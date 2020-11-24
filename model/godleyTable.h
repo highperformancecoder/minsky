@@ -39,6 +39,7 @@ namespace minsky
     friend struct SchemaHelper;
     friend class GodleyIcon;
     typedef std::vector<std::vector<string>> Data;
+    enum DisplayStyle {DRCR, sign}; ///< how to display -ve data in table
   private:
     CLASSDESC_ACCESS(GodleyTable);
     /// class of each column (used in DE compliant mode)
@@ -65,7 +66,7 @@ namespace minsky
       cell(1,0)=initialConditions;
       
     }
-
+    
     GodleyTable(const GodleyTable& other)
       : m_assetClass(other.m_assetClass),
         data(other.data),
@@ -84,6 +85,10 @@ namespace minsky
     const vector<AssetClass>& _assetClass() const {return m_assetClass;}
     AssetClass _assetClass(size_t col) const;
     AssetClass _assetClass(size_t col, AssetClass cls);
+    
+    /// Check whether more than one equity column is present
+    /// irrespective of single or multiple equity column mode.
+    bool singleEquity() const;
 
     /**
      * Generates a unique name for this table.
@@ -107,9 +112,12 @@ namespace minsky
     */
     string assetClass(ecolab::TCL_args args); 
   
-    // returns true if \a row is an "Initial Conditions" row
+    /// returns true if \a row is an "Initial Conditions" row
     bool initialConditionRow(unsigned row) const;
-
+    
+    /// return true if row is empty apart from a value in column \a col
+    bool singularRow(unsigned row, unsigned col);
+    
     size_t rows() const {return data.size();}
     size_t cols() const {return data.empty()? 0: data[0].size();}
 
@@ -126,7 +134,9 @@ namespace minsky
     */
     /// insert row at \a row
     void insertRow(unsigned row);
-   /// insert col at \a col
+    /// delete row at \a row
+    void deleteRow(unsigned row) {data.erase(data.begin()+row);}
+    /// insert col at \a col
     void insertCol(unsigned col);
     /// delete col before \a col
     void deleteCol(unsigned col);
@@ -148,6 +158,8 @@ namespace minsky
         throw std::out_of_range("Godley table index error");
       return data[row][col];
     }
+    bool cellInTable(int row, int col) const
+    {return row>=0 && size_t(row)<rows() && col>=0 && size_t(col)<cols();}
     string getCell(unsigned row, unsigned col) const {
       if (row<rows() && col<cols())
         return cell(row,col);
@@ -184,6 +196,10 @@ namespace minsky
 
     /// rename all instances of a variable
     void rename(const std::string& from, const std::string& to);
+    /// rename all instances of a flow variable
+    void renameFlows(const std::string& from, const std::string& to);        
+    /// rename a stock variable
+    void renameStock(const std::string& from, const std::string& to);        
   };
 
 }

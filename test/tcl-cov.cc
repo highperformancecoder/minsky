@@ -7,11 +7,10 @@
 #include "minsky_epilogue.h"
 #include <vector>
 #include <fstream>
+#include <regex> 
 
-#include <boost/regex.hpp>
-#include <boost/filesystem.hpp>
-using boost::regex;
-using boost::smatch;
+using std::regex;
+using std::smatch;
 using boost::filesystem::current_path;
 
 using namespace minsky;
@@ -72,6 +71,20 @@ struct ElementStack: public vector<Element>
     return r;
   }
 };
+
+namespace ecolab
+{
+  Tk_Window mainWin=0;
+}
+
+namespace minsky
+{
+  // check and perform a GUI event
+  void doOneEvent(bool idletasksOnly)
+  {
+    Tcl_DoOneEvent(TCL_DONT_WAIT | (idletasksOnly? TCL_IDLE_EVENTS: 0));
+  }
+}
 
 int main(int argc, char** argv)
 {

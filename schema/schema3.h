@@ -30,6 +30,7 @@ but any renamed attributes require bumping the schema number.
 #include "model/sheet.h"
 #include "schema/schema2.h"
 #include "schemaHelper.h"
+#include "zStream.h"
 #include "classdesc.h"
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
@@ -38,6 +39,7 @@ but any renamed attributes require bumping the schema number.
 #include <xsd_generate_base.h>
 #include <vector>
 #include <string>
+
 
 
 namespace schema3
@@ -64,33 +66,33 @@ namespace schema3
     int id=-1;
     std::string type;
     float x=0, y=0; ///< position in canvas, or within group
-    float zoomFactor=1;
+    float scaleFactor=1; ///< scale factor of item on canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
+    Optional<float> width, height;
     std::vector<int> ports;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor()), rotation(it.rotation()),
-      ports(ports) {}
+      x(it.m_x), y(it.m_y), scaleFactor(it.m_sf),
+      rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type), x(it.x), y(it.y), zoomFactor(it.zoomFactor),
-      rotation(it.rotation), ports(it.ports) {}
+      Note(it), id(it.id), type(type), x(it.x), y(it.y), 
+      rotation(it.rotation), width(it.width), height(it.height), ports(it.ports) {}
   };
 
   struct Slider
   {
-    bool visible=true, stepRel=false;
+    bool  stepRel=false;
     double min, max, step;
     Slider() {}
-    Slider(bool v, bool stepRel, double min, double max, double step):
-      visible(v), stepRel(stepRel), min(min), max(max), step(step) {}
+    Slider(bool stepRel, double min, double max, double step):
+      stepRel(stepRel), min(min), max(max), step(step) {}
     Slider(const schema2::Slider& s):
-      visible(s.visible), stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
+      stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
   };
     
   struct Item: public ItemBase
   {
-    Optional<float> width, height;
     Optional<std::string> name; //name, description or title
     Optional<std::string> init;
     Optional<std::string> units;
@@ -98,7 +100,7 @@ namespace schema3
     Optional<int> intVar;
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
-    Optional<minsky::RavelState> ravelState;
+    Optional<schema2::RavelState> ravelState;
     Optional<int> lockGroup;
     Optional<minsky::Dimensions> dimensions;
     // Operation tensor parameters
@@ -107,10 +109,10 @@ namespace schema3
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
-    Optional<float> iconScale; // for handling legacy schemas
+    Optional<bool> editorMode, buttonDisplay, variableDisplay;
     // Plot specific fields
     Optional<bool> logx, logy, ypercent;
-    Optional<Plot::PlotType> plotType;
+    Optional<minsky::PlotWidget::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;
@@ -129,21 +131,22 @@ namespace schema3
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
       name(v.rawName()), init(v.init()) {
       if (v.sliderBoundsSet)
-        slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
+        slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
         units=vv->units.str();
-      packTensorInit(v);
     }
     Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(o),ports),
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      width(g.width()/g.zoomFactor()), height(g.height()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
-      assetClasses(g.table._assetClass()) {}
+      /*width(g.iWidth()), height(g.iHeight()),*/ name(g.table.title), data(g.table.getData()),
+      assetClasses(g.table._assetClass()),
+      editorMode(g.editorMode()),
+      buttonDisplay(g.buttonDisplay()), variableDisplay(g.variableDisplay) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      width(p.width), height(p.height), name(p.title),
+      /*width(p.iWidth()), height(p.iHeight()),*/ name(p.title),
       logx(p.logx), logy(p.logy), ypercent(p.percent),
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
@@ -152,26 +155,27 @@ namespace schema3
     {
       if (p.legend) legend=p.legendSide;
     }
-    Item(int id, const minsky::Sheet& s, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(s),ports),
-      width(s.m_width), height(s.m_height) {}
+//    Item(int id, const minsky::Sheet& s, const std::vector<int>& ports):
+//      ItemBase(id,static_cast<const minsky::Item&>(s),ports),
+//      width(s.m_width), height(s.m_height) {}
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      width(g.iconWidth), height(g.iconHeight), name(g.title), bookmarks(g.bookmarks) {} 
+      /*width(g.iWidth()), height(g.iHeight()),*/ name(g.title), bookmarks(g.bookmarks) {} 
 
     static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
     Item(const schema2::Item& it):
-      ItemBase(it,it.type), width(it.width), height(it.height), name(it.name), init(it.init),
+      ItemBase(it,it.type), /*width(it.width), height(it.height),*/ name(it.name), init(it.init),
       units(it.units),
       slider(it.slider), intVar(it.intVar), dataOpData(it.dataOpData), filename(it.filename),
       ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
       axis(it.axis), arg(it.arg), data(it.data), assetClasses(it.assetClasses),
-      iconScale(it.iconScale), logx(it.logx), logy(it.logy), ypercent(it.ypercent),
-      plotType(it.plotType), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
+      logx(it.logx), logy(it.logy), ypercent(it.ypercent),
+      plotType(minsky::PlotWidget::PlotType(it.plotType? int(*it.plotType): 0)),
+      xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
       nxTicks(it.nxTicks), nyTicks(it.nyTicks), xtickAngle(it.xtickAngle),
       exp_threshold(it.exp_threshold), legend(it.legend), bookmarks(it.bookmarks),
       tensorData(convertTensorDataFromSchema2(it.tensorData)), palette(it.palette)
@@ -210,6 +214,7 @@ namespace schema3
   {
     static const int version=3;
     int schemaVersion=Minsky::version;
+    std::string minskyVersion="unknown";
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
@@ -220,8 +225,10 @@ namespace schema3
     minsky::ConversionsMap conversions;
     
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
-    Minsky(const minsky::Group& g);
-    Minsky(const minsky::Minsky& m): Minsky(*m.model) {
+    Minsky(const minsky::Group& g, bool packTensorData=true);
+    Minsky(const minsky::Minsky& m, bool packTensorData=true):
+      Minsky(*m.model,packTensorData)  {
+      minskyVersion=m.minskyVersion;
       rungeKutta=m;
       zoomFactor=m.model->zoomFactor();
       bookmarks=m.model->bookmarks;
@@ -234,7 +241,9 @@ namespace schema3
     {minsky::loadSchema<schema2::Minsky>(*this,data,"Minsky");}
     
     Minsky(const schema2::Minsky& m):
-      wires(m.wires.begin(), m.wires.end()), items(m.items.begin(), m.items.end()),
+      schemaVersion(m.schemaVersion),
+      wires(m.wires.begin(), m.wires.end()),
+      items(m.items.begin(), m.items.end()),
       groups(m.groups.begin(), m.groups.end()), rungeKutta(m.rungeKutta),
       zoomFactor(m.zoomFactor), bookmarks(m.bookmarks), dimensions(m.dimensions),
       conversions(m.conversions) {}

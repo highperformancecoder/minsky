@@ -31,8 +31,11 @@ trap "fail" 1 2 3 15
 cp $here/test/assert.tcl .
 for i in $here/examples/*.mky; do
     echo $i
-   $here/gui-tk/minsky $here/test/checkOverrides.tcl $i
-   if [ $? -ne 0 ]; then fail; fi
+   $here/gui-tk/minsky $here/test/checkOverrides.tcl $i &>log
+   if [ $? -ne 0 ]; then
+       cat log
+       fail
+   fi
 done
 
 pass

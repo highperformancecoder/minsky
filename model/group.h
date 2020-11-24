@@ -187,7 +187,8 @@ namespace minsky
   public:
     
     std::string title;
-    float iconWidth{100}, iconHeight{100}; // size of icon
+    Group() {iWidth(100); iHeight(100);}
+    ~Group() {}   
     std::vector<VariablePtr> createdIOvariables;
     
     bool nocycles() const override; 
@@ -219,7 +220,7 @@ namespace minsky
     void moveContents(Group& source);     
 
     /// returns which I/O region (x,y) is in if any
-    struct IORegion {enum type {none,input,output};};
+    struct IORegion {enum type {none,input,output,topBottom};};
       
     IORegion::type inIORegion(float x, float y) const;
     /// check if item is a variable and located in an I/O region, and add it if it is
@@ -230,13 +231,8 @@ namespace minsky
 
     ItemPtr removeItem(const Item&);
     /// remove item from group, and also all attached wires.
-    void deleteItem(const Item& i) {
-      auto r=removeItem(i);
-      if (r) {
-        r->deleteAttachedWires();
-        r->removeControlledItems();
-      }
-    }
+    void deleteItem(const Item&);
+
     void deleteAttachedWires() override {
       for (auto& i: inVariables) i->deleteAttachedWires();
       for (auto& i: outVariables) i->deleteAttachedWires();
@@ -274,16 +270,16 @@ namespace minsky
     bool displayContentsChanged() const {return m_displayContentsChanged;}
 
     /// margin sizes to allow space for edge variables. 
-    void margins(float& left, float& right) const;
+    void margins(float& left, float& right) const;    
 
     /// for debugging purposes
     std::vector<float> marginsV() const {
       float l, r; margins(l,r);  return {l,r};
-    }
+    }    
     
     /// computes the zoom at which to show contents, given current
     /// contentBounds and width
-    float displayZoom{1}; ///< extra fzoom at which contents are displayed
+    float displayZoom{1}; ///< extra zoom at which contents are displayed
     float relZoom{1}; ///< relative zoom contents of this group are displayed at
     float computeDisplayZoom();
     void computeRelZoom();
@@ -343,6 +339,10 @@ namespace minsky
     /// rotate all conatined items by 180 degrees
     void flipContents();
 
+    /// return a list of existing variables a variable in this group
+    /// could be connected to
+    std::vector<std::string> accessibleVars() const;
+
     std::vector<Bookmark> bookmarks;
     /// returns list of bookmark names for populating menu 
     std::vector<std::string> bookmarkList() {
@@ -357,16 +357,21 @@ namespace minsky
       if (i<bookmarks.size())
         bookmarks.erase(bookmarks.begin()+i);
     }
-    void gotoBookmark(size_t i) {
-      if (i<bookmarks.size())
-        {
-          auto& b=bookmarks[i];
-          moveTo(b.x, b.y);
-          zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
-        }
+    void gotoBookmark_b(const Bookmark& b) {
+      moveTo(b.x, b.y);
+      zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
     }
-    
+    void gotoBookmark(size_t i) 
+    {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
 
+    /// return default extension for this group - .mky if no ravels in group, .rvl otherwise
+    std::string defaultExtension() const;
+
+    /// automatically lay out items in this group using a graph layout algorithm
+    void autoLayout();
+    /// randomly lay out items in this group
+    void randomLayout();
+    
   };
 
   template <class M, class C>
@@ -398,7 +403,7 @@ namespace minsky
       }
     return r;
   }
-
+  
 }
 
 #ifdef CLASSDESC

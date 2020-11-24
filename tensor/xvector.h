@@ -48,15 +48,20 @@ namespace civita
   /// default parsing of a time string
   boost::posix_time::ptime sToPtime(const std::string& s);
 
-  /// labels describing the points along dimensions. These can be strings (text type), time values (boost::posix_time type) or numerical values (double)
-  struct XVector: public std::vector<boost::any>
+  struct NamedDimension
   {
-    typedef std::vector<boost::any> V;
     std::string name;
     Dimension dimension;
+    NamedDimension(const std::string& name={}, const Dimension& dimension={}): name(name), dimension(dimension) {}
+  };
+  
+  /// labels describing the points along dimensions. These can be strings (text type), time values (boost::posix_time type) or numerical values (double)
+  struct XVector: public NamedDimension, public std::vector<boost::any>
+  {
+    typedef std::vector<boost::any> V;
     XVector() {}
-    XVector(const std::string& name, const V& v=V()): V(v), name(name) {}
-    XVector(const std::string& name, const std::initializer_list<const char*>& v): name(name)
+    XVector(const std::string& name, const Dimension& dimension={}, const V& v={}): NamedDimension(name), V(v) {}
+    XVector(const std::string& name, const Dimension& dimension, const std::initializer_list<const char*>& v): NamedDimension(name, dimension)
     {for (auto i: v) push_back(i);}
     bool operator==(const XVector& x) const;
     void push_back(const std::string&);
@@ -64,6 +69,30 @@ namespace civita
     using V::push_back;
     /// best time format given range of data for plot xticks and spreadsheet labels
     std::string timeFormat() const;
+    /// rewrites the labels according to dimension
+    void imposeDimension();
+    /// @return true if all elements of this are of type T
+    template <class T>
+    bool checkType() const {
+      for (auto& i:*this)
+        if (!boost::any_cast<T>(&i))
+          return false;
+      return true;
+    }
+    /// @return true if all elements have type described by @a dimension
+    bool checkThisType() const {
+      switch (dimension.type)
+        {
+        case Dimension::string:
+          return checkType<std::string>();
+        case Dimension::value:
+          return checkType<double>();
+        case Dimension::time:
+          return checkType<boost::posix_time::ptime>();
+        }
+      return false;
+    }
+
   };
 
 }

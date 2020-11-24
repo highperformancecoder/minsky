@@ -138,30 +138,39 @@ namespace MathDAG
 
   }
 
-  void SystemOfEquations::renderEquations(Surface& dest) const
+  void SystemOfEquations::renderEquations(Surface& dest, double height) const
   {
     double x, y; // starting position of current line
     cairo_get_current_point(dest.cairo(),&x,&y);
+    const double origin=-y;
     Pango den(dest.cairo());
     den.setMarkup("dt");
 
+    const double fontHeight=30;
+    int baseEqn=origin/fontHeight;
+    int eqnNo=0;
+    
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i)) continue;
-        if (i->type==VariableType::constant) continue;
+        if (!i || i->type==VariableType::constant) continue;
+        if (eqnNo++ < baseEqn) continue;
         RecordingSurface line;
         variableRender(line,*i);
         cairo_move_to(dest.cairo(), x, y-line.top());
         variableRender(dest,*i);
         y+=line.height()+4;
         cairo_move_to(dest.cairo(), x, y);
+        if (y>height) return;
        }
 
     for (const VariableDAG* i: integrationVariables)
       {
+        if (eqnNo++ < baseEqn) continue;
         // initial conditions
+        cairo_move_to(dest.cairo(), x, y); // needed to define a current point on the equations tab. for ticket 1256
         y+=print(dest.cairo(), latexToPango(mathrm(i->name))+"(0) = "+
-                 latexToPango(latexInit(i->init)),Anchor::nw);
+                 latexToPango(latexInit(i->init)),Anchor::nw);   
         
         // differential equation
         Pango num(dest.cairo());
@@ -197,8 +206,8 @@ namespace MathDAG
         cairo_move_to(dest.cairo(), x+0.5*(num.width()-den.width()), eqY);
         den.show();
         cairo_move_to(dest.cairo(), x, y+=lineSpacing);// move to next line
-        
 
+        if (y>height) return;
       }
   } 
 
@@ -338,10 +347,48 @@ namespace MathDAG
   }
   template <>
   void OperationDAG<OperationType::time>::render(Surface& surf) const 
-  {print(surf.cairo(),"<i>t</i>",Anchor::nw);}
+  {print(surf.cairo(),"<i>t</i>",Anchor::nw);}  
+  template <>
+  void OperationDAG<OperationType::euler>::render(Surface& surf) const 
+  {print(surf.cairo(),"<i>e</i>",Anchor::nw);}
+  template <>
+  void OperationDAG<OperationType::pi>::render(Surface& surf) const 
+  {print(surf.cairo(),"<i>π</i>",Anchor::nw);}    
+  template <>
+  void OperationDAG<OperationType::zero>::render(Surface& surf) const 
+  {print(surf.cairo(),"<i>0</i>",Anchor::nw);}
+  template <>
+  void OperationDAG<OperationType::one>::render(Surface& surf) const 
+  {print(surf.cairo(),"<i>1</i>",Anchor::nw);}    
+  template <>
+  void OperationDAG<OperationType::inf>::render(Surface& surf) const 
+  {print(surf.cairo(),"<i>∞</i>",Anchor::nw);}   
+  template <>
+  void OperationDAG<OperationType::percent>::render(Surface& s) const
+  {
+      double xx,yy;
+      cairo_get_current_point(s.cairo(),&xx,&yy);
+ 
+      RecordingSurface r;
+      arguments[0][0]->render(r);
+
+      Pango pango(s.cairo());
+      double oldFs=pango.getFontSize();
+      pango.setFontSize(r.height());     
+      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
+      pango.show();
+      cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
+      cairo_rel_move_to(s.cairo(),pango.width(),0);
+      arguments[0][0]->render(s);
+      xx+=pango.width()+r.width();
+      pango.setMarkup("%");
+      cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
+      pango.show();
+      cairo_move_to(s.cairo(),xx+pango.width(),yy);
+  }     
   template <>
   void OperationDAG<OperationType::copy>::render(Surface& surf) const
-  {print(surf.cairo(),"=",Anchor::nw);}
+  {print(surf.cairo(),"=",Anchor::nw);} 
   template <>
   void OperationDAG<OperationType::integrate>::render(Surface& surf) const
   {throw error("should not be rendering integration operations");}
@@ -541,6 +588,59 @@ namespace MathDAG
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
   }
+  
+  template <>
+  void OperationDAG<OperationType::gamma>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"Γ",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
+  }
+  
+  template <>
+  void OperationDAG<OperationType::polygamma>::render(Surface& surf) const 
+  {
+      print(surf.cairo(),"ψ",Anchor::nw);
+      if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])	  
+      {
+        if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+          {  
+	        RecordingSurface base;
+            arguments[1][0]->render(base);
+            cairo_rel_move_to(surf.cairo(), 0, -0.5*base.height());
+            parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});   			  
+            arguments[0][0]->render(base);
+            cairo_rel_move_to(surf.cairo(), 0, 0.5*base.height());                        
+            parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});   			  
+          }
+         else
+            parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+		}
+  }      
+  
+  template <>
+  void OperationDAG<OperationType::fact>::render(Surface& s) const
+  {
+      double xx,yy;
+      cairo_get_current_point(s.cairo(),&xx,&yy);
+ 
+      RecordingSurface r;
+      arguments[0][0]->render(r);
+
+      Pango pango(s.cairo());
+      double oldFs=pango.getFontSize();
+      pango.setFontSize(r.height());
+      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
+      pango.show();
+      cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
+      cairo_rel_move_to(s.cairo(),pango.width(),0);
+      arguments[0][0]->render(s);
+      xx+=pango.width()+r.width();
+      pango.setMarkup("!");
+      cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
+      pango.show();
+      cairo_move_to(s.cairo(),xx+pango.width(),yy);
+  }   
 
   template <>
   void OperationDAG<OperationType::sum>::render(Surface& surf) const
@@ -675,7 +775,7 @@ namespace MathDAG
         if (!arguments[1].empty() && arguments[1][0])
           if (!arguments[0].empty() && arguments[0][0])
             {
-              print(surf.cairo(),"Θ",Anchor::nw);
+              print(surf.cairo(),"θ",Anchor::nw);
               parenthesise(surf, [&](Surface& surf){
                   arguments[1][0]->render(surf);
                   print(surf.cairo()," - ",Anchor::nw);
@@ -689,13 +789,13 @@ namespace MathDAG
             }
           else
             {
-              print(surf.cairo(),"Θ",Anchor::nw);
+              print(surf.cairo(),"θ",Anchor::nw);
               parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});
             }
         else
           if (!arguments[0].empty() && arguments[0][0])
             {
-              print(surf.cairo(),"Θ",Anchor::nw);
+              print(surf.cairo(),"θ",Anchor::nw);
               parenthesise(surf, [&](Surface& surf){
                   print(surf.cairo()," - ",Anchor::nw);
                   if (arguments[0][0]->BODMASlevel()>1)

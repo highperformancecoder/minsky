@@ -25,7 +25,12 @@
 #include "classdesc_access.h"
 #include "constMap.h"
 #include "str.h"
-#include <boost/regex.hpp>
+#include "CSVDialog.h"
+#include "latexMarkup.h"
+#include <regex> 
+#include <utility>
+#include <boost/locale.hpp>
+using namespace boost::locale::conv;
 
 namespace minsky
 {
@@ -44,12 +49,10 @@ namespace minsky
     double& valRef(); 
     const double& valRef() const;
     std::vector<unsigned> m_dims;
-    std::vector<size_t> m_index;     
     
     friend class VariableManager;
     friend struct SchemaHelper;
   public:
-    using ITensor::hypercube;
     /// variable has an input port
     bool lhs() const {
       return m_type==flow || m_type==tempFlow;}
@@ -75,14 +78,15 @@ namespace minsky
     Units units;
     bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
     void setUnits(const std::string& x) {units=Units(x);}
-    
+
+    bool sliderVisible=false; // determined at reset time
     bool godleyOverridden;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
-    double value(size_t i=0) const {return *(begin()+i);}
+    double value(size_t i=0) const {return operator[](i);}
     int idx() const {return m_idx;}
     void reset_idx() {m_idx=-1;}    
 
@@ -90,42 +94,43 @@ namespace minsky
     Timestamp timestamp() const override {return Timestamp::clock::now();}
     
     double operator[](size_t i) const override {return *(&valRef()+i);}
-    double& operator[](size_t i) override {return *(&valRef()+i);}
+    double& operator[](size_t i) override;
 
-
-    std::vector<size_t> index() const override {return m_index;}
-    void index(const std::vector<size_t>& i) override {
+    const Index& index(Index&& i) override {
+      assert(idx()==-1||idxInRange());
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
-        allocValue();    
+        allocValue();
+      assert(idxInRange());
+      return m_index;
     }
-
-    
-    size_t numDenseElements() const {return hypercube().numElements();}
-  
-    size_t size() const override
-    {return m_index.size() ? m_index.size(): numDenseElements();}    
+    using ITensorVal::index;
     
     template <class T>                                            
     void hypercube_(T x) {    
+      assert(idx()==-1||idxInRange());
       size_t prevNumElems = size();
       ITensor::hypercube(x);    
       if (idx()==-1 || (prevNumElems<size()))    
-        allocValue();    
+        allocValue();
+      assert(idxInRange());
     }
+
+    bool idxInRange() const;
     
     const Hypercube& hypercube(const Hypercube& hc) override
     {hypercube_(hc); return m_hypercube;}
     const Hypercube& hypercube(Hypercube&& hc) override
     {hypercube_(hc); return m_hypercube;}
-                                                                              
+    using ITensorVal::hypercube;
+                                                                           
     void makeXConformant(const ITensor& x) {
       m_hypercube.makeConformant(x.hypercube());
     }
     
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
-      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
+      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
 
 //    const VariableValue& operator=(double x) {valRef()=x; return *this;}
 //    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
@@ -140,6 +145,9 @@ namespace minsky
     VariableValue& allocValue();
 
     std::string valueId() const {return valueIdFromScope(m_scope.lock(),name);}
+
+    /// for importing CSV files
+    CSVDialog csvDialog;
     
     /// evaluates the initial value, based on the set of variables
     /// contained in \a VariableManager. \a visited is used to check
@@ -153,24 +161,26 @@ namespace minsky
     void reset(const VariableValues&); 
 
     /// check that name is a valid valueId (useful for assertions)
-    static bool isValueId(const std::string& name) {
+    static bool isValueId(const std::string& name) {	
       return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-        boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\{}]+)"));
+        std::regex_match(utf_to_utf<char>(name), std::regex(R"((constant)?\d*:[^:\s\\]+)"));   // Leave curly braces in valueIds. For ticket 1165
     }
 
     /// construct a valueId
     static std::string valueId(int scope, std::string name) {
-      if (scope<0) return ":"+stripActive(uqName(name));
-      else return std::to_string(scope)+":"+stripActive(uqName(name));
+      auto tmp=":"+utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
+      if (scope<0) return tmp;
+      else return std::to_string(scope)+tmp;
     }
     static std::string valueId(std::string name) {
+	  name=utf_to_utf<char>(name);	
       return valueId(scope(name), name);
     }
     /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
     /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
     static GroupPtr scope(GroupPtr ref, const std::string& name);
     static std::string valueId(const GroupPtr& ref, const std::string& name) 
-    {return valueIdFromScope(scope(ref,name), name);}
+    {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(name));}
     static std::string valueIdFromScope(const GroupPtr& scope, const std::string& name);
     
     /// extract scope from a qualified variable name
@@ -193,19 +203,22 @@ namespace minsky
     static std::vector<double> flowVars;
   };
 
-  struct VariableValues: public ConstMap<std::string, VariableValue>
+  /// a shared_ptr that default constructs a default target
+  struct VariableValuePtr: public std::shared_ptr<VariableValue>
+  {
+    template <class... A>
+    VariableValuePtr(A... a): std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(std::forward<A>(a)...)) {}
+  };
+  
+  struct VariableValues: public ConstMap<std::string, VariableValuePtr>
   {
     VariableValues() {clear();}
     void clear() {
-      ConstMap<std::string, VariableValue>::clear();
+      ConstMap<std::string, mapped_type>::clear();
       // add special values for zero and one, used for the derivative
       // operator in SystemOfEquations
-      insert
-        (value_type("constant:zero",
-                    VariableValue(VariableType::constant,"constant:zero","0")));
-      insert
-        (value_type("constant:one",
-                    VariableValue(VariableType::constant,"constant:one","1")));
+      emplace("constant:zero", VariableValuePtr(VariableType::constant,"constant:zero","0"));
+      emplace("constant:one", VariableValuePtr(VariableType::constant,"constant:one","1"));
     }
     /// generate a new valueId not otherwise in the system
     std::string newName(const std::string& name) const;
@@ -214,14 +227,14 @@ namespace minsky
     bool validEntries() const;
     void resetUnitsCache() {
       for (auto& i: *this)
-        i.second.unitsCached=false;
+        i.second->unitsCached=false;
     }
   };
   
   struct EngNotation {int sciExp, engExp;};
   /// return formatted mantissa and exponent in engineering format
   EngNotation engExp(double value);
-  std::string mantissa(double value, const EngNotation&);
+  std::string mantissa(double value, const EngNotation&,int digits=3);
   std::string expMultiplier(int exp);
 
 

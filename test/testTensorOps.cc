@@ -42,10 +42,10 @@ struct Eval: private std::shared_ptr<EvalCommon>, public TensorEval
   template <class Op>
   Eval(VariableBase& result, Op& op):
     shared_ptr<EvalCommon>(new EvalCommon),
-    TensorEval(*result.vValue(), *this,
+    TensorEval(result.vValue(), *this,
                TensorOpFactory().create(op,TensorsFromPort(*this))) {}
   
-  void operator()() {TensorEval::eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());}
+  void operator()() {TensorEval::eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());}
 };
 
 struct TestFixture
@@ -230,6 +230,67 @@ SUITE(TensorOps)
       }
     }
 
+  TEST_FIXTURE(TestFixture, difference2D)
+    {
+      vector<unsigned> dims{5,5};
+      fromVal.hypercube(Hypercube(dims));
+      int cnt=0;
+      for (auto& i: fromVal)
+        i=cnt++;
+
+      int delta=1;
+      evalOp<OperationType::difference>("0",delta);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(1,i);
+      evalOp<OperationType::difference>("1",delta);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(5,i);
+      delta=2;
+      evalOp<OperationType::difference>("0",delta);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(2,i);
+      evalOp<OperationType::difference>("1",delta);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(10,i);
+    }
+  TEST_FIXTURE(TestFixture, difference1D)
+    {
+      vector<unsigned> dims{5};
+      fromVal.hypercube(Hypercube(dims));
+      int cnt=0;
+      for (auto& i: fromVal)
+        i=cnt++;
+
+      int delta=1;
+      evalOp<OperationType::difference>("",delta=1);
+      CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(1,i);
+      CHECK_EQUAL(1, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+
+      evalOp<OperationType::difference>("",delta=-1);
+      CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(-1,i);
+      CHECK_EQUAL(0, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+                  
+      evalOp<OperationType::difference>("",delta=2);
+      CHECK_EQUAL(3, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(2,i);
+      CHECK_EQUAL(2, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+
+      // check that the sparse code works as expected
+      fromVal.index({0,1,2,3,4});
+      evalOp<OperationType::difference>("",delta=1);
+      CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(1,i);
+      CHECK_EQUAL(1, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+      vector<size_t> ii{0,1,2,3};
+      CHECK_ARRAY_EQUAL(ii, to.vValue()->index(), 4);
+    }
+  
   TEST_FIXTURE(TestFixture, indexGather)
     {
       auto& toVal=*to.vValue();
@@ -291,8 +352,8 @@ SUITE(TensorOps)
           OperationPtr o(op);
           CHECK_EQUAL(2, o->numPorts());
           Wire w1(src.ports[0], o->ports[1]), w2(o->ports[0], dest.ports[1]);
-          TensorEval eval(*dest.vValue(), ev, factory.create(*o,tp));
-          eval.eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());
+          TensorEval eval(dest.vValue(), ev, factory.create(*o,tp));
+          eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
           switch (OperationType::classify(op))
             {
             case OperationType::function:
@@ -316,7 +377,10 @@ SUITE(TensorOps)
               break;
             case OperationType::scan:
               CHECK_EQUAL(1, dest.vValue()->rank());
-              CHECK_EQUAL(src.vValue()->size(), dest.vValue()->size());
+              if (op==OperationType::difference) //TODO should difference really be a scan?
+                CHECK_EQUAL(src.vValue()->size()-1, dest.vValue()->size());
+              else
+                CHECK_EQUAL(src.vValue()->size(), dest.vValue()->size());
               break;
             default:
               CHECK(false);
@@ -345,8 +409,8 @@ SUITE(TensorOps)
           CHECK_EQUAL(3, o->numPorts());
           Wire w1(src1.ports[0], o->ports[1]), w2(src2.ports[0], o->ports[2]),
             w3(o->ports[0], dest.ports[1]);
-          TensorEval eval(*dest.vValue(), ev, factory.create(*o,tp));
-          eval.eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());
+          TensorEval eval(dest.vValue(), ev, factory.create(*o,tp));
+          eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
           CHECK_EQUAL(src1.vValue()->size(), dest.vValue()->size());
           CHECK_EQUAL(src2.vValue()->size(), dest.vValue()->size());
           unique_ptr<ScalarEvalOp> scalarOp(ScalarEvalOp::create(op));
@@ -370,8 +434,9 @@ SUITE(TensorOps)
     CHECK_EQUAL(identity, (*tensorOp)[0]);
     Hypercube hc(vector<unsigned>{2});
     auto tv1=make_shared<TensorVal>(hc), tv2=make_shared<TensorVal>(hc);
-    tv1->push_back(0,1), tv2->push_back(0,2);
-    tv1->push_back(1,2), tv2->push_back(1,1);
+    map<size_t,double> tv1Data{{0,1},{1,2}}, tv2Data{{0,2},{1,1}};
+    *tv1=tv1Data;
+    *tv2=tv2Data;
     tensorOp->setArguments(vector<TensorPtr>{tv1,tv2},vector<TensorPtr>{});
     CHECK_EQUAL(f((*tv1)[0],(*tv2)[0]), (*tensorOp)[0]);
     CHECK_EQUAL(f((*tv1)[1],(*tv2)[1]), (*tensorOp)[1]);
@@ -424,4 +489,222 @@ SUITE(TensorOps)
 //      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 6, 0.001);
 //    }
 
+  struct TensorValFixture
+  {
+    ravel::RavelState state;
+    std::shared_ptr<TensorVal> arg;
+    TensorValFixture() {
+      Hypercube hc;
+      arg=make_shared<TensorVal>();
+      hc.xvectors=
+        {
+          XVector("country",{},{"Australia","Canada","US"}),
+          XVector("sex",{},{"male","female"}),
+          XVector("date",{},{"2010","2011","2012"})
+        };
+      arg->hypercube(hc);
+      for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
+      for (auto& xv: hc.xvectors)
+        {
+          state.handleStates.emplace_back();
+          state.handleStates.back().description=xv.name;
+        }
+    }
+  };
+  
+  TEST_FIXTURE(TensorValFixture, sliced2dswapped)
+    {
+      auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="sex";});
+      sex->sliceLabel="male";
+      state.outputHandles={"date","country"};
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      auto& chc=chain.back()->hypercube();
+      auto& ahc=arg->hypercube();
+      CHECK_EQUAL("date",chc.xvectors[0].name);
+      CHECK(chc.xvectors[0]==ahc.xvectors[2]);
+      CHECK_EQUAL("country",chc.xvectors[1].name);
+      CHECK(chc.xvectors[1]==ahc.xvectors[0]);
+      CHECK_EQUAL(9,chain.back()->size());
+      for (size_t i=0; i<chain.back()->size(); ++i)
+        CHECK(ahc.splitIndex((*chain.back())[i])[1]==0); //entry is "male"
+      vector<double> expected={0,1,2,6,7,8,12,13,14};
+      CHECK_ARRAY_EQUAL(expected, *chain[1], 9);
+      expected={0,6,12,1,7,13,2,8,14};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      sex->sliceLabel="female";
+      chain=createRavelChain(state, arg);
+      CHECK_EQUAL(9,chain.back()->size());
+      for (size_t i=0; i<chain.back()->size(); ++i)
+        CHECK(ahc.splitIndex((*chain.back())[i])[1]==1); //entry is "female"
+      
+    }
+  TEST_FIXTURE(TensorValFixture, reduction2dswapped)
+    {
+      auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="sex";});
+      sex->collapsed=true;
+      sex->reductionOp=ravel::Op::sum;
+      state.outputHandles={"date","country"};
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      auto& chc=chain.back()->hypercube();
+      auto& ahc=arg->hypercube();
+      CHECK_EQUAL("date",chc.xvectors[0].name);
+      CHECK(chc.xvectors[0]==ahc.xvectors[2]);
+      CHECK_EQUAL("country",chc.xvectors[1].name);
+      CHECK(chc.xvectors[1]==ahc.xvectors[0]);
+      CHECK_EQUAL(9,chain.back()->size());
+      vector<double> expected={3,15,27,5,17,29,7,19,31};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      sex->reductionOp=ravel::Op::prod;
+      chain=createRavelChain(state, arg);
+      expected={0,54,180,4,70,208,10,88,238};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      sex->reductionOp=ravel::Op::av;
+      chain=createRavelChain(state, arg);
+      expected={1.5,7.5,13.5,2.5,8.5,14.5,3.5,9.5,15.5};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      sex->reductionOp=ravel::Op::stddev;
+      chain=createRavelChain(state, arg);
+      expected={1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      sex->reductionOp=ravel::Op::min;
+      chain=createRavelChain(state, arg);
+      expected={0,6,12,1,7,13,2,8,14};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      
+      sex->reductionOp=ravel::Op::max;
+      chain=createRavelChain(state, arg);
+      expected={3,9,15,4,10,16,5,11,17};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+     
+    }
+
+    TEST_FIXTURE(TensorValFixture, sparseSlicedRavel)
+    {
+      state.outputHandles={"date","country"};
+      auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="sex";});
+      arg->index({0,4,8,12,16});
+      sex->sliceLabel="male";
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      CHECK_EQUAL(3, chain.back()->size());
+      vector<size_t> expectedi{0,5,6};
+      CHECK_ARRAY_EQUAL(expectedi, chain[1]->index(),3);
+      expectedi={0,2,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(),3);
+      vector<double> expectedf{0,1,2,3,4};
+      CHECK_ARRAY_EQUAL(expectedf, *arg,3);
+      expectedf={0,2,3};
+      CHECK_ARRAY_EQUAL(expectedf, *chain[1],3);
+      expectedf={0,3,2};
+      CHECK_ARRAY_EQUAL(expectedf, *chain.back(),3);
+
+      sex->collapsed=true;
+      chain=createRavelChain(state, arg);
+      CHECK_EQUAL(5, chain.back()->size());
+      expectedi={0,1,5,6,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain[1]->index(),3);
+      expectedi={0,2,3,5,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(),3);
+      expectedf={0,1,2,3,4};
+      CHECK_ARRAY_EQUAL(expectedf, *chain[1], 5);
+      expectedf={0,3,1,4,2};
+      CHECK_ARRAY_EQUAL(expectedf, *chain.back(),5);
+    }
+    
+    TEST_FIXTURE(TensorValFixture, calipered)
+    {
+      state.outputHandles={"date","country"};
+      auto country=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="country";});
+      country->minLabel="Canada";
+      country->displayFilterCaliper=true;
+      auto date=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="date";});
+      date->maxLabel="2011";
+      date->displayFilterCaliper=true;
+      arg->index({0,4,8,12,16});
+      auto chain=createRavelChain(state, arg);
+      vector<double> expected={2};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), expected.size());
+      vector<double> expectedi={3};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(), expectedi.size());
+      vector<size_t> dims={2,2};
+      CHECK_ARRAY_EQUAL(dims, chain.back()->shape(), 2);
+    }
+
+    TEST_FIXTURE(TensorValFixture, imposeDimensions)
+      {
+        Dimensions dimensions;
+        dimensions.emplace("date",Dimension{Dimension::time,"%Y"});
+        arg->imposeDimensions(dimensions);
+        auto& xv=arg->hypercube().xvectors[2];
+        CHECK_EQUAL("date",xv.name);
+        CHECK_EQUAL(Dimension::time,xv.dimension.type);
+        CHECK_EQUAL("%Y",xv.dimension.units);
+        for (auto& i: xv)
+          CHECK(boost::any_cast<boost::posix_time::ptime>(&i));
+      }
+
+    TEST(sortByValue)
+      {
+        auto val=make_shared<TensorVal>(vector<unsigned>{5});
+        vector<double> data={3,2,4,5,1};
+        for (size_t i=0; i<data.size(); ++i) (*val)[i]=data[i];
+        val->updateTimestamp();
+        SortByValue forward(ravel::HandleSort::forward);
+        forward.setArgument(val);
+        CHECK_EQUAL(val->timestamp(), forward.timestamp());
+        CHECK_EQUAL(val->size(), forward.size());
+        for (size_t i=1; i<forward.size(); ++i)
+          CHECK(forward[i]>forward[i-1]);
+        vector<int> expected={4,1,0,2,3};
+        for (size_t i=0; i<forward.size(); ++i)
+          CHECK_EQUAL(expected[i], boost::any_cast<double>(forward.hypercube().xvectors[0][i]));
+        SortByValue reverse(ravel::HandleSort::reverse);
+        reverse.setArgument(val);
+        for (size_t i=1; i<reverse.size(); ++i)
+          CHECK(reverse[i]<reverse[i-1]);
+        expected={3,2,0,1,4};
+        for (size_t i=0; i<reverse.size(); ++i)
+          CHECK_EQUAL(expected[i], boost::any_cast<double>(reverse.hypercube().xvectors[0][i]));
+      }
+
+    TEST(tensorValVectorIndex)
+      {
+        TensorVal tv(vector<unsigned>{5,3,2});
+        for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
+        CHECK_EQUAL(8,tv({3,1,0}));
+        tv.index({1,4,8,12});
+        for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
+        CHECK_EQUAL(2,tv({3,1,0}));
+        CHECK(isnan(tv({2,1,0})));
+      }
+    
+    TEST(tensorValAssignment)
+      {
+        auto arg=std::make_shared<TensorVal>(vector<unsigned>{5,3,2});
+        for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
+        Scan scan([](double& x,double y,size_t){x+=y;});
+        scan.setArgument(arg,"0",0);
+        CHECK_EQUAL(arg->rank(), scan.rank());
+        CHECK(scan.size()>1);
+        
+        TensorVal tv;
+        tv=scan;
+
+        CHECK_EQUAL(tv.size(), scan.size());
+        CHECK_ARRAY_EQUAL(tv.hypercube().dims(), scan.hypercube().dims(), scan.rank());
+        for (size_t i=0; i<tv.size(); ++i)
+          CHECK_EQUAL(scan[i], tv[i]);
+      }
 }

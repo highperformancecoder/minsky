@@ -11,24 +11,17 @@ Presumably, (with effort), it could be built on any posix compliant platform.
 
 Dependencies
 ------------
-* gcc/g++ (C++11 compatible, ver 5 or later)
+* gcc/g++ (C++11 compatible)
 * gmake
-* boost 1.47.0 or later 
+* boost 1.66.0 or later 
 * json_spirit
 * TCL/Tk
 * cairo
 * pango
 * GSL (GNU Scientific Library) 
 * librsvg
-* Berkeley DB (libdb) (Minsky doesn't use BDB, but it helps for installing EcoLab from source code)
-* Most recent ecolab.5 release
 
-The server component is an experimental implementation for supporting a web-based Minsky client. It is not needed for building and using the standard desktop application.
-
-For building server (experimental)
-
-* websocketpp 2.x (get from Github)
-* soci
+Hint: - if building on a Linux system, you can take a sneak peek at either [minsky.spec](https://build.opensuse.org/package/view_file/home:hpcoder1/minsky/minsky.dsc?expand=1) (for Redhat/Fedora/CentOS/OpenSUSE) or [minsky.dsc](https://build.opensuse.org/package/view_file/home:hpcoder1/minsky/minsky.dsc?expand=1) (for Debian/Ubuntu) at  to see what packages you can install to get your dependencies installed via the system's built-in package manager.
 
 Package Managers
 ----------------

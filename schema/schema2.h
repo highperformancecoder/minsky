@@ -34,6 +34,7 @@ but any renamed attributes require bumping the schema number.
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
 #include "rungeKutta.h"
+#include "ravelState-schema2.h"
 
 #include "optional.h"
 
@@ -100,7 +101,7 @@ namespace schema2
     Optional<int> intVar;
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
-    Optional<minsky::RavelState> ravelState;
+    Optional<RavelState> ravelState;
     Optional<int> lockGroup;
     Optional<minsky::Dimensions> dimensions;
     // Operation tensor parameters

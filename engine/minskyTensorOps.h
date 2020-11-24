@@ -35,15 +35,21 @@ namespace minsky
   class EvalCommon
   {
     double* m_flowVars=nullptr;
+    size_t m_fvSize=0;
     const double* m_stockVars=nullptr;
     ITensor::Timestamp m_timestamp;
   public:
     double* flowVars() const {return m_flowVars;}
+    size_t fvSize() const {return m_fvSize;}
     const double* stockVars() const {return m_stockVars;}
     ITensor::Timestamp timestamp() const {return m_timestamp;}
-    void update(double* fv, const double* sv)
+    /// initialise flow and stock var array pointers
+    /// @param fv - pointer to flow variable vector
+    /// @param n - size of flow variable vector
+    /// @param sv - pointer to stock variable vector
+    void update(double* fv, size_t n, const double* sv)
     {
-      m_flowVars=fv; m_stockVars=sv; m_timestamp=ITensor::Timestamp::clock::now();
+      m_flowVars=fv; m_fvSize=n; m_stockVars=sv; m_timestamp=ITensor::Timestamp::clock::now();
     }
   };
 
@@ -87,34 +93,59 @@ namespace minsky
   };
   
   // a VariableValue that contains a references to overridable value vectors
-  struct TensorVarVal: public VariableValue, public DerivativeMixin
+  template <class VV=const VariableValue, class I=ITensor>
+  struct TensorVarValBase: public I, public DerivativeMixin
   {
+    std::shared_ptr<VV> value;
     /// reference to EvalOpVector owning this value, to extract
     /// flowVar and stockVarinfo
     shared_ptr<EvalCommon> ev;
+
+    int idx() const {return value->idx();}
+    
     /// 
-    Timestamp timestamp() const override {return ev->timestamp();}
+    ITensor::Timestamp timestamp() const override {return ev->timestamp();}
     double operator[](size_t i) const override {
-      return isFlowVar()? ev->flowVars()[idx()+i]: ev->stockVars()[idx()+i];
+      return value->isFlowVar()? ev->flowVars()[value->idx()+i]: ev->stockVars()[value->idx()+i];
     }
-    double& operator[](size_t i) override {
-      assert(isFlowVar());
-      return ev->flowVars()[idx()+i];
-    }
-    TensorVarVal(const VariableValue& vv, const shared_ptr<EvalCommon>& ev):
-      VariableValue(vv), ev(ev) {}
-    const TensorVarVal& operator=(const ITensor& t) override {
-      VariableValue::operator=(t);
-      ev->update(ev->flowVars(),ev->stockVars());
-      return *this;
-    }
+    TensorVarValBase(const std::shared_ptr<VV>& vv, const shared_ptr<EvalCommon>& ev):
+      value(vv), ev(ev) {}
+    const Hypercube& hypercube() const override {return value->hypercube();}
+    const Index& index() const override {return value->index();}
+    size_t size() const override {return value->size();}
+   
     double dFlow(size_t ti, size_t fi) const override 
-    {return isFlowVar() && fi==ti+idx();}
+    {return value->isFlowVar() && fi==ti+value->idx();}
     double dStock(size_t ti, size_t si) const override 
-    {return !isFlowVar() && si==ti+idx();}
+    {return !value->isFlowVar() && si==ti+value->idx();}
   };
 
+  using ConstTensorVarVal=TensorVarValBase<>;
 
+  struct TensorVarVal: public TensorVarValBase<VariableValue,ITensorVal>
+  {
+    TensorVarVal(const std::shared_ptr<VariableValue>& vv, const shared_ptr<EvalCommon>& ev):
+      TensorVarValBase<VariableValue,ITensorVal>(vv,ev) {}
+    using ITensorVal::index;
+    const Index& index(Index&& x) override {return value->index(move(x));}
+    const Index& index() const override {return value->index();}
+    const Hypercube& hypercube(const Hypercube& hc) override {return value->hypercube(hc);}
+    const Hypercube& hypercube(Hypercube&& hc) override {return value->hypercube(std::move(hc));}
+    const Hypercube& hypercube() const override {return value->hypercube();}
+    using ITensorVal::operator[];
+    double& operator[](size_t i) override {
+      assert(value->isFlowVar());
+      assert(value->idx()+i<ev->fvSize());
+      return ev->flowVars()[value->idx()+i];
+    }
+    TensorVarVal& operator=(const ITensor& t) override {
+      *value=t;
+      ev->update(ev->flowVars(), ev->fvSize(), ev->stockVars());
+      return *this;
+    }
+  };
+
+  
   /// A helper to evaluate a variable value
   class TensorEval: public classdesc::Poly<TensorEval, EvalOpBase>
   //                    public classdesc::PolyPack<TensorEval>
@@ -125,19 +156,18 @@ namespace minsky
   public:
     // not used, but required to make this a concrete type
     Type type() const override {assert(false); return OperationType::numOps;} 
-    TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev); 
-    TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev,
+    TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev); 
+    TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
       result.hypercube(rhs->hypercube());
       result.index(rhs->index());
-      v=result;
       assert(result.idx()>=0);
       assert(result.size()==rhs->size());
     } 
-    TensorEval(const VariableValue& dest, const VariableValue& src);
+    TensorEval(const std::shared_ptr<VariableValue>& dest, const std::shared_ptr<VariableValue>& src);
                
-    void eval(double fv[], const double sv[]) override;
-    void deriv(double df[],const double ds[],const double sv[],const double fv[]) override;
+    void eval(double fv[], size_t,const double sv[]) override;
+    void deriv(double df[],size_t,const double ds[],const double sv[],const double fv[]) override;
   };
 }
   

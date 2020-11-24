@@ -20,11 +20,13 @@
 #ifndef CIVITA_TENSORINTERFACE_H
 #define CIVITA_TENSORINTERFACE_H
 #include "hypercube.h"
+#include "index.h"
 
 #ifndef CLASSDESC_ACCESS
 #define CLASSDESC_ACCESS(x)
 #endif
 #include <chrono>
+#include <set>
 
 namespace civita
 {
@@ -46,41 +48,49 @@ namespace civita
     virtual const Hypercube& hypercube(Hypercube&& hc) {return m_hypercube=std::move(hc);}
     size_t rank() const {return hypercube().rank();}
     std::vector<unsigned> shape() const {return hypercube().dims();}
+
+    /// impose dimensions according to dimension map \a dimensions
+    void imposeDimensions(const Dimensions& dimensions) {
+      auto hc=hypercube();
+      for (auto& xv: hc.xvectors)
+        {
+          auto dim=dimensions.find(xv.name);
+          if (dim!=dimensions.end())
+            {
+              xv.dimension=dim->second;
+              xv.imposeDimension();
+            }
+        }
+      hypercube(std::move(hc));
+    }
     
     /// the index vector - assumed to be ordered and unique
-    virtual std::vector<size_t> index() const=0;
+    virtual const Index& index() const {return m_index;}
     /// return or compute data at a location
     virtual double operator[](size_t) const=0;
     /// return number of elements in tensor - maybe less than hypercube.numElements if sparse
-    virtual size_t size() const=0;
+    virtual size_t size() const {
+      size_t s=index().size();
+      return s? s: hypercube().numElements();
+    }        
     
     /// returns the data value at hypercube index \a hcIdx, or NaN if 
     double atHCIndex(size_t hcIdx) const {
-      auto idx=index();
+      auto& idx=index();
       if (idx.empty()) {
         assert(hcIdx<size());
         return (*this)[hcIdx]; // this is dense
       }
-      assert(idx.size()==size());
-      assert(std::all_of(idx.begin()+1, idx.end(), [](const size_t& i){return i>*(&i-1);}));
-      auto i=std::lower_bound(idx.begin(), idx.end(), hcIdx);
-      if (i!=idx.end() && *i==hcIdx)
-        return (*this)[i-idx.begin()]; // hcIdx found, return data element with same offset
+      auto i=idx.linealOffset(hcIdx);
+      if (i<idx.size())
+        return (*this)[i];
       return nan("");
     }
 
-    size_t hcIndex(const std::initializer_list<size_t>& indices) const
-    {
-      size_t stride=1, index=0;
-      auto dims=hypercube().dims();
-      auto dim=dims.begin();
-      for (auto i: indices)
-        {
-          index += i*stride;
-          stride *= *(dim++);
-        }
-      return index;
-    }
+    template <class T>
+    size_t hcIndex(const std::initializer_list<T>& indices) const
+    {return hypercube().linealIndex(indices);}
+
     template <class T>
     double operator()(const std::initializer_list<T>& indices) const
     {return atHCIndex(hcIndex(indices));}
@@ -104,6 +114,7 @@ namespace civita
    
   protected:
     Hypercube m_hypercube;
+    Index m_index;
     void notImpl() const
     {throw std::runtime_error("setArgument(s) variant not implemented");}
   };

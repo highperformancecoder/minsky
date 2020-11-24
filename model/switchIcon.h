@@ -24,10 +24,10 @@
 
 namespace minsky
 {
-  class SwitchIcon: public ItemT<SwitchIcon>
+  class SwitchIcon: public ItemT<SwitchIcon, BottomRightResizerItem>
   {
     CLASSDESC_ACCESS(SwitchIcon);
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
   public:
     SwitchIcon();
 
@@ -42,6 +42,9 @@ namespace minsky
     /// value of switch according to current inputs
     unsigned switchValue() const;
     double value() const override {return ports[switchValue()+2]->value();}
+    
+    const SwitchIcon* switchIconCast() const override {return this;}
+    SwitchIcon* switchIconCast() override {return this;}    
     
     bool flipped=false;
 

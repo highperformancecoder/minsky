@@ -58,9 +58,7 @@ namespace civita
 
   public:
     void setArgument(const TensorPtr& a, const string&,double) override;
-    std::vector<size_t> index() const {return {};}
     double operator[](size_t) const;
-    size_t size() const {return hypercube().numElements();}
     Timestamp timestamp() const override {return arg->timestamp();}
   };
   

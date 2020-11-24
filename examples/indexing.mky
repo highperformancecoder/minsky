@@ -1,5 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.21.0-beta.15</minskyVersion>
   <wires>
    <Wire>
     <id>39</id>
@@ -8,9 +9,9 @@
     <coords>
      <float>147</float>
      <float>208</float>
-     <float>235.369</float>
-     <float>-20.5636</float>
-     <float>451.5</float>
+     <float>209.125</float>
+     <float>47.3156</float>
+     <float>359</float>
      <float>166.25</float>
     </coords>
    </Wire>
@@ -90,10 +91,10 @@
     <from>28</from>
     <to>35</to>
     <coords>
-     <float>259</float>
+     <float>261</float>
      <float>406</float>
-     <float>226</float>
-     <float>538</float>
+     <float>228.157</float>
+     <float>537.373</float>
      <float>302</float>
      <float>532</float>
     </coords>
@@ -110,15 +111,16 @@
     <type>Variable:parameter</type>
     <x>110</x>
     <y>208</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>0</int>
     </ports>
     <name>rand(5)</name>
     <init>rand(5,3)</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -130,21 +132,23 @@
     <type>Sheet</type>
     <x>501.5</x>
     <y>166.25</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>285</width>
+    <height>141.5</height>
     <ports>
      <int>2</int>
     </ports>
-    <width>285</width>
-    <height>141.5</height>
    </Item>
    <Item>
     <id>6</id>
     <type>Operation:infimum</type>
     <x>240</x>
     <y>180</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>4</int>
      <int>5</int>
@@ -156,15 +160,16 @@
     <type>Variable:flow</type>
     <x>304</x>
     <y>178</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>7</int>
      <int>8</int>
     </ports>
     <name>x1</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -176,15 +181,16 @@
     <type>Variable:flow</type>
     <x>302</x>
     <y>222</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>10</int>
      <int>11</int>
     </ports>
     <name>x2</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>4</max>
@@ -196,15 +202,16 @@
     <type>Variable:flow</type>
     <x>302</x>
     <y>271</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>13</int>
      <int>14</int>
     </ports>
     <name>x3</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3.51824e+13</max>
@@ -216,15 +223,16 @@
     <type>Variable:flow</type>
     <x>311</x>
     <y>339</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>16</int>
      <int>17</int>
     </ports>
     <name>x4</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3.51824e+13</max>
@@ -236,8 +244,10 @@
     <type>Operation:supremum</type>
     <x>241</x>
     <y>231</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>19</int>
      <int>20</int>
@@ -249,8 +259,10 @@
     <type>Operation:infIndex</type>
     <x>244</x>
     <y>273</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>22</int>
      <int>23</int>
@@ -262,8 +274,10 @@
     <type>Operation:supIndex</type>
     <x>245</x>
     <y>332</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>25</int>
      <int>26</int>
@@ -275,8 +289,10 @@
     <type>Operation:index</type>
     <x>249</x>
     <y>406</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>28</int>
      <int>29</int>
@@ -289,21 +305,23 @@
     <type>Sheet</type>
     <x>662.25</x>
     <y>381.375</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>617.5</width>
+    <height>67.25</height>
     <ports>
      <int>31</int>
     </ports>
-    <width>617.5</width>
-    <height>67.25</height>
    </Item>
    <Item>
     <id>36</id>
     <type>Operation:gather</type>
     <x>310</x>
     <y>523</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>33</int>
      <int>34</int>
@@ -317,13 +335,13 @@
     <type>Sheet</type>
     <x>501.5</x>
     <y>546</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>289</width>
+    <height>112</height>
     <ports>
      <int>37</int>
     </ports>
-    <width>289</width>
-    <height>112</height>
    </Item>
   </items>
   <groups>
@@ -338,6 +356,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
+   <tmax>INF</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

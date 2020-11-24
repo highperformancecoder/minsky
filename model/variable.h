@@ -44,11 +44,6 @@ namespace minsky
   struct SchemaHelper;
   class GodleyIcon;
 
-//  template <class T, class G, class S>
-//  ecolab::Accessor<T,G,S> makeAccessor(G g,S s) {
-//    return ecolab::Accessor<T,G,S>(g,s);
-//  }
-  
   /// exception-safe increment/decrement of a counter in a block
   struct IncrDecrCounter
   {
@@ -63,15 +58,14 @@ namespace minsky
     struct NameAccessor: ecolab::TCLAccessor<minsky::VariableBase,std::string,0> {NameAccessor();};
     struct InitAccessor: ecolab::TCLAccessor<minsky::VariableBase,std::string,1> {InitAccessor();};
     struct ValueAccessor: ecolab::TCLAccessor<minsky::VariableBase,double> {ValueAccessor();};
-    struct SliderVisibleAccessor: ecolab::TCLAccessor<minsky::VariableBase,bool> {SliderVisibleAccessor();};
   }
 
   class VariableBase: virtual public classdesc::PolyPackBase,
-                      public Item, public Slider, public VariableType,
+                      public BottomRightResizerItem,
+                      public Slider, public VariableType,
                       public VarAccessors::NameAccessor,
                       public VarAccessors::InitAccessor,
-                      public VarAccessors::ValueAccessor,
-                      public VarAccessors::SliderVisibleAccessor
+                      public VarAccessors::ValueAccessor
   {
   public:
     typedef VariableType::Type Type;
@@ -82,6 +76,7 @@ namespace minsky
   private:
     CLASSDESC_ACCESS(VariableBase);
     std::string m_name; 
+    std::pair<std::string,std::string> m_dimLabelsPicked;    
     mutable int unitsCtr=0; ///< for detecting reentrancy in units()
     static int stockVarsPassed; ///< for detecting reentrancy in units()
 
@@ -108,7 +103,6 @@ namespace minsky
     const VariableBase* variableCast() const override {return this;}
     VariableBase* variableCast() override {return this;}
 
-    
     float zoomFactor() const override;
     
     /// @{ variable displayed name
@@ -131,12 +125,22 @@ namespace minsky
     /// variable's scope is used
     std::string valueIdInCurrentScope(const std::string& nm) const;
     /// variableValue associated with this. nullptr if not associated with a variableValue
-    VariableValue* vValue() const;
+    std::shared_ptr<VariableValue> vValue() const;
     std::vector<unsigned> dims() const {
       if (auto v=vValue()) return v->hypercube().dims();
       else return {};
     }
-      
+    
+    std::vector<std::string> dimLabels() const {
+      if (auto v=vValue()) return v->hypercube().dimLabels();
+      else return {};
+    }    
+        
+    std::pair<std::string,std::string> getDimLabelsPicked() const {return m_dimLabelsPicked;}   
+    std::pair<std::string,std::string> setDimLabelsPicked(const std::string& dimLabel1, const std::string& dimLabel2) {
+      m_dimLabelsPicked=std::make_pair(dimLabel1,dimLabel2);
+      return m_dimLabelsPicked;
+    }         
 
     /// @{ the initial value of this variable
     std::string init() const; /// < return initial value for this variable
@@ -156,18 +160,15 @@ namespace minsky
     /// initialise slider bounds when slider first opened
     void initSliderBounds() const;
     void adjustSliderBounds() const;
-    bool sliderVisible() const {return Slider::sliderVisible;}
-    bool sliderVisible(const bool& v) {
-          if (v) {initSliderBounds(); adjustSliderBounds();}
-          return Slider::sliderVisible=v;
-    }
+    /// a maximum of at most 10000 slider steps permitted
+    double maxSliderSteps() const;    
 
     /// sets/gets the units associated with this type
     Units units(bool check=false) const override;
     void setUnits(const std::string&);
     std::string unitsStr() const {return units().str();}
     
-    bool handleArrows(int dir,bool) override;
+    bool onKeyPress(int, const std::string&, int) override; 
     
     /// variable is on left hand side of flow calculation
     bool lhs() const {return type()==flow || type()==tempFlow;} 
@@ -177,33 +178,36 @@ namespace minsky
     bool isStock() const {return type()==stock || type()==integral;}
 
     virtual ~VariableBase();
+    
+    bool varTabDisplay=false;
+    void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
+    bool attachedToDefiningVar() const override {return varTabDisplay;}     
 
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
-    void draw(cairo_t*) const override;
+    void draw(cairo_t*) const override;  
+    void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) override;
+
+    /// @return true if variable is defined (inputWired() || isStock() && controlled)
+    bool defined() const {return inputWired() || (isStock() && controller.lock());}
     
     bool inputWired() const;
-    /// return a list of existing variables a variable in this group
-    /// could be connected to
+    
+    /// return a list of existing variables this could be connected to
     std::vector<std::string> accessibleVars() const;
 
     /// return formatted mantissa and exponent in engineering format
     EngNotation engExp() const
     {return minsky::engExp(value());}
-    std::string mantissa(const EngNotation& e) const
-    {return minsky::mantissa(value(),e);}
+    std::string mantissa(const EngNotation& e, int digits=3) const
+    {return minsky::mantissa(value(),e, digits);}
 
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
-    void importFromCSV(const std::string& filename, const DataSpec& spec) {
-      if (auto v=vValue()) {
-        std::ifstream is(filename);
-        loadValueFromCSVFile(*v, is, spec);
-      }
-    }
+    void importFromCSV(std::string filename, const DataSpec& spec);
 
     void insertControlled(Selection& selection) override;
   };
@@ -260,6 +264,7 @@ namespace minsky
     VariablePtr(VariableBase::Type type=VariableBase::undefined, 
                 const std::string& name=""): 
       PtrBase(VariableBase::create(type)) {get()->name(name);}
+    virtual ~VariablePtr() {}
     template <class P>
     VariablePtr(P* var): PtrBase(dynamic_cast<VariableBase*>(var)) 
     {

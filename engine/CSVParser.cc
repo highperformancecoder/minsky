@@ -30,6 +30,33 @@ using namespace std;
 typedef boost::escaped_list_separator<char> Parser;
 typedef boost::tokenizer<Parser> Tokenizer;
 
+struct SpaceSeparatorParser
+{
+  char escape, quote;
+  SpaceSeparatorParser(char escape='\\', char sep=' ', char quote='"'):
+    escape(escape), quote(quote) {}
+  template <class I>
+  bool operator()(I& next, I end, std::string& tok)
+  {
+    tok.clear();
+    bool quoted=false;
+    for (; next!=end; ++next)
+      if (*next==escape)
+        tok+=*(++next);
+      else if (*next==quote)
+        quoted=!quoted;
+      else if (!quoted && isspace(*next))
+        {
+          while (isspace(*next)) ++next;
+          return true;
+        }
+      else
+        tok+=*next;
+    return !tok.empty();
+  }
+  void reset() {}
+};
+
 struct NoDataColumns: public std::exception
 {
   const char* what() const noexcept override {return "No data columns";}
@@ -50,15 +77,14 @@ namespace
   
   double quotedStoD(const string& s,size_t& charsProcd)
   {
-    double r=stod(s,&charsProcd);
-    if (charsProcd==s.size()) return r;
     //strip possible quote characters
-    if (!s.empty() && s[0]==s[s.size()-1])
+    if (!s.empty() && s[0]==s[s.size()-1] && !isalnum(s[0]))
       {
-        r=stod(s.substr(1),&charsProcd);
+        double r=stod(s.substr(1),&charsProcd);
         charsProcd+=2;
+        return r;
       }
-    return r;
+    return stod(s,&charsProcd);
   }
 
   string stripWSAndDecimalSep(const string& s)
@@ -145,6 +171,16 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
         if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
         boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
         vector<string> line(tok.begin(), tok.end());
+        if (!line.empty())
+          {
+            smatch match;
+            static const regex re("RavelHypercube=(.*)");
+            if (regex_match(line[0], match, re))
+              {
+                populateFromRavelMetadata(match[1], row);
+                return;
+              }
+          }
         starts.push_back(firstNumerical(line));
         nCols=std::max(nCols, line.size());
         if (starts.back()==line.size())
@@ -175,7 +211,7 @@ void DataSpec::guessRemainder(std::istream& input, char sep)
 {
   separator=sep;
   if (separator==' ')
-    givenTFguessRemainder(input,boost::char_separator<char>()); //asumes merged whitespace separators
+    givenTFguessRemainder(input,SpaceSeparatorParser(escape,separator,quote)); //asumes merged whitespace separators
   else
     givenTFguessRemainder(input,Parser(escape,separator,quote));
 }
@@ -214,6 +250,7 @@ void DataSpec::guessFromStream(std::istream& input)
       guessRemainder(inputCopy,' ');
   }
 
+  if (dimensionNames.empty())
   {
     //fill in guessed dimension names
     istringstream inputCopy(streamBuf.str());
@@ -224,7 +261,7 @@ void DataSpec::guessFromStream(std::istream& input)
 void DataSpec::guessDimensionsFromStream(std::istream& i)
 {
   if (separator==' ')
-    guessDimensionsFromStream(i,boost::char_separator<char>());
+    guessDimensionsFromStream(i,SpaceSeparatorParser(escape,quote));
   else
     guessDimensionsFromStream(i,Parser(escape,separator,quote));
 }
@@ -273,20 +310,38 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
       }
 }
 
-
-
+ void DataSpec::populateFromRavelMetadata(const std::string& metadata, size_t row)
+ {
+   vector<NamedDimension> ravelMetadata;
+   json(ravelMetadata,metadata);
+   columnar=true;
+   headerRow=row+2;
+   setDataArea(headerRow, ravelMetadata.size());
+   dimensionNames.clear();
+   dimensions.clear();
+   for (auto& i: ravelMetadata)
+     {
+       dimensions.push_back(i.dimension);
+       dimensionNames.push_back(i.name);
+     }
+   for (size_t i=0; i<dimensions.size(); ++i)
+     dimensionCols.insert(i);
+ }
 
 namespace minsky
 {
-  void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec)
+  template <class P>
+  void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec)
   {
     typedef vector<string> Key;
     map<Key,string> lines;
     multimap<Key,string> duplicateLines;
     string buf;
-    Parser csvParser(spec.escape,spec.separator,spec.quote);
+    P csvParser(spec.escape,spec.separator,spec.quote);
     for (size_t row=0; getline(input, buf); ++row)
       {
+        // remove trailing carriage returns
+        if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
         if (row==spec.headerRow)
           {
             output<<"error"<<spec.separator<<buf<<endl;
@@ -294,7 +349,7 @@ namespace minsky
           }
         if (row>=spec.nRowAxes())
           {
-            Tokenizer tok(buf.begin(), buf.end(), csvParser);
+            boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
             Key key;
             auto field=tok.begin();
             for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
@@ -336,9 +391,18 @@ namespace minsky
       output<<spec.separator<<i.second<<endl;
   }
 
-  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+  void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec)
   {
-    Parser csvParser(spec.escape,spec.separator,spec.quote);
+    if (spec.separator==' ')
+      reportFromCSVFileT<SpaceSeparatorParser>(input,output,spec);
+    else
+      reportFromCSVFileT<Parser>(input,output,spec);
+  }
+
+  template <class P>
+  void loadValueFromCSVFileT(VariableValue& v, istream& input, const DataSpec& spec)
+  {
+    P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
     typedef vector<string> Key;
     map<Key,double> tmpData;
@@ -348,16 +412,20 @@ namespace minsky
     bool tabularFormat=false;
     Hypercube hc;
     vector<string> horizontalLabels;
-	       
+
     for (size_t i=0; i<spec.nColAxes(); ++i)
       if (spec.dimensionCols.count(i))
-        hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
-
+        {
+          hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
+          hc.xvectors.back().dimension=spec.dimensions[i];
+        }
     try
       {
         for (size_t row=0; getline(input, buf); ++row)
           {
-            Tokenizer tok(buf.begin(), buf.end(), csvParser);
+            // remove trailing carriage returns
+            if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);//buf.erase(buf.end()-1);
+            boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
             assert(spec.headerRow<=spec.nRowAxes());
             if (row==spec.headerRow && !spec.columnar) // in header section
@@ -368,6 +436,7 @@ namespace minsky
                     tabularFormat=true;
                     horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
                     hc.xvectors.emplace_back(spec.horizontalDimName);
+                    hc.xvectors.back().dimension=spec.horizontalDimension;
                     for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
                     dimLabels.emplace_back();
                     for (size_t i=0; i<horizontalLabels.size(); ++i)
@@ -384,8 +453,17 @@ namespace minsky
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
                       key.push_back(*field);
-                      if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
-                        hc.xvectors[dim].push_back(*field);
+                      try
+                        {
+                          if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
+                            hc.xvectors[dim].push_back(*field);
+                        }
+                      catch (...)
+                        {
+                          throw std::runtime_error("Invalid data: "+*field+" for "+
+                                                   to_string(spec.dimensions[dim].type)+
+                                                   " dimensioned column: "+spec.dimensionNames[dim]);
+                        }
                       dim++;
                     }
                     
@@ -396,7 +474,9 @@ namespace minsky
                   {
                     if (tabularFormat)
                       key.push_back(horizontalLabels[col]);
-
+                    else if (col)
+                      break; // only 1 value column, everything to right ignored
+                    
                     // remove thousands separators, and set decimal separator to '.' ("C" locale)
                     string s;
                     for (auto c: *field)
@@ -406,9 +486,19 @@ namespace minsky
                         s+=c;                    
 
                     auto i=tmpData.find(key);
+                    bool valueExists=true;
+                    double v=spec.missingValue;
                     try
                       {
-                        double v=stod(s);
+                        v=stod(s);
+                      }
+                    catch (...) // value misunderstood
+                      {
+                        if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                          valueExists=false;
+                      }
+                    if (valueExists)
+                      {
                         if (i==tmpData.end())
                           tmpData.emplace(key,v);
                         else	
@@ -439,10 +529,6 @@ namespace minsky
                               break;
                             }
                       }
-                    catch (...)
-                      {
-                        tmpData[key]=spec.missingValue;
-                      }
                     if (tabularFormat)
                       key.pop_back();
                     else
@@ -451,11 +537,14 @@ namespace minsky
               }
           }
                   
+        for (auto& xv: hc.xvectors)
+          xv.imposeDimension();
+
         size_t numHyperCubeElems=1;
         for (auto& i : hc.xvectors) numHyperCubeElems*=i.size();
                            
         double sparsityRatio =  static_cast<double>(1.0-static_cast<double>(tmpData.size())/numHyperCubeElems); 
-		
+
         if (sparsityRatio <= 0.5) 
           { // dense case
             v.index({});
@@ -463,6 +552,7 @@ namespace minsky
               throw runtime_error("memory threshold exceeded");            
             v.hypercube(hc);
             // stash the data into vv tensorInit field
+            v.tensorInit.index({});
             v.tensorInit.hypercube(hc);
             for (auto& i: v.tensorInit)
               i=spec.missingValue;
@@ -486,7 +576,7 @@ namespace minsky
               throw runtime_error("memory threshold exceeded");	  	  		
             auto dims=hc.dims();
               
-            vector<size_t> index;
+            map<size_t,double> indexValue; // intermediate stash to sort index vector
             for (auto& i: tmpData)
               {
                 size_t idx=0;
@@ -497,12 +587,16 @@ namespace minsky
                     assert(dimLabels[j].count(i.first[j]));
                     idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
                   }
-                if (!isnan(i.second))   
-                  v.tensorInit.push_back(idx, i.second);
+                if (!isnan(i.second))
+                  indexValue.emplace(idx, i.second);
               }
-            v.index(index);
+
+            v.tensorInit.index(indexValue);
             v.hypercube(hc);
             v.tensorInit.hypercube(hc);
+            size_t j=0;
+            for (auto& i: indexValue)
+              v.tensorInit[j++]=i.second;
           }                 
 
       }
@@ -514,6 +608,14 @@ namespace minsky
       { // replace with a more user friendly error message
         throw std::runtime_error("exhausted memory - try reducing the rank");
       }
-  }
 
+  }
+  
+  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+  {
+    if (spec.separator==' ')
+      loadValueFromCSVFileT<SpaceSeparatorParser>(v,input,spec);
+    else
+      loadValueFromCSVFileT<Parser>(v,input,spec);
+  }
 }

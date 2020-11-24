@@ -68,24 +68,32 @@ namespace minsky
       godleyIcon(godleyIcon), idx(idx) {}
   };
 
-  class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums
+  class GodleyTableEditor: public ButtonWidgetEnums
   {
     
-    CLASSDESC_ACCESS(GodleyTableWindow);
+    CLASSDESC_ACCESS(GodleyTableEditor);
   public:
     static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window
-    static constexpr double leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
-    static constexpr double topTableOffset=30;
+    double leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
+    double topTableOffset=30;
     static constexpr double pulldownHot=12; ///< space for ▼ in stackVar cells
     /// minimum column width (for eg empty columns)
     static constexpr double minColumnWidth=4*ButtonWidget<col>::buttonSpacing;
+
+    bool drawButtons=true; ///< whether to draw row/column buttons
+    void disableButtons() {drawButtons=false; leftTableOffset=0; topTableOffset=20; }
+    void enableButtons() {drawButtons=true; leftTableOffset=4*ButtonWidget<col>::buttonSpacing; topTableOffset=30;}
 
     std::shared_ptr<GodleyIcon> godleyIcon;
     /// starting row/col number of the scrolling region
     unsigned scrollRowStart=1, scrollColStart=1;
     /// which cell is active, none initially
     int selectedRow=-1, selectedCol=-1;
+    /// src cell in the event of a move
+    int srcRow=-1, srcCol=-1;
+    bool selectedCellInTable() const
+    {return godleyIcon->table.cellInTable(selectedRow, selectedCol);}
     int hoverRow=-1, hoverCol=-1;
     /// computed positions of the table columns
     std::vector<double> colLeftMargin;
@@ -95,15 +103,14 @@ namespace minsky
     /// other end of selection (if mouse-swiped)
     unsigned insertIdx=0, selectIdx=0;
     bool displayValues=false;
-    enum DisplayStyle {DRCR, sign};
-    DisplayStyle displayStyle=sign;
+    GodleyTable::DisplayStyle displayStyle=GodleyTable::sign;
     double zoomFactor=1; ///< zoom the display
 
-    GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)
-    {adjustWidgets();}
+    GodleyTableEditor(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)
+    {enableButtons(); adjustWidgets();}
+
+    void draw(cairo_t* cairo);
     
-    void redraw(int, int, int width, int height) override;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// event handling 
     void mouseDown(double x, double y);
     void mouseUp(double x, double y);
@@ -181,6 +188,18 @@ namespace minsky
     void handleBackspace();    
     void handleDelete();
   };
+
+  class GodleyTableWindow: public ecolab::CairoSurface, public GodleyTableEditor
+  {
+  public:
+    GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): GodleyTableEditor(g) {}
+    void redraw(int, int, int width, int height) override {
+      if (surface.get()) draw(surface->cairo());
+    }
+    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+   
+  };
+
 }
 
 #include "godleyTableWindow.cd"

@@ -51,16 +51,28 @@ namespace civita
     /// set the dimensions. 
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d);
     
+    std::vector<std::string> dimLabels() const;
+    
     /// removes elements of xVector not found in \a a
     void makeConformant(const Hypercube& a);
 
-    /// compute stride and dimension size of dimension \a dim
-    /// @throw if dimension \a dim doesn't exist
-    /// if \a dim is empty, defaults to first dimension
-    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
-    
+    /// split lineal index into components along each dimension
+    std::vector<size_t> splitIndex(size_t) const;
+    /// combine a split index into a lineal hypercube index
+    template <class V>
+    size_t linealIndex(const V& splitIndex) const {
+      assert(dims().size()==splitIndex.size());
+      size_t index=0, stride=1;
+      auto dd=dims();
+      auto ii=splitIndex.begin();
+      for (size_t i=0; i<dd.size(); ++i, ++ii)
+        {
+          index+=*ii * stride;
+          stride*=dd[i];
+        }
+      return index;
+    }
   };
-  
 }
 
 #endif

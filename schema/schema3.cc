@@ -20,9 +20,6 @@
 #include "sheet.h"
 #include "minsky_epilogue.h"
 
-#include "a85.h"
-#include <zlib.h>
-
 using namespace std;
 
 namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}
@@ -39,14 +36,14 @@ namespace schema3
   // than classdesc generated to ensure backward compatibility
   void pack(classdesc::pack_t& b, const civita::XVector& a)
   {
-    b<<a.name<<a.dimension<<a.size();
+    b<<a.name<<a.dimension<<uint64_t(a.size());
     for (auto& i: a)
-      b<<civita::str(i);
+      b<<civita::str(i,a.dimension.units);
   }
 
   void unpack(classdesc::pack_t& b, civita::XVector& a)
   {
-    size_t size;
+    uint64_t size;
     std::string x;
     a.clear();
     b>>a.name>>a.dimension>>size;
@@ -59,11 +56,14 @@ namespace schema3
   
   void pack(classdesc::pack_t& b, const civita::TensorVal& a)
   {
-    b<<a.size();
-    for (size_t i=0; i<a.size(); ++i)
-      b<<a[i];
-    b<<a.index();
-    b<<a.hypercube().xvectors.size();
+    b<<uint64_t(a.size());
+    for (auto i: a)
+      b<<i;
+    b<<uint64_t(a.index().size());
+    for (auto i: a.index())
+      b<<uint64_t(i);
+
+    b<<uint64_t(a.hypercube().xvectors.size());
     for (auto& i: a.hypercube().xvectors)
       pack(b, i);
   }
@@ -71,22 +71,35 @@ namespace schema3
 
   void unpack(classdesc::pack_t& b, civita::TensorVal& a)
   {
-    vector<double> data;
-    vector<size_t> index;
-    b>>data>>index;
-    
-    civita::Hypercube hc;
-    size_t sz;
+    uint64_t sz;
     b>>sz;
+    vector<double> data;
+    for (size_t i=0; i<sz; ++i)
+      {
+        data.emplace_back();
+        b>>data.back();
+      }
+    b>>sz;
+    set<size_t> index;
+    for (size_t i=0; i<sz; ++i)
+      {
+        uint64_t x;
+        b>>x;
+        index.insert(x);
+      }
+
+    b>>sz;
+    civita::Hypercube hc;
+
     for (size_t i=0; i<sz; ++i)
       {
         civita::XVector xv;
         unpack(b,xv);
         hc.xvectors.push_back(xv);
       }
-    
-    a.hypercube(hc); //dimension data
-    a.index(index);
+    assert(std::find_if(index.begin(),index.end(),[&](size_t i){return i>=hc.numElements();})==index.end());
+    a.index(std::move(index));
+    a.hypercube(std::move(hc)); //dimension data
     assert(a.size()==data.size());
     memcpy(a.begin(),&data[0],data.size()*sizeof(data[0]));
   }
@@ -148,7 +161,7 @@ namespace schema3
             }
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
-              items.back().filename=r->filename();
+              //              items.back().filename=r->filename();
               if (r->lockGroup)
                 items.back().lockGroup=at(r->lockGroup.get());
               auto s=r->getState();
@@ -243,7 +256,7 @@ namespace schema3
   void Item::packTensorInit(const minsky::VariableBase& v)
   {
     if (auto val=v.vValue())
-      if (val->tensorInit.size())
+      if (val->tensorInit.rank())
         {
           pack_t buf;
           pack(buf,val->tensorInit);
@@ -252,7 +265,7 @@ namespace schema3
   }
 
 
-  Minsky::Minsky(const minsky::Group& g)
+  Minsky::Minsky(const minsky::Group& g, bool packTensorData)
   {
     IdMap itemMap;
 
@@ -265,6 +278,11 @@ namespace schema3
           itemMap.emplaceIf<minsky::SwitchIcon>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Sheet>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Item>(items, i->get());
+        if (packTensorData) //pack tensor data
+          if (auto v=(*i)->variableCast())
+            if (!items.back().tensorData)
+              items.back().packTensorInit(*v);
+
         return false;
       });
     
@@ -329,7 +347,8 @@ namespace schema3
     m.model->bookmarks=bookmarks;
     m.dimensions=dimensions;
     m.conversions=conversions;
-
+    m.fileVersion=minskyVersion;
+    
     static_cast<minsky::RungeKutta&>(m)=rungeKutta;
     return m;
   }
@@ -345,7 +364,10 @@ namespace schema3
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
+    x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
+    if (y.width) x.iWidth(*y.width);
+    if (y.height) x.iHeight(*y.height);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
@@ -355,16 +377,10 @@ namespace schema3
       }
     if (auto x1=dynamic_cast<minsky::Ravel*>(&x))
       {
-        if (y.filename)
-          try
-            {
-              x1->loadFile(*y.filename);
-            }
-          catch (...) {}
         if (y.ravelState)
           {
-            x1->applyState(*y.ravelState);
-            SchemaHelper::initHandleState(*x1,*y.ravelState);
+            x1->applyState(y.ravelState->toRavelRavelState());
+            SchemaHelper::initHandleState(*x1,y.ravelState->toRavelRavelState());
           }
         
         if (y.dimensions)
@@ -374,33 +390,15 @@ namespace schema3
       {
         if (y.name)
           x1->name(*y.name);
-        if (y.init)
-          x1->init(*y.init);
-        if (y.units)
-          x1->setUnits(*y.units);
         if (y.slider)
           {
             x1->sliderBoundsSet=true;
-            x1->sliderVisible(y.slider->visible);
             x1->sliderStepRel=y.slider->stepRel;
             x1->sliderMin=y.slider->min;
             x1->sliderMax=y.slider->max;
             x1->sliderStep=y.slider->step;
           }
-        if (y.tensorData)
-          if (auto val=x1->vValue())
-            {
-              auto buf=minsky::decode(*y.tensorData);
-              try
-                {
-                  unpack(buf, val->tensorInit);
-                  val->hypercube(val->tensorInit.hypercube());
-                }
-              catch (const std::exception& ex) {
-                cout<<ex.what()<<endl;
-              }
-              catch (...) {} // absorb for now - maybe log later
-            }
+        // variableValue attributes populated later once variable is homed in its group
       }
     if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))
       {
@@ -408,23 +406,30 @@ namespace schema3
         if (y.arg) x1->arg=*y.arg;
       }
    if (auto x1=dynamic_cast<minsky::GodleyIcon*>(&x))
-      {
+      {	  
         std::vector<std::vector<std::string>> data;
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
         if (y.data) data=*y.data;
         if (y.assetClasses) assetClasses=*y.assetClasses;
-        if (y.name) x1->table.title=*y.name;
-        SchemaHelper::setPrivates(x1->table,data,assetClasses);
+        SchemaHelper::setPrivates(*x1,data,assetClasses);
         try
           {
             x1->table.orderAssetClasses();
           }
         catch (const std::exception&) {}
+        if (y.name) x1->table.title=*y.name;
+        if (y.editorMode && *y.editorMode!=x1->editorMode())
+          x1->toggleEditorMode();
+        if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
+        if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
+          x1->toggleButtons();
+        if (y.width && *y.width>0) x1->iWidth(*y.width);
+        if (y.height && *y.height>0) x1->iHeight(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
-        if (y.width) x1->width=*y.width;
-        if (y.height) x1->height=*y.height;
+        if (y.width) x1->iWidth(*y.width);
+        if (y.height) x1->iHeight(*y.height);
         x1->bb.update(*x1);        
         if (y.name) x1->title=*y.name;
         if (y.logx) x1->logx=*y.logx;
@@ -452,15 +457,10 @@ namespace schema3
         if (y.ports.size()>=2)
           x1->setNumCases(y.ports.size()-2);
       }
-    if (auto x1=dynamic_cast<minsky::Sheet*>(&x))
-      {
-        if (y.width) x1->m_width=*y.width;
-        if (y.height) x1->m_height=*y.height;
-      }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
-        if (y.width) x1->iconWidth=*y.width;
-        if (y.height) x1->iconHeight=*y.height;
+        if (y.width) x1->iWidth(*y.width);
+        if (y.height) x1->iHeight(*y.height);       
         x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
         if (y.bookmarks) x1->bookmarks=*y.bookmarks;
@@ -492,7 +492,7 @@ namespace schema3
           populateItem(*newItem,i);
           for (size_t j=0; j<min(newItem->ports.size(), i.ports.size()); ++j)
             portMap[i.ports[j]]=newItem->ports[j];
-          if (matchesStart(i.type,"Variable:"))
+          if (newItem->variableCast())
             schema3VarMap[i.id]=i;
         }
     // second loop over items to wire up integrals, and populate Godley table variables
@@ -547,10 +547,6 @@ namespace schema3
                 try
                   {
                     godley->update();
-                    if (i.height)
-                      godley->scaleIconForHeight(*i.height*godley->zoomFactor());
-                    else if (i.iconScale) //legacy schema handling
-                      godley->scaleIconForHeight(*i.iconScale * godley->height());
                   }
                 catch (...) {} //ignore exceptions: ticket #1045
               }
@@ -585,7 +581,9 @@ namespace schema3
               {
                 auto it=itemMap.find(j);
                 if (it!=itemMap.end())
-                  newG->addItem(it->second, true/*inSchema*/);
+                  {
+                    newG->addItem(it->second, true/*inSchema*/);
+                  }
               }
             if (i.inVariables)
               for (auto j: *i.inVariables)
@@ -610,6 +608,39 @@ namespace schema3
                         newG->outVariables.push_back(v);
                         v->controller=newG;
                       }
+                }
+          }
+      }
+    // now that variables have been homed in their groups, set the variableValue stuff
+    for (auto& i: schema3VarMap)
+      {
+        auto it=itemMap.find(i.first);
+        if (auto v=it->second->variableCast())
+          {
+            if (i.second.init)
+              v->init(*i.second.init);
+            if (i.second.units)
+              v->setUnits(*i.second.units);
+            if (i.second.tensorData)
+              if (auto val=v->vValue())
+                {
+                  auto buf=minsky::decode(*i.second.tensorData);
+                  try
+                    {
+                      civita::TensorVal tmp;
+                      unpack(buf, tmp);
+                      *val=tmp;
+                      val->tensorInit=std::move(tmp);
+                      assert(val->idxInRange());
+                    }
+                  catch (const std::exception& ex) {
+                    val->tensorInit.hypercube({});
+                    cout<<ex.what()<<endl;
+                  }
+                  catch (...) {
+                    val->tensorInit.hypercube({});
+                    assert(val->idxInRange());
+                  } // absorb for now - maybe log later
                 }
           }
       }

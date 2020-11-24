@@ -33,6 +33,7 @@ void GodleyTable::markEdited()
 
 bool GodleyTable::initialConditionRow(unsigned row) const
 {
+  if (row>=rows()) return false;
   const string& label=cell(row,0);
   static size_t initialConditionsSz=strlen(initialConditions);
   size_t i, j;
@@ -42,6 +43,14 @@ bool GodleyTable::initialConditionRow(unsigned row) const
   for (j=0; j<initialConditionsSz && i<label.size() && 
          toupper(label[i])==toupper(initialConditions[j]); ++i, ++j);
   return j==initialConditionsSz;
+}
+
+bool GodleyTable::singularRow(unsigned row, unsigned col)
+{
+  for (size_t c=0; c<cols(); ++c)
+    if (c!=col && !cell(row, c).empty())
+      return false;
+  return true;
 }
 
 void GodleyTable::insertRow(unsigned row)
@@ -169,6 +178,10 @@ GodleyTable::AssetClass GodleyTable::_assetClass
   return _assetClass(col);
 }
 
+bool GodleyTable::singleEquity() const {
+  assert(cols()>=3);
+  return m_assetClass[cols()-2]!=GodleyAssetClass::equity;
+}
 
 string GodleyTable::assetClass(TCL_args args)
 {
@@ -332,6 +345,33 @@ void GodleyTable::rename(const std::string& from, const std::string& to)
           {
             fc.name=to;
             cell(r,c)=fc.str();
+          }
+      }
+}
+
+void GodleyTable::renameFlows(const std::string& from, const std::string& to)
+{
+  for (size_t r=1; r<rows(); ++r) 	
+    for (size_t c=1; c<cols(); ++c)
+      {
+        FlowCoef fc(cell(r,c));
+        if (!fc.name.empty() && fc.name==from)
+          {
+            fc.name=to;
+            cell(r,c)=fc.str();
+          }
+      }
+}
+
+void GodleyTable::renameStock(const std::string& from, const std::string& to)
+{
+    for (size_t c=1; c<cols(); ++c)
+      {
+        FlowCoef fc(cell(0,c));
+        if (!fc.name.empty() && fc.name==from)
+          {
+            fc.name=to;
+            cell(0,c)=fc.str();
           }
       }
 }

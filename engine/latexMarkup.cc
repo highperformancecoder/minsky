@@ -849,11 +849,11 @@ namespace minsky
         }
     }
     
-  string latexToPango(const char* input)
+  string latexToPangoNonItalicised(const char* input)
   {
     if (input[0]=='\0')
       return ""; // do not wrap with italic environment
-    Result r("<i>");
+    Result r;
     while (*input!='\0')
       switch (*input)
         {
@@ -880,7 +880,7 @@ namespace minsky
 
     // take care of mismatched braces
     while (!r.stack.empty()) r.pop();
-    return r+"</i>";
+    return r;
   }
 
 }

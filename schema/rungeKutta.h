@@ -19,6 +19,8 @@
 #ifndef RUNGEKUTTA_H
 #define RUNGEKUTTA_H
 
+#include <cmath>
+
 namespace minsky
 {
  struct RungeKutta
@@ -30,6 +32,7 @@ namespace minsky
     bool implicit{false};
     int simulationDelay{0};
     std::string timeUnit;
+    double tmax{INFINITY}, t0{0};
   };
 }
 

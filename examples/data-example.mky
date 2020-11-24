@@ -1,5 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.21.0-beta.15</minskyVersion>
   <wires>
    <Wire>
     <id>31</id>
@@ -23,8 +24,10 @@
     <type>DataOp</type>
     <x>61</x>
     <y>1</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>0</int>
      <int>1</int>
@@ -59,8 +62,10 @@
     <type>Operation:time</type>
     <x>0</x>
     <y>0</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>3</int>
     </ports>
@@ -71,8 +76,10 @@
     <type>Variable:flow</type>
     <x>121</x>
     <y>4.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>5</int>
      <int>6</int>
@@ -80,7 +87,6 @@
     <name>:x</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -92,8 +98,10 @@
     <type>PlotWidget</type>
     <x>236</x>
     <y>62.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>150</width>
+    <height>150</height>
     <ports>
      <int>8</int>
      <int>9</int>
@@ -118,8 +126,6 @@
      <int>28</int>
      <int>29</int>
     </ports>
-    <width>150</width>
-    <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -138,8 +144,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -148,8 +152,6 @@
        <b>0</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -162,8 +164,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -174,8 +174,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -184,8 +182,6 @@
        <b>1</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -198,8 +194,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -210,8 +204,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -220,8 +212,6 @@
        <b>0.941</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -240,6 +230,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
+   <tmax>INF</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

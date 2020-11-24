@@ -18,7 +18,9 @@
 */
 #ifndef CSVPARSER_H
 #define CSVPARSER_H
-#include "variableValue.h"
+
+#include "dimension.h"
+#include "classdesc_access.h"
 
 #include <stddef.h>
 #include <string>
@@ -27,7 +29,8 @@
 
 namespace minsky
 {
-  using namespace civita;
+  class VariableValue;
+
   class DataSpec
   {
     size_t m_nRowAxes=0, m_nColAxes=0;
@@ -37,14 +40,15 @@ namespace minsky
     bool mergeDelimiters=false;
     bool columnar=false;
     double missingValue=nan("");
-    /// start row/col of data area
+    /// number of header rows
     size_t headerRow=0;
     /// start row of the data area
     size_t nRowAxes() const {return m_nRowAxes;}
     /// start column of the data area
     size_t nColAxes() const {return m_nColAxes;}
     std::string horizontalDimName="?";
-
+    civita::Dimension horizontalDimension;
+    
     /// what to do with duplicate keys
     enum DuplicateKeyAction {throwException, sum, product, min, max, av};
     DuplicateKeyAction duplicateKeyAction=throwException;
@@ -61,7 +65,7 @@ namespace minsky
 
     void setDataArea(size_t row, size_t col);
     
-    std::vector<Dimension> dimensions;
+    std::vector<civita::Dimension> dimensions;
     std::vector<std::string> dimensionNames;
     
     /// initial stab at dataspec from examining stream
@@ -73,6 +77,8 @@ namespace minsky
       guessFromStream(is);
     }
 
+    /// populates this spec from a "RavelHypercube" entry, \a row is the row being read, used to set the headerRow attribute
+    void populateFromRavelMetadata(const std::string& metadata, size_t row);
     
   private:
     /// try to fill in remainder of spec, given a tokenizer function tf

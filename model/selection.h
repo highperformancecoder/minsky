@@ -44,11 +44,8 @@ namespace minsky
     /// check if \a group already present, and if not, inserts it
     void ensureGroupInserted(const GroupPtr& item);
 
-    void insertItem(const ItemPtr& item) {
-      items.push_back(item);
-      item->insertControlled(*this);
-      item->selected=true;
-    }
+    void insertItem(const ItemPtr& item);
+
     void insertGroup(const GroupPtr& g) {
       groups.push_back(g);
       g->selected=true;
@@ -60,7 +57,7 @@ namespace minsky
   /// represents rectangular region of a lasso operation
   struct LassoBox
   {
-    float x0=0, y0=0, x1=0, y1=0;
+    float x0=0, y0=0, x1=0, y1=0, angle=0;
     LassoBox() {}
     LassoBox(float x0, float y0, float x1, float y1): 
       x0(x0), y0(y0), x1(x1), y1(y1) {
@@ -72,7 +69,7 @@ namespace minsky
     template <class Item>
     bool intersects(const Item& item) const {
       return item.right() >= x0 && item.left() <= x1 &&
-        item.top() >= y0 && item.bottom() <= y1;
+        item.bottom() >= y0 && item.top() <= y1;
     }
 
     /// return true if both endpoints of the wire lie

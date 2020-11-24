@@ -320,6 +320,43 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::time>::matlab(ostream& o) const
   {
     return o<<"t";
+  }    
+ 
+  template <>
+  ostream& OperationDAG<OperationType::euler>::matlab(ostream& o) const
+  {
+    return o<<"e";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::pi>::matlab(ostream& o) const
+  {
+    return o<<"pi";
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::zero>::matlab(ostream& o) const
+  {
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::one>::matlab(ostream& o) const
+  {
+    return o<<"1";
+  }            
+ 
+  template <>
+  ostream& OperationDAG<OperationType::inf>::matlab(ostream& o) const
+  {
+    return o<<"inf";
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::percent>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"100*("<<arguments[0][0]->matlab()<<")";
   }
 
   template <>
@@ -463,6 +500,27 @@ namespace MathDAG
     checkArg(0,0);
     return o<<"frac("<<arguments[0][0]->matlab()<<")";
   }
+ 
+  template <>
+  ostream& OperationDAG<OperationType::gamma>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"gamma("<<arguments[0][0]->matlab()<<")";
+  }    
+  
+  template <>
+  ostream& OperationDAG<OperationType::polygamma>::matlab(ostream& o) const
+  {
+    checkArg(0,0); checkArg(1,0);
+    return o<<"psi(floor("<<arguments[1][0]->matlab()<<"),("<<arguments[0][0]->matlab()<<"))";
+  }       
+  
+  template <>
+  ostream& OperationDAG<OperationType::fact>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"gamma(1+("<<arguments[0][0]->matlab()<<"))";
+  }  
 
   template <>
   ostream& OperationDAG<OperationType::sum>::matlab(ostream& o) const

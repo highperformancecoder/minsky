@@ -31,6 +31,13 @@ namespace civita
     for (auto& i: xvectors) d.push_back(i.size());
     return d;
   }
+  
+  std::vector<string> Hypercube::dimLabels() const
+  {
+    std::vector<std::string> l;			  
+    for (auto& i: xvectors) l.push_back(static_cast<std::string>(i.name));
+    return l;
+  }      
 
   const std::vector<unsigned>& Hypercube::dims(const std::vector<unsigned>& d) {
     xvectors.clear();
@@ -95,22 +102,17 @@ namespace civita
       throw ecolab::error("tensors nonconformant");
   }
 
-  void Hypercube::computeStrideAndSize(const string& dim, size_t& stride, size_t& size) const
-  {
-    stride=1;
-    if (dim.empty())
-      // default to first axis if empty
-      size=xvectors.empty()? 1:xvectors[0].size();
-    else
-      {
-        for (auto& i: xvectors)
-          {
-            size=i.size();
-            if (i.name==dim) return;
-            stride*=i.size();
-          }
-        throw runtime_error("axis "+dim+" not found");
-      }
-  }
+    /// split lineal index into components along each dimension
+    vector<size_t> Hypercube::splitIndex(size_t i) const
+    {
+      std::vector<size_t> splitIndex;
+      for (auto& d: dims())
+        {
+          auto res=div(ssize_t(i),ssize_t(d));
+          splitIndex.push_back(res.rem);
+          i=res.quot;
+        }
+      return splitIndex;
+    }
 }
 

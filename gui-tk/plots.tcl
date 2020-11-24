@@ -44,7 +44,7 @@ proc deiconifyPltWindowOptions {} {
 
         frame .pltWindowOptions.plotType
         label .pltWindowOptions.plotType.label -text "Plot type"
-        ttk::combobox  .pltWindowOptions.plotType.val -width 20 -state readonly -textvariable plotWindowOptions(plotType) -value {line bar}
+        ttk::combobox  .pltWindowOptions.plotType.val -width 20 -state readonly -textvariable plotWindowOptions(plotType) -value {line bar automatic}
         pack .pltWindowOptions.plotType.label .pltWindowOptions.plotType.val  -side left
         
         
@@ -168,6 +168,7 @@ proc plotDoubleClick {plotId} {
     pack .plot$plotId.menubar  -side top -fill x
 
     image create cairoSurface .plot$plotId.image -surface $plotId -width 400 -height 400
+    $plotId.deleteCallback "destroy .plot$plotId"
     label .plot$plotId.label -image .plot$plotId.image -width 400 -height 400
     pack .plot$plotId.label -fill both -expand 1
 }
@@ -220,7 +221,7 @@ proc penStyleOK plot {
             "- · -" {$p.dashStyle dashDot}
         }
     }
-    $plot.redraw
+    $plot.requestRedraw
 }
 
 proc addRow plot {

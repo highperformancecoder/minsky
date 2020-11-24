@@ -33,6 +33,7 @@ minsky.defaultFont Sans
 minsky.setGodleyIconResource $here/gui-tk/icons/bank.svg
 minsky.setGroupIconResource $here/gui-tk/icons/group.svg
 minsky.load $here/test/allItems.mky
+minsky.multipleEquities 1
 minsky.canvas.renderToSVG allItemsBare.svg
 
 for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
@@ -67,7 +68,7 @@ for i in *.svg; do
     # ids are assigned randomly, so strip out those tags
     sed -e 's/id="[^"]*"/id=""/' <$i >tmp1
     sed -e 's/id="[^"]*"/id=""/' <$here/test/renderedImages/$i >tmp2
-    diff -1 tmp1 tmp2
+    $here/test/compareSVG.sh tmp1 tmp2
     if [ $? -ne 0 ]; then fail; fi
 done
 

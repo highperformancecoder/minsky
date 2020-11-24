@@ -27,9 +27,14 @@ namespace
   struct TestFixture: public Minsky
   {
     LocalMinsky lm;
+    mutable string clipboard;
+    string savedMessage;
     TestFixture(): lm(*this)
     {
     }
+    string getClipboard() const override {return clipboard;}
+    void putClipboard(const string& x) const override {clipboard=x;}
+    void message(const string& x) override {savedMessage=x;}
   };
 }
 
@@ -202,22 +207,22 @@ SUITE(Minsky)
       godley.cell(2,2)="-:a";
       gi->update();
  
-      variableValues[":a"].init="5";
+      variableValues[":a"]->init="5";
  
       garbageCollect();
       reset();
-      CHECK_EQUAL(10,variableValues[":c"].value());
-      CHECK_EQUAL(20,variableValues[":d"].value());
-      CHECK_EQUAL(30,variableValues[":e"].value());
-      CHECK_EQUAL(5,variableValues[":a"].value());
+      CHECK_EQUAL(10,variableValues[":c"]->value());
+      CHECK_EQUAL(20,variableValues[":d"]->value());
+      CHECK_EQUAL(30,variableValues[":e"]->value());
+      CHECK_EQUAL(5,variableValues[":a"]->value());
       for (size_t i=0; i<stockVars.size(); ++i)
         stockVars[i]=0;
      
       evalGodley.eval(&stockVars[0], &flowVars[0]);
-      CHECK_EQUAL(5,variableValues[":c"].value());
-      CHECK_EQUAL(-5,variableValues[":d"].value());
-      CHECK_EQUAL(0,variableValues[":e"].value());
-      CHECK_EQUAL(5,variableValues[":a"].value());
+      CHECK_EQUAL(5,variableValues[":c"]->value());
+      CHECK_EQUAL(-5,variableValues[":d"]->value());
+      CHECK_EQUAL(0,variableValues[":e"]->value());
+      CHECK_EQUAL(5,variableValues[":a"]->value());
     
     }
 
@@ -273,9 +278,9 @@ SUITE(Minsky)
       vector<double> j(stockVars.size()*stockVars.size());
       Matrix jac(stockVars.size(),&j[0]);
  
-      VariableValue& c=variableValues[":c"];   c=100;
-      VariableValue& d=variableValues[":d"];   d=200;
-      VariableValue& e=variableValues[":e"];   e=300;
+      auto& c=*variableValues[":c"];   c=100;
+      auto& d=*variableValues[":d"];   d=200;
+      auto& e=*variableValues[":e"];   e=300;
       double& x=stockVars.back();   x=0; // temporary variable storing \int c+d
  
       CHECK_EQUAL(4, stockVars.size());
@@ -321,7 +326,7 @@ SUITE(Minsky)
       step();
       // for now, constructEquations doesn work
       CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
-      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"].value(), 1e-5);
+      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"]->value(), 1e-5);
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
@@ -420,8 +425,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"].init="0.1";
-      variableValues[":b"].init="0.2";
+      variableValues[":a"]->init="0.1";
+      variableValues[":b"]->init="0.2";
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -444,7 +449,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.3, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.3, variableValues[":c"]->value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsSubtract)
@@ -452,8 +457,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"].init="0.1";
-      variableValues[":b"].init="0.2";
+      variableValues[":a"]->init="0.1";
+      variableValues[":b"]->init="0.2";
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -475,7 +480,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(-0.3, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(-0.3, variableValues[":c"]->value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsMultiply)
@@ -483,8 +488,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"].init="0.1";
-      variableValues[":b"].init="0.2";
+      variableValues[":a"]->init="0.1";
+      variableValues[":b"]->init="0.2";
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -506,7 +511,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.02, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.02, variableValues[":c"]->value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsDivide)
@@ -514,8 +519,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"].init="0.1";
-      variableValues[":b"].init="0.2";
+      variableValues[":a"]->init="0.1";
+      variableValues[":b"]->init="0.2";
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -537,7 +542,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(50, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(50, variableValues[":c"]->value(), 1e-5);
     }
 
   // instantiate all operations and variables to ensure that definitions
@@ -672,7 +677,7 @@ SUITE(Minsky)
           case OperationType::le:
           case OperationType::eq:
           case OperationType::floor:
-          case OperationType::frac:
+          case OperationType::frac:      
             continue;
           default:
             break;
@@ -851,14 +856,53 @@ SUITE(Minsky)
       g1->update();
       g2->update();
 
-      balanceDuplicateColumns(*g1, 2);
-      // two rows should have been added
-      CHECK_EQUAL(5,godley2.rows());
+      godley2.exportToCSV("before.csv");
+      CHECK_EQUAL(3,godley2.rows());
+      balanceDuplicateColumns(*g1, 2); 
+      godley2.exportToCSV("after.csv");
+      // two rows should have been added, and one deleted
+      CHECK_EQUAL(4,godley2.rows());
       CHECK_EQUAL("a",trimWS(godley2.cell(1,1)));
-      CHECK(trimWS(godley2.cell(2,1)).empty()); // "d" is deleted
-      CHECK_EQUAL("b",godley2.cell(3,1));
-      CHECK_EQUAL("c",godley2.cell(4,1));
-      CHECK_EQUAL("row3",godley2.cell(4,0)); // check label transferred
+      CHECK_EQUAL("b",godley2.cell(2,1));
+      CHECK_EQUAL("c",godley2.cell(3,1));
+      CHECK_EQUAL("row3",godley2.cell(3,0)); // check label transferred
+    }
+
+  TEST_FIXTURE(TestFixture,bug1157)
+    {
+      auto g1=new GodleyIcon; model->addItem(g1);
+      auto g2=new GodleyIcon; model->addItem(g2);
+      GodleyTable& godley1=g1->table;
+      GodleyTable& godley2=g2->table;
+      godley1.resize(3,2);
+      godley2.resize(3,2);
+
+      godley1._assetClass(1,GodleyAssetClass::asset);  
+      godley2._assetClass(1,GodleyAssetClass::liability);  
+
+      godley1.cell(0,1)="a";  
+      godley1.cell(2,0)="xx";
+      godley1.cell(2,1)="-b";
+      g1->update();
+      
+      godley2.cell(0,1)="a";  
+      godley2.cell(2,0)="yy";  
+      godley2.cell(2,1)="-b";
+      g2->update();
+
+      CHECK_EQUAL(3,godley2.rows());
+      CHECK_EQUAL("yy",godley2.cell(2,0));
+      CHECK_EQUAL("-b",godley2.cell(2,1));
+      godley2.exportToCSV("before.csv");
+
+      godley1.cell(2,1)="b";
+      balanceDuplicateColumns(*g1, 1); 
+      godley2.exportToCSV("after.csv");
+      CHECK_EQUAL(4,godley2.rows());
+      CHECK_EQUAL("yy",godley2.cell(2,0)); // row label should be updated
+      CHECK_EQUAL("-b",godley2.cell(2,1));  // sign should be transferred
+      CHECK_EQUAL("xx",godley2.cell(3,0)); // row label should be updated
+      CHECK_EQUAL("2b",godley2.cell(3,1));  // sign should be transferred
     }
 
   TEST_FIXTURE(TestFixture,importDuplicateColumn)
@@ -867,7 +911,7 @@ SUITE(Minsky)
       auto g2=new GodleyIcon; model->addItem(g2);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
-      godley1.resize(4,2);
+      godley1.resize(4,3);
       godley2.resize(2,2);
 
       godley1._assetClass(1,GodleyAssetClass::asset);  
@@ -1067,4 +1111,97 @@ SUITE(Minsky)
       CHECK_THROW(reset(), std::exception);
     }
 
+    TEST_FIXTURE(TestFixture, RemoveDefinitionsFromPastedVars)
+      {
+        VariablePtr a(VariableType::flow,"a");
+        VariablePtr b(VariableType::flow,"b");
+        model->addItem(a); model->addItem(b);
+        model->addWire(a->ports[0], b->ports[1]);
+        canvas.selection.ensureItemInserted(a);
+        canvas.selection.ensureItemInserted(b);
+        CHECK_EQUAL(1,canvas.selection.numWires());
+        copy();
+        paste();
+        CHECK_EQUAL(4, model->items.size());
+        // ensure extra wire is not copied
+        CHECK_EQUAL(1, model->wires.size());
+        // check that b's definition remains as before
+        CHECK(definingVar(":b")==b);
+      }
+
+    TEST_FIXTURE(TestFixture, DefinitionPasted)
+      {
+        VariablePtr a(VariableType::flow,"a");
+        VariablePtr b(VariableType::flow,"b");
+        model->addItem(a); model->addItem(b);
+        model->addWire(a->ports[0], b->ports[1]);
+        canvas.selection.ensureItemInserted(a);
+        canvas.selection.ensureItemInserted(b);
+        copy();
+        model->deleteItem(*b);
+        CHECK_EQUAL(0, model->wires.size());
+        paste();
+        // ensure extra wire is not copied
+        CHECK_EQUAL(1, model->wires.size());
+        // check that b's definition is now the copied var
+        CHECK(definingVar(":b")!=b);
+      }
+    
+    TEST_FIXTURE(TestFixture, PastedIntOpShowsMessage)
+      {
+        auto intOp=make_shared<IntOp>();
+        intOp->description("foo");
+        model->addItem(intOp);
+        CHECK_EQUAL(2,model->items.size());
+        canvas.selection.ensureItemInserted(intOp);
+        copy();
+        paste();
+        CHECK(savedMessage.size()); // check that pop message is written
+      }
+
+    TEST_FIXTURE(TestFixture, RetypePastedIntegralVariable)
+      {
+        auto intOp=make_shared<IntOp>();
+        intOp->description("foo");
+        model->addItem(intOp);
+        VariablePtr clonedIntVar(intOp->intVar->clone());
+        model->addItem(clonedIntVar);
+        canvas.selection.ensureItemInserted(clonedIntVar);
+        copy();
+        model->removeItem(*intOp);
+        intOp.reset();
+        paste();
+        CHECK_EQUAL(2,model->items.size());
+        CHECK(model->items[1]->variableCast());
+        CHECK_EQUAL(VariableType::flow, model->items[1]->variableCast()->type());
+        CHECK_EQUAL(clonedIntVar->name(), model->items[1]->variableCast()->name());
+      }
+    
+    TEST_FIXTURE(TestFixture, cut)
+      {
+        auto a=model->addItem(new Variable<VariableType::flow>("a"));
+        auto integ=new IntOp;
+        model->addItem(integ);
+        auto g=model->addGroup(new Group);
+        g->addItem(new Variable<VariableType::flow>("a1"));
+        CHECK_EQUAL(4,model->numItems());
+        CHECK_EQUAL(1,model->numGroups());
+
+        canvas.selection.ensureItemInserted(a);
+        CHECK_EQUAL(1,canvas.selection.numItems());
+        canvas.selection.toggleItemMembership(integ->intVar);
+        CHECK_EQUAL(3,canvas.selection.numItems()); // both integral and intVar must be inserted
+        canvas.selection.toggleItemMembership(model->findItem(*integ));
+        CHECK_EQUAL(1,canvas.selection.numItems());
+        canvas.selection.items.push_back(integ->intVar);
+        CHECK_EQUAL(2,canvas.selection.numItems());
+        canvas.selection.ensureGroupInserted(g);
+        CHECK_EQUAL(3,canvas.selection.numItems());
+        CHECK_EQUAL(1,canvas.selection.numGroups());
+
+        a.reset(); g.reset(); // prevent triggering assertion filaure in cut()
+        cut();
+        CHECK_EQUAL(2,model->numItems()); //intVar should not be deleted
+        CHECK_EQUAL(0,model->numGroups());
+      }
 }

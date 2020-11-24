@@ -33,6 +33,7 @@ minsky.defaultFont Sans
 
 proc afterMinskyStarted {} {
   minsky.load $here/examples/1Free.mky
+  minsky.multipleEquities 1
   findObject GodleyIcon
   set id [minsky.openGodley]
   openGodley \$id
@@ -74,7 +75,7 @@ for i in *.svg; do
     # ids are assigned randomly, so strip out those tags
     sed -e 's/id="[^"]*"/id=""/' <$i >tmp1
     sed -e 's/id="[^"]*"/id=""/' <$here/test/renderedImages/$i >tmp2
-    diff -q tmp1 tmp2
+    $here/test/compareSVG.sh tmp1 tmp2
     if [ $? -ne 0 ]; then fail; fi
 done
 

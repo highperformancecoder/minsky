@@ -31,8 +31,9 @@ namespace minsky
 
   OperationType::Group OperationType::classify(Type t)
   {
-      if (t<add) return general;
-      if (t<copy) return binop;
+	  if (t<euler) return general;
+	  if (t<add) return constop; 
+      if (t<copy) return binop;     
       if (t<sum) return function;
       if (t<runningSum) return reduction;
       if (t<innerProduct) return scan;
@@ -43,12 +44,19 @@ namespace minsky
   namespace OperationTypeInfo
   {
     template <> int numArguments<OperationType::constant>() {return 0;}
+    template <> int numArguments<OperationType::euler>() {return 0;}
+    template <> int numArguments<OperationType::pi>() {return 0;}
+    template <> int numArguments<OperationType::zero>() {return 0;}
+    template <> int numArguments<OperationType::one>() {return 0;}                
+    template <> int numArguments<OperationType::inf>() {return 0;}    
+    template <> int numArguments<OperationType::percent>() {return 1;}  
     template <> int numArguments<OperationType::add>() {return 2;}
     template <> int numArguments<OperationType::subtract>() {return 2;}
     template <> int numArguments<OperationType::multiply>() {return 2;}
     template <> int numArguments<OperationType::divide>() {return 2;}
     template <> int numArguments<OperationType::log>() {return 2;}
     template <> int numArguments<OperationType::pow>() {return 2;}
+    template <> int numArguments<OperationType::polygamma>() {return 2;}       
     template <> int numArguments<OperationType::lt>() {return 2;}
     template <> int numArguments<OperationType::le>() {return 2;}
     template <> int numArguments<OperationType::eq>() {return 2;}
@@ -57,12 +65,11 @@ namespace minsky
     template <> int numArguments<OperationType::and_>() {return 2;}
     template <> int numArguments<OperationType::or_>() {return 2;}
     template <> int numArguments<OperationType::not_>() {return 1;}
-    template <> int numArguments<OperationType::time>() {return 0;}
-    template <> int numArguments<OperationType::copy>() {return 1;}
+    template <> int numArguments<OperationType::time>() {return 0;}    
+    template <> int numArguments<OperationType::copy>() {return 1;} 
     template <> int numArguments<OperationType::integrate>() {return 2;}
     template <> int numArguments<OperationType::differentiate>() {return 1;}
     template <> int numArguments<OperationType::data>() {return 1;}
-    template <> int numArguments<OperationType::ravel>() {return 1;}
     template <> int numArguments<OperationType::sqrt>() {return 1;}
     template <> int numArguments<OperationType::exp>() {return 1;}
     template <> int numArguments<OperationType::ln>() {return 1;}
@@ -78,6 +85,8 @@ namespace minsky
     template <> int numArguments<OperationType::abs>() {return 1;}
     template <> int numArguments<OperationType::floor>() {return 1;}
     template <> int numArguments<OperationType::frac>() {return 1;}
+    template <> int numArguments<OperationType::gamma>() {return 1;}            
+    template <> int numArguments<OperationType::fact>() {return 1;}        
     template <> int numArguments<OperationType::sum>() {return 1;}
     template <> int numArguments<OperationType::product>() {return 1;}
     template <> int numArguments<OperationType::infimum>() {return 1;}
@@ -92,7 +101,8 @@ namespace minsky
     template <> int numArguments<OperationType::innerProduct>() {return 2;}
     template <> int numArguments<OperationType::outerProduct>() {return 2;}
     template <> int numArguments<OperationType::index>() {return 1;}
-    template <> int numArguments<OperationType::gather>() {return 2;}
+    template <> int numArguments<OperationType::gather>() {return 2;} 
+    template <> int numArguments<OperationType::ravel>() {return 1;}     
     template <> int numArguments<OperationType::numOps>() {return -1;} //no output port as well
   }
 }

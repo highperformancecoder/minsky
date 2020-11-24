@@ -25,24 +25,21 @@
 
 using namespace minsky;
 using namespace ecolab;
+using namespace std;
+
+// width of draggable border 
+const float border=10;
 
 Sheet::Sheet()
 {
   ports.emplace_back(new Port(*this, Port::inputPort));
 }
 
-ClickType::Type Sheet::clickType(float x, float y)
+bool Sheet::inItem(float xx, float yy) const
 {
-  double dx=x-this->x(), dy=y-this->y();
-  auto z=zoomFactor();
-  double w=0.5*m_width*z, h=0.5*m_height*z;
-  // check if (x,y) is within portradius of the 4 corners
-  if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-      fabs(fabs(dy)-h) < portRadiusMult*z &&
-      fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
-    return ClickType::onResize;
-  return Item::clickType(x,y);
+  return abs(xx-x())<0.5*width()-border && abs(yy-y())<0.5*height()-border;
 }
+
 
 void Sheet::draw(cairo_t* cairo) const
 {
@@ -52,21 +49,36 @@ void Sheet::draw(cairo_t* cairo) const
     {
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
-      if (onResizeHandles) drawResizeHandles(cairo);
+      // Resize handles always visible on mousefocus. For ticket 92.
+      drawResizeHandles(cairo);
     }
 
   cairo_scale(cairo,z,z);
     
+  cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
+  cairo_stroke_preserve(cairo);
   cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
   cairo_stroke_preserve(cairo);
+  // draw border
+  if (onBorder)
+    { // shadow the border when mouse is over it
+      cairo::CairoSave cs(cairo);
+      cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
+      cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
+      cairo_fill(cairo);
+    }
+  cairo_new_path(cairo);
+  cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
   cairo_clip(cairo);
+  
   if (selected) drawSelected(cairo);
 
   try
     {
-      auto& value=ports[0]->getVariableValue();
+      auto value=ports[0]->getVariableValue();
+      if (!value) return;
       Pango pango(cairo);
-      if (value.hypercube().rank()>2)
+      if (value->hypercube().rank()>2)
         {
           pango.setMarkup("Error: rank>2");
           cairo_move_to(cairo,-0.5*pango.width(),-0.5*pango.height());
@@ -74,70 +86,124 @@ void Sheet::draw(cairo_t* cairo) const
         }
       else
         {
-          float x0=-0.5*m_width, y0=-0.5*m_height;//+pango.height();
-          float x=x0, y=y0;
-          double colWidth=0;
-          pango.setMarkup("9999");
-          float rowHeight=pango.height();
-          if (value.hypercube().rank()==0)
+          float x0=-0.5*m_width+border, y0=-0.5*m_height+border;
+          if (value->hypercube().rank()==0)
             {
-              cairo_move_to(cairo,x,y);
-              pango.setMarkup(str(value[0]));
+              cairo_move_to(cairo,x0,y0);
+              pango.setMarkup(str((*value)[0]));
               pango.show();
             }
           else
             {
-              if (value.hypercube().rank()==2)
-                y+=rowHeight; // allow room for header row
+              if (!value->hypercube().xvectors[0].name.empty())
+                {
+                  cairo::CairoSave cs(cairo);
+                  pango.setMarkup(value->hypercube().xvectors[0].name);
+                  x0+=pango.height();
+                  cairo_move_to(cairo,x0, -0.5*pango.width());
+                  pango.angle=0.5*M_PI;
+                  pango.show();
+                  pango.angle=0;
+                  { // draw vertical grid line
+                    cairo::CairoSave cs(cairo);
+                    cairo_set_source_rgba(cairo,0,0,0,0.5);
+                    cairo_move_to(cairo,x0,-0.5*m_height);
+                    cairo_line_to(cairo,x0,0.5*m_height);
+                    cairo_stroke(cairo);
+                  }                  				
+                }
 
+              pango.setMarkup("9999");
+              float rowHeight=pango.height();
+
+              double colWidth=0;
+              float x=x0, y=y0;
+              string format=value->hypercube().xvectors[0].dimension.units;
+              // calculate label column width
+              for (auto& i: value->hypercube().xvectors[0])
+                {
+                  pango.setText(trimWS(str(i,format)));
+                  colWidth=std::max(colWidth,5+pango.width());
+                }                
+
+              if (value->hypercube().rank()==2)
+                {
+                  y+=rowHeight; // allow room for header row               
+                  if (!value->hypercube().xvectors[1].name.empty())
+                    {
+                      cairo::CairoSave cs(cairo);
+                      pango.setMarkup(value->hypercube().xvectors[1].name);
+                      cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-pango.width()), y0);
+                      y0+=pango.height();
+                      pango.show();
+                    }
+                }
+              
+              { // draw horizontal grid line
+                cairo::CairoSave cs(cairo);
+                cairo_set_source_rgba(cairo,0,0,0,0.5);
+                cairo_move_to(cairo,-0.5*m_width,y0-2.5);
+                cairo_line_to(cairo,0.5*m_width,y0-2.5);
+                cairo_stroke(cairo);
+              }                    
               // draw in label column
-              string format=value.hypercube().xvectors[0].timeFormat();
-              for (auto& i: value.hypercube().xvectors[0])
+              for (auto& i: value->hypercube().xvectors[0])
                 {
                   cairo_move_to(cairo,x,y);
                   pango.setText(trimWS(str(i,format)));
                   pango.show();
                   y+=rowHeight;
-                  colWidth=std::max(colWidth,5+pango.width()/z);
+                }                
+              y=y0;          
+              x+=colWidth;            
+              if (value->hypercube().rank()==1)
+                {
+                  { // draw vertical grid line
+                    cairo::CairoSave cs(cairo);
+                    cairo_set_source_rgba(cairo,0,0,0,0.5);
+                    cairo_move_to(cairo,x,-0.5*m_height);
+                    cairo_line_to(cairo,x,0.5*m_height);
+                    cairo_stroke(cairo);
+                  }                  				
+                  for (size_t i=0; i<value->size(); ++i)
+                    {
+                      if (!value->index().empty())
+                        y=y0+value->index()[i]*rowHeight;
+                      cairo_move_to(cairo,x,y);
+                      auto v=(*value)[i];
+                      if (!std::isnan(v))
+                        {
+                          pango.setMarkup(str(v));
+                          pango.show();
+                        }                       
+                      y+=rowHeight;
+                    }
                 }
-              y=y0;
-              x+=colWidth;
-              if (value.hypercube().rank()==1)
-                for (auto v: value)
-                  {
-                    cairo_move_to(cairo,x,y);
-                    if (!std::isnan(v))
-                      {
-                        pango.setMarkup(str(v));
-                        pango.show();
-                      }
-                    y+=rowHeight;
-                  }
               else
                 {
-                  format=value.hypercube().xvectors[1].timeFormat();
-                  auto dims=value.hypercube().dims();
+                  format=value->hypercube().xvectors[1].dimension.units;
+                  auto dims=value->hypercube().dims();
                   for (size_t i=0; i<dims[1]; ++i)
                     {
                       colWidth=0;
                       y=y0;
                       cairo_move_to(cairo,x,y);
-                      pango.setText(trimWS(str(value.hypercube().xvectors[1][i],format)));
+                      pango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
                       pango.show();
                       { // draw vertical grid line
                         cairo::CairoSave cs(cairo);
                         cairo_set_source_rgba(cairo,0,0,0,0.5);
-                        cairo_move_to(cairo,x-2.5,-0.5*m_height);
+                        cairo_move_to(cairo,x-2.5,y0);
                         cairo_line_to(cairo,x-2.5,0.5*m_height);
                         cairo_stroke(cairo);
                       }
-                      colWidth=std::max(colWidth, 5+pango.width()/z);
+                      colWidth=std::max(colWidth, 5+pango.width());
                       for (size_t j=0; j<dims[0]; ++j)
                         {
                           y+=rowHeight;
                           if (y>0.5*m_height) break;
                           cairo_move_to(cairo,x,y);
-                          auto v=value.atHCIndex(j+i*dims[0]);
+                          auto v=value->atHCIndex(j+i*dims[0]);
                           if (!std::isnan(v))
                             {
                               pango.setText(str(v));
@@ -155,7 +221,7 @@ void Sheet::draw(cairo_t* cairo) const
                 cairo_set_source_rgba(cairo,0,0,0,0.2);
                 for (y=y0+0.8*rowHeight; y<0.5*m_height; y+=2*rowHeight)
                   {
-                    cairo_rectangle(cairo,-0.5*m_width,y,m_width,rowHeight);
+                    cairo_rectangle(cairo,x0,y,m_width,rowHeight);
                     cairo_fill(cairo);
                  }
               }
@@ -164,13 +230,8 @@ void Sheet::draw(cairo_t* cairo) const
         }
     }
   catch (...) {/* exception most likely invalid variable value */}
+  cairo_reset_clip(cairo);
+  cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
+  cairo_clip(cairo);
 }
 
-void Sheet::resize(const LassoBox& b)
-{
-  auto invZ=1/zoomFactor();
-  m_width=abs(b.x1-b.x0)*invZ;
-  m_height=abs(b.y1-b.y0)*invZ;
-  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-  bb.update(*this);
-}
