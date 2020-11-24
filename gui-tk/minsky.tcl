@@ -939,6 +939,21 @@ addTab variables "Variables" minsky.variableSheet
 pack .variables.canvas -fill both -expand 1
 .tabs select 0
 
+bind .variables.canvas <<contextMenu>> "variableContext %x %y %X %Y"  
+menu .variables.context -tearoff 0   
+
+proc variableContext {x y X Y} {
+    .variables.context delete 0 end
+    set c [variableSheet.colX $x]    
+    switch [variableSheet.clickType $x $y] {
+        background {}
+        internal {
+			.variables.context add command -label "Show variable on Canvas" -command "variableSheet.toggleVarDisplay $c;  variableSheet.requestRedraw"
+		}
+    }
+    tk_popup .variables.context $X $Y
+}  
+
 source $minskyHome/godley.tcl
 source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
