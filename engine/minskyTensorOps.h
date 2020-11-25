@@ -159,8 +159,8 @@ namespace minsky
     TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev); 
     TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
-      result.hypercube(rhs->hypercube());
       result.index(rhs->index());
+      result.hypercube(rhs->hypercube());
       assert(result.idx()>=0);
       assert(result.size()==rhs->size());
     } 

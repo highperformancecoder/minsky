@@ -135,6 +135,7 @@ namespace minsky
 //    const VariableValue& operator=(double x) {valRef()=x; return *this;}
 //    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
 //    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
+    using ITensorVal::operator=;
     const VariableValue& operator=(TensorVal const&);
     const VariableValue& operator=(const ITensor& x) override;
 //    const VariableValue& operator+=(const TensorVal& x);

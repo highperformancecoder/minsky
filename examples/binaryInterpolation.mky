@@ -2,101 +2,152 @@
   <schemaVersion>3</schemaVersion>
   <minskyVersion>2.21.0-beta.15</minskyVersion>
   <wires>
+   <Wire>
+    <id>18</id>
+    <from>0</from>
+    <to>4</to>
+   </Wire>
+   <Wire>
+    <id>19</id>
+    <from>2</from>
+    <to>6</to>
+   </Wire>
+   <Wire>
+    <id>20</id>
+    <from>8</from>
+    <to>13</to>
+   </Wire>
+   <Wire>
+    <id>21</id>
+    <from>10</from>
+    <to>14</to>
+   </Wire>
+   <Wire>
+    <id>22</id>
+    <from>12</from>
+    <to>16</to>
+   </Wire>
   </wires>
   <items>
    <Item>
-    <id>2</id>
-    <type>Variable:flow</type>
-    <x>0</x>
-    <y>0</y>
+    <id>1</id>
+    <type>Variable:parameter</type>
+    <x>100</x>
+    <y>97</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
      <int>0</int>
-     <int>1</int>
     </ports>
-    <name>:\sqrt[3]2</name>
-    <init>0</init>
+    <name>x1</name>
     <slider>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <tensorData>
+<![CDATA[GhQY?5R&=sTaV0*)CEa\6_&^Y&WJDO68FiI8om73"$H`?JFO)rpdSqE@l1n+)W)6gD[,;*!5aF#gA]]>    </tensorData>
+   </Item>
+   <Item>
+    <id>3</id>
+    <type>Variable:parameter</type>
+    <x>101</x>
+    <y>243</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
+    <ports>
+     <int>2</int>
+    </ports>
+    <name>x2</name>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+    <tensorData>
+<![CDATA[GhQY>5R&2<&6~'+M`AL_(t%O[-7!HP0^V~j:sT+M@!lH@^+#9W!8oC4"o]]>    </tensorData>
    </Item>
    <Item>
     <id>5</id>
-    <type>Variable:flow</type>
-    <x>9.0001</x>
-    <y>53.0002</y>
+    <type>Sheet</type>
+    <x>322.438</x>
+    <y>110.938</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
-    <width>0</width>
-    <height>0</height>
+    <width>183.125</width>
+    <height>160.125</height>
     <ports>
-     <int>3</int>
      <int>4</int>
     </ports>
-    <name>:\int_0^\infty&#32;e^{-x^2/2}</name>
-    <init>0</init>
-    <slider>
-     <stepRel>false</stepRel>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
-    </slider>
    </Item>
    <Item>
-    <id>8</id>
-    <type>Variable:flow</type>
-    <x>105</x>
-    <y>2.0002</y>
+    <id>7</id>
+    <type>Sheet</type>
+    <x>310.812</x>
+    <y>304.625</y>
+    <scaleFactor>1.00487</scaleFactor>
+    <rotation>0</rotation>
+    <width>160.375</width>
+    <height>154.75</height>
+    <ports>
+     <int>6</int>
+    </ports>
+   </Item>
+   <Item>
+    <id>9</id>
+    <type>Variable:parameter</type>
+    <x>533</x>
+    <y>138</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>6</int>
-     <int>7</int>
+     <int>8</int>
     </ports>
-    <name>:\aleph_0</name>
-    <init>0</init>
+    <name>x1</name>
     <slider>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <tensorData>
+<![CDATA[GhQY?5R&=sTaV0*)CEa\6_&^Y&WJDO68FiI8om73"$H`?JFO)rpdSqE@l1n+)W)6gD[,;*!5aF#gA]]>    </tensorData>
    </Item>
    <Item>
     <id>11</id>
-    <type>Variable:flow</type>
-    <x>126</x>
-    <y>75.0002</y>
+    <type>Variable:parameter</type>
+    <x>531</x>
+    <y>239</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>9</int>
      <int>10</int>
     </ports>
-    <name>:\partial&#32;f(x)/\partial&#32;x|_0</name>
-    <init>0</init>
+    <name>x2</name>
     <slider>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <tensorData>
+<![CDATA[GhQY>5R&2<&6~'+M`AL_(t%O[-7!HP0^V~j:sT+M@!lH@^+#9W!8oC4"o]]>    </tensorData>
    </Item>
    <Item>
-    <id>14</id>
-    <type>Variable:flow</type>
-    <x>21.0001</x>
-    <y>141</y>
+    <id>15</id>
+    <type>Operation:add</type>
+    <x>631</x>
+    <y>191</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -104,88 +155,29 @@
     <ports>
      <int>12</int>
      <int>13</int>
+     <int>14</int>
     </ports>
-    <name>:\tau_\mathrm{RD}</name>
-    <init>0</init>
-    <slider>
-     <stepRel>false</stepRel>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
-    </slider>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>17</id>
-    <type>Variable:flow</type>
-    <x>140.001</x>
-    <y>162.001</y>
+    <type>Sheet</type>
+    <x>824.25</x>
+    <y>204.75</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
-    <width>0</width>
-    <height>0</height>
+    <width>223.5</width>
+    <height>162.5</height>
     <ports>
-     <int>15</int>
      <int>16</int>
     </ports>
-    <name>:\mathrm{universit\&quot;at}</name>
-    <init>0</init>
-    <slider>
-     <stepRel>false</stepRel>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
-    </slider>
-   </Item>
-   <Item>
-    <id>20</id>
-    <type>Variable:flow</type>
-    <x>111</x>
-    <y>218.001</y>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>18</int>
-     <int>19</int>
-    </ports>
-    <name>:\mathrm{fran\c{c}ais</name>
-    <init>0</init>
-    <slider>
-     <stepRel>false</stepRel>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
-    </slider>
-   </Item>
-   <Item>
-    <id>23</id>
-    <type>Variable:flow</type>
-    <x>265.001</x>
-    <y>155.001</y>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>21</int>
-     <int>22</int>
-    </ports>
-    <name>:\mathrm{universit\&quot;{a}t}</name>
-    <init>0</init>
-    <slider>
-     <stepRel>false</stepRel>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
-    </slider>
    </Item>
   </items>
   <groups>
   </groups>
   <rungeKutta>
    <stepMin>0</stepMin>
-   <stepMax>0.1</stepMax>
+   <stepMax>0.01</stepMax>
    <nSteps>1</nSteps>
    <epsRel>0.01</epsRel>
    <epsAbs>0.001</epsAbs>
@@ -200,6 +192,13 @@
   <bookmarks>
   </bookmarks>
   <dimensions>
+   <pair>
+    <first>t</first>
+    <second>
+     <type>value</type>
+     <units></units>
+    </second>
+   </pair>
   </dimensions>
   <conversions>
   </conversions>

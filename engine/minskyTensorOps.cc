@@ -19,6 +19,7 @@
 
 #include <classdesc.h>
 #include "minskyTensorOps.h"
+#include "interpolateHypercube.h"
 #include "minsky.h"
 #include "ravelWrap.h"
 #include "minsky_epilogue.h"
@@ -76,12 +77,28 @@ namespace minsky
   {
     EvalOp<op> eo;
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
-    void setArguments(const std::vector<TensorPtr>& a1, const std::vector<TensorPtr>& a2) override
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override
     {
-      civita::BinOp::setArguments
-        (a1.empty()? TensorPtr(): a1[0],
-         a2.empty()?  TensorPtr(): a2[0]
-         );
+      if (a1 && a1->rank()>0)
+        hypercube(a1->hypercube());
+      else if (a2)
+        hypercube(a2->hypercube());
+      else
+        hypercube(Hypercube());
+      
+      arg1=a1;
+
+      if (a2)
+        {
+          if (a2->rank()==0 || a2->hypercube()==hypercube())
+            arg2=a2;
+          else
+            {
+              arg2=make_shared<InterpolateHC>();
+              arg2->hypercube(hypercube());
+              arg2->setArgument(a2);
+            }
+        }
     }
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv1=dynamic_cast<DerivativeMixin*>(arg1.get());
@@ -146,9 +163,24 @@ namespace minsky
     virtual void setArguments(const std::vector<TensorPtr>& a1,
                               const std::vector<TensorPtr>& a2)
     {
-      auto pa1=make_shared<AccumArgs<op>>(), pa2=make_shared<AccumArgs<op>>();
-      pa1->setArguments(a1,{},0); pa2->setArguments(a2,{},0);
-      civita::BinOp::setArguments(pa1, pa2);
+      TensorPtr pa1, pa2;
+      if (a1.size()==1)
+        pa1=a1[0];
+      else
+        {
+          pa1 = make_shared<AccumArgs<op>>();
+          pa1->setArguments(a1,{},0);
+        }
+
+      if (a2.size()==1)
+        pa2=a2[0];
+      else
+        {
+          pa2 = make_shared<AccumArgs<op>>();
+          pa2->setArguments(a2,{},0);
+        }
+      
+      TensorBinOp<op>::setArguments(pa1, pa2);
     }
   };
    
