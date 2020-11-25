@@ -944,11 +944,12 @@ menu .variables.context -tearoff 0
 
 proc variableContext {x y X Y} {
     .variables.context delete 0 end
-    set c [variableSheet.colX $x]    
+    set r [variableSheet.rowY $y]    
     switch [variableSheet.clickType $x $y] {
         background {}
         internal {
-			.variables.context add command -label "Show variable on Canvas" -command "variableSheet.toggleVarDisplay $c;  variableSheet.requestRedraw"
+			set varName [variableSheet.getVarName $r]
+			.variables.context add command -label "Show variable $varName on Canvas" -command "variableSheet.toggleVarDisplay $r;  variableSheet.requestRedraw"
 		}
     }
     tk_popup .variables.context $X $Y

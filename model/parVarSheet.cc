@@ -47,9 +47,8 @@ namespace minsky
     if ((x-offsx)<colLeftMargin[0]) return -1;
     if ((x-offsx)<colLeftMargin[1]) return 0;
     auto p=std::upper_bound(colLeftMargin.begin(), colLeftMargin.end(), (x-offsx));
-    size_t r=p-colLeftMargin.begin()-2+scrollColStart;
-    //if (r>cols()-1) r=-1; // out of bounds, invalidate. Also exclude A-L-E column. For ticket 1163.
-    if (r<0) r=-1;
+    size_t r=p-colLeftMargin.begin();
+    if (r<0) r=-1; // out of bounds, invalidate
     return r;
   }
 
@@ -57,8 +56,6 @@ namespace minsky
   {
 	if (itemVector.empty()) return -1;      
     int c=(y-offsy)/(2*rowHeight);
-    //if (c>0) c+=scrollRowStart-1; 
-    //if (c<0 || size_t(c)>rows()) c=-1; // out of bounds, invalidate
     if (c<0) c=-1; // out of bounds, invalidate
     return c;
   }
@@ -66,11 +63,8 @@ namespace minsky
   ParVarSheet::ClickType ParVarSheet::clickType(double x, double y) const
   {
     int c=colX(x), r=rowY(y);
-        
-    //if (c>=0 && c<int(cols()))
-    //  if (r>=0 && r<int(rows()))
-    if (c>=0 && c<varAttribVals.size())
-      if (r>=0 && r<2*itemVector.size())
+
+    if (c>=0 && c<int(varAttribVals.size())&& r>=0 && r<int(2*itemVector.size()))
         return internal;
   
     return background;

@@ -42,14 +42,13 @@ namespace minsky
     virtual float height() const {return m_height;}
     Items itemVector;     
 
-    /// starting row/col number of the scrolling region
-    unsigned scrollRowStart=1, scrollColStart=1;        
     /// computed positions of the table columns
     std::vector<double> colLeftMargin;                              
 
     void populateItemVector();
     virtual bool variableSelector(ItemPtr i) = 0;
     void toggleVarDisplay(int i) const {if (i>=0 && i<int(2*itemVector.size())) (itemVector[i/2])->variableCast()->toggleVarTabDisplay(); else return;}
+    std::string getVarName(int i) const {if (i>=0 && i<int(2*itemVector.size())) return (itemVector[i/2])->variableCast()->name(); else return "";}
     std::vector<std::string> varAttrib{"Name","Initial Value","Short Description", "Long Description","Slider Step","Slider Min","Slider Max","Value"};       
     std::vector<std::string> varAttribVals;
     /// column at \a x in unzoomed coordinates
