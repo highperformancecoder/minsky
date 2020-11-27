@@ -40,6 +40,38 @@ namespace minsky
                                          return false;
                                        });   	
   }
+  
+  int ParVarSheet::colX(double x) const
+  { 
+	if (itemVector.empty() || colLeftMargin.empty()) return -1;
+	size_t c;
+    for (auto& i: colLeftMargin)
+	{
+       auto p=std::upper_bound(i.second.begin(), i.second.end(), (x-offsx));
+       c=p-i.second.begin();
+       }
+    if (c<0) c=-1; // out of bounds, invalidate
+    return c;
+  }
+
+  int ParVarSheet::rowY(double y) const
+  {
+	if (itemVector.empty() || rowTopMargin.empty()) return -1;     
+    auto p=std::upper_bound(rowTopMargin.begin(), rowTopMargin.end(), (y-offsy));
+    size_t r=p-rowTopMargin.begin(); 
+    if (r<0) r=-1; // out of bounds, invalidate
+    return r;
+  }
+  
+  ParVarSheet::ClickType ParVarSheet::clickType(double x, double y) const
+  {
+    int c=colX(x), r=rowY(y);
+
+    if (c>=0 && c<int(colLeftMargin.size())&& r>=0 && r<int(itemVector.size()))
+        return internal;
+  
+    return background;
+  }
 	
   void ParVarSheet::draw(cairo_t* cairo)
   {   
@@ -50,6 +82,9 @@ namespace minsky
           {
             float x0, y0=1.5*rowHeight;//+pango.height();	
             double w=0,h=0,h_prev,lh; 
+            colLeftMargin.clear();                
+            rowTopMargin.clear();
+            int iC=0;                
             for (auto& it: itemVector)
               {
                 auto v=it->variableCast();
@@ -59,19 +94,83 @@ namespace minsky
                 Pango pango(cairo);      
                 x0=0.0;
                 float x=x0, y=y0;
-                double colWidth=0;
                 pango.setMarkup("9999");
                 if (rank==0)
                   { 
-                    cairo_move_to(cairo,x,y-1.5*rowHeight);
-                    pango.setMarkup(latexToPango(value->name)+" = "+str(value->value(0)));
-                    pango.show();              
+                    varAttribVals.clear();
+                    varAttribVals.push_back(v->name());
+                    varAttribVals.push_back(v->init());
+                    varAttribVals.push_back(it->tooltip);
+                    varAttribVals.push_back(it->detailedText);
+                    varAttribVals.push_back(to_string(v->sliderStep));
+                    varAttribVals.push_back(to_string(v->sliderMin));
+                    varAttribVals.push_back(to_string(v->sliderMax));
+                    varAttribVals.push_back(to_string(v->value()));
+                    
+                    for (auto& i:varAttrib) 
+                      {
+                        cairo_move_to(cairo,x,y-1.5*rowHeight);                    
+                        pango.setMarkup(i);
+                        pango.show();                  
+                        colWidth=std::max(colWidth,5+pango.width());  
+                        x+=colWidth;	
+                        colLeftMargin[iC].push_back(x);                        				    
+                      }
+                    x=0;
+                    for (auto& i : varAttribVals)
+                      {
+                        cairo_move_to(cairo,x,y-0.5*rowHeight);                    
+                        pango.setMarkup(latexToPango(i));
+                        pango.show();                    
+                        colWidth=std::max(colWidth,5+pango.width());
+                        x+=colWidth;		
+                      }
+				   x=x0;                      
+                    h_prev=h;
+                    w=0;h=0;      
+                    cairo_get_current_point (cairo,&w,&h);   
+                    if (h<h_prev) h+=h_prev;                                                                         
+                    // draw grid
+                    {
+				      		
+                      cairo::CairoSave cs(cairo);
+                      cairo_set_source_rgba(cairo,0,0,0,0.2);
+                      for (y=y0-1.5*rowHeight; y<h+rowHeight; y+=2*rowHeight)
+                        {
+                          cairo_rectangle(cairo,x0,y,w+colWidth,rowHeight);
+                          cairo_fill(cairo);
+                        }
+
+                    }
+                    { // draw vertical grid lines
+                      cairo::CairoSave cs(cairo);
+                      cairo_set_source_rgba(cairo,0,0,0,0.5);
+                      for (x=x0; x<w+colWidth; x+=colWidth)
+                        {
+                          cairo_move_to(cairo,x,y-2*rowHeight);
+                          cairo_line_to(cairo,x,y+0.5*rowHeight);
+                          cairo_stroke(cairo);
+                        }
+                    }                                            
+                    { // draw horizontal grid line
+                      cairo::CairoSave cs(cairo);
+                      cairo_set_source_rgba(cairo,0,0,0,0.5);
+                      cairo_move_to(cairo,x0,y0-0.5*rowHeight);
+                      cairo_line_to(cairo,w+colWidth,y0-0.5*rowHeight);
+                      cairo_stroke(cairo);
+                    }                                  
+                    cairo::CairoSave cs(cairo);
+                    // make sure rectangle has right height
+                    cairo_rectangle(cairo,x0,y0-1.5*rowHeight,w+colWidth,y-y0+2*rowHeight);    
+                    rowTopMargin.push_back(y);
+                    cairo_stroke(cairo);                          	          
+                    cairo_clip(cairo);	                               
                   }
                 else if (rank==1)
                   {
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
                     pango.setMarkup(latexToPango(value->name)+":");
-                    pango.show();              
+                    pango.show();                                  
                     string format=value->hypercube().xvectors[0].dimension.units;
                     for (auto& i: value->hypercube().xvectors[0])
                       {
@@ -81,6 +180,7 @@ namespace minsky
                         y+=rowHeight;
                         colWidth=std::max(colWidth,5+pango.width());
                       }
+                    colLeftMargin[iC].push_back(x);                         
                     y=y0;
                     lh=0;                        
                     for (size_t j=0; j<dims[0]; ++j)
@@ -128,14 +228,15 @@ namespace minsky
                     cairo_rectangle(cairo,0.0,y0,w+colWidth,rectHeight);    
                     cairo_stroke(cairo);                          
                     cairo_clip(cairo);             
-                   
+                    rowTopMargin.push_back(y);                    
+                    colLeftMargin[iC].push_back(x);                   
                     y0=h+3.1*rowHeight;                 
                   }
                 else
                   { 
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
                     pango.setMarkup(latexToPango(value->name)+":");
-                    pango.show(); 
+                    pango.show();                
                     size_t labelDim1=0, labelDim2=1; 					    
                     string vName;
                     if (v->type()==VariableType::parameter)
@@ -165,7 +266,6 @@ namespace minsky
                     format=value->hypercube().xvectors[labelDim2].timeFormat();
                     for (size_t i=0; i<dims[labelDim2]; ++i)
                       {
-                        colWidth=0;
                         y=y0;
                         cairo_move_to(cairo,x,y);
                         pango.setText(trimWS(str(value->hypercube().xvectors[labelDim2][i],format)));
@@ -191,6 +291,7 @@ namespace minsky
                               }
                             colWidth=std::max(colWidth, pango.width());
                           }
+                        colLeftMargin[iC].push_back(x);                     
                         x+=colWidth;
                         if (x>2e09) break;
                       }      
@@ -223,15 +324,16 @@ namespace minsky
                     else rectHeight=y-y0-rowHeight;
                     cairo_rectangle(cairo,x0,y0,w+colWidth,rectHeight);    
                     cairo_stroke(cairo);                          	        
-                    cairo_clip(cairo);		        
-                   
+                    cairo_clip(cairo);	
+                    rowTopMargin.push_back(y);    	        
                     x+=0.25*colWidth;      
                     y=y0;                	
 			
 						
                   }               
-                if (rank>0) y0=h+3.1*rowHeight;
-                else y0+=3.1*rowHeight;   
+                if (rank>0) y0=h+4.1*rowHeight;
+                else y0+=4.1*rowHeight;   
+                iC++;
                
               }
           }
@@ -276,6 +378,6 @@ namespace minsky
           m_height=surf.height();
         }     
       }
-    }
+    }    
 
 }

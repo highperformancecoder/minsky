@@ -40,10 +40,25 @@ namespace minsky
     float m_width=600, m_height=800;
     virtual float width() const {return m_width;}
     virtual float height() const {return m_height;}
-    Items itemVector;                             
+    Items itemVector;     
+
+    /// computed positions of the table columns
+    std::map<int,std::vector<double>> colLeftMargin;             
+    /// computed positions of the variable rows
+    std::vector<double> rowTopMargin;                      
 
     void populateItemVector();
     virtual bool variableSelector(ItemPtr i) = 0;
+    void toggleVarDisplay(int i) const {if (i>=0 && i<int(itemVector.size())) (itemVector[i])->variableCast()->toggleVarTabDisplay(); else return;}
+    std::string getVarName(int i) const {if (i>=0 && i<int(itemVector.size())) return (itemVector[i])->variableCast()->name(); else return "";}
+    std::vector<std::string> varAttrib{"Name","Initial Value","Short Description", "Long Description","Slider Step","Slider Min","Slider Max","Value"};       
+    std::vector<std::string> varAttribVals;
+    /// column at \a x in unzoomed coordinates
+    int colX(double x) const;
+    /// row at \a y in unzoomed coordinates
+    int rowY(double y) const;    
+    enum ClickType {background, internal};    
+    ClickType clickType(double x, double y) const;         
     void draw(cairo_t* cairo); 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
