@@ -43,7 +43,7 @@ namespace minsky
   
   int ParVarSheet::colX(double x) const
   { 
-	if (itemVector.empty()) return -1;
+	if (itemVector.empty() || colLeftMargin.empty()) return -1;
 	size_t c;
     for (auto& i: colLeftMargin)
 	{
@@ -56,7 +56,7 @@ namespace minsky
 
   int ParVarSheet::rowY(double y) const
   {
-	if (itemVector.empty()) return -1;     
+	if (itemVector.empty() || rowTopMargin.empty()) return -1;     
     auto p=std::upper_bound(rowTopMargin.begin(), rowTopMargin.end(), (y-offsy));
     size_t r=p-rowTopMargin.begin(); 
     if (r<0) r=-1; // out of bounds, invalidate
