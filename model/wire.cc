@@ -103,6 +103,7 @@ namespace minsky
   {
     auto f=from(), t=to();
     if (attachedToDefiningVar()) return false;
+    if (f->item().attachedToDefiningVar()) return false;      // ensure wires attached to out port do not dangle. for ticket 1275
     assert(f->item().group.lock() && t->item().group.lock());
     return f && t && 
       (f->item().group.lock()->displayContents() ||

@@ -415,6 +415,10 @@ bool VariableBase::visible() const
   auto g=group.lock();
   //toplevel i/o items always visible
   if ((!g || !g->group.lock()) && g==controller.lock()) return true;
+  // ensure vars attached to invisible ops are also made invisible. for ticket 1275
+  if (!ports[0]->wires().empty())
+    if (auto i=ports[0]->wires()[0]->to()->item().operationCast())
+      if (!i->visible()) return false;
   return !controller.lock() && Item::visible();
 }
 
