@@ -415,17 +415,6 @@ bool VariableBase::visible() const
   auto g=group.lock();
   //toplevel i/o items always visible
   if ((!g || !g->group.lock()) && g==controller.lock()) return true;
-  // ensure pars and constants with invisible out wires are made invisible. for ticket 1275  
-  if (type()==constant || type()==parameter)
-  {
-    for (auto w: ports[0]->wires())
-      if (w->visible()) return true;
-    return false;  
-  }  
-  // ensure flow vars with out wires remain visible. for ticket 1275
-  if (attachedToDefiningVar() && !ports[0]->wires().empty() && lhs()) return true;  
-  if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
-     if (i->attachedToDefiningVar()) return true;
   return !controller.lock() && Item::visible();
 }
 

@@ -101,8 +101,8 @@ namespace minsky
 
   bool Wire::visible() const
   {
-    if (attachedToDefiningVar()) return false;	  
     auto f=from(), t=to();
+    if (attachedToDefiningVar()) return false;
     assert(f->item().group.lock() && t->item().group.lock());
     return f && t && 
       (f->item().group.lock()->displayContents() ||
@@ -370,6 +370,7 @@ namespace
   {
     auto t=to();
     assert(t);             
+    if (auto i=dynamic_cast<IntOp*>(t->item().operationCast())) return i->intVar->varTabDisplay;
     if (t->item().attachedToDefiningVar()) return true;
     return false;       
   }    
