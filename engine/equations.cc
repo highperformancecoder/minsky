@@ -22,6 +22,7 @@
 #include "minsky.h"
 #include "str.h"
 #include "flowCoef.h"
+#include "userFunction.h"
 #include "minskyTensorOps.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
@@ -526,6 +527,10 @@ namespace MathDAG
                 
                }
            }
+         else if (auto fn=dynamic_cast<UserFunction*>(it->get()))
+           {
+             userDefinedFunctions.emplace(fn->name(), fn->expression);
+           }
          return false;
        });
 
@@ -766,6 +771,8 @@ namespace MathDAG
   ostream& SystemOfEquations::latex(ostream& o) const
   {
     o << "\\begin{eqnarray*}\n";
+    // output user defined functions
+    
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||

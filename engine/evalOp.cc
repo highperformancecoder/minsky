@@ -20,6 +20,7 @@
 #include "cairoItems.h"
 #include "evalOp.h"
 #include "variable.h"
+#include "userFunction.h"
 #include "minsky.h"
 #include "str.h"
 
@@ -337,6 +338,16 @@ namespace minsky
   {return 0;}
 
   template <>
+  double EvalOp<OperationType::userFunction>::evaluate(double in1, double in2) const
+  {return dynamic_cast<UserFunction&>(*state).evaluate(in1,in2);}
+  template <>
+  double EvalOp<OperationType::userFunction>::d1(double x1, double x2) const
+  {throw error("user functions cannot be used with an implicit method");}
+  template <>
+  double EvalOp<OperationType::userFunction>::d2(double x1, double x2) const
+  {throw error("user functions cannot be used with an implicit method");}
+
+  template <>
   double EvalOp<OperationType::min>::evaluate(double in1, double in2) const
   {return std::min(in1,in2);}
   template <>
@@ -605,6 +616,12 @@ namespace minsky
             //        return new RavelEvalOp;
           case numOps:
             return NULL;
+          case userFunction:
+            {
+              auto r=evalOpFactory.create(op);
+              dynamic_cast<UserFunction&>(*r->state).compile();
+              return r;
+            }
           default:
             return evalOpFactory.create(op);
           }

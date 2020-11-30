@@ -39,6 +39,7 @@ namespace minsky
                // single wire binops
                log, pow, polygamma, 
                lt, le, eq, 
+               userFunction,
                // underscores to avoid C++ keywords. Can be filtered at UI
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,

@@ -20,6 +20,7 @@
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "flowCoef.h"
+#include "userFunction.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -201,6 +202,7 @@ namespace minsky
     equations.clear();
     integrals.clear();
     variableValues.clear();
+    UserFunction::nextId=0;
     
     flowVars.clear();
     stockVars.clear();
