@@ -389,6 +389,15 @@ namespace MathDAG
                     }
                 ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
                 break;
+              case userFunction:
+                for (size_t i=0; i<arguments.size(); ++i)
+                  if (arguments[i].empty())
+                    {
+                      argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
+                      argIdx[i].back().allocValue();
+                    }
+                ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
+                break;
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
