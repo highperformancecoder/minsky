@@ -19,6 +19,7 @@
 #include "geometry.h"
 #define OPNAMEDEF
 #include "operation.h"
+#include "userFunction.h"
 #include "ravelWrap.h"
 #include "minsky.h"
 #include "str.h"
@@ -318,7 +319,7 @@ namespace minsky
   {
     try
       {
-        unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type()));
+        unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type(),itemPtrFromThis()));
         if (e)
           switch (e->numArgs())
             {
@@ -411,7 +412,7 @@ namespace minsky
         switch (type())
           {
             // these binops need to have dimensionless units
-          case log: case and_: case or_: case polygamma:
+          case log: case and_: case or_: case polygamma: case userFunction:
 
             if (check && !ports[1]->units(check).empty())
               throw_error("function inputs not dimensionless");
@@ -806,6 +807,7 @@ namespace minsky
       case data: return new DataOp;
       case ravel: return new Ravel;
       case constant: throw error("Constant deprecated");
+      case userFunction: return new UserFunction;
       default: return operationFactory.create(type);
       }
   }

@@ -23,7 +23,7 @@
 #include "exprtk/exprtk.hpp"
 namespace  minsky
 {
-  class UserFunction: public Operation<OperationType::userFunction>
+  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>
   {
     exprtk::symbol_table<double> symbolTable;
     exprtk::expression<double> compiledExpression;

@@ -39,6 +39,7 @@ namespace minsky
   {
     symbolTable.add_variable("x",x);
     symbolTable.add_variable("y",x);
+    compiledExpression.register_symbol_table(symbolTable);
     // TODO bind any other external references to the variableValues table
     exprtk::parser<double> parser;
     if (!parser.compile(expression, compiledExpression))
