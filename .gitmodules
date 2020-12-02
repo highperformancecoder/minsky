@@ -9,4 +9,4 @@
 	url = https://github.com/highperformancecoder/RavelCAPI.git
 [submodule "exprtk"]
 	path = exprtk
-	url = git@github.com:ArashPartow/exprtk.git
+	url = https://github.com/ArashPartow/math-parser-benchmark-project.git
