@@ -1252,6 +1252,7 @@ proc deiconifyEditConstant {} {
         foreach var {
             "Name"
             "Value"
+            "Expression"
             "Units"
             "Rotation"
             "Slider Bounds: Max"
@@ -1385,6 +1386,9 @@ proc setDataValue {} {
     set item minsky.canvas.item
     $item.description "$constInput(Name)"
     $item.rotation $constInput(Rotation)
+    if [llength [info commands $item.expression]] {
+        $item.expression $constInput(Expression)
+    }
 }
 
 proc setIntegralIValue {} {
@@ -1427,10 +1431,13 @@ proc configEditConstantForData {} {
     global rowdict
     cleanEditConstantConfig
     set i 10
-    foreach var {
+    set items {
         "Name"
         "Rotation"
-    } {
+    }
+    if [llength [info commands minsky.canvas.item.expression]] {lappend items "Expression"}
+    
+    foreach var $items {
         set row $rowdict($var)
         grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
         grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2

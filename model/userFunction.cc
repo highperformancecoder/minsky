@@ -32,7 +32,7 @@ namespace minsky
   void UserFunction::compile()
   {
     symbolTable.add_variable("x",x);
-    symbolTable.add_variable("y",x);
+    symbolTable.add_variable("y",y);
     compiledExpression.register_symbol_table(symbolTable);
     // TODO bind any other external references to the variableValues table
     exprtk::parser<double> parser;

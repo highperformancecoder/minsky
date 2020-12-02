@@ -209,8 +209,17 @@ namespace minsky
             Rotate rr(rotation(),0,0);
 
             ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
-            if (numPorts()>1)
-              ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+            switch (numPorts())
+              {
+              case 1: break;
+              case 2: 
+                ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+                break;
+              case 3: default:
+                ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,-h+3));
+                ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,h-3));
+                break;
+              }
             if (mouseFocus)
               {
                 drawPorts(cairo);
