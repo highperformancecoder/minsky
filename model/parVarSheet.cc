@@ -23,7 +23,9 @@
 #include <pango.h>
 #include "minsky_epilogue.h"
 #include "minsky.h"
+#include "equations.h"
 using namespace std;
+using namespace MathDAG;
 using ecolab::cairo::Surface;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
@@ -72,6 +74,38 @@ namespace minsky
   
     return background;
   }
+  
+namespace
+{
+  std::string definition(const string& valueId)
+  {
+    SystemOfEquations system(cminsky());	  
+	ostringstream o;
+
+    for (const VariableDAG* i: system.variables)
+      {
+		if (i->valueId==valueId) 
+		{  		  
+           if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
+               !i || i->type==VariableType::constant) continue;
+           if (i->rhs)
+             o << i->rhs->matlab();
+	    }
+      }
+
+    for (const VariableDAG* i: system.integrationVariables)
+      {
+		if (i->valueId==valueId) 
+		{  
+            VariableDAGPtr input=system.expressionCache.getIntegralInput(i->valueId);
+            if (input && input->rhs)
+              input->rhs->matlab(o);
+	    }
+      }
+   
+    return o.str();	  
+  }
+}  
 	
   void ParVarSheet::draw(cairo_t* cairo)
   {   
@@ -99,6 +133,7 @@ namespace minsky
                   { 
                     varAttribVals.clear();
                     varAttribVals.push_back(v->name());
+                    varAttribVals.push_back(definition(v->valueId()));                    
                     varAttribVals.push_back(v->init());
                     varAttribVals.push_back(it->tooltip);
                     varAttribVals.push_back(it->detailedText);
