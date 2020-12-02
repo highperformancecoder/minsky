@@ -1453,7 +1453,7 @@ proc editItem {} {
             grab set .wiring.editOperation
             wm transient .wiring.editOperation
         }
-        "IntOp|DataOp" {
+        "IntOp|DataOp|UserFunction" {
             set constInput(Value) ""
             set "constInput(Slider Bounds: Min)" ""
             set "constInput(Slider Bounds: Max)" ""

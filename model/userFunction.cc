@@ -26,15 +26,9 @@ namespace minsky
 {
   int UserFunction::nextId=0;
 
-  template <>
-  void Operation<OperationType::userFunction>::iconDraw(cairo_t* cairo) const
-  {
-    double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"f(x)");
-  }
-
+  template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
+  {assert(false);}
+  
   void UserFunction::compile()
   {
     symbolTable.add_variable("x",x);

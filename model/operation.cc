@@ -165,9 +165,10 @@ namespace minsky
           // at the moment its too tricky to get all the information
           // together for rendering constants
         case OperationType::data:
+        case OperationType::userFunction:
           {
         
-            auto& c=dynamic_cast<const DataOp&>(*this);
+            auto& c=dynamic_cast<const NamedOp&>(*this);
           
             Pango pango(cairo);
             pango.setFontSize(10*scaleFactor()*z);
@@ -865,15 +866,15 @@ namespace minsky
     return r;
   }
   
-  string DataOp::description() const
+  string NamedOp::description() const
   {
     return m_description;  
   }
    
-  string DataOp::description(const std::string& x)
+  string NamedOp::description(const std::string& x)
   {
     m_description=x;
-    bb.update(*this); // adjust icon bounding box - see ticket #1121
+    updateBB(); // adjust icon bounding box - see ticket #1121
     return m_description;
   }    
 

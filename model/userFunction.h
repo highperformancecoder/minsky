@@ -23,17 +23,16 @@
 #include "exprtk/exprtk.hpp"
 namespace  minsky
 {
-  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>
+  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp
   {
     exprtk::symbol_table<double> symbolTable;
     exprtk::expression<double> compiledExpression;
-    std::string m_name;
+    void updateBB() override {bb.update(*this);}
   public:
     static int nextId;
     double x, y, result;
     std::string expression;
-    UserFunction(): m_name("uf"+std::to_string(nextId++)) {}
-    const std::string& name() const {return m_name;}
+    UserFunction() {description("uf"+std::to_string(nextId++)+"(x,y)");}
     void compile();
     double evaluate(double x, double y);
   };

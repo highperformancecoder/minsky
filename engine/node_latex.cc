@@ -568,11 +568,11 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::userFunction>::latex(ostream& o) const
   {
     if (arguments.empty() || arguments[0].empty())
-      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"(0,0)";
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"(0,0)";
     else if (arguments.size()<2 || arguments[1].empty())
-      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"\\left("<<arguments[0][0]->latex()<<",0\\right)";
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"\\left("<<arguments[0][0]->latex()<<",0\\right)";
     else
-      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"\\left("<<arguments[0][0]->latex()<<","<<arguments[0][1]->latex()<<"\\right)";
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"\\left("<<arguments[0][0]->latex()<<","<<arguments[0][1]->latex()<<"\\right)";
   }    
 
   template <>

@@ -538,7 +538,7 @@ namespace MathDAG
            }
          else if (auto fn=dynamic_cast<UserFunction*>(it->get()))
            {
-             userDefinedFunctions.emplace(fn->name(), fn->expression);
+             userDefinedFunctions.emplace(fn->description(), fn->expression);
            }
          return false;
        });

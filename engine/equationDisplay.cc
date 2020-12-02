@@ -325,7 +325,7 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::userFunction>::render(Surface& surf) const 
   {
-    print(surf.cairo(),"<i>"+dynamic_cast<UserFunction&>(*state).name()+"</i>",Anchor::nw);
+    print(surf.cairo(),"<i>"+dynamic_cast<UserFunction&>(*state).description()+"</i>",Anchor::nw);
     if (arguments.empty() || arguments[0].empty() || !arguments[0][0])
       print(surf.cairo(),"(0,0)",Anchor::nw);
     else
