@@ -418,12 +418,8 @@ bool VariableBase::visible() const
   // ensure pars and constants with invisible out wires are made invisible. for ticket 1275  
   if (type()==constant || type()==parameter)
   {
-    for (auto w: ports[0]->wires())
-      if (w->attachedToDefiningVar()) 
-      {
-        if (w->visible()) return true;
-        else return false;  
-	  }
+	if (std::any_of(ports[0]->wires().begin(),ports[0]->wires().end(), [](Wire* w){return w->attachedToDefiningVar() && !w->visible();})) return false;
+	else return true;
   }  
   // ensure flow vars with out wires remain visible. for ticket 1275
   if (attachedToDefiningVar() && !ports[0]->wires().empty()) return true;  
