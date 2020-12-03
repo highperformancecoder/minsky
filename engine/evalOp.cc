@@ -617,7 +617,7 @@ namespace minsky
           case userFunction:
             if (auto f=dynamic_cast<UserFunction*>(state.get()))
               f->compile();
-            [[fallthrough]]
+            [[fallthrough]];
           default:
             auto r=evalOpFactory.create(op);
             r->state=dynamic_pointer_cast<OperationBase>(state);
