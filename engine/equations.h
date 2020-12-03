@@ -329,10 +329,12 @@ namespace MathDAG
 
   class SystemOfEquations
   {
+  public:	  
     SubexpressionCache expressionCache;
     // these are weak references
     vector<VariableDAG*> variables;
     vector<VariableDAG*> integrationVariables;
+  private: 
     set<string> processedColumns; // to avoid double counting shared columns
     vector<pair<VariableDAGPtr,string>> derivInputs; //handle recursively defined stock vars and derivatives
     
