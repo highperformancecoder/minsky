@@ -381,7 +381,8 @@ namespace MathDAG
     /// useful constants to share
     NodePtr zero{new ConstantDAG("0")}, one{new ConstantDAG("1")};
     
-    VariableDAGPtr getNodeFromVar(const VariablePtr var);    
+    VariableDAGPtr getNodeFromVar(const VariablePtr var);
+    ostringstream getDefFromIntVar(const VariablePtr var);
 
     /// render equations into a cairo context
     void renderEquations(ecolab::cairo::Surface&, double height) const;

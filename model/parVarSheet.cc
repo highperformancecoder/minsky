@@ -81,19 +81,19 @@ namespace
   std::string definition(const VariablePtr v)
   {
     SystemOfEquations system(cminsky());	  
-	ostringstream o;
+    ostringstream o;
 	
 	auto varDAG=system.getNodeFromVar(*v);
     
-    if (varDAG && varDAG->rhs && varDAG->type!=VariableType::constant)   
+    if (v->type()!=VariableType::parameter)
     {
-      //if (!dynamic_cast<const IntegralInputVariableDAG*>(varDAG.get()))	    
-        o << varDAG->rhs->matlab();
-      //else varDAG->rhs->matlab(o);   
+      if (varDAG && varDAG->rhs && varDAG->type!=VariableType::constant && !dynamic_cast<const IntegralInputVariableDAG*>(varDAG.get()))
+         o << varDAG->rhs->matlab();
+	  else return system.getDefFromIntVar(*v).str();
     }
           
     return o.str();	  
-  }  
+  }
 }  
 	
   void ParVarSheet::draw(cairo_t* cairo)
