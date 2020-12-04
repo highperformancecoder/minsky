@@ -43,6 +43,7 @@ namespace minsky
   class SwitchIcon;
 
   class Item;
+  typedef std::shared_ptr<Item> ItemPtr;
 
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and
@@ -268,9 +269,11 @@ namespace minsky
     virtual void removeControlledItems(Group&) const {}
     /// remove all controlled items their owning group
     void removeControlledItems() const;
+
+    /// return a shared_ptr to this
+    ItemPtr itemPtrFromThis() const;
   };
 
-  typedef std::shared_ptr<Item> ItemPtr;
   typedef std::vector<ItemPtr> Items;
   
   /** curiously recursive template pattern for generating overrides */

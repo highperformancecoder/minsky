@@ -213,25 +213,34 @@ namespace minsky
     using Item::removeControlledItems;
   };
 
-  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>,
-                public ecolab::TCLAccessor<DataOp,std::string>
+  class NamedOp: public ecolab::TCLAccessor<NamedOp,std::string>
   {
-    CLASSDESC_ACCESS(DataOp);
-    friend struct SchemaHelper;
     std::string m_description;
+    virtual void updateBB()=0;
+    CLASSDESC_ACCESS(NamedOp);
   public:
-    DataOp(): ecolab::TCLAccessor<DataOp,std::string>
-      ("description",(ecolab::TCLAccessor<DataOp,std::string>::Getter)&DataOp::description,
-       (ecolab::TCLAccessor<DataOp,std::string>::Setter)&DataOp::description)
+    NamedOp(): ecolab::TCLAccessor<NamedOp,std::string>
+      ("description",(ecolab::TCLAccessor<NamedOp,std::string>::Getter)&NamedOp::description,
+       (ecolab::TCLAccessor<NamedOp,std::string>::Setter)&NamedOp::description)
     {}
-    ~DataOp() {}
-    
-    const DataOp& operator=(const DataOp& x); 
-
     /// @{ name of the associated data operation
     std::string description() const;  
     std::string description(const std::string&);    
     /// @}
+
+  };
+  
+  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>,
+                public NamedOp
+  {
+    CLASSDESC_ACCESS(DataOp);
+    friend struct SchemaHelper;
+    void updateBB() override {bb.update(*this);}
+  public:
+    ~DataOp() {}
+    
+    const DataOp& operator=(const DataOp& x); 
+
     std::map<double, double> data;
     void readData(const std::string& fileName);
     /// initialise with uniform random numbers 

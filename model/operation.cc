@@ -19,6 +19,7 @@
 #include "geometry.h"
 #define OPNAMEDEF
 #include "operation.h"
+#include "userFunction.h"
 #include "ravelWrap.h"
 #include "minsky.h"
 #include "str.h"
@@ -164,9 +165,10 @@ namespace minsky
           // at the moment its too tricky to get all the information
           // together for rendering constants
         case OperationType::data:
+        case OperationType::userFunction:
           {
         
-            auto& c=dynamic_cast<const DataOp&>(*this);
+            auto& c=dynamic_cast<const NamedOp&>(*this);
           
             Pango pango(cairo);
             pango.setFontSize(10*scaleFactor()*z);
@@ -207,8 +209,17 @@ namespace minsky
             Rotate rr(rotation(),0,0);
 
             ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
-            if (numPorts()>1)
-              ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+            switch (numPorts())
+              {
+              case 1: break;
+              case 2: 
+                ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+                break;
+              case 3: default:
+                ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,-h+3));
+                ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,h-3));
+                break;
+              }
             if (mouseFocus)
               {
                 drawPorts(cairo);
@@ -318,7 +329,7 @@ namespace minsky
   {
     try
       {
-        unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type()));
+        unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type(),itemPtrFromThis()));
         if (e)
           switch (e->numArgs())
             {
@@ -411,7 +422,7 @@ namespace minsky
         switch (type())
           {
             // these binops need to have dimensionless units
-          case log: case and_: case or_: case polygamma:
+          case log: case and_: case or_: case polygamma: case userFunction:
 
             if (check && !ports[1]->units(check).empty())
               throw_error("function inputs not dimensionless");
@@ -806,6 +817,7 @@ namespace minsky
       case data: return new DataOp;
       case ravel: return new Ravel;
       case constant: throw error("Constant deprecated");
+      case userFunction: return new UserFunction;
       default: return operationFactory.create(type);
       }
   }
@@ -863,15 +875,15 @@ namespace minsky
     return r;
   }
   
-  string DataOp::description() const
+  string NamedOp::description() const
   {
     return m_description;  
   }
    
-  string DataOp::description(const std::string& x)
+  string NamedOp::description(const std::string& x)
   {
     m_description=x;
-    bb.update(*this); // adjust icon bounding box - see ticket #1121
+    updateBB(); // adjust icon bounding box - see ticket #1121
     return m_description;
   }    
 

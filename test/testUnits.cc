@@ -131,6 +131,7 @@ SUITE(Units)
   }
 
   // TODO - not sure what to do here
+  template <> void TestOp::impl<OperationType::userFunction>() {}
   template <> void TestOp::impl<OperationType::data>() {}
   template <> void TestOp::impl<OperationType::differentiate>(){}
   template <> void TestOp::impl<OperationType::integrate>() {}

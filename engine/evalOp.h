@@ -110,7 +110,7 @@ namespace minsky
     virtual int numArgs() const =0;
 
     /// factory method
-    static ScalarEvalOp* create(Type op/*=numOps*/);
+    static ScalarEvalOp* create(Type op/*=numOps*/, const ItemPtr& state);
 
     void deriv(double df[], size_t n, const double ds[], 
                        const double sv[], const double fv[]) override;
@@ -153,7 +153,7 @@ namespace minsky
     EvalOpPtr() {}
     EvalOpPtr(EvalOpBase* e): classdesc::shared_ptr<EvalOpBase>(e) {}
     EvalOpPtr(OperationType::Type op):
-      classdesc::shared_ptr<EvalOpBase>(ScalarEvalOp::create(op)) {}
+      classdesc::shared_ptr<EvalOpBase>(ScalarEvalOp::create(op,nullptr)) {}
     EvalOpPtr(OperationType::Type op,
               const ItemPtr& state,
               VariableValue& to,

@@ -22,6 +22,7 @@
 #include "minsky.h"
 #include "str.h"
 #include "flowCoef.h"
+#include "userFunction.h"
 #include "minskyTensorOps.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
@@ -87,7 +88,7 @@ namespace MathDAG
         try
           {
             auto ec=make_shared<EvalCommon>();
-            TensorPtr rhs=tensorOpFactory.create(*state,TensorsFromPort(ec));
+            TensorPtr rhs=tensorOpFactory.create(state,TensorsFromPort(ec));
             if (!rhs) return false;
             result->index(rhs->index());
             result->hypercube(rhs->hypercube());
@@ -388,6 +389,15 @@ namespace MathDAG
                     }
                 ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
                 break;
+              case userFunction:
+                for (size_t i=0; i<arguments.size(); ++i)
+                  if (arguments[i].empty())
+                    {
+                      argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
+                      argIdx[i].back().allocValue();
+                    }
+                ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
+                break;
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
@@ -525,6 +535,10 @@ namespace MathDAG
                    }
                 
                }
+           }
+         else if (auto fn=dynamic_cast<UserFunction*>(it->get()))
+           {
+             userDefinedFunctions.emplace(fn->description(), fn->expression);
            }
          return false;
        });
@@ -786,6 +800,9 @@ namespace MathDAG
   ostream& SystemOfEquations::latex(ostream& o) const
   {
     o << "\\begin{eqnarray*}\n";
+    // output user defined functions
+    for (auto& i: userDefinedFunctions)
+      o<<i.first<<"(x,y)&=&"<<i.second<<"\\\\\n";
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
@@ -843,6 +860,12 @@ namespace MathDAG
 
   ostream& SystemOfEquations::matlab(ostream& o) const
   {
+    // output user defined functions
+    for (auto& i: userDefinedFunctions)
+      {
+        o<<"function f="<<i.first<<"(x,y)\n";
+        o<<"f="<<i.second<<"\nendfunction;\n\n";
+      }
     o<<"function f=f(x,t)\n";
     // define names for the components of x for reference
     int j=1;

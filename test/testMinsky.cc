@@ -669,6 +669,7 @@ SUITE(Minsky)
         switch (op)
           {
           case OperationType::ravel:
+          case OperationType::userFunction:
           case OperationType::differentiate:
           case OperationType::and_:
           case OperationType::or_:
