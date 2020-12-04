@@ -392,6 +392,17 @@ namespace minsky
       hc.xvectors.insert(hc.xvectors.begin(), xv2.begin(), xv2.end());         
       hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end());           
       cachedResult.hypercube(move(hc));
+      
+       // determine offset in hypercube space
+      auto dims1=arg1->hypercube().dims();
+	  
+      set<size_t> newIdx;
+      for (auto& i: arg1->index())
+        for (auto& j: arg2->index()) 
+        {
+            newIdx.insert(i+dims1[i]*j);
+         }   
+      //cachedResult.index(Index(newIdx)); 
         
     }      
   };
