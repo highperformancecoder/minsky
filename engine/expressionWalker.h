@@ -93,13 +93,13 @@ namespace minsky
   bool operator>(size_t, const UnitsExpressionWalker&) {return false;}
   
   UnitsExpressionWalker pow(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
-  {x.checkDimensionless(); y.checkDimensionless();}
+  {x.checkDimensionless(); y.checkDimensionless(); return {};}
   UnitsExpressionWalker nand(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
-  {x.checkDimensionless(); y.checkDimensionless();}
+  {x.checkDimensionless(); y.checkDimensionless(); return {};}
   UnitsExpressionWalker nor(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
-  {x.checkDimensionless(); y.checkDimensionless();}
+  {x.checkDimensionless(); y.checkDimensionless(); return {};}
   UnitsExpressionWalker xnor(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
-  {x.checkDimensionless(); y.checkDimensionless();}
+  {x.checkDimensionless(); y.checkDimensionless(); return {};}
 //  template <class T>
 //  UnitsExpressionWalker operator+(const UnitsExpressionWalker& x, T y)
 //  {auto tmp=x; tmp+=y; return tmp;}
@@ -156,7 +156,7 @@ namespace exprtk
   {
     template <>
     inline bool string_to_real(const std::string& s, minsky::UnitsExpressionWalker& t)
-    {t.units.clear();}
+    {t.units.clear(); return true;}
 
     namespace numeric
     {
