@@ -781,7 +781,7 @@ namespace MathDAG
     NodePtr r;
     if (expressionCache.exists(v))
       return dynamic_pointer_cast<VariableDAG>(expressionCache[v]);
-    else if (&v && v.type()!=VariableBase::undefined) r=makeDAG(const_cast<VariableBase&>(v));
+    else if (v.type()!=VariableBase::undefined) r=makeDAG(const_cast<VariableBase&>(v));
     return dynamic_pointer_cast<VariableDAG>(r);
   }         
 
