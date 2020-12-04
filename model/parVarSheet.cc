@@ -78,18 +78,18 @@ namespace minsky
 namespace
 {
  
-  std::string definition(const VariablePtr v)
+  std::string definition(const VariableBase& v)
   {
     SystemOfEquations system(cminsky());	  
     ostringstream o;
 	
-	auto varDAG=system.getNodeFromVar(*v);
+	auto varDAG=system.getNodeFromVar(v);
     
-    if (v->type()!=VariableType::parameter)
+    if (v.type()!=VariableType::parameter)
     {
-      if (varDAG && varDAG->rhs && varDAG->type!=VariableType::constant && !dynamic_cast<const IntegralInputVariableDAG*>(varDAG.get()))
+      if (varDAG && varDAG->rhs && varDAG->type!=VariableType::constant && varDAG->type!=VariableType::integral)
          o << varDAG->rhs->matlab();
-	  else return system.getDefFromIntVar(*v).str();
+	  else return system.getDefFromIntVar(v).str();
     }
           
     return o.str();	  

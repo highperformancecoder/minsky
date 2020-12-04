@@ -762,27 +762,25 @@ namespace MathDAG
     return r;
   }
   
-  VariableDAGPtr SystemOfEquations::getNodeFromVar(const VariablePtr v)
+  VariableDAGPtr SystemOfEquations::getNodeFromVar(const VariableBase& v)
   {
     NodePtr r;
-    if (expressionCache.exists(*v))
-      return dynamic_pointer_cast<VariableDAG>(expressionCache[*v]);
-    else if (v && v->type()!=VariableBase::undefined) r=makeDAG(*v);
+    if (expressionCache.exists(v))
+      return dynamic_pointer_cast<VariableDAG>(expressionCache[v]);
+    else if (&v && v.type()!=VariableBase::undefined) r=makeDAG(const_cast<VariableBase&>(v));
     return dynamic_pointer_cast<VariableDAG>(r);
   }         
 
-  ostringstream SystemOfEquations::getDefFromIntVar(const VariablePtr v)
+  ostringstream SystemOfEquations::getDefFromIntVar(const VariableBase& v)
   {
     ostringstream o;
     
-	std::vector<VariableDAG*>::const_iterator it1=std::find_if(integrationVariables.begin(),integrationVariables.end(),[&](VariableDAG* i){return i->valueId==v->valueId();});    
-    if (*it1)     
-    {      
-      VariableDAGPtr input=expressionCache.getIntegralInput((*it1)->valueId);    
-      if (input && input->rhs) input->rhs->matlab(o);    
-    }
+	std::vector<VariableDAG*>::const_iterator it1=std::find_if(integrationVariables.begin(),integrationVariables.end(),[&](VariableDAG* i){return i->valueId==v.valueId();});         
+    VariableDAGPtr input=expressionCache.getIntegralInput((*it1)->valueId);    
+    if (input && input->rhs) input->rhs->matlab(o);    
+    
     return o;
-  }           
+  }        
   
     
   ostream& SystemOfEquations::latex(ostream& o) const
