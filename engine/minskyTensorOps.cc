@@ -368,17 +368,23 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO Sparse implementation
-      size_t m=arg1->hypercube().numElements(), n=arg2->hypercube().numElements();   
+      size_t m=arg1->size(), n=arg2->size();   
   	
-      for (size_t i=0; i< m; i++)
-      {
-        auto v1=(*arg1)[i];  			
-        for (size_t j=0; j< n; j++) 
-        {
-            auto v2=(*arg2)[j];			
-            if (!isnan(v1) && !isnan(v2)) cachedResult[i+j*m]=v1*v2;			
-		}
-	  }
+      //if (cachedResult.index().empty())  	
+       for (size_t i=0; i< m; i++)
+       {
+         auto v1=(*arg1)[i];  			
+         for (size_t j=0; j< n; j++) 
+         {
+             auto v2=(*arg2)[j];			
+             if (!isnan(v1) && !isnan(v2)) cachedResult[i+j*m]=v1*v2;			
+ 			}
+ 		}
+ 	  //else
+	  //  for (auto& i: arg1->index())
+      //     for (auto& j: arg2->index()) 
+      //          cachedResult[i+arg1->index().size()*j]=(*arg1)[i]*(*arg2)[j];
+ 	     
     		            
       if (cachedResult.size()==0) 
         for (size_t i=0; i<m*n; i++) 
@@ -392,18 +398,16 @@ namespace minsky
       hc.xvectors.insert(hc.xvectors.begin(), xv2.begin(), xv2.end());         
       hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end());           
       cachedResult.hypercube(move(hc));
-      
-       // determine offset in hypercube space
-      auto dims1=arg1->hypercube().dims();
-	  
+        
       set<size_t> newIdx;
       for (auto& i: arg1->index())
         for (auto& j: arg2->index()) 
         {
-            newIdx.insert(i+dims1[i]*j);
-         }   
-      //cachedResult.index(Index(newIdx)); 
-        
+            newIdx.insert(i+arg1->index().size()*j);
+         }    
+         
+      cachedResult.index(Index(newIdx));  
+      
     }      
   };
 
