@@ -118,10 +118,11 @@ namespace
             double w=0,h=0,h_prev,lh; 
             colLeftMargin.clear();                
             rowTopMargin.clear();
-            int iC=0;                
+            int iC=0, iP=0;                
             for (auto& it: itemVector)
+            {
+              if (auto v=it->variableCast())
               {
-                auto v=it->variableCast();
                 auto value=v->vValue();
                 auto rank=value->hypercube().rank();
                 auto dims=value->hypercube().dims();                
@@ -370,7 +371,13 @@ namespace
                 else y0+=4.1*rowHeight;   
                 iC++;
                
-              }
+              } else if (auto p=dynamic_cast<PlotWidget*>(it.get()))
+		       {	 
+			    p->draw(cairo);
+			    cairo_move_to(cairo,0.0-0.5*p->width(),(iP-1.5)*p->height()); 			    
+			    iP++;  
+			   }
+		      }              
           }
       }
     catch (...) {throw;/* exception most likely invalid variable value */}

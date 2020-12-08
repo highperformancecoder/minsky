@@ -937,6 +937,8 @@ addTab parameters "Parameters" minsky.parameterSheet
 pack .parameters.canvas -fill both -expand 1
 addTab variables "Variables" minsky.variableSheet
 pack .variables.canvas -fill both -expand 1
+addTab plts "Plots" minsky.plotSheet
+pack .plts.canvas -fill both -expand 1
 .tabs select 0
 
 bind .variables.canvas <<contextMenu>> "variableContext %x %y %X %Y"  
@@ -972,6 +974,7 @@ bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; mins
 bind .equations.canvas <Configure> {setScrollBars}
 bind .parameters.canvas <Configure> {setScrollBars}
 bind .variables.canvas <Configure> {setScrollBars}
+bind .plts.canvas <Configure> {setScrollBars}
 
 set helpTopics(.wiring.panopticon) Panopticon
 
@@ -1004,7 +1007,13 @@ proc setScrollBars {} {
             set y0 [expr (10000-[variableSheet.offsy])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .variables.canvas]/20000.0]
             .vscroll set $y0 [expr $y0+[winfo height .variables.canvas]/20000.0]                 
-        }        
+        }
+        .plts {
+            set x0 [expr (10000-[plotSheet.offsx])/20000.0]
+            set y0 [expr (10000-[plotSheet.offsy])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .plts.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .plts.canvas]/20000.0]                 
+        }                 
     }
 }
 
@@ -1033,6 +1042,11 @@ proc panCanvas {offsx offsy} {
             variableSheet.offsy $offsy						
             variableSheet.requestRedraw
         }           
+        .plts {
+            plotSheet.offsx $offsx
+            plotSheet.offsy $offsy						
+            plotSheet.requestRedraw
+        }            
     }
     setScrollBars
 }
@@ -1076,6 +1090,14 @@ proc scrollCanvases {xyview args} {
             set x1 [expr 0.5*$w]
             set y1 [expr 0.5*$h]
         }                
+        .plts {
+            set x [plotSheet.offsx]
+            set y [plotSheet.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }           
     }
     switch [lindex $args 0] {
         moveto {
@@ -1139,6 +1161,14 @@ bind .variables.canvas <Button-1> {
     set panOffsY [expr %y-[variableSheet.offsy]]
 }
 bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+# plots pan mode
+.plts.canvas configure -cursor $panIcon
+bind .plts.canvas <Button-1> {
+    set panOffsX [expr %x-[plotSheet.offsx]]
+    set panOffsY [expr %y-[plotSheet.offsy]]
+}
+bind .plts.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew
@@ -1353,7 +1383,13 @@ proc recentreCanvas {} {
             variableSheet.offsx 0
             variableSheet.offsy 0
             variableSheet.requestRedraw
-        }                
+        }       
+        .plts {
+            plotSheet.offsx 0
+            plotSheet.offsy 0
+            plotSheet.requestRedraw
+        }               
+                 
     }
 }
 

@@ -99,6 +99,10 @@ namespace minsky
     {if (surface.get()) {Plot::draw(surface->cairo(),width,height); surface->blit();}}
     void redrawWithBounds() override {redraw(0,0,500,500);}
     
+    bool plotTabDisplay=false;
+    void togglePlotTabDisplay() {plotTabDisplay=!plotTabDisplay;}     
+    bool plotOnTab() const {return plotTabDisplay;}        
+    
     /// add this as a display plot to its group
     void makeDisplayPlot();
           
