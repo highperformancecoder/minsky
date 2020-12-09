@@ -73,7 +73,7 @@ namespace minsky
   {      
     //m_x=x;
     //m_y=y;   
-    assert(abs(x-this->x())<1 && abs(y-this->y())<1);
+    //assert(abs(x-this->x())<1 && abs(y-this->y())<1);
   }  
   
   ParVarSheet::ClickType ParVarSheet::clickType(double x, double y)
