@@ -329,12 +329,10 @@ namespace MathDAG
 
   class SystemOfEquations
   {
-  public:	  
     SubexpressionCache expressionCache;
     // these are weak references
     vector<VariableDAG*> variables;
     vector<VariableDAG*> integrationVariables;
-  private: 
     set<string> processedColumns; // to avoid double counting shared columns
     vector<pair<VariableDAGPtr,string>> derivInputs; //handle recursively defined stock vars and derivatives
     
@@ -383,6 +381,9 @@ namespace MathDAG
 
     /// useful constants to share
     NodePtr zero{new ConstantDAG("0")}, one{new ConstantDAG("1")};
+    
+    VariableDAGPtr getNodeFromVar(const VariableBase& v);
+    ostringstream getDefFromIntVar(const VariableBase& v);
 
     /// render equations into a cairo context
     void renderEquations(ecolab::cairo::Surface&, double height) const;
