@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2019
+  @copyright Steve Keen 2020
   @author Russell Standish
   @author Wynand Dednam
   This file is part of Minsky.
@@ -28,7 +28,7 @@ namespace minsky
   class PlotSheet: public ParVarSheet
   {	  
   public:
-    bool variableSelector(ItemPtr i) override {if (auto p=dynamic_cast<PlotWidget*>(i.get())) return p->plotOnTab(); return false;}    
+    bool variableSelector(ItemPtr i) override {if (auto p=i->plotWidgetCast()) {return p->plotOnTab();}; return false;}    
   };
   
 }

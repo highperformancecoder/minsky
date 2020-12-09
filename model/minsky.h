@@ -215,7 +215,7 @@ namespace minsky
       model->self=model;
     }
 
-    GroupPtr model{new Group};
+    GroupPtr model{new Group}, tabItems{new Group};
     Canvas canvas{model};
 
     void clearAllMaps();

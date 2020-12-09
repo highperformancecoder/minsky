@@ -944,6 +944,24 @@ pack .plts.canvas -fill both -expand 1
 bind .variables.canvas <<contextMenu>> "variableContext %x %y %X %Y"  
 menu .variables.context -tearoff 0   
 
+# support tooltips
+proc hoverMouse {} {
+    plotSheet.displayDelayedTooltip [get_pointer_x .plts.canvas] [get_pointer_y .plts.canvas]
+}
+
+# reset hoverMouse timer
+proc wrapHoverMouse {op x y} {
+    after cancel hoverMouse
+    # ignore any exceptions
+    catch {plotSheet.$op $x $y}
+    after 3000 hoverMouse
+}
+  
+bind .plts.canvas <ButtonPress-1> {wrapHoverMouse plotSheet.mouseDownCommon %x %y}
+bind .plts.canvas <ButtonRelease-1> {wrapHoverMouse plotSheet.mouseUp %x %y}
+bind .plts.canvas <Motion> {wrapHoverMouse plotSheet.mouseMove %x %y}
+bind .plts.canvas <Leave> {after cancel hoverMouse}
+
 proc variableContext {x y X Y} {
     .variables.context delete 0 end
     set r [variableSheet.rowY $y]    
@@ -1012,7 +1030,7 @@ proc setScrollBars {} {
             set x0 [expr (10000-[plotSheet.offsx])/20000.0]
             set y0 [expr (10000-[plotSheet.offsy])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .plts.canvas]/20000.0]
-            .vscroll set $y0 [expr $y0+[winfo height .plts.canvas]/20000.0]                 
+            .vscroll set $y0 [expr $y0+[winfo height .plts.canvas]/20000.0]           
         }                 
     }
 }
@@ -1044,7 +1062,7 @@ proc panCanvas {offsx offsy} {
         }           
         .plts {
             plotSheet.offsx $offsx
-            plotSheet.offsy $offsy						
+            plotSheet.offsy $offsy	
             plotSheet.requestRedraw
         }            
     }
@@ -1164,11 +1182,11 @@ bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panO
 
 # plots pan mode
 .plts.canvas configure -cursor $panIcon
-bind .plts.canvas <Button-1> {
+bind .plts.canvas <Shift-Button-1> {
     set panOffsX [expr %x-[plotSheet.offsx]]
     set panOffsY [expr %y-[plotSheet.offsy]]
 }
-bind .plts.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+bind .plts.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew

@@ -35,10 +35,14 @@ namespace minsky
 
   void ParVarSheet::populateItemVector() {
     itemVector.clear();	
+    itemCoords.clear();
     minsky().canvas.model->recursiveDo(&GroupItems::items,
                                        [&](Items&, Items::iterator i) {                                 
-                                         if (variableSelector(*i))		                                 
+                                         if (variableSelector(*i)) 
+                                         {		                                 
                                            itemVector.emplace_back(*i);
+                                           if (auto p=(*i)->plotWidgetCast()) itemCoords.emplace(make_pair(*i,make_pair(p->x(),p->y()))); 
+									     }
                                          return false;
                                        });   	
   }
@@ -65,15 +69,79 @@ namespace minsky
     return r;
   }
   
-  ParVarSheet::ClickType ParVarSheet::clickType(double x, double y) const
+  void ParVarSheet::moveTo(float x, float y)
+  {      
+    //m_x=x;
+    //m_y=y;   
+    assert(abs(x-this->x())<1 && abs(y-this->y())<1);
+  }  
+  
+  ParVarSheet::ClickType ParVarSheet::clickType(double x, double y)
   {
     int c=colX(x), r=rowY(y);
 
     if (c>=0 && c<int(colLeftMargin.size())&& r>=0 && r<int(itemVector.size()))
         return internal;
+        
+    if (itemAt(x,y)) return internal;   
   
     return background;
   }
+    
+  void ParVarSheet::mouseDownCommon(float x, float y)
+  {
+        switch (clickType(x,y))
+          {
+          case internal:
+            //moveOffsX=x-this->x();
+            //moveOffsY=y-this->y();
+            break;
+          case background:
+            break;
+          default:
+            break;  
+          }
+  }  
+  
+  void ParVarSheet::mouseUp(float x, float y)
+  {
+    mouseMove(x,y);
+  }
+  
+  void ParVarSheet::mouseMove(float x, float y)
+    try
+      {
+            switch (clickType(x,y))
+              {
+              case internal:
+                //moveTo(x-moveOffsX, y-moveOffsY);
+                requestRedraw();
+                return;
+              case background:           
+                requestRedraw();
+                break;
+              default:
+                break;
+              }
+      }
+    catch (...) {/* absorb any exceptions, as they're not useful here */}  
+  
+  ItemPtr ParVarSheet::itemAt(float x, float y)
+  {
+    ItemPtr item;                    
+    auto minD=numeric_limits<float>::max();
+    for (auto& i: itemCoords)
+    {
+	  float d=sqr((i.second).first-x)+sqr((i.second).second-y);
+      if (d<minD)
+        {
+          minD=d;
+          item=i.first;
+        }
+	}
+    
+    return item;
+  }    
   
 namespace
 {
@@ -107,7 +175,7 @@ namespace
             double w=0,h=0,h_prev,lh; 
             colLeftMargin.clear();                
             rowTopMargin.clear();
-            int iC=0, iP=0;                
+            int iC=0;                
             for (auto& it: itemVector)
             {
               if (auto v=it->variableCast())
@@ -360,11 +428,9 @@ namespace
                 else y0+=4.1*rowHeight;   
                 iC++;
                
-              } else if (auto p=dynamic_cast<PlotWidget*>(it.get()))
-		       {	 
+              } else if (auto p=it->plotWidgetCast())
+		       {	    			    				   
 			    p->draw(cairo);
-			    cairo_move_to(cairo,0.0-0.5*p->width(),(iP-1.5)*p->height()); 			    
-			    iP++;  
 			   }
 		      }              
           }
