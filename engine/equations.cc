@@ -788,9 +788,8 @@ namespace MathDAG
   ostringstream SystemOfEquations::getDefFromIntVar(const VariableBase& v)
   {
     ostringstream o;
-    
-	std::vector<VariableDAG*>::const_iterator it1=std::find_if(integrationVariables.begin(),integrationVariables.end(),[&](VariableDAG* i){return i->valueId==v.valueId();});         
-    VariableDAGPtr input=expressionCache.getIntegralInput((*it1)->valueId);    
+         
+    VariableDAGPtr input=expressionCache.getIntegralInput(v.valueId());    
     if (input && input->rhs) input->rhs->matlab(o);    
     
     return o;
