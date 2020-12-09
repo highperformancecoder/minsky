@@ -370,21 +370,16 @@ namespace minsky
     void computeTensor() const override {//TODO Sparse implementation
       size_t m=arg1->size(), n=arg2->size();   
   	
-      //if (cachedResult.index().empty())  	
-       for (size_t i=0; i< m; i++)
+	
+      for (size_t i=0; i< m; i++)
        {
          auto v1=(*arg1)[i];  			
          for (size_t j=0; j< n; j++) 
          {
-             auto v2=(*arg2)[j];			
-             if (!isnan(v1) && !isnan(v2)) cachedResult[i+j*m]=v1*v2;			
- 			}
- 		}
- 	  //else
-	  //  for (auto& i: arg1->index())
-      //     for (auto& j: arg2->index()) 
-      //          cachedResult[i+arg1->index().size()*j]=(*arg1)[i]*(*arg2)[j];
- 	     
+            auto v2=(*arg2)[j];			
+            cachedResult[i+j*m]=v1*v2;			
+ 	 }
+       }	     
     		            
       if (cachedResult.size()==0) 
         for (size_t i=0; i<m*n; i++) 
@@ -400,11 +395,11 @@ namespace minsky
       cachedResult.hypercube(move(hc));
         
       set<size_t> newIdx;
+      size_t stride=arg1->hypercube().numElements();
+      
       for (auto& i: arg1->index())
         for (auto& j: arg2->index()) 
-        {
-            newIdx.insert(i+arg1->index().size()*j);
-         }    
+            newIdx.insert(i+stride*j);
          
       cachedResult.index(Index(newIdx));  
       
