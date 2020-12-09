@@ -33,8 +33,9 @@ namespace minsky
   struct UnitsExpressionWalker
   {
     Units units;
+    double value=std::nan("");
     UnitsExpressionWalker() {}
-    UnitsExpressionWalker(double) {}
+    UnitsExpressionWalker(double x): value(x) {}
     UnitsExpressionWalker(const std::string& units): units(units) {}
     
     void checkSameDims(const UnitsExpressionWalker& x) const
@@ -85,58 +86,35 @@ namespace minsky
     bool operator>=(const UnitsExpressionWalker& x) const
     {checkSameDims(x); return true;}
     bool operator==(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
+    {return x.value==value;}
     bool operator!=(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
+    {return !operator==(x);}
   };
 
-  bool operator>(size_t, const UnitsExpressionWalker&) {return false;}
+  bool operator>(size_t x, const UnitsExpressionWalker& y) {return false;}
   
   UnitsExpressionWalker pow(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
+  {
+    auto exponent=int(y.value);
+    if (exponent==y.value)
+      {
+        auto tmp=x;
+        for (auto& i: tmp.units)
+          i.second*=exponent;
+        return tmp;
+      }
+    x.checkDimensionless();
+    y.checkDimensionless();
+    return {};
+  }
+  UnitsExpressionWalker checkDimensionless(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
   {x.checkDimensionless(); y.checkDimensionless(); return {};}
-  UnitsExpressionWalker nand(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
-  {x.checkDimensionless(); y.checkDimensionless(); return {};}
-  UnitsExpressionWalker nor(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
-  {x.checkDimensionless(); y.checkDimensionless(); return {};}
-  UnitsExpressionWalker xnor(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
-  {x.checkDimensionless(); y.checkDimensionless(); return {};}
-//  template <class T>
-//  UnitsExpressionWalker operator+(const UnitsExpressionWalker& x, T y)
-//  {auto tmp=x; tmp+=y; return tmp;}
-//  
-//  UnitsExpressionWalker operator+(double x, const UnitsExpressionWalker& y)
-//  {auto tmp=y; tmp+=x; return tmp;}
- 
-  
-//  struct IWalker
-//  {
-//    std::shared_ptr<IWalker> clone()=0;
-//    void add(const IWalker&)=0;
-//    void sub(const IWalker&)=0;
-//    void mul(const IWalker&)=0;
-//    void div(const IWalker&)=0;
-//  };
-//  
-//  struct ExpressionWalker
-//  {
-//    std::shared_ptr<IWalker> impl;
-//    ExpressionWalker() {}
-//    ExpressionWalker(const std::shared_ptr<IWalker>& impl): impl(impl) {}
-//    ExpressionWalker operator+(const ExpressionWalker& y)
-//    {auto tmp=impl->clone(); tmp->add(y); return tmp;}
-//    ExpressionWalker operator+=(const ExpressionWalker& x, const ExpressionWalker& y)
-//    {impl->add(y);}
-//    ExpressionWalker operator-=(const ExpressionWalker& x, const ExpressionWalker& y)
-//    {impl->sub(y);}
-//    ExpressionWalker operator*(const ExpressionWalker& y)
-//    {auto tmp=impl->clone(); tmp->mul(y); return tmp;}
-//    ExpressionWalker operator*=(const ExpressionWalker& x, const ExpressionWalker& y)
-//    {impl->mul(y);}
-//    ExpressionWalker operator/(const ExpressionWalker& y)
-//    {auto tmp=impl->clone(); tmp->div(y); return tmp;}
-//  };
-//
-//  ExpressionWalker operator-(const ExpressionWalker
+  UnitsExpressionWalker checkSameDims(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
+  {x.checkSameDims(y); return {};}
+//  UnitsExpressionWalker nor(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
+//  {x.checkDimensionless(); y.checkDimensionless(); return {};}
+//  UnitsExpressionWalker xnor(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
+//  {x.checkDimensionless(); y.checkDimensionless(); return {};}
 
 }
 
@@ -156,7 +134,16 @@ namespace exprtk
   {
     template <>
     inline bool string_to_real(const std::string& s, minsky::UnitsExpressionWalker& t)
-    {t.units.clear(); return true;}
+    {
+      t.units.clear();
+      try
+        {
+          t.value=stod(s);
+        }
+      catch (...)
+        {return false;}
+      return true;
+    }
 
     namespace numeric
     {
@@ -206,10 +193,10 @@ namespace exprtk
       exprtk_define_unary_function(frac )
       exprtk_define_unary_function(trunc)
 
-      template <> inline int to_int32(const minsky::UnitsExpressionWalker) {return 0;}
-      template <> inline _int64_t to_int64(const minsky::UnitsExpressionWalker) {return 0;}
-      template <> inline bool is_integer(const minsky::UnitsExpressionWalker) {return false;}
-      template <> inline bool is_nan(const minsky::UnitsExpressionWalker) {return false;}
+      template <> inline int to_int32(const minsky::UnitsExpressionWalker x) {return int(x.value);}
+      template <> inline _int64_t to_int64(const minsky::UnitsExpressionWalker x) {return int64_t(x.value);}
+      template <> inline bool is_integer(const minsky::UnitsExpressionWalker x) {return int64_t(x.value)==x.value;}
+      template <> inline bool is_nan(const minsky::UnitsExpressionWalker x) {return std::isnan(x.value);}
       
 #define exprtk_define_binary_function(Function)                         \
       template <>                                                       \
@@ -266,6 +253,7 @@ namespace exprtk
 
 #define exprtk_define_binary_op(Op,op) exprtk_define_binary_op_impl(Op, x op y)
 #define exprtk_define_binary_fun_op(Op) exprtk_define_binary_op_impl(Op, Op(x,y))
+#define exprtk_define_binary_fun_op2(Op,f) exprtk_define_binary_op_impl(Op, f(x,y))
     
     exprtk_define_binary_op( add,+)
     exprtk_define_binary_op( sub,-)
@@ -273,18 +261,18 @@ namespace exprtk
     exprtk_define_binary_op( div,/)
     exprtk_define_binary_op( mod,%)
     exprtk_define_binary_fun_op( pow)
-    exprtk_define_binary_op(  lt,<)
-    exprtk_define_binary_op( lte,<=)
-    exprtk_define_binary_op(  gt,>)
-    exprtk_define_binary_op( gte,>=)
-    exprtk_define_binary_op(  eq,==)
-    exprtk_define_binary_op(  ne,!=)
-    exprtk_define_binary_op( and,&&)
-    exprtk_define_binary_fun_op(nand)
-    exprtk_define_binary_op(  or,||)
-    exprtk_define_binary_fun_op( nor)
-    exprtk_define_binary_op( xor,^)
-    exprtk_define_binary_fun_op(xnor)
+    exprtk_define_binary_fun_op2(  lt,checkSameDims)
+    exprtk_define_binary_fun_op2( lte,checkSameDims)
+    exprtk_define_binary_fun_op2(  gt,checkSameDims)
+    exprtk_define_binary_fun_op2( gte,checkSameDims)
+    exprtk_define_binary_fun_op2(  eq,checkSameDims)
+    exprtk_define_binary_fun_op2(  ne,checkSameDims)
+    exprtk_define_binary_fun_op2( and,checkSameDims)
+    exprtk_define_binary_fun_op2(nand,checkSameDims)
+    exprtk_define_binary_fun_op2(  or,checkSameDims)
+    exprtk_define_binary_fun_op2( nor,checkSameDims)
+    exprtk_define_binary_fun_op2( xor,checkSameDims)
+    exprtk_define_binary_fun_op2(xnor,checkSameDims)
 
     
     }
