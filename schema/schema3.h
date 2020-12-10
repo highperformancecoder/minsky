@@ -99,6 +99,7 @@ namespace schema3
     Optional<Slider> slider;
     Optional<int> intVar;
     Optional<std::map<double,double>> dataOpData;
+    Optional<std::string> expression; // userfunction
     Optional<std::string> filename;
     Optional<schema2::RavelState> ravelState;
     Optional<int> lockGroup;
