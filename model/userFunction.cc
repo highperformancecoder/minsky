@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "expressionWalker.h"
 #include "userFunction.h"
 #include "evalOp.h"
 #include "selection.h"
@@ -26,6 +27,11 @@ namespace minsky
 {
   int UserFunction::nextId=0;
 
+  namespace {
+    exprtk::parser<double> parser;
+    exprtk::parser<UnitsExpressionWalker> unitsParser;
+  }
+  
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
   
@@ -50,5 +56,22 @@ namespace minsky
     x=in1, y=in2;
     return compiledExpression.value();
   }
+
+  Units UserFunction::units(bool check) const
+  {
+    UnitsExpressionWalker x,y;
+    x.units=ports[1]->units(check); x.check=check;
+    y.units=ports[2]->units(check); y.check=check;
+
+    exprtk::symbol_table<UnitsExpressionWalker> symbolTable;
+    symbolTable.add_variable("x",x);
+    symbolTable.add_variable("y",y);
+    exprtk::expression<UnitsExpressionWalker> compiled;
+    compiled.register_symbol_table(symbolTable);
+    unitsParser.compile(expression, compiled);
+    return compiled.value().units;
+  }
+
+  
 }
 

@@ -35,6 +35,7 @@ namespace  minsky
     UserFunction() {description("uf"+std::to_string(nextId++)+"(x,y)");}
     void compile();
     double evaluate(double x, double y);
+    Units units(bool check=false) const override;
   };
 }
 #include "userFunction.cd"
