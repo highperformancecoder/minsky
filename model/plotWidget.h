@@ -104,7 +104,7 @@ namespace minsky
     
     bool plotTabDisplay=false;
     void togglePlotTabDisplay() {plotTabDisplay=!plotTabDisplay;}     
-    bool plotOnTab() const {return plotTabDisplay;}        
+    bool plotOnTab() const {return plotTabDisplay;}     
     
     /// add this as a display plot to its group
     void makeDisplayPlot();

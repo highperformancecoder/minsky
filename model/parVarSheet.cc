@@ -35,7 +35,7 @@ namespace minsky
 
   void ParVarSheet::populateItemVector() {
     itemVector.clear();	
-    itemCoords.clear();
+    //itemCoords.clear();
     minsky().canvas.model->recursiveDo(&GroupItems::items,
                                        [&](Items&, Items::iterator i) {                                 
                                          if (variableSelector(*i)) 
@@ -70,10 +70,12 @@ namespace minsky
   }
   
   void ParVarSheet::moveTo(float x, float y)
-  {      
-    //m_x=x;
-    //m_y=y;   
-    //assert(abs(x-this->x())<1 && abs(y-this->y())<1);
+  {   
+	 if (itemFocus) {    
+       xItem=x;	                               
+       yItem=y;
+       assert(abs(x-xItem)<1 && abs(y-yItem)<1);
+     }
   }  
   
   ParVarSheet::ClickType ParVarSheet::clickType(double x, double y)
@@ -83,20 +85,22 @@ namespace minsky
     if (c>=0 && c<int(colLeftMargin.size())&& r>=0 && r<int(itemVector.size()))
         return internal;
         
-    if (itemAt(x,y)) return internal;   
+    if (itemFocus) return internal;   
   
     return background;
   }
-    
+      
   void ParVarSheet::mouseDownCommon(float x, float y)
   {
+	 if (itemFocus=itemAt(x,y))
         switch (clickType(x,y))
           {
           case internal:
-            //moveOffsX=x-this->x();
-            //moveOffsY=y-this->y();
+            moveOffsX=x-itemCoords[itemFocus].first;
+            moveOffsY=y-itemCoords[itemFocus].second;
             break;
           case background:
+            itemFocus.reset();
             break;
           default:
             break;  
@@ -106,25 +110,36 @@ namespace minsky
   void ParVarSheet::mouseUp(float x, float y)
   {
     mouseMove(x,y);
+    itemFocus.reset();
   }
   
   void ParVarSheet::mouseMove(float x, float y)
+  {
+	    
     try
       {
+		 if (itemFocus)
             switch (clickType(x,y))
               {
               case internal:
-                //moveTo(x-moveOffsX, y-moveOffsY);
+                moveTo(x-moveOffsX,y-moveOffsY);
                 requestRedraw();
                 return;
-              case background:           
-                requestRedraw();
-                break;
               default:
                 break;
               }
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}  
+  }
+  
+  void ParVarSheet::displayDelayedTooltip(float x, float y)
+  {
+    if (auto item=itemAt(x,y))
+      {
+        item->displayDelayedTooltip(x,y);
+        requestRedraw();
+      }
+  } 
   
   ItemPtr ParVarSheet::itemAt(float x, float y)
   {
@@ -133,7 +148,9 @@ namespace minsky
     for (auto& i: itemCoords)
     {
 	  float d=sqr((i.second).first-x)+sqr((i.second).second-y);
-      if (d<minD)
+	  float z=i.first->zoomFactor();
+	  float plotExt=std::min(sqr(0.5*i.first->iWidth()*z),sqr(0.5*i.first->iHeight()*z));
+      if (d<minD && d<plotExt)
         {
           minD=d;
           item=i.first;
@@ -429,7 +446,13 @@ namespace
                 iC++;
                
               } else if (auto p=it->plotWidgetCast())
-		       {	    			    				   
+		       {
+				cairo::CairoSave cs(cairo);   
+				if (it==itemFocus) {
+					cairo_translate(cairo,xItem,yItem);  		    				   
+                    itemCoords.erase(itemFocus);   
+                    itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
+                 } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
 			    p->draw(cairo);
 			   }
 		      }              

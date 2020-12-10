@@ -942,25 +942,29 @@ pack .plts.canvas -fill both -expand 1
 .tabs select 0
 
 bind .variables.canvas <<contextMenu>> "variableContext %x %y %X %Y"  
-menu .variables.context -tearoff 0   
+menu .variables.context -tearoff 0 
+
+bind .plts.canvas <<contextMenu>> "plotTabContext %x %y %X %Y"  
+menu .plts.context -tearoff 0     
 
 # support tooltips
-proc hoverMouse {} {
+proc hoverMouseTab {} {
     plotSheet.displayDelayedTooltip [get_pointer_x .plts.canvas] [get_pointer_y .plts.canvas]
 }
 
 # reset hoverMouse timer
-proc wrapHoverMouse {op x y} {
-    after cancel hoverMouse
+proc wrapHoverMouseTab {op x y} {
+    after cancel hoverMouseTab
     # ignore any exceptions
     catch {plotSheet.$op $x $y}
-    after 3000 hoverMouse
+    after 3000 hoverMouseTab
 }
   
-bind .plts.canvas <ButtonPress-1> {wrapHoverMouse plotSheet.mouseDownCommon %x %y}
-bind .plts.canvas <ButtonRelease-1> {wrapHoverMouse plotSheet.mouseUp %x %y}
-bind .plts.canvas <Motion> {wrapHoverMouse plotSheet.mouseMove %x %y}
-bind .plts.canvas <Leave> {after cancel hoverMouse}
+bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab mouseDownCommon %x %y}
+bind .plts.canvas <$meta-ButtonPress-1> {wrapHoverMouseTab controlMousDown %x %y}
+bind .plts.canvas <ButtonRelease-1> {wrapHoverMouseTab mouseUp %x %y}
+bind .plts.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab mouseMove %x %y}
+bind .plts.canvas <Leave> {after cancel hoverMouseTab}
 
 proc variableContext {x y X Y} {
     .variables.context delete 0 end
@@ -973,7 +977,20 @@ proc variableContext {x y X Y} {
 		}
     }
     tk_popup .variables.context $X $Y
-}  
+}
+
+# Don't understand hwy this doesn't work???
+proc plotTabContext {x y X Y} { 
+    .plts.context delete 0 end
+    switch [plotSheet.clickType $x $y] {
+        background {}
+        internal {
+			puts {$x $y}
+			.plts.context add command -label "Remove plot from tab" -command "plotSheet.togglePlotTabDisplay;  plotSheet.requestRedraw"
+		}
+    }
+    tk_popup .plts.context $X $Y
+}		
 
 source $minskyHome/godley.tcl
 source $minskyHome/plots.tcl
@@ -1181,12 +1198,11 @@ bind .variables.canvas <Button-1> {
 bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 # plots pan mode
-.plts.canvas configure -cursor $panIcon
 bind .plts.canvas <Shift-Button-1> {
     set panOffsX [expr %x-[plotSheet.offsx]]
     set panOffsY [expr %y-[plotSheet.offsy]]
 }
-bind .plts.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+bind .plts.canvas <Shift-B1-Motion> {.plts.canvas configure -cursor $panIcon; panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew

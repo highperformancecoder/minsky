@@ -100,8 +100,10 @@ namespace minsky
     int colX(double x) const;
     /// row at \a y in unzoomed coordinates
     int rowY(double y) const;
-    void moveTo(float x, float y);       
-        
+    void moveTo(float x, float y);  
+         
+    float moveOffsX, moveOffsY,xItem,yItem;
+    ItemPtr itemFocus;        
     enum ClickType {background, internal};    
     ClickType clickType(double x, double y);         
     void draw(cairo_t* cairo); 
@@ -112,7 +114,9 @@ namespace minsky
     void mouseDownCommon(float x, float y);
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);    
-    ItemPtr itemAt(float x, float y);    
+    ItemPtr itemAt(float x, float y);
+    void togglePlotTabDisplay() {if (itemFocus) {itemFocus->plotWidgetCast()->togglePlotTabDisplay();} else return;}
+    void displayDelayedTooltip(float x, float y);        
        
     ~ParVarSheet() {}
   };
