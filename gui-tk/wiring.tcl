@@ -850,6 +850,12 @@ proc setupPickDimMenu {} {
 proc lockSpecificHandles {} {
     global currentLockHandles
 
+    if {![llength [info commands minsky.canvas.item.lockGroup.allLockHandles]]} {
+        minsky.canvas.lockRavelsInSelection
+        # reinitialise the canvas item commands
+        getItemAt [minsky.canvas.item.x] [minsky.canvas.item.y]
+        if {![llength [info commands minsky.canvas.item.lockGroup.allLockHandles]]} return
+    }    
     if {[winfo exists .wiring.context.lockHandles]} {destroy .wiring.context.lockHandles}
     toplevel .wiring.context.lockHandles
     foreach h [minsky.canvas.item.lockGroup.allLockHandles] {

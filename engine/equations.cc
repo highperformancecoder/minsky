@@ -774,7 +774,26 @@ namespace MathDAG
           }
       }
     return r;
-  }     
+  }
+  
+  VariableDAGPtr SystemOfEquations::getNodeFromVar(const VariableBase& v)
+  {
+    NodePtr r;
+    if (expressionCache.exists(v))
+      return dynamic_pointer_cast<VariableDAG>(expressionCache[v]);
+    else if (v.type()!=VariableBase::undefined) r=makeDAG(const_cast<VariableBase&>(v));
+    return dynamic_pointer_cast<VariableDAG>(r);
+  }         
+
+  ostringstream SystemOfEquations::getDefFromIntVar(const VariableBase& v)
+  {
+    ostringstream o;
+         
+    VariableDAGPtr input=expressionCache.getIntegralInput(v.valueId());    
+    if (input && input->rhs) input->rhs->matlab(o);    
+    
+    return o;
+  }        
   
     
   ostream& SystemOfEquations::latex(ostream& o) const
