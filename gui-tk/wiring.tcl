@@ -1489,6 +1489,9 @@ proc editItem {} {
             set constInput(Name) [$item.description]
             set constInput(title) $constInput(Name)
             set constInput(Rotation) [$item.rotation]
+            if [llength [info commands minsky.canvas.item.expression]] {
+                set constInput(Expression) [$item.expression]
+            }
             # value needs to be regotten, as var name may have changed
             set constInput(command) "
                         $setValue
