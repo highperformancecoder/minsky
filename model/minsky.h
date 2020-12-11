@@ -40,6 +40,7 @@
 #include "fontDisplay.h"
 #include "variableSheet.h"
 #include "parameterSheet.h"
+#include "plotSheet.h"
 #include "dimension.h"
 #include "rungeKutta.h"
 
@@ -150,6 +151,7 @@ namespace minsky
     FontDisplay fontSampler;
     ParameterSheet parameterSheet;
     VariableSheet variableSheet;
+    PlotSheet plotSheet;
         // Allow multiple equity columns.
     bool multipleEquities=false;    
 
