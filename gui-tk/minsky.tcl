@@ -986,7 +986,7 @@ proc plotTabContext {x y X Y} {
         background {}
         internal {
 			puts {$x $y}
-			.plts.context add command -label "Remove plot from tab" -command "plotSheet.togglePlotTabDisplay;  plotSheet.requestRedraw"
+			.plts.context add command -label "Remove plot from tab" -command "plotSheet.togglePlotDisplay;  plotSheet.requestRedraw"
 		}
     }
     tk_popup .plts.context $X $Y

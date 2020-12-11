@@ -943,7 +943,6 @@ namespace MathDAG
              if (!v->ports.empty())
                v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
            }
-         //else if (auto pw=dynamic_cast<PlotWidget*>(i->get()))
          else if (auto pw=(*i)->plotWidgetCast())
            for (auto& port: pw->ports) 
              for (auto w: port->wires())

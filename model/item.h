@@ -36,12 +36,12 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
-  class Group;
+  class Group; 
   class VariablePtr;
   class VariableBase;
   class OperationBase;
   class SwitchIcon;
-  class PlotWidget;
+  class PlotWidget;    
 
   class Item;
   typedef std::shared_ptr<Item> ItemPtr;

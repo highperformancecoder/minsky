@@ -21,11 +21,8 @@
 #ifndef PARVARSHEET_H
 #define PARVARSHEET_H
 #include <variable.h>
-#include "group.h"
 #include <cairoSurfaceImage.h>
 #include "classdesc_access.h"
-
-#include <chrono>
 
 namespace minsky
 {
@@ -76,7 +73,7 @@ namespace minsky
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);    
     ItemPtr itemAt(float x, float y);
-    void togglePlotTabDisplay() {if (itemFocus) {itemFocus->plotWidgetCast()->togglePlotTabDisplay();} else return;}
+    void togglePlotDisplay();
     void displayDelayedTooltip(float x, float y);        
        
     ~ParVarSheet() {}

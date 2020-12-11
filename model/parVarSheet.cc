@@ -157,7 +157,13 @@ namespace minsky
 	}
     
     return item;
-  }    
+  }
+  
+  void ParVarSheet::togglePlotDisplay()      
+  {
+	if (auto p=itemFocus->plotWidgetCast()) p->togglePlotTabDisplay();
+	else return;
+  }
   
 namespace
 {
