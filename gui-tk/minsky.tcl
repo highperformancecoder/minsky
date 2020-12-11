@@ -979,7 +979,7 @@ proc variableContext {x y X Y} {
     tk_popup .variables.context $X $Y
 }
 
-# Don't understand hwy this doesn't work???
+# Don't understand why this doesn't work???
 proc plotTabContext {x y X Y} { 
     .plts.context delete 0 end
     switch [plotSheet.clickType $x $y] {
