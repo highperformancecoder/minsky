@@ -25,14 +25,14 @@ namespace  minsky
 {
   class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp
   {
-    exprtk::symbol_table<double> symbolTable;
+    exprtk::symbol_table<double> localSymbols, externalSymbols;
     exprtk::expression<double> compiledExpression;
     void updateBB() override {bb.update(*this);}
   public:
     static int nextId;
-    double x, y, result;
+    double x, y;
     std::string expression;
-    UserFunction() {description("uf"+std::to_string(nextId++)+"(x,y)");}
+    UserFunction();
     void compile();
     double evaluate(double x, double y);
     Units units(bool check=false) const override;

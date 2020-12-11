@@ -21,6 +21,7 @@
 #include "userFunction.h"
 #include "evalOp.h"
 #include "selection.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 
 namespace minsky
@@ -34,14 +35,36 @@ namespace minsky
   
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
+
+  UserFunction::UserFunction() {
+    description("uf"+std::to_string(nextId++)+"(x,y)");
+    localSymbols.add_variable("x",x);
+    localSymbols.add_variable("y",y);
+    compiledExpression.register_symbol_table(externalSymbols);
+    compiledExpression.register_symbol_table(localSymbols);
+    parser.enable_unknown_symbol_resolver();
+    unitsParser.enable_unknown_symbol_resolver();
+  }
+
   
   void UserFunction::compile()
   {
-    symbolTable.add_variable("x",x);
-    symbolTable.add_variable("y",y);
-    compiledExpression.register_symbol_table(symbolTable);
-    // TODO bind any other external references to the variableValues table
-    exprtk::parser<double> parser;
+    // do an initial parse to pick up references to external variables
+    externalSymbols.clear();
+    parser.compile(expression, compiledExpression);
+    std::vector<std::string> externalVariables;
+    externalSymbols.get_variable_list(externalVariables);
+
+    // add them back in with their correct definitions
+    externalSymbols.clear();
+    for (auto& i: externalVariables)
+      {
+        auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
+        if (v!=minsky().variableValues.end())
+          externalSymbols.add_variable(i, (*v->second)[0]);
+      }
+    
+      // TODO bind any other external references to the variableValues table
     if (!parser.compile(expression, compiledExpression))
       {
         string errorInfo;
@@ -63,13 +86,42 @@ namespace minsky
     x.units=ports[1]->units(check); x.check=check;
     y.units=ports[2]->units(check); y.check=check;
 
-    exprtk::symbol_table<UnitsExpressionWalker> symbolTable;
+    exprtk::symbol_table<UnitsExpressionWalker> symbolTable, unknownVariables;
+    exprtk::expression<UnitsExpressionWalker> compiled;
+    compiled.register_symbol_table(unknownVariables);
+    compiled.register_symbol_table(symbolTable);
     symbolTable.add_variable("x",x);
     symbolTable.add_variable("y",y);
-    exprtk::expression<UnitsExpressionWalker> compiled;
-    compiled.register_symbol_table(symbolTable);
+
+    // do an initial parse to pick up references to external variables
     unitsParser.compile(expression, compiled);
-    return compiled.value().units;
+    std::vector<std::string> externalVariables;
+    unknownVariables.get_variable_list(externalVariables);
+
+    unknownVariables.clear();
+    vector<UnitsExpressionWalker> externalUnits;
+    externalUnits.reserve(externalVariables.size());
+    for (auto& i: externalVariables)
+      {
+        auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
+        if (v!=minsky().variableValues.end())
+          {
+            externalUnits.emplace_back();
+            externalUnits.back().units=v->second->units;
+            externalUnits.back().check=check;
+            unknownVariables.add_variable(i, externalUnits.back());
+          }
+      }
+
+    unitsParser.compile(expression, compiled);
+    try
+      {
+        return compiled.value().units;
+      }
+    catch (const std::exception& ex)
+      {
+        throw_error(ex.what());
+      }
   }
 
   
