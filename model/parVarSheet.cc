@@ -35,7 +35,6 @@ namespace minsky
 
   void ParVarSheet::populateItemVector() {
     itemVector.clear();	
-    //itemCoords.clear();
     minsky().canvas.model->recursiveDo(&GroupItems::items,
                                        [&](Items&, Items::iterator i) {                                 
                                          if (variableSelector(*i)) 
