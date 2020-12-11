@@ -34,46 +34,7 @@ namespace minsky
   {
     CLASSDESC_ACCESS(ParVarSheet);         
   public:
-    //typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
-    //struct TabItems: public GroupPtr
-    //{
-    //  Exclude<Timestamp> timestamp{Timestamp::clock::now()};
-    //  void updateTimestamp() {timestamp=Timestamp::clock::now();}
-    //  GroupPtr parent; // stash a ref to this groups parent for later restore
-    //  float px=0,py=0,pz=1;
-    //  TabItems() {}
-    //  TabItems(const GroupPtr& g) {operator=(g);}
-    //  TabItems& operator=(const GroupPtr& tabItems) {
-    //    updateTimestamp();
-    //    if (this->get())
-    //      {
-    //        // restore previous stuff
-    //        (*this)->group=parent;
-    //        (*this)->m_x=px;
-    //        (*this)->m_y=py;
-    //        (*this)->relZoom=pz;
-    //      }
-    //    parent=tabItems->group.lock();
-    //    tabItems->group.reset();
-    //    px=tabItems->m_x;
-    //    py=tabItems->m_y;
-    //    pz=tabItems->relZoom;
-    //    tabItems->group.reset(); // disassociate model from it's parent
-    //    GroupPtr::operator=(tabItems);
-    //    return *this;
-    //  }
-    //  void zoom(double x, double y, double z) {
-    //    if (fabs(x-(*this)->x())>1e-5 || fabs(y-(*this)->y())>1e-5)
-    //      updateTimestamp(); // Why is this needed??
-    //    (*this)->zoom(x,y,z);
-    //  }
-    //};
-	//
-    //TabItems tabItems;  
-  
-   
-    ParVarSheet() {}
-    //ParVarSheet(const GroupPtr& t): tabItems(t) {}    
+    ParVarSheet() {} 
   
     double xoffs=80;
     double rowHeight=0;
