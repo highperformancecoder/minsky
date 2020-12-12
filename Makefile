@@ -278,6 +278,8 @@ dist:
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	cd RavelCAPI; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/RavelCAPI/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd exprtk; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/exprtk/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
 
 lcov:

@@ -160,6 +160,8 @@ proc doPlotOptions {plot} {
 proc plotDoubleClick {plotId} {
     toplevel .plot$plotId
     wm title .plot$plotId [$plotId.title]
+    
+    #pack [canvas .plots.canvas$plotId] -fill both -expand 1
 
     labelframe .plot$plotId.menubar -relief raised
     button .plot$plotId.menubar.options -text Options -command "doPlotOptions $plotId" -relief flat
