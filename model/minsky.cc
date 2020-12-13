@@ -21,6 +21,7 @@
 #include "minsky.h"
 #include "flowCoef.h"
 #include "userFunction.h"
+#include "mdlReader.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -1512,6 +1513,12 @@ namespace minsky
     });
   }
 
-  
+  void Minsky::importVensim(const string& filename)
+  {
+    ifstream f(filename);
+    readMdl(*model,f);
+    canvas.requestRedraw();
+  }
+
 }
 
