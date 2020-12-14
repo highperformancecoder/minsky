@@ -18,19 +18,19 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PLOTSHEET_H
-#define PLOTSHEET_H
-#include <parVarSheet.h>
+#ifndef PLOTTAB_H
+#define PLOTTAB_H
+#include <itemTab.h>
 
 namespace minsky
 {
 	 
-  class PlotSheet: public ParVarSheet
+  class PlotTab: public ItemTab
   {	  
   public:
-    bool variableSelector(ItemPtr i) override {if (auto p=i->plotWidgetCast()) {return p->plotOnTab();}; return false;}    
+    bool itemSelector(ItemPtr i) override {if (auto p=i->plotWidgetCast()) {return p->plotOnTab();}; return false;}    
   };
   
 }
-#include "plotSheet.cd"
+#include "plotTab.cd"
 #endif

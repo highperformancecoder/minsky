@@ -17,7 +17,7 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "parVarSheet.h"
+#include "itemTab.h"
 #include "latexMarkup.h"
 #include "group.h"
 #include <pango.h>
@@ -33,20 +33,21 @@ using ecolab::cairo::CairoSave;
 namespace minsky
 {
 
-  void ParVarSheet::populateItemVector() {
+  void ItemTab::populateItemVector() {
     itemVector.clear();	
     minsky().canvas.model->recursiveDo(&GroupItems::items,
                                        [&](Items&, Items::iterator i) {                                 
-                                         if (variableSelector(*i)) 
+                                         if (itemSelector(*i)) 
                                          {		                                 
                                            itemVector.emplace_back(*i);
                                            if (auto p=(*i)->plotWidgetCast()) itemCoords.emplace(make_pair(*i,make_pair(p->x(),p->y()))); 
+                                           if (auto g=dynamic_cast<GodleyIcon*>(i->get())) itemCoords.emplace(make_pair(*i,make_pair(g->x(),g->y()))); 
 									     }
                                          return false;
                                        });   	
   }
   
-  int ParVarSheet::colX(double x) const
+  int ItemTab::colX(double x) const
   { 
 	if (itemVector.empty() || colLeftMargin.empty()) return -1;
 	size_t c;
@@ -59,7 +60,7 @@ namespace minsky
     return c;
   }
 
-  int ParVarSheet::rowY(double y) const
+  int ItemTab::rowY(double y) const
   {
 	if (itemVector.empty() || rowTopMargin.empty()) return -1;     
     auto p=std::upper_bound(rowTopMargin.begin(), rowTopMargin.end(), (y-offsy));
@@ -68,7 +69,7 @@ namespace minsky
     return r;
   }
   
-  void ParVarSheet::moveTo(float x, float y)
+  void ItemTab::moveTo(float x, float y)
   {   
 	 if (itemFocus) {    
        xItem=x;	                               
@@ -77,7 +78,7 @@ namespace minsky
      }
   }  
   
-  ParVarSheet::ClickType ParVarSheet::clickType(double x, double y)
+  ItemTab::ClickType ItemTab::clickType(double x, double y) const
   {
     int c=colX(x), r=rowY(y);
 
@@ -89,7 +90,7 @@ namespace minsky
     return background;
   }
       
-  void ParVarSheet::mouseDownCommon(float x, float y)
+  void ItemTab::mouseDownCommon(float x, float y)
   {
 	 if (itemFocus=itemAt(x,y))
         switch (clickType(x,y))
@@ -106,13 +107,13 @@ namespace minsky
           }
   }  
   
-  void ParVarSheet::mouseUp(float x, float y)
+  void ItemTab::mouseUp(float x, float y)
   {
     mouseMove(x,y);
     itemFocus.reset();
   }
   
-  void ParVarSheet::mouseMove(float x, float y)
+  void ItemTab::mouseMove(float x, float y)
   {
 	    
     try
@@ -131,7 +132,7 @@ namespace minsky
     catch (...) {/* absorb any exceptions, as they're not useful here */}  
   }
   
-  void ParVarSheet::displayDelayedTooltip(float x, float y)
+  void ItemTab::displayDelayedTooltip(float x, float y)
   {
     if (auto item=itemAt(x,y))
       {
@@ -140,16 +141,16 @@ namespace minsky
       }
   } 
   
-  ItemPtr ParVarSheet::itemAt(float x, float y)
+  ItemPtr ItemTab::itemAt(float x, float y)
   {
     ItemPtr item;                    
     auto minD=numeric_limits<float>::max();
     for (auto& i: itemCoords)
     {
-	  float d=sqr((i.second).first-x)+sqr((i.second).second-y);
+	  float d=sqr((i.second).first+offsx-x)+sqr((i.second).second+offsy-y);
 	  float z=i.first->zoomFactor();
-	  float plotExt=std::min(sqr(0.5*i.first->iWidth()*z),sqr(0.5*i.first->iHeight()*z));
-      if (d<minD && d<plotExt)
+	  float w=0.5*i.first->iWidth()*z,h=0.5*i.first->iHeight()*z; 
+      if (d<minD && fabs((i.second).first+offsx-x)<w && fabs((i.second).second+offsy-y)<h)
         {
           minD=d;
           item=i.first;
@@ -159,7 +160,7 @@ namespace minsky
     return item;
   }
   
-  void ParVarSheet::togglePlotDisplay()      
+  void ItemTab::togglePlotDisplay() const      
   {
 	if (auto p=itemFocus->plotWidgetCast()) p->togglePlotTabDisplay();
 	else return;
@@ -186,7 +187,7 @@ namespace
   }
 }  
 	
-  void ParVarSheet::draw(cairo_t* cairo)
+  void ItemTab::draw(cairo_t* cairo)
   {   
     try
       {	
@@ -449,17 +450,28 @@ namespace
                 if (rank>0) y0=h+4.1*rowHeight;
                 else y0+=4.1*rowHeight;   
                 iC++;
-               
-              } else if (auto p=it->plotWidgetCast())
-		       {
-				cairo::CairoSave cs(cairo);   
-				if (it==itemFocus) {
-					cairo_translate(cairo,xItem,yItem);  		    				   
-                    itemCoords.erase(itemFocus);   
-                    itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
-                 } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
-			    p->draw(cairo);
-			   }
+              
+              }
+             else if (auto p=it->plotWidgetCast())
+		      {
+			cairo::CairoSave cs(cairo);   
+			 if (it==itemFocus) {
+				cairo_translate(cairo,xItem,yItem);  		    				   
+                   itemCoords.erase(itemFocus);   
+                   itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
+                } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
+			   p->draw(cairo);
+			  }
+             else if (auto g=dynamic_cast<GodleyIcon*>(it.get()))
+		      {
+			cairo::CairoSave cs(cairo);   
+			if (it==itemFocus) {
+				cairo_translate(cairo,xItem,yItem);  		    				   
+                   itemCoords.erase(itemFocus);   
+                   itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
+                } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
+			   g->draw(cairo);
+			   }			   
 		      }              
           }
       }
@@ -484,7 +496,7 @@ namespace
     };
   }
 
-  void ParVarSheet::redraw(int, int, int width, int height)
+  void ItemTab::redraw(int, int, int width, int height)
   {
     if (surface.get()) {
         cairo_t* cairo=surface->cairo();  
