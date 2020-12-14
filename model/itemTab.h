@@ -18,8 +18,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARVARSHEET_H
-#define PARVARSHEET_H
+#ifndef ITEMTAB_H
+#define ITEMTAB_H
 #include <variable.h>
 #include <cairoSurfaceImage.h>
 #include "classdesc_access.h"
@@ -27,11 +27,11 @@
 namespace minsky
 {
 		 
-  class ParVarSheet: public ecolab::CairoSurface
+  class ItemTab: public ecolab::CairoSurface
   {
-    CLASSDESC_ACCESS(ParVarSheet);         
+    CLASSDESC_ACCESS(ItemTab);         
   public:
-    ParVarSheet() {} 
+    ItemTab() {} 
   
     double xoffs=80;
     double rowHeight=0;
@@ -49,7 +49,7 @@ namespace minsky
     std::vector<double> rowTopMargin;                      
 
     void populateItemVector();
-    virtual bool variableSelector(ItemPtr i) = 0;
+    virtual bool itemSelector(ItemPtr i) = 0;
     void toggleVarDisplay(int i) const {if (i>=0 && i<int(itemVector.size())) (itemVector[i])->variableCast()->toggleVarTabDisplay(); else return;}
     std::string getVarName(int i) const {if (i>=0 && i<int(itemVector.size())) return (itemVector[i])->variableCast()->name(); else return "";}
     std::vector<std::string> varAttrib{"Name","Definition","Initial Value","Short Description", "Long Description","Slider Step","Slider Min","Slider Max","Value"};       
@@ -63,7 +63,7 @@ namespace minsky
     float moveOffsX, moveOffsY,xItem,yItem;
     ItemPtr itemFocus;        
     enum ClickType {background, internal};    
-    ClickType clickType(double x, double y);         
+    ClickType clickType(double x, double y) const;         
     void draw(cairo_t* cairo); 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
@@ -73,13 +73,13 @@ namespace minsky
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);    
     ItemPtr itemAt(float x, float y);
-    void togglePlotDisplay();
+    void togglePlotDisplay() const;
     void displayDelayedTooltip(float x, float y);        
        
-    ~ParVarSheet() {}
+    ~ItemTab() {}
   };
   
 }
 
-#include "parVarSheet.cd"
+#include "itemTab.cd"
 #endif

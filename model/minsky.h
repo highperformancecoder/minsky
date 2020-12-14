@@ -38,9 +38,10 @@
 #include "canvas.h"
 #include "panopticon.h"
 #include "fontDisplay.h"
-#include "variableSheet.h"
-#include "parameterSheet.h"
-#include "plotSheet.h"
+#include "variableTab.h"
+#include "parameterTab.h"
+#include "plotTab.h"
+#include "godleyTab.h"
 #include "dimension.h"
 #include "rungeKutta.h"
 
@@ -149,9 +150,10 @@ namespace minsky
     EquationDisplay equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
-    ParameterSheet parameterSheet;
-    VariableSheet variableSheet;
-    PlotSheet plotSheet;
+    ParameterTab parameterTab;
+    VariableTab variableTab;
+    PlotTab plotTab;
+    GodleyTab godleyTab;
         // Allow multiple equity columns.
     bool multipleEquities=false;    
 
