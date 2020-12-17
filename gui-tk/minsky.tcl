@@ -1737,7 +1737,18 @@ proc unknown {procname args} {
 }
 
 pushFlags
-if {$argc>1 && ![string match "*.tcl" $argv(1)]} {catch {eval openNamedFile {$argv(1)}}}
+
+if {$argc>1} {
+    #if argv(1) has .mdl extension, it is a Vensim model file
+    if [string match "*.mdl" $argv(1)] {
+        eval importVensim $argv(1)
+        minsky.model.autoLayout
+#        minsky.canvas.requestRedraw
+        .controls.zoomFit invoke
+    } elseif {![string match "*.tcl" $argv(1)]} {
+        catch {eval openNamedFile {$argv(1)}}
+    }
+}
 
 proc ifDef {var} {
     upvar $var v

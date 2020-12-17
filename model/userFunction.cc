@@ -42,22 +42,28 @@ namespace minsky
     localSymbols.add_variable("y",y);
     compiledExpression.register_symbol_table(externalSymbols);
     compiledExpression.register_symbol_table(localSymbols);
-    parser.enable_unknown_symbol_resolver();
-    unitsParser.enable_unknown_symbol_resolver();
   }
 
+  vector<string> UserFunction::externalVariables() const
+  {
+    // do an initial parse to pick up references to external variables
+    exprtk::symbol_table<double> externalSymbols, localSymbols=this->localSymbols;
+    exprtk::expression<double> compiledExpression;
+    compiledExpression.register_symbol_table(externalSymbols);
+    compiledExpression.register_symbol_table(localSymbols);
+    parser.enable_unknown_symbol_resolver();
+    parser.compile(expression, compiledExpression);
+    parser.disable_unknown_symbol_resolver();
+    std::vector<std::string> externalVariables;
+    externalSymbols.get_variable_list(externalVariables);
+    return externalVariables;
+  }
   
   void UserFunction::compile()
   {
-    // do an initial parse to pick up references to external variables
-    externalSymbols.clear();
-    parser.compile(expression, compiledExpression);
-    std::vector<std::string> externalVariables;
-    externalSymbols.get_variable_list(externalVariables);
-
     // add them back in with their correct definitions
     externalSymbols.clear();
-    for (auto& i: externalVariables)
+    for (auto& i: externalVariables())
       {
         auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
         if (v!=minsky().variableValues.end())
@@ -86,6 +92,7 @@ namespace minsky
     x.units=ports[1]->units(check); x.check=check;
     y.units=ports[2]->units(check); y.check=check;
 
+    vector<UnitsExpressionWalker> externalUnits;
     exprtk::symbol_table<UnitsExpressionWalker> symbolTable, unknownVariables;
     exprtk::expression<UnitsExpressionWalker> compiled;
     compiled.register_symbol_table(unknownVariables);
@@ -93,15 +100,10 @@ namespace minsky
     symbolTable.add_variable("x",x);
     symbolTable.add_variable("y",y);
 
-    // do an initial parse to pick up references to external variables
-    unitsParser.compile(expression, compiled);
-    std::vector<std::string> externalVariables;
-    unknownVariables.get_variable_list(externalVariables);
+    std::vector<std::string> externalIds=const_cast<UserFunction*>(this)->externalVariables();
 
-    unknownVariables.clear();
-    vector<UnitsExpressionWalker> externalUnits;
-    externalUnits.reserve(externalVariables.size());
-    for (auto& i: externalVariables)
+    externalUnits.reserve(externalIds.size());
+    for (auto& i: externalIds)
       {
         auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
         if (v!=minsky().variableValues.end())
@@ -111,16 +113,24 @@ namespace minsky
             externalUnits.back().check=check;
             unknownVariables.add_variable(i, externalUnits.back());
           }
+        else
+          if (check)
+            throw_error("unknown variable: "+i);
+          else
+            return {};
       }
 
-    unitsParser.compile(expression, compiled);
     try
       {
+        unitsParser.compile(expression, compiled);
         return compiled.value().units;
       }
     catch (const std::exception& ex)
       {
-        throw_error(ex.what());
+        if (check)
+          throw_error(ex.what());
+        else
+          return {};
       }
   }
 
