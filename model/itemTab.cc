@@ -18,6 +18,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "itemTab.h"
+#include "godleyTableWindow.h"
 #include "latexMarkup.h"
 #include "group.h"
 #include <pango.h>
@@ -41,7 +42,7 @@ namespace minsky
                                            {		                                 
                                              itemVector.emplace_back(*i);
                                              if (auto p=(*i)->plotWidgetCast()) itemCoords.emplace(make_pair(*i,make_pair(p->x(),p->y()))); 
-                                             if (auto g=dynamic_cast<GodleyIcon*>(i->get())) itemCoords.emplace(make_pair(*i,make_pair(g->x(),g->y()))); 
+                                             if (auto g=dynamic_cast<GodleyIcon*>(i->get())) itemCoords.emplace(make_pair(*i,make_pair(g->x(),g->y())));
                                            }
                                          return false;
                                        });   	
@@ -149,7 +150,7 @@ namespace minsky
       {
         float d=sqr((i.second).first+offsx-x)+sqr((i.second).second+offsy-y);
         float z=i.first->zoomFactor();
-        float w=0.5*i.first->iWidth()*z,h=0.5*i.first->iHeight()*z; 
+        float w=0.5*i.first->iWidth()*z,h=0.5*i.first->iHeight()*z;
         if (d<minD && fabs((i.second).first+offsx-x)<w && fabs((i.second).second+offsy-y)<h)
           {
             minD=d;
@@ -458,19 +459,21 @@ namespace minsky
                     if (it==itemFocus) {
                       cairo_translate(cairo,xItem,yItem);  		    				   
                       itemCoords.erase(itemFocus);   
-                      itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
+                      itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));
                     } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
                     p->draw(cairo);
                   }
-                else if (auto g=dynamic_cast<GodleyIcon*>(it.get()))
+                else if (auto g=dynamic_pointer_cast<GodleyIcon>(it))
                   {
                     cairo::CairoSave cs(cairo);   
                     if (it==itemFocus) {
                       cairo_translate(cairo,xItem,yItem);  		    				   
                       itemCoords.erase(itemFocus);   
                       itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
-                    } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
-                    g->draw(cairo);
+                    } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
+                    auto godley=GodleyTableWindow(g);
+                    godley.disableButtons();   
+                    godley.draw(cairo);
                   }			   
               }              
           }

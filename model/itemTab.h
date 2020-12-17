@@ -76,7 +76,7 @@ namespace minsky
     void togglePlotDisplay() const;
     void displayDelayedTooltip(float x, float y);        
        
-    ~ItemTab() {}
+    virtual ~ItemTab() {}
   };
   
 }
