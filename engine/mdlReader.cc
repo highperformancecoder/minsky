@@ -97,8 +97,12 @@ namespace minsky
     exprtk::expression<double> compiled;
     compiled.register_symbol_table(symbols);
     set<string> integrationVariables;
+    regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");
+    regex identifier(R"([A-Za-z]\w*)");
+    regex number(R"(\d*\.?\d+[Ee]?\d*)");
     
     string c;
+    string currentMDLGroup;
     while (mdlFile>>GetUtf8Char(c))
       {
         if (isspace(c[0])) continue;
@@ -112,6 +116,10 @@ namespace minsky
         
           case '*':
             // group leadin
+            for (; c[0]=='*'; mdlFile>>GetUtf8Char(c));
+            currentMDLGroup=readToken(mdlFile,'*');
+            if (currentMDLGroup==".Control")
+              return; // TODO Add processing of simulation parameters
             while (mdlFile>>GetUtf8Char(c))
               if (c[0]=='|')
                 {
@@ -129,7 +137,6 @@ namespace minsky
         string definition=collapseWS(readToken(mdlFile,'~'));
         string units=readToken(mdlFile,'~');
         string comments=readToken(mdlFile,'|');
-        regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");
         smatch match;
         if (regex_match(definition,match,integ))
           {
@@ -139,13 +146,32 @@ namespace minsky
             intOp->detailedText=comments;
             auto& v=intOp->intVar;
             integrationVariables.insert(name);
-            auto function=new UserFunction;
-            group.addItem(function);
-            function->description("Integrand of "+name);
-            function->expression=match[1].str();
-            parser.compile(function->expression, compiled);
-            group.addWire(function->ports[0], intOp->ports[1]);
             v->init(match[2].str());
+            v->setUnits(units);
+            v->detailedText=comments;
+
+            auto integrand=match[1].str();
+            if (regex_match(integrand,match,identifier))
+              {
+                VariablePtr rhs(VariableBase::flow, integrand);
+                group.addItem(rhs);
+                group.addWire(rhs->ports[0], intOp->ports[1]);
+              }
+            else
+              {
+                auto function=new UserFunction;
+                group.addItem(function);
+                function->description("Integrand of "+name);
+                function->expression=integrand;
+                parser.compile(function->expression, compiled);
+                group.addWire(function->ports[0], intOp->ports[1]);
+              }
+          }
+        else if (regex_match(definition,match,number))
+          {
+            VariablePtr v(VariableBase::parameter, name);
+            group.addItem(v);
+            v->init(definition);
             v->setUnits(units);
             v->detailedText=comments;
           }
@@ -153,12 +179,21 @@ namespace minsky
           {
             VariablePtr v(VariableBase::flow, name);
             group.addItem(v);
-            auto function=new UserFunction;
-            group.addItem(function);
-            function->description("Def: "+name);
-            function->expression=definition;
-            parser.compile(function->expression, compiled);
-            group.addWire(function->ports[0], v->ports[1]);
+            if (regex_match(definition,match,identifier))
+              {
+                VariablePtr rhs(VariableBase::flow, definition);
+                group.addItem(rhs);
+                group.addWire(rhs->ports[0], v->ports[1]);
+              }
+            else
+              {
+                auto function=new UserFunction;
+                group.addItem(function);
+                function->description("Def: "+name);
+                function->expression=definition;
+                parser.compile(function->expression, compiled);
+                group.addWire(function->ports[0], v->ports[1]);
+              }
             v->setUnits(units);
             v->detailedText=comments;
           }
