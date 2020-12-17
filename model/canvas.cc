@@ -87,7 +87,7 @@ namespace minsky
             item=itemFocus;
             break;
           case ClickType::legendMove: case ClickType::legendResize:
-            if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
+            if (auto p=itemFocus->plotWidgetCast())
               p->mouseDown(x,y);
             break;
           }
@@ -244,7 +244,7 @@ namespace minsky
                   requestRedraw();
                 return;
               case ClickType::legendMove: case ClickType::legendResize:
-                if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
+                if (auto p=itemFocus->plotWidgetCast())
                   {
                     p->mouseMove(x,y);
                     requestRedraw();

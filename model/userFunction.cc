@@ -17,7 +17,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "expressionWalker.h"
 #include "userFunction.h"
 #include "evalOp.h"
 #include "selection.h"
@@ -30,7 +29,6 @@ namespace minsky
 
   namespace {
     exprtk::parser<double> parser;
-    exprtk::parser<UnitsExpressionWalker> unitsParser;
   }
   
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
@@ -85,55 +83,5 @@ namespace minsky
     x=in1, y=in2;
     return compiledExpression.value();
   }
-
-  Units UserFunction::units(bool check) const
-  {
-    UnitsExpressionWalker x,y;
-    x.units=ports[1]->units(check); x.check=check;
-    y.units=ports[2]->units(check); y.check=check;
-
-    vector<UnitsExpressionWalker> externalUnits;
-    exprtk::symbol_table<UnitsExpressionWalker> symbolTable, unknownVariables;
-    exprtk::expression<UnitsExpressionWalker> compiled;
-    compiled.register_symbol_table(unknownVariables);
-    compiled.register_symbol_table(symbolTable);
-    symbolTable.add_variable("x",x);
-    symbolTable.add_variable("y",y);
-
-    std::vector<std::string> externalIds=const_cast<UserFunction*>(this)->externalVariables();
-
-    externalUnits.reserve(externalIds.size());
-    for (auto& i: externalIds)
-      {
-        auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
-        if (v!=minsky().variableValues.end())
-          {
-            externalUnits.emplace_back();
-            externalUnits.back().units=v->second->units;
-            externalUnits.back().check=check;
-            unknownVariables.add_variable(i, externalUnits.back());
-          }
-        else
-          if (check)
-            throw_error("unknown variable: "+i);
-          else
-            return {};
-      }
-
-    try
-      {
-        unitsParser.compile(expression, compiled);
-        return compiled.value().units;
-      }
-    catch (const std::exception& ex)
-      {
-        if (check)
-          throw_error(ex.what());
-        else
-          return {};
-      }
-  }
-
-  
 }
 
