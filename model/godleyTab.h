@@ -28,7 +28,7 @@ namespace minsky
   class GodleyTab: public ItemTab
   {	  
   public:
-    bool itemSelector(ItemPtr i) override {if (dynamic_cast<GodleyIcon*>(i.get())) return true; return false;}    
+    bool itemSelector(ItemPtr i) override {if (dynamic_cast<GodleyIcon*>(i.get())) return i.get(); return false;}
   };
   
 }
