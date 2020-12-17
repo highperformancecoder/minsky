@@ -1516,7 +1516,7 @@ namespace minsky
   void Minsky::importVensim(const string& filename)
   {
     ifstream f(filename);
-    readMdl(*model,f);
+    readMdl(*model,*this,f);
     canvas.requestRedraw();
   }
 

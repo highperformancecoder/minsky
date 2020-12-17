@@ -133,12 +133,14 @@ namespace minsky
     
   }
 
-  void readMdl(Group& group, istream& mdlFile)
+  void readMdl(Group& group, RungeKutta& simParms, istream& mdlFile)
   {
     set<string> integrationVariables;
     regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");
     regex number(R"(\d*\.?\d+[Ee]?\d*)");
-
+    regex unitFieldPattern(R"(([^][]*)(\[.*\])?)");
+    regex sliderSpecPattern(R"(\[([^,]*),?([^,]*),?([^,]*)\])");
+    smatch match;
     UserFunction::globalSymbols().clear();
     
     string c;
@@ -158,8 +160,7 @@ namespace minsky
             // group leadin
             for (; c[0]=='*'; mdlFile>>GetUtf8Char(c));
             currentMDLGroup=readToken(mdlFile,'*');
-            if (currentMDLGroup==".Control")
-              return; // TODO Add processing of simulation parameters
+              
             while (mdlFile>>GetUtf8Char(c))
               if (c[0]=='|')
                 {
@@ -175,9 +176,29 @@ namespace minsky
         if (name.substr(0,9)==R"(\\\---///)")
           break; // we don't parse the sketch information - not used in Minsky
         string definition=collapseWS(readToken(mdlFile,'~'));
-        string units=readToken(mdlFile,'~');
+        auto unitField=readToken(mdlFile,'~');
+        regex_match(unitField,match,unitFieldPattern);
+        string units=trimWS(match[1]);
+        string sliderSpec;
+        if (match.size()>1)
+          sliderSpec=match[2];
+        
         string comments=readToken(mdlFile,'|');
-        smatch match;
+
+
+        if (currentMDLGroup==".Control")
+          {
+            if (name=="timeStep")
+              {
+                simParms.timeUnit=units;
+                if (regex_match(definition,match,number))
+                  simParms.stepMax=stod(definition);
+              }
+            if (!regex_match(definition,match,number)) continue;
+            if (name=="initialTime") simParms.t0=stod(definition);
+            if (name=="finalTime") simParms.tmax=stod(definition);
+            continue;
+          }
         if (regex_match(definition,match,integ))
           {
             auto intOp=new IntOp;
@@ -198,9 +219,27 @@ namespace minsky
             VariablePtr v(VariableBase::parameter, name);
             group.addItem(v);
             v->init(definition);
-            v->initSliderBounds();
             v->setUnits(units);
             v->detailedText=comments;
+            if (regex_match(sliderSpec,match,sliderSpecPattern))
+              {
+                vector<string> spec;
+                for (size_t i=1; i<=match.size(); ++i) spec.push_back(match[i]);
+                if (spec.size()>0 && regex_match(spec[0],match,number))
+                  v->sliderMin=stod(spec[0]);
+                else
+                  v->sliderMin=0.1*stod(definition);
+                if (spec.size()>1 && regex_match(spec[1],match,number))
+                  v->sliderMax=stod(spec[1]);
+                else
+                  v->sliderMax=10*stod(definition);
+                if (spec.size()>2 && regex_match(spec[2],match,number))
+                  v->sliderStep=stod(spec[2]);
+                v->adjustSliderBounds();
+              }
+            else
+              v->initSliderBounds();
+              
           }
         else
           {

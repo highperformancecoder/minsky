@@ -20,11 +20,12 @@
 #ifndef MDLREADER_H
 #define MDLREADER_H
 #include "group.h"
+#include "rungeKutta.h"
 #include <iostream>
 
 namespace minsky
 {
-  /// import a Vensim mdl file into \a group 
-  void readMdl(Group& group, std::istream& mdlFile);
+  /// import a Vensim mdl file into \a group, also populating \a simParms from the control block
+  void readMdl(Group& group, RungeKutta& simParms, std::istream& mdlFile);
 }
 #endif
