@@ -172,6 +172,7 @@ namespace minsky
             VariablePtr v(VariableBase::parameter, name);
             group.addItem(v);
             v->init(definition);
+            v->initSliderBounds();
             v->setUnits(units);
             v->detailedText=comments;
           }

@@ -38,6 +38,9 @@ namespace minsky
     description("uf"+std::to_string(nextId++)+"(x,y)");
     localSymbols.add_variable("x",x);
     localSymbols.add_variable("y",y);
+    localSymbols.add_variable("time",minsky().t);
+    localSymbols.add_function("step",[](double x, double h){return x<minsky().t? h: 0;});
+      
     compiledExpression.register_symbol_table(externalSymbols);
     compiledExpression.register_symbol_table(localSymbols);
   }
