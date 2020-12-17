@@ -8,7 +8,7 @@ for i in test/00/*.sh; do
     echo -n "$i: "
     # rendering is too unstable, so disable on the Travis platform
     if [ "$TRAVIS" = 1 -a $i = test/00/renderEquations.sh ]; then echo disabled; continue; fi
-    if [ "$TRAVIS" = 1 -a $i = test/00/renderParVarSheet.sh ]; then echo disabled; continue; fi
+    if [ "$TRAVIS" = 1 -a $i = test/00/renderItemTab.sh ]; then echo disabled; continue; fi
     if [ "$TRAVIS" = 1 -a $i = test/00/allItemsRenderCheck.sh ]; then echo disabled; continue; fi
     if [ "$TRAVIS" = 1 -a $i = test/00/godleyTableWindow.sh ]; then echo disabled; continue; fi
     # greek characters in variable names cause problems in docker containers
