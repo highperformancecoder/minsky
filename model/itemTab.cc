@@ -51,7 +51,7 @@ namespace minsky
   int ItemTab::colX(double x) const
   { 
     if (itemVector.empty() || colLeftMargin.empty()) return -1;
-    size_t c;
+    size_t c=-1;
     for (auto& i: colLeftMargin)
       {
         auto p=std::upper_bound(i.second.begin(), i.second.end(), (x-offsx));
@@ -148,16 +148,16 @@ namespace minsky
     auto minD=numeric_limits<float>::max();
     for (auto& i: itemCoords)
       {
-		float xx=(i.second).first+offsx, yy=(i.second).second+offsy;  
+        float xx=(i.second).first+offsx, yy=(i.second).second+offsy;  
         float d=sqr(xx-x)+sqr(yy-y);
         float z=i.first->zoomFactor();
         float w=0.5*i.first->iWidth()*z,h=0.5*i.first->iHeight()*z;
         // improve grabbing of Godley tables on the tab.
         if (auto g=dynamic_pointer_cast<GodleyIcon>(i.first))
-        {
-			GodleyTableWindow godley(g);
+          {
+            GodleyTableWindow godley(g);
             ecolab::cairo::Surface surf
-               (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
+              (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
             try
               {
                 godley.draw(surf.cairo());
@@ -165,12 +165,12 @@ namespace minsky
             catch (const std::exception& e) 
               {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
             catch (...) {cerr<<"illegal exception caught in draw()";}
-			w=0.5*godley.colLeftMargin[godley.colLeftMargin.size()-1];
-			h=0.5*(godley.godleyIcon->table.rows())*godley.rowHeight;
-			xx+=w;
-			yy+=h;
-			d=sqr(xx-x)+sqr(yy-y);
-		}
+            w=0.5*godley.colLeftMargin[godley.colLeftMargin.size()-1];
+            h=0.5*(godley.godleyIcon->table.rows())*godley.rowHeight;
+            xx+=w;
+            yy+=h;
+            d=sqr(xx-x)+sqr(yy-y);
+          }
         if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
           {
             minD=d;
@@ -495,7 +495,7 @@ namespace minsky
                     godley.disableButtons();   
                     godley.draw(cairo);
                     
-                      // draw title
+                    // draw title
                     if (!g->table.title.empty())
                       {
                         CairoSave cs(cairo);
