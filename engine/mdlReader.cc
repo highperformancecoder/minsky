@@ -100,6 +100,8 @@ namespace minsky
       {"step",{"y*(x>time)",FUNCTION([](double x,double y){return y*(x>minsky().t);})}}
     };
 
+    set<string> functionsAdded; // track user functions added to group
+    
     void addDefinitionToPort(Group& group, const shared_ptr<Port>& port, const string& name, const string& definition)
     {
       static regex identifier(R"([A-Za-z]\w*)");
@@ -123,7 +125,8 @@ namespace minsky
           auto f=venSimFunctions.find(i);
           if (f!=venSimFunctions.end())
             {
-              addDefinitionToPort(group,nullptr,f->first,f->second.expression);
+              if (!functionsAdded.insert(f->first).second)
+                addDefinitionToPort(group,nullptr,f->first,f->second.expression);
               f->second.addToTable(f->first, UserFunction::globalSymbols());
             }
        }
@@ -138,10 +141,11 @@ namespace minsky
     set<string> integrationVariables;
     regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");
     regex number(R"(\d*\.?\d+[Ee]?\d*)");
-    regex unitFieldPattern(R"(([^][]*)(\[.*\])?)");
+    regex unitFieldPattern(R"(([^\[\]]*)(\[.*\])?)");
     regex sliderSpecPattern(R"(\[([^,]*),?([^,]*),?([^,]*)\])");
     smatch match;
     UserFunction::globalSymbols().clear();
+    functionsAdded.clear();
     
     string c;
     string currentMDLGroup;
