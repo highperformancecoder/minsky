@@ -21,9 +21,9 @@
 #include "operation.h"
 #include "userFunction.h"
 #include "selection.h" //TODO why is this needed?
+#include "minsky.h"
 #include "minsky_epilogue.h"
 
-#include "exprtk/exprtk.hpp"
 #include <boost/locale.hpp>
 
 using boost::locale::conv::utf_to_utf;
@@ -87,19 +87,59 @@ namespace minsky
         }
       return utf_to_utf<char>(result);
     }
+
+    struct FunctionDef
+    {
+      std::string expression;
+      std::function<void(const std::string&,exprtk::symbol_table<double>&)> addToTable;
+    };
+
+#define FUNCTION(def) [](const std::string& name, exprtk::symbol_table<double>& table){table.add_function(name,def);}       
+    
+    map<string, FunctionDef> venSimFunctions={
+      {"step",{"y*(x>time)",FUNCTION([](double x,double y){return y*(x>minsky().t);})}}
+    };
+
+    void addDefinitionToPort(Group& group, const shared_ptr<Port>& port, const string& name, const string& definition)
+    {
+      static regex identifier(R"([A-Za-z]\w*)");
+      smatch match;
+      if (regex_match(definition,match,identifier))
+        {
+          VariablePtr rhs(VariableBase::flow, definition);
+          group.addItem(rhs);
+          if (port)
+            group.addWire(rhs->ports[0], port);
+          return;
+        }
+      
+      auto function=new UserFunction;
+      group.addItem(function);
+      function->description(name);
+      function->expression=definition;
+      function->addVariable("time",minsky().t);
+      for (auto i: function->externalSymbolNames())
+        {
+          auto f=venSimFunctions.find(i);
+          if (f!=venSimFunctions.end())
+            {
+              addDefinitionToPort(group,nullptr,f->first,f->second.expression);
+              f->second.addToTable(f->first, UserFunction::globalSymbols());
+            }
+       }
+      if (port)
+        group.addWire(function->ports[0], port);
+    }
+    
   }
 
   void readMdl(Group& group, istream& mdlFile)
   {
-    exprtk::parser<double> parser;
-    parser.enable_unknown_symbol_resolver();
-    exprtk::symbol_table<double> symbols;
-    exprtk::expression<double> compiled;
-    compiled.register_symbol_table(symbols);
     set<string> integrationVariables;
     regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");
-    regex identifier(R"([A-Za-z]\w*)");
     regex number(R"(\d*\.?\d+[Ee]?\d*)");
+
+    UserFunction::globalSymbols().clear();
     
     string c;
     string currentMDLGroup;
@@ -151,21 +191,7 @@ namespace minsky
             v->detailedText=comments;
 
             auto integrand=match[1].str();
-            if (regex_match(integrand,match,identifier))
-              {
-                VariablePtr rhs(VariableBase::flow, integrand);
-                group.addItem(rhs);
-                group.addWire(rhs->ports[0], intOp->ports[1]);
-              }
-            else
-              {
-                auto function=new UserFunction;
-                group.addItem(function);
-                function->description("Integrand of "+name);
-                function->expression=integrand;
-                parser.compile(function->expression, compiled);
-                group.addWire(function->ports[0], intOp->ports[1]);
-              }
+            addDefinitionToPort(group, intOp->ports[1], "Integrand of "+name, integrand);
           }
         else if (regex_match(definition,match,number))
           {
@@ -180,32 +206,11 @@ namespace minsky
           {
             VariablePtr v(VariableBase::flow, name);
             group.addItem(v);
-            if (regex_match(definition,match,identifier))
-              {
-                VariablePtr rhs(VariableBase::flow, definition);
-                group.addItem(rhs);
-                group.addWire(rhs->ports[0], v->ports[1]);
-              }
-            else
-              {
-                auto function=new UserFunction;
-                group.addItem(function);
-                function->description("Def: "+name);
-                function->expression=definition;
-                parser.compile(function->expression, compiled);
-                group.addWire(function->ports[0], v->ports[1]);
-              }
+            addDefinitionToPort(group, v->ports[1], "Def: "+name, definition);
             v->setUnits(units);
             v->detailedText=comments;
           }
       }
-
-//    // add in the variables
-//    std::vector<std::string> variableNames;
-//    symbols.get_variable_list(variableNames);
-//    for (auto& name: variableNames)
-//      if (!integrationVariables.count(name))
-//        group.addItem(new Variable<VariableType::flow>(name));
 
   }
 }

@@ -26,7 +26,13 @@
 namespace minsky
 {
   int UserFunction::nextId=0;
-
+  
+  exprtk::symbol_table<double>& UserFunction::globalSymbols()
+  {
+    static exprtk::symbol_table<double> table;
+    return table;
+  }
+  
   namespace {
     exprtk::parser<double> parser;
   }
@@ -34,18 +40,17 @@ namespace minsky
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
 
-  UserFunction::UserFunction() {
-    description("uf"+std::to_string(nextId++)+"(x,y)");
+  UserFunction::UserFunction(const string& name, const string& expression): expression(expression) {
+    description(name);
     localSymbols.add_variable("x",x);
     localSymbols.add_variable("y",y);
-    localSymbols.add_variable("time",minsky().t);
-    localSymbols.add_function("step",[](double x, double h){return x<minsky().t? h: 0;});
       
+    compiledExpression.register_symbol_table(globalSymbols());
     compiledExpression.register_symbol_table(externalSymbols);
     compiledExpression.register_symbol_table(localSymbols);
   }
 
-  vector<string> UserFunction::externalVariables() const
+  vector<string> UserFunction::externalSymbolNames() const
   {
     // do an initial parse to pick up references to external variables
     exprtk::symbol_table<double> externalSymbols, localSymbols=this->localSymbols;
@@ -64,7 +69,7 @@ namespace minsky
   {
     // add them back in with their correct definitions
     externalSymbols.clear();
-    for (auto& i: externalVariables())
+    for (auto& i: externalSymbolNames())
       {
         auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
         if (v!=minsky().variableValues.end())

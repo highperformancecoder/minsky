@@ -42,7 +42,7 @@ namespace minsky
     symbolTable.add_variable("x",x);
     symbolTable.add_variable("y",y);
 
-    std::vector<std::string> externalIds=const_cast<UserFunction*>(this)->externalVariables();
+    std::vector<std::string> externalIds=const_cast<UserFunction*>(this)->externalSymbolNames();
 
     externalUnits.reserve(externalIds.size());
     for (auto& i: externalIds)
