@@ -65,16 +65,20 @@ namespace minsky
           
           if (!isspace(i) && i!='_')
             {
-              // add _ if collapsing whitespace in an identifier, ' ' otherwise
+              // camelcase if collapsing whitespace in an identifier, ' ' otherwise
               if (lastWS)
                 if (quoted || (identifierChar(i) && identifierChar(lastNonWS)))
-                  result+='_';
+                  if (isascii(i))
+                    result+=toupper(i);
+                  else
+                    result+=i;
                 else
-                  result+=' ';
-              if (isascii(i))
-                result+=tolower(i);
+                  result+=utf_to_utf<uint32_t>(" ")+i;
               else
-                result+=i;
+                if (isascii(i))
+                  result+=tolower(i);
+                else
+                  result+=i;
               lastNonWS=i;
               lastWS=false;
             }
@@ -125,7 +129,7 @@ namespace minsky
         string definition=collapseWS(readToken(mdlFile,'~'));
         string units=readToken(mdlFile,'~');
         string comments=readToken(mdlFile,'|');
-        regex integ(R"(\s*INTEG\s*\(([^,]*),([^,]*)\))");
+        regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");
         smatch match;
         if (regex_match(definition,match,integ))
           {

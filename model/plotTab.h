@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2019
+  @copyright Steve Keen 2020
   @author Russell Standish
   @author Wynand Dednam
   This file is part of Minsky.
@@ -18,19 +18,19 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARAMETERSHEET_H
-#define PARAMETERSHEET_H
-#include <parVarSheet.h>
+#ifndef PLOTTAB_H
+#define PLOTTAB_H
+#include <itemTab.h>
 
 namespace minsky
 {
 	 
-  class ParameterSheet: public ParVarSheet
-  {
+  class PlotTab: public ItemTab
+  {	  
   public:
-    bool variableSelector(ItemPtr i) override {if (auto v=i->variableCast()) return v->type()==VariableType::parameter; return false;} 
+    bool itemSelector(ItemPtr i) override {if (auto p=i->plotWidgetCast()) {return p->plotOnTab();}; return false;}    
   };
   
 }
-#include "parameterSheet.cd"
+#include "plotTab.cd"
 #endif

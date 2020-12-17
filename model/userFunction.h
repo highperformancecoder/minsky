@@ -28,11 +28,13 @@ namespace  minsky
     exprtk::symbol_table<double> localSymbols, externalSymbols;
     exprtk::expression<double> compiledExpression;
     void updateBB() override {bb.update(*this);}
+    CLASSDESC_ACCESS(UserFunction);
   public:
     static int nextId;
     double x, y;
     std::string expression;
     UserFunction();
+    std::vector<std::string> externalVariables() const;
     void compile();
     double evaluate(double x, double y);
     Units units(bool check=false) const override;

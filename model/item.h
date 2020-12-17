@@ -36,11 +36,12 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
-  class Group;
+  class Group; 
   class VariablePtr;
   class VariableBase;
   class OperationBase;
   class SwitchIcon;
+  class PlotWidget;    
 
   class Item;
   typedef std::shared_ptr<Item> ItemPtr;
@@ -155,7 +156,11 @@ namespace minsky
     /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
     virtual const SwitchIcon* switchIconCast() const {return nullptr;}
     virtual SwitchIcon* switchIconCast() {return nullptr;}
-    /// @}      
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
+    virtual PlotWidget* plotWidgetCast() {return nullptr;}
+    /// @}            
 
     ItemPortVector ports;
     virtual float x() const; 
