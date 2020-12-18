@@ -95,9 +95,44 @@ namespace minsky
     };
 
 #define FUNCTION(def) [](const std::string& name, exprtk::symbol_table<double>& table){table.add_function(name,def);}       
+
+    double pulse(double x, double y)
+    {return (minsky().t>=x)*(minsky().t<x+y);}
+    double pulseTrain(double s, double b,double r,double e)
+    {
+      double t=minsky().t; double tm=fmod(t,r); double sm=fmod(s,r); double bm=fmod(s+b,r);
+      return (t<e)*(t>=s)*(tm>=sm)*(tm<bm);
+    }
     
     map<string, FunctionDef> venSimFunctions={
-      {"step",{"y*(time>x)",FUNCTION([](double x,double y){return y*(minsky().t>x);})}}
+      {"arccos",{"acos(x)",FUNCTION([](double x){return acos(x);})}},
+      {"arcsin",{"asin(x)",FUNCTION([](double x){return asin(x);})}},
+      {"arctan",{"atan(x)",FUNCTION([](double x){return atan(x);})}},
+      {"gammaLn",{"gammaLn(x)",FUNCTION([](double x){return lgamma(x);})}},
+      {"integer",{"floor(x)",FUNCTION([](double x){return floor(x);})}},
+      {"ln",{"log(x)",FUNCTION([](double x){return log(x);})}},
+      {"log",{"log(x)/log(y)",FUNCTION([](double x, double y){return log(x)/log(y);})}},
+      {"modulo",{"modulo(x,y)",FUNCTION([](double x, double y){return fmod(x,y);})}},
+      {"power",{"x^y",FUNCTION([](double x, double y){return pow(x,y);})}},
+//      {"pulse",{"(time>=x)*(time<x+y)",FUNCTION([](double x, double y){return (minsky().t>=x)*(minsky().t<x+y);})}},
+//      {"pulseTrain",{"pulseTrain(x,y,x,y)",FUNCTION([](double s, double b,double r,double e){
+//        double t=minsky().t; double tm=fmod(t,r); double sm=fmod(s,r); double bm=fmod(s+b,r);
+//        return (t<e)*(t>=s)*(tm>=sm)*(tm<bm);
+//      })}},
+      // why do the above lambdas fail?
+      {"pulse",{"(time>=x)*(time<x+y)",FUNCTION(pulse)}},
+      {"pulseTrain",{"pulseTrain(x,y,x,y)",FUNCTION(pulseTrain)}},
+      {"quantum",{"floor(x/y)",FUNCTION([](double x, double y){return floor(x/y);})}},
+      {"ramp",{"ramp(x,y,y)",FUNCTION([](double s, double t1, double t2){
+        double t=minsky().t;
+        if (t1>t2) swap(t1,t2);
+        if (t<t1) return 0.0;
+        else if (t<t2) return (t-t1)*s;
+        else return (t2-t1)*s;
+      })}},
+      {"step",{"y*(time>=x)",FUNCTION([](double x,double y){return y*(minsky().t>x);})}},
+      {"xidz",{"xidz(x,y,y)",FUNCTION([](double a,double b,double x){return (b==0)? x: a/b;})}},
+      {"zidz",{"zidz(x,y)",FUNCTION([](double a,double b){return (b==0)? 0: a/b;})}}
     };
 
     set<string> functionsAdded; // track user functions added to group
@@ -117,7 +152,7 @@ namespace minsky
       
       auto function=new UserFunction;
       group.addItem(function);
-      function->description(name);
+      function->description(name+"()");
       function->expression=definition;
       for (auto i: function->externalSymbolNames())
         {
@@ -147,6 +182,9 @@ namespace minsky
     functionsAdded.clear();
 
     UserFunction::globalSymbols().add_variable("time",minsky().t);
+    UserFunction::globalSymbols().add_variable("timeStep",minsky().stepMax);
+    UserFunction::globalSymbols().add_variable("initialTime",minsky().t0);
+    UserFunction::globalSymbols().add_variable("finalTime",minsky().tmax);
     UserFunction::globalUnitSymbols().add_variable("time",timeUnit);
     
     string c;
