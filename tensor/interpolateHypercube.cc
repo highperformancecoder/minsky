@@ -78,6 +78,7 @@ namespace civita
             if (dst==targetHC.end())
             {
 			  // possible alternative when targetHC has no xvectors or undefined ones. for feature 147
+              //throw runtime_error("no matching dimension found");
               interimHC.xvectors.push_back(src);
               rotation[i]=i;
 		    }
