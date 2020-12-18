@@ -47,6 +47,8 @@ namespace  minsky
     void addFunction(const std::string& name, F f) {
       localSymbols.add_function(name,f);
     }
+    void displayTooltip(cairo_t* cr, const std::string& tt) const override
+    {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
   };
 
   // single argument user function
