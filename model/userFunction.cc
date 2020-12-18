@@ -56,6 +56,7 @@ namespace minsky
     exprtk::symbol_table<double> externalSymbols, localSymbols=this->localSymbols;
     exprtk::expression<double> compiledExpression;
     compiledExpression.register_symbol_table(externalSymbols);
+    compiledExpression.register_symbol_table(globalSymbols());
     compiledExpression.register_symbol_table(localSymbols);
     parser.enable_unknown_symbol_resolver();
     parser.compile(expression, compiledExpression);

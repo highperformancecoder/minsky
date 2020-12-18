@@ -28,16 +28,29 @@ namespace minsky
     exprtk::parser<UnitsExpressionWalker> unitsParser;
   }
 
+  UnitsExpressionWalker timeUnit;
+  bool UnitsExpressionWalker::check=true;
+  
+  exprtk::symbol_table<UnitsExpressionWalker>& UserFunction::globalUnitSymbols()
+  {
+    static exprtk::symbol_table<UnitsExpressionWalker> table;
+    return table;
+  }
+
   Units UserFunction::units(bool check) const
   {
+    UnitsExpressionWalker::check=check;
     UnitsExpressionWalker x,y;
     x.units=ports[1]->units(check); x.check=check;
     y.units=ports[2]->units(check); y.check=check;
 
+    timeUnit.units=Units(cminsky().timeUnit);
+    
     vector<UnitsExpressionWalker> externalUnits;
     exprtk::symbol_table<UnitsExpressionWalker> symbolTable, unknownVariables;
     exprtk::expression<UnitsExpressionWalker> compiled;
     compiled.register_symbol_table(unknownVariables);
+    compiled.register_symbol_table(globalUnitSymbols());
     compiled.register_symbol_table(symbolTable);
     symbolTable.add_variable("x",x);
     symbolTable.add_variable("y",y);

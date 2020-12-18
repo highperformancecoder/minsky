@@ -97,7 +97,7 @@ namespace minsky
 #define FUNCTION(def) [](const std::string& name, exprtk::symbol_table<double>& table){table.add_function(name,def);}       
     
     map<string, FunctionDef> venSimFunctions={
-      {"step",{"y*(x>time)",FUNCTION([](double x,double y){return y*(x>minsky().t);})}}
+      {"step",{"y*(time>x)",FUNCTION([](double x,double y){return y*(minsky().t>x);})}}
     };
 
     set<string> functionsAdded; // track user functions added to group
@@ -119,7 +119,6 @@ namespace minsky
       group.addItem(function);
       function->description(name);
       function->expression=definition;
-      function->addVariable("time",minsky().t);
       for (auto i: function->externalSymbolNames())
         {
           auto f=venSimFunctions.find(i);
@@ -146,6 +145,9 @@ namespace minsky
     smatch match;
     UserFunction::globalSymbols().clear();
     functionsAdded.clear();
+
+    UserFunction::globalSymbols().add_variable("time",minsky().t);
+    UserFunction::globalUnitSymbols().add_variable("time",timeUnit);
     
     string c;
     string currentMDLGroup;

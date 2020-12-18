@@ -20,6 +20,7 @@
 #ifndef USERFUNCTION_H
 #define USERFUNCTION_H
 #include "operation.h"
+#include "unitsExpressionWalker.h"
 #include "exprtk/exprtk.hpp"
 namespace  minsky
 {
@@ -31,6 +32,7 @@ namespace  minsky
     CLASSDESC_ACCESS(UserFunction);
   public:
     static exprtk::symbol_table<double>& globalSymbols();
+    static exprtk::symbol_table<UnitsExpressionWalker>& globalUnitSymbols();
     static int nextId;
     double x, y;
     std::string expression;
@@ -59,6 +61,10 @@ namespace  minsky
     UserFunction1(const std::string& name, const std::string& expression=""): UserFunction(name,expression) {}
     double evaluate(double x) {return UserFunction::evaluate(x,0);}
   };
+
+  // static UnitExpressionWalker that is initialised to the time unit
+  extern UnitsExpressionWalker timeUnit;
+
 }
 #include "userFunction.cd"
 #include "userFunction.xcd"
