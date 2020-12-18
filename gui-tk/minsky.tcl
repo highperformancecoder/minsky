@@ -1852,7 +1852,7 @@ pushFlags
 if {$argc>1} {
     #if argv(1) has .mdl extension, it is a Vensim model file
     if [string match "*.mdl" $argv(1)] {
-        eval importVensim $argv(1)
+        catch {eval importVensim $argv(1)}
         minsky.model.autoLayout
 #        minsky.canvas.requestRedraw
         .controls.zoomFit invoke

@@ -550,6 +550,7 @@ namespace minsky
   {
     for (auto& i: variableValues)
       i.second->units.clear();
+    timeUnit.clear();
   }
   
   void Minsky::populateMissingDimensions() {

@@ -214,7 +214,11 @@ namespace minsky
             auto& v=intOp->intVar;
             integrationVariables.insert(name);
             v->init(match[2].str());
-            v->setUnits(units);
+            try  // absorb any errors in units - we have a chance to fix these later
+              {
+                v->setUnits(units);
+              }
+            catch (...) {}
             v->detailedText=comments;
 
             auto integrand=match[1].str();
@@ -225,7 +229,11 @@ namespace minsky
             VariablePtr v(VariableBase::parameter, name);
             group.addItem(v);
             v->init(definition);
-            v->setUnits(units);
+            try  // absorb any errors in units - we have a chance to fix these later
+              {
+                v->setUnits(units);
+              }
+            catch (...) {}
             v->detailedText=comments;
             if (regex_match(sliderSpec,match,sliderSpecPattern))
               {
@@ -245,14 +253,17 @@ namespace minsky
               }
             else
               v->initSliderBounds();
-              
           }
         else
           {
             VariablePtr v(VariableBase::flow, name);
             group.addItem(v);
             addDefinitionToPort(group, v->ports[1], "Def: "+name, definition);
-            v->setUnits(units);
+            try  // absorb any errors in units - we have a chance to fix these later
+              {
+                v->setUnits(units);
+              }
+            catch (...) {}
             v->detailedText=comments;
           }
       }
