@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-rc.2</minskyVersion>
+  <minskyVersion>2.21.0-beta.15</minskyVersion>
   <wires>
    <Wire>
     <id>39</id>
@@ -9,9 +9,9 @@
     <coords>
      <float>147</float>
      <float>208</float>
-     <float>235.369</float>
-     <float>-20.5636</float>
-     <float>451.5</float>
+     <float>209.125</float>
+     <float>47.3156</float>
+     <float>359</float>
      <float>166.25</float>
     </coords>
    </Wire>
@@ -113,6 +113,8 @@
     <y>208</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>0</int>
     </ports>
@@ -132,11 +134,11 @@
     <y>166.25</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>285</width>
+    <height>141.5</height>
     <ports>
      <int>2</int>
     </ports>
-    <width>285</width>
-    <height>141.5</height>
    </Item>
    <Item>
     <id>6</id>
@@ -145,6 +147,8 @@
     <y>180</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>4</int>
      <int>5</int>
@@ -158,6 +162,8 @@
     <y>178</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>7</int>
      <int>8</int>
@@ -177,6 +183,8 @@
     <y>222</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>10</int>
      <int>11</int>
@@ -196,6 +204,8 @@
     <y>271</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>13</int>
      <int>14</int>
@@ -215,6 +225,8 @@
     <y>339</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>16</int>
      <int>17</int>
@@ -234,6 +246,8 @@
     <y>231</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>19</int>
      <int>20</int>
@@ -247,6 +261,8 @@
     <y>273</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>22</int>
      <int>23</int>
@@ -260,6 +276,8 @@
     <y>332</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>25</int>
      <int>26</int>
@@ -273,6 +291,8 @@
     <y>406</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>28</int>
      <int>29</int>
@@ -287,11 +307,11 @@
     <y>381.375</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>617.5</width>
+    <height>67.25</height>
     <ports>
      <int>31</int>
     </ports>
-    <width>617.5</width>
-    <height>67.25</height>
    </Item>
    <Item>
     <id>36</id>
@@ -300,6 +320,8 @@
     <y>523</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>33</int>
      <int>34</int>
@@ -315,11 +337,11 @@
     <y>546</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>289</width>
+    <height>112</height>
     <ports>
      <int>37</int>
     </ports>
-    <width>289</width>
-    <height>112</height>
    </Item>
   </items>
   <groups>

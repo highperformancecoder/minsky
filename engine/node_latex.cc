@@ -19,6 +19,7 @@
 
 #include "equations.h"
 #include "minsky.h"
+#include "userFunction.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -561,6 +562,17 @@ namespace MathDAG
   {
     checkArg(0,0);
     return o<<"\\left("<<arguments[0][0]->latex()<<"\\right)!";
+  }    
+
+  template <>
+  ostream& OperationDAG<OperationType::userFunction>::latex(ostream& o) const
+  {
+    if (arguments.empty() || arguments[0].empty())
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"(0,0)";
+    else if (arguments.size()<2 || arguments[1].empty())
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"\\left("<<arguments[0][0]->latex()<<",0\\right)";
+    else
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"\\left("<<arguments[0][0]->latex()<<","<<arguments[0][1]->latex()<<"\\right)";
   }    
 
   template <>

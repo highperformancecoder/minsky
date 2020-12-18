@@ -19,6 +19,7 @@
 #include "geometry.h"
 #define OPNAMEDEF
 #include "operation.h"
+#include "userFunction.h"
 #include "ravelWrap.h"
 #include "minsky.h"
 #include "str.h"
@@ -164,9 +165,10 @@ namespace minsky
           // at the moment its too tricky to get all the information
           // together for rendering constants
         case OperationType::data:
+        case OperationType::userFunction:
           {
         
-            auto& c=dynamic_cast<const DataOp&>(*this);
+            auto& c=dynamic_cast<const NamedOp&>(*this);
           
             Pango pango(cairo);
             pango.setFontSize(10*scaleFactor()*z);
@@ -207,8 +209,17 @@ namespace minsky
             Rotate rr(rotation(),0,0);
 
             ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
-            if (numPorts()>1)
-              ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+            switch (numPorts())
+              {
+              case 1: break;
+              case 2: 
+                ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+                break;
+              case 3: default:
+                ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,-h+3));
+                ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,h-3));
+                break;
+              }
             if (mouseFocus)
               {
                 drawPorts(cairo);
@@ -318,7 +329,7 @@ namespace minsky
   {
     try
       {
-        unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type()));
+        unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type(),itemPtrFromThis()));
         if (e)
           switch (e->numArgs())
             {
@@ -411,7 +422,7 @@ namespace minsky
         switch (type())
           {
             // these binops need to have dimensionless units
-          case log: case and_: case or_: case polygamma:
+          case log: case and_: case or_: case polygamma: case userFunction:
 
             if (check && !ports[1]->units(check).empty())
               throw_error("function inputs not dimensionless");
@@ -806,6 +817,7 @@ namespace minsky
       case data: return new DataOp;
       case ravel: return new Ravel;
       case constant: throw error("Constant deprecated");
+      case userFunction: return new UserFunction;
       default: return operationFactory.create(type);
       }
   }
@@ -863,15 +875,15 @@ namespace minsky
     return r;
   }
   
-  string DataOp::description() const
+  string NamedOp::description() const
   {
     return m_description;  
   }
    
-  string DataOp::description(const std::string& x)
+  string NamedOp::description(const std::string& x)
   {
     m_description=x;
-    bb.update(*this); // adjust icon bounding box - see ticket #1121
+    updateBB(); // adjust icon bounding box - see ticket #1121
     return m_description;
   }    
 
@@ -1015,11 +1027,10 @@ namespace minsky
   
   template <> void Operation<OperationType::inf>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);		  
+    double sf = scaleFactor();  	  
     cairo_move_to(cairo,-4,-10);
     Pango pango(cairo);
-    pango.setFontSize(9*sf*zoomFactor());
+    pango.setFontSize(9*sf);
     pango.setMarkup("∞");
     pango.show();    
   }
@@ -1027,21 +1038,19 @@ namespace minsky
   template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
+    pango.setFontSize(7*sf);
     pango.setMarkup("%");
     pango.show();
   }   
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);		  	  
+    double sf = scaleFactor();  	  	  
     cairo_move_to(cairo,-4,-5);
     Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
+    pango.setFontSize(7*sf);
     pango.setMarkup("→");
     pango.show();
   }
@@ -1318,10 +1327,9 @@ namespace minsky
   template <> void Operation<OperationType::floor>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-7,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
+    pango.setFontSize(7*sf);
     pango.setMarkup("⌊x⌋");
     pango.show();
   }
@@ -1403,10 +1411,9 @@ namespace minsky
   template <> void Operation<OperationType::sum>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
+    pango.setFontSize(7*sf);
     pango.setMarkup("∑");
     pango.show();
   }
@@ -1414,10 +1421,9 @@ namespace minsky
   template <> void Operation<OperationType::product>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
+    pango.setFontSize(7*sf);
     pango.setMarkup("∏");
     pango.show();
   }
@@ -1479,10 +1485,9 @@ namespace minsky
  template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-7,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
+    pango.setFontSize(7*sf);
     pango.setMarkup("∑+");
     pango.show();
   }
@@ -1490,10 +1495,9 @@ namespace minsky
  template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
     cairo_move_to(cairo,-6,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
+    pango.setFontSize(7*sf);
     pango.setMarkup("∏×");
     pango.show();
   }
@@ -1501,10 +1505,9 @@ namespace minsky
  template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
+    pango.setFontSize(7*sf);
     pango.setMarkup("Δ");
     pango.show();
   }
@@ -1512,10 +1515,9 @@ namespace minsky
   template <> void Operation<OperationType::innerProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
     cairo_move_to(cairo,-4,-10);
     Pango pango(cairo);
-    pango.setFontSize(14*sf*zoomFactor());
+    pango.setFontSize(14*sf);
     pango.setMarkup("·");
     pango.show();
   }
@@ -1523,10 +1525,9 @@ namespace minsky
   template <> void Operation<OperationType::outerProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
     cairo_move_to(cairo,-4,-10);
     Pango pango(cairo);
-    pango.setFontSize(10*sf*zoomFactor());
+    pango.setFontSize(10*sf);
     pango.setMarkup("⊗");
     pango.show();
   }

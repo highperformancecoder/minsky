@@ -698,6 +698,11 @@ namespace MathDAG
       }
   }    
   
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::userFunction>& expr)
+  {throw error("Derivatives of user defined functions not implemented");}
+  
 #define VECTOR_DERIVATIVE_NOT_IMPLEMENTED(op)           \
   template <>                                           \
   NodePtr SystemOfEquations::derivative<>               \

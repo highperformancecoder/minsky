@@ -18,6 +18,7 @@
 */
 #include "schema3.h"
 #include "sheet.h"
+#include "userFunction.h"
 #include "minsky_epilogue.h"
 
 using namespace std;
@@ -159,6 +160,11 @@ namespace schema3
               items.back().dataOpData=d->data;
               items.back().name=d->description();
             }
+          if (auto d=dynamic_cast<minsky::UserFunction*>(i))
+            {
+              items.back().expression=d->expression;
+              items.back().name=d->description();
+            }
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
               //              items.back().filename=r->filename();
@@ -202,6 +208,7 @@ namespace schema3
       registerClassType<minsky::Item>();
       registerClassType<minsky::IntOp>();
       registerClassType<minsky::DataOp>();
+      registerClassType<minsky::UserFunction>();
       registerClassType<minsky::Ravel>();
       registerClassType<minsky::Sheet>();
       registerClassType<minsky::VarConstant>();
@@ -375,6 +382,14 @@ namespace schema3
         if (y.dataOpData)
           x1->data=*y.dataOpData;
       }
+    if (auto x1=dynamic_cast<minsky::UserFunction*>(&x))
+      {
+        if (y.name)
+          x1->description(*y.name);
+        if (y.expression)
+          x1->expression=*y.expression;
+      }
+    
     if (auto x1=dynamic_cast<minsky::Ravel*>(&x))
       {
         if (y.ravelState)

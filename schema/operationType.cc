@@ -64,6 +64,7 @@ namespace minsky
     template <> int numArguments<OperationType::max>() {return 2;}
     template <> int numArguments<OperationType::and_>() {return 2;}
     template <> int numArguments<OperationType::or_>() {return 2;}
+    template <> int numArguments<OperationType::userFunction>() {return 2;}
     template <> int numArguments<OperationType::not_>() {return 1;}
     template <> int numArguments<OperationType::time>() {return 0;}    
     template <> int numArguments<OperationType::copy>() {return 1;} 

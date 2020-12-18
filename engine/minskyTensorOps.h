@@ -78,7 +78,7 @@ namespace minsky
     /// create a tensor representation of the expression rooted at
     /// op. If expression doesn't contain any references variables,
     /// then the \a tp parameter may be omitted.
-    std::shared_ptr<ITensor> create(const Item&, const TensorsFromPort& tp={});
+    std::shared_ptr<ITensor> create(const ItemPtr&, const TensorsFromPort& tp={});
   };    
   
   extern TensorOpFactory tensorOpFactory;
@@ -159,8 +159,8 @@ namespace minsky
     TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev); 
     TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
-      result.hypercube(rhs->hypercube());
       result.index(rhs->index());
+      result.hypercube(rhs->hypercube());
       assert(result.idx()>=0);
       assert(result.size()==rhs->size());
     } 

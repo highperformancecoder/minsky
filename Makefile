@@ -33,11 +33,12 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o parVarSheet.o variableInstanceList.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o itemTab.o variableInstanceList.o autoLayout.o userFunction.o userFunction_units.o
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
 	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o
-TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o
+TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o operationType.o a85.o
+
 #schema0.o 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=RESTService.o
@@ -79,6 +80,7 @@ endif
 ifdef MXE
 BOOST_EXT=-mt-x64
 EXE=.exe
+FLAGS+=-Wa,-mbig-obj
 else
 EXE=
 BOOST_EXT=
@@ -276,6 +278,8 @@ dist:
 	cd certify; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/certify/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	cd RavelCAPI; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/RavelCAPI/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd exprtk; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/exprtk/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
 

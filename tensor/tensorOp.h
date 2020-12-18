@@ -59,6 +59,15 @@ namespace civita
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override;
 
     double operator[](size_t i) const override {
+      // missing arguments treated as group identity
+      if (!arg1)
+        {
+          if (arg2)
+            return (*arg2)[i];
+          else
+            throw std::runtime_error("inputs undefined");
+        }
+      if (!arg2) return (*arg1)[i];
       auto hcIndex=index()[i];
       // scalars are broadcast
       return f(arg1->rank()? arg1->atHCIndex(hcIndex): (*arg1)[0],

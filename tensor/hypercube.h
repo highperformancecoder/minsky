@@ -28,6 +28,8 @@ namespace civita
   struct Hypercube
   {
     Hypercube() {}
+    template <class T>
+    Hypercube(const std::initializer_list<T>& d) {dims(std::vector<unsigned>(d.begin(),d.end()));}
     Hypercube(const std::vector<unsigned>& d) {dims(d);}
     Hypercube(const std::vector<XVector>& d): xvectors(d) {}
     Hypercube(std::vector<XVector>&& d): xvectors(std::move(d)) {}
@@ -46,8 +48,7 @@ namespace civita
     /// dimensions
     size_t numElements() const;
       
-    /// set the dimensions. \a d cannot be empty, by may consist of
-    ///the single element {1} to refer to a scalar
+    /// set the dimensions. 
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d);
     
     std::vector<std::string> dimLabels() const;

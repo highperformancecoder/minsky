@@ -74,7 +74,8 @@ namespace minsky
     /// display coordinates 
     std::vector<float> coords() const;
     std::vector<float> coords(const std::vector<float>& coords);
-    
+
+#undef near
     /// returns true if coordinates are near this wire
     bool near(float x, float y) const;
     /// returns the index into the coordinate list if x,y is close to

@@ -225,24 +225,6 @@ if {$preferences(focusFollowsMouse)} {
 }
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
-#source $minskyHome/library/htmllib.tcl
-#toplevel .splash
-#text .splash.text
-#button .splash.ok -text OK -command {destroy .splash}
-#pack .splash.text .splash.ok
-#
-#HMinit_win .splash.text
-#proc HMlink_callback {win url} {
-#    openURL $url
-#}
-#
-#set splashTextFile [open $minskyHome/library/splash.html]
-#set splashText ""
-#while {! [eof $splashTextFile]} {
-#    append splashText [gets $splashTextFile]
-#}
-#HMparse_html $splashText "HMrender .splash.text"
-
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should
     # receive the event - see ticket #114 
@@ -721,6 +703,8 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 .menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
+.menubar.edit add command -label "Randomize layout" -command minsky.model.randomLayout
+.menubar.edit add command -label "Auto layout" -command minsky.model.autoLayout
 
 proc togglePaste {} {
     if {[getClipboard]==""} {
@@ -949,11 +933,74 @@ proc addTab {window label surface} {
 addTab wiring "Wiring" minsky.canvas
 addTab equations "Equations" minsky.equationDisplay
 pack .equations.canvas -fill both -expand 1
-addTab parameters "Parameters" minsky.parameterSheet
+addTab parameters "Parameters" minsky.parameterTab
 pack .parameters.canvas -fill both -expand 1
-addTab variables "Variables" minsky.variableSheet
+addTab variables "Variables" minsky.variableTab
 pack .variables.canvas -fill both -expand 1
+
+bind .variables.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
+menu .variables.context -tearoff 0   
+
+addTab plts "Plots" minsky.plotTab
+pack .plts.canvas -fill both -expand 1
+
+bind .plts.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
+menu .plts.context -tearoff 0   
+
+bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDownCommon %x %y}
+bind .plts.canvas <ButtonRelease-1> {wrapHoverMouseTab plotTab mouseUp %x %y}
+bind .plts.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab plotTab mouseMove %x %y}
+bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
+
+
+addTab gdlys "Godleys" minsky.godleyTab
+pack .gdlys.canvas -fill both -expand 1
+
+bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDownCommon %x %y}
+bind .gdlys.canvas <ButtonRelease-1> {wrapHoverMouseTab godleyTab mouseUp %x %y}
+bind .gdlys.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab godleyTab mouseMove %x %y}
+bind .gdlys.canvas <Leave> {after cancel hoverMouseTab godleyTab}
+
 .tabs select 0
+
+proc hoverMouseTab {tabId} {
+    $tabId.displayDelayedTooltip [get_pointer_x .plts.canvas] [get_pointer_y .plts.canvas]
+}
+
+# reset hoverMouse timer
+proc wrapHoverMouseTab {tabId op x y} {
+    after cancel hoverMouseTab $tabId
+    # ignore any exceptions
+    catch {$tabId.$op $x $y}
+    after 3000 hoverMouseTab $tabId
+}
+
+proc tabContext {x y X Y} {
+	    switch [lindex [.tabs tabs] [.tabs index current]] {
+		.variables {	
+		    .variables.context delete 0 end	
+		    set r [variableTab.rowY $y]    	
+		    switch [variableTab.clickType $x $y] {	
+		        background {}	
+		        internal {	
+		    		set varName [variableTab.getVarName $r]	
+		    		.variables.context add command -label "Show variable $varName on Canvas" -command "variableTab.toggleVarDisplay $r;  variableTab.requestRedraw"	
+		    	}	
+		    }	
+		    tk_popup .variables.context $X $Y	
+	    }
+	    .plts { # still doesn't work???
+			.plts.context delete 0 end
+			switch [plotTab.clickType $x $y] {
+			    background {}
+			    internal {
+					.plts.context add command -label "Remove plot from tab" -command "plotTab.togglePlotDisplay;  plotTab.requestRedraw"
+				}
+			}
+            tk_popup .plts.context $X $Y
+		}
+	}
+}
 
 source $minskyHome/godley.tcl
 source $minskyHome/plots.tcl
@@ -972,6 +1019,8 @@ bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; mins
 bind .equations.canvas <Configure> {setScrollBars}
 bind .parameters.canvas <Configure> {setScrollBars}
 bind .variables.canvas <Configure> {setScrollBars}
+bind .plts.canvas <Configure> {setScrollBars}
+bind .gdlys.canvas <Configure> {setScrollBars}
 
 set helpTopics(.wiring.panopticon) Panopticon
 
@@ -994,17 +1043,29 @@ proc setScrollBars {} {
             } else {.vscroll set  0 1}
         }
         .parameters {
-            set x0 [expr (10000-[parameterSheet.offsx])/20000.0]
-            set y0 [expr (10000-[parameterSheet.offsy])/20000.0]       
+            set x0 [expr (10000-[parameterTab.offsx])/20000.0]
+            set y0 [expr (10000-[parameterTab.offsy])/20000.0]       
             .hscroll set $x0 [expr $x0+[winfo width .parameters.canvas]/20000.0]
             .vscroll set $y0 [expr $y0+[winfo height .parameters.canvas]/20000.0]           
 		}      
         .variables {
-            set x0 [expr (10000-[variableSheet.offsx])/20000.0]
-            set y0 [expr (10000-[variableSheet.offsy])/20000.0]
+            set x0 [expr (10000-[variableTab.offsx])/20000.0]
+            set y0 [expr (10000-[variableTab.offsy])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .variables.canvas]/20000.0]
             .vscroll set $y0 [expr $y0+[winfo height .variables.canvas]/20000.0]                 
-        }        
+        }
+        .plts {
+            set x0 [expr (10000-[plotTab.offsx])/20000.0]
+            set y0 [expr (10000-[plotTab.offsy])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .plts.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .plts.canvas]/20000.0]           
+        }  
+        .gdlys {
+            set x0 [expr (10000-[godleyTab.offsx])/20000.0]
+            set y0 [expr (10000-[godleyTab.offsy])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .gdlys.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .gdlys.canvas]/20000.0]           
+        }                         
     }
 }
 
@@ -1024,15 +1085,25 @@ proc panCanvas {offsx offsy} {
             equationDisplay.requestRedraw
         }
         .parameters {
-            parameterSheet.offsx $offsx
-            parameterSheet.offsy $offsy			
-            parameterSheet.requestRedraw
+            parameterTab.offsx $offsx
+            parameterTab.offsy $offsy			
+            parameterTab.requestRedraw
         }        
         .variables {
-            variableSheet.offsx $offsx
-            variableSheet.offsy $offsy						
-            variableSheet.requestRedraw
+            variableTab.offsx $offsx
+            variableTab.offsy $offsy						
+            variableTab.requestRedraw
         }           
+        .plts {
+            plotTab.offsx $offsx
+            plotTab.offsy $offsy	
+            plotTab.requestRedraw
+        }         
+        .gdlys {
+            godleyTab.offsx $offsx
+            godleyTab.offsy $offsy	
+            godleyTab.requestRedraw
+        }             
     }
     setScrollBars
 }
@@ -1061,21 +1132,37 @@ proc scrollCanvases {xyview args} {
             set h [equationDisplay.height]
         }
         .parameters {
-            set x [parameterSheet.offsx]
-            set y [parameterSheet.offsy]
+            set x [parameterTab.offsx]
+            set y [parameterTab.offsy]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]
             set y1 [expr 0.5*$h]       
         }
         .variables {
-            set x [variableSheet.offsx]
-            set y [variableSheet.offsy]
+            set x [variableTab.offsx]
+            set y [variableTab.offsy]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]
             set y1 [expr 0.5*$h]
         }                
+        .plts {
+            set x [plotTab.offsx]
+            set y [plotTab.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }
+        .gdlys {
+            set x [godleyTab.offsx]
+            set y [godleyTab.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }                      
     }
     switch [lindex $args 0] {
         moveto {
@@ -1127,18 +1214,32 @@ bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panO
 # parameters pan mode
 .parameters.canvas configure -cursor $panIcon
 bind .parameters.canvas <Button-1> {
-    set panOffsX [expr %x-[parameterSheet.offsx]]
-    set panOffsY [expr %y-[parameterSheet.offsy]]
+    set panOffsX [expr %x-[parameterTab.offsx]]
+    set panOffsY [expr %y-[parameterTab.offsy]]
 }
 bind .parameters.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 # variables pan mode
 .variables.canvas configure -cursor $panIcon
 bind .variables.canvas <Button-1> {
-    set panOffsX [expr %x-[variableSheet.offsx]]
-    set panOffsY [expr %y-[variableSheet.offsy]]
+    set panOffsX [expr %x-[variableTab.offsx]]
+    set panOffsY [expr %y-[variableTab.offsy]]
 }
 bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+# plots pan mode
+bind .plts.canvas <Shift-Button-1> {
+    set panOffsX [expr %x-[plotTab.offsx]]
+    set panOffsY [expr %y-[plotTab.offsy]]
+}
+bind .plts.canvas <Shift-B1-Motion> {.plts.canvas configure -cursor $panIcon; panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+# plots pan mode
+bind .gdlys.canvas <Shift-Button-1> {
+    set panOffsX [expr %x-[godleyTab.offsx]]
+    set panOffsY [expr %y-[godleyTab.offsy]]
+}
+bind .gdlys.canvas <Shift-B1-Motion> {.gdlys.canvas configure -cursor $panIcon; panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew
@@ -1345,15 +1446,25 @@ proc recentreCanvas {} {
             equationDisplay.requestRedraw
         }
         .parameters {
-            parameterSheet.offsx 0
-            parameterSheet.offsy 0
-            parameterSheet.requestRedraw
+            parameterTab.offsx 0
+            parameterTab.offsy 0
+            parameterTab.requestRedraw
         }
         .variables {
-            variableSheet.offsx 0
-            variableSheet.offsy 0
-            variableSheet.requestRedraw
-        }                
+            variableTab.offsx 0
+            variableTab.offsy 0
+            variableTab.requestRedraw
+        }       
+        .plts {
+            plotTab.offsx 0
+            plotTab.offsy 0
+            plotTab.requestRedraw
+        }               
+        .gdlys {
+            godleyTab.offsx 0
+            godleyTab.offsy 0
+            godleyTab.requestRedraw
+        }                    
     }
 }
 

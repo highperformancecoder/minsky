@@ -348,3 +348,30 @@ void GodleyTable::rename(const std::string& from, const std::string& to)
           }
       }
 }
+
+void GodleyTable::renameFlows(const std::string& from, const std::string& to)
+{
+  for (size_t r=1; r<rows(); ++r) 	
+    for (size_t c=1; c<cols(); ++c)
+      {
+        FlowCoef fc(cell(r,c));
+        if (!fc.name.empty() && fc.name==from)
+          {
+            fc.name=to;
+            cell(r,c)=fc.str();
+          }
+      }
+}
+
+void GodleyTable::renameStock(const std::string& from, const std::string& to)
+{
+    for (size_t c=1; c<cols(); ++c)
+      {
+        FlowCoef fc(cell(0,c));
+        if (!fc.name.empty() && fc.name==from)
+          {
+            fc.name=to;
+            cell(0,c)=fc.str();
+          }
+      }
+}

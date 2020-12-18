@@ -742,6 +742,9 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Make Group Plot" -command "$item.makeDisplayPlot"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
             .wiring.context add command -label "Pen Styles" -command "penStyles $item"
+             global plotTabDisplay
+             set plotTabDisplay [$item.plotTabDisplay]            
+            .wiring.context add checkbutton -label "Display plot on tab" -command "$item.togglePlotTabDisplay" -variable plotTabDisplay               
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             .wiring.context add command -label "Export as Image" -command exportItemAsImg
         }
@@ -850,6 +853,12 @@ proc setupPickDimMenu {} {
 proc lockSpecificHandles {} {
     global currentLockHandles
 
+    if {![llength [info commands minsky.canvas.item.lockGroup.allLockHandles]]} {
+        minsky.canvas.lockRavelsInSelection
+        # reinitialise the canvas item commands
+        getItemAt [minsky.canvas.item.x] [minsky.canvas.item.y]
+        if {![llength [info commands minsky.canvas.item.lockGroup.allLockHandles]]} return
+    }    
     if {[winfo exists .wiring.context.lockHandles]} {destroy .wiring.context.lockHandles}
     toplevel .wiring.context.lockHandles
     foreach h [minsky.canvas.item.lockGroup.allLockHandles] {
@@ -1252,6 +1261,7 @@ proc deiconifyEditConstant {} {
         foreach var {
             "Name"
             "Value"
+            "Expression"
             "Units"
             "Rotation"
             "Slider Bounds: Max"
@@ -1385,6 +1395,9 @@ proc setDataValue {} {
     set item minsky.canvas.item
     $item.description "$constInput(Name)"
     $item.rotation $constInput(Rotation)
+    if [llength [info commands $item.expression]] {
+        $item.expression $constInput(Expression)
+    }
 }
 
 proc setIntegralIValue {} {
@@ -1427,10 +1440,13 @@ proc configEditConstantForData {} {
     global rowdict
     cleanEditConstantConfig
     set i 10
-    foreach var {
+    set items {
         "Name"
         "Rotation"
-    } {
+    }
+    if [llength [info commands minsky.canvas.item.expression]] {lappend items "Expression"}
+    
+    foreach var $items {
         set row $rowdict($var)
         grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
         grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
@@ -1453,7 +1469,7 @@ proc editItem {} {
             grab set .wiring.editOperation
             wm transient .wiring.editOperation
         }
-        "IntOp|DataOp" {
+        "IntOp|DataOp|UserFunction" {
             set constInput(Value) ""
             set "constInput(Slider Bounds: Min)" ""
             set "constInput(Slider Bounds: Max)" ""
@@ -1473,6 +1489,9 @@ proc editItem {} {
             set constInput(Name) [$item.description]
             set constInput(title) $constInput(Name)
             set constInput(Rotation) [$item.rotation]
+            if [llength [info commands minsky.canvas.item.expression]] {
+                set constInput(Expression) [$item.expression]
+            }
             # value needs to be regotten, as var name may have changed
             set constInput(command) "
                         $setValue

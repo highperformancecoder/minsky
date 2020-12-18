@@ -346,7 +346,7 @@ namespace minsky
   
   void MinskyTCL::setColour(size_t i, const char* name)
   {
-    if (auto p=dynamic_cast<PlotWidget*>(canvas.item.get()))
+    if (auto p=canvas.item->plotWidgetCast())
       if (i<p->palette.size())
         if (auto c=Tk_GetColor(interp(),Tk_MainWindow(interp()),name))
           {

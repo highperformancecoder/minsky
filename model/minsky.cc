@@ -20,6 +20,7 @@
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "flowCoef.h"
+#include "userFunction.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -201,6 +202,7 @@ namespace minsky
     equations.clear();
     integrals.clear();
     variableValues.clear();
+    UserFunction::nextId=0;
     
     flowVars.clear();
     stockVars.clear();
@@ -498,7 +500,7 @@ namespace minsky
       (&Group::items,
        [&](Items& m, Items::iterator i)
        {
-         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+         if (auto p=(*i)->plotWidgetCast())
            {
              p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();
@@ -533,7 +535,7 @@ namespace minsky
          else if (!(*i)->ports.empty() && !(*i)->ports[0]->input() &&
                   (*i)->ports[0]->wires().empty())
            (*i)->checkUnits(); // check anything with an unwired output port
-         else if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+         else if (auto p=(*i)->plotWidgetCast())
            for (auto& i: p->ports)
              i->checkUnits();
          else if (auto p=dynamic_cast<Sheet*>(i->get()))
@@ -881,7 +883,7 @@ namespace minsky
       (&Group::items,
        [&](Items& m, Items::iterator i)
        {
-         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+         if (auto p=(*i)->plotWidgetCast())
            {
              p->clear();
              if (running)
@@ -1399,14 +1401,25 @@ namespace minsky
        {
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
            {
+			 string newName;  
              if (type!=VariableType::flow)
                for (auto v: g->flowVars())
                  if (v->valueId()==name)
-                   throw error("flow variables in Godley tables cannot be converted to a different type");
+                   {
+					   newName=v->name()+"^{Flow}";
+                       VariableValues::iterator iv=variableValues.find(newName);
+                       if (iv==variableValues.end()) g->table.renameFlows(v->name(),newName);
+					   else throw error("flow variables in Godley tables cannot be converted to a different type");
+					}
              if (type!=VariableType::stock)
                for (auto v: g->stockVars())
                  if (v->valueId()==name)
-                   throw error("stock variables in Godley tables cannot be converted to a different type");
+                   {
+					   newName=v->name()+"^{Stock}";
+                       VariableValues::iterator iv=variableValues.find(newName);
+                       if (iv==variableValues.end()) g->table.renameStock(v->name(),newName);
+					   else throw error("stock variables in Godley tables cannot be converted to a different type");
+				  }
            }
          return false;
        });
@@ -1414,7 +1427,7 @@ namespace minsky
     if (auto var=definingVar(name))
       // we want to be able to convert stock vars to flow vars when their input is wired
       if (var->type() != type && (!var->isStock() || var->controller.lock()))
-        throw error("cannot convert a variable to a type other than its defined type");
+         throw error("cannot convert a variable to a type other than its defined type");
 
     // filter out invalid targets
     switch (type)
@@ -1464,7 +1477,7 @@ namespace minsky
     unsigned plotNum=0;
     model->recursiveDo(&Group::items,
                        [&](Items&, Items::iterator i) {
-                         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+                         if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
                                p->renderToSVG((prefix+"-"+p->title+".svg").c_str());
@@ -1479,7 +1492,7 @@ namespace minsky
     unsigned plotNum=0;
     model->recursiveDo(&Group::items,
                        [&](Items&, Items::iterator i) {
-                         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+                         if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
                                p->exportAsCSV((prefix+"-"+p->title+".csv").c_str());

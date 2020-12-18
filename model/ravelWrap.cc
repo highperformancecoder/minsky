@@ -445,7 +445,7 @@ namespace
     VariableValue v(VariableType::flow);
     TensorsFromPort tp(make_shared<EvalCommon>());
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
-    v=*tensorOpFactory.create(*this, tp);
+    v=*tensorOpFactory.create(itemPtrFromThis(), tp);
     // TODO: add some comment lines, such as source of data
     v.exportAsCSV(filename, ravel::Ravel::description());
   }

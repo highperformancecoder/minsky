@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-rc.2</minskyVersion>
+  <minskyVersion>2.21.0-beta.15</minskyVersion>
   <wires>
    <Wire>
     <id>12</id>
@@ -26,6 +26,8 @@
     <y>124</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>0</int>
     </ports>
@@ -46,6 +48,8 @@
     <y>248</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>2</int>
     </ports>
@@ -66,11 +70,11 @@
     <y>119</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>100</width>
+    <height>100</height>
     <ports>
      <int>4</int>
     </ports>
-    <width>100</width>
-    <height>100</height>
    </Item>
    <Item>
     <id>7</id>
@@ -79,11 +83,11 @@
     <y>252</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>100</width>
+    <height>100</height>
     <ports>
      <int>6</int>
     </ports>
-    <width>100</width>
-    <height>100</height>
    </Item>
    <Item>
     <id>9</id>
@@ -92,6 +96,8 @@
     <y>378</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>8</int>
     </ports>
@@ -111,11 +117,11 @@
     <y>390</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>100</width>
+    <height>100</height>
     <ports>
      <int>10</int>
     </ports>
-    <width>100</width>
-    <height>100</height>
    </Item>
   </items>
   <groups>
