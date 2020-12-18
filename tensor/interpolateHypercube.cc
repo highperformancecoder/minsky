@@ -77,15 +77,15 @@ namespace civita
                              [&](const XVector& i){return i.name==src.name;});
             if (dst==targetHC.end())
             {
-			  // possible alternative when targetHC has no xvectors or undefined ones. for feature 147
+              // possible alternative when targetHC has no xvectors or undefined ones. for feature 147
               interimHC.xvectors.push_back(src);
               rotation[i]=i;
-		    }
-		    else
-		    {
-		       interimHC.xvectors.push_back(*dst);
-               rotation[dst-targetHC.begin()]=i;
-		    }
+            }
+            else
+              {
+                interimHC.xvectors.push_back(*dst);
+                rotation[dst-targetHC.begin()]=i;
+              }
           }
         strides.push_back(stride);
         stride*=targetHC[i].size();
