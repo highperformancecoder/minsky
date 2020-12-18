@@ -76,9 +76,16 @@ namespace civita
             auto dst=find_if(targetHC.begin(), targetHC.end(),
                              [&](const XVector& i){return i.name==src.name;});
             if (dst==targetHC.end())
-              throw runtime_error("no matching dimension found");
-            interimHC.xvectors.push_back(*dst);
-            rotation[dst-targetHC.begin()]=i;
+            {
+			  // possible alternative when targetHC has no xvectors or undefined ones. for feature 147
+              interimHC.xvectors.push_back(src);
+              rotation[i]=i;
+		    }
+		    else
+		    {
+		       interimHC.xvectors.push_back(*dst);
+               rotation[dst-targetHC.begin()]=i;
+		    }
           }
         strides.push_back(stride);
         stride*=targetHC[i].size();
