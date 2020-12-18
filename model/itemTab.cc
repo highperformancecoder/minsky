@@ -491,8 +491,9 @@ namespace minsky
                       itemCoords.erase(itemFocus);   
                       itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
                     } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
-                    auto godley=GodleyTableWindow(g);
-                    godley.disableButtons();   
+                    GodleyTableWindow godley(g);
+                    godley.disableButtons();
+                    godley.displayValues=true;   
                     godley.draw(cairo);
                     
                     // draw title
