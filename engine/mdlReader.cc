@@ -57,28 +57,52 @@ namespace minsky
       auto xx=utf_to_utf<uint32_t>(x);
       basic_string<uint32_t> result;
       uint32_t lastNonWS=0;
-      bool quoted=false, lastWS=false;;
+      bool quoted=false, lastWS=false, inIdentifier=false;
       for (auto& i: xx)
         {
           if (i=='"' &&lastNonWS!='\\')
-            quoted=!quoted;
+            {
+              quoted=!quoted;
+              inIdentifier=quoted;
+              // identifiers not allowed to end in .
+              if (!inIdentifier && result.back()=='.')
+                result.erase(result.end()-1);
+              continue; // strip quotes
+            }
+          
+          if (!quoted && !inIdentifier && isalpha(i))
+            inIdentifier=true;
+          if (!quoted && inIdentifier && !identifierChar(i) && !isspace(i) && i!='_')
+            {
+              // identifiers not allowed to end in .
+              if (result.back()=='.')
+                result.erase(result.end()-1);
+              inIdentifier=false;
+            }
           
           if (!isspace(i) && i!='_')
             {
+              // convert verboten characters into ones more friendly to exprtk
+              // we use . as an escape into a numerical unicode code uXXXX, terminated by another .
+              basic_string<uint32_t> exprTkGoodChar;
+              if (inIdentifier)
+                exprTkGoodChar=utf_to_utf<uint32_t>(".u"+to_string(i)+".");
+              else
+                exprTkGoodChar+=i;
               // camelcase if collapsing whitespace in an identifier, ' ' otherwise
               if (lastWS)
                 if (quoted || (identifierChar(i) && identifierChar(lastNonWS)))
-                  if (isascii(i))
+                  if (isalnum(i))
                     result+=toupper(i);
                   else
-                    result+=i;
+                    result+=exprTkGoodChar;
                 else
-                  result+=utf_to_utf<uint32_t>(" ")+i;
+                  result+=utf_to_utf<uint32_t>(" ")+exprTkGoodChar;
               else
-                if (isascii(i))
+                if (isalnum(i))
                   result+=tolower(i);
                 else
-                  result+=i;
+                  result+=exprTkGoodChar;
               lastNonWS=i;
               lastWS=false;
             }
