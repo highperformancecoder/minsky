@@ -74,7 +74,11 @@ namespace minsky
           {
             if (state)
               cminsky().displayErrorItem(*state);
-            string msg="Invalid: "+OperationBase::typeName(type())+"(";
+            string msg="Invalid: ";
+            if (auto uf=dynamic_cast<UserFunction*>(state.get()))
+              msg+=uf->description()+"(";
+            else
+              msg+=OperationBase::typeName(type())+"(";
             if (numArgs()>0)
               msg+=std::to_string(flow1? fv[in1[i]]: sv[in1[i]]);
             if (numArgs()>1)
