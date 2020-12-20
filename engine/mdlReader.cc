@@ -127,6 +127,14 @@ namespace minsky
       double t=minsky().t; double tm=fmod(t,r); double sm=fmod(s,r); double bm=fmod(s+b,r);
       return (t<e)*(t>=s)*(tm>=sm)*(tm<bm);
     }
+
+    double xidz(double a, double b, double x)
+    {
+      double r=a/b;
+      return finite(r)? r: x;
+    }
+    
+    double zidz(double a,double b) {return xidz(a,b,0);}
     
     map<string, FunctionDef> venSimFunctions={
       {"arccos",{"acos(x)",FUNCTION([](double x){return acos(x);})}},
@@ -155,8 +163,8 @@ namespace minsky
         else return (t2-t1)*s;
       })}},
       {"step",{"y*(time>=x)",FUNCTION([](double x,double y){return y*(minsky().t>x);})}},
-      {"xidz",{"xidz(x,y,y)",FUNCTION([](double a,double b,double x){return (b==0)? x: a/b;})}},
-      {"zidz",{"zidz(x,y)",FUNCTION([](double a,double b){return (b==0)? 0: a/b;})}}
+      {"xidz",{"xidz(x,y,y)",FUNCTION(xidz)}},
+      {"zidz",{"zidz(x,y)",FUNCTION(zidz)}}
     };
 
     set<string> functionsAdded; // track user functions added to group
