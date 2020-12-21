@@ -89,10 +89,10 @@ namespace civita
                 tmpRotation[dst-targetHC.begin()]=i;
               }
           }
-        rotation[i]=tmpRotation[i];  
         strides.push_back(stride);
         stride*=targetHC[i].size();
       }
+    for (size_t i=0; i< tmpRotation.size(); i++) rotation[i]=tmpRotation[i];  
 #ifndef NDEBUG
     for (auto& i: rotation) assert(i<rank()); // check that no indices have been doubly assigned.
     // Now we're sure rotation is a permutation
