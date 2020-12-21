@@ -374,4 +374,11 @@ namespace minsky
       removeControlledItems(*g);
   }
 
+  ItemPtr Item::itemPtrFromThis() const
+  {
+    if (auto g=group.lock())
+      return g->findItem(*this);
+    return {};
+  }
+  
 }

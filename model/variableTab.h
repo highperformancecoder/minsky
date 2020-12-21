@@ -18,19 +18,19 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARAMETERSHEET_H
-#define PARAMETERSHEET_H
-#include <parVarSheet.h>
+#ifndef VARIABLETAB_H
+#define VARIABLETAB_H
+#include <itemTab.h>
 
 namespace minsky
 {
 	 
-  class ParameterSheet: public ParVarSheet
-  {
+  class VariableTab: public ItemTab
+  {	  
   public:
-    bool variableSelector(ItemPtr i) override {if (auto v=i->variableCast()) return v->type()==VariableType::parameter; return false;} 
+    bool itemSelector(ItemPtr i) override {if (auto v=i->variableCast()) return v->type()!=VariableType::parameter && v->attachedToDefiningVar(); return false;}  
   };
   
 }
-#include "parameterSheet.cd"
+#include "variableTab.cd"
 #endif

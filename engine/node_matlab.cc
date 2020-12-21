@@ -19,6 +19,7 @@
 
 #include "equations.h"
 #include "minsky.h"
+#include "userFunction.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -522,6 +523,18 @@ namespace MathDAG
     return o<<"gamma(1+("<<arguments[0][0]->matlab()<<"))";
   }  
 
+  template <>
+  ostream& OperationDAG<OperationType::userFunction>::matlab(ostream& o) const
+  {
+    if (arguments.empty() || arguments[0].empty())
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"(0,0)";
+    else if (arguments.size()<2 || arguments[1].empty())
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"("<<arguments[0][0]->matlab()<<",0)";
+    else
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"("<<arguments[0][0]->matlab()<<","<<arguments[0][1]->matlab()<<")";
+  }    
+
+  
   template <>
   ostream& OperationDAG<OperationType::sum>::matlab(ostream& o) const
   {

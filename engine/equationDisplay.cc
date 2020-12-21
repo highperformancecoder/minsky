@@ -19,6 +19,7 @@
 #include "equations.h"
 #include "latexMarkup.h"
 #include "selection.h"
+#include "userFunction.h"
 #include <pango.h>
 #include "minsky_epilogue.h"
 using namespace ecolab;
@@ -320,6 +321,24 @@ namespace MathDAG
         arguments[0][0]->render(surf);
       }
   }
+  
+  template <>
+  void OperationDAG<OperationType::userFunction>::render(Surface& surf) const 
+  {
+    print(surf.cairo(),"<i>"+dynamic_cast<UserFunction&>(*state).description()+"</i>",Anchor::nw);
+    if (arguments.empty() || arguments[0].empty() || !arguments[0][0])
+      print(surf.cairo(),"(0,0)",Anchor::nw);
+    else
+      parenthesise(surf, [&](Surface& surf){
+        arguments[0][0]->render(surf);
+        print(surf.cairo(),",",Anchor::nw);
+        if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+          arguments[1][0]->render(surf);
+        else
+          print(surf.cairo(),"0",Anchor::nw);
+        });
+  }
+
   template <>
   void OperationDAG<OperationType::pow>::render(Surface& surf) const 
   {
@@ -345,6 +364,8 @@ namespace MathDAG
       }
    
   }
+  
+
   template <>
   void OperationDAG<OperationType::time>::render(Surface& surf) const 
   {print(surf.cairo(),"<i>t</i>",Anchor::nw);}  

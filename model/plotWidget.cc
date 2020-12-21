@@ -110,7 +110,7 @@ namespace minsky
     double yoffs=0; // offset to allow for title
     if (!title.empty())
       {
-        double fx=0, fy=titleHeight*iHeight();
+        double fx=0, fy=titleHeight*iHeight()*z;
         cairo_user_to_device_distance(cairo,&fx,&fy);
         
         Pango pango(cairo);

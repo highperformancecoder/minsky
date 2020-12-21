@@ -20,6 +20,7 @@
 #include "cairoItems.h"
 #include "evalOp.h"
 #include "variable.h"
+#include "userFunction.h"
 #include "minsky.h"
 #include "str.h"
 
@@ -337,6 +338,16 @@ namespace minsky
   {return 0;}
 
   template <>
+  double EvalOp<OperationType::userFunction>::evaluate(double in1, double in2) const
+  {return state? dynamic_cast<UserFunction&>(*state).evaluate(in1,in2): 0;}
+  template <>
+  double EvalOp<OperationType::userFunction>::d1(double x1, double x2) const
+  {throw error("user functions cannot be used with an implicit method");}
+  template <>
+  double EvalOp<OperationType::userFunction>::d2(double x1, double x2) const
+  {throw error("user functions cannot be used with an implicit method");}
+
+  template <>
   double EvalOp<OperationType::min>::evaluate(double in1, double in2) const
   {return std::min(in1,in2);}
   template <>
@@ -589,7 +600,7 @@ namespace minsky
 
   namespace {OperationFactory<ScalarEvalOp, EvalOp, OperationType::sum-1> evalOpFactory;}
 
-  ScalarEvalOp* ScalarEvalOp::create(Type op)
+  ScalarEvalOp* ScalarEvalOp::create(Type op, const ItemPtr& state)
   {
     switch (classify(op))
       {
@@ -601,12 +612,16 @@ namespace minsky
           {
           case constant:
             return new ConstantEvalOp;
-            //      case ravel:
-            //        return new RavelEvalOp;
           case numOps:
-            return NULL;
+            return nullptr;
+          case userFunction:
+            if (auto f=dynamic_cast<UserFunction*>(state.get()))
+              f->compile();
+            [[fallthrough]];
           default:
-            return evalOpFactory.create(op);
+            auto r=evalOpFactory.create(op);
+            r->state=dynamic_pointer_cast<OperationBase>(state);
+            return r;
           }
       case reduction:
       case scan:
@@ -848,11 +863,13 @@ namespace minsky
   EvalOpPtr::EvalOpPtr(OperationType::Type op, const ItemPtr& state,
                        VariableValue& to, const VariableValue& from1, const VariableValue& from2)
   {
-    auto t=ScalarEvalOp::create(op);
+    auto t=ScalarEvalOp::create(op,state);
     reset(t);
     assert(t->numArgs()==0 || (from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0)));
-    t->state=dynamic_pointer_cast<OperationBase>(state);
-      
+
+    if (auto f=dynamic_cast<UserFunction*>(state.get()))
+      f->compile();
+    
     switch (t->numArgs())
       {
       case 2:

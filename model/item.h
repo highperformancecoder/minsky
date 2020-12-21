@@ -36,13 +36,15 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
-  class Group;
+  class Group; 
   class VariablePtr;
   class VariableBase;
   class OperationBase;
   class SwitchIcon;
+  class PlotWidget;    
 
   class Item;
+  typedef std::shared_ptr<Item> ItemPtr;
 
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and
@@ -154,7 +156,11 @@ namespace minsky
     /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
     virtual const SwitchIcon* switchIconCast() const {return nullptr;}
     virtual SwitchIcon* switchIconCast() {return nullptr;}
-    /// @}      
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
+    virtual PlotWidget* plotWidgetCast() {return nullptr;}
+    /// @}            
 
     ItemPortVector ports;
     virtual float x() const; 
@@ -268,9 +274,11 @@ namespace minsky
     virtual void removeControlledItems(Group&) const {}
     /// remove all controlled items their owning group
     void removeControlledItems() const;
+
+    /// return a shared_ptr to this
+    ItemPtr itemPtrFromThis() const;
   };
 
-  typedef std::shared_ptr<Item> ItemPtr;
   typedef std::vector<ItemPtr> Items;
   
   /** curiously recursive template pattern for generating overrides */
