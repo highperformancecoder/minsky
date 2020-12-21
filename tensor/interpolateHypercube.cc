@@ -57,6 +57,8 @@ namespace civita
     auto& targetHC=hypercube().xvectors;
     rotation.clear();
     rotation.resize(rank(), rank());
+    // ensure rotation vector will contain unique indices
+    std::map<size_t,size_t> tmpRotation;
     // construct interim hypercube and its rotation permutation
     for (size_t i=0; i<rank(); ++i)
       {
@@ -69,7 +71,7 @@ namespace civita
                 src.dimension.units!=dst.dimension.units) //TODO handle conversion between different units
               throw runtime_error("mismatch between unnamed dimensions");
             interimHC.xvectors.push_back(dst);
-            rotation[i]=i;
+            tmpRotation[i]=i;
           }
         else // find matching names dimension
           {
@@ -79,14 +81,15 @@ namespace civita
             {
               // possible alternative when targetHC has no xvectors or undefined ones. for feature 147
               interimHC.xvectors.push_back(src);
-              rotation[i]=i;
+              tmpRotation[i]=i;
             }
             else
               {
                 interimHC.xvectors.push_back(*dst);
-                rotation[dst-targetHC.begin()]=i;
+                tmpRotation[dst-targetHC.begin()]=i;
               }
           }
+        rotation[i]=tmpRotation[i];  
         strides.push_back(stride);
         stride*=targetHC[i].size();
       }
