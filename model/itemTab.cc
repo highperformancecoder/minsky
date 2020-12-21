@@ -41,7 +41,7 @@ namespace minsky
                                          if (itemSelector(*i)) 
                                            {		                                 
                                              itemVector.emplace_back(*i);
-                                             if (auto p=(*i)->plotWidgetCast()) itemCoords.emplace(make_pair(*i,make_pair(p->x(),p->y()))); 
+                                             if ((*i)->classType()=="PlotWidget") itemCoords.emplace(make_pair(*i,make_pair((*i)->x(),(*i)->y()))); 
                                              if (auto g=dynamic_cast<GodleyIcon*>(i->get())) itemCoords.emplace(make_pair(*i,make_pair(g->x(),g->y())));
                                            }
                                          return false;
@@ -179,12 +179,6 @@ namespace minsky
       }
     
     return item;
-  }
-  
-  void ItemTab::togglePlotDisplay() const      
-  {
-    if (auto p=itemFocus->plotWidgetCast()) p->togglePlotTabDisplay();
-    else return;
   }
   
   namespace
@@ -472,16 +466,6 @@ namespace minsky
                     else y0+=4.1*rowHeight;   
                     iC++;
               
-                  }
-                else if (auto p=it->plotWidgetCast())
-                  {
-                    cairo::CairoSave cs(cairo);   
-                    if (it==itemFocus) {
-                      cairo_translate(cairo,xItem,yItem);  		    				   
-                      itemCoords.erase(itemFocus);   
-                      itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));
-                    } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
-                    p->draw(cairo);
                   }
                 else if (auto g=dynamic_pointer_cast<GodleyIcon>(it))
                   {

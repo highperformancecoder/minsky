@@ -64,7 +64,7 @@ namespace minsky
     ItemPtr itemFocus;        
     enum ClickType {background, internal};    
     ClickType clickType(double x, double y) const;         
-    void draw(cairo_t* cairo); 
+    virtual void draw(cairo_t* cairo); 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
 
@@ -73,7 +73,6 @@ namespace minsky
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);    
     ItemPtr itemAt(float x, float y);
-    void togglePlotDisplay() const;
     void displayDelayedTooltip(float x, float y);        
        
     virtual ~ItemTab() {}
