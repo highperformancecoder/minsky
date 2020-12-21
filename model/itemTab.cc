@@ -478,7 +478,7 @@ namespace minsky
 						
                       }               
                     if (rank>0) y0=h+4.1*rowHeight;
-                    else y0+=4.1*rowHeight;   
+                    else y0+=2.1*rowHeight;   
                     iC++;
               
                   }
