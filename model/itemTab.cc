@@ -18,7 +18,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "itemTab.h"
-#include "godleyTableWindow.h"
 #include "latexMarkup.h"
 #include "group.h"
 #include <pango.h>
@@ -42,7 +41,7 @@ namespace minsky
                                            {		                                 
                                              itemVector.emplace_back(*i);
                                              if (auto p=(*i)->plotWidgetCast()) itemCoords.emplace(make_pair(*i,make_pair(p->x(),p->y()))); 
-                                             if (auto g=dynamic_cast<GodleyIcon*>(i->get())) itemCoords.emplace(make_pair(*i,make_pair(g->x(),g->y())));
+                                             if ((*i)->classType()=="GodleyIcon") itemCoords.emplace(make_pair(*i,make_pair((*i)->x(),(*i)->y())));
                                            }
                                          return false;
                                        });   	
@@ -152,25 +151,6 @@ namespace minsky
         float d=sqr(xx-x)+sqr(yy-y);
         float z=i.first->zoomFactor();
         float w=0.5*i.first->iWidth()*z,h=0.5*i.first->iHeight()*z;
-        // improve grabbing of Godley tables on the tab.
-        if (auto g=dynamic_pointer_cast<GodleyIcon>(i.first))
-          {
-            GodleyTableWindow godley(g);
-            ecolab::cairo::Surface surf
-              (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
-            try
-              {
-                godley.draw(surf.cairo());
-              }
-            catch (const std::exception& e) 
-              {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
-            catch (...) {cerr<<"illegal exception caught in draw()";}
-            w=0.5*godley.colLeftMargin[godley.colLeftMargin.size()-1];
-            h=0.5*(godley.godleyIcon->table.rows())*godley.rowHeight;
-            xx+=w;
-            yy+=h;
-            d=sqr(xx-x)+sqr(yy-y);
-          }
         if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
           {
             minD=d;
@@ -482,31 +462,7 @@ namespace minsky
                       itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));
                     } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
                     p->draw(cairo);
-                  }
-                else if (auto g=dynamic_pointer_cast<GodleyIcon>(it))
-                  {
-                    cairo::CairoSave cs(cairo);   
-                    if (it==itemFocus) {
-                      cairo_translate(cairo,xItem,yItem);  		    				   
-                      itemCoords.erase(itemFocus);   
-                      itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
-                    } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
-                    GodleyTableWindow godley(g);
-                    godley.disableButtons();
-                    godley.displayValues=true;   
-                    godley.draw(cairo);
-                    
-                    // draw title
-                    if (!g->table.title.empty())
-                      {
-                        CairoSave cs(cairo);
-                        Pango pango(cairo);
-                        pango.setMarkup("<b>"+latexToPango(g->table.title)+"</b>");
-                        pango.setFontSize(12);
-                        cairo_move_to(cairo,0.5*godley.colLeftMargin[godley.colLeftMargin.size()-1],godley.topTableOffset-2*godley.rowHeight);
-                        pango.show();
-                      }                    
-                  }			   
+                  }	   
               }              
           }
       }
