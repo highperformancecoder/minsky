@@ -39,10 +39,21 @@ namespace minsky
       while (mdlFile>>GetUtf8Char(c))
         if (c[0]==delim)
           break;
+        else if (c[0]=='{') /* inline comment - read up to close brace */
+          {
+            while (c[0]!='}' && mdlFile>>GetUtf8Char(c));
+            continue;
+          }
+        else if (c[0]=='\\')
+          // quoted end of line processing
+          if (mdlFile>>GetUtf8Char(c) &&  (c[0]=='\n'||c[0]=='\r'))
+            r+=c;
+          else
+            r+="\\"+c;
         else if (c[0]>=' ') // strip out control characters
           r+=c;
       
-      return trimWS(r);
+      return r;
     }
 
     bool identifierChar(int c)
@@ -168,10 +179,10 @@ namespace minsky
     };
 
     set<string> functionsAdded; // track user functions added to group
-    
+    regex identifier(R"([A-Za-z][A-Za-z0-9._]*[A-Za-z0-9_])");
+  
     void addDefinitionToPort(Group& group, const shared_ptr<Port>& port, const string& name, const string& definition)
     {
-      static regex identifier(R"([A-Za-z][A-Za-z0-9._]*[A-Za-z0-9_])");
       smatch match;
       if (regex_match(definition,match,identifier))
         {
@@ -228,14 +239,14 @@ namespace minsky
           {
           case '{':
               // check this is a UTF-8 file
-            if (readToken(mdlFile,'}')!="UTF-8")
+            if (trimWS(readToken(mdlFile,'}'))!="UTF-8")
               throw runtime_error("only UTF-8 file encoding is supported");
             continue;
         
           case '*':
             // group leadin
             for (; c[0]=='*'; mdlFile>>GetUtf8Char(c));
-            currentMDLGroup=readToken(mdlFile,'*');
+            currentMDLGroup=trimWS(readToken(mdlFile,'*'));
               
             while (mdlFile>>GetUtf8Char(c))
               if (c[0]=='|')
@@ -248,18 +259,26 @@ namespace minsky
         
         // macros?
         // read variable name
-        string name=collapseWS(c+readToken(mdlFile,'='));
+        string name=collapseWS(trimWS(c+readToken(mdlFile,'=')));
         if (name.substr(0,9)==R"(\\\---///)")
           break; // we don't parse the sketch information - not used in Minsky
-        string definition=collapseWS(readToken(mdlFile,'~'));
-        auto unitField=readToken(mdlFile,'~');
+        string definition=collapseWS(trimWS(readToken(mdlFile,'~')));
+        switch (definition[0])
+          {
+          case '=': case ':': // for now, treat constant assignment and data assignment equally to numeric assignment
+            definition.erase(definition.front());
+            break;
+          default:
+            break;
+          }
+        auto unitField=trimWS(readToken(mdlFile,'~'));
         regex_match(unitField,match,unitFieldPattern);
         string units=trimWS(match[1]);
         string sliderSpec;
         if (match.size()>1)
           sliderSpec=match[2];
         
-        string comments=readToken(mdlFile,'|');
+        string comments=trimWS(readToken(mdlFile,'|'));
 
 
         if (currentMDLGroup==".Control")
@@ -283,7 +302,17 @@ namespace minsky
             intOp->detailedText=comments;
             auto& v=intOp->intVar;
             integrationVariables.insert(name);
-            v->init(match[2].str());
+            auto integrand=match[1].str();
+            addDefinitionToPort(group, intOp->ports[1], "Integrand of "+name, integrand);
+
+            auto init=match[2].str();
+            if (regex_match(init,match,identifier))
+              v->init(init);
+            else
+              {
+                // we need to add another variable, and attach it to a function block
+                addDefinitionToPort(group, intOp->ports[2], "Initial value of "+name, init);
+              }
             try  // absorb any errors in units - we have a chance to fix these later
               {
                 v->setUnits(units);
@@ -291,8 +320,6 @@ namespace minsky
             catch (...) {}
             v->detailedText=comments;
 
-            auto integrand=match[1].str();
-            addDefinitionToPort(group, intOp->ports[1], "Integrand of "+name, integrand);
           }
         else if (regex_match(definition,match,number))
           {
