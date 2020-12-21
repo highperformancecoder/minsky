@@ -75,6 +75,8 @@ namespace minsky
         auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
         if (v!=minsky().variableValues.end())
           externalSymbols.add_variable(i, (*v->second)[0]);
+        else
+          throw_error("unknown variable: "+i);
       }
     
       // TODO bind any other external references to the variableValues table

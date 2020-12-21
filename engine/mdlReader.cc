@@ -171,7 +171,7 @@ namespace minsky
     
     void addDefinitionToPort(Group& group, const shared_ptr<Port>& port, const string& name, const string& definition)
     {
-      static regex identifier(R"([A-Za-z]\w*)");
+      static regex identifier(R"([A-Za-z][A-Za-z0-9._]*[A-Za-z0-9_])");
       smatch match;
       if (regex_match(definition,match,identifier))
         {
