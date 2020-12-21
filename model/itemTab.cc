@@ -234,7 +234,7 @@ namespace minsky
                     pango.setMarkup("9999");
                     if (rank==0)
                       { 
-						def=definition(*v);  
+                        def=definition(*v);  
                         varAttribVals.clear();
                         varAttribVals.push_back(v->name());
                         varAttribVals.push_back(def);                    
@@ -247,16 +247,16 @@ namespace minsky
                         varAttribVals.push_back(to_string(v->value()));
                     
                         if (it==itemVector[0]) {
-                        for (auto& i:varAttrib) 
-                          {
-                            cairo_move_to(cairo,x,y-1.5*rowHeight);                    
-                            pango.setMarkup(i);
-                            pango.show();                  
-                            colWidth=std::max(colWidth,5+pango.width());  
-                            x+=colWidth;	
-                            colLeftMargin[iC].push_back(x);                        				    
-                          }
-					    }
+                          for (auto& i:varAttrib) 
+                            {
+                              cairo_move_to(cairo,x,y-1.5*rowHeight);                    
+                              pango.setMarkup(i);
+                              pango.show();                  
+                              colWidth=std::max(colWidth,5+pango.width());  
+                              x+=colWidth;	
+                              colLeftMargin[iC].push_back(x);                        				    
+                            }
+                        }
                         x=0;
                         for (auto& i : varAttribVals)
                           {
@@ -297,13 +297,13 @@ namespace minsky
                         }
                         
                         if (it==itemVector[0])                                            
-                        { // draw horizontal grid line
-                          cairo::CairoSave cs(cairo);
-                          cairo_set_source_rgba(cairo,0,0,0,0.5);
-                          cairo_move_to(cairo,x0,y0-0.5*rowHeight);
-                          cairo_line_to(cairo,w+colWidth,y0-0.5*rowHeight);
-                          cairo_stroke(cairo);
-                        }                                  
+                          { // draw horizontal grid line
+                            cairo::CairoSave cs(cairo);
+                            cairo_set_source_rgba(cairo,0,0,0,0.5);
+                            cairo_move_to(cairo,x0,y0-0.5*rowHeight);
+                            cairo_line_to(cairo,w+colWidth,y0-0.5*rowHeight);
+                            cairo_stroke(cairo);
+                          }                                  
                         cairo::CairoSave cs(cairo);
                         // make sure rectangle has right height
                         if (it==itemVector[0]) cairo_rectangle(cairo,x0,y0-1.5*rowHeight,w+colWidth,y-y0+2*rowHeight);    
