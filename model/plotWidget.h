@@ -86,9 +86,7 @@ namespace minsky
     float height() const {return Item::height();}
     
     const PlotWidget* plotWidgetCast() const override {return this;}
-    PlotWidget* plotWidgetCast() override {return this;}
-    
-    std::string classType() const override {return "PlotWidget";}            
+    PlotWidget* plotWidgetCast() override {return this;}          
     
     void addPlotPt(double t); ///< add another plot point
     void updateIcon(double t) override {addPlotPt(t);}

@@ -533,9 +533,9 @@ proc canvasContext {x y X Y} {
     if {[getClipboard]==""} {
         .wiring.context entryconfigure end -state disabled
     }
-    .wiring.context add command -label "Hide defining variables on tab" -command "minsky.canvas.pushDefiningVarsToTab"
-    .wiring.context add command -label "Show defining variables on canvas" -command "minsky.canvas.showDefiningVarsOnCanvas"
-    .wiring.context add command -label "Show all plots on tab" -command "minsky.canvas.showPlotsOnTab" 
+    .wiring.context add command -label "Hide defining groups of selected variables" -command "minsky.canvas.pushDefiningVarsToTab"
+    .wiring.context add command -label "Show all defining groups on canvas" -command "minsky.canvas.showDefiningVarsOnCanvas"
+    .wiring.context add command -label "Show all plots on tab" -command "minsky.canvas.showPlotsOnTab"      
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
