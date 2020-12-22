@@ -57,7 +57,7 @@ namespace minsky
     }
 
     bool identifierChar(int c)
-    {return isalnum(c) || c=='\'' || c=='$';}
+    {return c>0x7f || isalnum(c) || c=='\'' || c=='$';}
     
     // collapse multiple whitespace characters, and if in the middle
     // of an identifier (alphanum <space> alphanum, replace with
@@ -108,7 +108,13 @@ namespace minsky
                   else
                     result+=exprTkGoodChar;
                 else
-                  result+=utf_to_utf<uint32_t>(" ")+exprTkGoodChar;
+                  {
+                    result+=' ';
+                    if (isalnum(i))
+                      result+=tolower(i);
+                    else
+                      result+=exprTkGoodChar;
+                  }
               else
                 if (isalnum(i))
                   result+=tolower(i);
@@ -266,7 +272,7 @@ namespace minsky
         switch (definition[0])
           {
           case '=': case ':': // for now, treat constant assignment and data assignment equally to numeric assignment
-            definition.erase(definition.front());
+            definition.erase(definition.begin());
             break;
           default:
             break;
