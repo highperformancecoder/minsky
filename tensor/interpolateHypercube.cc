@@ -57,6 +57,8 @@ namespace civita
     auto& targetHC=hypercube().xvectors;
     rotation.clear();
     rotation.resize(rank(), rank());
+    // ensure rotation vector will contain unique indices
+    std::map<size_t,size_t> tmpRotation;
     // construct interim hypercube and its rotation permutation
     for (size_t i=0; i<rank(); ++i)
       {
@@ -69,20 +71,29 @@ namespace civita
                 src.dimension.units!=dst.dimension.units) //TODO handle conversion between different units
               throw runtime_error("mismatch between unnamed dimensions");
             interimHC.xvectors.push_back(dst);
-            rotation[i]=i;
+            tmpRotation.emplace(make_pair(i,i));
           }
         else // find matching names dimension
           {
             auto dst=find_if(targetHC.begin(), targetHC.end(),
                              [&](const XVector& i){return i.name==src.name;});
             if (dst==targetHC.end())
-              throw runtime_error("no matching dimension found");
-            interimHC.xvectors.push_back(*dst);
-            rotation[dst-targetHC.begin()]=i;
+            {
+              // possible alternative when targetHC has no xvectors or undefined ones. for feature 147
+              interimHC.xvectors.push_back(src);
+              tmpRotation.emplace(make_pair(i,i));
+            }
+            else
+              {
+                interimHC.xvectors.push_back(*dst);
+                tmpRotation.emplace(make_pair(dst-targetHC.begin(),i));
+              }
           }
         strides.push_back(stride);
         stride*=targetHC[i].size();
       }
+    if (tmpRotation.size()!=rank()) throw runtime_error("rotation of indices is not a permutation"); 
+    for (auto& i: tmpRotation) rotation[i.first]=i.second;
 #ifndef NDEBUG
     for (auto& i: rotation) assert(i<rank()); // check that no indices have been doubly assigned.
     // Now we're sure rotation is a permutation
