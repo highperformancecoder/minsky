@@ -48,7 +48,7 @@ namespace minsky
     /// computed positions of the variable rows
     std::vector<double> rowTopMargin;                      
 
-    void populateItemVector();
+    virtual void populateItemVector();
     virtual bool itemSelector(ItemPtr i) = 0;
     void toggleVarDisplay(int i) const {if (i>=0 && i<int(itemVector.size())) (itemVector[i])->variableCast()->toggleVarTabDisplay(); else return;}
     std::string getVarName(int i) const {if (i>=0 && i<int(itemVector.size())) return (itemVector[i])->variableCast()->name(); else return "";}
@@ -64,7 +64,7 @@ namespace minsky
     ItemPtr itemFocus;        
     enum ClickType {background, internal};    
     ClickType clickType(double x, double y) const;         
-    void draw(cairo_t* cairo); 
+    virtual void draw(cairo_t* cairo); 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
 
@@ -72,7 +72,7 @@ namespace minsky
     void mouseDownCommon(float x, float y);
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);    
-    ItemPtr itemAt(float x, float y);
+    virtual ItemPtr itemAt(float x, float y);
     void togglePlotDisplay() const;
     void displayDelayedTooltip(float x, float y);        
        

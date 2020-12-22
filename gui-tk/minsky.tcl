@@ -985,7 +985,7 @@ proc tabContext {x y X Y} {
 		        background {}	
 		        internal {	
 		    		set varName [variableTab.getVarName $r]	
-		    		.variables.context add command -label "Show variable $varName on Canvas" -command "variableTab.toggleVarDisplay $r;  variableTab.requestRedraw"	
+		    		.variables.context add command -label "Remove $varName from tab" -command "variableTab.toggleVarDisplay $r;  variableTab.requestRedraw"	
 		    	}	
 		    }	
 		    tk_popup .variables.context $X $Y	
