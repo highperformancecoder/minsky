@@ -123,5 +123,30 @@ namespace minsky
         return index-i;
     return index>0? index-1: 0;
   }
+
+  // an iomanip implementing single UTF8 character getting via >>
+  struct GetUtf8Char
+  {
+    std::string* c; // pointer, not ref, to get around constness rules
+    GetUtf8Char(std::string& c): c(&c) {}
+  };
+
+  inline std::istream& operator>>(std::istream& i, const GetUtf8Char& g)
+  {
+    char c;
+    g.c->clear();
+    if (i.get(c))
+      {
+        *g.c+=c;
+        unsigned n=numBytes(c)-1;
+        for (unsigned j=0; j<n; ++j)
+          {
+            if (i.get(c))
+              *g.c+=c;
+          }
+      }
+    return i;
+  }
+
 }
 #endif

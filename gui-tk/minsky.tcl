@@ -575,6 +575,7 @@ menu .exportPlots
 .menubar.file add command -label "Save" -command save -underline 0 -accelerator $meta_menu-S
 .menubar.file add command -label "SaveAs" -command saveAs -underline 4 -accelerator $meta_menu-A 
 .menubar.file add command -label "Insert File as Group" -command insertFile
+.menubar.file add command -label "Import Vensim MDL file" -command importMDL
 
 .menubar.file add command -label "Dimensional Analysis" -command {
     dimensionalAnalysis
@@ -984,7 +985,7 @@ proc tabContext {x y X Y} {
 		        background {}	
 		        internal {	
 		    		set varName [variableTab.getVarName $r]	
-		    		.variables.context add command -label "Show variable $varName on Canvas" -command "variableTab.toggleVarDisplay $r;  variableTab.requestRedraw"	
+		    		.variables.context add command -label "Remove $varName from tab" -command "variableTab.toggleVarDisplay $r;  variableTab.requestRedraw"	
 		    	}	
 		    }	
 		    tk_popup .variables.context $X $Y	
@@ -1436,6 +1437,15 @@ proc insertFile {} {
     eval insertGroupFromFile $fname
 }
 
+proc importMDL {} {
+    global workDir
+    newSystem
+    set fname [tk_getOpenFile -multiple 1 -filetypes {
+        {Vensim {.mdl}} {All {.*}}} -initialdir $workDir]
+    eval importVensim $fname
+    minsky.model.autoLayout
+}
+
 # adjust canvas so that -ve coordinates appear on canvas
 proc recentreCanvas {} {
     switch [lindex [.tabs tabs] [.tabs index current]] {
@@ -1838,7 +1848,18 @@ proc unknown {procname args} {
 }
 
 pushFlags
-if {$argc>1 && ![string match "*.tcl" $argv(1)]} {catch {eval openNamedFile {$argv(1)}}}
+
+if {$argc>1} {
+    #if argv(1) has .mdl extension, it is a Vensim model file
+    if [string match "*.mdl" $argv(1)] {
+        catch {eval importVensim $argv(1)}
+        minsky.model.autoLayout
+#        minsky.canvas.requestRedraw
+        .controls.zoomFit invoke
+    } elseif {![string match "*.tcl" $argv(1)]} {
+        catch {eval openNamedFile {$argv(1)}}
+    }
+}
 
 proc ifDef {var} {
     upvar $var v

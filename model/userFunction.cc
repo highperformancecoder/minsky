@@ -26,7 +26,13 @@
 namespace minsky
 {
   int UserFunction::nextId=0;
-
+  
+  exprtk::symbol_table<double>& UserFunction::globalSymbols()
+  {
+    static exprtk::symbol_table<double> table;
+    return table;
+  }
+  
   namespace {
     exprtk::parser<double> parser;
   }
@@ -34,31 +40,43 @@ namespace minsky
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
 
-  UserFunction::UserFunction() {
-    description("uf"+std::to_string(nextId++)+"(x,y)");
+  UserFunction::UserFunction(const string& name, const string& expression): expression(expression) {
+    description(name);
     localSymbols.add_variable("x",x);
     localSymbols.add_variable("y",y);
+      
+    compiledExpression.register_symbol_table(globalSymbols());
     compiledExpression.register_symbol_table(externalSymbols);
     compiledExpression.register_symbol_table(localSymbols);
   }
 
-  
-  void UserFunction::compile()
+  vector<string> UserFunction::externalSymbolNames() const
   {
     // do an initial parse to pick up references to external variables
-    externalSymbols.clear();
+    exprtk::symbol_table<double> externalSymbols, localSymbols=this->localSymbols;
+    exprtk::expression<double> compiledExpression;
+    compiledExpression.register_symbol_table(externalSymbols);
+    compiledExpression.register_symbol_table(globalSymbols());
+    compiledExpression.register_symbol_table(localSymbols);
+    parser.enable_unknown_symbol_resolver();
     parser.compile(expression, compiledExpression);
     parser.disable_unknown_symbol_resolver();
     std::vector<std::string> externalVariables;
     externalSymbols.get_variable_list(externalVariables);
-
+    return externalVariables;
+  }
+  
+  void UserFunction::compile()
+  {
     // add them back in with their correct definitions
     externalSymbols.clear();
-    for (auto& i: externalVariables)
+    for (auto& i: externalSymbolNames())
       {
         auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
         if (v!=minsky().variableValues.end())
           externalSymbols.add_variable(i, (*v->second)[0]);
+        else
+          throw_error("unknown variable: "+i);
       }
     
       // TODO bind any other external references to the variableValues table
@@ -76,8 +94,5 @@ namespace minsky
     x=in1, y=in2;
     return compiledExpression.value();
   }
-
-
-  
 }
 

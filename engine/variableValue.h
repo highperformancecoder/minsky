@@ -161,9 +161,10 @@ namespace minsky
     void reset(const VariableValues&); 
 
     /// check that name is a valid valueId (useful for assertions)
-    static bool isValueId(const std::string& name) {	
+    static bool isValueId(const std::string& name) {
+      static std::regex pattern("((constant)?\\d*:[^:\\ \f\n\r\t\v]+)");
       return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-        std::regex_match(utf_to_utf<char>(name), std::regex(R"((constant)?\d*:[^:\s\\]+)"));   // Leave curly braces in valueIds. For ticket 1165
+        std::regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
     }
 
     /// construct a valueId
