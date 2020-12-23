@@ -148,7 +148,7 @@ namespace minsky
     double xidz(double a, double b, double x)
     {
       double r=a/b;
-      return finite(r)? r: x;
+      return std::isfinite(r)? r: x;
     }
     
     double zidz(double a,double b) {return xidz(a,b,0);}
