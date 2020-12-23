@@ -66,22 +66,30 @@ namespace minsky
         break;
       }
 
-    // check for NaNs only on scalars. For tensors, NaNs just means
-    // element not present
-    if (in1.size()==1)
-      for (unsigned i=0; i<in1.size(); ++i)
-        if (!std::isfinite(fv[out+i]))
-          {
-            if (state)
-              cminsky().displayErrorItem(*state);
-            string msg="Invalid: "+OperationBase::typeName(type())+"(";
-            if (numArgs()>0)
-              msg+=std::to_string(flow1? fv[in1[i]]: sv[in1[i]]);
-            if (numArgs()>1)
-              msg+=","+std::to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
-            msg+=")";
-            throw runtime_error(msg.c_str());
-          }
+    // This check may well be obsolete. ecolab::Plot will now elide
+    // non-finite data, and it appears that the RK solver can
+    // integrate through infinities. Leaving the code here for now,
+    // just in case we decide to enable it via a user preference.
+//    // check for NaNs only on scalars. For tensors, NaNs just means
+//    // element not present
+//    if (in1.size()==1)
+//      for (unsigned i=0; i<in1.size(); ++i)
+//        if (!std::isfinite(fv[out+i]))
+//          {
+//            if (state)
+//              cminsky().displayErrorItem(*state);
+//            string msg="Invalid: ";
+//            if (auto uf=dynamic_cast<UserFunction*>(state.get()))
+//              msg+=uf->description()+"(";
+//            else
+//              msg+=OperationBase::typeName(type())+"(";
+//            if (numArgs()>0)
+//              msg+=std::to_string(flow1? fv[in1[i]]: sv[in1[i]]);
+//            if (numArgs()>1)
+//              msg+=","+std::to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
+//            msg+=")";
+//            throw runtime_error(msg.c_str());
+//          }
   };
 
   void ScalarEvalOp::deriv(double df[], size_t n, const double ds[],

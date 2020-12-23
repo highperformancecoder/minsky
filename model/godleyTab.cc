@@ -29,6 +29,11 @@ using ecolab::cairo::CairoSave;
 
 namespace minsky
 {
+	
+  bool GodleyTab::itemSelector(ItemPtr i)
+  {
+    return dynamic_cast<GodleyIcon*>(i.get());
+  }	
   
   ItemPtr GodleyTab::itemAt(float x, float y)
   {
@@ -36,75 +41,65 @@ namespace minsky
     auto minD=numeric_limits<float>::max();
     for (auto& i: itemCoords)
       {
-		if (i.first->classType()=="GodleyIcon")
-		{
-          float xx=(i.second).first+offsx, yy=(i.second).second+offsy;  
-		  auto g=dynamic_pointer_cast<GodleyIcon>(i.first);  
-		  g->godleyT.reset(new GodleyTableEditor(g));
-          ecolab::cairo::Surface surf
-            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
-          try
-            {
-              g->godleyT.get()->draw(surf.cairo());
-            }
-          catch (const std::exception& e) 
-            {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
-          catch (...) {cerr<<"illegal exception caught in draw()";}
-          float w=0.5*g->godleyT.get()->colLeftMargin[g->godleyT.get()->colLeftMargin.size()-1];
-          float h=0.5*(g->godleyT.get()->godleyIcon->table.rows())*g->godleyT.get()->rowHeight;
-          xx+=w;
-          yy+=h;
-          float d=sqr(xx-x)+sqr(yy-y);
+        if (auto g=dynamic_pointer_cast<GodleyIcon>(i.first))
+          {
+            float xx=(i.second).first+offsx, yy=(i.second).second+offsy;   
+            if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));
+            ecolab::cairo::Surface surf
+              (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
+            try
+              {
+                g->godleyT->draw(surf.cairo());
+              }
+            catch (const std::exception& e) 
+              {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
+            catch (...) {cerr<<"illegal exception caught in draw()";}
+            float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
+            float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
+            xx+=w;
+            yy+=h;
+            float d=sqr(xx-x)+sqr(yy-y);
           
-          if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
-            {
-              minD=d;
-              item=i.first;
-            }
-		}
-	}
+            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
+              {
+                minD=d;
+                item=i.first;
+              }
+          }
+      }
     
     return item;
   }
 	
   void GodleyTab::draw(cairo_t* cairo)
   {   
-    try
-      {	
-      		
-        if (!itemVector.empty())
-          {               
-            for (auto& it: itemVector)
+    for (auto& it: itemVector)
+      {
+        if (auto g=dynamic_pointer_cast<GodleyIcon>(it))
+          {
+            if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));  
+            cairo::CairoSave cs(cairo);   
+            if (it==itemFocus) {
+              cairo_translate(cairo,xItem,yItem);  		    				   
+              itemCoords.erase(itemFocus);   
+              itemCoords[itemFocus]=move(make_pair(xItem,yItem));         
+            } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
+            g->godleyT->disableButtons();
+            g->godleyT->displayValues=true;   
+            g->godleyT->draw(cairo);
+            
+            // draw title
+            if (!g->table.title.empty())
               {
-                if (it->classType()=="GodleyIcon")
-                  {
-					auto g=dynamic_pointer_cast<GodleyIcon>(it);
-					g->godleyT.reset(new GodleyTableEditor(g));  
-                    cairo::CairoSave cs(cairo);   
-                    if (it==itemFocus) {
-                      cairo_translate(cairo,xItem,yItem);  		    				   
-                      itemCoords.erase(itemFocus);   
-                      itemCoords.emplace(make_pair(itemFocus,make_pair(xItem,yItem)));         
-                    } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
-                    g->godleyT.get()->disableButtons();
-                    g->godleyT.get()->displayValues=true;   
-                    g->godleyT.get()->draw(cairo);
-                    
-                    // draw title
-                    if (!g->table.title.empty())
-                      {
-                        CairoSave cs(cairo);
-                        Pango pango(cairo);
-                        pango.setMarkup("<b>"+latexToPango(g->table.title)+"</b>");
-                        pango.setFontSize(12);
-                        cairo_move_to(cairo,0.5*g->godleyT.get()->colLeftMargin[g->godleyT.get()->colLeftMargin.size()-1],g->godleyT.get()->topTableOffset-2*g->godleyT.get()->rowHeight);
-                        pango.show();
-                      }                    
-                  }			   
-              }              
-          }
-      }
-    catch (...) {throw;/* exception most likely invalid variable value */}
+                CairoSave cs(cairo);
+                Pango pango(cairo);
+                pango.setMarkup("<b>"+latexToPango(g->table.title)+"</b>");
+                pango.setFontSize(12);
+                cairo_move_to(cairo,0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1],g->godleyT->topTableOffset-2*g->godleyT->rowHeight);
+                pango.show();
+              }                    
+          }			   
+      }              
   }
 
 }

@@ -80,8 +80,6 @@ namespace minsky
     void setEditorDisplayValues();
     
     CopiableUniquePtr godleyT;
-    
-    std::string classType() const override {return "GodleyIcon";}    
 
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         

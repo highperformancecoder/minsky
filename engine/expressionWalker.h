@@ -24,74 +24,12 @@ To use, define the actions you want to happen for each type of expression
 
 #ifndef EXPRESSIONWALKER_H
 #define EXPRESSIONWALKER_H
-#include <variableType.h>
+#include "unitsExpressionWalker.h"
 
 #include <memory>
 
 namespace minsky
 {
-  struct UnitsExpressionWalker
-  {
-    Units units;
-    bool check=true;
-    double value=std::nan("");
-    UnitsExpressionWalker() {}
-    UnitsExpressionWalker(double x): value(x) {}
-    UnitsExpressionWalker(const std::string& units): units(units) {}
-
-    void checkSameDims(const UnitsExpressionWalker& x) const
-    {if (check && x.units!=units) throw std::runtime_error("Incommensurate units");}
-    void checkDimensionless() const
-    {if (check && !units.empty()) throw std::runtime_error("Incommensurate units");}
-    UnitsExpressionWalker operator+=(const UnitsExpressionWalker& x)
-    {checkSameDims(x); return *this;}
-    UnitsExpressionWalker operator+(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return *this;}
-    UnitsExpressionWalker operator-=(const UnitsExpressionWalker& x)
-    {checkSameDims(x); return *this;}
-    UnitsExpressionWalker operator-(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return *this;}
-
-    UnitsExpressionWalker operator*=(const UnitsExpressionWalker& x)
-    {
-      for (auto& i: x.units)
-        units[i.first]+=i.second;
-      units.normalise();
-      return *this;
-    }
-    UnitsExpressionWalker operator*(const UnitsExpressionWalker& x) const
-    {auto tmp=*this; return tmp*=x;}
-    UnitsExpressionWalker operator/=(const UnitsExpressionWalker& x)
-    {
-      for (auto& i: x.units)
-        units[i.first]-=i.second;
-      units.normalise();
-      return *this;
-    }
-    UnitsExpressionWalker operator/(const UnitsExpressionWalker& x) const
-    {auto tmp=*this; return tmp/=x;}
-    UnitsExpressionWalker operator%(const UnitsExpressionWalker& x) const
-    {return x;}
-    UnitsExpressionWalker operator&&(const UnitsExpressionWalker& x) const
-    {checkSameDims(x);return x;}
-    UnitsExpressionWalker operator^(const UnitsExpressionWalker& x) const
-    {checkSameDims(x);return x;}
-    UnitsExpressionWalker operator||(const UnitsExpressionWalker& x) const
-    {checkSameDims(x);return x;}
-    bool operator<(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
-    bool operator>(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
-    bool operator<=(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
-    bool operator>=(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
-    bool operator==(const UnitsExpressionWalker& x) const
-    {return x.value==value;}
-    bool operator!=(const UnitsExpressionWalker& x) const
-    {return !operator==(x);}
-  };
-
   inline bool operator>(size_t x, const UnitsExpressionWalker& y) {return false;}
   
   inline UnitsExpressionWalker pow(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
@@ -237,9 +175,9 @@ namespace exprtk
       static inline void assign(RefType t1, Type t2)                    \
       {t1=t2;}                                                          \
       static inline typename expression_node<T>::node_type type()       \
-      { return expression_node<T>::e_and; }                             \
+      { return expression_node<T>::e_##Op; }                             \
       static inline details::operator_type operation()                  \
-      { return details::e_and; }                                        \
+      { return details::e_##Op; }                                        \
     };
 
 #define exprtk_define_binary_op(Op,op) exprtk_define_binary_op_impl(Op, x op y)

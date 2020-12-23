@@ -41,7 +41,7 @@ namespace minsky
                                            {		                                 
                                              itemVector.emplace_back(*i);
                                              if (auto p=(*i)->plotWidgetCast()) itemCoords.emplace(make_pair(*i,make_pair(p->x(),p->y()))); 
-                                             if ((*i)->classType()=="GodleyIcon") itemCoords.emplace(make_pair(*i,make_pair((*i)->x(),(*i)->y())));
+                                             if (auto g=dynamic_cast<GodleyIcon*>((*i).get())) itemCoords.emplace(make_pair(*i,make_pair(g->x(),g->y())));
                                            }
                                          return false;
                                        });   	

@@ -363,6 +363,9 @@ namespace minsky
     /// set display value mode on all godley table editor modes
     void setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle);
 
+    /// import a Vensim file
+    void importVensim(const std::string&);
+    
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
