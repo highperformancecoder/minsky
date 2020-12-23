@@ -1,7 +1,6 @@
 /*
   @copyright Steve Keen 2020
   @author Russell Standish
-  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it
@@ -18,21 +17,15 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GODLEYTAB_H
-#define GODLEYTAB_H
-#include <itemTab.h>
+#ifndef MDLREADER_H
+#define MDLREADER_H
+#include "group.h"
+#include "rungeKutta.h"
+#include <iostream>
 
 namespace minsky
 {
-	 
-  class GodleyTab: public ItemTab
-  {	  
-  public:
-    bool itemSelector(const ItemPtr& i) override;
-    ItemPtr itemAt(float x, float y) override;
-    void draw(cairo_t* cairo) override;
-  };
-  
+  /// import a Vensim mdl file into \a group, also populating \a simParms from the control block
+  void readMdl(Group& group, RungeKutta& simParms, std::istream& mdlFile);
 }
-#include "godleyTab.cd"
 #endif

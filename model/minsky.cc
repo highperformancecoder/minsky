@@ -21,6 +21,7 @@
 #include "minsky.h"
 #include "flowCoef.h"
 #include "userFunction.h"
+#include "mdlReader.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -549,6 +550,7 @@ namespace minsky
   {
     for (auto& i: variableValues)
       i.second->units.clear();
+    timeUnit.clear();
   }
   
   void Minsky::populateMissingDimensions() {
@@ -1512,6 +1514,12 @@ namespace minsky
     });
   }
 
-  
+  void Minsky::importVensim(const string& filename)
+  {
+    ifstream f(filename);
+    readMdl(*model,*this,f);
+    canvas.requestRedraw();
+  }
+
 }
 

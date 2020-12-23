@@ -837,6 +837,10 @@ namespace minsky
       {
         redrawUpdateRegion();
       }
+    catch (std::exception& ex)
+      {
+        cerr << ex.what() << endl;
+      }
     catch (...)
       {
         // consume exception and try redrawing

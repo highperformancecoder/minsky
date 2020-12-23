@@ -28,29 +28,37 @@ namespace minsky
     exprtk::parser<UnitsExpressionWalker> unitsParser;
   }
 
+  UnitsExpressionWalker timeUnit;
+  bool UnitsExpressionWalker::check=true;
+  
+  exprtk::symbol_table<UnitsExpressionWalker>& UserFunction::globalUnitSymbols()
+  {
+    static exprtk::symbol_table<UnitsExpressionWalker> table;
+    return table;
+  }
+
   Units UserFunction::units(bool check) const
   {
-    unitsParser.enable_unknown_symbol_resolver();
+    UnitsExpressionWalker::check=check;
     UnitsExpressionWalker x,y;
     x.units=ports[1]->units(check); x.check=check;
     y.units=ports[2]->units(check); y.check=check;
 
+    timeUnit.units=Units(cminsky().timeUnit);
+    
+    vector<UnitsExpressionWalker> externalUnits;
     exprtk::symbol_table<UnitsExpressionWalker> symbolTable, unknownVariables;
     exprtk::expression<UnitsExpressionWalker> compiled;
     compiled.register_symbol_table(unknownVariables);
+    compiled.register_symbol_table(globalUnitSymbols());
     compiled.register_symbol_table(symbolTable);
     symbolTable.add_variable("x",x);
     symbolTable.add_variable("y",y);
 
-    // do an initial parse to pick up references to external variables
-    unitsParser.compile(expression, compiled);
-    std::vector<std::string> externalVariables;
-    unknownVariables.get_variable_list(externalVariables);
+    std::vector<std::string> externalIds=const_cast<UserFunction*>(this)->externalSymbolNames();
 
-    unknownVariables.clear();
-    vector<UnitsExpressionWalker> externalUnits;
-    externalUnits.reserve(externalVariables.size());
-    for (auto& i: externalVariables)
+    externalUnits.reserve(externalIds.size());
+    for (auto& i: externalIds)
       {
         auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
         if (v!=minsky().variableValues.end())
@@ -60,16 +68,24 @@ namespace minsky
             externalUnits.back().check=check;
             unknownVariables.add_variable(i, externalUnits.back());
           }
+        else
+          if (check)
+            throw_error("unknown variable: "+i);
+          else
+            return {};
       }
 
-    unitsParser.compile(expression, compiled);
     try
       {
+        unitsParser.compile(expression, compiled);
         return compiled.value().units;
       }
     catch (const std::exception& ex)
       {
-        throw_error(ex.what());
+        if (check)
+          throw_error(ex.what());
+        else
+          return {};
       }
   }
 }

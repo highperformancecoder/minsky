@@ -702,6 +702,19 @@ namespace MathDAG
             for (auto w: p->wires())
               r->arguments[i-1].push_back(getNodeFromWire(*w));
           }
+        if (auto uf=dynamic_cast<const UserFunction*>(&op))
+          {
+            // add external variable references as additional "arguments" in order to determine the correct evaluation order
+            r->arguments.emplace_back();
+            for (auto& i: uf->externalSymbolNames())
+              {
+                auto vv=minsky.variableValues.find(VariableValue::valueId(op.group.lock(), i));
+                if (vv!=minsky.variableValues.end())
+                  {
+                    r->arguments.back().emplace_back(makeDAG(vv->first,vv->second->name,vv->second->type()));
+                  }
+              }
+          }
         return r;
       }
   }

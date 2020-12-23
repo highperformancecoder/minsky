@@ -224,7 +224,7 @@ namespace minsky
     void dummyDraw() const;
 
     /// display tooltip text, eg on mouseover
-    void displayTooltip(cairo_t*, const std::string&) const;
+    virtual void displayTooltip(cairo_t*, const std::string&) const;
     
     /// update display after a step()
     virtual void updateIcon(double t) {}

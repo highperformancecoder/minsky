@@ -30,7 +30,7 @@ using ecolab::cairo::CairoSave;
 namespace minsky
 {
 
-  bool PlotTab::itemSelector(const ItemPtr i)
+  bool PlotTab::itemSelector(const ItemPtr& i)
   {
 	if (auto p=i->plotWidgetCast()) return p->plotOnTab();
 	return false;
@@ -48,8 +48,7 @@ namespace minsky
          assert(it->plotWidgetCast());
          cairo::CairoSave cs(cairo);   
          if (it==itemFocus) {
-           cairo_translate(cairo,xItem,yItem);  		    				   
-           itemCoords.erase(itemFocus);   
+           cairo_translate(cairo,xItem,yItem);  		    				    
            itemCoords[itemFocus]=move(make_pair(xItem,yItem));
          } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
          it->draw(cairo);
