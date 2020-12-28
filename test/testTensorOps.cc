@@ -246,17 +246,21 @@ SUITE(TensorOps)
       int delta=1;
       evalOp<OperationType::difference>("0",delta);
       for (auto& i: *to->vValue())
-        CHECK_EQUAL(1,i);
+        if (std::isfinite(i))
+          CHECK_EQUAL(1,i);
       evalOp<OperationType::difference>("1",delta);
       for (auto& i: *to->vValue())
-        CHECK_EQUAL(5,i);
+        if (std::isfinite(i))
+          CHECK_EQUAL(5,i);
       delta=2;
       evalOp<OperationType::difference>("0",delta);
       for (auto& i: *to->vValue())
-        CHECK_EQUAL(2,i);
+        if (std::isfinite(i))
+          CHECK_EQUAL(2,i);
       evalOp<OperationType::difference>("1",delta);
       for (auto& i: *to->vValue())
-        CHECK_EQUAL(10,i);
+        if (std::isfinite(i))
+          CHECK_EQUAL(10,i);
     }
   TEST_FIXTURE(TestFixture, difference1D)
     {
@@ -294,6 +298,57 @@ SUITE(TensorOps)
       CHECK_EQUAL(1, any_cast<double>(to->vValue()->hypercube().xvectors[0][0]));
       vector<size_t> ii{0,1,2,3};
       CHECK_ARRAY_EQUAL(ii, to->vValue()->index(), 4);
+    }
+  
+  TEST_FIXTURE(TestFixture, difference2D_II)
+    {
+      vector<unsigned> dims{5,5,5};
+      fromVal.hypercube(Hypercube(dims));
+      size_t cnt=0;
+      for (size_t i=0; i<dims[2]; ++i)
+        for (size_t j=0; j<dims[1]; ++j)
+          for (size_t k=0; k<dims[0]; ++k)
+            fromVal[cnt++]=i+j+k;
+
+      int delta=1;
+      evalOp<OperationType::difference>("1",delta=1);
+      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
+      for (auto& i: *to->vValue())
+        if (std::isfinite(i))
+          CHECK_EQUAL(1,i);
+      CHECK_EQUAL(1, any_cast<double>(to->vValue()->hypercube().xvectors[1][0]));
+
+      evalOp<OperationType::difference>("1",delta=-1);
+      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
+      for (auto& i: *to->vValue())
+        if (std::isfinite(i))
+          CHECK_EQUAL(-1,i);
+      CHECK_EQUAL(0, any_cast<double>(to->vValue()->hypercube().xvectors[1][0]));
+                  
+      evalOp<OperationType::difference>("1",delta=2);
+      CHECK_EQUAL(3, to->vValue()->hypercube().dims()[1]);
+      for (auto& i: *to->vValue())
+        if (std::isfinite(i))
+          CHECK_EQUAL(2,i);
+      CHECK_EQUAL(2, any_cast<double>(to->vValue()->hypercube().xvectors[1][0]));
+
+      // check that the sparse code works as expected
+      fromVal.index({3,8,13,16,32,64});
+      for (size_t i=0; i<fromVal.size(); ++i)
+        fromVal[i]=(i%5)+(i/5)%5+(i/5);
+      evalOp<OperationType::difference>("1",delta=1);
+      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
+      cnt=0;
+      for (auto& i: *to->vValue())
+        if (std::isfinite(i))
+          {
+            CHECK_EQUAL(1,i);
+            cnt++;
+          }
+      CHECK_EQUAL(2,cnt);
+      CHECK_EQUAL(1, any_cast<double>(to->vValue()->hypercube().xvectors[1][0]));
+      vector<size_t> ii{3,8};
+      CHECK_ARRAY_EQUAL(ii, to->vValue()->index(), ii.size());
     }
   
   TEST_FIXTURE(TestFixture, indexGather)

@@ -64,6 +64,8 @@ namespace civita
     const Index& index(const std::initializer_list<size_t>& x)
     {std::set<size_t> tmp(x); return index(Index(tmp));}
     const Index& index(const Index& x) {auto tmp=x; return index(std::move(tmp));}
+    template <class T>
+    const Index& index(const T& x) {return index(Index(x));}
     virtual const Index& index(Index&&)=0;
     using ITensor::index;
     

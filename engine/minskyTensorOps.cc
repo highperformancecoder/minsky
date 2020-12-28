@@ -264,6 +264,8 @@ namespace minsky
   struct GeneralTensorOp<OperationType::difference>: public civita::DimensionedArgCachedOp
   {
     ssize_t delta=0;
+    size_t innerStride=1, outerStride;
+    vector<size_t> argIndices;
     void setArgument(const TensorPtr& a,const std::string& s,double d) override {
       civita::DimensionedArgCachedOp::setArgument(a,s,d);
       if (dimension>=rank() && rank()>1)
@@ -274,40 +276,80 @@ namespace minsky
       auto hc=arg->hypercube();
       if (rank()==0) return;
       
-      auto& xv=hc.xvectors[0];
+      auto& xv=hc.xvectors[rank()==1? 0: dimension];
       if (delta>=0)
         xv.erase(xv.begin(), xv.begin()+delta);
       else
         xv.erase(xv.end()+delta, xv.end());
-      hypercube(move(hc));
+      cachedResult.hypercube(move(hc));
       
       // determine offset in hypercube space
       auto dims=arg->hypercube().dims();
+      innerStride=1;
       if (dimension<dims.size())
-        for (size_t i=0; i<dimension; ++i)
-          delta*=dims[i];
+        {
+          for (size_t i=0; i<dimension; ++i)
+            {
+              delta*=dims[i];
+              innerStride*=dims[i];
+            }
+          outerStride=innerStride*dims[dimension];
+        }
+      else
+        outerStride=arg->hypercube().numElements();
       auto idx=arg->index();
-      set<size_t> newIdx;
+      set<size_t> idxSet(idx.begin(),idx.end()), newIdx;
       for (auto& i: idx)
         {
           // strip of any indices outside the output range
           auto t=ssize_t(i)-delta;
-          if (t>=0 && t<ssize_t(size()))
-            newIdx.insert(t);
+          if (t>=0 && t<ssize_t(size()) && idxSet.count(t))
+            {
+              argIndices.push_back(t);
+              newIdx.insert(hypercube().linealIndex(arg->hypercube().splitIndex(t)));
+            }
         }
       cachedResult.index(Index(newIdx));
     }
 
+    bool sameSlice(size_t i, size_t j) const
+    {
+      return rank()==1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
+    }
+    
     void computeTensor() const override
     {
-      size_t ane=arg->hypercube().numElements();
-      if (delta>=0)
-        for (size_t i=0; i<size() && i+delta<ane; ++i)
-          cachedResult[i]=arg->atHCIndex(i+delta)-arg->atHCIndex(i);
-      else
-        for (size_t i=0; i<size() && i-delta<ane; ++i)
-          cachedResult[i]=arg->atHCIndex(i)-arg->atHCIndex(i-delta);
-        
+      if (argIndices.size())
+        {
+          assert(argIndices.size()==size());
+          size_t idx=0;
+          for (auto i: argIndices)
+            {
+              auto t=i+delta;
+              if (sameSlice(t, i))
+                cachedResult[idx++]=arg->atHCIndex(t)-arg->atHCIndex(i);
+              else
+                cachedResult[idx++]=nan("");
+            }
+        }
+      else if (delta>=0)
+        for (size_t i=0; i<size(); ++i)
+          {
+            auto t=i+delta;
+            if (sameSlice(t, i))
+              cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(i);
+            else
+              cachedResult[i]=nan("");
+          }
+      else // with -ve delta, origin of result is shifted
+        for (size_t i=0; i<size(); ++i)
+          {
+            auto t=i-delta;
+            if (sameSlice(t,i))
+              cachedResult[i]=arg->atHCIndex(i)-arg->atHCIndex(t);
+            else
+              cachedResult[i]=nan("");
+          }
     }
 
   };
