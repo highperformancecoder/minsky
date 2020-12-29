@@ -538,6 +538,9 @@ namespace minsky
     if (editor)
       {
         editor->mouseMove(-1,-1);
+        // May be a bit overzealous, but it solves bug 1273, which is caused by a flow which has not yet fully come into existence....
+        editor->selectedCol=-1;
+        editor->selectedRow=-1;
         editor->update();
       }
   }
