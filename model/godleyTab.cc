@@ -30,7 +30,7 @@ using ecolab::cairo::CairoSave;
 namespace minsky
 {
 	
-  bool GodleyTab::itemSelector(ItemPtr i)
+  bool GodleyTab::itemSelector(const ItemPtr& i)
   {
     return dynamic_cast<GodleyIcon*>(i.get());
   }	
@@ -81,7 +81,6 @@ namespace minsky
             cairo::CairoSave cs(cairo);   
             if (it==itemFocus) {
               cairo_translate(cairo,xItem,yItem);  		    				   
-              itemCoords.erase(itemFocus);   
               itemCoords[itemFocus]=move(make_pair(xItem,yItem));         
             } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
             g->godleyT->disableButtons();

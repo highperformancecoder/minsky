@@ -28,7 +28,7 @@ namespace minsky
   class ParameterTab: public ItemTab
   {
   public:
-    bool itemSelector(ItemPtr i) override {if (auto v=i->variableCast()) return v->type()==VariableType::parameter; return false;} 
+    bool itemSelector(const ItemPtr& i) override {if (auto v=i->variableCast()) return v->type()==VariableType::parameter; return false;} 
   };
   
 }
