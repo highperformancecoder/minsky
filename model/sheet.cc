@@ -33,18 +33,30 @@ const float border=10;
 Sheet::Sheet()
 {
   ports.emplace_back(new Port(*this, Port::inputPort));
+  iWidth(100);
+  iHeight(100);	  
 }
 
 bool Sheet::inItem(float xx, float yy) const
-{
+{			
   return abs(xx-x())<0.5*width()-border && abs(yy-y())<0.5*height()-border;
 }
 
+void Sheet::resize(const LassoBox& b)
+{
+  // Set initial iWidth() and iHeight() to initial Pango determined values. This resize method is not very reliable. Probably a Pango issue. 
+  float w=iWidth(), h=iHeight(), invZ=1/zoomFactor();   
+  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
+  iWidth(abs(b.x1-b.x0)*invZ);
+  iHeight(abs(b.y1-b.y0)*invZ);
+  Item::updateBoundingBox();     
+}
 
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();
-  ports[0]->moveTo(x()-0.5*m_width*z,y());
+  float w=iWidth(), h=iHeight();
+  ports[0]->moveTo(x()-0.5*w*z,y());
   if (mouseFocus)
     {
       drawPorts(cairo);
@@ -55,9 +67,9 @@ void Sheet::draw(cairo_t* cairo) const
 
   cairo_scale(cairo,z,z);
     
-  cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
+  cairo_rectangle(cairo,-0.5*w+border,-0.5*h+border,w-2*border,h-2*border);
   cairo_stroke_preserve(cairo);
-  cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
+  cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
   cairo_stroke_preserve(cairo);
   // draw border
   if (onBorder)
@@ -68,7 +80,7 @@ void Sheet::draw(cairo_t* cairo) const
       cairo_fill(cairo);
     }
   cairo_new_path(cairo);
-  cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
+  cairo_rectangle(cairo,-0.5*w+border,-0.5*h+border,w-2*border,h-2*border);
   cairo_clip(cairo);
   
   if (selected) drawSelected(cairo);
@@ -86,7 +98,7 @@ void Sheet::draw(cairo_t* cairo) const
         }
       else
         {
-          float x0=-0.5*m_width+border, y0=-0.5*m_height+border;
+          float x0=-0.5*w+border, y0=-0.5*h+border;
           if (value->hypercube().rank()==0)
             {
               cairo_move_to(cairo,x0,y0);
@@ -107,8 +119,8 @@ void Sheet::draw(cairo_t* cairo) const
                   { // draw vertical grid line
                     cairo::CairoSave cs(cairo);
                     cairo_set_source_rgba(cairo,0,0,0,0.5);
-                    cairo_move_to(cairo,x0,-0.5*m_height);
-                    cairo_line_to(cairo,x0,0.5*m_height);
+                    cairo_move_to(cairo,x0,-0.5*h);
+                    cairo_line_to(cairo,x0,0.5*h);
                     cairo_stroke(cairo);
                   }                  				
                 }
@@ -133,7 +145,7 @@ void Sheet::draw(cairo_t* cairo) const
                     {
                       cairo::CairoSave cs(cairo);
                       pango.setMarkup(value->hypercube().xvectors[1].name);
-                      cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-pango.width()), y0);
+                      cairo_move_to(cairo,0.5*(x0+colWidth+0.5*w-pango.width()), y0);
                       y0+=pango.height();
                       pango.show();
                     }
@@ -142,8 +154,8 @@ void Sheet::draw(cairo_t* cairo) const
               { // draw horizontal grid line
                 cairo::CairoSave cs(cairo);
                 cairo_set_source_rgba(cairo,0,0,0,0.5);
-                cairo_move_to(cairo,-0.5*m_width,y0-2.5);
-                cairo_line_to(cairo,0.5*m_width,y0-2.5);
+                cairo_move_to(cairo,-0.5*w,y0-2.5);
+                cairo_line_to(cairo,0.5*w,y0-2.5);
                 cairo_stroke(cairo);
               }                    
               // draw in label column
@@ -161,8 +173,8 @@ void Sheet::draw(cairo_t* cairo) const
                   { // draw vertical grid line
                     cairo::CairoSave cs(cairo);
                     cairo_set_source_rgba(cairo,0,0,0,0.5);
-                    cairo_move_to(cairo,x,-0.5*m_height);
-                    cairo_line_to(cairo,x,0.5*m_height);
+                    cairo_move_to(cairo,x,-0.5*h);
+                    cairo_line_to(cairo,x,0.5*h);
                     cairo_stroke(cairo);
                   }                  				
                   for (size_t i=0; i<value->size(); ++i)
@@ -194,14 +206,14 @@ void Sheet::draw(cairo_t* cairo) const
                         cairo::CairoSave cs(cairo);
                         cairo_set_source_rgba(cairo,0,0,0,0.5);
                         cairo_move_to(cairo,x-2.5,y0);
-                        cairo_line_to(cairo,x-2.5,0.5*m_height);
+                        cairo_line_to(cairo,x-2.5,0.5*h);
                         cairo_stroke(cairo);
                       }
                       colWidth=std::max(colWidth, 5+pango.width());
                       for (size_t j=0; j<dims[0]; ++j)
                         {
                           y+=rowHeight;
-                          if (y>0.5*m_height) break;
+                          if (y>0.5*h) break;
                           cairo_move_to(cairo,x,y);
                           auto v=value->atHCIndex(j+i*dims[0]);
                           if (!std::isnan(v))
@@ -212,16 +224,16 @@ void Sheet::draw(cairo_t* cairo) const
                           colWidth=std::max(colWidth, pango.width());
                         }
                       x+=colWidth;
-                      if (x>0.5*m_width) break;
+                      if (x>0.5*w) break;
                     }
                 }
               // draw grid
               {
                 cairo::CairoSave cs(cairo);
                 cairo_set_source_rgba(cairo,0,0,0,0.2);
-                for (y=y0+0.8*rowHeight; y<0.5*m_height; y+=2*rowHeight)
+                for (y=y0+0.8*rowHeight; y<0.5*h; y+=2*rowHeight)
                   {
-                    cairo_rectangle(cairo,x0,y,m_width,rowHeight);
+                    cairo_rectangle(cairo,x0,y,w,rowHeight);
                     cairo_fill(cairo);
                  }
               }
@@ -231,7 +243,7 @@ void Sheet::draw(cairo_t* cairo) const
     }
   catch (...) {/* exception most likely invalid variable value */}
   cairo_reset_clip(cairo);
-  cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
+  cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
   cairo_clip(cairo);
 }
 
