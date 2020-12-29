@@ -36,7 +36,7 @@ namespace civita
       CLASSDESC_ACCESS(Index);
     public:
       Index() {}
-      template <class T>
+      template <class T> explicit
       Index(const T& indices) {*this=indices;}
       Index(const Index&)=default;
       Index(Index&&)=default;

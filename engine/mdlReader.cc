@@ -159,6 +159,8 @@ namespace minsky
       {"arctan",{"atan(x)",FUNCTION([](double x){return atan(x);})}},
       {"gammaLn",{"gammaLn(x)",FUNCTION([](double x){return lgamma(x);})}},
       {"integer",{"floor(x)",FUNCTION([](double x){return floor(x);})}},
+      {"ifThenElse",{"x? y: z",FUNCTION([](double x,double y,double z)
+      {return x? y: z;})}},
       {"ln",{"log(x)",FUNCTION([](double x){return log(x);})}},
       {"log",{"log(x)/log(y)",FUNCTION([](double x, double y){return log(x)/log(y);})}},
       {"modulo",{"modulo(x,y)",FUNCTION([](double x, double y){return fmod(x,y);})}},
