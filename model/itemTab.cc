@@ -219,7 +219,7 @@ namespace minsky
                         varAttribVals.push_back(to_string(v->sliderMax));
                         varAttribVals.push_back(to_string(v->value()));
                     
-                        if (it==itemVector[0]) {
+                        if (&it==&itemVector[0]) {
                           for (auto& i:varAttrib) 
                             {
                               cairo_move_to(cairo,x,y-1.5*rowHeight);                    
@@ -245,7 +245,7 @@ namespace minsky
                         cairo_get_current_point (cairo,&w,&h);   
                         if (h<h_prev) h+=h_prev;                                                                         
                         // draw grid
-                        float y1=it==itemVector[0]?-1.5*rowHeight: rowHeight;
+                        float y1=&it==&itemVector[0]?-1.5*rowHeight: rowHeight;
                         {
 				      		
                           cairo::CairoSave cs(cairo);
@@ -260,7 +260,7 @@ namespace minsky
                         { // draw vertical grid lines
                           cairo::CairoSave cs(cairo);
                           cairo_set_source_rgba(cairo,0,0,0,0.5);
-                          y1=it==itemVector[0]? 0.5*rowHeight: 0;
+                          y1=&it==&itemVector[0]? 0.5*rowHeight: 0;
                           for (x=x0; x<w+colWidth; x+=colWidth)
                             {
                               cairo_move_to(cairo,x,y-2*rowHeight);
@@ -269,7 +269,7 @@ namespace minsky
                             }
                         }
                         
-                        if (it==itemVector[0])                                            
+                        if (&it==&itemVector[0])                                            
                           { // draw horizontal grid line
                             cairo::CairoSave cs(cairo);
                             cairo_set_source_rgba(cairo,0,0,0,0.5);
@@ -279,8 +279,8 @@ namespace minsky
                           }                                  
                         cairo::CairoSave cs(cairo);
                         // make sure rectangle has right height
-                        if (it==itemVector[0]) cairo_rectangle(cairo,x0,y0-1.5*rowHeight,w+colWidth,y-y0+2*rowHeight);    
-                        else cairo_rectangle(cairo,x0,y0-rowHeight,w+colWidth,y-y0+rowHeight);    
+                        y1=&it==&itemVector[0]? -0.5*rowHeight: 0;
+                        cairo_rectangle(cairo,x0,y0+y1-rowHeight,w+colWidth,y-y0-2*y1+rowHeight);    
                         rowTopMargin.push_back(y);
                         cairo_stroke(cairo);                          	          
                         cairo_clip(cairo);	                               
