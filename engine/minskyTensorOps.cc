@@ -619,7 +619,16 @@ namespace minsky
     {return chain.empty()? Timestamp(): chain.back()->timestamp();}
     const Hypercube& hypercube() const override {return chain.back()->hypercube();}
   };
-       
+
+  namespace
+  {
+    // used to mark the exception as already dealt with, in terms of displayErrorItem
+    struct TensorOpError: public runtime_error
+    {
+      TensorOpError(const string& msg): runtime_error(msg) {}
+    };
+  }
+  
   std::shared_ptr<ITensor> TensorOpFactory::create
   (const ItemPtr& it, const TensorsFromPort& tfp)
   {
@@ -648,10 +657,13 @@ namespace minsky
         }
       catch (const InvalidType&)
         {return {};}
+      catch (const TensorOpError& ex)
+        {throw;}
       catch (const std::exception& ex)
         {
-          // rethrow with op attached to mark op on canvas
-          op->throw_error(ex.what());
+          // mark op on canvas, and rethrow as TensorOpError to indicate op is marked
+          cminsky().displayErrorItem(*op);
+          throw TensorOpError(ex.what());
         }
     else if (auto v=it->variableCast())
       return make_shared<ConstTensorVarVal>(v->vValue(), tfp.ev);
