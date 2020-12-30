@@ -37,19 +37,6 @@ namespace minsky
 
   namespace
   {
-    struct InvalidSym {
-      const string symbol;
-      InvalidSym(const string& s): symbol(s) {}
-    };
-
-    struct RavelDataSpec
-    {
-      int nRowAxes=-1; ///< No. rows describing axes
-      int nColAxes=-1; ///< No. cols describing axes
-      int nCommentLines=-1; ///< No. comment header lines
-      char separator=','; ///< field separator character
-    };
-
     typedef ravel::Op::ReductionOp ReductionOp;
     typedef ravel::HandleSort::Order HandleSort;
     
