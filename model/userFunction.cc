@@ -40,7 +40,7 @@ namespace minsky
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
 
-  UserFunction::UserFunction(const string& name, const string& expression): expression(expression), argNames{"x","y"} {
+  UserFunction::UserFunction(const string& name, const string& expression): argNames{"x","y"}, expression(expression)  {
     description(name);
       
     compiledExpression.register_symbol_table(globalSymbols());
