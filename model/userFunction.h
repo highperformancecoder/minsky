@@ -34,7 +34,8 @@ namespace  minsky
     static exprtk::symbol_table<double>& globalSymbols();
     static exprtk::symbol_table<UnitsExpressionWalker>& globalUnitSymbols();
     static int nextId;
-    double x, y;
+    std::vector<std::string> argNames;
+    std::vector<double> argVals;
     std::string expression;
     UserFunction(): UserFunction("uf"+std::to_string(nextId++)+"(x,y)") {}
     UserFunction(const std::string& name, const std::string& expression="");

@@ -40,10 +40,8 @@ namespace minsky
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
 
-  UserFunction::UserFunction(const string& name, const string& expression): expression(expression) {
+  UserFunction::UserFunction(const string& name, const string& expression): expression(expression), argNames{"x","y"} {
     description(name);
-    localSymbols.add_variable("x",x);
-    localSymbols.add_variable("y",y);
       
     compiledExpression.register_symbol_table(globalSymbols());
     compiledExpression.register_symbol_table(externalSymbols);
@@ -65,9 +63,13 @@ namespace minsky
     externalSymbols.get_variable_list(externalVariables);
     return externalVariables;
   }
-  
+
   void UserFunction::compile()
   {
+    localSymbols.clear();
+    argVals.resize(argNames.size());
+    for (size_t i=0; i<argNames.size(); ++i)
+      localSymbols.add_variable(argNames[i], argVals[i]);
     // add them back in with their correct definitions
     externalSymbols.clear();
     for (auto& i: externalSymbolNames())
@@ -91,7 +93,8 @@ namespace minsky
   
   double UserFunction::evaluate(double in1, double in2)
   {
-    x=in1, y=in2;
+    if (argVals.size()>0) argVals[0]=in1;
+    if (argVals.size()>1) argVals[1]=in2;
     return compiledExpression.value();
   }
 }
