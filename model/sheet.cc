@@ -33,13 +33,30 @@ const float border=10;
 Sheet::Sheet()
 {
   ports.emplace_back(new Port(*this, Port::inputPort));
+  iWidth(100);
+  iHeight(100);	  
 }
 
 bool Sheet::inItem(float xx, float yy) const
 {
-  return abs(xx-x())<0.5*width()-border && abs(yy-y())<0.5*height()-border;
+  auto z=zoomFactor();	 					
+  return abs(xx-x())<0.5*width()-border*z && abs(yy-y())<0.5*height()-border*z;
 }
 
+ClickType::Type Sheet::clickType(float x, float y)
+{
+  double dx=fabs(x-this->x()), dy=fabs(y-this->y());
+  double w=0.5*width(), h=0.5*height();  
+  if (onResizeHandle(x,y)) return ClickType::onResize;
+  if (inItem(x,y)) return ClickType::inItem;                     
+  if (dx < w && dy < h)
+    return ClickType::onItem;
+  else 
+    return ClickType::outside;  
+  if (auto item=select(x,y))
+    return item->clickType(x,y);      
+  return Item::clickType(x,y);  
+}
 
 void Sheet::draw(cairo_t* cairo) const
 {

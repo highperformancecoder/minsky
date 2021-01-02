@@ -28,7 +28,9 @@ namespace minsky
   class PlotTab: public ItemTab
   {	  
   public:
-    bool itemSelector(ItemPtr i) override {if (auto p=i->plotWidgetCast()) {return p->plotOnTab();}; return false;}    
+    bool itemSelector(const ItemPtr& i) override;
+    void togglePlotDisplay() const;    
+    void draw(cairo_t* cairo) override;    
   };
   
 }
