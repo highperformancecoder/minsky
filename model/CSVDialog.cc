@@ -170,7 +170,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   req.method(http::verb::get);     
   req.target(target.str());     
   req.version(10);
-  req.set(http::field::host, host);
+  req.set(http::field::host, host.str());
   req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 
   // Send the HTTP request to the remote host
