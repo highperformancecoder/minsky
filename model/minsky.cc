@@ -1387,7 +1387,7 @@ namespace minsky
       throw error("variable %s doesn't exist",name.c_str());
     if (i->second->type()==type) return; // nothing to do!
 
-	string newName=name; // useful for checking flows and stocks with same name and renaming them as the case may be. for ticket 1272  
+    string newName=name; // useful for checking flows and stocks with same name and renaming them as the case may be. for ticket 1272  
     model->recursiveDo
       (&GroupItems::items,
        [&](const Items&,Items::const_iterator i)
@@ -1398,20 +1398,20 @@ namespace minsky
                for (auto v: g->flowVars())
                  if (v->valueId()==name)
                    {
-					   newName=v->name()+"^{Flow}";
+		       newName=v->name()+"^{Flow}";
                        VariableValues::iterator iv=variableValues.find(newName);
                        if (iv==variableValues.end()) {g->table.renameFlows(v->name(),newName); v->retype(VariableType::flow);}
 					   else throw error("flow variables in Godley tables cannot be converted to a different type");
-					}	
+		   }	
              if (type!=VariableType::stock)
                for (auto v: g->stockVars())
                  if (v->valueId()==name)
                    {
-					   newName=v->name()+"^{Stock}";
+		       newName=v->name()+"^{Stock}";
                        VariableValues::iterator iv=variableValues.find(newName);
                        if (iv==variableValues.end()) {g->table.renameStock(v->name(),newName); v->retype(VariableType::stock);}
 					   else throw error("stock variables in Godley tables cannot be converted to a different type");
-				  }
+		   }
            }
          return false;
        });   
