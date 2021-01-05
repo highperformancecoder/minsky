@@ -284,7 +284,6 @@ namespace minsky
     void jacobian(Matrix& jac, double t, const double vars[]);
     
     double t{0}; ///< time
-    double t0{0}; ///< simulation start time
     bool running=false; ///< controls whether simulation is running
     bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
