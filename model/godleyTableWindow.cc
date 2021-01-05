@@ -223,7 +223,7 @@ namespace minsky
                   {
                     string value;
                     FlowCoef fc(text);
-                    if (displayValues)
+                    if (displayValues && col!=0)  // Do not add value "= 0.0" to first column. For tickets 1064/1274
                       try
                         {
                           auto vv=cminsky().variableValues
@@ -267,7 +267,7 @@ namespace minsky
                           }
                         else // is flow tag, stock var or initial condition
                           text = latexToPango(text);
-                        if (row!=1 || col!=0) text+=value;  // Do not add value "= 0.0" to Initial Condtions cell(1,0). For ticket 1064
+                        text+=value;
                       }
                     else
                       //Display values of parameters used as initial conditions in Godley tables. for ticket 1126.  
