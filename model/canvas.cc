@@ -503,7 +503,18 @@ namespace minsky
            });
 	}      
     itemVector.clear();  
-  }  
+  }
+  
+  void Canvas::showPlotsOnTab()
+  {
+     model->recursiveDo
+       (&GroupItems::items, [&](const Items&,Items::const_iterator i)
+        {
+          if (auto p=(*i)->plotWidgetCast())
+            if (p->plotOnTab()==false) p->togglePlotTabDisplay();	 
+          return false;
+        });
+  }    
   
   void Canvas::deleteItem()
   {

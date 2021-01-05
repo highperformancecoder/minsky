@@ -1387,38 +1387,38 @@ namespace minsky
       throw error("variable %s doesn't exist",name.c_str());
     if (i->second->type()==type) return; // nothing to do!
 
+    string newName=name; // useful for checking flows and stocks with same name and renaming them as the case may be. for ticket 1272  
     model->recursiveDo
       (&GroupItems::items,
        [&](const Items&,Items::const_iterator i)
        {
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
            {
-			 string newName;  
              if (type!=VariableType::flow)
                for (auto v: g->flowVars())
                  if (v->valueId()==name)
                    {
-					   newName=v->name()+"^{Flow}";
+		       newName=v->name()+"^{Flow}";
                        VariableValues::iterator iv=variableValues.find(newName);
-                       if (iv==variableValues.end()) g->table.renameFlows(v->name(),newName);
+                       if (iv==variableValues.end()) {g->table.renameFlows(v->name(),newName); v->retype(VariableType::flow);}
 					   else throw error("flow variables in Godley tables cannot be converted to a different type");
-					}
+		   }	
              if (type!=VariableType::stock)
                for (auto v: g->stockVars())
                  if (v->valueId()==name)
                    {
-					   newName=v->name()+"^{Stock}";
+		       newName=v->name()+"^{Stock}";
                        VariableValues::iterator iv=variableValues.find(newName);
-                       if (iv==variableValues.end()) g->table.renameStock(v->name(),newName);
+                       if (iv==variableValues.end()) {g->table.renameStock(v->name(),newName); v->retype(VariableType::stock);}
 					   else throw error("stock variables in Godley tables cannot be converted to a different type");
-				  }
+		   }
            }
          return false;
-       });
-                       
+       });   
+                         
     if (auto var=definingVar(name))
-      // we want to be able to convert stock vars to flow vars when their input is wired
-      if (var->type() != type && (!var->isStock() || var->controller.lock()))
+      // we want to be able to convert stock vars to flow vars when their input is wired. condition is only met when newName has not been changed above. for ticket 1272
+      if (name==newName && var->type() != type && (!var->isStock() || var->controller.lock()))
          throw error("cannot convert a variable to a type other than its defined type");
 
     // filter out invalid targets
