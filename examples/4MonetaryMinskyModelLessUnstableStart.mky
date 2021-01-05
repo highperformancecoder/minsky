@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-beta.19</minskyVersion>
+  <minskyVersion>2.21.0-beta.15</minskyVersion>
   <wires>
    <Wire>
     <id>593</id>
@@ -794,6 +794,8 @@
     <y>562</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>0</int>
      <int>1</int>
@@ -808,6 +810,8 @@
     <y>509</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>4</int>
      <int>5</int>
@@ -822,6 +826,8 @@
     <y>556.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>8</int>
      <int>9</int>
@@ -836,6 +842,8 @@
     <y>506</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>12</int>
      <int>13</int>
@@ -850,6 +858,8 @@
     <y>517.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>16</int>
      <int>17</int>
@@ -864,6 +874,8 @@
     <y>563</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>20</int>
      <int>21</int>
@@ -878,6 +890,8 @@
     <y>556</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>24</int>
      <int>25</int>
@@ -892,6 +906,8 @@
     <y>546</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>28</int>
      <int>29</int>
@@ -906,6 +922,8 @@
     <y>462.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>32</int>
      <int>33</int>
@@ -920,6 +938,8 @@
     <y>447.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>36</int>
      <int>37</int>
@@ -934,6 +954,8 @@
     <y>420</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>40</int>
      <int>41</int>
@@ -947,6 +969,8 @@
     <y>382</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>43</int>
      <int>44</int>
@@ -961,6 +985,8 @@
     <y>415.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>47</int>
      <int>48</int>
@@ -975,6 +1001,8 @@
     <y>463.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>51</int>
      <int>52</int>
@@ -989,6 +1017,8 @@
     <y>441</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>55</int>
      <int>56</int>
@@ -1003,6 +1033,8 @@
     <y>366</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>59</int>
      <int>60</int>
@@ -1017,6 +1049,8 @@
     <y>374.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>63</int>
      <int>64</int>
@@ -1031,6 +1065,8 @@
     <y>449</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>67</int>
      <int>68</int>
@@ -1045,6 +1081,8 @@
     <y>422</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>71</int>
      <int>72</int>
@@ -1059,6 +1097,8 @@
     <y>394</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>75</int>
      <int>76</int>
@@ -1073,6 +1113,8 @@
     <y>441</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>79</int>
      <int>80</int>
@@ -1087,6 +1129,8 @@
     <y>13.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>83</int>
      <int>84</int>
@@ -1101,6 +1145,8 @@
     <y>103</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>87</int>
      <int>88</int>
@@ -1115,6 +1161,8 @@
     <y>149</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>91</int>
      <int>92</int>
@@ -1129,6 +1177,8 @@
     <y>83</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>95</int>
      <int>96</int>
@@ -1143,6 +1193,8 @@
     <y>133</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>99</int>
      <int>100</int>
@@ -1157,6 +1209,8 @@
     <y>200</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>103</int>
      <int>104</int>
@@ -1171,6 +1225,8 @@
     <y>242</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>107</int>
      <int>108</int>
@@ -1185,6 +1241,8 @@
     <y>282.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>111</int>
      <int>112</int>
@@ -1199,6 +1257,8 @@
     <y>325</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>115</int>
      <int>116</int>
@@ -1213,6 +1273,8 @@
     <y>367.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>119</int>
      <int>120</int>
@@ -1227,6 +1289,8 @@
     <y>411</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>123</int>
      <int>124</int>
@@ -1241,6 +1305,8 @@
     <y>513.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>127</int>
      <int>128</int>
@@ -1255,6 +1321,8 @@
     <y>523.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>131</int>
      <int>132</int>
@@ -1269,6 +1337,8 @@
     <y>214</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>135</int>
      <int>136</int>
@@ -1283,6 +1353,8 @@
     <y>284</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>139</int>
      <int>140</int>
@@ -1297,6 +1369,8 @@
     <y>261</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>143</int>
      <int>144</int>
@@ -1311,6 +1385,8 @@
     <y>26</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>147</int>
      <int>148</int>
@@ -1325,6 +1401,8 @@
     <y>42.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>151</int>
      <int>152</int>
@@ -1339,6 +1417,8 @@
     <y>92</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>155</int>
      <int>156</int>
@@ -1353,6 +1433,8 @@
     <y>109.999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>159</int>
      <int>160</int>
@@ -1367,6 +1449,8 @@
     <y>134</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>163</int>
      <int>164</int>
@@ -1381,6 +1465,8 @@
     <y>155.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>167</int>
      <int>168</int>
@@ -1395,6 +1481,8 @@
     <y>196.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>171</int>
      <int>172</int>
@@ -1409,6 +1497,8 @@
     <y>177.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>175</int>
      <int>176</int>
@@ -1423,6 +1513,8 @@
     <y>215.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>179</int>
      <int>180</int>
@@ -1437,6 +1529,8 @@
     <y>237.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>183</int>
      <int>184</int>
@@ -1451,6 +1545,8 @@
     <y>255</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>187</int>
      <int>188</int>
@@ -1465,6 +1561,8 @@
     <y>255</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>191</int>
      <int>192</int>
@@ -1478,6 +1576,8 @@
     <y>268</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>194</int>
      <int>195</int>
@@ -1492,6 +1592,8 @@
     <y>339.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>198</int>
      <int>199</int>
@@ -1506,6 +1608,8 @@
     <y>354.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>202</int>
      <int>203</int>
@@ -1520,6 +1624,8 @@
     <y>152.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>206</int>
      <int>207</int>
@@ -1534,6 +1640,8 @@
     <y>118</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>210</int>
      <int>211</int>
@@ -1548,6 +1656,8 @@
     <y>175</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>214</int>
      <int>215</int>
@@ -1562,6 +1672,8 @@
     <y>111</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>218</int>
      <int>219</int>
@@ -1575,6 +1687,8 @@
     <y>174.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>221</int>
      <int>222</int>
@@ -1588,6 +1702,8 @@
     <y>119</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>224</int>
      <int>225</int>
@@ -1602,6 +1718,8 @@
     <y>176</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>228</int>
      <int>229</int>
@@ -1616,6 +1734,8 @@
     <y>108</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>232</int>
      <int>233</int>
@@ -1630,6 +1750,8 @@
     <y>184</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>236</int>
      <int>237</int>
@@ -1644,13 +1766,14 @@
     <y>400</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>240</int>
     </ports>
     <name>:BC</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1664,13 +1787,14 @@
     <y>271</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>242</int>
     </ports>
     <name>:BPL</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1684,13 +1808,14 @@
     <y>0</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>244</int>
     </ports>
     <name>:FL</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1704,13 +1829,14 @@
     <y>189.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>246</int>
     </ports>
     <name>:FD</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1724,13 +1850,14 @@
     <y>246</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>248</int>
     </ports>
     <name>:WD</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1744,13 +1871,14 @@
     <y>513.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>250</int>
     </ports>
     <name>:N</name>
     <init>300</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1764,13 +1892,14 @@
     <y>517.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>252</int>
     </ports>
     <name>:a</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1784,13 +1913,14 @@
     <y>566.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>254</int>
     </ports>
     <name>:Kr</name>
     <init>900</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1804,13 +1934,14 @@
     <y>499</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>256</int>
     </ports>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1824,13 +1955,14 @@
     <y>456.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>258</int>
     </ports>
     <name>:W</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1844,13 +1976,14 @@
     <y>577.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>260</int>
     </ports>
     <name>:\lambda</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1864,6 +1997,8 @@
     <y>366</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>262</int>
      <int>263</int>
@@ -1871,7 +2006,6 @@
     <name>:I</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1885,6 +2019,8 @@
     <y>411</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>265</int>
      <int>266</int>
@@ -1892,7 +2028,6 @@
     <name>:J</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1906,6 +2041,8 @@
     <y>41.0001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>268</int>
      <int>269</int>
@@ -1913,7 +2050,6 @@
     <name>:B</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1927,6 +2063,8 @@
     <y>13.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>271</int>
      <int>272</int>
@@ -1934,7 +2072,6 @@
     <name>:A</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1948,6 +2085,8 @@
     <y>77.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>274</int>
      <int>275</int>
@@ -1955,7 +2094,6 @@
     <name>:C</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1969,6 +2107,8 @@
     <y>146</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>277</int>
      <int>278</int>
@@ -1976,7 +2116,6 @@
     <name>:D</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -1990,6 +2129,8 @@
     <y>200</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>280</int>
      <int>281</int>
@@ -1997,7 +2138,6 @@
     <name>:E</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2011,6 +2151,8 @@
     <y>241</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>283</int>
      <int>284</int>
@@ -2018,7 +2160,6 @@
     <name>:F</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2032,6 +2173,8 @@
     <y>281.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>286</int>
      <int>287</int>
@@ -2039,7 +2182,6 @@
     <name>:G</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2053,6 +2195,8 @@
     <y>323.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>289</int>
      <int>290</int>
@@ -2060,7 +2204,6 @@
     <name>:H</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2074,6 +2217,8 @@
     <y>505.501</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>292</int>
      <int>293</int>
@@ -2081,7 +2226,6 @@
     <name>:ode_N</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2095,6 +2239,8 @@
     <y>510.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>295</int>
      <int>296</int>
@@ -2102,7 +2248,6 @@
     <name>:ode_a</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2116,6 +2261,8 @@
     <y>556.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>298</int>
      <int>299</int>
@@ -2123,7 +2270,6 @@
     <name>:ode_{Kr}</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2137,6 +2283,8 @@
     <y>561.239</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>301</int>
      <int>302</int>
@@ -2144,7 +2292,6 @@
     <name>:ode_{PC}</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2158,6 +2305,8 @@
     <y>449.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>304</int>
      <int>305</int>
@@ -2165,7 +2314,6 @@
     <name>:ode_W</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2179,6 +2327,8 @@
     <y>561.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>307</int>
      <int>308</int>
@@ -2186,7 +2336,6 @@
     <name>:ode_\lambda</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2200,13 +2349,14 @@
     <y>528</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>310</int>
     </ports>
     <name>:W</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2220,13 +2370,14 @@
     <y>548.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>312</int>
     </ports>
     <name>:a</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2240,6 +2391,8 @@
     <y>461</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>314</int>
      <int>315</int>
@@ -2247,7 +2400,6 @@
     <name>:Ph(\lambda)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2261,13 +2413,14 @@
     <y>371.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>317</int>
     </ports>
     <name>:\lambda</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2281,6 +2434,8 @@
     <y>358.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>319</int>
      <int>320</int>
@@ -2288,7 +2443,6 @@
     <name>:\alpha</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2302,6 +2456,8 @@
     <y>501.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>322</int>
      <int>323</int>
@@ -2309,7 +2465,6 @@
     <name>:\alpha</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2323,6 +2478,8 @@
     <y>387</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>325</int>
      <int>326</int>
@@ -2330,7 +2487,6 @@
     <name>:\beta</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2344,6 +2500,8 @@
     <y>345.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>328</int>
      <int>329</int>
@@ -2351,7 +2509,6 @@
     <name>:g</name>
     <init>0.0405595</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2365,6 +2522,8 @@
     <y>408.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>331</int>
      <int>332</int>
@@ -2372,7 +2531,6 @@
     <name>:g-(\alpha+\beta)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2386,6 +2544,8 @@
     <y>548.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>334</int>
      <int>335</int>
@@ -2393,7 +2553,6 @@
     <name>:g-(\alpha+\beta)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2407,13 +2566,14 @@
     <y>59.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>337</int>
     </ports>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2427,13 +2587,14 @@
     <y>163</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>339</int>
     </ports>
     <name>:W</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2447,13 +2608,14 @@
     <y>140</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>341</int>
     </ports>
     <name>:a</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2467,13 +2629,14 @@
     <y>320.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>343</int>
     </ports>
     <name>:WD</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2487,13 +2650,14 @@
     <y>360</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>345</int>
     </ports>
     <name>:FL</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2507,13 +2671,14 @@
     <y>13.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>347</int>
     </ports>
     <name>:FD</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2527,13 +2692,14 @@
     <y>52</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>349</int>
     </ports>
     <name>:FL</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2547,13 +2713,14 @@
     <y>180.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>351</int>
     </ports>
     <name>:BC</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2567,6 +2734,8 @@
     <y>540.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>353</int>
      <int>354</int>
@@ -2574,7 +2743,6 @@
     <name>:g</name>
     <init>0.0405595</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2588,6 +2756,8 @@
     <y>214.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>356</int>
      <int>357</int>
@@ -2595,7 +2765,6 @@
     <name>:\pi_r</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2609,6 +2778,8 @@
     <y>37.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>359</int>
      <int>360</int>
@@ -2616,7 +2787,6 @@
     <name>:v</name>
     <init>3</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3</max>
@@ -2630,6 +2800,8 @@
     <y>26.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>362</int>
      <int>363</int>
@@ -2637,7 +2809,6 @@
     <name>:Yr</name>
     <init>300</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>300</max>
@@ -2651,6 +2822,8 @@
     <y>251</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>365</int>
      <int>366</int>
@@ -2658,7 +2831,6 @@
     <name>:v</name>
     <init>3</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3</max>
@@ -2672,13 +2844,14 @@
     <y>13.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>368</int>
     </ports>
     <name>:Kr</name>
     <init>900</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2692,6 +2865,8 @@
     <y>43.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>370</int>
      <int>371</int>
@@ -2699,7 +2874,6 @@
     <name>:L</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2713,13 +2887,14 @@
     <y>53</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>373</int>
     </ports>
     <name>:a</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2733,13 +2908,14 @@
     <y>80.9999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>375</int>
     </ports>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2753,6 +2929,8 @@
     <y>104.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>377</int>
      <int>378</int>
@@ -2760,7 +2938,6 @@
     <name>:Yr</name>
     <init>300</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>300</max>
@@ -2774,13 +2951,14 @@
     <y>127</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>380</int>
     </ports>
     <name>:W</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2794,6 +2972,8 @@
     <y>145.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>382</int>
      <int>383</int>
@@ -2801,7 +2981,6 @@
     <name>:L</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2815,6 +2994,8 @@
     <y>168</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>385</int>
      <int>386</int>
@@ -2822,7 +3003,6 @@
     <name>:rL</name>
     <init>0.05</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2836,13 +3016,14 @@
     <y>187</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>388</int>
     </ports>
     <name>:FL</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2856,6 +3037,8 @@
     <y>205.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>390</int>
      <int>391</int>
@@ -2863,7 +3046,6 @@
     <name>:rD</name>
     <init>0.01</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2877,13 +3059,14 @@
     <y>227</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>393</int>
     </ports>
     <name>:FD</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2897,13 +3080,14 @@
     <y>272.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>395</int>
     </ports>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2917,6 +3101,8 @@
     <y>301.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>397</int>
      <int>398</int>
@@ -2924,7 +3110,6 @@
     <name>:Yr</name>
     <init>300</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>300</max>
@@ -2938,6 +3123,8 @@
     <y>269.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>400</int>
      <int>401</int>
@@ -2945,7 +3132,6 @@
     <name>:Inv(\pi_r)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -2959,6 +3145,8 @@
     <y>350</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>403</int>
      <int>404</int>
@@ -2966,7 +3154,6 @@
     <name>:v</name>
     <init>3</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3</max>
@@ -2980,6 +3167,8 @@
     <y>376.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>406</int>
      <int>407</int>
@@ -2987,7 +3176,6 @@
     <name>:\delta</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3001,6 +3189,8 @@
     <y>354.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>409</int>
      <int>410</int>
@@ -3008,7 +3198,6 @@
     <name>:g</name>
     <init>0.0405595</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3022,6 +3211,8 @@
     <y>210</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>412</int>
      <int>413</int>
@@ -3029,7 +3220,6 @@
     <name>:rD</name>
     <init>0.01</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3043,6 +3233,8 @@
     <y>112</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>415</int>
      <int>416</int>
@@ -3050,7 +3242,6 @@
     <name>:Yr</name>
     <init>300</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>300</max>
@@ -3064,6 +3255,8 @@
     <y>82.239</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>418</int>
      <int>419</int>
@@ -3071,7 +3264,6 @@
     <name>:Inv(\pi_r)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3085,6 +3277,8 @@
     <y>21.0001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>421</int>
      <int>422</int>
@@ -3092,7 +3286,6 @@
     <name>:rL</name>
     <init>0.05</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3106,6 +3299,8 @@
     <y>106.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>424</int>
      <int>425</int>
@@ -3113,7 +3308,6 @@
     <name>:\tau_{RL}(\pi_r)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3127,6 +3321,8 @@
     <y>183.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>427</int>
      <int>428</int>
@@ -3134,7 +3330,6 @@
     <name>:\tau_{LC}(\pi_r)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3148,6 +3343,8 @@
     <y>383.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>430</int>
      <int>431</int>
@@ -3155,7 +3352,6 @@
     <name>:\tau_{RL}(\pi_r)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3169,6 +3365,8 @@
     <y>418.239</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>433</int>
      <int>434</int>
@@ -3176,7 +3374,6 @@
     <name>:\tau_{LC}(\pi_r)</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3186,17 +3383,18 @@
    <Item>
     <id>437</id>
     <type>Variable:stock</type>
-    <x>681.557</x>
-    <y>1006.42</y>
+    <x>674.73</x>
+    <y>1001.67</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>436</int>
     </ports>
     <name>:BC</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3206,17 +3404,18 @@
    <Item>
     <id>439</id>
     <type>Variable:stock</type>
-    <x>711.79</x>
-    <y>1010.46</y>
+    <x>704.73</x>
+    <y>1005.67</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>438</int>
     </ports>
     <name>:BPL</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3226,17 +3425,18 @@
    <Item>
     <id>441</id>
     <type>Variable:stock</type>
-    <x>742.023</x>
-    <y>1005.42</y>
+    <x>734.73</x>
+    <y>1000.67</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>440</int>
     </ports>
     <name>:FL</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3246,17 +3446,18 @@
    <Item>
     <id>443</id>
     <type>Variable:stock</type>
-    <x>772.256</x>
-    <y>1006.42</y>
+    <x>764.73</x>
+    <y>1001.67</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>442</int>
     </ports>
     <name>:FD</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3266,17 +3467,18 @@
    <Item>
     <id>445</id>
     <type>Variable:stock</type>
-    <x>802.489</x>
-    <y>1008.44</y>
+    <x>794.73</x>
+    <y>1003.67</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>444</int>
     </ports>
     <name>:WD</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3286,17 +3488,18 @@
    <Item>
     <id>447</id>
     <type>Variable:stock</type>
-    <x>832.722</x>
-    <y>1002.39</y>
+    <x>824.73</x>
+    <y>997.667</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>446</int>
     </ports>
     <name>:N</name>
     <init>300</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>300</max>
@@ -3306,17 +3509,18 @@
    <Item>
     <id>449</id>
     <type>Variable:stock</type>
-    <x>862.955</x>
-    <y>1000.38</y>
+    <x>854.73</x>
+    <y>995.667</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>448</int>
     </ports>
     <name>:a</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3326,17 +3530,18 @@
    <Item>
     <id>451</id>
     <type>Variable:stock</type>
-    <x>893.188</x>
-    <y>1004.41</y>
+    <x>884.73</x>
+    <y>999.667</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>450</int>
     </ports>
     <name>:Kr</name>
     <init>900</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>900</max>
@@ -3346,17 +3551,18 @@
    <Item>
     <id>453</id>
     <type>Variable:stock</type>
-    <x>923.421</x>
-    <y>1006.42</y>
+    <x>914.73</x>
+    <y>1001.67</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>452</int>
     </ports>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1.25</max>
@@ -3366,17 +3572,18 @@
    <Item>
     <id>455</id>
     <type>Variable:stock</type>
-    <x>953.654</x>
-    <y>1003.4</y>
+    <x>944.73</x>
+    <y>998.667</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>454</int>
     </ports>
     <name>:W</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3386,10 +3593,12 @@
    <Item>
     <id>458</id>
     <type>Variable:flow</type>
-    <x>631.372</x>
-    <y>443.529</y>
+    <x>623.7</x>
+    <y>438.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>456</int>
      <int>457</int>
@@ -3397,7 +3606,6 @@
     <name>:A</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3407,10 +3615,12 @@
    <Item>
     <id>461</id>
     <type>Variable:flow</type>
-    <x>631.372</x>
-    <y>473.762</y>
+    <x>623.7</x>
+    <y>468.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>459</int>
      <int>460</int>
@@ -3418,7 +3628,6 @@
     <name>:B</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3428,10 +3637,12 @@
    <Item>
     <id>464</id>
     <type>Variable:flow</type>
-    <x>631.372</x>
-    <y>503.995</y>
+    <x>623.7</x>
+    <y>498.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>462</int>
      <int>463</int>
@@ -3439,7 +3650,6 @@
     <name>:C</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>56.905</max>
@@ -3449,10 +3659,12 @@
    <Item>
     <id>467</id>
     <type>Variable:flow</type>
-    <x>631.372</x>
-    <y>534.228</y>
+    <x>623.7</x>
+    <y>528.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>465</int>
      <int>466</int>
@@ -3460,7 +3672,6 @@
     <name>:D</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>300</max>
@@ -3470,10 +3681,12 @@
    <Item>
     <id>470</id>
     <type>Variable:flow</type>
-    <x>631.372</x>
-    <y>564.461</y>
+    <x>624.7</x>
+    <y>558.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>468</int>
      <int>469</int>
@@ -3481,7 +3694,6 @@
     <name>:E</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3491,10 +3703,12 @@
    <Item>
     <id>473</id>
     <type>Variable:flow</type>
-    <x>631.372</x>
-    <y>594.694</y>
+    <x>624.7</x>
+    <y>588.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>471</int>
      <int>472</int>
@@ -3502,7 +3716,6 @@
     <name>:F</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3512,10 +3725,12 @@
    <Item>
     <id>476</id>
     <type>Variable:flow</type>
-    <x>630.364</x>
-    <y>624.927</y>
+    <x>623.7</x>
+    <y>618.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>474</int>
      <int>475</int>
@@ -3523,7 +3738,6 @@
     <name>:G</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3533,10 +3747,12 @@
    <Item>
     <id>479</id>
     <type>Variable:flow</type>
-    <x>630.364</x>
-    <y>655.16</y>
+    <x>623.7</x>
+    <y>648.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>477</int>
      <int>478</int>
@@ -3544,7 +3760,6 @@
     <name>:H</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3554,10 +3769,12 @@
    <Item>
     <id>482</id>
     <type>Variable:flow</type>
-    <x>634.395</x>
-    <y>685.393</y>
+    <x>626.7</x>
+    <y>678.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>480</int>
      <int>481</int>
@@ -3565,7 +3782,6 @@
     <name>:I</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3575,10 +3791,12 @@
    <Item>
     <id>485</id>
     <type>Variable:flow</type>
-    <x>631.372</x>
-    <y>715.626</y>
+    <x>624.7</x>
+    <y>708.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>483</int>
      <int>484</int>
@@ -3586,7 +3804,6 @@
     <name>:J</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3596,10 +3813,12 @@
    <Item>
     <id>488</id>
     <type>Variable:flow</type>
-    <x>617.263</x>
-    <y>780.123</y>
+    <x>610.7</x>
+    <y>772.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>486</int>
      <int>487</int>
@@ -3607,7 +3826,6 @@
     <name>:ode_W</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3617,10 +3835,12 @@
    <Item>
     <id>491</id>
     <type>Variable:flow</type>
-    <x>619.279</x>
-    <y>882.915</y>
+    <x>612.7</x>
+    <y>874.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>489</int>
      <int>490</int>
@@ -3628,7 +3848,6 @@
     <name>:ode_a</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3638,10 +3857,12 @@
    <Item>
     <id>494</id>
     <type>Variable:flow</type>
-    <x>618.271</x>
-    <y>917.179</y>
+    <x>611.7</x>
+    <y>908.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>492</int>
      <int>493</int>
@@ -3649,7 +3870,6 @@
     <name>:ode_N</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>6</max>
@@ -3659,10 +3879,12 @@
    <Item>
     <id>497</id>
     <type>Variable:flow</type>
-    <x>617.263</x>
-    <y>848.651</y>
+    <x>609.7</x>
+    <y>840.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>495</int>
      <int>496</int>
@@ -3670,7 +3892,6 @@
     <name>:ode_{Kr}</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>45.524</max>
@@ -3680,10 +3901,12 @@
    <Item>
     <id>500</id>
     <type>Variable:flow</type>
-    <x>615.248</x>
-    <y>814.387</y>
+    <x>607.7</x>
+    <y>806.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>498</int>
      <int>499</int>
@@ -3691,7 +3914,6 @@
     <name>:ode_{PC}</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3701,10 +3923,12 @@
    <Item>
     <id>503</id>
     <type>Variable:flow</type>
-    <x>619.279</x>
-    <y>745.859</y>
+    <x>612.7</x>
+    <y>738.95</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>501</int>
      <int>502</int>
@@ -3712,7 +3936,6 @@
     <name>:ode_\lambda</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3722,17 +3945,18 @@
    <Item>
     <id>505</id>
     <type>Variable:stock</type>
-    <x>983.887</x>
-    <y>1001.39</y>
+    <x>974.73</x>
+    <y>996.667</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>504</int>
     </ports>
     <name>:\lambda</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3746,13 +3970,14 @@
     <y>489</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>506</int>
     </ports>
     <name>:\beta_0</name>
     <init>0.02</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-0.2</min>
      <max>0.2</max>
@@ -3766,13 +3991,14 @@
     <y>297.239</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>508</int>
     </ports>
     <name>:\tau_B</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-10</min>
      <max>10</max>
@@ -3786,13 +4012,14 @@
     <y>336.239</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>510</int>
     </ports>
     <name>:\tau_W</name>
     <init>0.0384615</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-0.384615</min>
      <max>0.384615</max>
@@ -3806,13 +4033,14 @@
     <y>575</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>512</int>
     </ports>
     <name>:-\tau_{Pc}</name>
     <init>-1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>-1</max>
@@ -3826,13 +4054,14 @@
     <y>379</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>514</int>
     </ports>
     <name>:\omega</name>
     <init>0.1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3846,13 +4075,14 @@
     <y>579</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>516</int>
     </ports>
     <name>:1-s</name>
     <init>0.73</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3866,13 +4096,14 @@
     <y>392</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>518</int>
     </ports>
     <name>:xval</name>
     <init>0.96</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3886,13 +4117,14 @@
     <y>448</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>520</int>
     </ports>
     <name>:yval</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3906,13 +4138,14 @@
     <y>422</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>522</int>
     </ports>
     <name>:sval</name>
     <init>2</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>2</max>
@@ -3926,13 +4159,14 @@
     <y>481.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>524</int>
     </ports>
     <name>:min</name>
     <init>-0.04</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3946,13 +4180,14 @@
     <y>257</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>526</int>
     </ports>
     <name>:0.04</name>
     <init>0.04</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -3966,13 +4201,14 @@
     <y>290</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>528</int>
     </ports>
     <name>:50</name>
     <init>50</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>50</max>
@@ -3986,13 +4222,14 @@
     <y>288.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>530</int>
     </ports>
     <name>:0.04</name>
     <init>0.04</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-0.4</min>
      <max>0.4</max>
@@ -4006,13 +4243,14 @@
     <y>163</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>532</int>
     </ports>
     <name>:0.03</name>
     <init>0.03</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -4026,13 +4264,14 @@
     <y>109.999</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>534</int>
     </ports>
     <name>:14.285744</name>
     <init>14.2857</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>14.2857</max>
@@ -4046,13 +4285,14 @@
     <y>183.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>536</int>
     </ports>
     <name>:-33.33333333</name>
     <init>-33.3333</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-33.3333</min>
      <max>1</max>
@@ -4066,13 +4306,14 @@
     <y>215.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>538</int>
     </ports>
     <name>:1.5</name>
     <init>1.5</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1.5</max>
@@ -4086,13 +4327,14 @@
     <y>139.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>540</int>
     </ports>
     <name>:7</name>
     <init>7</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>7</max>
@@ -4106,13 +4348,14 @@
     <y>84</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>542</int>
     </ports>
     <name>:3</name>
     <init>3</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3</max>
@@ -4126,13 +4369,14 @@
     <y>208.001</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>544</int>
     </ports>
     <name>:0.5</name>
     <init>0.5</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -4146,6 +4390,8 @@
     <y>71</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>150</width>
+    <height>150</height>
     <ports>
      <int>546</int>
      <int>547</int>
@@ -4170,8 +4416,6 @@
      <int>566</int>
      <int>567</int>
     </ports>
-    <width>150</width>
-    <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -4190,8 +4434,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -4200,8 +4442,6 @@
        <b>0</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -4214,8 +4454,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -4226,8 +4464,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -4236,8 +4472,6 @@
        <b>1</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -4250,8 +4484,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -4260,8 +4492,6 @@
        <b>0</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -4274,8 +4504,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
    </Item>
@@ -4286,6 +4514,8 @@
     <y>238</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>150</width>
+    <height>150</height>
     <ports>
      <int>569</int>
      <int>570</int>
@@ -4310,8 +4540,6 @@
      <int>589</int>
      <int>590</int>
     </ports>
-    <width>150</width>
-    <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -4330,8 +4558,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -4340,8 +4566,6 @@
        <b>0</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -4354,8 +4578,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -4366,8 +4588,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -4376,8 +4596,6 @@
        <b>1</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -4390,8 +4608,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -4400,8 +4616,6 @@
        <b>0</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -4414,8 +4628,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
    </Item>
@@ -4426,6 +4638,8 @@
     <y>589.5</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>534.6</width>
+    <height>830.334</height>
     <ports>
      <int>457</int>
      <int>460</int>
@@ -4455,8 +4669,6 @@
      <int>454</int>
      <int>504</int>
     </ports>
-    <width>534.6</width>
-    <height>830.334</height>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -4811,6 +5023,9 @@
      <AssetClass>liability</AssetClass>
      <AssetClass>equity</AssetClass>
     </assetClasses>
+    <editorMode>false</editorMode>
+    <buttonDisplay>false</buttonDisplay>
+    <variableDisplay>true</variableDisplay>
    </Item>
   </items>
   <groups>
@@ -4825,6 +5040,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
+   <tmax>INF</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

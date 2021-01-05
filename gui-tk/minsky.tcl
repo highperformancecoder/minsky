@@ -225,24 +225,6 @@ if {$preferences(focusFollowsMouse)} {
 }
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
-#source $minskyHome/library/htmllib.tcl
-#toplevel .splash
-#text .splash.text
-#button .splash.ok -text OK -command {destroy .splash}
-#pack .splash.text .splash.ok
-#
-#HMinit_win .splash.text
-#proc HMlink_callback {win url} {
-#    openURL $url
-#}
-#
-#set splashTextFile [open $minskyHome/library/splash.html]
-#set splashText ""
-#while {! [eof $splashTextFile]} {
-#    append splashText [gets $splashTextFile]
-#}
-#HMparse_html $splashText "HMrender .splash.text"
-
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should
     # receive the event - see ticket #114 
@@ -303,6 +285,10 @@ if {[tk windowingsystem] == "aqua"} {
     }
     proc ::tk::mac::ShowPreferences {} {showPreferences}
     proc ::tk::mac::ShowHelp {} {help Introduction}
+} else {
+    # keyboard accelerator introducer, which is different on macs
+    set meta Control
+    set meta_menu Ctrl
 }
 
 menu .menubar.file
@@ -434,7 +420,7 @@ proc showPreferences {} {
 }
 
 menu .menubar.rungeKutta
-.menubar.rungeKutta add command -label "Runge Kutta" -command {
+.menubar.rungeKutta add command -label "Simulation" -command {
     foreach {var text} $rkVars { set rkVarInput($var) [$var] }
     set implicitSolver [implicit]
     deiconifyRKDataForm
@@ -444,7 +430,7 @@ menu .menubar.rungeKutta
     grab set .rkDataForm
     wm transient .rkDataForm .
 } -underline 0 
-.menubar add cascade -label "Runge Kutta" -menu .menubar.rungeKutta
+.menubar add cascade -label "Simulation" -menu .menubar.rungeKutta
 
 # special platform specific menus
 menu .menubar.help
@@ -477,25 +463,30 @@ if {$classicMode} {
     image create photo stopButton -file "$minskyHome/icons/Pause.gif"
     image create photo resetButton -file "$minskyHome/icons/Rewind.gif"
     image create photo stepButton -file "$minskyHome/icons/Last.gif"
-    image create photo rec -file "$minskyHome/icons/rec.gif"
-    image create photo runmode -file "$minskyHome/icons/runmode.gif"
-    image create photo recplay -file "$minskyHome/icons/recplay.gif"
     # iconic mode
     button .controls.run -image runButton -height 25 -width 25 -command runstop
     button .controls.reset -image resetButton -height 25 -width 25 -command reset
     button .controls.step -image stepButton -height 25 -width 25  -command {step}
-    checkbutton .controls.rec -image rec -height 25 -width 25 -command toggleRecording -variable eventRecording -indicatoron 0
-    checkbutton .controls.runmode -image runmode -height 25 -width 25 -selectimage recplay -variable recordingReplay -command replay -indicatoron 0 -selectcolor $backgroundColour
-    checkbutton .controls.reverse -text "Rev" -command {
-        minsky.reverse $reverse} -variable reverse
-    
-    tooltip .controls.rec "Record"
-    tooltip .controls.runmode "Simulate/Recording Replay"
-    tooltip .controls.reverse "Reverse simulation"
-    tooltip .controls.run "Run/Stop"
-    tooltip .controls.reset "Reset simulation"
-    tooltip .controls.step "Step simulation"
 }
+
+image create photo recalculate -file "$minskyHome/icons/recalculate.gif"
+button .controls.recalculate -image recalculate -height 25 -width 25  -command reset
+image create photo rec -file "$minskyHome/icons/rec.gif"
+image create photo runmode -file "$minskyHome/icons/runmode.gif"
+image create photo recplay -file "$minskyHome/icons/recplay.gif"
+
+checkbutton .controls.rec -image rec -height 25 -width 25 -command toggleRecording -variable eventRecording -indicatoron 0
+checkbutton .controls.runmode -image runmode -height 25 -width 25 -selectimage recplay -variable recordingReplay -command replay -indicatoron 0 -selectcolor $backgroundColour
+checkbutton .controls.reverse -text "Rev" -command {
+    minsky.reverse $reverse} -variable reverse
+    
+tooltip .controls.recalculate "Recalculate"
+tooltip .controls.rec "Record"
+tooltip .controls.runmode "Simulate/Recording Replay"
+tooltip .controls.reverse "Reverse simulation"
+tooltip .controls.run "Run/Stop"
+tooltip .controls.reset "Reset simulation"
+tooltip .controls.step "Step simulation"
 
 # enable auto-repeat on step button
 bind .controls.step <ButtonPress-1> {set buttonPressed 1; autoRepeatButton .controls.step}
@@ -560,13 +551,9 @@ label .controls.slowSpeed -text "slow"
 label .controls.fastSpeed -text "fast"
 scale .controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0
 
-# keyboard accelerator introducer, which is different on macs
-set meta Control
-set meta_menu Ctrl
 
 
-
-pack .controls.rec .controls.runmode .controls.reverse .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
+pack .controls.recalculate .controls.rec .controls.runmode .controls.reverse .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
 pack .controls.statusbar -side right -fill x
 
 grid .controls -row 0 -column 0 -columnspan 1000 -sticky ew
@@ -588,6 +575,7 @@ menu .exportPlots
 .menubar.file add command -label "Save" -command save -underline 0 -accelerator $meta_menu-S
 .menubar.file add command -label "SaveAs" -command saveAs -underline 4 -accelerator $meta_menu-A 
 .menubar.file add command -label "Insert File as Group" -command insertFile
+.menubar.file add command -label "Import Vensim MDL file" -command importMDL
 
 .menubar.file add command -label "Dimensional Analysis" -command {
     dimensionalAnalysis
@@ -716,6 +704,8 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 .menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
+.menubar.edit add command -label "Randomize layout" -command minsky.model.randomLayout
+.menubar.edit add command -label "Auto layout" -command minsky.model.autoLayout
 
 proc togglePaste {} {
     if {[getClipboard]==""} {
@@ -730,6 +720,7 @@ proc undo {delta} {
     doPushHistory 0
     minsky.undo $delta
     minsky.canvas.requestRedraw
+    deleteSubsidiaryTopLevels
     doPushHistory 1
 }
 
@@ -739,37 +730,38 @@ proc cut {} {
 
 proc dimensionsDialog {} {
     populateMissingDimensions
-    if {![winfo exists .dimensions]} {
-        toplevel .dimensions
-        grid [button .dimensions.cancel -text Cancel -command "wm withdraw .dimensions"] \
-            [button .dimensions.ok -text OK -command {
-                    set colRows [grid size .dimensions]
-                    for {set i 2} {$i<[lindex $colRows 1]} {incr i} {
-                        set dim [.dimensions.g${i}_dim get]
-                        if {$dim!=""} {
-                            set d [dimensions.@elem $dim]
+    toplevel .dimensions
+    grid [button .dimensions.cancel -text Cancel -command "destroy .dimensions"] \
+        [button .dimensions.ok -text OK -command {
+            set colRows [grid size .dimensions]
+            for {set i 2} {$i<[lindex $colRows 1]} {incr i} {
+                set dim [.dimensions.g${i}_dim get]
+                if {$dim!=""} {
+                    set d [dimensions.@elem $dim]
                             $d.type [.dimensions.g${i}_type get]
-                            $d.units [.dimensions.g${i}_units get]
+                            if [info exists timeFormatStrings([.dimensions.g${i}_units get])] {
+                                $d.units $timeFormatStrings([.dimensions.g${i}_units get])
+                            } else {
+                                $d.units [.dimensions.g${i}_units get]
+                            }
                         }
                     }
-                imposeDimensions
-                wm withdraw .dimensions
-                reset
-            }]
-        grid [label .dimensions.g1_dim -text Dimension] \
-            [label .dimensions.g1_type -text Type]\
-            [label .dimensions.g1_units -text "Units/Format"]
-        tooltip .dimensions.g1_units "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
-    } else {
-        wm deiconify .dimensions
-    }
+            imposeDimensions
+            destroy .dimensions
+            reset
+        }]
+    grid [label .dimensions.g1_dim -text Dimension] \
+        [label .dimensions.g1_type -text Type]\
+        [label .dimensions.g1_units -text "Units/Format"]
+    tooltip .dimensions.g1_units "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
+
     set colRows [grid size .dimensions]
     for {set i [lindex $colRows 1]} {$i<[dimensions.size]+3} {incr i} {
         grid [entry .dimensions.g${i}_dim] \
             [ttk::combobox .dimensions.g${i}_type -state readonly \
-             -values {string value time}] \
+                 -values {string value time}] \
             [ttk::combobox .dimensions.g${i}_units \
-         -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\]"
+                 -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\] {}"
             ]
     }
     set i 2
@@ -780,26 +772,67 @@ proc dimensionsDialog {} {
         .dimensions.g${i}_type set [$d.type]
         .dimensions.g${i}_units delete 0 end
         .dimensions.g${i}_units insert 0 [$d.units]
+        dimFormatPopdown .dimensions.g${i}_units [$d.type] {}
         incr i
     }
 }
 
-set timeFormatStrings {
-    "%Y-%m-%d" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q" "%m/%d/%y"
+
+
+array set timeFormatStrings {
+    "1999-Q4" "%Y-Q%Q"
+    "1999" "%Y"
+    "12/31/99" "%m/%d/%y"
+    "12/31/1999" "%m/%d/%Y"
+    "31/12/99" "%d/%m/%y"
+    "31/12/1999" "%d/%m/%Y"
+    "1999-12-31T13:37:46" "%Y-%m-%dT%H:%M:%S"
+    "12/31/1999 01:37 PM" "%m/%d/%Y %I:%M %p"
+    "12/31/99 01:37 PM" "%m/%d/%y %I:%M %p"
+    "12/31/1999 13:37 PM" "%m/%d/%Y %H:%M %p"
+    "12/31/99 13:37 PM" "%m/%d/%y %H:%M %p"
+    "Friday, December 31, 1999" "%A, %B %d, %Y"
+    "Dec 31, 99" "%b %d, %y"
+    "Dec 31, 1999" "%b %d, %Y"
+    "31. Dec. 1999" "%d. %b. %Y"
+    "December 31, 1999" "%B %d, %Y"
+    "31. December 1999" "%d. %B %Y"
+    "Fri, Dec 31, 99" "%a, %b %d, %y"
+    "Fri 31/Dec 99" "%a %d/%b %y"
+    "Fri, Dec 31, 1999" "%a, %b %d, %Y"
+    "Friday, December 31, 1999" "%A, %B %d, %Y"
+    "12-31" "%m-%d"
+    "99-12-31" "%y-%m-%d"
+    "1999-12-31" "%Y-%m-%d"
+    "12/99" "%m/%y"
+    "Dec 31" "%b %d"
+    "December" "%B"
+    "4th quarter 99" "%Qth quarter %y"
 }
 
-proc dimFormatPopdown {comboBox type} {
+proc rewriteTimeComboBox {comboBox} {
+    global timeFormatStrings
+    if [info exists timeFormatStrings([$comboBox get])] {
+        $comboBox set $timeFormatStrings([$comboBox get])
+    }
+}
+
+# If comboBox is a format combo box for a field of \a type, then set up rewrite strings, then execute \a onSelect
+proc dimFormatPopdown {comboBox type onSelect} {
     global timeFormatStrings
     switch $type {
         string {
             $comboBox configure -values {}
             $comboBox set {}
+            bind $comboBox <<ComboboxSelected>> $onSelect
         }
         value {
             $comboBox configure -values {}
+            bind $comboBox <<ComboboxSelected>> $onSelect
         }
         time {
-            $comboBox configure -values $timeFormatStrings
+            $comboBox configure -values [lsort [array names timeFormatStrings]]
+            bind $comboBox <<ComboboxSelected>> "rewriteTimeComboBox $comboBox; $onSelect"
         }
     }
 }
@@ -837,6 +870,9 @@ bind . <$meta-G> {minsky.createGroup}
 # tabbed manager
 ttk::notebook .tabs -padding 0
 ttk::notebook::enableTraversal .tabs
+# disable arrow bindings for switching between tabs, as we want to use these on the canvas
+bind .tabs <Key-Left> {}
+bind .tabs <Key-Right> {}
 grid .tabs -column 0 -row 10 -sticky news
 grid columnconfigure . 0 -weight 1
 grid rowconfigure . 10 -weight 1
@@ -898,11 +934,74 @@ proc addTab {window label surface} {
 addTab wiring "Wiring" minsky.canvas
 addTab equations "Equations" minsky.equationDisplay
 pack .equations.canvas -fill both -expand 1
-addTab parameters "Parameters" minsky.parameterSheet
+addTab parameters "Parameters" minsky.parameterTab
 pack .parameters.canvas -fill both -expand 1
-addTab variables "Variables" minsky.variableSheet
+addTab variables "Variables" minsky.variableTab
 pack .variables.canvas -fill both -expand 1
+
+bind .variables.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
+menu .variables.context -tearoff 0   
+
+addTab plts "Plots" minsky.plotTab
+pack .plts.canvas -fill both -expand 1
+
+bind .plts.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
+menu .plts.context -tearoff 0   
+
+bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDownCommon %x %y}
+bind .plts.canvas <ButtonRelease-1> {wrapHoverMouseTab plotTab mouseUp %x %y}
+bind .plts.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab plotTab mouseMove %x %y}
+bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
+
+
+addTab gdlys "Godleys" minsky.godleyTab
+pack .gdlys.canvas -fill both -expand 1
+
+bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDownCommon %x %y}
+bind .gdlys.canvas <ButtonRelease-1> {wrapHoverMouseTab godleyTab mouseUp %x %y}
+bind .gdlys.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab godleyTab mouseMove %x %y}
+bind .gdlys.canvas <Leave> {after cancel hoverMouseTab godleyTab}
+
 .tabs select 0
+
+proc hoverMouseTab {tabId} {
+    $tabId.displayDelayedTooltip [get_pointer_x .plts.canvas] [get_pointer_y .plts.canvas]
+}
+
+# reset hoverMouse timer
+proc wrapHoverMouseTab {tabId op x y} {
+    after cancel hoverMouseTab $tabId
+    # ignore any exceptions
+    catch {$tabId.$op $x $y}
+    after 3000 hoverMouseTab $tabId
+}
+
+proc tabContext {x y X Y} {
+	    switch [lindex [.tabs tabs] [.tabs index current]] {
+		.variables {	
+		    .variables.context delete 0 end	
+		    set r [variableTab.rowY $y]    	
+		    switch [variableTab.clickType $x $y] {	
+		        background {}	
+		        internal {	
+		    		set varName [variableTab.getVarName $r]	
+		    		.variables.context add command -label "Remove $varName from tab" -command "variableTab.toggleVarDisplay $r;  variableTab.requestRedraw"	
+		    	}	
+		    }	
+		    tk_popup .variables.context $X $Y	
+	    }
+	    .plts { # still doesn't work???
+			.plts.context delete 0 end
+			switch [plotTab.clickType $x $y] {
+			    background {}
+			    internal {
+					.plts.context add command -label "Remove plot from tab" -command "plotTab.togglePlotDisplay;  plotTab.requestRedraw"
+				}
+			}
+            tk_popup .plts.context $X $Y
+		}
+	}
+}
 
 source $minskyHome/godley.tcl
 source $minskyHome/plots.tcl
@@ -921,6 +1020,8 @@ bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; mins
 bind .equations.canvas <Configure> {setScrollBars}
 bind .parameters.canvas <Configure> {setScrollBars}
 bind .variables.canvas <Configure> {setScrollBars}
+bind .plts.canvas <Configure> {setScrollBars}
+bind .gdlys.canvas <Configure> {setScrollBars}
 
 set helpTopics(.wiring.panopticon) Panopticon
 
@@ -943,17 +1044,29 @@ proc setScrollBars {} {
             } else {.vscroll set  0 1}
         }
         .parameters {
-            set x0 [expr (10000-[parameterSheet.offsx])/20000.0]
-            set y0 [expr (10000-[parameterSheet.offsy])/20000.0]       
+            set x0 [expr (10000-[parameterTab.offsx])/20000.0]
+            set y0 [expr (10000-[parameterTab.offsy])/20000.0]       
             .hscroll set $x0 [expr $x0+[winfo width .parameters.canvas]/20000.0]
             .vscroll set $y0 [expr $y0+[winfo height .parameters.canvas]/20000.0]           
 		}      
         .variables {
-            set x0 [expr (10000-[variableSheet.offsx])/20000.0]
-            set y0 [expr (10000-[variableSheet.offsy])/20000.0]
+            set x0 [expr (10000-[variableTab.offsx])/20000.0]
+            set y0 [expr (10000-[variableTab.offsy])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .variables.canvas]/20000.0]
             .vscroll set $y0 [expr $y0+[winfo height .variables.canvas]/20000.0]                 
-        }        
+        }
+        .plts {
+            set x0 [expr (10000-[plotTab.offsx])/20000.0]
+            set y0 [expr (10000-[plotTab.offsy])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .plts.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .plts.canvas]/20000.0]           
+        }  
+        .gdlys {
+            set x0 [expr (10000-[godleyTab.offsx])/20000.0]
+            set y0 [expr (10000-[godleyTab.offsy])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .gdlys.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .gdlys.canvas]/20000.0]           
+        }                         
     }
 }
 
@@ -973,15 +1086,25 @@ proc panCanvas {offsx offsy} {
             equationDisplay.requestRedraw
         }
         .parameters {
-            parameterSheet.offsx $offsx
-            parameterSheet.offsy $offsy			
-            parameterSheet.requestRedraw
+            parameterTab.offsx $offsx
+            parameterTab.offsy $offsy			
+            parameterTab.requestRedraw
         }        
         .variables {
-            variableSheet.offsx $offsx
-            variableSheet.offsy $offsy						
-            variableSheet.requestRedraw
+            variableTab.offsx $offsx
+            variableTab.offsy $offsy						
+            variableTab.requestRedraw
         }           
+        .plts {
+            plotTab.offsx $offsx
+            plotTab.offsy $offsy	
+            plotTab.requestRedraw
+        }         
+        .gdlys {
+            godleyTab.offsx $offsx
+            godleyTab.offsy $offsy	
+            godleyTab.requestRedraw
+        }             
     }
     setScrollBars
 }
@@ -1010,21 +1133,37 @@ proc scrollCanvases {xyview args} {
             set h [equationDisplay.height]
         }
         .parameters {
-            set x [parameterSheet.offsx]
-            set y [parameterSheet.offsy]
+            set x [parameterTab.offsx]
+            set y [parameterTab.offsy]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]
             set y1 [expr 0.5*$h]       
         }
         .variables {
-            set x [variableSheet.offsx]
-            set y [variableSheet.offsy]
+            set x [variableTab.offsx]
+            set y [variableTab.offsy]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]
             set y1 [expr 0.5*$h]
         }                
+        .plts {
+            set x [plotTab.offsx]
+            set y [plotTab.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }
+        .gdlys {
+            set x [godleyTab.offsx]
+            set y [godleyTab.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }                      
     }
     switch [lindex $args 0] {
         moveto {
@@ -1076,18 +1215,32 @@ bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panO
 # parameters pan mode
 .parameters.canvas configure -cursor $panIcon
 bind .parameters.canvas <Button-1> {
-    set panOffsX [expr %x-[parameterSheet.offsx]]
-    set panOffsY [expr %y-[parameterSheet.offsy]]
+    set panOffsX [expr %x-[parameterTab.offsx]]
+    set panOffsY [expr %y-[parameterTab.offsy]]
 }
 bind .parameters.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 # variables pan mode
 .variables.canvas configure -cursor $panIcon
 bind .variables.canvas <Button-1> {
-    set panOffsX [expr %x-[variableSheet.offsx]]
-    set panOffsY [expr %y-[variableSheet.offsy]]
+    set panOffsX [expr %x-[variableTab.offsx]]
+    set panOffsY [expr %y-[variableTab.offsy]]
 }
 bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+# plots pan mode
+bind .plts.canvas <Shift-Button-1> {
+    set panOffsX [expr %x-[plotTab.offsx]]
+    set panOffsY [expr %y-[plotTab.offsy]]
+}
+bind .plts.canvas <Shift-B1-Motion> {.plts.canvas configure -cursor $panIcon; panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+# plots pan mode
+bind .gdlys.canvas <Shift-Button-1> {
+    set panOffsX [expr %x-[godleyTab.offsx]]
+    set panOffsY [expr %y-[godleyTab.offsy]]
+}
+bind .gdlys.canvas <Shift-B1-Motion> {.gdlys.canvas configure -cursor $panIcon; panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew
@@ -1154,10 +1307,8 @@ proc runstop {} {
     }
 }
 
-set simTMax Inf
-
 proc step {} {
-    global recordingReplay eventRecordR simTMax
+    global recordingReplay eventRecordR simTMax simTStart
     if {$recordingReplay} {
         if {[gets $eventRecordR cmd]>=0} {
             eval $cmd
@@ -1170,7 +1321,7 @@ proc step {} {
         global preferences
         set lastt [t]
         if {[catch minsky.step errMsg options] && [running]} {runstop}
-        if {$simTMax<[t]} {runstop}
+        if {[minsky.t0]>[t] || [minsky.tmax]<[t]} {runstop}
         .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
         update
@@ -1239,7 +1390,7 @@ populateRecentFiles
 proc openFile {} {
     global fname workDir preferences
     set ofname [tk_getOpenFile -multiple 1 -filetypes {
-	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
+        {Minsky {.mky}} {Ravel {.rvl}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
     if [string length $ofname] {eval openNamedFile $ofname}
 }
 
@@ -1282,8 +1433,17 @@ proc openNamedFile {ofname} {
 proc insertFile {} {
     global workDir
     set fname [tk_getOpenFile -multiple 1 -filetypes {
-	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
+        {Minsky {.mky}} {Ravel {.rvl}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
     eval insertGroupFromFile $fname
+}
+
+proc importMDL {} {
+    global workDir
+    newSystem
+    set fname [tk_getOpenFile -multiple 1 -filetypes {
+        {Vensim {.mdl}} {All {.*}}} -initialdir $workDir]
+    eval importVensim $fname
+    minsky.model.autoLayout
 }
 
 # adjust canvas so that -ve coordinates appear on canvas
@@ -1295,14 +1455,43 @@ proc recentreCanvas {} {
             equationDisplay.offsy 0
             equationDisplay.requestRedraw
         }
+        .parameters {
+            parameterTab.offsx 0
+            parameterTab.offsy 0
+            parameterTab.requestRedraw
+        }
+        .variables {
+            variableTab.offsx 0
+            variableTab.offsy 0
+            variableTab.requestRedraw
+        }       
+        .plts {
+            plotTab.offsx 0
+            plotTab.offsy 0
+            plotTab.requestRedraw
+        }               
+        .gdlys {
+            godleyTab.offsx 0
+            godleyTab.offsy 0
+            godleyTab.requestRedraw
+        }                    
+    }
+}
+
+proc fileTypes {defaultExtension} {
+    if {$defaultExtension==".rvl"} {
+        return {{"Ravel" .rvl TEXT} {"Minsky" .mky TEXT} {"All Files" * TEXT}}
+    } else {
+        return {{"Minsky" .mky TEXT} {"Ravel" .rvl TEXT} {"All Files" * TEXT}}
     }
 }
 
 proc save {} {
     global fname workDir
+    set ext [minsky.model.defaultExtension]
     if {![string length $fname]} {
-        setFname [tk_getSaveFile -defaultextension .mky  -initialdir $workDir \
-                  -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]}            
+        setFname [tk_getSaveFile -defaultextension $ext  -initialdir $workDir \
+                      -filetypes [fileTypes $ext]]}            
     if [string length $fname] {
         set workDir [file dirname $fname]
         eval minsky.save {$fname}
@@ -1312,8 +1501,9 @@ proc save {} {
 
 proc saveAs {} {
     global fname workDir
-    setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir \
-              -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]
+    set ext [minsky.model.defaultExtension]
+    setFname [tk_getSaveFile -defaultextension $ext  -initialdir $workDir \
+                  -filetypes [fileTypes $ext]]            
     if [string length $fname] save
 }
 
@@ -1366,19 +1556,6 @@ set rkVars {
     order      "Solver order (1,2 or 4)"
 }
 
-proc tmax {args} {
-    global simTMax
-    if [llength $args] {
-        if {[lindex $args 0]==""} {
-            set simTMax Inf
-        } else {
-            return [set simTMax [lindex $args 0]]
-        }
-    } else {
-        return [set simTMax]
-    }
-}
-
 proc deiconifyRKDataForm {} {
     if {![winfo exists .rkDataForm]} {
         global rkVarInput rkVars
@@ -1387,7 +1564,7 @@ proc deiconifyRKDataForm {} {
 
         set row 0
 
-        grid [label .rkDataForm.label$row -text "Runge-Kutta parameters"] -column 1 -columnspan 999 -pady 10
+        grid [label .rkDataForm.label$row -text "Simulation parameters"] -column 1 -columnspan 999 -pady 10
         incr row 10
 
         foreach {var text} $rkVars {
@@ -1408,7 +1585,7 @@ proc deiconifyRKDataForm {} {
         
         bind .rkDataForm <Key-Return> {invokeOKorCancel .rkDataForm.buttonBar}
 
-        wm title .rkDataForm "Runge-Kutta parameters"
+        wm title .rkDataForm "Simulation parameters"
         # help bindings
         bind .rkDataForm  <F1>  {help RungeKutta}
         global helpTopics
@@ -1565,7 +1742,6 @@ proc aboutMinsky {} {
   tk_messageBox -message "
    Minsky [minskyVersion]\n
    Version used to save file [fileVersion]\n
-   EcoLab [ecolabVersion]\n
    Tcl/Tk [info tclversion]\n
    Ravel [ravelVersion]
 " -detail "
@@ -1672,7 +1848,18 @@ proc unknown {procname args} {
 }
 
 pushFlags
-if {$argc>1 && ![string match "*.tcl" $argv(1)]} {catch {eval openNamedFile {$argv(1)}}}
+
+if {$argc>1} {
+    #if argv(1) has .mdl extension, it is a Vensim model file
+    if [string match "*.mdl" $argv(1)] {
+        catch {eval importVensim $argv(1)}
+        minsky.model.autoLayout
+#        minsky.canvas.requestRedraw
+        .controls.zoomFit invoke
+    } elseif {![string match "*.tcl" $argv(1)]} {
+        catch {eval openNamedFile {$argv(1)}}
+    }
+}
 
 proc ifDef {var} {
     upvar $var v
@@ -1752,6 +1939,7 @@ if {[llength [info commands afterMinskyStarted]]>0} {
     afterMinskyStarted
 }
 
+setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
 disableEventProcessing
 popFlags
 pushHistory

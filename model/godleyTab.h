@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2019
+  @copyright Steve Keen 2020
   @author Russell Standish
   @author Wynand Dednam
   This file is part of Minsky.
@@ -18,19 +18,21 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef VARIABLESHEET_H
-#define VARIABLESHEET_H
-#include <parVarSheet.h>
+#ifndef GODLEYTAB_H
+#define GODLEYTAB_H
+#include <itemTab.h>
 
 namespace minsky
 {
 	 
-  class VariableSheet: public ParVarSheet
+  class GodleyTab: public ItemTab
   {	  
   public:
-    bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()!=VariableType::parameter;}
+    bool itemSelector(const ItemPtr& i) override;
+    ItemPtr itemAt(float x, float y) override;
+    void draw(cairo_t* cairo) override;
   };
   
 }
-#include "variableSheet.cd"
+#include "godleyTab.cd"
 #endif

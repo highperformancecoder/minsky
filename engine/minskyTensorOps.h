@@ -78,7 +78,7 @@ namespace minsky
     /// create a tensor representation of the expression rooted at
     /// op. If expression doesn't contain any references variables,
     /// then the \a tp parameter may be omitted.
-    std::shared_ptr<ITensor> create(const Item&, const TensorsFromPort& tp={});
+    std::shared_ptr<ITensor> create(const ItemPtr&, const TensorsFromPort& tp={});
   };    
   
   extern TensorOpFactory tensorOpFactory;
@@ -112,7 +112,8 @@ namespace minsky
       value(vv), ev(ev) {}
     const Hypercube& hypercube() const override {return value->hypercube();}
     const Index& index() const override {return value->index();}
-    
+    size_t size() const override {return value->size();}
+   
     double dFlow(size_t ti, size_t fi) const override 
     {return value->isFlowVar() && fi==ti+value->idx();}
     double dStock(size_t ti, size_t si) const override 
@@ -127,8 +128,10 @@ namespace minsky
       TensorVarValBase<VariableValue,ITensorVal>(vv,ev) {}
     using ITensorVal::index;
     const Index& index(Index&& x) override {return value->index(move(x));}
+    const Index& index() const override {return value->index();}
     const Hypercube& hypercube(const Hypercube& hc) override {return value->hypercube(hc);}
     const Hypercube& hypercube(Hypercube&& hc) override {return value->hypercube(std::move(hc));}
+    const Hypercube& hypercube() const override {return value->hypercube();}
     using ITensorVal::operator[];
     double& operator[](size_t i) override {
       assert(value->isFlowVar());
@@ -156,8 +159,8 @@ namespace minsky
     TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev); 
     TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
-      result.hypercube(rhs->hypercube());
       result.index(rhs->index());
+      result.hypercube(rhs->hypercube());
       assert(result.idx()>=0);
       assert(result.size()==rhs->size());
     } 

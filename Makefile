@@ -21,9 +21,11 @@ endif
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
 # submakes do not parallelise, so explicit force -j4 (reasonable compromise)
-build_ecolab:=$(shell cd ecolab; $(MAKE) -j4 $(MAKEOVERRIDES) all-without-models))
+build_ecolab:=$(shell cd ecolab && $(MAKE) -j4 $(MAKEOVERRIDES) all-without-models))
 $(warning $(build_ecolab))
 include $(ECOLAB_HOME)/include/Makefile
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) -j4 $(MAKEOVERRIDES)))
+$(warning $(build_RavelCAPI))
 endif
 
 # override the install prefix here
@@ -34,12 +36,13 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o parVarSheet.o variableInstanceList.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o itemTab.o plotTab.o godleyTab.o variableInstanceList.o autoLayout.o userFunction.o userFunction_units.o
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
-	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o
-TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o
-SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o operationType.o a85.o
-#schema0.o 
+	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o mdlReader.o
+TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
+SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
+	operationType.o a85.o
+
 GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
 RESTSERVICE_OBJS=minskyRS.o itemRS.o
 
@@ -52,11 +55,9 @@ FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security
 endif
 
+FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
-
-
-VPATH= schema model engine tensor gui-tk RESTService $(ECOLAB_HOME)/include
+VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -87,8 +88,9 @@ FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor
 endif
 
 ifdef MXE
-BOOST_EXT=-mt-x32
+BOOST_EXT=-mt-x64
 EXE=.exe
+FLAGS+=-Wa,-mbig-obj
 else
 EXE=
 BOOST_EXT=
@@ -103,7 +105,10 @@ BOOST_EXT=
 $(warning Boost extension=$(BOOST_EXT))
 endif
 
-LIBS+=	-ljson_spirit \
+#EXES=gui-tk/minsky$(EXE)
+#RESTService/RESTService 
+
+LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
@@ -159,11 +164,18 @@ else
 # symbolic debugger available for this build
 OPT=-O0
 endif
+ifdef RAVEL
+GUI_TK_OBJS+=RavelLogo.o
+else
 GUI_TK_OBJS+=MinskyLogo.o
+endif
 WINDRES=$(MXE_PREFIX)-windres
 endif
 
 MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
+	$(WINDRES) -O coff -i $< -o $@
+
+RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
 gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
@@ -200,6 +212,8 @@ endif
 
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
+$(EXES): RavelCAPI/libravelCAPI.a
+
 tests: $(EXES)
 	cd test; $(MAKE)
 
@@ -214,6 +228,7 @@ clean:
 	-cd engine; $(BASIC_CLEAN)
 	-cd schema; $(BASIC_CLEAN)
 	-cd ecolab; $(MAKE) clean
+	-cd RavelCAPI; $(MAKE) clean
 
 mac-dist: gui-tk/minsky
 # create executable in the app package directory. Make it 32 bit only
@@ -272,6 +287,10 @@ dist:
 	cd ecolab/graphcode; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/graphcode/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	cd certify; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/certify/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd RavelCAPI; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/RavelCAPI/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd exprtk; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/exprtk/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
 

@@ -1,7 +1,6 @@
 /*
-  @copyright Steve Keen 2019
+  @copyright Steve Keen 2020
   @author Russell Standish
-  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it
@@ -18,19 +17,15 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARAMETERSHEET_H
-#define PARAMETERSHEET_H
-#include <parVarSheet.h>
+#ifndef MDLREADER_H
+#define MDLREADER_H
+#include "group.h"
+#include "rungeKutta.h"
+#include <iostream>
 
 namespace minsky
 {
-	 
-  class ParameterSheet: public ParVarSheet
-  {
-  public:
-    bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()==VariableType::parameter;} 
-  };
-  
+  /// import a Vensim mdl file into \a group, also populating \a simParms from the control block
+  void readMdl(Group& group, RungeKutta& simParms, std::istream& mdlFile);
 }
-#include "parameterSheet.cd"
 #endif

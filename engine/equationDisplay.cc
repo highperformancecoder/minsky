@@ -19,6 +19,7 @@
 #include "equations.h"
 #include "latexMarkup.h"
 #include "selection.h"
+#include "userFunction.h"
 #include <pango.h>
 #include "minsky_epilogue.h"
 using namespace ecolab;
@@ -168,8 +169,9 @@ namespace MathDAG
       {
         if (eqnNo++ < baseEqn) continue;
         // initial conditions
+        cairo_move_to(dest.cairo(), x, y); // needed to define a current point on the equations tab. for ticket 1256
         y+=print(dest.cairo(), latexToPango(mathrm(i->name))+"(0) = "+
-                 latexToPango(latexInit(i->init)),Anchor::nw);
+                 latexToPango(latexInit(i->init)),Anchor::nw);   
         
         // differential equation
         Pango num(dest.cairo());
@@ -319,6 +321,24 @@ namespace MathDAG
         arguments[0][0]->render(surf);
       }
   }
+  
+  template <>
+  void OperationDAG<OperationType::userFunction>::render(Surface& surf) const 
+  {
+    print(surf.cairo(),"<i>"+dynamic_cast<UserFunction&>(*state).description()+"</i>",Anchor::nw);
+    if (arguments.empty() || arguments[0].empty() || !arguments[0][0])
+      print(surf.cairo(),"(0,0)",Anchor::nw);
+    else
+      parenthesise(surf, [&](Surface& surf){
+        arguments[0][0]->render(surf);
+        print(surf.cairo(),",",Anchor::nw);
+        if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+          arguments[1][0]->render(surf);
+        else
+          print(surf.cairo(),"0",Anchor::nw);
+        });
+  }
+
   template <>
   void OperationDAG<OperationType::pow>::render(Surface& surf) const 
   {
@@ -344,6 +364,8 @@ namespace MathDAG
       }
    
   }
+  
+
   template <>
   void OperationDAG<OperationType::time>::render(Surface& surf) const 
   {print(surf.cairo(),"<i>t</i>",Anchor::nw);}  
@@ -361,7 +383,30 @@ namespace MathDAG
   {print(surf.cairo(),"<i>1</i>",Anchor::nw);}    
   template <>
   void OperationDAG<OperationType::inf>::render(Surface& surf) const 
-  {print(surf.cairo(),"<i>∞</i>",Anchor::nw);}       
+  {print(surf.cairo(),"<i>∞</i>",Anchor::nw);}   
+  template <>
+  void OperationDAG<OperationType::percent>::render(Surface& s) const
+  {
+      double xx,yy;
+      cairo_get_current_point(s.cairo(),&xx,&yy);
+ 
+      RecordingSurface r;
+      arguments[0][0]->render(r);
+
+      Pango pango(s.cairo());
+      double oldFs=pango.getFontSize();
+      pango.setFontSize(r.height());     
+      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
+      pango.show();
+      cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
+      cairo_rel_move_to(s.cairo(),pango.width(),0);
+      arguments[0][0]->render(s);
+      xx+=pango.width()+r.width();
+      pango.setMarkup("%");
+      cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
+      pango.show();
+      cairo_move_to(s.cairo(),xx+pango.width(),yy);
+  }     
   template <>
   void OperationDAG<OperationType::copy>::render(Surface& surf) const
   {print(surf.cairo(),"=",Anchor::nw);} 
@@ -563,30 +608,6 @@ namespace MathDAG
     print(surf.cairo(),"frac",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
-  }
-  
-  template <>
-  void OperationDAG<OperationType::percent>::render(Surface& s) const
-  {
-      double xx,yy;
-      cairo_get_current_point(s.cairo(),&xx,&yy);
- 
-      RecordingSurface r;
-      arguments[0][0]->render(r);
-
-      Pango pango(s.cairo());
-      double oldFs=pango.getFontSize();
-      pango.setFontSize(r.height());     
-      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
-      pango.show();
-      cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
-      cairo_rel_move_to(s.cairo(),pango.width(),0);
-      arguments[0][0]->render(s);
-      xx+=pango.width()+r.width();
-      pango.setMarkup("%");
-      cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
-      pango.show();
-      cairo_move_to(s.cairo(),xx+pango.width(),yy);
   }
   
   template <>

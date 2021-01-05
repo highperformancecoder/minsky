@@ -74,9 +74,8 @@ namespace minsky
             if (lassoMode==LassoMode::none)
               lassoMode=LassoMode::lasso;
             break;
-          case ClickType::onRavel:
-            if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
-              r->onMouseDown(x,y);
+          case ClickType::inItem:
+            itemFocus->onMouseDown(x,y);
             break;
           case ClickType::onResize:
             lassoMode=LassoMode::itemResize;
@@ -88,7 +87,7 @@ namespace minsky
             item=itemFocus;
             break;
           case ClickType::legendMove: case ClickType::legendResize:
-            if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
+            if (auto p=itemFocus->plotWidgetCast())
               p->mouseDown(x,y);
             break;
           }
@@ -137,14 +136,12 @@ namespace minsky
   {
     mouseMove(x,y);
     
-    if (clickType==ClickType::onRavel)
-      if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
-        {
-          r->onMouseUp(x,y);
-          r->broadcastStateToLockGroup();
-          itemFocus.reset(); // prevent spurious mousemove events being processed
-          minsky().reset();
-        }
+    if (itemFocus && clickType==ClickType::inItem)
+      {
+        itemFocus->onMouseUp(x,y);
+        itemFocus.reset(); // prevent spurious mousemove events being processed
+        minsky().reset();
+      }
     if (fromPort.get())
       {
           if (auto to=closestInPort(x,y))
@@ -229,9 +226,10 @@ namespace minsky
                 if (auto v=itemFocus->variableCast())
                   {
                     RenderVariable rv(*v);
-                    double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation()*M_PI/180));
-                    v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
-                                 rw + 0.5*(v->sliderMin+v->sliderMax));
+                    double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
+                    double sliderPos=(x-v->x())* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
+                    double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
+                    v->sliderSet(sliderHatch);
                     // push History to prevent an unnecessary reset when
                     // adjusting the slider whilst paused. See ticket #812
                     minsky().pushHistory();
@@ -241,13 +239,12 @@ namespace minsky
                     requestRedraw();
                   }
                 return;
-              case ClickType::onRavel:
-                if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
-                  if (r->onMouseMotion(x,y))
-                    requestRedraw();
+              case ClickType::inItem:
+                if (itemFocus->onMouseMotion(x,y))
+                  requestRedraw();
                 return;
               case ClickType::legendMove: case ClickType::legendResize:
-                if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
+                if (auto p=itemFocus->plotWidgetCast())
                   {
                     p->mouseMove(x,y);
                     requestRedraw();
@@ -301,15 +298,12 @@ namespace minsky
                                                 else
                                                   {
                                                     auto ct=(*i)->clickType(x,y);
-                                                    if (ct==ClickType::onRavel)
+                                                    if (ct==ClickType::inItem)
                                                       {
-                                                        if (auto r=dynamic_cast<Ravel*>(i->get()))
-                                                          {
-                                                            r->mouseFocus=true;
-                                                            r->onBorder = false;
-                                                            if (r->onMouseOver(x,y))
-                                                              requestRedraw();
-                                                          }
+                                                        (*i)->mouseFocus=true;
+                                                        (*i)->onBorder = false;
+                                                        if ((*i)->onMouseOver(x,y))
+                                                          requestRedraw();
                                                       }
                                                     else
                                                       {
@@ -320,13 +314,9 @@ namespace minsky
                                                             (*i)->mouseFocus=mf;
                                                           }
                                                         (*i)->onResizeHandles=ct==ClickType::onResize;
+                                                        (*i)->onBorder = ct==ClickType::onItem;
+                                                        (*i)->onMouseLeave();
                                                         requestRedraw();
-                                                        if (auto r=dynamic_cast<Ravel*>(i->get()))
-                                                          {
-                                                            r->onBorder = ct==ClickType::onItem;
-                                                            r->onMouseLeave();
-                                                            requestRedraw();
-                                                          }
                                                       }
                                                   }
                                                 return false;
@@ -362,6 +352,18 @@ namespace minsky
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
+  bool Canvas::keyPress(int keySym, const std::string& utf8, int state, float x, float y)
+  {
+    if (auto item=itemAt(x,y))
+      if (item->onKeyPress(keySym, utf8, state))
+        {
+          requestRedraw();
+          return true;
+        }
+    return false;
+  }
+
+  
   void Canvas::displayDelayedTooltip(float x, float y)
   {
     if (auto item=itemAt(x,y))
@@ -386,10 +388,6 @@ namespace minsky
     for (auto& i: topLevel->groups)
       if (i->visible() && lasso.intersects(*i))
         selection.ensureGroupInserted(i);
-
-    for (auto& i: topLevel->wires)
-      if (i->visible() && lasso.contains(*i))
-        selection.wires.push_back(i);
 
     if (focusFollowsMouse)
       minsky().copy();
@@ -471,6 +469,52 @@ namespace minsky
       if (auto r=dynamic_cast<Ravel*>(i.get()))
         r->leaveLockGroup();
   }
+  
+  void Canvas::pushDefiningVarsToTab()
+  {
+    for (auto& i: selection.items)
+      {
+        auto v=i->variableCast();
+        if (v && v->defined() && !v->varTabDisplay) {
+          itemVector.push_back(i);
+          v->toggleVarTabDisplay();	  
+	    }
+      }
+  }
+  
+  void Canvas::showDefiningVarsOnCanvas()
+  {
+    for (auto& i: itemVector)
+      {
+        auto v=(*i).variableCast();
+        if (v && v->defined() && v->varTabDisplay)
+          v->toggleVarTabDisplay();	  
+      }
+    // ensure individual hidden defining vars can be made visible once more. for ticket 145.
+    if (itemVector.empty())
+	{
+        model->recursiveDo
+          (&GroupItems::items, [&](const Items&,Items::const_iterator i)
+           {
+             if (auto v=(*i)->variableCast())
+               if (v->defined() && v->varTabDisplay)
+				 v->toggleVarTabDisplay();	 
+             return false;
+           });
+	}      
+    itemVector.clear();  
+  }
+  
+  void Canvas::showPlotsOnTab()
+  {
+     model->recursiveDo
+       (&GroupItems::items, [&](const Items&,Items::const_iterator i)
+        {
+          if (auto p=(*i)->plotWidgetCast())
+            if (p->plotOnTab()==false) p->togglePlotTabDisplay();	 
+          return false;
+        });
+  }    
   
   void Canvas::deleteItem()
   {
@@ -734,17 +778,6 @@ namespace minsky
     } else throw error("no flow or stock variables to copy");    
   }
 
-  void Canvas::handleArrows(int dir, float x, float y, bool modifier)
-  {
-    if (auto item=itemAt(x,y))
-      if (item->handleArrows(dir,modifier))
-        {
-          requestRedraw();
-          minsky().pushHistory(); //for ticket #812
-        }
-    
-  }
-  
   void Canvas::zoomToDisplay()
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
@@ -804,10 +837,15 @@ namespace minsky
       {
         redrawUpdateRegion();
       }
+    catch (std::exception& ex)
+      {
+        cerr << ex.what() << endl;
+      }
     catch (...)
       {
         // consume exception and try redrawing
-        requestRedraw();
+        // this leads to an endless loop...
+        //requestRedraw();
       }
   }
   

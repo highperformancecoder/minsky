@@ -77,17 +77,19 @@ namespace civita
     /// returns the data value at hypercube index \a hcIdx, or NaN if 
     double atHCIndex(size_t hcIdx) const {
       auto& idx=index();
-      if (idx.empty()) {
-        assert(hcIdx<size());
-        return (*this)[hcIdx]; // this is dense
+      if (idx.empty()) {// this is dense
+        if (hcIdx<size())
+          return (*this)[hcIdx]; 
+      } else {
+        auto i=idx.linealOffset(hcIdx);
+        if (i<idx.size())
+          return (*this)[i];
       }
-      auto i=idx.linealOffset(hcIdx);
-      if (i<idx.size())
-        return (*this)[i];
-      return nan("");
+      return nan(""); //element not found
     }
 
-    size_t hcIndex(const std::initializer_list<size_t>& indices) const
+    template <class T>
+    size_t hcIndex(const std::initializer_list<T>& indices) const
     {return hypercube().linealIndex(indices);}
 
     template <class T>

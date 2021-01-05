@@ -19,6 +19,7 @@
 
 #include "equations.h"
 #include "minsky.h"
+#include "userFunction.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -44,6 +45,11 @@ namespace MathDAG
     string::size_type ss;
     if ((ss=nm.find_first_of("_^"))!=string::npos)
       return mathrm(nm.substr(0, ss)) + nm[ss] + "{"+mathrm(nm.substr(ss+1))+"}";
+      
+    // process % chars
+    string::size_type pc;
+    if ((pc=nm.find_first_of("%"))!=string::npos)
+      return mathrm(nm.substr(0, pc)) + "\\" + nm[pc] + mathrm(nm.substr(pc+1));      
     
     // if its a single letter variable, or contains LaTeX codes, process as is
     if (nm.length()==1 || nm.find('\\')!=string::npos)
@@ -397,13 +403,20 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::one>::latex(ostream& o) const
   {
     return o<<" 1 ";
-  }      
+  }        
   
   template <>
   ostream& OperationDAG<OperationType::inf>::latex(ostream& o) const
   {
     return o<<"\\infty ";
-  }  
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::percent>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\left("<<arguments[0][0]->latex()<<"\\right)\\%";
+  } 
 
   template <>
   ostream& OperationDAG<OperationType::copy>::latex(ostream& o) const
@@ -531,13 +544,6 @@ namespace MathDAG
   }
   
   template <>
-  ostream& OperationDAG<OperationType::percent>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\left"<<arguments[0][0]->latex()<<"\\right\\%";
-  }
-  
-  template <>
   ostream& OperationDAG<OperationType::gamma>::latex(ostream& o) const
   {
     checkArg(0,0);
@@ -555,7 +561,18 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::fact>::latex(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"\\left"<<arguments[0][0]->latex()<<"\\right!";
+    return o<<"\\left("<<arguments[0][0]->latex()<<"\\right)!";
+  }    
+
+  template <>
+  ostream& OperationDAG<OperationType::userFunction>::latex(ostream& o) const
+  {
+    if (arguments.empty() || arguments[0].empty())
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"(0,0)";
+    else if (arguments.size()<2 || arguments[1].empty())
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"\\left("<<arguments[0][0]->latex()<<",0\\right)";
+    else
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"\\left("<<arguments[0][0]->latex()<<","<<arguments[0][1]->latex()<<"\\right)";
   }    
 
   template <>

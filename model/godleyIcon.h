@@ -37,11 +37,7 @@ namespace minsky
 
   class GodleyIcon: public ItemT<GodleyIcon>
   {
-    /// for placement of bank icon within complex
-    float flowMargin=0, stockMargin=0;
-    CLASSDESC_ACCESS(GodleyIcon);
-    friend struct SchemaHelper;
-
+  public:
     /// support godley edit window on canvas
     struct CopiableUniquePtr: public std::unique_ptr<GodleyTableEditor>
     {
@@ -51,6 +47,14 @@ namespace minsky
       CopiableUniquePtr(const CopiableUniquePtr&);
       CopiableUniquePtr& operator=(const CopiableUniquePtr&) {return *this;}
     };
+
+  private:
+    
+    /// for placement of bank icon within complex
+    float flowMargin=0, stockMargin=0;
+    CLASSDESC_ACCESS(GodleyIcon);
+    friend struct SchemaHelper;
+
     CopiableUniquePtr editor;
 
     void updateBB() {
@@ -63,7 +67,7 @@ namespace minsky
     static SVGRenderer svgRenderer;
     
     GodleyIcon() {iWidth(150); iHeight(150);}
-    ~GodleyIcon() {removeControlledItems();}
+    ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
     bool editorMode() const {return editor.get();}
@@ -74,8 +78,13 @@ namespace minsky
     void toggleButtons(); 
 
     bool variableDisplay=true;
-    void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
+    void toggleVariableDisplay() {variableDisplay=!variableDisplay; updateBoundingBox();}
+
+    /// sets editor's display values attributes to current global preferences
+    void setEditorDisplayValues();
     
+    CopiableUniquePtr godleyT;
+
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
     
@@ -84,11 +93,8 @@ namespace minsky
     /// bottom margin of bank icon with Godley icon
     float bottomMargin() const {return variableDisplay? stockMargin*scaleFactor()*zoomFactor(): 0;}
 
-    /// helper for schema1
-    double schema1ZoomFactor() const; 
-    
     void resize(const LassoBox&) override;
-    void removeControlledItems() const override;
+    void removeControlledItems(Group&) const override;
  
     /// set cell(row,col) with contents val
     void setCell(int row, int col, const string& val);
@@ -135,6 +141,15 @@ namespace minsky
     {for (auto& i: m_stockVars) i->setUnits(currency);}
       
     void insertControlled(Selection& selection) override;
+
+    void onMouseDown(float, float) override;
+    void onMouseUp(float, float) override;
+    bool onMouseMotion(float, float) override;
+    bool onMouseOver(float, float) override;
+    void onMouseLeave() override;
+    bool onKeyPress(int, const std::string&, int) override;
+    bool inItem(float, float) const override;
+
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 
@@ -142,6 +157,10 @@ namespace minsky
     /// move contained variables to correct locations within icon
     void positionVariables() const;
     Variables m_flowVars, m_stockVars;
+
+    /// @{ convert mouse coordinates into editor coords
+    float toEditorX(float) const;
+    float toEditorY(float) const;
   };
 }
 

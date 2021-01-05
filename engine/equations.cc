@@ -22,6 +22,7 @@
 #include "minsky.h"
 #include "str.h"
 #include "flowCoef.h"
+#include "userFunction.h"
 #include "minskyTensorOps.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
@@ -87,8 +88,9 @@ namespace MathDAG
         try
           {
             auto ec=make_shared<EvalCommon>();
-            TensorPtr rhs=tensorOpFactory.create(*state,TensorsFromPort(ec));
+            TensorPtr rhs=tensorOpFactory.create(state,TensorsFromPort(ec));
             if (!rhs) return false;
+            result->index(rhs->index());
             result->hypercube(rhs->hypercube());
             ev.emplace_back(EvalOpPtr(new TensorEval(result, ec, rhs)));
             return true;
@@ -122,12 +124,15 @@ namespace MathDAG
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValuePtr(VariableType::tempFlow)).first;
         result=ri->second;
         if (rhs)
-          if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
-            { // everything scalar, revert to scalar processing
-              if (result->idx()<0) result->allocValue();
-              if (rhs)
+          {
+            if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
+              { // everything scalar, revert to scalar processing
+                if (result->idx()<0) result->allocValue();
                 rhs->addEvalOps(ev, result);
-            }
+              }
+          }
+        else
+          if (result->idx()<0) result->allocValue();
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
       ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
@@ -384,6 +389,15 @@ namespace MathDAG
                     }
                 ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
                 break;
+              case userFunction:
+                for (size_t i=0; i<arguments.size(); ++i)
+                  if (arguments[i].empty())
+                    {
+                      argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
+                      argIdx[i].back().allocValue();
+                    }
+                ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
+                break;
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
@@ -509,7 +523,7 @@ namespace MathDAG
                        }
                      catch (...) {}
                      if (auto v=dynamic_cast<VariableDAG*>(init.get()))
-                       iv->init(VariableValue::uqName(v->valueId));
+                       iv->init(VariableValue::uqName(v->name));
                      else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                        {
                          // slightly convoluted to prevent sliderSet from overriding c->value
@@ -521,6 +535,10 @@ namespace MathDAG
                    }
                 
                }
+           }
+         else if (auto fn=dynamic_cast<UserFunction*>(it->get()))
+           {
+             userDefinedFunctions.emplace(fn->description(), fn->expression);
            }
          return false;
        });
@@ -620,7 +638,8 @@ namespace MathDAG
     if (expressionCache.exists(valueId))
       return expressionCache[valueId];
 
-    assert(VariableValue::isValueId(valueId));
+    if (!VariableValue::isValueId(valueId))
+      throw runtime_error("Invalid valueId: "+valueId);
     assert(minsky.variableValues.count(valueId));
     auto vv=minsky.variableValues[valueId];
 
@@ -682,6 +701,19 @@ namespace MathDAG
             auto& p=op.ports[i];
             for (auto w: p->wires())
               r->arguments[i-1].push_back(getNodeFromWire(*w));
+          }
+        if (auto uf=dynamic_cast<const UserFunction*>(&op))
+          {
+            // add external variable references as additional "arguments" in order to determine the correct evaluation order
+            r->arguments.emplace_back();
+            for (auto& i: uf->externalSymbolNames())
+              {
+                auto vv=minsky.variableValues.find(VariableValue::valueId(op.group.lock(), i));
+                if (vv!=minsky.variableValues.end())
+                  {
+                    r->arguments.back().emplace_back(makeDAG(vv->first,vv->second->name,vv->second->type()));
+                  }
+              }
           }
         return r;
       }
@@ -755,12 +787,34 @@ namespace MathDAG
           }
       }
     return r;
-  }     
+  }
+  
+  VariableDAGPtr SystemOfEquations::getNodeFromVar(const VariableBase& v)
+  {
+    NodePtr r;
+    if (expressionCache.exists(v))
+      return dynamic_pointer_cast<VariableDAG>(expressionCache[v]);
+    else if (v.type()!=VariableBase::undefined) r=makeDAG(const_cast<VariableBase&>(v));
+    return dynamic_pointer_cast<VariableDAG>(r);
+  }         
+
+  ostringstream SystemOfEquations::getDefFromIntVar(const VariableBase& v)
+  {
+    ostringstream o;
+         
+    VariableDAGPtr input=expressionCache.getIntegralInput(v.valueId());    
+    if (input && input->rhs) input->rhs->matlab(o);    
+    
+    return o;
+  }        
   
     
   ostream& SystemOfEquations::latex(ostream& o) const
   {
     o << "\\begin{eqnarray*}\n";
+    // output user defined functions
+    for (auto& i: userDefinedFunctions)
+      o<<i.first<<"(x,y)&=&"<<i.second<<"\\\\\n";
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
@@ -818,6 +872,12 @@ namespace MathDAG
 
   ostream& SystemOfEquations::matlab(ostream& o) const
   {
+    // output user defined functions
+    for (auto& i: userDefinedFunctions)
+      {
+        o<<"function f="<<i.first<<"(x,y)\n";
+        o<<"f="<<i.second<<"\nendfunction;\n\n";
+      }
     o<<"function f=f(x,t)\n";
     // define names for the components of x for reference
     int j=1;
@@ -896,7 +956,7 @@ namespace MathDAG
              if (!v->ports.empty())
                v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
            }
-         else if (auto pw=dynamic_cast<PlotWidget*>(i->get()))
+         else if (auto pw=(*i)->plotWidgetCast())
            for (auto& port: pw->ports) 
              for (auto w: port->wires())
                // ensure plot inputs are evaluated

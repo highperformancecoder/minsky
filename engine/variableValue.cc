@@ -21,7 +21,22 @@
 #include "str.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
+#include <iomanip>
 #include <error.h>
+
+#ifdef WIN32
+// std::quoted not supported (yet) on MXE
+string quoted(const std::string& x)
+{
+  string r="\"";
+  for (auto& i: x)
+    if (i=='"')
+      r+=R"(\")";
+    else
+      r+=i;
+  return r+"\"";
+}
+#endif
 
 using namespace ecolab;
 using namespace std;
@@ -30,10 +45,15 @@ namespace minsky
   std::vector<double> ValueVector::stockVars(1);
   std::vector<double> ValueVector::flowVars(1);
 
+  bool VariableValue::idxInRange() const
+  {return m_type==undefined || idx()+size()<=
+      (isFlowVar()?ValueVector::flowVars.size(): ValueVector::stockVars.size());}
+    
+
+  
   double& VariableValue::operator[](size_t i)
   {
-    assert((isFlowVar() && i+m_idx<ValueVector::flowVars.size()) ||
-           (!isFlowVar() && i+m_idx<ValueVector::stockVars.size()));
+    assert(i<size() && idxInRange());
     return *(&valRef()+i);
   }
 
@@ -41,8 +61,7 @@ namespace minsky
   {
     index(x.index());
     hypercube(x.hypercube());
-    assert((isFlowVar() && x.size()+m_idx<=ValueVector::flowVars.size()) ||
-           (!isFlowVar() && x.size()+m_idx<=ValueVector::stockVars.size()));
+    assert(idxInRange());
     memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
     return *this;
   }
@@ -51,6 +70,7 @@ namespace minsky
   {
     index(x.index());
     hypercube(x.hypercube());
+    assert(idxInRange());
     for (size_t i=0; i<x.size(); ++i)
       (*this)[i]=x[i];
     return *this;
@@ -88,11 +108,13 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
+        assert(idxInRange());
          if (size_t(m_idx)<ValueVector::flowVars.size())
            return ValueVector::flowVars[m_idx];
          break;
       case stock:
       case integral:
+        assert(idxInRange());
         if (size_t(m_idx)<ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx];
         break;
@@ -112,10 +134,12 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
+        assert(idxInRange());
         if (size_t(m_idx+size())<=ValueVector::flowVars.size())
           return ValueVector::flowVars[m_idx]; 
       case stock:
       case integral: 
+        assert(idxInRange());
         if (size_t(m_idx+size())<=ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx]; 
         break;
@@ -224,15 +248,20 @@ namespace minsky
                 }
               tensorInit.hypercube(hc);
             }
-          operator=(initValue(v));
+          if (tensorInit.rank()>0)
+            operator=(tensorInit);
+          else
+            operator=(initValue(v));
         }
+      assert(idxInRange());
   }
 
 
   int VariableValue::scope(const std::string& name) 
   {
-    boost::smatch m;
-    if (boost::regex_search(name, m, boost::regex(R"((\d*)]?:.*)")))
+    smatch m;
+    auto nm=utf_to_utf<char>(name);
+    if (regex_search(nm, m, regex(R"((\d*)]?:.*)")))
       if (m.size()>1 && m[1].matched && !m[1].str().empty())
         {
           int r;
@@ -248,7 +277,7 @@ namespace minsky
 
   GroupPtr VariableValue::scope(GroupPtr scope, const std::string& a_name)
   {
-    auto name=stripActive(a_name);
+    auto name=utf_to_utf<char>(stripActive(utf_to_utf<char>(a_name)));
     if (name[0]==':' && scope)
       {
         // find maximum enclosing scope that has this same-named variable
@@ -273,18 +302,18 @@ namespace minsky
   string VariableValue::valueIdFromScope(const GroupPtr& scope, const std::string& name)
   {
     if (name.empty() || !scope || !scope->group.lock())
-      return VariableValue::valueId(-1,name); // retain previous global var id
+      return VariableValue::valueId(-1,utf_to_utf<char>(name)); // retain previous global var id
     else
-      return VariableValue::valueId(size_t(scope.get()), name);
+      return VariableValue::valueId(size_t(scope.get()), utf_to_utf<char>(name));
 }
   
   std::string VariableValue::uqName(const std::string& name)
   {
     string::size_type p=name.rfind(':');
     if (p==string::npos)
-      return name;
+      return utf_to_utf<char>(name);
     else
-    return name.substr(p+1);
+    return utf_to_utf<char>(name).substr(p+1);
   }
  
   string VariableValues::newName(const string& name) const
@@ -292,7 +321,7 @@ namespace minsky
     int i=1;
     string trialName;
     do
-      trialName=name+to_string(i++);
+      trialName=utf_to_utf<char>(name)+to_string(i++);
     while (count(VariableValue::valueId(trialName)));
     return trialName;
   }
@@ -305,6 +334,7 @@ namespace minsky
     for (auto& v: *this) {
       v.second->reset_idx();  // Set idx of all flowvars and stockvars to -1 on reset. For ticket 1049		
       v.second->allocValue().reset(*this);
+      assert(v.second->idxInRange());
     }
 }
 
@@ -350,88 +380,36 @@ namespace minsky
   string expMultiplier(int exp)
   {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
 
-//  void VariableValue::makeXConformant(const VariableValue& a)
-//  {
-//    auto xv=xVector;
-//    for (auto& i: a.xVector)
-//      {
-//        size_t j=0;
-//        for (j=0; j<xv.size(); ++j)
-//          if (xv[j].name==i.name)
-//            {
-//              if (xv[j].dimension.type!=i.dimension.type)
-//                throw error("dimension %s has inconsistent type",i.name.c_str());
-//              // only match labels for string dimensions. Other types are interpolated.
-//              XVector newLabels;
-//              switch (i.dimension.type)
-//                {
-//                case Dimension::string:
-//                  {
-//                    set<string> alabels;
-//                    for (auto& k: i)
-//                      alabels.insert(str(k));
-//                    for (auto k: xVector[j])
-//                      if (alabels.count(str(k)))
-//                        newLabels.push_back(k);
-//                    break;
-//                  }
-//                default:
-//                  {
-//                    // set overlapping value ranges
-//                    set<boost::any, AnyLess> vals(i.begin(), i.end());
-//                    for (auto k: xVector[j])
-//                      if (diff(k, *vals.begin())>=0 && diff(k, *vals.rbegin())<=0)
-//                        newLabels.push_back(k);
-//                    break;
-//                  }
-//                }
-//              xv[j].swap(newLabels);
-//              break;
-//            }
-//        if (j==xVector.size()) // axis not present on LHS, so increase rank
-//          xv.push_back(i);
-//      }
-//    setXVector(move(xv));
-//    if (dataSize()==0)
-//      throw error("tensors nonconformant");
-//  }
-
-//  void VariableValue::computeStrideAndSize(const string& dim, size_t& stride, size_t& size) const
-//  {
-//    stride=1;
-//    if (dim.empty())
-//      // default to first axis if empty
-//      size=xVector.empty()? 1:xVector[0].size();
-//    else
-//      {
-//        for (auto& i: xVector)
-//          {
-//            size=i.size();
-//            if (i.name==dim) return;
-//            stride*=i.size();
-//          }
-//        throw runtime_error("axis "+dim+" not found");
-//      }
-//  }
-
 
   void VariableValue::exportAsCSV(const string& filename, const string& comment) const
   {
     ofstream of(filename);
     if (!comment.empty())
-      of<<"\""<<comment<<"\"\n";
-    size_t i=0;
+      of<<R"(""")"<<comment<<R"(""")"<<endl;
+               
+    auto& xv=hypercube().xvectors;
+    ostringstream os;
+    for (auto& i: xv)
+      {
+        if (&i>&xv[0]) os<<",";
+        os<<json(static_cast<const NamedDimension&>(i));
+      }
+    of<<quoted("RavelHypercube=["+os.str()+"]")<<endl;
     for (auto& i: hypercube().xvectors)
       of<<"\""<<i.name<<"\",";
     of<<"value$\n";
+
+    auto idxv=index();
+    size_t i=0;
     for (auto d=begin(); d!=end(); ++i, ++d)
       if (isfinite(*d))
         {
-          size_t stride=1;
+          ssize_t idx=idxv.empty()? i: idxv[i];
           for (size_t j=0; j<rank(); ++j)
             {
-              of << "\""<<str(hypercube().xvectors[j][(i/stride) % hypercube().xvectors[j].size()]) << "\",";
-              stride*=hypercube().xvectors[j].size();
+              auto div=std::div(idx, ssize_t(hypercube().xvectors[j].size()));
+              of << "\""<<str(hypercube().xvectors[j][div.rem], hypercube().xvectors[j].dimension.units) << "\",";
+              idx=div.quot;
             }
           of << *d << endl;
         }

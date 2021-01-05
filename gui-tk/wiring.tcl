@@ -209,9 +209,9 @@ proc wrapHoverMouse {op x y} {
     catch {minsky.canvas.$op $x $y}
     after 3000 hoverMouse
 }
-    
+  
 bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
-bind .wiring.canvas <Control-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
+bind .wiring.canvas <$meta-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}
 bind .wiring.canvas <Motion> {wrapHoverMouse mouseMove %x %y}
 bind .wiring.canvas <Leave> {after cancel hoverMouse}
@@ -234,11 +234,7 @@ bind .wiring.canvas <Button-5> {zoomAt  %x %y [expr 1.0/1.1]}
 # mouse wheel bindings for pc and aqua
 bind .wiring.canvas <MouseWheel> { if {%D>=0} {zoomAt %x %y 1.1} {zoomAt  %x %y [expr 1.0/(1.1)]} }
 
-if {[tk windowingsystem]=="aqua"} {
-    bind .wiring.canvas <Command-Button-1> {
-        tk_messageBox -message "Mouse coordinates %x %y"
-    }
-} else {
+if {[tk windowingsystem]!="aqua"} {
      bind .wiring.canvas <Alt-Button-1> {
         tk_messageBox -message "Mouse coordinates %x %y"
     }
@@ -322,7 +318,7 @@ proc addVariablePostModal {} {
         canvas.itemFocus.sliderMax  [set "varInput(Slider Bounds: Max)"]
         canvas.itemFocus.sliderMin  [set "varInput(Slider Bounds: Min)"]
         canvas.itemFocus.sliderStep  [set "varInput(Slider Step Size)"]
-        canvas.itemFocus.sliderBoundsSet 1
+        canvas.itemFocus.sliderBoundsSet 1    
     }
     closeEditWindow .wiring.initVar
 }
@@ -365,7 +361,7 @@ proc addConstantOrVariable {} {
     deiconifyInitVar
     resetItem
     garbageCollect
-    .wiring.initVar.entry10 configure -values [accessibleVars]
+    .wiring.initVar.entry10 configure -values [minsky.canvas.model.accessibleVars]
     ::tk::TabToWindow $varInput(initial_focus);
     ensureWindowVisible .wiring.initVar
     grab set .wiring.initVar
@@ -412,16 +408,26 @@ proc textOK {} {
     canvas.moveOffsX 0
     canvas.moveOffsY 0
     if {[lsearch [availableOperations] $textBuffer]>-1} {
-        addOperationKey $textBuffer
+		addOperationKey $textBuffer
+	} elseif {[llength $textBuffer]==1 && [string match "-" $textBuffer]} { # minus sign only creates subtract op. for ticket 145
+		addOperationKey subtract		
     } elseif [string match "\[%#\]*" $textBuffer] {
         addNote [string range $textBuffer 1 end]
     } else {
-        if [regexp "(.*)=(.*)" $textBuffer dummy name init] {            
-            minsky.addVariable $name flow
+        if [regexp "(.*)=(.*)" $textBuffer dummy name init] {
+			minsky.addVariable $name flow
 			minsky.canvas.itemFocus.init $init
             minsky.variableValues.reset
+        # signed numbers create constant on the canvas. for ticket 145.
         } else {
-            minsky.addVariable $textBuffer flow
+			if [regexp "^\[+-\]?\\d*\\.?\\d+\[eE\]?\[+-\]?\\d*$"  $textBuffer] {
+
+			    minsky.addVariable $textBuffer constant
+			    minsky.canvas.itemFocus.init $textBuffer
+			    minsky.variableValues.reset
+			} else {
+				minsky.addVariable $textBuffer flow
+			}
             
             getItemAtFocus
             editVar
@@ -430,42 +436,40 @@ proc textOK {} {
     canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 }
 
-# operation add shortcuts
-bind . <Key-plus> {addOperationKey add}
-bind . <Key-minus> {addOperationKey subtract}
-bind . <Key-asterisk> {addOperationKey multiply}
-bind . <Key-KP_Multiply> {addOperationKey multiply}
-bind . <Key-slash> {addOperationKey divide}
-bind . <Key-KP_Divide> {addOperationKey divide}
-bind . <Key-asciicircum> {addOperationKey pow}
-#bind . <Key-backslash> {addOperationKey sqrt}
-bind . <Key-ampersand> {addOperationKey integrate}
-bind . <Key-equal> {addNewGodleyItemKey}
-bind . <Key-at> {addPlotKey}
-#Clear canvas pan mode in case shift key is pressed to create a capitalized variable via textInput. for ticket 1112.
-bind . <Key> {textInput %A; .wiring.canvas configure -cursor {}}  
+proc canvasKeyPress {N A s} {
+    return [canvas.keyPress $N [encoding convertto utf-8 $A] $s \
+                [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]]
+}
 
-bind . <Key-Delete> {deleteKey [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
-bind . <Key-BackSpace> {deleteKey  [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
+
+# operation add shortcuts
+bind . <Key-plus> {if {![canvasKeyPress %N %A %s]} {addOperationKey add}}
+bind . <Key-minus> {if {![canvasKeyPress %N %A %s]} {textInput "-"; .wiring.canvas configure -cursor {}}}
+bind . <Key-asterisk> {if {![canvasKeyPress %N %A %s]} {addOperationKey multiply}}
+bind . <Key-KP_Multiply> {if {![canvasKeyPress %N %A %s]} {addOperationKey multiply}}
+bind . <Key-slash> {if {![canvasKeyPress %N %A %s]} {addOperationKey divide}}
+bind . <Key-KP_Divide> {if {![canvasKeyPress %N %A %s]} {addOperationKey divide}}
+bind . <Key-asciicircum> {if {![canvasKeyPress %N %A %s]} {addOperationKey pow}}
+#bind . <Key-backslash> {if {![canvasKeyPress %N %A]} {addOperationKey sqrt}}
+bind . <Key-ampersand> {if {![canvasKeyPress %N %A %s]} {addOperationKey integrate}}
+bind . <Key-equal> {if {![canvasKeyPress %N %A %s]} {addNewGodleyItemKey}}
+bind . <Key-at> {if {![canvasKeyPress %N %A %s]} {addPlotKey}}
+
+#Clear canvas pan mode in case shift key is pressed to create a capitalized variable via textInput. for ticket 1112.
+bind . <Key> {
+    if {![canvasKeyPress %N %A %s]} {
+        textInput %A
+        .wiring.canvas configure -cursor {}
+    }
+}  
+
+bind . <Key-Delete> {if {![canvasKeyPress %N %A %s]} {deleteKey [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}}
+bind . <Key-BackSpace> {if {![canvasKeyPress %N %A %s]} {deleteKey  [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}}
 
 bind . <KeyPress-Shift_L> {.wiring.canvas configure -cursor $panIcon}
 bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor {}}
 bind . <KeyPress-Shift_R> {.wiring.canvas configure -cursor $panIcon}
 bind . <KeyRelease-Shift_R> {.wiring.canvas configure -cursor {}}
-
-# slider key bindings
-bind . <KeyPress-Left> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 0}
-bind . <KeyPress-Right> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 0}
-bind . <KeyPress-Up> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 0}
-bind . <KeyPress-Down> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 0}
-bind . <Shift-KeyPress-Left> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1}
-bind . <Shift-KeyPress-Right> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1}
-bind . <Shift-KeyPress-Up> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1}
-bind . <Shift-KeyPress-Down> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1}
-bind . <Control-KeyPress-Left> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1}
-bind . <Control-KeyPress-Right> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1}
-bind . <Control-KeyPress-Up> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1}
-bind . <Control-KeyPress-Down> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1}
 
 # handle processing when delete or backspace is pressed
 proc deleteKey {x y} {
@@ -528,7 +532,10 @@ proc canvasContext {x y X Y} {
     .wiring.context add command -label "Paste selection" -command pasteAt
     if {[getClipboard]==""} {
         .wiring.context entryconfigure end -state disabled
-    } 
+    }
+    .wiring.context add command -label "Hide defining groups of selected variables" -command "minsky.canvas.pushDefiningVarsToTab"
+    .wiring.context add command -label "Show all defining groups on canvas" -command "minsky.canvas.showDefiningVarsOnCanvas"
+    .wiring.context add command -label "Show all plots on tab" -command "minsky.canvas.showPlotsOnTab"      
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
@@ -539,7 +546,9 @@ proc canvasContext {x y X Y} {
 
 proc saveSelection {} {
     global workDir
-    set f [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
+    set ext [canvas.selection.defaultExtension]
+    set f [tk_getSaveFile -defaultextension $ext  -initialdir $workDir \
+                  -filetypes [fileTypes $ext]]            
     if [string length $f] {
         set workDir [file dirname $f]
         eval minsky.saveSelectionAsFile {$f}
@@ -694,9 +703,15 @@ proc contextMenu {x y X Y} {
             if {![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
-            .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
+            if {[$item.defined]} {
+                 global varTabDisplay
+                 set varTabDisplay [$item.varTabDisplay]            
+                .wiring.context add checkbutton -label "Display variable on tab" -command "$item.toggleVarTabDisplay" -variable varTabDisplay
+            }            
+            .wiring.context add command -label "Flip" -command "$item.flip; flip_default"                     
             if {[$item.type]=="parameter"} {
                 .wiring.context add command -label "Import CSV" -command {CSVImportDialog}
+                .wiring.context add command -label "Display CSV values on tab" -command {setupPickDimMenu}                 
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
@@ -728,6 +743,9 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Make Group Plot" -command "$item.makeDisplayPlot"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
             .wiring.context add command -label "Pen Styles" -command "penStyles $item"
+             global plotTabDisplay
+             set plotTabDisplay [$item.plotTabDisplay]            
+            .wiring.context add checkbutton -label "Display plot on tab" -command "$item.togglePlotTabDisplay" -variable plotTabDisplay               
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             .wiring.context add command -label "Export as Image" -command exportItemAsImg
         }
@@ -743,9 +761,9 @@ proc contextMenu {x y X Y} {
             set editorMode [$item.editorMode]
             set buttonDisplay [$item.buttonDisplay]
             set variableDisplay [$item.variableDisplay]
-            .wiring.context add checkbutton -label "Editor mode" -command "$item.toggleEditorMode; $item.update" -variable editorMode
-            .wiring.context add checkbutton -label "Row/Col buttons" -command "$item.toggleButtons ; $item.update" -variable buttonDisplay
-            .wiring.context add checkbutton -label "Display variables" -command "$item.toggleVariableDisplay; $item.update" -variable variableDisplay
+            .wiring.context add checkbutton -label "Editor mode" -command "$item.toggleEditorMode" -variable editorMode
+            .wiring.context add checkbutton -label "Row/Col buttons" -command "$item.toggleButtons" -variable buttonDisplay
+            .wiring.context add checkbutton -label "Display variables" -command "$item.toggleVariableDisplay" -variable variableDisplay
             .wiring.context add command -label "Copy flow variables" -command "canvas.copyAllFlowVars"
             .wiring.context add command -label "Copy stock variables" -command "canvas.copyAllStockVars"
             .wiring.context add command -label "Export to file" -command "godley::export"
@@ -779,8 +797,11 @@ proc contextMenu {x y X Y} {
                 set sortOrder [minsky.canvas.item.sortOrder]
             }
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
-            .wiring.context add command -label "Unlock" -command {
-                minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
+            if [llength [info commands minsky.canvas.item.lockGroup]] {
+                .wiring.context add command -label "Lock specific handles" -command lockSpecificHandles
+                .wiring.context add command -label "Unlock" -command {
+                    minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
+                }
             }
         }
     }
@@ -793,7 +814,87 @@ proc contextMenu {x y X Y} {
     tk_popup .wiring.context $X $Y
 }
 
+proc setupPickDimMenu {} {
+    global dimLabelPicked
+    if {![winfo exists .wiring.context.pick]} {
+        toplevel .wiring.context.pick
+        wm title .wiring.context.pick "Pick any two dimensions"
+        frame .wiring.context.pick.select
+        scrollbar .wiring.context.pick.select.vscroll -orient vertical -command {
+            .wiring.context.pick.select.lb yview}
+        listbox .wiring.context.pick.select.lb -listvariable dimLabelPicked \
+            -selectmode extended -selectforeground blue \
+            -width 35 \
+            -yscrollcommand {.wiring.context.pick.select.vscroll set} 
+        pack .wiring.context.pick.select.lb -fill both  -expand y -side left
+        pack .wiring.context.pick.select.vscroll -fill y -expand y -side left
+        pack .wiring.context.pick.select
+        buttonBar .wiring.context.pick {
+            set pick {}
+            foreach i [.wiring.context.pick.select.lb curselection] {
+                lappend pick [lindex $dimLabelPicked $i]
+            }
+			minsky.canvas.item.setDimLabelsPicked [lindex $pick 0] [lindex $pick 1]
+            reset
+        }
+        button .wiring.context.pick.buttonBar.clear -text "Clear" -command {
+            .wiring.context.pick.select.lb selection clear 0 end}
+        pack .wiring.context.pick.buttonBar.clear -side left
+    } else {
+        deiconify .wiring.context.pick
+    }
+        
+    set dimLabelPicked [minsky.canvas.item.dimLabels]
+    wm transient .wiring.context.pick
+    wm geometry .wiring.context.pick +[winfo pointerx .]+[winfo pointery .]
+    ensureWindowVisible .wiring.context.pick
+    grab set .wiring.context.pick
+}    
 
+proc lockSpecificHandles {} {
+    global currentLockHandles
+
+    if {![llength [info commands minsky.canvas.item.lockGroup.allLockHandles]]} {
+        minsky.canvas.lockRavelsInSelection
+        # reinitialise the canvas item commands
+        getItemAt [minsky.canvas.item.x] [minsky.canvas.item.y]
+        if {![llength [info commands minsky.canvas.item.lockGroup.allLockHandles]]} return
+    }    
+    if {[winfo exists .wiring.context.lockHandles]} {destroy .wiring.context.lockHandles}
+    toplevel .wiring.context.lockHandles
+    foreach h [minsky.canvas.item.lockGroup.allLockHandles] {
+        frame .wiring.context.lockHandles."$h"
+        checkbutton .wiring.context.lockHandles."$h".button -variable currentLockHandles($h)
+        label .wiring.context.lockHandles."$h".label -text $h -anchor w -width 50
+        grid .wiring.context.lockHandles."$h".button .wiring.context.lockHandles."$h".label
+        pack .wiring.context.lockHandles."$h"
+    }
+
+    # initialise currentLockHandles array to current lock handles state
+    foreach i [array names currentLockHandles] {
+        set currentLockHandles($i) 0
+    }
+    if [llength [minsky.canvas.item.lockGroup.handlesToLock.#members]] {
+        foreach i [minsky.canvas.item.lockGroup.handlesToLock.#members] {
+            set currentLockHandles($i) 1
+        }
+    } else {
+        foreach i [minsky.canvas.item.lockGroup.allLockHandles] {
+            set currentLockHandles($i) 1
+        }
+    }        
+
+    buttonBar .wiring.context.lockHandles {
+        set lh {}
+        global currentLockHandles
+        foreach i [array names currentLockHandles] {
+            if $currentLockHandles($i) {
+                lappend lh $i
+            }
+        }
+        minsky.canvas.item.lockGroup.setLockHandles $lh
+    }
+}
 
 menu .wiring.context.axisMenu 
 .wiring.context.axisMenu add command -label "Description" -command {
@@ -841,12 +942,17 @@ proc setDimension {} {
         frame .wiring.context.axisMenu.dim.type
         label .wiring.context.axisMenu.dim.type.label -text "type"
         ttk::combobox .wiring.context.axisMenu.dim.type.value -values {string value time} -state readonly -textvariable axisType
+        bind .wiring.context.axisMenu.dim.type.value <<ComboboxSelected>> {
+            minsky.value.csvDialog.spec.horizontalDimension.type [.wiring.context.axisMenu.dim.type.value get]
+            dimFormatPopdown .wiring.context.axisMenu.dim.units.value [.wiring.context.axisMenu.dim.type.value get] {}
+        }
         pack .wiring.context.axisMenu.dim.type.label .wiring.context.axisMenu.dim.type.value -side left
         frame .wiring.context.axisMenu.dim.units
         label .wiring.context.axisMenu.dim.units.label -text "units/format"
         tooltip .wiring.context.axisMenu.dim.units.label \
      "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
-        entry .wiring.context.axisMenu.dim.units.value
+        ttk::combobox .wiring.context.axisMenu.dim.units.value
+        dimFormatPopdown .wiring.context.axisMenu.dim.units.value [minsky.canvas.item.dimensionType] {}
         pack .wiring.context.axisMenu.dim.units.label .wiring.context.axisMenu.dim.units.value -side left
         pack .wiring.context.axisMenu.dim.type .wiring.context.axisMenu.dim.units
         buttonBar .wiring.context.axisMenu.dim {
@@ -912,7 +1018,7 @@ proc setupPickMenu {} {
 
 proc exportItemAsCSV {} {
     global workDir
-    set f [tk_getSaveFile -filetypes {
+    set f [tk_getSaveFile -defaultextension .csv -filetypes {
         {"CSV" .csv TEXT} {"All" {.*} TEXT}
     } -initialdir $workDir ]
     if {$f!=""} {
@@ -1156,6 +1262,7 @@ proc deiconifyEditConstant {} {
         foreach var {
             "Name"
             "Value"
+            "Expression"
             "Units"
             "Rotation"
             "Slider Bounds: Max"
@@ -1250,7 +1357,7 @@ proc editVar {} {
     deiconifyEditVar
     wm title .wiring.editVar "Edit [$item.name]"
     # populate combobox with existing variable names
-    .wiring.editVar.entry10 configure -values [accessibleVars]
+    .wiring.editVar.entry10 configure -values [$item.accessibleVars]
     
 
     set "editVarInput(Name)" [$item.name]
@@ -1289,6 +1396,9 @@ proc setDataValue {} {
     set item minsky.canvas.item
     $item.description "$constInput(Name)"
     $item.rotation $constInput(Rotation)
+    if [llength [info commands $item.expression]] {
+        $item.expression $constInput(Expression)
+    }
 }
 
 proc setIntegralIValue {} {
@@ -1331,10 +1441,13 @@ proc configEditConstantForData {} {
     global rowdict
     cleanEditConstantConfig
     set i 10
-    foreach var {
+    set items {
         "Name"
         "Rotation"
-    } {
+    }
+    if [llength [info commands minsky.canvas.item.expression]] {lappend items "Expression"}
+    
+    foreach var $items {
         set row $rowdict($var)
         grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
         grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
@@ -1357,7 +1470,7 @@ proc editItem {} {
             grab set .wiring.editOperation
             wm transient .wiring.editOperation
         }
-        "IntOp|DataOp" {
+        "IntOp|DataOp|UserFunction" {
             set constInput(Value) ""
             set "constInput(Slider Bounds: Min)" ""
             set "constInput(Slider Bounds: Max)" ""
@@ -1377,6 +1490,9 @@ proc editItem {} {
             set constInput(Name) [$item.description]
             set constInput(title) $constInput(Name)
             set constInput(Rotation) [$item.rotation]
+            if [llength [info commands minsky.canvas.item.expression]] {
+                set constInput(Expression) [$item.expression]
+            }
             # value needs to be regotten, as var name may have changed
             set constInput(command) "
                         $setValue
@@ -1479,6 +1595,8 @@ proc postNote {item} {
 proc OKnote {item} {
     minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
     minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
+    # update bounding box - see ticket #1164
+    minsky.canvas.$item.updateBoundingBox 
     closeEditWindow .wiring.note
 }
 

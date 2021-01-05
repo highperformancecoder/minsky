@@ -42,11 +42,8 @@
 
 namespace minsky
 {
-  using namespace ecolab;
-  using namespace classdesc;
-  using namespace std;
-  using classdesc::shared_ptr;
   class OperationPtr;
+  class Group;
 
   class OperationBase: virtual public classdesc::PolyPackBase,
                        public BottomRightResizerItem, public OperationType
@@ -71,7 +68,7 @@ namespace minsky
     virtual void iconDraw(cairo_t *) const=0;
 
     /// returns a list of values the ports currently have
-    string portValues() const;
+    std::string portValues() const;
 
     // returns true if multiple input wires are allowed.
     bool multiWire();
@@ -91,11 +88,11 @@ namespace minsky
     double arg=1;
 
     /// axis selector in tensor operations
-    string axis;
+    std::string axis;
 
     /// return dimension names of tensor object attached to input
     /// if binary op, then the union of dimension names is returned
-    std::vector<string> dimensions() const;
+    std::vector<std::string> dimensions() const;
     Units units(bool check=false) const override;
 
   protected:
@@ -106,7 +103,7 @@ namespace minsky
 
   template <minsky::OperationType::Type T>
   class Operation: public ItemT<Operation<T>, OperationBase>,
-                   public PolyPack<Operation<T> >
+                   public classdesc::PolyPack<Operation<T> >
   {
     typedef OperationBase Super;
   public:
@@ -173,7 +170,7 @@ namespace minsky
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
       OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
-    ~IntOp() {removeControlledItems();}
+    ~IntOp() {Item::removeControlledItems();}
     
     const IntOp& operator=(const IntOp& x); 
 
@@ -182,19 +179,22 @@ namespace minsky
     std::string description() const {return intVar? intVar->name(): "";}
     /// @}
 
-    string valueId() const 
+    std::string valueId() const 
     {return intVar->valueId();}
-      
+    
+    bool attachedToDefiningVar() const override;        
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;  
     std::pair<double,Point> rotatedPoints() const override;        
 
-    void removeControlledItems() const override;
 
    /// return reference to integration variable
     VariablePtr intVar; 
 
-    bool handleArrows(int dir,bool) override {return intVar->handleArrows(dir,false);}
+    bool onKeyPress(int keySym, const std::string& utf8, int state) override {
+      if (intVar) return intVar->onKeyPress(keySym, utf8, state);
+      return false;
+    }
 
     /// toggles coupled state of integration variable. Only valid for integrate
     /// @return coupled state
@@ -205,33 +205,44 @@ namespace minsky
     }
     Units units(bool) const override;
 
-    void pack(pack_t& x, const string& d) const override;
-    void unpack(unpack_t& x, const string& d) override;
+    void pack(classdesc::pack_t& x, const std::string& d) const override;
+    void unpack(classdesc::unpack_t& x, const std::string& d) override;
 
     void insertControlled(Selection& selection) override;
+    void removeControlledItems(minsky::Group&) const override;
+    using Item::removeControlledItems;
   };
 
-  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>,
-                public ecolab::TCLAccessor<DataOp,std::string>
+  class NamedOp: public ecolab::TCLAccessor<NamedOp,std::string>
   {
-    CLASSDESC_ACCESS(DataOp);
-    friend struct SchemaHelper;
-    string m_description;
+    std::string m_description;
+    virtual void updateBB()=0;
+    CLASSDESC_ACCESS(NamedOp);
   public:
-    DataOp(): ecolab::TCLAccessor<DataOp,std::string>
-      ("description",(ecolab::TCLAccessor<DataOp,std::string>::Getter)&DataOp::description,
-       (ecolab::TCLAccessor<DataOp,std::string>::Setter)&DataOp::description)
+    NamedOp(): ecolab::TCLAccessor<NamedOp,std::string>
+      ("description",(ecolab::TCLAccessor<NamedOp,std::string>::Getter)&NamedOp::description,
+       (ecolab::TCLAccessor<NamedOp,std::string>::Setter)&NamedOp::description)
     {}
-    ~DataOp() {}
-    
-    const DataOp& operator=(const DataOp& x); 
-
     /// @{ name of the associated data operation
     std::string description() const;  
     std::string description(const std::string&);    
     /// @}
+
+  };
+  
+  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>,
+                public NamedOp
+  {
+    CLASSDESC_ACCESS(DataOp);
+    friend struct SchemaHelper;
+    void updateBB() override {bb.update(*this);}
+  public:
+    ~DataOp() {}
+    
+    const DataOp& operator=(const DataOp& x); 
+
     std::map<double, double> data;
-    void readData(const string& fileName);
+    void readData(const std::string& fileName);
     /// initialise with uniform random numbers 
     void initRandom(double xmin, double xmax, unsigned numSamples);
     /// interpolates y data between x values bounding the argument
@@ -245,17 +256,17 @@ namespace minsky
     /// called to initialise a variable value when no input wire is connected
     //    void initOutputVariableValue(VariableValue&) const;
     
-    void pack(pack_t& x, const string& d) const override;
-    void unpack(unpack_t& x, const string& d) override;
+    void pack(classdesc::pack_t& x, const std::string& d) const override;
+    void unpack(classdesc::unpack_t& x, const std::string& d) override;
   };
 
   /// shared_ptr class for polymorphic operation objects. Note, you
   /// may assume that this pointer is always valid, although currently
   /// the implementation doesn't guarantee it (eg reset() is exposed).
-  class OperationPtr: public classdesc::shared_ptr<OperationBase>
+  class OperationPtr: public std::shared_ptr<OperationBase>
   {
   public:
-    typedef classdesc::shared_ptr<OperationBase> PtrBase;
+    typedef std::shared_ptr<OperationBase> PtrBase;
     OperationPtr(OperationType::Type type=OperationType::numOps): 
       PtrBase(OperationBase::create(type)) {}
     // reset pointer to a newly created operation

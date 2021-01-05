@@ -52,33 +52,6 @@ namespace minsky
     // height of title, as a fraction of overall widget height
     const double titleHeight=0.07;
 
-    /// temporarily sets nTicks and fontScale, restoring them on scope exit
-    struct SetTicksAndFontSize
-    {
-      PlotWidget& p;
-      int nxTicks, nyTicks;
-      double fontScale;
-      bool subgrid;
-      SetTicksAndFontSize(PlotWidget& p, bool override, int n, double f, bool g):
-        p(p), nxTicks(p.nxTicks), nyTicks(p.nyTicks), 
-        fontScale(p.fontScale), subgrid(p.subgrid) 
-      {
-        if (override)
-          {
-            p.nxTicks=p.nyTicks=n;
-            p.fontScale=f;
-            p.subgrid=g;
-          }
-      }
-      ~SetTicksAndFontSize()
-      {
-        p.nxTicks=nxTicks;
-        p.nyTicks=nyTicks;
-        p.fontScale=fontScale;
-        p.subgrid=subgrid;
-      }
-    };
-
   }
 
   PlotWidget::PlotWidget()
@@ -137,7 +110,7 @@ namespace minsky
     double yoffs=0; // offset to allow for title
     if (!title.empty())
       {
-        double fx=0, fy=titleHeight*h;
+        double fx=0, fy=titleHeight*iHeight()*z;
         cairo_user_to_device_distance(cairo,&fx,&fy);
         
         Pango pango(cairo);
@@ -206,7 +179,7 @@ namespace minsky
       case bar:  pt=Plot::bar;  break;
       default: break;
       }
-      
+
     Plot::draw(cairo,gw,gh); 
     cairo_restore(cairo);
     if (mouseFocus)
@@ -282,7 +255,7 @@ namespace minsky
     if (!justDataChanged)
       // label pens
       for (size_t i=0; i<yvars.size(); ++i)
-        if (yvars[i])
+        if (yvars[i] && !yvars[i]->name.empty())
           labelPen(i, latexToPango(yvars[i]->name));
   }
 
@@ -407,14 +380,14 @@ namespace minsky
                 y=(*yvars[pen])[i];
                 break;
               case 1: // use the value of attached variable
-                assert(xvars[0]->idx()>=0);
+                assert(xvars[0] && xvars[0]->idx()>=0);  // xvars also vector of shared pointers and null derefencing error can likewise cause crash. for ticket 1248
                 if (xvars[0]->size()>1)
                   throw_error("Tensor valued x inputs not supported");
                 x=(*xvars[0])[0];
                 y=(*yvars[pen])[i];
                 break;
               default:
-                if (pen < xvars.size() && xvars[pen]->idx()>=0)
+                if (pen < xvars.size() && xvars[pen] && xvars[pen]->idx()>=0) // xvars also vector of shared pointers and null derefencing error can likewise cause crash. for ticket 1248
                   {
                     if (xvars[pen]->size()>1)
                       throw_error("Tensor valued x inputs not supported");
@@ -422,7 +395,7 @@ namespace minsky
                     y=(*yvars[pen])[i];
                   }
                 else
-                  throw error("x input not wired for pen %d",(int)pen+1);
+                  throw_error("x input not wired for pen "+to_string(pen+1));
                 break;
               }
             size_t p=pen;
@@ -531,22 +504,38 @@ namespace minsky
             }
           
           // higher rank y objects treated as multiple y vectors to plot
-          // For feature 47
+          auto startPen=extraPen;
+          auto& idx=yv->index();
+          if (idx.empty())
             for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
               {
                 setPen(extraPen, x, yv->begin()+j, d[0]);
-                if (pen>=numLines)
-                  assignSide(extraPen,Side::right);
-               string label;
-                size_t stride=d[0];
-                for (size_t i=1; i<yv->hypercube().rank(); ++i)
-                  {
-                    label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
-                    stride*=d[i];
-                  }
-                labelPen(extraPen,label);
                 extraPen++;
-              }      
+              }
+          else // data is sparse
+            for (size_t j=0; j<idx.size(); ++j)
+              {
+                auto div=lldiv(idx[j], d[0]);
+                if (size_t(div.quot)<maxNumTensorElementsToPlot)
+                  {
+                    addPt(startPen+div.quot, x[div.rem], (*yv)[j]);
+                    if (extraPen<=startPen+div.quot) extraPen=startPen+div.quot+1;
+                  }
+              }
+          // compute the pen labels
+          for (int j=0; startPen<extraPen; ++startPen, ++j)
+            {
+              string label;
+              size_t stride=1;
+              for (size_t i=1; i<yv->hypercube().rank(); ++i)
+                {
+                  label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
+                  stride*=d[i];
+                }
+              if (pen>=numLines)
+                assignSide(extraPen,Side::right);
+              labelPen(startPen,defang(label));
+            }
         }
     scalePlot();
   }
@@ -568,14 +557,14 @@ namespace minsky
     unsigned pen=port-nBoundsPorts;
     if (pen<2*numLines)
       {
-        yvars.resize(2*numLines);
+        yvars.resize(pen+1);
         yvars[pen]=var;
         if (pen>=numLines)
           assignSide(pen,Side::right);
       }
     else if (pen<4*numLines)
       {
-        xvars.resize(2*numLines);
+        xvars.resize(pen-2*numLines+1);
         xvars[pen-2*numLines]=var;
       }
     scalePlot();

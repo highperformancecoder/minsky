@@ -20,6 +20,8 @@
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "flowCoef.h"
+#include "userFunction.h"
+#include "mdlReader.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -201,6 +203,7 @@ namespace minsky
     equations.clear();
     integrals.clear();
     variableValues.clear();
+    UserFunction::nextId=0;
     
     flowVars.clear();
     stockVars.clear();
@@ -283,61 +286,98 @@ namespace minsky
   void Minsky::paste()
   {
     istringstream is(getClipboard());
-    xml_unpack_t unpacker(is);
+    xml_unpack_t unpacker(is); 
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
-    canvas.model->addGroup(g);
+    g->self=g;
     m.populateGroup(*g);
+    // stash values of parameters in copied group, as they are reset for some unknown reason later on. for ticket 1258
+    map<string,string> existingParms; 
+    for (auto& i: g->items) {
+        auto v=i->variableCast(); 
+        if (v && v->type()==VariableType::parameter) 
+			existingParms.emplace(v->valueId(),v->init());
+	}
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    canvas.selection.clear();    
+    canvas.selection.clear();
+    // The following is only necessary if one pastes into an existing model. For ticket 1258   
+    if (!history.empty() || !canvas.model.get()->empty()) {     
+      bool alreadyDefinedMessageDisplayed=false;
+      
+      // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
+      g->recursiveDo(&GroupItems::items,
+                     [&](Items&, Items::iterator i) {
+                       if (auto v=(*i)->variableCast())
+                         if (v->defined() || v->isStock())
+                           {
+                             // if defined, check no other defining variable exists
+                             auto alreadyDefined = canvas.model->findAny
+                               (&GroupItems::items,
+                                [&v](const ItemPtr& j)
+                                {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
+                             if (v->isStock())
+                               {
+                                 if (v->defined() && alreadyDefined && !alreadyDefinedMessageDisplayed)
+                                   {
+                                     message("Integral/Stock variable "+v->name()+" already defined.");
+                                     alreadyDefinedMessageDisplayed=true;
+                                   }
+                                 else if (!v->defined() && !alreadyDefined)
+                                   {
+                                     // need to do this var explicitly, as not currently part of model structure
+                                     if (auto vp=VariablePtr(*i))
+                                       {
+                                         vp.retype(VariableType::flow);
+                                         *i=vp;
+                                         convertVarType(vp->valueId(), VariableType::flow);
+                                       }
+                                   }
+                               }
+                             else if (alreadyDefined)
+                               {
+                                 // delete defining wire from this
+                                 assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
+                                 g->removeWire(*v->ports[1]->wires()[0]);
+                               }
+                           }
+                       return false;
+                     });
+    }                              
 
-    // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
-    g->recursiveDo(&GroupItems::items,
-                   [&](Items&, Items::iterator i) {
-                     if (auto v=(*i)->variableCast())
-                       if (v->defined() || v->isStock())
-                         {
-                           // if defined, check no other defining variable exists
-                           auto alreadyDefined = canvas.model->findAny
-                             (&GroupItems::items,
-                              [&v](const ItemPtr& j)
-                              {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
-                           if (v->isStock())
-                             {
-                               if (v->defined() && alreadyDefined)
-                                 message("Integral/Stock variable "+v->name()+" already defined"); 
-                               else if (!v->defined() && !alreadyDefined)
-                                 convertVarType(v->valueId(), VariableType::flow);
-                             }
-                           else if (alreadyDefined)
-                             {
-                               // delete defining wire from this
-                               assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
-                               canvas.model->removeWire(*v->ports[1]->wires()[0]);
-                             }
-                         }
-                     return false;
-                   });
-
+    canvas.model->addGroup(g); // needed to ensure wires are correctly handled
     auto copyOfItems=g->items;
-    for (auto& i: copyOfItems)
-      {		
-         canvas.model->addItem(i);			  
-         canvas.selection.ensureItemInserted(i);
-         assert(!i->ioVar());
-      }
-    // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!copyOfItems.empty()) canvas.setItemFocus(g->items[0]);	      
     auto copyOfGroups=g->groups;
-    for (auto& i: copyOfGroups)
-    {	
-        canvas.model->addGroup(i);	
-    }
-    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
-    g->clear();  
-    model->removeGroup(*g);
+    
+    // ungroup g, putting all its contents on the canvas
+    canvas.model->moveContents(*g); 
+
+    // leave newly ungrouped items in selection
+    for (auto& i: copyOfItems) {
+       canvas.selection.ensureItemInserted(i);
+       // ensure that initial values of pasted parameters are correct. for ticket 1258
+       if (auto v=i->variableCast())
+		 if (v->type()==VariableType::parameter && !existingParms.empty()) 
+		 {
+		   auto it=existingParms.find(v->valueId());
+		   if (it!=existingParms.end()) v->init(it->second);
+	   }
+	}
+	
+	if (!existingParms.empty()) existingParms.clear();
+	
+    // Attach mouse focus only to first visible item in selection. For ticket 1098.      
+    for (auto& i: canvas.selection.items)
+      if (i->visible())
+        {
+          canvas.setItemFocus(i);
+          break;
+        }
+                        
+    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);   
+
+    canvas.model->removeGroup(*g);  
     canvas.requestRedraw();
-  }
+  }  
 
   namespace
   {
@@ -461,7 +501,7 @@ namespace minsky
       (&Group::items,
        [&](Items& m, Items::iterator i)
        {
-         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+         if (auto p=(*i)->plotWidgetCast())
            {
              p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();
@@ -496,7 +536,7 @@ namespace minsky
          else if (!(*i)->ports.empty() && !(*i)->ports[0]->input() &&
                   (*i)->ports[0]->wires().empty())
            (*i)->checkUnits(); // check anything with an unwired output port
-         else if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+         else if (auto p=(*i)->plotWidgetCast())
            for (auto& i: p->ports)
              i->checkUnits();
          else if (auto p=dynamic_cast<Sheet*>(i->get()))
@@ -510,6 +550,7 @@ namespace minsky
   {
     for (auto& i: variableValues)
       i.second->units.clear();
+    timeUnit.clear();
   }
   
   void Minsky::populateMissingDimensions() {
@@ -520,7 +561,7 @@ namespace minsky
            {
              auto state=ri->getState();
              for (auto& j: state.handleStates)
-               dimensions.emplace(j.first,Dimension());
+               dimensions.emplace(j.description,Dimension());
            }
          return false;
        });
@@ -534,9 +575,27 @@ namespace minsky
         auto d=dimensions.find(xv.name);
         if (d==dimensions.end())
           dimensions.emplace(xv.name, xv.dimension);
+        else if (d->second.type==xv.dimension.type)
+          d->second.units=xv.dimension.units;
+        else
+          message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog");
+        
       }
+    // set all such dimensions on Ravels to forward sort order
+    set<string> varDimensions;
+    for (auto& xv: v.hypercube().xvectors)
+      varDimensions.insert(xv.name);
+    model->recursiveDo
+      (&Group::items,[&](Items& m, Items::iterator it)
+      {
+        if (auto ri=dynamic_cast<Ravel*>(it->get()))
+          for (size_t i=0; i<ri->numHandles(); ++i)
+            if (varDimensions.count(ri->handleDescription(i)))
+              ri->setHandleSortOrder(ravel::HandleSort::forward, i);
+        return false;
+      });
   }
-      
+  
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;
@@ -826,7 +885,7 @@ namespace minsky
       (&Group::items,
        [&](Items& m, Items::iterator i)
        {
-         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+         if (auto p=(*i)->plotWidgetCast())
            {
              p->clear();
              if (running)
@@ -838,7 +897,8 @@ namespace minsky
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            {
              if (r->ports[1]->numWires()>0)
-               r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+               if (auto vv=r->ports[1]->getVariableValue())
+                 r->populateHypercube(vv->hypercube());
            }
          else if (auto v=(*i)->variableCast())
            { //determine whether a slider should be shown
@@ -998,9 +1058,11 @@ namespace minsky
               displayErrorItem(*i->operation);
             throw error("integral not wired");
           }
-        result[i->stock.idx()] = reverseFactor *
-          (i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()]);
-      }
+        // enable element-wise integration of tensor variables. for feature 147  
+	for (size_t j=0; j<i->input.size(); ++j)
+	    result[i->stock.idx()+j] = reverseFactor *
+	      (i->input.isFlowVar()? flow[i->input.idx()+j] : vars[i->input.idx()+j]);
+      } 
   }
 
   void Minsky::jacobian(Matrix& jac, double t, const double sv[])
@@ -1112,39 +1174,6 @@ namespace minsky
     ofstream f(filename);
     x.output(f,schemaURL);
   }
-
-  vector<string> Minsky::accessibleVars() const
-  {
-    set<string> r;
-    // insert global variables
-    for (auto i: variableValues)
-      if (i.first[0]==':')
-        r.insert(i.first);
-    if (canvas.item)
-      if (auto g=canvas.item->group.lock())
-        {
-          // first add local variables
-          for (auto& i: g->items)
-            if (auto v=i->variableCast())
-              r.insert(v->name());
-          // now add variables in outer scopes, ensuring they qualified
-          for (g=g->group.lock(); g;  g=g->group.lock())
-            for (auto& i: g->items)
-              if (auto v=i->variableCast())
-                {
-                  auto n=v->name();
-                  if (!n.empty())
-                    {
-                      if (n[0]==':')
-                        r.insert(n);
-                      else
-                        r.insert(':'+n);
-                    }
-                }
-        }
-    return vector<string>(r.begin(),r.end());
-  }
-
   
   namespace
   {
@@ -1279,7 +1308,7 @@ namespace minsky
   {
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
-    schema3::Minsky m(*this);
+    schema3::Minsky m(*this, false /* don't pack tensor data */);
     pack_t buf;
     buf<<m;
     if (history.empty())
@@ -1330,9 +1359,21 @@ namespace minsky
       {
         schema3::Minsky m;
         history[historyPtr-1].reseto()>>m;
+        // stash tensorInit data for later restoration
+        auto stashedValues=move(variableValues);
         clearAllMaps();
         model->clear();
         m.populateGroup(*model);
+        // restore tensorInit data
+        for (auto& v: variableValues)
+          {
+            auto stashedValue=stashedValues.find(v.first);
+            if (stashedValue!=stashedValues.end())
+              v.second->tensorInit=move(stashedValue->second->tensorInit);
+          }
+        try {reset();}
+        catch (...) {}
+          
       }
     else
       historyPtr+=changes; // revert
@@ -1352,14 +1393,25 @@ namespace minsky
        {
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
            {
+			 string newName;  
              if (type!=VariableType::flow)
                for (auto v: g->flowVars())
                  if (v->valueId()==name)
-                   throw error("flow variables in Godley tables cannot be converted to a different type");
+                   {
+					   newName=v->name()+"^{Flow}";
+                       VariableValues::iterator iv=variableValues.find(newName);
+                       if (iv==variableValues.end()) g->table.renameFlows(v->name(),newName);
+					   else throw error("flow variables in Godley tables cannot be converted to a different type");
+					}
              if (type!=VariableType::stock)
                for (auto v: g->stockVars())
                  if (v->valueId()==name)
-                   throw error("stock variables in Godley tables cannot be converted to a different type");
+                   {
+					   newName=v->name()+"^{Stock}";
+                       VariableValues::iterator iv=variableValues.find(newName);
+                       if (iv==variableValues.end()) g->table.renameStock(v->name(),newName);
+					   else throw error("stock variables in Godley tables cannot be converted to a different type");
+				  }
            }
          return false;
        });
@@ -1367,7 +1419,7 @@ namespace minsky
     if (auto var=definingVar(name))
       // we want to be able to convert stock vars to flow vars when their input is wired
       if (var->type() != type && (!var->isStock() || var->controller.lock()))
-        throw error("cannot convert a variable to a type other than its defined type");
+         throw error("cannot convert a variable to a type other than its defined type");
 
     // filter out invalid targets
     switch (type)
@@ -1417,7 +1469,7 @@ namespace minsky
     unsigned plotNum=0;
     model->recursiveDo(&Group::items,
                        [&](Items&, Items::iterator i) {
-                         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+                         if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
                                p->renderToSVG((prefix+"-"+p->title+".svg").c_str());
@@ -1432,7 +1484,7 @@ namespace minsky
     unsigned plotNum=0;
     model->recursiveDo(&Group::items,
                        [&](Items&, Items::iterator i) {
-                         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+                         if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
                                p->exportAsCSV((prefix+"-"+p->title+".csv").c_str());
@@ -1449,6 +1501,24 @@ namespace minsky
           g->table.setDEmode(mode);
         return false;
       });
+  }
+
+  void Minsky::setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle)
+  {
+    this->displayValues=displayValues;
+    this->displayStyle=displayStyle;
+    model->recursiveDo(&GroupItems::items, [](Items&,Items::iterator i) {
+      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+        g->setEditorDisplayValues();
+      return false;
+    });
+  }
+
+  void Minsky::importVensim(const string& filename)
+  {
+    ifstream f(filename);
+    readMdl(*model,*this,f);
+    canvas.requestRedraw();
   }
 
 }

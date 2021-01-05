@@ -32,10 +32,11 @@ namespace minsky
     
     CLASSDESC_ACCESS(Sheet);
   public:
-    float m_width=100, m_height=100;
+    //    float m_width=100, m_height=100;
     Sheet();
+    bool inItem(float, float) const override;
+    ClickType::Type clickType(float x, float y) override;   
     void draw(cairo_t* cairo) const override;
-    void resize(const LassoBox& b) override;
   };
 }
 

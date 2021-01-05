@@ -19,12 +19,12 @@
 
 #include "xvector.h"
 #include <error.h>
+#include <regex>
 #include "minsky_epilogue.h"
 using ecolab::error;
 
 using namespace std;
 
-#include <boost/regex.hpp>
 #include <boost/date_time.hpp>
 using namespace boost;
 using namespace boost::posix_time;
@@ -57,31 +57,38 @@ namespace civita
         size()!=x.size())
       return false;
     for (auto i=begin(), j=x.begin(); i!=end(); ++i, ++j)
-      switch (dimension.type)
-        {
-        case Dimension::string:
-          try
-            {
-              if (any_cast<string>(*i)!=any_cast<string>(*j))
-                return false;
-            }
-          catch (const bad_any_cast&)
-            {
-              if (strcmp(any_cast<const char*>(*i), any_cast<const char*>(*j))!=0)
-                return false;
-            }
-          break;
-        case Dimension::value:
-          if (any_cast<double>(*i)!=any_cast<double>(*j))
+      {
+        if (i->type()!=j->type())
+          {
+            cout << i->type().name() << " "<<j->type().name() << endl;
             return false;
-          break;
-        case Dimension::time:
-          if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
-            return false;
-          break;
-        default:
-          throw error("unknown dimension type");
-        }
+          }
+        switch (dimension.type)
+          {
+          case Dimension::string:
+            try
+              {
+                if (any_cast<string>(*i)!=any_cast<string>(*j))
+                  return false;
+              }
+            catch (const bad_any_cast&)
+              {
+                if (strcmp(any_cast<const char*>(*i), any_cast<const char*>(*j))!=0)
+                  return false;
+              }
+            break;
+          case Dimension::value:
+            if (any_cast<double>(*i)!=any_cast<double>(*j))
+              return false;
+            break;
+          case Dimension::time:
+            if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
+              return false;
+            break;
+          default:
+            throw error("unknown dimension type");
+          }
+      }
     return true;
   }
   
@@ -140,13 +147,13 @@ namespace civita
                       try
                         {v=stoi(val[i]);}
                       catch (...)
-                        {throw runtime_error(val[i]+" is not an integer");}
+                        {throw runtime_error(val[i].str()+" is not an integer");}
                       switch (m.str(i)[0])
                         {
                         case 'd': day=v; break;
                         case 'm': month=v; break;
                         case 'y':
-                          if (v>99) throw runtime_error(val[i]+" is out of range for %y");
+                          if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
                           year=v>68? v+1900: v+2000;
                           break;
                         case 'Y': year=v; break;
@@ -213,7 +220,7 @@ namespace civita
   double diff(const boost::any& x, const boost::any& y)
   {
     if (x.type()!=y.type())
-      throw error("incompatible types in diff");
+      throw runtime_error(string("incompatible types ")+x.type().name()+" and "+y.type().name()+" in diff");
     if (auto vx=any_cast<string>(&x))
       {
         // Hamming distance
@@ -229,9 +236,18 @@ namespace civita
       return 1e-9*(*vx-any_cast<ptime>(y)).total_nanoseconds();
     throw error("unsupported type");
   }
+
+  // format a string with two integer arguments
+  string formatString(const std::string& format, int i, int j)
+  {
+    char r[512];
+    snprintf(r,sizeof(r),format.c_str(),i,j);
+    return r;
+  }
   
   string str(const boost::any& v, const string& format)
   {
+    string::size_type pq;
     if (auto s=any_cast<std::string>(&v))
       return *s;
     else if (auto s=any_cast<const char*>(&v))
@@ -241,6 +257,24 @@ namespace civita
     else if (auto s=any_cast<ptime>(&v))
       if (format.empty())
         return to_iso_extended_string(*s);
+      else if ((pq=format.find("%Q"))!=string::npos)
+        {
+          auto pY=format.find("%Y");
+          if (pY==string::npos)
+            throw error("year not specified in format string");
+            
+          // replace %Q and %Y with %d
+          string sformat=format;
+          for (size_t i=1; i<sformat.size(); ++i)
+            if (sformat[i-1]=='%' && (sformat[i]=='Q' || sformat[i]=='Y'))
+              sformat[i]='d';
+          char result[100];
+          auto tm=to_tm(s->date());
+          if (pq<pY)
+            return formatString(sformat,tm.tm_mon/3+1, tm.tm_year+1900);
+          else
+            return formatString(sformat, tm.tm_year+1900, tm.tm_mon/3+1);
+        }
       else
         {
           unique_ptr<time_facet> facet(new time_facet(format.c_str()));
@@ -298,6 +332,7 @@ namespace civita
 
     for (auto& i: *this)
       i=anyVal(dimension, str(i));
+    assert(checkThisType());
   }
 
 }

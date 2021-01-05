@@ -24,13 +24,6 @@
 #ifdef CIVITA_INDEX_H
 #include "index.cd"
 #endif
-#ifdef CIVITA_TENSORINTERFACE_H
-#include "tensorInterface.xcd"
-#endif
-#ifdef CIVITA_TENSORVAL_H
-#include "tensorVal.xcd"
-#endif
-
 #ifdef RESTPROCESS_H
 
 namespace classdesc
@@ -149,7 +142,15 @@ namespace classdesc_access
   template <>
   struct access_json_unpack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_unpack_t> {};
 }
+#endif
 
+//#ifdef CIVITA_HYPERCUBE_H
+//#include "hypercube.cd"
+//#include "hypercube.xcd"
+//#endif
+//
+#ifdef CIVITA_XVECTOR_H
+#include "xvector.xcd"
 #endif
 
 #include <ecolab_epilogue.h>

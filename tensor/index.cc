@@ -30,18 +30,4 @@ namespace civita
       return size_t(lb-index.begin());
     return index.size();
   }
-
-  void Index::insert(size_t h, std::vector<double>& v, double x)
-  {
-    auto lb=std::lower_bound(index.begin(), index.end(), h);
-    if (lb==index.end() || *lb!=h)
-      {
-        v.insert(v.begin()+(lb-index.begin()),x);
-        index.insert(lb, h);
-      }
-    else
-      v[lb-index.begin()]=x;
-    assert(sorted());
-  }
-
 }

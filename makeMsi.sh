@@ -54,7 +54,7 @@ cat >$minskyWxs <<EOF
     <Upgrade Id='$upgradeId'>
       <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
          Minimum='0.0.0' IncludeMinimum='yes'
-         Maximum='2.0.0' IncludeMaximum='no' />
+         Maximum='100.0.0' IncludeMaximum='no' />
     </Upgrade>
     <InstallExecuteSequence>
       <RemoveExistingProducts Before='InstallInitialize'/>
@@ -64,7 +64,7 @@ cat >$minskyWxs <<EOF
       <Directory Id='ProgramFilesFolder'>
         <Directory Id='Minsky' Name='$productName'>
           <Directory Id='INSTALLDIR'>
-            <Component Id='MinskyFiles' Guid='$componentId'>
+            <Component Id='MinskyFiles' Guid='$componentId' UninstallWhenSuperseded='yes'>
               <RemoveFile Id="removePreviousFiles" Name="*" On="install"/>
               <File Id='MinskyEXE' Name='minsky.exe' Source='gui-tk/minsky.exe' KeyPath='yes'>
                 <Shortcut Id="startmenuMinsky" Directory="ProgramMenuDir" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes">
@@ -72,10 +72,16 @@ cat >$minskyWxs <<EOF
                 <Shortcut Id="desktopMinsky" Directory="DesktopFolder" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes" />
               </File>
 EOF
-if [ $productName = "Minsky" ]; then
-cat >>$minskyWxs <<EOF 
-              <ProgId Id='MinskyData' Description='Minsky Project File' Icon='MinskyEXE'>
-                <Extension Id='mky' ContentType='application/minsky'>
+# TODO - when Ravel 1.1 is released, switch this to ravel, not ravel beta
+if [ $productName = "Minsky" -o $productName = "Ravel" -o $productName = "RavelBeta"  ]; then
+    if [ $productName = "Minsky" ]; then
+	echo "<ProgId Id='MinskyData' Description='Minsky Project File' Icon='MinskyEXE'>" >>$minskyWxs
+	echo "<Extension Id='mky' ContentType='application/minsky'>" >>$minskyWxs
+    else
+	echo "<ProgId Id='RavelData' Description='Ravel Project File' Icon='MinskyEXE'>" >>$minskyWxs
+	echo "<Extension Id='rvl' ContentType='application/ravel'>" >>$minskyWxs
+    fi	
+    cat >>$minskyWxs <<EOF 
                   <Verb Id='open' Command='Open' TargetFile='MinskyEXE' Argument='"%1"'/>
                  </Extension>
                </ProgId>
@@ -191,5 +197,5 @@ EOF
 candle minsky.wxs
 echo "light minsky.wixobj"
 light -ext WixUIExtension -dWixUILicenseRtf=$license minsky.wixobj
-signtool sign -t http://timestamp.comodoca.com/rfc3161 minsky.msi
+signtool sign -t http://timestamp.sectigo.com minsky.msi
 mv minsky.msi $productName-$version-win-dist.msi

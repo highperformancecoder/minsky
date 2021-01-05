@@ -39,6 +39,7 @@ namespace minsky
     friend struct SchemaHelper;
     friend class GodleyIcon;
     typedef std::vector<std::vector<string>> Data;
+    enum DisplayStyle {DRCR, sign}; ///< how to display -ve data in table
   private:
     CLASSDESC_ACCESS(GodleyTable);
     /// class of each column (used in DE compliant mode)
@@ -196,6 +197,10 @@ namespace minsky
 
     /// rename all instances of a variable
     void rename(const std::string& from, const std::string& to);
+    /// rename all instances of a flow variable
+    void renameFlows(const std::string& from, const std::string& to);        
+    /// rename a stock variable
+    void renameStock(const std::string& from, const std::string& to);        
   };
 
 }

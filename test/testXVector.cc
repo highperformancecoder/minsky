@@ -40,8 +40,8 @@ SUITE(XVector)
     {
       VariableValue from1(VariableType::flow), from2(VariableType::flow),
         to(VariableType::flow);
-      from1.hypercube(XV{{"a",{"a1","a2","a3"}},{"b",{"b1","b3","b4"}}});
-      from2.hypercube(XV{{"c",{"c1","c2","c3"}},{"b",{"b2","b3","b4","b5"}}});
+      from1.hypercube(XV{{"a",{},{"a1","a2","a3"}},{"b",{},{"b1","b3","b4"}}});
+      from2.hypercube(XV{{"c",{},{"c1","c2","c3"}},{"b",{},{"b2","b3","b4","b5"}}});
 //      from1.allocValue();
 //      from2.allocValue();
       EvalOpPtr e(OperationType::add, nullptr, to, from1, from2);
@@ -52,7 +52,7 @@ SUITE(XVector)
       CHECK_EQUAL(3,m["a"].size());
       CHECK(m["a"]==from1.hypercube().xvectors[0]);
       CHECK(m["c"]==from2.hypercube().xvectors[0]);
-      XVector t1{"b",{"b3","b4"}};
+      XVector t1{"b",{},{"b3","b4"}};
       CHECK(m["b"]==t1);
 
       CHECK_EQUAL(3, to.hypercube().dims().size());
@@ -108,11 +108,11 @@ SUITE(XVector)
     {
       VariableValue from1(VariableType::flow), from2(VariableType::flow),
         to(VariableType::flow);
-      XV xv1{{"a",{1.0,2.0,3.0}},{"b",{1.0,3.0,4.0,6.0}}};
+      XV xv1{{"a",{},{1.0,2.0,3.0}},{"b",{},{1.0,3.0,4.0,6.0}}};
       xv1[0].dimension.type=Dimension::value;
       xv1[1].dimension.type=Dimension::value;
       from1.hypercube(xv1);
-      XV xv2{{"c",{"c1","c2","c3"}},{"b",{2.0,3.0,3.5,4.2,5.0}}};
+      XV xv2{{"c",{},{"c1","c2","c3"}},{"b",{},{2.0,3.0,3.5,4.2,5.0}}};
       xv2[1].dimension.type=Dimension::value;
       from2.hypercube(xv2);
       from1.allocValue();
@@ -177,5 +177,25 @@ SUITE(XVector)
       CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
       CHECK_THROW(push_back("foo"),std::exception);
 
+    }
+
+  TEST_FIXTURE(Conversions, convert)
+    {
+      emplace("day:hour",24);
+      CHECK_EQUAL(48,convert(2,"day","hour"));
+      CHECK_EQUAL(2,convert(48,"hour","day"));
+      CHECK_THROW(convert(1,"metre","second"), std::exception);
+    }
+  
+  TEST(str)
+    {
+      CHECK_EQUAL("0.3",str(boost::any("0.3"),""));
+      CHECK_EQUAL("0.300000",str(boost::any(0.3),""));
+      boost::any t(boost::posix_time::time_from_string("2002-04-20 23:59:59.000"));
+      CHECK_EQUAL("2002-04-20T23:59:59", str(t,""));
+      CHECK_EQUAL("2002/04/20", str(t,"%Y/%m/%d"));
+      CHECK_EQUAL("2002-Q2", str(t,"%Y-Q%Q"));
+      CHECK_EQUAL("Q2-2002", str(t,"Q%Q-%Y"));
+      CHECK_THROW(str(t,"Q%Q"), std::exception);
     }
 }

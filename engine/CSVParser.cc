@@ -77,15 +77,14 @@ namespace
   
   double quotedStoD(const string& s,size_t& charsProcd)
   {
-    double r=stod(s,&charsProcd);
-    if (charsProcd==s.size()) return r;
     //strip possible quote characters
-    if (!s.empty() && s[0]==s[s.size()-1])
+    if (!s.empty() && s[0]==s[s.size()-1] && !isalnum(s[0]))
       {
-        r=stod(s.substr(1),&charsProcd);
+        double r=stod(s.substr(1),&charsProcd);
         charsProcd+=2;
+        return r;
       }
-    return r;
+    return stod(s,&charsProcd);
   }
 
   string stripWSAndDecimalSep(const string& s)
@@ -172,6 +171,16 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
         if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
         boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
         vector<string> line(tok.begin(), tok.end());
+        if (!line.empty())
+          {
+            smatch match;
+            static const regex re("RavelHypercube=(.*)");
+            if (regex_match(line[0], match, re))
+              {
+                populateFromRavelMetadata(match[1], row);
+                return;
+              }
+          }
         starts.push_back(firstNumerical(line));
         nCols=std::max(nCols, line.size());
         if (starts.back()==line.size())
@@ -241,6 +250,7 @@ void DataSpec::guessFromStream(std::istream& input)
       guessRemainder(inputCopy,' ');
   }
 
+  if (dimensionNames.empty())
   {
     //fill in guessed dimension names
     istringstream inputCopy(streamBuf.str());
@@ -300,8 +310,23 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
       }
 }
 
-
-
+ void DataSpec::populateFromRavelMetadata(const std::string& metadata, size_t row)
+ {
+   vector<NamedDimension> ravelMetadata;
+   json(ravelMetadata,metadata);
+   columnar=true;
+   headerRow=row+2;
+   setDataArea(headerRow, ravelMetadata.size());
+   dimensionNames.clear();
+   dimensions.clear();
+   for (auto& i: ravelMetadata)
+     {
+       dimensions.push_back(i.dimension);
+       dimensionNames.push_back(i.name);
+     }
+   for (size_t i=0; i<dimensions.size(); ++i)
+     dimensionCols.insert(i);
+ }
 
 namespace minsky
 {
@@ -428,8 +453,17 @@ namespace minsky
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
                       key.push_back(*field);
-                      if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
-                        hc.xvectors[dim].push_back(*field);
+                      try
+                        {
+                          if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
+                            hc.xvectors[dim].push_back(*field);
+                        }
+                      catch (...)
+                        {
+                          throw std::runtime_error("Invalid data: "+*field+" for "+
+                                                   to_string(spec.dimensions[dim].type)+
+                                                   " dimensioned column: "+spec.dimensionNames[dim]);
+                        }
                       dim++;
                     }
                     
@@ -440,7 +474,9 @@ namespace minsky
                   {
                     if (tabularFormat)
                       key.push_back(horizontalLabels[col]);
-
+                    else if (col)
+                      break; // only 1 value column, everything to right ignored
+                    
                     // remove thousands separators, and set decimal separator to '.' ("C" locale)
                     string s;
                     for (auto c: *field)
@@ -495,6 +531,8 @@ namespace minsky
                       }
                     if (tabularFormat)
                       key.pop_back();
+                    else
+                      break; // only one column of data needs to be read
                   }
               }
           }
@@ -554,11 +592,11 @@ namespace minsky
               }
 
             v.tensorInit.index(indexValue);
+            v.hypercube(hc);
+            v.tensorInit.hypercube(hc);
             size_t j=0;
             for (auto& i: indexValue)
               v.tensorInit[j++]=i.second;
-            v.hypercube(hc);
-            v.tensorInit.hypercube(hc);
           }                 
 
       }

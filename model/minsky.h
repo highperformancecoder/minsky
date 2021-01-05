@@ -38,8 +38,10 @@
 #include "canvas.h"
 #include "panopticon.h"
 #include "fontDisplay.h"
-#include "variableSheet.h"
-#include "parameterSheet.h"
+#include "variableTab.h"
+#include "parameterTab.h"
+#include "plotTab.h"
+#include "godleyTab.h"
 #include "dimension.h"
 #include "rungeKutta.h"
 
@@ -143,12 +145,15 @@ namespace minsky
 
     Exclude<boost::posix_time::ptime> lastRedraw;
 
+    
   public:
     EquationDisplay equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
-    ParameterSheet parameterSheet;
-    VariableSheet variableSheet;
+    ParameterTab parameterTab;
+    VariableTab variableTab;
+    PlotTab plotTab;
+    GodleyTab godleyTab;
         // Allow multiple equity columns.
     bool multipleEquities=false;    
 
@@ -295,20 +300,15 @@ namespace minsky
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
 
-    /// return a list of existing variables a variable could be
-    /// connected to. This includes all global variables, plus any
-    /// accessible from item's group
-    std::vector<std::string> accessibleVars() const;
-
     /// return the AEGIS assigned version number
     static const char* minskyVersion;
     std::string ecolabVersion() const {return VERSION;}
-    std::string ravelVersion() const;
+    std::string ravelVersion() const {return ravel::Ravel::version();}
 
     std::string fileVersion; ///< Minsky version file was saved under
     
     unsigned maxHistory{100}; ///< maximum no. of history states to save
-    int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvaas during simulation
+    int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvas during simulation
 
     /// clear history
     void clearHistory() {history.clear(); historyPtr=0;}
@@ -356,6 +356,16 @@ namespace minsky
     /// set std library RNG seed
     void srand(int seed) {::srand(seed);}
 
+    // godley table display values preferences
+    bool displayValues=false;
+    GodleyTable::DisplayStyle displayStyle=GodleyTable::sign;
+
+    /// set display value mode on all godley table editor modes
+    void setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle);
+
+    /// import a Vensim file
+    void importVensim(const std::string&);
+    
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
@@ -364,6 +374,9 @@ namespace minsky
     virtual void message(const std::string&) {}
     /// request all Godley table windows to redraw
     virtual void redrawAllGodleyTables() {}
+
+    /// run callback attached to \a item
+    virtual void runItemDeletedCallback(const Item&) {}
     
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL

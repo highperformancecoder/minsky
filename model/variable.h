@@ -76,6 +76,7 @@ namespace minsky
   private:
     CLASSDESC_ACCESS(VariableBase);
     std::string m_name; 
+    std::pair<std::string,std::string> m_dimLabelsPicked;    
     mutable int unitsCtr=0; ///< for detecting reentrancy in units()
     static int stockVarsPassed; ///< for detecting reentrancy in units()
 
@@ -129,7 +130,17 @@ namespace minsky
       if (auto v=vValue()) return v->hypercube().dims();
       else return {};
     }
-      
+    
+    std::vector<std::string> dimLabels() const {
+      if (auto v=vValue()) return v->hypercube().dimLabels();
+      else return {};
+    }    
+        
+    std::pair<std::string,std::string> getDimLabelsPicked() const {return m_dimLabelsPicked;}   
+    std::pair<std::string,std::string> setDimLabelsPicked(const std::string& dimLabel1, const std::string& dimLabel2) {
+      m_dimLabelsPicked=std::make_pair(dimLabel1,dimLabel2);
+      return m_dimLabelsPicked;
+    }         
 
     /// @{ the initial value of this variable
     std::string init() const; /// < return initial value for this variable
@@ -149,13 +160,15 @@ namespace minsky
     /// initialise slider bounds when slider first opened
     void initSliderBounds() const;
     void adjustSliderBounds() const;
+    /// a maximum of at most 10000 slider steps permitted
+    double maxSliderSteps() const;    
 
     /// sets/gets the units associated with this type
     Units units(bool check=false) const override;
     void setUnits(const std::string&);
     std::string unitsStr() const {return units().str();}
     
-    bool handleArrows(int dir,bool) override;
+    bool onKeyPress(int, const std::string&, int) override; 
     
     /// variable is on left hand side of flow calculation
     bool lhs() const {return type()==flow || type()==tempFlow;} 
@@ -165,6 +178,10 @@ namespace minsky
     bool isStock() const {return type()==stock || type()==integral;}
 
     virtual ~VariableBase();
+    
+    bool varTabDisplay=false;
+    void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
+    bool attachedToDefiningVar() const override {return varTabDisplay;}     
 
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
@@ -177,8 +194,8 @@ namespace minsky
     bool defined() const {return inputWired() || (isStock() && controller.lock());}
     
     bool inputWired() const;
-    /// return a list of existing variables a variable in this group
-    /// could be connected to
+    
+    /// return a list of existing variables this could be connected to
     std::vector<std::string> accessibleVars() const;
 
     /// return formatted mantissa and exponent in engineering format

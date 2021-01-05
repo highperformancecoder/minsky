@@ -231,13 +231,8 @@ namespace minsky
 
     ItemPtr removeItem(const Item&);
     /// remove item from group, and also all attached wires.
-    void deleteItem(const Item& i) {
-      auto r=removeItem(i);
-      if (r) {
-        r->deleteAttachedWires();
-        r->removeControlledItems();
-      }
-    }
+    void deleteItem(const Item&);
+
     void deleteAttachedWires() override {
       for (auto& i: inVariables) i->deleteAttachedWires();
       for (auto& i: outVariables) i->deleteAttachedWires();
@@ -344,6 +339,10 @@ namespace minsky
     /// rotate all conatined items by 180 degrees
     void flipContents();
 
+    /// return a list of existing variables a variable in this group
+    /// could be connected to
+    std::vector<std::string> accessibleVars() const;
+
     std::vector<Bookmark> bookmarks;
     /// returns list of bookmark names for populating menu 
     std::vector<std::string> bookmarkList() {
@@ -365,7 +364,14 @@ namespace minsky
     void gotoBookmark(size_t i) 
     {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
 
+    /// return default extension for this group - .mky if no ravels in group, .rvl otherwise
+    std::string defaultExtension() const;
 
+    /// automatically lay out items in this group using a graph layout algorithm
+    void autoLayout();
+    /// randomly lay out items in this group
+    void randomLayout();
+    
   };
 
   template <class M, class C>
@@ -397,7 +403,7 @@ namespace minsky
       }
     return r;
   }
-
+  
 }
 
 #ifdef CLASSDESC

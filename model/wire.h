@@ -51,6 +51,7 @@ namespace minsky
 
     constexpr static float handleRadius=3;
     mutable int unitsCtr=0; ///< for detecting wiring loops in units()
+    mutable std::vector<std::pair<float,float>> cairoCoords; ///< contains all the internal cairo coordinates used to draw a wire
   public:
 
     Wire() {}
@@ -63,13 +64,18 @@ namespace minsky
 
     /// switch ports this wire links to
     void moveToPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
+    /// stash all the internal cairo coordinates along a wire 
+    void storeCairoCoords(cairo_t* cairo) const;
+    
+    bool attachedToDefiningVar() const;         
     /// draw this item into a cairo context
     void draw(cairo_t* cairo) const;
     
     /// display coordinates 
     std::vector<float> coords() const;
     std::vector<float> coords(const std::vector<float>& coords);
-    
+
+#undef near
     /// returns true if coordinates are near this wire
     bool near(float x, float y) const;
     /// returns the index into the coordinate list if x,y is close to

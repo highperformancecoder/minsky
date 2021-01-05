@@ -18,10 +18,8 @@
 */
 #include "schema3.h"
 #include "sheet.h"
+#include "userFunction.h"
 #include "minsky_epilogue.h"
-
-#include "a85.h"
-#include <zlib.h>
 
 using namespace std;
 
@@ -100,8 +98,9 @@ namespace schema3
         unpack(b,xv);
         hc.xvectors.push_back(xv);
       }
-    a.hypercube(hc); //dimension data
-    a.index(index);
+    assert(std::find_if(index.begin(),index.end(),[&](size_t i){return i>=hc.numElements();})==index.end());
+    a.index(std::move(index));
+    a.hypercube(std::move(hc)); //dimension data
     assert(a.size()==data.size());
     memcpy(a.begin(),&data[0],data.size()*sizeof(data[0]));
   }
@@ -161,9 +160,14 @@ namespace schema3
               items.back().dataOpData=d->data;
               items.back().name=d->description();
             }
+          if (auto d=dynamic_cast<minsky::UserFunction*>(i))
+            {
+              items.back().expression=d->expression;
+              items.back().name=d->description();
+            }
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
-              items.back().filename=r->filename();
+              //              items.back().filename=r->filename();
               if (r->lockGroup)
                 items.back().lockGroup=at(r->lockGroup.get());
               auto s=r->getState();
@@ -204,6 +208,7 @@ namespace schema3
       registerClassType<minsky::Item>();
       registerClassType<minsky::IntOp>();
       registerClassType<minsky::DataOp>();
+      registerClassType<minsky::UserFunction>();
       registerClassType<minsky::Ravel>();
       registerClassType<minsky::Sheet>();
       registerClassType<minsky::VarConstant>();
@@ -267,7 +272,7 @@ namespace schema3
   }
 
 
-  Minsky::Minsky(const minsky::Group& g)
+  Minsky::Minsky(const minsky::Group& g, bool packTensorData)
   {
     IdMap itemMap;
 
@@ -280,6 +285,11 @@ namespace schema3
           itemMap.emplaceIf<minsky::SwitchIcon>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Sheet>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Item>(items, i->get());
+        if (packTensorData) //pack tensor data
+          if (auto v=(*i)->variableCast())
+            if (!items.back().tensorData)
+              items.back().packTensorInit(*v);
+
         return false;
       });
     
@@ -363,6 +373,8 @@ namespace schema3
     x.m_y=y.y;
     x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
+    if (y.width) x.iWidth(*y.width);
+    if (y.height) x.iHeight(*y.height);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
@@ -370,18 +382,20 @@ namespace schema3
         if (y.dataOpData)
           x1->data=*y.dataOpData;
       }
+    if (auto x1=dynamic_cast<minsky::UserFunction*>(&x))
+      {
+        if (y.name)
+          x1->description(*y.name);
+        if (y.expression)
+          x1->expression=*y.expression;
+      }
+    
     if (auto x1=dynamic_cast<minsky::Ravel*>(&x))
       {
-        if (y.filename)
-          try
-            {
-              x1->loadFile(*y.filename);
-            }
-          catch (...) {}
         if (y.ravelState)
           {
-            x1->applyState(*y.ravelState);
-            SchemaHelper::initHandleState(*x1,*y.ravelState);
+            x1->applyState(y.ravelState->toRavelRavelState());
+            SchemaHelper::initHandleState(*x1,y.ravelState->toRavelRavelState());
           }
         
         if (y.dimensions)
@@ -407,7 +421,7 @@ namespace schema3
         if (y.arg) x1->arg=*y.arg;
       }
    if (auto x1=dynamic_cast<minsky::GodleyIcon*>(&x))
-      {
+      {	  
         std::vector<std::vector<std::string>> data;
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
         if (y.data) data=*y.data;
@@ -421,9 +435,9 @@ namespace schema3
         if (y.name) x1->table.title=*y.name;
         if (y.editorMode && *y.editorMode!=x1->editorMode())
           x1->toggleEditorMode();
+        if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
         if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
           x1->toggleButtons();
-        if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
         if (y.width && *y.width>0) x1->iWidth(*y.width);
         if (y.height && *y.height>0) x1->iHeight(*y.height);
       }
@@ -457,11 +471,6 @@ namespace schema3
         x1->flipped=r>90 && r<270;
         if (y.ports.size()>=2)
           x1->setNumCases(y.ports.size()-2);
-      }
-    if (auto x1=dynamic_cast<minsky::Sheet*>(&x))
-      {
-        if (y.width) x1->m_width=*y.width;
-        if (y.height) x1->m_height=*y.height;
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
@@ -633,8 +642,11 @@ namespace schema3
                   auto buf=minsky::decode(*i.second.tensorData);
                   try
                     {
-                      unpack(buf, val->tensorInit);
-                      val->hypercube(val->tensorInit.hypercube());
+                      civita::TensorVal tmp;
+                      unpack(buf, tmp);
+                      *val=tmp;
+                      val->tensorInit=std::move(tmp);
+                      assert(val->idxInRange());
                     }
                   catch (const std::exception& ex) {
                     val->tensorInit.hypercube({});
@@ -642,6 +654,7 @@ namespace schema3
                   }
                   catch (...) {
                     val->tensorInit.hypercube({});
+                    assert(val->idxInRange());
                   } // absorb for now - maybe log later
                 }
           }

@@ -22,7 +22,7 @@
 // below, for ticket #327
 #define DISPLAY_POW_UPSIDE_DOWN
 
-
+#define BOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
 #include <boost/geometry/geometry.hpp>
 #include "cairoItems.h"
 #include "operation.h"
@@ -39,61 +39,6 @@ using namespace ecolab;
 using namespace std;
 using namespace minsky;
 using namespace boost::geometry;
-
-RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
-  op(op), cairo(cairo), hoffs(0)
-{
-  cairo_t *lcairo=cairo;
-  cairo_surface_t* surf=NULL;
-  if (!lcairo)
-    {
-      surf = cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100);
-      lcairo = cairo_create(surf);
-    }
-
-  const float l=op.l, r=op.r;
-  w=0.5*(-l+r);
-  h=op.h;
-
-  switch (op.type())
-    {
-    case OperationType::data:
-      {
-        cairo_text_extents_t bbox;
-        auto& c=dynamic_cast<const DataOp&>(op);
-
-        Pango pango(lcairo);
-        pango.setFontSize(10);
-        pango.setMarkup(latexToPango(c.description()));
-        w=0.5*pango.width()+2; 
-        h=0.5*pango.height()+4;
-        hoffs=pango.top();
-        break;
-      }
-    case OperationType::integrate:
-      {
-        const IntOp& i=dynamic_cast<const IntOp&>(op);
-        if (i.coupled())
-          {
-            RenderVariable rv(*i.intVar,cairo);
-            w+=i.intVarOffset+rv.width(); 
-            h=max(h, rv.height());
-          }
-        break;
-      }
-    default: break;
-    }
- if (surf) //cleanup temporary surface
-    {
-      cairo_destroy(lcairo);
-      cairo_surface_destroy(surf);
-    }
-}
-
-void RenderOperation::draw()
-{
-  op.draw(cairo);
-}
 
 namespace
 {
@@ -135,20 +80,8 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
 
 void RenderVariable::draw()
 {
-  //  updatePortLocs();
   var.draw(cairo);
 
-}
-
-void RenderVariable::updatePortLocs() const
-{
-  double angle=var.rotation() * M_PI / 180.0;
-  double x0=w, y0=0, x1=-w+2, y1=0, z=var.zoomFactor();
-  double sa=sin(angle), ca=cos(angle);
-  var.ports[0]->moveTo(var.x()+z*(x0*ca-y0*sa), 
-                           var.y()+z*(y0*ca+x0*sa));
-  var.ports[1]->moveTo(var.x()+z*(x1*ca-y1*sa), 
-                           var.y()+z*(y1*ca+x1*sa));
 }
 
 bool RenderVariable::inImage(float x, float y)
@@ -161,9 +94,9 @@ bool RenderVariable::inImage(float x, float y)
 
 double RenderVariable::handlePos() const
 {
-  var.initSliderBounds();
+  if (var.sliderStep<std::numeric_limits<double>::min() || std::isnan(var.sliderStep)) var.initSliderBounds();   // this should only be used when sliderStep's value has not been set or is a nonsensicl
   var.adjustSliderBounds();
-  return w*(var.value()-0.5*(var.sliderMin+var.sliderMax))/(var.sliderMax-var.sliderMin);
+  return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(var.value()-0.5*(var.sliderMin+var.sliderMax))/(var.sliderMax-var.sliderMin);
 }
 
 void minsky::drawTriangle

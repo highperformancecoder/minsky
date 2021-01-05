@@ -22,6 +22,7 @@
 #include "wire.h"
 #include "operation.h"
 #include "minsky.h"
+#include "autoLayout.h"
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
 using namespace std;
@@ -140,7 +141,18 @@ namespace minsky
         return r;
     return ItemPtr();
   }
-       
+
+  void Group::deleteItem(const Item& i)
+  {
+    if (auto r=removeItem(i))
+      {
+        r->deleteAttachedWires();
+        r->removeControlledItems();
+        minsky().runItemDeletedCallback(*r);
+      }
+  }
+
+  
   WirePtr GroupItems::removeWire(const Wire& w)
   {
     for (auto i=wires.begin(); i!=wires.end(); ++i)
@@ -287,14 +299,16 @@ namespace minsky
     shared_ptr<Group> p1=w.from()->item().group.lock(), p2=w.to()->item().group.lock();
     assert(p1 && p2);
     unsigned l1=p1->level(), l2=p2->level();
-    for (; l1>l2; l1--) p1=p1->group.lock();
-    for (; l2>l1; l2--) p2=p2->group.lock();
-    while (p1!=p2) 
+    for (; p1 && l1>l2; l1--) p1=p1->group.lock();
+    for (; p2 && l2>l1; l2--) p2=p2->group.lock();
+    
+    while (p1 && p2 && p1!=p2) 
       {
         assert(p1 && p2);
         p1=p1->group.lock();
         p2=p2->group.lock();
       }
+    if (!p1 || !p2) return;
     w.moveIntoGroup(*p1);
   }
   
@@ -1103,4 +1117,48 @@ namespace minsky
       }
   }
 
+  vector<string> Group::accessibleVars() const
+{
+  set<string> r;
+  // first add local variables
+  for (auto& i: items)
+    if (auto v=i->variableCast())
+      r.insert(v->name());
+  // now add variables in outer scopes, ensuring they qualified
+  auto g=this;
+  for (g=g->group.lock().get(); g;  g=g->group.lock().get())
+    for (auto& i: g->items)
+      if (auto v=i->variableCast())
+        {
+          auto n=v->name();
+          if (n[0]==':')
+            r.insert(n);
+          else
+            r.insert(':'+n);
+        }
+
+  return vector<string>(r.begin(),r.end());
+}
+
+  std::string Group::defaultExtension() const
+  {
+    if (findAny(&GroupItems::items, [](const ItemPtr& i){return dynamic_cast<Ravel*>(i.get());}))
+      return ".rvl";
+    return ".mky";
+  }
+
+  void Group::autoLayout()
+  {
+    minsky().setBusyCursor();
+    layoutGroup(*this);
+    minsky().clearBusyCursor();
+  }
+
+  void Group::randomLayout()
+  {
+    minsky().setBusyCursor();
+    randomizeLayout(*this);
+    minsky().clearBusyCursor();
+  }
+  
 }

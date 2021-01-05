@@ -161,8 +161,9 @@ namespace minsky
  
   bool Item::visible() const 
   {
+	if (attachedToDefiningVar()) return false;   
     auto g=group.lock();
-    return !g || g->displayContents();
+    return (!g || g->displayContents());
   }
   
 
@@ -196,7 +197,8 @@ namespace minsky
       }          
 
     if (onResizeHandle(x,y)) return ClickType::onResize;         
-
+    if (inItem(x,y)) return ClickType::inItem;
+    
     ecolab::cairo::Surface dummySurf
                                 (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     draw(dummySurf.cairo());
@@ -279,6 +281,13 @@ namespace minsky
     cairo_stroke(cairo);
   }
   
+  bool Item::attachedToDefiningVar() const
+  {
+	if (variableCast() || operationCast())  
+      for (auto w: ports[0]->wires())
+        if (w->attachedToDefiningVar()) return true;
+    return false;
+  }    
   
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
@@ -359,8 +368,17 @@ namespace minsky
     return r;
   }
 
-  ItemPtr Item::select(float x, float y) const
-  {return ItemPtr();}
+  void Item::removeControlledItems() const
+  {
+    if (auto g=group.lock())
+      removeControlledItems(*g);
+  }
 
-
+  ItemPtr Item::itemPtrFromThis() const
+  {
+    if (auto g=group.lock())
+      return g->findItem(*this);
+    return {};
+  }
+  
 }

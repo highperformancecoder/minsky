@@ -23,10 +23,10 @@
 #include "minsky.h"
 #include "expr.h"
 #include "minsky_epilogue.h"
-#include <boost/regex.hpp>
+#include <regex> 
 
-using boost::regex;
-using boost::smatch;
+using std::regex;
+using std::smatch;
 using namespace minsky;
 
 namespace MathDAG
@@ -415,6 +415,19 @@ namespace MathDAG
   }  
   
   template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::percent>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        return (100*x)->derivative(*this);
+      }
+  }
+  
+  template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::copy>& expr)
   {
@@ -641,19 +654,6 @@ namespace MathDAG
   }
   
   template <>
-  NodePtr SystemOfEquations::derivative<>
-  (const OperationDAG<OperationType::percent>& expr)
-  {
-    if (expr.arguments[0].empty())
-      return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return (100*x)->derivative(*this);
-      }
-  }
-  
-  template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::gamma>& expr)
   {
@@ -697,6 +697,11 @@ namespace MathDAG
         return chainRule(x,polygamma(1+x,Expr(expressionCache,zero))*gamma(1+x));
       }
   }    
+  
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::userFunction>& expr)
+  {throw error("Derivatives of user defined functions not implemented");}
   
 #define VECTOR_DERIVATIVE_NOT_IMPLEMENTED(op)           \
   template <>                                           \

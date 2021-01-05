@@ -43,13 +43,22 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
-  
+  class Group; 
+  class VariablePtr;
+  class VariableBase;
+  class OperationBase;
+  class SwitchIcon;
+  class PlotWidget;    
+
+  class Item;
+  typedef std::shared_ptr<Item> ItemPtr;
+
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and
   /// a lasso is intended
   struct ClickType
   {
-    enum Type {onItem, onPort, outside, onSlider, onRavel, onResize, legendMove, legendResize};
+    enum Type {onItem, onPort, outside, onSlider, inItem, onResize, legendMove, legendResize};
   };
 
   /// radius of circle marking ports at zoom=1
@@ -65,12 +74,6 @@ namespace minsky
     ItemPortVector& operator=(const ItemPortVector&) {return *this;}
   };
 
-  class VariablePtr;
-  class VariableBase;
-  class OperationBase;
-  class SwitchIcon;
-
-  class Item;
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
   {
@@ -102,6 +105,8 @@ namespace minsky
     float m_x=0, m_y=0; ///< position in canvas, or within group
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
+    bool onBorder=false; ///< true to indicate mouse hovering over border
+    std::string deleteCallback; /// callback to be run when item deleted from group
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
     /// canvas bounding box.
@@ -158,7 +163,11 @@ namespace minsky
     /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
     virtual const SwitchIcon* switchIconCast() const {return nullptr;}
     virtual SwitchIcon* switchIconCast() {return nullptr;}
-    /// @}      
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
+    virtual PlotWidget* plotWidgetCast() {return nullptr;}
+    /// @}            
 
     ItemPortVector ports;
     virtual float x() const; 
@@ -172,14 +181,28 @@ namespace minsky
     float top()    const {ensureBBValid(); return y()+bb.top()*zoomFactor();}
     float bottom() const {ensureBBValid(); return y()+bb.bottom()*zoomFactor();}
 
-    // resize handles should be at least a percentage if the icon size (#1025)
+    /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
+    /// @return true is (x,y) is located on a resize handle
     virtual bool onResizeHandle(float x, float y) const;
-    
+    /// @return true if item internally responds to the mouse, and (x,y) is within editable area
+    virtual bool inItem(float x, float y) const {return false;}
+    /// respond to mouse down events
+    virtual void onMouseDown(float x, float y) {}
+    /// respond to mouse up events
+    virtual void onMouseUp(float x, float y) {}
+    /// respond to mouse motion events with button pressed
+    virtual bool onMouseMotion(float x, float y) {return false;}
+    /// respond to mouse motion events (hover) without button pressed
+    virtual bool onMouseOver(float x, float y) {return false;}
+    /// respond to mouse leave events (when mouse leaves item)
+    virtual void onMouseLeave() {}
+    /// respond to key press events
+    virtual bool onKeyPress(int keySym, const std::string& utf8, int state)
+    {return false;}
+
     /// delete all attached wires
     virtual void deleteAttachedWires();
-    /// remove all controlled items from their group
-    virtual void removeControlledItems() const {}
     
     virtual Item* clone() const {
       auto r=new Item(*this);
@@ -189,6 +212,9 @@ namespace minsky
 
     /// whether this item is visible on the canvas. 
     virtual bool visible() const;
+    
+    /// whether this item is attached to a defining variable that is hidden
+    virtual bool attachedToDefiningVar() const;    
 
     void moveTo(float x, float y);
 
@@ -205,7 +231,7 @@ namespace minsky
     void dummyDraw() const;
 
     /// display tooltip text, eg on mouseover
-    void displayTooltip(cairo_t*, const std::string&) const;
+    virtual void displayTooltip(cairo_t*, const std::string&) const;
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
@@ -223,15 +249,9 @@ namespace minsky
     virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 
     virtual std::shared_ptr<Port> closestInPort(float x, float y) const;
 
-    /// respond to arrow keys.
-    /// @param dir = -1/1 if left/down, right/up pressed
-    /// @param modifier = true if modifier (eg shift/control) pressed
-    /// @return true if state changed, and item needs to be redrawn
-    virtual bool handleArrows(int dir, bool modifier=false) {return false;}
-    
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
-    virtual std::shared_ptr<Item> select(float x, float y) const;
+    virtual std::shared_ptr<Item> select(float x, float y) const {return {};}
     /// runs the TCL_obj descriptor suitable for this type
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
@@ -256,9 +276,15 @@ namespace minsky
     /// insert this items controlled or controller items are inserted
     /// correctly into \a selection.
     virtual void insertControlled(Selection& selection) {}
+    /// remove all controlled items from a group
+    virtual void removeControlledItems(Group&) const {}
+    /// remove all controlled items their owning group
+    void removeControlledItems() const;
+
+    /// return a shared_ptr to this
+    ItemPtr itemPtrFromThis() const;
   };
 
-  typedef std::shared_ptr<Item> ItemPtr;
   typedef std::vector<ItemPtr> Items;
   
   /** curiously recursive template pattern for generating overrides */

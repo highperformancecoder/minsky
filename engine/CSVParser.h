@@ -77,6 +77,8 @@ namespace minsky
       guessFromStream(is);
     }
 
+    /// populates this spec from a "RavelHypercube" entry, \a row is the row being read, used to set the headerRow attribute
+    void populateFromRavelMetadata(const std::string& metadata, size_t row);
     
   private:
     /// try to fill in remainder of spec, given a tokenizer function tf

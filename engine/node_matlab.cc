@@ -19,6 +19,7 @@
 
 #include "equations.h"
 #include "minsky.h"
+#include "userFunction.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -350,7 +351,14 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::inf>::matlab(ostream& o) const
   {
     return o<<"inf";
-  }  
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::percent>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"100*("<<arguments[0][0]->matlab()<<")";
+  }
 
   template <>
   ostream& OperationDAG<OperationType::copy>::matlab(ostream& o) const
@@ -493,13 +501,6 @@ namespace MathDAG
     checkArg(0,0);
     return o<<"frac("<<arguments[0][0]->matlab()<<")";
   }
-  
-  template <>
-  ostream& OperationDAG<OperationType::percent>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"100*("<<arguments[0][0]->matlab()<<")";
-  }
  
   template <>
   ostream& OperationDAG<OperationType::gamma>::matlab(ostream& o) const
@@ -522,6 +523,18 @@ namespace MathDAG
     return o<<"gamma(1+("<<arguments[0][0]->matlab()<<"))";
   }  
 
+  template <>
+  ostream& OperationDAG<OperationType::userFunction>::matlab(ostream& o) const
+  {
+    if (arguments.empty() || arguments[0].empty())
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"(0,0)";
+    else if (arguments.size()<2 || arguments[1].empty())
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"("<<arguments[0][0]->matlab()<<",0)";
+    else
+      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"("<<arguments[0][0]->matlab()<<","<<arguments[0][1]->matlab()<<")";
+  }    
+
+  
   template <>
   ostream& OperationDAG<OperationType::sum>::matlab(ostream& o) const
   {

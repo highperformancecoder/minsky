@@ -30,8 +30,7 @@
 #include <boost/beast/core.hpp>                                                  
 #include <boost/beast/http.hpp>                                                  
 #include <boost/beast/version.hpp>  
-                                      
-#include <boost/regex.hpp>                                                       
+                                                                                        
 #include <boost/filesystem.hpp>                                                  
                                                                                  
 #include "certify/include/boost/certify/extensions.hpp"                          
@@ -43,6 +42,7 @@
 #include <string>                                                                
 #include <stdexcept>                                                                                                                         
 #include <sstream>      
+#include <regex>    
 
 using namespace std;
 using namespace minsky;
@@ -114,8 +114,8 @@ std::string CSVDialog::loadWebFile(const std::string& url)
     }
   
   // Parse input URL. Also handles URLs of the type username:password@example.com/pathname#section. See https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
-  boost::regex ex(R"((http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\??([^ #]*)#?([^ ]*)|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
-  boost::cmatch what;
+  regex ex(R"((http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\??([^ #]*)#?([^ ]*)|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
+  cmatch what;
   if (regex_match(url.c_str(), what, ex)) {
    // what[0] contains the whole string 	 
    // what[1] is the protocol
@@ -157,7 +157,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   // end::stream_setup_source[]         
 
   // Look up the domain name
-  auto const results = resolver.resolve(host, protocol);
+  auto const results = resolver.resolve(host.str(), protocol.str());
           
   // Make the connection on the IP address we get from a lookup
   boost::asio::connect(stream.next_layer(), results.begin(), results.end());                   

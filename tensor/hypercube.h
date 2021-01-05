@@ -28,6 +28,8 @@ namespace civita
   struct Hypercube
   {
     Hypercube() {}
+    template <class T>
+    Hypercube(const std::initializer_list<T>& d) {dims(std::vector<unsigned>(d.begin(),d.end()));}
     Hypercube(const std::vector<unsigned>& d) {dims(d);}
     Hypercube(const std::vector<XVector>& d): xvectors(d) {}
     Hypercube(std::vector<XVector>&& d): xvectors(std::move(d)) {}
@@ -46,24 +48,31 @@ namespace civita
     /// dimensions
     size_t numElements() const;
       
-    /// set the dimensions. \a d cannot be empty, by may consist of
-    ///the single element {1} to refer to a scalar
+    /// set the dimensions. 
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d);
+    
+    std::vector<std::string> dimLabels() const;
     
     /// removes elements of xVector not found in \a a
     void makeConformant(const Hypercube& a);
 
-    /// compute stride and dimension size of dimension \a dim
-    /// @throw if dimension \a dim doesn't exist
-    /// if \a dim is empty, defaults to first dimension
-    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
-
     /// split lineal index into components along each dimension
     std::vector<size_t> splitIndex(size_t) const;
     /// combine a split index into a lineal hypercube index
-    size_t linealIndex(const std::vector<size_t>&) const;
+    template <class V>
+    size_t linealIndex(const V& splitIndex) const {
+      assert(dims().size()==splitIndex.size());
+      size_t index=0, stride=1;
+      auto dd=dims();
+      auto ii=splitIndex.begin();
+      for (size_t i=0; i<dd.size(); ++i, ++ii)
+        {
+          index+=*ii * stride;
+          stride*=dd[i];
+        }
+      return index;
+    }
   };
-  
 }
 
 #endif

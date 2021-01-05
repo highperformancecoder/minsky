@@ -360,7 +360,8 @@ namespace MathDAG
     std::set<std::string> varNames;
     /// keep track of derivatives of variables, to trap definition loops
     std::set<std::string> processingDerivative;
-    
+    /// table of user defined functions and their definitions
+    std::map<std::string, std::string> userDefinedFunctions;
   public:
     /// construct the system of equations 
     SystemOfEquations(const Minsky&);
@@ -380,6 +381,9 @@ namespace MathDAG
 
     /// useful constants to share
     NodePtr zero{new ConstantDAG("0")}, one{new ConstantDAG("1")};
+    
+    VariableDAGPtr getNodeFromVar(const VariableBase& v);
+    ostringstream getDefFromIntVar(const VariableBase& v);
 
     /// render equations into a cairo context
     void renderEquations(ecolab::cairo::Surface&, double height) const;

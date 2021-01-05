@@ -20,6 +20,7 @@
 #include "cairoItems.h"
 #include "evalOp.h"
 #include "variable.h"
+#include "userFunction.h"
 #include "minsky.h"
 #include "str.h"
 
@@ -65,22 +66,30 @@ namespace minsky
         break;
       }
 
-    // check for NaNs only on scalars. For tensors, NaNs just means
-    // element not present
-    if (in1.size()==1)
-      for (unsigned i=0; i<in1.size(); ++i)
-        if (!std::isfinite(fv[out+i]))
-          {
-            if (state)
-              cminsky().displayErrorItem(*state);
-            string msg="Invalid: "+OperationBase::typeName(type())+"(";
-            if (numArgs()>0)
-              msg+=std::to_string(flow1? fv[in1[i]]: sv[in1[i]]);
-            if (numArgs()>1)
-              msg+=","+std::to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
-            msg+=")";
-            throw runtime_error(msg.c_str());
-          }
+    // This check may well be obsolete. ecolab::Plot will now elide
+    // non-finite data, and it appears that the RK solver can
+    // integrate through infinities. Leaving the code here for now,
+    // just in case we decide to enable it via a user preference.
+//    // check for NaNs only on scalars. For tensors, NaNs just means
+//    // element not present
+//    if (in1.size()==1)
+//      for (unsigned i=0; i<in1.size(); ++i)
+//        if (!std::isfinite(fv[out+i]))
+//          {
+//            if (state)
+//              cminsky().displayErrorItem(*state);
+//            string msg="Invalid: ";
+//            if (auto uf=dynamic_cast<UserFunction*>(state.get()))
+//              msg+=uf->description()+"(";
+//            else
+//              msg+=OperationBase::typeName(type())+"(";
+//            if (numArgs()>0)
+//              msg+=std::to_string(flow1? fv[in1[i]]: sv[in1[i]]);
+//            if (numArgs()>1)
+//              msg+=","+std::to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
+//            msg+=")";
+//            throw runtime_error(msg.c_str());
+//          }
   };
 
   void ScalarEvalOp::deriv(double df[], size_t n, const double ds[],
@@ -194,7 +203,17 @@ namespace minsky
   {return 0;}
   template <>
   double EvalOp<OperationType::inf>::d2(double x1, double x2) const
-  {return 0;}  
+  {return 0;}
+  
+  template <>
+  double EvalOp<OperationType::percent>::evaluate(double in1, double in2) const
+  {return 100.0*in1;}
+  template <>
+  double EvalOp<OperationType::percent>::d1(double x1, double x2) const
+  {return 100.0;}
+  template <>
+  double EvalOp<OperationType::percent>::d2(double x1, double x2) const
+  {return 0;}    
   
   template <>
   double EvalOp<OperationType::copy>::evaluate(double in1, double in2) const
@@ -325,6 +344,16 @@ namespace minsky
   template <>
   double EvalOp<OperationType::eq>::d2(double x1, double x2) const
   {return 0;}
+
+  template <>
+  double EvalOp<OperationType::userFunction>::evaluate(double in1, double in2) const
+  {return state? dynamic_cast<UserFunction&>(*state).evaluate(in1,in2): 0;}
+  template <>
+  double EvalOp<OperationType::userFunction>::d1(double x1, double x2) const
+  {throw error("user functions cannot be used with an implicit method");}
+  template <>
+  double EvalOp<OperationType::userFunction>::d2(double x1, double x2) const
+  {throw error("user functions cannot be used with an implicit method");}
 
   template <>
   double EvalOp<OperationType::min>::evaluate(double in1, double in2) const
@@ -497,16 +526,6 @@ namespace minsky
   {return 0;}
   
   template <>
-  double EvalOp<OperationType::percent>::evaluate(double in1, double in2) const
-  {return 100.0*in1;}
-  template <>
-  double EvalOp<OperationType::percent>::d1(double x1, double x2) const
-  {return 100.0;}
-  template <>
-  double EvalOp<OperationType::percent>::d2(double x1, double x2) const
-  {return 0;}
-  
-  template <>
   double EvalOp<OperationType::gamma>::evaluate(double in1, double in2) const
   {return in1 > 0? boost::math::tgamma(in1) : numeric_limits<double>::max();}
   template <>
@@ -589,7 +608,7 @@ namespace minsky
 
   namespace {OperationFactory<ScalarEvalOp, EvalOp, OperationType::sum-1> evalOpFactory;}
 
-  ScalarEvalOp* ScalarEvalOp::create(Type op)
+  ScalarEvalOp* ScalarEvalOp::create(Type op, const ItemPtr& state)
   {
     switch (classify(op))
       {
@@ -601,12 +620,16 @@ namespace minsky
           {
           case constant:
             return new ConstantEvalOp;
-            //      case ravel:
-            //        return new RavelEvalOp;
           case numOps:
-            return NULL;
+            return nullptr;
+          case userFunction:
+            if (auto f=dynamic_cast<UserFunction*>(state.get()))
+              f->compile();
+            [[fallthrough]];
           default:
-            return evalOpFactory.create(op);
+            auto r=evalOpFactory.create(op);
+            r->state=dynamic_pointer_cast<OperationBase>(state);
+            return r;
           }
       case reduction:
       case scan:
@@ -848,11 +871,13 @@ namespace minsky
   EvalOpPtr::EvalOpPtr(OperationType::Type op, const ItemPtr& state,
                        VariableValue& to, const VariableValue& from1, const VariableValue& from2)
   {
-    auto t=ScalarEvalOp::create(op);
+    auto t=ScalarEvalOp::create(op,state);
     reset(t);
     assert(t->numArgs()==0 || (from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0)));
-    t->state=dynamic_pointer_cast<OperationBase>(state);
-      
+
+    if (auto f=dynamic_cast<UserFunction*>(state.get()))
+      f->compile();
+    
     switch (t->numArgs())
       {
       case 2:

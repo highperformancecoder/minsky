@@ -34,6 +34,13 @@ namespace civita
     ITensorVal(Hypercube&& hc): ITensor(std::move(hc)) {}
     ITensorVal(const std::vector<unsigned>& dims): ITensor(dims) {}
     virtual const ITensorVal& operator=(const ITensor&)=0;
+    template <class T>
+    ITensorVal& operator=(const std::initializer_list<T>& vals) {
+      auto i=begin();
+      for (auto j: vals)
+        *i++=j;
+      return *this;
+    }
 
     virtual double& operator[](size_t)=0;
     using ITensor::operator[];
@@ -57,6 +64,8 @@ namespace civita
     const Index& index(const std::initializer_list<size_t>& x)
     {std::set<size_t> tmp(x); return index(Index(tmp));}
     const Index& index(const Index& x) {auto tmp=x; return index(std::move(tmp));}
+    template <class T>
+    const Index& index(const T& x) {return index(Index(x));}
     virtual const Index& index(Index&&)=0;
     using ITensor::index;
     
@@ -78,16 +87,15 @@ namespace civita
   public:
     TensorVal(): data(1) {}
     TensorVal(double x): data(1,x) {}
-    TensorVal(const Hypercube& hc): ITensorVal(hc) {}
-    TensorVal(Hypercube&& hc): ITensorVal(std::move(hc)) {}
-    TensorVal(const std::vector<unsigned>& dims): ITensorVal(dims) {}
-
+    TensorVal(const Hypercube& hc): ITensorVal(hc) {allocVal();}
+    TensorVal(Hypercube&& hc): ITensorVal(std::move(hc)) {allocVal();}
+    TensorVal(const std::vector<unsigned>& dims): ITensorVal(dims) {allocVal();}
+    TensorVal(const ITensor& t) {*this=t;}
+    
     using ITensorVal::index;
     const Index& index(Index&& idx) override {
-      m_index=idx;
-      if (!m_index.empty()) {
-        data.resize(idx.size());
-      }
+      m_index=std::move(idx);
+      allocVal();
       return m_index;
     }
     const Hypercube& hypercube(const Hypercube& hc) override
@@ -96,7 +104,7 @@ namespace civita
     {m_hypercube=std::move(hc);allocVal();return m_hypercube;}
     using ITensor::hypercube;
 
-    void allocVal() {if (m_index.empty()) data.resize(hypercube().numElements());}
+    void allocVal() {data.resize(size());}
 
     // assign a sparse data set
     TensorVal& operator=(const std::map<size_t,double>& x) {
@@ -108,11 +116,10 @@ namespace civita
     
     double operator[](size_t i) const override {return data.empty()? 0: data[i];}
     double& operator[](size_t i) override {return data[i];}
-    size_t size() const override {return std::max(data.size(),size_t(1));}
     const TensorVal& operator=(const ITensor& x) override {
+      index(x.index());
       hypercube(x.hypercube());
-      m_index=index();
-      data.resize(x.size());
+      assert(data.size()==x.size());
       for (size_t i=0; i<x.size(); ++i) data[i]=x[i];
       updateTimestamp();
       return *this;

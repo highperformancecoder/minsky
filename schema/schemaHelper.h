@@ -63,7 +63,6 @@ namespace minsky
   */
   struct SchemaHelper
   {
-
     static void setPrivates
     (minsky::GodleyTable& g, const vector<vector<string> >& data, 
      const vector<GodleyTable::AssetClass>& assetClass)
@@ -86,7 +85,7 @@ namespace minsky
       g.m_stockVars=stockVars;
     }
 
-    static void initHandleState(minsky::Ravel& r, const RavelState& s)
+    static void initHandleState(minsky::Ravel& r, const ravel::RavelState& s)
     {r.initState=s;}
 
   };

@@ -27,8 +27,10 @@
 #include "str.h"
 #include "CSVDialog.h"
 #include "latexMarkup.h"
-#include <boost/regex.hpp>
+#include <regex> 
 #include <utility>
+#include <boost/locale.hpp>
+using namespace boost::locale::conv;
 
 namespace minsky
 {
@@ -94,59 +96,46 @@ namespace minsky
     double operator[](size_t i) const override {return *(&valRef()+i);}
     double& operator[](size_t i) override;
 
-    const Index& index() const override {
-      if (m_type==parameter && tensorInit.size())
-        return tensorInit.index();
-      else
-        return m_index;
-    }
     const Index& index(Index&& i) override {
+      assert(idx()==-1||idxInRange());
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
         allocValue();
+      assert(idxInRange());
       return m_index;
     }
     using ITensorVal::index;
     
-    size_t numDenseElements() const {return hypercube().numElements();}
-
-    size_t size() const override
-    {
-      auto idx=index();
-      return idx.size() ? idx.size(): numDenseElements();
-    }    
-    
-    const Hypercube& hypercube() const override {
-      if (m_type==parameter && tensorInit.rank()>0)
-        return tensorInit.hypercube();
-      else
-        return ITensor::hypercube();
-    }
-
     template <class T>                                            
     void hypercube_(T x) {    
+      assert(idx()==-1||idxInRange());
       size_t prevNumElems = size();
       ITensor::hypercube(x);    
       if (idx()==-1 || (prevNumElems<size()))    
-        allocValue();    
+        allocValue();
+      assert(idxInRange());
     }
+
+    bool idxInRange() const;
     
     const Hypercube& hypercube(const Hypercube& hc) override
     {hypercube_(hc); return m_hypercube;}
     const Hypercube& hypercube(Hypercube&& hc) override
     {hypercube_(hc); return m_hypercube;}
-                                                                              
+    using ITensorVal::hypercube;
+                                                                           
     void makeXConformant(const ITensor& x) {
       m_hypercube.makeConformant(x.hypercube());
     }
     
-    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
-      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
+    VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
+      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
 
 //    const VariableValue& operator=(double x) {valRef()=x; return *this;}
 //    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
 //    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
+    using ITensorVal::operator=;
     const VariableValue& operator=(TensorVal const&);
     const VariableValue& operator=(const ITensor& x) override;
 //    const VariableValue& operator+=(const TensorVal& x);
@@ -173,24 +162,26 @@ namespace minsky
 
     /// check that name is a valid valueId (useful for assertions)
     static bool isValueId(const std::string& name) {
+      static std::regex pattern("((constant)?\\d*:[^:\\ \f\n\r\t\v]+)");
       return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-        boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\]+)"));   // Leave curly braces in valueIds. For ticket 1165
+        std::regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
     }
 
     /// construct a valueId
     static std::string valueId(int scope, std::string name) {
-      auto tmp=":"+stripActive(trimWS(latexToPangoNonItalicised(uqName(name))));
+      auto tmp=":"+utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
       if (scope<0) return tmp;
       else return std::to_string(scope)+tmp;
     }
     static std::string valueId(std::string name) {
+	  name=utf_to_utf<char>(name);	
       return valueId(scope(name), name);
     }
     /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
     /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
     static GroupPtr scope(GroupPtr ref, const std::string& name);
     static std::string valueId(const GroupPtr& ref, const std::string& name) 
-    {return valueIdFromScope(scope(ref,name), name);}
+    {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(name));}
     static std::string valueIdFromScope(const GroupPtr& scope, const std::string& name);
     
     /// extract scope from a qualified variable name

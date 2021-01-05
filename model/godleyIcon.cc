@@ -28,9 +28,14 @@
 #include <cairo_base.h>
 #include <ctype.h>
 #include "minsky_epilogue.h"
+#include <boost/locale.hpp>
+using namespace boost::locale::conv;
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
+
+// width of draggable border 
+const float border=10;
 
 namespace minsky
 {
@@ -86,6 +91,11 @@ namespace minsky
     {return x=='.' || isdigit(x);}
 
 
+  }
+
+  bool GodleyIcon::inItem(float xx, float yy) const
+  {
+    return abs(xx-x())<0.5*width()-border && abs(yy-y())<0.5*height()-border;
   }
 
   void GodleyIcon::updateVars(GodleyIcon::Variables& vars, 
@@ -144,13 +154,31 @@ namespace minsky
   void GodleyIcon::toggleEditorMode()
   {
     if (editor)
-      editor.reset();
+      {
+        editor.reset();
+        variableDisplay=true;
+      }
     else
       if (auto g=group.lock())
         if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
-          editor.reset(new GodleyTableEditor(icon));
+          {
+            editor.reset(new GodleyTableEditor(icon));
+            editor->disableButtons();
+            setEditorDisplayValues();
+            variableDisplay=false;
+          }
+    updateBoundingBox();
   }
 
+  void GodleyIcon::setEditorDisplayValues()
+  {
+    if (editor)
+      {
+            editor->displayValues=cminsky().displayValues;
+            editor->displayStyle=cminsky().displayStyle;
+      }
+  }
+  
   bool GodleyIcon::buttonDisplay() const {return editor && editor->drawButtons;}
   void GodleyIcon::toggleButtons()
   {
@@ -160,6 +188,7 @@ namespace minsky
           editor->disableButtons();
         else
           editor->enableButtons();
+        updateBoundingBox();
       }
   }
   
@@ -168,14 +197,6 @@ namespace minsky
     update();
     scaleFactor(min(w/(leftMargin()+iWidth()*zoomFactor()),h/(bottomMargin()+iHeight()*zoomFactor())));
   }  
-
-  double GodleyIcon::schema1ZoomFactor() const
-  {
-    if (auto g=group.lock())
-      return scaleFactor()*g->zoomFactor();
-    else
-      return scaleFactor();
-  }
 
   void GodleyIcon::resize(const LassoBox& b)
   {
@@ -186,18 +207,15 @@ namespace minsky
     iWidth((bw-leftMargin())*invZ);
     iHeight((bh-bottomMargin())*invZ);  
     scaleIcon(bw,bh);
-    updateBB(); 
+    updateBoundingBox();
   }
 
-  void GodleyIcon::removeControlledItems() const
+  void GodleyIcon::removeControlledItems(Group& g) const
   {
-    if (auto g=group.lock())
-      {
-        for (auto& i: m_flowVars)
-          g->removeItem(*i);
-        for (auto& i: m_stockVars)
-          g->removeItem(*i);
-      }
+    for (auto& i: m_flowVars)
+      g.removeItem(*i);
+    for (auto& i: m_stockVars)
+      g.removeItem(*i);
   }
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
@@ -279,8 +297,16 @@ namespace minsky
             string::size_type start=table.cell(r,c).find_first_not_of(" ");
             if (start!=string::npos)
               {
-                FlowCoef fc(table.cell(r,c).substr(start));                      
+                FlowCoef fc(table.cell(r,c).substr(start));                                      
                 v.init=fc.str();              
+                // set initial value of stock var to init value of flow that is defined by a parameter or a constant. for ticket 1137
+                if (auto initVar=minsky().definingVar(VariableValue::valueId(group.lock(),fc.str())))
+                  if (initVar->inputWired() && initVar->type()==VariableType::flow)
+                    if (auto lhsVar=initVar->ports[1]->wires()[0]->from()->item().variableCast()) {
+                      FlowCoef fc1(lhsVar->vValue()->init);
+                      fc1.coef*=fc.coef;
+                      v.init=fc1.str();	
+                    }       
                 v.godleyOverridden=true;
               }
             else
@@ -353,29 +379,36 @@ namespace minsky
   void GodleyIcon::draw(cairo_t* cairo) const
   {
     float z=zoomFactor()*scaleFactor();
-    float w=iWidth()*z, h=iHeight()*z;
+    float w=iWidth()*z, h=iHeight()*z, left=-0.5*(w-leftMargin()), top=-0.5*(bottomMargin()+h);
     positionVariables();
     double titley;
     
     if (editor.get())
       {
         CairoSave cs(cairo);
-        cairo_rectangle(cairo, -0.5*(w-leftMargin()),-0.5*(bottomMargin()+h), w, h);
+        cairo_rectangle(cairo, left, top, w, h);
+        cairo_stroke_preserve(cairo);
+        cairo_rectangle(cairo, left+border, top+border, w-2*border, h-2*border);
+        cairo_stroke_preserve(cairo);
+        if (onBorder)
+          { // shadow the border when mouse is over it
+            cairo::CairoSave cs(cairo);
+            cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
+            cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
+            cairo_fill(cairo);
+          }
+        cairo_new_path(cairo);
+        cairo_rectangle(cairo, left+border, top-border, w-2*border, h-2*border);
         cairo_clip(cairo);
-        cairo_translate(cairo,-0.5*(w-leftMargin()),-0.5*(bottomMargin()+h)+12*zoomFactor()/* space for title*/);
-        //cairo_scale(cairo, zoomFactor(), zoomFactor());
+        cairo_translate(cairo,left+border,top+border+12*zoomFactor()/* space for title*/);
         editor->zoomFactor=zoomFactor();
         editor->draw(cairo);
-        // Adjust bounding box to fit table in Canvas. For ticket 1178.
-        double ww=w,hh=h;      
-        cairo_get_current_point(cairo,&ww,&hh);           
         titley=-0.5*(bottomMargin()+h);
-        w=ww,h=hh;
       }
     else
       {
         CairoSave cs(cairo);
-        cairo_translate(cairo,-0.5*(w-leftMargin()),-0.5*(bottomMargin()+h));
+        cairo_translate(cairo,left,top);
         cairo_scale(cairo, (w)/svgRenderer.width(), (h)/svgRenderer.height());
         svgRenderer.render(cairo);
         titley=-0.5*bottomMargin()-0.35*(h);
@@ -408,14 +441,18 @@ namespace minsky
         drawResizeHandles(cairo);
       }
       
-    cairo_rectangle(cairo, -0.5*(w-leftMargin()),-0.5*(bottomMargin()+h), w, h);    
+    cairo_rectangle(cairo, left,top, w, h);    
     cairo_clip(cairo);
-    if (selected) drawSelected(cairo);
+    if (selected)
+      {
+        drawSelected(cairo);
+      }
   }
 
   Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
   {
     unsigned stockCol=1;
+    //string sName=utf_to_utf<char>(stockName);    
     auto vid=valueId(stockName);
     for (; stockCol<table.cols(); ++stockCol)
       if (valueId(table.cell(0,stockCol))==vid)
@@ -459,6 +496,7 @@ namespace minsky
   
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {
+    if (editor) return Item::clickType(x,y);
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
     auto z=zoomFactor()*scaleFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
@@ -472,6 +510,46 @@ namespace minsky
       return ClickType::outside;
   }
 
+  float GodleyIcon::toEditorX(float xx) const
+  {return xx-x()+0.5f*width()-border;}
+  float GodleyIcon::toEditorY(float yy) const
+  {return yy-y()+0.5f*height()-border-12*zoomFactor();}
+  
+  void GodleyIcon::onMouseDown(float x, float y)
+  {if (editor) editor->mouseDown(toEditorX(x),toEditorY(y));}
+  
+  void GodleyIcon::onMouseUp(float x, float y)
+  {if (editor) editor->mouseUp(toEditorX(x),toEditorY(y));}
+  
+  bool GodleyIcon::onMouseMotion(float x, float y)
+  {
+    if (editor) editor->mouseMoveB1(toEditorX(x),toEditorY(y));
+    return false;
+  }
+  
+  bool GodleyIcon::onMouseOver(float x, float y)
+  {
+    if (editor) editor->mouseMove(toEditorX(x),toEditorY(y));
+    return false;
+  }
+  
+  void GodleyIcon::onMouseLeave()
+  {
+    if (editor)
+      {
+        editor->mouseMove(-1,-1);
+        // May be a bit overzealous, but it solves bug 1273, which is caused by a flow which has not yet fully come into existence....
+        editor->selectedCol=-1;
+        editor->selectedRow=-1;
+        editor->update();
+      }
+  }
+
+  bool GodleyIcon::onKeyPress(int keySym, const std::string& utf8, int)
+  {
+    if (editor) editor->keyPress(keySym, utf8);
+    return editor.get();
+  }
   
   SVGRenderer GodleyIcon::svgRenderer;
 }

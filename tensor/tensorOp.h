@@ -58,14 +58,21 @@ namespace civita
     
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override;
 
-    // TODO merge indices
     double operator[](size_t i) const override {
+      // missing arguments treated as group identity
+      if (!arg1)
+        {
+          if (arg2)
+            return (*arg2)[i];
+          else
+            throw std::runtime_error("inputs undefined");
+        }
+      if (!arg2) return (*arg1)[i];
       auto hcIndex=index()[i];
       // scalars are broadcast
       return f(arg1->rank()? arg1->atHCIndex(hcIndex): (*arg1)[0],
                arg2->rank()? arg2->atHCIndex(hcIndex): (*arg2)[0]);
     }
-    size_t size() const override {return arg1 && arg1->size()>1? arg1->size(): (arg2? arg2->size(): 0);}
     Timestamp timestamp() const override
     {return max(arg1->timestamp(), arg2->timestamp());}
   };
@@ -261,9 +268,9 @@ namespace civita
   class SortByValue: public CachedTensorOp
   {
     TensorPtr arg;
-    minsky::RavelState::HandleState::HandleSort order;
+    ravel::HandleSort::Order order;
   public:
-    SortByValue(minsky::RavelState::HandleState::HandleSort order): order(order) {}
+    SortByValue(ravel::HandleSort::Order order): order(order) {}
     void setArgument(const TensorPtr& a,const std::string& ={},double=0) override {
       if (a->rank()!=1)
         throw std::runtime_error("Sort by Value only applicable for rank 1 tensors");
@@ -286,7 +293,7 @@ namespace civita
   
   /// creates a chain of tensor operations that represents a Ravel in
   /// state \a state, operating on \a arg
-  std::vector<TensorPtr> createRavelChain(const minsky::RavelState&, const TensorPtr& arg);
+  std::vector<TensorPtr> createRavelChain(const ravel::RavelState&, const TensorPtr& arg);
 
 }
 

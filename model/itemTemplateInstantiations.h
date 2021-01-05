@@ -26,6 +26,7 @@
 #define ITEMTEMPLATEINSTANTIATION_H
 #include "operation.h"
 #include "ravelWrap.h"
+#include "userFunction.h"
 #include "sheet.h"
 #include "switchIcon.h"
 #include "variable.h"
@@ -50,6 +51,7 @@ namespace minsky
   DEFOP(zero)
   DEFOP(one)
   DEFOP(inf)
+  DEFOP(percent)
   DEFOP(add)
   DEFOP(subtract)
   DEFOP(multiply)
@@ -64,6 +66,7 @@ namespace minsky
   DEFOP(lt)
   DEFOP(le)
   DEFOP(eq)
+  DEFOP(userFunction)
   DEFOP(copy)
   DEFOP(sqrt)
   DEFOP(exp)
@@ -81,7 +84,6 @@ namespace minsky
   DEFOP(floor)
   DEFOP(frac)
   DEFOP(not_)
-  DEFOP(percent)
   DEFOP(gamma)
   DEFOP(fact)
   DEFOP(sum)
@@ -104,7 +106,8 @@ namespace minsky
   DEF(DataOp, Operation<OperationType::data>)
   DEF(IntOp, Operation<OperationType::integrate>)
   DEF(Ravel, Operation<OperationType::ravel>)
-
+  DEF(UserFunction, Operation<OperationType::userFunction>)
+  
   DEFVAR(undefined)
   DEFVAR(constant)
   DEFVAR(parameter)
