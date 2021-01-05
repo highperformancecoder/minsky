@@ -23,6 +23,8 @@ ifneq ($(MAKECMDGOALS),clean)
 build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) all-without-models))
 $(warning $(build_ecolab))
 include $(ECOLAB_HOME)/include/Makefile
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) -j4 $(MAKEOVERRIDES)))
+$(warning $(build_RavelCAPI))
 endif
 
 # override the install prefix here
@@ -198,10 +200,6 @@ endif
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
 $(EXES): RavelCAPI/libravelCAPI.a
-
-.PHONY: RavelCAPI/libravelCAPI.a
-RavelCAPI/libravelCAPI.a:
-	cd RavelCAPI && $(MAKE) $(MAKEOVERRIDES) 
 
 tests: $(EXES)
 	cd test; $(MAKE)
