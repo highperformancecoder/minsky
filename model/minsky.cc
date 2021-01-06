@@ -479,6 +479,25 @@ namespace minsky
     equations.clear();
     integrals.clear();
 
+    // add all user defined functions to the global symbol tables
+    UserFunction::globalSymbols().clear();
+    UserFunction::globalUnitSymbols().clear();
+    model->recursiveDo
+      (&Group::items,
+       [](const Items&, Items::const_iterator it){
+         if (auto f=dynamic_cast<UserFunction*>(it->get()))
+           UserFunction::globalSymbols().add_function(f->name(),*f);
+         return false;
+       });
+
+    // Vensim names for these variables.
+    // TODO replace these by xmile names, and add user function to provide aliases for Vensim, and add the ability to resolve var names to argumentless functions
+    UserFunction::globalSymbols().add_variable("time",t);
+    UserFunction::globalSymbols().add_variable("timeStep",stepMax);
+    UserFunction::globalSymbols().add_variable("initialTime",t0);
+    UserFunction::globalSymbols().add_variable("finalTime",tmax);
+    UserFunction::globalUnitSymbols().add_variable("time",minsky::timeUnit);
+
     try
       {
         dimensionalAnalysis();

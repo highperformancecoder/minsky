@@ -23,6 +23,8 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 
+#include <cmath>
+
 namespace minsky
 {
   int UserFunction::nextId=0;
@@ -31,6 +33,48 @@ namespace minsky
   {
     static exprtk::symbol_table<double> table;
     return table;
+  }
+
+  namespace {
+    // resolve overloads
+    inline double isfinite(double x) {return std::isfinite(x);}
+    inline double isinf(double x) {return std::isinf(x);}
+    inline double isnan(double x) {return std::isnan(x);}
+    // add extra function definitions here
+    int dum=(
+             UserFunction::globalSymbols().add_function("isfinite",isfinite),
+             UserFunction::globalSymbols().add_function("isinf",isinf),
+             UserFunction::globalSymbols().add_function("isnan",isnan),
+             0);
+
+//    // exprtk goes up to 15 arguments only
+//#define ARGS0(T) ()
+//#define ARGS1(T) (T x1)
+//#define ARGS2(T) (T x1, T x2)
+//    
+//#define CALLFUNCTION(N)                                                 \
+//    [f]ARGS##N(double){return f->evaluate ARGS##N();}
+//
+//    void addUserFunctionToGlobalTable(const ItemPtr& item)
+//    {
+//      if (auto f=dynamic_pointer_cast<UserFunction>(item))
+//        {
+//          switch (f->argNames.size())
+//            {
+//            case 0:
+//              UserFunction::globalSymbols().add_function(f->description(), CALLFUNCTION(0));
+//              break;
+//            case 1:
+//              UserFunction::globalSymbols().add_function(f->description(), CALLFUNCTION(1));
+//              break;
+//            case 2:
+//              UserFunction::globalSymbols().add_function(f->description(), CALLFUNCTION(2));
+//              break;
+//            default:
+//              f->throw_error("Too many arguments: "+f->argNames.size());
+//            }
+//        }
+//    }
   }
   
   namespace {
@@ -41,7 +85,7 @@ namespace minsky
   {assert(false);}
 
   UserFunction::UserFunction(const string& name, const string& expression): argNames{"x","y"}, expression(expression)  {
-    description(name);
+    UserFunction::description(name);
       
     compiledExpression.register_symbol_table(globalSymbols());
     compiledExpression.register_symbol_table(externalSymbols);
@@ -95,7 +139,47 @@ namespace minsky
   {
     if (argVals.size()>0) argVals[0]=in1;
     if (argVals.size()>1) argVals[1]=in2;
+    for (size_t i=2; i<argVals.size(); ++i) argVals[i]=0;
     return compiledExpression.value();
   }
+
+  double UserFunction::operator()(const std::vector<double>& p)
+  {
+    size_t i=0;
+    for (; i<p.size() && i<argVals.size(); ++i) argVals[i]=p[i];
+    for (; i<argVals.size(); ++i) argVals[i]=0;
+    return compiledExpression.value();
+  }
+
+  string UserFunction::description(const string& nm)
+  {
+    NamedOp::description(nm);
+    static regex extractArgList(R"([^(]*\(([^)]*)\))");
+    smatch match;
+    string argList;
+    if (regex_match(nm,match,extractArgList))
+      argList=match[1];
+
+    argNames.clear();
+    auto end=argList.find(',');
+    decltype(end) begin=0;
+    for (; end!=string::npos; begin=end+1, end=argList.find(',',begin))
+      argNames.push_back(argList.substr(begin,end-begin));
+    argNames.push_back(argList.substr(begin));
+    return nm;
+  }
+
+  string UserFunction::name() const
+  {
+    static regex extractName(R"(([^(]*).*)");
+    smatch match;
+    auto d=description();
+    regex_match(d, match, extractName);
+    assert (match.size()>1);
+    return match[1];
+  }    
+
+
+  
 }
 

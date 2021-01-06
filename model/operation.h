@@ -215,6 +215,7 @@ namespace minsky
 
   class NamedOp: public ecolab::TCLAccessor<NamedOp,std::string>
   {
+  protected:
     std::string m_description;
     virtual void updateBB()=0;
     CLASSDESC_ACCESS(NamedOp);
@@ -224,8 +225,8 @@ namespace minsky
        (ecolab::TCLAccessor<NamedOp,std::string>::Setter)&NamedOp::description)
     {}
     /// @{ name of the associated data operation
-    std::string description() const;  
-    std::string description(const std::string&);    
+    virtual std::string description() const;  
+    virtual std::string description(const std::string&);    
     /// @}
 
   };

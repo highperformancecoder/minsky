@@ -24,7 +24,7 @@
 #include "exprtk/exprtk.hpp"
 namespace  minsky
 {
-  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp
+  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp, public exprtk::ivararg_function<double>
   {
     exprtk::symbol_table<double> localSymbols, externalSymbols;
     exprtk::expression<double> compiledExpression;
@@ -37,11 +37,31 @@ namespace  minsky
     std::vector<std::string> argNames;
     std::vector<double> argVals;
     std::string expression;
-    UserFunction(): UserFunction("uf"+std::to_string(nextId++)+"(x,y)") {}
+    UserFunction(): UserFunction("uf"+std::to_string(nextId++)) {}
     UserFunction(const std::string& name, const std::string& expression="");
     std::vector<std::string> externalSymbolNames() const;
     void compile();
     double evaluate(double x, double y);
+
+    /// evaluate function on arbitrary number of arguments (exprtk support)
+    double operator()(const std::vector<double>& p) override;
+    //    /// set argument n of the parameter list
+//    template <class... Args> void setArg(size_t n, double x, Args... a) {
+//      if (n<argVals.size()) {
+//        argVals[n]=x;
+//        setArg(n+1,std::forward<Args>(a)...);
+//      }
+//    }
+//    template <class... Args> void setArg(size_t n) {
+//      for (; n<argVals.size(); ++n) argVals[n]=0; // set remaining arguments to zero
+//    }
+//    /// evaluate function with an arbitrary number of
+//    /// arguments. Unused arguments are set to zero, extra arguments
+//    /// ignored
+//    template <class... Args> double evaluate(Args... a) {
+//      setArg(0,std::forward<Args>(a)...);
+//      return compiledExpression.value();
+//    }
     Units units(bool check=false) const override;
     void addVariable(const std::string& name, double& x) {
       localSymbols.add_variable(name,x);
@@ -52,16 +72,22 @@ namespace  minsky
     }
     void displayTooltip(cairo_t* cr, const std::string& tt) const override
     {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
+
+    using NamedOp::description;
+    std::string description(const std::string&) override;
+    /// function name, shorn of argument decorators
+    std::string name() const;
+
   };
 
-  // single argument user function
-  class UserFunction1: public UserFunction
-  {
-  public:
-    UserFunction1() {}
-    UserFunction1(const std::string& name, const std::string& expression=""): UserFunction(name,expression) {}
-    double evaluate(double x) {return UserFunction::evaluate(x,0);}
-  };
+//  // single argument user function
+//  class UserFunction1: public UserFunction
+//  {
+//  public:
+//    UserFunction1() {}
+//    UserFunction1(const std::string& name, const std::string& expression=""): UserFunction(name,expression) {}
+//    double evaluate(double x) {return UserFunction::evaluate(x,0);}
+//  };
 
   // static UnitExpressionWalker that is initialised to the time unit
   extern UnitsExpressionWalker timeUnit;
