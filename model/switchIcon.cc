@@ -77,21 +77,24 @@ namespace minsky
 
   void SwitchIcon::draw(cairo_t* cairo) const
   {
+	auto z=zoomFactor();
+	// following the draw method in the Sheet class, iWidth() and iHeight() have been changed to m_width and m_height,
+	// since the former largely play a role in the VariableBase and OperationBase classes. for ticket 1250
+	float width=m_width*z, height=m_height*z;
     cairo_set_line_width(cairo,1);
-    cairo_rectangle(cairo,-0.5*iWidth(),-0.5*iHeight(),iWidth(),iHeight());
-    cairo_stroke(cairo);
+    cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
+    cairo_stroke(cairo);     	 
 
-
-    float w=flipped? -iWidth(): iWidth();
+    float w=flipped? -width: width;
     float o=flipped? -8: 8;
     // output port
     drawTriangle(cairo, 0.5*w, 0, palette[0], flipped? M_PI: 0);
     ports[0]->moveTo(x()+0.5*w, y());
     // control port
-    drawTriangle(cairo, 0, -0.5*iHeight()-8, palette[0], M_PI/2);
-    ports[1]->moveTo(x(), y()-0.5*iHeight()-8);
-    float dy=iHeight()/numCases();
-    float y1=-0.5*iHeight()+0.5*dy;
+    drawTriangle(cairo, 0, -0.5*height-8, palette[0], M_PI/2);
+    ports[1]->moveTo(x(), y()-0.5*height-8);
+    float dy=height/numCases();
+    float y1=-0.5*height+0.5*dy;
     // case ports
     for (size_t i=2; i<ports.size(); ++i, y1+=dy)
       {
@@ -102,24 +105,24 @@ namespace minsky
     cairo_move_to(cairo,0.5*w, 0);
     try
       {
-        y1=-0.5*iWidth()+0.5*dy+switchValue()*dy;
+        y1=-0.5*width+0.5*dy+switchValue()*dy;
       }
     catch (const std::exception&)
       {
-        y1=-0.5*iWidth()+0.5*dy;
+        y1=-0.5*width+0.5*dy;
       }
     cairo_line_to(cairo,-0.45*w,0.9*y1);
     cairo_stroke(cairo);
 
     if (mouseFocus)
-      {
+      { 		  
         drawPorts(cairo);
         displayTooltip(cairo,tooltip);
         if (onResizeHandles) drawResizeHandles(cairo);
-      }
+      }	       
 
     // add 8 pt margin to allow for ports
-    cairo_rectangle(cairo,-0.5*iWidth()-8,-0.5*iHeight()-8,iWidth()+16,iHeight()+8);
+    cairo_rectangle(cairo,-0.5*width-8,-0.5*height-8,width+16,height+8);
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
   }
