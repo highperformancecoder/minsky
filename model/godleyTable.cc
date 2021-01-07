@@ -223,8 +223,8 @@ string GodleyTable::rowSum(int row) const
         if (i->second==-1)
           ret<<"-";
         else if (i->second!=1)
-          ret<<i->second;
-        ret<<i->first;
+          i->second>5*std::numeric_limits<double>::epsilon()? ret<<i->second : ret<<0; // only display decimals if sum of row is larger than 5*2.22045e-16. for ticket 1244 
+        i->second>5*std::numeric_limits<double>::epsilon()? ret<<i->first : ret<<"";
       }
 
   //if completely empty, substitute a zero
