@@ -44,6 +44,7 @@
 #include "godleyTab.h"
 #include "dimension.h"
 #include "rungeKutta.h"
+#include "userFunction.h"
 
 #include <vector>
 #include <string>
@@ -185,6 +186,7 @@ namespace minsky
     }
     
     VariableValues variableValues;
+    std::map<std::string, std::shared_ptr<UserFunction>> userFunctions;
     Dimensions dimensions;
     Conversions conversions;
     /// fills in dimensions table with all loaded ravel axes

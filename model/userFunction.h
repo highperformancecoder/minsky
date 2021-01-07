@@ -78,6 +78,10 @@ namespace  minsky
     /// function name, shorn of argument decorators
     std::string name() const;
 
+    // required by the compiler
+    static UserFunction* create(Type t) 
+    {return (t==OperationType::userFunction)? new UserFunction: nullptr;}
+    
   };
 
 //  // single argument user function

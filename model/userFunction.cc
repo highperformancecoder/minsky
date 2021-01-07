@@ -75,6 +75,17 @@ namespace minsky
 //            }
 //        }
 //    }
+
+    void addTimeVariables(exprtk::symbol_table<double>& table)
+    {
+      // Vensim names for these variables.
+      // TODO replace these by xmile names, and add user function to provide aliases for Vensim, and add the ability to resolve var names to argumentless functions
+      table.add_variable("time",minsky().t);
+      table.add_variable("timeStep",minsky().stepMax);
+      table.add_variable("initialTime",minsky().t0);
+      table.add_variable("finalTime",minsky().tmax);
+    }
+  
   }
   
   namespace {
@@ -86,10 +97,6 @@ namespace minsky
 
   UserFunction::UserFunction(const string& name, const string& expression): argNames{"x","y"}, expression(expression)  {
     UserFunction::description(name);
-      
-    compiledExpression.register_symbol_table(globalSymbols());
-    compiledExpression.register_symbol_table(externalSymbols);
-    compiledExpression.register_symbol_table(localSymbols);
   }
 
   vector<string> UserFunction::externalSymbolNames() const
@@ -97,8 +104,8 @@ namespace minsky
     // do an initial parse to pick up references to external variables
     exprtk::symbol_table<double> externalSymbols, localSymbols=this->localSymbols;
     exprtk::expression<double> compiledExpression;
+    addTimeVariables(localSymbols);
     compiledExpression.register_symbol_table(externalSymbols);
-    compiledExpression.register_symbol_table(globalSymbols());
     compiledExpression.register_symbol_table(localSymbols);
     parser.enable_unknown_symbol_resolver();
     parser.compile(expression, compiledExpression);
@@ -110,22 +117,34 @@ namespace minsky
 
   void UserFunction::compile()
   {
+    compiledExpression=exprtk::expression<double>();
     localSymbols.clear();
     argVals.resize(argNames.size());
     for (size_t i=0; i<argNames.size(); ++i)
       localSymbols.add_variable(argNames[i], argVals[i]);
+
     // add them back in with their correct definitions
     externalSymbols.clear();
     for (auto& i: externalSymbolNames())
       {
-        auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
+        auto scopedName=VariableValue::valueIdFromScope(group.lock(),i);
+        auto v=minsky().variableValues.find(scopedName);
         if (v!=minsky().variableValues.end())
           externalSymbols.add_variable(i, (*v->second)[0]);
         else
-          throw_error("unknown variable: "+i);
+          {
+            auto f=minsky().userFunctions.find(scopedName);
+            if (f!=minsky().userFunctions.end())
+              externalSymbols.add_function(i,*f->second);
+            else
+              throw_error("unknown variable/function: "+i);
+          }
       }
+    addTimeVariables(externalSymbols);
+    compiledExpression.register_symbol_table(externalSymbols);
+    compiledExpression.register_symbol_table(localSymbols);
     
-      // TODO bind any other external references to the variableValues table
+    // TODO bind any other external references to the variableValues table
     if (!parser.compile(expression, compiledExpression))
       {
         string errorInfo;

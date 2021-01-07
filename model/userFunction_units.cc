@@ -34,6 +34,7 @@ namespace minsky
   exprtk::symbol_table<UnitsExpressionWalker>& UserFunction::globalUnitSymbols()
   {
     static exprtk::symbol_table<UnitsExpressionWalker> table;
+    table.add_variable("time",minsky::timeUnit);
     return table;
   }
 
