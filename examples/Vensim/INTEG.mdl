@@ -1,0 +1,147 @@
+{UTF-8}
+Accumulation= INTEG (
+	Inflow-Outflow,
+		Initial Accumulation)
+	~	widgets
+	~		|
+
+Outflow=
+	STEP(1,50)
+	~	widgets/Month
+	~		|
+
+Inflow=
+	STEP(1,10)
+	~	widgets/Month
+	~		|
+
+Initial Accumulation=
+	0
+	~	widgets
+	~		|
+
+INTEG x= INTEG (
+	x,
+		0)
+	~	widgets
+	~		|
+
+amplitude=
+	2
+	~	widgets/Month
+	~		|
+
+Period=
+	20
+	~	Month
+	~		|
+
+x=
+	amplitude*COS(6.28*Time/Period)
+	~	widgets/Month
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 0.25
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,100,0
+12,1,0,285,40,39,19,8,135,0,18,-1,0,0,0,-1--1--1,0-0-0,|12|B|128-0-0
+INTEG - integration
+10,4,Period,140,265,22,11,8,3,0,0,-1,0,0,0
+1,5,4,17,0,0,0,0,0,64,0,-1--1--1,,1|(196,227)|
+10,6,Time,115,215,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+1,7,6,17,0,0,0,0,0,64,0,-1--1--1,,1|(187,201)|
+10,9,amplitude,235,260,31,11,8,3,0,0,-1,0,0,0
+1,10,9,17,0,0,0,0,0,64,0,-1--1--1,,1|(242,231)|
+10,11,INTEG x,350,165,40,20,3,3,0,16,0,0,0,0,0-0-0,0-0-0,|0|B|0-0-0
+12,12,48,188,170,10,8,0,3,0,0,-1,0,0,0
+1,14,16,11,4,0,0,22,0,0,0,-1--1--1,,1|(285,170)|
+1,15,16,12,100,0,0,22,0,0,0,-1--1--1,,1|(223,170)|
+11,16,0,254,170,6,8,34,3,0,0,1,0,0,0
+10,17,x,254,189,6,11,40,3,0,0,0,0,0,0
+10,18,Accumulation,375,407,50,22,3,131,0,16,0,0,0,0,0-0-0,0-0-0,|0|B|0-0-0
+12,19,48,147,408,10,8,0,3,0,0,-1,0,0,0
+1,21,23,18,4,0,0,22,0,0,0,-1--1--1,,1|(286,408)|
+1,22,23,19,100,0,0,22,0,0,0,-1--1--1,,1|(196,408)|
+11,23,0,241,408,6,8,34,3,0,0,1,0,0,0
+10,24,Inflow,241,427,21,11,40,3,0,0,-1,0,0,0
+12,25,48,598,406,10,8,0,3,0,0,-1,0,0,0
+1,27,29,25,4,0,0,22,0,0,0,-1--1--1,,1|(550,406)|
+1,28,29,18,100,0,0,22,0,0,0,-1--1--1,,1|(462,406)|
+11,29,0,506,406,6,8,34,3,0,0,1,0,0,0
+10,30,Outflow,506,425,27,11,40,3,0,0,-1,0,0,0
+10,31,Initial Accumulation,375,490,44,19,8,3,0,0,-1,0,0,0
+1,32,31,18,0,0,0,0,0,64,1,-1--1--1,,1|(375,457)|
+12,33,0,637,165,207,150,3,188,0,0,1,0,0,0
+INTEG_x
+12,34,0,837,469,197,150,3,156,0,0,1,0,0,0
+Accumulation
+///---\\\
+:GRAPH INTEG_x
+:TITLE INTEG x
+:SCALE
+:VAR x
+:SCALE
+:VAR INTEG x
+
+:GRAPH Accumulation
+:TITLE Accumulation
+:SCALE
+:VAR Inflow
+:VAR Outflow
+:SCALE
+:VAR Accumulation
+:L<%^E!@
+1:INTEG.vdf
+9:INTEG
+22:$,Dollar,Dollars,$s
+22:Day,Days
+22:Hour,Hours
+22:Month,Months
+22:Person,People,Persons
+22:Unit,Units
+22:Week,Weeks
+22:Year,Years
+15:0,0,0,0,0,0
+19:100,0
+27:0,
+34:0,
+4:Time
+5:Accumulation
+35:Date
+36:YYYY-MM-DD
+37:2000
+38:1
+39:1
+40:2
+41:0
+24:0
+25:100
+26:100
