@@ -188,8 +188,8 @@ namespace minsky
         }
       
       auto function=new UserFunction(name,definition);
-      group.addItem(function);
-      for (auto i: function->externalSymbolNames())
+      group.addItem(function); //ownership passed
+      for (auto i: function->symbolNames())
         {
           auto f=venSimFunctions.find(i);
           if (f!=venSimFunctions.end())

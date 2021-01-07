@@ -26,6 +26,7 @@ namespace minsky
 {
   namespace {
     exprtk::parser<UnitsExpressionWalker> unitsParser;
+
   }
 
   UnitsExpressionWalker timeUnit;
@@ -51,13 +52,14 @@ namespace minsky
         symbolTable.add_variable(argNames[i],args[i]);
       }
 
-    std::vector<std::string> externalIds=const_cast<UserFunction*>(this)->externalSymbolNames();
+    std::vector<std::string> externalIds=symbolNames();
 
     externalUnits.reserve(externalIds.size());
     for (auto& i: externalIds)
       {
         if (find(argNames.begin(), argNames.end(), i)!=argNames.end()) continue; // skip arguments
-        auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
+        auto id=VariableValue::valueIdFromScope(group.lock(),i);
+        auto v=minsky().variableValues.find(id);
         if (v!=minsky().variableValues.end())
           {
             externalUnits.emplace_back();
@@ -66,9 +68,10 @@ namespace minsky
             unknownVariables.add_variable(i, externalUnits.back());
           }
         else
-          if (check)
-            throw_error("unknown variable: "+i);
-          else
+          // TODO: add in references to user functions: for now, just return dimensionless in the case of unresolved variables. See ticket #1290
+          //if (check)
+          //  throw_error("unknown variable: "+i);
+          //else
             return {};
       }
     unknownVariables.add_variable("time",minsky::timeUnit);

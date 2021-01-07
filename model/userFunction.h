@@ -26,7 +26,7 @@ namespace  minsky
 {
   class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp, public exprtk::ivararg_function<double>
   {
-    exprtk::symbol_table<double> localSymbols, externalSymbols;
+    exprtk::symbol_table<double> symbols;
     exprtk::expression<double> compiledExpression;
     void updateBB() override {bb.update(*this);}
     CLASSDESC_ACCESS(UserFunction);
@@ -37,7 +37,7 @@ namespace  minsky
     std::string expression;
     UserFunction(): UserFunction("uf"+std::to_string(nextId++)) {}
     UserFunction(const std::string& name, const std::string& expression="");
-    std::vector<std::string> externalSymbolNames() const;
+    std::vector<std::string> symbolNames() const;
     void compile();
     double evaluate(double x, double y);
 
@@ -45,13 +45,13 @@ namespace  minsky
     double operator()(const std::vector<double>& p) override;
 
     Units units(bool check=false) const override;
-    void addVariable(const std::string& name, double& x) {
-      localSymbols.add_variable(name,x);
-    }
-    template <class F>
-    void addFunction(const std::string& name, F f) {
-      localSymbols.add_function(name,f);
-    }
+//    void addVariable(const std::string& name, double& x) {
+//      localSymbols.add_variable(name,x);
+//    }
+//    template <class F>
+//    void addFunction(const std::string& name, F f) {
+//      localSymbols.add_function(name,f);
+//    }
     void displayTooltip(cairo_t* cr, const std::string& tt) const override
     {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
 
@@ -65,15 +65,6 @@ namespace  minsky
     {return (t==OperationType::userFunction)? new UserFunction: nullptr;}
     
   };
-
-//  // single argument user function
-//  class UserFunction1: public UserFunction
-//  {
-//  public:
-//    UserFunction1() {}
-//    UserFunction1(const std::string& name, const std::string& expression=""): UserFunction(name,expression) {}
-//    double evaluate(double x) {return UserFunction::evaluate(x,0);}
-//  };
 
   // static UnitExpressionWalker that is initialised to the time unit
   extern UnitsExpressionWalker timeUnit;

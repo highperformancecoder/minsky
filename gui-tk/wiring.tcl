@@ -1394,7 +1394,7 @@ proc editVar {} {
 proc setDataValue {} {
     global constInput
     set item minsky.canvas.item
-    $item.description "$constInput(Name)"
+    eval [set item].description "$constInput(Name)"
     $item.rotation $constInput(Rotation)
     if [llength [info commands $item.expression]] {
         $item.expression $constInput(Expression)

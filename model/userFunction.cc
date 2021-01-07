@@ -62,50 +62,65 @@ namespace minsky
     UserFunction::description(name);
   }
 
-  vector<string> UserFunction::externalSymbolNames() const
+  vector<string> UserFunction::symbolNames() const
   {
-    // do an initial parse to pick up references to external variables
-    exprtk::symbol_table<double> externalSymbols, localSymbols=this->localSymbols;
-    exprtk::expression<double> compiledExpression;
-    addTimeVariables(localSymbols);
-    compiledExpression.register_symbol_table(externalSymbols);
-    compiledExpression.register_symbol_table(localSymbols);
-    parser.enable_unknown_symbol_resolver();
-    parser.compile(expression, compiledExpression);
-    parser.disable_unknown_symbol_resolver();
-    std::vector<std::string> externalVariables;
-    externalSymbols.get_variable_list(externalVariables);
-    return externalVariables;
+    std::set<std::string> symbolNames;
+
+    string word;
+    bool inWord=false, inString=false, quoted=false;
+    for (auto c: expression)
+      {
+      switch (c)
+        {
+        case '\'': if (!quoted) inString=!inString; break;
+        case '\\': quoted=true; break;
+        default: quoted=false; break; // I'm assuming that \" embeds a quote, but may not be true
+        }
+                                                     
+      if (!inWord && !inString)
+        inWord=isalpha(c);
+
+      if (inWord)
+        if (isalnum(c) || c=='_' || c=='.')
+          word+=c;
+        else
+          {
+            // trailing '.' not allowed
+            if (word.back()=='.') word.erase(word.end()-1);
+            symbolNames.insert(word);
+            word.clear();
+            inWord=false;
+          }
+      }
+    return {symbolNames.begin(), symbolNames.end()};
   }
 
   void UserFunction::compile()
   {
     compiledExpression=exprtk::expression<double>();
-    localSymbols.clear();
-    argVals.resize(argNames.size());
-    for (size_t i=0; i<argNames.size(); ++i)
-      localSymbols.add_variable(argNames[i], argVals[i]);
 
-    // add them back in with their correct definitions
-    externalSymbols.clear();
-    for (auto& i: externalSymbolNames())
+    // build symbol table
+    symbols.clear();
+    addTimeVariables(symbols);
+    for (auto& i: symbolNames())
       {
         auto scopedName=VariableValue::valueIdFromScope(group.lock(),i);
         auto v=minsky().variableValues.find(scopedName);
         if (v!=minsky().variableValues.end())
-          externalSymbols.add_variable(i, (*v->second)[0]);
-        else
           {
-            auto f=minsky().userFunctions.find(scopedName);
-            if (f!=minsky().userFunctions.end())
-              externalSymbols.add_function(i,*f->second);
-            else
-              throw_error("unknown variable/function: "+i);
+            symbols.add_variable(i, (*v->second)[0]);
+            continue;
           }
+        auto f=minsky().userFunctions.find(scopedName);
+        if (f!=minsky().userFunctions.end())
+          symbols.add_function(i,*f->second);
       }
-    addTimeVariables(externalSymbols);
-    compiledExpression.register_symbol_table(externalSymbols);
-    compiledExpression.register_symbol_table(localSymbols);
+
+    // add arguments
+    argVals.resize(argNames.size());
+    for (size_t i=0; i<argNames.size(); ++i)
+      symbols.add_variable(argNames[i], argVals[i]);
+    compiledExpression.register_symbol_table(symbols);
     
     if (!parser.compile(expression, compiledExpression))
       {

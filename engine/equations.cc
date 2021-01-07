@@ -706,7 +706,7 @@ namespace MathDAG
           {
             // add external variable references as additional "arguments" in order to determine the correct evaluation order
             r->arguments.emplace_back();
-            for (auto& i: uf->externalSymbolNames())
+            for (auto& i: uf->symbolNames())
               {
                 auto vv=minsky.variableValues.find(VariableValue::valueId(op.group.lock(), i));
                 if (vv!=minsky.variableValues.end())
