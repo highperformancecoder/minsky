@@ -81,16 +81,18 @@ namespace minsky
         inWord=isalpha(c);
 
       if (inWord)
-        if (isalnum(c) || c=='_' || c=='.')
-          word+=c;
-        else
-          {
-            // trailing '.' not allowed
-            if (word.back()=='.') word.erase(word.end()-1);
-            symbolNames.insert(word);
-            word.clear();
-            inWord=false;
-          }
+        {
+          if (isalnum(c) || c=='_' || c=='.')
+            word+=c;
+          else
+            {
+              // trailing '.' not allowed
+              if (word.back()=='.') word.erase(word.end()-1);
+              symbolNames.insert(word);
+              word.clear();
+              inWord=false;
+            }
+        }
       }
     return {symbolNames.begin(), symbolNames.end()};
   }
