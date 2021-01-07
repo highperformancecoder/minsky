@@ -35,7 +35,7 @@ namespace  minsky
     std::vector<std::string> argNames;
     std::vector<double> argVals;
     std::string expression;
-    UserFunction(): UserFunction("uf"+std::to_string(nextId++)) {}
+    UserFunction(): UserFunction("uf"+std::to_string(nextId++)+"(x,y)") {}
     UserFunction(const std::string& name, const std::string& expression="");
     std::vector<std::string> symbolNames() const;
     void compile();
