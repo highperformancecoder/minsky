@@ -29,52 +29,11 @@ namespace minsky
 {
   int UserFunction::nextId=0;
   
-  exprtk::symbol_table<double>& UserFunction::globalSymbols()
-  {
-    static exprtk::symbol_table<double> table;
-    return table;
-  }
-
   namespace {
     // resolve overloads
     inline double isfinite(double x) {return std::isfinite(x);}
     inline double isinf(double x) {return std::isinf(x);}
     inline double isnan(double x) {return std::isnan(x);}
-    // add extra function definitions here
-    int dum=(
-             UserFunction::globalSymbols().add_function("isfinite",isfinite),
-             UserFunction::globalSymbols().add_function("isinf",isinf),
-             UserFunction::globalSymbols().add_function("isnan",isnan),
-             0);
-
-//    // exprtk goes up to 15 arguments only
-//#define ARGS0(T) ()
-//#define ARGS1(T) (T x1)
-//#define ARGS2(T) (T x1, T x2)
-//    
-//#define CALLFUNCTION(N)                                                 \
-//    [f]ARGS##N(double){return f->evaluate ARGS##N();}
-//
-//    void addUserFunctionToGlobalTable(const ItemPtr& item)
-//    {
-//      if (auto f=dynamic_pointer_cast<UserFunction>(item))
-//        {
-//          switch (f->argNames.size())
-//            {
-//            case 0:
-//              UserFunction::globalSymbols().add_function(f->description(), CALLFUNCTION(0));
-//              break;
-//            case 1:
-//              UserFunction::globalSymbols().add_function(f->description(), CALLFUNCTION(1));
-//              break;
-//            case 2:
-//              UserFunction::globalSymbols().add_function(f->description(), CALLFUNCTION(2));
-//              break;
-//            default:
-//              f->throw_error("Too many arguments: "+f->argNames.size());
-//            }
-//        }
-//    }
 
     void addTimeVariables(exprtk::symbol_table<double>& table)
     {
@@ -84,6 +43,10 @@ namespace minsky
       table.add_variable("timeStep",minsky().stepMax);
       table.add_variable("initialTime",minsky().t0);
       table.add_variable("finalTime",minsky().tmax);
+
+      table.add_function("isfinite",isfinite);
+      table.add_function("isinf",isinf);
+      table.add_function("isnan",isnan);
     }
   
   }
@@ -144,7 +107,6 @@ namespace minsky
     compiledExpression.register_symbol_table(externalSymbols);
     compiledExpression.register_symbol_table(localSymbols);
     
-    // TODO bind any other external references to the variableValues table
     if (!parser.compile(expression, compiledExpression))
       {
         string errorInfo;

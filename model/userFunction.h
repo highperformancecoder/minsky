@@ -31,8 +31,6 @@ namespace  minsky
     void updateBB() override {bb.update(*this);}
     CLASSDESC_ACCESS(UserFunction);
   public:
-    static exprtk::symbol_table<double>& globalSymbols();
-    static exprtk::symbol_table<UnitsExpressionWalker>& globalUnitSymbols();
     static int nextId;
     std::vector<std::string> argNames;
     std::vector<double> argVals;
@@ -45,23 +43,7 @@ namespace  minsky
 
     /// evaluate function on arbitrary number of arguments (exprtk support)
     double operator()(const std::vector<double>& p) override;
-    //    /// set argument n of the parameter list
-//    template <class... Args> void setArg(size_t n, double x, Args... a) {
-//      if (n<argVals.size()) {
-//        argVals[n]=x;
-//        setArg(n+1,std::forward<Args>(a)...);
-//      }
-//    }
-//    template <class... Args> void setArg(size_t n) {
-//      for (; n<argVals.size(); ++n) argVals[n]=0; // set remaining arguments to zero
-//    }
-//    /// evaluate function with an arbitrary number of
-//    /// arguments. Unused arguments are set to zero, extra arguments
-//    /// ignored
-//    template <class... Args> double evaluate(Args... a) {
-//      setArg(0,std::forward<Args>(a)...);
-//      return compiledExpression.value();
-//    }
+
     Units units(bool check=false) const override;
     void addVariable(const std::string& name, double& x) {
       localSymbols.add_variable(name,x);

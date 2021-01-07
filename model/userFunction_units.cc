@@ -31,13 +31,6 @@ namespace minsky
   UnitsExpressionWalker timeUnit;
   bool UnitsExpressionWalker::check=true;
   
-  exprtk::symbol_table<UnitsExpressionWalker>& UserFunction::globalUnitSymbols()
-  {
-    static exprtk::symbol_table<UnitsExpressionWalker> table;
-    table.add_variable("time",minsky::timeUnit);
-    return table;
-  }
-
   Units UserFunction::units(bool check) const
   {
     UnitsExpressionWalker::check=check;
@@ -51,7 +44,6 @@ namespace minsky
     exprtk::symbol_table<UnitsExpressionWalker> symbolTable, unknownVariables;
     exprtk::expression<UnitsExpressionWalker> compiled;
     compiled.register_symbol_table(unknownVariables);
-    compiled.register_symbol_table(globalUnitSymbols());
     compiled.register_symbol_table(symbolTable);
     for (size_t i=0; i<args.size(); ++i)
       {
@@ -79,6 +71,7 @@ namespace minsky
           else
             return {};
       }
+    unknownVariables.add_variable("time",minsky::timeUnit);
 
     try
       {
