@@ -664,7 +664,7 @@ namespace minsky
     if (auto g=dynamic_cast<Group*>(item.get()))
       {		  
         if (auto p=g->group.lock())
-		  if (!g->empty())   // minskly crashes if group empty and ungrouped subsequently. for ticket 1243
+		  if (!g->empty()) // minskly crashes if group empty and ungrouped subsequently. for ticket 1243
 		    {  	    				 
                // stash values of parameters in copied group, as they are reset for some unknown reason later on. for tickets 1243/1258
                map<string,string> existingParms; 
@@ -679,6 +679,8 @@ namespace minsky
                
                p->moveContents(*g);
                deleteItem();
+               
+	           selection.clear();  // ensure no previous selection because ungrouped items will be left in selection afterwards.             
                
                // leave newly ungrouped items in selection
                for (auto& i: copyOfItems) {
@@ -696,8 +698,6 @@ namespace minsky
 	           
 	           if (!existingParms.empty()) existingParms.clear();
 	           
-	           //selection.clear();
-	           
                // Attach mouse focus only to first visible item in selection. For ticket 1098.      
                for (auto& i: selection.items)
                  if (i->visible())
@@ -706,7 +706,7 @@ namespace minsky
                      break;
                    }
                                    
-               if (!copyOfGroups.empty()) setItemFocus(copyOfGroups[0]);               
+               if (!copyOfGroups.empty()) setItemFocus(copyOfGroups[0]);           
 		  } else {
 		  	p->moveContents(*g);
             deleteItem();
