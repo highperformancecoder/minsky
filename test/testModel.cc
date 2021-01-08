@@ -813,6 +813,7 @@ SUITE(Canvas)
         unsigned originalNumGroups=model->numGroups();
         canvas.item=group0;
         canvas.ungroupItem();
+        canvas.mouseDown(group0->x(),group0->y());
         CHECK_EQUAL(originalNumItems, model->numItems());
         CHECK_EQUAL(originalNumGroups-1, model->numGroups());
       }
