@@ -811,7 +811,7 @@ SUITE(Canvas)
       {
         unsigned originalNumItems=model->numItems();
         unsigned originalNumGroups=model->numGroups();
-        canvas.item=group0;    
+        canvas.item=group0;
         canvas.ungroupItem();
         CHECK_EQUAL(originalNumItems, model->numItems());
         CHECK_EQUAL(originalNumGroups-1, model->numGroups());
