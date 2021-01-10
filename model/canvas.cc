@@ -696,6 +696,8 @@ namespace minsky
                 }
 	           
                 selection.autoLayout();
+		    
+		existingParms.clear();    
 	           
                 // Attach mouse focus only to first visible item in selection. For ticket 1098.      
                 for (auto& i: selection.items)
