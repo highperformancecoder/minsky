@@ -23,6 +23,8 @@
 #include "group.h"
 #include "selection.h"
 #include "operation.h"
+#include "plotWidget.h"
+#include "SVGItem.h"
 #include "switchIcon.h"
 #include "minsky_epilogue.h"
 using namespace std;

@@ -98,6 +98,7 @@ namespace minsky
   
   void layoutGroup(Group& g)
   {
+    if (g.items.size()+g.groups.size()<2) return;
     double layoutSize=sqrt(10*totalArea(g)); //half width of square to emplace the items
    
     Graph gg;

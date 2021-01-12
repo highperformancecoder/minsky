@@ -37,7 +37,7 @@ namespace minsky
       string r;
       string c;
       while (mdlFile>>GetUtf8Char(c))
-        if (c[0]==delim)
+        if (c[0]==delim || c[0]=='~' || c[0]=='|')
           break;
         else if (c[0]=='{') /* inline comment - read up to close brace */
           {
@@ -202,6 +202,46 @@ namespace minsky
         group.addWire(function->ports[0], port);
     }
     
+    void defineLookupFunction(Group& group, const std::string& name, std::string data)
+    {
+      regex lookupPairsPattern(R"((\[[^\]]*\],)?(\(.*\)))");
+      smatch match; 
+      map<double,double> xData;
+      if (regex_match(data,match,lookupPairsPattern))
+        {
+          auto data=match[2].str();
+          regex extractHead(R"(\(([^,]*),([^)]*)\)(,(\(.*\)))*)");
+          // note match[3] is the trailing data, match[4] strips the leading ,
+          for (auto data=match[2].str(); regex_match(data, match, extractHead); data=match[4])
+            xData[stod(match[1])]=stod(match[2]);
+        }
+      else
+        {
+          vector<double> xyData;
+          for (size_t offs=0; offs<data.size(); ++offs)
+            xyData.push_back(stod(data.substr(offs),&offs));
+          if (xyData.size()%2!=0)
+            throw runtime_error("Odd amount of data specified");
+          for (size_t i=0; i<xyData.size()/2; ++i)
+            xData[xyData[i]]=xyData[i+xyData.size()/2];
+        }
+      // TODO - use a call to a group instead of this code - see feature #154
+      auto f=make_shared<UserFunction>(name+"(x)");
+      string xStr, yStr;
+      for (auto& v: xData)
+        {
+          xStr+=((&v==&*xData.begin())?"":",")+to_string(v.first);
+          yStr+=((&v==&*xData.begin())?"":",")+to_string(v.second);
+        }
+      f->expression+="var xData["+to_string(xData.size())+"]:={"+xStr+"};\n";
+      f->expression+="var yData["+to_string(xData.size())+"]:={"+yStr+"};\n";
+      f->expression+="if (x<=xData[0]) yData[0];\n";
+      f->expression+="if (x>=xData[xData[]-1]) yData[xData-1];\n";
+      f->expression+="for (var i:=1; i<xData[]; ++i)\n{\n";
+      f->expression+="  if (x<xData[i])\n";
+      f->expression+="    (yData[i]-yData[i-1])*(x-xData[i-1])/(xData[i]-xData[i-1]);\n}\n";
+      group.addItem(f);
+    }
   }
 
   void readMdl(Group& group, RungeKutta& simParms, istream& mdlFile)
@@ -211,6 +251,7 @@ namespace minsky
     regex number(R"(\d*\.?\d+[Ee]?\d*)");
     regex unitFieldPattern(R"(([^\[\]]*)(\[.*\])?)");
     regex sliderSpecPattern(R"(\[([^,]*),?([^,]*),?([^,]*)\])");
+    regex lookupPattern(R"(([^(]*)\((.*)\))");
     smatch match;
     functionsAdded.clear();
 
@@ -278,7 +319,9 @@ namespace minsky
             if (name=="finalTime") simParms.tmax=stod(definition);
             continue;
           }
-        if (regex_match(definition,match,integ))
+        if (regex_match(name,match,lookupPattern))
+          defineLookupFunction(group, match[1], match[2]);
+        else if (regex_match(definition,match,integ))
           {
             auto intOp=new IntOp;
             group.addItem(intOp);

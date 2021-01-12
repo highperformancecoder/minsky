@@ -23,6 +23,8 @@
 #include "group.h"
 #include "selection.h"
 #include "operation.h"
+#include "plotWidget.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 #include  <random>
 #include  <iterator>
