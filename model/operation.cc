@@ -671,45 +671,64 @@ namespace minsky
     bb.update(*this);	  
   }
   
-  std::pair<double,Point> IntOp::rotatedPoints() const
-  {
-    // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
-    double fm=std::fmod(this->rotation(),360), angle;	
-    float x1=this->right(),y1=this->bottom();
-    if (fm==-90 || fm==270) {
-      angle=-this->rotation();
-      Rotate r1(angle,this->x(),this->y());
-      x1=r1.x(this->right(),this->bottom());
-      y1=r1.y(this->right(),this->bottom());						  
-    }
-    else if (fabs(fm)==180) {
-      angle=this->rotation();
-      x1=this->right();
-      y1=this->top();					
-    }
-    else angle=0;	       
-    if (coupled()) {
-      angle=intVar->rotation();  
-      Rotate r2(angle,intVar->x(),intVar->y());		
-      if (fm==-90 || fm==270) {
-        x1=r2.x(intVar->right(),intVar->bottom());
-        y1=r2.y(intVar->right(),intVar->bottom());
-      } else if (fm==90 || fm==-270) {
-        x1=r2.x(intVar->left(),intVar->top());
-        y1=r2.y(intVar->left(),intVar->top());			       
-      } else if (fabs(fm)==180) {
-        angle=-intVar->rotation();
-        x1=intVar->right();  			  
-        y1=intVar->top();  				       		  
-      } else if (fm==0 || fm==360) {
-        angle=-intVar->rotation();
-        x1=intVar->right(); 			
-        y1=intVar->bottom(); 				  
-      } else angle=0;
-    }
-    Point p(x1,y1);  
-    return make_pair(angle,p);  
-  }   
+  //std::pair<double,Point> IntOp::rotatedPoints() const
+  //{
+  //  // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+  //  double fm=std::fmod(this->rotation(),360), angle;	
+  //  float x1=this->right(),y1=this->bottom();
+  //  if (fm==-90 || fm==270) {
+  //    angle=-this->rotation();
+  //    Rotate r1(angle,this->x(),this->y());
+  //    x1=r1.x(this->right(),this->bottom());
+  //    y1=r1.y(this->right(),this->bottom());						  
+  //  }
+  //  else if (fabs(fm)==180) {
+  //    angle=this->rotation();
+  //    x1=this->right();
+  //    y1=this->top();					
+  //  }
+  //  else angle=0;	       
+  //  if (coupled()) {
+  //    angle=intVar->rotation();  
+  //    Rotate r2(angle,intVar->x(),intVar->y());		
+  //    if (fm==-90 || fm==270) {
+  //      x1=r2.x(intVar->right(),intVar->bottom());
+  //      y1=r2.y(intVar->right(),intVar->bottom());
+  //    } else if (fm==90 || fm==-270) {
+  //      x1=r2.x(intVar->left(),intVar->top());
+  //      y1=r2.y(intVar->left(),intVar->top());			       
+  //    } else if (fabs(fm)==180) {
+  //      angle=-intVar->rotation();
+  //      x1=intVar->right();  			  
+  //      y1=intVar->top();  				       		  
+  //    } else if (fm==0 || fm==360) {
+  //      angle=-intVar->rotation();
+  //      x1=intVar->right(); 			
+  //      y1=intVar->bottom(); 				  
+  //    } else angle=0;
+  //  }
+  //  Point p(x1,y1);  
+  //  return make_pair(angle,p);  
+  //}
+  
+   std::pair<double,Point> IntOp::rotatedPoints() const
+   {
+     // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+     double fm=std::fmod(rotation(),360), angle=rotation();	
+     bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
+     Rotate r(angle,this->x(),this->y()); // rotate into item's frame of reference    
+     float x1=r.x(right(),notflipped? bottom() :top()), y1=r.y(right(),notflipped? bottom() :top());
+     if (coupled()) {
+       angle=intVar->rotation();  
+       fm=std::fmod(angle,360);	
+       notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;		        
+       Rotate r2(angle,intVar->x(),intVar->y());
+       x1=r2.x(intVar->right(),notflipped? intVar->bottom() :intVar->top());
+       y1=r2.y(intVar->right(),notflipped? intVar->bottom() :intVar->top());
+     }
+     Point p(x1,y1);  
+     return make_pair(angle,p);  
+  }       
 
   void IntOp::insertControlled(Selection& selection)
   {
