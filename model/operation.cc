@@ -667,8 +667,7 @@ namespace minsky
     // Ensure int op height and var height similar to make gripping resize handle easier. for ticket 1203.
     iHeight(0.25*std::abs(b.y1-b.y0)*invZ);
     intVar->iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
-    intVar->iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
-    bb.update(*this);	  
+    intVar->iHeight(0.5*std::abs(b.y1-b.y0)*invZ);	  
   }
   
    std::pair<double,Point> IntOp::rotatedPoints() const
@@ -678,11 +677,11 @@ namespace minsky
      bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
      Rotate r(angle,this->x(),this->y()); // rotate into item's frame of reference    
      float x1=r.x(right(),notflipped? bottom() :top()), y1=r.y(right(),notflipped? bottom() :top());
-     //if (coupled()) {
-     //  angle=intVar->rotation();          
-     //  x1=r.x(intVar->right(),notflipped? intVar->bottom() :intVar->top());
-     //  y1=r.y(intVar->right(),notflipped? intVar->bottom() :intVar->top());
-     //}
+     if (coupled()) {
+       angle=intVar->rotation();          
+       x1=r.x(intVar->right(),notflipped? intVar->bottom() :intVar->top());
+       y1=r.y(intVar->right(),notflipped? intVar->bottom() :intVar->top());
+     }
      Point p(x1,y1);  
      return make_pair(angle,p);  
   }       

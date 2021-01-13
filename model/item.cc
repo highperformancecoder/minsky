@@ -45,8 +45,8 @@ namespace minsky
     x.onResizeHandles=false;
     try
       {
-		cairo_rotate(surf.cairo(),x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232  
 		x.draw(surf.cairo());                    
+		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232    
       }
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
@@ -144,7 +144,7 @@ namespace minsky
   { 
      double angle=rotatedPoints().first;		  
      Point p=rotatedPoints().second;		    
-     Rotate r(0,0,0); // rotate into variable's frame of reference
+     Rotate r(0,0,0);
      return near(x,y,p.x(),p.y(),resizeHandleSize(),r);
   }
  
