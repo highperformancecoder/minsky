@@ -48,9 +48,13 @@ namespace minsky
         x.draw(surf.cairo());
 		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232      
       }
+#ifndef NDEBUG
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
     catch (...) {cerr<<"illegal exception caught in draw()";}
+#else
+    catch(...) {}
+#endif
     x.mouseFocus=savedMouseFocus;
     
     double l,t,w,h;

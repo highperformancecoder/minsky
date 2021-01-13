@@ -51,9 +51,13 @@ namespace minsky
               {
                 g->godleyT->draw(surf.cairo());
               }
+#ifndef NDEBUG
             catch (const std::exception& e) 
               {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
             catch (...) {cerr<<"illegal exception caught in draw()";}
+#else
+            catch (...) {}
+#endif
             float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
             float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
             xx+=w;

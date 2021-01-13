@@ -837,10 +837,12 @@ namespace minsky
       {
         redrawUpdateRegion();
       }
+#ifndef NDEBUG
     catch (std::exception& ex)
       {
         cerr << ex.what() << endl;
       }
+#endif
     catch (...)
       {
         // consume exception and try redrawing
