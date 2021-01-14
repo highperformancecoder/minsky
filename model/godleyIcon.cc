@@ -357,8 +357,8 @@ namespace minsky
       {
         // top justification at bottom of icon if displayed, bottom justified otherwise
         v->rotation(90);
-        v->moveTo(x, y + v->y() - (variableDisplay? v->top(): v->bottom()));
-        x+=v->width();
+        v->moveTo(x,y + v->x() - (variableDisplay? v->left(): v->right()));  // need to use x after stock vars have been rotated. for tickets 1230/1230
+        x+=v->height();
       }
   }
 

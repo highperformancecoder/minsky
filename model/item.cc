@@ -31,7 +31,6 @@
 #include <exception>
 
 using ecolab::Pango;
-using namespace std;
 
 namespace minsky
 {
@@ -45,8 +44,8 @@ namespace minsky
     x.onResizeHandles=false;
     try
       {
+		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180); 
 		x.draw(surf.cairo());                    
-		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232    
       }
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
@@ -187,10 +186,10 @@ namespace minsky
 
     if (onResizeHandle(x,y)) return ClickType::onResize;         
     if (inItem(x,y)) return ClickType::inItem;
-   
+
     ecolab::cairo::Surface dummySurf
                                 (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));                           
-    draw(dummySurf.cairo());       
+    draw(dummySurf.cairo());          
     if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
       return ClickType::onItem;               
     else                  
