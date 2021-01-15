@@ -134,7 +134,7 @@ void Sheet::draw(cairo_t* cairo) const
               float rowHeight=pango.height();
 
               double colWidth=0;
-              float x=x0, y=y0;
+              float x=x0, y=y0+rowHeight;   // make sure row labels are aligned with corresponding values. for ticket 1281
               string format=value->hypercube().xvectors[0].dimension.units;
               // calculate label column width
               for (auto& i: value->hypercube().xvectors[0])
