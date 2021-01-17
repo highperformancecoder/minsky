@@ -21,10 +21,10 @@
 #define USERFUNCTION_H
 #include "operation.h"
 #include "unitsExpressionWalker.h"
-#include "exprtk/exprtk.hpp"
+#include "callableFunction.h"
 namespace  minsky
 {
-  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp, public exprtk::ivararg_function<double>
+  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp, public CallableFunction
   {
     exprtk::symbol_table<double> symbols;
     exprtk::expression<double> compiledExpression;
@@ -58,7 +58,7 @@ namespace  minsky
     using NamedOp::description;
     std::string description(const std::string&) override;
     /// function name, shorn of argument decorators
-    std::string name() const;
+    std::string name() const override;
 
     // required by the compiler
     static UserFunction* create(Type t) 

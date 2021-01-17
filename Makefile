@@ -30,6 +30,9 @@ endif
 # override the install prefix here
 PREFIX=/usr/local
 
+ifdef DISTCC
+CPLUSPLUS=distcc
+endif
 
 # override MODLINK to remove tclmain.o, which allows us to provide a
 # custom one that picks up its scripts from a relative library

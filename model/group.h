@@ -20,6 +20,7 @@
 #ifndef GROUP_H
 #define GROUP_H
 #include "SVGItem.h"
+#include "callableFunction.h"
 
 #include <assert.h>         // for assert
 #include <string.h>         // for size_t, memcpy
@@ -198,13 +199,17 @@ namespace minsky
       return false;
     }
 
-  class Group: public ItemT<Group>, public GroupItems
+  class Group: public ItemT<Group>, public GroupItems, public CallableFunction
   {
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
   public:
     
     std::string title;
+    std:: string name() const override {return title;}
+    /// evaluate function on arbitrary number of arguments (exprtk support)
+    double operator()(const std::vector<double>& p) override;
+    
     Group() {iWidth(100); iHeight(100);}
     ~Group() {}   
     std::vector<VariablePtr> createdIOvariables;

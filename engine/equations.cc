@@ -452,7 +452,10 @@ namespace MathDAG
     return result;
   }
 
-  SystemOfEquations::SystemOfEquations(const Minsky& m): minsky(m)
+  SystemOfEquations::SystemOfEquations(const Minsky& m): SystemOfEquations(m,*m.model) {}
+
+  
+  SystemOfEquations::SystemOfEquations(const Minsky& m, const Group& group): minsky(m)
   {
     expressionCache.insertAnonymous(zero);
     expressionCache.insertAnonymous(one);
@@ -466,7 +469,7 @@ namespace MathDAG
     // list of stock vars whose input expression has not yet been calculated when the derivative operator is called.
     
     // search through operations looking for integrals
-    minsky.model->recursiveDo
+    group.recursiveDo
       (&Group::items,
        [&](const Items&, Items::const_iterator it){
          if (auto v=(*it)->variableCast())
@@ -544,7 +547,7 @@ namespace MathDAG
        });
 
     // add input variables for all stock variables to the expression cache
-    minsky.model->recursiveDo
+    group.recursiveDo
       (&Group::items,
        [&](const Items&, Items::const_iterator it){
         if (auto i=dynamic_cast<Variable<VariableType::stock>*>(it->get()))
@@ -566,7 +569,7 @@ namespace MathDAG
     // process the Godley tables
     derivInputs.clear();
     map<string, GodleyColumnDAG> godleyVars;
-    m.model->recursiveDo
+    group.recursiveDo
       (&Group::items,
        [&](const Items&, Items::const_iterator i)
        {
@@ -601,7 +604,7 @@ namespace MathDAG
     
 //    // check that all integral input variables now have a rhs defined,
 //    // so that derivatives can be processed correctly
-//    m.model->recursiveDo
+//    group.recursiveDo
 //      (&Group::items,
 //       [&](const Items&, Items::const_iterator i)
 //       {
@@ -615,7 +618,7 @@ namespace MathDAG
 //         return false;
 //       });
     
-    
+      
     
     for (auto& v: integVarMap)
       integrationVariables.push_back(v.second);

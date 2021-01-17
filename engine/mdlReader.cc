@@ -136,21 +136,21 @@ namespace minsky
     };
   
     
-    double pulse(double x, double y)
-    {return (minsky().t>=x)*(minsky().t<x+y);}
-    double pulseTrain(double s, double b,double r,double e)
-    {
-      double t=minsky().t; double tm=fmod(t,r); double sm=fmod(s,r); double bm=fmod(s+b,r);
-      return (t<e)*(t>=s)*(tm>=sm)*(tm<bm);
-    }
-
-    double xidz(double a, double b, double x)
-    {
-      double r=a/b;
-      return std::isfinite(r)? r: x;
-    }
-    
-    double zidz(double a,double b) {return xidz(a,b,0);}
+//    double pulse(double x, double y)
+//    {return (minsky().t>=x)*(minsky().t<x+y);}
+//    double pulseTrain(double s, double b,double r,double e)
+//    {
+//      double t=minsky().t; double tm=fmod(t,r); double sm=fmod(s,r); double bm=fmod(s+b,r);
+//      return (t<e)*(t>=s)*(tm>=sm)*(tm<bm);
+//    }
+//
+//    double xidz(double a, double b, double x)
+//    {
+//      double r=a/b;
+//      return std::isfinite(r)? r: x;
+//    }
+//    
+//    double zidz(double a,double b) {return xidz(a,b,0);}
     
     map<string, FunctionDef> venSimFunctions={
       {"arccos",{"(x)","acos(x)"}},
@@ -226,20 +226,30 @@ namespace minsky
             xData[xyData[i]]=xyData[i+xyData.size()/2];
         }
       // TODO - use a call to a group instead of this code - see feature #154
-      auto f=make_shared<UserFunction>(name+"(x)");
-      string xStr, yStr;
-      for (auto& v: xData)
-        {
-          xStr+=((&v==&*xData.begin())?"":",")+to_string(v.first);
-          yStr+=((&v==&*xData.begin())?"":",")+to_string(v.second);
-        }
-      f->expression+="var xData["+to_string(xData.size())+"]:={"+xStr+"};\n";
-      f->expression+="var yData["+to_string(xData.size())+"]:={"+yStr+"};\n";
-      f->expression+="if (x<=xData[0]) yData[0];\n";
-      f->expression+="if (x>=xData[xData[]-1]) yData[xData-1];\n";
-      f->expression+="for (var i:=1; i<xData[]; ++i)\n{\n";
-      f->expression+="  if (x<xData[i])\n";
-      f->expression+="    (yData[i]-yData[i-1])*(x-xData[i-1])/(xData[i]-xData[i-1]);\n}\n";
+      auto f=make_shared<Group>();
+      f->title=name;
+      VariablePtr dataVar(VariableType::flow,"data");
+      f->addItem(dataVar);
+      OperationPtr gather(OperationType::gather);
+      f->addItem(gather);
+      f->addInputVar();
+      f->addOutputVar();
+      f->addWire(*dataVar, *gather, 1);
+      f->addWire(*f->inVariables[0], *gather, 2);
+      f->addWire(*gather, *f->outVariables[0], 1);
+      
+      XVector xVals("0",{Dimension::value,""});
+      auto& tensorInit=dataVar->vValue()->tensorInit;
+      for (auto& i: xData)
+        xVals.push_back(i.first);
+      Hypercube hc; hc.xvectors.push_back(move(xVals));
+      tensorInit.hypercube(move(hc));
+
+      assert(tensorInit.size()==xData.size());
+      auto j=tensorInit.begin();
+      for (auto& i: xData)
+        *j++=i.second;
+
       group.addItem(f);
     }
   }

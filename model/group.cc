@@ -35,6 +35,19 @@ namespace minsky
 {
   SVGRenderer Group::svgRenderer;
 
+  double Group::operator()(const std::vector<double>& p) 
+  {
+    // assign values to unattached input variables
+    auto iVar=inVariables.begin();
+    for (auto v: p)
+      {
+        while ((*iVar)->inputWired() && iVar!=inVariables.end()) ++iVar;
+        if (iVar==inVariables.end()) break;
+        (*iVar)->value(v);
+      }
+    
+  }
+
   // assigned the cloned equivalent of a port
   void asgClonedPort(shared_ptr<Port>& p, const map<Item*,ItemPtr>& cloneMap)
   {

@@ -484,8 +484,8 @@ namespace minsky
     model->recursiveDo
       (&Group::items,
        [this](const Items&, Items::const_iterator it){
-         if (auto f=dynamic_pointer_cast<UserFunction>(*it))
-           userFunctions[VariableValue::valueIdFromScope(f->group.lock(), f->name())]=f;
+         if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
+           userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), f->name())]=f;
          return false;
        });
 

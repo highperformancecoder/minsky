@@ -364,7 +364,8 @@ namespace MathDAG
     std::map<std::string, std::string> userDefinedFunctions;
   public:
     /// construct the system of equations 
-    SystemOfEquations(const Minsky&);
+    SystemOfEquations(const Minsky&, const Group&g);
+    SystemOfEquations(const Minsky& m);
     ostream& latex(ostream&) const; ///< render as a LaTeX eqnarray
     /// Use LaTeX brqn environment to wrap long lines
     ostream& latexWrapped(ostream&) const; 
