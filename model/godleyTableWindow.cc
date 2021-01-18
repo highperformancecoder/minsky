@@ -309,7 +309,7 @@ namespace minsky
     // now row sum column
     x+=3;
     double y=topTableOffset;
-    cairo_move_to(cairo,x,y-rowHeight);     // display A-L-E above the final column. for ticket 1285
+    cairo_move_to(cairo,x,0);     // display A-L-E above the final column. for ticket 1285
     pango.setMarkup("A-L-E");
     pango.show();
     double colWidth=pango.width();
