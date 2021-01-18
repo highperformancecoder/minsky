@@ -28,7 +28,7 @@
 #include "wire.h"
 #include "ravelWrap.h"
 #include "sheet.h"
-#include <cairoSurfaceImage.h>
+#include "renderNativeWindow.h"
 
 #include <chrono>
 
@@ -44,7 +44,7 @@ namespace minsky
     NoAssign& operator=(const U& x) {T::operator=(x); return *this;}
   };
   
-  class Canvas: public ecolab::CairoSurface
+  class Canvas: public RenderNativeWindow
   {
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);

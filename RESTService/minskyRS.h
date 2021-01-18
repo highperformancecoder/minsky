@@ -52,6 +52,8 @@
 #include "plotTab.xcd"
 #include "plotWidget.rcd"
 #include "port.rcd"
+#include "renderNativeWindow.rcd"
+#include "renderNativeWindow.xcd"
 #include "rungeKutta.rcd"
 #include "selection.rcd"
 #include <signature.h>
