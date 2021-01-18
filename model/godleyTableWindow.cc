@@ -309,15 +309,14 @@ namespace minsky
     // now row sum column
     x+=3;
     double y=topTableOffset;
-    cairo_move_to(cairo,x,y);
+    cairo_move_to(cairo,x,y-rowHeight);     // display A-L-E above the final column. for ticket 1285
     pango.setMarkup("A-L-E");
     pango.show();
     double colWidth=pango.width();
-    y+=rowHeight;
   
-    for (unsigned row=1; row<godleyIcon->table.rows(); ++row)
+    for (unsigned row=0; row<godleyIcon->table.rows(); ++row)    // perform row sum on stock var heading column too. for ticket 1285
       {
-        if (row>0 && row<scrollRowStart) continue;
+        if (row>-1 && row<scrollRowStart) continue;                    
         pango.setMarkup(latexToPango(godleyIcon->table.rowSum(row)));
         colWidth=max(colWidth,pango.width());
         cairo_move_to(cairo,x,y);
