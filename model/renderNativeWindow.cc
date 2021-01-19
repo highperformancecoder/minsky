@@ -59,9 +59,19 @@ namespace minsky
 #elif defined(MAC_OSX_TK)
   inline cairo::SurfacePtr nativeWindowSurface(unsigned long window)
   {/* TODO */}
-#else  
+#else
+
+  int throwOnXError(Display*, XErrorEvent* ev)
+  {
+    char errorMessage[256];
+    XGetErrorText(ev->display, ev->error_code, errorMessage, sizeof(errorMessage));
+    throw runtime_error(errorMessage);
+  }
+  
   inline cairo::SurfacePtr nativeWindowSurface(unsigned long window)
   {
+    // ensure errors are thrown, rather than exit() being called
+    static bool errorHandlingSet=(XSetErrorHandler(throwOnXError), true);
     XWindowAttributes wAttr;
     auto display=XOpenDisplay(nullptr);
     int err=XGetWindowAttributes(display, window, &wAttr);
