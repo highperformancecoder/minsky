@@ -499,7 +499,29 @@ namespace minsky
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
-      arg1=a1; arg2=a2;
+	
+	// ensures that gather operation is x-vector aware, just like other tensor binops for ticket 1271	
+      if (a1 && a1->rank()>0)
+        hypercube(a1->hypercube());
+      else if (a2)
+        hypercube(a2->hypercube());
+      else
+        hypercube(Hypercube());
+      
+      arg1=a1;
+
+      if (a2)
+        {
+          if (a2->rank()==0 || a2->hypercube()==hypercube())
+            arg2=a2;
+          else
+            {
+              arg2=make_shared<InterpolateHC>();
+              arg2->hypercube(hypercube());
+              arg2->setArgument(a2);
+            }
+        }    
+        
       cachedResult.index(arg2->index());
       cachedResult.hypercube(arg2->hypercube());
     }

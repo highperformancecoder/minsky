@@ -453,7 +453,7 @@ namespace minsky
                 CheckConsistent(*this);
               return {};
             }
-          case add: case subtract: case max: case min:
+          case add: case subtract: case max: case min: case gather:
             {
               if (check)
                 return CheckConsistent(*this);
