@@ -199,79 +199,74 @@ string GodleyTable::rowSum(int row) const
 {
   // accumulate the total for each variable
   map<string,double> sum;
-
-  for (size_t c=1; c<cols(); ++c)
-    {
-      FlowCoef fc(cell(row,c));
-      if (row>0)
+  
+  if (row>0)
+  {
+    for (size_t c=1; c<cols(); ++c)
       {
-      if (!fc.name.empty()||initialConditionRow(row))
-        {
-          // apply accounting relation to the initial condition row
-          if (signConventionReversed(c))
-            sum[fc.name]-=fc.coef;
-          else
-            sum[fc.name]+=fc.coef;
-        }
-      } else   // display numerical sum of stock vars in first cell of last column. for ticket 1285
-        {
-		  string value;
-		  char* tail;		
-          try
-            {
-              auto gTable=cminsky().model->findAny
-                  (&Group::items,
-                   [&](const ItemPtr& i)
-                   {
-                     auto g=dynamic_cast<GodleyIcon*>(i.get());
-                     return g && g->table.title == title;
-                   });				
-				
-              auto vv=cminsky().variableValues
-                [VariableValue::valueIdFromScope
-                 (gTable->group.lock(),utf_to_utf<char>(fc.name))];
-              if (vv->idx()>=0)
-                {
-                  double val=fc.coef*vv->value();
-                  auto ee=engExp(val);
-                  if (ee.engExp==-3) ee.engExp=0;
-                  value=mantissa(val,ee)+expMultiplier(ee.engExp);
-                }
-            }
-          catch (const std::exception& ex)
-            {
-              value=string("= Err: ")+ex.what();
-            }
-          // apply accounting relation to the initial condition row
-          if (signConventionReversed(c))
-            sum[fc.name]-=strtod(value.c_str(),&tail);
-          else
-            sum[fc.name]+=strtod(value.c_str(),&tail);            	
-		}
-    }
+        FlowCoef fc(cell(row,c));
+        if (!fc.name.empty()||initialConditionRow(row))
+          {
+            // apply accounting relation to the initial condition row
+            if (signConventionReversed(c))
+              sum[fc.name]-=fc.coef;
+            else
+              sum[fc.name]+=fc.coef;
+          }
+      }
+   } else   // display numerical sum of stock vars in first cell of last column. for ticket 1285
+       for (size_t c=1; c<cols(); ++c)
+       {
+        FlowCoef fc(cell(0,c));         
+        try
+          {
+            auto item=cminsky().model->findAny
+                (&Group::items,
+                 [&](const ItemPtr& i)
+                 {
+                   auto g=dynamic_cast<GodleyIcon*>(i.get());
+                   return g && g->table.title == title;
+                 });       
+           auto vv=cminsky().variableValues
+             [VariableValue::valueIdFromScope
+              (item->group.lock(),utf_to_utf<char>(fc.name))];
+           if (vv->idx()>=0) {
+			  string value; 
+              double val=fc.coef*vv->value();
+              auto ee=engExp(val);
+              if (ee.engExp==-3) ee.engExp=0;
+              value=mantissa(val,ee)+expMultiplier(ee.engExp);			    
+              if (signConventionReversed(c))
+                sum[fc.name]-=stod(value); 
+              else
+                sum[fc.name]+=stod(value); 
+	       }
+          }
+        catch (...) {}  		           
+	}
 
   // create symbolic representation of each term
   ostringstream ret;
-  double stockSum;
-  auto last = std::prev(sum.end(), 1);
-  for (map<string,double>::iterator i=sum.begin(); i!=sum.end(); ++i)
-    if (i->second!=0)
-      {
-	    if (row>0) { 
-           if (!ret.str().empty() &&i->second>0)
-             ret<<"+";
-           if (i->second==-1)
-             ret<<"-";
-           else if (i->second!=1)
-             abs(i->second)>5*std::numeric_limits<double>::epsilon()? ret<<i->second : ret<<0; // only display decimals if sum of row is larger than 5*2.22045e-16. for ticket 1244 
-           abs(i->second)>5*std::numeric_limits<double>::epsilon()? ret<<i->first : ret<<"";  
-	      } 
-	    else    // only display numerical sum of stock vars in first cell of last column. for ticket 1285
-	      {
-		   stockSum+=i->second;  	
-	       if (i==last) abs(stockSum)>5*std::numeric_limits<double>::epsilon()? ret<<stockSum : ret<<0;  
-	      }
-      }
+  if (row>0)
+  {
+    for (map<string,double>::iterator i=sum.begin(); i!=sum.end(); ++i)
+      if (i->second!=0)
+        {
+          if (!ret.str().empty() &&i->second>0)
+            ret<<"+";
+          if (i->second==-1)
+            ret<<"-";
+          else if (i->second!=1)
+            abs(i->second)>5*std::numeric_limits<double>::epsilon()? ret<<i->second : ret<<0; // only display decimals if sum of row is larger than 5*2.22045e-16. for ticket 1244 
+          abs(i->second)>5*std::numeric_limits<double>::epsilon()? ret<<i->first : ret<<"";  
+        }    
+  } else    // only display numerical sum of stock vars in first cell of last column. for ticket 1285
+    {
+	  double stockSum;	
+      for (map<string,double>::iterator i=sum.begin(); i!=sum.end(); ++i) if (i->second!=0) stockSum+=i->second;  	
+	  abs(stockSum)>5*std::numeric_limits<double>::epsilon()? ret<<stockSum : ret<<0; 		
+    }
+      
 
   //if completely empty, substitute a zero
   if (ret.str().empty()) 
