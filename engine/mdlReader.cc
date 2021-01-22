@@ -32,13 +32,17 @@ namespace minsky
 {
   namespace
   {
-    string readToken(istream& mdlFile, char delim)
+    string readToken(istream& mdlFile, char delim, bool appendDelim=false)
     {
       string r;
       string c;
       while (mdlFile>>GetUtf8Char(c))
         if (c[0]==delim || c[0]=='~' || c[0]=='|')
-          break;
+          {
+            if (appendDelim)
+              r+=c[0];
+            break;
+          }
         else if (c[0]=='{') /* inline comment - read up to close brace */
           {
             while (c[0]!='}' && mdlFile>>GetUtf8Char(c));
@@ -218,8 +222,11 @@ namespace minsky
       OperationPtr gather(OperationType::gather);
       f->addItem(gather);
       gather->moveTo(f->x()+30,f->y()-10);
-      f->addInputVar();
-      f->addOutputVar();
+      VariablePtr inVar(VariableType::flow,"in"), outVar(VariableType::flow,"out");
+      f->addItem(inVar);
+      f->addItem(outVar);
+      f->inVariables.push_back(inVar);
+      f->outVariables.push_back(outVar);
       f->addWire(*dataVar, *gather, 1);
       f->addWire(*f->inVariables[0], *gather, 2);
       f->addWire(*gather, *f->outVariables[0], 1);
@@ -280,10 +287,14 @@ namespace minsky
         
         // macros?
         // read variable name
-        string name=collapseWS(trimWS(c+readToken(mdlFile,'=')));
+        string nameStr=readToken(mdlFile,'=',true /* append delimiter */);
+        string name=collapseWS(trimWS(c+nameStr.substr(0,nameStr.length()-1)));
         if (name.substr(0,9)==R"(\\\---///)")
           break; // we don't parse the sketch information - not used in Minsky
-        string definition=collapseWS(trimWS(readToken(mdlFile,'~')));
+        string definition;
+        if (nameStr.back()=='=')
+          // only read definition if this was a variable definition
+          definition=collapseWS(trimWS(readToken(mdlFile,'~')));
         switch (definition[0])
           {
           case '=': case ':': // for now, treat constant assignment and data assignment equally to numeric assignment

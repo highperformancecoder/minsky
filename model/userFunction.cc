@@ -94,6 +94,8 @@ namespace minsky
             }
         }
       }
+    if (!word.empty()) // we ended on an identifier
+      symbolNames.insert(word);
     return {symbolNames.begin(), symbolNames.end()};
   }
 
