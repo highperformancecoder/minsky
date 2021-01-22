@@ -550,7 +550,8 @@ namespace MathDAG
     group.recursiveDo
       (&Group::groups,
        [&](const Groups&, Groups::const_iterator it){
-         userDefinedFunctions.emplace((*it)->name()+(*it)->arguments(), (*it)->formula());
+         if (!(*it)->name().empty())
+           userDefinedFunctions.emplace((*it)->name()+(*it)->arguments(), (*it)->formula());
          return false;
        });
     

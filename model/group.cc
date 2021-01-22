@@ -62,11 +62,14 @@ namespace minsky
 
   std::string Group::formula() const
   {
-    if (outVariables.empty()) return "";
+    if (outVariables.empty()) return "0";
     MathDAG::SystemOfEquations system(minsky(), *this);
     ostringstream o;
-    if (auto rhs=system.getNodeFromVar(*outVariables[0])->rhs)
-      rhs->matlab(o);
+    auto node=system.getNodeFromVar(*outVariables[0]);
+    if (node->rhs)
+      node->rhs->matlab(o);
+    else
+      node->matlab(o);
     return o.str();
   }
 
