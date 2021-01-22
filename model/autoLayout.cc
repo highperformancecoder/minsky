@@ -172,9 +172,11 @@ namespace minsky
         auto p=pm[*i];
         gg[*i]->moveTo(p[0]+layoutSize,p[1]+layoutSize);
       }
-    
-    for (auto& i: g.groups)
-      layoutGroup(*i);
+
+    // TODO should we recursively descend into groups or not? If so,
+    // then we need to be aware of group's size
+//    for (auto& i: g.groups)
+//      layoutGroup(*i);
   }
 }
 

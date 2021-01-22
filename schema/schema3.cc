@@ -163,7 +163,7 @@ namespace schema3
           if (auto d=dynamic_cast<minsky::UserFunction*>(i))
             {
               items.back().expression=d->expression;
-              items.back().name=d->name();
+              items.back().name=d->description();
             }
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {

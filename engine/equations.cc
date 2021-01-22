@@ -546,6 +546,14 @@ namespace MathDAG
          return false;
        });
 
+    // add groups to the userDefinedFunctions table
+    group.recursiveDo
+      (&Group::groups,
+       [&](const Groups&, Groups::const_iterator it){
+         userDefinedFunctions.emplace((*it)->name()+(*it)->arguments(), (*it)->formula());
+         return false;
+       });
+    
     // add input variables for all stock variables to the expression cache
     group.recursiveDo
       (&Group::items,
@@ -878,7 +886,7 @@ namespace MathDAG
     // output user defined functions
     for (auto& i: userDefinedFunctions)
       {
-        o<<"function f="<<i.first<<"(x,y)\n";
+        o<<"function f="<<i.first<<"\n";
         o<<"f="<<i.second<<"\nendfunction;\n\n";
       }
     o<<"function f=f(x,t)\n";
@@ -945,7 +953,10 @@ namespace MathDAG
             integrals.back().input=*iInput->rhs->addEvalOps(equations);
       }
     assert(minsky.variableValues.validEntries());
+  }
 
+  void SystemOfEquations::updatePortVariableValue(EvalOpVector& equations)
+  {
     // ensure all variables have their output port's variable value up to date
     minsky.model->recursiveDo
       (&Group::items,

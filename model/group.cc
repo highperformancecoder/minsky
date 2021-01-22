@@ -23,6 +23,7 @@
 #include "operation.h"
 #include "minsky.h"
 #include "autoLayout.h"
+#include "equations.h"
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
 using namespace std;
@@ -37,17 +38,54 @@ namespace minsky
 
   double Group::operator()(const std::vector<double>& p) 
   {
-    // assign values to unattached input variables
+    if (outVariables.empty()) return nan("");
+
+    MathDAG::SystemOfEquations system(minsky(), *this);
+    EvalOpVector equations;
+    vector<Integral> integrals;
+    system.populateEvalOpVector(equations, integrals);
+    vector<double> flow(ValueVector::flowVars);
+
+        // assign values to unattached input variables
     auto iVar=inVariables.begin();
     for (auto v: p)
       {
         while ((*iVar)->inputWired() && iVar!=inVariables.end()) ++iVar;
         if (iVar==inVariables.end()) break;
-        (*iVar)->value(v);
+        flow[(*iVar)->vValue()->idx()]=v;
       }
-    
+
+    for (auto& i: equations)
+      i->eval(&flow[0], flow.size(),ValueVector::stockVars.data());
+    return flow[outVariables[0]->vValue()->idx()];
   }
 
+  std::string Group::formula() const
+  {
+    if (outVariables.empty()) return "";
+    MathDAG::SystemOfEquations system(minsky(), *this);
+    ostringstream o;
+    if (auto rhs=system.getNodeFromVar(*outVariables[0])->rhs)
+      rhs->matlab(o);
+    return o.str();
+  }
+
+  string Group::arguments() const
+  {
+    MathDAG::SystemOfEquations system(minsky(), *this);
+    ostringstream r;
+    r<<"(";
+    for (auto& i: inVariables)
+      if (!i->inputWired())
+        {
+          if (r.str().size()>1) r<<",";
+          system.getNodeFromVar(*i)->matlab(r);
+        }
+    r<<")";
+    return r.str();
+  }
+
+  
   // assigned the cloned equivalent of a port
   void asgClonedPort(shared_ptr<Port>& p, const map<Item*,ItemPtr>& cloneMap)
   {

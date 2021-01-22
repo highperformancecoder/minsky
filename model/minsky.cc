@@ -488,6 +488,12 @@ namespace minsky
            userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), f->name())]=f;
          return false;
        });
+    model->recursiveDo
+      (&Group::groups,
+       [this](const Groups&, Groups::const_iterator it){
+         userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
+         return false;
+       });
 
     try
       {
@@ -505,6 +511,7 @@ namespace minsky
     assert(variableValues.validEntries());
     system.populateEvalOpVector(equations, integrals);
     assert(variableValues.validEntries());
+    system.updatePortVariableValue(equations);
     
     // attach the plots
     model->recursiveDo

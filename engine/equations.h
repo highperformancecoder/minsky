@@ -377,6 +377,11 @@ namespace MathDAG
     void populateEvalOpVector
     (EvalOpVector& equations, std::vector<Integral>& integrals);
 
+    // ensure all variables have their output port's variable value up
+    // to date and add evalOps for plots and sheets
+    void updatePortVariableValue(EvalOpVector& equations);
+
+    
     /// symbolically differentiate \a expr
     template <class Expr> NodePtr derivative(const Expr& expr);
 

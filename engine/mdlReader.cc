@@ -136,22 +136,6 @@ namespace minsky
     };
   
     
-//    double pulse(double x, double y)
-//    {return (minsky().t>=x)*(minsky().t<x+y);}
-//    double pulseTrain(double s, double b,double r,double e)
-//    {
-//      double t=minsky().t; double tm=fmod(t,r); double sm=fmod(s,r); double bm=fmod(s+b,r);
-//      return (t<e)*(t>=s)*(tm>=sm)*(tm<bm);
-//    }
-//
-//    double xidz(double a, double b, double x)
-//    {
-//      double r=a/b;
-//      return std::isfinite(r)? r: x;
-//    }
-//    
-//    double zidz(double a,double b) {return xidz(a,b,0);}
-    
     map<string, FunctionDef> venSimFunctions={
       {"arccos",{"(x)","acos(x)"}},
       {"arcsin",{"(x)","asin(x)"}},
@@ -225,13 +209,15 @@ namespace minsky
           for (size_t i=0; i<xyData.size()/2; ++i)
             xData[xyData[i]]=xyData[i+xyData.size()/2];
         }
-      // TODO - use a call to a group instead of this code - see feature #154
       auto f=make_shared<Group>();
+      f->self=f;
       f->title=name;
       VariablePtr dataVar(VariableType::flow,"data");
       f->addItem(dataVar);
+      dataVar->moveTo(f->x()-50,f->y()-20);
       OperationPtr gather(OperationType::gather);
       f->addItem(gather);
+      gather->moveTo(f->x()+30,f->y()-10);
       f->addInputVar();
       f->addOutputVar();
       f->addWire(*dataVar, *gather, 1);

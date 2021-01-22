@@ -209,6 +209,10 @@ namespace minsky
     std:: string name() const override {return title;}
     /// evaluate function on arbitrary number of arguments (exprtk support)
     double operator()(const std::vector<double>& p) override;
+    /// algebraic formula representing value of first output argument of this group
+    std::string formula() const;
+    /// argument declaration, to be appended to name() for function declaration
+    std::string arguments() const;
     
     Group() {iWidth(100); iHeight(100);}
     ~Group() {}   
