@@ -561,13 +561,13 @@ namespace MathDAG
        [&](const Items&, Items::const_iterator it){
         if (auto i=dynamic_cast<Variable<VariableType::stock>*>(it->get()))
           if (!expressionCache.getIntegralInput(i->valueId()))
-          {
-            VariableDAGPtr input(new IntegralInputVariableDAG);
-            input->name=i->name();
-            variables.push_back(input.get());
-            // manage object's lifetime with expressionCache
-            expressionCache.insertIntegralInput(i->valueId(), input);
-          }
+            {
+              VariableDAGPtr input(new IntegralInputVariableDAG);
+              input->name=i->name();
+              variables.push_back(input.get());
+              // manage object's lifetime with expressionCache
+              expressionCache.insertIntegralInput(i->valueId(), input);
+            }
         return false;
       });
     
@@ -589,7 +589,6 @@ namespace MathDAG
 
     for (auto& g: godleyVars)
       {
-        //        assert(g->second.godleyId>=0);
         integVarMap[g.first]=dynamic_cast<VariableDAG*>
           (makeDAG(g.first,
                    g.second.name, VariableValue::stock).get());
@@ -632,17 +631,36 @@ namespace MathDAG
     for (auto& v: integVarMap)
       integrationVariables.push_back(v.second);
 
-    // now start with the variables, and work our way back to how they
-    // are defined
-    for (VariableValues::value_type v: m.variableValues)
-      if (v.second->isFlowVar())
-        if (auto vv=dynamic_cast<VariableDAG*>
-            (makeDAG(v.first, v.second->name, v.second->type()).get()))
-          variables.push_back(vv);
+    if (&group==m.model.get())
+      {
+        for (VariableValues::value_type v: m.variableValues)
+          if (v.second->isFlowVar())
+            if (auto vv=dynamic_cast<VariableDAG*>
+                (makeDAG(v.first, v.second->name, v.second->type()).get()))
+              variables.push_back(vv);
           
-    // sort variables into their order of definition
-    sort(variables.begin(), variables.end(), 
-         VariableDefOrder(expressionCache.size()));
+        // sort variables into their order of definition
+        sort(variables.begin(), variables.end(), 
+             VariableDefOrder(expressionCache.size()));
+      }
+    else
+      {
+        // now start with the variables, and work our way back to how they
+        // are defined
+        VariableDefOrder variableDefOrder(expressionCache.size()+m.variableValues.size());
+        set<VariableDAG*,VariableDefOrder> variableSet(variableDefOrder);
+        group.recursiveDo
+          (&Group::items,
+           [&](const Items&, Items::const_iterator it){
+             if (auto v=(*it)->variableCast())
+               if (auto vv=v->vValue())
+                 variableSet.insert(dynamic_cast<VariableDAG*>
+                                    (makeDAG(v->valueId(), vv->name, vv->type()).get()));
+             return false;
+           });
+        // TODO - if we can pass VariableDefOrder to the definition of variableSet, we don't need to resort...
+        variables.insert(variables.end(), variableSet.begin(), variableSet.end());
+      }
   }
 
   NodePtr SystemOfEquations::makeDAG(const string& valueId, const string& name, VariableType::Type type)

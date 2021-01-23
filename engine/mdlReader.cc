@@ -216,6 +216,7 @@ namespace minsky
       auto f=make_shared<Group>();
       f->self=f;
       f->title=name;
+      group.addItem(f);
       VariablePtr dataVar(VariableType::flow,"data");
       f->addItem(dataVar);
       dataVar->moveTo(f->x()-50,f->y()-20);
@@ -243,7 +244,7 @@ namespace minsky
       for (auto& i: xData)
         *j++=i.second;
 
-      group.addItem(f);
+      *dataVar->vValue()=tensorInit;
     }
   }
 
