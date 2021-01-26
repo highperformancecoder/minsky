@@ -221,7 +221,7 @@ namespace minsky
                         varAttribVals.push_back(to_string(v->sliderMax));
                         varAttribVals.push_back(to_string(v->value()));
                         
-						size_t vACtr=0;                           
+                        size_t vACtr=0;                           
                         colWidths.resize(varAttribVals.size());
                         for (auto i: colWidths) i=colWidth;  // generalises colWdith concept for par and var tabs.                        
                     
@@ -245,8 +245,8 @@ namespace minsky
                             pango.setMarkup(latexToPango(i));
                             pango.show();                    
                             colWidths[vACtr]=std::max(colWidths[vACtr],5+pango.width()); 
-							x+=colWidths[vACtr];
-							vACtr++;
+                            x+=colWidths[vACtr];
+                            vACtr++;
                           }
                         x=x0;                      
                         h_prev=h;
@@ -272,13 +272,13 @@ namespace minsky
                           y1=(&it==&itemVector[0] || lastRank>0)? 0.5*rowHeight: 0;
                           vACtr=0; 
                           for (auto& i : varAttribVals)
-                          {
-						    cairo_move_to(cairo,x,y-2*rowHeight);
-                            cairo_line_to(cairo,x,y+y1);
-                            cairo_stroke(cairo);
-                            x+=colWidths[vACtr];
-                            vACtr++;
-						  } 
+                            {
+                              cairo_move_to(cairo,x,y-2*rowHeight);
+                              cairo_line_to(cairo,x,y+y1);
+                              cairo_stroke(cairo);
+                              x+=colWidths[vACtr];
+                              vACtr++;
+                            } 
                         }
                         if (&it==&itemVector[0] || lastRank>0)                                            
                           { // draw horizontal grid line
