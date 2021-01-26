@@ -35,7 +35,8 @@ namespace minsky
   
     double xoffs=80;
     double rowHeight=0;
-    double colWidth=50, globalMaxColWidth=colWidth; 
+    double colWidth=50;
+    std::vector<double> colWidths; 
     float offsx=0, offsy=0;
     std::map<ItemPtr,std::pair<float,float>> itemCoords;       
     float m_width=600, m_height=800;
