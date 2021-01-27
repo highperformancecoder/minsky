@@ -291,13 +291,7 @@ namespace minsky
                         cairo::CairoSave cs(cairo);
                         // make sure rows have right height
                         y1=(&it==&itemVector[0] || lastRank>0)? -0.5*rowHeight: 0;
-                        cairo_move_to(cairo,x0,y0+y1-rowHeight);
-                        cairo_line_to(cairo,w+colWidths.back(),y0+y1-rowHeight);                         
-                        if (&it==&itemVector.back() && lastRank==0)
-                          {
-                            cairo_move_to(cairo,x0,y0+rowHeight);
-                            cairo_line_to(cairo,w+colWidths.back(),y0+rowHeight);
-                          }  						
+						cairo_rectangle(cairo,x0,y0+y1-rowHeight,w+colWidths.back(),y-y0-2*y1+rowHeight);
                         cairo_stroke(cairo);                          	          
                         cairo_clip(cairo);	                                     
                         rowTopMargin.push_back(y);                        
