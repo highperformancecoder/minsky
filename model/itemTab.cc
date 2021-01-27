@@ -274,7 +274,7 @@ namespace minsky
                           cairo_stroke(cairo);                                                        
                           for (auto& i : colWidths)
                             {						
-							  x+=i;	
+                              x+=i;	
                               cairo_move_to(cairo,x,y-2*rowHeight);
                               cairo_line_to(cairo,x,y+y1);
                               cairo_stroke(cairo);
@@ -294,10 +294,10 @@ namespace minsky
                         cairo_move_to(cairo,x0,y0+y1-rowHeight);
                         cairo_line_to(cairo,w+colWidths.back(),y0+y1-rowHeight);                         
                         if (&it==&itemVector.back() && lastRank==0)
-                        {
-							cairo_move_to(cairo,x0,y0+rowHeight);
-							cairo_line_to(cairo,w+colWidths.back(),y0+rowHeight);
-						}  						
+                          {
+                            cairo_move_to(cairo,x0,y0+rowHeight);
+                            cairo_line_to(cairo,w+colWidths.back(),y0+rowHeight);
+                          }  						
                         cairo_stroke(cairo);                          	          
                         cairo_clip(cairo);	                                     
                         rowTopMargin.push_back(y);                        
