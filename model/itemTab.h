@@ -36,7 +36,7 @@ namespace minsky
     double xoffs=80;
     double rowHeight=0;
     double colWidth=50;
-    std::vector<double> colWidths; 
+    std::vector<double> colWidths; // generalises colWdith concept for par and var tabs. 
     float offsx=0, offsy=0;
     std::map<ItemPtr,std::pair<float,float>> itemCoords;       
     float m_width=600, m_height=800;

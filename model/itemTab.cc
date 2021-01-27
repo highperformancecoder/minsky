@@ -222,8 +222,7 @@ namespace minsky
                         varAttribVals.push_back(to_string(v->value()));
                         
                         size_t vACtr=0;                           
-                        colWidths.resize(varAttribVals.size());
-                        for (auto i: colWidths) i=colWidth;  // generalises colWdith concept for par and var tabs.                        
+                        colWidths.resize(varAttribVals.size());                 
                     
                         if (&it==&itemVector[0] || lastRank>0) {
                           for (auto& i:varAttrib) 
@@ -270,15 +269,16 @@ namespace minsky
                           cairo::CairoSave cs(cairo);
                           cairo_set_source_rgba(cairo,0,0,0,0.5);
                           y1=(&it==&itemVector[0] || lastRank>0)? 0.5*rowHeight: 0;
-                          vACtr=0; 
-                          for (auto& i : varAttribVals)
-                            {
+                          cairo_move_to(cairo,x,y-2*rowHeight);
+                          cairo_line_to(cairo,x,y+y1);                          
+                          cairo_stroke(cairo);                                                        
+                          for (auto& i : colWidths)
+                            {						
+							  x+=i;	
                               cairo_move_to(cairo,x,y-2*rowHeight);
                               cairo_line_to(cairo,x,y+y1);
                               cairo_stroke(cairo);
-                              x+=colWidths[vACtr];
-                              vACtr++;
-                            } 
+                            }
                         }
                         if (&it==&itemVector[0] || lastRank>0)                                            
                           { // draw horizontal grid line
@@ -289,12 +289,18 @@ namespace minsky
                             cairo_stroke(cairo);
                           }                                  
                         cairo::CairoSave cs(cairo);
-                        // make sure rectangle has right height
+                        // make sure rows have right height
                         y1=(&it==&itemVector[0] || lastRank>0)? -0.5*rowHeight: 0;
-                        cairo_rectangle(cairo,x0,y0+y1-rowHeight,w+colWidths.back(),y-y0-2*y1+rowHeight);    
-                        rowTopMargin.push_back(y);
+                        cairo_move_to(cairo,x0,y0+y1-rowHeight);
+                        cairo_line_to(cairo,w+colWidths.back(),y0+y1-rowHeight);                         
+                        if (&it==&itemVector.back() && lastRank==0)
+                        {
+							cairo_move_to(cairo,x0,y0+rowHeight);
+							cairo_line_to(cairo,w+colWidths.back(),y0+rowHeight);
+						}  						
                         cairo_stroke(cairo);                          	          
-                        cairo_clip(cairo);	                            
+                        cairo_clip(cairo);	                                     
+                        rowTopMargin.push_back(y);                        
                       }
                     else if (rank==1)
                       {
