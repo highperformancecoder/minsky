@@ -216,10 +216,10 @@ namespace minsky
                         varAttribVals.push_back(v->init());
                         varAttribVals.push_back(it->tooltip);
                         varAttribVals.push_back(it->detailedText);
-                        varAttribVals.push_back(to_string(v->sliderStep));
-                        varAttribVals.push_back(to_string(v->sliderMin));
-                        varAttribVals.push_back(to_string(v->sliderMax));
-                        varAttribVals.push_back(to_string(v->value()));
+                        varAttribVals.push_back(str(v->sliderStep));
+                        varAttribVals.push_back(str(v->sliderMin));
+                        varAttribVals.push_back(str(v->sliderMax));
+                        varAttribVals.push_back(str(v->value()));
                         
                         size_t vACtr=0;                           
                         colWidths.resize(varAttribVals.size());                 
