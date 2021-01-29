@@ -407,10 +407,16 @@ proc textOK {} {
     destroy .textInput
     canvas.moveOffsX 0
     canvas.moveOffsY 0
-    if [regexp R"\\+" $textBuffer] {  # ensure that special characters escaped with \ can be used as pars and vars. for ticket 1291
-        if {[lsearch [availableOperations] $textBuffer]>-1} {
-		  addOperationKey $textBuffer
-	  }
+	if [regexp "^\\\[a-zA-Z\]+$" $textBuffer] {  # ensure that names escaped with \ can be used as ops or pars and vars as the case may be. for ticket 1291
+		  set subTextBuffer [string range $textBuffer 1 end]
+		  puts $subTextBuffer
+		  if {[lsearch [availableOperations] $subTextBuffer]>-1} {
+			  addOperationKey $subTextBuffer
+		  } else {
+			  minsky.addVariable $subTextBuffer flow
+		  }
+	} elseif {[lsearch [availableOperations] $textBuffer]>-1} {
+	      addOperationKey $textBuffer
 	} elseif {[llength $textBuffer]==1 && [string match "-" $textBuffer]} { # minus sign only creates subtract op. for ticket 145
 		addOperationKey subtract		
     } elseif [string match "\[%#\]*" $textBuffer] {
