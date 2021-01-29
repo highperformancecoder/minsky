@@ -611,7 +611,7 @@ namespace MathDAG
   }
   
   template <>
-  void OperationDAG<OperationType::gamma>::render(Surface& surf) const
+  void OperationDAG<OperationType::Gamma>::render(Surface& surf) const
   {
     print(surf.cairo(),"Γ",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])

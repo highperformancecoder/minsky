@@ -655,16 +655,16 @@ namespace MathDAG
   
   template <>
   NodePtr SystemOfEquations::derivative
-  (const OperationDAG<OperationType::gamma>& expr)
+  (const OperationDAG<OperationType::Gamma>& expr)
   {
     if (expr.arguments[0].empty())
       return zero;
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,polygamma(x,Expr(expressionCache,zero))*gamma(x)); 
+        return chainRule(x,polygamma(x,Expr(expressionCache,zero))*Gamma(x)); 
       }                                                                                       
-  }                                                                                           
+  }                                                                                         
 
   template <>
   NodePtr SystemOfEquations::derivative
@@ -694,7 +694,7 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,polygamma(1+x,Expr(expressionCache,zero))*gamma(1+x));
+        return chainRule(x,polygamma(1+x,Expr(expressionCache,zero))*Gamma(1+x));
       }
   }    
   

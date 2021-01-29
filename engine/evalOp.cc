@@ -526,13 +526,13 @@ namespace minsky
   {return 0;}
   
   template <>
-  double EvalOp<OperationType::gamma>::evaluate(double in1, double in2) const
+  double EvalOp<OperationType::Gamma>::evaluate(double in1, double in2) const
   {return in1 > 0? boost::math::tgamma(in1) : numeric_limits<double>::max();}
   template <>
-  double EvalOp<OperationType::gamma>::d1(double x1, double x2) const
+  double EvalOp<OperationType::Gamma>::d1(double x1, double x2) const
   {return boost::math::digamma(fabs(x1))*boost::math::tgamma(fabs(x1));}
   template <>
-  double EvalOp<OperationType::gamma>::d2(double x1, double x2) const
+  double EvalOp<OperationType::Gamma>::d2(double x1, double x2) const
   {return 0;} 
   
   template <>
