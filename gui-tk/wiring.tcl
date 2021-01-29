@@ -407,8 +407,10 @@ proc textOK {} {
     destroy .textInput
     canvas.moveOffsX 0
     canvas.moveOffsY 0
-    if {[lsearch [availableOperations] $textBuffer]>-1} {
-		addOperationKey $textBuffer
+    if [regexp R"\\+" $textBuffer] {  # ensure that special characters escaped with \ can be used as pars and vars. for ticket 1291
+        if {[lsearch [availableOperations] $textBuffer]>-1} {
+		  addOperationKey $textBuffer
+	  }
 	} elseif {[llength $textBuffer]==1 && [string match "-" $textBuffer]} { # minus sign only creates subtract op. for ticket 145
 		addOperationKey subtract		
     } elseif [string match "\[%#\]*" $textBuffer] {
