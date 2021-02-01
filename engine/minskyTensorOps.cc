@@ -400,6 +400,18 @@ namespace minsky
         hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());        
         hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
         cachedResult.hypercube(move(hc));
+        
+        auto idx1=arg1->index(), idx2=arg2->index();
+        set<size_t> newIdx;
+        
+        for (auto& i: idx1)
+           for (auto& j: idx2)
+             {
+               newIdx.insert(i+arg1->hypercube().splitIndex(i).size()*j);    // I know it has to be index from first tensor plus some stride times index from second tensor, but what stride???
+               //cout << *newIdx.end() << endl;
+		   }
+		   
+		cachedResult.index(Index(newIdx));           
                 
       }
     }    
