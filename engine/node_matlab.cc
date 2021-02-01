@@ -503,7 +503,7 @@ namespace MathDAG
   }
  
   template <>
-  ostream& OperationDAG<OperationType::gamma>::matlab(ostream& o) const
+  ostream& OperationDAG<OperationType::Gamma>::matlab(ostream& o) const
   {
     checkArg(0,0);
     return o<<"gamma("<<arguments[0][0]->matlab()<<")";

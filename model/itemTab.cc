@@ -194,7 +194,7 @@ namespace minsky
             rowTopMargin.clear();
             std::string def;
             int iC=0;  // keep track of number of Pars and Vars as distinct from Godleys and Plots
-            size_t lastRank=1; // needed to space parameters and variables of different rank properly on the tabs.                            
+            size_t lastRank=1; // needed to space parameters and variables of different rank properly on the tabs.                                            
             for (auto& it: itemVector)
               {
                 if (auto v=it->variableCast())
@@ -209,17 +209,20 @@ namespace minsky
                     def=definition(*v);                      
                     pango.setMarkup("9999");
                     if (rank==0)
-                      { 
+                      {   
                         varAttribVals.clear();
                         varAttribVals.push_back(v->name());
                         varAttribVals.push_back(def);                    
                         varAttribVals.push_back(v->init());
                         varAttribVals.push_back(it->tooltip);
                         varAttribVals.push_back(it->detailedText);
-                        varAttribVals.push_back(to_string(v->sliderStep));
-                        varAttribVals.push_back(to_string(v->sliderMin));
-                        varAttribVals.push_back(to_string(v->sliderMax));
-                        varAttribVals.push_back(to_string(v->value()));
+                        varAttribVals.push_back(str(v->sliderStep));
+                        varAttribVals.push_back(str(v->sliderMin));
+                        varAttribVals.push_back(str(v->sliderMax));
+                        varAttribVals.push_back(str(v->value()));
+                        
+                        size_t vACtr=0;                           
+                        colWidths.resize(varAttribVals.size());                 
                     
                         if (&it==&itemVector[0] || lastRank>0) {
                           for (auto& i:varAttrib) 
@@ -227,19 +230,22 @@ namespace minsky
                               cairo_move_to(cairo,x,y-1.5*rowHeight);                    
                               pango.setMarkup(i);
                               pango.show();                  
-                              colWidth=std::max(colWidth,5+pango.width());  
-                              x+=colWidth;	
-                              colLeftMargin[iC].push_back(x);                        				    
+                              colWidths[vACtr]=std::max(colWidths[vACtr],5+pango.width());
+                              x+=colWidths[vACtr];
+                              colLeftMargin[iC].push_back(x);         
+                              vACtr++;               				    
                             }
                         }
                         x=0;
+                        vACtr=0;                      
                         for (auto& i : varAttribVals)
                           {
                             cairo_move_to(cairo,x,y-0.5*rowHeight);                    
                             pango.setMarkup(latexToPango(i));
                             pango.show();                    
-                            colWidth=std::max(colWidth,5+pango.width());
-                            x+=colWidth;
+                            colWidths[vACtr]=std::max(colWidths[vACtr],5+pango.width()); 
+                            x+=colWidths[vACtr];
+                            vACtr++;
                           }
                         x=x0;                      
                         h_prev=h;
@@ -254,7 +260,7 @@ namespace minsky
                           cairo_set_source_rgba(cairo,0,0,0,0.2);
                           for (y=y0+y1; y<h+rowHeight; y+=2*rowHeight)
                             {
-                              cairo_rectangle(cairo,x0,y,w+colWidth,rowHeight);
+                              cairo_rectangle(cairo,x0,y,w+colWidths.back(),rowHeight);
                               cairo_fill(cairo);
                             }
 
@@ -263,29 +269,32 @@ namespace minsky
                           cairo::CairoSave cs(cairo);
                           cairo_set_source_rgba(cairo,0,0,0,0.5);
                           y1=(&it==&itemVector[0] || lastRank>0)? 0.5*rowHeight: 0;
-                          for (x=x0; x<w+colWidth; x+=colWidth)
-                            {
+                          cairo_move_to(cairo,x,y-2*rowHeight);
+                          cairo_line_to(cairo,x,y+y1);                          
+                          cairo_stroke(cairo);                                                        
+                          for (auto& i : colWidths)
+                            {						
+                              x+=i;	
                               cairo_move_to(cairo,x,y-2*rowHeight);
                               cairo_line_to(cairo,x,y+y1);
                               cairo_stroke(cairo);
                             }
                         }
-                        
                         if (&it==&itemVector[0] || lastRank>0)                                            
                           { // draw horizontal grid line
                             cairo::CairoSave cs(cairo);
                             cairo_set_source_rgba(cairo,0,0,0,0.5);
                             cairo_move_to(cairo,x0,y0-0.5*rowHeight);
-                            cairo_line_to(cairo,w+colWidth,y0-0.5*rowHeight);
+                            cairo_line_to(cairo,w+colWidths.back(),y0-0.5*rowHeight);
                             cairo_stroke(cairo);
                           }                                  
                         cairo::CairoSave cs(cairo);
-                        // make sure rectangle has right height
+                        // make sure rows have right height
                         y1=(&it==&itemVector[0] || lastRank>0)? -0.5*rowHeight: 0;
-                        cairo_rectangle(cairo,x0,y0+y1-rowHeight,w+colWidth,y-y0-2*y1+rowHeight);    
-                        rowTopMargin.push_back(y);
+						cairo_rectangle(cairo,x0,y0+y1-rowHeight,w+colWidths.back(),y-y0-2*y1+rowHeight);
                         cairo_stroke(cairo);                          	          
-                        cairo_clip(cairo);	                               
+                        cairo_clip(cairo);	                                     
+                        rowTopMargin.push_back(y);                        
                       }
                     else if (rank==1)
                       {
@@ -460,7 +469,7 @@ namespace minsky
               
                   }
               }              
-          }
+          }         
       }
     catch (...) {throw;/* exception most likely invalid variable value */}
   }
