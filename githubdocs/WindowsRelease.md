@@ -2,7 +2,7 @@
 
 - The Windows distributable is built using the MXE cross-compiler environment on Linux. 
 
-- Its best to pull from the develop branch of [my fork of MXE](https://github.com/highperformancecoder/mxe), as this is where I push any packages/changes I need. 
+- Its best to pull from the master branch of [my fork of MXE](https://github.com/highperformancecoder/mxe), as this is where I push any packages/changes I need. 
 
 - make MXE_TARGETS=x86_64-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/tcl.tk boost cairo tcl tk json_spirit gsl pango librsvg openssl
 - For Minsky 2.20 or less, MXE_TARGETS=i686-w64-mingw32.static

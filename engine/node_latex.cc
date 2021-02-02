@@ -544,7 +544,7 @@ namespace MathDAG
   }
   
   template <>
-  ostream& OperationDAG<OperationType::gamma>::latex(ostream& o) const
+  ostream& OperationDAG<OperationType::Gamma>::latex(ostream& o) const
   {
     checkArg(0,0);
     return o<<"\\Gamma\\left("<<arguments[0][0]->latex()<<"\\right)";

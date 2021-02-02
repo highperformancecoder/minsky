@@ -91,7 +91,7 @@ namespace minsky
     double m_rotation=0; ///< rotation of icon, in degrees
   protected:
     // these need to be protected, not private to allow the setting of these in constructors.
-    double m_width=0, m_height=0;
+    double m_width=10, m_height=10;
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}

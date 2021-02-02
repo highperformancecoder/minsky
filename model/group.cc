@@ -587,6 +587,7 @@ namespace minsky
     if (fabs(b.x0-b.x1) < l+r || fabs(b.y0-b.y1)<2*z*topMargin) return;
     iWidth(fabs(b.x0-b.x1)/z);
     iHeight((fabs(b.y0-b.y1)-2*topMargin)/z);
+    computeRelZoom(); // needed to ensure grouped items scale properly with resize operation. for ticket 1243    
 
     // rescale contents to fit
     // firstly, recentre the centroid
@@ -600,9 +601,10 @@ namespace minsky
         recentreItems(items,xc,yc);
         recentreItems(groups,xc,yc);
         
+        z=zoomFactor();     // recalculate zoomFactor because relZoom changed above. for ticket 1243
         double x0, x1, y0, y1;
         contentBounds(x0,y0,x1,y1);
-        double sx=(fabs(b.x0-b.x1)-(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);    
+        double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);    
         resizeItems(items,sx,sy);
         resizeItems(groups,sx,sy);
       }
@@ -815,8 +817,8 @@ namespace minsky
     float l, r;
     margins(l,r);    
     double dx=x1-x0, dy=y1-y0;
-    if (iWidth()*z-l-r>0 && dx>0 && dy>0)
-      relZoom=std::min(1.0, std::min((iWidth()*z-l-r)/(z*dx), (iHeight()*z-20*z)/(z*dy))); 
+    if (width()-l-r>0 && dx>0 && dy>0)
+      relZoom=std::min(1.0, std::min((width()-l-r)/(dx), (height()-20*z)/(dy))); 
   }
   
   const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item* ignore) const

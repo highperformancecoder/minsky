@@ -675,39 +675,11 @@ namespace minsky
                     existingParms.emplace(v->valueId(),v->init());
                 }
 		       
-                auto copyOfItems=g->items;
-                auto copyOfGroups=g->groups;				  
-               
                 p->moveContents(*g);
                 deleteItem();
-               
-                selection.clear();  // ensure no previous selection because ungrouped items will be left in selection afterwards.             
-               
-                // leave newly ungrouped items in selection
-                for (auto& i: copyOfItems) {
-                  selection.toggleItemMembership(i);
-                  // ensure that initial values of pasted parameters are correct. for ticket 1243/1258
-                  if (auto v=i->variableCast())
-                    if (v->type()==VariableType::parameter && !existingParms.empty()) 
-                      {
-                        auto it=existingParms.find(v->valueId());
-                        if (it!=existingParms.end()) v->init(it->second);
-                      }
-                }
-	           
-                selection.autoLayout();
-		    
+               	    
 		existingParms.clear();    
-	           
-                // Attach mouse focus only to first visible item in selection. For ticket 1098.      
-                for (auto& i: selection.items)
-                  if (i->visible())
-                    {
-                      setItemFocus(i);
-                      break;
-                    }
-                                   
-                if (!copyOfGroups.empty()) setItemFocus(copyOfGroups[0]);           
+	         
               } else deleteItem();
           }       
         

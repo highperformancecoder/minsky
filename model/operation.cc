@@ -1341,13 +1341,13 @@ namespace minsky
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"frac");
   }
-  template <> void Operation<OperationType::gamma>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::Gamma>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"Γ");
-  }      
+  }     
   template <> void Operation<OperationType::polygamma>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
