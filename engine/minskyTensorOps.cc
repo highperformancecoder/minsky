@@ -527,10 +527,10 @@ namespace minsky
           interpolate=[&](double x){
             // interpret as "year" in a common era date (Gregorian calendar)
             int year=x;
-            int daysInYear=(date(year+1)-date(year)).days();
+            int daysInYear=(date(year+1,Jan,1)-date(year,Jan,1)).days();
             double dayInYearF=daysInYear*(x-year);
             int dayInYear=dayInYearF;
-            ptime xtime(date(year)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
+            ptime xtime(date(year,Jan,1)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
             return interpolateAny(xv, xtime);
           };
           break;
