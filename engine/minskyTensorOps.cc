@@ -25,6 +25,9 @@
 #include "minsky_epilogue.h"
 
 using namespace civita;
+using namespace boost::gregorian;
+using namespace boost::posix_time;
+
 namespace classdesc
 {
   // postpone factory definition to TensorOpFactory()
@@ -468,34 +471,82 @@ namespace minsky
   };
 
   template <>
-  struct GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
+  struct GeneralTensorOp<OperationType::gather>: public civita::DimensionedArgCachedOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
+
+    double interpolateString(double idx) const
+    {
+      if (idx==arg1->size()-1)
+        return (*arg1)[idx];
+      else if (idx<arg1->size()-1)
+        {
+          double s=idx-floor(idx);
+          return (1-s)*(*arg1)[idx]+s*(*arg1)[idx+1];
+        }
+      else if (idx>-1)
+        return (*arg1)[0];
+      else
+        return nan("");
+    }
+
+    double interpolateAny(const XVector& xv, const boost::any& x) const
+    {
+      if (diff(x,xv.front())<0 || diff(x,xv.back())>0)
+        return nan("");
+      else
+        {
+          auto i=xv.begin();
+          for (; i+1!=xv.end() && diff(x,*(i+1))>0; ++i);
+          if (i+1==xv.end())
+            return (*arg1)[arg1->size()-1];
+          double s=diff(x,*i)/diff(*(i+1),*i);
+          return (1-s)*(*arg1)[i-xv.begin()] + s*(*arg1)[i-xv.begin()+1];
+        }
+    }
+
     void computeTensor() const override
     {
+      if (arg1->rank()==0)
+        throw runtime_error("Cannot apply gather to a scalar");
+        
+      if (dimension>=arg1->rank() && arg1->rank()>1)
+        throw runtime_error("Need to specify which dimension to gather");
+
+      size_t d=dimension;
+      if (d>=rank()) d=0;
+      auto& xv=arg1->hypercube().xvectors[d];
+      function<double(double)> interpolate;
+      
+      switch (xv.dimension.type)
+        {
+        case Dimension::string:
+          interpolate=[this](double x){return interpolateString(x);};
+          break;
+        case Dimension::time:
+          interpolate=[&](double x){
+            // interpret as "year" in a common era date (Gregorian calendar)
+            int year=x;
+            int daysInYear=(date(year+1)-date(year)).days();
+            double dayInYearF=daysInYear*(x-year);
+            int dayInYear=dayInYearF;
+            ptime xtime(date(year)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
+            return interpolateAny(xv, xtime);
+          };
+          break;
+        case Dimension::value:
+          interpolate=[&](double x){return interpolateAny(xv,x);};
+          break;
+        }
+      
       for (size_t i=0; i<arg2->size(); ++i)
         {
           auto idx=(*arg2)[i];
           if (isfinite(idx))
-            {
-              if (idx>=0)
-                {
-                  if (idx==arg1->size()-1)
-                    cachedResult[i]=(*arg1)[idx];
-                  else if (idx<arg1->size()-1)
-                    {
-                      double s=idx-floor(idx);
-                      cachedResult[i]=(1-s)*(*arg1)[idx]+s*(*arg1)[idx+1];
-                    }
-                }
-              else if (idx>-1)
-                cachedResult[i]=(*arg1)[0];
-              else
-                cachedResult[i]=nan("");
-            }
+            cachedResult[i]=interpolate(idx);
           else
             cachedResult[i]=nan("");
-        }              
+        }
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
