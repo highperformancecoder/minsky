@@ -89,7 +89,8 @@ namespace minsky
     EvalOp<op> eo;
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
     void setState(const OperationPtr& state) override {eo.state=state;}
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const std::string&, double) override
     {
       if (a1 && a1->rank()>0)
         hypercube(a1->hypercube());
@@ -172,8 +173,9 @@ namespace minsky
   
   template <OperationType::Type op> struct MultiWireBinOp: public TensorBinOp<op>
   {
-    virtual void setArguments(const std::vector<TensorPtr>& a1,
-                              const std::vector<TensorPtr>& a2)
+    void setArguments(const std::vector<TensorPtr>& a1,
+                      const std::vector<TensorPtr>& a2,
+                      const std::string&, double) override
     {
       TensorPtr pa1, pa2;
       if (a1.size()==1)
@@ -192,18 +194,10 @@ namespace minsky
           pa2->setArguments(a2,{},0);
         }
       
-      TensorBinOp<op>::setArguments(pa1, pa2);
+      TensorBinOp<op>::setArguments(pa1, pa2,{},0);
     }
   };
    
-//  template <minsky::OperationType::Type T>
-//  struct ReductionTraits
-//  {
-//    /// x op= y
-//    static void accum(double& x, double y);
-//    static const double init;
-//  };
-
   template <OperationType::Type op> struct GeneralTensorOp;
                                                                                       
   namespace
@@ -392,7 +386,8 @@ namespace minsky
           cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const std::string&, double) override {
       arg1=a1; arg2=a2;
       if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
         if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
@@ -431,7 +426,8 @@ namespace minsky
           cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const std::string&, double) override {
       arg1=a1; arg2=a2;
       auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
       Hypercube hc;
@@ -471,26 +467,29 @@ namespace minsky
   };
 
   template <>
-  struct GeneralTensorOp<OperationType::gather>: public civita::DimensionedArgCachedOp
+  struct GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-
-    double interpolateString(double idx) const
+    size_t dimension=numeric_limits<size_t>::max();
+    std::vector<size_t> offsets; // offsets for each 1D slice of the tensor
+    
+    double interpolateString(double idx, size_t stride, size_t offset) const
     {
-      if (idx==arg1->size()-1)
-        return (*arg1)[idx];
-      else if (idx<arg1->size()-1)
+      auto maxIdx=arg1->rank()==1? arg1->size()-1: arg1->hypercube().xvectors[dimension].size()-1;
+      if (idx==maxIdx)
+        return arg1->atHCIndex(idx*stride+offset);
+      else if (idx<maxIdx)
         {
           double s=idx-floor(idx);
-          return (1-s)*(*arg1)[idx]+s*(*arg1)[idx+1];
+          return (1-s)*arg1->atHCIndex(idx*stride+offset)+s*arg1->atHCIndex((idx+1)*stride+offset);
         }
       else if (idx>-1)
-        return (*arg1)[0];
+        return arg1->atHCIndex(offset);
       else
         return nan("");
     }
 
-    double interpolateAny(const XVector& xv, const boost::any& x) const
+    double interpolateAny(const XVector& xv, const boost::any& x, size_t stride, size_t offset) const
     {
       if (diff(x,xv.front())<0 || diff(x,xv.back())>0)
         return nan("");
@@ -499,9 +498,9 @@ namespace minsky
           auto i=xv.begin();
           for (; i+1!=xv.end() && diff(x,*(i+1))>0; ++i);
           if (i+1==xv.end())
-            return (*arg1)[arg1->size()-1];
+            return arg1->atHCIndex((xv.size()-1)*stride+offset);
           double s=diff(x,*i)/diff(*(i+1),*i);
-          return (1-s)*(*arg1)[i-xv.begin()] + s*(*arg1)[i-xv.begin()+1];
+          return (1-s)*arg1->atHCIndex((i-xv.begin())*stride+offset) + s*arg1->atHCIndex((i-xv.begin()+1)*stride+offset);
         }
     }
 
@@ -516,43 +515,125 @@ namespace minsky
       size_t d=dimension;
       if (d>=rank()) d=0;
       auto& xv=arg1->hypercube().xvectors[d];
-      function<double(double)> interpolate;
+      function<double(double,size_t)> interpolate;
+      
+      size_t stride=1;
+      auto dims=arg1->hypercube().dims();
+      for (size_t i=0; i<d; ++i)
+        stride*=dims[i];
       
       switch (xv.dimension.type)
         {
         case Dimension::string:
-          interpolate=[this](double x){return interpolateString(x);};
+          interpolate=[&](double x, size_t offset){
+            return interpolateString(x,stride,offset);};
           break;
         case Dimension::time:
-          interpolate=[&](double x){
+          interpolate=[&](double x, size_t offset){
             // interpret as "year" in a common era date (Gregorian calendar)
             int year=x;
             int daysInYear=(date(year+1,Jan,1)-date(year,Jan,1)).days();
             double dayInYearF=daysInYear*(x-year);
             int dayInYear=dayInYearF;
             ptime xtime(date(year,Jan,1)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
-            return interpolateAny(xv, xtime);
+            return interpolateAny(xv, xtime, stride, offset);
           };
           break;
         case Dimension::value:
-          interpolate=[&](double x){return interpolateAny(xv,x);};
+          interpolate=[&](double x, size_t offset){
+            return interpolateAny(xv,x,stride,offset);};
           break;
         }
-      
-      for (size_t i=0; i<arg2->size(); ++i)
-        {
-          auto idx=(*arg2)[i];
-          if (isfinite(idx))
-            cachedResult[i]=interpolate(idx);
-          else
-            cachedResult[i]=nan("");
+
+      for (size_t j=0; j<offsets.size(); ++j)
+        for (size_t i=0; i<arg2->size(); ++i)
+          {
+            auto idx=(*arg2)[i];
+            if (isfinite(idx))
+              cachedResult[i+arg2->size()*j]=interpolate(idx, offsets[j]);
+            else
+              cachedResult[i]=nan("");
         }
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const std::string& dim, double) override {
+      
       arg1=a1; arg2=a2;
-      cachedResult.index(arg2->index());
-      cachedResult.hypercube(arg2->hypercube());
+      if (!arg1 || !arg2) return;
+      try
+        {
+          dimension=stoi(dim);
+        }
+      catch (...)
+        {}
+      if (arg1->rank()<=1) dimension=0;
+
+      // find reduced dimensions of arg1
+      auto arg1Dims=arg1->hypercube().dims();
+      size_t lowerStride=1;
+      for (size_t i=0; i<dimension; ++i)
+        lowerStride*=arg1Dims[i];
+      size_t upperStride=1;
+      for (size_t i=dimension+1; i<arg1Dims.size(); ++i)
+        upperStride*=arg1Dims[i];
+
+      // calculate offsets
+      set<size_t> offsetSet;
+      if (arg1->index().empty()) //dense case
+        {
+          for (size_t i=0; i<upperStride; ++i)
+            for (size_t j=0; j<lowerStride; ++j)
+              offsetSet.insert(i*lowerStride*arg1Dims[dimension]+j);
+        }
+      else
+        for (auto i: arg1->index())
+          {
+            auto splitted=arg1->hypercube().splitIndex(i);
+            splitted[dimension]=0;
+            offsetSet.insert(arg1->hypercube().linealIndex(splitted));
+          }
+      offsets.clear(); offsets.insert(offsets.end(), offsetSet.begin(), offsetSet.end());
+
+      // resulting hypercube is a tensor product of arg2 and the reduced arg1.
+      size_t arg2NumElements=arg2->hypercube().numElements();
+      Hypercube hc=arg2->hypercube();
+      hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin(), arg1->hypercube().xvectors.begin()+dimension);
+      hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin()+dimension+1, arg1->hypercube().xvectors.end());
+
+      if (!arg1->index().empty() || !arg2->index().empty())
+        {
+          vector<size_t> arg1Idx(arg1->index().begin(), arg1->index().end()),
+            arg2Idx(arg2->index().begin(), arg2->index().end());
+
+          if (arg1Idx.empty())
+            // no need to duplicate elements along the reduced dimension
+            for (size_t i=0; i<upperStride; ++i)
+              for (size_t j=0; j<lowerStride; ++j)
+                arg1Idx.push_back(i*lowerStride*arg1Dims[dimension]+j);
+          if (arg2Idx.empty())
+            for (size_t i=0; i<arg2->size(); ++i) arg2Idx.push_back(i);
+      
+          set<size_t> resultantIndex;
+          size_t lastOuter=numeric_limits<size_t>::max();
+          for (auto i: arg1Idx)
+            {
+              auto splitIdx=arg1->hypercube().splitIndex(i);
+              size_t outerIdx=0, stride=1;
+              for (size_t j=0; j<arg1->rank(); ++j)
+                if (j!=dimension)
+                  {
+                    outerIdx+=stride*splitIdx[j];
+                    stride*=dim[j];
+                  }
+              if (outerIdx==lastOuter) continue;
+              lastOuter=outerIdx;
+              for (auto j: arg2Idx)
+                resultantIndex.insert(outerIdx*arg2->size()+j);
+            }
+          cachedResult.index(resultantIndex);
+        }
+      cachedResult.hypercube(move(hc));
     }
       
   };
@@ -701,7 +782,7 @@ namespace minsky
               r->setArguments(tfp.tensorsFromPort(*op->ports[1]),op->axis,op->arg);
             break;
             case 3:
-              r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]));
+              r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]),op->axis,op->arg);
               break;
             }
           return r;

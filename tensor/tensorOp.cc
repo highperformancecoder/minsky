@@ -25,7 +25,8 @@ using namespace std;
 
 namespace civita
 {
-  void BinOp::setArguments(const TensorPtr& a1, const TensorPtr& a2)
+  void BinOp::setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                           const std::string& dimension, double)
   {
     arg1=a1; arg2=a2;
     if (arg1 && arg1->rank()!=0)

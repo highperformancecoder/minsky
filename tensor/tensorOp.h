@@ -54,9 +54,9 @@ namespace civita
   public:
     template <class F>
     BinOp(F f, const TensorPtr& arg1={},const TensorPtr& arg2={}):
-      f(f) {BinOp::setArguments(arg1,arg2);}
+      f(f) {BinOp::setArguments(arg1,arg2,{},0);}
     
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override;
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2, const std::string&, double) override;
 
     double operator[](size_t i) const override {
       // missing arguments treated as group identity
