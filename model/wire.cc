@@ -539,7 +539,8 @@ namespace
     {return sqr(x1-x0)+sqr(y1-y0);}
     	
   }    
-  
+
+#undef near
   bool Wire::near(float x, float y) const
   {
     auto c=coords();
