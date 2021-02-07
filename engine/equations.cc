@@ -445,8 +445,9 @@ namespace MathDAG
       }
     if (type()!=integrate && r && r->isFlowVar() && result!=r)
       ev.push_back(EvalOpPtr(copy, state, *r, *result));
-    if (state && !state->ports.empty() && state->ports[0]) 
-      state->ports[0]->setVariableValue(result);
+    if (state && state->portsSize()>0)
+      if (auto statePort=state->ports(0).lock()) 
+        statePort->setVariableValue(result);
     assert(result->idx()>=0);
     doOneEvent(true);
     return result;
@@ -497,7 +498,7 @@ namespace MathDAG
                  VariableDAG* v=integVarMap[iv->valueId()]=
                    dynamic_cast<VariableDAG*>(makeDAG(*iv).get());
                  v->intOp=i;
-                 if (i->ports[1]->wires().size()>0)
+                 if (i->ports(1).lock()->wires().size()>0)
                    {
                      // with integrals, we need to create a distinct variable to
                      // prevent infinite recursion of order() in the case of graph cycles
@@ -507,22 +508,22 @@ namespace MathDAG
                      // manage object's lifetime with expressionCache
                      expressionCache.insertIntegralInput(iv->valueId(), input);
                      try
-                       {input->rhs=getNodeFromWire(*(i->ports[1]->wires()[0]));}
+                       {input->rhs=getNodeFromWire(*(i->ports(1).lock()->wires()[0]));}
                      catch (...)
                        {
                          // try again later
-                         integralInputs.emplace_back(input,i->ports[1]->wires()[0]);
+                         integralInputs.emplace_back(input,i->ports(1).lock()->wires()[0]);
                        }
                    }
                 
-                 if (i->ports[2]->wires().size()>0)
+                 if (i->ports(2).lock()->wires().size()>0)
                    {
                      // second port can be attached to a variable,
                      // which supplies an init string
                      NodePtr init;
                      try
                        {
-                         init=getNodeFromWire(*(i->ports[2]->wires()[0]));
+                         init=getNodeFromWire(*(i->ports(2).lock()->wires()[0]));
                        }
                      catch (...) {}
                      if (auto v=dynamic_cast<VariableDAG*>(init.get()))
@@ -690,8 +691,8 @@ namespace MathDAG
     expressionCache.insert(valueId, r);
     r->init=vv->init;
     if (auto v=minsky.definingVar(valueId))
-      if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports[1]->wires().empty())
-        r->rhs=getNodeFromWire(*v->ports[1]->wires()[0]);
+      if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports(1).lock()->wires().empty())
+        r->rhs=getNodeFromWire(*v->ports(1).lock()->wires()[0]);
     return r;
   }
 
@@ -702,9 +703,9 @@ namespace MathDAG
 
     if (op.type()==OperationType::differentiate)
       {
-        assert(op.ports.size()==2);
+        assert(op.portsSize()==2);
         NodePtr expr;
-        if (op.ports[1]->wires().size()==0 || !(expr=getNodeFromWire(*op.ports[1]->wires()[0])))
+        if (op.ports(1).lock()->wires().size()==0 || !(expr=getNodeFromWire(*op.ports(1).lock()->wires()[0])))
           op.throw_error("derivative not wired");
         try
           {
@@ -726,12 +727,10 @@ namespace MathDAG
         //assert( r->state->type()!=OperationType::numOps);
 
         r->arguments.resize(op.numPorts()-1);
-        for (size_t i=1; i<op.ports.size(); ++i)
-          {
-            auto& p=op.ports[i];
+        for (size_t i=1; i<op.portsSize(); ++i)
+          if (auto p=op.ports(i).lock())
             for (auto w: p->wires())
               r->arguments[i-1].push_back(getNodeFromWire(*w));
-          }
         if (auto uf=dynamic_cast<const UserFunction*>(&op))
           {
             // add external variable references as additional "arguments" in order to determine the correct evaluation order
@@ -753,9 +752,9 @@ namespace MathDAG
   {
     // grab list of input wires
     vector<Wire*> wires;
-    for (unsigned i=1; i<sw.ports.size(); ++i)
+    for (unsigned i=1; i<sw.portsSize(); ++i)
       {
-        auto& w=sw.ports[i]->wires();
+        auto& w=sw.ports(i).lock()->wires();
         if (w.size()==0)
           {
             minsky.displayErrorItem(sw);
@@ -986,16 +985,16 @@ namespace MathDAG
              if (v->type()==VariableType::undefined)
                throw error("variable %s has undefined type",v->name().c_str());
              assert(minsky.variableValues.count(v->valueId()));
-             if (!v->ports.empty())
-               v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
+             if (v->portsSize()>0)
+               v->ports(0).lock()->setVariableValue(minsky.variableValues[v->valueId()]);
            }
          else if (auto pw=(*i)->plotWidgetCast())
-           for (auto& port: pw->ports) 
-             for (auto w: port->wires())
+           for (size_t port=0; port<pw->portsSize(); ++port)
+             for (auto w: pw->ports(port).lock()->wires())
                // ensure plot inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
          else if (auto s=dynamic_cast<Sheet*>(i->get()))
-           for (auto w: s->ports[0]->wires())
+           for (auto w: s->ports(0).lock()->wires())
                // ensure sheet inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
 

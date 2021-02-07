@@ -147,7 +147,7 @@ namespace minsky
   class Copy: public Operation<OperationType::copy>
   {
   public:
-    Units units(bool check) const override {return ports[1]->units(check);}
+    Units units(bool check) const override {return m_ports[1]->units(check);}
   };
 
   class IntOp;
@@ -162,11 +162,14 @@ namespace minsky
     ///integration variable associated with this op.
     CLASSDESC_ACCESS(IntOp);
     friend struct SchemaHelper;
+    bool m_coupled=true;
   public:
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;
 
-    IntOp() {description("");}
+    IntOp() {
+      description("");
+    }
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
       OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
@@ -179,6 +182,12 @@ namespace minsky
     std::string description() const {return intVar? intVar->name(): "";}
     /// @}
 
+    std::weak_ptr<Port> ports(size_t i) const override {
+      // if coupled, the output port is the intVar's output
+      if (i==0 && coupled() && intVar) return intVar->ports(0);
+      return Item::ports(i);
+    }
+      
     std::string valueId() const 
     {return intVar->valueId();}
     
@@ -199,10 +208,7 @@ namespace minsky
     /// toggles coupled state of integration variable. Only valid for integrate
     /// @return coupled state
     bool toggleCoupled();
-    bool coupled() const {
-      assert(intVar);
-      return ports.size()>0 && intVar->ports.size()>0 && ports[0]==intVar->ports[0];
-    }
+    bool coupled() const {return m_coupled;}
     Units units(bool) const override;
 
     void pack(classdesc::pack_t& x, const std::string& d) const override;
@@ -252,7 +258,7 @@ namespace minsky
     /// derivative is defined as the weighted average of the left & right
     /// derivatives, weighted by the respective intervals
     double deriv(double) const;
-    Units units(bool check) const override {return ports[1]->units(check);}
+    Units units(bool check) const override {return m_ports[1]->units(check);}
 
     /// called to initialise a variable value when no input wire is connected
     //    void initOutputVariableValue(VariableValue&) const;

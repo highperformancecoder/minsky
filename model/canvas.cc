@@ -118,8 +118,9 @@ namespace minsky
                        [&](const Items&, Items::const_iterator i)
                        {
                          if ((*i)->group.lock()->displayContents())
-                           for (auto& p: (*i)->ports)
+                           for (size_t pi=0; pi<(*i)->portsSize(); ++pi)
                              {
+                               auto p=(*i)->ports(pi).lock();
                                float d=sqr(p->x()-x)+sqr(p->y()-y);
                                if (d<minD)
                                  {
@@ -145,7 +146,7 @@ namespace minsky
     if (fromPort.get())
       {
           if (auto to=closestInPort(x,y))
-            model->addWire(fromPort,to);
+            model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
         fromPort.reset();
       }
     

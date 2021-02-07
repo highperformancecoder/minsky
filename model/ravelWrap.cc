@@ -83,8 +83,8 @@ namespace
   void Ravel::draw(cairo_t* cairo) const
   {
     double  z=zoomFactor(), r=1.1*z*radius();
-    ports[0]->moveTo(x()+1.1*r, y());
-    ports[1]->moveTo(x()-1.1*r, y());
+    m_ports[0]->moveTo(x()+1.1*r, y());
+    m_ports[1]->moveTo(x()-1.1*r, y());
     if (mouseFocus)
       {
         drawPorts(cairo);
@@ -421,8 +421,8 @@ namespace
   
   void Ravel::exportAsCSV(const string& filename) const
   {
-    if (!ports.empty())
-      if (auto vv=ports[0]->getVariableValue())
+    if (!m_ports.empty())
+      if (auto vv=m_ports[0]->getVariableValue())
         {
           vv->exportAsCSV(filename, ravel::Ravel::description());
           return;
@@ -439,7 +439,7 @@ namespace
 
   Units Ravel::units(bool check) const
   {
-    Units inputUnits=ports[1]->units(check);
+    Units inputUnits=m_ports[1]->units(check);
     if (inputUnits.empty()) return inputUnits;
     size_t multiplier=1;
     // at this stage, gross up exponents by the handle size of each

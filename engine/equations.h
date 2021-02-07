@@ -271,13 +271,13 @@ namespace MathDAG
     std::map<const Node*, NodePtr> reverseLookupCache;
   public:
     std::string key(const OperationBase& x) const {
-      return "op:"+std::to_string(size_t(x.ports[0].get()));
+      return "op:"+std::to_string(size_t(x.ports(0).lock().get()));
     }
     std::string key(const VariableBase& x) const {
       return "var:"+x.valueId();
     }
     std::string key(const SwitchIcon& x) const {
-      return "switch:"+std::to_string(size_t(x.ports[0].get()));
+      return "switch:"+std::to_string(size_t(x.ports(0).lock().get()));
     }
     /// strings refer to variable names
     std::string key(const string& x) const {

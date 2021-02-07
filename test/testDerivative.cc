@@ -51,15 +51,15 @@ struct BinOpFixture: public Minsky
     model->addItem(tcube);
     model->addItem(deriv);
     model->addItem(f);
-    model->addWire(new Wire(t->ports[0],plus->ports[1]));
-    model->addWire(new Wire(offs->ports[0],plus->ports[2]));
-    model->addWire(new Wire(plus->ports[0],tsq->ports[1]));
-    model->addWire(new Wire(plus->ports[0],tsq->ports[2]));
-    model->addWire(new Wire(plus->ports[0],tcube->ports[1]));
-    model->addWire(new Wire(tsq->ports[0],tcube->ports[2]));
-    model->addWire(new Wire(deriv->ports[0], integ.ports[1]));
+    model->addWire(new Wire(t->ports(0),plus->ports(1)));
+    model->addWire(new Wire(offs->ports(0),plus->ports(2)));
+    model->addWire(new Wire(plus->ports(0),tsq->ports(1)));
+    model->addWire(new Wire(plus->ports(0),tsq->ports(2)));
+    model->addWire(new Wire(plus->ports(0),tcube->ports(1)));
+    model->addWire(new Wire(tsq->ports(0),tcube->ports(2)));
+    model->addWire(new Wire(deriv->ports(0), integ.ports(1)));
     model->addItem(df);
-    model->addWire(new Wire(deriv->ports[0], df->ports[1]));
+    model->addWire(new Wire(deriv->ports(0), df->ports(1)));
     
     stepMin=1e-12;
     stepMax=1e-9;
@@ -89,10 +89,10 @@ SUITE(Derivative)
   {
     OperationPtr minus{OperationType::subtract};
     model->addItem(minus);
-    model->addWire(new Wire(t->ports[0],minus->ports[1]));
-    model->addWire(new Wire(tsq->ports[0],minus->ports[2]));
-    model->addWire(new Wire(minus->ports[0], deriv->ports[1]));
-    model->addWire(new Wire(minus->ports[0], f->ports[1]));
+    model->addWire(new Wire(t->ports(0),minus->ports(1)));
+    model->addWire(new Wire(tsq->ports(0),minus->ports(2)));
+    model->addWire(new Wire(minus->ports(0), deriv->ports(1)));
+    model->addWire(new Wire(minus->ports(0), f->ports(1)));
 
     reset(); 
     nSteps=1;step(); // ensure f is evaluated
@@ -109,13 +109,13 @@ SUITE(Derivative)
   {
     OperationPtr pow{OperationType::pow};
     model->addItem(pow);
-    model->addWire(new Wire(plus->ports[0],pow->ports[1]));
-    model->addWire(new Wire(pow->ports[0], deriv->ports[1]));
-    model->addWire(new Wire(pow->ports[0], f->ports[1]));
+    model->addWire(new Wire(plus->ports(0),pow->ports(1)));
+    model->addWire(new Wire(pow->ports(0), deriv->ports(1)));
+    model->addWire(new Wire(pow->ports(0), f->ports(1)));
 
     // firstly check when base port is unwired
     CHECK_THROW(reset(),std::exception);
-    model->addWire(new Wire(tsq->ports[0],pow->ports[2]));
+    model->addWire(new Wire(tsq->ports(0),pow->ports(2)));
 
     reset(); 
     nSteps=1;step(); // ensure f is evaluated
@@ -136,15 +136,15 @@ SUITE(Derivative)
     model->addItem(exp);
 
 
-    model->addWire(new Wire(plus->ports[0],exp->ports[1]));
-    model->addWire(new Wire(exp->ports[0],log->ports[1]));
-    model->addWire(new Wire(log->ports[0], deriv->ports[1]));
-    model->addWire(new Wire(log->ports[0], f->ports[1]));
+    model->addWire(new Wire(plus->ports(0),exp->ports(1)));
+    model->addWire(new Wire(exp->ports(0),log->ports(1)));
+    model->addWire(new Wire(log->ports(0), deriv->ports(1)));
+    model->addWire(new Wire(log->ports(0), f->ports(1)));
 
     // firstly check when base port is unwired 
     CHECK_THROW(reset(),std::exception);
     
-    model->addWire(new Wire(tsq->ports[0],log->ports[2]));
+    model->addWire(new Wire(tsq->ports(0),log->ports(2)));
 
     
     reset(); 
@@ -166,10 +166,10 @@ SUITE(Derivative)
         OperationPtr opp{op};
         model->addItem(opp);
         
-        model->addWire(new Wire(t->ports[0],opp->ports[1]));
-        model->addWire(new Wire(tsq->ports[0],opp->ports[2]));
-        model->addWire(new Wire(opp->ports[0], deriv->ports[1]));
-        model->addWire(new Wire(opp->ports[0], f->ports[1]));
+        model->addWire(new Wire(t->ports(0),opp->ports(1)));
+        model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
+        model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
+        model->addWire(new Wire(opp->ports(0), f->ports(1)));
 
         CHECK_THROW(reset(),error);
         model->deleteItem(*opp);
@@ -183,11 +183,11 @@ SUITE(Derivative)
         OperationPtr opp{op};
         model->addItem(opp);
        
-        model->addWire(new Wire(t->ports[0],opp->ports[1]));
-        if (opp->ports.size()>2)
-          model->addWire(new Wire(tsq->ports[0],opp->ports[2]));
-        model->addWire(new Wire(opp->ports[0], deriv->ports[1]));
-        model->addWire(new Wire(opp->ports[0], f->ports[1]));
+        model->addWire(new Wire(t->ports(0),opp->ports(1)));
+        if (opp->portsSize()>2)
+          model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
+        model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
+        model->addWire(new Wire(opp->ports(0), f->ports(1)));
    
         reset(); 
         nSteps=1;step(); // ensure f is evaluated
@@ -200,15 +200,15 @@ SUITE(Derivative)
       {
         OperationPtr opp{op};
         model->addItem(opp);
-        model->addWire(new Wire(opp->ports[0], deriv->ports[1]));
-        model->addWire(new Wire(opp->ports[0], f->ports[1]));
+        model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
+        model->addWire(new Wire(opp->ports(0), f->ports(1)));
 
         // no inputs should evaluate to zero
         reset(); 
         nSteps=1;step(); // ensure f is evaluated
         CHECK_EQUAL(0, df->value());
         
-        auto opWire=model->addWire(new Wire(t->ports[0],opp->ports[1]));
+        auto opWire=model->addWire(new Wire(t->ports(0),opp->ports(1)));
 
         
         // check first with single input wired
@@ -224,7 +224,7 @@ SUITE(Derivative)
 
         // check other single input wired
         model->removeWire(*opWire);
-        model->addWire(new Wire(tsq->ports[0],opp->ports[2]));
+        model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
         reset(); 
         nSteps=1;step(); // ensure f is evaluated
         // set the constant of integration to the value of f at t=0
@@ -235,7 +235,7 @@ SUITE(Derivative)
         CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
        
         // now check with two inputs wired
-        model->addWire(new Wire(t->ports[0],opp->ports[1]));
+        model->addWire(new Wire(t->ports(0),opp->ports(1)));
         reset(); 
         nSteps=1;step(); // ensure f is evaluated
         // set the constant of integration to the value of f at t=0
@@ -273,9 +273,9 @@ SUITE(Derivative)
           funOp.reset(OperationBase::create(OperationType::Type(op)));
           garbageCollect();
           model->addItem(funOp);
-          model->addWire(new Wire(tcube->ports[0], funOp->ports[1]));
-          model->addWire(new Wire(funOp->ports[0], f->ports[1]));
-          model->addWire(new Wire(funOp->ports[0], deriv->ports[1]));
+          model->addWire(new Wire(tcube->ports(0), funOp->ports(1)));
+          model->addWire(new Wire(funOp->ports(0), f->ports(1)));
+          model->addWire(new Wire(funOp->ports(0), deriv->ports(1)));
           save(OperationType::typeName(op)+".mky");
           switch (OperationType::Type(op))
             {

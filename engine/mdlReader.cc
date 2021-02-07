@@ -171,7 +171,7 @@ namespace minsky
           VariablePtr rhs(VariableBase::flow, definition);
           group.addItem(rhs);
           if (port)
-            group.addWire(rhs->ports[0], port);
+            group.addWire(rhs->ports(0).lock(), port);
           return;
         }
       
@@ -187,7 +187,7 @@ namespace minsky
             }
        }
       if (port)
-        group.addWire(function->ports[0], port);
+        group.addWire(function->ports(0), port);
     }
     
     void defineLookupFunction(Group& group, const std::string& name, std::string data)
@@ -338,7 +338,7 @@ namespace minsky
             auto& v=intOp->intVar;
             integrationVariables.insert(name);
             auto integrand=match[1].str();
-            addDefinitionToPort(group, intOp->ports[1], "Integrand of "+name,integrand);
+            addDefinitionToPort(group, intOp->ports(1).lock(), "Integrand of "+name,integrand);
 
             auto init=match[2].str();
             if (regex_match(init,match,identifier))
@@ -346,7 +346,7 @@ namespace minsky
             else
               {
                 // we need to add another variable, and attach it to a function block
-                addDefinitionToPort(group, intOp->ports[2], "Initial value of "+name, init);
+                addDefinitionToPort(group, intOp->ports(2).lock(), "Initial value of "+name, init);
               }
             try  // absorb any errors in units - we have a chance to fix these later
               {
@@ -390,7 +390,7 @@ namespace minsky
           {
             VariablePtr v(VariableBase::flow, name);
             group.addItem(v);
-            addDefinitionToPort(group, v->ports[1], "Def: "+name, definition);
+            addDefinitionToPort(group, v->ports(1).lock(), "Def: "+name, definition);
             try  // absorb any errors in units - we have a chance to fix these later
               {
                 v->setUnits(units);

@@ -55,20 +55,20 @@ VariableBase::~VariableBase() {}
 void VariableBase::addPorts()
 {
 #ifndef NDEBUG
-  for (auto& i: ports)
+  for (auto& i: m_ports)
     assert(i.use_count()==1);
 #endif
-  ports.clear();
+  m_ports.clear();
   if (numPorts()>0)
-    ports.emplace_back(new Port(*this,Port::noFlags));
+    m_ports.emplace_back(new Port(*this,Port::noFlags));
   for (size_t i=1; i<numPorts(); ++i)
-    ports.emplace_back
+    m_ports.emplace_back
       (new Port(*this, Port::inputPort));
 }
 
 bool VariableBase::inputWired() const
 {
-  return ports.size()>1 && !ports[1]->wires().empty();
+  return m_ports.size()>1 && !m_ports[1]->wires().empty();
 }
 
 std::vector<std::string> VariableBase::accessibleVars() const
@@ -218,10 +218,10 @@ string VariableBase::init() const
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end()) {   	
     // set initial value of int var to init value of input to second port. for ticket 1137
-    if (!ports[0]->wires().empty())
-      if (auto i=dynamic_cast<IntOp*>(&ports[0]->wires()[0]->to()->item()))
-        if (i->ports.size()>2 && !i->ports[2]->wires().empty())
-          if (auto lhsVar=i->ports[2]->wires()[0]->from()->item().variableCast()) 
+    if (!m_ports[0]->wires().empty())
+      if (auto i=dynamic_cast<IntOp*>(&m_ports[0]->wires()[0]->to()->item()))
+        if (i->portsSize()>2 && !i->ports(2).lock()->wires().empty())
+          if (auto lhsVar=i->ports(2).lock()->wires()[0]->from()->item().variableCast()) 
             {
               value->second->init=lhsVar->vValue()->init;
               // Since integral takes initial value from second port, the intVar should have the same intial value. for ticket 1257
@@ -334,8 +334,8 @@ Units VariableBase::units(bool check) const
         }
       else
         // updates units in the process
-        if (ports.size()>1 && !ports[1]->wires().empty())
-          vv->units=ports[1]->wires()[0]->from()->item().units(check);
+        if (m_ports.size()>1 && !m_ports[1]->wires().empty())
+          vv->units=m_ports[1]->wires()[0]->from()->item().units(check);
         else if (auto v=cminsky().definingVar(valueId()))
           vv->units=v->units(check);
 
@@ -398,13 +398,13 @@ void VariablePtr::retype(VariableBase::Type type)
     {
       reset(VariableBase::create(type));
       static_cast<VariableBase&>(*get()) = *tmp;
-      for (size_t i=0; i<get()->ports.size() && i< tmp->ports.size(); ++i)
-        for (auto w: tmp->ports[i]->wires())
+      for (size_t i=0; i<get()->portsSize() && i< tmp->portsSize(); ++i)
+        for (auto w: tmp->ports(i).lock()->wires())
           {
-            if (get()->ports[i]->input())
-              w->moveToPorts(w->from(), get()->ports[i]);
+            if (get()->ports(i).lock()->input())
+              w->moveToPorts(w->from(), get()->ports(i).lock());
             else
-              w->moveToPorts(get()->ports[i], w->to());
+              w->moveToPorts(get()->ports(i).lock(), w->to());
           }
       get()->ensureValueExists(nullptr,"");
     }
@@ -416,13 +416,13 @@ bool VariableBase::visible() const
   //toplevel i/o items always visible
   if ((!g || !g->group.lock()) && g==controller.lock()) return true;
   // ensure pars, constants and flows with invisible out wires are made invisible. for ticket 1275  
-  if ((type()==constant || type()==parameter) && !ports[0]->wires().empty())
+  if ((type()==constant || type()==parameter) && !m_ports[0]->wires().empty())
   {
-	if (std::any_of(ports[0]->wires().begin(),ports[0]->wires().end(), [](Wire* w){return w->attachedToDefiningVar() && !w->visible();})) return false;
+	if (std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(), [](Wire* w){return w->attachedToDefiningVar() && !w->visible();})) return false;
 	else return true;
   }  
   // ensure flow vars with out wires remain visible. for ticket 1275
-  if (attachedToDefiningVar() && !ports[0]->wires().empty()) return true;  
+  if (attachedToDefiningVar() && !m_ports[0]->wires().empty()) return true;  
   if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
      if (i->attachedToDefiningVar()) return true;
   return !controller.lock() && Item::visible();
@@ -611,11 +611,11 @@ void VariableBase::draw(cairo_t *cairo) const
 
     double x0=w, y0=0, x1=-w+2, y1=0;
     double sa=sin(angle), ca=cos(angle);
-    if (ports.size()>0)
-      ports[0]->moveTo(x()+(x0*ca-y0*sa), 
+    if (m_ports.size()>0)
+      m_ports[0]->moveTo(x()+(x0*ca-y0*sa), 
                        y()+(y0*ca+x0*sa));
-    if (ports.size()>1)
-      ports[1]->moveTo(x()+(x1*ca-y1*sa), 
+    if (m_ports.size()>1)
+      m_ports[1]->moveTo(x()+(x1*ca-y1*sa), 
                        y()+(y1*ca+x1*sa));
 
     auto g=group.lock();

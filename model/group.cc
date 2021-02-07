@@ -93,13 +93,15 @@ namespace minsky
   void asgClonedPort(shared_ptr<Port>& p, const map<Item*,ItemPtr>& cloneMap)
   {
     auto clone=cloneMap.find(&p->item());
-    auto& oports=p->item().ports;
     if (clone!=cloneMap.end())
       {
-        auto opIt=find(oports.begin(), oports.end(), p);
-        assert(opIt != oports.end());
-        // set the new port to have the equivalent position in the clone
-        p=clone->second->ports[opIt-oports.begin()];
+        for (size_t i=0; i<p->item().portsSize(); ++i)
+          if (p->item().ports(i).lock()==p)
+            {
+              // set the new port to have the equivalent position in the clone
+              p=clone->second->ports(i).lock();
+              assert(p);
+            }
       }
   }
 
@@ -315,8 +317,9 @@ namespace minsky
       }
      
     // move wire to highest common group
-    for (auto& p: it->ports)
+    for (size_t i=0; i<it->portsSize(); ++i)
       {
+        auto p=it->ports(i).lock();
         assert(p);
         for (auto& w: p->wires())
           {
@@ -372,8 +375,8 @@ namespace minsky
     // wires to split first
     set<Wire*> wiresToSplit;
     for (auto& i: items)
-      for (auto& p: i->ports)
-        for (auto w: p->wires())
+      for (size_t p=0; p<i->portsSize(); ++p)
+        for (auto w: i->ports(p).lock()->wires())
           wiresToSplit.insert(w);
 
     for (auto w: wiresToSplit)
@@ -383,38 +386,38 @@ namespace minsky
     auto varsToCheck=createdIOvariables;
     for (auto& iv: varsToCheck)
       {
-        assert(iv->ports[1]->input() && !iv->ports[1]->multiWireAllowed());
+        assert(iv->ports(1).lock()->input() && !iv->ports(1).lock()->multiWireAllowed());
         // firstly join wires that don't cross boundaries
         // determine if this is input or output var
-        if (iv->ports[1]->wires().size()>0)
+        if (iv->ports(1).lock()->wires().size()>0)
           {
-            auto fromGroup=iv->ports[1]->wires()[0]->from()->item().group.lock();
+            auto fromGroup=iv->ports(1).lock()->wires()[0]->from()->item().group.lock();
             if (fromGroup.get() == this)
               {
                 // not an input var
-                for (auto& w: iv->ports[0]->wires())
+                for (auto& w: iv->ports(0).lock()->wires())
                   if (w->to()->item().group.lock().get() == this)
                     // join wires, as not crossing boundary
                     {
                       auto to=w->to();
-                      iv->ports[0]->eraseWire(w);
+                      iv->ports(0).lock()->eraseWire(w);
                       removeWire(*w);
-                      addWire(iv->ports[1]->wires()[0]->from(), to);
+                      addWire(iv->ports(1).lock()->wires()[0]->from(), to);
                     }
               }
             else
-              for (auto& w: iv->ports[0]->wires())
+              for (auto& w: iv->ports(0).lock()->wires())
                 if (w->to()->item().group.lock() == fromGroup)
                   // join wires, as not crossing boundary
                   {
                     auto to=w->to();
-                    iv->ports[0]->eraseWire(w);
+                    iv->ports(0).lock()->eraseWire(w);
                     globalGroup().removeWire(*w);
-                    adjustWiresGroup(*addWire(iv->ports[1]->wires()[0]->from(), to));
+                    adjustWiresGroup(*addWire(iv->ports(1).lock()->wires()[0]->from(), to));
                   }
           }
         
-        if (iv->ports[0]->wires().empty() || iv->ports[1]->wires().empty())
+        if (iv->ports(0).lock()->wires().empty() || iv->ports(1).lock()->wires().empty())
           removeItem(*iv);
       }
   }
@@ -644,10 +647,11 @@ namespace minsky
     return wires.back();
   }
   WirePtr GroupItems::addWire
-  (const shared_ptr<Port>& fromP, const shared_ptr<Port>& toP, const vector<float>& coords)
+  (const weak_ptr<Port>& fromPw, const weak_ptr<Port>& toPw, const vector<float>& coords)
   {
+    auto fromP=fromPw.lock(), toP=toPw.lock();
     // disallow self-wiring
-    if (&fromP->item()==&toP->item()) 
+    if (!fromP || !toP || &fromP->item()==&toP->item()) 
       return WirePtr();
 
     // wire must go from an output port to an input port

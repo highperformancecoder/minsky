@@ -82,12 +82,12 @@ namespace minsky
   }
 
 
-  Wire::Wire(const shared_ptr<Port>& from, const shared_ptr<Port>& to, 
+  Wire::Wire(const weak_ptr<Port>& from, const weak_ptr<Port>& to, 
          const vector<float>& a_coords): 
       m_from(from), m_to(to) 
   {
-    if (!from || !to) throw error("wiring defunct ports");
-    if (from->input() || !to->input()) throw error("invalid ports for wire");
+    if (!from.lock() || !to.lock()) throw error("wiring defunct ports");
+    if (from.lock()->input() || !to.lock()->input()) throw error("invalid ports for wire");
     coords(a_coords);
     m_from.lock()->m_wires.push_back(this);
     m_to.lock()->m_wires.push_back(this);
@@ -493,18 +493,18 @@ namespace
             if (i==fg->wires.end())
               {
                 fg->addOutputVar();
-                assert(fg->outVariables.back()->ports.size()>1);
-                fg->addWire(new Wire(from(),fg->outVariables.back()->ports[1]));
-                moveToPorts(fg->outVariables.back()->ports[0], to());
+                assert(fg->outVariables.back()->portsSize()>1);
+                fg->addWire(new Wire(from(),fg->outVariables.back()->ports(1)));
+                moveToPorts(fg->outVariables.back()->ports(0).lock(), to());
               }
             // check if this wire is in to group
             i=find_if(tg->wires.begin(), tg->wires.end(), cmp);
             if (i==tg->wires.end())
               {
                 tg->addInputVar();
-                assert(tg->inVariables.back()->ports.size()>1);
-                tg->addWire(new Wire(tg->inVariables.back()->ports[0],to()));
-                moveToPorts(from(), tg->inVariables.back()->ports[1]);
+                assert(tg->inVariables.back()->portsSize()>1);
+                tg->addWire(new Wire(tg->inVariables.back()->ports(0),to()));
+                moveToPorts(from(), tg->inVariables.back()->ports(1).lock());
               }
           }
   }

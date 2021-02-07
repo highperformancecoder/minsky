@@ -132,10 +132,10 @@ namespace schema3
         return i->second;
     }
     int operator[](void* o) {return at(o);}
-    vector<int> at(const minsky::ItemPortVector& v) {
+    vector<int> at(const minsky::Item& item) {
       vector<int> r;
-      for (auto& i: v)
-        r.push_back(at(i.get()));
+      for (size_t i=0; i<item.portsSize(); ++i)
+        r.push_back(at(item.ports(i).lock().get()));
       return r;
     }
   
@@ -145,15 +145,15 @@ namespace schema3
       auto j=dynamic_cast<T*>(i);
       if (j)
         {
-          items.emplace_back(at(i), *j, at(j->ports));
+          items.emplace_back(at(i), *j, at(*j));
           if (auto g=dynamic_cast<minsky::GodleyIcon*>(i))
             {
               // insert port references from flow/stock vars
               items.back().ports.clear();
               for (auto& v: g->flowVars())
-                items.back().ports.push_back(at(v->ports[1].get()));
+                items.back().ports.push_back(at(v->ports(1).lock().get()));
               for (auto& v: g->stockVars())
-                items.back().ports.push_back(at(v->ports[0].get()));
+                items.back().ports.push_back(at(v->ports(0).lock().get()));
             }
           if (auto d=dynamic_cast<minsky::DataOp*>(i))
             {
@@ -496,7 +496,7 @@ namespace schema3
   
   void Minsky::populateGroup(minsky::Group& g) const {
     map<int, minsky::ItemPtr> itemMap;
-    map<int, shared_ptr<minsky::Port>> portMap;
+    map<int, weak_ptr<minsky::Port>> portMap;
     map<int, schema3::Item> schema3VarMap;
     MinskyItemFactory factory;
     map<int,LockGroupFactory> lockGroups;
@@ -505,8 +505,8 @@ namespace schema3
       if (auto newItem=itemMap[i.id]=g.addItem(factory.create(i.type)))
         {
           populateItem(*newItem,i);
-          for (size_t j=0; j<min(newItem->ports.size(), i.ports.size()); ++j)
-            portMap[i.ports[j]]=newItem->ports[j];
+          for (size_t j=0; j<min(newItem->portsSize(), i.ports.size()); ++j)
+            portMap[i.ports[j]]=newItem->ports(j);
           if (newItem->variableCast())
             schema3VarMap[i.id]=i;
         }
@@ -531,7 +531,7 @@ namespace schema3
                     integ->toggleCoupled();
                 // ensure that the correct port is inserted (may have been the deleted intVar)
                 if (!i.ports.empty())
-                  portMap[i.ports[0]]=integ->ports[0];
+                  portMap[i.ports[0]]=integ->coupled()? integ->intVar->ports(0): integ->ports(0);
               }
           }
         if (i.type=="GodleyIcon")
@@ -544,7 +544,7 @@ namespace schema3
                   {
                     auto newP=portMap.find(p);
                     if (newP!=portMap.end())
-                      if (auto ip=g.findItem(newP->second->item()))
+                      if (auto ip=g.findItem(newP->second.lock()->item()))
                         if (auto v=dynamic_pointer_cast<minsky::VariableBase>(ip))
                           switch (v->type())
                             {
@@ -577,7 +577,6 @@ namespace schema3
     for (auto& w: wires)
       if (portMap.count(w.to) && portMap.count(w.from))
         {
-          assert(portMap[w.from].use_count()>1 && portMap[w.to].use_count()>1);
           populateWire
             (*g.addWire(new minsky::Wire(portMap[w.from],portMap[w.to])),w);
         }

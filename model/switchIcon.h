@@ -35,13 +35,13 @@ namespace minsky
         number of cases switched between.
         If input <1, case 0 is chosen, if input >=numCases-1, case numCases-1 is chosen
     */
-    unsigned numCases() const {return ports.size()-2;}
+    unsigned numCases() const {return m_ports.size()-2;}
     void setNumCases(unsigned);
     /// @}
 
     /// value of switch according to current inputs
     unsigned switchValue() const;
-    double value() const override {return ports[switchValue()+2]->value();}
+    double value() const override {return m_ports[switchValue()+2]->value();}
     
     const SwitchIcon* switchIconCast() const override {return this;}
     SwitchIcon* switchIconCast() override {return this;}    

@@ -125,10 +125,10 @@ namespace minsky
     // now bind items without outputs to this fixtures
     for (auto& i: g.items)
       {
-        if (dynamic_cast<UserFunction*>(i.get()) && i->ports[0]->wires().empty())
+        if (dynamic_cast<UserFunction*>(i.get()) && i->ports(0).lock()->wires().empty())
           gg.add_edge(vertexMap[&functions], vertexMap[i.get()]);
         else if (auto v=i->variableCast())
-          if (i->ports[0]->wires().empty() || !i->ports[1]->wires().empty())
+          if (i->ports(0).lock()->wires().empty() || !i->ports(1).lock()->wires().empty())
             switch (v->type())
               {
               case VariableType::parameter:

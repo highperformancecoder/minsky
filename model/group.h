@@ -165,12 +165,12 @@ namespace minsky
     WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
                 const std::vector<float>& coords = {})
     {
-      if (toPortIdx>=to.ports.size()) return WirePtr();
-      return addWire(from.ports[0], to.ports[toPortIdx], coords);
+      if (toPortIdx>=to.portsSize()) return WirePtr();
+      return addWire(from.ports(0), to.ports(toPortIdx), coords);
     }
 
-    WirePtr addWire(const std::shared_ptr<Port>& from,
-                    const std::shared_ptr<Port>& to, 
+    WirePtr addWire(const std::weak_ptr<Port>& from,
+                    const std::weak_ptr<Port>& to, 
                     const std::vector<float>& coords = {}); 
     
     /// total number of items in this and child groups

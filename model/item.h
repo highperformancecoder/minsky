@@ -92,6 +92,7 @@ namespace minsky
   protected:
     // these need to be protected, not private to allow the setting of these in constructors.
     double m_width=10, m_height=10;
+    ItemPortVector m_ports;
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
@@ -101,7 +102,24 @@ namespace minsky
     bool onBorder=false; ///< true to indicate mouse hovering over border
     std::string deleteCallback; /// callback to be run when item deleted from group
     /// owning group of this item.
-    classdesc::Exclude<std::weak_ptr<Group>> group; 
+    classdesc::Exclude<std::weak_ptr<Group>> group;
+
+    /// return a weak reference to the ith port
+    virtual std::weak_ptr<Port> ports(size_t i) const {
+      assert(i<m_ports.size());
+      return m_ports[i];
+    }
+    /// number of ports
+    size_t portsSize() const {return m_ports.size();}
+    float portX(size_t i) {
+      if (auto p=ports(i).lock()) return p->x();
+      return 0;
+    }
+   
+    float portY(size_t i) {
+      if (auto p=ports(i).lock()) return p->y();
+      return 0;
+    }
     /// canvas bounding box.
     mutable BoundingBox bb;
     bool contains(float xx, float yy) {
@@ -162,7 +180,6 @@ namespace minsky
     virtual PlotWidget* plotWidgetCast() {return nullptr;}
     /// @}            
 
-    ItemPortVector ports;
     virtual float x() const; 
     virtual float y() const;
     virtual float zoomFactor() const;

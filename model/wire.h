@@ -55,7 +55,7 @@ namespace minsky
   public:
 
     Wire() {}
-    Wire(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to, 
+    Wire(const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to, 
          const std::vector<float>& a_coords=std::vector<float>()); 
    ~Wire();
 
