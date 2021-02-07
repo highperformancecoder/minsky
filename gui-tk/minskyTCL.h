@@ -122,9 +122,9 @@ namespace minsky
     bool getPlotTabItemAt(float x, float y)
     {
       // deregister any old definitions, as item is polymorphic
-      TCL_obj_deregister("minsky.plotTab.itemFocus");
+      TCL_obj_deregister("minsky.plotTab.item");
       plotTab.getItemAt(x,y);
-      registerRef(plotTab.item,"minsky.plotTab.itemFocus");
+      registerRef(plotTab.item,"minsky.plotTab.item");
       return plotTab.item.get();
     }        
     
