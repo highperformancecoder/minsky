@@ -62,8 +62,8 @@ namespace minsky
     void moveTo(float x, float y);  
          
     float moveOffsX, moveOffsY,xItem,yItem;
-    ItemPtr itemFocus;      
-    void getItemAt(float x, float y) {itemFocus=itemAt(x,y);}  
+    ItemPtr itemFocus,item;      
+    void getItemAt(float x, float y) {item=itemAt(x,y);}  
     enum ClickType {background, internal};    
     ClickType clickType(double x, double y) const;         
     virtual void draw(cairo_t* cairo); 

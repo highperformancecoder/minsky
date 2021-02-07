@@ -37,7 +37,7 @@ namespace minsky
   
   void GodleyTab::toggleGodleyTabValueDisplay() const      
   {
-    if (auto g=dynamic_cast<GodleyIcon*>(itemFocus.get())) g->toggleGodleyTabValueDisplay();
+    if (auto g=dynamic_cast<GodleyIcon*>(item.get())) g->toggleGodleyTabValueDisplay();
   }	  	
   
   ItemPtr GodleyTab::itemAt(float x, float y)

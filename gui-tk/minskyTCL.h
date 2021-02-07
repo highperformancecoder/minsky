@@ -124,8 +124,8 @@ namespace minsky
       // deregister any old definitions, as item is polymorphic
       TCL_obj_deregister("minsky.plotTab.itemFocus");
       plotTab.getItemAt(x,y);
-      registerRef(plotTab.itemFocus,"minsky.plotTab.itemFocus");
-      return plotTab.itemFocus.get();
+      registerRef(plotTab.item,"minsky.plotTab.itemFocus");
+      return plotTab.item.get();
     }        
     
     bool getGodleyTabItemAt(float x, float y)
@@ -133,8 +133,8 @@ namespace minsky
       // deregister any old definitions, as item is polymorphic
       TCL_obj_deregister("minsky.godleyTab.item");
       godleyTab.getItemAt(x,y);
-      registerRef(godleyTab.itemFocus,"minsky.godleyTab.item");
-      return godleyTab.itemFocus.get();
+      registerRef(godleyTab.item,"minsky.godleyTab.item");
+      return godleyTab.item.get();
     }    
 
     // call item->retype, and update the canvas.item ptr with the new object
