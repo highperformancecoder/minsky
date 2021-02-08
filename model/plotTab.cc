@@ -38,7 +38,7 @@ namespace minsky
 
   void PlotTab::togglePlotDisplay() const      
   {
-    if (auto p=itemFocus->plotWidgetCast()) p->togglePlotTabDisplay();
+    if (auto p=item->plotWidgetCast()) p->togglePlotTabDisplay();
   }	
 	 
   void PlotTab::draw(cairo_t* cairo)
