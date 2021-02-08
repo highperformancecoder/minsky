@@ -476,17 +476,17 @@ namespace minsky
     double interpolateString(double idx, size_t stride, size_t offset) const
     {
       auto maxIdx=arg1->rank()==1? arg1->size()-1: arg1->hypercube().xvectors[dimension].size()-1;
+      if (idx<=-1 || idx>maxIdx)
+        return nan("");
       if (idx==maxIdx)
         return arg1->atHCIndex(idx*stride+offset);
-      else if (idx<maxIdx)
+      else if (idx<0)
+        return arg1->atHCIndex(offset);
+      else 
         {
           double s=idx-floor(idx);
           return (1-s)*arg1->atHCIndex(idx*stride+offset)+s*arg1->atHCIndex((idx+1)*stride+offset);
         }
-      else if (idx>-1)
-        return arg1->atHCIndex(offset);
-      else
-        return nan("");
     }
 
     double interpolateAny(const XVector& xv, const boost::any& x, size_t stride, size_t offset) const
@@ -506,12 +506,6 @@ namespace minsky
 
     void computeTensor() const override
     {
-      if (arg1->rank()==0)
-        throw runtime_error("Cannot apply gather to a scalar");
-        
-      if (dimension>=arg1->rank() && arg1->rank()>1)
-        throw runtime_error("Need to specify which dimension to gather");
-
       size_t d=dimension;
       if (d>=rank()) d=0;
       auto& xv=arg1->hypercube().xvectors[d];
@@ -563,11 +557,21 @@ namespace minsky
       if (!arg1 || !arg2) return;
       try
         {
-          dimension=stoi(dim);
+          dimension=arg1->rank();
+          auto& xv=arg1->hypercube().xvectors;
+          for (auto i=xv.begin(); i!=xv.end(); ++i)
+            if (i->name==dim)
+              dimension=i-xv.begin();
         }
       catch (...)
         {}
-      if (arg1->rank()<=1) dimension=0;
+      if (arg1->rank()==0)
+        throw runtime_error("Cannot apply gather to a scalar");
+        
+      if (arg1->rank()<=1)
+        dimension=0;
+      if (dimension>=arg1->rank())
+        throw runtime_error("Need to specify which dimension to gather");
 
       // find reduced dimensions of arg1
       auto arg1Dims=arg1->hypercube().dims();

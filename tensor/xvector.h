@@ -60,7 +60,7 @@ namespace civita
   {
     typedef std::vector<boost::any> V;
     XVector() {}
-    XVector(const std::string& name, const Dimension& dimension={}, const V& v={}): NamedDimension(name), V(v) {}
+    XVector(const std::string& name, const Dimension& dimension={}, const V& v={}): NamedDimension(name,dimension), V(v) {}
     XVector(const std::string& name, const Dimension& dimension, const std::initializer_list<const char*>& v): NamedDimension(name, dimension)
     {for (auto i: v) push_back(i);}
     bool operator==(const XVector& x) const;

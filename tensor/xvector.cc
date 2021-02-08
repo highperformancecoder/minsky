@@ -233,7 +233,10 @@ namespace civita
     if (auto vx=any_cast<double>(&x))
       return *vx-any_cast<double>(y);
     if (auto vx=any_cast<ptime>(&x))
-      return 1e-9*(*vx-any_cast<ptime>(y)).total_nanoseconds();
+      {
+        auto y1=vx->date().year(), y2=any_cast<ptime>(y).date().year();
+        return 1e-9*(*vx-any_cast<ptime>(y)).total_nanoseconds();
+      }
     throw error("unsupported type");
   }
 

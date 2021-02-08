@@ -396,6 +396,201 @@ SUITE(TensorOps)
       CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
     }
 
+  
+  
+  TEST_FIXTURE(TestFixture, indexGatherTensorStringArgs)
+    {
+      vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::string,""}},
+                        {"z",{Dimension::string,""}}};
+      for (int i=0; i<2; ++i) 
+        x[0].push_back(to_string(i));
+      for (int i=0; i<3; ++i) 
+        x[1].push_back(to_string(i));
+      for (int i=0; i<5; ++i) 
+        x[2].push_back(to_string(i));
+      Hypercube fromHC(x);
+
+      x.resize(2); x[1].resize(2); // trim to 2x2
+      Hypercube toHC(x);
+      
+      vector<int> checkV={2,3,5};
+      CHECK_ARRAY_EQUAL(checkV, fromHC.dims(), checkV.size());
+      checkV={2,2};
+      CHECK_ARRAY_EQUAL(checkV, toHC.dims(),checkV.size());
+
+      auto& toVal=*to->vValue();
+      auto& fromVal=*from->vValue();
+      toVal.hypercube(toHC);
+      fromVal.hypercube(fromHC);
+
+      vector<double> fv;
+      for (size_t i=0; i<fromHC.dims()[2]; ++i)
+        for (size_t j=0; j<fromHC.dims()[1]; ++j)
+          for (size_t k=0; k<fromHC.dims()[0]; ++k)
+            fv.push_back(i+j+k);
+
+      toVal[0]=-1;  // out of lower bound
+      toVal[1]=4;   // out of upper bound
+      toVal[2]=1.3; // interpolated
+      toVal[3]=2;   // on exact point
+
+      CHECK_EQUAL(fv.size(), fromVal.size());
+      memcpy(&fromVal[0], &fv[0], sizeof(double)*fv.size());
+      
+      // apply gather to the orignal vector and the index results.
+      OperationPtr gatherOp(OperationType::gather);
+      gatherOp->axis="y";
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports[0], gatherOp->ports[1]);
+      Wire w2(to->ports[0], gatherOp->ports[2]);
+      Wire w3(gatherOp->ports[0], gatheredVar.ports[1]);
+
+      auto& gathered=*gatheredVar.vValue();
+      Eval eval(gatheredVar, gatherOp);
+      eval();
+      
+      vector<size_t> expectedDims{2,2,2,5};
+      CHECK_EQUAL(expectedDims.size(), gathered.rank());
+      CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
+
+      for (size_t i=0; i<expectedDims[3]; ++i)
+        for (size_t j=0; j<expectedDims[2]; ++j)
+          {
+            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+1.3, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+2, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+          }
+    }
+
+  TEST_FIXTURE(TestFixture, indexGatherTensorValueArgs)
+    {
+      vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::value,""}},
+                        {"z",{Dimension::string,""}}};
+      for (int i=0; i<2; ++i) 
+        x[0].push_back(to_string(i));
+      x[1].push_back(1900.0); x[1].push_back(1950.0); x[1].push_back(1970.0);
+      for (int i=0; i<5; ++i) 
+        x[2].push_back(to_string(i));
+      Hypercube fromHC(x);
+
+      x.resize(2); x[1].resize(2); // trim to 2x2
+      Hypercube toHC(x);
+      
+      vector<int> checkV={2,3,5};
+      CHECK_ARRAY_EQUAL(checkV, fromHC.dims(), checkV.size());
+      checkV={2,2};
+      CHECK_ARRAY_EQUAL(checkV, toHC.dims(),checkV.size());
+
+      auto& toVal=*to->vValue();
+      auto& fromVal=*from->vValue();
+      toVal.hypercube(toHC);
+      fromVal.hypercube(fromHC);
+
+      vector<double> fv;
+      for (size_t i=0; i<fromHC.dims()[2]; ++i)
+        for (size_t j=0; j<fromHC.dims()[1]; ++j)
+          for (size_t k=0; k<fromHC.dims()[0]; ++k)
+            fv.push_back(i+j+k);
+
+      toVal[0]=1890;  // out of lower bound
+      toVal[1]=1980;   // out of upper bound
+      toVal[2]=1930; // interpolated
+      toVal[3]=1950;   // on exact point
+
+      CHECK_EQUAL(fv.size(), fromVal.size());
+      memcpy(&fromVal[0], &fv[0], sizeof(double)*fv.size());
+      
+      // apply gather to the orignal vector and the index results.
+      OperationPtr gatherOp(OperationType::gather);
+      gatherOp->axis="y";
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports[0], gatherOp->ports[1]);
+      Wire w2(to->ports[0], gatherOp->ports[2]);
+      Wire w3(gatherOp->ports[0], gatheredVar.ports[1]);
+
+      auto& gathered=*gatheredVar.vValue();
+      Eval eval(gatheredVar, gatherOp);
+      eval();
+      
+      vector<size_t> expectedDims{2,2,2,5};
+      CHECK_EQUAL(expectedDims.size(), gathered.rank());
+      CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
+
+      for (size_t i=0; i<expectedDims[3]; ++i)
+        for (size_t j=0; j<expectedDims[2]; ++j)
+          {
+            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+          }
+    }
+
+  TEST_FIXTURE(TestFixture, indexGatherTensorTimeArgs)
+    {
+      vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::time,""}},
+                        {"z",{Dimension::string,""}}};
+      for (int i=0; i<2; ++i) 
+        x[0].push_back(to_string(i));
+      x[1].push_back(ptime(date(1900,Jan,1))); x[1].push_back(ptime(date(1950,Jan,1))); x[1].push_back(ptime(date(1970,Jan,1)));
+      for (int i=0; i<5; ++i) 
+        x[2].push_back(to_string(i));
+      Hypercube fromHC(x);
+
+      x.resize(2); x[1].resize(2); // trim to 2x2
+      Hypercube toHC(x);
+      
+      vector<int> checkV={2,3,5};
+      CHECK_ARRAY_EQUAL(checkV, fromHC.dims(), checkV.size());
+      checkV={2,2};
+      CHECK_ARRAY_EQUAL(checkV, toHC.dims(),checkV.size());
+
+      auto& toVal=*to->vValue();
+      auto& fromVal=*from->vValue();
+      toVal.hypercube(toHC);
+      fromVal.hypercube(fromHC);
+
+      vector<double> fv;
+      for (size_t i=0; i<fromHC.dims()[2]; ++i)
+        for (size_t j=0; j<fromHC.dims()[1]; ++j)
+          for (size_t k=0; k<fromHC.dims()[0]; ++k)
+            fv.push_back(i+j+k);
+
+      toVal[0]=1890;  // out of lower bound
+      toVal[1]=1980;   // out of upper bound
+      toVal[2]=1930; // interpolated
+      toVal[3]=1950;   // on exact point
+
+      CHECK_EQUAL(fv.size(), fromVal.size());
+      memcpy(&fromVal[0], &fv[0], sizeof(double)*fv.size());
+      
+      // apply gather to the orignal vector and the index results.
+      OperationPtr gatherOp(OperationType::gather);
+      gatherOp->axis="y";
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports[0], gatherOp->ports[1]);
+      Wire w2(to->ports[0], gatherOp->ports[2]);
+      Wire w3(gatherOp->ports[0], gatheredVar.ports[1]);
+
+      auto& gathered=*gatheredVar.vValue();
+      Eval eval(gatheredVar, gatherOp);
+      eval();
+      
+      vector<size_t> expectedDims{2,2,2,5};
+      CHECK_EQUAL(expectedDims.size(), gathered.rank());
+      CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
+
+      for (size_t i=0; i<expectedDims[3]; ++i)
+        for (size_t j=0; j<expectedDims[2]; ++j)
+          {
+            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+          }
+    }
+
   TEST_FIXTURE(MinskyFixture, tensorUnOpFactory)
     {
       TensorOpFactory factory;
