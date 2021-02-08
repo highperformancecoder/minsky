@@ -33,7 +33,7 @@ const float border=10;
 
 Sheet::Sheet()
 {
-  ports.emplace_back(new Port(*this, Port::inputPort));
+  m_ports.emplace_back(new Port(*this, Port::inputPort));
   iWidth(100);
   iHeight(100);	  
 }
@@ -62,7 +62,7 @@ ClickType::Type Sheet::clickType(float x, float y)
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();
-  ports[0]->moveTo(x()-0.5*m_width*z,y());
+  m_ports[0]->moveTo(x()-0.5*m_width*z,y());
   if (mouseFocus)
     {
       drawPorts(cairo);
@@ -93,7 +93,7 @@ void Sheet::draw(cairo_t* cairo) const
 
   try
     {
-      auto value=ports[0]->getVariableValue();
+      auto value=m_ports[0]->getVariableValue();
       if (!value) return;
       Pango pango(cairo);
       if (value->hypercube().rank()>2)

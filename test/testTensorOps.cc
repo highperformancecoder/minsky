@@ -69,7 +69,7 @@ struct TestFixture
     g->addItem(theOp); 
     theOp->axis=axis;
     theOp->arg=arg;
-    Wire w1(from->ports[0], theOp->ports[1]), w2(theOp->ports[0], to->ports[1]);
+    Wire w1(from->ports(0), theOp->ports(1)), w2(theOp->ports(0), to->ports(1));
     Eval(*to, theOp)();
   }
   template <OperationType::Type op, class F>
@@ -365,9 +365,9 @@ SUITE(TensorOps)
       // apply gather to the orignal vector and the index results.
       OperationPtr gatherOp(OperationType::gather);
       Variable<VariableType::flow> gatheredVar("gathered");
-      Wire w1(from->ports[0], gatherOp->ports[1]);
-      Wire w2(to->ports[0], gatherOp->ports[2]);
-      Wire w3(gatherOp->ports[0], gatheredVar.ports[1]);
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
 
       auto& gathered=*gatheredVar.vValue();
       Eval eval(gatheredVar, gatherOp);
@@ -608,7 +608,7 @@ SUITE(TensorOps)
           OperationPtr o(op);
           model->addItem(o);
           CHECK_EQUAL(2, o->numPorts());
-          Wire w1(src->ports[0], o->ports[1]), w2(o->ports[0], dest->ports[1]);
+          Wire w1(src->ports(0), o->ports(1)), w2(o->ports(0), dest->ports(1));
           TensorEval eval(dest->vValue(), ev, factory.create(o,tp));
           eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
           switch (OperationType::classify(op))
@@ -673,8 +673,8 @@ SUITE(TensorOps)
               f->compile();
             }
           CHECK_EQUAL(3, o->numPorts());
-          Wire w1(src1->ports[0], o->ports[1]), w2(src2->ports[0], o->ports[2]),
-            w3(o->ports[0], dest->ports[1]);
+          Wire w1(src1->ports(0), o->ports(1)), w2(src2->ports(0), o->ports(2)),
+            w3(o->ports(0), dest->ports(1));
           TensorEval eval(dest->vValue(), ev, factory.create(o,tp));
           eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
           CHECK_EQUAL(src1->vValue()->size(), dest->vValue()->size());
@@ -747,9 +747,9 @@ SUITE(TensorOps)
       model->addItem(add);
       VariablePtr result(VariableType::flow,"result");
       model->addItem(result);
-      Wire w1(x1->ports[0],add->ports[1]);
-      Wire w2(x2->ports[0],add->ports[2]);
-      Wire w3(add->ports[0], result->ports[1]);
+      Wire w1(x1->ports(0),add->ports(1));
+      Wire w2(x2->ports(0),add->ports(2));
+      Wire w3(add->ports(0), result->ports(1));
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
@@ -778,9 +778,9 @@ SUITE(TensorOps)
       model->addItem(add);
       VariablePtr result(VariableType::flow,"result");
       model->addItem(result);
-      Wire w1(x1->ports[0],add->ports[1]);
-      Wire w2(x2->ports[0],add->ports[2]);
-      Wire w3(add->ports[0], result->ports[1]);
+      Wire w1(x1->ports(0),add->ports(1));
+      Wire w2(x2->ports(0),add->ports(2));
+      Wire w3(add->ports(0), result->ports(1));
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
@@ -810,9 +810,9 @@ SUITE(TensorOps)
       model->addItem(add);
       VariablePtr result(VariableType::flow,"result");
       model->addItem(result);
-      Wire w1(x1->ports[0],add->ports[1]);
-      Wire w2(x2->ports[0],add->ports[2]);
-      Wire w3(add->ports[0], result->ports[1]);
+      Wire w1(x1->ports(0),add->ports(1));
+      Wire w2(x2->ports(0),add->ports(2));
+      Wire w3(add->ports(0), result->ports(1));
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());

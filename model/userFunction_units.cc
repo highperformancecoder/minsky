@@ -36,8 +36,8 @@ namespace minsky
   {
     UnitsExpressionWalker::check=check;
     vector<UnitsExpressionWalker> args(argNames.size());
-    if (args.size()>0) args[0].units=ports[1]->units(check);
-    if (args.size()>1) args[1].units=ports[2]->units(check);
+    if (args.size()>0) args[0].units=m_ports[1]->units(check);
+    if (args.size()>1) args[1].units=m_ports[2]->units(check);
     
     timeUnit.units=Units(cminsky().timeUnit);
     

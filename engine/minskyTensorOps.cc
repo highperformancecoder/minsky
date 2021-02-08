@@ -771,7 +771,7 @@ namespace minsky
     if (auto ravel=dynamic_cast<const Ravel*>(it.get()))
 	    {
 	      auto r=make_shared<RavelTensor>(*ravel);
-	      r->setArguments(tfp.tensorsFromPorts(it->ports));
+	      r->setArguments(tfp.tensorsFromPorts(*it));
 	      return r;
 	    }
     else if (auto op=it->operationCast())
@@ -780,13 +780,13 @@ namespace minsky
           TensorPtr r{create(op->type())};
           if (auto ss=dynamic_cast<SetState*>(r.get()))
             ss->setState(dynamic_pointer_cast<OperationBase>(it));
-          switch (op->ports.size())
+          switch (op->portsSize())
             {
             case 2:
-              r->setArguments(tfp.tensorsFromPort(*op->ports[1]),op->axis,op->arg);
+              r->setArguments(tfp.tensorsFromPort(*op->ports(1).lock()),op->axis,op->arg);
             break;
             case 3:
-              r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]),op->axis,op->arg);
+              r->setArguments(tfp.tensorsFromPort(*op->ports(1).lock()), tfp.tensorsFromPort(*op->ports(2).lock()),op->axis,op->arg);
               break;
             }
           return r;
@@ -806,7 +806,7 @@ namespace minsky
     else if (auto sw=dynamic_cast<const SwitchIcon*>(it.get()))
       {
         auto r=make_shared<SwitchTensor>();
-        r->setArguments(tfp.tensorsFromPorts(it->ports));
+        r->setArguments(tfp.tensorsFromPorts(*it));
         return r;
       }
     return {};
@@ -825,7 +825,7 @@ namespace minsky
               {
                 // check if we're differentiating a scalar or tensor
                 // expression, and throw accordingly
-                auto rhs=tensorsFromPort(*o->ports[1]);
+                auto rhs=tensorsFromPort(*o->ports(1).lock());
                 if (rhs.empty() || rhs[0]->size()==1)
                   throw FallBackToScalar();
                 else
@@ -841,15 +841,16 @@ namespace minsky
   }
 
 
-  vector<TensorPtr> TensorsFromPort::tensorsFromPorts(const vector<shared_ptr<Port>>& ports) const
+  vector<TensorPtr> TensorsFromPort::tensorsFromPorts(const Item& item) const
   {
     vector<TensorPtr> r;
-    for (auto& p: ports)
-      if (p->input())
-        {
-          auto tensorArgs=tensorsFromPort(*p);
-          r.insert(r.end(), tensorArgs.begin(), tensorArgs.end());
-        }
+    for (size_t i=0; i<item.portsSize(); ++i)
+      if (auto p=item.ports(i).lock())
+        if (p->input())
+          {
+            auto tensorArgs=tensorsFromPort(*p);
+            r.insert(r.end(), tensorArgs.begin(), tensorArgs.end());
+          }
     return r;
   }
 
@@ -859,7 +860,7 @@ namespace minsky
     if (auto var=cminsky().definingVar(v->valueId()))
       if (var->lhs())
         {
-          rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports[1])[0];
+          rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports(1).lock())[0];
           result.hypercube(rhs->hypercube());
           result.index(rhs->index());
           *v=result;

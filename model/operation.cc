@@ -129,11 +129,11 @@ namespace minsky
 
   void OperationBase::addPorts()
   {
-    ports.clear();
+    m_ports.clear();
     if (numPorts()>0)
-      ports.emplace_back(new Port(*this,Port::noFlags));
+      m_ports.emplace_back(new Port(*this,Port::noFlags));
     for (size_t i=1; i<numPorts(); ++i)
-      ports.emplace_back
+      m_ports.emplace_back
         (new Port(*this, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
   }
   
@@ -208,16 +208,16 @@ namespace minsky
             // point of reference
             Rotate rr(rotation(),0,0);
 
-            ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
+            m_ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
             switch (numPorts())
               {
               case 1: break;
               case 2: 
-                ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+                m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
                 break;
               case 3: default:
-                ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,-h+3));
-                ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,h-3));
+                m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,-h+3));
+                m_ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,h-3));
                 break;
               }
             if (mouseFocus)
@@ -279,7 +279,7 @@ namespace minsky
           cairo_restore(cairo);
     
           if (numPorts()>0) 
-            ports[0]->moveTo(x0, y0);
+            m_ports[0]->moveTo(x0, y0);
           if (numPorts()>1) 
             {
 #ifdef DISPLAY_POW_UPSIDE_DOWN
@@ -287,7 +287,7 @@ namespace minsky
                 ports[1]->moveTo(x2, y2);
               else
 #endif
-                ports[1]->moveTo(x1, y1);
+                m_ports[1]->moveTo(x1, y1);
             }
     
           if (numPorts()>2)
@@ -297,7 +297,7 @@ namespace minsky
                 ports[2]->moveTo(x1, y1);
               else
 #endif
-                ports[2]->moveTo(x2, y2);
+                m_ports[2]->moveTo(x2, y2);
             }
 
           cairo_restore(cairo); // undo rotation
@@ -334,8 +334,8 @@ namespace minsky
           switch (e->numArgs())
             {
             case 0: return e->evaluate(0,0);
-            case 1: return e->evaluate(ports[1]->value());
-            case 2: return e->evaluate(ports[1]->value(),ports[2]->value());
+            case 1: return e->evaluate(m_ports[1]->value());
+            case 2: return e->evaluate(m_ports[1]->value(),m_ports[2]->value());
             }
       }
     catch (...)
@@ -347,9 +347,9 @@ namespace minsky
   vector<string> OperationBase::dimensions() const
   {
     set<string> names;
-    for (size_t i=1; i<ports.size(); ++i)
+    for (size_t i=1; i<m_ports.size(); ++i)
       {
-        auto vv=ports[i]->getVariableValue();
+        auto vv=m_ports[i]->getVariableValue();
         if (vv)
           for (auto& i: vv->hypercube().xvectors)
             names.insert(i.name);
@@ -370,8 +370,8 @@ namespace minsky
       CheckConsistent(const Item& item)
       {
         bool inputFound=false;
-        for (size_t i=1; i<item.ports.size(); ++i)
-          for (auto w: item.ports[i]->wires())
+        for (size_t i=1; i<item.portsSize(); ++i)
+          for (auto w: item.ports(i).lock()->wires())
             if (inputFound)
               {
                 auto tmp=w->units(true);
@@ -394,7 +394,7 @@ namespace minsky
       {
       case function: case reduction: case scan: case tensor:
         {
-          if (check && !ports[1]->units(check).empty())
+          if (check && !m_ports[1]->units(check).empty())
             throw_error("function input not dimensionless");
           return {};
         }
@@ -404,9 +404,9 @@ namespace minsky
           case percent:
             { 
               // Add % sign to units from input to % operator. Need the first conditional otherwise Minsky crashes		
-              if (!ports[1]->wires().empty()) {
-                auto r=ports[1]->units(check);	 	 
-                if (auto vV=dynamic_cast<VariableValue*>(&ports[1]->wires()[0]->from()->item())) 
+              if (!m_ports[1]->wires().empty()) {
+                auto r=m_ports[1]->units(check);	 	 
+                if (auto vV=dynamic_cast<VariableValue*>(&m_ports[1]->wires()[0]->from()->item())) 
                   {    
                     vV->setUnits("%"+r.str());
                     vV->units.normalise();
@@ -424,17 +424,17 @@ namespace minsky
             // these binops need to have dimensionless units
           case log: case and_: case or_: case polygamma: case userFunction:
 
-            if (check && !ports[1]->units(check).empty())
+            if (check && !m_ports[1]->units(check).empty())
               throw_error("function inputs not dimensionless");
             return {};
           case pow:
             {
-              auto r=ports[1]->units(check);
+              auto r=m_ports[1]->units(check);
 
               if (!r.empty())
                 {
-                  if (!ports[2]->wires().empty())
-                    if (auto v=dynamic_cast<VarConstant*>(&ports[2]->wires()[0]->from()->item()))
+                  if (!m_ports[2]->wires().empty())
+                    if (auto v=dynamic_cast<VarConstant*>(&m_ports[2]->wires()[0]->from()->item()))
                       if (fracPart(v->value())==0)
                         {
                           for (auto& i: r) i.second*=v->value();
@@ -457,24 +457,24 @@ namespace minsky
             {
               if (check)
                 return CheckConsistent(*this);
-              if (!ports[1]->wires().empty())
-                return ports[1]->wires()[0]->units(check);
-              if (!ports[2]->wires().empty())
-                return ports[2]->wires()[0]->units(check);
+              if (!m_ports[1]->wires().empty())
+                return m_ports[1]->wires()[0]->units(check);
+              if (!m_ports[2]->wires().empty())
+                return m_ports[2]->wires()[0]->units(check);
               return {};
             }
             // multiply and divide are especially computed
           case multiply: case divide:
             {
               Units units;
-              for (auto w: ports[1]->wires())
+              for (auto w: m_ports[1]->wires())
                 {
                   auto tmp=w->units(check);
                   for (auto& i: tmp)
                     units[i.first]+=i.second;
                 }
               int f=(type()==multiply)? 1: -1; //indices are negated for division
-              for (auto w: ports[2]->wires())
+              for (auto w: m_ports[2]->wires())
                 {
                   auto tmp=w->units(check);
                   for (auto& i: tmp)
@@ -497,7 +497,7 @@ namespace minsky
 
   Units Time::units(bool) const {return cminsky().timeUnit;}
   Units Derivative::units(bool check) const {
-    Units r=ports[1]->units(check);
+    Units r=m_ports[1]->units(check);
     if (!cminsky().timeUnit.empty())
       r[cminsky().timeUnit]--;
     r.normalise();
@@ -508,7 +508,7 @@ namespace minsky
     ("description",(Getter)&IntOp::description,(Setter)&IntOp::description) {}
   
   Units IntOp::units(bool check) const {
-    Units r=ports[1]->units(check);
+    Units r=m_ports[1]->units(check);
     if (!cminsky().timeUnit.empty())
       r[cminsky().timeUnit]++;
     r.normalise();
@@ -638,11 +638,11 @@ namespace minsky
       cairo_restore(cairo);
     
       if (numPorts()>0) 
-        ports[0]->moveTo(x0, y0);
+        m_ports[0]->moveTo(x0, y0);
       if (numPorts()>1) 
-        ports[1]->moveTo(x1, y1);
+        m_ports[1]->moveTo(x1, y1);
       if (numPorts()>2)
-        ports[2]->moveTo(x2, y2);
+        m_ports[2]->moveTo(x2, y2);
 	
       cairo_translate(cairo,-coupledIntTranslation,0);        
       cairo_restore(cairo); // undo rotation
@@ -745,10 +745,10 @@ namespace minsky
       return description(); // nothing to do
 
     vector<Wire> savedWires;
-    if (numPorts()>0)
+    if (intVar->portsSize()>0)
       {
         // save any attached wires for later use
-        for (auto w: ports[0]->wires())
+        for (auto w: intVar->ports(0).lock()->wires())
           savedWires.push_back(*w);
       }
 
@@ -787,11 +787,11 @@ namespace minsky
     if (auto g=group.lock())
       intVar->controller=g->findItem(*this); // we're managing our own display
     // initialise in toggled state
-    ports[0]=intVar->ports[0];
-
+    m_coupled=true;
+    
     // recreate any previously attached wires, initially in global group.
     for (auto& w: savedWires)
-      minsky().model->addWire(new Wire(intVar->ports[0], w.to(), w.coords()));
+      minsky().model->addWire(new Wire(intVar->ports(0), w.to(), w.coords()));
 
     bb.update(*this); // adjust icon bounding box - see ticket #704
     
@@ -828,12 +828,10 @@ namespace minsky
 
     assert(intVar);
 
-    assert(ports.size()==3);
-    if (coupled()) 
+    assert(m_ports.size()==3);
+    if (m_coupled) 
       {
-        intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
-        ports[0].reset(new Port(*this,Port::noFlags));
-        WirePtr newWire(new Wire(ports[0], intVar->ports[1]));
+        WirePtr newWire(new Wire(m_ports[0], intVar->ports(1)));
         if (auto g=group.lock())
           g->addWire(newWire);
         else
@@ -843,18 +841,15 @@ namespace minsky
       }
     else
       {
-        // need to explicitly remove wire, as deleting the port is
-        // not sufficient - wires hold a reference to the ports
-        // they connect
         if (auto g=group.lock())
           {
-            for (auto w: intVar->ports[1]->wires())
+            for (auto w: intVar->ports(1).lock()->wires())
               g->removeWire(*w);
             intVar->controller=g->findItem(*this);
           }
-        ports[0]=intVar->ports[0];
         intVar->mouseFocus=false; // prevent drawing of variable ports when coupled
       }
+    m_coupled=!m_coupled;
     bb.update(*this); // adjust bounding box for coupled integral operation - see ticket #1055  
     return coupled();
   }
@@ -862,16 +857,16 @@ namespace minsky
   string OperationBase::portValues() const
   {
     string r="equations not yet constructed, please reset";
-    if (ports.size()>0 && ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
+    if (m_ports.size()>0 && m_ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
       {
         std::stringstream ss;
-        ss <<"[out]="<<ports[0]->value();		
+        ss <<"[out]="<<m_ports[0]->value();		
         r=ss.str();
-      } else r="[out]="+to_string(ports[0]->value());
-    if (ports.size()>1)
-      r+=" [in1]="+ to_string(ports[1]->value());
-    if (ports.size()>2)
-      r+=" [in2]="+ to_string(ports[2]->value());
+      } else r="[out]="+to_string(m_ports[0]->value());
+    if (m_ports.size()>1)
+      r+=" [in1]="+ to_string(m_ports[1]->value());
+    if (m_ports.size()>2)
+      r+=" [in2]="+ to_string(m_ports[2]->value());
     return r;
   }
   
@@ -1357,7 +1352,7 @@ namespace minsky
     cairo_rel_move_to(cairo,0,-3);
     cairo_set_font_size(cairo,7);
     // show order of polygamma function. 0 is default.
-    std::string order="("+to_string(static_cast<unsigned>(ports[2]->value()))+")";
+    std::string order="("+to_string(static_cast<unsigned>(m_ports[2]->value()))+")";
     cairo_show_text(cairo,order.c_str());
     cairo_rel_move_to(cairo,0,-2);
   }     

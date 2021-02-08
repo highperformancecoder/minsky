@@ -94,10 +94,10 @@ SUITE(Units)
     void init(OperationType::Type op) {
       opp.reset(OperationBase::create(op));
       model->addItem(opp);
-      if (opp->ports.size()>1)
-        model->addWire(from1->ports[0], opp->ports[1]);
-      if (opp->ports.size()>2)
-        model->addWire(from2->ports[0], opp->ports[2]);
+      if (opp->portsSize()>1)
+        model->addWire(from1->ports(0), opp->ports(1));
+      if (opp->portsSize()>2)
+        model->addWire(from2->ports(0), opp->ports(2));
     }
     
     template <OperationType::Type op> void impl();
@@ -174,7 +174,7 @@ SUITE(Units)
     model->removeItem(*from2);
     from2=VariablePtr(VariableType::constant);
     model->addItem(from2);
-    model->addWire(from2->ports[0],opp->ports[2]);
+    model->addWire(from2->ports(0),opp->ports(2));
     from2->init("2");
     CHECK_EQUAL(1,opp->checkUnits().size());
     CHECK_EQUAL(2,opp->checkUnits()["m"]);
