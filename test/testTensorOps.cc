@@ -441,9 +441,9 @@ SUITE(TensorOps)
       OperationPtr gatherOp(OperationType::gather);
       gatherOp->axis="y";
       Variable<VariableType::flow> gatheredVar("gathered");
-      Wire w1(from->ports[0], gatherOp->ports[1]);
-      Wire w2(to->ports[0], gatherOp->ports[2]);
-      Wire w3(gatherOp->ports[0], gatheredVar.ports[1]);
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
 
       auto& gathered=*gatheredVar.vValue();
       Eval eval(gatheredVar, gatherOp);
@@ -505,9 +505,9 @@ SUITE(TensorOps)
       OperationPtr gatherOp(OperationType::gather);
       gatherOp->axis="y";
       Variable<VariableType::flow> gatheredVar("gathered");
-      Wire w1(from->ports[0], gatherOp->ports[1]);
-      Wire w2(to->ports[0], gatherOp->ports[2]);
-      Wire w3(gatherOp->ports[0], gatheredVar.ports[1]);
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
 
       auto& gathered=*gatheredVar.vValue();
       Eval eval(gatheredVar, gatherOp);
@@ -569,9 +569,9 @@ SUITE(TensorOps)
       OperationPtr gatherOp(OperationType::gather);
       gatherOp->axis="y";
       Variable<VariableType::flow> gatheredVar("gathered");
-      Wire w1(from->ports[0], gatherOp->ports[1]);
-      Wire w2(to->ports[0], gatherOp->ports[2]);
-      Wire w3(gatherOp->ports[0], gatheredVar.ports[1]);
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
 
       auto& gathered=*gatheredVar.vValue();
       Eval eval(gatheredVar, gatherOp);
