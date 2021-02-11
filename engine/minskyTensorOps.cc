@@ -332,18 +332,20 @@ namespace minsky
       else if (delta>=0)
         for (size_t i=0; i<size(); ++i)
           {
-            auto t=i+delta;
-            if (sameSlice(t, i))
-              cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(i);
+            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto t=ai+delta;
+            if (sameSlice(t, ai))
+              cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(ai);
             else
               cachedResult[i]=nan("");
           }
       else // with -ve delta, origin of result is shifted
         for (size_t i=0; i<size(); ++i)
           {
-            auto t=i-delta;
-            if (sameSlice(t,i))
-              cachedResult[i]=arg->atHCIndex(i)-arg->atHCIndex(t);
+            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto t=ai-delta;
+            if (sameSlice(t,ai))
+              cachedResult[i]=arg->atHCIndex(ai)-arg->atHCIndex(t);
             else
               cachedResult[i]=nan("");
           }

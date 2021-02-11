@@ -68,7 +68,8 @@ namespace civita
             throw std::runtime_error("inputs undefined");
         }
       if (!arg2) return (*arg1)[i];
-      auto hcIndex=index()[i];
+      assert(index().size()==0 || i<index().size());
+      auto hcIndex=index().size()? index()[i]: i;
       // scalars are broadcast
       return f(arg1->rank()? arg1->atHCIndex(hcIndex): (*arg1)[0],
                arg2->rank()? arg2->atHCIndex(hcIndex): (*arg2)[0]);
