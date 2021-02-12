@@ -1761,6 +1761,7 @@ proc aboutMinsky {} {
 
 Thanks to following Minsky Unicorn sponsors:
      Edward McDaniel
+     Travis Kimmel
    " 
 }
 
