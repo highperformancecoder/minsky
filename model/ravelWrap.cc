@@ -186,6 +186,7 @@ namespace
   void Ravel::populateHypercube(const Hypercube& hc)
   {
     auto state=initState.empty()? getState(): initState;
+    bool redistribute=!initState.empty();
     initState.clear();
     clear();
     for (auto& i: hc.xvectors)
@@ -201,7 +202,7 @@ namespace
     else
       {
         applyState(state);
-        redistributeHandles();
+        if (redistribute) redistributeHandles();
       }
 #ifndef NDEBUG
     if (state.empty())
@@ -516,7 +517,8 @@ namespace
                       if (!lockGroup->handlesToLock.count(i))
                         state.outputHandles.push_back(i);
                   }
-                r->applyState(state/*,true*/);
+                r->applyState(state);
+                r->redistributeHandles();
                 state.outputHandles=move(stateOutputHandles);
               }
       }
