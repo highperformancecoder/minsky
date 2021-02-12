@@ -98,6 +98,7 @@ namespace schema3
     Optional<std::string> units;
     Optional<Slider> slider;
     Optional<int> intVar;
+    Optional<string> url; //file or URL of CSVDialog
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> expression; // userfunction
     Optional<std::string> filename;
@@ -134,7 +135,10 @@ namespace schema3
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
-        units=vv->units.str();
+        {
+          units=vv->units.str();
+          url=vv->csvDialog.url;
+        }
     }
     Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(o),ports),

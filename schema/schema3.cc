@@ -639,6 +639,8 @@ namespace schema3
             if (i.second.tensorData)
               if (auto val=v->vValue())
                 {
+                  if (i.second.url)
+                    val->csvDialog.url=*i.second.url;
                   auto buf=minsky::decode(*i.second.tensorData);
                   try
                     {
