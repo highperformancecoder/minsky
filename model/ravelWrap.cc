@@ -199,7 +199,10 @@ namespace
     if (state.empty())
       setRank(hc.rank());
     else
-      applyState(state);
+      {
+        applyState(state);
+        redistributeHandles();
+      }
 #ifndef NDEBUG
     if (state.empty())
       {

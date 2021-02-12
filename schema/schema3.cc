@@ -395,6 +395,7 @@ namespace schema3
         if (y.ravelState)
           {
             x1->applyState(y.ravelState->toRavelRavelState());
+            x1->redistributeHandles();
             SchemaHelper::initHandleState(*x1,y.ravelState->toRavelRavelState());
           }
         
