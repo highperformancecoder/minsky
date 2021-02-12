@@ -28,6 +28,7 @@ but any renamed attributes require bumping the schema number.
 #include "model/minsky.h"
 #include "model/ravelWrap.h"
 #include "model/sheet.h"
+#include "dataSpecSchema.h"
 #include "schema/schema2.h"
 #include "schemaHelper.h"
 #include "zStream.h"
@@ -98,7 +99,8 @@ namespace schema3
     Optional<std::string> units;
     Optional<Slider> slider;
     Optional<int> intVar;
-    Optional<string> url; //file or URL of CSVDialog
+    Optional<std::string> url; //file or url of CSV import data
+    Optional<minsky::DataSpecSchema> csvDataSpec; //CSV import data
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> expression; // userfunction
     Optional<std::string> filename;
@@ -137,6 +139,7 @@ namespace schema3
       if (auto vv=v.vValue())
         {
           units=vv->units.str();
+          csvDataSpec=vv->csvDialog.spec.toSchema();
           url=vv->csvDialog.url;
         }
     }

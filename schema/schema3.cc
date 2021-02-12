@@ -636,29 +636,33 @@ namespace schema3
               v->init(*i.second.init);
             if (i.second.units)
               v->setUnits(*i.second.units);
-            if (i.second.tensorData)
-              if (auto val=v->vValue())
-                {
-                  if (i.second.url)
-                    val->csvDialog.url=*i.second.url;
-                  auto buf=minsky::decode(*i.second.tensorData);
-                  try
-                    {
-                      civita::TensorVal tmp;
-                      unpack(buf, tmp);
-                      *val=tmp;
-                      val->tensorInit=std::move(tmp);
-                      assert(val->idxInRange());
+            if (auto val=v->vValue())
+              {
+                if (i.second.csvDataSpec)
+                  val->csvDialog.spec=*i.second.csvDataSpec;
+                if (i.second.url)
+                  val->csvDialog.url=*i.second.url;
+                if (i.second.tensorData)
+                  {
+                    auto buf=minsky::decode(*i.second.tensorData);
+                    try
+                      {
+                        civita::TensorVal tmp;
+                        unpack(buf, tmp);
+                        *val=tmp;
+                        val->tensorInit=std::move(tmp);
+                        assert(val->idxInRange());
+                      }
+                    catch (const std::exception& ex) {
+                      val->tensorInit.hypercube({});
+                      cout<<ex.what()<<endl;
                     }
-                  catch (const std::exception& ex) {
-                    val->tensorInit.hypercube({});
-                    cout<<ex.what()<<endl;
+                    catch (...) {
+                      val->tensorInit.hypercube({});
+                      assert(val->idxInRange());
+                    } // absorb for now - maybe log later
                   }
-                  catch (...) {
-                    val->tensorInit.hypercube({});
-                    assert(val->idxInRange());
-                  } // absorb for now - maybe log later
-                }
+              }
           }
       }
   }

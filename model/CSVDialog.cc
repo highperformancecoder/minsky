@@ -215,9 +215,19 @@ std::string CSVDialog::loadWebFile(const std::string& url)
 
 void CSVDialog::loadFile()
 {
+  loadFileFromName(url.find("://")==string::npos? url: loadWebFile(url));
+}
+
+void CSVDialog::guessSpecAndLoadFile()
+{
   spec=DataSpec();
   string fname = url.find("://")==string::npos? url: loadWebFile(url);
   spec.guessFromFile(fname);
+  loadFileFromName(fname);
+}
+
+void CSVDialog::loadFileFromName(const std::string& fname)
+{  
   ifstream is(fname);
   initialLines.clear();
   for (size_t i=0; i<numInitialLines && is; ++i)
