@@ -31,7 +31,7 @@ proc CSVImportDialog {} {
         button .wiring.csvImport.fileUrl.load -text "Load" -command {
             if {[minsky.value.csvDialog.url]!=$csvParms(url)} {
                 minsky.value.csvDialog.url $csvParms(url)
-                minsky.value.csvDialog.guessAndloadFile
+                minsky.value.csvDialog.guessSpecAndLoadFile
             } else {
                 minsky.value.csvDialog.loadFile
             }
