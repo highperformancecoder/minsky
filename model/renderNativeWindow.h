@@ -27,6 +27,9 @@ namespace minsky
   class RenderNativeWindow: public ecolab::CairoSurface
   {
   public:
+    void initializeNativeWindow(unsigned long window);
+    void renderFrame();
+
     void renderToNativeWindow(unsigned long window);
   };
 }

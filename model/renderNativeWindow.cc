@@ -77,12 +77,38 @@ namespace minsky
     int err=XGetWindowAttributes(display, window, &wAttr);
     if (err>1)
       throw runtime_error("Invalid window: "+to_string(window));
-    cairo::SurfacePtr r(new cairo::Surface(cairo_xlib_surface_create(display,window,wAttr.visual,wAttr.width,wAttr.height),wAttr.width,wAttr.height));
+
+
+    int padding = 10;
+    int yOffset = 150;
+    int childWindowWidth = wAttr.width - 2*padding;
+    int childWindowHeight = wAttr.height - yOffset - padding;
+
+    unsigned long childWindow = XCreateSimpleWindow(display, window, padding, yOffset, childWindowWidth, childWindowHeight, 0, 0, 0);
+    XMapWindow(display, childWindow);
+
+    cout << "Child Window ID ::"<< childWindow << endl;
+    //XSelectInput(d, da, ButtonPressMask | KeyPressMask);
+    cout << "wAttr(x, y)::" << wAttr.x << "," << wAttr.y << endl;
+
+    cairo::SurfacePtr r(new cairo::Surface(cairo_xlib_surface_create(display, childWindow,wAttr.visual, childWindowWidth, childWindowHeight), childWindowWidth, childWindowHeight));
     cairo_surface_set_device_offset(r->surface(), -wAttr.x, -wAttr.y);
+
+    cairo_move_to(r->cairo(), 0, 0);
+    cairo_set_source_rgb(r->cairo(), 1, 1, 1);
+    cairo_paint(r->cairo());
     return r;
   }
 #endif
-  
+
+
+  void RenderNativeWindow::initializeNativeWindow(unsigned long window) {
+
+  }
+
+  void RenderNativeWindow::renderFrame() {
+
+  }
 
   void RenderNativeWindow::renderToNativeWindow(unsigned long window)
   {
