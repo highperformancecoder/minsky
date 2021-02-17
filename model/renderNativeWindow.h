@@ -38,7 +38,7 @@ namespace minsky
 
     WindowInformation();
     ~WindowInformation();
-    void initialize(unsigned long parentWin, int offsetLeft, int offsetTop);
+    void initialize(unsigned long parentWin, int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void copy(WindowInformation *winInfo);
   };
 
@@ -54,7 +54,10 @@ namespace minsky
     RenderNativeWindow(const RenderNativeWindow &a);
 
   public:
-    void initializeNativeWindow(unsigned long parentWindowId);
+    void initializeNativeWindow(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
+    
+    void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
+
     void renderFrame();
   };
 } // namespace minsky

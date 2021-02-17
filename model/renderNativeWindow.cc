@@ -17,6 +17,15 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* We have created a struct `WindowInformation` that stores the `childWindowId` along with other details like display and window attributes. This information is reused across multiple calls to `renderFrame`. 
+
+The flow for code will be -- when minsky starts, a call to /minsky/canvas/initializeNativeWindow will be made, with parentWindowId (and offsets) as the parameters (creating child window in electron did not work as expected, so we need to work with offsets). Subsequent repaints can be requested with /minsky/canvas/renderFrame
+
+As of now, we create the cairo surface with each call to `renderFrame`, though I think the surface can also be reused. I have a placeholder for pointer to cairo::SurfacePtr (not sure we should have pointer to pointer) but it didn't work as expected, so for now I am recreating the surface in `renderFrame`
+
+Please especially review the lifecycle (constructors, desctructors and copy constructors) that I have defined in `renderNativeWindow.cc `. I think the WindowInformation object that is destroyed in the destructor for RenderNativeWindow can be reused (perhaps it can be made a static object?). Also - am not sure how to distinguish between destructor for RenderNativeWindow that will be called with each call to load model (or undo/redo as you mentioned), and the final call when minsky is closed.
+ */
+
 #include "renderNativeWindow.h"
 #include "minsky_epilogue.h"
 
@@ -81,11 +90,12 @@ namespace minsky
   WindowInformation::WindowInformation()
   {
   }
-  WindowInformation::~WindowInformation() {
+  WindowInformation::~WindowInformation()
+  {
     cout << "Delete called for window information" << endl;
   }
 
-  void WindowInformation::initialize(unsigned long parentWin, int left, int top)
+  void WindowInformation::initialize(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
   {
     parentWindowId = parentWin;
     offsetLeft = left;
@@ -97,12 +107,20 @@ namespace minsky
     if (err > 1)
       throw runtime_error("Invalid window: " + to_string(parentWin));
 
-    int padding = offsetLeft;
-    int yOffset = offsetTop;
+    childWidth = wAttr.width - offsetLeft;
+    childHeight = wAttr.height - offsetTop;
+    
+    // Todo:: currently width, height parameters are not getting passed properly
+    // Eventually, we need those in order to ensure we don't need to worry about
+    // paddings, scrollbars etc
+    if(cWidth > 0) {
+      childWidth = min(childWidth, cWidth);
+    }
+    if(cHeight > 0) {
+      childHeight = min(childHeight, cHeight);
+    }
 
-    childWidth = wAttr.width - 2 * padding;
-    childHeight = wAttr.height - yOffset - padding;
-
+    cout << childWidth << "::" << childHeight << "::" << offsetLeft << "::" << offsetTop << endl;
     childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, 0); //TODO:: Should we pass visual and attributes at the end?
     XMapWindow(display, childWindowId);
   }
@@ -144,7 +162,7 @@ namespace minsky
   void RenderNativeWindow::renderFrame()
   {
     auto tmp = createNativeWindowSurface(winInfo);
-    
+
     //TODO:: Review if this paint (below 3 lines) is really needed with each frame
     cairo_move_to(tmp->cairo(), 0, 0);
     cairo_set_source_rgb(tmp->cairo(), 1, 1, 1);
@@ -155,9 +173,12 @@ namespace minsky
     tmp.swap(surface);
   }
 
-  void RenderNativeWindow::initializeNativeWindow(unsigned long parentWindowId)
+  void RenderNativeWindow::initializeNativeWindow(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    this->winInfo->initialize(parentWindowId, 15, 150);
+    cout << parentWindowId << "::" << offsetLeft << "::" << offsetTop << "::" << childWidth << "::" << childHeight << endl;
+    // TODO:: Only the first argument is getting passed here, rest values are 0s
+    offsetLeft = max(20, offsetLeft);
+    offsetTop = max(180, offsetTop);
+    this->winInfo->initialize(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
   }
-  
 } // namespace minsky
