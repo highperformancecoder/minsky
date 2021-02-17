@@ -24,15 +24,40 @@
 
 namespace minsky
 {
-  class RenderNativeWindow: public ecolab::CairoSurface
+  struct WindowInformation
   {
-  public:
-    void initializeNativeWindow(unsigned long window);
-    void renderFrame();
+    unsigned long parentWindowId;
+    unsigned long childWindowId;
+    int childWidth;
+    int childHeight;
+    int offsetLeft;
+    int offsetTop;
+    Display*	display;
+    XWindowAttributes wAttr;
+    ecolab::cairo::SurfacePtr *childSurface; // TODO:: Review right way to store surface ptr
 
-    void renderToNativeWindow(unsigned long window);
+    WindowInformation();
+    ~WindowInformation();
+    void initialize(unsigned long parentWin, int offsetLeft, int offsetTop);
+    void copy(WindowInformation *winInfo);
   };
-}
+
+  class RenderNativeWindow : public ecolab::CairoSurface
+  {
+  private:
+    WindowInformation *winInfo;
+
+  public:
+    RenderNativeWindow();
+    ~RenderNativeWindow();
+    RenderNativeWindow& operator=(const RenderNativeWindow &a);
+    RenderNativeWindow(const RenderNativeWindow &a);
+
+  public:
+    void initializeNativeWindow(unsigned long parentWindowId);
+    void renderFrame();
+  };
+} // namespace minsky
 
 #include "renderNativeWindow.cd"
 #endif
