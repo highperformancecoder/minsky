@@ -181,4 +181,9 @@ namespace minsky
     offsetTop = max(180, offsetTop);
     this->winInfo->initialize(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
   }
+
+
+  void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight) {
+    // TODO:: To be implemented... need to recreate child window
+  }
 } // namespace minsky
