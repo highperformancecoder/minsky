@@ -44,7 +44,8 @@ namespace minsky
 
   class RenderNativeWindow : public ecolab::CairoSurface
   {
-  private:
+  public:
+    /* Perhaps needs to be public for some auto-binding code */
     WindowInformation *winInfo;
 
   public:
