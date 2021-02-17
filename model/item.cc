@@ -356,7 +356,7 @@ namespace minsky
   {
     if (auto v=select(x,y))
       return v->closestOutPort(x,y);
-    return m_ports.size()>0 && !m_ports[0]->input()? m_ports[0]: nullptr;
+    return portsSize()>0 && !ports(0).lock()->input()? ports(0).lock(): nullptr;
   }
   
   shared_ptr<Port> Item::closestInPort(float x, float y) const
