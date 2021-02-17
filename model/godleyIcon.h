@@ -79,11 +79,7 @@ namespace minsky
     /// sets editor's display values attributes to current global preferences
     void setEditorDisplayValues();
     
-    CopiableUniquePtr godleyT;
-    
-    bool godleyTabValueDisplay=true;
-    void toggleGodleyTabValueDisplay() {godleyTabValueDisplay=!godleyTabValueDisplay;} 
-    bool tabDisplayValues() const {return godleyTabValueDisplay;}            
+    CopiableUniquePtr godleyT;    
 
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
