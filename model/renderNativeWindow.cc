@@ -103,7 +103,7 @@ namespace minsky
     childWidth = wAttr.width - 2 * padding;
     childHeight = wAttr.height - yOffset - padding;
 
-    childWindowId = XCreateSimpleWindow(display, parentWin, offsetTop, offsetLeft, childWidth, childHeight, 0, 0, 0);
+    childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, 0); //TODO:: Should we pass visual and attributes at the end?
     XMapWindow(display, childWindowId);
   }
 
