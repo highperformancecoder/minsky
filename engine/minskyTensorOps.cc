@@ -300,10 +300,11 @@ namespace minsky
         {
           // strip of any indices outside the output range
           auto t=ssize_t(i)-delta;
-          if (t>=0 && t<ssize_t(size()) && idxSet.count(t))
+          if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.count(t) && sameSlice(t,i))
             {
               argIndices.push_back(t);
               newIdx.insert(hypercube().linealIndex(arg->hypercube().splitIndex(t)));
+              assert(argIndices.size()==newIdx.size());
             }
         }
       cachedResult.index(Index(newIdx));
@@ -323,10 +324,7 @@ namespace minsky
           for (auto i: argIndices)
             {
               auto t=i+delta;
-              if (sameSlice(t, i))
-                cachedResult[idx++]=arg->atHCIndex(t)-arg->atHCIndex(i);
-              else
-                cachedResult[idx++]=nan("");
+              cachedResult[idx++]=arg->atHCIndex(t)-arg->atHCIndex(i);
             }
         }
       else if (delta>=0)
