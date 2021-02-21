@@ -1,31 +1,66 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta.15</minskyVersion>
+  <minskyVersion>2.21.0-beta.29</minskyVersion>
   <wires>
    <Wire>
-    <id>18</id>
+    <id>42</id>
     <from>0</from>
     <to>4</to>
    </Wire>
    <Wire>
-    <id>19</id>
+    <id>43</id>
     <from>2</from>
     <to>6</to>
    </Wire>
    <Wire>
-    <id>20</id>
+    <id>44</id>
     <from>8</from>
     <to>13</to>
    </Wire>
    <Wire>
-    <id>21</id>
+    <id>45</id>
     <from>10</from>
     <to>14</to>
    </Wire>
    <Wire>
-    <id>22</id>
+    <id>46</id>
     <from>12</from>
     <to>16</to>
+   </Wire>
+   <Wire>
+    <id>47</id>
+    <from>18</from>
+    <to>20</to>
+   </Wire>
+   <Wire>
+    <id>48</id>
+    <from>22</from>
+    <to>24</to>
+   </Wire>
+   <Wire>
+    <id>49</id>
+    <from>26</from>
+    <to>31</to>
+   </Wire>
+   <Wire>
+    <id>50</id>
+    <from>28</from>
+    <to>32</to>
+   </Wire>
+   <Wire>
+    <id>51</id>
+    <from>30</from>
+    <to>35</to>
+   </Wire>
+   <Wire>
+    <id>52</id>
+    <from>38</from>
+    <to>36</to>
+   </Wire>
+   <Wire>
+    <id>53</id>
+    <from>34</from>
+    <to>40</to>
    </Wire>
   </wires>
   <items>
@@ -48,6 +83,30 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
     <tensorData>
 <![CDATA[GhQY?5R&=sTaV0*)CEa\6_&^Y&WJDO68FiI8om73"$H`?JFO)rpdSqE@l1n+)W)6gD[,;*!5aF#gA]]>    </tensorData>
    </Item>
@@ -70,6 +129,30 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
     <tensorData>
 <![CDATA[GhQY>5R&2<&6~'+M`AL_(t%O[-7!HP0^V~j:sT+M@!lH@^+#9W!8oC4"o]]>    </tensorData>
    </Item>
@@ -118,6 +201,30 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
     <tensorData>
 <![CDATA[GhQY?5R&=sTaV0*)CEa\6_&^Y&WJDO68FiI8om73"$H`?JFO)rpdSqE@l1n+)W)6gD[,;*!5aF#gA]]>    </tensorData>
    </Item>
@@ -140,6 +247,30 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
     <tensorData>
 <![CDATA[GhQY>5R&2<&6~'+M`AL_(t%O[-7!HP0^V~j:sT+M@!lH@^+#9W!8oC4"o]]>    </tensorData>
    </Item>
@@ -172,6 +303,362 @@
      <int>16</int>
     </ports>
    </Item>
+   <Item>
+    <id>19</id>
+    <type>Variable:parameter</type>
+    <x>160.1</x>
+    <y>534.6</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>18</int>
+    </ports>
+    <name>x3</name>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>0</min>
+     <max>3.02677e-316</max>
+     <step>3.02668e-316</step>
+    </slider>
+    <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x3.csv</url>
+    <csvDataSpec>
+     <dataRowOffset>1</dataRowOffset>
+     <dataColOffset>2</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+      <int>0</int>
+      <int>1</int>
+     </dimensionCols>
+     <dimensions>
+      <Dimension>
+       <type>string</type>
+       <units></units>
+      </Dimension>
+      <Dimension>
+       <type>time</type>
+       <units></units>
+      </Dimension>
+     </dimensions>
+     <dimensionNames>
+      <string>country</string>
+      <string>date</string>
+      <string>&#32;value</string>
+     </dimensionNames>
+    </csvDataSpec>
+    <tensorData>
+<![CDATA[GhV1g5QVGo%M3qMKJ&XP`a94LVeec__s!Pk%PXZFTJS`p:<kN;.k.Jd[Z).sF$aT~dc-Fa`15%>R,1YX3%L@"b">5V8S,hLLbP&O1,(Q92)#0-&-E"b0LD$[_~`TCV@*C#Xs!H]]>    </tensorData>
+   </Item>
+   <Item>
+    <id>21</id>
+    <type>Sheet</type>
+    <x>626.075</x>
+    <y>534.025</y>
+    <scaleFactor>1.10969</scaleFactor>
+    <rotation>0</rotation>
+    <width>724.05</width>
+    <height>177.55</height>
+    <ports>
+     <int>20</int>
+    </ports>
+   </Item>
+   <Item>
+    <id>23</id>
+    <type>Variable:parameter</type>
+    <x>169.7</x>
+    <y>842.8</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>22</int>
+    </ports>
+    <name>x4</name>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>0</min>
+     <max>NaN</max>
+     <step>1.35884e-309</step>
+    </slider>
+    <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x4.csv</url>
+    <csvDataSpec>
+     <dataRowOffset>1</dataRowOffset>
+     <dataColOffset>2</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+      <int>0</int>
+      <int>1</int>
+     </dimensionCols>
+     <dimensions>
+      <Dimension>
+       <type>string</type>
+       <units></units>
+      </Dimension>
+      <Dimension>
+       <type>time</type>
+       <units></units>
+      </Dimension>
+     </dimensions>
+     <dimensionNames>
+      <string>sex</string>
+      <string>date</string>
+      <string>&#32;value</string>
+     </dimensionNames>
+    </csvDataSpec>
+    <tensorData>
+<![CDATA[GhQY95QVGo%M3qM.UB:6!N(MV8i&j!im\<G'4B6>:tdi_-^>.`G"^'`nmF4%M'~-[=EFm;Bd3^I@pK1(+:9hWYQ?$p.2+Ne!-VW~1B]]>    </tensorData>
+   </Item>
+   <Item>
+    <id>25</id>
+    <type>Sheet</type>
+    <x>604</x>
+    <y>841.5</y>
+    <scaleFactor>2.08723</scaleFactor>
+    <rotation>0</rotation>
+    <width>651.6</width>
+    <height>196.2</height>
+    <ports>
+     <int>24</int>
+    </ports>
+   </Item>
+   <Item>
+    <id>27</id>
+    <type>Variable:parameter</type>
+    <x>1146.5</x>
+    <y>550.2</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>26</int>
+    </ports>
+    <name>x3</name>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>0</min>
+     <max>3.02677e-316</max>
+     <step>3.02668e-316</step>
+    </slider>
+    <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x3.csv</url>
+    <csvDataSpec>
+     <dataRowOffset>1</dataRowOffset>
+     <dataColOffset>2</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+      <int>0</int>
+      <int>1</int>
+     </dimensionCols>
+     <dimensions>
+      <Dimension>
+       <type>string</type>
+       <units></units>
+      </Dimension>
+      <Dimension>
+       <type>time</type>
+       <units></units>
+      </Dimension>
+     </dimensions>
+     <dimensionNames>
+      <string>country</string>
+      <string>date</string>
+      <string>&#32;value</string>
+     </dimensionNames>
+    </csvDataSpec>
+    <tensorData>
+<![CDATA[GhV1g5QVGo%M3qMKJ&XP`a94LVeec__s!Pk%PXZFTJS`p:<kN;.k.Jd[Z).sF$aT~dc-Fa`15%>R,1YX3%L@"b">5V8S,hLLbP&O1,(Q92)#0-&-E"b0LD$[_~`TCV@*C#Xs!H]]>    </tensorData>
+   </Item>
+   <Item>
+    <id>29</id>
+    <type>Variable:parameter</type>
+    <x>1146.5</x>
+    <y>713</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>28</int>
+    </ports>
+    <name>x4</name>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>0</min>
+     <max>NaN</max>
+     <step>1.35884e-309</step>
+    </slider>
+    <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x4.csv</url>
+    <csvDataSpec>
+     <dataRowOffset>1</dataRowOffset>
+     <dataColOffset>2</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+      <int>0</int>
+      <int>1</int>
+     </dimensionCols>
+     <dimensions>
+      <Dimension>
+       <type>string</type>
+       <units></units>
+      </Dimension>
+      <Dimension>
+       <type>time</type>
+       <units></units>
+      </Dimension>
+     </dimensions>
+     <dimensionNames>
+      <string>sex</string>
+      <string>date</string>
+      <string>&#32;value</string>
+     </dimensionNames>
+    </csvDataSpec>
+    <tensorData>
+<![CDATA[GhQY95QVGo%M3qM.UB:6!N(MV8i&j!im\<G'4B6>:tdi_-^>.`G"^'`nmF4%M'~-[=EFm;Bd3^I@pK1(+:9hWYQ?$p.2+Ne!-VW~1B]]>    </tensorData>
+   </Item>
+   <Item>
+    <id>33</id>
+    <type>Operation:add</type>
+    <x>1251</x>
+    <y>636</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>30</int>
+     <int>31</int>
+     <int>32</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>37</id>
+    <type>Operation:gather</type>
+    <x>1354.4</x>
+    <y>661.3</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>34</int>
+     <int>35</int>
+     <int>36</int>
+    </ports>
+    <axis>sex</axis>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>39</id>
+    <type>Variable:parameter</type>
+    <x>1300.5</x>
+    <y>699.8</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>38</int>
+    </ports>
+    <name>0</name>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>0</min>
+     <max>0</max>
+     <step>5.43231e-312</step>
+    </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
+   </Item>
+   <Item>
+    <id>41</id>
+    <type>Sheet</type>
+    <x>1764.24</x>
+    <y>721.888</y>
+    <scaleFactor>1.39886</scaleFactor>
+    <rotation>0</rotation>
+    <width>647.725</width>
+    <height>215.425</height>
+    <ports>
+     <int>40</int>
+    </ports>
+   </Item>
   </items>
   <groups>
   </groups>
@@ -192,6 +679,27 @@
   <bookmarks>
   </bookmarks>
   <dimensions>
+   <pair>
+    <first>country</first>
+    <second>
+     <type>string</type>
+     <units></units>
+    </second>
+   </pair>
+   <pair>
+    <first>date</first>
+    <second>
+     <type>time</type>
+     <units></units>
+    </second>
+   </pair>
+   <pair>
+    <first>sex</first>
+    <second>
+     <type>string</type>
+     <units></units>
+    </second>
+   </pair>
    <pair>
     <first>t</first>
     <second>

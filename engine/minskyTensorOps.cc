@@ -90,28 +90,69 @@ namespace minsky
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
     void setState(const OperationPtr& state) override {eo.state=state;}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
-                      const std::string&, double) override
+                      const std::string& ax="", double ag=0) override
     {
-      if (a1 && a1->rank()>0)
-        hypercube(a1->hypercube());
-      else if (a2)
-        hypercube(a2->hypercube());
+      if (!a1 || a1->rank()==0)
+        if (a2)
+          hypercube(a2->hypercube());
+        else
+          hypercube(Hypercube());
       else
-        hypercube(Hypercube());
-      
-      arg1=a1;
+        if (!a2 || a2->rank()==0 || a1->hypercube()==a2->hypercube())
+          hypercube(a1->hypercube());
+        else
+          {
+            // pivot a1, a2 such that common axes are at end (resp beginning)
+            auto pivotArg1=make_shared<Pivot>(), pivotArg2=make_shared<Pivot>();
+            pivotArg1->setArgument(a1);
+            pivotArg2->setArgument(a2);
 
-      if (a2)
-        {
-          if (a2->rank()==0 || a2->hypercube()==hypercube())
-            arg2=a2;
-          else
-            {
-              arg2=make_shared<InterpolateHC>();
-              arg2->hypercube(hypercube());
-              arg2->setArgument(a2);
-            }
-        }
+            set <string> a2Axes;
+            for (auto& xv: a2->hypercube().xvectors) a2Axes.insert(xv.name);
+
+            // compute pivot orders and spread dimensions
+            std::vector<string> a1Order, common;
+            Hypercube hcSpread1, hcSpread2;
+            for (auto& i: a1->hypercube().xvectors)
+              if (a2Axes.count(i.name))
+                {
+                  common.push_back(i.name);
+                  a2Axes.erase(i.name);
+                }
+              else
+                {
+                  a1Order.push_back(i.name);
+                  hcSpread2.xvectors.push_back(i);
+                }
+            for (auto& xv: a2->hypercube().xvectors)
+              if (a2Axes.count(xv.name))
+                hcSpread1.xvectors.push_back(xv);
+
+            // append common dimensions to make up a1 final order
+            a1Order.insert(a1Order.end(), common.begin(), common.end());
+            pivotArg1->setOrientation(a1Order);
+            // add in remaining a2 axes to make up a2 order, reusing common.
+            common.insert(common.end(), a2Axes.begin(), a2Axes.end());
+            pivotArg2->setOrientation(common);
+
+            // now spread pivoted arguments across remaining dimensions
+            auto spread1=make_shared<SpreadLast>();
+            spread1->setArgument(pivotArg1);
+            spread1->setSpreadDimensions(hcSpread1);
+            auto spread2=make_shared<SpreadFirst>();
+            spread2->setArgument(pivotArg2);
+            spread2->setSpreadDimensions(hcSpread2);
+
+            if (spread1->hypercube()==spread2->hypercube())
+              setArguments(spread1, spread2);
+            else 
+              { // hypercubes not equal, interpolate the second argument
+                auto interpolate=make_shared<InterpolateHC>();
+                interpolate->hypercube(spread1->hypercube());
+                interpolate->setArgument(spread2);
+                civita::BinOp::setArguments(spread1, interpolate, ax, ag);
+              }
+          }
     }
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv1=dynamic_cast<DerivativeMixin*>(arg1.get());

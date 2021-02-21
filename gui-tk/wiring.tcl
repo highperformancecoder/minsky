@@ -307,6 +307,7 @@ proc addVariablePostModal {} {
     
     set name [string trim $varInput(Name)]
     set varExists [variableValues.count $name]
+    puts "minsky.addVariable $name $varInput(Type)"
     minsky.addVariable $name $varInput(Type)
     canvas.itemFocus.init $varInput(Value)
     canvas.itemFocus.setUnits $varInput(Units)
