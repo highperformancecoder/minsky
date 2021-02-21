@@ -38,6 +38,8 @@ namespace civita
       }
     else if (arg2)
       hypercube(arg2->hypercube());
+    else
+      hypercube(Hypercube());
     set<size_t> indices;
     if (arg1) indices.insert(arg1->index().begin(), arg1->index().end());
     if (arg2) indices.insert(arg2->index().begin(), arg2->index().end());

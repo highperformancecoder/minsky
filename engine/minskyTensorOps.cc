@@ -92,15 +92,9 @@ namespace minsky
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const std::string& ax="", double ag=0) override
     {
-      if (!a1 || a1->rank()==0)
-        if (a2)
-          hypercube(a2->hypercube());
-        else
-          hypercube(Hypercube());
+      if (!a1 || a1->rank()==0 || !a2 || a2->rank()==0 || a1->hypercube()==a2->hypercube())
+        civita::BinOp::setArguments(a1,a2,ax,ag);
       else
-        if (!a2 || a2->rank()==0 || a1->hypercube()==a2->hypercube())
-          hypercube(a1->hypercube());
-        else
           {
             // pivot a1, a2 such that common axes are at end (resp beginning)
             auto pivotArg1=make_shared<Pivot>(), pivotArg2=make_shared<Pivot>();
