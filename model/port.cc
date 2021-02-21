@@ -110,7 +110,7 @@ namespace minsky
   shared_ptr<VariableValue> Port::getVariableValue() const {
     if (input() && !m_wires.empty())
       return m_wires[0]->from()->getVariableValue();
-    return variableValue;
+    return variableValue.lock();
   }
 
 }
