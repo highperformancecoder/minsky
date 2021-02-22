@@ -23,42 +23,25 @@
 #include <cairoSurfaceImage.h>
 
 namespace minsky
-{
-  struct WindowInformation
-  {
-    unsigned long parentWindowId;
-    unsigned long childWindowId;
-    int childWidth;
-    int childHeight;
-    int offsetLeft;
-    int offsetTop;
-    Display*	display;
-    XWindowAttributes wAttr;
-    ecolab::cairo::SurfacePtr *childSurface; // TODO:: Review right way to store surface ptr
-
-    WindowInformation();
-    ~WindowInformation();
-    void initialize(unsigned long parentWin, int offsetLeft, int offsetTop, int childWidth, int childHeight);
-    void copy(WindowInformation *winInfo);
-  };
-
+{  
+  class WindowInformation;
   class RenderNativeWindow : public ecolab::CairoSurface
   {
-  public:
-    /* Perhaps needs to be public for some auto-binding code */
-    WindowInformation *winInfo;
+  private:
+    CLASSDESC_ACCESS(RenderNativeWindow); 
+    // std::shared_ptr<WindowInformation> winInfoPtr; // TODO:: cannot get things to work with this
+    WindowInformation* winInfo;
 
   public:
+
     RenderNativeWindow();
     ~RenderNativeWindow();
     RenderNativeWindow& operator=(const RenderNativeWindow &a);
     RenderNativeWindow(const RenderNativeWindow &a);
 
-  public:
-    void initializeNativeWindow(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
-    
-    void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
 
+    void initializeNativeWindow(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
+    void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void renderFrame();
   };
 } // namespace minsky

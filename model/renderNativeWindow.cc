@@ -27,10 +27,10 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
  */
 
 #include "renderNativeWindow.h"
+#include "windowInformation.h"
 #include "minsky_epilogue.h"
 
 #if defined(CAIRO_HAS_XLIB_SURFACE) && !defined(MAC_OSX_TK)
-#include <cairo/cairo-xlib.h>
 #include <cairo/cairo-xlib.h>
 #include <X11/Xlib.h>
 #endif
@@ -63,105 +63,50 @@ using namespace ecolab;
 namespace minsky
 {
 #ifdef USE_WIN32_SURFACE
-  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation *winInfo)
+  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation &winInfo)
   { /* TODO */
   }
 #elif defined(MAC_OSX_TK)
-  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation *winInfo)
+  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation &winInfo)
   { /* TODO */
   }
 #else
-
-  int throwOnXError(Display *, XErrorEvent *ev)
+  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation &wi)
   {
-    char errorMessage[256];
-    XGetErrorText(ev->display, ev->error_code, errorMessage, sizeof(errorMessage));
-    throw runtime_error(errorMessage);
-  }
-
-  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation *wi)
-  {
-    cairo::SurfacePtr childSurface(new cairo::Surface(cairo_xlib_surface_create(wi->display, wi->childWindowId, wi->wAttr.visual, wi->childWidth, wi->childHeight), wi->childWidth, wi->childHeight));
-    cairo_surface_set_device_offset(childSurface->surface(), -wi->wAttr.x, -wi->wAttr.y);
+    cairo::SurfacePtr childSurface(new cairo::Surface(cairo_xlib_surface_create(wi.getDisplay(), wi.getChildWindowId(), wi.wAttr.visual, wi.childWidth, wi.childHeight), wi.childWidth, wi.childHeight));
+    cairo_surface_set_device_offset(childSurface->surface(), -wi.wAttr.x, -wi.wAttr.y);
     return childSurface;
   }
 #endif
 
-  WindowInformation::WindowInformation()
+  RenderNativeWindow::~RenderNativeWindow()
   {
-  }
-  WindowInformation::~WindowInformation()
-  {
-    cout << "Delete called for window information" << endl;
-  }
-
-  void WindowInformation::initialize(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
-  {
-    parentWindowId = parentWin;
-    offsetLeft = left;
-    offsetTop = top;
-
-    static bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
-    display = XOpenDisplay(nullptr);
-    int err = XGetWindowAttributes(display, parentWin, &wAttr);
-    if (err > 1)
-      throw runtime_error("Invalid window: " + to_string(parentWin));
-
-    childWidth = wAttr.width - offsetLeft;
-    childHeight = wAttr.height - offsetTop;
-    
-    // Todo:: currently width, height parameters are not getting passed properly
-    // Eventually, we need those in order to ensure we don't need to worry about
-    // paddings, scrollbars etc
-    if(cWidth > 0) {
-      childWidth = min(childWidth, cWidth);
+    if (this->winInfo)
+    {
+      delete this->winInfo;
     }
-    if(cHeight > 0) {
-      childHeight = min(childHeight, cHeight);
-    }
-
-    cout << childWidth << "::" << childHeight << "::" << offsetLeft << "::" << offsetTop << endl;
-    childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, 0); //TODO:: Should we pass visual and attributes at the end?
-    XMapWindow(display, childWindowId);
-  }
-
-  void WindowInformation::copy(WindowInformation *winInfo)
-  {
-    this->parentWindowId = winInfo->parentWindowId;
-    this->childWindowId = winInfo->childWindowId;
-    this->offsetLeft = winInfo->offsetLeft;
-    this->offsetTop = winInfo->offsetTop;
-    this->display = winInfo->display;
-    this->wAttr = winInfo->wAttr;
-    // this->childSurface = winInfo->childSurface;// TODO:: Later, try reusing the surface also in winInfo
   }
 
   RenderNativeWindow::RenderNativeWindow()
   {
-    winInfo = new WindowInformation(); // TODO:: Try to reuse the WindowInformation object instead of creating a new one.... perhaps it should be a static data member?
-  }
-
-  RenderNativeWindow::~RenderNativeWindow()
-  {
-    delete winInfo;
+    this->winInfo = new WindowInformation();
   }
 
   RenderNativeWindow &RenderNativeWindow::operator=(const RenderNativeWindow &a)
   {
-    cout << "Calling assignment on renderNativeWindow" << endl;
-    a.winInfo->copy(this->winInfo);
-    return *this;
+    //TODO:: I expected this to be the "new" instance with uninitialized winInfo and a to have the previous winInfo.
+    // However, it seems to be the other way round in practice --- Janak
+    a.winInfo->initialize(*(this->winInfo));
   }
 
   RenderNativeWindow::RenderNativeWindow(const RenderNativeWindow &a)
   {
-    cout << "Copy constructor for RenderNativeWindow called... TODO:: implement this" << endl;
-    //a.winInfo->copy(this->winInfo); // reverse?
-  };
+    // cout << "Copy constructor was called" << endl;
+  }
 
   void RenderNativeWindow::renderFrame()
   {
-    auto tmp = createNativeWindowSurface(winInfo);
+    auto tmp = createNativeWindowSurface(*winInfo);
 
     //TODO:: Review if this paint (below 3 lines) is really needed with each frame
     cairo_move_to(tmp->cairo(), 0, 0);
@@ -173,17 +118,14 @@ namespace minsky
     tmp.swap(surface);
   }
 
-  void RenderNativeWindow::initializeNativeWindow(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
-  {
-    cout << parentWindowId << "::" << offsetLeft << "::" << offsetTop << "::" << childWidth << "::" << childHeight << endl;
-    // TODO:: Only the first argument is getting passed here, rest values are 0s
-    offsetLeft = max(20, offsetLeft);
-    offsetTop = max(180, offsetTop);
-    this->winInfo->initialize(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
+  void RenderNativeWindow::initializeNativeWindow(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight) {
+    //std::cout << parentWindowId << "::" << offsetLeft << "::" << offsetTop << "::" << childWidth << "::" << childHeight << std::endl;
+    winInfo->initialize(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
+    //std::cout << "Child window id:: " << winInfo->getChildWindowId() << std::endl;
   }
 
-
-  void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight) {
+  void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight)
+  {
     // TODO:: To be implemented... need to recreate child window
   }
 } // namespace minsky
