@@ -106,6 +106,7 @@ namespace schema3
     Optional<std::string> filename;
     Optional<schema2::RavelState> ravelState;
     Optional<int> lockGroup;
+    Optional<std::set<std::string>> lockGroupHandles;
     Optional<minsky::Dimensions> dimensions;
     // Operation tensor parameters
     Optional<std::string> axis;
