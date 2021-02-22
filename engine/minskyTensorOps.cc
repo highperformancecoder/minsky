@@ -434,43 +434,28 @@ namespace minsky
         hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
         cachedResult.hypercube(move(hc));
         
-        //size_t m=1, n=1;   
-        //if (arg1->rank()>1)
-        //  for (size_t i=0; i<arg1->rank()-1; i++)
-        //    m*=arg1->hypercube().dims()[i];
-        //    
-        //if (arg2->rank()>1)
-        //  for (size_t i=1; i<arg2->rank(); i++)
-        //    n*=arg2->hypercube().dims()[i];         
-        
-        auto idx1=arg1->index(), idx2=arg2->index();
         set<size_t> newIdx;
-        size_t stride=arg2->hypercube().splitIndex(0).size();
+        vector<vector<size_t>> idx1 ,idx2;       
         
         for (auto& i: arg1->index())
-          for (auto& j: arg2->index())
+            idx1.push_back(arg1->hypercube().splitIndex(i));          
+        for (auto& j: arg2->index())   
+            idx2.push_back(arg2->hypercube().splitIndex(j));
+        
+        // first element of split index of first tensor and last element of split index of second tensor is the split index of product tensor. Convert to lineal index to get new index vector????    
+        for (auto& i: idx1[0])
+          for (auto& j: idx2[idx2.size()-1])
           {
-              size_t tmpIdx=0;
-              for (size_t k=0; k<stride; k++)
-              {
-			   auto i1=arg1->rank()>1? idx1[k*arg1->index().size()+i] : idx1[k];
-			   auto i2=arg2->rank()>1? idx2[j*stride+k] : idx2[k];
-			   if (i1<=*idx1.end() && i2<=*idx2.end()) {
-				   cout << i1 << " " << i2 << endl;
-				   tmpIdx+=i1*i2; 	  
-				   //if (i2>i1) tmpIdx=i2;
-				   //else tmpIdx=i1; 
-			   }
-               //newIdx.insert(i+arg1->hypercube().splitIndex(i).size()*j);    // I know it has to be index from first tensor plus some stride times index from second tensor, but what stride???
-               //cout << *newIdx.end() << endl;
-		      }
-		    newIdx.insert(tmpIdx);
-		    //cout << *newIdx.end() << endl;
-		}  
-		
-	   cout << endl;
-		   
-		cachedResult.index(Index(newIdx));           
+			 vector<size_t> tmpIdx;
+			 if (i && j) {
+				 tmpIdx.push_back(i);
+				 tmpIdx.push_back(j);
+				 newIdx.insert(hc.linealIndex(tmpIdx));
+			 }
+             tmpIdx.clear();
+		 }
+             
+        cachedResult.index(Index(newIdx));              
                 
       }
     }    
