@@ -222,6 +222,11 @@ namespace MathDAG
     print(surf.cairo(), latexToPango(mathrm(name)), Anchor::nw);
   }
 
+  void LockDAG::render(ecolab::cairo::Surface& surf) const
+  {
+    print(surf.cairo(), "locked", Anchor::nw);
+  }
+
 
   template <>
   void OperationDAG<OperationType::constant>::render(Surface& surf) const 

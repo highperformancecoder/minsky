@@ -27,6 +27,7 @@
 #include "evalOp.h"
 #include "godleyIcon.h"
 #include "switchIcon.h"
+#include "lock.h"
 
 #include "operation.h"
 #include <cairo_base.h>
@@ -264,6 +265,22 @@ namespace MathDAG
     int order(unsigned maxOrder) const override {return 0;} // Godley columns define integration vars
   };
 
+  struct LockDAG: public Node
+  {
+    const Lock& lock;
+    WeakNodePtr rhs;
+    LockDAG(const Lock& lock): lock(lock) {}
+    int BODMASlevel() const override {return 0;} 
+    ostream& latex(ostream& o) const override  {return o<<"locked";} 
+    ostream& matlab(ostream& o) const override  {return o<<"";} 
+    void render(ecolab::cairo::Surface& surf) const override;
+    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={});
+    int order(unsigned maxOrder) const override {return rhs->order(maxOrder-1)+1;}
+    bool tensorEval() const override {return true;}
+    std::shared_ptr<Node> derivative(SystemOfEquations&) const override
+    {lock.throw_error("derivative not defined for locked objects");}
+  };
+  
   class SubexpressionCache
   {
     std::map<std::string, NodePtr > cache;
@@ -278,6 +295,9 @@ namespace MathDAG
     }
     std::string key(const SwitchIcon& x) const {
       return "switch:"+std::to_string(size_t(x.ports(0).lock().get()));
+    }
+    std::string key(const Lock& x) const {
+      return "lock:"+std::to_string(size_t(x.ports(0).lock().get()));
     }
     /// strings refer to variable names
     std::string key(const string& x) const {
@@ -345,6 +365,7 @@ namespace MathDAG
     /// create an operation DAG. returns cached value if previously called
     NodePtr makeDAG(const OperationBase& op);
     NodePtr makeDAG(const SwitchIcon& op);
+    NodePtr makeDAG(const Lock& op);
 
     /// returns cached subexpression node representing what feeds the
     /// wire, creating a new one if necessary

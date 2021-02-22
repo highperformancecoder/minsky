@@ -177,6 +177,9 @@ namespace schema3
                   items.back().dimensions=r->axisDimensions;
                 }
             }
+          if (auto l=dynamic_cast<minsky::Lock*>(i))
+            if (l->locked())
+              items.back().ravelState=l->lockedState;
         }
       return j;
     }
@@ -210,6 +213,7 @@ namespace schema3
       registerClassType<minsky::DataOp>();
       registerClassType<minsky::UserFunction>();
       registerClassType<minsky::Ravel>();
+      registerClassType<minsky::Lock>();
       registerClassType<minsky::Sheet>();
       registerClassType<minsky::VarConstant>();
       registerClassType<minsky::GodleyIcon>();
@@ -401,6 +405,11 @@ namespace schema3
         
         if (y.dimensions)
           x1->axisDimensions=*y.dimensions;
+      }
+    if (auto x1=dynamic_cast<minsky::Lock*>(&x))
+      {
+        if (y.ravelState)
+            x1->lockedState=y.ravelState->toRavelRavelState();
       }
     if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))
       {

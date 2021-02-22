@@ -1756,6 +1756,10 @@ proc aboutMinsky {} {
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
 
+   Some icons from the Antü Plasma Suita are licensed under Creative
+   Commons Attribution-Share Alike 3.0 Unported license
+   (https://creativecommons.org/licenses/by-sa/3.0/deed.en).
+
    Ravel is copyright Ravelation Pty Ltd. A separate license needs to
    be purchased to use Ravel. See https://ravelation.hpcoders.com.au
 
