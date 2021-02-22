@@ -32,13 +32,17 @@ namespace minsky
 {
   namespace
   {
-    string readToken(istream& mdlFile, char delim)
+    string readToken(istream& mdlFile, char delim, bool appendDelim=false)
     {
       string r;
       string c;
       while (mdlFile>>GetUtf8Char(c))
-        if (c[0]==delim)
-          break;
+        if (c[0]==delim || c[0]=='~' || c[0]=='|')
+          {
+            if (appendDelim)
+              r+=c[0];
+            break;
+          }
         else if (c[0]=='{') /* inline comment - read up to close brace */
           {
             while (c[0]!='}' && mdlFile>>GetUtf8Char(c));
@@ -131,59 +135,29 @@ namespace minsky
 
     struct FunctionDef
     {
+      std::string args;
       std::string expression;
-      std::function<void(const std::string&,exprtk::symbol_table<double>&)> addToTable;
     };
-
-#define FUNCTION(def) [](const std::string& name, exprtk::symbol_table<double>& table){table.add_function(name,def);}       
-
-    double pulse(double x, double y)
-    {return (minsky().t>=x)*(minsky().t<x+y);}
-    double pulseTrain(double s, double b,double r,double e)
-    {
-      double t=minsky().t; double tm=fmod(t,r); double sm=fmod(s,r); double bm=fmod(s+b,r);
-      return (t<e)*(t>=s)*(tm>=sm)*(tm<bm);
-    }
-
-    double xidz(double a, double b, double x)
-    {
-      double r=a/b;
-      return std::isfinite(r)? r: x;
-    }
-    
-    double zidz(double a,double b) {return xidz(a,b,0);}
+  
     
     map<string, FunctionDef> venSimFunctions={
-      {"arccos",{"acos(x)",FUNCTION([](double x){return acos(x);})}},
-      {"arcsin",{"asin(x)",FUNCTION([](double x){return asin(x);})}},
-      {"arctan",{"atan(x)",FUNCTION([](double x){return atan(x);})}},
-      {"gammaLn",{"gammaLn(x)",FUNCTION([](double x){return lgamma(x);})}},
-      {"integer",{"floor(x)",FUNCTION([](double x){return floor(x);})}},
-      {"ifThenElse",{"x? y: z",FUNCTION([](double x,double y,double z)
-      {return x? y: z;})}},
-      {"ln",{"log(x)",FUNCTION([](double x){return log(x);})}},
-      {"log",{"log(x)/log(y)",FUNCTION([](double x, double y){return log(x)/log(y);})}},
-      {"modulo",{"modulo(x,y)",FUNCTION([](double x, double y){return fmod(x,y);})}},
-      {"power",{"x^y",FUNCTION([](double x, double y){return pow(x,y);})}},
-//      {"pulse",{"(time>=x)*(time<x+y)",FUNCTION([](double x, double y){return (minsky().t>=x)*(minsky().t<x+y);})}},
-//      {"pulseTrain",{"pulseTrain(x,y,x,y)",FUNCTION([](double s, double b,double r,double e){
-//        double t=minsky().t; double tm=fmod(t,r); double sm=fmod(s,r); double bm=fmod(s+b,r);
-//        return (t<e)*(t>=s)*(tm>=sm)*(tm<bm);
-//      })}},
-      // why do the above lambdas fail?
-      {"pulse",{"(time>=x)*(time<x+y)",FUNCTION(pulse)}},
-      {"pulseTrain",{"pulseTrain(x,y,x,y)",FUNCTION(pulseTrain)}},
-      {"quantum",{"floor(x/y)",FUNCTION([](double x, double y){return floor(x/y);})}},
-      {"ramp",{"ramp(x,y,y)",FUNCTION([](double s, double t1, double t2){
-        double t=minsky().t;
-        if (t1>t2) swap(t1,t2);
-        if (t<t1) return 0.0;
-        else if (t<t2) return (t-t1)*s;
-        else return (t2-t1)*s;
-      })}},
-      {"step",{"y*(time>=x)",FUNCTION([](double x,double y){return y*(minsky().t>x);})}},
-      {"xidz",{"xidz(x,y,y)",FUNCTION(xidz)}},
-      {"zidz",{"zidz(x,y)",FUNCTION(zidz)}}
+      {"arccos",{"(x)","acos(x)"}},
+      {"arcsin",{"(x)","asin(x)"}},
+      {"arctan",{"(x)","atan(x)"}},
+      {"gammaLn",{"(x)","gammaLn(x)"}},
+      {"integer",{"(x)","floor(x)"}},
+      {"ifThenElse",{"(x,y,z)","x? y: z"}},
+      {"ln",{"(x)","log(x)"}},
+      {"log",{"(x,y)","log(x)/log(y)"}},
+      {"modulo",{"(x,y)","x%y"}},
+      {"power",{"(x,y)","x^y"}},
+      {"pulse",{"(x,y)","(time>=x)*(time<x+y)"}},
+      {"pulseTrain",{"(s,b,r,e)","tm:=time%r; (time<e)*(time>=s)*(tm<((s+b)%r))*(tm>=(s%r))"}},
+      {"quantum",{"(x,y)","floor(x/y)"}},
+      {"ramp",{"(s,a,b)","var t1:=min(a,b); var t2:=max(a,b); (clamp(t1,time,t2)-t1)*s"}},
+      {"step",{"(x,y)","y*(time>=x)"}},
+      {"xidz",{"(x,y,z)","var r:=y/z; isfinite(r)? r: x"}},
+      {"zidz",{"(x,y)","var r:=y/z; isfinite(r)? r:0"}}
     };
 
     set<string> functionsAdded; // track user functions added to group
@@ -197,28 +171,81 @@ namespace minsky
           VariablePtr rhs(VariableBase::flow, definition);
           group.addItem(rhs);
           if (port)
-            group.addWire(rhs->ports[0], port);
+            group.addWire(rhs->ports(0).lock(), port);
           return;
         }
       
-      auto function=new UserFunction;
-      group.addItem(function);
-      function->description(name+"()");
-      function->expression=definition;
-      for (auto i: function->externalSymbolNames())
+      auto function=new UserFunction(name,definition);
+      group.addItem(function); //ownership passed
+      for (auto i: function->symbolNames())
         {
           auto f=venSimFunctions.find(i);
           if (f!=venSimFunctions.end())
             {
-              if (!functionsAdded.insert(f->first).second)
-                addDefinitionToPort(group,nullptr,f->first,f->second.expression);
-              f->second.addToTable(f->first, UserFunction::globalSymbols());
+              if (functionsAdded.insert(f->first).second)
+                addDefinitionToPort(group,nullptr,f->first+f->second.args,f->second.expression);
             }
        }
       if (port)
-        group.addWire(function->ports[0], port);
+        group.addWire(function->ports(0), port);
     }
     
+    void defineLookupFunction(Group& group, const std::string& name, std::string data)
+    {
+      regex lookupPairsPattern(R"((\[[^\]]*\],)?(\(.*\)))");
+      smatch match; 
+      map<double,double> xData;
+      if (regex_match(data,match,lookupPairsPattern))
+        {
+          auto data=match[2].str();
+          regex extractHead(R"(\(([^,]*),([^)]*)\)(,(\(.*\)))*)");
+          // note match[3] is the trailing data, match[4] strips the leading ,
+          for (auto data=match[2].str(); regex_match(data, match, extractHead); data=match[4])
+            xData[stod(match[1])]=stod(match[2]);
+        }
+      else
+        {
+          vector<double> xyData;
+          for (size_t offs=0; offs<data.size(); ++offs)
+            xyData.push_back(stod(data.substr(offs),&offs));
+          if (xyData.size()%2!=0)
+            throw runtime_error("Odd amount of data specified");
+          for (size_t i=0; i<xyData.size()/2; ++i)
+            xData[xyData[i]]=xyData[i+xyData.size()/2];
+        }
+      auto f=make_shared<Group>();
+      f->self=f;
+      f->title=name;
+      group.addItem(f);
+      VariablePtr dataVar(VariableType::flow,"data");
+      f->addItem(dataVar);
+      dataVar->moveTo(f->x()-50,f->y()-20);
+      OperationPtr gather(OperationType::gather);
+      f->addItem(gather);
+      gather->moveTo(f->x()+30,f->y()-10);
+      VariablePtr inVar(VariableType::flow,"in"), outVar(VariableType::flow,"out");
+      f->addItem(inVar);
+      f->addItem(outVar);
+      f->inVariables.push_back(inVar);
+      f->outVariables.push_back(outVar);
+      f->addWire(*dataVar, *gather, 1);
+      f->addWire(*f->inVariables[0], *gather, 2);
+      f->addWire(*gather, *f->outVariables[0], 1);
+      
+      XVector xVals("0",{Dimension::value,""});
+      auto& tensorInit=dataVar->vValue()->tensorInit;
+      for (auto& i: xData)
+        xVals.push_back(i.first);
+      Hypercube hc; hc.xvectors.push_back(move(xVals));
+      tensorInit.hypercube(move(hc));
+
+      assert(tensorInit.size()==xData.size());
+      auto j=tensorInit.begin();
+      for (auto& i: xData)
+        *j++=i.second;
+
+      *dataVar->vValue()=tensorInit;
+    }
   }
 
   void readMdl(Group& group, RungeKutta& simParms, istream& mdlFile)
@@ -228,16 +255,10 @@ namespace minsky
     regex number(R"(\d*\.?\d+[Ee]?\d*)");
     regex unitFieldPattern(R"(([^\[\]]*)(\[.*\])?)");
     regex sliderSpecPattern(R"(\[([^,]*),?([^,]*),?([^,]*)\])");
+    regex lookupPattern(R"(([^(]*)\((.*)\))");
     smatch match;
-    UserFunction::globalSymbols().clear();
     functionsAdded.clear();
 
-    UserFunction::globalSymbols().add_variable("time",minsky().t);
-    UserFunction::globalSymbols().add_variable("timeStep",minsky().stepMax);
-    UserFunction::globalSymbols().add_variable("initialTime",minsky().t0);
-    UserFunction::globalSymbols().add_variable("finalTime",minsky().tmax);
-    UserFunction::globalUnitSymbols().add_variable("time",timeUnit);
-    
     string c;
     string currentMDLGroup;
     while (mdlFile>>GetUtf8Char(c))
@@ -267,10 +288,14 @@ namespace minsky
         
         // macros?
         // read variable name
-        string name=collapseWS(trimWS(c+readToken(mdlFile,'=')));
+        string nameStr=readToken(mdlFile,'=',true /* append delimiter */);
+        string name=collapseWS(trimWS(c+nameStr.substr(0,nameStr.length()-1)));
         if (name.substr(0,9)==R"(\\\---///)")
           break; // we don't parse the sketch information - not used in Minsky
-        string definition=collapseWS(trimWS(readToken(mdlFile,'~')));
+        string definition;
+        if (nameStr.back()=='=')
+          // only read definition if this was a variable definition
+          definition=collapseWS(trimWS(readToken(mdlFile,'~')));
         switch (definition[0])
           {
           case '=': case ':': // for now, treat constant assignment and data assignment equally to numeric assignment
@@ -302,7 +327,9 @@ namespace minsky
             if (name=="finalTime") simParms.tmax=stod(definition);
             continue;
           }
-        if (regex_match(definition,match,integ))
+        if (regex_match(name,match,lookupPattern))
+          defineLookupFunction(group, match[1], match[2]);
+        else if (regex_match(definition,match,integ))
           {
             auto intOp=new IntOp;
             group.addItem(intOp);
@@ -311,7 +338,7 @@ namespace minsky
             auto& v=intOp->intVar;
             integrationVariables.insert(name);
             auto integrand=match[1].str();
-            addDefinitionToPort(group, intOp->ports[1], "Integrand of "+name, integrand);
+            addDefinitionToPort(group, intOp->ports(1).lock(), "Integrand of "+name,integrand);
 
             auto init=match[2].str();
             if (regex_match(init,match,identifier))
@@ -319,7 +346,7 @@ namespace minsky
             else
               {
                 // we need to add another variable, and attach it to a function block
-                addDefinitionToPort(group, intOp->ports[2], "Initial value of "+name, init);
+                addDefinitionToPort(group, intOp->ports(2).lock(), "Initial value of "+name, init);
               }
             try  // absorb any errors in units - we have a chance to fix these later
               {
@@ -363,7 +390,7 @@ namespace minsky
           {
             VariablePtr v(VariableBase::flow, name);
             group.addItem(v);
-            addDefinitionToPort(group, v->ports[1], "Def: "+name, definition);
+            addDefinitionToPort(group, v->ports(1).lock(), "Def: "+name, definition);
             try  // absorb any errors in units - we have a chance to fix these later
               {
                 v->setUnits(units);

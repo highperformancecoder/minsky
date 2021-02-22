@@ -63,7 +63,8 @@ namespace minsky
   using namespace civita;
   
   struct RKdata; // an internal structure for holding Runge-Kutta data
-
+  struct CallableFunction;
+  
   // handle the display of rendered equations on the screen
   class EquationDisplay: public CairoSurface
   {
@@ -94,6 +95,7 @@ namespace minsky
     
     std::vector<int> flagStack;
 
+    std::map<std::string, std::shared_ptr<CallableFunction>> userFunctions;
     
     
     // make copy operations just dummies, as assignment of Minsky's

@@ -25,6 +25,9 @@
 #include "minsky_epilogue.h"
 
 using namespace civita;
+using namespace boost::gregorian;
+using namespace boost::posix_time;
+
 namespace classdesc
 {
   // postpone factory definition to TensorOpFactory()
@@ -86,28 +89,64 @@ namespace minsky
     EvalOp<op> eo;
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
     void setState(const OperationPtr& state) override {eo.state=state;}
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const std::string& ax="", double ag=0) override
     {
-      if (a1 && a1->rank()>0)
-        hypercube(a1->hypercube());
-      else if (a2)
-        hypercube(a2->hypercube());
+      if (!a1 || a1->rank()==0 || !a2 || a2->rank()==0 || a1->hypercube()==a2->hypercube())
+        civita::BinOp::setArguments(a1,a2,ax,ag);
       else
-        hypercube(Hypercube());
-      
-      arg1=a1;
+          {
+            // pivot a1, a2 such that common axes are at end (resp beginning)
+            auto pivotArg1=make_shared<Pivot>(), pivotArg2=make_shared<Pivot>();
+            pivotArg1->setArgument(a1);
+            pivotArg2->setArgument(a2);
 
-      if (a2)
-        {
-          if (a2->rank()==0 || a2->hypercube()==hypercube())
-            arg2=a2;
-          else
-            {
-              arg2=make_shared<InterpolateHC>();
-              arg2->hypercube(hypercube());
-              arg2->setArgument(a2);
-            }
-        }
+            set <string> a2Axes;
+            for (auto& xv: a2->hypercube().xvectors) a2Axes.insert(xv.name);
+
+            // compute pivot orders and spread dimensions
+            std::vector<string> a1Order, common;
+            Hypercube hcSpread1, hcSpread2;
+            for (auto& i: a1->hypercube().xvectors)
+              if (a2Axes.count(i.name))
+                {
+                  common.push_back(i.name);
+                  a2Axes.erase(i.name);
+                }
+              else
+                {
+                  a1Order.push_back(i.name);
+                  hcSpread2.xvectors.push_back(i);
+                }
+            for (auto& xv: a2->hypercube().xvectors)
+              if (a2Axes.count(xv.name))
+                hcSpread1.xvectors.push_back(xv);
+
+            // append common dimensions to make up a1 final order
+            a1Order.insert(a1Order.end(), common.begin(), common.end());
+            pivotArg1->setOrientation(a1Order);
+            // add in remaining a2 axes to make up a2 order, reusing common.
+            common.insert(common.end(), a2Axes.begin(), a2Axes.end());
+            pivotArg2->setOrientation(common);
+
+            // now spread pivoted arguments across remaining dimensions
+            auto spread1=make_shared<SpreadLast>();
+            spread1->setArgument(pivotArg1);
+            spread1->setSpreadDimensions(hcSpread1);
+            auto spread2=make_shared<SpreadFirst>();
+            spread2->setArgument(pivotArg2);
+            spread2->setSpreadDimensions(hcSpread2);
+
+            if (spread1->hypercube()==spread2->hypercube())
+              setArguments(spread1, spread2);
+            else 
+              { // hypercubes not equal, interpolate the second argument
+                auto interpolate=make_shared<InterpolateHC>();
+                interpolate->hypercube(spread1->hypercube());
+                interpolate->setArgument(spread2);
+                civita::BinOp::setArguments(spread1, interpolate, ax, ag);
+              }
+          }
     }
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv1=dynamic_cast<DerivativeMixin*>(arg1.get());
@@ -169,8 +208,9 @@ namespace minsky
   
   template <OperationType::Type op> struct MultiWireBinOp: public TensorBinOp<op>
   {
-    virtual void setArguments(const std::vector<TensorPtr>& a1,
-                              const std::vector<TensorPtr>& a2)
+    void setArguments(const std::vector<TensorPtr>& a1,
+                      const std::vector<TensorPtr>& a2,
+                      const std::string&, double) override
     {
       TensorPtr pa1, pa2;
       if (a1.size()==1)
@@ -189,18 +229,10 @@ namespace minsky
           pa2->setArguments(a2,{},0);
         }
       
-      TensorBinOp<op>::setArguments(pa1, pa2);
+      TensorBinOp<op>::setArguments(pa1, pa2,{},0);
     }
   };
    
-//  template <minsky::OperationType::Type T>
-//  struct ReductionTraits
-//  {
-//    /// x op= y
-//    static void accum(double& x, double y);
-//    static const double init;
-//  };
-
   template <OperationType::Type op> struct GeneralTensorOp;
                                                                                       
   namespace
@@ -303,10 +335,11 @@ namespace minsky
         {
           // strip of any indices outside the output range
           auto t=ssize_t(i)-delta;
-          if (t>=0 && t<ssize_t(size()) && idxSet.count(t))
+          if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.count(t) && sameSlice(t,i))
             {
               argIndices.push_back(t);
               newIdx.insert(hypercube().linealIndex(arg->hypercube().splitIndex(t)));
+              assert(argIndices.size()==newIdx.size());
             }
         }
       cachedResult.index(Index(newIdx));
@@ -326,27 +359,26 @@ namespace minsky
           for (auto i: argIndices)
             {
               auto t=i+delta;
-              if (sameSlice(t, i))
-                cachedResult[idx++]=arg->atHCIndex(t)-arg->atHCIndex(i);
-              else
-                cachedResult[idx++]=nan("");
+              cachedResult[idx++]=arg->atHCIndex(t)-arg->atHCIndex(i);
             }
         }
       else if (delta>=0)
         for (size_t i=0; i<size(); ++i)
           {
-            auto t=i+delta;
-            if (sameSlice(t, i))
-              cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(i);
+            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto t=ai+delta;
+            if (sameSlice(t, ai))
+              cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(ai);
             else
               cachedResult[i]=nan("");
           }
       else // with -ve delta, origin of result is shifted
         for (size_t i=0; i<size(); ++i)
           {
-            auto t=i-delta;
-            if (sameSlice(t,i))
-              cachedResult[i]=arg->atHCIndex(i)-arg->atHCIndex(t);
+            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto t=ai-delta;
+            if (sameSlice(t,ai))
+              cachedResult[i]=arg->atHCIndex(ai)-arg->atHCIndex(t);
             else
               cachedResult[i]=nan("");
           }
@@ -389,7 +421,8 @@ namespace minsky
           cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const std::string&, double) override {
       arg1=a1; arg2=a2;
       if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
         if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
@@ -466,7 +499,8 @@ namespace minsky
           cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const std::string&, double) override {
       arg1=a1; arg2=a2;
       auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
       Hypercube hc;
@@ -509,37 +543,174 @@ namespace minsky
   struct GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
+    size_t dimension=numeric_limits<size_t>::max();
+    std::vector<size_t> offsets; // offsets for each 1D slice of the tensor
+    
+    double interpolateString(double idx, size_t stride, size_t offset) const
+    {
+      auto maxIdx=arg1->rank()==1? arg1->size()-1: arg1->hypercube().xvectors[dimension].size()-1;
+      if (idx<=-1 || idx>maxIdx)
+        return nan("");
+      if (idx==maxIdx)
+        return arg1->atHCIndex(idx*stride+offset);
+      else if (idx<0)
+        return arg1->atHCIndex(offset);
+      else 
+        {
+          double s=idx-floor(idx);
+          return (1-s)*arg1->atHCIndex(idx*stride+offset)+s*arg1->atHCIndex((idx+1)*stride+offset);
+        }
+    }
+
+    double interpolateAny(const XVector& xv, const boost::any& x, size_t stride, size_t offset) const
+    {
+      if (diff(x,xv.front())<0 || diff(x,xv.back())>0)
+        return nan("");
+      else
+        {
+          auto i=xv.begin();
+          for (; i+1!=xv.end() && diff(x,*(i+1))>0; ++i);
+          if (i+1==xv.end())
+            return arg1->atHCIndex((xv.size()-1)*stride+offset);
+          double s=diff(x,*i)/diff(*(i+1),*i);
+          return (1-s)*arg1->atHCIndex((i-xv.begin())*stride+offset) + s*arg1->atHCIndex((i-xv.begin()+1)*stride+offset);
+        }
+    }
+
     void computeTensor() const override
     {
-      for (size_t i=0; i<arg2->size(); ++i)
+      size_t d=dimension;
+      if (d>=rank()) d=0;
+      auto& xv=arg1->hypercube().xvectors[d];
+      function<double(double,size_t)> interpolate;
+      
+      size_t stride=1;
+      auto dims=arg1->hypercube().dims();
+      for (size_t i=0; i<d; ++i)
+        stride*=dims[i];
+      
+      switch (xv.dimension.type)
         {
-          auto idx=(*arg2)[i];
-          if (isfinite(idx))
-            {
-              if (idx>=0)
-                {
-                  if (idx==arg1->size()-1)
-                    cachedResult[i]=(*arg1)[idx];
-                  else if (idx<arg1->size()-1)
-                    {
-                      double s=idx-floor(idx);
-                      cachedResult[i]=(1-s)*(*arg1)[idx]+s*(*arg1)[idx+1];
-                    }
-                }
-              else if (idx>-1)
-                cachedResult[i]=(*arg1)[0];
-              else
-                cachedResult[i]=nan("");
-            }
-          else
-            cachedResult[i]=nan("");
-        }              
+        case Dimension::string:
+          interpolate=[&](double x, size_t offset){
+            return interpolateString(x,stride,offset);};
+          break;
+        case Dimension::time:
+          interpolate=[&](double x, size_t offset){
+            // interpret as "year" in a common era date (Gregorian calendar)
+            int year=x;
+            int daysInYear=(date(year+1,Jan,1)-date(year,Jan,1)).days();
+            double dayInYearF=daysInYear*(x-year);
+            int dayInYear=dayInYearF;
+            ptime xtime(date(year,Jan,1)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
+            return interpolateAny(xv, xtime, stride, offset);
+          };
+          break;
+        case Dimension::value:
+          interpolate=[&](double x, size_t offset){
+            return interpolateAny(xv,x,stride,offset);};
+          break;
+        }
+
+      for (size_t j=0; j<offsets.size(); ++j)
+        for (size_t i=0; i<arg2->size(); ++i)
+          {
+            auto idx=(*arg2)[i];
+            if (isfinite(idx))
+              cachedResult[i+arg2->size()*j]=interpolate(idx, offsets[j]);
+            else
+              cachedResult[i]=nan("");
+        }
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const std::string& dim, double) override {
+      
       arg1=a1; arg2=a2;
-      cachedResult.index(arg2->index());
-      cachedResult.hypercube(arg2->hypercube());
+      if (!arg1 || !arg2) return;
+      try
+        {
+          dimension=arg1->rank();
+          auto& xv=arg1->hypercube().xvectors;
+          for (auto i=xv.begin(); i!=xv.end(); ++i)
+            if (i->name==dim)
+              dimension=i-xv.begin();
+        }
+      catch (...)
+        {}
+      if (arg1->rank()==0)
+        throw runtime_error("Cannot apply gather to a scalar");
+        
+      if (arg1->rank()<=1)
+        dimension=0;
+      if (dimension>=arg1->rank())
+        throw runtime_error("Need to specify which dimension to gather");
+
+      // find reduced dimensions of arg1
+      auto arg1Dims=arg1->hypercube().dims();
+      size_t lowerStride=1;
+      for (size_t i=0; i<dimension; ++i)
+        lowerStride*=arg1Dims[i];
+      size_t upperStride=1;
+      for (size_t i=dimension+1; i<arg1Dims.size(); ++i)
+        upperStride*=arg1Dims[i];
+
+      // calculate offsets
+      set<size_t> offsetSet;
+      if (arg1->index().empty()) //dense case
+        {
+          for (size_t i=0; i<upperStride; ++i)
+            for (size_t j=0; j<lowerStride; ++j)
+              offsetSet.insert(i*lowerStride*arg1Dims[dimension]+j);
+        }
+      else
+        for (auto i: arg1->index())
+          {
+            auto splitted=arg1->hypercube().splitIndex(i);
+            splitted[dimension]=0;
+            offsetSet.insert(arg1->hypercube().linealIndex(splitted));
+          }
+      offsets.clear(); offsets.insert(offsets.end(), offsetSet.begin(), offsetSet.end());
+
+      // resulting hypercube is a tensor product of arg2 and the reduced arg1.
+      size_t arg2NumElements=arg2->hypercube().numElements();
+      Hypercube hc=arg2->hypercube();
+      hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin(), arg1->hypercube().xvectors.begin()+dimension);
+      hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin()+dimension+1, arg1->hypercube().xvectors.end());
+
+      if (!arg1->index().empty() || !arg2->index().empty())
+        {
+          vector<size_t> arg1Idx(arg1->index().begin(), arg1->index().end()),
+            arg2Idx(arg2->index().begin(), arg2->index().end());
+
+          if (arg1Idx.empty())
+            // no need to duplicate elements along the reduced dimension
+            for (size_t i=0; i<upperStride; ++i)
+              for (size_t j=0; j<lowerStride; ++j)
+                arg1Idx.push_back(i*lowerStride*arg1Dims[dimension]+j);
+          if (arg2Idx.empty())
+            for (size_t i=0; i<arg2->size(); ++i) arg2Idx.push_back(i);
+      
+          set<size_t> resultantIndex;
+          size_t lastOuter=numeric_limits<size_t>::max();
+          for (auto i: arg1Idx)
+            {
+              auto splitIdx=arg1->hypercube().splitIndex(i);
+              size_t outerIdx=0, stride=1;
+              for (size_t j=0; j<arg1->rank(); ++j)
+                if (j!=dimension)
+                  {
+                    outerIdx+=stride*splitIdx[j];
+                    stride*=dim[j];
+                  }
+              if (outerIdx==lastOuter) continue;
+              lastOuter=outerIdx;
+              for (auto j: arg2Idx)
+                resultantIndex.insert(outerIdx*arg2->size()+j);
+            }
+          cachedResult.index(resultantIndex);
+        }
+      cachedResult.hypercube(move(hc));
     }
       
   };
@@ -657,14 +828,23 @@ namespace minsky
     {return chain.empty()? Timestamp(): chain.back()->timestamp();}
     const Hypercube& hypercube() const override {return chain.back()->hypercube();}
   };
-       
+
+  namespace
+  {
+    // used to mark the exception as already dealt with, in terms of displayErrorItem
+    struct TensorOpError: public runtime_error
+    {
+      TensorOpError(const string& msg): runtime_error(msg) {}
+    };
+  }
+  
   std::shared_ptr<ITensor> TensorOpFactory::create
   (const ItemPtr& it, const TensorsFromPort& tfp)
   {
     if (auto ravel=dynamic_cast<const Ravel*>(it.get()))
 	    {
 	      auto r=make_shared<RavelTensor>(*ravel);
-	      r->setArguments(tfp.tensorsFromPorts(it->ports));
+	      r->setArguments(tfp.tensorsFromPorts(*it));
 	      return r;
 	    }
     else if (auto op=it->operationCast())
@@ -673,30 +853,33 @@ namespace minsky
           TensorPtr r{create(op->type())};
           if (auto ss=dynamic_cast<SetState*>(r.get()))
             ss->setState(dynamic_pointer_cast<OperationBase>(it));
-          switch (op->ports.size())
+          switch (op->portsSize())
             {
             case 2:
-              r->setArguments(tfp.tensorsFromPort(*op->ports[1]),op->axis,op->arg);
+              r->setArguments(tfp.tensorsFromPort(*op->ports(1).lock()),op->axis,op->arg);
             break;
             case 3:
-              r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]));
+              r->setArguments(tfp.tensorsFromPort(*op->ports(1).lock()), tfp.tensorsFromPort(*op->ports(2).lock()),op->axis,op->arg);
               break;
             }
           return r;
         }
       catch (const InvalidType&)
         {return {};}
+      catch (const TensorOpError& ex)
+        {throw;}
       catch (const std::exception& ex)
         {
-          // rethrow with op attached to mark op on canvas
-          op->throw_error(ex.what());
+          // mark op on canvas, and rethrow as TensorOpError to indicate op is marked
+          cminsky().displayErrorItem(*op);
+          throw TensorOpError(ex.what());
         }
     else if (auto v=it->variableCast())
       return make_shared<ConstTensorVarVal>(v->vValue(), tfp.ev);
     else if (auto sw=dynamic_cast<const SwitchIcon*>(it.get()))
       {
         auto r=make_shared<SwitchTensor>();
-        r->setArguments(tfp.tensorsFromPorts(it->ports));
+        r->setArguments(tfp.tensorsFromPorts(*it));
         return r;
       }
     return {};
@@ -715,7 +898,7 @@ namespace minsky
               {
                 // check if we're differentiating a scalar or tensor
                 // expression, and throw accordingly
-                auto rhs=tensorsFromPort(*o->ports[1]);
+                auto rhs=tensorsFromPort(*o->ports(1).lock());
                 if (rhs.empty() || rhs[0]->size()==1)
                   throw FallBackToScalar();
                 else
@@ -731,15 +914,16 @@ namespace minsky
   }
 
 
-  vector<TensorPtr> TensorsFromPort::tensorsFromPorts(const vector<shared_ptr<Port>>& ports) const
+  vector<TensorPtr> TensorsFromPort::tensorsFromPorts(const Item& item) const
   {
     vector<TensorPtr> r;
-    for (auto& p: ports)
-      if (p->input())
-        {
-          auto tensorArgs=tensorsFromPort(*p);
-          r.insert(r.end(), tensorArgs.begin(), tensorArgs.end());
-        }
+    for (size_t i=0; i<item.portsSize(); ++i)
+      if (auto p=item.ports(i).lock())
+        if (p->input())
+          {
+            auto tensorArgs=tensorsFromPort(*p);
+            r.insert(r.end(), tensorArgs.begin(), tensorArgs.end());
+          }
     return r;
   }
 
@@ -749,7 +933,7 @@ namespace minsky
     if (auto var=cminsky().definingVar(v->valueId()))
       if (var->lhs())
         {
-          rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports[1])[0];
+          rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports(1).lock())[0];
           result.hypercube(rhs->hypercube());
           result.index(rhs->index());
           *v=result;

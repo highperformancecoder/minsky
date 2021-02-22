@@ -129,7 +129,7 @@ namespace civita
         double r=0;
         for (auto& i: weightedIndices[idx])
           {
-            assert(i.index<arg->size());
+            assert(i.index<arg->hypercube().numElements());
             r+=i.weight * arg->atHCIndex(i.index);
           }
         return r;

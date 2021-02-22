@@ -302,7 +302,7 @@ namespace minsky
                 // set initial value of stock var to init value of flow that is defined by a parameter or a constant. for ticket 1137
                 if (auto initVar=minsky().definingVar(VariableValue::valueId(group.lock(),fc.str())))
                   if (initVar->inputWired() && initVar->type()==VariableType::flow)
-                    if (auto lhsVar=initVar->ports[1]->wires()[0]->from()->item().variableCast()) {
+                    if (auto lhsVar=initVar->ports(1).lock()->wires()[0]->from()->item().variableCast()) {
                       FlowCoef fc1(lhsVar->vValue()->init);
                       fc1.coef*=fc.coef;
                       v.init=fc1.str();	

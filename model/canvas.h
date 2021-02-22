@@ -23,6 +23,7 @@
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
+#include "plotWidget.h"
 #include "selection.h"
 #include "switchIcon.h"
 #include "wire.h"
@@ -34,6 +35,7 @@
 
 namespace minsky
 {
+  using namespace classdesc;
   template <class T>
   struct NoAssign: public T
   {

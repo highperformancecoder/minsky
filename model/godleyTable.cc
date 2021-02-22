@@ -262,8 +262,8 @@ string GodleyTable::rowSum(int row) const
           }    
     } else    // only display numerical sum of stock vars in first cell of last column. for ticket 1285
     {
-      double stockSum;	
-      for (map<string,double>::iterator i=sum.begin(); i!=sum.end(); ++i) if (i->second!=0) stockSum+=i->second;  	
+      double stockSum=0;	
+      for (auto& i: sum) stockSum+=i.second;  	
       abs(stockSum)>5*std::numeric_limits<double>::epsilon()? ret<<stockSum : ret<<0; 		
     }
       

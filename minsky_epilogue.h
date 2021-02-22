@@ -53,4 +53,7 @@
 ////
 #endif
 
+#ifdef ITEM_H
+#include "plotWidget.h"
+#endif
 #include <ecolab_epilogue.h>

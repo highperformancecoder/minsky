@@ -46,11 +46,16 @@ namespace minsky
     std::string url;
 
     void redraw(int, int, int width, int height) override;
-
+    
     /// loads an initial sequence of lines from \a url. If fname
     /// contains "://", is is treated as a URL, and downloaded from
     /// the web.
-    void loadFile();
+    void loadFile(); 
+    /// guess the spec, then load an initial sequence of like loadFile()
+    void guessSpecAndLoadFile();
+    /// common implementation of loading the initial sequence of lines
+    void loadFileFromName(const std::string& fileName);
+    
     /// Return file name after downloading a CSV file from the
     /// web. Result is cached for 5 minutes.
     std::string loadWebFile(const std::string& url); 

@@ -19,6 +19,7 @@
 #include "sheet.h"
 #include "str.h"
 #include "selection.h"
+#include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>
 #include "minsky_epilogue.h"
@@ -32,7 +33,7 @@ const float border=10;
 
 Sheet::Sheet()
 {
-  ports.emplace_back(new Port(*this, Port::inputPort));
+  m_ports.emplace_back(new Port(*this, Port::inputPort));
   iWidth(100);
   iHeight(100);	  
 }
@@ -61,7 +62,7 @@ ClickType::Type Sheet::clickType(float x, float y)
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();
-  ports[0]->moveTo(x()-0.5*m_width*z,y());
+  m_ports[0]->moveTo(x()-0.5*m_width*z,y());
   if (mouseFocus)
     {
       drawPorts(cairo);
@@ -92,7 +93,7 @@ void Sheet::draw(cairo_t* cairo) const
 
   try
     {
-      auto value=ports[0]->getVariableValue();
+      auto value=m_ports[0]->getVariableValue();
       if (!value) return;
       Pango pango(cairo);
       if (value->hypercube().rank()>2)
@@ -134,7 +135,7 @@ void Sheet::draw(cairo_t* cairo) const
               float rowHeight=pango.height();
 
               double colWidth=0;
-              float x=x0, y=y0+rowHeight;   // make sure row labels are aligned with corresponding values. for ticket 1281
+              float x=x0, y=y0;   // make sure row labels are aligned with corresponding values. for ticket 1281
               string format=value->hypercube().xvectors[0].dimension.units;
               // calculate label column width
               for (auto& i: value->hypercube().xvectors[0])
@@ -145,7 +146,7 @@ void Sheet::draw(cairo_t* cairo) const
 
               if (value->hypercube().rank()==2)
                 {
-                  y+=rowHeight; // allow room for header row               
+                  y+=2*rowHeight; // allow room for header row               
                   if (!value->hypercube().xvectors[1].name.empty())
                     {
                       cairo::CairoSave cs(cairo);
@@ -154,15 +155,19 @@ void Sheet::draw(cairo_t* cairo) const
                       y0+=pango.height();
                       pango.show();
                     }
-                }
               
-              { // draw horizontal grid line
-                cairo::CairoSave cs(cairo);
-                cairo_set_source_rgba(cairo,0,0,0,0.5);
-                cairo_move_to(cairo,-0.5*m_width,y0-2.5);
-                cairo_line_to(cairo,0.5*m_width,y0-2.5);
-                cairo_stroke(cairo);
-              }                    
+                  { // draw horizontal grid lines
+                    cairo::CairoSave cs(cairo);
+                    cairo_set_source_rgba(cairo,0,0,0,0.5);
+                    cairo_move_to(cairo,-0.5*m_width,y0-2.5);
+                    cairo_line_to(cairo,0.5*m_width,y0-2.5);
+                    cairo_stroke(cairo);
+                    cairo_move_to(cairo,x,y0+rowHeight-2.5);
+                    cairo_line_to(cairo,0.5*m_width,y0+rowHeight-2.5);
+                    cairo_stroke(cairo);
+                    
+                  }
+                }
               // draw in label column
               for (auto& i: value->hypercube().xvectors[0])
                 {

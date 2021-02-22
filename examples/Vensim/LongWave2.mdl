@@ -1,0 +1,560 @@
+{UTF-8}
+********************************************************
+	.LongWave2
+********************************************************~
+		Replicated by Martin Grossman, MIT System Dynamics group, from:
+		Sterman, John (1984) "A Behavioral Model of the Long Wave," Journal of Ecconomic \
+		Behavior and
+		     Organization, v. 6, pp. 17-53.
+		
+		See also:
+		     Sterman, John (1989) "Deterministic Chaos in an Experimental Economic System," \
+		Journal of Ecconomic
+		     Behavior and Organization, v. 12, pp. 1-28.
+	|
+
+Average Life of Capital = 20
+	~	Years [1,100]
+	~		|
+
+Backlog =INTEG(Order Rate-Production Rate,
+Indicated Backlog)
+	~	Units
+	~		|
+
+Capacity Utilization =Table Capacity Utilization(Indicated Production/Production Capacity\
+		)
+	~	Fraction
+	~		|
+
+Capital Acquisition Time = Switch for Self Ordering*Delivery Delay+
+(1-Switch for Self Ordering)*Normal Delivery Delay
+	~	Years
+	~		|
+
+Capital Acquisitions = Switch for Capital Acquisition*
+(Capital Supply Line/Capital Acquisition Time)+
+(1-Switch for Capital Acquisition)*Capital Supply Line/Normal Delivery Delay
+	~	Units/Year
+	~		|
+
+Capital Discards = Capital Stock/Average Life of Capital
+	~	Units/Year
+	~		|
+
+Capital Order Fraction =Table Capital Order Fraction(Indicated Capital Order Fraction\
+		)
+	~	Fraction/Year
+	~		|
+
+Capital Orders = Capital Stock*Capital Order Fraction
+	~	Units/Year
+	~		|
+
+Capital Output Ratio = 3
+	~	Years [0,6]
+	~		|
+
+Capital Stock = INTEG(Capital Acquisitions-Capital Discards,Initial Capital Stock)
+	~	Units
+	~		|
+
+Capital Supply Line = INTEG(Capital Orders-Capital Acquisitions,Capital Discards*
+Capital Acquisition Time)
+	~	Units
+	~		|
+
+Correction for Backlog =( Backlog-Indicated Backlog)/Time to Adjust Backlog
+	~	Units/Year
+	~		|
+
+Correction for Capital = (Desired Capital-Capital Stock)/Time to Adjust Capital
+	~	Units/Year
+	~	The self ordering capital correction.
+	|
+
+Correction for Supply Line =
+ (Desired Supply Line-Capital Supply Line)/Time to Adjust Supply Line
+	~	Units/Year
+	~		|
+
+Delivery Delay =ACTIVE INITIAL(Backlog/Production Rate, Normal Delivery Delay)
+	~	Years
+	~		|
+
+Desired Capital = Reference Capital*Ratio of Desired to Reference Capital
+	~	Units
+	~		|
+
+Desired Supply Line = Capital Discards*Perceived Capital Acquisition Time
+	~	Units
+	~		|
+
+Effect of Delivery Delay on Supply Line = Effect of Delivery Delay on Supply Line f
+(Capital Acquisition Time/Nominal Capital Acquisition Time)
+	~	dimensionless
+	~		|
+
+Effect of Delivery Delay on Supply Line f     ([(0,0)-(3,3)],
+(0,0),(0.5,0.5),(3,3) )
+	~	dimensionless
+	~		|
+
+Exogeneous Desired Capital = Reference Capital*
+(1+STEP(Fractional Increase in Desired Capital,Time to Increase Desired Capital))
+	~	Units
+	~		|
+
+Expected Orders = INTEG((Order Rate-Expected Orders)/Time to Average Orders,
+Production Capacity)
+	~	Units/Year
+	~		|
+
+Fractional Increase in Desired Capital = 0.05
+	~	Fraction
+	~		|
+
+G Capital Acquisition Time = Delivery Delay
+	~	Years
+	~		|
+
+G Capital Acquisitions =Switch for Capital Acquisition*(Goods Supply Line/
+G Capital Acquisition Time)+(1-Switch for Capital Acquisition)*(Production Rate-
+Capital Acquisitions)
+	~	Units/Year
+	~		|
+
+G Capital Orders = G Reference Capital Orders*(1+
+STEP(G Fractional Increase in Capital Orders,Time to Increase Capital Orders))
+	~	Units/Year
+	~		|
+
+G Fractional Increase in Capital Orders = 0.05
+	~	Fraction
+	~		|
+
+G Reference Capital Orders = 1e+012
+	~	Units/Year
+	~		|
+
+Goods Supply Line = INTEG(G Capital Orders-G Capital Acquisitions
+,G Capital Orders*G Capital Acquisition Time)
+	~	Units
+	~		|
+
+Indicated Backlog = Normal Delivery Delay*Expected Orders
+	~	Units
+	~		|
+
+Indicated Capital = Switch for Desired Capital*Indicated Production Capacity*
+Capital Output Ratio+(1-Switch for Desired Capital)*Exogeneous Desired Capital
+	~	Units
+	~		|
+
+Indicated Capital Order Fraction =
+ (Capital Discards+Correction for Capital+
+Correction for Supply Line)/Capital Stock
+	~	Fraction/Year
+	~		|
+
+Indicated Production = Backlog/Normal Delivery Delay
+	~	Units/Year
+	~		|
+
+Indicated Production Capacity = Expected Orders+Correction for Backlog
+	~	Units/Year
+	~		|
+
+Initial Capital Stock = (1-Switch for Self Ordering)*G Capital Orders*Capital Output Ratio\
+		+
+Switch for Self Ordering*G Capital Orders*Capital Output Ratio*Average Life of Capital\
+		/
+(Average Life of Capital-Capital Output Ratio)
+	~	Units
+	~		|
+
+Nominal Capital Acquisition Time =Normal Delivery Delay
+	~	Years
+	~		|
+
+Normal Delivery Delay =1.5
+	~	Years
+	~		|
+
+Order Rate = G Capital Orders+Switch for Self Ordering*Capital Orders
+	~	Units/Year
+	~		|
+
+Perceived Capital Acquisition Time = Nominal Capital Acquisition Time*
+Effect of Delivery Delay on Supply Line
+	~	Years
+	~		|
+
+Production Capacity = Capital Stock/Capital Output Ratio
+	~	Units/Year
+	~		|
+
+Production Rate =ACTIVE INITIAL(
+Switch for Production*Production Capacity*Capacity Utilization+
+(1-Switch for Production)*Indicated Production Capacity,Production Capacity)
+	~	Units/Year
+	~		|
+
+Ratio of Desired to Reference Capital =
+ Table for Ratio(Indicated Capital/Reference Capital)
+	~	dimensionless
+	~		|
+
+Reference Capital = Capital Stock
+	~	Units
+	~		|
+
+Switch for Capital Acquisition =1
+	~	dimensionless
+	~		|
+
+Switch for Desired Capital = 1
+	~	dimensionless [0,1]
+	~		|
+
+Switch for Production =0
+	~	dimensionless [0,1]
+	~	This switch allows partial model testin. Switch at zero: production rate is equal to \
+		indicated
+		         production rate.
+	|
+
+Switch for Self Ordering = 0
+	~	dimensionless [0,1]
+	~	If switch is off, no self-ordering.
+	|
+
+Table Capacity Utilization   ([(0,0)-(2,2)],(0,0),(0.2,0.3),
+(0.4,0.55),(0.6,0.75),(0.8,0.9),(1,1),(2,1) )
+	~	dimensionless
+	~		|
+
+Table Capital Order Fraction     ([(-0.1,0)-(0.4,0.3)],(-0.1,0)
+,(-0.05,0),(0,0.02),(0.05,0.05),(0.1,0.1),(0.25,0.25),(0.3,0.28)
+,(0.35,0.3),(0.4,0.3) )
+	~	Fraction/Year
+	~		|
+
+Table for Ratio     ([(-0.5,0)-(7.5,10)],(-0.5,0),(0,0),(0.5,0.5)
+,(1,1),(5,5),(5.5,5.4),(6,5.7),(6.5,5.9),(7,6),(7.5,6) )
+	~	dimensionless
+	~		|
+
+Time to Adjust Backlog = 1.5
+	~	Years [0.25,8]
+	~		|
+
+Time to Adjust Capital = 3
+	~	Years
+	~		|
+
+Time to Adjust Supply Line = 3
+	~	Years
+	~		|
+
+Time to Average Orders = 2
+	~	Years
+	~		|
+
+Time to Increase Capital Orders = 1
+	~	Years [0.25,6]
+	~		|
+
+Time to Increase Desired Capital = 1
+	~	Years [0.25,6]
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Paramaters
+	|
+
+FINAL TIME  = 40
+	~	Years
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Years
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Years
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 0.03125
+	~	Years
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Capital Goods
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-0|-1--1--1|-1--1--1|96,96,100,0
+10,1,Capital Stock,844,471,40,29,3,3,0,0,0,0,0,0
+10,2,Capital Order Fraction,266,623,49,26,8,3,0,0,0,0,0,0
+11,3,492,622,469,6,8,34,3,0,0,1,0,0,0
+10,4,Capital Acquisitions,622,505,59,28,40,3,0,0,0,0,0,0
+12,5,48,1164,463,10,8,0,3,0,0,-1,0,0,0
+11,6,48,1025,468,6,8,34,3,0,0,1,0,0,0
+10,7,Capital Discards,1025,496,40,20,40,3,0,0,0,0,0,0
+10,8,Average Life of Capital,1194,542,48,27,8,3,0,0,0,0,0,0
+10,9,Switch for Capital Acquisition,754,517,54,26,8,3,0,0,0,0,0,0
+10,10,Capital Supply Line,477,476,52,30,3,3,0,0,0,0,0,0
+12,11,48,211,471,10,8,0,3,0,0,-1,0,0,0
+11,12,48,289,473,6,8,34,3,0,0,1,0,0,0
+10,13,Capital Orders,289,501,40,20,40,3,0,58,0,0,0,0,-1--1--1,0-0-0,Times New Roman|12|B|0-0-0
+10,14,Indicated Capital Order Fraction,386,758,63,28,8,3,0,58,0,0,0,0,-1--1--1,0-0-0,Times New Roman|12|B|0-0-0
+10,15,Capital Stock,149,543,42,24,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,16,Perceived Capital Acquisition Time,1066,710,72,26,8,3,0,0,0,0,0,0
+10,17,Desired Supply Line,882,709,40,27,8,3,0,0,0,0,0,0
+10,18,Correction for Supply Line,565,672,67,26,8,3,0,0,0,0,0,0
+10,19,Time to Adjust Supply Line,664,767,53,27,8,3,0,0,0,0,0,0
+10,20,Correction for Capital,845,359,51,27,8,3,0,58,0,0,0,0,-1--1--1,0-0-0,Times New Roman|12|B|0-0-0
+10,21,Desired Capital,907,248,40,20,8,3,0,58,0,0,0,0,-1--1--1,0-0-0,Times New Roman|12|B|0-0-0
+10,22,Time to Adjust Capital,783,265,44,27,8,3,0,0,0,0,0,0
+10,23,Reference Capital,1044,180,46,26,8,3,0,0,0,0,0,0
+10,24,Ratio of Desired to Reference Capital,1048,338,44,40,8,3,0,0,0,0,0,0
+10,25,Indicated Capital,1260,314,44,30,8,3,0,58,0,0,0,0,-1--1--1,0-0-0,Times New Roman|12|B|0-0-0
+10,26,Table for Ratio,1197,395,40,20,8,3,0,0,0,0,0,0
+10,27,Correction for Capital,548,862,57,29,8,2,0,59,0,0,0,0,128-128-128,0-0-0,Times New Roman|12|B|128-128-128
+10,28,Capital Stock,394,901,40,20,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,29,Table Capital Order Fraction,187,738,43,33,8,3,0,0,0,0,0,0
+10,30,Expected Orders,356,395,48,24,3,3,0,58,0,0,0,0,-1--1--1,0-0-0,Times New Roman|12|B|0-0-0
+10,31,Time to Average Orders,335,307,49,25,8,3,0,0,0,0,0,0
+10,32,Normal Delivery Delay,740,579,47,25,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,33,Capital Stock,948,97,40,20,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,34,Capital Discards,542,804,47,26,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,35,Capital Acquisition Time,576,385,55,26,8,3,0,0,0,0,0,0
+10,36,Nominal Capital Acquisition Time,1248,709,52,34,8,3,0,0,0,0,0,0
+10,37,Effect of Delivery Delay on Supply Line,1167,819,64,29,8,3,0,0,0,0,0,0
+10,38,Capital Acquisition Time,1262,910,53,33,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,39,Effect of Delivery Delay on Supply Line f,1076,915,78,34,8,3,0,0,0,0,0,0
+10,40,Switch for Desired Capital,1423,228,53,31,8,3,0,0,0,0,0,0
+10,41,Indicated Production Capacity,1429,304,49,28,8,2,0,59,0,0,0,0,128-128-128,0-0-0,Times New Roman|12|B|128-128-128
+10,42,Capital Output Ratio,1422,381,44,25,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,43,Exogeneous Desired Capital,1217,120,53,29,8,3,0,0,0,0,0,0
+10,44,Normal Delivery Delay,1373,657,44,28,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,45,Delivery Delay,1340,524,40,20,8,3,0,0,0,0,0,0
+10,46,Initial Capital Stock,623,229,32,28,8,3,0,0,0,0,0,0
+10,47,Switch for Self Ordering,488,121,54,27,8,3,0,0,0,0,0,0
+10,48,G Capital Orders,608,119,40,29,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,49,Capital Output Ratio,703,118,47,27,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,50,Average Life of Capital,817,119,51,27,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,51,Production Capacity,455,306,57,27,8,2,1,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,52,G Capital Orders,213,322,53,24,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,53,Switch for Self Ordering,67,389,57,28,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,54,Order Rate,202,398,33,21,8,3,0,0,0,0,0,0
+10,55,Switch for Self Ordering,580,302,50,27,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,56,Delivery Delay,725,360,54,25,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,57,Normal Delivery Delay,737,421,42,27,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,58,Backlog,1451,569,54,20,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,59,Production Rate,1446,472,56,23,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,60,Fractional Increase in Desired Capital,1408,138,76,26,8,3,0,0,0,0,0,0
+10,61,Time to Increase Desired Capital,1400,66,71,21,8,3,0,0,0,0,0,0
+1,62,3,1,4,0,0,22,0,0,0,-1--1--1,,1|(716,469)|
+1,63,3,10,100,0,0,22,0,0,0,-1--1--1,,1|(572,469)|
+1,64,6,5,4,0,0,22,0,0,0,-1--1--1,,1|(1092,468)|
+1,65,6,1,100,0,0,22,0,0,0,-1--1--1,,1|(951,468)|
+1,66,1,7,2,0,0,0,0,0,0,-1--1--1,,1|(1007,507)|
+1,67,8,7,2,0,0,0,0,0,0,-1--1--1,,1|(1114,523)|
+1,68,12,10,4,0,0,22,0,0,0,-1--1--1,,1|(360,473)|
+1,69,12,11,100,0,0,22,0,0,0,-1--1--1,,1|(252,473)|
+1,70,1,12,2,1,0,0,0,0,0,-1--1--1,,1|(429,565)|
+1,71,16,17,2,0,0,0,0,0,0,-1--1--1,,1|(937,745)|
+1,72,7,17,2,0,0,0,0,0,0,-1--1--1,,1|(945,673)|
+1,73,10,18,2,0,0,0,0,0,0,-1--1--1,,1|(574,614)|
+1,74,17,18,2,0,0,0,0,0,0,-1--1--1,,1|(647,715)|
+1,75,19,18,2,0,0,0,0,0,0,-1--1--1,,1|(585,730)|
+1,76,21,20,2,0,0,12,0,0,0,-1--1--1,,1|(864,303)|
+1,77,1,20,2,0,0,0,0,0,0,-1--1--1,,1|(840,406)|
+1,78,22,20,2,0,0,0,0,0,0,-1--1--1,,1|(772,321)|
+1,79,23,21,2,0,0,0,0,0,0,-1--1--1,,1|(925,214)|
+1,80,24,21,2,0,0,12,0,0,0,-1--1--1,,1|(962,327)|
+1,81,26,24,2,4,0,0,0,0,0,-1--1--1,,1|(1104,392)|
+1,82,23,24,2,0,0,0,0,0,0,-1--1--1,,1|(1126,308)|
+1,83,25,24,2,0,0,12,0,0,0,-1--1--1,,1|(1141,345)|
+1,84,18,14,2,0,0,0,0,0,0,-1--1--1,,1|(484,768)|
+1,85,27,14,2,0,0,12,0,0,0,-1--1--1,,1|(437,833)|
+1,86,28,14,2,0,0,0,0,0,0,-1--1--1,,1|(370,840)|
+1,87,14,2,2,0,0,12,0,0,0,-1--1--1,,1|(285,702)|
+1,88,29,2,2,4,0,0,0,0,0,-1--1--1,,1|(217,668)|
+1,89,31,30,1,0,0,0,0,0,0,-1--1--1,,1|(336,345)|
+1,90,9,4,2,0,0,0,0,0,0,-1--1--1,,1|(666,545)|
+1,91,10,3,2,0,0,0,0,0,0,-1--1--1,,1|(600,442)|
+1,92,35,3,2,0,0,0,0,0,0,-1--1--1,,1|(635,442)|
+1,93,36,16,2,0,0,0,0,0,0,-1--1--1,,1|(1110,655)|
+1,94,37,16,2,0,0,0,0,0,0,-1--1--1,,1|(1077,772)|
+1,95,39,37,2,4,0,0,0,0,0,-1--1--1,,1|(1087,844)|
+1,96,36,37,2,0,0,0,0,0,0,-1--1--1,,1|(1240,783)|
+1,97,38,37,2,0,0,0,0,0,0,-1--1--1,,1|(1251,834)|
+1,98,40,25,2,0,0,0,0,0,0,-1--1--1,,1|(1302,269)|
+1,99,41,25,2,0,0,12,0,0,0,-1--1--1,,1|(1323,324)|
+1,100,42,25,2,0,0,0,0,0,0,-1--1--1,,1|(1307,335)|
+1,101,43,25,2,0,0,0,0,0,0,-1--1--1,,1|(1282,223)|
+1,102,44,36,2,0,0,0,0,0,0,-1--1--1,,1|(1299,692)|
+1,103,47,46,2,0,0,0,0,0,0,-1--1--1,,1|(520,208)|
+1,104,48,46,2,0,0,0,0,0,0,-1--1--1,,1|(619,172)|
+1,105,49,46,2,0,0,0,0,0,0,-1--1--1,,1|(692,176)|
+1,106,50,46,2,0,0,0,0,0,0,-1--1--1,,1|(755,183)|
+1,107,52,54,2,0,0,0,0,0,0,-1--1--1,,1|(236,359)|
+1,108,53,54,2,0,0,0,0,0,0,-1--1--1,,1|(131,432)|
+1,109,55,35,2,0,0,0,0,0,0,-1--1--1,,1|(586,356)|
+1,110,56,35,2,0,0,0,0,0,0,-1--1--1,,1|(648,347)|
+1,111,57,35,2,0,0,0,0,0,0,-1--1--1,,1|(683,392)|
+1,112,59,45,2,0,0,0,0,0,0,-1--1--1,,1|(1360,471)|
+1,113,58,45,2,0,0,0,0,0,0,-1--1--1,,1|(1386,563)|
+1,114,23,43,2,0,0,0,0,0,0,-1--1--1,,1|(1105,137)|
+1,115,61,43,2,0,0,0,0,0,0,-1--1--1,,1|(1284,72)|
+1,116,60,43,2,0,0,0,0,0,0,-1--1--1,,1|(1366,156)|
+1,117,2,13,2,0,0,12,0,0,0,-1--1--1,,1|(256,555)|
+1,118,12,54,2,0,0,12,0,0,0,-1--1--1,,1|(226,434)|
+1,119,33,23,2,0,0,0,0,0,0,-1--1--1,,1|(1023,133)|
+1,120,34,14,2,0,0,0,0,0,0,-1--1--1,,1|(468,808)|
+1,121,32,4,1,0,0,0,0,0,0,-1--1--1,,1|(653,575)|
+1,122,15,13,2,0,0,0,0,0,0,-1--1--1,,1|(217,495)|
+1,123,54,30,2,0,0,12,0,0,0,-1--1--1,,1|(270,414)|
+12,124,0,230,140,193,11,0,4,0,2,-1,0,0,0,0-0-0,0-0-0,|12||255-0-0
+Sterman, John (1984) "A Behavioral Model of the Long Wave"
+12,125,0,230,171,193,11,0,4,0,2,-1,0,0,0,0-0-0,0-0-0,|12||255-0-0
+Replicated by Martin Grossman, MIT System Dynamics Group
+1,126,46,1,0,0,0,0,0,64,1,-1--1--1,,1|(727,344)|
+1,127,35,10,0,0,0,0,0,64,1,-1--1--1,,1|(533,423)|
+1,128,7,10,0,0,0,0,0,64,1,-1--1--1,,1|(763,486)|
+1,129,51,30,0,0,0,0,0,64,1,-1--1--1,,1|(408,347)|
+1,130,57,45,0,0,0,0,0,64,1,-1--1--1,,1|(1032,471)|
+12,131,0,225,235,69,15,8,135,0,18,-1,0,253,253,-1--1--1,0-0-0,|12|U|0-0-255
+http://models.metasd.com|models.metasd.com
+12,132,0,1720,235,168,150,3,188,0,0,2,0,0,0
+Capital Supply Line,graph
+12,133,0,1720,535,168,150,3,188,0,0,2,0,0,0
+Capital Stock,graph
+12,134,0,235,205,123,14,8,135,0,0,-1,0,0,0
+Minor updates, Tom Fiddaman, 2011
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*For Capital Sector
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-0|-1--1--1|-1--1--1|96,96,100,0
+10,1,Production Rate,273,524,47,23,8,3,0,0,0,0,0,0
+10,2,Switch for Production,102,518,48,21,8,3,0,0,0,0,0,0
+10,3,Production Capacity,393,601,51,25,8,3,0,0,0,0,0,0
+10,4,Capacity Utilization,511,506,56,27,8,3,0,0,0,0,0,0
+10,5,Indicated Production Capacity,245,413,49,36,8,3,0,58,0,0,0,0,-1--1--1,0-0-0,Times New Roman|12|B|0-0-0
+10,6,Indicated Production,522,362,50,23,8,3,0,0,0,0,0,0
+10,7,Table Capacity Utilization,691,510,49,28,8,3,0,0,0,0,0,0
+10,8,Backlog,474,180,51,25,3,3,0,0,0,0,0,0
+10,9,Normal Delivery Delay,682,369,43,24,8,3,0,0,0,0,0,0
+10,10,Capital Output Ratio,457,689,42,26,8,3,0,0,0,0,0,0
+10,11,Capital Stock,349,690,40,20,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,12,Correction for Backlog,288,308,49,22,8,3,0,0,0,0,0,0
+10,13,Expected Orders,84,408,47,24,8,2,0,59,0,0,0,0,128-128-128,0-0-0,Times New Roman|12|B|128-128-128
+10,14,Indicated Backlog,239,173,47,28,8,3,0,0,0,0,0,0
+10,15,Time to Adjust Backlog,113,302,37,30,8,3,0,0,0,0,0,0
+10,16,Normal Delivery Delay,125,192,41,29,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,17,Expected Orders,127,115,48,22,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,18,Capital Supply Line,768,74,53,26,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,19,Goods Supply Line,867,77,48,25,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,20,Switch for Self Ordering,632,80,65,23,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+12,21,48,668,181,10,8,0,3,0,0,-1,0,0,0
+12,22,48,298,179,10,8,0,3,0,0,-1,0,0,0
+11,23,48,345,179,6,8,34,3,0,0,1,0,0,0
+10,24,Order Rate,345,207,40,20,40,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+11,25,188,600,180,6,8,34,3,0,0,1,0,0,0
+10,26,Production Rate,600,214,60,26,40,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+1,27,17,14,1,0,0,0,0,0,0,-1--1--1,,1|(210,114)|
+1,28,16,14,1,0,0,0,0,0,0,-1--1--1,,1|(195,215)|
+1,29,15,12,2,0,0,0,0,0,0,-1--1--1,,1|(221,294)|
+1,30,14,12,1,0,0,0,0,0,0,-1--1--1,,1|(234,266)|
+1,31,8,12,1,0,0,0,0,0,0,-1--1--1,,1|(329,257)|
+1,32,13,5,2,0,0,12,0,0,0,-1--1--1,,1|(168,371)|
+1,33,12,5,2,0,0,0,0,0,0,-1--1--1,,1|(238,353)|
+1,34,10,3,2,0,0,0,0,0,0,-1--1--1,,1|(450,645)|
+1,35,11,3,2,0,0,0,0,0,0,-1--1--1,,1|(346,644)|
+1,36,9,6,2,0,0,0,0,0,0,-1--1--1,,1|(577,397)|
+1,37,8,6,2,0,0,0,0,0,0,-1--1--1,,1|(523,306)|
+1,38,3,4,2,0,0,0,0,0,0,-1--1--1,,1|(518,549)|
+1,39,6,4,2,0,0,0,0,0,0,-1--1--1,,1|(543,425)|
+1,40,7,4,2,0,0,0,0,0,0,-1--1--1,,1|(589,533)|
+1,41,5,1,2,0,0,0,0,0,0,-1--1--1,,1|(253,482)|
+1,42,4,1,2,0,0,0,0,0,0,-1--1--1,,1|(319,478)|
+1,43,3,1,2,0,0,0,0,0,0,-1--1--1,,1|(301,582)|
+1,44,2,1,2,0,0,0,0,0,0,-1--1--1,,1|(219,539)|
+1,45,23,8,4,0,0,22,0,0,0,-1--1--1,,1|(387,179)|
+1,46,23,22,100,0,0,22,0,0,0,-1--1--1,,1|(323,179)|
+1,47,25,21,4,0,0,22,0,0,0,-1--1--1,,1|(632,180)|
+1,48,25,8,100,0,0,22,0,0,0,-1--1--1,,1|(559,180)|
+1,49,14,8,2,0,0,0,0,0,1,-1--1--1,,1|(347,124)|
+12,50,0,997,309,168,150,3,188,0,0,2,0,0,0
+Backlog,graph
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Consumer Goods
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-0|-1--1--1|-1--1--1|96,96,100,0
+10,1,Goods Supply Line,378,213,56,31,3,3,0,0,0,0,0,0
+12,2,48,184,206,10,8,0,3,0,0,-1,0,0,0
+11,3,48,244,207,6,8,34,3,0,0,1,0,0,0
+10,4,G Capital Orders,244,237,46,22,40,3,0,0,0,0,0,0
+12,5,48,582,208,10,8,0,3,0,0,-1,0,0,0
+11,6,48,501,209,6,8,34,3,0,0,1,0,0,0
+10,7,G Capital Acquisitions,501,239,61,22,40,3,0,0,0,0,0,0
+10,8,G Capital Acquisition Time,571,103,52,32,8,3,0,0,0,0,0,0
+10,9,Production Rate,680,348,57,24,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,10,Capital Acquisitions,685,283,63,28,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,11,Switch for Capital Acquisition,692,200,63,27,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,12,Delivery Delay,742,71,48,24,8,2,0,3,0,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,13,G Reference Capital Orders,165,311,52,36,8,3,0,0,0,0,0,0
+10,14,G Fractional Increase in Capital Orders,182,108,66,28,8,3,0,0,0,0,0,0
+10,15,Time to Increase Capital Orders,343,102,40,37,8,3,0,0,0,0,0,0
+1,16,6,5,4,0,0,22,0,0,0,-1--1--1,,1|(539,209)|
+1,17,6,1,100,0,0,22,0,0,0,-1--1--1,,1|(464,209)|
+1,18,11,7,2,0,0,0,0,0,0,-1--1--1,,1|(584,239)|
+1,19,1,7,2,0,0,0,0,0,0,-1--1--1,,1|(399,275)|
+1,20,3,1,4,0,0,22,0,0,0,-1--1--1,,1|(286,207)|
+1,21,3,2,100,0,0,22,0,0,0,-1--1--1,,1|(216,207)|
+1,22,8,1,1,1,0,0,0,0,1,-1--1--1,,1|(371,288)|
+1,23,10,7,2,0,0,0,0,0,0,-1--1--1,,1|(601,283)|
+1,24,9,7,2,0,0,0,0,0,0,-1--1--1,,1|(580,328)|
+1,25,12,8,2,0,0,0,0,0,0,-1--1--1,,1|(648,55)|
+1,26,13,4,2,0,0,0,0,0,0,-1--1--1,,1|(176,258)|
+1,27,14,3,2,0,0,0,0,0,0,-1--1--1,,1|(204,161)|
+1,28,15,3,2,0,0,0,0,0,0,-1--1--1,,1|(293,168)|
+1,29,8,6,2,0,0,0,0,0,0,-1--1--1,,1|(507,182)|
+12,30,0,1027,224,168,150,3,188,0,0,2,0,0,0
+Goods Supply Line,graph
+///---\\\
+:L<%^E!@
+1:base.vdf
+9:base
+22:$,Dollar,Dollars,$s
+22:Day,Days
+22:Hour,Hours
+22:Month,Months
+22:Person,People,Persons
+22:Unit,Units
+22:Week,Weeks
+22:Year,Years,Yr,Yrs
+15:0,0,0,0,0,0
+19:100,0
+27:2,
+34:0,
+4:Time
+5:Capital Acquisition Time
+35:Date
+36:YYYY-MM-DD
+37:2000
+38:1
+39:1
+40:2
+41:0
+24:0
+25:40
+26:40

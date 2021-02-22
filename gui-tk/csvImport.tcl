@@ -4,6 +4,17 @@ proc CSVImportDialog {} {
     if {[llength [info commands minsky.canvas.item.valueId]]==0} return
     getValue [minsky.canvas.item.valueId]
     global workDir csvParms
+    set csvParms(url) [minsky.value.csvDialog.url]
+    set csvParms(separator) [minsky.value.csvDialog.spec.separator]
+    set csvParms(decSeparator) [minsky.value.csvDialog.spec.decSeparator]
+    set csvParms(escape) [minsky.value.csvDialog.spec.escape]
+    set csvParms(quote) [minsky.value.csvDialog.spec.quote]
+    set csvParms(mergeDelimiters) [minsky.value.csvDialog.spec.mergeDelimiters]
+    set csvParms(missingValue) [minsky.value.csvDialog.spec.missingValue]
+    set csvParms(duplicateKeyValue) [minsky.value.csvDialog.spec.duplicateKeyAction]
+    set csvParms(horizontalDimension) [minsky.value.csvDialog.spec.horizontalDimName]
+    set csvParms(horizontalType) [minsky.value.csvDialog.spec.horizontalDimension.type]
+    set csvParms(horizontalFormat) [minsky.value.csvDialog.spec.horizontalDimension.units]
     if {![winfo exists .wiring.csvImport]} {
         toplevel .wiring.csvImport
         minsky.canvas.item.deleteCallback "destroy .wiring.csvImport"
@@ -18,8 +29,12 @@ proc CSVImportDialog {} {
         label .wiring.csvImport.fileUrl.orUrl -text "or URL"
         entry .wiring.csvImport.fileUrl.url -textvariable csvParms(url) -width 100
         button .wiring.csvImport.fileUrl.load -text "Load" -command {
-            minsky.value.csvDialog.url $csvParms(url)
-            minsky.value.csvDialog.loadFile
+            if {[minsky.value.csvDialog.url]!=$csvParms(url)} {
+                minsky.value.csvDialog.url $csvParms(url)
+                minsky.value.csvDialog.guessSpecAndLoadFile
+            } else {
+                minsky.value.csvDialog.loadFile
+            }
             minsky.value.csvDialog.requestRedraw
         }
         bind .wiring.csvImport.fileUrl.url <Key-Return> ".wiring.csvImport.fileUrl.load invoke"
@@ -141,15 +156,6 @@ proc CSVImportDialog {} {
     if [string length [minsky.value.csvDialog.url]] {
         set workDir [file dirname [minsky.value.csvDialog.url]]
     }
-    set csvParms(url) [minsky.value.csvDialog.url]
-    set csvParms(separator) [minsky.value.csvDialog.spec.separator]
-    set csvParms(decSeparator) [minsky.value.csvDialog.spec.decSeparator]
-    set csvParms(escape) [minsky.value.csvDialog.spec.escape]
-    set csvParms(quote) [minsky.value.csvDialog.spec.quote]
-    set csvParms(mergeDelimiters) [minsky.value.csvDialog.spec.mergeDelimiters]
-    set csvParms(missingValue) [minsky.value.csvDialog.spec.missingValue]
-    set csvParms(duplicateKeyValue) [minsky.value.csvDialog.spec.duplicateKeyAction]
-    set csvParms(horizontalDimension) [minsky.value.csvDialog.spec.horizontalDimName]
     .wiring.csvImport.delimiters.colWidth set [minsky.value.csvDialog.colWidth]
     wm deiconify .wiring.csvImport
     raise .wiring.csvImport

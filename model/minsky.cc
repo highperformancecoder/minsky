@@ -336,8 +336,8 @@ namespace minsky
                              else if (alreadyDefined)
                                {
                                  // delete defining wire from this
-                                 assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
-                                 g->removeWire(*v->ports[1]->wires()[0]);
+                                 assert(v->portsSize()>1 && !v->ports(1).lock()->wires().empty());
+                                 g->removeWire(*v->ports(1).lock()->wires()[0]);
                                }
                            }
                        return false;
@@ -479,6 +479,22 @@ namespace minsky
     equations.clear();
     integrals.clear();
 
+    // add all user defined functions to the global symbol tables
+    userFunctions.clear();
+    model->recursiveDo
+      (&Group::items,
+       [this](const Items&, Items::const_iterator it){
+         if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
+           userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), f->name())]=f;
+         return false;
+       });
+    model->recursiveDo
+      (&Group::groups,
+       [this](const Groups&, Groups::const_iterator it){
+         userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
+         return false;
+       });
+
     try
       {
         dimensionalAnalysis();
@@ -495,6 +511,7 @@ namespace minsky
     assert(variableValues.validEntries());
     system.populateEvalOpVector(equations, integrals);
     assert(variableValues.validEntries());
+    system.updatePortVariableValue(equations);
     
     // attach the plots
     model->recursiveDo
@@ -506,11 +523,13 @@ namespace minsky
              p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();
              p->autoScale();
-             for (size_t i=0; i<p->ports.size(); ++i)
+             for (size_t i=0; i<p->portsSize(); ++i)
                {
-                 auto& pp=p->ports[i];
-                 if (pp->wires().size()>0 && pp->getVariableValue()->idx()>=0)
-                   p->connectVar(pp->getVariableValue(), i);
+                 auto pp=p->ports(i).lock();
+                 if (pp->wires().size()>0)
+                   if (auto vv=pp->getVariableValue())
+                     if (vv->idx()>=0)
+                       p->connectVar(vv, i);
                }
            }
          
@@ -533,15 +552,15 @@ namespace minsky
              if (v->isStock() && (v->inputWired() || v->controller.lock().get()))
                v->checkUnits();
            }
-         else if (!(*i)->ports.empty() && !(*i)->ports[0]->input() &&
-                  (*i)->ports[0]->wires().empty())
+         else if ((*i)->portsSize()>0 && !(*i)->ports(0).lock()->input() &&
+                  (*i)->ports(0).lock()->wires().empty())
            (*i)->checkUnits(); // check anything with an unwired output port
          else if (auto p=(*i)->plotWidgetCast())
-           for (auto& i: p->ports)
-             i->checkUnits();
+           for (size_t i=0; i<p->portsSize(); ++i)
+             p->ports(i).lock()->checkUnits();
          else if (auto p=dynamic_cast<Sheet*>(i->get()))
-           for (auto& i: p->ports)
-             i->checkUnits();
+           for (size_t i=0; i<p->portsSize(); ++i)
+             p->ports(i).lock()->checkUnits();
          return false;
        });
   }
@@ -896,8 +915,8 @@ namespace minsky
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            {
-             if (r->ports[1]->numWires()>0)
-               if (auto vv=r->ports[1]->getVariableValue())
+             if (r->ports(1).lock()->numWires()>0)
+               if (auto vv=r->ports(1).lock()->getVariableValue())
                  r->populateHypercube(vv->hypercube());
            }
          else if (auto v=(*i)->variableCast())
@@ -1215,8 +1234,8 @@ namespace minsky
       net.emplace(w->from().get(), w->to().get());
     for (auto& i: model->findItems([](ItemPtr){return true;}))
       if (!dynamic_cast<IntOp*>(i.get()) && !dynamic_cast<GodleyIcon*>(i.get()))
-        for (unsigned j=1; j<i->ports.size(); ++j)
-          net.emplace(i->ports[j].get(), i->ports[0].get());
+        for (unsigned j=1; j<i->portsSize(); ++j)
+          net.emplace(i->ports(j).lock().get(), i->ports(0).lock().get());
     
     for (auto& i: net)
       if (!i.first->input() && !net.portsVisited.count(i.first))
@@ -1260,8 +1279,8 @@ namespace minsky
                   {
                   case OperationType::add: case OperationType::subtract:
                   case OperationType::multiply: case OperationType::divide:
-                    fvInit[eo->in1[0]] |= op->ports[1]->wires().empty();
-                    fvInit[eo->in2[0][0].idx] |= op->ports[3]->wires().empty();
+                    fvInit[eo->in1[0]] |= op->ports(1).lock()->wires().empty();
+                    fvInit[eo->in2[0][0].idx] |= op->ports(3).lock()->wires().empty();
                     break;
                   default: break;
                   }

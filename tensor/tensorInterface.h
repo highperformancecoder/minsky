@@ -105,13 +105,15 @@ namespace civita
     /// arguments relevant for tensor expressions, not always meaningful. Exception thrown if not.
     virtual void setArgument(const TensorPtr&, const std::string& dimension={},
                              double argVal=0)  {notImpl();}
-    virtual void setArguments(const TensorPtr&, const TensorPtr&) {notImpl();}
+    virtual void setArguments(const TensorPtr&, const TensorPtr&,
+                              const std::string& dimension={}, double argVal=0) {notImpl();}
     virtual void setArguments(const std::vector<TensorPtr>& a,
                               const std::string& dimension={}, double argVal=0) 
     {if (a.size()) setArgument(a[0], dimension, argVal);}
     virtual void setArguments(const std::vector<TensorPtr>& a1,
-                              const std::vector<TensorPtr>& a2)
-    {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0]);}
+                              const std::vector<TensorPtr>& a2,
+                              const std::string& dimension={}, double argVal=0)
+    {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0], dimension, argVal);}
    
   protected:
     Hypercube m_hypercube;

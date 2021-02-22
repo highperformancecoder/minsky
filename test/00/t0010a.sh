@@ -33,16 +33,14 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 minsky.addOperation exp
 minsky.canvas.itemFocus.dummyDraw
-minsky.canvas.itemFocus.ports.@elem 0
-set x0 [minsky.canvas.itemFocus.ports(0).x]
-set y0 [minsky.canvas.itemFocus.ports(0).y]
+set x0 [minsky.canvas.itemFocus.portX 0]
+set y0 [minsky.canvas.itemFocus.portY 0]
 
 minsky.addOperation exp
 minsky.canvas.itemFocus.dummyDraw
 minsky.canvas.itemFocus.moveTo 100 100
-minsky.canvas.itemFocus.ports.@elem 1
-set x1 [minsky.canvas.itemFocus.ports(1).x]
-set y1 [minsky.canvas.itemFocus.ports(1).y]
+set x1 [minsky.canvas.itemFocus.portX 1]
+set y1 [minsky.canvas.itemFocus.portY 1]
 # add a wire
 minsky.canvas.mouseDown \$x0 \$y0
 minsky.canvas.mouseUp \$x1 \$y1

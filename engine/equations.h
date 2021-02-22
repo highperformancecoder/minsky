@@ -271,13 +271,13 @@ namespace MathDAG
     std::map<const Node*, NodePtr> reverseLookupCache;
   public:
     std::string key(const OperationBase& x) const {
-      return "op:"+std::to_string(size_t(x.ports[0].get()));
+      return "op:"+std::to_string(size_t(x.ports(0).lock().get()));
     }
     std::string key(const VariableBase& x) const {
       return "var:"+x.valueId();
     }
     std::string key(const SwitchIcon& x) const {
-      return "switch:"+std::to_string(size_t(x.ports[0].get()));
+      return "switch:"+std::to_string(size_t(x.ports(0).lock().get()));
     }
     /// strings refer to variable names
     std::string key(const string& x) const {
@@ -364,7 +364,8 @@ namespace MathDAG
     std::map<std::string, std::string> userDefinedFunctions;
   public:
     /// construct the system of equations 
-    SystemOfEquations(const Minsky&);
+    SystemOfEquations(const Minsky&, const Group&g);
+    SystemOfEquations(const Minsky& m);
     ostream& latex(ostream&) const; ///< render as a LaTeX eqnarray
     /// Use LaTeX brqn environment to wrap long lines
     ostream& latexWrapped(ostream&) const; 
@@ -376,6 +377,11 @@ namespace MathDAG
     void populateEvalOpVector
     (EvalOpVector& equations, std::vector<Integral>& integrals);
 
+    // ensure all variables have their output port's variable value up
+    // to date and add evalOps for plots and sheets
+    void updatePortVariableValue(EvalOpVector& equations);
+
+    
     /// symbolically differentiate \a expr
     template <class Expr> NodePtr derivative(const Expr& expr);
 

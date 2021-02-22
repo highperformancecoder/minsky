@@ -28,17 +28,17 @@ namespace minsky
 {
   SwitchIcon::SwitchIcon()
   {
-    ports.emplace_back(new Port(*this,Port::noFlags));
-    ports.emplace_back(new Port(*this, Port::inputPort));
+    m_ports.emplace_back(new Port(*this,Port::noFlags));
+    m_ports.emplace_back(new Port(*this, Port::inputPort));
     setNumCases(2); ///<default to if/then
   }
   
   void SwitchIcon::setNumCases(unsigned n)
   {
     if (n<2) throw error("switches need at least two cases");
-    for (unsigned i=ports.size(); i<n+2; ++i)
-      ports.emplace_back(new Port(*this, Port::inputPort));
-    ports.resize(n+2); // in case ports was larger than n+2
+    for (unsigned i=m_ports.size(); i<n+2; ++i)
+      m_ports.emplace_back(new Port(*this, Port::inputPort));
+    m_ports.resize(n+2); // in case ports was larger than n+2
     float width=8*zoomFactor()*numCases();
     if (width>iWidth()) iWidth(width);
     if (width>iHeight()) iHeight(width);
@@ -46,7 +46,7 @@ namespace minsky
 
   unsigned SwitchIcon::switchValue() const
   {
-    double x=ports[1]->value();
+    double x=m_ports[1]->value();
     if (x<1)
       return 0;
     else if (x>=numCases()-1)
@@ -59,8 +59,8 @@ namespace minsky
   {
     bool inputFound=false;
     Units r;
-    for (size_t i=2; i<ports.size(); ++i)
-      for (auto w: ports[i]->wires())
+    for (size_t i=2; i<m_ports.size(); ++i)
+      for (auto w: m_ports[i]->wires())
         if (check && inputFound)
           {
             auto tmp=w->units(check);
@@ -89,17 +89,17 @@ namespace minsky
     float o=flipped? -8: 8;
     // output port
     drawTriangle(cairo, 0.5*w, 0, palette[0], flipped? M_PI: 0);
-    ports[0]->moveTo(x()+0.5*w, y());
+    m_ports[0]->moveTo(x()+0.5*w, y());
     // control port
     drawTriangle(cairo, 0, -0.5*height-8, palette[0], M_PI/2);
-    ports[1]->moveTo(x(), y()-0.5*height-8);
+    m_ports[1]->moveTo(x(), y()-0.5*height-8);
     float dy=height/numCases();
     float y1=-0.5*height+0.5*dy;
     // case ports
-    for (size_t i=2; i<ports.size(); ++i, y1+=dy)
+    for (size_t i=2; i<m_ports.size(); ++i, y1+=dy)
       {
         drawTriangle(cairo, -0.5*w-o, y1, palette[(i-2)%paletteSz], flipped? M_PI: 0);
-        ports[i]->moveTo(x()+-0.5*w-o, y()+y1);
+        m_ports[i]->moveTo(x()+-0.5*w-o, y()+y1);
       }
     // draw indicating arrow
     cairo_move_to(cairo,0.5*w, 0);

@@ -25,7 +25,8 @@ using namespace std;
 
 namespace civita
 {
-  void BinOp::setArguments(const TensorPtr& a1, const TensorPtr& a2)
+  void BinOp::setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                           const std::string& dimension, double)
   {
     arg1=a1; arg2=a2;
     if (arg1 && arg1->rank()!=0)
@@ -37,6 +38,8 @@ namespace civita
       }
     else if (arg2)
       hypercube(arg2->hypercube());
+    else
+      hypercube(Hypercube());
     set<size_t> indices;
     if (arg1) indices.insert(arg1->index().begin(), arg1->index().end());
     if (arg2) indices.insert(arg2->index().begin(), arg2->index().end());

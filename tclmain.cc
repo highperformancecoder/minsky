@@ -5,22 +5,32 @@
 
   It is released as public domain.
 */
-#include "ecolab.h"
-#include "timer.h"
-#include "object.h"
-#include "eco_hashmap.h"
-#include "pack_stream.h"
-#include <cairoSurfaceImage.h>
-#include <pango.h>
+#include <exception>                 // for exception
+#include <fstream>                          // for std
+#include <map>                              // for map
+#include <string>                           // for string, operator<
+#include <boost/filesystem.hpp> 
 
+#include <cairoSurfaceImage.h>              // for CairoSurface
+#include <ctype.h>                          // for isdigit
+#include <pango.h>                          // for Pango, Pango::defaultFamily
+#include <signal.h>                         // for SIGABRT, SIGBUS, SIGSEGV
+#include <stdio.h>                          // for fprintf, stderr, fputs, puts
+#include <stdlib.h>                         // for atoi, free, srand
+#include <string.h>                         // for strcmp, strlen
+#include <time.h>                           // for time
+#include <tk.h>                             // for Tcl_GetStringResult, Tcl_...
+#include <tkDecls.h>                        // for Tk_Init, Tk_MainWindow
+#include "eco_hashmap.h"                    // for hash_map
+#include "eco_strstream.h"                  // for eco_strstream
+#include "ecolab.h"                         // for eco_string, classdesc
+#include "error.h"                          // for error, ecolab
+#include "tcl++.h"                          // for interp, tclvar, NEWCMD
+#include "timer.h"                          // for print_timers, stop_timer
+#include "version.h"                        // for VERSION
 #include <ecolab_epilogue.h>
-#include <fstream>
 
-#include <boost/filesystem.hpp>
 using boost::filesystem::path;
-
-#include <unistd.h>
-#include <fcntl.h>
 
 extern "C"
 {

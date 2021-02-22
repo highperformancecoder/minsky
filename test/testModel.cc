@@ -48,12 +48,12 @@ namespace
       a->moveTo(100,100);
       b->moveTo(200,100);
       c->moveTo(300,100);
-      CHECK_EQUAL(2,a->ports.size());
-      CHECK_EQUAL(2,b->ports.size());
-      CHECK_EQUAL(2,c->ports.size());
+      CHECK_EQUAL(2,a->portsSize());
+      CHECK_EQUAL(2,b->portsSize());
+      CHECK_EQUAL(2,c->portsSize());
 
-      ab=model->addWire(new Wire(a->ports[0], b->ports[1]));
-      bc=model->addWire(new Wire(b->ports[0], c->ports[1]));
+      ab=model->addWire(new Wire(a->ports(0), b->ports(1)));
+      bc=model->addWire(new Wire(b->ports(0), c->ports(1)));
       checkWiresConsistent();
 
       group0=model->addGroup(new Group);
@@ -80,22 +80,24 @@ namespace
 
     void checkWiresConsistent() {
       for (auto& i: model->items)
-        for (auto& p: i->ports)
-          for (auto& w: p->wires())
-            {
-              CHECK(w);
-              CHECK(p->input() || p==w->from());
-              CHECK(!p->input() || p==w->to());
-            }
-      for (auto& g: model->groups)
-        for (auto& i: g->items)
-          for (auto& p: i->ports)
+        for (size_t pi=0; pi<i->portsSize(); ++pi)
+          if (auto p=i->ports(pi).lock())
             for (auto& w: p->wires())
               {
-                assert(w);
-                assert(p->input() || p==w->from());
-                assert(!p->input() || p==w->to());
+                CHECK(w);
+                CHECK(p->input() || p==w->from());
+                CHECK(!p->input() || p==w->to());
               }
+      for (auto& g: model->groups)
+        for (auto& i: g->items)
+          for (size_t pi=0; pi<i->portsSize(); ++pi)
+            if (auto p=i->ports(pi).lock())
+              for (auto& w: p->wires())
+                {
+                  assert(w);
+                  assert(p->input() || p==w->from());
+                  assert(!p->input() || p==w->to());
+                }
     }
   };
 }
@@ -249,7 +251,7 @@ SUITE(Group)
   TEST_FIXTURE(TestFixture, copy)
     {
       auto t=model->addItem(new minsky::Time);
-      model->addWire(new Wire(t->ports[0],a->ports[1]));
+      model->addWire(new Wire(t->ports(0),a->ports(1)));
       group0->splitBoundaryCrossingWires();
       group0->addGroup(new Group);
       auto g=model->addGroup(group0->copy());
@@ -391,7 +393,7 @@ SUITE(Canvas)
   
   TEST_FIXTURE(TestFixture, getWireAt)
     {
-      auto from=a->ports[0], to=b->ports[1];
+      auto from=a->ports(0).lock(), to=b->ports(1).lock();
       float x=0.5f*(from->x()+to->x())+1;
       float y=0.5f*(from->y()+to->y())+1;
       canvas.getWireAt(x,y);
@@ -410,7 +412,7 @@ SUITE(Canvas)
       // initially, foo is undefined, so should return false
       CHECK(!findVariableDefinition());
       CHECK(item==var1);
-      model->addWire(new Wire(op->ports[0],var2->ports[1]));
+      model->addWire(new Wire(op->ports(0),var2->ports(1)));
       CHECK(findVariableDefinition());
       CHECK(item==var2);
       model->removeItem(*var2);
@@ -579,7 +581,7 @@ SUITE(Canvas)
         OperationPtr b(OperationType::exp);
         model->addItem(b);
         b->moveTo(200,200);
-        WirePtr w(new Wire(a->ports[0],b->ports[1]));
+        WirePtr w(new Wire(a->ports(0),b->ports(1)));
         model->addWire(w);
         auto coords=w->coords();
         CHECK_EQUAL(4, coords.size());
@@ -672,11 +674,11 @@ SUITE(Canvas)
         OperationPtr a(OperationType::exp);
         model->addItem(a);
         a->moveTo(100,100);
-        a->ports[0]->moveTo(110,100); // normally this is done inside draw()
+        a->ports(0).lock()->moveTo(110,100); // normally this is done inside draw()
         OperationPtr b(OperationType::exp);
         model->addItem(b);
         b->moveTo(200,200);
-        b->ports[1]->moveTo(190,200); // normally this is done inside draw()
+        b->ports(1).lock()->moveTo(190,200); // normally this is done inside draw()
         auto w=model->addWire(*a,*b,1);
 
         CHECK(!a->mouseFocus);
@@ -957,7 +959,7 @@ SUITE(Canvas)
          model->self=model;
          auto t=model->addItem(new Operation<OperationType::time>);
          auto e=model->addItem(new Operation<OperationType::exp>);
-         model->addWire(new Wire(t->ports[0],e->ports[1]));
+         model->addWire(new Wire(t->ports(0),e->ports(1)));
          auto g=model->addGroup(new Group);
          selection.items.push_back(t);
          selection.items.push_back(e);
@@ -977,12 +979,10 @@ SUITE(Wire)
 {
   TEST(handles)
     {
-      Item item;
-      item.ports.emplace_back(new Port(item));
-      item.ports.back()->moveTo(0,0);
-      item.ports.emplace_back(new Port(item,Port::inputPort));
-      item.ports.back()->moveTo(10,10);
-      Wire wire(item.ports[0],item.ports[1],{0,0,3,4,6,7,10,10});
+      Operation<OperationType::sin> item;
+      item.ports(0).lock()->moveTo(0,0);
+      item.ports(1).lock()->moveTo(10,10);
+      Wire wire(item.ports(0),item.ports(1),{0,0,3,4,6,7,10,10});
       CHECK_EQUAL(0, wire.nearestHandle(3.1, 3.9));
       CHECK_EQUAL(1, wire.nearestHandle(6.2, 7.5));
       // should not have inserted anything yet
@@ -1097,12 +1097,12 @@ SUITE(Integrate)
       auto intop=new IntOp;
       model->addItem(intop);
       model->addItem(a);
-      model->addWire(new Wire(intop->ports[0],a->ports[1]));
+      model->addWire(new Wire(intop->ports(0),a->ports(1)));
       intop->description("a");
       // should cowardly refuse, and give a different name
       CHECK_EQUAL("a1",intop->description());
-      CHECK_EQUAL(1,intop->ports[0]->wires().size());
-      CHECK(intop->ports[0]->wires()[0]->to()==a->ports[1]);
+      CHECK_EQUAL(1,intop->ports(0).lock()->wires().size());
+      CHECK(intop->ports(0).lock()->wires()[0]->to()==a->ports(1).lock());
       auto intop2=new IntOp;
       model->addItem(intop2);
       intop2->description(intop->description());

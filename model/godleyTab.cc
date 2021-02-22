@@ -33,7 +33,12 @@ namespace minsky
   bool GodleyTab::itemSelector(const ItemPtr& i)
   {
     return dynamic_cast<GodleyIcon*>(i.get());
-  }	
+  }
+  
+  void GodleyTab::toggleGodleyTabValueDisplay() const      
+  {
+    if (auto g=dynamic_cast<GodleyIcon*>(item.get())) g->toggleGodleyTabValueDisplay();
+  }	  	
   
   ItemPtr GodleyTab::itemAt(float x, float y)
   {
@@ -51,9 +56,13 @@ namespace minsky
               {
                 g->godleyT->draw(surf.cairo());
               }
+#ifndef NDEBUG
             catch (const std::exception& e) 
               {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
             catch (...) {cerr<<"illegal exception caught in draw()";}
+#else
+            catch (...) {}
+#endif
             float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
             float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
             xx+=w;
@@ -84,7 +93,7 @@ namespace minsky
               itemCoords[itemFocus]=move(make_pair(xItem,yItem));         
             } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
             g->godleyT->disableButtons();
-            g->godleyT->displayValues=true;   
+            g->godleyT->displayValues=g->tabDisplayValues();   
             g->godleyT->draw(cairo);
             
             // draw title

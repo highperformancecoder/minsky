@@ -48,9 +48,13 @@ namespace minsky
         x.draw(surf.cairo());
 		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232      
       }
+#ifndef NDEBUG
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
     catch (...) {cerr<<"illegal exception caught in draw()";}
+#else
+    catch(...) {}
+#endif
     x.mouseFocus=savedMouseFocus;
     
     double l,t,w,h;
@@ -107,7 +111,7 @@ namespace minsky
   
   void Item::deleteAttachedWires()
   {
-    for (auto& p: ports)
+    for (auto& p: m_ports)
       p->deleteWires();
   }
 
@@ -190,7 +194,7 @@ namespace minsky
       return item->clickType(x,y);
     
     // firstly, check whether a port has been selected
-    for (auto& p: ports)
+    for (auto& p: m_ports)
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor())
           return ClickType::onPort;
@@ -212,7 +216,7 @@ namespace minsky
   {
     cairo_save(cairo);
     cairo_new_path(cairo);
-    for (auto& p: ports)
+    for (auto& p: m_ports)
       {
         cairo_new_sub_path(cairo);
         cairo_arc(cairo, p->x()-x(), p->y()-y(), portRadius*zoomFactor(), 0, 2*M_PI);
@@ -284,7 +288,7 @@ namespace minsky
   bool Item::attachedToDefiningVar() const
   {
 	if (variableCast() || operationCast())  
-      for (auto w: ports[0]->wires())
+      for (auto w: m_ports[0]->wires())
         if (w->attachedToDefiningVar()) return true;
     return false;
   }    
@@ -352,7 +356,7 @@ namespace minsky
   {
     if (auto v=select(x,y))
       return v->closestOutPort(x,y);
-    return ports.size()>0 && !ports[0]->input()? ports[0]: nullptr;
+    return portsSize()>0 && !ports(0).lock()->input()? ports(0).lock(): nullptr;
   }
   
   shared_ptr<Port> Item::closestInPort(float x, float y) const
@@ -360,11 +364,11 @@ namespace minsky
     if (auto v=select(x,y))
       return v->closestInPort(x,y);
     shared_ptr<Port> r;
-    for (size_t i=0; i<ports.size(); ++i)
-      if (ports[i]->input() &&
-          (!r || sqr(ports[i]->x()-x)+sqr(ports[i]->y()-y) <
+    for (size_t i=0; i<m_ports.size(); ++i)
+      if (m_ports[i]->input() &&
+          (!r || sqr(m_ports[i]->x()-x)+sqr(m_ports[i]->y()-y) <
            sqr(r->x()-x)+sqr(r->y()-y)))
-        r=ports[i];
+        r=m_ports[i];
     return r;
   }
 
