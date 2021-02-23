@@ -33,6 +33,8 @@ namespace minsky
     Display*	display; // Weak reference, returned by system
     ecolab::cairo::SurfacePtr childSurface;
 
+  private:
+      void createSurface();
   public: 
       int childWidth;
       int childHeight;

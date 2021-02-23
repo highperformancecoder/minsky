@@ -23,11 +23,36 @@
 #include <stdexcept>
 #include <string>
 
+#if defined(CAIRO_HAS_XLIB_SURFACE) && !defined(MAC_OSX_TK)
+#include <cairo/cairo-xlib.h>
+#include <X11/Xlib.h>
+#endif
+
+#if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
+#define USE_WIN32_SURFACE
+#endif
+
+#ifdef _WIN32
+#undef Realloc
+#include <windows.h>
+#include <wingdi.h>
+#ifdef USE_WIN32_SURFACE
+#include <cairo/cairo-win32.h>
+#endif
+#endif
+
+#if defined(MAC_OSX_TK)
+#include <Carbon/Carbon.h>
+#include <cairo/cairo-quartz.h>
+#include "getContext.h"
+#endif
+
 using namespace std;
 using namespace ecolab;
 
 namespace minsky
 {
+
 #ifdef USE_WIN32_SURFACE
 #elif defined(MAC_OSX_TK)
 #else
@@ -38,25 +63,39 @@ namespace minsky
     throw runtime_error(errorMessage);
   }
 #endif
-  unsigned long WindowInformation::getChildWindowId()
-  {
+
+  unsigned long WindowInformation::getChildWindowId() {
     return childWindowId;
   }
 
-  Display *WindowInformation::getDisplay()
-  {
+  Display *WindowInformation::getDisplay() {
     return display;
   }
 
-  WindowInformation::~WindowInformation()
-  {
+  WindowInformation::~WindowInformation() {
     childSurface.reset();
     XDestroyWindow(display, childWindowId);
   }
 
-  ecolab::cairo::SurfacePtr WindowInformation::getSurface()
-  {
+  ecolab::cairo::SurfacePtr WindowInformation::getSurface() {
     return childSurface;
+  }
+
+  void WindowInformation::createSurface(){
+#ifdef USE_WIN32_SURFACE
+      {
+          /* TODO */
+      }
+#elif defined(MAC_OSX_TK)
+
+      {
+          /* TODO */
+      }
+#else
+      {childSurface.reset(new cairo::Surface(cairo_xlib_surface_create(getDisplay(), getChildWindowId(), wAttr.visual, childWidth, childHeight), childWidth, childHeight));
+  cairo_surface_set_device_offset(childSurface->surface(), -wAttr.x, -wAttr.y);
+}
+#endif
   }
 
   WindowInformation::WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
@@ -74,21 +113,18 @@ namespace minsky
     childWidth = wAttr.width - offsetLeft;
     childHeight = wAttr.height - offsetTop;
 
-    // Todo:: currently width, height parameters are not getting passed properly
-    // Eventually, we need those in order to ensure we don't need to worry about
-    // paddings, scrollbars etc
-    if (cWidth > 0)
-    {
+    // TODO:: Take care of scrollbars
+
+    if (cWidth > 0) {
       childWidth = min(childWidth, cWidth);
     }
-    if (cHeight > 0)
-    {
+
+    if (cHeight > 0) {
       childHeight = min(childHeight, cHeight);
     }
 
-    // std::cout << childWidth << "::" << childHeight << "::" << offsetLeft << "::" << offsetTop << std::endl;
     childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, 0); //TODO:: Should we pass visual and attributes at the end?
     XMapWindow(display, childWindowId);
-    // std::cout << "We got child window id = " << childWindowId << std::endl;
+    createSurface();
   }
 } // namespace minsky

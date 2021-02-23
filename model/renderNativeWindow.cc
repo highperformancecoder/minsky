@@ -30,29 +30,6 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 #include "windowInformation.h"
 #include "minsky_epilogue.h"
 
-#if defined(CAIRO_HAS_XLIB_SURFACE) && !defined(MAC_OSX_TK)
-#include <cairo/cairo-xlib.h>
-#include <X11/Xlib.h>
-#endif
-
-#if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
-#define USE_WIN32_SURFACE
-#endif
-
-#ifdef _WIN32
-#undef Realloc
-#include <windows.h>
-#include <wingdi.h>
-#ifdef USE_WIN32_SURFACE
-#include <cairo/cairo-win32.h>
-#endif
-#endif
-
-#if defined(MAC_OSX_TK)
-#include <Carbon/Carbon.h>
-#include <cairo/cairo-quartz.h>
-#include "getContext.h"
-#endif
 
 #include <stdexcept>
 #include <string>
@@ -62,29 +39,14 @@ using namespace ecolab;
 
 namespace minsky
 {
-#ifdef USE_WIN32_SURFACE
-  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation &winInfo)
-  { /* TODO */
-  }
-#elif defined(MAC_OSX_TK)
-  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation &winInfo)
-  { /* TODO */
-  }
-#else
-  inline cairo::SurfacePtr createNativeWindowSurface(WindowInformation &wi)
-  {
-    cairo::SurfacePtr childSurface(new cairo::Surface(cairo_xlib_surface_create(wi.getDisplay(), wi.getChildWindowId(), wi.wAttr.visual, wi.childWidth, wi.childHeight), wi.childWidth, wi.childHeight));
-    cairo_surface_set_device_offset(childSurface->surface(), -wi.wAttr.x, -wi.wAttr.y);
-    return childSurface;
-  }
-#endif
-
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
     if (!winInfoPtr)
      winInfoPtr=std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
 
-    auto tmp = createNativeWindowSurface(*winInfoPtr);
+    auto tmp = winInfoPtr->getSurface();
+    
+    //auto tmp = createNativeWindowSurface(*winInfoPtr);
 
     //TODO:: Review if this paint (below 3 lines) is really needed with each frame
     cairo_move_to(tmp->cairo(), 0, 0);
