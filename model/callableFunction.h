@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2015
+  @copyright Steve Keen 2020
   @author Russell Standish
   This file is part of Minsky.
 
@@ -19,11 +19,15 @@
 
 #ifndef CALLABLE_FUNCTION_H
 #define CALLABLE_FUNCTION_H
-#include "exprtk/exprtk.hpp"
+
+#include <string>
+#include <vector>
+
 namespace minsky
 {
-  struct CallableFunction: public exprtk::ivararg_function<double>
+  struct CallableFunction
   {
+    virtual double operator() (const std::vector<double>&)=0;
     virtual std::string name() const=0;
   };
 }
