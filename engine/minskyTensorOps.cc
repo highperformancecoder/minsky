@@ -844,6 +844,23 @@ namespace minsky
         r->setArguments(tfp.tensorsFromPorts(*it));
         return r;
       }
+    else if (auto l=dynamic_cast<const Lock*>(it.get()))
+      if (l->locked())
+        {
+          if (auto r=l->ravelInput())
+            if (auto p=r->ports(1).lock())
+              {
+                assert(!tfp.tensorsFromPort(*p).empty());
+                auto chain=createRavelChain(l->lockedState, tfp.tensorsFromPort(*p)[0]);
+                if (!chain.empty())
+                  return chain.back();
+              }
+        }
+      else
+        {
+          assert(!tfp.tensorsFromPort(*l->ports(1).lock()).empty());
+          return tfp.tensorsFromPort(*l->ports(1).lock())[0];
+        }
     return {};
   }
 
