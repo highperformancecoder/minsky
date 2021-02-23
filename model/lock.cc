@@ -114,7 +114,7 @@ namespace minsky
                   u.second*=multiplier;
               return inputUnits;
             }
-          return {};
+        return {};
       }
     else
       return m_ports[1]->units(check);
