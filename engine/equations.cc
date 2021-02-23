@@ -787,10 +787,12 @@ namespace MathDAG
   std::shared_ptr<VariableValue> LockDAG::addEvalOps(EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result)
-      if (r && r->isFlowVar())
-        result=r;
-      else
-        result=tmpResult;
+      {
+        if (r && r->isFlowVar())
+          result=r;
+        else
+          result=tmpResult;
+      }
 
     auto input=rhs->addEvalOps(ev,result);
     if (lock.locked())
@@ -812,16 +814,18 @@ namespace MathDAG
     auto r=make_shared<LockDAG>(l);
     expressionCache.insert(l,r);
     if (auto ravel=l.ravelInput())
-      if (l.locked())
-        {
-          if (auto p=ravel->ports(1).lock())
+      {
+        if (l.locked())
+          {
+            if (auto p=ravel->ports(1).lock())
+              if (!p->wires().empty())
+                r->rhs=getNodeFromWire(*p->wires()[0]);
+          }
+        else
+          if (auto p=l.ports(1).lock())
             if (!p->wires().empty())
               r->rhs=getNodeFromWire(*p->wires()[0]);
-        }
-      else
-        if (auto p=l.ports(1).lock())
-          if (!p->wires().empty())
-            r->rhs=getNodeFromWire(*p->wires()[0]);
+      }
     return r;
   }
 
