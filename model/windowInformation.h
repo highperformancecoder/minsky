@@ -44,17 +44,11 @@ namespace minsky
       Display* getDisplay();
 
   public:
-
-    
-    WindowInformation();
     ~WindowInformation();
     WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
-    void initialize(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
-    void initialize(const WindowInformation &other);
-
+    
     ecolab::cairo::SurfacePtr getSurface();
 
-    void copyFrom(const WindowInformation &other);
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;
   };

@@ -38,11 +38,6 @@ namespace minsky
     throw runtime_error(errorMessage);
   }
 #endif
-
-  WindowInformation::WindowInformation()
-  {
-  }
-
   unsigned long WindowInformation::getChildWindowId()
   {
     return childWindowId;
@@ -59,12 +54,12 @@ namespace minsky
     XDestroyWindow(display, childWindowId);
   }
 
-  void WindowInformation::initialize(const WindowInformation &other)
+  ecolab::cairo::SurfacePtr WindowInformation::getSurface()
   {
-    this->initialize(other.parentWindowId, other.offsetLeft, other.offsetTop, other.childWidth, other.childHeight);
+    return childSurface;
   }
 
-  void WindowInformation::initialize(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
+  WindowInformation::WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
   {
     parentWindowId = parentWin;
     offsetLeft = left;
@@ -96,15 +91,4 @@ namespace minsky
     XMapWindow(display, childWindowId);
     // std::cout << "We got child window id = " << childWindowId << std::endl;
   }
-
-  ecolab::cairo::SurfacePtr WindowInformation::getSurface()
-  {
-    return childSurface;
-  }
-
-  WindowInformation::WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
-  {
-    this->initialize(parentWin, left, top, cWidth, cHeight);
-  }
-
 } // namespace minsky

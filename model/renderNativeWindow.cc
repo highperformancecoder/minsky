@@ -79,34 +79,12 @@ namespace minsky
   }
 #endif
 
-  RenderNativeWindow::~RenderNativeWindow()
+  void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    if (this->winInfo)
-    {
-      delete this->winInfo;
-    }
-  }
+    if (!winInfoPtr)
+     winInfoPtr=std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
 
-  RenderNativeWindow::RenderNativeWindow()
-  {
-    this->winInfo = new WindowInformation();
-  }
-
-  RenderNativeWindow &RenderNativeWindow::operator=(const RenderNativeWindow &a)
-  {
-    //TODO:: I expected this to be the "new" instance with uninitialized winInfo and a to have the previous winInfo.
-    // However, it seems to be the other way round in practice --- Janak
-    a.winInfo->initialize(*(this->winInfo));
-  }
-
-  RenderNativeWindow::RenderNativeWindow(const RenderNativeWindow &a)
-  {
-    // cout << "Copy constructor was called" << endl;
-  }
-
-  void RenderNativeWindow::renderFrame()
-  {
-    auto tmp = createNativeWindowSurface(*winInfo);
+    auto tmp = createNativeWindowSurface(*winInfoPtr);
 
     //TODO:: Review if this paint (below 3 lines) is really needed with each frame
     cairo_move_to(tmp->cairo(), 0, 0);
@@ -116,12 +94,6 @@ namespace minsky
     tmp.swap(surface);
     redraw(0, 0, surface->width(), surface->height());
     tmp.swap(surface);
-  }
-
-  void RenderNativeWindow::initializeNativeWindow(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight) {
-    //std::cout << parentWindowId << "::" << offsetLeft << "::" << offsetTop << "::" << childWidth << "::" << childHeight << std::endl;
-    winInfo->initialize(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
-    //std::cout << "Child window id:: " << winInfo->getChildWindowId() << std::endl;
   }
 
   void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight)

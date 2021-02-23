@@ -29,20 +29,11 @@ namespace minsky
   {
   private:
     CLASSDESC_ACCESS(RenderNativeWindow); 
-    // std::shared_ptr<WindowInformation> winInfoPtr; // TODO:: cannot get things to work with this
-    WindowInformation* winInfo;
+    std::shared_ptr<WindowInformation> winInfoPtr;
 
-  public:
-
-    RenderNativeWindow();
-    ~RenderNativeWindow();
-    RenderNativeWindow& operator=(const RenderNativeWindow &a);
-    RenderNativeWindow(const RenderNativeWindow &a);
-
-
-    void initializeNativeWindow(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
+  public:    
     void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
-    void renderFrame();
+    void renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
   };
 } // namespace minsky
 
