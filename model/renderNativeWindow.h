@@ -23,13 +23,19 @@
 #include <cairoSurfaceImage.h>
 
 namespace minsky
-{
-  class RenderNativeWindow: public ecolab::CairoSurface
+{  
+  class WindowInformation;
+  class RenderNativeWindow : public ecolab::CairoSurface
   {
-  public:
-    void renderToNativeWindow(unsigned long window);
+  private:
+    CLASSDESC_ACCESS(RenderNativeWindow); 
+    classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
+
+  public:    
+    void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
+    void renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
   };
-}
+} // namespace minsky
 
 #include "renderNativeWindow.cd"
 #endif
