@@ -41,7 +41,7 @@ namespace minsky
 {
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    if (!winInfoPtr)
+    if (!winInfoPtr.get())
      winInfoPtr=std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
 
     auto tmp = winInfoPtr->getSurface();
