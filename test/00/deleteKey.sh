@@ -37,17 +37,18 @@ proc afterMinskyStarted {} {
   set numWires [model.numWires]
   focus .wiring.canvas
 
-#  set w [minsky.model.wires.@elem 1]
-#  set x {[\$w.coords.@elem 0]}
-#  set y {[\$w.coords.@elem 1]}
-#  deleteKey \$x \$y
-  deleteKey 415 290
+  set w [minsky.model.wires.@elem 11]
+  set c [minsky.model.wires(11).coords]
+  assert "[llength \$c]==4"
+  set x [expr 0.5*([lindex \$c 0]+[lindex \$c 2])]
+  set y [expr 0.5*([lindex \$c 1]+[lindex \$c 3])]
+  deleteKey \$x \$y
   assert "[model.numWires]==[expr \$numWires-1]" {test wire deletion}
   findVariable emprate
   deleteKey [minsky.canvas.item.x] [minsky.canvas.item.y]
   assert "[model.numItems]==[expr \$numItems-1]" {test emprate var deletion}
-  # should also be two more wires deleted
-  assert "[model.numWires]==[expr \$numWires-3]" {test attached wires deletion}
+  # should also be three more wires deleted
+  assert "[model.numWires]==[expr \$numWires-4]" {test attached wires deletion}
 
   findVariable Investment
   canvas.selectAllVariables

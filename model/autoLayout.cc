@@ -20,6 +20,7 @@
 #include "autoLayout.h"
 #include "selection.h"
 #include "userFunction.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 #include <map>

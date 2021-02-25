@@ -19,28 +19,39 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 
-#include "slider.h"
-#include "str.h"
-#include "CSVParser.h"
+#include <accessor.h>           // for TCLAccessor
+#include <arrays.h>             // for TCL_obj
+#include <assert.h>             // for assert
+#include <cairo/cairo.h>        // for cairo_t
+#include <polyPackBase.h>       // for PolyPackBase, PolyPack
+#include <stddef.h>             // for size_t
+#include <map>                  // for pair
+#include <memory>               // for shared_ptr, weak_ptr, dynamic_pointer...
+#include <string>               // for string, operator+, basic_string, oper...
+#include <type_traits>          // for remove_extent<>::type
+#include <utility>              // for make_pair
+#include <vector>               // for vector
+#include "TCL_obj_base.h"       // for TCL_obj, TCL_obj_t (ptr only)
+#include "TCL_obj_templates.h"  // for TCL_obj
+#include "classdesc.h"          // for Exclude
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
+#include "hypercube.h"          // for Hypercube
+#include "item.h"               // for ItemT, BottomRightResizerItem, ClickType
+#include "slider.h"             // for Slider
+#include "str.h"                // for str
+#include "tcl++.h"              // for string
+#include "typeName_epilogue.h"  // for typeName
+#include "variableType.h"       // for VariableType, VariableType::Type, Var...
+#include "variableValue.h"      // for engExp, mantissa, VariableValue, EngN...
 
-#include <ecolab.h>
-#include <arrays.h>
-
-#include <vector>
-#include <map>
-// override EcoLab's default CLASSDESC_ACCESS macro
-#include "classdesc_access.h"
-
-#include "polyBase.h"
-#include <polyPackBase.h>
-#include "variableType.h"
-#include "item.h"
-#include <accessor.h>
-#include <cairo/cairo.h>
 
 namespace minsky
 {
+  class DataSpec;
+  class VariableBase;
+  struct LassoBox;
   class VariablePtr;
+  struct Selection;
   struct SchemaHelper;
   class GodleyIcon;
 
@@ -251,8 +262,7 @@ namespace minsky
     double value(const double& x) override {init(str(x)); return x;}
     VarConstant* clone() const override {auto r=new VarConstant(*this); r->group.reset(); return r;}
     std::string classType() const override {return "VarConstant";}
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
-    {::TCL_obj(t,d,*this);}
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override;
   };
 
   class VariablePtr: 

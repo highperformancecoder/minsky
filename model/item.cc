@@ -18,17 +18,21 @@
 */
 
 #include "item.h"
-#include "group.h"
-#include "zoom.h"
-#include "variable.h"
-#include "latexMarkup.h"
-#include "geometry.h"
-#include "selection.h"
-#include "minsky.h"
-#include <pango.h>
-#include <cairo_base.h>
+#include <cairo_base.h>   // for Surface, CairoSave
+#include <math.h>         // for M_PI, abs, hypot
+#include <pango.h>        // for Pango
+#include <stdlib.h>       // for abs, NULL, size_t
+#include <iosfwd>         // for std
+#include <stdexcept>      // for runtime_error
+#include <utility>        // for pair, make_pair
+#include "cairo.h"        // for cairo_line_to, cairo_move_to, cairo_stroke
+#include "geometry.h"     // for Rotate, Point, sqr
+#include "group.h"        // for Group
+#include "latexMarkup.h"  // for latexToPango
+#include "minsky.h"       // for cminsky, Minsky
+#include "selection.h"    // for LassoBox
+#include "wire.h"         // for Wire
 #include "minsky_epilogue.h"
-#include <exception>
 
 using ecolab::Pango;
 using namespace std;
@@ -372,6 +376,10 @@ namespace minsky
     return r;
   }
 
+  void Item::TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
+  {::TCL_obj(t,d,*this);}
+
+  
   void Item::removeControlledItems() const
   {
     if (auto g=group.lock())

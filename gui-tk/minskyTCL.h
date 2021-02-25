@@ -19,11 +19,46 @@
 
 #ifndef MINSKYTCL_H
 #define MINSKYTCL_H
-#include "minsky.h"
-#include "godleyTableWindow.h"
-#include "variableInstanceList.h"
-#include <fstream>
-#include <memory>
+#include <string.h>                // for size_t, NULL, strcpy, strlen
+#include <tk.h>                    // for Tcl_CreateCommand, ClientData, Tcl...
+#include <algorithm>               // for find
+#include <fstream>                 // for char_traits, operator<<, ostream
+#include <functional>              // for function
+#include <map>                     // for pair
+#include <memory>                  // for __shared_ptr_access<>::element_type
+#include <set>                     // for operator!=, _Rb_tree_iterator, _Rb...
+#include <string>                  // for string, operator+, operator==, bas...
+#include <vector>                  // for vector
+#include "TCL_obj_base.h"          // for TCL_obj_deregister, TCL_obj_proper...
+#include "TCL_obj_stl.h"           // for TCL_objp
+#include "TCL_obj_templates.h"     // for TCL_obj
+#include "accessor.h"              // for Accessor
+#include "arrays.h"                // for TCL_obj
+#include "assetClass.h"            // for GodleyAssetClass::AssetClass, Godl...
+#include "canvas.h"                // for Canvas, Canvas::Model
+#include "classdesc.h"             // for Exclude, enum_keysData, EnumKey
+#include "equations.h"             // for SystemOfEquations
+#include "error.h"                 // for error
+#include "godleyIcon.h"            // for GodleyIcon
+#include "godleyTab.h"             // for GodleyTab
+#include "godleyTable.h"           // for GodleyTable
+#include "godleyTableWindow.h"     // for GodleyTableWindow
+#include "group.h"                 // for Group, Groups, GroupItems, GroupIt...
+#include "item.h"                  // for ItemPtr, Items, ItemT, Item
+#include "latexMarkup.h"           // for latexToPango
+#include "minsky.h"                // for Minsky, Minsky::minskyVersion
+#include "operationType.h"         // for operator<<, OperationType, Operati...
+#include "pango.h"                 // for Pango, Pango::defaultFamily
+#include "plotTab.h"               // for PlotTab
+#include "port.h"                  // for GroupPtr
+#include "tcl++.h"                 // for tclcmd, interp, cmd_data (ptr only)
+#include "tensorVal.h"             // for operator<<
+#include "variable.h"              // for VariableBase
+#include "variableInstanceList.h"  // for VariableInstanceList
+#include "variableType.h"          // for operator<<, VariableType, Variable...
+#include "variableValue.h"         // for VariableValue
+#include "wire.h"                  // for WirePtr, error
+namespace minsky { class DataSpec; }
 
 namespace ecolab {extern Tk_Window mainWin;}
 

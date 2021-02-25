@@ -37,14 +37,19 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "SVGItem.h"
+#include <glib-object.h>               // for g_object_unref
+#include <glib.h>                      // for g_error_free, GError
+#include <librsvg-2.0/librsvg/rsvg.h>  // for RsvgDimensionData, rsvg_handle...
+#include "cairo.h"                     // for cairo_t
+#include "classdesc.h"                 // for Exclude
+#include "error.h"                     // for error
 #include "minsky_epilogue.h"
-#include <librsvg-2.0/librsvg/rsvg.h>
 
-// if not #ifdef protected, you get a deprecated warning, which is
-// made fatal by -Werror
-#ifndef RSVG_CAIRO_H
-#include <librsvg-2.0/librsvg/rsvg-cairo.h>
-#endif
+//// if not #ifdef protected, you get a deprecated warning, which is
+//// made fatal by -Werror
+//#ifndef RSVG_CAIRO_H
+//#include <librsvg-2.0/librsvg/rsvg-cairo.h>
+//#endif
 
 namespace minsky
 {

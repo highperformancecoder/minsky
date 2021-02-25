@@ -19,15 +19,19 @@
 #ifndef WIRE_H
 #define WIRE_H
 
-#include "noteBase.h"
-#include "intrusiveMap.h"
-
-#include <error.h>
-#include <arrays.h>
-#include <TCL_obj_base.h>
-#include <accessor.h>
-#include "classdesc_access.h"
-#include <cairo.h>
+#include <accessor.h>           // for TCLAccessor
+#include <cairo.h>              // for cairo_t
+#include <map>                  // for pair
+#include <memory>               // for shared_ptr, weak_ptr
+#include <vector>               // for vector
+#include "TCL_obj_stl.h"        // for operator|
+#include "classdesc.h"          // for NullDescriptor
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
+#include "noteBase.h"           // for NoteBase
+#include "pack_base.h"          // for pack_t (ptr only), unpack_t
+namespace classdesc_access { template <class T> struct access_pack; }
+namespace classdesc_access { template <class T> struct access_unpack; }
+namespace ecolab { class error; }
 
 namespace minsky
 {

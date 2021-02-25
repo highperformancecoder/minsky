@@ -17,14 +17,31 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "cairoItems.h"
 #include "group.h"
-#include "wire.h"
-#include "operation.h"
-#include "minsky.h"
-#include "autoLayout.h"
-#include "equations.h"
-#include <cairo_base.h>
+#include <cairo_base.h>     // for CairoSave, cairo
+#include <math.h>           // for cos, fabs, sin, M_PI, abs, sqrt, nan
+#include <stdlib.h>         // for abs
+#include <algorithm>        // for max, min
+#include <limits>           // for numeric_limits
+#include <map>              // for map, pair, map<>::mapped_type
+#include <sstream>          // for ostringstream, operator<<, basic_ostream
+#include "SVGItem.h"        // for SVGRenderer
+#include "autoLayout.h"     // for layoutGroup, randomizeLayout
+#include "cairoItems.h"     // for RenderVariable
+#include "equations.h"      // for SystemOfEquations, VariableDAG, WeakNodePtr
+#include "evalOp.h"         // for EvalOpVector, EvalOpBase, EvalOpPtr
+#include "geometry.h"       // for Rotate
+#include "integral.h"       // for Integral
+#include "minsky.h"         // for minsky, Minsky, cminsky
+#include "operation.h"      // for IntOp
+#include "plot.h"           // for Plot
+#include "plotWidget.h"     // for PlotWidget
+#include "ravelWrap.h"      // for Ravel
+#include "selection.h"      // for LassoBox
+#include "str.h"            // for remove
+#include "variableValue.h"  // for VariableValue, ValueVector, ValueVector::...
+#include "wire.h"           // for Wire, WirePtr, Wires, error
+#include "zoom.h"           // for zoom
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;

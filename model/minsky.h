@@ -20,40 +20,50 @@
 #ifndef MINSKY_H
 #define MINSKY_H
 
-#include "intrusiveMap.h"
-#include "bookmark.h"
-#include "selection.h"
-#include "godleyIcon.h"
-#include "operation.h"
-#include "evalOp.h"
-#include "evalGodley.h"
-#include "wire.h"
-#include "plotWidget.h"
-#include "version.h"
-#include "variable.h"
-#include "equations.h"
-#include "latexMarkup.h"
-#include "integral.h"
-#include "variableValue.h"
-#include "canvas.h"
-#include "lock.h"
-#include "panopticon.h"
-#include "fontDisplay.h"
-#include "variableTab.h"
-#include "parameterTab.h"
-#include "plotTab.h"
-#include "godleyTab.h"
-#include "dimension.h"
-#include "rungeKutta.h"
+#include <stdlib.h>                                         // for size_t
+#include <boost/date_time/posix_time/posix_time_types.hpp>  // for microsec_...
+#include <boost/date_time/posix_time/ptime.hpp>             // for ptime
+#include <deque>                                            // for deque
+#include <fstream>                                          // for ofstream
+#include <limits>                                           // for numeric_l...
+#include <map>                                              // for map
+#include <memory>                                           // for shared_ptr
+#include <set>                                              // for set
+#include <string>                                           // for string
+#include <vector>                                           // for vector
+#include "SVGItem.h"                                        // for SVGRenderer
+#include "assetClass.h"                                     // for GodleyAss...
+#include "cairoSurfaceImage.h"                              // for CairoSurface
+#include "cairo_base.h"                                     // for Surface
+#include "canvas.h"                                         // for Canvas
+#include "classdesc.h"                                      // for Exclude
+#include "classdesc_access.h"                               // for CLASSDESC...
+#include "dimension.h"                                      // for Conversions
+#include "dynamicRavelCAPI.h"                               // for Ravel
+#include "error.h"                                          // for ecolab
+#include "evalGodley.h"                                     // for EvalGodley
+#include "evalOp.h"                                         // for EvalOpVector
+#include "fontDisplay.h"                                    // for FontDisplay
+#include "godleyIcon.h"                                     // for GodleyIcon
+#include "godleyTab.h"                                      // for GodleyTab
+#include "godleyTable.h"                                    // for GodleyTable
+#include "group.h"                                          // for Group
+#include "integral.h"                                       // for Integral
+#include "item.h"                                           // for Item (ptr...
+#include "lock.h"                                           // for Lock, Loc...
+#include "pack_base.h"                                      // for pack_t
+#include "panopticon.h"                                     // for Panopticon
+#include "parameterTab.h"                                   // for ParameterTab
+#include "plotTab.h"                                        // for PlotTab
+#include "port.h"                                           // for GroupPtr
+#include "rungeKutta.h"                                     // for RungeKutta
+#include "selection.h"                                      // for Selection
+#include "variable.h"                                       // for VariablePtr
+#include "variableTab.h"                                    // for VariableTab
+#include "variableType.h"                                   // for VariableType
+#include "variableValue.h"                                  // for VariableV...
+#include "version.h"                                        // for VERSION
 
-#include <vector>
-#include <string>
-#include <set>
-#include <deque>
-
-#include <ecolab.h>
-#include <xml_pack_base.h>
-#include <xml_unpack_base.h>
 using namespace ecolab;
 using namespace classdesc;
 
@@ -63,6 +73,7 @@ namespace minsky
   using classdesc::shared_ptr;
   using namespace civita;
   
+  class Minsky;
   struct RKdata; // an internal structure for holding Runge-Kutta data
   struct CallableFunction;
   

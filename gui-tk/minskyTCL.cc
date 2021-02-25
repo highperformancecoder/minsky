@@ -17,24 +17,38 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "cairoItems.h"
 #include "minskyTCL.h"
-#include "minskyTCLObj.h"
-#include "callableFunction.h"
-#include "CSVDialog.h"
-#include <ecolab.h>
-#include "minsky_epilogue.h"
+#include "lassoBox.h"
+
 #ifdef _WIN32
 #undef Realloc
 #include <windows.h>
 #include <tkPlatDecls.h>
+#elif defined(__linux__)
+//#include <X11/X.h>           // for Atom
+//#include <X11/Xlib.h>        // for (anonymous)
+#include <linux/sysinfo.h>   // for sysinfo
+#include <sys/sysinfo.h>     // for sysinfo
 #endif
+#undef True
 
-#if defined(__linux__)
-#include <sys/sysinfo.h>
-#endif
+#include <assert.h>          // for assert
+#include <tkDecls.h>         // for Tk_MainWindow, Tk_ClipboardAppend, Tk_Cl...
+#include <limits>            // for numeric_limits
+#include <stdexcept>         // for runtime_error
+#include <utility>           // for forward, pair
+#include "CSVDialog.h"       // for CSVDialog
+#include "cairo.h"           // for cairo_select_font_face, cairo_set_font_size
+#include "cairo_base.h"      // for Surface, SurfacePtr, CairoImage, TkPhoto...
+#include "minskyTCLObj.h"    // for minskyTCL_obj
+#include "operation.h"       // for OperationPtr, OperationBase
+#include "pack_base.h"       // for pack, unpack
+#include "plot.h"            // for Colour, Plot::LineStyle
+#include "plotWidget.h"      // for PlotWidget
+#include "switchIcon.h"      // for SwitchIcon
 
-#include <stdexcept>
+#include "minsky_epilogue.h"
+
 using namespace std;
 
 namespace minsky

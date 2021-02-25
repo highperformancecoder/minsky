@@ -18,11 +18,11 @@
 */
 #ifndef SVGITEM_H
 #define SVGITEM_H
-#include <classdesc.h>
-#include "classdesc_access.h"
-#include <cairo/cairo.h>
-#include <librsvg/rsvg.h>
-#include <string>
+#include <cairo/cairo.h>       // for cairo_t
+#include <classdesc.h>         // for Exclude
+#include <librsvg/rsvg.h>      // for RsvgHandle
+#include <string>              // for string
+#include "classdesc_access.h"  // for CLASSDESC_ACCESS
 
 namespace minsky
 {

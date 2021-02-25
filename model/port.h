@@ -18,17 +18,18 @@
 */
 #ifndef PORT_H
 #define PORT_H
-#include "classdesc_access.h"
-#include "variableValue.h"
-#include <error.h>
-#include <vector>
-#include <memory>
+#include <stddef.h>            // for size_t
+#include <memory>              // for shared_ptr, weak_ptr
+#include <vector>              // for vector
+#include "classdesc_access.h"  // for CLASSDESC_ACCESS
+#include "variableType.h"      // for Units
 
 namespace minsky
 {
   class Item;
   class Wire;
   class Group;
+  class VariableValue;
   typedef std::shared_ptr<Group> GroupPtr;
 
   class Port
@@ -38,8 +39,6 @@ namespace minsky
   private:
     float m_x{0}, m_y{0};
     int flags{0};
-//    bool m_multiWireAllowed;
-//    bool m_input; ///<true if input port
     CLASSDESC_ACCESS(Port);
     friend struct SchemaHelper;
     Port(const Port&)=delete;
@@ -74,7 +73,6 @@ namespace minsky
     float x() const;
     float y() const;
     void moveTo(float x, float y);
-    //Port() {}
     Port(Item& item, int f=noFlags): flags(f), m_item(item) {}
 
     // destruction of this port must also destroy all attached wires

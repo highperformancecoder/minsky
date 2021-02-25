@@ -20,17 +20,26 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include "noteBase.h"
-#include "port.h"
-#include "intrusiveMap.h"
-#include "geometry.h"
-//#include "RESTProcess_base.h"
-#include <accessor.h>
-#include <TCL_obj_base.h>
-
-#include <cairo.h>
-#include <vector>
-#include <cairo_base.h>
+#include <TCL_obj_base.h>       // for TCL_obj
+#include <accessor.h>           // for TCLAccessor, TCLAccessor<>::Getter
+#include <assert.h>             // for assert
+#include <cairo.h>              // for cairo_t
+#include <string.h>             // for size_t, strlen
+#include <algorithm>            // for max
+#include <map>                  // for pair
+#include <memory>               // for weak_ptr, shared_ptr, __shared_ptr_ac...
+#include <string>               // for string, operator+
+#include <vector>               // for vector
+#include "arrays.h"             // for TCL_obj
+#include "classdesc.h"          // for Exclude, NullDescriptor
+#include "ecolab.h"             // for unpack_t
+#include "geometry.h"           // for Point
+#include "noteBase.h"           // for NoteBase
+#include "port.h"               // for Port
+#include "variableType.h"       // for Units, operator<<
+namespace classdesc { class pack_t; }
+namespace classdesc_access { template <class T> struct access_pack; }
+namespace classdesc_access { template <class T> struct access_unpack; }
 
 namespace minsky 
 {
@@ -262,8 +271,7 @@ namespace minsky
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
     virtual std::shared_ptr<Item> select(float x, float y) const {return {};}
-    virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
-    {::TCL_obj(t,d,*this);}
+    virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d);
     /// returns a RESTProcessor appropriate for this item type
 //    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
 //    {
@@ -316,8 +324,7 @@ namespace minsky
       r->group.reset();
       return r;
     }
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
-    {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override; 
 //    std::unique_ptr<classdesc::RESTProcessBase> restProcess() override
 //    {
 //      return std::unique_ptr<classdesc::RESTProcessBase>

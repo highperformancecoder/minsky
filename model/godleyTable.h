@@ -19,13 +19,14 @@
 #ifndef GODLEYTABLE_H
 #define GODLEYTABLE_H
 
-#include <set>
-#include <vector>
-
-#include <ecolab.h>
-
-#include "variable.h"
-#include "assetClass.h"
+#include <cstddef>             // for size_t, std
+#include <memory>              // for allocator_traits<>::value_type, shared...
+#include <stdexcept>           // for out_of_range
+#include <string>              // for string, basic_string, operator==
+#include <vector>              // for vector, operator==, __alloc_traits<>::...
+#include "assetClass.h"        // for GodleyAssetClass::AssetClass, GodleyAs...
+#include "classdesc_access.h"  // for CLASSDESC_ACCESS
+namespace ecolab { class TCL_args; }
 
 namespace minsky
 {

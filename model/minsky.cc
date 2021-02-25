@@ -16,24 +16,66 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "cairoItems.h"
-#include "classdesc_access.h"
 #include "minsky.h"
-#include "flowCoef.h"
-#include "userFunction.h"
-#include "mdlReader.h"
-
-#include "TCL_obj_stl.h"
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_odeiv2.h>
-#include <cairo_base.h>
-
-#include <schema/schema3.h>
-
-
+#include <assert.h>                                            // for assert
+#include <exception>                                    // for exception
+#include <cairo_base.h>                                        // for Surface
+#include <gsl/gsl_errno.h>                                     // for GSL_EB...
+#include <gsl/gsl_odeiv2.h>                                    // for gsl_od...
+#include <schema/schema3.h>                                    // for Minsky
+#include <string.h>                                            // for size_t
+#include <tkDecls.h>                                           // for Tk_Fin...
+#include <unistd.h>                                            // for usleep
+#include <algorithm>                                           // for find
+#include <boost/core/checked_delete.hpp>                       // for checke...
+#include <boost/date_time/posix_time/posix_time_config.hpp>    // for posix_...
+#include <boost/date_time/posix_time/posix_time_duration.hpp>  // for millis...
+#include <boost/date_time/time.hpp>                            // for base_time
+#include <boost/move/utility_core.hpp>                         // for forward
+#include <boost/operators.hpp>                                 // for operator>
 //#include <thread>
 // std::thread apparently not supported on MXE for now...
-#include <boost/thread.hpp>
+#include <boost/thread.hpp>                      // for thread
+#include <cmath>                                               // for isfinite
+#include <iterator>                                            // for operat...
+#include <sstream>                                             // for ostrin...
+#include <stdexcept>                                           // for runtim...
+#include <type_traits>                                         // for remove...
+#include <utility>                                             // for move
+#include "arrays.h"                                            // for array
+#include "cairo.h"                                             // for cairo_...
+#include "callableFunction.h"                                  // for Callab...
+#include "equations.h"                                         // for System...
+#include "flowCoef.h"                                          // for FlowCoef
+#include "geometry.h"                                          // for minsky
+#include "hypercube.h"                                         // for Hypercube
+#include "mdlReader.h"                                         // for readMdl
+#include "minskyVersion.h"                                     // for MINSKY...
+#include "operation.h"                                         // for IntOp
+#include "operationType.h"                                     // for Operat...
+#include "optional.h"                                          // for xml_pack
+#include "pack_stream.h"                                       // for operat...
+#include "plotWidget.h"                                        // for PlotWi...
+#include "ravelState.h"                                        // for Handle...
+#include "ravelWrap.h"                                         // for Ravel
+#include "schema0.h"                                           // for Minsky
+#include "schema1.h"                                           // for Minsky
+#include "schema2.h"                                           // for Minsky
+#include "sheet.h"                                             // for Sheet
+#include "str.h"                                               // for trimWS
+#include "tcl++.h"                                             // for interp
+#include "tensorVal.h"                                         // for TensorVal
+#include "typeName_epilogue.h"                                 // for typeName
+#include "userFunction.h"                                      // for UserFu...
+#include "wire.h"                                              // for error
+#include "xml_pack_base.h"                                     // for xml_pa...
+#include "xml_pack_epilogue.h"                                 // for xml_pack
+#include "xml_unpack_base.h"                                   // for xml_un...
+#include "xsd_generate_base.h"                                 // for xsd_ge...
+#include "xvector.h"                                           // for XVector
+
+
+
 using namespace std;
 
 using namespace minsky;

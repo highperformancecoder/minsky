@@ -17,17 +17,26 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "geometry.h"
 #include "wire.h"
-#include "port.h"
-#include "group.h"
-#include "selection.h"
-#include "operation.h"
-#include "plotWidget.h"
+#include <assert.h>        // for assert
+#include <math.h>          // for sqrt, atan2, M_PI
+#include <algorithm>       // for find_if, remove
+#include <cstddef>         // for size_t, std
+#include <type_traits>     // for __strip_reference_wrapper<>::__type
+#include <utility>         // for pair, make_pair
+#include "accessor.h"      // for TCLAccessor, TCLAccessor<>::Getter, TCLAcc...
+#include "cairo.h"         // for cairo_line_to, cairo_arc, cairo_fill, cair...
+#include "error.h"         // for error
+#include "geometry.h"      // for sqr
+#include "group.h"         // for Group, GroupItems::wires, Groups
+#include "item.h"          // for Item
+#include "port.h"          // for Port
+#include "variable.h"      // for VariableBase, IncrDecrCounter
+#include "variableType.h"  // for Units
+
+#include "selection.h"  // TODO: why is this needed?
 #include "SVGItem.h"
 #include "minsky_epilogue.h"
-#include  <random>
-#include  <iterator>
 
 using namespace std;
 

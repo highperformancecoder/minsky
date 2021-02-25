@@ -19,8 +19,15 @@
 #ifndef SWITCHICON_H
 #define SWITCHICON_H
 
-#include "item.h"
-#include <cairo.h>
+#include <cairo.h>             // for cairo_t
+#include <memory>              // for __alloc_traits<>::value_type, __shared...
+#include <string>              // for operator+, operator==
+#include <vector>              // for vector
+#include "classdesc_access.h"  // for CLASSDESC_ACCESS
+#include "item.h"              // for BottomRightResizerItem, ItemPortVector
+#include "operationType.h"     // for operator<<
+#include "port.h"              // for Port
+#include "variableType.h"      // for Units, operator<<
 
 namespace minsky
 {

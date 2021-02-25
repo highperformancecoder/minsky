@@ -17,10 +17,34 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "godleyTable.h"
-#include "port.h"
-#include "minsky.h"
-#include "flowCoef.h"
-#include "godleyExport.h"
+#include <assert.h>                       // for assert
+#include <ctype.h>                        // for isspace, toupper
+#include <math.h>                         // for abs
+#include <stdlib.h>                       // for abs, size_t
+#include <string.h>                       // for strlen
+#include <algorithm>                      // for remove_if
+#include <boost/locale/encoding_utf.hpp>  // for utf_to_utf
+#include <fstream>                        // for operator<<, basic_ostream
+#include <limits>                         // for numeric_limits
+#include <map>                            // for map, pair, map<>::iterator
+#include <set>                            // for _Rb_tree_iterator, operator!=
+#include <sstream>                        // for ostringstream
+#include <utility>                        // for swap
+#include "TCL_obj_base.h"                 // for TCL_args
+#include "classdesc.h"                    // for Exclude
+#include "constMap.h"                     // for ConstMap
+#include "error.h"                        // for error
+#include "flowCoef.h"                     // for FlowCoef
+#include "godleyExport.h"                 // for exportToCSV, exportToLaTeX
+#include "godleyIcon.h"                   // for GodleyIcon
+#include "group.h"                        // for Group, GroupItems::items
+#include "item.h"                         // for Items, ItemPtr, Item
+#include "minsky.h"                       // for cminsky, Minsky, minsky
+#include "port.h"                         // for GroupPtr
+#include "slider.h"                       // for minsky
+#include "str.h"                          // for trimWS
+#include "variableValue.h"                // for EngNotation, VariableValue
+#include "wire.h"                         // for error
 #include "minsky_epilogue.h"
 using namespace minsky;
 

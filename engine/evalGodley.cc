@@ -18,6 +18,7 @@
 */
 
 #include "evalGodley.h"
+#include "SVGItem.h"
 #include "group.h"
 #include "selection.h"
 #include "minsky_epilogue.h"

@@ -17,6 +17,15 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef ITEM_H
+namespace minsky
+{
+  template <class T, class Base>
+  void ItemT<T,Base>::TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) 
+  {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
+}
+#endif
+
 //#ifdef RESTPROCESS_H
 //#include "RESTProcess_epilogue.h"
 //#endif

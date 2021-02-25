@@ -16,17 +16,37 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "geometry.h"
-#define OPNAMEDEF
 #include "operation.h"
-#include "userFunction.h"
-#include "ravelWrap.h"
-#include "minsky.h"
-#include "str.h"
-#include "cairoItems.h"
-
-#include <cairo_base.h>
-#include <pango.h>
+#include <cairo_base.h>         // for Path, CairoSave
+#include <math.h>               // for fabs, M_PI, modf, nan
+#include <pango.h>              // for Pango
+#include <stdlib.h>             // for abs, rand, size_t, RAND_MAX
+#include <algorithm>            // for max, min
+#include <fstream>              // for ifstream
+#include <iterator>             // for reverse_iterator
+#include <limits>               // for numeric_limits
+#include <set>                  // for set
+#include <sstream>              // for char_traits, basic_istream<>::__istre...
+#include <utility>              // for swap, make_pair
+#include "TCL_obj_templates.h"  // for operator>>
+#include "cairo.h"              // for cairo_move_to, cairo_show_text, cairo...
+#include "cairoItems.h"         // for RenderVariable
+#include "classdesc.h"          // for Exclude
+#include "error.h"              // for error, ecolab
+#include "evalOp.h"             // for ScalarEvalOp
+#include "geometry.h"           // for Rotate, Point
+#include "group.h"              // for Group
+#include "hypercube.h"          // for Hypercube
+#include "latexMarkup.h"        // for latexToPango
+#include "minsky.h"             // for minsky, Minsky, cminsky
+#include "pack_base.h"          // for pack, unpack, pack_t (ptr only), unpa...
+#include "pack_stl.h"           // for pack, unpack
+#include "ravelWrap.h"          // for Ravel
+#include "selection.h"          // for LassoBox, Selection
+#include "userFunction.h"       // for UserFunction
+#include "variableValue.h"      // for VariableValue, VariableValues, Variab...
+#include "wire.h"               // for Wire, error, WirePtr
+#include "xvector.h"            // for XVector
 #include "minsky_epilogue.h"
 
 #include <math.h>

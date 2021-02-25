@@ -6,11 +6,6 @@
   It is released as public domain.
 */
 #include <exception>                 // for exception
-#include <fstream>                          // for std
-#include <map>                              // for map
-#include <string>                           // for string, operator<
-#include <boost/filesystem.hpp> 
-
 #include <cairoSurfaceImage.h>              // for CairoSurface
 #include <ctype.h>                          // for isdigit
 #include <pango.h>                          // for Pango, Pango::defaultFamily
@@ -21,9 +16,15 @@
 #include <time.h>                           // for time
 #include <tk.h>                             // for Tcl_GetStringResult, Tcl_...
 #include <tkDecls.h>                        // for Tk_Init, Tk_MainWindow
+#include <boost/filesystem/operations.hpp>  // for exists
+#include <boost/filesystem/path.hpp>        // for operator/, path
+#include <fstream>                          // for std
+#include <map>                              // for map
+#include <string>                           // for string, operator<
+#include "classdesc_access.h"               // for classdesc
 #include "eco_hashmap.h"                    // for hash_map
 #include "eco_strstream.h"                  // for eco_strstream
-#include "ecolab.h"                         // for eco_string, classdesc
+#include "ecolab.h"                         // for eco_string
 #include "error.h"                          // for error, ecolab
 #include "tcl++.h"                          // for interp, tclvar, NEWCMD
 #include "timer.h"                          // for print_timers, stop_timer

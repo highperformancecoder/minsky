@@ -16,9 +16,21 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "cairoItems.h"
 #include "switchIcon.h"
-#include "minsky.h"
+#include <exception>  // for exception
+#include <math.h>            // for M_PI
+#include <cstddef>           // for size_t, std
+#include <map>               // for operator!=, map
+#include "cairo.h"           // for cairo_rectangle, cairo_stroke, cairo_clip
+#include "cairoItems.h"      // for drawTriangle
+#include "cairo_base.h"      // for cairo
+#include "error.h"           // for error, ecolab
+#include "plot.h"            // for Colour, palette, paletteSz
+#include "wire.h"            // for Wire, error
+#include "selection.h"
+#include "lassoBox.h"
+#include "operation.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;

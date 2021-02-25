@@ -20,6 +20,7 @@
 #include "variableInstanceList.h"
 #include "group.h"
 #include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 using namespace std;

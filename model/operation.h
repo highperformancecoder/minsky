@@ -19,6 +19,32 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 
+#include <assert.h>             // for assert
+#include <cairo/cairo.h>        // for cairo_t
+#include <pack_base.h>          // for unpack_t
+#include <stddef.h>             // for size_t
+#include <map>                  // for pair, map
+#include <memory>               // for __shared_ptr_access, dynamic_pointer_...
+#include <ostream>              // for basic_ostream::operator<<, operator<<
+#include <string>               // for string, operator+, operator==, basic_...
+#include <type_traits>          // for remove_extent<>::type
+#include <vector>               // for vector, __alloc_traits<>::value_type
+#include "TCL_obj_stl.h"        // for TCL_objp
+#include "accessor.h"           // for TCLAccessor, TCLAccessor<>::Getter
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
+#include "geometry.h"           // for Point
+#include "item.h"               // for ItemT, Item, ItemPtr, BottomRightResi...
+#include "operationType.h"      // for OperationType, operator<<, OperationT...
+#include "polyPackBase.h"       // for PolyPackBase, PolyPack
+#include "port.h"               // for Port
+#include "tcl++.h"              // for string
+#include "variable.h"           // for VariablePtr, VariableBase
+#include "variableType.h"       // for operator<<, Units
+namespace classdesc { class xml_pack_t; }
+namespace classdesc { class xml_unpack_t; }
+namespace classdesc { template <class T> class ref; }
+namespace ecolab { class urand; }
+
 #include <ecolab.h>
 #include <xml_pack_base.h>
 #include <xml_unpack_base.h>
@@ -42,6 +68,9 @@
 
 namespace minsky
 {
+  class IntOp;
+  struct LassoBox; 
+  struct Selection; 
   class OperationPtr;
   class Group;
 

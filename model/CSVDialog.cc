@@ -19,7 +19,8 @@
 
 #include "CSVDialog.h"                                                           
 #include "group.h"                                                               
-#include "selection.h"                                                           
+#include "selection.h"
+#include "SVGItem.h"
 #include <pango.h>                                                               
 #include "minsky_epilogue.h"                                                     
 #include "zStream.h"                                                           

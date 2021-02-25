@@ -19,37 +19,39 @@
 
 #ifndef GROUP_H
 #define GROUP_H
-#include "SVGItem.h"
-#include "callableFunction.h"
-
-#include <assert.h>         // for assert
-#include <string.h>         // for size_t, memcpy
-#include <memory>           // for shared_ptr, weak_ptr, __shared_ptr_access
-#include <set>              // for set
-#include <string>           // for string, basic_string, operator+, operator==
-#include <vector>           // for vector
-#include "TCL_obj_stl.h"    // for TCL_objp
-#include "arrays.h"         // for array
-#include "bookmark.h"       // for Bookmark
-#include "cairo.h"          // for cairo_t
-#include "classdesc.h"      // for Exclude, NullDescriptor
-#include "ecolab.h"         // for unpack_t
-#include "error.h"          // for error
-#include "item.h"           // for ItemPtr, Item, ItemPortVector, ItemT, Items
-#include "operationType.h"  // for operator<<
-#include "port.h"           // for GroupPtr, Port (ptr only)
-#include "tensorVal.h"      // for operator<<
-#include "variable.h"       // for VariablePtr, VariableBase
-#include "variableType.h"   // for operator<<
-#include "wire.h"           // for WirePtr, Wires, Wire, error
-namespace classdesc { class pack_t; }
-namespace classdesc_access { template <class T> struct access_pack; }
-namespace classdesc_access { template <class T> struct access_unpack; }
-namespace minsky { class PlotWidget; }
-namespace minsky { struct LassoBox; }
+#include <assert.h>            // for assert
+#include <string.h>            // for size_t, memcpy
+#include <memory>              // for shared_ptr, weak_ptr, __shared_ptr_access
+#include <set>                 // for set
+#include <string>              // for string, basic_string, operator+, opera...
+#include <vector>              // for vector
+#include "TCL_obj_stl.h"       // for TCL_objp
+#include "arrays.h"            // for array
+#include "bookmark.h"          // for Bookmark
+#include "cairo.h"             // for cairo_t
+#include "callableFunction.h"  // for CallableFunction
+#include "classdesc.h"         // for Exclude, NullDescriptor
+#include "ecolab.h"            // for unpack_t
+#include "error.h"             // for error
+#include "item.h"              // for ItemPtr, Item, ItemT, Items, ClickType
+#include "lassoBox.h"
+#include "operationType.h"     // for operator<<
+#include "port.h"              // for GroupPtr, Port (ptr only)
+#include "tensorVal.h"         // for operator<<
+#include "variable.h"          // for VariablePtr, VariableBase
+#include "variableType.h"      // for operator<<
+#include "wire.h"              // for WirePtr, Wires, Wire, error
+namespace classdesc { class pack_t; }  // lines 45-45
+namespace classdesc_access { template <class T> struct access_pack; }  // lines 46-46
+namespace classdesc_access { template <class T> struct access_unpack; }  // lines 47-47
 
 namespace minsky
 {
+  class Group; 
+  class PlotWidget;  
+  class SVGRenderer; 
+  struct LassoBox;   
+
   typedef std::vector<GroupPtr> Groups;
 
   // items broken out in a separate structure, as copying is non-default

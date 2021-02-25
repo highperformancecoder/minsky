@@ -21,6 +21,7 @@
 #include "selection.h"
 #include "userFunction.h"
 #include "mdlReader.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 #include <sstream>

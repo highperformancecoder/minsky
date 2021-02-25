@@ -16,21 +16,29 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <UnitTest++/UnitTest++.h>
-#include "selection.h"
-#include "SVGItem.h"
-#include "userFunction.h"
-#include "minsky_epilogue.h"
 
-using namespace minsky;
-using namespace std;
-
-SUITE(UserFunction)
+#ifndef LASSOBOX_H
+#define LASSOBOX_H
+namespace minsky
 {
-  TEST(symbolNames1)
-    {
-      UserFunction f("test","input/referenceInput");
-      vector<string> expected{"input","referenceInput"};
-      CHECK(f.symbolNames()==expected);
-    }
+  class Item;
+  class Wire;
+  
+  /// represents rectangular region of a lasso operation
+  struct LassoBox
+  {
+    float x0=0, y0=0, x1=0, y1=0, angle=0;
+    LassoBox() {}
+    LassoBox(float x0, float y0, float x1, float y1); 
+    
+    /// returns whether item's icon overlaps the lasso
+    bool intersects(const Item& item) const;
+
+    /// return true if both endpoints of the wire lie
+    /// within the lasso
+    bool contains(const Wire& wire) const;
+
+  };
 }
+#include "lassoBox.cd"
+#endif

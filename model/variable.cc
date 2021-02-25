@@ -17,16 +17,34 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "geometry.h"
 #include "variable.h"
-#include "cairoItems.h"
-#include "minsky.h"
-//#include "RESTProcess_base.h"
-#include <error.h>
+#include <error.h>                           // for error, ecolab
+#include <stdlib.h>                          // for size_t, abs
+#include <algorithm>                         // for any_of, max, min
+#include <boost/locale/encoding_errors.hpp>  // for conv
+#include <boost/locale/encoding_utf.hpp>     // for utf_to_utf
+#include <cmath>                             // for isnan, log10, cos, hypot
+#include <fstream>                           // for ifstream
+#include "CSVDialog.h"                       // for CSVDialog
+#include "CSVParser.h"                       // for loadValueFromCSVFile
+#include "accessor.h"                        // for TCLAccessor, TCLAccessor...
+#include "cairo.h"                           // for cairo_line_to, cairo_mov...
+#include "cairoItems.h"                      // for RenderVariable
+#include "cairo_base.h"                      // for Path, CairoSave, cairo
+#include "constMap.h"                        // for ConstMap
+#include "flowCoef.h"                        // for FlowCoef
+#include "geometry.h"                        // for Rotate, minsky
+#include "godleyIcon.h"                      // for GodleyIcon
+#include "group.h"                           // for Group, GroupItems, Group...
+#include "minsky.h"                          // for minsky, Minsky, cminsky
+#include "operation.h"                       // for IntOp
+#include "pango.h"                           // for Pango
+#include "port.h"                            // for Port, GroupPtr, Port::in...
+#include "selection.h"                       // for LassoBox, Selection
+#include "tensorVal.h"                       // for TensorVal
+#include "wire.h"                            // for Wire, error
 #include "minsky_epilogue.h"
-
-#include <boost/regex.hpp>
-#include <boost/locale.hpp>
+namespace ecolab { namespace array_ns { template <class T> class array; } }
 using namespace boost::locale::conv;
 
 using namespace classdesc;
@@ -648,3 +666,6 @@ void VariablePtr::makeConsistentWithValue()
 }
 
 int VarConstant::nextId=0;
+
+void VarConstant::TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
+{::TCL_obj(t,d,*this);}

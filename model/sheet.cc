@@ -22,6 +22,7 @@
 #include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;
