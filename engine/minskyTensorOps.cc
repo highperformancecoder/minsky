@@ -435,27 +435,36 @@ namespace minsky
         cachedResult.hypercube(move(hc));
         
         set<size_t> newIdx;
-        vector<vector<size_t>> idx1 ,idx2;       
+        vector<size_t> hcIdx1,hcIdx2;       
         
-        for (auto& i: arg1->index())
-            idx1.push_back(arg1->hypercube().splitIndex(i));          
+        if (!arg1->index().empty() && !arg2->index().empty())
+        {
+        for (auto& i: arg1->index()) 
+			for (auto& k: arg1->hypercube().splitIndex(i))
+                 hcIdx1.push_back(k);          
+	
         for (auto& j: arg2->index())   
-            idx2.push_back(arg2->hypercube().splitIndex(j));
+            for (auto& l: arg2->hypercube().splitIndex(j)) 
+                 hcIdx2.push_back(l);
+        
+	    vector<size_t> tmpIdx;
+	    size_t tmpLinealIdx;        
         
         // first element of split index of first tensor and last element of split index of second tensor is the split index of product tensor. Convert to lineal index to get new index vector????    
-        for (auto& i: idx1[0])
-          for (auto& j: idx2[idx2.size()-1])
+        for (size_t i=0; i< min(hcIdx1.size(),hcIdx2.size());i++)
           {
-			 vector<size_t> tmpIdx;
-			 if (i && j) {
-				 tmpIdx.push_back(i);
-				 tmpIdx.push_back(j);
-				 newIdx.insert(hc.linealIndex(tmpIdx));
-			 }
-             tmpIdx.clear();
+			 if (i==0) tmpIdx.push_back(hcIdx1[i]);
+			 if (i == min(hcIdx1.size(),hcIdx2.size())-1) tmpIdx.push_back(hcIdx2[i]);
 		 }
-             
-        cachedResult.index(Index(newIdx));              
+        tmpLinealIdx = hc.linealIndex(tmpIdx);		 	 
+        newIdx.insert(tmpLinealIdx);		 
+        tmpIdx.clear();		 
+         
+		cachedResult.index(Index(newIdx));               
+		
+		hcIdx1.clear();
+		hcIdx2.clear(); 
+	    }
                 
       }
     }    
