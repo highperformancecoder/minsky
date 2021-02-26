@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2020
+  @copyright Steve Keen 2021
   @author Russell Standish
   This file is part of Minsky.
 
@@ -17,18 +17,33 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CALLABLE_FUNCTION_H
-#define CALLABLE_FUNCTION_H
+#ifndef LOCK_H
+#define LOCK_H
 
-#include <string>
-#include <vector>
+#include "item.h"
+#include "ravelState.h"
+#include "ravelWrap.h"
+#include "SVGItem.h"
 
 namespace minsky
 {
-  struct CallableFunction
+  class Lock: public ItemT<Lock>
   {
-    virtual double operator() (const std::vector<double>&)=0;
-    virtual std::string name() const=0;
+  public:
+    Lock();
+    ravel::RavelState lockedState;
+
+    bool locked() const {return !lockedState.empty();}
+    void toggleLocked();
+
+    static SVGRenderer lockedIcon;
+    static SVGRenderer unlockedIcon;
+    void draw(cairo_t* context) const override;
+    Units units(bool) const override;
+    /// Ravel this is connected to. nullptr if not connected to a Ravel
+    Ravel* ravelInput() const;
   };
 }
+
+#include "lock.cd"
 #endif

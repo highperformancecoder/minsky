@@ -784,26 +784,63 @@ namespace MathDAG
     return r;
   };
 
+  std::shared_ptr<VariableValue> LockDAG::addEvalOps(EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
+  {
+    if (!result)
+      {
+        if (r && r->isFlowVar())
+          result=r;
+        else
+          result=tmpResult;
+      }
+
+    auto input=rhs->addEvalOps(ev,result);
+    if (lock.locked())
+      {
+        auto chain=createRavelChain(lock.lockedState, input);
+        if (chain.empty()) return {};
+        result->index(chain.back()->index());
+        result->hypercube(chain.back()->hypercube());
+        ev.emplace_back(EvalOpPtr(new TensorEval(result, make_shared<EvalCommon>(), chain.back())));
+        return result;
+      }
+    else
+      return input;
+  }
+
+  
+  NodePtr SystemOfEquations::makeDAG(const Lock& l)
+  {
+    auto r=make_shared<LockDAG>(l);
+    expressionCache.insert(l,r);
+    if (auto ravel=l.ravelInput())
+      {
+        if (l.locked())
+          {
+            if (auto p=ravel->ports(1).lock())
+              if (!p->wires().empty())
+                r->rhs=getNodeFromWire(*p->wires()[0]);
+          }
+        else
+          if (auto p=l.ports(1).lock())
+            if (!p->wires().empty())
+              r->rhs=getNodeFromWire(*p->wires()[0]);
+      }
+    return r;
+  }
+
   NodePtr SystemOfEquations::getNodeFromWire(const Wire& wire)
   {
-    NodePtr r;
     if (auto p=wire.from())
       {
         auto& item=p->item();
-        if (auto o=dynamic_cast<OperationBase*>(&item))
+        if (auto o=item.operationCast())
           {
             if (expressionCache.exists(*o))
               return expressionCache[*o];
             else
               // we're wired to an operation
-              r=makeDAG(*o);
-          }
-        else if (auto s=dynamic_cast<SwitchIcon*>(&item))
-          {
-            if (expressionCache.exists(*s))
-              return expressionCache[*s];
-            else
-              r=makeDAG(*s);
+              return makeDAG(*o);
           }
         else if (auto v=item.variableCast())
           {
@@ -812,10 +849,24 @@ namespace MathDAG
             else
               if (v && v->type()!=VariableBase::undefined) 
                 // we're wired to a variable
-                r=makeDAG(*v);
+                return makeDAG(*v);
+          }
+        else if (auto s=dynamic_cast<SwitchIcon*>(&item))
+          {
+            if (expressionCache.exists(*s))
+              return expressionCache[*s];
+            else
+              return makeDAG(*s);
+          }
+        else if (auto l=dynamic_cast<Lock*>(&item))
+          {
+            if (expressionCache.exists(*l))
+              return expressionCache[*l];
+            else
+              return makeDAG(*l);
           }
       }
-    return r;
+    return {};
   }
   
   VariableDAGPtr SystemOfEquations::getNodeFromVar(const VariableBase& v)

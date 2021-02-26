@@ -23,6 +23,7 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 
+#include <exprtk/exprtk.hpp>
 #include <cmath>
 
 namespace minsky
@@ -49,16 +50,32 @@ namespace minsky
       table.add_function("isnan",isnan);
     }
   
-  }
-  
-  namespace {
     exprtk::parser<double> parser;
+
+    struct ExprTkCallableFunction: public exprtk::ivararg_function<double>
+    {
+      std::weak_ptr<CallableFunction> f;
+      ExprTkCallableFunction(const std::weak_ptr<CallableFunction>& f): f(f) {}
+      double operator()(const std::vector<double>& x) {
+        if (auto sf=f.lock())
+          return (*sf)(x);
+        return nan("");
+      }
+    };
   }
+
+  struct UserFunction::Impl
+  {
+    exprtk::symbol_table<double> symbols;
+    exprtk::expression<double> compiledExpression;
+    std::vector<ExprTkCallableFunction> functions;
+  };
   
+
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
 
-  UserFunction::UserFunction(const string& name, const string& expression): argNames{"x","y"}, expression(expression)  {
+  UserFunction::UserFunction(const string& name, const string& expression): impl(make_shared<Impl>()), argNames{"x","y"}, expression(expression)  {
     UserFunction::description(name);
   }
 
@@ -101,32 +118,36 @@ namespace minsky
 
   void UserFunction::compile()
   {
-    compiledExpression=exprtk::expression<double>();
+    impl->compiledExpression=exprtk::expression<double>();
 
     // build symbol table
-    symbols.clear();
-    addTimeVariables(symbols);
+    impl->symbols.clear();
+    impl->functions.clear();
+    addTimeVariables(impl->symbols);
     for (auto& i: symbolNames())
       {
         auto scopedName=VariableValue::valueIdFromScope(group.lock(),i);
         auto v=minsky().variableValues.find(scopedName);
         if (v!=minsky().variableValues.end())
           {
-            symbols.add_variable(i, (*v->second)[0]);
+            impl->symbols.add_variable(i, (*v->second)[0]);
             continue;
           }
         auto f=minsky().userFunctions.find(scopedName);
         if (f!=minsky().userFunctions.end())
-          symbols.add_function(i,*f->second);
+          {
+            impl->functions.emplace_back(f->second);
+            impl->symbols.add_function(i,impl->functions.back());
+          }
       }
 
     // add arguments
     argVals.resize(argNames.size());
     for (size_t i=0; i<argNames.size(); ++i)
-      symbols.add_variable(argNames[i], argVals[i]);
-    compiledExpression.register_symbol_table(symbols);
+      impl->symbols.add_variable(argNames[i], argVals[i]);
+    impl->compiledExpression.register_symbol_table(impl->symbols);
     
-    if (!parser.compile(expression, compiledExpression))
+    if (!parser.compile(expression, impl->compiledExpression))
       {
         string errorInfo;
         for (size_t i=0; i<parser.error_count(); ++i)
@@ -140,7 +161,7 @@ namespace minsky
     if (argVals.size()>0) argVals[0]=in1;
     if (argVals.size()>1) argVals[1]=in2;
     for (size_t i=2; i<argVals.size(); ++i) argVals[i]=0;
-    return compiledExpression.value();
+    return impl->compiledExpression.value();
   }
 
   double UserFunction::operator()(const std::vector<double>& p)
@@ -148,7 +169,7 @@ namespace minsky
     size_t i=0;
     for (; i<p.size() && i<argVals.size(); ++i) argVals[i]=p[i];
     for (; i<argVals.size(); ++i) argVals[i]=0;
-    return compiledExpression.value();
+    return impl->compiledExpression.value();
   }
 
   string UserFunction::description(const string& nm)
