@@ -36,6 +36,7 @@ namespace minsky
   private:
       void createSurface();
   public: 
+      void clear();
       int childWidth;
       int childHeight;
       int offsetLeft;

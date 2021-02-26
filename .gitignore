@@ -2,11 +2,14 @@
 *.d
 *.cd
 *.xcd
+*.rcd
 *~
 *.aux
 *.dvi
 *.log
 *.out
+.vscode
+doxydoc
 test/unittests
 test/tcl-cov
 test/testDatabase
