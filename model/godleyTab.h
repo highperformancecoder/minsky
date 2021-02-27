@@ -29,7 +29,6 @@ namespace minsky
   {	  
   public:
     bool itemSelector(const ItemPtr& i) override;
-    void toggleGodleyTabValueDisplay() const;
     ItemPtr itemAt(float x, float y) override;
     void draw(cairo_t* cairo) override;
   };

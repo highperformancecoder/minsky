@@ -934,6 +934,10 @@ namespace minsky
     running=false;
 
     canvas.requestRedraw();
+    godleyTab.requestRedraw();
+    plotTab.requestRedraw();
+    variableTab.requestRedraw();
+    parameterTab.requestRedraw();    
   }
 
   void Minsky::step()
@@ -1034,6 +1038,10 @@ namespace minsky
     if ((microsec_clock::local_time()-(ptime&)lastRedraw) > maxWait)
       {
         canvas.requestRedraw();
+        godleyTab.requestRedraw();
+        plotTab.requestRedraw();
+        variableTab.requestRedraw();
+        parameterTab.requestRedraw();        
         lastRedraw=microsec_clock::local_time();
       }
 
