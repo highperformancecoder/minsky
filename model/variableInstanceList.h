@@ -19,11 +19,11 @@
 
 #ifndef VARIABLEINSTANCELIST_H
 #define VARIABLEINSTANCELIST_H
-#include "bookmark.h"
-#include "item.h"
-
-#include <string>
-#include <vector>
+#include <stddef.h>    // for size_t
+#include <string>      // for string, basic_string
+#include <vector>      // for vector
+#include "bookmark.h"  // for Bookmark
+#include "item.h"      // for ItemPtr
 
 /// @file create a list of bookmarks for all instance of a variable on
 /// current canvas

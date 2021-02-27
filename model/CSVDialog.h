@@ -23,11 +23,15 @@
 
 #ifndef CSVDIALOG_H
 #define CSVDIALOG_H
-#include "CSVParser.h"
-#include <cairoSurfaceImage.h>
-
-#include <vector>
-#include <string>
+#include <cairoSurfaceImage.h>  // for CairoSurface
+#include <stddef.h>             // for size_t
+#include <memory>               // for __shared_ptr_access
+#include <string>               // for string, basic_string
+#include <vector>               // for vector
+#include "CSVParser.h"          // for DataSpec
+#include "cairo_base.h"         // for Surface
+#include "classdesc.h"          // for Exclude
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
 
 namespace minsky
 {

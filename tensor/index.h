@@ -19,9 +19,10 @@
 
 #ifndef CIVITA_INDEX_H
 #define CIVITA_INDEX_H
-#include <vector>
-#include <set>
-#include <map>
+#include <stddef.h>  // for size_t
+#include <map>       // for map
+#include <set>       // for set
+#include <vector>    // for vector, vector<>::const_iterator
 
 #ifndef CLASSDESC_ACCESS
 #define CLASSDESC_ACCESS(x)

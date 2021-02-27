@@ -17,12 +17,16 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "schema2.h"
+#include "schema3.h"
+#include <capiRenderer.h>
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 #include <iostream>
 #undef NDEBUG
 #include <assert.h>
-using namespace schema2;
+using namespace schema3;
 using namespace std;
 
 namespace minsky {void doOneEvent(bool) {}}

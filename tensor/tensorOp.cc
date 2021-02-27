@@ -18,9 +18,17 @@
 */
 
 #include "tensorOp.h"
-#include <exception>
-#include <set>
+#include <sys/types.h>  // for ssize_t
+#include <cmath>        // for isnan
+#include <cstdlib>      // for size_t, div, ldiv, (anonymous)
+#include <iosfwd>       // for std
+#include <set>          // for set, operator!=, _Rb_tree_iterator, _Rb_tree_...
+#include "dimension.h"  // for Dimension
+namespace boost { class any; }
+
+//TODO - Civita shouldn't depend on Ecolab
 #include <ecolab_epilogue.h>
+
 using namespace std;
 
 namespace civita

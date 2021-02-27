@@ -31,7 +31,6 @@
 #include <vector>                  // for vector
 #include "TCL_obj_base.h"          // for TCL_obj_deregister, TCL_obj_proper...
 #include "TCL_obj_stl.h"           // for TCL_objp
-#include "TCL_obj_templates.h"     // for TCL_obj
 #include "accessor.h"              // for Accessor
 #include "arrays.h"                // for TCL_obj
 #include "assetClass.h"            // for GodleyAssetClass::AssetClass, Godl...

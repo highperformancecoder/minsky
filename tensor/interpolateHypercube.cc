@@ -18,7 +18,22 @@
 */
 
 #include "interpolateHypercube.h"
+#include <assert.h>       // for assert
+#include <math.h>         // for nan
+#include <stddef.h>       // for size_t
+#include <algorithm>      // for binary_search, find_if, sort, upper_bound
+#include <boost/any.hpp>  // for any
+#include <iterator>       // for __normal_iterator<>::difference_type
+#include <stdexcept>      // for runtime_error
+#include <utility>        // for make_pair
+#include "dimension.h"    // for Dimension
+#include "index.h"        // for Index
+#include "xvector.h"
+
+//TODO - Civita shouldn't depend on Ecolab
 #include <ecolab_epilogue.h>
+
+using namespace std;
 
 namespace
 {

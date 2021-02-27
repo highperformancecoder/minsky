@@ -17,11 +17,28 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "sheet.h"
-#include "str.h"
+#include <cairo_base.h>     // for CairoSave
+#include <pango.h>          // for Pango
+#include <stdlib.h>         // for abs, size_t
+#include <algorithm>        // for max
+#include <cmath>            // for isnan, fabs, abs, M_PI
+#include <iosfwd>           // for std
+#include <memory>           // for shared_ptr, __shared_ptr_access, __shared...
+#include <vector>           // for vector
+#include "dimension.h"      // for Dimension
+#include "error.h"          // for ecolab
+#include "hypercube.h"      // for Hypercube
+#include "index.h"          // for Index
+#include "item.h"           // for ClickType, ItemPortVector, Item, ClickTyp...
+#include "noteBase.h"       // for minsky
+#include "operationType.h"  // for operator<<
+#include "port.h"           // for Port, Port::inputPort
+#include "str.h"            // for str, trimWS
+#include "variableValue.h"  // for VariableValue
+#include "xvector.h"        // for str, XVector
+
+#include "lassoBox.h"
 #include "selection.h"
-#include "plotWidget.h"
-#include <cairo_base.h>
-#include <pango.h>
 #include "SVGItem.h"
 #include "minsky_epilogue.h"
 

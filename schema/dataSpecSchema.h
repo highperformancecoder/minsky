@@ -22,6 +22,7 @@
 #include <set>
 #include <vector>
 #include <math.h>
+#include "dimension.h"
 
 namespace minsky
 {

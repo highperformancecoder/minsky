@@ -16,16 +16,16 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <geometry.h>
-#include <plot.h>
-#include <pango.h>
-#include <cairo_base.h>
-#include <cairo/cairo.h>
-#include "operation.h"
-#include "variable.h"
+#ifndef CAIROITEMS_H
+#define CAIROITEMS_H 
+#include <cairo/cairo.h>  // for cairo_t
+#include <pango.h>        // for Pango
+#include <stddef.h>       // for NULL
+namespace ecolab { namespace cairo { struct Colour; } }
 
 namespace minsky
 {
+  class VariableBase;
   /** class that renders a variable into a cairo context. 
       A user can also query the size of the unrotated rendered image
   */
@@ -53,3 +53,5 @@ namespace minsky
 
   void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
 }
+
+#endif

@@ -18,14 +18,38 @@
 */
 
 #include "CSVParser.h"
-#include "minsky.h"
+#include <assert.h>                            // for assert
+#include <bits/exception.h>                    // for exception
+#include <ctype.h>                             // for isspace, isalnum
+#include <algorithm>                           // for max
+#include <boost/core/addressof.hpp>            // for addressof
+#include <boost/iterator/iterator_facade.hpp>  // for operator!=, operator==
+#include <boost/token_functions.hpp>           // for escaped_list_separator
+#include <boost/tokenizer.hpp>                 // for tokenizer
+#include <cmath>                               // for isnan
+#include <limits>                              // for numeric_limits
+#include <map>                                 // for map, pair, multimap
+#include <memory>                              // for allocator_traits<>::va...
+#include <new>                                 // for bad_alloc
+#include <regex>                               // for regex_match, match_res...
+#include <sstream>                             // for istringstream, ostring...
+#include <stdexcept>                           // for runtime_error, length_...
+#include <vector>                              // for vector, operator<
+#include "classdesc.h"                         // for to_string
+#include "dimension.h"                         // for Dimension, Dimension::...
+#include "hypercube.h"                         // for Hypercube
+#include "json_pack_base.h"                    // for json_pack_error, json
+#include "minsky.h"                            // for cminsky, Minsky
+#include "str.h"                               // for str
+#include "tensorVal.h"                         // for TensorVal
+#include "variableValue.h"                     // for VariableValue
+#include "xvector.h"                           // for XVector, NamedDimension
+
+#include <capiRenderer.h>
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 using namespace std;
-
-#include <boost/type_traits.hpp>
-#include <boost/tokenizer.hpp>
-#include <boost/token_functions.hpp>
 
 typedef boost::escaped_list_separator<char> Parser;
 typedef boost::tokenizer<Parser> Tokenizer;

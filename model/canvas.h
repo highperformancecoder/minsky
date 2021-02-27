@@ -20,19 +20,30 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
-#include "group.h"
-#include "godleyIcon.h"
-#include "operation.h"
-#include "plotWidget.h"
-#include "selection.h"
-#include "switchIcon.h"
-#include "wire.h"
-#include "ravelWrap.h"
-#include "lock.h"
-#include "sheet.h"
-#include <cairoSurfaceImage.h>
-
-#include <chrono>
+#include <cairoSurfaceImage.h>  // for CairoSurface
+#include <math.h>               // for fabs
+#include <chrono>               // for system_clock::time_point, high_resolu...
+#include <memory>               // for __shared_ptr_access, __shared_ptr_acc...
+#include <string>               // for string
+#include <vector>               // for vector
+#include "cairo_base.h"         // for SurfacePtr, Surface
+#include "classdesc.h"          // for Exclude, classdesc
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
+#include "godleyIcon.h"         // for GodleyIcon
+#include "group.h"              // for Group
+#include "item.h"               // for ItemPtr, Item, ClickType, ClickType::...
+#include "lock.h"               // for Lock
+#include "operation.h"          // for OperationBase
+#include "operationType.h"      // for OperationType, OperationType::Type
+#include "plotWidget.h"         // for PlotWidget
+#include "port.h"               // for GroupPtr, Port (ptr only)
+#include "ravelWrap.h"          // for Ravel
+#include "selection.h"          // for LassoBox, Selection
+#include "sheet.h"              // for Sheet
+#include "switchIcon.h"         // for SwitchIcon
+#include "variable.h"           // for VariablePtr
+#include "variableType.h"       // for VariableType, VariableType::Type
+#include "wire.h"               // for WirePtr
 
 namespace minsky
 {

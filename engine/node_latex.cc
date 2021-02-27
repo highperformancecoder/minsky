@@ -17,9 +17,25 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "equations.h"
-#include "minsky.h"
-#include "userFunction.h"
+#include <ext/type_traits.h>  // for __promote_2<>::__type
+#include <math.h>             // for log10, abs, pow
+#include <stdlib.h>           // for size_t, abs
+#include <memory>             // for __alloc_traits<>::value_type, allocator
+#include <ostream>            // for operator<<, ostream, basic_ostream, endl
+#include <string>             // for operator+, char_traits, string, operator<<
+#include <vector>             // for vector
+#include "equations.h"        // for OperationDAG, operator<<, Node, WeakNod...
+#include "error.h"            // for error
+#include "item.h"             // for ItemPtr
+#include "minsky.h"           // for cminsky, Minsky
+#include "operationType.h"    // for OperationType, numArguments, OperationT...
+#include "str.h"              // for str
+#include "tensorVal.h"        // for TensorVal
+#include "userFunction.h"     // for UserFunction
+#include "variableType.h"     // for VariableType::constant, minsky
+#include "variableValue.h"    // for VariableValue
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace minsky;
 

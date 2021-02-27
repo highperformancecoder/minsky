@@ -18,9 +18,19 @@
 */
 
 #include "lock.h"
-#include "wire.h"
-#include "selection.h"
+#include <stddef.h>     // for size_t
+#include <map>          // for operator!=, _Rb_tree_iterator, _Rb_tree_itera...
+#include <memory>       // for shared_ptr, __shared_ptr_access, __alloc_trai...
+#include <vector>       // for vector
 #include <cairo_base.h>
+#include "SVGItem.h"    // for SVGRenderer
+#include "port.h"       // for Port, Port::inputPort, Port::noFlags
+#include "ravelWrap.h"  // for Ravel
+#include "wire.h"       // for Wire
+
+#include "lassoBox.h"
+#include "selection.h"
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;
 

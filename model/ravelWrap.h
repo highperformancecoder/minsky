@@ -20,14 +20,27 @@
 #ifndef RAVELWRAP_H
 #define RAVELWRAP_H
 
-#include "operation.h"
-#include "cairoRenderer.h"
-#include "dynamicRavelCAPI.h"
+#include <memory>              // for weak_ptr, shared_ptr
+#include <set>                 // for set
+#include <string>              // for string, operator+, operator==
+#include <vector>              // for vector
+#include "TCL_obj_stl.h"       // for TCL_objp
+#include "cairo.h"             // for cairo_t
+#include "classdesc_access.h"  // for CLASSDESC_ACCESS
+#include "dimension.h"         // for Dimension, Dimension::Type, Dimensions
+#include "dynamicRavelCAPI.h"  // for Ravel
+#include "hypercube.h"         // for Hypercube
+#include "item.h"              // for ItemT
+#include "operation.h"         // for Operation, Operation::Type
+#include "operationType.h"     // for OperationType, OperationType::ravel
+#include "ravelState.h"        // for HandleSort, HandleSort::Order, RavelState
+#include "variableType.h"      // for operator<<, Units
 
 namespace minsky 
 {
   using namespace civita;
   class RavelLockGroup;
+  struct LassoBox;
   
   class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>, public ravel::Ravel
   {

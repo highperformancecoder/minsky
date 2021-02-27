@@ -32,7 +32,6 @@
 #include <utility>              // for make_pair
 #include <vector>               // for vector
 #include "TCL_obj_base.h"       // for TCL_obj, TCL_obj_t (ptr only)
-#include "TCL_obj_templates.h"  // for TCL_obj
 #include "classdesc.h"          // for Exclude
 #include "classdesc_access.h"   // for CLASSDESC_ACCESS
 #include "hypercube.h"          // for Hypercube
@@ -40,7 +39,6 @@
 #include "slider.h"             // for Slider
 #include "str.h"                // for str
 #include "tcl++.h"              // for string
-#include "typeName_epilogue.h"  // for typeName
 #include "variableType.h"       // for VariableType, VariableType::Type, Var...
 #include "variableValue.h"      // for engExp, mantissa, VariableValue, EngN...
 

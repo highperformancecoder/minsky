@@ -19,8 +19,11 @@
 
 #ifndef PANOPTICON_H
 #define PANOPTICON_H
-#include <cairoSurfaceImage.h>
-#include <canvas.h>
+#include <cairoSurfaceImage.h>  // for CairoSurface
+#include <canvas.h>             // for Canvas::Timestamp, Canvas
+#include <memory>               // for __shared_ptr_access
+#include "cairo_base.h"         // for SurfacePtr, Surface
+#include "classdesc.h"          // for Exclude
 
 namespace minsky
 {

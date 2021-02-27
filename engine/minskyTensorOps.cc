@@ -17,11 +17,44 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <classdesc.h>
 #include "minskyTensorOps.h"
-#include "interpolateHypercube.h"
-#include "minsky.h"
-#include "ravelWrap.h"
+#include <classdesc.h>                                         // for enable_if
+#include <sys/types.h>                                         // for ssize_t
+#include <algorithm>                                           // for max
+#include <boost/date_time/date.hpp>                            // for date
+#include <boost/date_time/date_defs.hpp>                       // for Jan
+#include <boost/date_time/gregorian/greg_date.hpp>             // for date
+#include <boost/date_time/gregorian/greg_duration.hpp>         // for date_d...
+#include <boost/date_time/gregorian/greg_month.hpp>            // for Jan
+#include <boost/date_time/gregorian/greg_weekday.hpp>          // for gregorian
+#include <boost/date_time/posix_time/posix_time_config.hpp>    // for posix_...
+#include <boost/date_time/posix_time/posix_time_duration.hpp>  // for seconds
+#include <boost/date_time/posix_time/ptime.hpp>                // for ptime
+#include <chrono>                                              // for operator<
+#include <cmath>                                               // for nan
+#include <functional>                                          // for function
+#include <limits>                                              // for numeri...
+#include <set>                                                 // for set
+#include <stdexcept>                                           // for runtim...
+#include <string>                                              // for string
+#include "classdesc_access.h"                                  // for CLASSD...
+#include "error.h"                                             // for error
+#include "interpolateHypercube.h"                              // for Interp...
+#include "lock.h"                                              // for Lock
+#include "minsky.h"                                            // for cminsky
+#include "operation.h"                                         // for Operat...
+#include "port.h"                                              // for Port
+#include "ravelWrap.h"                                         // for Ravel
+#include "switchIcon.h"                                        // for Switch...
+#include "tensorOp.h"                                          // for Reduce...
+#include "variable.h"                                          // for Variab...
+#include "wire.h"                                              // for error
+#include "xvector.h"                                           // for XVector
+namespace boost { class any; }
+//namespace minsky { template <OperationType::Type op> struct AccumArgs; }  // lines 175-175
+//namespace minsky { template <OperationType::Type op> struct GeneralTensorOp; }  // lines 236-236
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
 using namespace civita;

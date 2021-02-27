@@ -18,6 +18,14 @@
 */
 
 #include "panopticon.h"
+#include <algorithm>  // for min
+#include <chrono>     // for operator>, duration, time_point
+#include "SVGItem.h"  // for minsky
+#include "cairo.h"    // for cairo_fill, cairo_paint, cairo_recording_surfac...
+#include "canvas.h"   // for Canvas, Canvas::Model, Canvas::Timestamp
+#include "group.h"    // for Group
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace minsky;
 

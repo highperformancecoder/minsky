@@ -20,7 +20,13 @@
 #ifndef CIVITA_HYPERCUBE_H
 #define CIVITA_HYPERCUBE_H
 
-#include "xvector.h"
+#include <assert.h>          // for assert
+#include <stddef.h>          // for size_t
+#include <initializer_list>  // for initializer_list
+#include <string>            // for string
+#include <utility>           // for move
+#include <vector>            // for vector, operator==
+#include "xvector.h"         // for XVector
 
 namespace civita
 {

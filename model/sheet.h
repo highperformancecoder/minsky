@@ -23,7 +23,11 @@
 
 #ifndef SHEET_H
 #define SHEET_H
-#include <item.h>
+#include <item.h>              // for ClickType, ClickType::Type, ItemT
+#include <string>              // for operator+, operator==
+#include "cairo.h"             // for cairo_t
+#include "classdesc_access.h"  // for CLASSDESC_ACCESS
+#include "variableType.h"      // for operator<<
 
 namespace minsky
 {

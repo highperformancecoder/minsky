@@ -25,23 +25,45 @@ but any renamed attributes require bumping the schema number.
 #ifndef SCHEMA_3_H
 #define SCHEMA_3_H
 
-#include "model/minsky.h"
-#include "model/ravelWrap.h"
-#include "model/sheet.h"
-#include "dataSpecSchema.h"
-#include "schema/schema2.h"
-#include "schemaHelper.h"
-#include "zStream.h"
-#include "classdesc.h"
-#include "polyXMLBase.h"
-#include "polyJsonBase.h"
-#include "rungeKutta.h"
+#include <iosfwd>              // for std
+#include <map>                 // for map
+#include <memory>              // for shared_ptr, __shared_ptr_access, __sha...
+#include <set>                 // for set
+#include <string>              // for string, basic_string
+#include <vector>              // for vector
+#include "CSVDialog.h"         // for CSVDialog
+#include "CSVParser.h"         // for DataSpec
+#include "assetClass.h"        // for GodleyAssetClass::AssetClass, GodleyAs...
+#include "bookmark.h"          // for Bookmark
+#include "classdesc_access.h"  // for classdesc
+#include "dataSpecSchema.h"    // for DataSpecSchema
+#include "dimension.h"         // for Dimensions, ConversionsMap, Conversions
+#include "godleyIcon.h"        // for GodleyIcon
+#include "godleyTable.h"       // for GodleyTable
+#include "group.h"             // for Group
+#include "item.h"              // for Item
+#include "model/minsky.h"      // for Minsky
+#include "operation.h"         // for OperationBase
+#include "optional.h"          // for Optional, xml_pack, xsd_generate
+#include "plot.h"              // for Plot::LineStyle, Plot::Side, Plot
+#include "plotWidget.h"        // for PlotWidget, PlotWidget::PlotType
+#include "port.h"              // for GroupPtr
+#include "rungeKutta.h"        // for RungeKutta
+#include "schema/schema2.h"    // for Item, Minsky, Wire, Group, Slider
+#include "schemaHelper.h"      // for loadSchema, SchemaHelper (ptr only)
+#include "switchIcon.h"        // for SwitchIcon
+#include "variable.h"          // for VariableBase
+#include "variableType.h"      // for Units
+#include "variableValue.h"     // for VariableValue
+#include "wire.h"              // for Wire
 
-#include <xsd_generate_base.h>
-#include <vector>
-#include <string>
+#include "xml_common.xcd"
+#include "plot.xcd"
 
 
+namespace classdesc { class xml_unpack_t; }
+namespace classdesc { struct CDATA; }
+namespace schema2 { struct RavelState; }
 
 namespace schema3
 {

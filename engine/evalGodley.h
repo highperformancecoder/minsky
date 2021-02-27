@@ -19,14 +19,20 @@
 #ifndef EVALGODLEY_H
 #define EVALGODLEY_H
 
-#include "schema/assetClass.h"
-#include "classdesc_access.h"
-#include "variableValue.h"
-#include "str.h"
-#include "flowCoef.h"
-
-#include <ecolab.h>
-#include <arrays.h>
+#include <arrays.h>             // for array
+#include <stddef.h>             // for size_t
+#include <map>                  // for operator!=, map, _Rb_tree_const_iterator
+#include <memory>               // for __shared_ptr_access
+#include <set>                  // for set
+#include <string>               // for string, operator<
+#include <vector>               // for vector
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
+#include "constMap.h"           // for ConstMap
+#include "error.h"              // for ecolab
+#include "flowCoef.h"           // for FlowCoef
+#include "schema/assetClass.h"  // for GodleyAssetClass::AssetClass, GodleyA...
+#include "str.h"                // for trimWS
+#include "variableValue.h"      // for VariableValues, VariableValue, Variab...
 
 namespace minsky
 {

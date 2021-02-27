@@ -18,11 +18,12 @@
 */
 
 #ifndef GODLEYEXPORT_H
-#include "godleyTable.h"
-#include <iostream>
+#define GODLEYEXPORT_H
+#include <iostream>  // for ostream
 
 namespace minsky
 {
+  class GodleyTable;
   void exportToCSV(std::ostream& s, const GodleyTable& g);
   void exportToLaTeX(std::ostream& s, const GodleyTable& g);
 }

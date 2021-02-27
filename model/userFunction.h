@@ -19,9 +19,20 @@
 
 #ifndef USERFUNCTION_H
 #define USERFUNCTION_H
-#include "operation.h"
-#include "unitsExpressionWalker.h"
-#include "callableFunction.h"
+#include <memory>                   // for allocator, shared_ptr
+#include <string>                   // for string, operator+, char_traits
+#include <vector>                   // for vector
+#include "TCL_obj_stl.h"            // for TCL_objp
+#include "cairo.h"                  // for cairo_t
+#include "callableFunction.h"       // for CallableFunction
+#include "classdesc_access.h"       // for CLASSDESC_ACCESS
+#include "item.h"                   // for BoundingBox, Item, ItemT
+#include "operation.h"              // for Operation, NamedOp, Operation::Type
+#include "operationType.h"          // for OperationType, OperationType::use...
+#include "typeName_epilogue.h"      // for typeName
+#include "unitsExpressionWalker.h"  // for UnitsExpressionWalker
+#include "variableType.h"           // for Units, operator<<
+
 namespace  minsky
 {
   class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp, public CallableFunction

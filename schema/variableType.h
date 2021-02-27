@@ -19,9 +19,9 @@
 
 #ifndef VARIABLETYPE_H
 #define VARIABLETYPE_H
-#include <string>
-#include <ostream>
-#include <map>
+#include <map>      // for pair, operator!=, _Rb_tree_iterator, _Rb_tree_con...
+#include <ostream>  // for ostream, operator<<, basic_ostream::operator<<
+#include <string>   // for string, operator<<, basic_string
 
 namespace minsky
 {

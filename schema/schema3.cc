@@ -17,8 +17,41 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "schema3.h"
-#include "sheet.h"
-#include "userFunction.h"
+#include <assert.h>                     // for assert
+#include <bits/exception.h>             // for exception
+#include <math.h>                       // for fmod
+#include <stdint.h>                     // for uint64_t
+#include <string.h>                     // for size_t, memcpy, strlen
+#include <algorithm>                    // for min
+#include <boost/core/addressof.hpp>     // for addressof
+#include <boost/move/utility_core.hpp>  // for move
+#include <iostream>                     // for operator<<, endl, basic_ostream
+#include <type_traits>                  // for remove_const<>::type, remove_...
+#include <utility>                      // for move
+#include "TCL_obj_stl.h"                // for TCL_objp
+#include "classdesc.h"                  // for enum_keys, EnumKeys, Exclude
+#include "factory.h"                    // for Factory
+#include "hypercube.h"                  // for Hypercube
+#include "index.h"                      // for Index
+#include "json_pack_base.h"             // for json_pack_error, json_object_...
+#include "lock.h"                       // for Lock
+#include "minsky.h"                     // for Minsky, LocalMinsky
+#include "noteBase.h"                   // for NoteBase
+#include "operationType.h"              // for OperationType, OperationType:...
+#include "pack_base.h"                  // for pack_t
+#include "pack_stream.h"                // for operator<<, operator>>
+#include "ravelState-schema2.h"         // for RavelState
+#include "ravelState.h"                 // for RavelState
+#include "ravelWrap.h"                  // for Ravel, RavelLockGroup
+#include "schema1.h"                    // for SPoly, UnionLayout, Join, Layout
+#include "schema2.h"                    // for unpack
+#include "sheet.h"                      // for Sheet
+#include "tensorVal.h"                  // for TensorVal
+#include "userFunction.h"               // for UserFunction
+#include "xml_common.h"                 // for CDATA
+#include "xvector.h"                    // for XVector, str
+
+#include "capiRenderer.h"
 #include "minsky_epilogue.h"
 
 using namespace std;

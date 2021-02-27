@@ -36,7 +36,7 @@ namespace minsky
    
   /// convenience class to omit writing XML records when data absent or empty
   template <class T>
-  struct Optional: shared_ptr<T>
+  struct Optional: std::shared_ptr<T>
   {
     Optional() {}
     Optional(const T& x) {assign(x);}
@@ -48,7 +48,7 @@ namespace minsky
       if (!x.empty()) this->reset(new T(x));
     }
     template <class U>
-    typename classdesc::enable_if<Not<has_empty<U>>,void>::T
+    typename classdesc::enable_if<classdesc::Not<has_empty<U>>,void>::T
     assign(const U& x, classdesc::dummy<1> d=0) {this->reset(new T(x));}
 
     // if we access an optional, then create its target

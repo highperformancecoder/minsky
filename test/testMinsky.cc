@@ -18,6 +18,7 @@
 */
 #include "minsky.h"
 #include "equations.h"
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 #include <gsl/gsl_integration.h>

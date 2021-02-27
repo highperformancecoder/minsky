@@ -18,12 +18,36 @@
 */
 
 #include "equations.h"
-#include "expr.h"
-#include "minsky.h"
-#include "str.h"
-#include "flowCoef.h"
-#include "userFunction.h"
-#include "minskyTensorOps.h"
+#include <bits/exception.h>   // for exception
+#include <math.h>             // for abs
+#include <stdlib.h>           // for size_t, abs
+#include <algorithm>          // for max, sort
+#include <limits>             // for numeric_limits
+#include <ostream>            // for operator<<, ostream, basic_ostream, bas...
+#include <stdexcept>          // for runtime_error
+#include "classdesc.h"        // for Exclude
+#include "constMap.h"         // for ConstMap
+#include "evalOp.h"           // for EvalOpVector, EvalOpPtr, ConstantEvalOp
+#include "expr.h"             // for operator<, Expr, operator*, operator-
+#include "flowCoef.h"         // for FlowCoef
+#include "godleyIcon.h"       // for GodleyIcon
+#include "godleyTable.h"      // for GodleyTable
+#include "group.h"            // for Groups, Group, GroupItems::items, Group...
+#include "hypercube.h"        // for Hypercube
+#include "integral.h"         // for Integral
+#include "minsky.h"           // for Minsky, minsky, cminsky
+#include "minskyTensorOps.h"  // for EvalCommon, TensorEval, FallBackToScalar
+#include "plotWidget.h"       // for PlotWidget
+#include "port.h"             // for Port, GroupPtr
+#include "ravelWrap.h"        // for Ravel
+#include "sheet.h"            // for Sheet
+#include "str.h"              // for trimWS
+#include "tensorInterface.h"  // for TensorPtr, ITensor
+#include "tensorOp.h"         // for createRavelChain
+#include "userFunction.h"     // for UserFunction
+#include "wire.h"             // for Wire
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace minsky;
 

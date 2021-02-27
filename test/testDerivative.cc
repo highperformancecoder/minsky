@@ -19,6 +19,7 @@
 
 #include <equations.h>
 #include <minsky.h>
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;

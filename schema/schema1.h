@@ -25,18 +25,32 @@ but any renamed attributes require bumping the schema number.
 #ifndef SCHEMA_1_H
 #define SCHEMA_1_H
 
-#include "model/minsky.h"
-#include "schema/schema0.h"
-#include "schemaHelper.h"
-#include "classdesc.h"
-#include "polyXMLBase.h"
-#include "polyJsonBase.h"
-#include "plot.xcd"
-#include "rungeKutta.h"
-
-#include <xsd_generate_base.h>
-#include <vector>
-#include <string>
+#include <bits/exception.h>             // for exception
+#include <xsd_generate_base.h>          // for xsd_generate
+#include <boost/core/addressof.hpp>     // for addressof
+#include <boost/move/utility_core.hpp>  // for move
+#include <iosfwd>                       // for std
+#include <map>                          // for operator!=, map
+#include <memory>                       // for shared_ptr, unique_ptr
+#include <string>                       // for string, basic_string
+#include <vector>                       // for vector
+#include "arrays.h"                     // for array
+#include "assetClass.h"                 // for GodleyAssetClass::AssetClass
+#include "classdesc.h"                  // for string
+#include "classdesc_access.h"           // for classdesc
+#include "godleyTable.h"                // for GodleyTable
+#include "json_pack_base.h"             // for json_pack_error, json_object_...
+#include "operationType.h"              // for OperationType, OperationType:...
+#include "plot.h"                       // for Plot, Plot::Side
+#include "polyBase.h"                   // for PolyBase
+#include "polyJsonBase.h"               // for PolyJsonBase
+#include "polyXMLBase.h"                // for PolyXMLBase
+#include "rungeKutta.h"                 // for RungeKutta
+#include "schema/schema0.h"             // for GroupIcon, Operation, Variabl...
+#include "schemaHelper.h"               // for loadSchema, SchemaHelper (ptr...
+#include "variableType.h"               // for VariableType, VariableType::Type
+#include "xml_unpack_base.h"            // for xml_unpack_t (ptr only), xml_...
+namespace classdesc { class xml_pack_t; }
 
 // Note the explicit declaration of default assignment operators is
 // required to disable warnings about virtual move assigns. See ticket
@@ -377,7 +391,7 @@ namespace classdesc
 namespace classdesc_access
 {
   namespace cd=classdesc;
-  template <> struct access_xml_pack<shared_ptr<schema1::Layout> >
+  template <> struct access_xml_pack<std::shared_ptr<schema1::Layout> >
   {
     template <class U>
     void operator()(cd::xml_pack_t& x, const cd::string& d, U& a)
@@ -385,7 +399,7 @@ namespace classdesc_access
   };
 
   /// unpack into a UnionLayout structure, so everything's at hand 
-  template <>struct access_xml_unpack<shared_ptr<schema1::Layout> >
+  template <>struct access_xml_unpack<std::shared_ptr<schema1::Layout> >
   {
     template <class U>
     void operator()(cd::xml_unpack_t& x, const cd::string& d, U& a)
@@ -405,14 +419,14 @@ using classdesc::xsd_generate;
 #pragma omit xsd_generate schema1::SPoly
 #endif
 
-inline void xsd_generate(classdesc::xsd_generate_t&,const string&,const schema1::SPolyBase&) {}
+inline void xsd_generate(classdesc::xsd_generate_t&,const std::string&,const schema1::SPolyBase&) {}
 template <class T, class B1, class B2>
-void xsd_generate(classdesc::xsd_generate_t& x,const string& d, 
+void xsd_generate(classdesc::xsd_generate_t& x,const std::string& d, 
                   const schema1::SPoly<T,B1,B2>& a) 
 {xsd_generate(x,d,static_cast<const B1&>(a));}
 
 // Layout is end of the line, no need to process further
-inline void xsd_generate(classdesc::xsd_generate_t& x,const string& d, 
+inline void xsd_generate(classdesc::xsd_generate_t& x,const std::string& d, 
                   const schema1::SPoly<schema1::Layout,schema1::SPolyBase>& a) 
 {}
 

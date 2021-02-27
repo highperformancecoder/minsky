@@ -18,9 +18,15 @@
 */
 
 #include "evalGodley.h"
-#include "SVGItem.h"
-#include "group.h"
-#include "selection.h"
+#include <math.h>        // for abs
+#include <stdlib.h>      // for abs, size_t
+#include <iosfwd>        // for std
+#include <type_traits>   // for __enable_if_t
+#include <utility>       // for make_pair
+#include "arrays.h"      // for array
+#include "assetClass.h"  // for GodleyAssetClass::AssetClass, GodleyAssetCla...
+#include "wire.h"        // for error
+
 #include "minsky_epilogue.h"
 
 using namespace std;

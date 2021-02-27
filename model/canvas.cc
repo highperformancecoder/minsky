@@ -17,13 +17,26 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "geometry.h"
 #include "canvas.h"
-#include "cairoItems.h"
-#include "minsky.h"
-#include "ravelWrap.h"
-#include <cairo_base.h>
+#include <assert.h>         // for assert
+#include <cairo_base.h>     // for SurfacePtr, Surface, cairo
+#include <algorithm>        // for max
+#include <cstddef>          // for size_t, std
+#include <limits>           // for numeric_limits
+#include <map>              // for map, operator!=, _Rb_tree_const_iterator
+#include <set>              // for set
+#include "cairo.h"          // for cairo_restore, cairo_save, cairo_line_to
+#include "cairoItems.h"     // for RenderVariable
+#include "error.h"          // for error
+#include "geometry.h"       // for sqr, minsky
+#include "godleyTable.h"    // for GodleyTable
+#include "minsky.h"         // for minsky, Minsky, cminsky
+#include "ravelWrap.h"      // for Ravel, RavelLockGroup
+#include "variableValue.h"  // for VariableValue
+#include "zoom.h"           // for zoom
+struct _cairo;
 
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;

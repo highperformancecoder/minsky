@@ -18,18 +18,34 @@
 */
 
 #include "ravelWrap.h"
-#include "selection.h"
-#include "dimension.h"
-#include "minskyTensorOps.h"
-#include "minsky.h"
-#include "pango.h"
+#include <assert.h>           // for assert
+#include <ctype.h>            // for isspace
+#include <stdlib.h>           // for size_t, abs
+#include <algorithm>          // for max
+#include <cmath>              // for fabs
+#include <iosfwd>             // for std
+#include <map>                // for operator!=, pair, _Rb_tree_const_iterator
+#include <string>             // for string, basic_string, __alloc_traits<>:...
+#include <utility>            // for move
+#include "cairoRenderer.h"    // for CairoRenderer
+#include "cairo_base.h"       // for CairoSave
+#include "dimension.h"        // for Dimension, Dimensions, Dimension::Type
+#include "error.h"            // for error
+#include "minsky.h"           // for cminsky, Minsky, minsky
+#include "minskyTensorOps.h"  // for EvalCommon, TensorsFromPort, TensorOpFa...
+#include "pango.h"            // for Pango
+#include "plot.h"             // for Colour, palette, paletteSz
+#include "port.h"             // for Port
+#include "selection.h"        // for LassoBox
+#include "str.h"              // for str
+#include "variableValue.h"    // for VariableValue, ValueVector, ValueVector...
+#include "wire.h"             // for error
+#include "xvector.h"          // for XVector, str
+struct CAPIRenderer;
+
 #include "minsky_epilogue.h"
 
-#include <string>
-#include <cmath>
 using namespace std;
-
-#include "cairoRenderer.h"
 
 namespace minsky
 {

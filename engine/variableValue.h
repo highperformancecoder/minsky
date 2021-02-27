@@ -18,18 +18,35 @@
 */
 #ifndef VARIABLE_VALUE
 #define VARIABLE_VALUE
-#include "variableType.h"
-#include "tensorInterface.h"
-#include "tensorVal.h"
-#include "ecolab.h"
-#include "classdesc_access.h"
-#include "constMap.h"
-#include "str.h"
-#include "CSVDialog.h"
-#include "latexMarkup.h"
-#include <regex> 
-#include <utility>
-#include <boost/locale.hpp>
+#include <assert.h>                          // for assert
+#include <stddef.h>                          // for size_t
+#include <boost/locale/encoding_errors.hpp>  // for conv
+#include <boost/locale/encoding_utf.hpp>     // for utf_to_utf
+#include <map>                               // for operator!=, _Rb_tree_ite...
+#include <memory>                            // for allocator, weak_ptr, sha...
+#include <regex>                             // for regex_match, match_resul...
+#include <set>                               // for set
+#include <sstream>                           // for basic_stringbuf<>::int_type
+#include <string>                            // for string, basic_string
+#include <utility>                           // for forward, pair
+#include <vector>                            // for vector
+#include "CSVDialog.h"                       // for CSVDialog
+#include "classdesc.h"                       // for Exclude, NullDescriptor
+#include "classdesc_access.h"                // for CLASSDESC_ACCESS
+#include "constMap.h"                        // for ConstMap
+#include "dimension.h"                       // for civita
+#include "ecolab.h"                          // for unpack_t
+#include "hypercube.h"                       // for Hypercube
+#include "index.h"                           // for Index
+#include "latexMarkup.h"                     // for latexToPangoNonItalicised
+#include "str.h"                             // for stripActive, trimWS
+#include "tensorInterface.h"                 // for ITensor, ITensor::Timestamp
+#include "tensorVal.h"                       // for TensorVal, ITensorVal
+#include "variableType.h"                    // for Units, VariableType, Var...
+namespace classdesc { class pack_t; }
+namespace classdesc_access { template <class T> struct access_pack; }
+namespace classdesc_access { template <class T> struct access_unpack; }
+
 using namespace boost::locale::conv;
 
 namespace minsky

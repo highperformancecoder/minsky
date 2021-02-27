@@ -19,7 +19,7 @@
 
 
 #include "index.h"
-#include <assert.h>
+#include <algorithm>  // for lower_bound
 
 namespace civita
 {

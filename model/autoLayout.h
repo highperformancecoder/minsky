@@ -19,10 +19,10 @@
 
 #ifndef AUTOLAYOUT_H
 #define AUTOLAYOUT_H
-#include "group.h"
 
 namespace minsky
 {
+  class Group;
   /// randomly place items on canvas
   void randomizeLayout(Group&);
   /// auto layout group items

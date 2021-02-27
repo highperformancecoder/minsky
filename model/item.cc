@@ -32,6 +32,7 @@
 #include "minsky.h"       // for cminsky, Minsky
 #include "selection.h"    // for LassoBox
 #include "wire.h"         // for Wire
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
 using ecolab::Pango;

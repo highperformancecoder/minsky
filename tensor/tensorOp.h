@@ -19,12 +19,26 @@
 
 #ifndef CIVITA_TENSOROP_H
 #define CIVITA_TENSOROP_H
-#include "tensorVal.h"
-#include "ravelState.h"
-
-#include <functional>
-#include <memory>
-#include <vector>
+#include <assert.h>           // for assert
+#include <math.h>             // for nan, sqrt
+#include <stddef.h>           // for size_t
+#include <algorithm>          // for max
+#include <chrono>             // for operator>, operator<
+#include <functional>         // for function
+#include <limits>             // for numeric_limits
+#include <map>                // for map
+#include <memory>             // for __shared_ptr_access, shared_ptr
+#include <set>                // for set
+#include <stdexcept>          // for runtime_error
+#include <string>             // for string
+#include <utility>            // for move
+#include <vector>             // for vector
+#include "hypercube.h"        // for Hypercube
+#include "index.h"            // for Index
+#include "ravelState.h"       // for HandleSort, HandleSort::Order, RavelState
+#include "tensorInterface.h"  // for TensorPtr, ITensor, ITensor::Timestamp
+#include "tensorVal.h"        // for TensorVal
+#include "xvector.h"          // for XVector
 
 namespace civita
 {

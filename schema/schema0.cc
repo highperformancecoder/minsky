@@ -17,10 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "schema0.h"
-//#include "schemaHelper.h"
-//#include "str.h"
+#include <fstream>  // for std
+#include "error.h"  // for ecolab
+
 #include "minsky_epilogue.h"
-#include <fstream>
 using namespace ecolab;
 using namespace classdesc;
 using namespace std;

@@ -23,6 +23,8 @@
 #include "evalOp.h"
 #include "selection.h"
 #include "minsky.h"
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 #include <exception>

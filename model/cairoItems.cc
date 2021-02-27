@@ -23,13 +23,29 @@
 #define DISPLAY_POW_UPSIDE_DOWN
 
 #define BOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
-#include <boost/geometry/geometry.hpp>
 #include "cairoItems.h"
-#include "operation.h"
-#include "minsky.h"
-#include "latexMarkup.h"
-#include <arrays.h>
-#include <pango.h>
+#include <pango.h>                                // for Pango
+#include <boost/geometry/core/static_assert.hpp>  // for geometry
+#include <boost/geometry/geometry.hpp>  // lines 26-26
+#include <boost/locale/encoding_utf.hpp>          // for utf_to_utf
+#include <cmath>                                  // for cos, sin, isnan, M_PI
+#include <iosfwd>                                 // for std
+#include <limits>                                 // for numeric_limits
+#include <string>                                 // for operator+
+#include "cairo.h"                                // for cairo_line_to, cair...
+#include "cairo_base.h"                           // for Surface
+#include "error.h"                                // for ecolab, error
+#include "geometry.h"                             // for minsky
+#include "latexMarkup.h"                          // for latexToPango
+#include "plot.h"                                 // for Colour
+#include "variable.h"                             // for VariableBase
+#include "variableType.h"                         // for VariableType, Varia...
+#include "variableValue.h"                        // for EngNotation, expMul...
+#include "wire.h"                                 // for error
+
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 #include <boost/locale.hpp>

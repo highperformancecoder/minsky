@@ -16,11 +16,24 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "equations.h"
-#include "latexMarkup.h"
-#include "selection.h"
-#include "userFunction.h"
+#include <memory>           // for __alloc_traits<>::value_type, allocator_t...
+#include <string>           // for operator+, char_traits, string
+#include <vector>           // for vector
+#include "cairo.h"          // for cairo_rel_move_to, cairo_move_to, cairo_g...
+#include "cairo_base.h"     // for Surface
+#include "equations.h"      // for OperationDAG, Node, WeakNodePtr, mathrm
+#include "error.h"          // for error, ecolab
+#include "item.h"           // for ItemPtr
+#include "latexMarkup.h"    // for latexToPango
+#include "operation.h"      // for DataOp
+#include "operationType.h"  // for OperationType, numArguments, OperationTyp...
+#include "userFunction.h"   // for UserFunction
+#include "variableType.h"   // for VariableType, VariableType::constant
+
 #include <pango.h>
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace ecolab;
 using ecolab::cairo::Surface;

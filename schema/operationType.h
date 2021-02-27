@@ -18,9 +18,11 @@
 */
 #ifndef OPERATIONTYPE_H
 #define OPERATIONTYPE_H
-#include <factory.h>
-#include <string>
-#include <ostream>
+#include <memory>       // for unique_ptr
+#include <ostream>      // for ostream
+#include <string>       // for operator<<, string
+#include <vector>       // for vector
+#include "classdesc.h"  // for enable_if, Not (ptr only)
 
 namespace minsky
 {

@@ -17,19 +17,40 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #define OPNAMEDEF
-#include "cairoItems.h"
 #include "evalOp.h"
-#include "variable.h"
-#include "userFunction.h"
-#include "minsky.h"
-#include "str.h"
-
-#include "minsky_epilogue.h"
-
-#include <math.h>
+#include <assert.h>                                              // for assert
+#include <stddef.h>                                              // for size_t
+#include <algorithm>                                             // for min
+#include <boost/any.hpp>                                         // for any
+#include <boost/date_time/posix_time/posix_time_config.hpp>      // for posi...
+#include <boost/date_time/posix_time/ptime.hpp>                  // for ptime
+#include <boost/exception/exception.hpp>                         // for clon...
+#include <boost/math/policies/error_handling.hpp>                // for roun...
 #undef Complex 
-#include <boost/math/special_functions/gamma.hpp>
-#include <boost/math/special_functions/polygamma.hpp>
+//#include <boost/math/special_functions/detail/lanczos_sse2.hpp>  // for lanc...
+#include <boost/math/special_functions/digamma.hpp>              // for digamma
+#include <boost/math/special_functions/polygamma.hpp>            // for poly...
+#include <boost/math/tools/config.hpp>                           // for math
+#include <boost/type_index/type_index_facade.hpp>                // for oper...
+#include <cmath>                                                 // for log
+#include <limits>                                                // for nume...
+#include <map>                                                   // for pair
+#include <set>                                                   // for set
+#include <stdexcept>                                             // for over...
+#include <utility>                                               // for swap
+#include "dimension.h"                                           // for Dime...
+#include "geometry.h"                                            // for sqr
+#include "hypercube.h"                                           // for Hype...
+#include "operation.h"                                           // for DataOp
+#include "str.h"                                                 // for str
+#include "userFunction.h"                                        // for User...
+#include "wire.h"                                                // for error
+#include "xvector.h"                                             // for XVector
+
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
+#include "minsky_epilogue.h"
 
 using boost::any;
 using boost::any_cast;

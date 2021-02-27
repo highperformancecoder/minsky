@@ -20,11 +20,12 @@
 #ifndef SELECTION_H
 #define SELECTION_H
 
-#include "group.h"
-
-#include <cairo_base.h>
-
-#include <vector>
+#include <memory>   // for __shared_ptr_access, shared_ptr, __shared_ptr_acc...
+#include <utility>  // for swap
+#include "group.h"  // for Group, Groups
+#include "item.h"   // for Item, ItemPtr
+#include "port.h"   // for GroupPtr, Port
+#include "wire.h"   // for Wire
 
 namespace minsky
 {

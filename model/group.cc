@@ -42,6 +42,7 @@
 #include "variableValue.h"  // for VariableValue, ValueVector, ValueVector::...
 #include "wire.h"           // for Wire, WirePtr, Wires, error
 #include "zoom.h"           // for zoom
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;

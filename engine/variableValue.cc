@@ -17,12 +17,29 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "variableValue.h"
-#include "flowCoef.h"
-#include "str.h"
-#include "minsky.h"
+#include <error.h>                      // for error, ecolab
+#include <stdio.h>                      // for sprintf, sscanf
+#include <string.h>                     // for memcpy
+#include <sys/types.h>                  // for ssize_t
+#include <algorithm>                    // for max, min
+#include <boost/move/utility_core.hpp>  // for move
+#include <cmath>                        // for log, fabs, floor, isfinite, pow
+#include <cstdlib>                      // for size_t, div, rand, strtol
+#include <fstream>                      // for operator<<, basic_ostream
+#include <iomanip>                      // for operator<<, quoted
+#include "flowCoef.h"                   // for FlowCoef
+#include "group.h"                      // for Group
+#include "item.h"                       // for Item, Items
+#include "json_pack_base.h"             // for json_pack_error, json, json_o...
+#include "minsky.h"                     // for cminsky, Minsky
+#include "port.h"                       // for GroupPtr
+#include "str.h"                        // for stripActive, str, trimWS
+#include "variable.h"                   // for VariablePtr, VariableBase
+#include "wire.h"                       // for error
+#include "xvector.h"                    // for XVector, str, NamedDimension ...
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
-#include <iomanip>
-#include <error.h>
 
 #ifdef WIN32
 // std::quoted not supported (yet) on MXE

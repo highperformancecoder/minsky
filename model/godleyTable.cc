@@ -45,6 +45,7 @@
 #include "str.h"                          // for trimWS
 #include "variableValue.h"                // for EngNotation, VariableValue
 #include "wire.h"                         // for error
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace minsky;
 

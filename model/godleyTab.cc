@@ -18,10 +18,26 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "godleyTab.h"
-#include "godleyTableWindow.h"
-#include <pango.h>
+#include <math.h>               // for fabs
+#include <pango.h>              // for Pango
+#include <cstddef>              // for NULL, std
+#include <limits>               // for numeric_limits
+#include <map>                  // for pair, map, operator!=, _Rb_tree_iterator
+#include <memory>               // for shared_ptr, __shared_ptr_access, allo...
+#include <string>               // for operator+, char_traits, string
+#include <utility>              // for make_pair, move
+#include <vector>               // for vector
+#include "cairo_base.h"         // for CairoSave, Surface
+#include "geometry.h"           // for sqr
+#include "godleyIcon.h"         // for GodleyIcon, GodleyIcon::CopiableUniqu...
+#include "godleyTable.h"        // for GodleyTable
+#include "godleyTableWindow.h"  // for GodleyTableEditor
+#include "latexMarkup.h"        // for latexToPango
+
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
-#include "minsky.h"
 using namespace std;
 using ecolab::cairo::Surface;
 using ecolab::Pango;

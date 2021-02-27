@@ -17,9 +17,25 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "expressionWalker.h"
-#include "userFunction.h"
-#include "minsky.h"
+#include <exception>         // for exception
+#include <algorithm>                // for find
+#include <cstddef>                  // for size_t, std
+#include <map>                      // for operator!=, _Rb_tree_iterator
+#include <memory>                   // for allocator_traits<>::value_type
+#include <string>                   // for string, basic_string, operator==
+#include <vector>                   // for vector
+#include "classdesc.h"              // for Exclude
+#include "expressionWalker.h"       // for to_int64, to_int32, equal, is_int...
+#include "exprtk/exprtk.hpp"        // for expression_node<>::node_type, exp...
+#include "item.h"                   // for ItemPortVector
+#include "minsky.h"                 // for minsky, Minsky, cminsky
+#include "port.h"                   // for Port
+#include "unitsExpressionWalker.h"  // for UnitsExpressionWalker
+#include "userFunction.h"           // for UserFunction
+#include "variableType.h"           // for Units
+#include "variableValue.h"          // for VariableValues, VariableValue
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace std;
 namespace minsky

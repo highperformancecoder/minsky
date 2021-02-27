@@ -18,12 +18,13 @@
 */
 
 #include "latexMarkup.h"
-#include <map>
-#include <vector>
+#include <ctype.h>   // for isalpha, isspace
+#include <string.h>  // for strchr, NULL, size_t
+#include <iosfwd>    // for std
+#include <map>       // for map, operator!=, map<>::const_iterator, _Rb_tree...
+#include <memory>    // for allocator_traits<>::value_type
+#include <vector>    // for vector, _Bit_reference, vector<>::reference
 using namespace std;
-
-#include <ctype.h>
-#include <string.h>
 
 namespace
 {

@@ -5,8 +5,12 @@
   Provides support for regression test coverage analysis of TCL code
 */
 
-#include "str.h"
-#include <cachedDBM.h>
+#include <cachedDBM.h>  // for cachedDBM
+#include <map>          // for operator!=
+#include <string>       // for string, basic_string, operator<
+#include "error.h"      // for ecolab
+#include "tcl++.h"      // for string
+
 namespace minsky
 {
   using namespace ecolab;

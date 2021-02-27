@@ -24,23 +24,37 @@
 #ifndef EQUATIONS_H
 #define EQUATIONS_H
 
-#include "evalOp.h"
-#include "godleyIcon.h"
-#include "switchIcon.h"
-#include "lock.h"
-
-#include "operation.h"
-#include <cairo_base.h>
-#include <classdesc.h>
-#include <ostream>
-#include <vector>
-#include <map>
-#include <string>
-#include "integral.h"
+#include <assert.h>         // for assert
+#include <stddef.h>         // for size_t
+#include <map>              // for operator!=, pair, map, operator==, _Rb_tr...
+#include <memory>           // for shared_ptr, make_shared, weak_ptr, __shar...
+#include <set>              // for set
+#include <sstream>          // for ostream, operator<<, ostringstream, std
+#include <string>           // for basic_string, string, operator+, operator<
+#include <type_traits>      // for __enable_if_t
+#include <utility>          // for make_pair
+#include <vector>           // for vector
+#include "error.h"          // for error
+#include "item.h"           // for ItemPtr
+#include "lock.h"           // for Lock
+#include "operation.h"      // for OperationBase, IntOp (ptr only)
+#include "operationType.h"  // for OperationType, OperationType::Type, Opera...
+#include "str.h"            // for str
+#include "switchIcon.h"     // for SwitchIcon
+#include "variable.h"       // for VariableBase
+#include "variableType.h"   // for VariableType::Type, VariableType, Variabl...
+#include "variableValue.h"  // for VariableValue
+namespace ecolab { namespace cairo { class Surface; } }
 
 namespace minsky
 {
+  class GodleyIcon;
+  class Group;
   class Minsky;
+  class Wire;
+  struct EvalOpVector;
+  struct Integral;
+
   /// checks if any GUI events are waiting, and proces an event if so
   void doOneEvent(bool idleTasksOnly);
 }
@@ -51,7 +65,7 @@ namespace MathDAG
   using classdesc::shared_ptr;
   using namespace minsky;
   class SystemOfEquations;
-
+  
   struct Node;
   /// a manipulator to make iostream expressions easy 
   struct LaTeXManip
@@ -179,7 +193,7 @@ namespace MathDAG
     int order(unsigned maxOrder) const override {
       if (rhs) {
         if (cachedOrder>=0) return cachedOrder;
-        if (maxOrder==0) throw error("maximum order recursion reached");
+        if (maxOrder==0) throw std::runtime_error("maximum order recursion reached");
         return cachedOrder=rhs->order(maxOrder-1)+1;
       }
       else

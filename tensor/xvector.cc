@@ -18,8 +18,34 @@
 */
 
 #include "xvector.h"
-#include <error.h>
-#include <regex>
+#include <assert.h>                                            // for assert
+#include <bits/types/struct_tm.h>                              // for tm
+#include <ctype.h>                                             // for isdigit
+#include <error.h>                                             // for error
+#include <math.h>                                              // for abs
+#include <stdio.h>                                             // for snprintf
+#include <stdlib.h>                                            // for strtoul
+#include <string.h>                                            // for strcmp
+#include <time.h>                                              // for size_t
+#include <algorithm>                                           // for copy
+#include <boost/config/detail/suffix.hpp>                      // for boost
+#include <boost/date_time.hpp>                       // for Apr, Jan
+#include <boost/iterator/iterator_facade.hpp>                  // for operat...
+#include <boost/iterator/iterator_traits.hpp>                  // for iterat...
+#include <boost/lexical_cast/bad_lexical_cast.hpp>             // for bad_le...
+#include <boost/operators.hpp>                                 // for operator>
+#include <boost/type_index.hpp>                                // for type_info
+#include <deque>                                               // for _Deque...
+#include <iostream>                                            // for operat...
+#include <iterator>                                            // for ostrea...
+#include <locale>                                              // for locale
+#include <map>                                                 // for map
+#include <memory>                                              // for unique...
+#include <regex>                                               // for regex_...
+#include <sstream>                                             // for basic_...
+#include <stdexcept>                                           // for out_of...
+#include <utility>                                             // for swap
+
 #include "minsky_epilogue.h"
 using ecolab::error;
 

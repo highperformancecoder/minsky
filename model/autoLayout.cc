@@ -18,18 +18,28 @@
 */
 
 #include "autoLayout.h"
-#include "selection.h"
-#include "userFunction.h"
-#include "SVGItem.h"
-#include "minsky_epilogue.h"
-
-#include <map>
-#include <random>
-#include <vector>
-
+#include <math.h>                                 // for sqrt
+#include <algorithm>                              // for max
 #include <boost/graph/fruchterman_reingold.hpp>
 #include <boost/graph/topology.hpp>
 #include <boost/graph/directed_graph.hpp>
+#include <iosfwd>                                 // for std
+#include <list>                                   // for _List_iterator, ope...
+#include <map>                                    // for map, pair, operator!=
+#include <memory>                                 // for shared_ptr, __share...
+#include <random>                                 // for default_random_engine
+#include <vector>                                 // for vector
+#include "SVGItem.h"                              // for minsky
+#include "group.h"                                // for Group, Groups
+#include "item.h"                                 // for Item, Items
+#include "port.h"                                 // for Port
+#include "userFunction.h"                         // for UserFunction
+#include "variable.h"                             // for VariableBase
+#include "variableType.h"                         // for VariableType, Varia...
+#include "wire.h"                                 // for Wire, Wires
+
+#include "selection.h"
+#include "minsky_epilogue.h"
 
 using namespace std;
 using namespace boost;

@@ -24,12 +24,15 @@
 #include "userFunction.h"
 #include "minskyTensorOps.h"
 #include "minsky.h"
+#include "tensorOp.h"
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 
 #include <exception>
 using namespace std;
+using namespace civita;
 
 #include <boost/date_time.hpp>
 using namespace boost;

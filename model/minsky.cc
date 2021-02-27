@@ -57,6 +57,7 @@
 #include "pack_stream.h"                                       // for operat...
 #include "plotWidget.h"                                        // for PlotWi...
 #include "ravelState.h"                                        // for Handle...
+#include "ravelState-schema2.h"                                        // for Handle...
 #include "ravelWrap.h"                                         // for Ravel
 #include "schema0.h"                                           // for Minsky
 #include "schema1.h"                                           // for Minsky
@@ -74,7 +75,7 @@
 #include "xsd_generate_base.h"                                 // for xsd_ge...
 #include "xvector.h"                                           // for XVector
 
-
+#include <capiRenderer.h>
 
 using namespace std;
 

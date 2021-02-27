@@ -20,7 +20,9 @@
 
 #ifndef PLOTTAB_H
 #define PLOTTAB_H
-#include <itemTab.h>
+#include "itemTab.h"  // for ItemTab
+#include "cairo.h"    // for cairo_t
+#include "item.h"     // for ItemPtr
 
 namespace minsky
 {

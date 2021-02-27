@@ -18,13 +18,21 @@
 */
 
 #include "userFunction.h"
-#include "evalOp.h"
-#include "selection.h"
-#include "minsky.h"
-#include "minsky_epilogue.h"
+#include <assert.h>           // for assert
+#include <ctype.h>            // for isalnum, isalpha
+#include <stddef.h>           // for size_t
+#include <cmath>              // for isfinite, isinf, isnan, nan
+#include <exprtk/exprtk.hpp>  // for expression_node<>::node_type, expressio...
+#include <map>                // for operator!=, _Rb_tree_iterator, _Rb_tree...
+#include <regex>              // for regex_match, match_results<>::_Base_type
+#include <set>                // for set
+#include "classdesc.h"        // for Exclude
+#include "minsky.h"           // for minsky, Minsky
+#include "variableValue.h"    // for VariableValues, VariableValue, Variable...
 
-#include <exprtk/exprtk.hpp>
-#include <cmath>
+#include <capiRenderer.h>
+#include "SVGItem.h"
+#include "minsky_epilogue.h"
 
 namespace minsky
 {

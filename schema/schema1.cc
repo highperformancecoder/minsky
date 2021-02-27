@@ -18,11 +18,20 @@
 */
 
 #include "schema1.h"
-#include "schemaHelper.h"
-#include "factory.h"
-#include "str.h"
+#include <string.h>            // for memcpy
+#include <algorithm>           // for remove_if
+#include <set>                 // for set
+#include "enumerateSchema1.h"  // for enumerateRegisterItems, enumerateRegis...
+#include "factory.h"           // for Factory, Factory<>::registerType
+#include "schema0.h"           // for Variable, Minsky, VariableManager, Ope...
+
+#include <capiRenderer.h>
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
-#include <boost/regex.hpp>
+
+using ecolab::pcoord;
 
 namespace schema1
 {

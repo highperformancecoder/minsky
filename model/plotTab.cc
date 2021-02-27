@@ -19,9 +19,20 @@
 */
 
 #include <plotTab.h>
-#include <pango.h>
+#include <assert.h>      // for assert
+#include <iosfwd>        // for std
+#include <map>           // for pair, map, map<>::mapped_type
+#include <memory>        // for operator<, __shared_ptr_access, operator==
+#include <utility>       // for make_pair, move
+#include <vector>        // for vector
+#include "cairo_base.h"  // for CairoSave, Surface (ptr only)
+#include "plotWidget.h"  // for PlotWidget
+
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
-#include "minsky.h"
+namespace ecolab { class Pango; }
 using namespace std;
 using ecolab::cairo::Surface;
 using ecolab::Pango;

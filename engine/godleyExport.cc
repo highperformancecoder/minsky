@@ -18,11 +18,15 @@
 */
 
 #include "godleyExport.h"
-#include "flowCoef.h"
-#include "latexMarkup.h"
-#include "group.h"
-#include "selection.h"
-#include "SVGItem.h"
+#include <string>           // for allocator, operator<<, string, operator+
+#include "assetClass.h"     // for GodleyAssetClass, GodleyAssetClass::Asset...
+#include "classdesc.h"      // for EnumKey, enum_keysData
+#include "flowCoef.h"       // for FlowCoef
+#include "godleyTable.h"    // for GodleyTable
+#include "latexMarkup.h"    // for latexToPango
+#include "str.h"            // for str
+#include "variableValue.h"  // for VariableValue
+
 #include "minsky_epilogue.h"
 
 using namespace std;

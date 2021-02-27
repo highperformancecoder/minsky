@@ -18,19 +18,28 @@
 */
 #ifndef PLOTWIDGET_H
 #define PLOTWIDGET_H
-#include <cairo_base.h>
-#include <cairoSurfaceImage.h>
-#include <TCL_obj_base.h>
-#include "classdesc_access.h"
-#include "plot.h"
-#include "variable.h"
-#include "zoom.h"
-
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/date_time/posix_time/ptime.hpp>
+#include <cairoSurfaceImage.h>                              // for CairoSurface
+#include <cairo_base.h>                                     // for Surface
+#include <boost/date_time/posix_time/posix_time_types.hpp>  // for microsec_...
+#include <boost/date_time/posix_time/ptime.hpp>             // for ptime
+#include <memory>                                           // for shared_ptr
+#include <string>                                           // for string
+#include <vector>                                           // for vector
+#include "TCL_obj_stl.h"                                    // for TCL_objp
+#include "cairo.h"                                          // for cairo_t
+#include "classdesc.h"                                      // for Exclude
+#include "classdesc_access.h"                               // for CLASSDESC...
+#include "error.h"                                          // for ecolab
+#include "item.h"                                           // for Item, Cli...
+#include "plot.h"                                           // for Plot
+#include "tensorVal.h"                                      // for operator<<
+#include "variableType.h"                                   // for operator<<
+#include "variableValue.h"                                  // for VariableV...
+namespace classdesc { class xml_pack_t; class xml_unpack_t; }
 
 namespace minsky
 {
+  struct LassoBox;
   // seconds in a year. Gregorian year chosen.
   const double yearLength = 3600*24*365.2525;
   inline double yearToPTime(double x) {return (x-1970)*yearLength;}

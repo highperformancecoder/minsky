@@ -19,30 +19,24 @@
 #ifndef EVALOP_H
 #define EVALOP_H
 
-#include <ecolab.h>
-#include <xml_pack_base.h>
-#include <xml_unpack_base.h>
-
-#include "variableValue.h"
-#include "operation.h"
-#include "group.h"
-#include "polyPackBase.h"
-
-#include <vector>
-#include <cairo/cairo.h>
-
-#include <arrays.h>
-
-// override EcoLab's default CLASSDESC_ACCESS macro
-#include "classdesc_access.h"
-
+#include <cstddef>          // for size_t, std
+#include <memory>           // for shared_ptr
+#include <string>           // for string
+#include <vector>           // for vector
+#include "classdesc.h"      // for classdesc
+#include "error.h"          // for ecolab
+#include "item.h"           // for ItemPtr
+#include "operationType.h"  // for OperationType, OperationType::Type, Opera...
+#include "polyBase.h"       // for Poly, PolyBase
+#include "variableValue.h"  // for ValueVector, ValueVector::flowVars, Varia...
 
 namespace minsky
 {
   using namespace ecolab;
   using namespace classdesc;
   using namespace std;
-
+  class OperationBase;
+  
   struct EvalOpBase: public classdesc::PolyBase<minsky::OperationType::Type>,
                      //                     virtual public classdesc::PolyPackBase,
                      public OperationType

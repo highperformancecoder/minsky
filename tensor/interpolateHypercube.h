@@ -19,7 +19,14 @@
 
 #ifndef CIVITA_INTERPOLATE_HYPERCUBE_H
 #define CIVITA_INTERPOLATE_HYPERCUBE_H
-#include "tensorOp.h"
+#include <cstddef>            // for size_t, std
+#include <map>                // for pair
+#include <memory>             // for __shared_ptr_access
+#include <string>             // for string
+#include <vector>             // for vector
+#include "hypercube.h"        // for Hypercube
+#include "tensorInterface.h"  // for TensorPtr, ITensor, ITensor::Timestamp
+#include "xvector.h"          // for XVector
 using namespace std;
 
 namespace civita

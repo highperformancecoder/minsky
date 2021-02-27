@@ -16,19 +16,35 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "variable.h"
 #include "godleyIcon.h"
-#include "godleyTableWindow.h"
-#include "cairoItems.h"
-#include "minsky.h"
-#include "selection.h"
-#include <flowCoef.h>
-#include <evalGodley.h>
-#include <arrays.h>
-#include <cairo_base.h>
-#include <ctype.h>
+#include <assert.h>                          // for assert
+#include <cairo_base.h>                      // for CairoSave, cairo
+#include <ctype.h>                           // for isdigit
+#include <flowCoef.h>                        // for FlowCoef
+#include <math.h>                            // for fabs, abs
+#include <stdlib.h>                          // for abs, size_t
+#include <algorithm>                         // for max, min
+#include <boost/locale/encoding_errors.hpp>  // for conv
+#include <iosfwd>                            // for std
+#include <set>                               // for set
+#include "SVGItem.h"                         // for SVGRenderer
+#include "cairo.h"                           // for cairo_rectangle, cairo_t...
+#include "cairoItems.h"                      // for RenderVariable
+#include "constMap.h"                        // for ConstMap
+#include "error.h"                           // for ecolab
+#include "godleyTableWindow.h"               // for GodleyTableEditor
+#include "group.h"                           // for Group
+#include "latexMarkup.h"                     // for latexToPango
+#include "minsky.h"                          // for minsky, cminsky, Minsky
+#include "pango.h"                           // for Pango
+#include "port.h"                            // for Port
+#include "selection.h"                       // for LassoBox, Selection
+#include "str.h"                             // for trimWS
+#include "variable.h"                        // for VariablePtr, VariableBase
+#include "wire.h"                            // for Wire
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
-#include <boost/locale.hpp>
 using namespace boost::locale::conv;
 using namespace ecolab::cairo;
 using namespace ecolab;

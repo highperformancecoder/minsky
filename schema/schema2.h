@@ -25,24 +25,28 @@ but any renamed attributes require bumping the schema number.
 #ifndef SCHEMA_2_H
 #define SCHEMA_2_H
 
-#include "model/minsky.h"
-#include "model/ravelWrap.h"
-#include "model/sheet.h"
-#include "schema/schema1.h"
-#include "schemaHelper.h"
-#include "classdesc.h"
-#include "polyXMLBase.h"
-#include "polyJsonBase.h"
-#include "rungeKutta.h"
+#include <iosfwd>              // for std
+#include <map>                 // for map
+#include <memory>              // for __shared_ptr_access<>::element_type
+#include <string>              // for string, operator+, basic_string, to_st...
+#include <vector>              // for vector
+#include "assetClass.h"        // for GodleyAssetClass::AssetClass, GodleyAs...
+#include "bookmark.h"          // for Bookmark
+#include "classdesc_access.h"  // for classdesc
+#include "dimension.h"         // for Dimensions, ConversionsMap
+#include "item.h"              // for Item
+#include "operationType.h"     // for OperationType, OperationType::constant
+#include "optional.h"          // for Optional
+#include "plot.h"              // for Plot::LineStyle, Plot, Plot::PlotType
+#include "rungeKutta.h"        // for RungeKutta
 #include "ravelState-schema2.h"
-
-#include "optional.h"
-
-#include <xsd_generate_base.h>
-#include "xml_common.xcd"
-#include <vector>
-#include <string>
-
+#include "schema/schema1.h"    // for UnionLayout, Plot, Operation, Wire, Item
+#include "schemaHelper.h"      // for loadSchema, SchemaHelper (ptr only)
+#include "variableType.h"      // for VariableType
+namespace civita { class TensorVal; }
+namespace classdesc { class pack_t; }
+namespace classdesc { class xml_unpack_t; }
+namespace classdesc { struct CDATA; }
 
 namespace schema2
 {
@@ -52,7 +56,8 @@ namespace schema2
   using namespace classdesc;
   using classdesc::shared_ptr;
   using minsky::Optional;
-
+  struct RavelState;
+  
   /// unpack a TensorVal from a pack_t buffer. Schema2 encoding.
   void unpack(classdesc::pack_t&, civita::TensorVal&);
 
@@ -113,7 +118,7 @@ namespace schema2
     Optional<float> iconScale; // for handling legacy schemas
     // Plot specific fields
     Optional<bool> logx, logy, ypercent;
-    Optional<Plot::PlotType> plotType;
+    Optional<ecolab::Plot::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;

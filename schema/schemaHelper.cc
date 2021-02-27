@@ -18,11 +18,18 @@
 */
 
 #include "schemaHelper.h"
+#include <ctype.h>    // for isspace
+#include <algorithm>  // for replace
+#include <iosfwd>     // for std
+#include <utility>    // for move
+#include "a85.h"      // for from_a85, size_for_a85, size_for_bin, to_a85
+#include "zStream.h"  // for DeflateZStream, InflateZStream
+
+#include <capiRenderer.h>
+#include "lassoBox.h"
 #include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
-#include "a85.h"
-#include "zStream.h"
-#include <zlib.h>
 using namespace std;
 
 namespace minsky

@@ -17,6 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef MINSKY_EPILOGUE_H
+#define MINSKY_EPILOGUE_H
 #ifdef ITEM_H
 namespace minsky
 {
@@ -50,19 +52,11 @@ namespace minsky
 
 #ifdef CIVITA_XVECTOR_H
 #include "xvector.xcd"
-////namespace classdesc_access
-////{
-//////  template <>
-//////  struct access_RESTProcess<civita::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
-////  template <>
-////  struct access_json_pack<civita::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
-////  template <>
-////  struct access_json_unpack<civita::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
-////}
-////
 #endif
 
 #ifdef ITEM_H
 #include "plotWidget.h"
 #endif
 #include <ecolab_epilogue.h>
+
+#endif

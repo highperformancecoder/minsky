@@ -17,16 +17,42 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "plotWidget.h"
-#include "variable.h"
-#include "cairoItems.h"
-#include "minsky.h"
-#include "latexMarkup.h"
-#include "pango.h"
-#include <timer.h>
-#include <cairo/cairo-ps.h>
-#include <cairo/cairo-pdf.h>
-#include <cairo/cairo-svg.h>
+#include <assert.h>                                            // for assert
+#include <math.h>                                              // for M_PI, abs
+#include <stdlib.h>                                            // for abs
+#include <tk.h>                                                // for Tk_Window
+#include <algorithm>                                           // for min
+#include <boost/any.hpp>                                       // for any_cast
+#include <boost/config/detail/suffix.hpp>                      // for boost
+#include <boost/date_time/date_defs.hpp>                       // for Jan
+#include <boost/date_time/gregorian/greg_date.hpp>             // for date
+#include <boost/date_time/gregorian/greg_month.hpp>            // for Jan
+#include <boost/date_time/gregorian/greg_weekday.hpp>          // for gregorian
+#include <boost/date_time/posix_time/posix_time_config.hpp>    // for posix_...
+#include <boost/date_time/posix_time/posix_time_duration.hpp>  // for millis...
+#include <boost/date_time/time.hpp>                            // for base_time
+#include <boost/date_time/time_duration.hpp>                   // for time_d...
+#include <boost/date_time/time_system_counted.hpp>             // for counte...
+#include <boost/operators.hpp>                                 // for operator>
+#include <boost/type_index/type_index_facade.hpp>              // for operat...
+#include <iosfwd>                                              // for std
+#include <map>                                                 // for pair
+#include "cairoItems.h"                                        // for drawTr...
+#include "cairo_base.h"                                        // for Surface
+#include "dimension.h"                                         // for Dimension
+#include "group.h"                                             // for Group
+#include "hypercube.h"                                         // for Hypercube
+#include "index.h"                                             // for Index
+#include "latexMarkup.h"                                       // for latexT...
+#include "operationType.h"                                     // for operat...
+#include "pango.h"                                             // for Pango
+#include "port.h"                                              // for Port
+#include "selection.h"                                         // for LassoBox
+#include "str.h"                                               // for str
+#include "wire.h"                                              // for error
+#include "xvector.h"                                           // for XVector
 
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -541,7 +567,7 @@ namespace minsky
   }
 
   
-  void PlotWidget::connectVar(const shared_ptr<VariableValue>& var, unsigned port)
+  void PlotWidget::connectVar(const std::shared_ptr<VariableValue>& var, unsigned port)
   {
     assert(var);
     if (port<nBoundsPorts)

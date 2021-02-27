@@ -30,11 +30,21 @@
 #ifndef SCHEMA_SCHEMA_0
 #define SCHEMA_SCHEMA_0
 
-#include "operationType.h"
-#include "variableType.h"
-#include "assetClass.h"
-#include <arrays.h>
-#include <plot.h>
+#include <arrays.h>             // for operator>>, array
+#include <plot.h>               // for Plot, Plot::PlotType
+#include <string.h>             // for memcpy, size_t
+#include <map>                  // for map, map<>::value_compare
+#include <set>                  // for set
+#include <sstream>              // for istringstream
+#include <string>               // for string, basic_string, operator<
+#include <vector>               // for vector
+#include "assetClass.h"         // for GodleyAssetClass::AssetClass, GodleyA...
+#include "classdesc.h"          // for string
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
+#include "operationType.h"      // for OperationType, OperationType::numOps
+#include "variableType.h"       // for VariableType, VariableType::undefined
+#include "xml_unpack_base.h"    // for xml_unpack, xml_unpack_t (ptr only)
+namespace classdesc_access { template <class T> struct access_random_init; }
 
 namespace schema0
 {

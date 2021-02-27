@@ -17,12 +17,18 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "variableType.h"
+#include <ctype.h>          // for isspace
+#include <stdlib.h>         // for strtol
+#include <memory>           // for allocator_traits<>::value_type
+#include <sstream>          // for ostringstream
+#include <stdexcept>        // for runtime_error
+#include <string>           // for string, basic_string, operator+, allocator
+#include <vector>           // for vector
+#include "classdesc.h"      // for classdesc
+
 #include "minsky_epilogue.h"
 using namespace classdesc;
 
-#include <string>
-#include <sstream>
-#include <regex>
 using namespace std;
 
 namespace minsky

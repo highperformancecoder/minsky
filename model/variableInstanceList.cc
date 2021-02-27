@@ -18,7 +18,12 @@
 */
 
 #include "variableInstanceList.h"
-#include "group.h"
+#include <assert.h>    // for assert
+#include <cstddef>     // for size_t, std
+#include <memory>      // for __shared_ptr_access, __shared_ptr_access<>::el...
+#include "group.h"     // for Group, GroupItems::items, Groups
+#include "variable.h"  // for VariableBase
+
 #include "selection.h"
 #include "SVGItem.h"
 #include "minsky_epilogue.h"

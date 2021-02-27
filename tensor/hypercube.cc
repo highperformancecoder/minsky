@@ -18,8 +18,15 @@
 */
 
 #include "hypercube.h"
-#include <error.h>
-#include <set>
+#include <error.h>        // for error
+#include <sys/types.h>    // for ssize_t
+#include <boost/any.hpp>  // for any
+#include <cstdlib>        // for size_t, div, (anonymous)
+#include <iosfwd>         // for std
+#include <iterator>       // for reverse_iterator
+#include <memory>         // for allocator_traits<>::value_type
+#include <set>            // for __alloc_traits<>::value_type, set, _Rb_tree...
+#include "dimension.h"    // for Dimension, Dimension::string, Dimension::value
 
 using namespace std;
 

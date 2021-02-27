@@ -18,12 +18,31 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "itemTab.h"
-#include "latexMarkup.h"
-#include "group.h"
-#include <pango.h>
+#include <assert.h>         // for assert
+#include <pango.h>          // for Pango
+#include <stddef.h>         // for size_t, NULL
+#include <algorithm>        // for max, upper_bound
+#include <cmath>            // for isnan, fabs
+#include <limits>           // for numeric_limits
+#include <sstream>          // for ostringstream, ostream, std
+#include <utility>          // for make_pair
+#include "canvas.h"         // for Canvas, Canvas::Model
+#include "dimension.h"      // for Dimension
+#include "equations.h"      // for VariableDAG, SystemOfEquations, WeakNodePtr
+#include "geometry.h"       // for sqr
+#include "group.h"          // for Group, GroupItems, GroupItems::items, Groups
+#include "hypercube.h"      // for Hypercube
+#include "index.h"          // for Index
+#include "latexMarkup.h"    // for latexToPango
+#include "minsky.h"         // for minsky, cminsky, Minsky
+#include "str.h"            // for str, trimWS
+#include "variable.h"       // for VariableBase
+#include "variableType.h"   // for VariableType, VariableType::parameter
+#include "variableValue.h"  // for VariableValue
+#include "xvector.h"        // for str, XVector
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
-#include "minsky.h"
-#include "equations.h"
 using namespace std;
 using namespace MathDAG;
 using ecolab::cairo::Surface;

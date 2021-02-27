@@ -17,7 +17,27 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "schema2.h"
-#include "sheet.h"
+#include <assert.h>                     // for assert
+#include <string.h>                     // for size_t, memcpy
+#include <boost/core/addressof.hpp>     // for addressof
+#include <boost/move/utility_core.hpp>  // for move
+#include <utility>                      // for make_pair
+#include "flowCoef.h"                   // for FlowCoef
+#include "hypercube.h"                  // for Hypercube
+#include "json_pack_base.h"             // for json_pack_error, json_object_...
+#include "polyJsonBase.h"
+#include "pack_base.h"                  // for pack_t
+#include "pack_stl.h"                   // for unpack
+#include "pack_stream.h"                // for operator>>
+#include "schema1.h"                    // for SPoly, Minsky, UnionLayout
+#include "tensorVal.h"                  // for TensorVal
+#include "xvector.h"                    // for XVector
+
+#include <capiRenderer.h>
+#include "ravelState-schema2.h"
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 

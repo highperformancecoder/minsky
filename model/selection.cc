@@ -18,6 +18,11 @@
 */
 
 #include "selection.h"
+#include <algorithm>    // for find, find_if
+#include <cstddef>      // for size_t, std
+#include <vector>       // for vector
+#include "classdesc.h"  // for Exclude
+
 #include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace std;

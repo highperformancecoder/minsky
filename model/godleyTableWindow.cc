@@ -18,12 +18,32 @@
 */
 
 #include "godleyTableWindow.h"
-#include "selection.h"
-#include "latexMarkup.h"
-#include "minsky.h"
-#include <pango.h>
+#include <assert.h>                          // for assert
+#include <bits/exception.h>                  // for exception
+#include <ctype.h>                           // for toupper
+#include <math.h>                            // for abs
+#include <pango.h>                           // for Pango
+#include <stdlib.h>                          // for size_t, abs, NULL
+#include <algorithm>                         // for min, max, upper_bound
+#include <boost/locale/encoding_errors.hpp>  // for conv
+#include <boost/locale/encoding_utf.hpp>     // for utf_to_utf
+#include <iosfwd>                            // for std
+#include "assetClass.h"                      // for GodleyAssetClass, Godley...
+#include "canvas.h"                          // for Canvas
+#include "constMap.h"                        // for ConstMap
+#include "flowCoef.h"                        // for FlowCoef
+#include "group.h"                           // for Group, Groups
+#include "item.h"                            // for ItemPtr
+#include "latexMarkup.h"                     // for defang, latexToPango
+#include "minsky.h"                          // for minsky, cminsky, Minsky
+#include "port.h"                            // for GroupPtr
+#include "slider.h"                          // for minsky
+#include "str.h"                             // for numBytes, prevIndex
+#include "variable.h"                        // for VariablePtr, VariableBase
+#include "variableValue.h"                   // for EngNotation, VariableValue
+
+#include <capiRenderer.h>
 #include "minsky_epilogue.h"
-#include <boost/locale.hpp>
 
 using namespace std;
 using namespace minsky;

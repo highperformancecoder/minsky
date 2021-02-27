@@ -19,6 +19,8 @@
 
 #include "ravelWrap.h"
 #include "canvas.h"
+#include <capiRenderer.h>
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 #include <UnitTest++/UnitTest++.h>

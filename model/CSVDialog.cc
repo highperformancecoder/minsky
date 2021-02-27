@@ -17,36 +17,42 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CSVDialog.h"                                                           
-#include "group.h"                                                               
-#include "selection.h"
-#include "SVGItem.h"
-#include <pango.h>                                                               
-#include "minsky_epilogue.h"                                                     
-#include "zStream.h"                                                           
-                                                                                 
-#include <boost/asio/ssl/error.hpp>                                              
-#include <boost/asio/ssl/stream.hpp>                                             
-#include <boost/asio.hpp>                                                        
-#include <boost/beast/core.hpp>                                                  
-#include <boost/beast/http.hpp>                                                  
-#include <boost/beast/version.hpp>  
-                                                                                        
-#include <boost/filesystem.hpp>                                                  
-                                                                                 
-#include "certify/include/boost/certify/extensions.hpp"                          
-#include "certify/include/boost/certify/https_verification.hpp"                  
-                                                                                 
-#include <cstdlib>
+#include "CSVDialog.h"
+#include <pango.h>
+#include <boost/asio.hpp>
+#include <boost/beast.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>                                // for path
+#include <boost/intrusive/detail/list_iterator.hpp>
+#include <boost/intrusive/detail/tree_iterator.hpp>
+#include <boost/iterator/iterator_facade.hpp>
+#include <boost/move/utility_core.hpp>
+#include <boost/mp11/detail/mp_with_index.hpp>
+#include <boost/system/detail/error_code.hpp>
+#include <boost/system/system_error.hpp>
+#include <boost/token_functions.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/utility/string_view.hpp>
 #include <chrono>
-#include <iostream>                                                              
-#include <string>                                                                
-#include <stdexcept>                                                                                                                         
-#include <sstream>      
-#include <regex>    
+#include <cstdlib>
+#include <fstream>
+#include <regex>
+#include <set>                                                      // for set
+#include <stdexcept>
+#include <string>
+#include <utility>                                                  // for move
+#include "boost/certify/impl/extensions.hpp"
+#include "boost/certify/impl/https_verification.hpp"
+#include "boost/certify/impl/https_verification.ipp"
+#include "cairo.h"
+#include "dataSpecSchema.h"
+#include "dimension.h"
+
+#include "minsky_epilogue.h"                                                     
 
 using namespace std;
 using namespace minsky;
+using civita::Dimension;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 using tcp = boost::asio::ip::tcp;       

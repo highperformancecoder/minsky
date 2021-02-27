@@ -18,14 +18,29 @@
 */
 #ifndef MINSKYTENSOROPS_H
 #define MINSKYTENSOROPS_H
-#include "variableValue.h"
-#include "evalOp.h"
-#include <tensorOp.h>
+#include <assert.h>           // for assert
+#include <bits/exception.h>   // for exception
+#include <stddef.h>           // for size_t
+#include <memory>             // for shared_ptr, __shared_ptr_access, __shar...
+#include <utility>            // for move
+#include <vector>             // for vector
+#include "dimension.h"        // for civita
+#include "evalOp.h"           // for EvalOpBase, EvalOpBase::Type
+#include "factory.h"          // for Factory
+#include "hypercube.h"        // for Hypercube
+#include "index.h"            // for Index
+#include "item.h"             // for Item (ptr only), ItemPtr
+#include "operationType.h"    // for OperationType::Type, operator<<, Operat...
+#include "polyBase.h"         // for Poly
+#include "tensorInterface.h"  // for ITensor::Timestamp, ITensor, TensorPtr
+#include "tensorVal.h"        // for ITensorVal, ITensorVal::index
+#include "variableValue.h"    // for VariableValue
 
 namespace minsky
 {
   using namespace civita;
-
+  class Port;
+  
   struct FallBackToScalar: public std::exception
   {
     const char* what() const throw() {return "Falling back to scalar processing";}

@@ -19,11 +19,26 @@
 
 // contains implementation of symbolic differentiation
 
-#include "equations.h"
-#include "minsky.h"
-#include "expr.h"
+#include <assert.h>         // for assert
+#include <stdlib.h>         // for atoi, size_t
+#include <map>              // for pair
+#include <memory>           // for allocator_traits<>::value_type, __alloc_t...
+#include <regex>            // for regex_match, match_results, match_results...
+#include <set>              // for set
+#include <sstream>          // for operator<<, basic_ostream, basic_ostream:...
+#include <string>           // for string, basic_string, operator<<, char_tr...
+#include <vector>           // for vector
+#include "equations.h"      // for OperationDAG, SystemOfEquations, NodePtr
+#include "error.h"          // for error
+#include "expr.h"           // for Expr, operator*, operator/, CachedOp, ope...
+#include "operationType.h"  // for OperationType, OperationType::multiply
+#include "variable.h"       // for VariablePtr, VariableBase
+#include "variableType.h"   // for VariableType, VariableType::integral, Var...
+
+#include "lassoBox.h"
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
-#include <regex> 
 
 using std::regex;
 using std::smatch;

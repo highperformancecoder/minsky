@@ -20,13 +20,18 @@
 #ifndef LOCK_H
 #define LOCK_H
 
-#include "item.h"
-#include "ravelState.h"
-#include "ravelWrap.h"
-#include "SVGItem.h"
+#include <string>           // for operator+, operator==
+#include "TCL_obj_stl.h"    // for TCL_objp
+#include "cairo.h"          // for cairo_t
+#include "item.h"           // for ItemT
+#include "operationType.h"  // for operator<<
+#include "ravelState.h"     // for RavelState
+#include "variableType.h"   // for Units, operator<<
 
 namespace minsky
 {
+  class Ravel;
+  class SVGRenderer;
   class Lock: public ItemT<Lock>
   {
   public:

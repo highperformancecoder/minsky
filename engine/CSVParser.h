@@ -19,14 +19,12 @@
 #ifndef CSVPARSER_H
 #define CSVPARSER_H
 
-#include "dimension.h"
-#include "dataSpecSchema.h"
-#include "classdesc_access.h"
-
-#include <stddef.h>
-#include <string>
-#include <set>
-#include <fstream>
+#include <stddef.h>            // for size_t
+#include <fstream>             // for istream, ifstream, ostream
+#include <set>                 // for set, operator==, _Rb_tree_const_iterat...
+#include <string>              // for string
+#include "classdesc_access.h"  // for CLASSDESC_ACCESS
+#include "dataSpecSchema.h"    // for DataSpecSchema
 
 namespace minsky
 {

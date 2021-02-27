@@ -20,9 +20,17 @@
 
 #ifndef ITEMTAB_H
 #define ITEMTAB_H
-#include <variable.h>
-#include <cairoSurfaceImage.h>
-#include "classdesc_access.h"
+#include <cairoSurfaceImage.h>  // for CairoSurface
+#include <variable.h>           // for VariableBase
+#include <map>                  // for pair, map
+#include <memory>               // for __shared_ptr_access, __alloc_traits<>...
+#include <string>               // for string, basic_string
+#include <vector>               // for vector
+#include "cairo.h"              // for cairo_t
+#include "cairo_base.h"         // for Surface
+#include "classdesc.h"          // for Exclude
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
+#include "item.h"               // for ItemPtr, Items, Item
 
 namespace minsky
 {

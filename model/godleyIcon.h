@@ -19,21 +19,34 @@
 #ifndef GODLEYICON_H
 #define GODLEYICON_H
 
-#include "variable.h"
-#include "godleyTable.h"
-#include "zoom.h"
-#include "intrusiveMap.h"
-#include "classdesc_access.h"
-#include "SVGItem.h"
-#include "group.h"
-
-#include <map>
-#include <cairo.h>
-#include <cairo_base.h>
+#include <cairo.h>             // for cairo_t
+#include <map>                 // for map
+#include <memory>              // for __shared_ptr_access, unique_ptr
+#include <string>              // for string, operator+, operator==
+#include <vector>              // for vector
+#include "classdesc.h"         // for Exclude, NullDescriptor
+#include "classdesc_access.h"  // for CLASSDESC_ACCESS
+#include "ecolab.h"            // for unpack_t
+#include "godleyTable.h"       // for GodleyTable
+#include "item.h"              // for ItemPtr, ItemT, BoundingBox, ClickType
+#include "operationType.h"     // for operator<<
+#include "variable.h"          // for VariablePtr, VariableBase, VariableBas...
+#include "variableType.h"      // for operator<<, Units
+#include "variableValue.h"     // for VariableValue
+namespace classdesc { class pack_t; }
+namespace classdesc_access
+{
+  template <class T> struct access_pack;
+  template <class T> struct access_unpack;
+}
 
 namespace minsky
 {
   class GodleyTableEditor;
+  class Group;
+  class SVGRenderer;
+  struct LassoBox; 
+  struct Selection;
 
   class GodleyIcon: public ItemT<GodleyIcon>
   {

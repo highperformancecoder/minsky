@@ -23,11 +23,18 @@
 
 #ifndef GODLEYTABLEWINDOW_H
 #define GODLEYTABLEWINDOW_H
-#include "godleyIcon.h"
-#include "assetClass.h"
-#include <cairoSurfaceImage.h>
-#include <memory>
-#include <vector>
+#include <cairoSurfaceImage.h>  // for CairoSurface
+#include <stddef.h>             // for size_t
+#include <deque>                // for deque
+#include <memory>               // for shared_ptr, __shared_ptr_access
+#include <string>               // for string
+#include <vector>               // for vector
+#include "cairo.h"              // for cairo_t
+#include "cairo_base.h"         // for Surface
+#include "classdesc.h"          // for Exclude
+#include "classdesc_access.h"   // for CLASSDESC_ACCESS
+#include "godleyIcon.h"         // for GodleyIcon
+#include "godleyTable.h"        // for GodleyTable, GodleyTable::DisplayStyle
 
 namespace minsky
 {

@@ -18,18 +18,45 @@
 */
 
 #include "mdlReader.h"
-#include "operation.h"
-#include "userFunction.h"
-#include "selection.h" //TODO why is this needed?
-#include "minsky.h"
+#include <assert.h>                       // for assert
+#include <ctype.h>                        // for isalnum, isspace, tolower
+#include <stddef.h>                       // for size_t
+#include <boost/cstdint.hpp>              // for uint32_t
+#include <boost/locale/encoding_utf.hpp>  // for utf_to_utf
+#include <cstdint>                        // for uint32_t
+#include <map>                            // for map, operator!=, _Rb_tree_i...
+#include <memory>                         // for allocator, __shared_ptr_access
+#include <regex>                          // for regex_match, match_results<...
+#include <set>                            // for set
+#include <stdexcept>                      // for runtime_error
+#include <string>                         // for string, basic_string, stod
+#include <utility>                        // for move
+#include <vector>                         // for vector
+#include "classdesc.h"                    // for Exclude
+#include "dimension.h"                    // for Dimension, Dimension::value
+#include "group.h"                        // for Group
+#include "hypercube.h"                    // for Hypercube
+#include "operation.h"                    // for IntOp, OperationPtr, Operat...
+#include "operationType.h"                // for OperationType, OperationTyp...
+#include "rungeKutta.h"                   // for RungeKutta
+#include "str.h"                          // for trimWS, operator>>, GetUtf8...
+#include "tensorVal.h"                    // for TensorVal
+#include "userFunction.h"                 // for UserFunction
+#include "variable.h"                     // for VariablePtr, VariableBase
+#include "variableType.h"                 // for VariableType::flow, Variabl...
+#include "variableValue.h"                // for VariableValue
+#include "xvector.h"                      // for XVector
+
+#include "selection.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
-#include <boost/locale.hpp>
 
 using boost::locale::conv::utf_to_utf;
 using namespace std;
 namespace minsky
 {
+  class Port;
   namespace
   {
     string readToken(istream& mdlFile, char delim, bool appendDelim=false)

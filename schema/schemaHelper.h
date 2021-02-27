@@ -20,12 +20,18 @@
 #ifndef SCHEMA_HELPER
 #define SCHEMA_HELPER
 
-#include "operation.h"
-#include "variable.h"
-#include "godleyTable.h"
-#include "godleyIcon.h"
-#include "ravelWrap.h"
-#include "variableValue.h"
+#include <string>         // for string
+#include <vector>         // for vector
+#include "arrays.h"       // for array
+#include "assetClass.h"   // for GodleyAssetClass::AssetClass
+#include "error.h"        // for error
+#include "godleyIcon.h"   // for GodleyIcon, GodleyIcon::Variables
+#include "godleyTable.h"  // for GodleyTable, GodleyTable::Data
+#include "pack_base.h"    // for pack_t
+#include "ravelState.h"   // for RavelState
+#include "ravelWrap.h"    // for Ravel
+#include "wire.h"         // for error
+#include "xml_common.h"   // for CDATA
 #include <xml_unpack_base.h>
 
 template <class T>
