@@ -32,6 +32,8 @@
 #include "godleyTable.h"    // for GodleyTable
 #include "minsky.h"         // for minsky, Minsky, cminsky
 #include "ravelWrap.h"      // for Ravel, RavelLockGroup
+#include "sheet.h"
+#include "switchIcon.h"
 #include "variableValue.h"  // for VariableValue
 #include "zoom.h"           // for zoom
 struct _cairo;
@@ -437,6 +439,28 @@ namespace minsky
                         [&](const WirePtr& i){return i->near(x,y);});
   }
 
+  void Canvas::addOperation(OperationType::Type op) {
+      setItemFocus(model->addItem(OperationBase::create(op)));
+      itemFocus->rotation(defaultRotation);
+    }
+  void Canvas::addVariable(const std::string& name, VariableType::Type type) {
+      setItemFocus(model->addItem(VariablePtr(type,name)));
+      itemFocus->rotation(defaultRotation);
+    }
+  void Canvas::addNote(const std::string& text) {
+      setItemFocus(model->addItem(new Item));
+      itemFocus->detailedText=text;
+    }
+  
+  void Canvas::addPlot() {setItemFocus(model->addItem(new PlotWidget));}
+  void Canvas::addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
+  void Canvas::addGroup() {setItemFocus(model->addItem(new Group));}
+  void Canvas::addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
+  void Canvas::addRavel() {setItemFocus(model->addItem(new Ravel));}
+  void Canvas::addLock() {setItemFocus(model->addItem(new Lock));}
+  void Canvas::addSheet() {setItemFocus(model->addItem(new Sheet));}
+
+  
   void Canvas::groupSelection()
   {
     GroupPtr r=model->addGroup(new Group);
@@ -771,6 +795,19 @@ namespace minsky
         requestRedraw();
       }
   }
+
+  void Canvas::copyAllFlowVars()
+  {
+    if (auto g=dynamic_cast<GodleyIcon*>(item.get()))
+      copyVars(g->flowVars());
+  }
+
+  void Canvas::copyAllStockVars()
+  {
+    if (auto g=dynamic_cast<GodleyIcon*>(item.get()))
+      copyVars(g->stockVars());
+  }
+
 
   void Canvas::copyVars(const std::vector<VariablePtr>& v)
   {

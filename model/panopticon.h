@@ -33,7 +33,7 @@ namespace minsky
     Exclude<Canvas::Timestamp> lastBoundsCheck;
     double width=0,height=0;
     Canvas& canvas;
-    Exclude<cairo::SurfacePtr> cachedImage;
+    Exclude<ecolab::cairo::SurfacePtr> cachedImage;
     Panopticon(Canvas& canvas): canvas(canvas)  {}
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}

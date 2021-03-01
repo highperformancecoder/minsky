@@ -29,18 +29,13 @@
 #include "cairo_base.h"         // for SurfacePtr, Surface
 #include "classdesc.h"          // for Exclude, classdesc
 #include "classdesc_access.h"   // for CLASSDESC_ACCESS
-#include "godleyIcon.h"         // for GodleyIcon
 #include "group.h"              // for Group
 #include "item.h"               // for ItemPtr, Item, ClickType, ClickType::...
-#include "lock.h"               // for Lock
 #include "operation.h"          // for OperationBase
 #include "operationType.h"      // for OperationType, OperationType::Type
-#include "plotWidget.h"         // for PlotWidget
 #include "port.h"               // for GroupPtr, Port (ptr only)
 #include "ravelWrap.h"          // for Ravel
 #include "selection.h"          // for LassoBox, Selection
-#include "sheet.h"              // for Sheet
-#include "switchIcon.h"         // for SwitchIcon
 #include "variable.h"           // for VariablePtr
 #include "variableType.h"       // for VariableType, VariableType::Type
 #include "wire.h"               // for WirePtr
@@ -170,25 +165,16 @@ namespace minsky
     void getWireAt(float x, float y);
 
     double defaultRotation=0;
-    void addOperation(OperationType::Type op) {
-      setItemFocus(model->addItem(OperationBase::create(op)));
-      itemFocus->rotation(defaultRotation);
-    }
-    void addVariable(const std::string& name, VariableType::Type type) {
-      setItemFocus(model->addItem(VariablePtr(type,name)));
-      itemFocus->rotation(defaultRotation);
-    }
-    void addNote(const std::string& text) {
-      setItemFocus(model->addItem(new Item));
-      itemFocus->detailedText=text;
-    }
-    void addPlot() {setItemFocus(model->addItem(new PlotWidget));}
-    void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
-    void addGroup() {setItemFocus(model->addItem(new Group));}
-    void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
-    void addRavel() {setItemFocus(model->addItem(new Ravel));}
-    void addLock() {setItemFocus(model->addItem(new Lock));}
-    void addSheet() {setItemFocus(model->addItem(new Sheet));}
+    void addOperation(OperationType::Type op);
+    void addVariable(const std::string& name, VariableType::Type type);
+    void addNote(const std::string& text);
+    void addPlot();
+    void addGodley();
+    void addGroup();
+    void addSwitch();
+    void addRavel();
+    void addLock();
+    void addSheet();
     
     /// create a group from items found in the current selection
     void groupSelection();
@@ -230,15 +216,9 @@ namespace minsky
     void openGroupInCanvas(const ItemPtr& item);
 
     /// copy all flowVars of a GodleyIcon in \a item
-    void copyAllFlowVars() {
-      if (auto g=dynamic_cast<GodleyIcon*>(item.get()))
-        copyVars(g->flowVars());
-    }
+    void copyAllFlowVars();
     /// copy all stockVars of a GodleyIcon in \a item
-    void copyAllStockVars(){
-      if (auto g=dynamic_cast<GodleyIcon*>(item.get()))
-        copyVars(g->stockVars());
-    }
+    void copyAllStockVars();
 
     /// zooms canvas such that group indexed by item is displayed
     void zoomToDisplay();

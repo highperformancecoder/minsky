@@ -28,6 +28,7 @@
 #include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace minsky;
+using namespace std;
 
 void Panopticon::redraw(int, int, int w, int h)
 {
