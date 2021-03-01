@@ -25,8 +25,7 @@
 #define BOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
 #include "cairoItems.h"
 #include <pango.h>                                // for Pango
-#include <boost/geometry/core/static_assert.hpp>  // for geometry
-#include <boost/geometry/geometry.hpp>  // lines 26-26
+#include <boost/geometry.hpp>  // lines 26-26
 #include <boost/locale/encoding_utf.hpp>          // for utf_to_utf
 #include <cmath>                                  // for cos, sin, isnan, M_PI
 #include <iosfwd>                                 // for std
