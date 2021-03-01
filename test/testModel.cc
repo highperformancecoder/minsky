@@ -22,6 +22,7 @@
 #include "group.h"
 #include "minsky.h"
 #include "godleyTableWindow.h"
+#include "switchIcon.h"
 #include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
