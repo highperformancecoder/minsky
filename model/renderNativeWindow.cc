@@ -40,9 +40,9 @@ namespace minsky
 {
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    bool isInitial = false;
+    // bool isInitial = false;
     if (!(winInfoPtr.get())) {
-      isInitial = true;
+      // isInitial = true;
       winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
     }
 
