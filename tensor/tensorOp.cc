@@ -560,21 +560,24 @@ namespace civita
 //            case ravel::HandleSort::timeForward: case ravel::HandleSort::timeReverse:
 //              throw runtime_error("deprecated sort order used");
             }
-          // remove any permutation items outside calipers
-          if (!i.minLabel.empty())
-            for (auto j=perm.begin(); j!=perm.end(); ++j)
-              if (str(xv[*j],xv.dimension.units) == i.minLabel)
-                {
-                  perm.erase(perm.begin(), j);
-                  break;
-                }
-          if (!i.maxLabel.empty())
-            for (auto j=perm.begin(); j!=perm.end(); ++j)
-              if (str(xv[*j],xv.dimension.units) == i.maxLabel)
-                {
-                  perm.erase(j+1, perm.end());
-                  break;
-                }
+          if (i.displayFilterCaliper)
+            {
+              // remove any permutation items outside calipers
+              if (!i.minLabel.empty())
+                for (auto j=perm.begin(); j!=perm.end(); ++j)
+                  if (str(xv[*j],xv.dimension.units) == i.minLabel)
+                    {
+                      perm.erase(perm.begin(), j);
+                      break;
+                    }
+              if (!i.maxLabel.empty())
+                for (auto j=perm.begin(); j!=perm.end(); ++j)
+                  if (str(xv[*j],xv.dimension.units) == i.maxLabel)
+                    {
+                      perm.erase(j+1, perm.end());
+                      break;
+                    }
+            }
           permuteAxis->setPermutation(move(perm));
           chain.push_back(permuteAxis);
         }
