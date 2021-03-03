@@ -50,6 +50,9 @@
 using namespace std;
 using namespace ecolab;
 
+
+#define MINSKY_CANVAS_BACKGROUND_COLOR 0x00ffffff
+
 namespace minsky
 {
 
@@ -98,6 +101,10 @@ namespace minsky
 #endif
   }
 
+  void WindowInformation::clear() {
+    XClearWindow(display, childWindowId);
+  }
+
   WindowInformation::WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
   {
     parentWindowId = parentWin;
@@ -123,7 +130,7 @@ namespace minsky
       childHeight = min(childHeight, cHeight);
     }
 
-    childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, 0); //TODO:: Should we pass visual and attributes at the end?
+    childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, MINSKY_CANVAS_BACKGROUND_COLOR);
     XMapWindow(display, childWindowId);
     createSurface();
   }

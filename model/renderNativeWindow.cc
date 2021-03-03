@@ -30,7 +30,6 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 #include "windowInformation.h"
 #include "minsky_epilogue.h"
 
-
 #include <stdexcept>
 #include <string>
 
@@ -41,17 +40,22 @@ namespace minsky
 {
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    if (!winInfoPtr.get())
-     winInfoPtr=std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
+    // bool isInitial = false;
+    if (!(winInfoPtr.get())) {
+      // isInitial = true;
+      winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
+    }
 
+    winInfoPtr->clear();
     auto tmp = winInfoPtr->getSurface();
-    
-    //auto tmp = createNativeWindowSurface(*winInfoPtr);
 
-    //TODO:: Review if this paint (below 3 lines) is really needed with each frame
-    cairo_move_to(tmp->cairo(), 0, 0);
-    cairo_set_source_rgb(tmp->cairo(), 1, 1, 1);
-    cairo_paint(tmp->cairo());
+    //TODO:: Review if this paint with each frame (below 3 lines) are needed on other systems (Windows/MacOS). If not, delete the code
+    // if (isInitial || true)
+    // {
+    //   cairo_move_to(tmp->cairo(), 0, 0);
+    //   cairo_set_source_rgb(tmp->cairo(), 1, 1, 1);
+    //   cairo_paint(tmp->cairo());
+    // }
 
     tmp.swap(surface);
     redraw(0, 0, surface->width(), surface->height());
