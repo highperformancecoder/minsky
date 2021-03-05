@@ -459,6 +459,15 @@ namespace
         u.second*=multiplier;
     return inputUnits;
   }
+
+  void Ravel::applyState(const ravel::RavelState& state)
+ {
+   auto r=radius();
+   setRavelState(state);
+   if (state.radius!=r) // only need to update bounding box if radius changes
+     updateBoundingBox();
+ }
+
   
   void Ravel::displayDelayedTooltip(float xx, float yy)
   {

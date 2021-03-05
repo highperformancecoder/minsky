@@ -63,12 +63,11 @@ namespace civita
     size_t linealIndex(const V& splitIndex) const {
       assert(dims().size()==splitIndex.size());
       size_t index=0, stride=1;
-      auto dd=dims();
       auto ii=splitIndex.begin();
-      for (size_t i=0; i<dd.size(); ++i, ++ii)
+      for (size_t i=0; i<xvectors.size(); ++i, ++ii)
         {
           index+=*ii * stride;
-          stride*=dd[i];
+          stride*=xvectors[i].size();
         }
       return index;
     }
