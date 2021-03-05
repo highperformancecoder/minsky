@@ -938,9 +938,16 @@ namespace minsky
     if (rhs)
       {
         assert(result.idx()>=0);
-        result.ev->update(fv, n, sv);
-        //        assert(result.size()==rhs->size());
+        bool fvIsGlobalFlowVars=fv==ValueVector::flowVars.data();
+        result.index(rhs->index());
         result.hypercube(rhs->hypercube());
+        if (fvIsGlobalFlowVars) // hypercube operation may have resized flowVars, invalidating fv
+          {
+            fv=ValueVector::flowVars.data();
+            n=ValueVector::flowVars.size();
+          }
+        result.ev->update(fv, n, sv);
+        assert(result.size()==rhs->size());
         for (size_t i=0; i<rhs->size(); ++i)
           {
             auto v=(*rhs)[i];

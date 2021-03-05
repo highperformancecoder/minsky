@@ -346,6 +346,7 @@ namespace civita
     for (size_t i=0; i<ahc.xvectors.size(); ++i)
       if (!axisSet.count(ahc.xvectors[i].name))
         {
+          invPermutation[i]=permutation.size();
           permutation.push_back(i);
           hc.xvectors.push_back(ahc.xvectors[i]);
         }
@@ -359,7 +360,11 @@ namespace civita
         auto idx=arg->hypercube().splitIndex(arg->index()[i]);
         auto pidx=idx;
         for (size_t j=0; j<idx.size(); ++j)
-          pidx[invPermutation[j]]=idx[j];
+          {
+            assert(invPermutation.count(j));
+            assert(invPermutation[j]<pidx.size());
+            pidx[invPermutation[j]]=idx[j];
+          }
         auto l=hypercube().linealIndex(pidx);
         assert(pi.count(l)==0);
         pi[l]=i;
