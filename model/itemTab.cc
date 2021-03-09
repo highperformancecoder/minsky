@@ -41,7 +41,6 @@
 #include "variableValue.h"  // for VariableValue
 #include "xvector.h"        // for str, XVector
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace MathDAG;

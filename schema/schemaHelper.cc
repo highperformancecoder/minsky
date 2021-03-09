@@ -27,7 +27,6 @@
 #include "ravelState.h"   // for RavelState
 #include "ravelWrap.h"    // for Ravel
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace std;
 

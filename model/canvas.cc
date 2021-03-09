@@ -38,7 +38,6 @@
 #include "zoom.h"           // for zoom
 struct _cairo;
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;

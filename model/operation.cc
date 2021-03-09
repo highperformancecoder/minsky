@@ -47,7 +47,6 @@
 #include "variableValue.h"      // for VariableValue, VariableValues, Variab...
 #include "wire.h"               // for Wire, error, WirePtr
 #include "xvector.h"            // for XVector
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
 #include <math.h>

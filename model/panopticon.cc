@@ -25,7 +25,6 @@
 #include "canvas.h"   // for Canvas, Canvas::Model, Canvas::Timestamp
 #include "group.h"    // for Group
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace minsky;
 using namespace std;

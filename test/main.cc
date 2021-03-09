@@ -32,8 +32,6 @@ using std::string;
 using std::cout;
 using std::endl;
 
-#include <capiRenderer.h>  //TODO why?
-
 namespace
 {
   string name(const Test& t)

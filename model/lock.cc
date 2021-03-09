@@ -28,7 +28,6 @@
 #include "ravelWrap.h"  // for Ravel
 #include "wire.h"       // for Wire
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;
 

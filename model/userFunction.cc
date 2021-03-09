@@ -30,7 +30,6 @@
 #include "minsky.h"           // for minsky, Minsky
 #include "variableValue.h"    // for VariableValues, VariableValue, Variable...
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
 namespace minsky

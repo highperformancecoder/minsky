@@ -42,7 +42,6 @@
 #include "variable.h"                        // for VariablePtr, VariableBase
 #include "variableValue.h"                   // for EngNotation, VariableValue
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
 using namespace std;

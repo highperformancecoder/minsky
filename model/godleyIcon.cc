@@ -43,7 +43,6 @@
 #include "variable.h"                        // for VariablePtr, VariableBase
 #include "wire.h"                            // for Wire
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace boost::locale::conv;
 using namespace ecolab::cairo;

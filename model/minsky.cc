@@ -66,17 +66,14 @@
 #include "str.h"                                               // for trimWS
 #include "tcl++.h"                                             // for interp
 #include "tensorVal.h"                                         // for TensorVal
-#include "typeName_epilogue.h"                                 // for typeName
 #include "userFunction.h"                                      // for UserFu...
 #include "wire.h"                                              // for error
 #include "xml_pack_base.h"                                     // for xml_pa...
-#include "xml_pack_epilogue.h"                                 // for xml_pack
 #include "xml_unpack_base.h"                                   // for xml_un...
 #include "xsd_generate_base.h"                                 // for xsd_ge...
 #include "xvector.h"                                           // for XVector
 
-#include <capiRenderer.h>
-
+#include "minsky_epilogue.h"
 using namespace std;
 
 using namespace minsky;

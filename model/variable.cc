@@ -43,7 +43,7 @@
 #include "selection.h"                       // for LassoBox, Selection
 #include "tensorVal.h"                       // for TensorVal
 #include "wire.h"                            // for Wire, error
-#include <capiRenderer.h>
+
 #include "minsky_epilogue.h"
 namespace ecolab { namespace array_ns { template <class T> class array; } }
 using namespace boost::locale::conv;

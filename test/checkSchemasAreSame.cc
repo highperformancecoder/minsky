@@ -18,10 +18,7 @@
 */
 
 #include "schema3.h"
-#include <capiRenderer.h>
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
+
 #include "minsky_epilogue.h"
 #include <iostream>
 #undef NDEBUG

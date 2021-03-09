@@ -35,7 +35,6 @@
 #include "variableType.h"           // for Units
 #include "variableValue.h"          // for VariableValues, VariableValue
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace std;
 namespace minsky
