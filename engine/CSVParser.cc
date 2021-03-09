@@ -45,8 +45,6 @@
 #include "variableValue.h"                     // for VariableValue
 #include "xvector.h"                           // for XVector, NamedDimension
 
-#include <capiRenderer.h>
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 using namespace std;

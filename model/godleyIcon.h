@@ -44,7 +44,6 @@ namespace minsky
 {
   class GodleyTableEditor;
   class Group;
-  class SVGRenderer;
   struct LassoBox; 
   struct Selection;
 
@@ -73,7 +72,6 @@ namespace minsky
       selected=wasSelected;
     }
   public:
-    static SVGRenderer svgRenderer;
     
     GodleyIcon() {iWidth(150); iHeight(150);}
     ~GodleyIcon() {Item::removeControlledItems();}
@@ -175,6 +173,10 @@ namespace minsky
     float toEditorX(float) const;
     float toEditorY(float) const;
   };
+
+  /// set the godley icon
+  /// @param resource - path to SVG file
+  void setGodleyIcon(const std::string& resource);
 }
 
 #ifdef CLASSDESC

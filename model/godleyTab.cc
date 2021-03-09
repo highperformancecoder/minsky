@@ -34,9 +34,9 @@
 #include "godleyTableWindow.h"  // for GodleyTableEditor
 #include "latexMarkup.h"        // for latexToPango
 
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
+//#include "lassoBox.h"
+//#include "selection.h"
+//#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace std;
 using ecolab::cairo::Surface;

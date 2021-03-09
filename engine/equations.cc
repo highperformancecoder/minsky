@@ -47,7 +47,6 @@
 #include "userFunction.h"     // for UserFunction
 #include "wire.h"             // for Wire
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using namespace minsky;
 

@@ -34,7 +34,6 @@
 #include "ecolab.h"            // for unpack_t
 #include "error.h"             // for error
 #include "item.h"              // for ItemPtr, Item, ItemT, Items, ClickType
-#include "lassoBox.h"
 #include "operationType.h"     // for operator<<
 #include "port.h"              // for GroupPtr, Port (ptr only)
 #include "tensorVal.h"         // for operator<<
@@ -49,8 +48,6 @@ namespace minsky
 {
   class Group; 
   class PlotWidget;  
-  class SVGRenderer; 
-  struct LassoBox;   
 
   typedef std::vector<GroupPtr> Groups;
 
@@ -224,7 +221,6 @@ namespace minsky
 
     GroupPtr copy() const;
     Group* clone() const override {throw error("Groups cannot be cloned");}
-    static SVGRenderer svgRenderer;
 
     // TODO fix up the need for this override - see ticket #786
     ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false)
@@ -432,7 +428,10 @@ namespace minsky
       }
     return r;
   }
-  
+
+  /// set the group icon
+  /// @param resource - path to SVG file
+  void setGroupIcon(const std::string& resource);
 }
 
 #ifdef CLASSDESC

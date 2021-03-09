@@ -51,10 +51,7 @@
 #include "wire.h"                                              // for error
 #include "xvector.h"                                           // for XVector
 namespace boost { class any; }
-//namespace minsky { template <OperationType::Type op> struct AccumArgs; }  // lines 175-175
-//namespace minsky { template <OperationType::Type op> struct GeneralTensorOp; }  // lines 236-236
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
 using namespace civita;

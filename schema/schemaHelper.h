@@ -28,11 +28,11 @@
 #include "godleyIcon.h"   // for GodleyIcon, GodleyIcon::Variables
 #include "godleyTable.h"  // for GodleyTable, GodleyTable::Data
 #include "pack_base.h"    // for pack_t
-#include "ravelState.h"   // for RavelState
-#include "ravelWrap.h"    // for Ravel
 #include "wire.h"         // for error
 #include "xml_common.h"   // for CDATA
 #include <xml_unpack_base.h>
+
+namespace ravel {class RavelState;}
 
 template <class T>
 ecolab::array<T> toArray(const std::vector<T>& v) 
@@ -60,6 +60,8 @@ std::vector<double> toDoubleVector(const ecolab::array<T>& a)
 
 namespace minsky
 {
+  class Ravel;
+  
   /**
      A bridge pattern to allow schemas to update private members of
      various classes, whilst retaining desired
@@ -91,8 +93,7 @@ namespace minsky
       g.m_stockVars=stockVars;
     }
 
-    static void initHandleState(minsky::Ravel& r, const ravel::RavelState& s)
-    {r.initState=s;}
+    static void initHandleState(minsky::Ravel& r, const ravel::RavelState& s);
 
   };
 

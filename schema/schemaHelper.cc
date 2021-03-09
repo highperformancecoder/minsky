@@ -24,16 +24,18 @@
 #include <utility>    // for move
 #include "a85.h"      // for from_a85, size_for_a85, size_for_bin, to_a85
 #include "zStream.h"  // for DeflateZStream, InflateZStream
+#include "ravelState.h"   // for RavelState
+#include "ravelWrap.h"    // for Ravel
 
 #include <capiRenderer.h>
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace std;
 
 namespace minsky
 {
+  void SchemaHelper::initHandleState(Ravel& r, const ravel::RavelState& s)
+  {r.initState=s;}
+
   classdesc::pack_t decode(const classdesc::CDATA& data)
   {
     string trimmed; //trim whitespace

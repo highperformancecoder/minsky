@@ -55,9 +55,17 @@ const float border=10;
 
 namespace minsky
 {
+  namespace
+  {
+    SVGRenderer svgRenderer;
+  }
+
   GodleyIcon::CopiableUniquePtr::CopiableUniquePtr() {}
   GodleyIcon::CopiableUniquePtr::~CopiableUniquePtr() {}
   GodleyIcon::CopiableUniquePtr::CopiableUniquePtr(const CopiableUniquePtr&) {}
+
+  void setGodleyIcon(const std::string& resource)
+  {svgRenderer.setResource(resource);}
 
   namespace
   {
@@ -567,5 +575,4 @@ namespace minsky
     return editor.get();
   }
   
-  SVGRenderer GodleyIcon::svgRenderer;
 }

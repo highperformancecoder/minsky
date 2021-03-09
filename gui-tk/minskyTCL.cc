@@ -47,7 +47,6 @@
 #include "plotWidget.h"      // for PlotWidget
 #include "switchIcon.h"      // for SwitchIcon
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
 using namespace std;

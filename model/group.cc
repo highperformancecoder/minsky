@@ -42,7 +42,9 @@
 #include "variableValue.h"  // for VariableValue, ValueVector, ValueVector::...
 #include "wire.h"           // for Wire, WirePtr, Wires, error
 #include "zoom.h"           // for zoom
+#include "SVGItem.h"
 #include <capiRenderer.h>
+
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;
@@ -50,10 +52,17 @@ using namespace ecolab::cairo;
 // size of the top and bottom margins of the group icon
 static const int topMargin=10;
 
+namespace
+{
+  minsky::SVGRenderer svgRenderer;
+}
+
 namespace minsky
 {
-  SVGRenderer Group::svgRenderer;
+  void setGroupIcon(const std::string& resource)
+  {svgRenderer.setResource(resource);}
 
+  
   double Group::operator()(const std::vector<double>& p) 
   {
     if (outVariables.empty()) return nan("");

@@ -47,9 +47,6 @@
 #include "wire.h"                                                // for error
 #include "xvector.h"                                             // for XVector
 
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 using boost::any;

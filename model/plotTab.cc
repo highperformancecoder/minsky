@@ -28,9 +28,6 @@
 #include "cairo_base.h"  // for CairoSave, Surface (ptr only)
 #include "plotWidget.h"  // for PlotWidget
 
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 namespace ecolab { class Pango; }
 using namespace std;

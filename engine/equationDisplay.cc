@@ -31,9 +31,6 @@
 #include "variableType.h"   // for VariableType, VariableType::constant
 
 #include <pango.h>
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace ecolab;
 using ecolab::cairo::Surface;

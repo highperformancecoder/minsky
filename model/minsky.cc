@@ -629,6 +629,12 @@ namespace minsky
        });
   }
 
+  void Minsky::setGodleyIconResource(const string& s)
+  {setGodleyIcon(s);}
+  void Minsky::setGroupIconResource(const string& s)
+  {setGroupIcon(s);}
+  void Minsky::setLockIconResource(const string& locked, const string& unlocked)
+  {setLockIcons(locked, unlocked);}
 
   void Minsky::populateMissingDimensionsFromVariable(const VariableValue& v)
   {

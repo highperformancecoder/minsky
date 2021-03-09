@@ -25,8 +25,6 @@
 #include "variableValue.h"  // for VariableValue
 #include "wire.h"           // for WirePtr, Wire
 
-#include "SVGItem.h"
-#include "selection.h" //TODO: why is this needed?
 #include "minsky_epilogue.h"
 using namespace std;
 

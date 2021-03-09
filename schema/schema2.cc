@@ -33,11 +33,7 @@
 #include "tensorVal.h"                  // for TensorVal
 #include "xvector.h"                    // for XVector
 
-#include <capiRenderer.h>
 #include "ravelState-schema2.h"
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 

@@ -35,9 +35,6 @@
 #include "variable.h"       // for VariablePtr, VariableBase
 #include "variableType.h"   // for VariableType, VariableType::integral, Var...
 
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 using std::regex;

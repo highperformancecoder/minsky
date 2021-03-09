@@ -25,10 +25,6 @@
 #include "factory.h"           // for Factory, Factory<>::registerType
 #include "schema0.h"           // for Variable, Minsky, VariableManager, Ope...
 
-#include <capiRenderer.h>
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 using ecolab::pcoord;

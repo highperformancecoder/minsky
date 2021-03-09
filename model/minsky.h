@@ -31,7 +31,6 @@
 #include <set>                                              // for set
 #include <string>                                           // for string
 #include <vector>                                           // for vector
-#include "SVGItem.h"                                        // for SVGRenderer
 #include "assetClass.h"                                     // for GodleyAss...
 #include "cairoSurfaceImage.h"                              // for CairoSurface
 #include "cairo_base.h"                                     // for Surface
@@ -57,7 +56,6 @@
 #include "plotTab.h"                                        // for PlotTab
 #include "port.h"                                           // for GroupPtr
 #include "rungeKutta.h"                                     // for RungeKutta
-#include "selection.h"                                      // for Selection
 #include "variable.h"                                       // for VariablePtr
 #include "variableTab.h"                                    // for VariableTab
 #include "variableType.h"                                   // for VariableType
@@ -206,14 +204,16 @@ namespace minsky
 
     void populateMissingDimensionsFromVariable(const VariableValue&);
     
-    void setGodleyIconResource(const string& s)
-    {GodleyIcon::svgRenderer.setResource(s);}
-    void setGroupIconResource(const string& s)
-    {Group::svgRenderer.setResource(s);}
-    void setLockIconResource(const string& locked, const string& unlocked) {
-      Lock::lockedIcon.setResource(locked);
-      Lock::unlockedIcon.setResource(unlocked);
-    }
+    /// set the godley icon
+    /// @param resource - path to SVG file
+    void setGodleyIconResource(const string& s);
+    /// set the group icon
+    /// @param resource - path to SVG file
+    void setGroupIconResource(const string& s);
+    /// set the lock icon resources
+    /// @param locked SVG file showing a locked icon
+    /// @param unlocked SVG file showing an unlocked icon
+    void setLockIconResource(const string& locked, const string& unlocked);
     
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process

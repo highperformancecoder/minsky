@@ -38,7 +38,6 @@
 #include "wire.h"                       // for error
 #include "xvector.h"                    // for XVector, str, NamedDimension ...
 
-#include <capiRenderer.h>
 #include "minsky_epilogue.h"
 
 #ifdef WIN32

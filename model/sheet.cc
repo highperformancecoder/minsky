@@ -37,9 +37,6 @@
 #include "variableValue.h"  // for VariableValue
 #include "xvector.h"        // for str, XVector
 
-#include "lassoBox.h"
-#include "selection.h"
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;

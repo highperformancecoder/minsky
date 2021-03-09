@@ -31,7 +31,6 @@
 #include "variableValue.h"    // for VariableValues, VariableValue, Variable...
 
 #include <capiRenderer.h>
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 namespace minsky

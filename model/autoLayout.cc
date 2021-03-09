@@ -29,7 +29,6 @@
 #include <memory>                                 // for shared_ptr, __share...
 #include <random>                                 // for default_random_engine
 #include <vector>                                 // for vector
-#include "SVGItem.h"                              // for minsky
 #include "group.h"                                // for Group, Groups
 #include "item.h"                                 // for Item, Items
 #include "port.h"                                 // for Port
@@ -38,7 +37,6 @@
 #include "variableType.h"                         // for VariableType, Varia...
 #include "wire.h"                                 // for Wire, Wires
 
-#include "selection.h"
 #include "minsky_epilogue.h"
 
 using namespace std;

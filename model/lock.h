@@ -31,7 +31,6 @@
 namespace minsky
 {
   class Ravel;
-  class SVGRenderer;
   class Lock: public ItemT<Lock>
   {
   public:
@@ -41,13 +40,16 @@ namespace minsky
     bool locked() const {return !lockedState.empty();}
     void toggleLocked();
 
-    static SVGRenderer lockedIcon;
-    static SVGRenderer unlockedIcon;
     void draw(cairo_t* context) const override;
     Units units(bool) const override;
     /// Ravel this is connected to. nullptr if not connected to a Ravel
     Ravel* ravelInput() const;
   };
+
+  /// set the lock icon resources
+  /// @param locked SVG file showing a locked icon
+  /// @param unlocked SVG file showing an unlocked icon
+  void setLockIcons(const std::string& locked, const std::string& unlocked);
 }
 
 #include "lock.cd"

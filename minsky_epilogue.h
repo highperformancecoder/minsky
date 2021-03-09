@@ -26,6 +26,14 @@ namespace minsky
   void ItemT<T,Base>::TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) 
   {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
 }
+
+#include "lassoBox.h"
+#include "selection.h"
+#include "plotWidget.h"
+#endif
+
+#ifdef RAVELWRAP_H
+#include <capiRenderer.h>
 #endif
 
 //#ifdef RESTPROCESS_H
@@ -54,9 +62,6 @@ namespace minsky
 #include "xvector.xcd"
 #endif
 
-#ifdef ITEM_H
-#include "plotWidget.h"
-#endif
 #include <ecolab_epilogue.h>
 
 #endif

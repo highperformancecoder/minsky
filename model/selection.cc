@@ -23,7 +23,6 @@
 #include <vector>       // for vector
 #include "classdesc.h"  // for Exclude
 
-#include "SVGItem.h"
 #include "minsky_epilogue.h"
 using namespace std;
 

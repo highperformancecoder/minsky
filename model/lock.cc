@@ -28,17 +28,25 @@
 #include "ravelWrap.h"  // for Ravel
 #include "wire.h"       // for Wire
 
-#include "lassoBox.h"
-#include "selection.h"
 #include <capiRenderer.h>
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;
 
+
 namespace minsky
 {
-  SVGRenderer Lock::lockedIcon;
-  SVGRenderer Lock::unlockedIcon;
+  namespace
+  {
+    SVGRenderer lockedIcon;
+    SVGRenderer unlockedIcon;
+  }
 
+  void setLockIcons(const string& locked, const string& unlocked)
+  {
+    lockedIcon.setResource(locked);
+    unlockedIcon.setResource(unlocked);
+  }
+  
   Lock::Lock()
   {
     tooltip="Double click to lock/unlock";

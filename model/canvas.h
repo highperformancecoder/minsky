@@ -34,7 +34,7 @@
 #include "operation.h"          // for OperationBase
 #include "operationType.h"      // for OperationType, OperationType::Type
 #include "port.h"               // for GroupPtr, Port (ptr only)
-#include "ravelWrap.h"          // for Ravel
+#include "lassoBox.h"          // for LassoBox, Selection
 #include "selection.h"          // for LassoBox, Selection
 #include "variable.h"           // for VariablePtr
 #include "variableType.h"       // for VariableType, VariableType::Type
@@ -42,6 +42,8 @@
 
 namespace minsky
 {
+  class Ravel;
+  
   using namespace classdesc;
   template <class T>
   struct NoAssign: public T

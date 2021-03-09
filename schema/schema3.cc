@@ -51,7 +51,6 @@
 #include "xml_common.h"                 // for CDATA
 #include "xvector.h"                    // for XVector, str
 
-#include "capiRenderer.h"
 #include "minsky_epilogue.h"
 
 using namespace std;

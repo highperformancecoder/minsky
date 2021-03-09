@@ -27,10 +27,7 @@
 #include "error.h"           // for error, ecolab
 #include "plot.h"            // for Colour, palette, paletteSz
 #include "wire.h"            // for Wire, error
-#include "selection.h"
-#include "lassoBox.h"
-#include "operation.h"
-#include "SVGItem.h"
+//#include "operation.h"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
