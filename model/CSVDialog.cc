@@ -28,8 +28,6 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/move/utility_core.hpp>
 #include <boost/mp11/detail/mp_with_index.hpp>
-#include <boost/system/detail/error_code.hpp>
-#include <boost/system/system_error.hpp>
 #include <boost/token_functions.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/utility/string_view.hpp>
