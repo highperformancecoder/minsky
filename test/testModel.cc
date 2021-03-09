@@ -1016,7 +1016,7 @@ SUITE(GodleyIcon)
 {
   TEST_FIXTURE(GodleyIcon, select)
     {
-      GodleyIcon::svgRenderer.setResource("bank.svg");
+      setGodleyIcon("bank.svg");
       
       table.resize(3,2);
       table.cell(2,1)="flow1";
