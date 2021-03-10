@@ -45,22 +45,6 @@ namespace minsky
   {
     bool rebuildTCLcommands=false;
 
-    /// list the possible string values of an enum (for TCL)
-    template <class E> void enumVals()
-    {
-      tclreturn r;
-      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
-        r << enum_keysData<E>::keysData[i].name;
-    }
-
-    /// list of available operations
-    void availableOperations() {enumVals<OperationType::Type>();}
-    /// list of available variable types
-    void variableTypes() {enumVals<VariableType::Type>();}
-
-    /// return list of available asset classes
-    void assetClasses() {enumVals<GodleyTable::AssetClass>();}
-
     /// generate a TCL_obj referring to variableValues[valueId]
     void getValue(const std::string& valueId);
     
@@ -363,17 +347,6 @@ namespace minsky
       rebuildTCLcommands=true;
     }
 
-    void latex(const char* filename, bool wrapLaTeXLines);
-
-    void matlab(const char* filename) {
-      if (cycleCheck()) throw error("cyclic network detected");
-      ofstream f(filename);
-      MathDAG::SystemOfEquations(*this).matlab(f);
-    }
-
-    // for testing purposes
-    string latex2pango(const char* x) {return latexToPango(x);}
-
     /// restore model to state \a changes ago 
     void undo(TCL_args args) {
       if (args.count) Minsky::undo(args);
@@ -382,28 +355,10 @@ namespace minsky
 
     string valueId(const string& x) {return VariableValue::valueId(x);}
 
-    vector<string> listFonts() const {
-      vector<string> r;
-#ifdef PANGO
-      PangoFontFamily **families;
-      int num;
-      pango_font_map_list_families(pango_cairo_font_map_get_default(),
-                                   &families,&num);
-      for (int i=0; i<num; ++i)
-        r.push_back(pango_font_family_get_name(families[i]));
-      g_free(families);
-#endif
-      return r;
-    }
-
     ecolab::Accessor<std::string> defaultFont{
-      [this]() {return _defaultFont? _defaultFont.get(): "";},
-      [this](const std::string& x) {
-        _defaultFont.reset(new char[x.length()+1]);
-        strcpy(_defaultFont.get(),x.c_str());
-        ecolab::Pango::defaultFamily=_defaultFont.get();
-        return x;
-      }};
+      [this]() {return Minsky::defaultFont();},
+      [this](const std::string& x) {return Minsky::defaultFont(x);}
+    };
 
     void setBusyCursor() override
     {tclcmd()<<"setCursor watch\n";}
@@ -430,11 +385,6 @@ namespace minsky
       return r;
     }
     
-    int numOpArgs(OperationType::Type o) const;
-    OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
-  private:
-    std::unique_ptr<char[]> _defaultFont;
-
   };
 }
 

@@ -85,6 +85,17 @@ namespace
      }   
     return GSL_SUCCESS;
   }
+
+  /// list the possible string values of an enum (for TCL)
+  template <class E> vector<string> enumVals()
+    {
+      vector<string> r;
+      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
+        r.push_back(enum_keysData<E>::keysData[i].name);
+      return r;
+    }
+
+
 }
 
 namespace minsky
@@ -1520,6 +1531,53 @@ namespace minsky
     readMdl(*model,*this,f);
     canvas.requestRedraw();
   }
+
+  vector<string> Minsky::availableOperations() const
+  {return enumVals<OperationType::Type>();}
+  vector<string> Minsky::variableTypes() const
+  {return enumVals<VariableType::Type>();}
+  vector<string> Minsky::assetClasses() const
+  {return enumVals<GodleyTable::AssetClass>();}
+
+  static std::unique_ptr<char[]> _defaultFont;
+
+  string Minsky::defaultFont() const
+  {return _defaultFont? _defaultFont.get(): "";}
+  
+  string Minsky::defaultFont(const std::string& x)
+  {
+    _defaultFont.reset(new char[x.length()+1]);
+    strcpy(_defaultFont.get(),x.c_str());
+    ecolab::Pango::defaultFamily=_defaultFont.get();
+    return x;
+  }
+
+  
+  void Minsky::latex(const char* filename, bool wrapLaTeXLines) 
+  {
+    if (cycleCheck()) throw error("cyclic network detected");
+    ofstream f(filename);
+
+    f<<"\\documentclass{article}\n";
+    if (wrapLaTeXLines)
+      {
+        f<<"\\usepackage{breqn}\n\\begin{document}\n";
+        MathDAG::SystemOfEquations(*this).latexWrapped(f);
+      }
+    else
+      {
+        f<<"\\begin{document}\n";
+          MathDAG::SystemOfEquations(*this).latex(f);
+      }
+    f<<"\\end{document}\n";
+  }
+
+  int Minsky::numOpArgs(OperationType::Type o) const
+  {
+    OperationPtr op(o);
+    return op->numPorts()-1;
+  }
+
 
 }
 

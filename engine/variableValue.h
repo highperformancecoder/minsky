@@ -91,7 +91,7 @@ namespace minsky
     void reset_idx() {m_idx=-1;}    
 
     // values are always live
-    Timestamp timestamp() const override {return Timestamp::clock::now();}
+    ITensor::Timestamp timestamp() const override {return Timestamp::clock::now();}
     
     double operator[](size_t i) const override {return *(&valRef()+i);}
     double& operator[](size_t i) override;
@@ -129,7 +129,7 @@ namespace minsky
       m_hypercube.makeConformant(x.hypercube());
     }
     
-    VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
+    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
 
 //    const VariableValue& operator=(double x) {valRef()=x; return *this;}

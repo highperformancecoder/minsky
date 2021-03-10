@@ -263,25 +263,6 @@ namespace minsky
 #endif
     }
 
-  void MinskyTCL::latex(const char* filename, bool wrapLaTeXLines) 
-  {
-    if (cycleCheck()) throw error("cyclic network detected");
-    ofstream f(filename);
-
-    f<<"\\documentclass{article}\n";
-    if (wrapLaTeXLines)
-      {
-        f<<"\\usepackage{breqn}\n\\begin{document}\n";
-        MathDAG::SystemOfEquations(*this).latexWrapped(f);
-      }
-    else
-      {
-        f<<"\\begin{document}\n";
-          MathDAG::SystemOfEquations(*this).latex(f);
-      }
-    f<<"\\end{document}\n";
-  }
-
   namespace
   {
     template <class T>
@@ -326,12 +307,6 @@ namespace minsky
       IconBase<SwitchIcon>(imageName).draw();
     else
       IconBase<OperationIcon>(imageName, opName).draw();
-  }
-
-  int MinskyTCL::numOpArgs(OperationType::Type o) const
-  {
-    OperationPtr op(o);
-    return op->numPorts()-1;
   }
 
   TCLTYPE(CSVDialog);

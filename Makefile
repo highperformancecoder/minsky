@@ -66,7 +66,7 @@ VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/in
 	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
 
 .h.rcd:
-	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -respect_private \
+	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	RESTProcess >$@
 

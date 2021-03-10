@@ -125,7 +125,7 @@ namespace civita
       return *this;
     }
 
-    Timestamp timestamp() const override {return m_timestamp;}
+    ITensor::Timestamp timestamp() const override {return m_timestamp;}
     // timestamp should be updated every time the data r index vectors
     // is updated, if using the CachedTensorOp functionality
     void updateTimestamp() {m_timestamp=std::chrono::high_resolution_clock::now();}

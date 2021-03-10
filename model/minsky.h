@@ -381,7 +381,47 @@ namespace minsky
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL
     virtual bool checkMemAllocation(size_t bytes) const {return true;}
-    
+
+        vector<string> listFonts() const {
+      vector<string> r;
+#ifdef PANGO
+      PangoFontFamily **families;
+      int num;
+      pango_font_map_list_families(pango_cairo_font_map_get_default(),
+                                   &families,&num);
+      for (int i=0; i<num; ++i)
+        r.push_back(pango_font_family_get_name(families[i]));
+      g_free(families);
+#endif
+      return r;
+    }
+
+    /// @{ the default used by Pango
+    std::string defaultFont() const;
+    std::string defaultFont(const std::string& x);
+    /// @}
+
+    int numOpArgs(OperationType::Type o) const;
+    OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
+
+    void latex(const char* filename, bool wrapLaTeXLines);
+
+    void matlab(const char* filename) {
+      if (cycleCheck()) throw error("cyclic network detected");
+      ofstream f(filename);
+      MathDAG::SystemOfEquations(*this).matlab(f);
+    }
+
+    // for testing purposes
+    string latex2pango(const char* x) {return latexToPango(x);}
+
+    /// list of available operations
+    std::vector<std::string> availableOperations() const;
+    /// list of available variable types
+    std::vector<std::string> variableTypes() const;
+    /// return list of available asset classes
+    std::vector<std::string> assetClasses() const;
+
   };
 
   /// global minsky object
