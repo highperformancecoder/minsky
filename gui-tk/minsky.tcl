@@ -962,9 +962,6 @@ bind .gdlys.canvas <ButtonRelease-1> {wrapHoverMouseTab godleyTab mouseUp %x %y}
 bind .gdlys.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab godleyTab mouseMove %x %y}
 bind .gdlys.canvas <Leave> {after cancel hoverMouseTab godleyTab}
 
-bind .gdlys.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
-menu .gdlys.context -tearoff 0  
-
 .tabs select 0
 
 proc hoverMouseTab {tabId} {
@@ -999,13 +996,6 @@ proc tabContext {x y X Y} {
 				.plts.context add command -label "Remove plot from tab" -command "plotTab.togglePlotDisplay;  plotTab.requestRedraw"
 			}
             tk_popup .plts.context $X $Y
-		}
-	    .gdlys {
-			.gdlys.context delete 0 end
-			if [getGodleyTabItemAt $x $y] {
-				.gdlys.context add command -label "Toggle value display" -command "godleyTab.toggleGodleyTabValueDisplay; godleyTab.requestRedraw"
-			}
-            tk_popup .gdlys.context $X $Y
 		}		
 	}
 }
@@ -1755,6 +1745,10 @@ proc aboutMinsky {} {
    Minsky is FREE software, distributed under the 
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
+
+   Some icons from the Antü Plasma Suita are licensed under Creative
+   Commons Attribution-Share Alike 3.0 Unported license
+   (https://creativecommons.org/licenses/by-sa/3.0/deed.en).
 
    Ravel is copyright Ravelation Pty Ltd. A separate license needs to
    be purchased to use Ravel. See https://ravelation.hpcoders.com.au

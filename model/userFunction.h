@@ -26,8 +26,8 @@ namespace  minsky
 {
   class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp, public CallableFunction
   {
-    exprtk::symbol_table<double> symbols;
-    exprtk::expression<double> compiledExpression;
+    struct Impl;
+    std::shared_ptr<Impl> impl;
     void updateBB() override {bb.update(*this);}
     CLASSDESC_ACCESS(UserFunction);
   public:
@@ -45,13 +45,6 @@ namespace  minsky
     double operator()(const std::vector<double>& p) override;
 
     Units units(bool check=false) const override;
-//    void addVariable(const std::string& name, double& x) {
-//      localSymbols.add_variable(name,x);
-//    }
-//    template <class F>
-//    void addFunction(const std::string& name, F f) {
-//      localSymbols.add_function(name,f);
-//    }
     void displayTooltip(cairo_t* cr, const std::string& tt) const override
     {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
 

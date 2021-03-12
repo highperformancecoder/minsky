@@ -291,7 +291,66 @@ namespace civita
     }
   };
 
-  
+  class SpreadBase: public ITensor
+  {
+  protected:
+    TensorPtr arg;
+    size_t numSpreadElements=1;
+  public:
+    void setArgument(const TensorPtr& a,const std::string& ax="",double ag=0) override {
+      arg=a;
+      if (arg){
+        hypercube(arg->hypercube());
+        m_index=arg->index();
+      }
+    }
+    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
+  };
+    
+  class SpreadFirst: public SpreadBase
+  {
+  public:
+    void setSpreadDimensions(const Hypercube& hc) {
+      if (!arg) return;
+      numSpreadElements=hc.numElements();
+      m_hypercube=hc;
+      m_hypercube.xvectors.insert(m_hypercube.xvectors.end(), arg->hypercube().xvectors.begin(),
+                                  arg->hypercube().xvectors.end());
+      std::set<size_t> idx;
+      for (auto& i: arg->index())
+        for (size_t j=0; j<numSpreadElements; ++j)
+          idx.insert(j+i*numSpreadElements);
+      m_index=idx;
+    }
+    
+    double operator[](size_t i) const override {
+      if (arg) return (*arg)[i/numSpreadElements];
+      return nan("");
+    }
+  };
+
+  class SpreadLast: public SpreadBase
+  {
+  public:
+    void setSpreadDimensions(const Hypercube& hc) {
+      if (!arg) return;
+      numSpreadElements=hc.numElements();
+      m_hypercube=arg->hypercube();
+      m_hypercube.xvectors.insert(m_hypercube.xvectors.end(), hc.xvectors.begin(), hc.xvectors.end());
+      std::set<size_t> idx;
+      for (auto& i: arg->index())
+        for (size_t j=0; j<numSpreadElements; ++j)
+          idx.insert(i+j*arg->size());
+      m_index=idx;
+    }
+    
+    double operator[](size_t i) const override {
+      if (arg) return (*arg)[i%arg->size()];
+      return nan("");
+    }
+  };
+
+    
   /// creates a chain of tensor operations that represents a Ravel in
   /// state \a state, operating on \a arg
   std::vector<TensorPtr> createRavelChain(const ravel::RavelState&, const TensorPtr& arg);

@@ -1,7 +1,6 @@
 /*
-  @copyright Steve Keen 2020
+  @copyright Steve Keen 2021
   @author Russell Standish
-  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it
@@ -18,21 +17,33 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GODLEYTAB_H
-#define GODLEYTAB_H
-#include <itemTab.h>
+#ifndef LOCK_H
+#define LOCK_H
+
+#include "item.h"
+#include "ravelState.h"
+#include "ravelWrap.h"
+#include "SVGItem.h"
 
 namespace minsky
 {
-	 
-  class GodleyTab: public ItemTab
-  {	  
+  class Lock: public ItemT<Lock>
+  {
   public:
-    bool itemSelector(const ItemPtr& i) override;
-    ItemPtr itemAt(float x, float y) override;
-    void draw(cairo_t* cairo) override;
+    Lock();
+    ravel::RavelState lockedState;
+
+    bool locked() const {return !lockedState.empty();}
+    void toggleLocked();
+
+    static SVGRenderer lockedIcon;
+    static SVGRenderer unlockedIcon;
+    void draw(cairo_t* context) const override;
+    Units units(bool) const override;
+    /// Ravel this is connected to. nullptr if not connected to a Ravel
+    Ravel* ravelInput() const;
   };
-  
 }
-#include "godleyTab.cd"
+
+#include "lock.cd"
 #endif

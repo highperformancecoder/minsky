@@ -167,9 +167,11 @@ namespace schema3
             }
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
-              //              items.back().filename=r->filename();
               if (r->lockGroup)
-                items.back().lockGroup=at(r->lockGroup.get());
+                {
+                  items.back().lockGroup=at(r->lockGroup.get());
+                  items.back().lockGroupHandles=r->lockGroup->handlesToLock;
+                }
               auto s=r->getState();
               if (!s.handleStates.empty())
                 {
@@ -177,6 +179,9 @@ namespace schema3
                   items.back().dimensions=r->axisDimensions;
                 }
             }
+          if (auto l=dynamic_cast<minsky::Lock*>(i))
+            if (l->locked())
+              items.back().ravelState=l->lockedState;
         }
       return j;
     }
@@ -210,6 +215,7 @@ namespace schema3
       registerClassType<minsky::DataOp>();
       registerClassType<minsky::UserFunction>();
       registerClassType<minsky::Ravel>();
+      registerClassType<minsky::Lock>();
       registerClassType<minsky::Sheet>();
       registerClassType<minsky::VarConstant>();
       registerClassType<minsky::GodleyIcon>();
@@ -402,6 +408,11 @@ namespace schema3
         if (y.dimensions)
           x1->axisDimensions=*y.dimensions;
       }
+    if (auto x1=dynamic_cast<minsky::Lock*>(&x))
+      {
+        if (y.ravelState)
+            x1->lockedState=y.ravelState->toRavelRavelState();
+      }
     if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))
       {
         if (y.name)
@@ -571,6 +582,8 @@ namespace schema3
           if (auto r=dynamic_pointer_cast<minsky::Ravel>(itemMap[i.id]))
             {
               r->lockGroup=lockGroups[*i.lockGroup];
+              if (i.lockGroupHandles)
+                r->lockGroup->handlesToLock=*i.lockGroupHandles;
               r->lockGroup->ravels.push_back(r);
             }
       }

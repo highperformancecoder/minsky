@@ -36,6 +36,7 @@
 #include "integral.h"
 #include "variableValue.h"
 #include "canvas.h"
+#include "lock.h"
 #include "panopticon.h"
 #include "fontDisplay.h"
 #include "variableTab.h"
@@ -198,7 +199,11 @@ namespace minsky
     {GodleyIcon::svgRenderer.setResource(s);}
     void setGroupIconResource(const string& s)
     {Group::svgRenderer.setResource(s);}
-
+    void setLockIconResource(const string& locked, const string& unlocked) {
+      Lock::lockedIcon.setResource(locked);
+      Lock::unlockedIcon.setResource(unlocked);
+    }
+    
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
     //  @param ac type of column we wish matches for

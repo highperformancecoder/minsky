@@ -75,6 +75,7 @@ namespace minsky
         argv0!="minsky.selectVar" &&
         argv0!="minsky.setGodleyIconResource" &&
         argv0!="minsky.setGroupIconResource" &&
+        argv0!="minsky.setLockIconResource" &&
         argv0!="minsky.step" &&
         argv0!="minsky.running" &&
         argv0!="minsky.multipleEquities" &&

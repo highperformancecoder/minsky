@@ -526,8 +526,10 @@ namespace minsky
              for (size_t i=0; i<p->portsSize(); ++i)
                {
                  auto pp=p->ports(i).lock();
-                 if (pp->wires().size()>0 && pp->getVariableValue()->idx()>=0)
-                   p->connectVar(pp->getVariableValue(), i);
+                 if (pp->wires().size()>0)
+                   if (auto vv=pp->getVariableValue())
+                     if (vv->idx()>=0)
+                       p->connectVar(vv, i);
                }
            }
          
@@ -932,6 +934,10 @@ namespace minsky
     running=false;
 
     canvas.requestRedraw();
+    godleyTab.requestRedraw();
+    plotTab.requestRedraw();
+    variableTab.requestRedraw();
+    parameterTab.requestRedraw();    
   }
 
   void Minsky::step()
@@ -1032,6 +1038,10 @@ namespace minsky
     if ((microsec_clock::local_time()-(ptime&)lastRedraw) > maxWait)
       {
         canvas.requestRedraw();
+        godleyTab.requestRedraw();
+        plotTab.requestRedraw();
+        variableTab.requestRedraw();
+        parameterTab.requestRedraw();        
         lastRedraw=microsec_clock::local_time();
       }
 

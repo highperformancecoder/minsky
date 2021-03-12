@@ -134,7 +134,10 @@ namespace minsky
     using ITensorVal::operator[];
     double& operator[](size_t i) override {
       assert(value->isFlowVar());
-      assert(value->idx()+i<ev->fvSize());
+      assert(
+             (ev->flowVars()==ValueVector::flowVars.data() &&
+              value->idx()+i<ValueVector::flowVars.size())
+             || value->idx()+i<ev->fvSize());
       return ev->flowVars()[value->idx()+i];
     }
     TensorVarVal& operator=(const ITensor& t) override {
