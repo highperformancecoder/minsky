@@ -86,7 +86,20 @@ namespace minsky
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
-    double value(size_t i=0) const {return operator[](i);}
+    // name valueAt to allow TCL exposure
+    double valueAt(size_t i) const {
+      if (i>=size())
+        throw std::runtime_error("Index out of range");
+      return operator[](i);
+    }
+    double value() const {return valueAt(0);}
+    ///< set the value at the \a ith location
+    double setValue(size_t i, double x) {
+      if (i>=size())
+        throw std::runtime_error("Index out of range");
+      return operator[](i)=x;
+    }
+    double setValue(double x) {return setValue(0,x);}
     int idx() const {return m_idx;}
     void reset_idx() {m_idx=-1;}    
 
@@ -210,7 +223,7 @@ namespace minsky
     VariableValuePtr(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()):
       std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,name,init,group)) {}
   };
-  
+
   struct VariableValues: public ConstMap<std::string, VariableValuePtr>
   {
     VariableValues() {clear();}
@@ -259,6 +272,12 @@ namespace ecolab
 #pragma omit pack minsky::VariableValue
 #pragma omit unpack minsky::VariableValue
 #endif
+
+namespace classdesc
+{
+  // allows for RESTProcess to recognise this as a smart pointer, and to process the target
+  template <> struct is_smart_ptr<minsky::VariableValuePtr>: public true_type {};
+}
 
 namespace classdesc_access
 {

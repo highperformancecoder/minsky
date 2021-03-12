@@ -33,15 +33,25 @@ using namespace std;
 
 namespace minsky
 {
-  Minsky& minsky() {
-    static Minsky m;
-    return m;
+  namespace
+  {
+    Minsky* l_minsky=NULL;
   }
+
+  Minsky& minsky()
+  {
+    static Minsky s_minsky;
+    if (l_minsky)
+      return *l_minsky;
+    else
+      return s_minsky;
+  }
+
+  LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
+  LocalMinsky::~LocalMinsky() {l_minsky=NULL;}
+
   // GUI callback needed only to solve linkage problems
   void doOneEvent(bool idleTasksOnly) {}
-  // not used, but needed for the linker
-  LocalMinsky::LocalMinsky(Minsky& m) {}
-  LocalMinsky::~LocalMinsky() {}
 }
 
 tuple<string,string> splitFirstComponent(const string& x)

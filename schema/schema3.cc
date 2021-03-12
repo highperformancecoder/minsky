@@ -350,6 +350,7 @@ namespace schema3
     minsky::Minsky m;
     minsky::LocalMinsky lm(m);
     populateGroup(*m.model);
+
     m.model->setZoom(zoomFactor);
     m.model->bookmarks=bookmarks;
     m.dimensions=dimensions;

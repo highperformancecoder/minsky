@@ -317,7 +317,7 @@ namespace minsky
                             if (!value->index().empty())
                               y=y0+value->index()[i]*rowHeight;
                             cairo_move_to(cairo,x,y);
-                            auto v=value->value(i);
+                            auto v=value->valueAt(i);
                             if (!std::isnan(v))
                               {
                                 pango.setMarkup(str(v));
