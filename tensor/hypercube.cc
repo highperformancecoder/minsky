@@ -106,9 +106,10 @@ namespace civita
     vector<size_t> Hypercube::splitIndex(size_t i) const
     {
       std::vector<size_t> splitIndex;
-      for (auto& d: dims())
+      splitIndex.reserve(xvectors.size());
+      for (auto& xv: xvectors)
         {
-          auto res=div(ssize_t(i),ssize_t(d));
+          auto res=div(ssize_t(i),ssize_t(xv.size()));
           splitIndex.push_back(res.rem);
           i=res.quot;
         }

@@ -68,24 +68,24 @@ namespace minsky
     float dy = h/(numLines);
 
     // xmin, xmax, ymin, ymax ports
-    ports.emplace_back(new Port(*this, Port::inputPort)); //xmin
-    ports.emplace_back(new Port(*this, Port::inputPort));  //xmax
-    ports.emplace_back(new Port(*this, Port::inputPort)); //ymin
-    ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
-    ports.emplace_back(new Port(*this, Port::inputPort)); //y1min
-    ports.emplace_back(new Port(*this, Port::inputPort)); //y1max
+    m_ports.emplace_back(new Port(*this, Port::inputPort)); //xmin
+    m_ports.emplace_back(new Port(*this, Port::inputPort));  //xmax
+    m_ports.emplace_back(new Port(*this, Port::inputPort)); //ymin
+    m_ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
+    m_ports.emplace_back(new Port(*this, Port::inputPort)); //y1min
+    m_ports.emplace_back(new Port(*this, Port::inputPort)); //y1max
 
     // y variable ports
     for (float y=0.5*(dy-h); y<0.5*h; y+=dy)
-      ports.emplace_back(new Port(*this, Port::inputPort));
+      m_ports.emplace_back(new Port(*this, Port::inputPort));
 
     // RHS y variable ports
     for (float y=0.5*(dy-h); y<0.5*h; y+=dy)
-      ports.emplace_back(new Port(*this, Port::inputPort));
+      m_ports.emplace_back(new Port(*this, Port::inputPort));
 
     // add in the x variable ports
     for (float x=2*dx-0.5*w; x<0.5*w; x+=dx)
-      ports.emplace_back(new Port(*this, Port::inputPort));
+      m_ports.emplace_back(new Port(*this, Port::inputPort));
 
     yvars.resize(2*numLines);
     xvars.resize(numLines);
@@ -135,7 +135,7 @@ namespace minsky
       {
         float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
-          ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
+          m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
@@ -145,7 +145,7 @@ namespace minsky
       {
         float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
-          ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
+          m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
@@ -154,7 +154,7 @@ namespace minsky
       {
         float y=0.5*(dy-h) + (i-numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
-          ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
+          m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
       }
 
@@ -163,7 +163,7 @@ namespace minsky
       {
         float x=dx-0.5*w + (i-2*numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
-          ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
+          m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
@@ -335,7 +335,7 @@ namespace minsky
   {
     // firstly, check whether a port has been selected
     double z=zoomFactor();  
-    for (auto& p: ports)
+    for (auto& p: m_ports)
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*z)
           return ClickType::onPort;

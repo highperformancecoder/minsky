@@ -20,6 +20,7 @@
 #define CSVPARSER_H
 
 #include "dimension.h"
+#include "dataSpecSchema.h"
 #include "classdesc_access.h"
 
 #include <stddef.h>
@@ -31,30 +32,29 @@ namespace minsky
 {
   class VariableValue;
 
-  class DataSpec
+  class DataSpec: public DataSpecSchema
   {
     size_t m_nRowAxes=0, m_nColAxes=0;
     CLASSDESC_ACCESS(DataSpec);
   public:
-    char separator=',', quote='"', escape='\\', decSeparator='.';
-    bool mergeDelimiters=false;
-    bool columnar=false;
-    double missingValue=nan("");
-    /// number of header rows
-    size_t headerRow=0;
     /// start row of the data area
     size_t nRowAxes() const {return m_nRowAxes;}
     /// start column of the data area
     size_t nColAxes() const {return m_nColAxes;}
-    std::string horizontalDimName="?";
-    civita::Dimension horizontalDimension;
+
+    // handle extra initialisation on conversion
+    DataSpecSchema toSchema() {
+      dataRowOffset=nRowAxes();
+      dataColOffset=nColAxes();
+      return *this;
+    }
+
+    DataSpec& operator=(const DataSpecSchema& x) {
+      DataSpecSchema::operator=(x);
+      setDataArea(dataRowOffset, dataColOffset);
+      return *this;
+    }
     
-    /// what to do with duplicate keys
-    enum DuplicateKeyAction {throwException, sum, product, min, max, av};
-    DuplicateKeyAction duplicateKeyAction=throwException;
-    
-    /// rows and columns that are comment lines to be ignored
-    std::set<unsigned> dimensionCols;
     void toggleDimension(size_t c) {
       auto i=dimensionCols.find(c);
       if (i==dimensionCols.end())
@@ -64,9 +64,6 @@ namespace minsky
     }
 
     void setDataArea(size_t row, size_t col);
-    
-    std::vector<civita::Dimension> dimensions;
-    std::vector<std::string> dimensionNames;
     
     /// initial stab at dataspec from examining stream
     void guessFromStream(std::istream& file);

@@ -28,6 +28,7 @@ but any renamed attributes require bumping the schema number.
 #include "model/minsky.h"
 #include "model/ravelWrap.h"
 #include "model/sheet.h"
+#include "dataSpecSchema.h"
 #include "schema/schema2.h"
 #include "schemaHelper.h"
 #include "zStream.h"
@@ -98,11 +99,14 @@ namespace schema3
     Optional<std::string> units;
     Optional<Slider> slider;
     Optional<int> intVar;
+    Optional<std::string> url; //file or url of CSV import data
+    Optional<minsky::DataSpecSchema> csvDataSpec; //CSV import data
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> expression; // userfunction
     Optional<std::string> filename;
     Optional<schema2::RavelState> ravelState;
     Optional<int> lockGroup;
+    Optional<std::set<std::string>> lockGroupHandles;
     Optional<minsky::Dimensions> dimensions;
     // Operation tensor parameters
     Optional<std::string> axis;
@@ -134,7 +138,11 @@ namespace schema3
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
-        units=vv->units.str();
+        {
+          units=vv->units.str();
+          csvDataSpec=vv->csvDialog.spec.toSchema();
+          url=vv->csvDialog.url;
+        }
     }
     Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(o),ports),

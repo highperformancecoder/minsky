@@ -990,16 +990,13 @@ proc tabContext {x y X Y} {
 		    }	
 		    tk_popup .variables.context $X $Y	
 	    }
-	    .plts { # still doesn't work???
+	    .plts {
 			.plts.context delete 0 end
-			switch [plotTab.clickType $x $y] {
-			    background {}
-			    internal {
-					.plts.context add command -label "Remove plot from tab" -command "plotTab.togglePlotDisplay;  plotTab.requestRedraw"
-				}
+			if [getPlotTabItemAt $x $y] {
+				.plts.context add command -label "Remove plot from tab" -command "plotTab.togglePlotDisplay;  plotTab.requestRedraw"
 			}
             tk_popup .plts.context $X $Y
-		}
+		}		
 	}
 }
 
@@ -1749,11 +1746,16 @@ proc aboutMinsky {} {
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
 
+   Some icons from the Antü Plasma Suita are licensed under Creative
+   Commons Attribution-Share Alike 3.0 Unported license
+   (https://creativecommons.org/licenses/by-sa/3.0/deed.en).
+
    Ravel is copyright Ravelation Pty Ltd. A separate license needs to
    be purchased to use Ravel. See https://ravelation.hpcoders.com.au
 
 Thanks to following Minsky Unicorn sponsors:
      Edward McDaniel
+     Travis Kimmel
    " 
 }
 

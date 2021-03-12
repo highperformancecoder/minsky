@@ -23,10 +23,12 @@
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
+#include "plotWidget.h"
 #include "selection.h"
 #include "switchIcon.h"
 #include "wire.h"
 #include "ravelWrap.h"
+#include "lock.h"
 #include "sheet.h"
 #include "renderNativeWindow.h"
 
@@ -34,6 +36,7 @@
 
 namespace minsky
 {
+  using namespace classdesc;
   template <class T>
   struct NoAssign: public T
   {
@@ -175,6 +178,7 @@ namespace minsky
     void addGroup() {setItemFocus(model->addItem(new Group));}
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
     void addRavel() {setItemFocus(model->addItem(new Ravel));}
+    void addLock() {setItemFocus(model->addItem(new Lock));}
     void addSheet() {setItemFocus(model->addItem(new Sheet));}
     
     /// create a group from items found in the current selection

@@ -503,7 +503,7 @@ namespace MathDAG
   }
  
   template <>
-  ostream& OperationDAG<OperationType::gamma>::matlab(ostream& o) const
+  ostream& OperationDAG<OperationType::Gamma>::matlab(ostream& o) const
   {
     checkArg(0,0);
     return o<<"gamma("<<arguments[0][0]->matlab()<<")";
@@ -527,11 +527,11 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::userFunction>::matlab(ostream& o) const
   {
     if (arguments.empty() || arguments[0].empty())
-      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"(0,0)";
+      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"(0,0)";
     else if (arguments.size()<2 || arguments[1].empty())
-      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"("<<arguments[0][0]->matlab()<<",0)";
+      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<",0)";
     else
-      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"("<<arguments[0][0]->matlab()<<","<<arguments[0][1]->matlab()<<")";
+      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<","<<arguments[0][1]->matlab()<<")";
   }    
 
   

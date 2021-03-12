@@ -36,6 +36,7 @@
 #include "integral.h"
 #include "variableValue.h"
 #include "canvas.h"
+#include "lock.h"
 #include "panopticon.h"
 #include "fontDisplay.h"
 #include "variableTab.h"
@@ -63,7 +64,8 @@ namespace minsky
   using namespace civita;
   
   struct RKdata; // an internal structure for holding Runge-Kutta data
-
+  struct CallableFunction;
+  
   // handle the display of rendered equations on the screen
   class EquationDisplay: public CairoSurface
   {
@@ -94,6 +96,7 @@ namespace minsky
     
     std::vector<int> flagStack;
 
+    std::map<std::string, std::shared_ptr<CallableFunction>> userFunctions;
     
     
     // make copy operations just dummies, as assignment of Minsky's
@@ -196,7 +199,11 @@ namespace minsky
     {GodleyIcon::svgRenderer.setResource(s);}
     void setGroupIconResource(const string& s)
     {Group::svgRenderer.setResource(s);}
-
+    void setLockIconResource(const string& locked, const string& unlocked) {
+      Lock::lockedIcon.setResource(locked);
+      Lock::unlockedIcon.setResource(unlocked);
+    }
+    
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
     //  @param ac type of column we wish matches for
@@ -284,7 +291,6 @@ namespace minsky
     void jacobian(Matrix& jac, double t, const double vars[]);
     
     double t{0}; ///< time
-    double t0{0}; ///< simulation start time
     bool running=false; ///< controls whether simulation is running
     bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values

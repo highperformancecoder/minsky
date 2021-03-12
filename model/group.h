@@ -19,15 +19,34 @@
 
 #ifndef GROUP_H
 #define GROUP_H
-#include "intrusiveMap.h"
-#include "bookmark.h"
-#include "item.h"
-#include "plotWidget.h"
-#include "wire.h"
-#include "group.h"
-#include "variable.h"
-#include <function.h>
 #include "SVGItem.h"
+#include "callableFunction.h"
+
+#include <assert.h>         // for assert
+#include <string.h>         // for size_t, memcpy
+#include <memory>           // for shared_ptr, weak_ptr, __shared_ptr_access
+#include <set>              // for set
+#include <string>           // for string, basic_string, operator+, operator==
+#include <vector>           // for vector
+#include "TCL_obj_stl.h"    // for TCL_objp
+#include "arrays.h"         // for array
+#include "bookmark.h"       // for Bookmark
+#include "cairo.h"          // for cairo_t
+#include "classdesc.h"      // for Exclude, NullDescriptor
+#include "ecolab.h"         // for unpack_t
+#include "error.h"          // for error
+#include "item.h"           // for ItemPtr, Item, ItemPortVector, ItemT, Items
+#include "operationType.h"  // for operator<<
+#include "port.h"           // for GroupPtr, Port (ptr only)
+#include "tensorVal.h"      // for operator<<
+#include "variable.h"       // for VariablePtr, VariableBase
+#include "variableType.h"   // for operator<<
+#include "wire.h"           // for WirePtr, Wires, Wire, error
+namespace classdesc { class pack_t; }
+namespace classdesc_access { template <class T> struct access_pack; }
+namespace classdesc_access { template <class T> struct access_unpack; }
+namespace minsky { class PlotWidget; }
+namespace minsky { struct LassoBox; }
 
 namespace minsky
 {
@@ -146,12 +165,12 @@ namespace minsky
     WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
                 const std::vector<float>& coords = {})
     {
-      if (toPortIdx>=to.ports.size()) return WirePtr();
-      return addWire(from.ports[0], to.ports[toPortIdx], coords);
+      if (toPortIdx>=to.portsSize()) return WirePtr();
+      return addWire(from.ports(0), to.ports(toPortIdx), coords);
     }
 
-    WirePtr addWire(const std::shared_ptr<Port>& from,
-                    const std::shared_ptr<Port>& to, 
+    WirePtr addWire(const std::weak_ptr<Port>& from,
+                    const std::weak_ptr<Port>& to, 
                     const std::vector<float>& coords = {}); 
     
     /// total number of items in this and child groups
@@ -180,13 +199,21 @@ namespace minsky
       return false;
     }
 
-  class Group: public ItemT<Group>, public GroupItems
+  class Group: public ItemT<Group>, public GroupItems, public CallableFunction
   {
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
   public:
     
     std::string title;
+    std:: string name() const override {return title;}
+    /// evaluate function on arbitrary number of arguments (exprtk support)
+    double operator()(const std::vector<double>& p) override;
+    /// algebraic formula representing value of first output argument of this group
+    std::string formula() const;
+    /// argument declaration, to be appended to name() for function declaration
+    std::string arguments() const;
+    
     Group() {iWidth(100); iHeight(100);}
     ~Group() {}   
     std::vector<VariablePtr> createdIOvariables;
@@ -198,7 +225,7 @@ namespace minsky
     static SVGRenderer svgRenderer;
 
     // TODO fix up the need for this override - see ticket #786
-    ItemPtr addItem(const shared_ptr<Item>& it, bool inSchema=false)
+    ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false)
     {
       auto r=GroupItems::addItem(it,inSchema);
       return r;

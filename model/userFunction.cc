@@ -23,67 +23,131 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 
+#include <exprtk/exprtk.hpp>
+#include <cmath>
+
 namespace minsky
 {
   int UserFunction::nextId=0;
-
-  namespace userFunction
-  {
-    exprtk::symbol_table<double>& globalSymbols()
-    {
-      static exprtk::symbol_table<double> table;
-      return table;
-    }
-  }
   
   namespace {
-    exprtk::parser<double> parser;
-  }
+    // resolve overloads
+    inline double isfinite(double x) {return std::isfinite(x);}
+    inline double isinf(double x) {return std::isinf(x);}
+    inline double isnan(double x) {return std::isnan(x);}
+
+    void addTimeVariables(exprtk::symbol_table<double>& table)
+    {
+      // Vensim names for these variables.
+      // TODO replace these by xmile names, and add user function to provide aliases for Vensim, and add the ability to resolve var names to argumentless functions
+      table.add_variable("time",minsky().t);
+      table.add_variable("timeStep",minsky().stepMax);
+      table.add_variable("initialTime",minsky().t0);
+      table.add_variable("finalTime",minsky().tmax);
+
+      table.add_function("isfinite",isfinite);
+      table.add_function("isinf",isinf);
+      table.add_function("isnan",isnan);
+    }
   
+    exprtk::parser<double> parser;
+
+    struct ExprTkCallableFunction: public exprtk::ivararg_function<double>
+    {
+      std::weak_ptr<CallableFunction> f;
+      ExprTkCallableFunction(const std::weak_ptr<CallableFunction>& f): f(f) {}
+      double operator()(const std::vector<double>& x) {
+        if (auto sf=f.lock())
+          return (*sf)(x);
+        return nan("");
+      }
+    };
+  }
+
+  struct UserFunction::Impl
+  {
+    exprtk::symbol_table<double> symbols;
+    exprtk::expression<double> compiledExpression;
+    std::vector<ExprTkCallableFunction> functions;
+  };
+  
+
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
 
-  UserFunction::UserFunction(const string& name, const string& expression): expression(expression) {
-    description(name);
-    localSymbols.add_variable("x",x);
-    localSymbols.add_variable("y",y);
-      
-    compiledExpression.register_symbol_table(userFunction::globalSymbols());
-    compiledExpression.register_symbol_table(externalSymbols);
-    compiledExpression.register_symbol_table(localSymbols);
+  UserFunction::UserFunction(const string& name, const string& expression): impl(make_shared<Impl>()), argNames{"x","y"}, expression(expression)  {
+    UserFunction::description(name);
   }
 
-  vector<string> UserFunction::externalSymbolNames() const
+  vector<string> UserFunction::symbolNames() const
   {
-    // do an initial parse to pick up references to external variables
-    exprtk::symbol_table<double> externalSymbols, localSymbols=this->localSymbols;
-    exprtk::expression<double> compiledExpression;
-    compiledExpression.register_symbol_table(externalSymbols);
-    compiledExpression.register_symbol_table(userFunction::globalSymbols());
-    compiledExpression.register_symbol_table(localSymbols);
-    parser.enable_unknown_symbol_resolver();
-    parser.compile(expression, compiledExpression);
-    parser.disable_unknown_symbol_resolver();
-    std::vector<std::string> externalVariables;
-    externalSymbols.get_variable_list(externalVariables);
-    return externalVariables;
+    std::set<std::string> symbolNames;
+
+    string word;
+    bool inWord=false, inString=false, quoted=false;
+    for (auto c: expression)
+      {
+      switch (c)
+        {
+        case '\'': if (!quoted) inString=!inString; break;
+        case '\\': quoted=true; break;
+        default: quoted=false; break; // I'm assuming that \" embeds a quote, but may not be true
+        }
+                                                     
+      if (!inWord && !inString)
+        inWord=isalpha(c);
+
+      if (inWord)
+        {
+          if (isalnum(c) || c=='_' || c=='.')
+            word+=c;
+          else
+            {
+              // trailing '.' not allowed
+              if (word.back()=='.') word.erase(word.end()-1);
+              symbolNames.insert(word);
+              word.clear();
+              inWord=false;
+            }
+        }
+      }
+    if (!word.empty()) // we ended on an identifier
+      symbolNames.insert(word);
+    return {symbolNames.begin(), symbolNames.end()};
   }
-  
+
   void UserFunction::compile()
   {
-    // add them back in with their correct definitions
-    externalSymbols.clear();
-    for (auto& i: externalSymbolNames())
+    impl->compiledExpression=exprtk::expression<double>();
+
+    // build symbol table
+    impl->symbols.clear();
+    impl->functions.clear();
+    addTimeVariables(impl->symbols);
+    for (auto& i: symbolNames())
       {
-        auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
+        auto scopedName=VariableValue::valueIdFromScope(group.lock(),i);
+        auto v=minsky().variableValues.find(scopedName);
         if (v!=minsky().variableValues.end())
-          externalSymbols.add_variable(i, (*v->second)[0]);
-        else
-          throw_error("unknown variable: "+i);
+          {
+            impl->symbols.add_variable(i, (*v->second)[0]);
+            continue;
+          }
+        auto f=minsky().userFunctions.find(scopedName);
+        if (f!=minsky().userFunctions.end())
+          {
+            impl->functions.emplace_back(f->second);
+            impl->symbols.add_function(i,impl->functions.back());
+          }
       }
+
+    // add arguments
+    argVals.resize(argNames.size());
+    for (size_t i=0; i<argNames.size(); ++i)
+      impl->symbols.add_variable(argNames[i], argVals[i]);
+    impl->compiledExpression.register_symbol_table(impl->symbols);
     
-      // TODO bind any other external references to the variableValues table
-    if (!parser.compile(expression, compiledExpression))
+    if (!parser.compile(expression, impl->compiledExpression))
       {
         string errorInfo;
         for (size_t i=0; i<parser.error_count(); ++i)
@@ -94,8 +158,49 @@ namespace minsky
   
   double UserFunction::evaluate(double in1, double in2)
   {
-    x=in1, y=in2;
-    return compiledExpression.value();
+    if (argVals.size()>0) argVals[0]=in1;
+    if (argVals.size()>1) argVals[1]=in2;
+    for (size_t i=2; i<argVals.size(); ++i) argVals[i]=0;
+    return impl->compiledExpression.value();
   }
+
+  double UserFunction::operator()(const std::vector<double>& p)
+  {
+    size_t i=0;
+    for (; i<p.size() && i<argVals.size(); ++i) argVals[i]=p[i];
+    for (; i<argVals.size(); ++i) argVals[i]=0;
+    return impl->compiledExpression.value();
+  }
+
+  string UserFunction::description(const string& nm)
+  {
+    NamedOp::description(nm);
+    static regex extractArgList(R"([^(]*\(([^)]*)\))");
+    smatch match;
+    string argList;
+    if (regex_match(nm,match,extractArgList))
+      argList=match[1];
+
+    argNames.clear();
+    auto end=argList.find(',');
+    decltype(end) begin=0;
+    for (; end!=string::npos; begin=end+1, end=argList.find(',',begin))
+      argNames.push_back(argList.substr(begin,end-begin));
+    argNames.push_back(argList.substr(begin));
+    return nm;
+  }
+
+  string UserFunction::name() const
+  {
+    static regex extractName(R"(([^(]*).*)");
+    smatch match;
+    auto d=description();
+    regex_match(d, match, extractName);
+    assert (match.size()>1);
+    return match[1];
+  }    
+
+
+  
 }
 

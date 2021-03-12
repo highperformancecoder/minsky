@@ -26,44 +26,39 @@ namespace minsky
 {
   namespace {
     exprtk::parser<UnitsExpressionWalker> unitsParser;
+
   }
 
   UnitsExpressionWalker timeUnit;
   bool UnitsExpressionWalker::check=true;
-
-  namespace userFunction
-  {
-    exprtk::symbol_table<UnitsExpressionWalker>& globalUnitSymbols()
-    {
-      static exprtk::symbol_table<UnitsExpressionWalker> table;
-      return table;
-    }
-  }
-
   Units UserFunction::units(bool check) const
   {
     UnitsExpressionWalker::check=check;
-    UnitsExpressionWalker x,y;
-    x.units=ports[1]->units(check); x.check=check;
-    y.units=ports[2]->units(check); y.check=check;
-
+    vector<UnitsExpressionWalker> args(argNames.size());
+    if (args.size()>0) args[0].units=m_ports[1]->units(check);
+    if (args.size()>1) args[1].units=m_ports[2]->units(check);
+    
     timeUnit.units=Units(cminsky().timeUnit);
     
     vector<UnitsExpressionWalker> externalUnits;
     exprtk::symbol_table<UnitsExpressionWalker> symbolTable, unknownVariables;
     exprtk::expression<UnitsExpressionWalker> compiled;
     compiled.register_symbol_table(unknownVariables);
-    compiled.register_symbol_table(userFunction::globalUnitSymbols());
     compiled.register_symbol_table(symbolTable);
-    symbolTable.add_variable("x",x);
-    symbolTable.add_variable("y",y);
+    for (size_t i=0; i<args.size(); ++i)
+      {
+        args[i].check=check;
+        symbolTable.add_variable(argNames[i],args[i]);
+      }
 
-    std::vector<std::string> externalIds=const_cast<UserFunction*>(this)->externalSymbolNames();
+    std::vector<std::string> externalIds=symbolNames();
 
     externalUnits.reserve(externalIds.size());
     for (auto& i: externalIds)
       {
-        auto v=minsky().variableValues.find(VariableValue::valueIdFromScope(group.lock(),i));
+        if (find(argNames.begin(), argNames.end(), i)!=argNames.end()) continue; // skip arguments
+        auto id=VariableValue::valueIdFromScope(group.lock(),i);
+        auto v=minsky().variableValues.find(id);
         if (v!=minsky().variableValues.end())
           {
             externalUnits.emplace_back();
@@ -72,11 +67,13 @@ namespace minsky
             unknownVariables.add_variable(i, externalUnits.back());
           }
         else
-          if (check)
-            throw_error("unknown variable: "+i);
-          else
+          // TODO: add in references to user functions: for now, just return dimensionless in the case of unresolved variables. See ticket #1290
+          //if (check)
+          //  throw_error("unknown variable: "+i);
+          //else
             return {};
       }
+    unknownVariables.add_variable("time",minsky::timeUnit);
 
     try
       {

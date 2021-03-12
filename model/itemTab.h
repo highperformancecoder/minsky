@@ -35,7 +35,8 @@ namespace minsky
   
     double xoffs=80;
     double rowHeight=0;
-    double colWidth=50; 
+    double colWidth=50;
+    std::vector<double> colWidths; // generalises colWdith concept for par and var tabs. 
     float offsx=0, offsy=0;
     std::map<ItemPtr,std::pair<float,float>> itemCoords;       
     float m_width=600, m_height=800;
@@ -50,7 +51,7 @@ namespace minsky
 
     virtual void populateItemVector();
     virtual bool itemSelector(const ItemPtr& i) = 0;
-    void toggleVarDisplay(int i) const {if (i>=0 && i<int(itemVector.size())) (itemVector[i])->variableCast()->toggleVarTabDisplay(); else return;}
+    void toggleVarDisplay(int i) const {if (i>=0 && i<int(itemVector.size())) (itemVector[i])->variableCast()->toggleVarTabDisplay(); else return;}    
     std::string getVarName(int i) const {if (i>=0 && i<int(itemVector.size())) return (itemVector[i])->variableCast()->name(); else return "";}
     std::vector<std::string> varAttrib{"Name","Definition","Initial Value","Short Description", "Long Description","Slider Step","Slider Min","Slider Max","Value"};       
     std::vector<std::string> varAttribVals;
@@ -61,7 +62,8 @@ namespace minsky
     void moveTo(float x, float y);  
          
     float moveOffsX, moveOffsY,xItem,yItem;
-    ItemPtr itemFocus;        
+    ItemPtr itemFocus,item;      
+    void getItemAt(float x, float y) {item=itemAt(x,y);}  
     enum ClickType {background, internal};    
     ClickType clickType(double x, double y) const;         
     virtual void draw(cairo_t* cairo); 

@@ -153,4 +153,7 @@ namespace classdesc_access
 #include "xvector.xcd"
 #endif
 
+#ifdef ITEM_H
+#include "plotWidget.h"
+#endif
 #include <ecolab_epilogue.h>

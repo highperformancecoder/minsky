@@ -20,6 +20,7 @@
 #include "cairoItems.h"
 #include "minskyTCL.h"
 #include "minskyTCLObj.h"
+#include "callableFunction.h"
 #include "CSVDialog.h"
 #include <ecolab.h>
 #include "minsky_epilogue.h"

@@ -81,18 +81,19 @@ SUITE(Minsky)
       CHECK(var["f"]->lhs());
 
       auto addOp=model->addItem(OperationBase::create(OperationType::add)); 
-      CHECK_EQUAL(3, addOp->ports.size());
-      auto intOp=model->addItem(OperationBase::create(OperationType::integrate)); 
-      CHECK_EQUAL(3, intOp->ports.size());
+      CHECK_EQUAL(3, addOp->portsSize());
+      auto intOp=dynamic_cast<IntOp*>(OperationBase::create(OperationType::integrate));
+      model->addItem(intOp); 
+      CHECK_EQUAL(3, intOp->portsSize());
       auto mulOp=model->addItem(OperationBase::create(OperationType::multiply)); 
-      CHECK_EQUAL(3, mulOp->ports.size());
+      CHECK_EQUAL(3, mulOp->portsSize());
  
       model->addWire(*var["e"], *var["f"], 1, {});
       model->addWire(*var["c"], *addOp, 1, {});
       model->addWire(*var["d"], *addOp, 2, {});
       model->addWire(*addOp, *intOp, 1, {});
-      model->addWire(*intOp, *var["a"], 1, {});
-      model->addWire(*intOp, *mulOp, 1, {});
+      model->addWire(*intOp->intVar, *var["a"], 1, {});
+      model->addWire(*intOp->intVar, *mulOp, 1, {});
       model->addWire(*var["e"], *mulOp, 2, {});
       model->addWire(*mulOp, *var["b"], 1, {});
 
@@ -156,11 +157,11 @@ SUITE(Minsky)
             var[v->name()]=v;
 
       auto op4=model->addItem(new VarConstant);
-      CHECK_EQUAL(1, op4->ports.size());
+      CHECK_EQUAL(1, op4->portsSize());
       auto op5=model->addItem(new VarConstant);
-      CHECK_EQUAL(1, op5->ports.size());
+      CHECK_EQUAL(1, op5->portsSize());
       auto op6=model->addItem(OperationBase::create(OperationType::add));
-      CHECK_EQUAL(3, op6->ports.size());
+      CHECK_EQUAL(3, op6->portsSize());
 
       ecolab::array<float> coords(4,0);
  
@@ -261,15 +262,16 @@ SUITE(Minsky)
           var[v->name()]=v;
 
       auto op1=model->addItem(OperationPtr(OperationType::add));
-      auto op2=model->addItem(OperationPtr(OperationType::integrate));
+      auto op2=new IntOp;
+      model->addItem(op2);
       auto op3=model->addItem(OperationPtr(OperationType::multiply));
   
       model->addWire(*var["e"], *var["f"], 1);
       model->addWire(*var["c"], *op1, 1);
       model->addWire(*var["d"], *op1, 2);
       model->addWire(*op1, *op2, 1);
-      model->addWire(*op2, *var["a"], 1);
-      model->addWire(*op2, *op3, 1);
+      model->addWire(*op2->intVar, *var["a"], 1);
+      model->addWire(*op2->intVar, *op3, 1);
       model->addWire(*var["e"],* op3, 2);
       model->addWire(*op3, *var["b"], 1);
  
@@ -330,7 +332,7 @@ SUITE(Minsky)
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
-      model->addWire(*op2, *op3, 1, vector<float>());
+      model->addWire(*intOp->intVar, *op3, 1, vector<float>());
       reset();
       step();
       //      CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
@@ -355,11 +357,11 @@ SUITE(Minsky)
       auto op1=model->addItem(OperationPtr(OperationType::add));
       auto w=model->addItem(VariablePtr(VariableType::flow,"w"));
       auto a=model->addItem(VariablePtr(VariableType::flow,"a"));
-      CHECK(model->addWire(new Wire(op1->ports[0], w->ports[1])));
-      CHECK(model->addWire(new Wire(w->ports[0], op1->ports[1])));
-      model->addWire(new Wire(op1->ports[0], w->ports[1]));
-      model->addWire(new Wire(w->ports[0], op1->ports[1]));
-      model->addWire(new Wire(a->ports[0], op1->ports[2]));
+      CHECK(model->addWire(new Wire(op1->ports(0), w->ports(1))));
+      CHECK(model->addWire(new Wire(w->ports(0), op1->ports(1))));
+      model->addWire(new Wire(op1->ports(0), w->ports(1)));
+      model->addWire(new Wire(w->ports(0), op1->ports(1)));
+      model->addWire(new Wire(a->ports(0), op1->ports(2)));
 
       CHECK(cycleCheck());
       CHECK_THROW(constructEquations(), ecolab::error);
@@ -381,13 +383,13 @@ SUITE(Minsky)
       auto op1=model->addItem(OperationPtr(OperationType::integrate));
       auto op2=model->addItem(OperationPtr(OperationType::multiply));
       auto a=model->addItem(VariablePtr(VariableType::flow,"a"));
-      CHECK(model->addWire(new Wire(op1->ports[0], op2->ports[1])));
-      CHECK(model->addWire(new Wire(op2->ports[0], op1->ports[1])));
-      CHECK(model->addWire(new Wire(a->ports[0], op2->ports[2])));
+      CHECK(model->addWire(new Wire(op1->ports(0), op2->ports(1))));
+      CHECK(model->addWire(new Wire(op2->ports(0), op1->ports(1))));
+      CHECK(model->addWire(new Wire(a->ports(0), op2->ports(2))));
 
-      model->addWire(new Wire(op1->ports[0], op2->ports[1]));
-      model->addWire(new Wire(op2->ports[0], op1->ports[1]));
-      model->addWire(new Wire(a->ports[0], op2->ports[2]));
+      model->addWire(new Wire(op1->ports(0), op2->ports(1)));
+      model->addWire(new Wire(op2->ports(0), op1->ports(1)));
+      model->addWire(new Wire(a->ports(0), op2->ports(2)));
 
       CHECK(!cycleCheck());
       constructEquations();
@@ -433,10 +435,10 @@ SUITE(Minsky)
 
       auto op=model->addItem(OperationBase::create(OperationType::add));
 
-      model->addWire(new Wire(varA->ports[0], op->ports[1]));
-      model->addWire(new Wire(varB->ports[0], op->ports[1]));
-      model->addWire(new Wire(op->ports[0], varC->ports[1]));
-      model->addWire(new Wire(varC->ports[0], intOp->ports[1]));
+      model->addWire(new Wire(varA->ports(0), op->ports(1)));
+      model->addWire(new Wire(varB->ports(0), op->ports(1)));
+      model->addWire(new Wire(op->ports(0), varC->ports(1)));
+      model->addWire(new Wire(varC->ports(0), intOp->ports(1)));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -464,10 +466,10 @@ SUITE(Minsky)
   
       auto op=model->addItem(OperationBase::create(OperationType::subtract));
 
-      model->addWire(new Wire(varA->ports[0], op->ports[2]));
-      model->addWire(new Wire(varB->ports[0], op->ports[2]));
-      model->addWire(new Wire(op->ports[0], varC->ports[1]));
-      model->addWire(new Wire(varC->ports[0], intOp->ports[1]));
+      model->addWire(new Wire(varA->ports(0), op->ports(2)));
+      model->addWire(new Wire(varB->ports(0), op->ports(2)));
+      model->addWire(new Wire(op->ports(0), varC->ports(1)));
+      model->addWire(new Wire(varC->ports(0), intOp->ports(1)));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -495,10 +497,10 @@ SUITE(Minsky)
   
       auto op=model->addItem(OperationBase::create(OperationType::multiply));
 
-      model->addWire(new Wire(varA->ports[0], op->ports[2]));
-      model->addWire(new Wire(varB->ports[0], op->ports[2]));
-      model->addWire(new Wire(op->ports[0], varC->ports[1]));
-      model->addWire(new Wire(varC->ports[0], intOp->ports[1]));
+      model->addWire(new Wire(varA->ports(0), op->ports(2)));
+      model->addWire(new Wire(varB->ports(0), op->ports(2)));
+      model->addWire(new Wire(op->ports(0), varC->ports(1)));
+      model->addWire(new Wire(varC->ports(0), intOp->ports(1)));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -526,10 +528,10 @@ SUITE(Minsky)
   
       auto op=model->addItem(OperationBase::create(OperationType::divide));
 
-      model->addWire(new Wire(varA->ports[0], op->ports[2]));
-      model->addWire(new Wire(varB->ports[0], op->ports[2]));
-      model->addWire(new Wire(op->ports[0], varC->ports[1]));
-      model->addWire(new Wire(varC->ports[0], intOp->ports[1]));
+      model->addWire(new Wire(varA->ports(0), op->ports(2)));
+      model->addWire(new Wire(varB->ports(0), op->ports(2)));
+      model->addWire(new Wire(op->ports(0), varC->ports(1)));
+      model->addWire(new Wire(varC->ports(0), intOp->ports(1)));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -1090,10 +1092,10 @@ SUITE(Minsky)
       model->addItem(f1);
       model->addItem(f2);
       model->addItem(op);
-      model->addWire(op->ports[0],f1->ports[1]);
-      model->addWire(op->ports[0],f2->ports[1]);
-      CHECK_EQUAL(1, f1->ports[1]->wires().size());
-      CHECK_EQUAL(0, f2->ports[1]->wires().size());
+      model->addWire(op->ports(0),f1->ports(1));
+      model->addWire(op->ports(0),f2->ports(1));
+      CHECK_EQUAL(1, f1->ports(1).lock()->wires().size());
+      CHECK_EQUAL(0, f2->ports(1).lock()->wires().size());
     }
 
     TEST_FIXTURE(TestFixture,MultiplyDefinedVarsThrowsOnReset)
@@ -1104,11 +1106,11 @@ SUITE(Minsky)
       model->addItem(f1);
       model->addItem(f2);
       model->addItem(op);
-      model->addWire(op->ports[0],f1->ports[1]);
-      model->addWire(std::make_shared<Wire>(op->ports[0],f2->ports[1]));
-      CHECK_EQUAL(1, f1->ports[1]->wires().size());
+      model->addWire(op->ports(0),f1->ports(1));
+      model->addWire(std::make_shared<Wire>(op->ports(0),f2->ports(1)));
+      CHECK_EQUAL(1, f1->ports(1).lock()->wires().size());
       // We've tricked the system into having a multiply defined variable
-      CHECK_EQUAL(1, f2->ports[1]->wires().size());
+      CHECK_EQUAL(1, f2->ports(1).lock()->wires().size());
       CHECK_THROW(reset(), std::exception);
     }
 
@@ -1117,7 +1119,7 @@ SUITE(Minsky)
         VariablePtr a(VariableType::flow,"a");
         VariablePtr b(VariableType::flow,"b");
         model->addItem(a); model->addItem(b);
-        model->addWire(a->ports[0], b->ports[1]);
+        model->addWire(a->ports(0), b->ports(1));
         canvas.selection.ensureItemInserted(a);
         canvas.selection.ensureItemInserted(b);
         CHECK_EQUAL(1,canvas.selection.numWires());
@@ -1135,7 +1137,7 @@ SUITE(Minsky)
         VariablePtr a(VariableType::flow,"a");
         VariablePtr b(VariableType::flow,"b");
         model->addItem(a); model->addItem(b);
-        model->addWire(a->ports[0], b->ports[1]);
+        model->addWire(a->ports(0), b->ports(1));
         canvas.selection.ensureItemInserted(a);
         canvas.selection.ensureItemInserted(b);
         copy();

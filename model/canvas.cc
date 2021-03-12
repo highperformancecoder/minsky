@@ -118,8 +118,9 @@ namespace minsky
                        [&](const Items&, Items::const_iterator i)
                        {
                          if ((*i)->group.lock()->displayContents())
-                           for (auto& p: (*i)->ports)
+                           for (size_t pi=0; pi<(*i)->portsSize(); ++pi)
                              {
+                               auto p=(*i)->ports(pi).lock();
                                float d=sqr(p->x()-x)+sqr(p->y()-y);
                                if (d<minD)
                                  {
@@ -145,7 +146,7 @@ namespace minsky
     if (fromPort.get())
       {
           if (auto to=closestInPort(x,y))
-            model->addWire(fromPort,to);
+            model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
         fromPort.reset();
       }
     
@@ -662,12 +663,27 @@ namespace minsky
   void Canvas::ungroupItem()
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
-      {
+      {		  
         if (auto p=g->group.lock())
           {
-            p->moveContents(*g);
-            deleteItem();
-          }
+            if (!g->empty()) // minskly crashes if group empty and ungrouped subsequently. for ticket 1243
+              {  	    				 
+                // stash values of parameters in copied group, as they are reset for some unknown reason later on. for tickets 1243/1258
+                map<string,string> existingParms; 
+                for (auto& i: g->items) {
+                  auto v=i->variableCast(); 
+                  if (v && v->type()==VariableType::parameter) 
+                    existingParms.emplace(v->valueId(),v->init());
+                }
+		       
+                p->moveContents(*g);
+                deleteItem();
+               	    
+		existingParms.clear();    
+	         
+              } else deleteItem();
+          }       
+        
         // else item is toplevel which can't be ungrouped
       }
   }
@@ -837,10 +853,12 @@ namespace minsky
       {
         redrawUpdateRegion();
       }
+#ifndef NDEBUG
     catch (std::exception& ex)
       {
         cerr << ex.what() << endl;
       }
+#endif
     catch (...)
       {
         // consume exception and try redrawing

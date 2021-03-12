@@ -19,6 +19,7 @@
 
 #include "autoLayout.h"
 #include "selection.h"
+#include "userFunction.h"
 #include "minsky_epilogue.h"
 
 #include <map>
@@ -40,7 +41,7 @@ namespace minsky
     inline double sqr(double x) {return x*x;}
     using Graph=boost::directed_graph<Item*>;
 
-    // computes minimum distance two items can appriach each other
+    // computes minimum distance two items can approach each other
     double minD(const Item& item1, const Item& item2)
     {return std::max(item1.width()+item2.width(), item1.height()+item2.height());}
     
@@ -50,8 +51,10 @@ namespace minsky
       double operator()(const Graph::edge_descriptor& e, double k, double d, const Graph& g)
       {
         auto from=g[source(e,g)], to=g[target(e,g)];
-        if (d<minD(*from,*to))
+        auto m=minD(*from,*to);
+        if (d<m)
           return 0;
+        //return exp(d-m)-1;//d*d*d;
         return d*d;
       }
     };
@@ -91,9 +94,13 @@ namespace minsky
       i->moveTo(layoutSize*rng(gen), layoutSize*rng(gen));
   }
 
+  
+  
   void layoutGroup(Group& g)
   {
-    
+    if (g.items.size()+g.groups.size()<2) return;
+    double layoutSize=sqrt(10*totalArea(g)); //half width of square to emplace the items
+   
     Graph gg;
     map<Item*, decltype(gg.add_vertex())> vertexMap;
     for (auto& i: g.items)
@@ -104,6 +111,41 @@ namespace minsky
     for (auto& w: g.wires)
       gg.add_edge(vertexMap[&w->from()->item()], vertexMap[&w->to()->item()]);
 
+    // add some additional vertices representing classes: functions, parameters, flowVars, stockVars etc
+    Item functions, parameters, flowVars, intVars;
+    functions.moveTo(-0.5*layoutSize,-0.5*layoutSize);
+    parameters.moveTo(-0.5*layoutSize,0.5*layoutSize);
+    flowVars.moveTo(-0.5*layoutSize,0.5*layoutSize);
+    intVars.moveTo(0.5*layoutSize,0.5*layoutSize);
+    vertexMap.emplace(&functions, gg.add_vertex(&functions)); 
+    vertexMap.emplace(&parameters, gg.add_vertex(&parameters)); 
+    vertexMap.emplace(&flowVars, gg.add_vertex(&flowVars)); 
+    vertexMap.emplace(&intVars, gg.add_vertex(&intVars)); 
+
+    // now bind items without outputs to this fixtures
+    for (auto& i: g.items)
+      {
+        if (dynamic_cast<UserFunction*>(i.get()) && i->ports(0).lock()->wires().empty())
+          gg.add_edge(vertexMap[&functions], vertexMap[i.get()]);
+        else if (auto v=i->variableCast())
+          if (i->ports(0).lock()->wires().empty() || !i->ports(1).lock()->wires().empty())
+            switch (v->type())
+              {
+              case VariableType::parameter:
+                gg.add_edge(vertexMap[&parameters], vertexMap[i.get()]);
+                break;
+              case VariableType::flow:
+                gg.add_edge(vertexMap[&flowVars], vertexMap[i.get()]);
+                break;
+              case VariableType::integral:
+                gg.add_edge(vertexMap[&intVars], vertexMap[i.get()]);
+                break;
+              default:
+                break;
+              }
+      }
+
+    
     using Topology=square_topology<>;
     
     using PosMap=std::map<decltype(gg.add_vertex()), Topology::point_type>;
@@ -118,7 +160,6 @@ namespace minsky
         positions[i.second]=p;
       }
 
-    double layoutSize=sqrt(10*totalArea(g));
     fruchterman_reingold_force_directed_layout
       (gg,pm, Topology(layoutSize), attractive_force(WireForce()).repulsive_force(RepulsiveForce()));
     // maybe not needed
@@ -131,9 +172,11 @@ namespace minsky
         auto p=pm[*i];
         gg[*i]->moveTo(p[0]+layoutSize,p[1]+layoutSize);
       }
-    
-    for (auto& i: g.groups)
-      layoutGroup(*i);
+
+    // TODO should we recursively descend into groups or not? If so,
+    // then we need to be aware of group's size
+//    for (auto& i: g.groups)
+//      layoutGroup(*i);
   }
 }
 

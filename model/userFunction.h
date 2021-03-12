@@ -21,49 +21,42 @@
 #define USERFUNCTION_H
 #include "operation.h"
 #include "unitsExpressionWalker.h"
-#include "exprtk/exprtk.hpp"
+#include "callableFunction.h"
 namespace  minsky
 {
-  namespace userFunction
+  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp, public CallableFunction
   {
-    exprtk::symbol_table<double>& globalSymbols();
-    exprtk::symbol_table<UnitsExpressionWalker>& globalUnitSymbols();
-  }
-  
-  class UserFunction: public ItemT<UserFunction, Operation<OperationType::userFunction>>, public NamedOp
-  {
-    exprtk::symbol_table<double> localSymbols, externalSymbols;
-    exprtk::expression<double> compiledExpression;
+    struct Impl;
+    std::shared_ptr<Impl> impl;
     void updateBB() override {bb.update(*this);}
     CLASSDESC_ACCESS(UserFunction);
   public:
     static int nextId;
-    double x, y;
+    std::vector<std::string> argNames;
+    std::vector<double> argVals;
     std::string expression;
     UserFunction(): UserFunction("uf"+std::to_string(nextId++)+"(x,y)") {}
     UserFunction(const std::string& name, const std::string& expression="");
-    std::vector<std::string> externalSymbolNames() const;
+    std::vector<std::string> symbolNames() const;
     void compile();
     double evaluate(double x, double y);
+
+    /// evaluate function on arbitrary number of arguments (exprtk support)
+    double operator()(const std::vector<double>& p) override;
+
     Units units(bool check=false) const override;
-    void addVariable(const std::string& name, double& x) {
-      localSymbols.add_variable(name,x);
-    }
-    template <class F>
-    void addFunction(const std::string& name, F f) {
-      localSymbols.add_function(name,f);
-    }
     void displayTooltip(cairo_t* cr, const std::string& tt) const override
     {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
-  };
 
-  // single argument user function
-  class UserFunction1: public UserFunction
-  {
-  public:
-    UserFunction1() {}
-    UserFunction1(const std::string& name, const std::string& expression=""): UserFunction(name,expression) {}
-    double evaluate(double x) {return UserFunction::evaluate(x,0);}
+    using NamedOp::description;
+    std::string description(const std::string&) override;
+    /// function name, shorn of argument decorators
+    std::string name() const override;
+
+    // required by the compiler
+    static UserFunction* create(OperationType::Type t) 
+    {return (t==OperationType::userFunction)? new UserFunction: nullptr;}
+    
   };
 
   // static UnitExpressionWalker that is initialised to the time unit

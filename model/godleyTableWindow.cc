@@ -223,7 +223,7 @@ namespace minsky
                   {
                     string value;
                     FlowCoef fc(text);
-                    if (displayValues)
+                    if (displayValues && col!=0)  // Do not add value "= 0.0" to first column. For tickets 1064/1274
                       try
                         {
                           auto vv=cminsky().variableValues
@@ -267,7 +267,7 @@ namespace minsky
                           }
                         else // is flow tag, stock var or initial condition
                           text = latexToPango(text);
-                        if (row!=1 || col!=0) text+=value;  // Do not add value "= 0.0" to Initial Condtions cell(1,0). For ticket 1064
+                        text+=value;
                       }
                     else
                       //Display values of parameters used as initial conditions in Godley tables. for ticket 1126.  
@@ -309,15 +309,14 @@ namespace minsky
     // now row sum column
     x+=3;
     double y=topTableOffset;
-    cairo_move_to(cairo,x,y);
+    cairo_move_to(cairo,x,0);     // display A-L-E above the final column. for ticket 1285
     pango.setMarkup("A-L-E");
     pango.show();
     double colWidth=pango.width();
-    y+=rowHeight;
   
-    for (unsigned row=1; row<godleyIcon->table.rows(); ++row)
+    for (unsigned row=0; row<godleyIcon->table.rows(); ++row)    // perform row sum on stock var heading column too. for ticket 1285
       {
-        if (row>0 && row<scrollRowStart) continue;
+        if (row >0 && row<scrollRowStart) continue;                    
         pango.setMarkup(latexToPango(godleyIcon->table.rowSum(row)));
         colWidth=max(colWidth,pango.width());
         cairo_move_to(cairo,x,y);

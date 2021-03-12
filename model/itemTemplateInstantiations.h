@@ -26,6 +26,7 @@
 #define ITEMTEMPLATEINSTANTIATION_H
 #include "operation.h"
 #include "ravelWrap.h"
+#include "lock.h"
 #include "userFunction.h"
 #include "sheet.h"
 #include "switchIcon.h"
@@ -84,7 +85,7 @@ namespace minsky
   DEFOP(floor)
   DEFOP(frac)
   DEFOP(not_)
-  DEFOP(gamma)
+  DEFOP(Gamma)
   DEFOP(fact)
   DEFOP(sum)
   DEFOP(product)
@@ -118,6 +119,7 @@ namespace minsky
   
   DEF(GodleyIcon,Item)
   DEF(Group,Item)
+  DEF(Lock,Item)
   DEF(PlotWidget,Item)
   DEF(Sheet,Item)
   DEF(SwitchIcon,BottomRightResizerItem)

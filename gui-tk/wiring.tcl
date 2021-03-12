@@ -193,7 +193,13 @@ image create photo ravelImg -file $minskyHome/icons/ravel.gif
 button .wiring.menubar.ravel -image ravelImg \
     -height 24 -width 37 -command {addRavel}
 tooltip .wiring.menubar.ravel "Ravel"
-pack .wiring.menubar.ravel -side left 
+pack .wiring.menubar.ravel -side left
+
+image create photo lockImg -file $minskyHome/icons/lock.gif
+button .wiring.menubar.lock -image lockImg \
+    -height 24 -width 37 -command {addLock}
+tooltip .wiring.menubar.ravel "Lock Ravel"
+pack .wiring.menubar.lock -side left 
 
 pack .wiring.menubar -fill x
 
@@ -407,8 +413,13 @@ proc textOK {} {
     destroy .textInput
     canvas.moveOffsX 0
     canvas.moveOffsY 0
-    if {[lsearch [availableOperations] $textBuffer]>-1} {
-		addOperationKey $textBuffer
+	if {[lsearch [availableOperations] $textBuffer]>-1} {
+		  set subTextBuffer [string range $textBuffer 1 end]
+		  if {[lsearch [availableOperations] $subTextBuffer]>-1} { # ensure that names escaped with \ can be used as ops or pars and vars as the case may be. for ticket 1291
+			  addOperationKey $subTextBuffer
+		  } else {
+			  addOperationKey $textBuffer
+		  }  
 	} elseif {[llength $textBuffer]==1 && [string match "-" $textBuffer]} { # minus sign only creates subtract op. for ticket 145
 		addOperationKey subtract		
     } elseif [string match "\[%#\]*" $textBuffer] {
@@ -484,6 +495,7 @@ proc deleteKey {x y} {
 
 # global godley icon resource
 setGodleyIconResource $minskyHome/icons/bank.svg
+setLockIconResource $minskyHome/icons/Antu_emblem-locked.svg $minskyHome/icons/Antu_emblem-unlocked.svg
 
 proc rightMouseGodley {x y X Y} {
     if [selectVar $x $y] {
@@ -559,8 +571,13 @@ proc saveSelection {} {
 bind .wiring.canvas <Double-Button-1> {doubleButton %x %y}
 proc doubleButton {x y} {
     if [getItemAt $x $y] {
-        selectVar $x $y
-        editItem
+        if {[canvas.item.classType]=="Lock"} {
+            canvas.item.toggleLocked
+            reset
+        } else {
+            selectVar $x $y
+            editItem
+        }
     } else {
     # For ticket 1092. Reinstate delete handle user interaction    		
     canvas.delHandle $x $y
@@ -802,6 +819,13 @@ proc contextMenu {x y X Y} {
                 .wiring.context add command -label "Unlock" -command {
                     minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
                 }
+            }
+        }
+        Lock {
+            if [$item.locked] {
+                .wiring.context add command -label "Unlock" -command $item.toggleLocked
+            } else {
+                .wiring.context add command -label "Lock" -command $item.toggleLocked
             }
         }
     }
@@ -1394,7 +1418,7 @@ proc editVar {} {
 proc setDataValue {} {
     global constInput
     set item minsky.canvas.item
-    $item.description "$constInput(Name)"
+    eval [set item].description "$constInput(Name)"
     $item.rotation $constInput(Rotation)
     if [llength [info commands $item.expression]] {
         $item.expression $constInput(Expression)
