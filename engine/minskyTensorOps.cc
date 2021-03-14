@@ -436,40 +436,38 @@ namespace minsky
         
         set<size_t> newIdx;
         vector<size_t> hcIdx1,hcIdx2;       
+        size_t tmpLinealIdx;        
         
         if (!arg1->index().empty() && !arg2->index().empty())
         {
         for (auto& i: arg1->index()) 
-			for (auto& k: arg1->hypercube().splitIndex(i))
-                 hcIdx1.push_back(k);          
+            if (i!=arg1->index()[arg1->index().size()-1])
+            {
+			   for (auto& k: arg1->hypercube().splitIndex(i))
+			      hcIdx1.push_back(k);          
+			  tmpLinealIdx = hc.linealIndex(hcIdx1);		 	 
+              newIdx.insert(tmpLinealIdx);
+              hcIdx1.clear();
+		    }
+			    
+			    
 	
         for (auto& j: arg2->index())   
-            for (auto& l: arg2->hypercube().splitIndex(j)) 
-                 hcIdx2.push_back(l);
-        
-	    //vector<size_t> tmpIdx;
-	    size_t tmpLinealIdx;        
+           if (j!=arg2->index()[0])
+           {
+              for (auto& l: arg2->hypercube().splitIndex(j)) 
+                    hcIdx2.push_back(l); 
+              tmpLinealIdx = hc.linealIndex(hcIdx2);		 	 
+              newIdx.insert(tmpLinealIdx);        
+              hcIdx2.clear(); 
+            }
         
         //// first element of split index of first tensor and last element of split index of second tensor is the split index of product tensor. Convert to lineal index to get new index vector????    
-        //for (size_t i=0; i< min(hcIdx1.size(),hcIdx2.size());i++)
-        //  {
-		//	 if (i==0) tmpIdx.push_back(hcIdx1[i]);
-		//	 if (i == min(hcIdx1.size(),hcIdx2.size())-1) tmpIdx.push_back(hcIdx2[i]);
-		// }
-		vector<size_t> tmpIdx(hcIdx1.begin(), hcIdx1.end()-1);
-        tmpIdx.insert(tmpIdx.end(),hcIdx2.begin()+1,hcIdx2.end());
-        
-        //tmpLinealIdx = hc.linealIndex(tmpIdx);		 	 
-        //cout << tmpLinealIdx << endl;
-        //newIdx.insert(tmpLinealIdx);		 
-        //tmpIdx.clear();		 
+		//vector<size_t> tmpIdx(hcIdx1.begin(), hcIdx1.end()-1);
+        //tmpIdx.insert(tmpIdx.end(),hcIdx2.begin()+1,hcIdx2.end()); 
          
-		cachedResult.index(move(tmpIdx));               
-		
-		
-		//hcIdx1.clear();
-		//hcIdx2.clear(); 
-	    }
+		cachedResult.index(Index(newIdx));               
+	   }
                 
       }
     }    
