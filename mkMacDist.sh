@@ -94,7 +94,7 @@ fi
 #fi
 
 rm -f $productName-$version-mac-dist.dmg
-hdiutil create -srcfolder minsky.app -volname Minsky -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size 150M temp.dmg
+hdiutil create -srcfolder minsky.app -volname Minsky -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size 300M temp.dmg
 hdiutil convert -format UDZO -imagekey zlib-level=9 -o $productName-$version-mac-dist.dmg temp.dmg 
 rm -f temp.dmg
 codesign -s "Developer ID Application" --options runtime $productName-$version-mac-dist.dmg
