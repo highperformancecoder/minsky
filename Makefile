@@ -52,7 +52,7 @@ ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJ
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
-LIBS+=-Wl,-framework -Wl,Security
+LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 endif
 
 FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
