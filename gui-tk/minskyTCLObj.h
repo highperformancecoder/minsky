@@ -107,7 +107,9 @@ namespace minsky
             if (modelChanged && m.autoSaveFile.get())
               try
                 {
+                  m.setBusyCursor();
                   m.save(*m.autoSaveFile);
+                  m.clearBusyCursor();
                   m.markEdited(); // undo edited flag reset
                 }
               catch(...)
