@@ -1336,7 +1336,7 @@ namespace minsky
         history.emplace_back();
         buf.swap(history.back());
         historyPtr=history.size();
-        return true;
+        return false;
       }
     while (history.size()>maxHistory)
       history.pop_front();
@@ -1363,7 +1363,7 @@ namespace minsky
             history.emplace_back();
             buf.swap(history.back());
             historyPtr=history.size();
-            if (autoSaver)
+            if (autoSaver && doPushHistory)
               try
                 {
                   setBusyCursor();

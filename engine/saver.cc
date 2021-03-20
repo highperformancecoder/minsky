@@ -26,20 +26,34 @@ namespace minsky
   const char* schemaURL="http://minsky.sf.net/minsky";
   
   Saver::Saver(const string& fileName): fileName(fileName), packer(os, schemaURL) {}
+
+  namespace
+  {
+    struct OnExit
+    {
+      std::function<void()> f;
+      OnExit(const std::function<void()>& f): f(f) {}
+      ~OnExit() {f();}
+    };
+  }
   
   void Saver::save(const schema3::Minsky& m)
   {
     os.open(fileName);
-    lastError.clear();
+    OnExit closeOnExit([&](){os.close();});
+
     try
       {
         packer.abort=false; // reset abort flag
         xml_pack(packer, "Minsky", m);
       }
-    catch (xml_pack_t::PackAborted) {}
-    catch (const std::exception& ex) {lastError=ex.what();}
-    catch (...) {} // we don't want any error to propagate
-    os.close();
+    catch (const xml_pack_t::PackAborted&) {}
+    catch (...) {
+      // if exception is due to file error, provide a more useful message
+      if (!os)
+        throw runtime_error("cannot save to "+fileName);
+      throw;
+    }
   }
 
   void BackgroundSaver::killThread()
@@ -55,8 +69,18 @@ namespace minsky
   {
     killThread();
     if (!lastError.empty())
-      throw std::runtime_error(lastError);
-    thread=std::thread([this,m](){Saver::save(m);});
+      {
+        lastError.clear();
+        throw std::runtime_error(lastError);
+      }
+    thread=std::thread([this,m](){
+      try
+        {
+          Saver::save(m);
+        }
+      catch (const std::exception& ex) {lastError=ex.what();}
+      catch (...) {} // we don't want any error to propagate
+    });
   }
 
   

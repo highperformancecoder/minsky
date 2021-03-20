@@ -35,10 +35,9 @@ namespace minsky
 
   struct Saver
   {
+    std::string fileName;
     std::ofstream os;
     classdesc::xml_pack_t packer;
-    std::string lastError;
-    std::string fileName;
     Saver(const std::string& fileName);
     void save(const schema3::Minsky&);
   };
@@ -46,6 +45,7 @@ namespace minsky
   struct BackgroundSaver: public Saver, public std::thread
   {
     std::thread thread;
+    std::string lastError;
     BackgroundSaver(const std::string& fileName): Saver(fileName) {}
     ~BackgroundSaver() {killThread();}
     void save(const schema3::Minsky&);
