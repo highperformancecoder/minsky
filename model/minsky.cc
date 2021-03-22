@@ -1366,10 +1366,8 @@ namespace minsky
             if (autoSaver && doPushHistory)
               try
                 {
-                  setBusyCursor();
-                  autoSaver->packer.prettyPrint=true;
+                  //autoSaver->packer.prettyPrint=true;
                   autoSaver->save(m);
-                  clearBusyCursor();
                 }
               catch (...)
                 {
