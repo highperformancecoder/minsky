@@ -420,12 +420,16 @@ namespace minsky
         }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen] && yvars[pen]->size()>1)
+      if (pen<yvars.size() && yvars[pen])
         {
           auto& yv=yvars[pen];
           auto d=yv->hypercube().dims();
-          if (d.empty()) continue;
-          
+          if (d.empty())
+            {
+              if (Plot::plotType==Plot::bar)
+                addPlotPt(0);
+              continue;
+            }
           // work out a reference to the x data
           vector<double> xdefault;
           double* x;
