@@ -177,8 +177,6 @@ namespace minsky
     virtual VariableBase* clone() const override=0;
     bool isStock() const {return type()==stock || type()==integral;}
 
-    virtual ~VariableBase();
-    
     bool varTabDisplay=false;
     void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
     bool attachedToDefiningVar() const override {return varTabDisplay;}     
@@ -223,6 +221,12 @@ namespace minsky
 
     Variable(const Variable& x): VariableBase(x) {this->addPorts();}
     Variable& operator=(const Variable& x) {
+      VariableBase::operator=(x);
+      this->addPorts();
+      return *this;
+    }
+    Variable(Variable&& x): VariableBase(x) {this->addPorts();}
+    Variable& operator=(Variable&& x) {
       VariableBase::operator=(x);
       this->addPorts();
       return *this;
