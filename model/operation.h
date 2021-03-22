@@ -61,8 +61,6 @@ namespace minsky
 
     const OperationBase* operationCast() const override {return this;}
     OperationBase* operationCast() override {return this;}
-    
-    virtual ~OperationBase() {}
 
     /// visual representation of operation on the canvas
     virtual void iconDraw(cairo_t *) const=0;
@@ -124,7 +122,13 @@ namespace minsky
         }
     }
     Operation(const Operation& x): Super(x) {this->addPorts();}
+    Operation(Operation&& x): Super(x) {this->addPorts();}
     Operation& operator=(const Operation& x) {
+      Super::operator=(x);
+      this->addPorts();
+      return *this;
+    }
+    Operation& operator=(Operation&& x) {
       Super::operator=(x);
       this->addPorts();
       return *this;

@@ -62,35 +62,18 @@ namespace minsky
     leadingMarker=true;
     grid=true;
     legendLeft=0.1; // override ecolab's default value
-
-    float w=iWidth(), h=iHeight();
-    float dx=w/(2*numLines+1); // x location of ports
-    float dy = h/(numLines);
-
-    // xmin, xmax, ymin, ymax ports
-    m_ports.emplace_back(new Port(*this, Port::inputPort)); //xmin
-    m_ports.emplace_back(new Port(*this, Port::inputPort));  //xmax
-    m_ports.emplace_back(new Port(*this, Port::inputPort)); //ymin
-    m_ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
-    m_ports.emplace_back(new Port(*this, Port::inputPort)); //y1min
-    m_ports.emplace_back(new Port(*this, Port::inputPort)); //y1max
-
-    // y variable ports
-    for (float y=0.5*(dy-h); y<0.5*h; y+=dy)
-      m_ports.emplace_back(new Port(*this, Port::inputPort));
-
-    // RHS y variable ports
-    for (float y=0.5*(dy-h); y<0.5*h; y+=dy)
-      m_ports.emplace_back(new Port(*this, Port::inputPort));
-
-    // add in the x variable ports
-    for (float x=2*dx-0.5*w; x<0.5*w; x+=dx)
-      m_ports.emplace_back(new Port(*this, Port::inputPort));
-
+    addPorts();
+    
     yvars.resize(2*numLines);
     xvars.resize(numLines);
-   }
+  }
 
+  void PlotWidget::addPorts()
+  {
+    for (unsigned i=0; i<4*numLines+nBoundsPorts; ++i)
+      m_ports.emplace_back(new Port(*this, Port::inputPort));
+  }
+  
   void PlotWidget::draw(cairo_t* cairo) const
   {
     double z=zoomFactor();
@@ -437,12 +420,16 @@ namespace minsky
         }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen] && yvars[pen]->size()>1)
+      if (pen<yvars.size() && yvars[pen])
         {
           auto& yv=yvars[pen];
           auto d=yv->hypercube().dims();
-          if (d.empty()) continue;
-          
+          if (d.empty())
+            {
+              if (Plot::plotType==Plot::bar)
+                addPlotPt(0);
+              continue;
+            }
           // work out a reference to the x data
           vector<double> xdefault;
           double* x;
