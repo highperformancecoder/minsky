@@ -1,7 +1,6 @@
 /*
-  @copyright Steve Keen 2020
+  @copyright Steve Keen 2021
   @author Russell Standish
-  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it
@@ -18,21 +17,40 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GODLEYTAB_H
-#define GODLEYTAB_H
-#include <itemTab.h>
+#ifndef SAVER_H
+#define SAVER_H
+#include <xml_pack_base.h>
+#include <fstream>
+#include <string>
+#include <thread>
+
+namespace schema3
+{
+  class Minsky;
+}
 
 namespace minsky
 {
-	 
-  class GodleyTab: public ItemTab
-  {	  
-  public:
-    bool itemSelector(const ItemPtr& i) override;
-    ItemPtr itemAt(float x, float y) override;
-    void draw(cairo_t* cairo) override;
+  extern const char* schemaURL;
+
+  struct Saver
+  {
+    std::string fileName;
+    std::ofstream os;
+    classdesc::xml_pack_t packer;
+    Saver(const std::string& fileName);
+    void save(const schema3::Minsky&);
   };
-  
+
+  struct BackgroundSaver: public Saver, public std::thread
+  {
+    std::thread thread;
+    std::string lastError;
+    BackgroundSaver(const std::string& fileName): Saver(fileName) {}
+    ~BackgroundSaver() {killThread();}
+    void save(const schema3::Minsky&);
+    void killThread();
+  };
 }
-#include "godleyTab.cd"
+
 #endif

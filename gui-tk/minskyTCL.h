@@ -73,16 +73,6 @@ namespace minsky
       eventRecord.reset();
     }
 
-    std::unique_ptr<std::string> autoSaveFile;
-    void setAutoSaveFile(const std::string& file) {
-      autoSaveFile.reset(new std::string(file));
-    }
-    
-    /// flag to indicate whether a TCL should be pushed onto the
-    /// history stack, or logged in a recording. This is used to avoid
-    /// movements being added to recordings and undo history
-    bool doPushHistory=true;
-
     
 
     /// fill in a Tk image with the icon for a specific operation

@@ -93,13 +93,16 @@ fi
 #    echo "try running this script on the Mac GUI desktop, not ssh shell"
 #fi
 
+codesign -s "Developer ID Application" --options runtime --timestamp --deep --force minsky.app
 rm -f $productName-$version-mac-dist.dmg
-hdiutil create -srcfolder minsky.app -volname Minsky -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size 150M temp.dmg
+hdiutil create -srcfolder minsky.app -volname Minsky -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size 300M temp.dmg
 hdiutil convert -format UDZO -imagekey zlib-level=9 -o $productName-$version-mac-dist.dmg temp.dmg 
 rm -f temp.dmg
-codesign -s "Developer ID Application" --options runtime $productName-$version-mac-dist.dmg
+codesign -s "Developer ID Application" --options runtime --timestamp --deep $productName-$version-mac-dist.dmg
 xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $productName-$version-mac-dist.dmg
 # check using xcrun altool --notarization-history 0 -u apple@hpcoders.com.au -p "@keychain:Minsky"
+# xcrun altool --notarization-info <RequestUUID> -u apple@hpcoders.com.au -p "@keychain:Minsky"
+# Open LogFileURL in web browser
 echo "Sleeping for a bit for software to be notarised"
 sleep 60
 xcrun stapler staple $productName-$version-mac-dist.dmg

@@ -42,8 +42,6 @@ using namespace boost::posix_time;
 
 namespace
 {
-  const char* schemaURL="http://minsky.sf.net/minsky";
-
   inline bool isFinite(const double y[], size_t n)
   {
     for (size_t i=0; i<n; ++i)
@@ -276,11 +274,7 @@ namespace minsky
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
   {
     schema3::Minsky m(g);
-    ofstream os(fileName);
-    xml_pack_t packer(os, schemaURL);
-    xml_pack(packer, "Minsky", m);
-//    if (!of)
-//      throw runtime_error("cannot save to "+fileName);
+    Saver(fileName).save(m);
   }
 
   void Minsky::paste()
@@ -934,6 +928,10 @@ namespace minsky
     running=false;
 
     canvas.requestRedraw();
+    godleyTab.requestRedraw();
+    plotTab.requestRedraw();
+    variableTab.requestRedraw();
+    parameterTab.requestRedraw();    
   }
 
   void Minsky::step()
@@ -1034,6 +1032,10 @@ namespace minsky
     if ((microsec_clock::local_time()-(ptime&)lastRedraw) > maxWait)
       {
         canvas.requestRedraw();
+        godleyTab.requestRedraw();
+        plotTab.requestRedraw();
+        variableTab.requestRedraw();
+        parameterTab.requestRedraw();        
         lastRedraw=microsec_clock::local_time();
       }
 
@@ -1118,17 +1120,16 @@ namespace minsky
 
   void Minsky::save(const std::string& filename)
   {
-    ofstream of(filename);
-    xml_pack_t saveFile(of, schemaURL);
-    saveFile.prettyPrint=true;
     schema3::Minsky m(*this);
+    Saver saver(filename);
+    saver.packer.prettyPrint=true;
     try
       {
-        xml_pack(saveFile, "Minsky", m);
+        saver.save(m);
       }
     catch (...) {
       // if exception is due to file error, provide a more useful message
-      if (!of)
+      if (!saver.os)
         throw runtime_error("cannot save to "+filename);
       throw;
     }
@@ -1335,7 +1336,7 @@ namespace minsky
         history.emplace_back();
         buf.swap(history.back());
         historyPtr=history.size();
-        return true;
+        return false;
       }
     while (history.size()>maxHistory)
       history.pop_front();
@@ -1345,8 +1346,9 @@ namespace minsky
         ostringstream prev, curr;
         xml_pack_t prevXbuf(prev), currXbuf(curr);
         xml_pack(currXbuf,"Minsky",m);
-        history.back().reseto()>>m;
-        xml_pack(prevXbuf,"Minsky",m);
+        schema3::Minsky previousMinsky;
+        history.back().reseto()>>previousMinsky;
+        xml_pack(prevXbuf,"Minsky",previousMinsky);
 
         if (curr.str()!=prev.str())
           {
@@ -1361,13 +1363,26 @@ namespace minsky
             history.emplace_back();
             buf.swap(history.back());
             historyPtr=history.size();
+            if (autoSaver && doPushHistory)
+              try
+                {
+                  setBusyCursor();
+                  autoSaver->packer.prettyPrint=true;
+                  autoSaver->save(m);
+                  clearBusyCursor();
+                }
+              catch (...)
+                {
+                  autoSaver.reset();
+                  throw std::runtime_error("Unable to autosave to this location");
+                }
             return true;
           }
       }
     historyPtr=history.size();
     return false;
   }
-
+  
   void Minsky::undo(int changes)
   {
     // save current state for later restoration if needed
@@ -1540,5 +1555,13 @@ namespace minsky
     canvas.requestRedraw();
   }
 
+  void Minsky::setAutoSaveFile(const std::string& file) {
+    if (file.empty())
+      autoSaver.reset();
+    else
+      autoSaver.reset(new BackgroundSaver(file));
+  }
+
+  
 }
 

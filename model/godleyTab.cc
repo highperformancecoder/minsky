@@ -35,11 +35,6 @@ namespace minsky
     return dynamic_cast<GodleyIcon*>(i.get());
   }
   
-  void GodleyTab::toggleGodleyTabValueDisplay() const      
-  {
-    if (auto g=dynamic_cast<GodleyIcon*>(item.get())) g->toggleGodleyTabValueDisplay();
-  }	  	
-  
   ItemPtr GodleyTab::itemAt(float x, float y)
   {
     ItemPtr item;                    
@@ -93,7 +88,7 @@ namespace minsky
               itemCoords[itemFocus]=move(make_pair(xItem,yItem));         
             } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
             g->godleyT->disableButtons();
-            g->godleyT->displayValues=g->tabDisplayValues();   
+            g->godleyT->displayValues=minsky().displayValues;
             g->godleyT->draw(cairo);
             
             // draw title
