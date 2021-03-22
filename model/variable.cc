@@ -50,8 +50,6 @@ namespace minsky
 }
 
 
-VariableBase::~VariableBase() {}
-
 void VariableBase::addPorts()
 {
 #ifndef NDEBUG
@@ -524,12 +522,10 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
     rv.show();
 
-    VariableValue vv;
-    if (VariableValue::isValueId(valueId()))
-      vv=*minsky::cminsky().variableValues[valueId()];
+    auto vv=vValue();
   
     // For feature 47
-    if (type()!=constant && !ioVar() && (vv.size()==1) )
+    if (type()!=constant && !ioVar() && vv && vv->size()==1)
       try
         {
           auto val=engExp();    
@@ -537,7 +533,7 @@ void VariableBase::draw(cairo_t *cairo) const
           Pango pangoVal(cairo);
           if (!isnan(value())) {
             pangoVal.setFontSize(6*scaleFactor*z);
-            if (sliderBoundsSet && vv.sliderVisible)
+            if (sliderBoundsSet && vv->sliderVisible)
               pangoVal.setMarkup
                 (mantissa(val,
                           int(1+
@@ -595,7 +591,7 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo_close_path(cairo);
       clipPath.reset(new cairo::Path(cairo));
       cairo_stroke(cairo);
-      if (vv.sliderVisible && vv.size()==1)
+      if (vv && vv->sliderVisible && vv->size()==1)
         {
           // draw slider
           CairoSave cs(cairo);

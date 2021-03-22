@@ -26,11 +26,26 @@ namespace minsky
 {
   class SwitchIcon: public ItemT<SwitchIcon, BottomRightResizerItem>
   {
+    using Super=ItemT<SwitchIcon, BottomRightResizerItem>;
     CLASSDESC_ACCESS(SwitchIcon);
     friend struct SchemaHelper;
   public:
-    SwitchIcon();
-
+    SwitchIcon() {setNumCases(2);} ///<default to if/then
+    SwitchIcon(const SwitchIcon& x): Super(x), flipped(x.flipped) {setNumCases(x.numCases());}
+    SwitchIcon(SwitchIcon&& x): Super(x), flipped(x.flipped) {setNumCases(x.numCases());}
+    SwitchIcon& operator=(const SwitchIcon& x) {
+      Super::operator=(x);
+      flipped=x.flipped;
+      setNumCases(x.numCases());
+      return *this;
+    }
+    SwitchIcon& operator=(SwitchIcon&& x) {
+      Super::operator=(x);
+      flipped=x.flipped;
+      setNumCases(x.numCases());
+      return *this;
+    }
+    
     /** @{
         number of cases switched between.
         If input <1, case 0 is chosen, if input >=numCases-1, case numCases-1 is chosen
@@ -46,12 +61,13 @@ namespace minsky
     const SwitchIcon* switchIconCast() const override {return this;}
     SwitchIcon* switchIconCast() override {return this;}    
     
-    bool flipped=false;
-
     Units units(bool) const override;
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
+
+    /// whether icon is oriented so input ports are on the rhs, and output on the lhs
+    bool flipped=false;
   };
 }
 

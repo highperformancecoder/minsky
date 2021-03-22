@@ -64,7 +64,9 @@ namespace minsky
   {
     ItemPortVector() {}
     ItemPortVector(const ItemPortVector&) {}
+    ItemPortVector(ItemPortVector&&) {}
     ItemPortVector& operator=(const ItemPortVector&) {return *this;}
+    ItemPortVector& operator=(ItemPortVector&&) {return *this;}
   };
 
   /// bounding box information (at zoom=1 scale)
@@ -86,7 +88,7 @@ namespace minsky
     float bottom() const {return m_bottom;}
   };
 
-  class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
+  class Item: public virtual NoteBase, public ecolab::TCLAccessor<Item,double>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
   protected:
@@ -245,6 +247,11 @@ namespace minsky
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
+
+    Item(const Item&)=default;
+    //Item(Item&&)=default;
+    Item& operator=(const Item&)=default;
+    //Item& operator=(Item&&)=default;
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
@@ -318,6 +325,12 @@ namespace minsky
     }
     void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
+    ItemT()=default;
+    ItemT(const ItemT&)=default;
+    ItemT& operator=(const ItemT&)=default;
+    // delete move operations to avoid the dreaded virtual-move-assign warning
+    ItemT(ItemT&&)=delete;
+    ItemT& operator=(ItemT&&)=delete;
 //    std::unique_ptr<classdesc::RESTProcessBase> restProcess() override
 //    {
 //      return std::unique_ptr<classdesc::RESTProcessBase>

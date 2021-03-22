@@ -215,7 +215,6 @@ namespace minsky
     std::string arguments() const;
     
     Group() {iWidth(100); iHeight(100);}
-    ~Group() {}   
     std::vector<VariablePtr> createdIOvariables;
     
     bool nocycles() const override; 

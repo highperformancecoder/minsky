@@ -26,19 +26,15 @@ using namespace std;
 
 namespace minsky
 {
-  SwitchIcon::SwitchIcon()
-  {
-    m_ports.emplace_back(new Port(*this,Port::noFlags));
-    m_ports.emplace_back(new Port(*this, Port::inputPort));
-    setNumCases(2); ///<default to if/then
-  }
-  
   void SwitchIcon::setNumCases(unsigned n)
   {
     if (n<2) throw error("switches need at least two cases");
+
+    m_ports.clear();
+    m_ports.emplace_back(new Port(*this,Port::noFlags));
+    // output port, selector port and n case ports
     for (unsigned i=m_ports.size(); i<n+2; ++i)
       m_ports.emplace_back(new Port(*this, Port::inputPort));
-    m_ports.resize(n+2); // in case ports was larger than n+2
     float width=8*zoomFactor()*numCases();
     if (width>iWidth()) iWidth(width);
     if (width>iHeight()) iHeight(width);

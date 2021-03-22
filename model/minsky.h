@@ -45,6 +45,7 @@
 #include "godleyTab.h"
 #include "dimension.h"
 #include "rungeKutta.h"
+#include "saver.h"
 
 #include <vector>
 #include <string>
@@ -65,6 +66,8 @@ namespace minsky
   
   struct RKdata; // an internal structure for holding Runge-Kutta data
   struct CallableFunction;
+
+  class SaveThread;
   
   // handle the display of rendered equations on the screen
   class EquationDisplay: public CairoSurface
@@ -81,7 +84,7 @@ namespace minsky
     EquationDisplay& operator=(const EquationDisplay& x) {CairoSurface::operator=(x); return *this;}
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
-  
+
   // a place to put working variables of the Minsky class that needn't
   // be serialised.
   struct MinskyExclude
@@ -90,7 +93,8 @@ namespace minsky
     vector<Integral> integrals;
     shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
-    
+    unique_ptr<BackgroundSaver> autoSaver;
+
     enum StateFlags {is_edited=1, reset_needed=2, fullEqnDisplay_needed=4};
     int flags=reset_needed;
     
@@ -324,6 +328,11 @@ namespace minsky
     /// push current model state onto history if it differs from previous
     bool pushHistory();
 
+    /// flag to indicate whether a TCL should be pushed onto the
+    /// history stack, or logged in a recording. This is used to avoid
+    /// movements being added to recordings and undo history
+    bool doPushHistory=true;
+
     /// restore model to state \a changes ago 
     void undo(int changes=1);
 
@@ -387,6 +396,10 @@ namespace minsky
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL
     virtual bool checkMemAllocation(size_t bytes) const {return true;}
+
+    /// initialises auto saving
+    /// empty \a file to turn off autosave
+    void setAutoSaveFile(const std::string& file);
     
   };
 
