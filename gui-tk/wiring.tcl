@@ -73,7 +73,7 @@ set helpTopics(.wiring.menubar.sheet) "Sheet"
 
 button .wiring.menubar.var -text var -foreground #9f0000 -command {
     tk_popup .wiring.menubar.var.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]} 
-tooltip .wiring.menubar.var "variable"
+tooltip .wiring.menubar.var "Variable"
 set helpTopics(.wiring.menubar.var) Variable
 pack .wiring.menubar.var -side left 
 
@@ -97,44 +97,44 @@ set helpTopics(.wiring.menubar.note) "Item"
 
 button .wiring.menubar.time -image timeImg -width 37 -height 24 -command {
     addOperation time}
-tooltip .wiring.menubar.time time
+tooltip .wiring.menubar.time Time
 set helpTopics(.wiring.menubar.integrate) Operation:time
 
 button .wiring.menubar.constops -image eulerImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.constops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.constops "fundamental constants"
+tooltip .wiring.menubar.constops "Fundamental constants"
 set helpTopics(.wiring.menubar.constops) Operations
 menu .wiring.menubar.constops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "fundamental constants toolbox"}
 
 button .wiring.menubar.binops -image addImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.binops "binary operations"
+tooltip .wiring.menubar.binops "Binary operations"
 set helpTopics(.wiring.menubar.binops) Operations
 menu .wiring.menubar.binops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "binary operations toolbox"}
 
 button .wiring.menubar.fnops -image sqrtImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.fnops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.fnops "functions"
+tooltip .wiring.menubar.fnops "Functions"
 set helpTopics(.wiring.menubar.fnops) Operations
 menu .wiring.menubar.fnops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "function toolbox"}
 
 button .wiring.menubar.reductionops -image sumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.reductionops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.reductionops "reductions"
+tooltip .wiring.menubar.reductionops "Reductions"
 set helpTopics(.wiring.menubar.reductionops) Operations
 menu .wiring.menubar.reductionops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "reduction operations toolbox"}
 
 button .wiring.menubar.scanops -image runningSumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.scanops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.scanops "scans"
+tooltip .wiring.menubar.scanops "Scans"
 set helpTopics(.wiring.menubar.scanops) Operations
-menu .wiring.menubar.scanops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff  "scans toolbox"}
+menu .wiring.menubar.scanops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff  "Scans toolbox"}
 
 button .wiring.menubar.tensorops -image outerProductImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.tensorops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.tensorops "tensor operations"
+tooltip .wiring.menubar.tensorops "Tensor operations"
 set helpTopics(.wiring.menubar.tensorops) Operations
-menu .wiring.menubar.tensorops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "tensor toolbox"}
+menu .wiring.menubar.tensorops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "Tensor toolbox"}
 
 pack .wiring.menubar.time .wiring.menubar.constops .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
 pack .wiring.menubar.scanops .wiring.menubar.tensorops -side left
@@ -197,13 +197,13 @@ set helpTopics(.wiring.menubar.godley)  GodleyIcon
 image create photo integrateImg -file $minskyHome/icons/integrate.gif
 button .wiring.menubar.integrate -image integrateImg -width 37 -height 24 -command {
     addOperation integrate}
-tooltip .wiring.menubar.integrate integrate
+tooltip .wiring.menubar.integrate Integrate
 set helpTopics(.wiring.menubar.integrate) IntOp
 
 image create photo differentiateImg -file $minskyHome/icons/differentiate.gif
 button .wiring.menubar.differentiate -image differentiateImg -width 37 -height 24 -command {
     addOperation differentiate}
-tooltip .wiring.menubar.differentiate differantiate
+tooltip .wiring.menubar.differentiate Differentiate
 set helpTopics(.wiring.menubar.differentiate) Operation:differentiate
 
 pack .wiring.menubar.godley .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
