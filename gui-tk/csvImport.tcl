@@ -261,9 +261,7 @@ proc csvImportButton1Up {x y X Y} {
                     setupCombo [[minsky.value.csvDialog.spec.dimensions.@elem $col].units] \
                         "minsky.value.csvDialog.spec.dimensions($col).units" \
                         "Dimension units/format" "-values $units -state normal" $X $Y
-                    dimFormatPopdown .wiring.csvImport.text.combo [[minsky.value.csvDialog.spec.dimensions.@elem $col].type] {
-                        minsky.value.csvDialog.spec.dimensions($col).units [.wiring.csvImport.text.combo get]
-                    }
+                    dimFormatPopdown .wiring.csvImport.text.combo [[minsky.value.csvDialog.spec.dimensions.@elem $col].type] "minsky.value.csvDialog.spec.dimensions($col).units \[.wiring.csvImport.text.combo get\]"
                 }
             }
             3 {if {$col<[minsky.value.csvDialog.spec.dimensions.size]} {
