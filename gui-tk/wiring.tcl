@@ -37,38 +37,68 @@ proc addToolTipToTearOff {text menu tornOffMenu} {
     }
 }
 
-image create photo godleyImg -file $minskyHome/icons/bank.gif
-button .wiring.menubar.godley -image godleyImg -height 24 -width 37 \
-    -command addGodley
-tooltip .wiring.menubar.godley "Godley table"
-set helpTopics(.wiring.menubar.godley)  GodleyIcon
+image create photo dataPng -file $minskyHome/icons/data.png
 
-image create photo integrateImg -file $minskyHome/icons/integrate.gif
-button .wiring.menubar.integrate -image integrateImg -width 37 -height 24 -command {
-    addOperation integrate}
-tooltip .wiring.menubar.integrate integrate
-set helpTopics(.wiring.menubar.integrate) IntOp
+set renameCSVparamToFilname 0
+button .wiring.menubar.data -image dataPng \
+    -height 24 -width 37 -command {
+        minsky.addVariable dataImport parameter
+        itemFromItemFocus
+        set renameCSVparamToFilname 1
+        CSVImportDialog
+    }
+tooltip .wiring.menubar.data "Import data"
+pack .wiring.menubar.data -side left 
+set helpTopics(.wiring.menubar.data) "Operation:csvImport"
 
-image create photo differentiateImg -file $minskyHome/icons/differentiate.gif
-button .wiring.menubar.differentiate -image differentiateImg -width 37 -height 24 -command {
-    addOperation differentiate}
-tooltip .wiring.menubar.differentiate differantiate
-set helpTopics(.wiring.menubar.differentiate) Operation:differentiate
+image create photo ravelImg -file $minskyHome/icons/ravel.gif
+button .wiring.menubar.ravel -image ravelImg \
+    -height 24 -width 37 -command {addRavel}
+tooltip .wiring.menubar.ravel "Ravel"
+pack .wiring.menubar.ravel -side left -padx {0 10}
 
-button .wiring.menubar.time -image timeImg -width 37 -height 24 -command {
-    addOperation time}
-tooltip .wiring.menubar.time time
-set helpTopics(.wiring.menubar.integrate) Operation:time
+image create photo plotImg -file $minskyHome/icons/plot.gif
+button .wiring.menubar.plot -image plotImg \
+    -height 24 -width 37 -command {addPlot}
+tooltip .wiring.menubar.plot "PlotWidget"
+pack .wiring.menubar.plot -side left 
+set helpTopics(.wiring.menubar.plot) "PlotWidget"
+
+image create photo sheetImg -file $minskyHome/icons/sheet.gif
+button .wiring.menubar.sheet -image sheetImg \
+    -height 24 -width 37 -command {addSheet}
+tooltip .wiring.menubar.sheet "Sheet"
+pack .wiring.menubar.sheet -side left 
+set helpTopics(.wiring.menubar.sheet) "Sheet"
 
 button .wiring.menubar.var -text var -foreground #9f0000 -command {
     tk_popup .wiring.menubar.var.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]} 
 tooltip .wiring.menubar.var "variable"
 set helpTopics(.wiring.menubar.var) Variable
+pack .wiring.menubar.var -side left 
 
 menu .wiring.menubar.var.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "variable toolbar"}
 .wiring.menubar.var.menu add command -label "variable" -command addVariable
 .wiring.menubar.var.menu add command -label "constant" -command addConstant
 .wiring.menubar.var.menu add command -label "parameter" -command addParameter
+
+image create photo lockImg -file $minskyHome/icons/lock.gif
+button .wiring.menubar.lock -image lockImg \
+    -height 24 -width 37 -command {addLock}
+tooltip .wiring.menubar.lock "Lock Ravel"
+pack .wiring.menubar.lock -side left
+
+image create photo noteImg -file $minskyHome/icons/note.gif
+button .wiring.menubar.note -image noteImg \
+     -command {addNote "Enter your note here"}
+tooltip .wiring.menubar.note "Note"
+pack .wiring.menubar.note -side left 
+set helpTopics(.wiring.menubar.note) "Item"
+
+button .wiring.menubar.time -image timeImg -width 37 -height 24 -command {
+    addOperation time}
+tooltip .wiring.menubar.time time
+set helpTopics(.wiring.menubar.integrate) Operation:time
 
 button .wiring.menubar.constops -image eulerImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.constops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
@@ -106,7 +136,6 @@ tooltip .wiring.menubar.tensorops "tensor operations"
 set helpTopics(.wiring.menubar.tensorops) Operations
 menu .wiring.menubar.tensorops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "tensor toolbox"}
 
-pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
 pack .wiring.menubar.time .wiring.menubar.constops .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
 pack .wiring.menubar.scanops .wiring.menubar.tensorops -side left
 
@@ -152,54 +181,32 @@ tooltip .wiring.menubar.scanops.menu -index 0 "scans toolbox"
 tooltip .wiring.menubar.tensorops.menu -index 0 "tensor toolbox"
 
 
-button .wiring.menubar.data -image dataImg \
-    -height 24 -width 37 -command {addOperation data}
-tooltip .wiring.menubar.data "data"
-pack .wiring.menubar.data -side left 
-set helpTopics(.wiring.menubar.data) "Operation:data"
-
 image create photo switchImg -file $minskyHome/icons/switch.gif
-
-
 button .wiring.menubar.switch -image switchImg \
     -height 24 -width 37 -command {addSwitch}
 tooltip .wiring.menubar.switch "Switch"
-pack .wiring.menubar.switch -side left 
+pack .wiring.menubar.switch -side left -padx {0 10}
 set helpTopics(.wiring.menubar.switch) "SwitchIcon"
 
+image create photo godleyImg -file $minskyHome/icons/bank.gif
+button .wiring.menubar.godley -image godleyImg -height 24 -width 37 \
+    -command addGodley
+tooltip .wiring.menubar.godley "Godley table"
+set helpTopics(.wiring.menubar.godley)  GodleyIcon
 
-image create photo plotImg -file $minskyHome/icons/plot.gif
-button .wiring.menubar.plot -image plotImg \
-    -height 24 -width 37 -command {addPlot}
-tooltip .wiring.menubar.plot "PlotWidget"
-pack .wiring.menubar.plot -side left 
-set helpTopics(.wiring.menubar.plot) "PlotWidget"
+image create photo integrateImg -file $minskyHome/icons/integrate.gif
+button .wiring.menubar.integrate -image integrateImg -width 37 -height 24 -command {
+    addOperation integrate}
+tooltip .wiring.menubar.integrate integrate
+set helpTopics(.wiring.menubar.integrate) IntOp
 
-image create photo sheetImg -file $minskyHome/icons/sheet.gif
-button .wiring.menubar.sheet -image sheetImg \
-    -height 24 -width 37 -command {addSheet}
-tooltip .wiring.menubar.sheet "Sheet"
-pack .wiring.menubar.sheet -side left 
-set helpTopics(.wiring.menubar.sheet) "Sheet"
+image create photo differentiateImg -file $minskyHome/icons/differentiate.gif
+button .wiring.menubar.differentiate -image differentiateImg -width 37 -height 24 -command {
+    addOperation differentiate}
+tooltip .wiring.menubar.differentiate differantiate
+set helpTopics(.wiring.menubar.differentiate) Operation:differentiate
 
-image create photo noteImg -file $minskyHome/icons/note.gif
-button .wiring.menubar.note -image noteImg \
-    -height 24 -width 37 -command {addNote "Enter your note here"}
-tooltip .wiring.menubar.note "Note"
-pack .wiring.menubar.note -side left 
-set helpTopics(.wiring.menubar.note) "Item"
-
-image create photo ravelImg -file $minskyHome/icons/ravel.gif
-button .wiring.menubar.ravel -image ravelImg \
-    -height 24 -width 37 -command {addRavel}
-tooltip .wiring.menubar.ravel "Ravel"
-pack .wiring.menubar.ravel -side left
-
-image create photo lockImg -file $minskyHome/icons/lock.gif
-button .wiring.menubar.lock -image lockImg \
-    -height 24 -width 37 -command {addLock}
-tooltip .wiring.menubar.ravel "Lock Ravel"
-pack .wiring.menubar.lock -side left 
+pack .wiring.menubar.godley .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
 
 pack .wiring.menubar -fill x
 

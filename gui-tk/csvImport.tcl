@@ -18,6 +18,7 @@ proc CSVImportDialog {} {
     if {![winfo exists .wiring.csvImport]} {
         toplevel .wiring.csvImport
         minsky.canvas.item.deleteCallback "destroy .wiring.csvImport"
+        bind .wiring.csvImport <Destroy> "canvas.deleteItem"
         
         # file/url control
         frame .wiring.csvImport.fileUrl
@@ -163,7 +164,7 @@ proc CSVImportDialog {} {
 }
 
 proc csvImportDialogOK {} {
-    global csvParms
+    global csvParms renameCSVparamToFilname
     minsky.value.csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
     set csvImportFailed [catch {loadVariableFromCSV minsky.value.csvDialog.spec "$csvParms(url)"} err]	
     if $csvImportFailed {
@@ -175,6 +176,11 @@ proc csvImportDialogOK {} {
         .csvImportError.buttonBar.ok configure -text "Yes"
         .csvImportError.buttonBar.cancel configure -text "No"
     } else {
+        if {$renameCSVparamToFilname} {
+            minsky.canvas.item.name [file rootname [file tail [minsky.value.csvDialog.url]]]
+            # don't delete the variable we've so carefully populated
+            bind .wiring.csvImport <Destroy> ""
+        }
         catch reset
         cancelWin .wiring.csvImport
     }

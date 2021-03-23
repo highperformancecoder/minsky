@@ -99,6 +99,14 @@ namespace minsky
       else
         TCL_obj_deregister(name);
     }
+
+    bool itemFromItemFocus()
+    {
+      TCL_obj_deregister("minsky.canvas.item");
+      canvas.item=canvas.itemFocus;
+      registerRef(canvas.item,"minsky.canvas.item");
+      return canvas.item.get();
+    }
     
     bool getItemAt(float x, float y)
     {
