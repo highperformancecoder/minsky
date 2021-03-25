@@ -50,8 +50,12 @@
 using namespace std;
 using namespace ecolab;
 
+//#define MINSKY_CANVAS_BACKGROUND_COLOR 0xee5a5add
+//#define MINSKY_CANVAS_BACKGROUND_COLOR_OTHER 0xee5add5a
 
 #define MINSKY_CANVAS_BACKGROUND_COLOR 0x00ffffff
+
+// TODO:: Child surface should be transparent --- or -- there has to be provision to set background color as FE has that option
 
 namespace minsky
 {
@@ -67,42 +71,66 @@ namespace minsky
   }
 #endif
 
-  unsigned long WindowInformation::getChildWindowId() {
-    return childWindowId;
-  }
-
-  Display *WindowInformation::getDisplay() {
+  Display *WindowInformation::getDisplay()
+  {
     return display;
   }
 
-  WindowInformation::~WindowInformation() {
-    childSurface.reset();
+  WindowInformation::~WindowInformation()
+  {
+    windowSurface.reset();
+    bufferSurface.reset();
     XDestroyWindow(display, childWindowId);
   }
 
-  ecolab::cairo::SurfacePtr WindowInformation::getSurface() {
-    return childSurface;
+  ecolab::cairo::SurfacePtr WindowInformation::getBufferSurface()
+  {
+    return bufferSurface;
   }
 
-  void WindowInformation::createSurface(){
+  void WindowInformation::copyBufferToMain()
+  {
+    cairo_set_source_surface(windowSurface->cairo(), bufferSurface->surface(), 0, 0);
+    cairo_paint(windowSurface->cairo());
+  }
+
+  void WindowInformation::createSurfaces()
+  {
 #ifdef USE_WIN32_SURFACE
-      {
-          /* TODO */
-      }
+    {
+      /* TODO */
+    }
 #elif defined(MAC_OSX_TK)
 
-      {
-          /* TODO */
-      }
+    {
+      /* TODO */
+    }
 #else
-      {childSurface.reset(new cairo::Surface(cairo_xlib_surface_create(getDisplay(), getChildWindowId(), wAttr.visual, childWidth, childHeight), childWidth, childHeight));
-  cairo_surface_set_device_offset(childSurface->surface(), -wAttr.x, -wAttr.y);
-}
+    {
+      windowSurface.reset(new cairo::Surface(cairo_xlib_surface_create(getDisplay(), childWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
+      cairo_surface_set_device_offset(windowSurface->surface(), -wAttr.x, -wAttr.y);
+
+
+      bufferSurface.reset(new cairo::Surface(cairo_surface_create_similar(windowSurface->surface(), CAIRO_CONTENT_COLOR_ALPHA, childWidth, childHeight), childWidth, childHeight));
+      cairo_surface_set_device_offset(bufferSurface->surface(), -wAttr.x, -wAttr.y);
+    }
+
 #endif
   }
 
-  void WindowInformation::clear() {
+  void WindowInformation::clear()
+  {
     XClearWindow(display, childWindowId);
+  }
+
+  void WindowInformation::setRenderingFlag(bool value)
+  {
+    isRendering = value;
+  }
+
+  bool WindowInformation::getRenderingFlag()
+  {
+    return isRendering;
   }
 
   WindowInformation::WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
@@ -122,16 +150,21 @@ namespace minsky
 
     // TODO:: Take care of scrollbars
 
-    if (cWidth > 0) {
+    if (cWidth > 0)
+    {
       childWidth = min(childWidth, cWidth);
     }
 
-    if (cHeight > 0) {
+    if (cHeight > 0)
+    {
       childHeight = min(childHeight, cHeight);
     }
 
     childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, MINSKY_CANVAS_BACKGROUND_COLOR);
+
     XMapWindow(display, childWindowId);
-    createSurface();
+
+    createSurfaces();
+    isRendering = false;
   }
 } // namespace minsky

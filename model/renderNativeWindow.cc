@@ -40,26 +40,33 @@ namespace minsky
 {
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    // bool isInitial = false;
     if (!(winInfoPtr.get())) {
-      // isInitial = true;
       winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
     }
+    if(winInfoPtr->getRenderingFlag()) {
+      return;
+    }
 
-    winInfoPtr->clear();
-    auto tmp = winInfoPtr->getSurface();
+    winInfoPtr->setRenderingFlag(true);
 
-    //TODO:: Review if this paint with each frame (below 3 lines) are needed on other systems (Windows/MacOS). If not, delete the code
-    // if (isInitial || true)
-    // {
-    //   cairo_move_to(tmp->cairo(), 0, 0);
-    //   cairo_set_source_rgb(tmp->cairo(), 1, 1, 1);
-    //   cairo_paint(tmp->cairo());
-    // }
+    auto surfaceToDraw = winInfoPtr->getBufferSurface();
+    surfaceToDraw.swap(surface);
+    
+    // Draw a white rectangle and set source rgb back to black
+    // TODO:: Must be implemented in canvas - as depending on context colors might change. Also instead of white, should be transparent
 
-    tmp.swap(surface);
+    cairo_set_source_rgb(surface->cairo(), 1, 1, 1);
+    cairo_rectangle(surface->cairo(), 0, 0, surface->width(), surface->height());
+    cairo_fill(surface->cairo());
+    cairo_set_source_rgb(surface->cairo(), 0, 0, 0);
+
     redraw(0, 0, surface->width(), surface->height());
-    tmp.swap(surface);
+    //cairo_surface_write_to_png(surface->surface(), "testOutput.png");
+
+    surfaceToDraw.swap(surface);
+
+    winInfoPtr->copyBufferToMain();
+    winInfoPtr->setRenderingFlag(false);
   }
 
   void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight)

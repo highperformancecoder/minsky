@@ -27,14 +27,16 @@ namespace minsky
 {
   class WindowInformation
   {
+    bool isRendering;
     unsigned long parentWindowId;
     unsigned long childWindowId;
     
     Display*	display; // Weak reference, returned by system
-    ecolab::cairo::SurfacePtr childSurface;
+    ecolab::cairo::SurfacePtr windowSurface;
+    ecolab::cairo::SurfacePtr bufferSurface;
 
   private:
-      void createSurface();
+      void createSurfaces();
   public: 
       void clear();
       int childWidth;
@@ -43,14 +45,16 @@ namespace minsky
       int offsetTop;
       
       XWindowAttributes wAttr;
-      unsigned long getChildWindowId();
       Display* getDisplay();
-
+      bool getRenderingFlag();
+      void setRenderingFlag(bool value);
+      void copyBufferToMain();
+      
   public:
     ~WindowInformation();
     WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
     
-    ecolab::cairo::SurfacePtr getSurface();
+    ecolab::cairo::SurfacePtr getBufferSurface();
 
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;
