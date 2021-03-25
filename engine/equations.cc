@@ -794,6 +794,7 @@ namespace MathDAG
           result=tmpResult;
       }
 
+    if (!rhs) return result;
     auto input=rhs->addEvalOps(ev,result);
     if (lock.locked())
       {

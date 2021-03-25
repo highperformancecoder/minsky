@@ -785,10 +785,10 @@ namespace minsky
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
     size_t size() const override {return chain.empty()? 1: chain.back()->size();}
     const Index& index() const override
-    {if (chain.empty()) return m_index; else return chain.back()->index();}
+    {return chain.empty()? m_index: chain.back()->index();}
     Timestamp timestamp() const override
     {return chain.empty()? Timestamp(): chain.back()->timestamp();}
-    const Hypercube& hypercube() const override {return chain.back()->hypercube();}
+    const Hypercube& hypercube() const override {return chain.empty()? m_hypercube: chain.back()->hypercube();}
   };
 
   namespace
