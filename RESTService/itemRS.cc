@@ -64,6 +64,8 @@
 #include "plotWidget.rcd"
 #include "plot.xcd"
 #include "plot.rcd"
+#include "polyRESTProcessBase.rcd"
+#include "polyRESTProcessBase.xcd"
 #include "ravelWrap.h"
 #include "ravelWrap.rcd"
 #include "ravelWrap.xcd"
@@ -109,7 +111,7 @@ namespace classdesc
     RESTProcessBase* RPItem() const
     {
       RESTProcess_t rp;
-      ptr->restProcess(rp,"");
+      ptr->RESTProcess(rp,"");
       auto i=rp.find("");
       if (i!=rp.end())
         return i->second.get();
@@ -152,12 +154,12 @@ namespace minsky
   using classdesc::json_pack_t;
   using std::string;
 
-  void Item::restProcess(RESTProcess_t& rp, const string& d)
+  void Item::RESTProcess(RESTProcess_t& rp, const string& d)
   {
     ::RESTProcess(rp,d,*this);
   }
 
-  void Item::restProcess(RESTProcess_t& rp, const string& d) const
+  void Item::RESTProcess(RESTProcess_t& rp, const string& d) const
   {
     ::RESTProcess(rp,d,*this);
   }
@@ -168,13 +170,13 @@ namespace minsky
   }
 
   template <class T, class B>
-  void ItemT<T,B>::restProcess(RESTProcess_t& rp, const string& d)
+  void ItemT<T,B>::RESTProcess(RESTProcess_t& rp, const string& d)
   {
     ::RESTProcess(rp,d,dynamic_cast<T&>(*this));
   }
 
   template <class T, class B>
-  void ItemT<T,B>::restProcess(RESTProcess_t& rp, const string& d) const
+  void ItemT<T,B>::RESTProcess(RESTProcess_t& rp, const string& d) const
   {
     ::RESTProcess(rp,d,dynamic_cast<const T&>(*this));
   }

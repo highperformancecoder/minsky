@@ -57,6 +57,8 @@
 #include "plotTab.rcd"
 #include "plotTab.xcd"
 #include "plotWidget.rcd"
+#include "polyRESTProcessBase.rcd"
+#include "polyRESTProcessBase.xcd"
 #include "port.rcd"
 #include "renderNativeWindow.rcd"
 #include "renderNativeWindow.xcd"
