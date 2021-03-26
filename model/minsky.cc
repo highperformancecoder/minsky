@@ -956,6 +956,7 @@ namespace minsky
     if (reset_flag())
       reset();
     running=true;
+    lastT=t;
     
     // create a private copy for worker thread use
     vector<double> stockVarsCopy(stockVars);
