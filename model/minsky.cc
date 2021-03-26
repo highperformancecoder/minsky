@@ -591,7 +591,7 @@ namespace minsky
         else if (d->second.type==xv.dimension.type)
           d->second.units=xv.dimension.units;
         else
-          message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog");
+          message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog, which can be found under the Edit menu.");
         
       }
     // set all such dimensions on Ravels to forward sort order
