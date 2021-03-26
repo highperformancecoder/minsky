@@ -132,6 +132,11 @@ namespace minsky
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
 
+    VariableValue(Type type, const VariableValue& vv):  VariableValue(vv) {
+      m_type=type;
+      m_idx=-1;
+    }
+    
 //    const VariableValue& operator=(double x) {valRef()=x; return *this;}
 //    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
 //    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}

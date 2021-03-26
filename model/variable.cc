@@ -205,9 +205,7 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
         minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"",group.lock()));
       // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
       else
-        minsky().variableValues.emplace
-          (valueId,VariableValuePtr(type(),nm,vv->init,group.lock())).first->
-          second->tensorInit=vv->tensorInit;
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv));
     }
 }
 

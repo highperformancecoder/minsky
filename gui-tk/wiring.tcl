@@ -39,12 +39,12 @@ proc addToolTipToTearOff {text menu tornOffMenu} {
 
 image create photo dataPng -file $minskyHome/icons/data.png
 
-set renameCSVparamToFilname 0
+set dataImportDialog 0
 button .wiring.menubar.data -image dataPng \
     -height 24 -width 37 -command {
         minsky.addVariable dataImport parameter
         itemFromItemFocus
-        set renameCSVparamToFilname 1
+        set dataImportDialog 1
         CSVImportDialog
     }
 tooltip .wiring.menubar.data "Import data"

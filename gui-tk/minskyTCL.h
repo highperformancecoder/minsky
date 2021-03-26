@@ -104,7 +104,19 @@ namespace minsky
     {
       TCL_obj_deregister("minsky.canvas.item");
       canvas.item=canvas.itemFocus;
+      canvas.itemFocus.reset();
       registerRef(canvas.item,"minsky.canvas.item");
+      registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
+      return canvas.item.get();
+    }
+    
+    bool itemFocusFromItem()
+    {
+      TCL_obj_deregister("minsky.canvas.item");
+      canvas.itemFocus=canvas.item;
+      canvas.item.reset();
+      registerRef(canvas.item,"minsky.canvas.item");
+      registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
       return canvas.item.get();
     }
     
