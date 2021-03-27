@@ -1047,7 +1047,7 @@ SUITE(TensorOps)
         // 5x5 example
         Hypercube hc{5,5};
         auto dense=make_shared<TensorVal>(hc);
-        for (auto i=0; i<dense->size(); ++i) (*dense)[i]=i;
+        for (size_t i=0; i<dense->size(); ++i) (*dense)[i]=i;
         PermuteAxis pa;
         pa.setArgument(dense,"0");
         vector<size_t> permutation{1,4,3};
@@ -1100,7 +1100,7 @@ SUITE(TensorOps)
         
         auto sparse=make_shared<TensorVal>(hc);
         sparse->index(std::set<size_t>{2,4,5,8,10,11,15,20});
-        for (auto i=0; i<sparse->size(); ++i) (*sparse)[i]=sparse->index()[i];
+        for (size_t i=0; i<sparse->size(); ++i) (*sparse)[i]=sparse->index()[i];
 
         pa.setArgument(sparse,"0");
         pa.setPermutation(permutation);
