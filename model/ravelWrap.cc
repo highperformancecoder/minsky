@@ -362,6 +362,34 @@ namespace
     return size_t(selectedHandle())==ids[0];
   }
 
+  void Ravel::sortByValue(ravel::HandleSort::Order dir)
+  {
+    if (rank()!=1) return;
+    setHandleSortOrder(ravel::HandleSort::none, outputHandleIds()[0]);
+    minsky().reset();
+    auto vv=m_ports[0]->getVariableValue();
+    if (!vv)
+      throw runtime_error("Cannot sort handle at the moment");
+    vector<size_t> permutation;
+    for (size_t i=0; i<vv->hypercube().xvectors[0].size(); ++i)
+      if (std::isfinite(vv->atHCIndex(i)))
+        permutation.push_back(i);
+    switch (dir)
+      {
+      case ravel::HandleSort::forward:
+        sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
+        {return vv->atHCIndex(i)<vv->atHCIndex(j);});
+        break;
+      case ravel::HandleSort::reverse:
+        sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
+        {return vv->atHCIndex(i)>vv->atHCIndex(j);});
+        break;
+      default:
+        break;
+      }
+    applyCustomPermutation(outputHandleIds()[0], permutation);
+  }
+  
   
   string Ravel::description() const
   {

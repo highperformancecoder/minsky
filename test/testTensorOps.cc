@@ -1041,4 +1041,117 @@ SUITE(TensorOps)
         for (size_t i=0; i<tv.size(); ++i)
           CHECK_EQUAL(scan[i], tv[i]);
       }
+
+    TEST(permuteAxis)
+      {
+        // 5x5 example
+        Hypercube hc{5,5};
+        auto dense=make_shared<TensorVal>(hc);
+        for (auto i=0; i<dense->size(); ++i) (*dense)[i]=i;
+        PermuteAxis pa;
+        pa.setArgument(dense,"0");
+        vector<size_t> permutation{1,4,3};
+        pa.setPermutation(permutation);
+        CHECK_EQUAL(2, pa.rank());
+        CHECK_EQUAL(3, pa.hypercube().dims()[0]);
+        CHECK_EQUAL(5, pa.hypercube().dims()[1]);
+        CHECK_EQUAL(15, pa.size());
+        
+        for (size_t i=0; i<pa.size(); ++i)
+          {
+            switch (i%3)
+              {
+              case 0:
+                CHECK_EQUAL(1, int(pa[i])%5);
+                break;
+              case 1:
+                CHECK_EQUAL(4, int(pa[i])%5);
+                break;
+              case 2:
+                CHECK_EQUAL(3, int(pa[i])%5);
+                break;
+              }
+          }
+
+        pa.setArgument(dense,"1");
+        pa.setPermutation(permutation);
+        CHECK_EQUAL(2, pa.rank());
+        CHECK_EQUAL(5, pa.hypercube().dims()[0]);
+        CHECK_EQUAL(3, pa.hypercube().dims()[1]);
+        CHECK_EQUAL(15, pa.size());
+        
+        for (size_t i=0; i<pa.size(); ++i)
+          {
+            switch (i/5)
+              {
+              case 0:
+                CHECK_EQUAL(1, int(pa[i])/5);
+                break;
+              case 1:
+                CHECK_EQUAL(4, int(pa[i])/5);
+                break;
+              case 2:
+                CHECK_EQUAL(3, int(pa[i])/5);
+                break;
+              }
+          }
+
+        
+        
+        auto sparse=make_shared<TensorVal>(hc);
+        sparse->index(std::set<size_t>{2,4,5,8,10,11,15,20});
+        for (auto i=0; i<sparse->size(); ++i) (*sparse)[i]=sparse->index()[i];
+
+        pa.setArgument(sparse,"0");
+        pa.setPermutation(permutation);
+        CHECK_EQUAL(2, pa.rank());
+        CHECK_EQUAL(3, pa.hypercube().dims()[0]);
+        CHECK_EQUAL(5, pa.hypercube().dims()[1]);
+        CHECK_EQUAL(3, pa.size());
+        
+        for (size_t i=0; i<pa.size(); ++i)
+          {
+            auto splitted=pa.hypercube().splitIndex(pa.index()[i]);
+            switch (splitted[0])
+              {
+              case 0:
+                CHECK_EQUAL(1, int(pa[i])%5);
+                break;
+              case 1:
+                CHECK_EQUAL(4, int(pa[i])%5);
+                break;
+              case 2:
+                CHECK_EQUAL(3, int(pa[i])%5);
+                break;
+              default:
+                CHECK(false);
+              }
+          }
+        pa.setArgument(sparse,"1");
+        pa.setPermutation(permutation);
+        CHECK_EQUAL(2, pa.rank());
+        CHECK_EQUAL(3, pa.hypercube().dims()[1]);
+        CHECK_EQUAL(5, pa.hypercube().dims()[0]);
+        CHECK_EQUAL(4, pa.size());
+        
+        for (size_t i=0; i<pa.size(); ++i)
+          {
+            auto splitted=pa.hypercube().splitIndex(pa.index()[i]);
+            switch (splitted[1])
+              {
+              case 0:
+                CHECK_EQUAL(1, int(pa[i])/5);
+                break;
+              case 1:
+                CHECK_EQUAL(4, int(pa[i])/5);
+                break;
+              case 2:
+                CHECK_EQUAL(3, int(pa[i])/5);
+                break;
+              default:
+                CHECK(false);
+              }
+          }
+        
+      }
 }

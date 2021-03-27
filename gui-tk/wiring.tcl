@@ -815,11 +815,7 @@ proc contextMenu {x y X Y} {
         Ravel {
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             global sortOrder
-            if {[minsky.canvas.item.handleSortableByValue] && [minsky.canvas.item.sortByValue]!="none"} {
-                set sortOrder [minsky.canvas.item.sortByValue]
-            } else {
-                set sortOrder [minsky.canvas.item.sortOrder]
-            }
+            set sortOrder [minsky.canvas.item.sortOrder]
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
             if [llength [info commands minsky.canvas.item.lockGroup]] {
                 .wiring.context add command -label "Lock specific handles" -command lockSpecificHandles
@@ -945,22 +941,16 @@ set sortOrder none
 
 proc populateSortOptions {} {
     set orders {none forward reverse}
-    if [minsky.canvas.item.handleSortableByValue] {
-        lappend orders "forward by value" "reverse by value"
-    }
     .wiring.context.axisMenu.sort delete 0 end
     foreach order $orders {
         .wiring.context.axisMenu.sort add radiobutton -label $order -command {
-            if [regexp "(.*) by value" $sortOrder dummy valueOrder] {
-                minsky.canvas.item.sortByValue $valueOrder
-            } else {
-                minsky.canvas.item.sortByValue none
-                minsky.canvas.item.setSortOrder $sortOrder
-            }
+            minsky.canvas.item.setSortOrder $sortOrder
             minsky.canvas.item.broadcastStateToLockGroup
             reset
         } -value "$order" -variable sortOrder
     }
+    .wiring.context.axisMenu.sort add command -label "forward by value" -command {minsky.canvas.item.sortByValue "forward"; reset}
+    .wiring.context.axisMenu.sort add command -label "reverse by value" -command {minsky.canvas.item.sortByValue "reverse"; reset}
 }
 
 .wiring.context.axisMenu add command -label "Pick Slices" -command setupPickMenu

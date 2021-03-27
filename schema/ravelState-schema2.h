@@ -30,7 +30,6 @@ namespace schema2
   {
     // ravel::RavelState imported here
     double radius=ravel::ravelDefaultRadius;
-    ravel::HandleSort::Order sortByValue=ravel::HandleSort::none;
     std::vector<std::string> outputHandles;
 
     // schema3 ravel state differs by how handle states are stored
@@ -39,7 +38,6 @@ namespace schema2
     ravel::RavelState toRavelRavelState() const {
       ravel::RavelState r;
       r.radius=radius;
-      r.sortByValue=sortByValue;
       r.outputHandles=outputHandles;
       for (auto& i: handleStates)
         {
@@ -50,7 +48,6 @@ namespace schema2
     }
     RavelState(const ravel::RavelState& x) {
       radius=x.radius;
-      sortByValue=x.sortByValue;
       outputHandles=x.outputHandles;
       for (auto& i: x.handleStates)
         handleStates[i.description]=i;

@@ -258,6 +258,8 @@ namespace civita
     std::vector<size_t> permutedIndex; /// argument indices corresponding to this indices, when sparse
   public:
     void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
+    void setPermutation(const std::vector<size_t>& p)
+    {auto pp(p); setPermutation(std::move(pp));}
     void setPermutation(std::vector<size_t>&&);
     size_t axis() const {return m_axis;}
     const std::vector<size_t>& permutation() const {return m_permutation;}

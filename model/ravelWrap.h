@@ -113,10 +113,11 @@ namespace minsky
     /// set a given handle sort order
     ravel::HandleSort::Order setHandleSortOrder(ravel::HandleSort::Order, int handle);
 
-    /// Set the sort order to sort by value. Only applicable for rank 1 ravels
-    ravel::HandleSort::Order sortByValue = ravel::HandleSort::none;
-    /// @return true if mouse is over an output handle sortable by value
+    /// @return true if currently selected handle is sortable by value
     bool handleSortableByValue() const;
+    /// Sort handle by value. Only applicable for rank 1 ravels
+    ///@param dir direction to sort (forward/reverse, all other cases ignored)
+    void sortByValue(ravel::HandleSort::Order dir);
     
     /// @} get/set description of selected handle
     std::string description() const;
