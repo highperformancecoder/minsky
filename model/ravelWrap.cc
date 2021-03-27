@@ -366,7 +366,7 @@ namespace
   {
     if (rank()!=1) return;
     setHandleSortOrder(ravel::HandleSort::none, outputHandleIds()[0]);
-    minsky().reset();
+    try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
     auto vv=m_ports[0]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
