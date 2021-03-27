@@ -820,6 +820,7 @@ proc contextMenu {x y X Y} {
             } else {
                 set sortOrder [minsky.canvas.item.sortOrder]
             }
+            .wiring.context add cascade -label "Set Next Aggregation" -menu .wiring.context.nextAggregationMenu
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
             if [llength [info commands minsky.canvas.item.lockGroup]] {
                 .wiring.context add command -label "Lock specific handles" -command lockSpecificHandles
@@ -927,6 +928,17 @@ proc lockSpecificHandles {} {
     }
 }
 
+set aggTypes {{"Σ" "sum"} {"Π" "prod"} {"av" "av"} {"σ" "stddev"} {"min" "min"} {"max" "max"}}
+menu .wiring.context.nextAggregationMenu
+foreach m $aggTypes {
+    .wiring.context.nextAggregationMenu add command -label [lindex $m 0] -command "minsky.canvas.item.nextReduction [lindex $m 1]"
+}
+
+menu .wiring.context.axisAggregationMenu
+foreach m $aggTypes {
+    .wiring.context.axisAggregationMenu add command -label [lindex $m 0] -command "minsky.canvas.item.handleSetReduction \[minsky.canvas.item.selectedHandle\] [lindex $m 1]"
+}
+
 menu .wiring.context.axisMenu 
 .wiring.context.axisMenu add command -label "Description" -command {
     textEntryPopup .wiring.context.axisMenu.desc [minsky.canvas.item.description] {
@@ -939,6 +951,7 @@ menu .wiring.context.axisMenu
     minsky.canvas.item.broadcastStateToLockGroup
     reset
 }
+.wiring.context.axisMenu add cascade -label "Set Aggregation" -menu .wiring.context.axisAggregationMenu
 menu .wiring.context.axisMenu.sort -postcommand populateSortOptions
 .wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort
 set sortOrder none
