@@ -774,9 +774,7 @@ namespace minsky
     
     CLASSDESC_ACCESS(Ravel);
   public:
-    RavelTensor(const Ravel& ravel): ravel(ravel) {
-      ravel.addTemporaryVariableValue();
-    }
+    RavelTensor(const Ravel& ravel): ravel(ravel) {}
 
     void setArgument(const TensorPtr& a,const std::string&,double) override {
       // not sure how to avoid this const cast here

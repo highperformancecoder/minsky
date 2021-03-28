@@ -803,9 +803,6 @@ namespace MathDAG
         result->index(chain.back()->index());
         result->hypercube(chain.back()->hypercube());
         ev.emplace_back(EvalOpPtr(new TensorEval(result, make_shared<EvalCommon>(), chain.back())));
-        // this was added to solve Ravel #154 whenever a locked lock is attached to a Ravel, but doesn't work.
-        if (auto ravel=lock.ravelInput())
-          ravel->addTemporaryVariableValue(true);
         return result;
       }
     else
@@ -1050,6 +1047,10 @@ namespace MathDAG
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
          else if (auto s=dynamic_cast<Sheet*>(i->get()))
            for (auto w: s->ports(0).lock()->wires())
+               // ensure sheet inputs are evaluated
+               w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+         else if (auto r=dynamic_cast<Ravel*>(i->get()))
+           for (auto w: r->ports(1).lock()->wires())
                // ensure sheet inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
 

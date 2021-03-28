@@ -141,9 +141,6 @@ namespace minsky
 
     Units units(bool) const override;
 
-    /// add a temporary variable value.
-    /// @param addAnyway - add the variable Value even though wires are attached
-    void addTemporaryVariableValue(bool addAnyway=false) const;
   };
 
   class RavelLockGroup
