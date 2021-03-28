@@ -561,6 +561,15 @@ namespace
       }
   }
 
+  void Ravel::addTemporaryVariableValue(bool addAnyway) const
+  {
+    if (auto p=ports(0).lock())
+      if ((p->wires().empty()||addAnyway) && !p->getVariableValue())
+        // insert a temporary output variable value to get ravels to populate
+        p->setVariableValue(minsky::minsky().variableValues.emplace(to_string(size_t(this))+":RAVEL",VariableValuePtr(VariableType::tempFlow)).first->second);
+  }
+
+  
   vector<string> RavelLockGroup::allLockHandles()
   {
     set<string> handles;
