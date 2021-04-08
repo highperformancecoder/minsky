@@ -378,7 +378,15 @@ void GodleyTable::orderAssetClasses()
 
 void GodleyTable::rename(const std::string& from, const std::string& to)
 {
-  for (size_t r=0; r<rows(); ++r)   // Part of tickets 1053/1072. Fixes up disappearing column headings when whole columns are moved.
+  // handle stock vars separately, as their not FlowCoef cells
+  for (size_t c=1; c<cols(); ++c)
+    if (cell(0,c)==from)
+      {
+        cell(0,c)=to;
+        return;
+      }
+  // if no stock vars found, check flow var cells.
+  for (size_t r=1; r<rows(); ++r)
     for (size_t c=1; c<cols(); ++c)
       {
         FlowCoef fc(cell(r,c));
