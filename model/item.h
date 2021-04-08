@@ -91,10 +91,20 @@ namespace minsky
   class Item: public virtual NoteBase, public ecolab::TCLAccessor<Item,double>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
+
   protected:
     // these need to be protected, not private to allow the setting of these in constructors.
     double m_width=10, m_height=10;
     ItemPortVector m_ports;
+    
+    mutable struct MemoisedRotator: public Rotate
+    {
+      MemoisedRotator(): Rotate(0,0,0) {}
+      void update(float a,float x, float y) {
+        if (!initialisedFrom(a,x,y))
+          Rotate::operator=(Rotate(a,x,y));
+      }
+    } memoisedRotator;
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
@@ -125,9 +135,8 @@ namespace minsky
     /// canvas bounding box.
     mutable BoundingBox bb;
     bool contains(float xx, float yy) {
-      if (!bb.valid()) bb.update(*this);
-      float invZ=1/zoomFactor();
-      return bb.contains((xx-x())*invZ, (yy-y())*invZ);
+      auto hz=resizeHandleSize(); // extend by resize handle size (which is also portRadius)
+      return left()-hz<=xx && right()+hz>=xx && top()-hz<=yy && bottom()+hz>=yy; 
     }
     void updateBoundingBox() {bb.update(*this);}
     
@@ -140,11 +149,7 @@ namespace minsky
     virtual double value() const {return 0;}
 
     double rotation() const {return m_rotation;}
-    double rotation(const double& r) {
-      m_rotation=r;
-      bb.update(*this);
-      return m_rotation;
-    }
+    double rotation(const double& r) {return m_rotation=r;}
     
     float iWidth() const {return m_width;}
     float iWidth(const float& w) {
@@ -186,12 +191,13 @@ namespace minsky
     virtual float y() const;
     virtual float zoomFactor() const;
     void ensureBBValid() const {if (!bb.valid()) bb.update(*this);}
-    float width()  const {ensureBBValid(); return bb.width()*zoomFactor();}
-    float height() const {ensureBBValid(); return bb.height()*zoomFactor();}
-    float left()   const {ensureBBValid(); return x()+bb.left()*zoomFactor();}
-    float right()  const {ensureBBValid(); return x()+bb.right()*zoomFactor();}
-    float top()    const {ensureBBValid(); return y()+bb.top()*zoomFactor();}
-    float bottom() const {ensureBBValid(); return y()+bb.bottom()*zoomFactor();}
+    float width()  const {return right()-left();}
+    float height() const {return bottom()-top();}
+    std::vector<Point> corners() const; // 4 corners of item
+    float left()   const;
+    float right()  const;
+    float top()    const;
+    float bottom() const;
 
     /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
@@ -257,7 +263,6 @@ namespace minsky
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
     virtual void drawResizeHandles(cairo_t* cairo) const;
-    virtual std::pair<double,Point> rotatedPoints() const;    
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);
@@ -342,6 +347,8 @@ namespace minsky
   {
     bool onResizeHandle(float x, float y) const override; 
     void drawResizeHandles(cairo_t* cairo) const override;
+    /// returns coordinates of the resizer handle
+    virtual Point resizeHandleCoords() const;
   };
   
 }
