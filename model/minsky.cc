@@ -892,6 +892,7 @@ namespace minsky
     canvas.itemIndicator=false;
     BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
+    lastT=t0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
     // make the simulation proceed
