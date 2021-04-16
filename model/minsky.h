@@ -326,6 +326,11 @@ namespace minsky
     /// push current model state onto history if it differs from previous
     bool pushHistory();
 
+    /// flag to indicate whether a TCL should be pushed onto the
+    /// history stack, or logged in a recording. This is used to avoid
+    /// movements being added to recordings and undo history
+    bool doPushHistory=true;
+
     /// restore model to state \a changes ago 
     void undo(int changes=1);
 
