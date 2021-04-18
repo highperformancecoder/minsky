@@ -49,6 +49,8 @@ namespace minsky
   public:
     Rotate(float rot, float x0, float y0):
       angle(rot*M_PI/180.0), ca(std::cos(angle)), sa(std::sin(angle)), x0(x0), y0(y0) {}
+    bool initialisedFrom(float rot, float x, float y) const
+    {return x==x0 && y==y0 && angle==rot*M_PI/180.0;}
     /// rotate (x1,y1)
     Point operator()(float x1, float y1) const {
       return Point(x(x1,y1),y(x1,y1));}
@@ -79,6 +81,21 @@ namespace minsky
       return xy*(x-x0)+yy*(y-y0)+y0;
     }
   };
+
+  /// return x modulo 360
+  inline double clamp360(double x)
+  {
+    // adjust x to be positive before taking modulus
+    if (x<0)
+      x+=(size_t(-x)/360+1)*360;
+    return std::fmod(x,360);
+  }
+
+  /// return quadrant x is in: 0=[-45,45),1=[45,135), etc
+  inline int quadrant(double x)
+  {
+    return int(clamp360(x+45)/90);
+  }
 }
 
 #endif

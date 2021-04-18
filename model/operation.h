@@ -198,10 +198,8 @@ namespace minsky
     bool attachedToDefiningVar() const override;        
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;  
-    std::pair<double,Point> rotatedPoints() const override;        
 
-
-   /// return reference to integration variable
+    /// return reference to integration variable
     VariablePtr intVar; 
 
     bool onKeyPress(int keySym, const std::string& utf8, int state) override {

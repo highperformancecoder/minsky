@@ -871,8 +871,8 @@ bind . <$meta-G> {minsky.createGroup}
 ttk::notebook .tabs -padding 0
 ttk::notebook::enableTraversal .tabs
 # disable arrow bindings for switching between tabs, as we want to use these on the canvas
-bind .tabs <Key-Left> {}
-bind .tabs <Key-Right> {}
+bind .tabs <Left> {}
+bind .tabs <Right> {}
 grid .tabs -column 0 -row 10 -sticky news
 grid columnconfigure . 0 -weight 1
 grid rowconfigure . 10 -weight 1

@@ -1178,8 +1178,7 @@ proc deiconifyEditVar {} {
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
             retypeItem $editVarInput(Type)
-            # update name after type change, as it is needed when changing from constants. (ticket #1135)
-            $item.name $editVarInput(Name)
+            canvas.renameItem $editVarInput(Name)
                 
             makeVariablesConsistent
             catch reset

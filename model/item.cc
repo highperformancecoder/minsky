@@ -45,8 +45,9 @@ namespace minsky
     x.onResizeHandles=false;
     try
       {
+        cairo::CairoSave cs(surf.cairo());
+        cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
         x.draw(surf.cairo());
-		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232      
       }
 #ifndef NDEBUG
     catch (const std::exception& e) 
@@ -117,49 +118,91 @@ namespace minsky
 
   namespace
   {
-    bool near(float x0, float y0, float x1, float y1, float d, const Rotate& r)
+    inline bool near(float x0, float y0, float x1, float y1, float d)
     {
-      return abs(x0-r.x(x1,y1))<d && abs(y0-r.y(x1,y1))<d;
+      return abs(x0-x1)<d && abs(y0-y1)<d;
+    }
+    inline bool near(float x0, float y0, float x1, float y1, float d, const Rotate& r)
+    {
+      return near(x0,y0,r.x(x1,y1),r.y(x1,y1),d);
     }
 }
-    
-   std::pair<double,Point> Item::rotatedPoints() const
+
+  std::vector<Point> Item::corners() const
+  {
+    ensureBBValid();
+    auto left=x()+bb.left()*zoomFactor(), right=x()+bb.right()*zoomFactor();
+    auto top=y()+bb.top()*zoomFactor(), bottom=y()+bb.bottom()*zoomFactor();
+    memoisedRotator.update(rotation(),x(),y());
+    return {memoisedRotator(left,top),memoisedRotator(left,bottom),
+      memoisedRotator(right,bottom),memoisedRotator(right,top)};
+  }
+  
+    float Item::left()   const
+    {
+      auto left=x();
+      for (auto& p: corners())
+        if (p.x()<left) left=p.x();
+      return left;
+    }
+    float Item::right()   const
+    {
+      auto right=x();
+      for (auto& p: corners())
+        if (p.x()>right) right=p.x();
+      return right;
+    }
+    float Item::top()   const
+    {
+      auto top=y();
+      for (auto& p: corners())
+        if (p.y()<top) top=p.y();
+      return top;
+    }
+    float Item::bottom()   const
+    {
+      auto bottom=y();
+      for (auto& p: corners())
+        if (p.y()>bottom) bottom=p.y();
+      return bottom;
+    }
+
+   Point BottomRightResizerItem::resizeHandleCoords() const
    {
-     // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
-     double fm=std::fmod(rotation(),360), angle;	
-     float x1=right(),y1=bottom();  
-     if (fm==-90 || fm==270) {
-       angle=-rotation();
-       Rotate r1(angle,this->x(),this->y());
-       x1=r1.x(right(),bottom());
-       y1=r1.y(right(),bottom());						  
-     }
-     else if (abs(fm)==180) {
-       angle=rotation();
-       x1=right();
-       y1=top();					
-     }
-     else angle=0;	
-     Point p(x1,y1);  
-     return make_pair(angle,p);  
+     // ensure resize handle is always active on the same corner of variable/items. for ticket 1232
+     ensureBBValid();
+     memoisedRotator.update(rotation(),x(),y());
+     auto left=x()+bb.left()*zoomFactor(), right=x()+bb.right()*zoomFactor();
+     auto top=y()+bb.top()*zoomFactor(), bottom=y()+bb.bottom()*zoomFactor();
+     switch (quadrant(rotation()))
+       {
+       case 0:
+         return memoisedRotator(right,bottom);
+       case 1:
+         return memoisedRotator(right,top);
+       case 2:
+         return memoisedRotator(left,top);
+       case 3:
+         return memoisedRotator(left,bottom);
+       default:
+         assert(false);
+         return {};
+       }
   }
   
   bool Item::onResizeHandle(float x, float y) const
   {
     float rhSize=resizeHandleSize();
-    Rotate r(rotation(),this->x(),this->y());
-    return near(x,y,left(),top(),rhSize,r) ||
-      near(x,y,right(),top(),rhSize,r) ||
-      near(x,y,left(),bottom(),rhSize,r) ||
-      near(x,y,right(),bottom(),rhSize,r); 
+    for (auto& p: corners())
+      if (near(x,y,p.x(),p.y(),rhSize))
+        return true;
+    return false;
   }
 
    bool BottomRightResizerItem::onResizeHandle(float x, float y) const
   {
-    double angle=rotatedPoints().first;		  
-    Point p=rotatedPoints().second;		  
-    Rotate r(angle,this->x(),this->y());		  
-    return near(x,y,p.x(),p.y(),resizeHandleSize(),r);
+    Point p=resizeHandleCoords();
+    return near(x,y,p.x(),p.y(),resizeHandleSize());
   }
 
  
@@ -269,19 +312,19 @@ namespace minsky
   void Item::drawResizeHandles(cairo_t* cairo) const
   {
     auto sf=resizeHandleSize();
-    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
-    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
-    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
-    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
+    double angle=0.5*M_PI;
+    for (auto& p: corners())
+      {
+        angle+=0.5*M_PI;
+        drawResizeHandle(cairo,p.x()-x(),p.y()-y(),sf,angle);
+      }
     cairo_stroke(cairo);
   }
 
   void BottomRightResizerItem::drawResizeHandles(cairo_t* cairo) const
   { 			  			
-    double angle=rotatedPoints().first;		  
-    Point p=rotatedPoints().second;			  
-    Rotate r(angle,this->x(),this->y());
-    drawResizeHandle(cairo,r.x(p.x(),p.y())-x(),r.y(p.x(),p.y())-y(),0.5*resizeHandleSize(),abs(rotation())==180? 0.5*M_PI : 0);
+    Point p=resizeHandleCoords();
+    drawResizeHandle(cairo,p.x()-x(),p.y()-y(),resizeHandleSize(),0);
     cairo_stroke(cairo);
   }
   
