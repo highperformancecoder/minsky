@@ -20,6 +20,7 @@
 #include "CSVParser.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
+
 using namespace minsky;
 using namespace std;
 
@@ -406,7 +407,6 @@ namespace minsky
     string buf;
     typedef vector<string> Key;
     map<Key,double> tmpData;
-    multimap<Key,double> tmpAll; 
     map<Key,int> tmpCnt;
     vector<map<string,size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
@@ -485,23 +485,25 @@ namespace minsky
                       else if (!isspace(c) && c!='.' && c!=',')
                         s+=c;                    
 
-                    auto i=tmpData.find(key);
-                    bool valueExists=true;
-                    double v=spec.missingValue;
-                    try
+                    // TODO - this disallows special floating point values - is this right?
+                    bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
+                    if (valueExists || !isnan(spec.missingValue))
                       {
-                        v=stod(s);
-                      }
-                    catch (...) // value misunderstood
-                      {
-                        if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
-                          valueExists=false;
-                      }
-                    if (valueExists)
-                      {
-                        if (i==tmpData.end())
-                          tmpData.emplace(key,v);
-                        else	
+                        auto i=tmpData.find(key);
+                        double v=spec.missingValue;
+                        if (valueExists)
+                          try
+                            {
+                              v=stod(s);
+                              if (i==tmpData.end())
+                                tmpData.emplace(key,v);
+                            }
+                          catch (...) // value misunderstood
+                            {
+                              if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                                valueExists=false;
+                            }
+                        if (valueExists && i!=tmpData.end())
                           switch (spec.duplicateKeyAction)
                             {
                             case DataSpec::throwException:
@@ -592,11 +594,11 @@ namespace minsky
               }
 
             v.tensorInit.index(indexValue);
-            v.hypercube(hc);
             v.tensorInit.hypercube(hc);
             size_t j=0;
             for (auto& i: indexValue)
               v.tensorInit[j++]=i.second;
+            v=v.tensorInit;
           }                 
 
       }
