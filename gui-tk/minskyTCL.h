@@ -384,7 +384,11 @@ namespace minsky
       if (i!=TCL_obj_properties().end())
         if (auto spec=dynamic_cast<member_entry<DataSpec>*>(i->second.get()))
           if (auto v=canvas.item->variableCast())
-            v->importFromCSV(filename, *spec->memberptr);
+            {
+              setBusyCursor();
+              v->importFromCSV(filename, *spec->memberptr);
+              clearBusyCursor();
+            }
     }
     
     /// load from a file
