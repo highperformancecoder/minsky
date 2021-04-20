@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 
-<!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
-<HTML lang="EN">
+<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
+<HTML lang="en">
 <HEAD>
 <TITLE>Importing a parameter from a CSV file</TITLE>
 <META NAME="description" CONTENT="Importing a parameter from a CSV file">
@@ -11,7 +11,7 @@
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2019.2">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
@@ -43,7 +43,7 @@
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION00445000000000000000"></A><A ID="CSV___import"></A><A ID="2502"></A>
+<H2><A ID="SECTION00445000000000000000"></A><A ID="CSV___import"></A><A ID="2480"></A>
 <BR>
 Importing a parameter from a CSV file
 </H2>
@@ -60,8 +60,9 @@ specify assorted encoding parameters. The dialog looks somewhat like this:
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog.eps}}$
  -->
-<IMG STYLE=""
- SRC="img213.png"
+<IMG
+ WIDTH="533" HEIGHT="268" STYLE=""
+ SRC="img206.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog.eps}}">
 </DIV>
 
@@ -82,8 +83,9 @@ example is as follows:
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail.eps}}$
  -->
-<IMG STYLE=""
- SRC="img214.png"
+<IMG
+ WIDTH="533" HEIGHT="204" STYLE=""
+ SRC="img207.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail.eps}}">
 </DIV>
 
@@ -98,8 +100,9 @@ first cell of the data region.
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData.eps}}$
  -->
-<IMG STYLE=""
- SRC="img215.png"
+<IMG
+ WIDTH="533" HEIGHT="204" STYLE=""
+ SRC="img208.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData.eps}}">
 </DIV>
 
@@ -123,8 +126,9 @@ rendered in red, indicating data that is commented out:
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected.eps}}$
  -->
-<IMG STYLE=""
- SRC="img216.png"
+<IMG
+ WIDTH="533" HEIGHT="204" STYLE=""
+ SRC="img209.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected.eps}}">
 </DIV>
 
@@ -141,20 +145,28 @@ spacing. It is therefore important to parse the Date column as
 temporal data, which is achieved by changing the column type to
 &ldquo;time&rdquo;, and specifying a format string, which follows strftime
 conventions with the addition of a quarter specifier (<code>%Q</code>).
-<A ID="2523"></A><A ID="strftime_format_specifier"></A>
+<A ID="2501"></A><A ID="strftime_format_specifier"></A>
+<P>
+If your temporal data is in the form Y*M*D*H*M*S, where * signifies
+any sequence of non-digit characters, and the year, month, day, hour
+minutes, second fields are regular integers in that order, then it
+suffices to use the blank format string <A ID="2503"></A>. If some of the fields are missing, eg minutes and seconds,
+then they will be filled in with sensible defaults.
+
 <P>
 <DIV class="CENTER">
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat.eps}}$
  -->
-<IMG STYLE=""
- SRC="img217.png"
+<IMG
+ WIDTH="533" HEIGHT="204" STYLE=""
+ SRC="img210.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat.eps}}">
 </DIV>
 
 <P>
 <BR><P></P>
-<DIV class="CENTER"><A ID="2534"></A>
+<DIV class="CENTER"><A ID="2513"></A>
 <TABLE>
 <CAPTION><STRONG>Table 4.1:</STRONG>
 Table of strftime codes</CAPTION>
@@ -162,11 +174,22 @@ Table of strftime codes</CAPTION>
 <TR><TD CLASS="CENTER">Code</TD>
 <TD CLASS="LEFT">Description</TD>
 </TR>
+<TR><TD CLASS="CENTER">%a or %A</TD>
+<TD CLASS="LEFT">The name of the day of the week according to the current locale,
+                 in abbreviated form or the full name.</TD>
+</TR>
+<TR><TD CLASS="CENTER">%b or %B</TD>
+<TD CLASS="LEFT">The month name according to the current locale,  in  abbreviated
+              form or the full name.</TD>
+</TR>
 <TR><TD CLASS="CENTER">%d</TD>
 <TD CLASS="LEFT">Day of month in range 01 to 31</TD>
 </TR>
 <TR><TD CLASS="CENTER">%H</TD>
-<TD CLASS="LEFT">Hour in range 00 to 23</TD>
+<TD CLASS="LEFT">Hour in range 0 to 23</TD>
+</TR>
+<TR><TD CLASS="CENTER">%I</TD>
+<TD CLASS="LEFT">Hour in range 1 to 12</TD>
 </TR>
 <TR><TD CLASS="CENTER">%m</TD>
 <TD CLASS="LEFT">Month as a decimal number (01 to 12)</TD>
@@ -176,6 +199,9 @@ Table of strftime codes</CAPTION>
 </TR>
 <TR><TD CLASS="CENTER">%Q</TD>
 <TD CLASS="LEFT">Quarter (0=1st January, 1=1st March etc)</TD>
+</TR>
+<TR><TD CLASS="CENTER">%p</TD>
+<TD CLASS="LEFT">AM or PM</TD>
 </TR>
 <TR><TD CLASS="CENTER">%s</TD>
 <TD CLASS="LEFT">Number of seconds since epoch (1st January 1970)</TD>
@@ -226,8 +252,9 @@ large, but very sparse hypercube. If you remove those columns, as per
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogRemoved.eps}}$
  -->
-<IMG STYLE=""
- SRC="img218.png"
+<IMG
+ WIDTH="533" HEIGHT="204" STYLE=""
+ SRC="img211.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogRemoved.eps}}">
 </DIV>
 
@@ -242,8 +269,9 @@ with dimensions to aggregate over, we can get the data imported.
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal.eps}}$
  -->
-<IMG STYLE=""
- SRC="img219.png"
+<IMG
+ WIDTH="533" HEIGHT="209" STYLE=""
+ SRC="img212.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal.eps}}">
 </DIV>
 
