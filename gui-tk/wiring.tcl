@@ -156,6 +156,7 @@ foreach op [availableOperations] {
         "integrate"  -
         "differentiate" -
         "time" -
+        "userFunction" -
         "data" continue 
     }
 
@@ -185,8 +186,16 @@ image create photo switchImg -file $minskyHome/icons/switch.gif
 button .wiring.menubar.switch -image switchImg \
     -height 24 -width 37 -command {addSwitch}
 tooltip .wiring.menubar.switch "Switch"
-pack .wiring.menubar.switch -side left -padx {0 10}
+pack .wiring.menubar.switch -side left 
 set helpTopics(.wiring.menubar.switch) "SwitchIcon"
+
+button .wiring.menubar.userFunction -image userFunctionImg \
+    -height 24 -width 37 -command {addOperation userFunction}
+tooltip .wiring.menubar.userFunction "User Defined Function"
+pack .wiring.menubar.userFunction -side left -padx {0 10}
+set helpTopics(.wiring.menubar.userFunction) "Operation:userFunction"
+
+
 
 image create photo godleyImg -file $minskyHome/icons/bank.gif
 button .wiring.menubar.godley -image godleyImg -height 24 -width 37 \
