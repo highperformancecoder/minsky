@@ -1,4 +1,4 @@
-\chapter{User defined functions}
+\chapter{User defined functions}\label{ExprTk}
 
 {\em Much of this chapter is exerpted from \htmladdnormallink{exprtk's
 read.txt
@@ -284,13 +284,15 @@ eg: Given a string x with a value of 'abcdefgh' then:
  may also be the result of an expression, in the event they have
  fractional components truncation will be performed. (eg: $1.67
                 \rightarrow 1$)\\
+  %begin{latexonly}
   \hline
 \end{tabular}
 
 \begin{tabular}{|c|p{0.8\textwidth}|}
 \hline
 FUNCTION& DEFINITION\\
-\hline
+  \hline
+  %end{latexonly}
 \verb':='& Assign the value of x to y. Where y is a mutable string  or
  string range and x is either a string or a string  range. eg:
  \begin{enumerate}
@@ -328,13 +330,15 @@ and y is either a string or a string range. eg:
 \\
 \verb'<=>'&  Swap the values of x and y. Where x and y are mutable   
             strings.  (eg: \verb'x <=> y')\\
+  %begin{latexonly}
   \hline
 \end{tabular}
 
 \begin{tabular}{|c|p{0.8\textwidth}|}
 \hline
 FUNCTION& DEFINITION\\
-\hline
+  \hline
+  %end{latexonly}
 \verb'[]'& The string size operator returns the size of the string 
  being actioned. eg:
 \begin{enumerate}
@@ -407,13 +411,15 @@ while ((x -= 1) > 0)
 }               
 \end{verbatim}
   \\
+  %begin{latexonly}
   \hline
 \end{tabular}
 
 \begin{tabular}{|c|p{0.8\textwidth}|}
 \hline
 FUNCTION& DEFINITION\\
-\hline
+  \hline
+  %end{latexonly}
 \verb'repeat/until'& The structure will repeatedly evaluate the internal
 statement(s) 'until' the condition is true. The final
 statement in the final iteration will be used as the 
@@ -471,13 +477,15 @@ for (var i := 0; i < 10; i += 1)
 }            
 \end{verbatim}
   \\
+  %begin{latexonly}
   \hline
 \end{tabular}
 
 \begin{tabular}{|c|p{0.8\textwidth}|}
 \hline
 FUNCTION& DEFINITION\\
-\hline
+  \hline
+  %end{latexonly}
 \verb'return'& Return immediately from within the current expression.
 With the option of passing back a variable number of
 values (scalar, vector or string). eg:
