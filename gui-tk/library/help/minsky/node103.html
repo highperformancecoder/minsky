@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 
-<!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
-<HTML lang="EN">
+<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
+<HTML lang="en">
 <HEAD>
 <TITLE>Tensor values</TITLE>
 <META NAME="description" CONTENT="Tensor values">
@@ -11,7 +11,7 @@
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2019.2">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
@@ -43,7 +43,7 @@
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A ID="SECTION00460000000000000000"></A><A ID="2550"></A>
+<H1><A ID="SECTION00460000000000000000"></A><A ID="2530"></A>
 <BR>
 Tensor values
 </H1>
@@ -51,15 +51,16 @@ Tensor values
 <P>
 Variables may have tensor values, or sets of data. Different tensors
 are sorted by rank. For example, a tensor of rank 0 may appear as a
-single number, let's refer to it as <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
+single number, let's refer to it as <SPAN CLASS="MATH"><IMG
+ STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
  ALT="$x$"></SPAN>. A tensor of rank 1 may appear
-as a sequence of numbers, let's say <SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img221.png"
+as a sequence of numbers, let's say <SPAN CLASS="MATH"><IMG
+ STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img214.png"
  ALT="$(x x x x)$"></SPAN>. Rank 2 means a tensor
 appears as a 2D sequence of numbers, for example:
 
 <P>
-<BR><P></P>
-<DIV CLASS="mathdisplay">
+<DIV CLASS="displaymath">
 <!-- MATH
  \begin{displaymath}
 \left(
@@ -72,19 +73,16 @@ appears as a 2D sequence of numbers, for example:
 \end{displaymath}
  -->
 
-<IMG STYLE=""
- SRC="img222.png"
- ALT="\begin{displaymath}
-\left(
+<IMG
+ STYLE="height: 8.46ex; vertical-align: -3.72ex; " SRC="img215.png"
+ ALT="$\displaystyle \left(
 \begin{array}{ccc}
 x&amp; x&amp; x\\
 x&amp; x&amp; x\\
 x&amp; x&amp; x
 \end{array} \right)
-\end{displaymath}">
+$">
 </DIV>
-<BR CLEAR="ALL">
-<P></P>
 
 <P>
 A tensor of rank 3 will appear as a three-dimensional cube,
@@ -103,7 +101,7 @@ two tensors of rank 2 can be multiplied together, but a tensor of rank 2 and
 a tensor of rank 3 cannot. They may have differing dimensions, which means
 the values within each tensor may not necessarily match up 1-to-1 exactly.
 To understand what happens when a given dimension is mismatched requires 
-understanding the concept of an x-vector<A ID="2559"></A>.
+understanding the concept of an x-vector<A ID="2539"></A>.
 
 <P>
 When Minsky is given tensor values, it sorts the values within each tensor
@@ -122,9 +120,12 @@ If no x-vector is explicitly provided, then implicitly it consists of the the va
 <!-- MATH
  $(0,\ldots,n_i-1)$
  -->
-<SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img223.png"
- ALT="$(0,\ldots,n_i-1)$"></SPAN>, where <SPAN CLASS="MATH"><IMG STYLE="height: 1.47ex; vertical-align: -0.46ex; " SRC="img224.png"
- ALT="$n_i$"></SPAN> is the dimension size of axis <SPAN CLASS="MATH"><IMG STYLE="height: 1.61ex; vertical-align: -0.12ex; " SRC="img225.png"
+<SPAN CLASS="MATH"><IMG
+ STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img216.png"
+ ALT="$(0,\ldots,n_i-1)$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ STYLE="height: 1.47ex; vertical-align: -0.46ex; " SRC="img217.png"
+ ALT="$n_i$"></SPAN> is the dimension size of axis <SPAN CLASS="MATH"><IMG
+ STYLE="height: 1.61ex; vertical-align: -0.12ex; " SRC="img218.png"
  ALT="$i$"></SPAN>
 of the tensor.
 
@@ -132,11 +133,13 @@ of the tensor.
 For example, if the first tensor consists of three elements <!-- MATH
  $(x_0, x_1, x_2)$
  -->
-<SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img226.png"
+<SPAN CLASS="MATH"><IMG
+ STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img219.png"
  ALT="$(x_0, x_1, x_2)$"></SPAN>
 and the second consist of a number of different elements that roughly
 correspond to the same three elements, these can be added together.
-The x-vector starts with the first tensor's value of <SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img227.png"
+The x-vector starts with the first tensor's value of <SPAN CLASS="MATH"><IMG
+ STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img220.png"
  ALT="$(x_0)$"></SPAN> and looks for a
 matching value in the second tensor. If it can't find a direct match, it will
 search for nearby values which roughly correspond. It can then take those
@@ -147,15 +150,18 @@ values would appear, and what that hypothetical value would be. To take
 another example:
 
 <P>
-Suppose the first tensor was a vector <SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img228.png"
+Suppose the first tensor was a vector <SPAN CLASS="MATH"><IMG
+ STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img221.png"
  ALT="$(x_0,x_1)$"></SPAN> and had an
-x-vector (1,3) and the second tensor <SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img229.png"
+x-vector (1,3) and the second tensor <SPAN CLASS="MATH"><IMG
+ STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img222.png"
  ALT="$(y_0,y_1,y_2)$"></SPAN> had an x-vector
 (0,2,3), then the resulting tensor will be <!-- MATH
  $(x_0+0.5(y_0+y_1),
 x_1+y_2)$
  -->
-<SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img230.png"
+<SPAN CLASS="MATH"><IMG
+ STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img223.png"
  ALT="$(x_0+0.5(y_0+y_1),
 x_1+y_2)$"></SPAN>. If the x-vector were date/time data, then the tensor values
 will be interpolated according to the actual time values. If the first
@@ -168,7 +174,8 @@ tensors' x-vector ranges.
 If both tensor had string x-vectors, then the resultant tensor will
 only have values where both input tensors have the same string value
 in their x-vectors. In the above case, where the x-vectors were
-('1','3') and ('0','2','3') the resulting tensor will be the scalar <SPAN CLASS="MATH"><IMG STYLE="height: 1.89ex; vertical-align: -0.57ex; " SRC="img231.png"
+('1','3') and ('0','2','3') the resulting tensor will be the scalar <SPAN CLASS="MATH"><IMG
+ STYLE="height: 1.89ex; vertical-align: -0.57ex; " SRC="img224.png"
  ALT="$x_1+y_2$"></SPAN>.
 
 <P>

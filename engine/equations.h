@@ -274,7 +274,7 @@ namespace MathDAG
     ostream& latex(ostream& o) const override  {return o<<"locked";} 
     ostream& matlab(ostream& o) const override  {return o<<"";} 
     void render(ecolab::cairo::Surface& surf) const override;
-    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={});
+    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={}) override;
     int order(unsigned maxOrder) const override {return rhs->order(maxOrder-1)+1;}
     bool tensorEval() const override {return true;}
     std::shared_ptr<Node> derivative(SystemOfEquations&) const override
