@@ -780,6 +780,8 @@ proc contextMenu {x y X Y} {
              set plotTabDisplay [$item.plotTabDisplay]            
             .wiring.context add checkbutton -label "Display plot on tab" -command "$item.togglePlotTabDisplay" -variable plotTabDisplay               
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
+            .wiring.context add command -label "Export resolution factor: [$item.resolutionScaleFactor]" -command "setExportResolutionFactor $item"
+
             .wiring.context add command -label "Export as Image" -command exportItemAsImg
         }
         "GodleyIcon" {

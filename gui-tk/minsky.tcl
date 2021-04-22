@@ -582,6 +582,7 @@ menu .exportPlots
     tk_messageBox -type ok -icon info -message "Dimension Analysis passed"
 }
 
+.menubar.file add command -label "Export resolution factor: [minsky.canvas.resolutionScaleFactor]" -command {setExportResolutionFactor minsky.canvas}
 .menubar.file add command -label "Export Canvas" -command exportCanvas
 .menubar.file add cascade -label "Export Plots" -menu .exportPlots
 .menubar.file add checkbutton -label "Log simulation" -variable simLogging \
@@ -597,12 +598,26 @@ menu .exportPlots
 .menubar.file add command -label "Select items" -command selectItems
 .menubar.file add command -label "Command" -command cli
 
+.menubar.file configure -postcommand {
+    .menubar.file entryconfigure "Export resolution factor:*" -label "Export resolution factor: [minsky.canvas.resolutionScaleFactor]"
+}
+
 proc imageFileTypes {} {
     global tcl_platform
-    set fileTypes {{"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT}}
+    set fileTypes {{"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"Portable Network Graphics" .png TEXT}}
     if {$tcl_platform(platform)=="windows"} {lappend fileTypes {"EMF" .emf TEXT}}
     return $fileTypes
 }
+
+proc setExportResolutionFactor {setter} {
+    toplevel .resolutionFactor
+    wm title .resolutionFactor "Export resolution scale factor"
+    ttk::spinbox .resolutionFactor.value -from 1 -to 1000 -increment 1
+    pack .resolutionFactor.value
+    .resolutionFactor.value set [$setter.resolutionScaleFactor]
+    buttonBar .resolutionFactor "$setter.resolutionScaleFactor \[.resolutionFactor.value get\]"
+}
+
 
 proc renderImage {filename type surf} {
     global tcl_platform
@@ -612,12 +627,15 @@ proc renderImage {filename type surf} {
         $surf.renderToPDF "$filename"
     } elseif {[string match -nocase *.ps "$filename"] || [string match -nocase *.eps "$filename"]} {
         $surf.renderToPS "$filename"
+    } elseif {[string match -nocase *.png "$filename"]} {
+        $surf.renderToPNG "$filename"
     } elseif {$tcl_platform(platform)=="windows" && [string match -nocase *.emf "$filename"]} {
         $surf.renderToEMF "$filename"
     } else {
         switch $type {
             "SVG" {$surf.renderToSVG  "$filename.svg"}
             "PDF" {$surf.renderToPDF "$filename.pdf"}
+            "PNG" {$surf.renderToPNG "$filename.png"}
             "EMF" {$surf.renderToEMF "$filename.emf"}
             "Postscript" {$surf.renderToPS "$filename.eps"}
             default {return false}
