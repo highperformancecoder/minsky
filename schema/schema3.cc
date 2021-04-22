@@ -462,6 +462,7 @@ namespace schema3
         if (y.logx) x1->logx=*y.logx;
         if (y.logy) x1->logy=*y.logy;
         if (y.ypercent) x1->percent=*y.ypercent;
+        if (y.plotTabDisplay) x1->plotTabDisplay=*y.plotTabDisplay;
         if (y.plotType) x1->plotType=*y.plotType;
         if (y.xlabel) x1->xlabel=*y.xlabel;
         if (y.ylabel) x1->ylabel=*y.ylabel;
