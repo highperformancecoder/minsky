@@ -584,7 +584,9 @@ namespace minsky
           intVarWidth=rv.width()*z;
           if (rv.width()<intVar->iWidth()) intVarWidth=0.5*intVar->iWidth()*z;
           // set the port location...
-          intVar->moveTo(x()+r+ivo+intVarWidth, y());
+          Rotate rot(rotation(), x(), y());
+          auto ivp=rot(x()+r+ivo+intVarWidth, y());
+          intVar->moveTo(ivp.x(), ivp.y());
          
           cairo_save(cairo);
           cairo_translate(cairo,r+ivo+intVarWidth,0);
