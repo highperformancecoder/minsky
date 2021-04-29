@@ -453,15 +453,16 @@ namespace minsky
   {
     if (row==0) // A-L-E sum values across stockvars
       {
-        if (m_stockVars.empty()) return {};
-#ifndef NDEBUG //assert that m_stockVars is in order across the columns
-        assert(m_stockVars.size()==table.cols()-1);
-        for (size_t c=1; c<table.cols(); ++c)
-          assert(table.cell(0,c)==m_stockVars[c-1]->name());
-#endif
+        map<string,VariablePtr> stockVars;
+        for (auto& i: m_stockVars)
+          stockVars[i->valueId()]=i;
         double sum=0;
         for (size_t c=1; c<table.cols(); ++c)
-          sum+=(table.signConventionReversed(c)? -1: 1)*m_stockVars[c-1]->value();
+          {
+            auto i=stockVars.find(VariableValue::valueIdFromScope(group.lock(), trimWS(table.cell(0,c))));
+            if (i!=stockVars.end())
+              sum+=(table.signConventionReversed(c)? -1: 1)*i->second->value();
+          }
         return str(sum);
       }
     else return table.rowSum(row);
