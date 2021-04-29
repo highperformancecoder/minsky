@@ -16,14 +16,14 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNGEKUTTA_H
-#define RUNGEKUTTA_H
+#ifndef SIMULATION_H
+#define SIMULATION_H
 
 #include <cmath>
 
 namespace minsky
 {
- struct RungeKutta
+ struct Simulation
   {
     double stepMin{0}, stepMax{0.01};
     int nSteps{1};
@@ -36,6 +36,6 @@ namespace minsky
   };
 }
 
-#include "rungeKutta.cd" 
-#include "rungeKutta.xcd" 
+#include "simulation.cd" 
+#include "simulation.xcd" 
 #endif

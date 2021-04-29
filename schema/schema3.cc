@@ -362,7 +362,7 @@ namespace schema3
     m.conversions=conversions;
     m.fileVersion=minskyVersion;
     
-    static_cast<minsky::RungeKutta&>(m)=rungeKutta;
+    static_cast<minsky::Simulation&>(m)=rungeKutta;
     return m;
   }
 

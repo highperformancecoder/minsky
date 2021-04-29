@@ -33,7 +33,7 @@ but any renamed attributes require bumping the schema number.
 #include "classdesc.h"
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
-#include "rungeKutta.h"
+#include "simulation.h"
 #include "ravelState-schema2.h"
 
 #include "optional.h"
@@ -200,7 +200,7 @@ namespace schema2
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
-    minsky::RungeKutta rungeKutta;
+    minsky::Simulation rungeKutta;
     double zoomFactor=1;
     vector<minsky::Bookmark> bookmarks;
     minsky::Dimensions dimensions;

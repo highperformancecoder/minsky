@@ -44,7 +44,7 @@
 #include "plotTab.h"
 #include "godleyTab.h"
 #include "dimension.h"
-#include "rungeKutta.h"
+#include "simulation.h"
 #include "saver.h"
 
 #include <vector>
@@ -139,7 +139,7 @@ namespace minsky
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  class Minsky: public ValueVector, public Exclude<MinskyExclude>, public RungeKutta
+  class Minsky: public ValueVector, public Exclude<MinskyExclude>, public Simulation
   {
     CLASSDESC_ACCESS(Minsky);
 
