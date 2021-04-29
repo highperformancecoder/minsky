@@ -449,6 +449,25 @@ namespace minsky
       }
   }
 
+  string GodleyIcon::rowSum(int row) const
+  {
+    if (row==0) // A-L-E sum values across stockvars
+      {
+        map<string,VariablePtr> stockVars;
+        for (auto& i: m_stockVars)
+          stockVars[i->valueId()]=i;
+        double sum=0;
+        for (size_t c=1; c<table.cols(); ++c)
+          {
+            auto i=stockVars.find(VariableValue::valueIdFromScope(group.lock(), trimWS(table.cell(0,c))));
+            if (i!=stockVars.end())
+              sum+=(table.signConventionReversed(c)? -1: 1)*i->second->value();
+          }
+        return str(sum);
+      }
+    else return table.rowSum(row);
+  }
+  
   Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
   {
     unsigned stockCol=1;
