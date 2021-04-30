@@ -26,14 +26,12 @@
 #include "godleyIcon.h"
 #include "operation.h"
 #include "evalOp.h"
-#include "evalGodley.h"
 #include "wire.h"
 #include "plotWidget.h"
 #include "version.h"
 #include "variable.h"
 #include "equations.h"
 #include "latexMarkup.h"
-#include "integral.h"
 #include "variableValue.h"
 #include "canvas.h"
 #include "lock.h"
@@ -44,7 +42,7 @@
 #include "plotTab.h"
 #include "godleyTab.h"
 #include "dimension.h"
-#include "simulation.h"
+#include "rungeKutta.h"
 #include "saver.h"
 
 #include <vector>
@@ -64,7 +62,6 @@ namespace minsky
   using classdesc::shared_ptr;
   using namespace civita;
   
-  struct RKdata; // an internal structure for holding Runge-Kutta data
   struct CallableFunction;
 
   class SaveThread;
@@ -89,9 +86,6 @@ namespace minsky
   // be serialised.
   struct MinskyExclude
   {
-    EvalOpVector equations;
-    vector<Integral> integrals;
-    shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
     unique_ptr<BackgroundSaver> autoSaver;
 
@@ -109,8 +103,6 @@ namespace minsky
     MinskyExclude(const MinskyExclude&): historyPtr(0) {}
     MinskyExclude& operator=(const MinskyExclude&) {return *this;}
     
-    /// used to report a thrown exception on the simulation thread
-    std::string threadErrMsg;
   protected:
     /// save history of model for undo
     /* 
@@ -121,25 +113,11 @@ namespace minsky
     std::deque<classdesc::pack_t> history;
     size_t historyPtr;
 
-    /// flag indicates that RK engine is computing a step
-    volatile bool RKThreadRunning=false;
-  };
-
-  /// convenience class for accessing matrix elements from a data array
-  class MinskyMatrix
-  {
-    size_t n;
-    double *data;
-    CLASSDESC_ACCESS(MinskyMatrix);
-  public:
-    MinskyMatrix(size_t n, double* data): n(n), data(data) {}
-    double& operator()(size_t i, size_t j) {return data[i*n+j];}
-    double operator()(size_t i, size_t j) const {return data[i*n+j];}
   };
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  class Minsky: public ValueVector, public Exclude<MinskyExclude>, public Simulation
+  class Minsky: public Exclude<MinskyExclude>, public RungeKutta
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -184,11 +162,12 @@ namespace minsky
     }
     /// @}
 
-    /// evaluate the flow equations without stepping.
-    /// @throw ecolab::error if equations are illdefined
-    void evalEquations() {
-      for (auto& eq: equations)
-        eq->eval(&flowVars[0], flowVars.size(), &stockVars[0]);
+    void step();  ///< step the equations (by n steps, default 1)
+
+    bool resetIfFlagged() override {
+      if (reset_flag())
+        reset();
+      return reset_flag();
     }
     
     VariableValues variableValues;
@@ -217,8 +196,6 @@ namespace minsky
     void importDuplicateColumn(GodleyTable& srcTable, int srcCol);
     /// makes all duplicated columns consistent with \a srcTable, \a srcCol
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
-
-    EvalGodley evalGodley;
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky(): equationDisplay(*this) {
@@ -279,8 +256,6 @@ namespace minsky
     /// construct the equations based on input data
     /// @throws ecolab::error if the data is inconsistent
     void constructEquations();
-    /// evaluate the equations (stockVars.size() of them)
-    void evalEquations(double result[], double t, const double vars[]);
     /// performs dimension analysis, throws if there is a problem
     void dimensionalAnalysis() const;
     /// removes units markup from all variables in model
@@ -291,14 +266,8 @@ namespace minsky
     /// operation.
     bool checkEquationOrder() const;
 
-    typedef MinskyMatrix Matrix; 
-    void jacobian(Matrix& jac, double t, const double vars[]);
     
-    double t{0}; ///< time
-    bool running=false; ///< controls whether simulation is running
-    bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
-    void step();  ///< step the equations (by n steps, default 1)
 
     /// save to a file
     void save(const std::string& filename);

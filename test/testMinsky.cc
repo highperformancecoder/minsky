@@ -18,6 +18,7 @@
 */
 #include "minsky.h"
 #include "godleyTableWindow.h"
+#include "matrix.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 #include <gsl/gsl_integration.h>
@@ -289,7 +290,7 @@ SUITE(Minsky)
       CHECK_EQUAL(4, stockVars.size());
  
       save("derivative.mky");
-      jacobian(jac,t,&stockVars[0]);
+      evalJacobian(jac,t,&stockVars[0]);
    
       CHECK_EQUAL(0, jac(0,0));
       CHECK_EQUAL(0, jac(0,1));  
@@ -326,6 +327,7 @@ SUITE(Minsky)
       double value = 10;
       dynamic_cast<VariableBase*>(op1.get())->init(to_string(value));
       nSteps=1;
+      running=true;
       step();
       // for now, constructEquations doesn work
       CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
@@ -335,6 +337,7 @@ SUITE(Minsky)
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
       model->addWire(*intOp->intVar, *op3, 1, vector<float>());
       reset();
+      running=true;
       step();
       //      CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
       intOp=dynamic_cast<IntOp*>(op3.get());

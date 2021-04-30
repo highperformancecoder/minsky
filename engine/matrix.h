@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2018
+  @copyright Steve Keen 2021
   @author Russell Standish
   This file is part of Minsky.
 
@@ -16,27 +16,21 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef SIMULATION_H
-#define SIMULATION_H
 
-#include <cmath>
-#include <string>
+#ifndef MATRIX_H
+#define MATRIX_H
 
 namespace minsky
 {
- struct Simulation
+  /// convenience class for accessing matrix elements from a data array
+  class Matrix
   {
-    double stepMin{0}, stepMax{0.01};
-    int nSteps{1};
-    double epsRel{1e-2}, epsAbs{1e-3};
-    int order{4};
-    bool implicit{false};
-    int simulationDelay{0};
-    std::string timeUnit;
-    double tmax{INFINITY}, t0{0};
+    size_t n;
+    double *data;
+  public:
+    Matrix(size_t n, double* data): n(n), data(data) {}
+    double& operator()(size_t i, size_t j) {return data[i*n+j];}
+    double operator()(size_t i, size_t j) const {return data[i*n+j];}
   };
 }
-
-#include "simulation.cd" 
-#include "simulation.xcd" 
 #endif
