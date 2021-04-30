@@ -245,6 +245,7 @@ string VariableBase::init(const string& x)
         }
       catch (...)
         {}
+      updateBoundingBox();
     }
   return x;
 }

@@ -984,7 +984,7 @@ bind .gdlys.canvas <Leave> {after cancel hoverMouseTab godleyTab}
 
 proc hoverMouseTab {tabId} {
     set tab [lindex [.tabs tabs] [.tabs index current]]
-    $tabId.displayDelayedTooltip [get_pointer_x .$tab.canvas] [get_pointer_y .$tab.canvas]
+    $tabId.displayDelayedTooltip [get_pointer_x $tab.canvas] [get_pointer_y $tab.canvas]
 }
 
 # reset hoverMouse timer
