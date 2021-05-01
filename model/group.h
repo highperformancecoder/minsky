@@ -219,7 +219,11 @@ namespace minsky
     
     bool nocycles() const override; 
 
+    /// Make a copy of this as a sibling group (owned by
+    /// parent). Attempting to copying minsky.model is a null operation.
     GroupPtr copy() const;
+    /// make a copy of this, that is not owned by any group
+    GroupPtr copyUnowned() const;
     Group* clone() const override {throw error("Groups cannot be cloned");}
     static SVGRenderer svgRenderer;
 
