@@ -162,10 +162,12 @@ namespace minsky
 
     double defaultRotation=0;
     void addOperation(OperationType::Type op) {
+      if (op==OperationType::numOps) return;
       setItemFocus(model->addItem(OperationBase::create(op)));
       itemFocus->rotation(defaultRotation);
     }
     void addVariable(const std::string& name, VariableType::Type type) {
+      if (type==VariableType::undefined || type==VariableType::numVarTypes) return;
       setItemFocus(model->addItem(VariablePtr(type,name)));
       itemFocus->rotation(defaultRotation);
     }
