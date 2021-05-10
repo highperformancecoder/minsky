@@ -57,6 +57,7 @@
 #include "plotTab.rcd"
 #include "plotTab.xcd"
 #include "plotWidget.rcd"
+#include "polyRESTProcess.h"
 #include "polyRESTProcessBase.rcd"
 #include "polyRESTProcessBase.xcd"
 #include "port.rcd"
