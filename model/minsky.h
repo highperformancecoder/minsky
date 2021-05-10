@@ -318,6 +318,12 @@ namespace minsky
     unsigned maxHistory{100}; ///< maximum no. of history states to save
     int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvas during simulation
 
+    /// name of an auto save file
+    std::unique_ptr<std::string> autoSaveFile;
+    void setAutoSaveFile(const std::string& file) {
+      autoSaveFile.reset(new std::string(file));
+    }
+    
     /// clear history
     void clearHistory() {history.clear(); historyPtr=0;}
     /// called periodically to ensure history up to date
@@ -326,6 +332,17 @@ namespace minsky
     /// push current model state onto history if it differs from previous
     bool pushHistory();
 
+    /// Executed after each interpreter command to maintain undo/redo stack, edited flag, autosaving etc.
+    /// @param command '.' separated command
+    /// @param argc number of arguments
+    /// @return whether to save the command when recording events
+    bool commandHook(const std::string& command, int argc);
+
+    enum CmdData {no_command, is_const, is_setterGetter, generic};
+
+    /// return meta information on a given command
+    virtual CmdData getCommandData(const std::string& command) const {return generic;}
+    
     /// flag to indicate whether a TCL should be pushed onto the
     /// history stack, or logged in a recording. This is used to avoid
     /// movements being added to recordings and undo history
