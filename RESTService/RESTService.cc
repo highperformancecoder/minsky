@@ -18,6 +18,7 @@
 */
 
 #include "minskyRS.h"
+#include "RESTMinsky.h"
 #include "minsky_epilogue.h"
 
 using namespace classdesc;
@@ -50,10 +51,13 @@ namespace minsky
   void doOneEvent(bool idleTasksOnly) {}
 }
 
+using namespace minsky;
+
 int main()
 {
-  RESTProcess_t registry;
-  RESTProcess(registry,"/minsky",minsky::minsky());
+  RESTMinsky minsky;
+  LocalMinsky lm(minsky);
+  RESTProcess(minsky.registry,"/minsky",minsky::minsky());
 
   char* c;
   string buffer;
@@ -66,7 +70,7 @@ int main()
         cerr << buffer << "command doesn't starts with /"<<endl;
       else if (buffer[0]=='#') continue;
       else if (buffer=="/list")
-        for (auto& i: registry)
+        for (auto& i: minsky.registry)
           cout << i.first << endl;
       else
         {
@@ -75,16 +79,21 @@ int main()
               auto n=buffer.find(' ');
               json_pack_t jin(json_spirit::mValue::null);
               string cmd;
+              unsigned nargs=0;
               if (n==string::npos)
                 cmd=buffer;
               else
                 { // read argument(s)
                   cmd=buffer.substr(0,n);
                   read(buffer.substr(n),jin);
+                  nargs = jin.type()==json_spirit::array_type? jin.get_array().size(): 1;
                 }
               cout<<cmd<<"=>";
-              write(registry.process(cmd, jin),cout);
+              write(minsky.registry.process(cmd, jin),cout);
               cout << endl;
+              cmd.erase(0,1); // remove leading '/'
+              replace(cmd.begin(), cmd.end(), '/', '.');
+              minsky.commandHook(cmd, nargs);
             }
           catch (const std::exception& ex)
             {

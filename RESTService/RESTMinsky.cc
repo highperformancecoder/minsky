@@ -18,14 +18,39 @@
 */
 
 #include "RESTMinsky.h"
+#include "RESTProcess_base.h"
+#include "signature.h"
+#include "signature.xcd"
+#include "minsky_epilogue.h"
 using namespace std;
 
 namespace minsky
 {
-  CmdData getCommandData(const string& dottedCommand) const override
+  Minsky::CmdData RESTMinsky::getCommandData(const string& dottedCommand) const 
   {
-    string slashedCommand=dottedCommand;
+    string slashedCommand="/"+dottedCommand;
     replace(slashedCommand.begin(), slashedCommand.end(), '.','/');
+    switch (registry.count(slashedCommand))
+      {
+      case 0:
+        return no_command;
+      case 1:
+        {
+          auto& cmd=*registry.find(slashedCommand)->second;
+          return cmd.isConst()? is_const: cmd.isObject()? is_setterGetter: generic;
+        }
+      case 2:
+        {
+          auto firstCmd=registry.find(slashedCommand), secondCmd=firstCmd;
+          ++secondCmd;
+          if (firstCmd->second->arity()+secondCmd->second->arity() == 1)
+            return is_setterGetter;
+          else
+            return generic;
+        }
+      default:
+        return generic;
+      }
     
   }
 }

@@ -1389,7 +1389,7 @@ namespace minsky
     return false;
   }
 
-  bool Minsky::commandHook(const std::string& command, int argc)
+  bool Minsky::commandHook(const std::string& command, unsigned nargs)
   {
     if (doPushHistory &&
         command!="minsky.availableOperations" &&
@@ -1427,7 +1427,7 @@ namespace minsky
         )
       {
         auto t=getCommandData(command);
-        if (t==generic || (t==is_setterGetter && argc>1))
+        if (t==generic || (t==is_setterGetter && nargs>0))
           {
             bool modelChanged=pushHistory();
             if (modelChanged && command!="minsky.load" && command!="minsky.reverse") markEdited();

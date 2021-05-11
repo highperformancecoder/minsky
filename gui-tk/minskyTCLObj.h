@@ -53,7 +53,7 @@ namespace minsky
         return;
       }
 
-    if (m.commandHook(argv0,argc) && m.eventRecord.get() && argv0!="minsky.startRecording")
+    if (m.commandHook(argv0,argc-1) && m.eventRecord.get() && argv0!="minsky.startRecording")
       {
         for (int i=0; i<argc; ++i)
           (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";

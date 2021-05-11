@@ -334,9 +334,9 @@ namespace minsky
 
     /// Executed after each interpreter command to maintain undo/redo stack, edited flag, autosaving etc.
     /// @param command '.' separated command
-    /// @param argc number of arguments
+    /// @param nargs number of arguments
     /// @return whether to save the command when recording events
-    bool commandHook(const std::string& command, int argc);
+    bool commandHook(const std::string& command, unsigned nargs);
 
     enum CmdData {no_command, is_const, is_setterGetter, generic};
 
