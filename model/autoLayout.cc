@@ -106,7 +106,14 @@ namespace minsky
     for (auto& i: g.items)
       vertexMap.emplace(i.get(), gg.add_vertex(i.get())); 
     for (auto& i: g.groups)
-      vertexMap.emplace(i.get(), gg.add_vertex(i.get())); 
+      {
+        vertexMap.emplace(i.get(), gg.add_vertex(i.get()));
+        // add I/O variables, as these may be wired too.
+        for (auto& j: i->inVariables)
+          vertexMap.emplace(j.get(), gg.add_vertex(j.get()));
+        for (auto& j: i->outVariables)
+          vertexMap.emplace(j.get(), gg.add_vertex(j.get()));
+      }
 
     for (auto& w: g.wires)
       gg.add_edge(vertexMap[&w->from()->item()], vertexMap[&w->to()->item()]);
@@ -128,7 +135,7 @@ namespace minsky
         if (dynamic_cast<UserFunction*>(i.get()) && i->ports(0).lock()->wires().empty())
           gg.add_edge(vertexMap[&functions], vertexMap[i.get()]);
         else if (auto v=i->variableCast())
-          if (i->ports(0).lock()->wires().empty() || !i->ports(1).lock()->wires().empty())
+          if ((i->portsSize()>0 && i->ports(0).lock()->wires().empty()) || (i->portsSize()>1 && !i->ports(1).lock()->wires().empty()))
             switch (v->type())
               {
               case VariableType::parameter:
