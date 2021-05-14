@@ -92,7 +92,20 @@ namespace schema3
     Slider(const schema2::Slider& s):
       stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
   };
-    
+
+  struct LegendGeometry
+  {
+    double legendLeft=0.9, legendTop=0.95, legendFontSz=0.03;
+    LegendGeometry()=default;
+    LegendGeometry(const ecolab::Plot& plot):
+      legendLeft(plot.legendLeft), legendTop(plot.legendTop), legendFontSz(plot.legendFontSz) {}
+    void setLegendGeometry(ecolab::Plot& plot) const {
+      plot.legendLeft=legendLeft;
+      plot.legendTop=legendTop;
+      plot.legendFontSz=legendFontSz;
+    }
+  };
+  
   struct Item: public ItemBase
   {
     Optional<std::string> name; //name, description or title
@@ -123,6 +136,7 @@ namespace schema3
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;
     Optional<ecolab::Plot::Side> legend;
+    Optional<LegendGeometry> legendGeometry;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
@@ -161,7 +175,8 @@ namespace schema3
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
       nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
-      exp_threshold(p.exp_threshold), palette(p.palette)
+      exp_threshold(p.exp_threshold), palette(p.palette),
+      legendGeometry(p)
     {
       if (p.legend) legend=p.legendSide;
     }

@@ -478,6 +478,8 @@ namespace schema3
             x1->legend=true;
             x1->legendSide=*y.legend;
           }
+        if (y.legendGeometry)
+          y.legendGeometry->setLegendGeometry(*x1);
         if (y.palette) x1->palette=*y.palette;
       }
     if (auto x1=dynamic_cast<minsky::SwitchIcon*>(&x))
