@@ -67,6 +67,7 @@ namespace schema3
     int id=-1;
     std::string type;
     float x=0, y=0; ///< position in canvas, or within group
+    float itemTabX=nan(""), itemTabY=nan(""); 
     float scaleFactor=1; ///< scale factor of item on canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
     Optional<float> width, height;
@@ -74,10 +75,10 @@ namespace schema3
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), scaleFactor(it.m_sf),
+      x(it.m_x), y(it.m_y), itemTabX(it.itemTabX), itemTabY(it.itemTabY), scaleFactor(it.m_sf),
       rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type), x(it.x), y(it.y), 
+      Note(it), id(it.id), type(type), x(it.x), y(it.y),
       rotation(it.rotation), width(it.width), height(it.height), ports(it.ports) {}
   };
 

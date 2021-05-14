@@ -39,11 +39,11 @@ namespace minsky
   {
     ItemPtr item;                    
     auto minD=numeric_limits<float>::max();
-    for (auto& i: itemCoords)
+    for (auto& i: itemVector)
       {
-        if (auto g=dynamic_pointer_cast<GodleyIcon>(i.first))
+        if (auto g=dynamic_pointer_cast<GodleyIcon>(i))
           {
-            float xx=(i.second).first+offsx, yy=(i.second).second+offsy;   
+            float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;   
             if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));
             ecolab::cairo::Surface surf
               (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
@@ -67,7 +67,7 @@ namespace minsky
             if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
               {
                 minD=d;
-                item=i.first;
+                item=i;
               }
           }
       }
@@ -84,9 +84,10 @@ namespace minsky
             if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));  
             cairo::CairoSave cs(cairo);   
             if (it==itemFocus) {
-              cairo_translate(cairo,xItem,yItem);  		    				   
-              itemCoords[itemFocus]=move(make_pair(xItem,yItem));         
-            } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
+              it->itemTabX=xItem;
+              it->itemTabY=yItem;
+            }
+            cairo_translate(cairo,it->itemTabX,it->itemTabY);  		    				   
             g->godleyT->disableButtons();
             g->godleyT->displayValues=minsky().displayValues;
             g->godleyT->draw(cairo);
