@@ -748,7 +748,7 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
-        "Operation*|IntOp|DataOp" {
+        "Operation*|IntOp|DataOp|UserFunction" {
             set portValues "unknown"
             catch {set portValues [$item.portValues]}
             .wiring.context add command -label "Port values $portValues" 
