@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta.29</minskyVersion>
+  <minskyVersion>2.21.0-rc.3</minskyVersion>
   <wires>
    <Wire>
     <id>42</id>
@@ -69,6 +69,8 @@
     <type>Variable:parameter</type>
     <x>100</x>
     <y>97</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -115,6 +117,8 @@
     <type>Variable:parameter</type>
     <x>101</x>
     <y>243</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -161,6 +165,8 @@
     <type>Sheet</type>
     <x>322.438</x>
     <y>110.938</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>183.125</width>
@@ -174,6 +180,8 @@
     <type>Sheet</type>
     <x>310.812</x>
     <y>304.625</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1.00487</scaleFactor>
     <rotation>0</rotation>
     <width>160.375</width>
@@ -187,6 +195,8 @@
     <type>Variable:parameter</type>
     <x>533</x>
     <y>138</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -233,6 +243,8 @@
     <type>Variable:parameter</type>
     <x>531</x>
     <y>239</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -279,6 +291,8 @@
     <type>Operation:add</type>
     <x>631</x>
     <y>191</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -295,6 +309,8 @@
     <type>Sheet</type>
     <x>824.25</x>
     <y>204.75</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>223.5</width>
@@ -308,6 +324,8 @@
     <type>Variable:parameter</type>
     <x>160.1</x>
     <y>534.6</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -368,6 +386,8 @@
     <type>Sheet</type>
     <x>626.075</x>
     <y>534.025</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1.10969</scaleFactor>
     <rotation>0</rotation>
     <width>724.05</width>
@@ -381,6 +401,8 @@
     <type>Variable:parameter</type>
     <x>169.7</x>
     <y>842.8</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -441,6 +463,8 @@
     <type>Sheet</type>
     <x>604</x>
     <y>841.5</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>2.08723</scaleFactor>
     <rotation>0</rotation>
     <width>651.6</width>
@@ -454,6 +478,8 @@
     <type>Variable:parameter</type>
     <x>1146.5</x>
     <y>550.2</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -514,6 +540,8 @@
     <type>Variable:parameter</type>
     <x>1146.5</x>
     <y>713</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -574,6 +602,8 @@
     <type>Operation:add</type>
     <x>1251</x>
     <y>636</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -590,6 +620,8 @@
     <type>Operation:gather</type>
     <x>1354.4</x>
     <y>661.3</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -607,6 +639,8 @@
     <type>Variable:parameter</type>
     <x>1300.5</x>
     <y>699.8</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -651,6 +685,8 @@
     <type>Sheet</type>
     <x>1764.24</x>
     <y>721.888</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1.39886</scaleFactor>
     <rotation>0</rotation>
     <width>647.725</width>
