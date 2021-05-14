@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
 
       - name: Run docker build
         run: |
