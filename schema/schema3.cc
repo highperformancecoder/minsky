@@ -377,6 +377,8 @@ namespace schema3
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
+    x.itemTabX=y.itemTabX;
+    x.itemTabY=y.itemTabY;
     x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
     if (y.width) x.iWidth(*y.width);
@@ -476,6 +478,8 @@ namespace schema3
             x1->legend=true;
             x1->legendSide=*y.legend;
           }
+        if (y.legendGeometry)
+          y.legendGeometry->setLegendGeometry(*x1);
         if (y.palette) x1->palette=*y.palette;
       }
     if (auto x1=dynamic_cast<minsky::SwitchIcon*>(&x))

@@ -482,8 +482,12 @@ bind . <Key-ampersand> {if {![canvasKeyPress %N %A %s]} {addOperationKey integra
 bind . <Key-equal> {if {![canvasKeyPress %N %A %s]} {addNewGodleyItemKey}}
 bind . <Key-at> {if {![canvasKeyPress %N %A %s]} {addPlotKey}}
 
+array set modifiers {"Control_L" "1" "Control_R" "1" "Alt_L" "1" "Alt_R" "1"}
+
 #Clear canvas pan mode in case shift key is pressed to create a capitalized variable via textInput. for ticket 1112.
 bind . <Key> {
+    # ignore any modifier keys
+    if [info exists modifiers(%K)] return
     if {![canvasKeyPress %N %A %s]} {
         textInput %A
         .wiring.canvas configure -cursor {}
@@ -748,7 +752,7 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
-        "Operation*|IntOp|DataOp" {
+        "Operation*|IntOp|DataOp|UserFunction" {
             set portValues "unknown"
             catch {set portValues [$item.portValues]}
             .wiring.context add command -label "Port values $portValues" 

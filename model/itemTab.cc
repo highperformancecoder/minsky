@@ -40,7 +40,12 @@ namespace minsky
                                          if (itemSelector(*i)) 
                                            {		                                 
                                              itemVector.emplace_back(*i);
-                                             itemCoords.emplace(make_pair(*i,make_pair((*i)->x(),(*i)->y()))); 
+                                             if (isnan((*i)->itemTabX) || isnan((*i)->itemTabY))
+                                               {
+                                                 // NANs used to indicate the position on tab has not yet been initialised
+                                                 (*i)->itemTabX=(*i)->x();
+                                                 (*i)->itemTabY=(*i)->y();
+                                               }
                                            }
                                          return false;
                                        });   	
@@ -95,8 +100,8 @@ namespace minsky
       switch (clickType(x,y))
         {
         case internal:
-          moveOffsX=x-itemCoords[itemFocus].first;
-          moveOffsY=y-itemCoords[itemFocus].second;
+          moveOffsX=x-itemFocus->itemTabX;
+          moveOffsY=y-itemFocus->itemTabY;
           break;
         case background:
           itemFocus.reset();
@@ -144,16 +149,16 @@ namespace minsky
   {
     ItemPtr item;                    
     auto minD=numeric_limits<float>::max();
-    for (auto& i: itemCoords)
+    for (auto& i: itemVector)
       {
-        float xx=(i.second).first+offsx, yy=(i.second).second+offsy;  
+        float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;  
         float d=sqr(xx-x)+sqr(yy-y);
-        float z=i.first->zoomFactor();
-        float w=0.5*i.first->iWidth()*z,h=0.5*i.first->iHeight()*z;
+        float z=i->zoomFactor();
+        float w=0.5*i->iWidth()*z,h=0.5*i->iHeight()*z;
         if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
           {
             minD=d;
-            item=i.first;
+            item=i;
           }
       }
     

@@ -67,6 +67,7 @@ namespace schema3
     int id=-1;
     std::string type;
     float x=0, y=0; ///< position in canvas, or within group
+    float itemTabX=nan(""), itemTabY=nan(""); 
     float scaleFactor=1; ///< scale factor of item on canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
     Optional<float> width, height;
@@ -74,10 +75,10 @@ namespace schema3
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), scaleFactor(it.m_sf),
+      x(it.m_x), y(it.m_y), itemTabX(it.itemTabX), itemTabY(it.itemTabY), scaleFactor(it.m_sf),
       rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type), x(it.x), y(it.y), 
+      Note(it), id(it.id), type(type), x(it.x), y(it.y),
       rotation(it.rotation), width(it.width), height(it.height), ports(it.ports) {}
   };
 
@@ -91,7 +92,20 @@ namespace schema3
     Slider(const schema2::Slider& s):
       stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
   };
-    
+
+  struct LegendGeometry
+  {
+    double legendLeft=0.9, legendTop=0.95, legendFontSz=0.03;
+    LegendGeometry()=default;
+    LegendGeometry(const ecolab::Plot& plot):
+      legendLeft(plot.legendLeft), legendTop(plot.legendTop), legendFontSz(plot.legendFontSz) {}
+    void setLegendGeometry(ecolab::Plot& plot) const {
+      plot.legendLeft=legendLeft;
+      plot.legendTop=legendTop;
+      plot.legendFontSz=legendFontSz;
+    }
+  };
+  
   struct Item: public ItemBase
   {
     Optional<std::string> name; //name, description or title
@@ -122,6 +136,7 @@ namespace schema3
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;
     Optional<ecolab::Plot::Side> legend;
+    Optional<LegendGeometry> legendGeometry;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
@@ -160,7 +175,8 @@ namespace schema3
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
       nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
-      exp_threshold(p.exp_threshold), palette(p.palette)
+      exp_threshold(p.exp_threshold), palette(p.palette),
+      legendGeometry(p)
     {
       if (p.legend) legend=p.legendSide;
     }
