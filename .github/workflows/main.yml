@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ubuntu_ver: [18.04, 20.04]
+        ubuntu_ver: [20.04]
 
     name: ubuntu-${{ matrix.ubuntu_ver }}
 
@@ -21,7 +21,6 @@ jobs:
           submodules: true
 
       - name: Run docker build
-        if: matrix.ubuntu_ver == 18.04
         run: |
           docker build --network=host .
 
