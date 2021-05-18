@@ -84,7 +84,7 @@ namespace minsky
   
   ItemTab::ClickType ItemTab::clickType(double x, double y) const
   {
-    return (colX(x)>=0 && rowY(y)>=0 || itemFocus)? internal: background;
+    return ((colX(x)>=0 && rowY(y)>=0) || itemFocus)? internal: background;
   }
       
   void ItemTab::mouseDownCommon(float x, float y)
