@@ -20,6 +20,7 @@
 #ifndef GRID_H
 #define GRID_H
 #include <vector>
+#include "classdesc_access.h"
 
 namespace minsky
 {
@@ -32,20 +33,25 @@ namespace minsky
     virtual double width() const=0;  ///< width of cell on canvas
     virtual double height() const=0; ///< height of cell
   };
-    
+
+  struct JustificationStruct
+  {
+    enum Justification {left, right, centre};
+  };
+  
   template <class Cell>
-  class Grid
+  class Grid: public JustificationStruct
   {
     /// move current cursor to \a x,y
     virtual void moveTo(double x, double y)=0;
+    CLASSDESC_ACCESS(Grid);
   public:
     virtual ~Grid()=default;
     /// return reference to cell \a row, \a col. Reference is valid until next call to cell()
     virtual Cell& cell(unsigned row, unsigned col)=0;
     virtual unsigned numRows() const=0;
     virtual unsigned numCols() const=0;
-    enum Justification {left, right, centre};
-    /// justification of \a col
+   /// justification of \a col
     virtual Justification justification(unsigned col) const {return left;};
     /// whether cells all have the same height or not
     virtual bool evenHeight() const {return true;}
@@ -62,4 +68,5 @@ namespace minsky
   
 }
 
+#include "grid.cd"
 #endif

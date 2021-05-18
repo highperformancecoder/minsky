@@ -20,33 +20,57 @@
 
 #ifndef ITEMTAB_H
 #define ITEMTAB_H
-#include <variable.h>
+#include "variable.h"
+#include "grid.h"
+#include <pango.h>
 #include <cairoSurfaceImage.h>
 #include "classdesc_access.h"
 
 namespace minsky
 {
+  class ItemTabCellPtr: public std::shared_ptr<ecolab::Pango>
+  {
+    cairo_t* cachedCairo=nullptr;
+  public:
+    void reset(cairo_t* cairo) {
+      if (cairo!=cachedCairo) {
+        cachedCairo=cairo;
+        std::shared_ptr<ecolab::Pango>::operator=(std::make_shared<ecolab::Pango>(cairo));
+      }
+    }
+  };
 		 
-  class ItemTab: public ecolab::CairoSurface
+  class ItemTab: public ecolab::CairoSurface, public Grid<ecolab::Pango>
   {
     CLASSDESC_ACCESS(ItemTab);         
+    classdesc::Exclude<ItemTabCellPtr> cellPtr;
   public:
     ItemTab() {} 
   
     double xoffs=80;
-    double rowHeight=0;
-    double colWidth=50;
-    std::vector<double> colWidths; // generalises colWdith concept for par and var tabs. 
+//    double rowHeight=0;
+//    double colWidth=50;
+//    std::vector<double> colWidths; // generalises colWdith concept for par and var tabs. 
     float offsx=0, offsy=0;
     float m_width=600, m_height=800;
     virtual float width() const {return m_width;}
     virtual float height() const {return m_height;}
     Items itemVector;     
 
-    /// computed positions of the table columns
-    std::map<int,std::vector<double>> colLeftMargin;             
-    /// computed positions of the variable rows
-    std::vector<double> rowTopMargin;                      
+    unsigned numRows() const override {return itemVector.size()+1;}
+    unsigned numCols() const override {return varAttrib.size();}
+
+    ecolab::Pango& cell(unsigned row, unsigned col) override;
+
+    void moveTo(double x, double y) override {
+      if (surface.get())
+        cairo_move_to(surface->cairo(),x,y);
+    }
+    
+//    /// computed positions of the table columns
+//    std::map<int,std::vector<double>> colLeftMargin;             
+//    /// computed positions of the variable rows
+//    std::vector<double> rowTopMargin;                      
 
     virtual void populateItemVector();
     virtual bool itemSelector(const ItemPtr& i) = 0;
@@ -54,11 +78,11 @@ namespace minsky
     std::string getVarName(int i) const {if (i>=0 && i<int(itemVector.size())) return (itemVector[i])->variableCast()->name(); else return "";}
     std::vector<std::string> varAttrib{"Name","Definition","Initial Value","Short Description", "Long Description","Slider Step","Slider Min","Slider Max","Value"};       
     std::vector<std::string> varAttribVals;
-    /// column at \a x in unzoomed coordinates
-    int colX(double x) const;
-    /// row at \a y in unzoomed coordinates
-    int rowY(double y) const;
-    void moveTo(float x, float y);  
+//    /// column at \a x in unzoomed coordinates
+//    int colX(double x) const;
+//    /// row at \a y in unzoomed coordinates
+//    int rowY(double y) const;
+    void moveItemTo(float x, float y);  
          
     float moveOffsX, moveOffsY,xItem,yItem;
     ItemPtr itemFocus,item;      

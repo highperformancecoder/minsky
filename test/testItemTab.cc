@@ -81,23 +81,4 @@ SUITE(ItemTab)
       
     }
 
-  TEST_FIXTURE(ParVarTabFixture, colXrowY)
-    {
-      parameterTab.draw(surface.cairo());
-      // TODO: this test is horribly implementation specific
-      CHECK_EQUAL(1, parameterTab.colLeftMargin.count(0));
-      CHECK(parameterTab.colLeftMargin[0].size()>1);
-      CHECK_EQUAL(2, parameterTab.colX(parameterTab.colLeftMargin[0][1]));
-
-      for (auto& i: parameterTab.colLeftMargin[0])
-        cout << i << " ";
-      cout << endl;
-      for (auto& i: parameterTab.rowTopMargin)
-        cout << i << " ";
-      cout << endl;
-      
-      CHECK_EQUAL(2, parameterTab.rowTopMargin.size());
-      CHECK_EQUAL(1, parameterTab.rowY(parameterTab.rowTopMargin[1]));
-    }
-
 }
