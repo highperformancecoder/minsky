@@ -32,28 +32,42 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 
 #include <stdexcept>
 #include <string>
+#include <chrono>
 
 using namespace std;
 using namespace ecolab;
 
+#define FPS_PROFILING_ON
+
 namespace minsky
 {
+  static cairo_status_t appendDataToBufferNOP(void *p, const unsigned char *data, unsigned length)
+  {
+    return CAIRO_STATUS_SUCCESS;
+  }
+
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    if (!(winInfoPtr.get())) {
+    if (!(winInfoPtr.get()))
+    {
       winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
     }
-    if(winInfoPtr->getRenderingFlag()) {
+    if (winInfoPtr->getRenderingFlag())
+    {
       return;
     }
+
+#ifdef FPS_PROFILING_ON
+    unsigned long t0_render_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+#endif
 
     winInfoPtr->setRenderingFlag(true);
 
     auto surfaceToDraw = winInfoPtr->getBufferSurface();
     surfaceToDraw.swap(surface);
-    
-    // Draw a white rectangle and set source rgb back to black
-    // TODO:: Must be implemented in canvas - as depending on context colors might change. Also instead of white, should be transparent
+
+    // Draw a white rectangle (should we go for transparent instead?) and set source rgb back to black
+    // TODO:: Resetting the color be implemented in canvas class - as depending on context colors might change.
 
     cairo_set_source_rgb(surface->cairo(), 1, 1, 1);
     cairo_rectangle(surface->cairo(), 0, 0, surface->width(), surface->height());
@@ -61,12 +75,33 @@ namespace minsky
     cairo_set_source_rgb(surface->cairo(), 0, 0, 0);
 
     redraw(0, 0, surface->width(), surface->height());
-    //cairo_surface_write_to_png(surface->surface(), "testOutput.png");
+
+
+#ifdef FPS_PROFILING_ON
+    unsigned long t1_png_stream_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+#endif
+    // TODO:: Below write_to_png_stream is needed to copyBufferToMain to work.
+    // This is temporary and must be removed. 
+    vector<unsigned char> buffer;
+    cairo_surface_write_to_png_stream(surface->surface(), appendDataToBufferNOP, &buffer);
+
+#ifdef FPS_PROFILING_ON
+    unsigned long t2_window_copy_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+#endif
 
     surfaceToDraw.swap(surface);
-
     winInfoPtr->copyBufferToMain();
     winInfoPtr->setRenderingFlag(false);
+
+#ifdef FPS_PROFILING_ON
+    unsigned long t3_render_over = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+    unsigned long windowCopyTime = t3_render_over - t2_window_copy_start;
+    unsigned long pngStreamWriteTime = t2_window_copy_start - t1_png_stream_start;
+    unsigned long totalTime = t3_render_over - t0_render_start;
+
+    cout << "Rendering Time (ms): " << totalTime << " (total) | " << windowCopyTime << " (window copy) | "  << pngStreamWriteTime << " (png stream overhead) " << endl;
+#endif
   }
 
   void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight)
