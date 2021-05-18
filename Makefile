@@ -47,7 +47,7 @@ SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.
 	operationType.o a85.o
 
 GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
-RESTSERVICE_OBJS=minskyRS.o itemRS.o
+RESTSERVICE_OBJS=minskyRS.o itemRS.o RESTMinsky.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o
 

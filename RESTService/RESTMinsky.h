@@ -17,26 +17,18 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RENDER_NATIVE_WINDOW_H
-#define RENDER_NATIVE_WINDOW_H
+#ifndef RESTMINSKY_H
+#define RESTMINSKY_H
 
-#include <cairoSurfaceImage.h>
-
+#include "minsky.h"
+#include "RESTProcess_base.h"
 namespace minsky
-{  
-  class WindowInformation;
-  class RenderNativeWindow : public ecolab::CairoSurface
+{
+  struct RESTMinsky: public Minsky
   {
-  private:
-    CLASSDESC_ACCESS(RenderNativeWindow); 
-    classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
-
-  public:    
-    void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
-    void renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
-    void draw();
+    RESTProcess_t registry;
+    CmdData getCommandData(const std::string&) const override;
   };
-} // namespace minsky
+}
 
-#include "renderNativeWindow.cd"
 #endif

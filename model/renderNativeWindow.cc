@@ -45,6 +45,18 @@ namespace minsky
   {
     return CAIRO_STATUS_SUCCESS;
   }
+  
+  namespace
+  {
+    class NativeSurface: cairo::Surface
+    {
+      RenderNativeWindow& renderNativeWindow;
+    public:
+      NativeSurface(RenderNativeWindow& r, cairo_surface_t* s=nullptr, int width=-1, int height=-1):
+        cairo::Surface(s,width,height), renderNativeWindow(r) {}
+      void requestRedraw() override {renderNativeWindow.draw();}
+    };
+  }
 
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
@@ -52,8 +64,12 @@ namespace minsky
     {
       winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
     }
-    if (winInfoPtr->getRenderingFlag())
-    {
+    draw();
+  }
+
+  void RenderNativeWindow::draw()
+  {
+    if(!winInfoPtr.get() || winInfoPtr->getRenderingFlag()) {
       return;
     }
 
@@ -104,6 +120,7 @@ namespace minsky
 #endif
   }
 
+  
   void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
     // TODO:: To be implemented... need to recreate child window

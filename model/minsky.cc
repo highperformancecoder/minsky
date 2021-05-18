@@ -892,6 +892,7 @@ namespace minsky
     canvas.itemIndicator=false;
     BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
+    lastT=t0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
     // make the simulation proceed
@@ -956,6 +957,7 @@ namespace minsky
     if (reset_flag())
       reset();
     running=true;
+    lastT=t;
     
     // create a private copy for worker thread use
     vector<double> stockVarsCopy(stockVars);
@@ -1387,6 +1389,66 @@ namespace minsky
     return false;
   }
 
+  bool Minsky::commandHook(const std::string& command, unsigned nargs)
+  {
+    if (doPushHistory &&
+        command!="minsky.availableOperations" &&
+        command!="minsky.canvas.select" &&
+        command!="minsky.canvas.recentre" &&
+        command!="minsky.canvas.focusFollowsMouse" &&
+        command!="minsky.canvas.displayDelayedTooltip" &&
+        command!="minsky.canvas.requestRedraw" &&
+        /* ensure we record mouse movements, but filter from history */
+        command!="minsky.canvas.mouseDown"&&
+        command!="minsky.canvas.mouseMove" && 
+        command!="minsky.clearAll" &&
+        command!="minsky.doPushHistory" &&
+        command!="minsky.model.moveTo" &&
+        command!="minsky.canvas.model.moveTo" &&
+        command!="minsky.canvas.model.zoom" &&
+        command!="minsky.model.zoom" &&
+        command!="minsky.newGlobalGroupTCL" &&
+        command!="minsky.popFlags" &&
+        command!="minsky.pushFlags" &&
+        command!="minsky.select" &&
+        command!="minsky.selectVar" &&
+        command!="minsky.setGodleyIconResource" &&
+        command!="minsky.setGroupIconResource" &&
+        command!="minsky.setLockIconResource" &&
+        command!="minsky.step" &&
+        command!="minsky.running" &&
+        command!="minsky.multipleEquities" &&
+        command.find("minsky.panopticon")==string::npos &&
+        command.find("minsky.equationDisplay")==string::npos && 
+        command.find("minsky.setGodleyDisplayValue")==string::npos && 
+        command.find(".get")==string::npos && 
+        command.find(".@elem")==string::npos && 
+        command.find(".mouseFocus")==string::npos
+        )
+      {
+        auto t=getCommandData(command);
+        if (t==generic || (t==is_setterGetter && nargs>0))
+          {
+            bool modelChanged=pushHistory();
+            if (modelChanged && command!="minsky.load" && command!="minsky.reverse") markEdited();
+            if (modelChanged && autoSaveFile.get())
+              try
+                {
+                  save(*autoSaveFile);
+                  markEdited(); // undo edited flag reset
+                }
+              catch(...)
+                { // unable to autosave
+                  autoSaveFile.reset();
+                  throw std::runtime_error("Unable to autosave to this location");
+                }
+            return modelChanged;
+          }
+      }
+    return command=="minsky.canvas.requestRedraw" || command=="minsky.canvas.mouseDown" || command=="minsky.canvas.mouseMove" || command.find(".get")!=string::npos;
+  }
+
+  
   void Minsky::undo(int changes)
   {
     // save current state for later restoration if needed

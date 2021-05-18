@@ -24,7 +24,8 @@
 #include "port.h"
 #include "intrusiveMap.h"
 #include "geometry.h"
-//#include "RESTProcess_base.h"
+#include "polyRESTProcessBase.h"
+
 #include <accessor.h>
 #include <TCL_obj_base.h>
 #include <json_pack_base.h>
@@ -93,7 +94,8 @@ namespace minsky
     float bottom() const {return m_bottom;}
   };
 
-  class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
+  class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>,
+              public classdesc::PolyRESTProcessBase
   {
     double m_rotation=0; ///< rotation of icon, in degrees
   protected:
@@ -273,8 +275,8 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
     /// runs the RESTProcess descriptor suitable for this type
-    virtual void restProcess(classdesc::RESTProcess_t&,const std::string&);
-    virtual void restProcess(classdesc::RESTProcess_t&,const std::string&) const;
+    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&);
+    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const;
     virtual void json_pack(classdesc::json_pack_t&) const;
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)
@@ -324,8 +326,8 @@ namespace minsky
     }
     void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d) override 
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
-    void restProcess(classdesc::RESTProcess_t&,const std::string&) override;
-    void restProcess(classdesc::RESTProcess_t&,const std::string&) const override;
+    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) override;
+    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const override;
     void json_pack(classdesc::json_pack_t&) const override;
   };
 

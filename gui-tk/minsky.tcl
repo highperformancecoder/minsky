@@ -1316,10 +1316,9 @@ proc step {} {
     } else {
         # run simulation
         global preferences
-        set lastt [t]
         if {[catch minsky.step errMsg options] && [running]} {runstop}
         if {[minsky.t0]>[t] || [minsky.tmax]<[t]} {runstop}
-        .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
+        .controls.statusbar configure -text "t: [t] Δt: [format %g [deltaT]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
         update
         return -options $options $errMsg

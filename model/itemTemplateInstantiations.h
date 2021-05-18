@@ -33,8 +33,8 @@
 #include "variable.h"
 
 #define DEF(type, base)                                                 \
-  template void ItemT<type,base>::restProcess(RESTProcess_t&, const string&); \
-  template void ItemT<type,base>::restProcess(RESTProcess_t&, const string&) const; \
+  template void ItemT<type,base>::RESTProcess(RESTProcess_t&, const string&); \
+  template void ItemT<type,base>::RESTProcess(RESTProcess_t&, const string&) const; \
   template void ItemT<type,base>::json_pack(json_pack_t&) const; 
 #define DEFOP(type) DEF(Operation<OperationType::type>, OperationBase)
 #define DEFVAR(type) DEF(Variable<VariableType::type>, VariableBase)
