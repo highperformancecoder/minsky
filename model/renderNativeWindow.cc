@@ -41,7 +41,6 @@ using namespace ecolab;
 
 namespace minsky
 {
-  
   static cairo_status_t appendDataToBufferNOP(void *p, const unsigned char *data, unsigned length)
   {
     return CAIRO_STATUS_SUCCESS;
