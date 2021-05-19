@@ -35,45 +35,56 @@ namespace minsky
     return dynamic_cast<GodleyIcon*>(i.get());
   }
   
-  ItemPtr GodleyTab::itemAt(float x, float y)
+  ItemTab::ClickType GodleyTab::clickType(double x, double y) const
   {
-    ItemPtr item;                    
-    auto minD=numeric_limits<float>::max();
     for (auto& i: itemVector)
-      {
-        if (auto g=dynamic_pointer_cast<GodleyIcon>(i))
-          {
-            float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;   
-            if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));
-            ecolab::cairo::Surface surf
-              (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
-            try
-              {
-                g->godleyT->draw(surf.cairo());
-              }
-#ifndef NDEBUG
-            catch (const std::exception& e) 
-              {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
-            catch (...) {cerr<<"illegal exception caught in draw()";}
-#else
-            catch (...) {}
-#endif
-            float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
-            float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
-            xx+=w;
-            yy+=h;
-            float d=sqr(xx-x)+sqr(yy-y);
-          
-            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
-              {
-                minD=d;
-                item=i;
-              }
-          }
-      }
-    
-    return item;
+      if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+        if (auto e=g->godleyT)
+          if (e->clickType(x-offsx-i->itemTabX,y-offsy-i->itemTabY)!=GodleyTableEditor::background)
+            return internal;
+    return background;
   }
+  
+  
+//  ItemPtr GodleyTab::itemAt(float x, float y)
+//  {
+//    ItemPtr item;                    
+//    auto minD=numeric_limits<float>::max();
+//    for (auto& i: itemVector)
+//      {
+//        if (auto g=dynamic_pointer_cast<GodleyIcon>(i))
+//          {
+//            float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;   
+//            if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));
+//            ecolab::cairo::Surface surf
+//              (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
+//            try
+//              {
+//                g->godleyT->draw(surf.cairo());
+//              }
+//#ifndef NDEBUG
+//            catch (const std::exception& e) 
+//              {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
+//            catch (...) {cerr<<"illegal exception caught in draw()";}
+//#else
+//            catch (...) {}
+//#endif
+//            float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
+//            float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
+//            xx+=w;
+//            yy+=h;
+//            float d=sqr(xx-x)+sqr(yy-y);
+//          
+//            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
+//              {
+//                minD=d;
+//                item=i;
+//              }
+//          }
+//      }
+//    
+//    return item;
+//  }
 	
   void GodleyTab::draw(cairo_t* cairo)
   {   

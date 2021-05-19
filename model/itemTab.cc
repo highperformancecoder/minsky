@@ -52,32 +52,45 @@ namespace minsky
   void ItemTab::moveItemTo(float x, float y)
   {   
     if (itemFocus) {    
-      xItem=x;	                               
-      yItem=y;
-      assert(abs(x-xItem)<1 && abs(y-yItem)<1);
+      itemFocus->itemTabX=x-offsx;	                               
+      itemFocus->itemTabY=y-offsy;
     }
   }  
   
   ItemTab::ClickType ItemTab::clickType(double x, double y) const
   {
-    return ((colX(x)>=0 && rowY(y)>=0) || itemFocus)? internal: background;
+    return (colX(x)>=0 && rowY(y)>=0)? internal: background;
   }
       
   void ItemTab::mouseDownCommon(float x, float y)
   {
-    if (itemFocus=itemAt(x,y))
-      switch (clickType(x,y))
-        {
-        case internal:
-          moveOffsX=x-itemFocus->itemTabX;
-          moveOffsY=y-itemFocus->itemTabY;
-          break;
-        case background:
-          itemFocus.reset();
-          break;
-        default:
-          break;  
-        }
+    switch (clickType(x-offsx,y-offsy))
+      {
+      case background:
+        itemFocus.reset();
+        break;
+      case internal:
+        itemFocus=itemAt(x-offsx,y-offsy);
+        break;
+      }
+            
+//    if (itemFocus=itemAt(x,y))
+//      {
+//          moveOffsX=x-itemFocus->itemTabX;
+//          moveOffsY=y-itemFocus->itemTabY;
+//      }
+//      switch (clickType(x,y))
+//        {
+//        case internal:
+//          moveOffsX=x-itemFocus->itemTabX;
+//          moveOffsY=y-itemFocus->itemTabY;
+//          break;
+//        case background:
+//          itemFocus.reset();
+//          break;
+//        default:
+//          break;  
+//        }
   }  
   
   void ItemTab::mouseUp(float x, float y)
@@ -88,20 +101,22 @@ namespace minsky
   
   void ItemTab::mouseMove(float x, float y)
   {
-    try
-      {
+//    try
+//      {
         if (itemFocus)
-          switch (clickType(x,y))
-            {
-            case internal:
-              moveItemTo(x-moveOffsX,y-moveOffsY);
-              requestRedraw();
-              return;
-            default:
-              break;
-            }
-      }
-    catch (...) {/* absorb any exceptions, as they're not useful here */}  
+          {
+            moveItemTo(x/*-moveOffsX*/,y/*-moveOffsY*/);
+            requestRedraw();
+          }
+//           switch (clickType(x,y))
+//            {
+//            case internal:
+//             return;
+//            default:
+//              break;
+//            }
+//      }
+//    catch (...) {/* absorb any exceptions, as they're not useful here */}  
   }
   
   void ItemTab::displayDelayedTooltip(float x, float y)

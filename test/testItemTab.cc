@@ -98,5 +98,22 @@ SUITE(ItemTab)
       // test other columns maybe?
     }
 
-    
+    TEST_FIXTURE(ParVarTabFixture, itemAt)
+    {
+      auto item0=variableTab.itemVector[0];
+      CHECK_EQUAL(item0, variableTab.itemAt(item0->itemTabX, item0->itemTabY));
+      auto item1=variableTab.itemVector[1];
+      CHECK_EQUAL(item1, variableTab.itemAt(item1->itemTabX, item1->itemTabY));
+    }
+
+    TEST_FIXTURE(ParVarTabFixture, moveItem)
+    {
+      auto item0=variableTab.itemVector[0];
+      item0->itemTabX=100; item0->itemTabY=200;
+      double x=item0->itemTabX, y=item0->itemTabY;
+      variableTab.mouseDownCommon(x,y);
+      variableTab.mouseUp(x+10, y+10);
+      CHECK_EQUAL(x+10, item0->itemTabX);
+      CHECK_EQUAL(y+10, item0->itemTabY);
+    }
 }

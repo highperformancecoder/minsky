@@ -76,7 +76,7 @@ namespace minsky
     ItemPtr itemFocus,item;      
     void getItemAt(float x, float y) {item=itemAt(x,y);}  
     enum ClickType {background, internal};    
-    ClickType clickType(double x, double y) const;         
+    virtual ClickType clickType(double x, double y) const;         
     virtual void draw(cairo_t* cairo); 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
