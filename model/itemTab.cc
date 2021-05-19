@@ -32,7 +32,6 @@ using ecolab::cairo::CairoSave;
 
 namespace minsky
 {
-
   void ItemTab::populateItemVector() {
     itemVector.clear();	
     minsky().canvas.model->recursiveDo(&GroupItems::items,
@@ -211,7 +210,10 @@ namespace minsky
             cellPtr->setText(str(v->sliderMax));
             break;
           case 8:
-            cellPtr->setText(str(v->value()));
+            if (v->dims().size())
+              cellPtr->setText("<tensor>");
+            else
+              cellPtr->setText(str(v->value()));
             break;
           default:
             break;

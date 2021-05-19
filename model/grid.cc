@@ -24,6 +24,11 @@
 
 namespace minsky
 {
+  namespace
+  {
+    static constexpr double padx=2; ///< padding between cells
+  }
+  
   template <class Cell>
   void Grid<Cell>::draw()
   {
@@ -58,7 +63,7 @@ namespace minsky
           case right: case centre:
             // work out column width
             for (unsigned row=0; row<numRows(); ++row)
-              colWidth=std::max(colWidth,cell(row,col).width());
+              colWidth=std::max(colWidth,cell(row,col).width()+padx);
             break;
           default:
             break;
@@ -75,9 +80,9 @@ namespace minsky
               case right: offset+=colWidth-currentCell.width(); break;
               case centre: offset+=0.5*(colWidth-currentCell.width()); break;
               }
-            moveTo(x+offset,y);
+            moveTo(x+offset+0.5*padx,y);
             currentCell.show();
-            colWidth=std::max(colWidth, currentCell.width());
+            colWidth=std::max(colWidth, currentCell.width()+padx);
             y=bottomRowMargin[row];
           }
         x+=colWidth;

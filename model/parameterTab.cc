@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2019
+  @copyright Steve Keen 2021
   @author Russell Standish
   @author Wynand Dednam
   This file is part of Minsky.
@@ -18,22 +18,28 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARAMETERTAB_H
-#define PARAMETERTAB_H
-#include <itemTab.h>
-
+#include "parameterTab.h"
+#include "selection.h"
+#include "minsky_epilogue.h"
+using namespace std;
 namespace minsky
 {
-	 
-  class ParameterTab: public ItemTab
+  ecolab::Pango& ParameterTab::cell(unsigned row, unsigned col)
   {
-  public:
-    // replace definition column by dimensions
-    ParameterTab() {assert(varAttrib[1]=="Definition"); varAttrib[1]="Dimensions";}
-    bool itemSelector(const ItemPtr& i) override {if (auto v=i->variableCast()) return v->type()==VariableType::parameter; return false;}
-    ecolab::Pango& cell(unsigned row, unsigned col) override;
-  };
-  
+    if (row>0 && col==1) // override the definition column
+      {
+        if (auto v=itemVector[row-1]->variableCast())
+          {
+            cellPtr.reset(surface->cairo());
+            string dimString;
+            auto dims=v->dims();
+            for (size_t i=0; i<dims.size(); ++i)
+              dimString+=(i?",":"")+to_string(dims[i]);
+            cellPtr->setText(dimString);
+          }
+        return *cellPtr;
+      }
+    else
+      return ItemTab::cell(row,col);
+  }
 }
-#include "parameterTab.cd"
-#endif

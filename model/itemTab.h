@@ -43,6 +43,7 @@ namespace minsky
   class ItemTab: public ecolab::CairoSurface, public Grid<ecolab::Pango>
   {
     CLASSDESC_ACCESS(ItemTab);         
+  protected:
     classdesc::Exclude<ItemTabCellPtr> cellPtr;
   public:
     ItemTab() {} 
