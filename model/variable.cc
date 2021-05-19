@@ -419,7 +419,14 @@ bool VariableBase::visible() const
 	else return true;
   }  
   // ensure flow vars with out wires remain visible. for ticket 1275
-  if (attachedToDefiningVar() && !m_ports[0]->wires().empty()) return true;  
+  if (attachedToDefiningVar())
+    {
+      bool visibleOutWires=false;
+      for (auto w: m_ports[0]->wires())
+        visibleOutWires |= w->visible();
+      if (visibleOutWires)
+        return true;
+    }
   if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
      if (i->attachedToDefiningVar()) return true;
   return !controller.lock() && Item::visible();
