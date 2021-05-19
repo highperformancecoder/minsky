@@ -21,6 +21,7 @@
 #include "variable.h"
 #include "cairoItems.h"
 #include "minsky.h"
+#include "equations.h"
 //#include "RESTProcess_base.h"
 #include <error.h>
 #include "minsky_epilogue.h"
@@ -500,6 +501,22 @@ bool VariableBase::onKeyPress(int keySym, const std::string&,int)
     }
 }
 
+std::string VariableBase::definition() const
+{
+  MathDAG::SystemOfEquations system(cminsky());	  
+  ostringstream o;
+	
+  auto varDAG=system.getNodeFromVar(*this);
+    
+  if (type()!=VariableType::parameter)
+    {
+      if (varDAG && varDAG->rhs && varDAG->type!=VariableType::constant && varDAG->type!=VariableType::integral)
+        o << varDAG->rhs->matlab();
+      else return system.getDefFromIntVar(*this).str();
+    }
+          
+  return o.str();	  
+}
 
 void VariableBase::draw(cairo_t *cairo) const
 {	

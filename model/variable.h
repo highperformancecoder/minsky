@@ -179,8 +179,10 @@ namespace minsky
 
     bool varTabDisplay=false;
     void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
-    bool attachedToDefiningVar() const override {return varTabDisplay;}     
-
+    bool attachedToDefiningVar() const override {return varTabDisplay;}
+    /// formula defining this variable
+    std::string definition() const;
+    
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */

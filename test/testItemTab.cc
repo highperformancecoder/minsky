@@ -49,6 +49,7 @@ namespace
       b->toggleVarTabDisplay();
       c->toggleVarTabDisplay();
       intOp->intVar->toggleVarTabDisplay();
+      model->addWire(*a, *c, 1);
       parameterTab.populateItemVector();
       variableTab.populateItemVector();
     }
@@ -81,4 +82,21 @@ SUITE(ItemTab)
       
     }
 
+    TEST_FIXTURE(ParVarTabFixture, checkCells)
+    {
+      variableTab.surface=make_shared<ecolab::cairo::Surface>(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+      ecolab::Pango pango(surface.cairo());
+      CHECK_EQUAL(2,variableTab.itemVector.size());
+      // name
+      pango.setMarkup(latexToPango(variableTab.itemVector[0]->variableCast()->name()));
+      CHECK_EQUAL(pango.width(),variableTab.cell(1,0).width());
+      // definition
+      pango.setMarkup(variableTab.itemVector[0]->variableCast()->definition());
+      CHECK_EQUAL(pango.width(),variableTab.cell(1,1).width());
+      pango.setMarkup(variableTab.itemVector[1]->variableCast()->definition());
+      CHECK_EQUAL(pango.width(),variableTab.cell(1,2).width());
+      // test other columns maybe?
+    }
+
+    
 }

@@ -25,7 +25,6 @@
 #include "minsky.h"
 #include "equations.h"
 using namespace std;
-using namespace MathDAG;
 using ecolab::cairo::Surface;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
@@ -134,27 +133,6 @@ namespace minsky
     return item;
   }
   
-  namespace
-  {
- 
-    std::string definition(const VariableBase& v)
-    {
-      SystemOfEquations system(cminsky());	  
-      ostringstream o;
-	
-      auto varDAG=system.getNodeFromVar(v);
-    
-      if (v.type()!=VariableType::parameter)
-        {
-          if (varDAG && varDAG->rhs && varDAG->type!=VariableType::constant && varDAG->type!=VariableType::integral)
-            o << varDAG->rhs->matlab();
-	  else return system.getDefFromIntVar(v).str();
-        }
-          
-      return o.str();	  
-    }
-  }  
-
   ecolab::Pango& ItemTab::cell(unsigned row, unsigned col) {
     cellPtr.reset(surface->cairo());
     if (row==0)
@@ -167,7 +145,7 @@ namespace minsky
             cellPtr->setMarkup(latexToPango(v->name()));
             break;
           case 1:
-            cellPtr->setMarkup(definition(*v));
+            cellPtr->setMarkup(v->definition());
             break;
           case 2:
             cellPtr->setMarkup(latexToPango(v->init()));

@@ -49,9 +49,6 @@ namespace minsky
     ItemTab() {} 
   
     double xoffs=80;
-//    double rowHeight=0;
-//    double colWidth=50;
-//    std::vector<double> colWidths; // generalises colWdith concept for par and var tabs. 
     float offsx=0, offsy=0;
     float m_width=600, m_height=800;
     virtual float width() const {return m_width;}
@@ -73,7 +70,6 @@ namespace minsky
     void toggleVarDisplay(int i) const {if (i>0 && i-1<int(itemVector.size())) (itemVector[i-1])->variableCast()->toggleVarTabDisplay(); else return;}    
     std::string getVarName(int i) const {if (i>0 && i-1<int(itemVector.size())) return (itemVector[i-1])->variableCast()->name(); else return "";}
     std::vector<std::string> varAttrib{"Name","Definition","Initial Value","Short Description", "Long Description","Slider Step","Slider Min","Slider Max","Value"};       
-    //    std::vector<std::string> varAttribVals;
     void moveItemTo(float x, float y);  
          
     float moveOffsX, moveOffsY,xItem,yItem;
