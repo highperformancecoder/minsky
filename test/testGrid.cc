@@ -71,6 +71,8 @@ namespace
 
 }
 
+const double padx=2;
+
 SUITE(Grid)
 {
   TEST_FIXTURE(EvenHeightLeftGrid, draw)
@@ -80,7 +82,7 @@ SUITE(Grid)
       CHECK_EQUAL(numCols(), rightColMargin.size());
       CHECK_EQUAL(numRows(), bottomRowMargin.size());
       for (size_t i=0; i<rightColMargin.size(); ++i)
-        CHECK_EQUAL((i+1)*cell(0,0).width(), rightColMargin[i]);
+        CHECK_EQUAL((i+1)*(cell(0,0).width()+padx), rightColMargin[i]);
       for (size_t i=0; i<bottomRowMargin.size(); ++i)
         CHECK_EQUAL((i+1)*cell(0,0).height(), bottomRowMargin[i]);
 
@@ -88,7 +90,7 @@ SUITE(Grid)
       for (size_t col=0; col<numCols(); ++col) 
         for (size_t row=0; row<numRows(); ++row, ++m)
          {
-           CHECK_EQUAL(col>0? rightColMargin[col-1]: 0, xpos[m]);
+           CHECK_EQUAL((col>0? rightColMargin[col-1]: 0)+0.5*padx, xpos[m]);
            CHECK_EQUAL(row>0? bottomRowMargin[row-1]: 0, ypos[m]);
           }
     }
@@ -104,7 +106,7 @@ SUITE(Grid)
       double x=0;
       for (size_t i=0; i<rightColMargin.size(); ++i)
         {
-          x+=cell(numRows()-1,i).width();
+          x+=cell(numRows()-1,i).width()+padx;
           CHECK_EQUAL(x, rightColMargin[i]);
         }
       // maximum cell height is final column
@@ -119,7 +121,7 @@ SUITE(Grid)
       for (size_t col=0; col<numCols(); ++col) 
         for (size_t row=0; row<numRows(); ++row, ++m)
          {
-           CHECK_EQUAL(col>0? rightColMargin[col-1]: 0, xpos[m]);
+           CHECK_EQUAL((col>0? rightColMargin[col-1]: 0)+0.5*padx, xpos[m]);
            CHECK_EQUAL(row>0? bottomRowMargin[row-1]: 0, ypos[m]);
           }
     }
@@ -136,7 +138,7 @@ SUITE(Grid)
       double x=0;
       for (size_t i=0; i<rightColMargin.size(); ++i)
         {
-          x+=cell(numRows()-1,i).width();
+          x+=cell(numRows()-1,i).width()+padx;
           CHECK_EQUAL(x, rightColMargin[i]);
         }
       // maximum cell height is final column
@@ -151,7 +153,7 @@ SUITE(Grid)
       for (size_t col=0; col<numCols(); ++col) 
         for (size_t row=0; row<numRows(); ++row, ++m)
          {
-           CHECK_EQUAL(rightColMargin[col]-cell(row,col).width(), xpos[m]);
+           CHECK_EQUAL((rightColMargin[col]-cell(row,col).width())+0.5*padx, xpos[m]);
            CHECK_EQUAL((row>0? bottomRowMargin[row-1]: 0), ypos[m]);
           }
     }
@@ -168,7 +170,7 @@ SUITE(Grid)
       double x=0;
       for (size_t i=0; i<rightColMargin.size(); ++i)
         {
-          x+=cell(numRows()-1,i).width();
+          x+=cell(numRows()-1,i).width()+padx;
           CHECK_EQUAL(x, rightColMargin[i]);
         }
       // maximum cell height is final column
@@ -183,7 +185,7 @@ SUITE(Grid)
       for (size_t col=0; col<numCols(); ++col) 
         for (size_t row=0; row<numRows(); ++row, ++m)
          {
-           CHECK_EQUAL(0.5*((col>0? rightColMargin[col-1]: 0) + rightColMargin[col] - cell(row,col).width()), xpos[m]);
+           CHECK_EQUAL(0.5*((col>0? rightColMargin[col-1]: 0) + rightColMargin[col] - cell(row,col).width())+0.5*padx, xpos[m]);
            CHECK_EQUAL((row>0? bottomRowMargin[row-1]: 0), ypos[m]);
           }
     }
