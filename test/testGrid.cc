@@ -190,4 +190,21 @@ SUITE(Grid)
           }
     }
 
+  TEST_FIXTURE(UnevenHeightGridMock, colX)
+    {
+      draw();
+      CHECK_EQUAL(-1, colX(-1));
+      CHECK_EQUAL(-1, colX(rightColMargin.back()));
+      for (size_t i=0; i<rightColMargin.size(); ++i)
+        CHECK_EQUAL(i, colX(rightColMargin[i]-0.5));
+    }
+  
+  TEST_FIXTURE(UnevenHeightGridMock, rowY)
+    {
+      draw();
+      CHECK_EQUAL(-1, rowY(-1));
+      CHECK_EQUAL(-1, rowY(bottomRowMargin.back()));
+      for (size_t i=0; i<bottomRowMargin.size(); ++i)
+        CHECK_EQUAL(i, rowY(bottomRowMargin[i]-0.5));
+    }
 }
