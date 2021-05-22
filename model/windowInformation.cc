@@ -88,6 +88,11 @@ namespace minsky
     return bufferSurface;
   }
 
+   ecolab::cairo::SurfacePtr WindowInformation::getWindowSurface()
+  {
+    return windowSurface;
+  }
+
   void WindowInformation::copyBufferToMain()
   {
     cairo_set_source_surface(windowSurface->cairo(), bufferSurface->surface(), 0, 0);
