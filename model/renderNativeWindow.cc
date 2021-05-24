@@ -48,12 +48,12 @@ namespace minsky
   
   namespace
   {
-    class NativeSurface: cairo::Surface
+    // default dummy surface to arrange a callback on requestRedraw
+    class NativeSurface: public cairo::Surface
     {
       RenderNativeWindow& renderNativeWindow;
     public:
-      NativeSurface(RenderNativeWindow& r, cairo_surface_t* s=nullptr, int width=-1, int height=-1):
-        cairo::Surface(s,width,height), renderNativeWindow(r) {}
+      NativeSurface(RenderNativeWindow& r): renderNativeWindow(r) {}
       void requestRedraw() override {renderNativeWindow.draw();}
     };
   }
@@ -63,6 +63,7 @@ namespace minsky
     if (!(winInfoPtr.get()))
     {
       winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
+      surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
     }
     draw();
   }
