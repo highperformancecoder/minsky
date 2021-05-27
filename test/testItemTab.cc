@@ -54,6 +54,27 @@ namespace
       variableTab.populateItemVector();
     }
   };
+
+  struct MockItem: public Item {
+    bool displayDelayedTooltip_called=false;
+    void displayDelayedTooltip(float x, float y) {displayDelayedTooltip_called=true;}
+    MockItem() {m_width=10; m_height=10;}
+  };
+  
+  struct MockItemTab: public ItemTab
+  {
+    bool itemSelector(const ItemPtr& i) override {return true;}
+    ClickType clickType(double x, double y) const override {return internal;}
+    MockItemTab()
+    {
+      itemVector.emplace_back(make_shared<MockItem>());
+      itemVector.emplace_back(make_shared<MockItem>());
+      itemVector.emplace_back(make_shared<MockItem>());
+      itemVector[0]->itemTabX=itemVector[0]->itemTabY=0; 
+      itemVector[1]->itemTabX=itemVector[1]->itemTabY=50; 
+      itemVector[2]->itemTabX=itemVector[2]->itemTabY=100;
+    }
+  };
   
 }
 
@@ -106,14 +127,21 @@ SUITE(ItemTab)
       CHECK_EQUAL(item1, variableTab.itemAt(item1->itemTabX, item1->itemTabY));
     }
 
-    TEST_FIXTURE(ParVarTabFixture, moveItem)
-    {
-      auto item0=variableTab.itemVector[0];
-      item0->itemTabX=100; item0->itemTabY=200;
-      double x=item0->itemTabX, y=item0->itemTabY;
-      variableTab.mouseDownCommon(x,y);
-      variableTab.mouseUp(x+10, y+10);
-      CHECK_EQUAL(x+10, item0->itemTabX);
-      CHECK_EQUAL(y+10, item0->itemTabY);
-    }
+    TEST_FIXTURE(MockItemTab, displayDelayedTooltip)
+      {
+        displayDelayedTooltip(50,50);
+        CHECK(!dynamic_cast<MockItem&>(*itemVector[0]).displayDelayedTooltip_called);
+        CHECK(dynamic_cast<MockItem&>(*itemVector[1]).displayDelayedTooltip_called);
+        CHECK(!dynamic_cast<MockItem&>(*itemVector[2]).displayDelayedTooltip_called);
+      }
+
+      TEST_FIXTURE(MockItemTab, mouseDownUp)
+      {
+        mouseDownCommon(50,50);
+        mouseUp(60,75);
+        CHECK_EQUAL(60,itemVector[1]->itemTabX);
+        CHECK_EQUAL(75,itemVector[1]->itemTabY);
+      }
+
+  
 }
