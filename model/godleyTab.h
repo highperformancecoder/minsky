@@ -30,7 +30,7 @@ namespace minsky
   public:
     bool itemSelector(const ItemPtr& i) override;
     ClickType clickType(double x, double y) const override;         
-    //    ItemPtr itemAt(float x, float y) override;
+    ItemPtr itemAt(float x, float y) override;
     void draw(cairo_t* cairo) override;
   };
   

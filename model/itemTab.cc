@@ -71,26 +71,11 @@ namespace minsky
         break;
       case internal:
         itemFocus=itemAt(x-offsx,y-offsy);
+        moveOffsX=x-itemFocus->itemTabX;
+        moveOffsY=y-itemFocus->itemTabY;
         break;
       }
-            
-//    if (itemFocus=itemAt(x,y))
-//      {
-//          moveOffsX=x-itemFocus->itemTabX;
-//          moveOffsY=y-itemFocus->itemTabY;
-//      }
-//      switch (clickType(x,y))
-//        {
-//        case internal:
-//          moveOffsX=x-itemFocus->itemTabX;
-//          moveOffsY=y-itemFocus->itemTabY;
-//          break;
-//        case background:
-//          itemFocus.reset();
-//          break;
-//        default:
-//          break;  
-//        }
+           
   }  
   
   void ItemTab::mouseUp(float x, float y)
@@ -101,22 +86,11 @@ namespace minsky
   
   void ItemTab::mouseMove(float x, float y)
   {
-//    try
-//      {
         if (itemFocus)
           {
-            moveItemTo(x/*-moveOffsX*/,y/*-moveOffsY*/);
+            moveItemTo(x-moveOffsX,y-moveOffsY);
             requestRedraw();
           }
-//           switch (clickType(x,y))
-//            {
-//            case internal:
-//             return;
-//            default:
-//              break;
-//            }
-//      }
-//    catch (...) {/* absorb any exceptions, as they're not useful here */}  
   }
   
   void ItemTab::displayDelayedTooltip(float x, float y)
