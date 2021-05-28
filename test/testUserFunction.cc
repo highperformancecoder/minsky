@@ -19,6 +19,7 @@
 #include <UnitTest++/UnitTest++.h>
 #include "selection.h"
 #include "userFunction.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;
@@ -32,4 +33,30 @@ SUITE(UserFunction)
       vector<string> expected{"input","referenceInput"};
       CHECK(f.symbolNames()==expected);
     }
+
+  TEST(referenceMinskyVariables)
+    {
+      Minsky minsky;
+      LocalMinsky lm(minsky);
+      minsky.variableValues[":foo"]->allocValue()=3.0;
+      minsky.variableValues[":bar"]->allocValue()=5.0;
+      UserFunction f("test","foo+bar");
+      f.compile();
+      CHECK_EQUAL(8, f({}));
+    }
+
+  TEST(arguments)
+    {
+      UserFunction f("test","x+y");
+      f.argNames={"x","y"};
+      f.compile();
+      CHECK_EQUAL(7, f({3,4}));
+    }  
+
+  TEST(error)
+    {
+      UserFunction f("test","x+");
+      f.argNames={"x","y"};
+      CHECK_THROW(f.compile(), std::exception);
+    }  
 }
