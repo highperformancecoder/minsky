@@ -242,7 +242,7 @@ install: gui-tk/minsky$(EXE)
 
 # runs the regression tests
 sure: all tests
-	bash test/runtests.sh
+	xvfb-run bash test/runtests.sh
 
 # produce doxygen annotated web pages
 doxydoc: $(wildcard *.h) $(wildcard *.cc) \

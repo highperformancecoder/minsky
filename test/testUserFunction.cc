@@ -38,6 +38,8 @@ SUITE(UserFunction)
     {
       Minsky minsky;
       LocalMinsky lm(minsky);
+      minsky.variableValues.emplace(":foo", VariableValue{VariableType::flow});
+      minsky.variableValues.emplace(":bar", VariableValue{VariableType::flow});
       minsky.variableValues[":foo"]->allocValue()=3.0;
       minsky.variableValues[":bar"]->allocValue()=5.0;
       UserFunction f("test","foo+bar");
