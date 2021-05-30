@@ -61,4 +61,35 @@ SUITE(UserFunction)
       f.argNames={"x","y"};
       CHECK_THROW(f.compile(), std::exception);
     }  
+
+  TEST(stringProcessing)
+    {
+       UserFunction f("test(x)","x:='foo\\'s bar'[]");
+       f.compile(); // checks this is syntactically valid
+       auto sn=f.symbolNames();
+       CHECK_EQUAL(1,sn.size());
+       CHECK_EQUAL("x",sn[0]);
+    }
+
+  TEST(units)
+    {
+      Minsky minsky;
+      LocalMinsky lm(minsky);
+      minsky.variableValues.emplace(":foo", VariableValue{VariableType::flow});
+      minsky.variableValues.emplace(":bar", VariableValue{VariableType::flow});
+      minsky.variableValues[":foo"]->allocValue()=3.0;
+      minsky.variableValues[":bar"]->allocValue()=5.0;
+      minsky.variableValues[":foo"]->setUnits("m");
+      minsky.variableValues[":bar"]->setUnits("s");
+      minsky.timeUnit="s";
+      UserFunction f("test","foo+bar");
+      CHECK_THROW(f.units(true),std::exception);
+      f.expression="bar+time";
+      CHECK_EQUAL("s",f.units(true).str());
+      f.expression="foo*bar";
+      CHECK_EQUAL("m s",f.units(true).str());
+      f.expression="exp(foo)";
+      CHECK_THROW(f.units(true),std::exception);
+    }
+
 }
