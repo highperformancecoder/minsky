@@ -31,8 +31,10 @@ set ret 0
 running 1
 #provide seed to ensure repeatability
 srand 10
+reset
+#step
 
-for {set step 0} {$step<10} {incr step} {
+for {set step 0} {$step<$nsteps} {incr step} {
 
     step
     gets $log logbuf
@@ -40,7 +42,6 @@ for {set step 0} {$step<10} {incr step} {
         puts "t=[t], logged [lindex $logbuf 0]"
         set ret 1
     }
-
 
     array set values [lrange $logbuf 1 end]
 
@@ -55,11 +56,9 @@ for {set step 0} {$step<10} {incr step} {
         # different scope
 
         if {[lsearch [array names values] $name]==-1} {
-            #puts "$name ->[array names values *:[regsub "(.*:)" $name ""]]"
             set status 1
-            foreach n [array names values *:[regsub "(.*:)" $name ""]] {
-                #puts "[value.value] $values($n)"
-                if [fclose [value.value] $values($n)] {
+            foreach n [concat [array names values *:[regsub "(.*:)" $name ""]] [array names values *:[regsub "(.*:)" $name ""]|*]] {
+                if [fclose [value.value 0] $values($n)] {
                     set status 0
                     break
                 }
@@ -71,10 +70,20 @@ for {set step 0} {$step<10} {incr step} {
             }
             continue
         }
-        
-        if {![fclose [value.value] $values($name)]} {
-            puts "$argv(2) t=[t], $name=[value.value], logged  $values($name)"
-            set ret 1
+
+        if {[value.size]>1} {
+            for {set i 0} {$i<[value.size]} {incr i} {
+                if {![fclose [value.value $i] $values($name|$i)]} {
+                    puts "$argv(2) t=[t], $name|$i=[value.value $i], logged  $values($name|$i)"
+                    set ret 1
+                }
+            }
+            
+        } else {
+            if {![fclose [value.value] $values($name)]} {
+                puts "$argv(2) t=[t], $name=[value.value], logged  $values($name)"
+                set ret 1
+            }
         }
     }
 }

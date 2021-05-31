@@ -28,12 +28,12 @@
 #ifdef CIVITA_INDEX_H
 #include "index.cd"
 #endif
-//#ifdef CIVITA_TENSORINTERFACE_H
-//#include "tensorInterface.cd"
-//#endif
-////#ifdef CIVITA_TENSORVAL_H
-////#include "tensorVal.cd"
-////#endif
+#ifdef CIVITA_TENSORINTERFACE_H
+#include "tensorInterface.cd"
+#endif
+#ifdef CIVITA_TENSORVAL_H
+#include "tensorVal.cd"
+#endif
 #ifdef CIVITA_HYPERCUBE_H
 #include "hypercube.cd"
 #include "hypercube.xcd"

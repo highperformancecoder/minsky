@@ -11,9 +11,11 @@ minsky.load $argv(2)
 
 set nsteps 10
 puts "nsteps 10"
+running 1
 #provide seed to ensure repeatability
 srand 10
-step
+reset
+#step
 
 for {set step 0} {$step<$nsteps} {incr step} {
     step
@@ -25,7 +27,13 @@ for {set step 0} {$step<$nsteps} {incr step} {
     foreach name [variableValues.#keys] {
         if [regexp "^constant:" $name] continue
         getValue "$name"
-        puts -nonewline "{$name} [value.value] "
+        if {[value.size]>1} {
+            for {set i 0} {$i<[value.size]} {incr i} {
+                puts -nonewline "{$name|$i} [value.value $i] "
+            }
+        } else {
+            puts -nonewline "{$name} [value.value] "
+        }
     }
     puts ""
 }
