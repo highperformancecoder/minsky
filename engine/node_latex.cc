@@ -567,12 +567,13 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::userFunction>::latex(ostream& o) const
   {
+    auto desc=mathrm(dynamic_cast<UserFunction&>(*state).description());
     if (arguments.empty() || arguments[0].empty())
-      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"(0,0)";
+      return o<<desc<<"()";
     else if (arguments.size()<2 || arguments[1].empty())
-      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"\\left("<<arguments[0][0]->latex()<<",0\\right)";
+      return o<<desc<<"\\left("<<arguments[0][0]->latex()<<"\\right)";
     else
-      return o<<dynamic_cast<UserFunction*>(state.get())->description()<<"\\left("<<arguments[0][0]->latex()<<","<<arguments[0][1]->latex()<<"\\right)";
+      return o<<desc<<"\\left("<<arguments[0][0]->latex()<<","<<arguments[1][0]->latex()<<"\\right)";
   }    
 
   template <>

@@ -527,11 +527,11 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::userFunction>::matlab(ostream& o) const
   {
     if (arguments.empty() || arguments[0].empty())
-      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"(0,0)";
+      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"()";
     else if (arguments.size()<2 || arguments[1].empty())
-      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<",0)";
+      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<")";
     else
-      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<","<<arguments[0][1]->matlab()<<")";
+      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<","<<arguments[1][0]->matlab()<<")";
   }    
 
   
