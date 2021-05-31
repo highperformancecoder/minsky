@@ -133,7 +133,7 @@ namespace minsky
     vector<double> stockVarsCopy(stockVars);
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
-    // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
+    // run RK algorithm on a separate worker thread so as to not block UI. See ticket #6
     boost::thread rkThread([&]() {
       try
         { 
@@ -230,9 +230,9 @@ namespace minsky
         for (vector<Integral>::iterator i=integrals.begin(); 
              i!=integrals.end(); ++i)
           {
-            assert(i->stock.idx()>=0 && i->input.idx()>=0);
-            d[i->stock.idx()] = 
-              i->input.isFlowVar()? df[i->input.idx()]: ds[i->input.idx()];
+            assert(i->stock->idx()>=0 && i->input().idx()>=0);
+            d[i->stock->idx()] = 
+              i->input().isFlowVar()? df[i->input().idx()]: ds[i->input().idx()];
           }
         for (size_t i=0; i<stockVars.size(); i++)
           jac(i,j)=reverseFactor*d[i];
@@ -257,16 +257,17 @@ namespace minsky
     // integrations are kind of a copy
     for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
       {
-        if (i->input.idx()<0)
+        if (i->input().idx()<0)
           {
             if (i->operation)
               minsky().displayErrorItem(*i->operation);
             throw error("integral not wired");
           }
-        // enable element-wise integration of tensor variables. for feature 147  
-	for (size_t j=0; j<i->input.size(); ++j)
-          result[i->stock.idx()+j] = reverseFactor *
-            (i->input.isFlowVar()? flow[i->input.idx()+j] : vars[i->input.idx()+j]);
+        // enable element-wise integration of tensor variables. for feature 147
+        assert(i->input().size()==i->stock->size());
+	for (size_t j=0; j<i->input().size(); ++j)
+          result[i->stock->idx()+j] = reverseFactor *
+            (i->input().isFlowVar()? flow[i->input().idx()+j] : vars[i->input().idx()+j]);
       } 
   }
 

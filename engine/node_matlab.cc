@@ -605,13 +605,16 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::innerProduct>::matlab(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"dot("<<arguments[0][0]->matlab()<<")";
+    checkArg(1,0);
+    return o<<"("<<arguments[0][0]->matlab()<<")*("<<arguments[1][0]->matlab()<<")";
   }
   template <>
   ostream& OperationDAG<OperationType::outerProduct>::matlab(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"kron("<<arguments[0][0]->matlab()<<")";
+    checkArg(1,0);
+    // note matlab can only deal with rank 2 tensors  - this works if both are vectors, or one is a scalar and the other a matrix
+    return o<<"("<<arguments[0][0]->matlab()<<").*transpose("<<arguments[1][0]->matlab()<<")";
   }
   template <>
   ostream& OperationDAG<OperationType::index>::matlab(ostream& o) const

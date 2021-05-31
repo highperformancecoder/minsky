@@ -116,9 +116,9 @@ SUITE(Minsky)
       int nakedIntegral=-1;
       for (size_t i=0; i<integrals.size(); ++i)
         {
-          if (integrals[i].stock.name=="int1")
+          if (integrals[i].stock->name=="int1")
             nakedIntegral=i;
-          CHECK(!integrals[i].stock.isFlowVar());
+          CHECK(!integrals[i].stock->isFlowVar());
         }
       CHECK(nakedIntegral>=0);
 
@@ -130,9 +130,9 @@ SUITE(Minsky)
       implicit=false;
       step();
 
-      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock.value(), var["a"]->value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock.value()*var["e"]->value(), var["b"]->value(), 1e-4);
+      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input().value(), 1e-4);
+      CHECK_CLOSE(integrals[nakedIntegral].stock->value(), var["a"]->value(), 1e-4);
+      CHECK_CLOSE(integrals[nakedIntegral].stock->value()*var["e"]->value(), var["b"]->value(), 1e-4);
       CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
       ode.reset();
     }
@@ -330,8 +330,8 @@ SUITE(Minsky)
       running=true;
       step();
       // for now, constructEquations doesn work
-      CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
-      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"]->value(), 1e-5);
+      CHECK_CLOSE(value*t, integrals[0].stock->value(), 1e-5);
+      CHECK_CLOSE(integrals[0].stock->value(), variableValues[":output"]->value(), 1e-5);
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));

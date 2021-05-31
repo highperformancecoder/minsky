@@ -1016,11 +1016,11 @@ namespace MathDAG
         integrals.push_back(Integral());
         assert(VariableValue::isValueId(vid));
         assert(minsky.variableValues.count(vid));
-        integrals.back().stock=*minsky.variableValues[vid];
+        integrals.back().stock=minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
-            integrals.back().input=*iInput->rhs->addEvalOps(equations);
+          integrals.back().setInput(*iInput->rhs->addEvalOps(equations));
       }
     assert(minsky.variableValues.validEntries());
   }

@@ -442,9 +442,10 @@ namespace minsky
   struct GeneralTensorOp<OperationType::outerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO Sparse implementation
+    void computeTensor() const override {
+      if (!arg1 || !arg2) return;
       size_t m=arg1->size(), n=arg2->size();   
-  	
+      assert(cachedResult.size()==m*n);
 	
       for (size_t i=0; i< m; i++)
        {
@@ -456,28 +457,42 @@ namespace minsky
  	 }
        }	     
     		            
-      if (cachedResult.size()==0) 
-        for (size_t i=0; i<m*n; i++) 
-          cachedResult[i]=nan("");
+//      if (cachedResult.size()==0) 
+//        for (size_t i=0; i<m*n; i++) 
+//          cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const std::string&, double) override {
       arg1=a1; arg2=a2;
+      if (!arg1 || !arg2) return;
+      
+      set<size_t> newIdx;
+      size_t stride=arg1->hypercube().numElements();
+
+      vector<size_t> idx1(arg1->index().begin(), arg1->index().end()), idx2(arg2->index().begin(), arg2->index().end());
+      if (!idx1.empty() || !idx2.empty())
+        {
+          if (idx1.empty()) // dense arg1, generate a corresponding sparse index vector
+            for (size_t i=0; i<arg1->size(); ++i)
+              idx1.push_back(i);
+          if (idx2.empty()) // dense arg2, generate a corresponding sparse index vector
+            for (size_t i=0; i<arg2->size(); ++i)
+              idx2.push_back(i);
+          
+          for (auto& i: idx1)
+            for (auto& j: idx2) 
+              newIdx.insert(i+stride*j);
+         
+          cachedResult.index(Index(newIdx));
+        }
+
       auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
       Hypercube hc;
       hc.xvectors.insert(hc.xvectors.begin(), xv2.begin(), xv2.end());         
       hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end());           
       cachedResult.hypercube(move(hc));
         
-      set<size_t> newIdx;
-      size_t stride=arg1->hypercube().numElements();
-      
-      for (auto& i: arg1->index())
-        for (auto& j: arg2->index()) 
-            newIdx.insert(i+stride*j);
-         
-      cachedResult.index(Index(newIdx));  
       
     }      
   };

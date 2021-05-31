@@ -34,12 +34,13 @@ cp -r $here/examples .
 for i in examples/*.mky; do
     # math-examples is not a runnable example
     if [ $i = "examples/math-examples.mky" ]; then continue; fi
-    # data object not suppported in Octave
+    # data and tensor objects not suppported in Octave
     if [ $i = "examples/binaryInterpolation.mky" ]; then continue; fi
     if [ $i = "examples/data-example.mky" ]; then continue; fi
     if [ $i = "examples/importedCSV.mky" ]; then continue; fi
     if [ $i = "examples/rand-gather-interpolation.mky" ]; then continue; fi
     if [ $i = "examples/tensor-switch.mky" ]; then continue; fi
+    if [ $i = "examples/inner-outer-example.mky" ]; then continue; fi
     echo $i
     
     for order in 1 2 4; do
