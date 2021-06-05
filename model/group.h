@@ -76,14 +76,6 @@ namespace minsky
     bool empty() const {return items.empty() && groups.empty() && wires.empty();}
 
 
-    /// plot widget used for group icon
-    std::shared_ptr<PlotWidget> displayPlot;
-    /// remove the display plot
-    void removeDisplayPlot() {
-      displayPlot.reset();
-    }
-    
-
     /// tests that groups are arranged heirarchically without any recurrence
     virtual bool nocycles() const=0; 
 
@@ -401,6 +393,13 @@ namespace minsky
     void autoLayout();
     /// randomly lay out items in this group
     void randomLayout();
+    
+    /// plot widget used for group icon
+    std::shared_ptr<PlotWidget> displayPlot;
+    /// remove the display plot
+    void removeDisplayPlot() {
+      displayPlot.reset();
+    }
     
   };
 

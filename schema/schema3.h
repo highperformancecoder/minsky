@@ -138,7 +138,6 @@ namespace schema3
     Optional<double> xtickAngle, exp_threshold;
     Optional<ecolab::Plot::Side> legend;
     Optional<LegendGeometry> legendGeometry;
-    Optional<bool> displayPlot;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
@@ -179,9 +178,6 @@ namespace schema3
       exp_threshold(p.exp_threshold), legendGeometry(p), palette(p.palette)
     {
       if (p.legend) legend=p.legendSide;
-      if (auto g=p.group.lock())
-        if (g->displayPlot.get() == &p)
-          displayPlot=true;
     }
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
@@ -226,6 +222,7 @@ namespace schema3
   struct Group: public Item
   {
     vector<int> items;
+    int displayPlot=-1;
     Optional<vector<int>> inVariables, outVariables;
     Group() {}
     Group(int id, const minsky::Group& g): Item(id,g,std::vector<int>()) {}

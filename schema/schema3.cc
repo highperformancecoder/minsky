@@ -334,6 +334,8 @@ namespace schema3
                       {
                         assert(itemMap.count(j.get()));
                         groups.back().items.push_back(itemMap[j.get()]);
+                        if (j==(*i)->displayPlot)
+                          groups.back().displayPlot=itemMap[j.get()];
                       }
                     for (auto& j: (*i)->groups)
                       groups.back().items.push_back(itemMap[j.get()]);
@@ -461,7 +463,6 @@ namespace schema3
         if (y.logy) x1->logy=*y.logy;
         if (y.ypercent) x1->percent=*y.ypercent;
         if (y.plotTabDisplay) x1->plotTabDisplay=*y.plotTabDisplay;
-        if (y.displayPlot && *y.displayPlot) x1->makeDisplayPlot();
         if (y.plotType) x1->plotType=*y.plotType;
         if (y.xlabel) x1->xlabel=*y.xlabel;
         if (y.ylabel) x1->ylabel=*y.ylabel;
@@ -612,6 +613,12 @@ namespace schema3
                   {
                     newG->addItem(it->second, true/*inSchema*/);
                   }
+              }
+            if (i.displayPlot>=0)
+              {
+                auto it=itemMap.find(i.displayPlot);
+                if (it!=itemMap.end())
+                  newG->displayPlot=dynamic_pointer_cast<minsky::PlotWidget>(it->second);
               }
             if (i.inVariables)
               for (auto j: *i.inVariables)
