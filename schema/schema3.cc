@@ -381,8 +381,8 @@ namespace schema3
     x.itemTabY=y.itemTabY;
     x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
-    if (y.width) x.iWidth(*y.width);
-    if (y.height) x.iHeight(*y.height);
+    x.iWidth(y.width);
+    x.iHeight(y.height);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
@@ -452,19 +452,16 @@ namespace schema3
         if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
         if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
           x1->toggleButtons();
-        if (y.width && *y.width>0) x1->iWidth(*y.width);
-        if (y.height && *y.height>0) x1->iHeight(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
-        if (y.width) x1->iWidth(*y.width);
-        if (y.height) x1->iHeight(*y.height);
         x1->bb.update(*x1);        
         if (y.name) x1->title=*y.name;
         if (y.logx) x1->logx=*y.logx;
         if (y.logy) x1->logy=*y.logy;
         if (y.ypercent) x1->percent=*y.ypercent;
         if (y.plotTabDisplay) x1->plotTabDisplay=*y.plotTabDisplay;
+        if (y.displayPlot && *y.displayPlot) x1->makeDisplayPlot();
         if (y.plotType) x1->plotType=*y.plotType;
         if (y.xlabel) x1->xlabel=*y.xlabel;
         if (y.ylabel) x1->ylabel=*y.ylabel;
@@ -491,8 +488,6 @@ namespace schema3
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
-        if (y.width) x1->iWidth(*y.width);
-        if (y.height) x1->iHeight(*y.height);       
         x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
         if (y.bookmarks) x1->bookmarks=*y.bookmarks;
