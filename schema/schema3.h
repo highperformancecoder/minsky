@@ -70,7 +70,7 @@ namespace schema3
     float itemTabX=nan(""), itemTabY=nan(""); 
     float scaleFactor=1; ///< scale factor of item on canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
-    Optional<float> width, height;
+    float width=10, height=10;
     std::vector<int> ports;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
@@ -79,7 +79,8 @@ namespace schema3
       rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
       Note(it), id(it.id), type(type), x(it.x), y(it.y),
-      rotation(it.rotation), width(it.width), height(it.height), ports(it.ports) {}
+      rotation(it.rotation), width(it.width? *it.width: 0), height(it.height?*it.height:0),
+      ports(it.ports) {}
   };
 
   struct Slider
@@ -137,6 +138,7 @@ namespace schema3
     Optional<double> xtickAngle, exp_threshold;
     Optional<ecolab::Plot::Side> legend;
     Optional<LegendGeometry> legendGeometry;
+    Optional<bool> displayPlot;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
@@ -164,13 +166,12 @@ namespace schema3
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      /*width(g.iWidth()), height(g.iHeight()),*/ name(g.table.title), data(g.table.getData()),
+      name(g.table.title), data(g.table.getData()),
       assetClasses(g.table._assetClass()),
       editorMode(g.editorMode()),
       buttonDisplay(g.buttonDisplay()), variableDisplay(g.variableDisplay) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      /*width(p.iWidth()), height(p.iHeight()),*/ name(p.title),
+      ItemBase(id,static_cast<const minsky::Item&>(p),ports), name(p.title),
       logx(p.logx), logy(p.logy), ypercent(p.percent), plotTabDisplay(p.plotTabDisplay),
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
@@ -178,21 +179,21 @@ namespace schema3
       exp_threshold(p.exp_threshold), legendGeometry(p), palette(p.palette)
     {
       if (p.legend) legend=p.legendSide;
+      if (auto g=p.group.lock())
+        if (g->displayPlot.get() == &p)
+          displayPlot=true;
     }
-//    Item(int id, const minsky::Sheet& s, const std::vector<int>& ports):
-//      ItemBase(id,static_cast<const minsky::Item&>(s),ports),
-//      width(s.m_width), height(s.m_height) {}
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      /*width(g.iWidth()), height(g.iHeight()),*/ name(g.title), bookmarks(g.bookmarks) {} 
+      name(g.title), bookmarks(g.bookmarks) {} 
 
     static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
     Item(const schema2::Item& it):
-      ItemBase(it,it.type), /*width(it.width), height(it.height),*/ name(it.name), init(it.init),
+      ItemBase(it,it.type), name(it.name), init(it.init),
       units(it.units),
       slider(it.slider), intVar(it.intVar), dataOpData(it.dataOpData), filename(it.filename),
       ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
