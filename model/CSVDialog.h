@@ -62,11 +62,11 @@ namespace minsky
     void reportFromFile(const std::string& input, const std::string& output);
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// return column mouse is over
-    size_t columnOver(double x);
+    std::size_t columnOver(double x);
     /// return row mouse is over
-    size_t rowOver(double x);
-    void copyHeaderRowToDimNames(size_t row);
-    std::string headerForCol(size_t col) const;
+    std::size_t rowOver(double x);
+    void copyHeaderRowToDimNames(std::size_t row);
+    std::string headerForCol(std::size_t col) const;
     std::vector<std::vector<std::string>> parseLines() const;
   };
 }

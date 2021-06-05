@@ -28,7 +28,7 @@ namespace minsky
   // nice RAII wrappers around zlib's data structures
   struct ZStream: public z_stream
   {
-    ZStream(Bytef* input, size_t inputSize, Bytef* output, size_t outputSize)
+    ZStream(Bytef* input, std::size_t inputSize, Bytef* output, std::size_t outputSize)
     {
       next_in=input;
       avail_in=inputSize;
@@ -61,7 +61,7 @@ namespace minsky
   {
     classdesc::pack_t output{256};
     Bytef* inputData;
-    size_t inputSize;
+    std::size_t inputSize;
       
     template <class I>
     InflateZStream(const I& input):
@@ -96,7 +96,7 @@ namespace minsky
   {
     std::string output;
     Bytef* inputData;
-    size_t inputSize;
+    std::size_t inputSize;
       
     template <class I>
     InflateFileZStream(const I& input):

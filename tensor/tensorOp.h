@@ -39,8 +39,8 @@ namespace civita
     void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;}
     const Hypercube& hypercube() const override {return arg? arg->hypercube(): m_hypercube;}
     const Index& index() const override {return arg? arg->index(): m_index;}
-    double operator[](size_t i) const override {return arg? f((*arg)[i]): 0;}
-    size_t size() const override {return arg? arg->size(): 1;}
+    double operator[](std::size_t i) const override {return arg? f((*arg)[i]): 0;}
+    std::size_t size() const override {return arg? arg->size(): 1;}
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
 
@@ -58,7 +58,7 @@ namespace civita
     
     void setArguments(const TensorPtr& a1, const TensorPtr& a2, const std::string&, double) override;
 
-    double operator[](size_t i) const override {
+    double operator[](std::size_t i) const override {
       // missing arguments treated as group identity
       if (!arg1)
         {
@@ -87,7 +87,7 @@ namespace civita
   public:
     template <class F> ReduceArguments(F f, double init): f(f), init(init) {}
     void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override;
-    double operator[](size_t i) const override;
+    double operator[](std::size_t i) const override;
     Timestamp timestamp() const override;
   };
     
@@ -95,7 +95,7 @@ namespace civita
   /// reduce all elements to a single number
   struct ReduceAllOp: public ITensor
   {
-    std::function<void(double&,double,size_t)> f;
+    std::function<void(double&,double,std::size_t)> f;
     double init;
     std::shared_ptr<ITensor> arg;
     void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;}
@@ -104,7 +104,7 @@ namespace civita
     ReduceAllOp(F f, double init, const std::shared_ptr<ITensor>& arg={}):
       f(f),init(init), arg(arg) {}
 
-    double operator[](size_t) const override;
+    double operator[](std::size_t) const override;
     Timestamp timestamp() const override {return arg->timestamp();}
   };
 
@@ -112,9 +112,9 @@ namespace civita
   /// any missing entry (NaNs)
   class ReductionOp: public ReduceAllOp
   {
-    size_t dimension;
-    struct SOI {size_t index, dimIndex;};
-    std::map<size_t, std::vector<SOI>> sumOverIndices;
+    std::size_t dimension;
+    struct SOI {std::size_t index, dimIndex;};
+    std::map<std::size_t, std::vector<SOI>> sumOverIndices;
   public:
    
     template <class F>
@@ -122,7 +122,7 @@ namespace civita
       ReduceAllOp(f,init) {ReduceAllOp::setArgument(arg,dimName,0);}
 
     void setArgument(const TensorPtr& a, const std::string&,double) override;
-    double operator[](size_t i) const override;
+    double operator[](std::size_t i) const override;
   };
 
   // general tensor expression - all elements calculated and cached
@@ -136,8 +136,8 @@ namespace civita
     virtual void computeTensor() const=0;
   public:
     const Index& index() const override {return cachedResult.index();}
-    size_t size() const override {return cachedResult.size();}
-    double operator[](size_t i) const override;
+    std::size_t size() const override {return cachedResult.size();}
+    double operator[](std::size_t i) const override;
     const Hypercube& hypercube() const override {return cachedResult.hypercube();}
     const Hypercube& hypercube(const Hypercube& hc) override {return cachedResult.hypercube(hc);}
     const Hypercube& hypercube(Hypercube&& hc) override {return cachedResult.hypercube(std::move(hc));}
@@ -147,47 +147,47 @@ namespace civita
   struct Sum: public ReductionOp
   {
   public:
-    Sum(): ReductionOp([](double& x, double y,size_t){x+=y;},0) {}
+    Sum(): ReductionOp([](double& x, double y,std::size_t){x+=y;},0) {}
   };
   
   /// calculate the product along an axis or whole tensor
   struct Product: public ReductionOp
   {
   public:
-    Product(): ReductionOp([](double& x, double y,size_t){x*=y;},1) {}
+    Product(): ReductionOp([](double& x, double y,std::size_t){x*=y;},1) {}
   };
   
   /// calculate the minimum along an axis or whole tensor
   class Min: public civita::ReductionOp
   {
   public:
-    Min(): civita::ReductionOp([](double& x, double y,size_t){if (y<x) x=y;},std::numeric_limits<double>::max()){}
+    Min(): civita::ReductionOp([](double& x, double y,std::size_t){if (y<x) x=y;},std::numeric_limits<double>::max()){}
    };
   /// calculate the maximum along an axis or whole tensor
   class Max: public civita::ReductionOp
   {
   public:
-    Max(): civita::ReductionOp([](double& x, double y,size_t){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
+    Max(): civita::ReductionOp([](double& x, double y,std::size_t){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
    };
 
   /// calculates the average along an axis or whole tensor
   struct Average: public ReductionOp
   {
-    mutable size_t count;
+    mutable std::size_t count;
   public:
-    Average(): ReductionOp([this](double& x, double y,size_t){x+=y; ++count;},0) {}
-    double operator[](size_t i) const override
+    Average(): ReductionOp([this](double& x, double y,std::size_t){x+=y; ++count;},0) {}
+    double operator[](std::size_t i) const override
     {count=0; return ReductionOp::operator[](i)/count;}
   };
 
   /// calculates the standard deviation along an axis or whole tensor
   struct StdDeviation: public ReductionOp
   {
-    mutable size_t count;
+    mutable std::size_t count;
     mutable double sqr;
   public:
-    StdDeviation(): ReductionOp([this](double& x, double y,size_t){x+=y; sqr+=y*y; ++count;},0) {}
-    double operator[](size_t i) const override {
+    StdDeviation(): ReductionOp([this](double& x, double y,std::size_t){x+=y; sqr+=y*y; ++count;},0) {}
+    double operator[](std::size_t i) const override {
       count=0; sqr=0;
       double av=ReductionOp::operator[](i)/count;
       return sqrt(std::max(0.0, sqr/count-av*av));
@@ -197,7 +197,7 @@ namespace civita
   struct DimensionedArgCachedOp: public CachedTensorOp
   {
     /// dimension to apply operation over. >rank = all dims
-    size_t dimension=std::numeric_limits<size_t>::max(); 
+    std::size_t dimension=std::numeric_limits<std::size_t>::max(); 
     /// op arg value, eg binsize or delta in difference op
     double argVal=0;
     TensorPtr arg;
@@ -208,7 +208,7 @@ namespace civita
   class Scan: public DimensionedArgCachedOp
   {
   public:
-    std::function<void(double&,double,size_t)> f;
+    std::function<void(double&,double,std::size_t)> f;
     template <class F>
     Scan(F f, const TensorPtr& arg={}, const std::string& dimName="", double av=0): f(f) 
     {Scan::setArgument(arg,dimName,av);}
@@ -224,46 +224,46 @@ namespace civita
   /// corresponds to OLAP slice operation
   class Slice: public ITensor
   {
-    size_t stride=1, split=1, sliceIndex=0;
+    std::size_t stride=1, split=1, sliceIndex=0;
     TensorPtr arg;
-    std::vector<size_t> arg_index;
+    std::vector<std::size_t> arg_index;
   public:
     void setArgument(const TensorPtr& a,const std::string&,double) override;
-    double operator[](size_t i) const override;
+    double operator[](std::size_t i) const override;
     Timestamp timestamp() const override {return arg->timestamp();}
   };
 
   /// corresponds to the OLAP pivot operation
   class Pivot: public ITensor
   {
-    std::vector<size_t> permutation;   /// permutation of axes
-    std::vector<size_t> permutedIndex; /// argument indices corresponding to this indices, when sparse
+    std::vector<std::size_t> permutation;   /// permutation of axes
+    std::vector<std::size_t> permutedIndex; /// argument indices corresponding to this indices, when sparse
     TensorPtr arg;
     // returns hypercube index of arg given hypercube index of this
-    size_t pivotIndex(size_t i) const;
+    std::size_t pivotIndex(std::size_t i) const;
   public:
     void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
     /// set's the pivots orientation
     /// @param axes - list of axes that are the output
     void setOrientation(const std::vector<std::string>& axes);
-    double operator[](size_t i) const override;
+    double operator[](std::size_t i) const override;
     Timestamp timestamp() const override {return arg->timestamp();}
   };
 
   class PermuteAxis: public ITensor
   {
     TensorPtr arg;
-    size_t m_axis;
-    std::vector<size_t> m_permutation;
-    std::vector<size_t> permutedIndex; /// argument indices corresponding to this indices, when sparse
+    std::size_t m_axis;
+    std::vector<std::size_t> m_permutation;
+    std::vector<std::size_t> permutedIndex; /// argument indices corresponding to this indices, when sparse
   public:
     void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
-    void setPermutation(const std::vector<size_t>& p)
+    void setPermutation(const std::vector<std::size_t>& p)
     {auto pp(p); setPermutation(std::move(pp));}
-    void setPermutation(std::vector<size_t>&&);
-    size_t axis() const {return m_axis;}
-    const std::vector<size_t>& permutation() const {return m_permutation;}
-    double operator[](size_t i) const override;
+    void setPermutation(std::vector<std::size_t>&&);
+    std::size_t axis() const {return m_axis;}
+    const std::vector<std::size_t>& permutation() const {return m_permutation;}
+    double operator[](std::size_t i) const override;
     Timestamp timestamp() const override {return arg->timestamp();}
   };
 
@@ -287,7 +287,7 @@ namespace civita
       if (timestamp()>m_timestamp) computeTensor();
       return cachedResult.hypercube();
     }
-    size_t size() const override {
+    std::size_t size() const override {
       if (timestamp()>m_timestamp) computeTensor();
       return cachedResult.size();
     }
@@ -297,7 +297,7 @@ namespace civita
   {
   protected:
     TensorPtr arg;
-    size_t numSpreadElements=1;
+    std::size_t numSpreadElements=1;
   public:
     void setArgument(const TensorPtr& a,const std::string& ax="",double ag=0) override {
       arg=a;
@@ -318,14 +318,14 @@ namespace civita
       m_hypercube=hc;
       m_hypercube.xvectors.insert(m_hypercube.xvectors.end(), arg->hypercube().xvectors.begin(),
                                   arg->hypercube().xvectors.end());
-      std::set<size_t> idx;
+      std::set<std::size_t> idx;
       for (auto& i: arg->index())
-        for (size_t j=0; j<numSpreadElements; ++j)
+        for (std::size_t j=0; j<numSpreadElements; ++j)
           idx.insert(j+i*numSpreadElements);
       m_index=idx;
     }
     
-    double operator[](size_t i) const override {
+    double operator[](std::size_t i) const override {
       if (arg) return (*arg)[i/numSpreadElements];
       return nan("");
     }
@@ -339,14 +339,14 @@ namespace civita
       numSpreadElements=hc.numElements();
       m_hypercube=arg->hypercube();
       m_hypercube.xvectors.insert(m_hypercube.xvectors.end(), hc.xvectors.begin(), hc.xvectors.end());
-      std::set<size_t> idx;
+      std::set<std::size_t> idx;
       for (auto& i: arg->index())
-        for (size_t j=0; j<numSpreadElements; ++j)
+        for (std::size_t j=0; j<numSpreadElements; ++j)
           idx.insert(i+j*arg->size());
       m_index=idx;
     }
     
-    double operator[](size_t i) const override {
+    double operator[](std::size_t i) const override {
       if (arg) return (*arg)[i%arg->size()];
       return nan("");
     }

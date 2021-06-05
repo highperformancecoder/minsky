@@ -151,8 +151,8 @@ namespace minsky
     
     int textIdx(double x) const;
 
-    size_t maxHistory{100}; ///< maximum no. of history states to save
-    size_t historyPtr=0;
+    std::size_t maxHistory{100}; ///< maximum no. of history states to save
+    std::size_t historyPtr=0;
     // push state onto history if different
     void pushHistory();
     /// restore to state \a changes ago 

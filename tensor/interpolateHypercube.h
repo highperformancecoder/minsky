@@ -31,21 +31,21 @@ namespace civita
     TensorPtr arg;
     /// hypercube that's been rotated to match the arguments hypercube
     Hypercube interimHC;
-    std::vector<size_t> strides; ///<strides along each dimension of this->hypercube()
-    std::vector<size_t> rotation; ///< permutation of axes of interimHC and this->hypercube()
+    std::vector<std::size_t> strides; ///<strides along each dimension of this->hypercube()
+    std::vector<std::size_t> rotation; ///< permutation of axes of interimHC and this->hypercube()
     
-    std::vector<std::pair<XVector, std::vector<size_t>>> sortedArgHC;
+    std::vector<std::pair<XVector, std::vector<std::size_t>>> sortedArgHC;
     void sortAndAdd(const XVector&);
 
     //
-    vector<size_t> splitAndRotate(size_t) const;
+    vector<std::size_t> splitAndRotate(std::size_t) const;
     
     /// structure for referring to an argument index and its weight 
     struct WeightedIndex
     {
-      size_t index;
+      std::size_t index;
       double weight;
-      WeightedIndex(size_t index,double weight): index(index), weight(weight) {}
+      WeightedIndex(std::size_t index,double weight): index(index), weight(weight) {}
     };
 
     struct WeightedIndexVector: public vector<WeightedIndex>
@@ -58,11 +58,11 @@ namespace civita
 
     /// computes the neighbourhood around a target argument index when
     /// the target index is not on the hypercube
-    WeightedIndexVector bodyCentredNeighbourhood(size_t idx) const;
+    WeightedIndexVector bodyCentredNeighbourhood(std::size_t idx) const;
 
   public:
     void setArgument(const TensorPtr& a, const string& ax="",double ag=0) override;
-    double operator[](size_t) const;
+    double operator[](std::size_t) const;
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
   

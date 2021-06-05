@@ -111,7 +111,7 @@ namespace minsky
        use of shared_ptr
      */
     std::deque<classdesc::pack_t> history;
-    size_t historyPtr;
+    std::size_t historyPtr;
 
   };
 
@@ -364,7 +364,7 @@ namespace minsky
     
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL
-    virtual bool checkMemAllocation(size_t bytes) const {return true;}
+    virtual bool checkMemAllocation(std::size_t bytes) const {return true;}
 
     /// initialises auto saving
     /// empty \a file to turn off autosave

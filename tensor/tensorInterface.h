@@ -50,7 +50,7 @@ namespace civita
     virtual const Hypercube& hypercube() const {return m_hypercube;}
     virtual const Hypercube& hypercube(const Hypercube& hc) {return m_hypercube=hc;}
     virtual const Hypercube& hypercube(Hypercube&& hc) {return m_hypercube=std::move(hc);}
-    size_t rank() const {return hypercube().rank();}
+    std::size_t rank() const {return hypercube().rank();}
     std::vector<unsigned> shape() const {return hypercube().dims();}
 
     /// impose dimensions according to dimension map \a dimensions
@@ -71,15 +71,15 @@ namespace civita
     /// the index vector - assumed to be ordered and unique
     virtual const Index& index() const {return m_index;}
     /// return or compute data at a location
-    virtual double operator[](size_t) const=0;
+    virtual double operator[](std::size_t) const=0;
     /// return number of elements in tensor - maybe less than hypercube.numElements if sparse
-    virtual size_t size() const {
-      size_t s=index().size();
+    virtual std::size_t size() const {
+      std::size_t s=index().size();
       return s? s: hypercube().numElements();
     }        
     
     /// returns the data value at hypercube index \a hcIdx, or NaN if 
-    double atHCIndex(size_t hcIdx) const {
+    double atHCIndex(std::size_t hcIdx) const {
       auto& idx=index();
       if (idx.empty()) {// this is dense
         if (hcIdx<size())
@@ -93,7 +93,7 @@ namespace civita
     }
 
     template <class T>
-    size_t hcIndex(const std::initializer_list<T>& indices) const
+    std::size_t hcIndex(const std::initializer_list<T>& indices) const
     {return hypercube().linealIndex(indices);}
 
     template <class T>

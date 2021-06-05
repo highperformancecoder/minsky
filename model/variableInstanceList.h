@@ -42,7 +42,7 @@ namespace minsky
     /// @param valueId id of variables to obtain the instances of
     VariableInstanceList(Group& model, const std::string& valueId);
     /// zoom model to instance number in the list
-    void gotoInstance(size_t);
+    void gotoInstance(std::size_t);
     /// return the list of names
     std::vector<std::string> names() const {
       std::vector<std::string> r;

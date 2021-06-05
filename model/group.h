@@ -23,7 +23,7 @@
 #include "callableFunction.h"
 
 #include <assert.h>         // for assert
-#include <string.h>         // for size_t, memcpy
+#include <string.h>         // for std::size_t, memcpy
 #include <memory>           // for shared_ptr, weak_ptr, __shared_ptr_access
 #include <set>              // for set
 #include <string>           // for string, basic_string, operator+, operator==
@@ -166,11 +166,11 @@ namespace minsky
                     const std::vector<float>& coords = {}); 
     
     /// total number of items in this and child groups
-    size_t numItems() const; 
+    std::size_t numItems() const; 
     /// total number of wires in this and child groups
-    size_t numWires() const; 
+    std::size_t numWires() const; 
     /// total number of groups in this and child groups
-    size_t numGroups() const; 
+    std::size_t numGroups() const; 
   };
 
   template <class G, class M, class O>
@@ -375,7 +375,7 @@ namespace minsky
     void addBookmark(const std::string& name) {
       bookmarks.emplace_back(x(), y(), relZoom*zoomFactor(), name);
     }
-    void deleteBookmark(size_t i) {
+    void deleteBookmark(std::size_t i) {
       if (i<bookmarks.size())
         bookmarks.erase(bookmarks.begin()+i);
     }
@@ -383,7 +383,7 @@ namespace minsky
       moveTo(b.x, b.y);
       zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
     }
-    void gotoBookmark(size_t i) 
+    void gotoBookmark(std::size_t i) 
     {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
 
     /// return default extension for this group - .mky if no ravels in group, .rvl otherwise

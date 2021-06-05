@@ -25,12 +25,12 @@ namespace minsky
   /// convenience class for accessing matrix elements from a data array
   class Matrix
   {
-    size_t n;
+    std::size_t n;
     double *data;
   public:
-    Matrix(size_t n, double* data): n(n), data(data) {}
-    double& operator()(size_t i, size_t j) {return data[i*n+j];}
-    double operator()(size_t i, size_t j) const {return data[i*n+j];}
+    Matrix(std::size_t n, double* data): n(n), data(data) {}
+    double& operator()(std::size_t i, std::size_t j) {return data[i*n+j];}
+    double operator()(std::size_t i, std::size_t j) const {return data[i*n+j];}
   };
 }
 #endif

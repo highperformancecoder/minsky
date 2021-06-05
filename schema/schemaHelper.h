@@ -32,7 +32,7 @@ template <class T>
 ecolab::array<T> toArray(const std::vector<T>& v) 
 {
   ecolab::array<T> a(v.size());
-  for (size_t i=0; i<v.size(); ++i) a[i]=v[i];
+  for (std::size_t i=0; i<v.size(); ++i) a[i]=v[i];
   return a;
 }
 
@@ -40,7 +40,7 @@ template <class T>
 std::vector<T> toVector(const ecolab::array<T>& a) 
 {
   std::vector<T> v(a.size());
-  for (size_t i=0; i<v.size(); ++i) v[i]=a[i];
+  for (std::size_t i=0; i<v.size(); ++i) v[i]=a[i];
   return v;
 }
 
@@ -48,7 +48,7 @@ template <class T>
 std::vector<double> toDoubleVector(const ecolab::array<T>& a) 
 {
   std::vector<double> v(a.size());
-  for (size_t i=0; i<v.size(); ++i) v[i]=a[i];
+  for (std::size_t i=0; i<v.size(); ++i) v[i]=a[i];
   return v;
 }
 

@@ -118,18 +118,18 @@ namespace minsky
     classdesc::Exclude<std::weak_ptr<Group>> group;
 
     /// return a weak reference to the ith port
-    virtual std::weak_ptr<Port> ports(size_t i) const {
+    virtual std::weak_ptr<Port> ports(std::size_t i) const {
       assert(i<m_ports.size());
       return m_ports[i];
     }
     /// number of ports
-    size_t portsSize() const {return m_ports.size();}
-    float portX(size_t i) {
+    std::size_t portsSize() const {return m_ports.size();}
+    float portX(std::size_t i) {
       if (auto p=ports(i).lock()) return p->x();
       return 0;
     }
    
-    float portY(size_t i) {
+    float portY(std::size_t i) {
       if (auto p=ports(i).lock()) return p->y();
       return 0;
     }

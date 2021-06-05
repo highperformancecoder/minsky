@@ -88,7 +88,7 @@ namespace minsky
     ///factory method
     static VariableBase* create(Type type); 
 
-    virtual size_t numPorts() const=0;
+    virtual std::size_t numPorts() const=0;
     virtual Type type() const=0;
 
     /// attempt to replace this variable with variable of \a type.
@@ -219,7 +219,7 @@ namespace minsky
   public:
     typedef VariableBase::Type Type;
     Type type() const override {return T;}
-    size_t numPorts() const override;
+    std::size_t numPorts() const override;
 
     Variable(const Variable& x): VariableBase(x) {this->addPorts();}
     Variable& operator=(const Variable& x) {

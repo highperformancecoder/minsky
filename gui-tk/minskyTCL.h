@@ -39,7 +39,7 @@ namespace minsky
   ecolab::TCL_obj_t& minskyTCL_obj();
   void setTCL_objAttributes();
 
-  size_t physicalMem();
+  std::size_t physicalMem();
   
   struct MinskyTCL: public Minsky
   {
@@ -49,7 +49,7 @@ namespace minsky
     template <class E> void enumVals()
     {
       tclreturn r;
-      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
+      for (std::size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
         r << enum_keysData<E>::keysData[i].name;
     }
 
@@ -274,7 +274,7 @@ namespace minsky
     /// @return a unique TCL command lead in sequence, or empty if no
     /// such object is created
     std::string TCLItem() {
-      std::string name="item"+std::to_string(size_t(canvas.item.get()));
+      std::string name="item"+std::to_string(std::size_t(canvas.item.get()));
       if (canvas.item && !TCL_obj_properties().count(name)) {
         canvas.item->TCL_obj(minskyTCL_obj(),name);
         // create a reference to manage object's lifetime
@@ -287,7 +287,7 @@ namespace minsky
     }
   
     /// sets the colour of palette item i to Tk acceptable colour name
-    void setColour(size_t i, const char* name);
+    void setColour(std::size_t i, const char* name);
     
     /// find first object of given \a type
     bool findObject(const std::string& type)
@@ -343,7 +343,7 @@ namespace minsky
     std::string openGodley() {
       if (auto gi=dynamic_pointer_cast<GodleyIcon>(canvas.item))
         {
-          std::string name="godleyWindow"+to_string(size_t(canvas.item.get()));
+          std::string name="godleyWindow"+to_string(std::size_t(canvas.item.get()));
           if (TCL_obj_properties().count(name)==0)
             {
               auto godley=new GodleyTableWindow(gi);
@@ -362,7 +362,7 @@ namespace minsky
     std::string listAllInstances() const {
       if (auto v=canvas.item->variableCast())
         {
-          std::string name="instanceList"+to_string(size_t(canvas.item.get()));
+          std::string name="instanceList"+to_string(std::size_t(canvas.item.get()));
           if (TCL_obj_properties().count(name)==0)
             {
               auto instanceList=new VariableInstanceList(*canvas.model, v->valueId());
@@ -455,7 +455,7 @@ namespace minsky
     void runItemDeletedCallback(const Item& item) override
     {tclcmd()<<item.deleteCallback<<'\n';}
     
-    bool checkMemAllocation(size_t bytes) const override {
+    bool checkMemAllocation(std::size_t bytes) const override {
       bool r=true;
       if (ecolab::mainWin && bytes>0.2*physicalMem())
         {

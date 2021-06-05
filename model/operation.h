@@ -53,7 +53,7 @@ namespace minsky
     static constexpr float l=-8, h=12, r=12;
     typedef OperationType::Type Type;
 
-    virtual size_t numPorts() const=0;
+    virtual std::size_t numPorts() const=0;
     ///factory method. \a ports is used for recreating an object read
     ///from a schema
     static OperationBase* create(Type type); 
@@ -108,7 +108,7 @@ namespace minsky
     typedef OperationType::Type Type;
     Type type() const override {return T;}
     void iconDraw(cairo_t *) const override;
-    size_t numPorts() const override 
+    std::size_t numPorts() const override 
     {return OperationTypeInfo::numArguments<T>()+1;}
     Operation() {
       this->addPorts();
@@ -186,7 +186,7 @@ namespace minsky
     std::string description() const {return intVar? intVar->name(): "";}
     /// @}
 
-    std::weak_ptr<Port> ports(size_t i) const override {
+    std::weak_ptr<Port> ports(std::size_t i) const override {
       // if coupled, the output port is the intVar's output
       if (i==0 && coupled() && intVar) return intVar->ports(0);
       return Item::ports(i);
@@ -281,7 +281,7 @@ namespace minsky
     // reset pointer to a newly created operation
     OperationPtr(OperationBase* op): PtrBase(op) {assert(op);}
     OperationPtr clone() const {return OperationPtr(ItemPtr(get()->clone()));}
-    size_t use_count() const {return  classdesc::shared_ptr<OperationBase>::use_count();}
+    std::size_t use_count() const {return  classdesc::shared_ptr<OperationBase>::use_count();}
     OperationPtr(const PtrBase& x): PtrBase(x) {}
     OperationPtr& operator=(const PtrBase& x) {PtrBase::operator=(x); return *this;}
     OperationPtr(const ItemPtr& x): 
@@ -294,7 +294,7 @@ namespace minsky
   // for TCL interfacing
 inline std::ostream& operator<<(std::ostream& x, const std::vector<int>& y)
 {
-  for (size_t i=0; i<y.size(); ++i)
+  for (std::size_t i=0; i<y.size(); ++i)
     x<<(i==0?"":" ")<<y[i];
   return x;
 }

@@ -86,19 +86,19 @@ namespace minsky
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
-    double value(size_t i=0) const {return operator[](i);}
+    double value(std::size_t i=0) const {return operator[](i);}
     int idx() const {return m_idx;}
     void reset_idx() {m_idx=-1;}    
 
     // values are always live
     Timestamp timestamp() const override {return Timestamp::clock::now();}
     
-    double operator[](size_t i) const override {return *(&valRef()+i);}
-    double& operator[](size_t i) override;
+    double operator[](std::size_t i) const override {return *(&valRef()+i);}
+    double& operator[](std::size_t i) override;
 
     const Index& index(Index&& i) override {
       assert(idx()==-1||idxInRange());
-      size_t prevNumElems = size();
+      std::size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
         allocValue();
@@ -110,7 +110,7 @@ namespace minsky
     template <class T>                                            
     void hypercube_(T x) {    
       assert(idx()==-1||idxInRange());
-      size_t prevNumElems = size();
+      std::size_t prevNumElems = size();
       ITensor::hypercube(x);    
       if (idx()==-1 || (prevNumElems<size()))    
         allocValue();

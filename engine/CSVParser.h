@@ -23,7 +23,7 @@
 #include "dataSpecSchema.h"
 #include "classdesc_access.h"
 
-#include <stddef.h>
+#include <cstddef>
 #include <string>
 #include <set>
 #include <fstream>
@@ -34,13 +34,13 @@ namespace minsky
 
   class DataSpec: public DataSpecSchema
   {
-    size_t m_nRowAxes=0, m_nColAxes=0;
+    std::size_t m_nRowAxes=0, m_nColAxes=0;
     CLASSDESC_ACCESS(DataSpec);
   public:
     /// start row of the data area
-    size_t nRowAxes() const {return m_nRowAxes;}
+    std::size_t nRowAxes() const {return m_nRowAxes;}
     /// start column of the data area
-    size_t nColAxes() const {return m_nColAxes;}
+    std::size_t nColAxes() const {return m_nColAxes;}
 
     // handle extra initialisation on conversion
     DataSpecSchema toSchema() {
@@ -55,7 +55,7 @@ namespace minsky
       return *this;
     }
     
-    void toggleDimension(size_t c) {
+    void toggleDimension(std::size_t c) {
       auto i=dimensionCols.find(c);
       if (i==dimensionCols.end())
         dimensionCols.insert(c);
@@ -63,7 +63,7 @@ namespace minsky
         dimensionCols.erase(i);
     }
 
-    void setDataArea(size_t row, size_t col);
+    void setDataArea(std::size_t row, std::size_t col);
     
     /// initial stab at dataspec from examining stream
     void guessFromStream(std::istream& file);
@@ -75,7 +75,7 @@ namespace minsky
     }
 
     /// populates this spec from a "RavelHypercube" entry, \a row is the row being read, used to set the headerRow attribute
-    void populateFromRavelMetadata(const std::string& metadata, size_t row);
+    void populateFromRavelMetadata(const std::string& metadata, std::size_t row);
     
   private:
     /// try to fill in remainder of spec, given a tokenizer function tf

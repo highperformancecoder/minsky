@@ -77,7 +77,7 @@ namespace minsky
 
     /// Godley table data this points to
     const std::vector<std::vector<std::string> >& data() const;
-    const GodleyAssetClass::AssetClass assetClass(size_t col) const;
+    const GodleyAssetClass::AssetClass assetClass(std::size_t col) const;
     bool signConventionReversed(int col) const;
     bool initialConditionRow(int row) const;
     /// returns valueid for variable reference in table
@@ -131,13 +131,13 @@ namespace minsky
         if (g.data().empty()) continue;
         // check for shared columns
         if (!compatibility)
-          for (size_t col=1; col<g.data()[0].size(); ++col)
+          for (std::size_t col=1; col<g.data()[0].size(); ++col)
             if (!trimWS(g.data()[0][col]).empty())
               scCheck.checkShared(g.valueId(trimWS(g.data()[0][col])), g.assetClass(col));
 
-        for (size_t row=1; row<g.data().size(); ++row)
+        for (std::size_t row=1; row<g.data().size(); ++row)
           if (!g.initialConditionRow(row))
-            for (size_t col=1; col<g.data()[row].size(); ++col)
+            for (std::size_t col=1; col<g.data()[row].size(); ++col)
               {
                 FlowCoef fvc(g.data()[row][col]);
                 auto svName=trimWS(g.data()[0][col]);

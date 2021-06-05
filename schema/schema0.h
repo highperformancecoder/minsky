@@ -131,7 +131,7 @@ namespace schema0
     std::string title;
   
     GodleyTable(): doubleEntryCompliant(false)  {}
-    size_t rows() const {return data.size();}
+    std::size_t rows() const {return data.size();}
   };
 
   struct GodleyIcon
