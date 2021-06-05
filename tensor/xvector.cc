@@ -59,10 +59,7 @@ namespace civita
     for (auto i=begin(), j=x.begin(); i!=end(); ++i, ++j)
       {
         if (i->type()!=j->type())
-          {
-            cout << i->type().name() << " "<<j->type().name() << endl;
-            return false;
-          }
+          return false;
         switch (dimension.type)
           {
           case Dimension::string:
