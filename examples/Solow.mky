@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-rc.3</minskyVersion>
+  <minskyVersion>2.21.0-beta49</minskyVersion>
   <wires>
    <Wire>
     <id>112</id>

@@ -18,21 +18,26 @@ ifeq ($(OS),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1
 endif
 
+ifdef DISTCC
+CPLUSPLUS=distcc
+# number of jobs to do sub-makes
+JOBS=-j 20
+else
+# number of jobs to do sub-makes
+JOBS=-j 4
+endif
+
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
-build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) all-without-models))
+build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) $(JOBS) all-without-models))
 $(warning $(build_ecolab))
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) -j4 $(MAKEOVERRIDES)))
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
 endif
 
 # override the install prefix here
 PREFIX=/usr/local
-
-ifdef DISTCC
-CPLUSPLUS=distcc
-endif
 
 # override MODLINK to remove tclmain.o, which allows us to provide a
 # custom one that picks up its scripts from a relative library

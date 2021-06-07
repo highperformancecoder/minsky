@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-rc.3</minskyVersion>
+  <minskyVersion>2.21.0-beta49</minskyVersion>
   <wires>
    <Wire>
     <id>102</id>
@@ -1258,6 +1258,7 @@
      <int>98</int>
      <int>101</int>
     </items>
+    <displayPlot>-1</displayPlot>
     <inVariables>
      <int>101</int>
     </inVariables>

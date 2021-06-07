@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-rc.3</minskyVersion>
+  <minskyVersion>2.21.0-beta49</minskyVersion>
   <wires>
    <Wire>
     <id>659</id>
@@ -274,7 +274,7 @@
     <coords>
      <float>463</float>
      <float>626.842</float>
-     <float>-2.69653</float>
+     <float>-2.69656</float>
      <float>425.914</float>
      <float>103.25</float>
      <float>261.466</float>
@@ -680,8 +680,8 @@
     <coords>
      <float>938.712</float>
      <float>610.935</float>
-     <float>866.856</float>
-     <float>379.292</float>
+     <float>866.855</float>
+     <float>379.29</float>
      <float>932.297</float>
      <float>594.354</float>
     </coords>
@@ -703,8 +703,8 @@
     <coords>
      <float>933.106</float>
      <float>618.938</float>
-     <float>888.292</float>
-     <float>468.903</float>
+     <float>888.293</float>
+     <float>468.907</float>
      <float>917.766</float>
      <float>615.969</float>
     </coords>
@@ -777,7 +777,7 @@
      <float>882.004</float>
      <float>52.1136</float>
      <float>855.583</float>
-     <float>32.7914</float>
+     <float>32.7913</float>
      <float>886.985</float>
      <float>30.3117</float>
     </coords>
@@ -794,8 +794,8 @@
     <coords>
      <float>879.443</float>
      <float>54.697</float>
-     <float>870.944</float>
-     <float>46.7356</float>
+     <float>870.943</float>
+     <float>46.7352</float>
      <float>886.985</float>
      <float>48.3117</float>
     </coords>
@@ -808,7 +808,7 @@
      <float>879.443</float>
      <float>54.697</float>
      <float>867.138</float>
-     <float>43.1709</float>
+     <float>43.1708</float>
      <float>896.071</float>
      <float>56.9053</float>
     </coords>
@@ -7903,6 +7903,7 @@
      <int>565</int>
      <int>568</int>
     </items>
+    <displayPlot>-1</displayPlot>
     <inVariables>
      <int>565</int>
     </inVariables>
@@ -7939,6 +7940,7 @@
      <int>610</int>
      <int>613</int>
     </items>
+    <displayPlot>-1</displayPlot>
     <inVariables>
      <int>610</int>
     </inVariables>
@@ -7975,6 +7977,7 @@
      <int>655</int>
      <int>658</int>
     </items>
+    <displayPlot>-1</displayPlot>
     <inVariables>
      <int>658</int>
     </inVariables>

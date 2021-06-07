@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-rc.3</minskyVersion>
+  <minskyVersion>2.21.0-beta49</minskyVersion>
   <wires>
    <Wire>
     <id>827</id>
@@ -743,7 +743,7 @@
      <float>593.424</float>
      <float>309.342</float>
      <float>587.117</float>
-     <float>299.024</float>
+     <float>299.025</float>
      <float>579.708</float>
      <float>312.856</float>
     </coords>
@@ -865,8 +865,8 @@
     <coords>
      <float>936.973</float>
      <float>634.175</float>
-     <float>863.47</float>
-     <float>427.158</float>
+     <float>863.469</float>
+     <float>427.156</float>
      <float>930.558</float>
      <float>617.594</float>
     </coords>
@@ -888,8 +888,8 @@
     <coords>
      <float>931.367</float>
      <float>642.178</float>
-     <float>885.671</float>
-     <float>508.205</float>
+     <float>885.672</float>
+     <float>508.208</float>
      <float>916.027</float>
      <float>639.209</float>
     </coords>
@@ -979,8 +979,8 @@
     <coords>
      <float>841.943</float>
      <float>246.356</float>
-     <float>826.846</float>
-     <float>230.952</float>
+     <float>826.845</float>
+     <float>230.951</float>
      <float>849.485</float>
      <float>239.971</float>
     </coords>
@@ -9638,6 +9638,7 @@
      <int>733</int>
      <int>736</int>
     </items>
+    <displayPlot>-1</displayPlot>
     <inVariables>
      <int>733</int>
     </inVariables>
@@ -9674,6 +9675,7 @@
      <int>778</int>
      <int>781</int>
     </items>
+    <displayPlot>-1</displayPlot>
     <inVariables>
      <int>778</int>
     </inVariables>
@@ -9710,6 +9712,7 @@
      <int>823</int>
      <int>826</int>
     </items>
+    <displayPlot>-1</displayPlot>
     <inVariables>
      <int>826</int>
     </inVariables>
