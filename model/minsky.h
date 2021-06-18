@@ -296,7 +296,7 @@ namespace minsky
     bool running=false; ///< controls whether simulation is running
     bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
-    void step();  ///< step the equations (by n steps, default 1)
+    ecolab::array<double> step();  ///< step the equations (by n steps, default 1)
 
     /// save to a file
     void save(const std::string& filename);
