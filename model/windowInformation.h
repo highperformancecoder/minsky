@@ -55,6 +55,7 @@ namespace minsky
     WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
     
     ecolab::cairo::SurfacePtr getBufferSurface();
+    ecolab::cairo::SurfacePtr getWindowSurface();
 
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;
