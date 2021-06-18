@@ -45,32 +45,35 @@ namespace minsky
   {
     return CAIRO_STATUS_SUCCESS;
   }
-  
+
   namespace
   {
     // default dummy surface to arrange a callback on requestRedraw
-    class NativeSurface: public cairo::Surface
+    class NativeSurface : public cairo::Surface
     {
-      RenderNativeWindow& renderNativeWindow;
+      RenderNativeWindow &renderNativeWindow;
+
     public:
-      NativeSurface(RenderNativeWindow& r): renderNativeWindow(r) {}
-      void requestRedraw() override {renderNativeWindow.draw();}
+      NativeSurface(RenderNativeWindow &r, cairo_surface_t *s = nullptr, int width = -1, int height = -1) : cairo::Surface(s, width, height), renderNativeWindow(r) {}
+      void requestRedraw() override { renderNativeWindow.draw(); }
     };
-  }
+  } // namespace
 
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
     if (!(winInfoPtr.get()))
     {
       winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
-      surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
+      //surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
+      // NOTE: Above does not work properly with the JS throttling
     }
     draw();
   }
 
   void RenderNativeWindow::draw()
   {
-    if(!winInfoPtr.get() || winInfoPtr->getRenderingFlag()) {
+    if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
+    {
       return;
     }
 
@@ -93,12 +96,11 @@ namespace minsky
 
     redraw(0, 0, surface->width(), surface->height());
 
-
 #ifdef FPS_PROFILING_ON
     unsigned long t1_png_stream_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 #endif
     // TODO:: Below write_to_png_stream is needed to copyBufferToMain to work.
-    // This is temporary and must be removed. 
+    // This is temporary and must be removed.
     vector<unsigned char> buffer;
     cairo_surface_write_to_png_stream(surface->surface(), appendDataToBufferNOP, &buffer);
 
@@ -117,11 +119,10 @@ namespace minsky
     unsigned long pngStreamWriteTime = t2_window_copy_start - t1_png_stream_start;
     unsigned long totalTime = t3_render_over - t0_render_start;
 
-    cout << "Rendering Time (ms): " << totalTime << " (total) | " << windowCopyTime << " (window copy) | "  << pngStreamWriteTime << " (png stream overhead) " << endl;
+    cout << "Rendering Time (ms): " << totalTime << " (total) | " << windowCopyTime << " (window copy) | " << pngStreamWriteTime << " (png stream overhead) " << endl;
 #endif
   }
 
-  
   void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
     // TODO:: To be implemented... need to recreate child window
