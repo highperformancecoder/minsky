@@ -94,15 +94,18 @@ namespace minsky
     cairo_fill(surface->cairo());
     cairo_set_source_rgb(surface->cairo(), 0, 0, 0);
 
-    redraw(0, 0, surface->width(), surface->height());
+    bool didDrawSomething = redraw(0, 0, surface->width(), surface->height());
 
 #ifdef FPS_PROFILING_ON
     unsigned long t1_png_stream_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 #endif
-    // TODO:: Below write_to_png_stream is needed to copyBufferToMain to work.
-    // This is temporary and must be removed.
-    vector<unsigned char> buffer;
-    cairo_surface_write_to_png_stream(surface->surface(), appendDataToBufferNOP, &buffer);
+    if (!didDrawSomething)
+    {
+      // TODO:: Below write_to_png_stream is needed to copyBufferToMain to work when nothing is drawn on the canvas
+      // This is temporary and must be removed.
+      vector<unsigned char> buffer;
+      cairo_surface_write_to_png_stream(surface->surface(), appendDataToBufferNOP, &buffer);
+    }
 
 #ifdef FPS_PROFILING_ON
     unsigned long t2_window_copy_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();

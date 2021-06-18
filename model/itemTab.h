@@ -67,7 +67,7 @@ namespace minsky
     enum ClickType {background, internal};    
     ClickType clickType(double x, double y) const;         
     virtual void draw(cairo_t* cairo); 
-    void redraw(int, int, int width, int height) override;
+    bool redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
 
     /// event handling for the canvas

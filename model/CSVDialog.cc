@@ -271,7 +271,7 @@ namespace
   };
 }
 
-void CSVDialog::redraw(int, int, int width, int height)
+bool CSVDialog::redraw(int, int, int width, int height)
 {
   cairo_t* cairo=surface->cairo();
   CroppedPango pango(cairo, colWidth);
@@ -390,6 +390,7 @@ void CSVDialog::redraw(int, int, int width, int height)
       cairo_rel_line_to(cairo,(col-1)*(colWidth+5),0);
       cairo_stroke(cairo);
     }
+  return true;
 }
 
 size_t CSVDialog::columnOver(double x)
