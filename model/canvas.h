@@ -250,12 +250,12 @@ namespace minsky
     //    void indicateItem() {itemIndicator=true;}
 
     /// redraw whole model
-    void redraw(int x0, int y0, int width, int height) override;
-    void redraw();
+    bool redraw(int x0, int y0, int width, int height) override;
+    bool redraw();
     /// region to be updated
     LassoBox updateRegion{0,0,0,0};
     /// update region given by updateRegion
-    void redrawUpdateRegion();
+    bool redrawUpdateRegion();
 
     /// adjust canvas so that -ve coordinates appear on canvas
     void recentre();

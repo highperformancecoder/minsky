@@ -842,7 +842,7 @@ namespace minsky
     return false;
   }
 
-  void Canvas::redraw(int x0, int y0, int width, int height)
+  bool Canvas::redraw(int x0, int y0, int width, int height)
   {
     updateRegion.x0=x0;
     updateRegion.y0=y0;
@@ -851,7 +851,7 @@ namespace minsky
     // redraw of canvas may throw if called during a reset operation
     try
       {
-        redrawUpdateRegion();
+        return redrawUpdateRegion();
       }
 #ifndef NDEBUG
     catch (std::exception& ex)
@@ -865,17 +865,21 @@ namespace minsky
         // this leads to an endless loop...
         //requestRedraw();
       }
+      return false;
   }
   
-  void Canvas::redraw()
+  bool Canvas::redraw()
   {
     // nb using maxint here doesn't seem to work
-    redraw(-1e9,-1e9,2e9,2e9);
+    return redraw(-1e9,-1e9,2e9,2e9);
   }
 
-  void Canvas::redrawUpdateRegion()
+  bool Canvas::redrawUpdateRegion()
   {
-    if (!surface().get()) return;
+    bool didDrawSomething = false;
+    if (!surface().get()) {
+      return didDrawSomething;
+    }
     m_redrawRequested=false;
     auto cairo=surface()->cairo();
     cairo_save(cairo);
@@ -889,6 +893,7 @@ namespace minsky
          auto& it=**i;
          if (it.visible() && updateRegion.intersects(it))
            {
+             didDrawSomething = true;
              cairo_save(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
@@ -905,6 +910,7 @@ namespace minsky
          auto& it=**i;
          if (it.visible() && updateRegion.intersects(it))
            {
+             didDrawSomething = true;
              cairo_save(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
@@ -920,13 +926,16 @@ namespace minsky
       (&GroupItems::wires, [&](const Wires&, Wires::const_iterator i)
        {
          const Wire& w=**i;
-         if (w.visible()/* && updateRegion.intersects(w)*/)
+         if (w.visible()/* && updateRegion.intersects(w)*/) {
+           //didDrawSomething = true;
            w.draw(cairo);
+         }
          return false;
        });
 
     if (fromPort.get()) // we're in process of creating a wire
       {
+        didDrawSomething = true;
         cairo_move_to(cairo,fromPort->x(),fromPort->y());
         cairo_line_to(cairo,termX,termY);
         cairo_stroke(cairo);
@@ -945,12 +954,14 @@ namespace minsky
 
     if (lassoMode!=LassoMode::none)
       {
+        didDrawSomething = true;
         cairo_rectangle(cairo,lasso.x0,lasso.y0,lasso.x1-lasso.x0,lasso.y1-lasso.y0);
         cairo_stroke(cairo);
       }
 
     if (itemIndicator && item) // draw a red circle to indicate an error or other marker
       {
+        //didDrawSomething = true;
         cairo_save(surface()->cairo());
         cairo_set_source_rgb(surface()->cairo(),1,0,0);
         cairo_arc(surface()->cairo(),item->x(),item->y(),15,0,2*M_PI);
@@ -960,6 +971,7 @@ namespace minsky
 
     cairo_restore(cairo);
     surface()->blit();
+    return didDrawSomething;
   }
 
   void Canvas::recentre()

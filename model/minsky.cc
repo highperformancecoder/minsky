@@ -160,7 +160,7 @@ using namespace std;
 
 namespace minsky
 {
-  void EquationDisplay::redraw(int x0, int y0, int width, int height)
+  bool EquationDisplay::redraw(int x0, int y0, int width, int height)
   {
     if (surface.get()) {
       m.setBusyCursor();
@@ -179,7 +179,9 @@ namespace minsky
           m.flags &= ~Minsky::fullEqnDisplay_needed;
         }
       m.clearBusyCursor();
+      return true;
     }
+    return false;
   }
 
   
@@ -952,8 +954,9 @@ namespace minsky
     parameterTab.requestRedraw();    
   }
 
-  void Minsky::step()
+  ecolab::array<double> Minsky::step()
   {
+    ecolab::array<double> tValues(2);
     if (reset_flag())
       reset();
     running=true;
@@ -1015,11 +1018,14 @@ namespace minsky
         // rethrow exception so message gets displayed to user
         throw err;
       }
-    
+
+    tValues[0]=t;
+    tValues[1]=t - lastT;
+
     if (reset_flag()) // in case reset() was called during the step evaluation
       {
         reset();
-        return;
+        return tValues;
       }
 
     switch (err)
@@ -1057,7 +1063,7 @@ namespace minsky
         parameterTab.requestRedraw();        
         lastRedraw=microsec_clock::local_time();
       }
-
+    return tValues;
   }
 
   string Minsky::diagnoseNonFinite() const

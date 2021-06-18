@@ -71,7 +71,7 @@ namespace minsky
   {
     Minsky& m;
     double m_width=0, m_height=0;
-    void redraw(int x0, int y0, int width, int height) override;
+    bool redraw(int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(EquationDisplay);
   public:
     float offsx=0, offsy=0; // pan controls
@@ -296,7 +296,7 @@ namespace minsky
     bool running=false; ///< controls whether simulation is running
     bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
-    void step();  ///< step the equations (by n steps, default 1)
+    ecolab::array<double> step();  ///< step the equations (by n steps, default 1)
 
     /// save to a file
     void save(const std::string& filename);

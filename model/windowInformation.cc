@@ -16,7 +16,6 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #include "windowInformation.h"
 #include "minsky_epilogue.h"
 
@@ -113,11 +112,8 @@ namespace minsky
 #else
     {
       windowSurface.reset(new cairo::Surface(cairo_xlib_surface_create(getDisplay(), childWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
-      cairo_surface_set_device_offset(windowSurface->surface(), -wAttr.x, -wAttr.y);
-
 
       bufferSurface.reset(new cairo::Surface(cairo_surface_create_similar(windowSurface->surface(), CAIRO_CONTENT_COLOR_ALPHA, childWidth, childHeight), childWidth, childHeight));
-      cairo_surface_set_device_offset(bufferSurface->surface(), -wAttr.x, -wAttr.y);
     }
 
 #endif
@@ -150,20 +146,10 @@ namespace minsky
     if (err > 1)
       throw runtime_error("Invalid window: " + to_string(parentWin));
 
-    childWidth = wAttr.width - offsetLeft;
-    childHeight = wAttr.height - offsetTop;
+    // TODO:: Do some sanity checks on dimensions 
 
-    // TODO:: Take care of scrollbars
-
-    if (cWidth > 0)
-    {
-      childWidth = min(childWidth, cWidth);
-    }
-
-    if (cHeight > 0)
-    {
-      childHeight = min(childHeight, cHeight);
-    }
+    childWidth = cWidth;
+    childHeight = cHeight;
 
     childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, MINSKY_CANVAS_BACKGROUND_COLOR);
 

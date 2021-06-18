@@ -32,7 +32,7 @@ namespace minsky
     Canvas& canvas;
     Exclude<cairo::SurfacePtr> cachedImage;
     Panopticon(Canvas& canvas): canvas(canvas)  {}
-    void redraw(int, int, int width, int height) override;
+    bool redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
 
     Panopticon& operator=(const Panopticon&) {return *this;}

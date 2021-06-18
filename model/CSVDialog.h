@@ -45,7 +45,7 @@ namespace minsky
     /// filename, or web url
     std::string url;
 
-    void redraw(int, int, int width, int height) override;
+    bool redraw(int, int, int width, int height) override;
     
     /// loads an initial sequence of lines from \a url. If fname
     /// contains "://", is is treated as a URL, and downloaded from

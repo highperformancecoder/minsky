@@ -193,8 +193,12 @@ namespace minsky
   {
   public:
     GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): GodleyTableEditor(g) {}
-    void redraw(int, int, int width, int height) override {
-      if (surface.get()) draw(surface->cairo());
+    bool redraw(int, int, int width, int height) override {
+      if (surface.get()) {
+        draw(surface->cairo());
+        return true;
+      }
+      return false;
     }
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
    

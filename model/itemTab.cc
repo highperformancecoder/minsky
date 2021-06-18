@@ -492,7 +492,7 @@ namespace minsky
     };
   }
 
-  void ItemTab::redraw(int, int, int width, int height)
+  bool ItemTab::redraw(int, int, int width, int height)
   {
     if (surface.get()) {
       cairo_t* cairo=surface->cairo();  
@@ -509,8 +509,9 @@ namespace minsky
         draw(surf.cairo());      
         m_width=surf.width();
         m_height=surf.height();
-      }     
+        return true;
+      }
     }
-  }    
-
+    return false;
+  }
 }

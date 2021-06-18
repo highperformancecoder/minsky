@@ -21,7 +21,7 @@
 #include "minsky_epilogue.h"
 using namespace minsky;
 
-void Panopticon::redraw(int, int, int w, int h)
+bool Panopticon::redraw(int, int, int w, int h)
 {
   // cache results of canvas image size
   if (canvas.model.timestamp>lastBoundsCheck || !cachedImage.get())
@@ -59,4 +59,5 @@ void Panopticon::redraw(int, int, int w, int h)
   cairo_set_source_rgba(surface->cairo(),0,0,0,0.5);
   cairo_fill(surface->cairo());
   surface->blit();
+  return true;
 }
