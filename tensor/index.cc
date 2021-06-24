@@ -21,6 +21,8 @@
 #include "index.h"
 #include <assert.h>
 
+using namespace std;
+
 namespace civita
 {
   size_t Index::linealOffset(size_t h) const
