@@ -309,7 +309,7 @@ namespace minsky
     void displayErrorItem(const Item& op) const;
 
     /// return the AEGIS assigned version number
-    static const char* minskyVersion;
+    static const std::string minskyVersion;
     std::string ecolabVersion() const {return VERSION;}
     std::string ravelVersion() const {return ravel::Ravel::version();}
 

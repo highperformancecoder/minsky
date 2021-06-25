@@ -227,7 +227,7 @@ namespace minsky
   }
 
 
-  const char* Minsky::minskyVersion=MINSKY_VERSION;
+  const std::string Minsky::minskyVersion=MINSKY_VERSION;
 
   void Minsky::cut()
   {
