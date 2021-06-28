@@ -32,7 +32,7 @@ but any renamed attributes require bumping the schema number.
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
 #include "plot.xcd"
-#include "rungeKutta.h"
+#include "simulation.h"
 
 #include <xsd_generate_base.h>
 #include <vector>
@@ -331,7 +331,7 @@ namespace schema1
     vector<Group> groups;
     vector<Switch> switches;
     vector<Godley> godleys;
-    minsky::RungeKutta rungeKutta;
+    minsky::Simulation rungeKutta;
   };
 
   struct Minsky

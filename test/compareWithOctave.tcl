@@ -8,6 +8,7 @@ if [file exists extraOpts.tcl] {source extraOpts.tcl}
 set dat [open $argv(2).dat w]
 puts $dat "d=\["
 
+minsky.running 1
 for {set i 0} {$i<7} {incr i} {
     puts -nonewline $dat "\[[minsky.t] "
     foreach var [minsky.variableValues.#keys] {

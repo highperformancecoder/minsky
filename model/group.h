@@ -23,7 +23,7 @@
 #include "callableFunction.h"
 
 #include <assert.h>         // for assert
-#include <string.h>         // for size_t, memcpy
+#include <string.h>         // for std::size_t, memcpy
 #include <memory>           // for shared_ptr, weak_ptr, __shared_ptr_access
 #include <set>              // for set
 #include <string>           // for string, basic_string, operator+, operator==
@@ -75,14 +75,6 @@ namespace minsky
     }
     bool empty() const {return items.empty() && groups.empty() && wires.empty();}
 
-
-    /// plot widget used for group icon
-    std::shared_ptr<PlotWidget> displayPlot;
-    /// remove the display plot
-    void removeDisplayPlot() {
-      displayPlot.reset();
-    }
-    
 
     /// tests that groups are arranged heirarchically without any recurrence
     virtual bool nocycles() const=0; 
@@ -174,11 +166,11 @@ namespace minsky
                     const std::vector<float>& coords = {}); 
     
     /// total number of items in this and child groups
-    size_t numItems() const; 
+    std::size_t numItems() const; 
     /// total number of wires in this and child groups
-    size_t numWires() const; 
+    std::size_t numWires() const; 
     /// total number of groups in this and child groups
-    size_t numGroups() const; 
+    std::size_t numGroups() const; 
   };
 
   template <class G, class M, class O>
@@ -215,12 +207,15 @@ namespace minsky
     std::string arguments() const;
     
     Group() {iWidth(100); iHeight(100);}
-    ~Group() {}   
     std::vector<VariablePtr> createdIOvariables;
     
     bool nocycles() const override; 
 
+    /// Make a copy of this as a sibling group (owned by
+    /// parent). Attempting to copying minsky.model is a null operation.
     GroupPtr copy() const;
+    /// make a copy of this, that is not owned by any group
+    GroupPtr copyUnowned() const;
     Group* clone() const override {throw error("Groups cannot be cloned");}
     static SVGRenderer svgRenderer;
 
@@ -380,7 +375,7 @@ namespace minsky
     void addBookmark(const std::string& name) {
       bookmarks.emplace_back(x(), y(), relZoom*zoomFactor(), name);
     }
-    void deleteBookmark(size_t i) {
+    void deleteBookmark(std::size_t i) {
       if (i<bookmarks.size())
         bookmarks.erase(bookmarks.begin()+i);
     }
@@ -388,7 +383,7 @@ namespace minsky
       moveTo(b.x, b.y);
       zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
     }
-    void gotoBookmark(size_t i) 
+    void gotoBookmark(std::size_t i) 
     {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
 
     /// return default extension for this group - .mky if no ravels in group, .rvl otherwise
@@ -398,6 +393,13 @@ namespace minsky
     void autoLayout();
     /// randomly lay out items in this group
     void randomLayout();
+    
+    /// plot widget used for group icon
+    std::shared_ptr<PlotWidget> displayPlot;
+    /// remove the display plot
+    void removeDisplayPlot() {
+      displayPlot.reset();
+    }
     
   };
 

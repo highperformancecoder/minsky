@@ -17,6 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "minsky.h"
+#include "godleyTableWindow.h"
+#include "matrix.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 #include <gsl/gsl_integration.h>
@@ -114,9 +116,9 @@ SUITE(Minsky)
       int nakedIntegral=-1;
       for (size_t i=0; i<integrals.size(); ++i)
         {
-          if (integrals[i].stock.name=="int1")
+          if (integrals[i].stock->name=="int1")
             nakedIntegral=i;
-          CHECK(!integrals[i].stock.isFlowVar());
+          CHECK(!integrals[i].stock->isFlowVar());
         }
       CHECK(nakedIntegral>=0);
 
@@ -128,9 +130,9 @@ SUITE(Minsky)
       implicit=false;
       step();
 
-      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock.value(), var["a"]->value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock.value()*var["e"]->value(), var["b"]->value(), 1e-4);
+      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input().value(), 1e-4);
+      CHECK_CLOSE(integrals[nakedIntegral].stock->value(), var["a"]->value(), 1e-4);
+      CHECK_CLOSE(integrals[nakedIntegral].stock->value()*var["e"]->value(), var["b"]->value(), 1e-4);
       CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
       ode.reset();
     }
@@ -288,7 +290,7 @@ SUITE(Minsky)
       CHECK_EQUAL(4, stockVars.size());
  
       save("derivative.mky");
-      jacobian(jac,t,&stockVars[0]);
+      evalJacobian(jac,t,&stockVars[0]);
    
       CHECK_EQUAL(0, jac(0,0));
       CHECK_EQUAL(0, jac(0,1));  
@@ -325,15 +327,17 @@ SUITE(Minsky)
       double value = 10;
       dynamic_cast<VariableBase*>(op1.get())->init(to_string(value));
       nSteps=1;
+      running=true;
       step();
       // for now, constructEquations doesn work
-      CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
-      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"]->value(), 1e-5);
+      CHECK_CLOSE(value*t, integrals[0].stock->value(), 1e-5);
+      CHECK_CLOSE(integrals[0].stock->value(), variableValues[":output"]->value(), 1e-5);
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
       model->addWire(*intOp->intVar, *op3, 1, vector<float>());
       reset();
+      running=true;
       step();
       //      CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
       intOp=dynamic_cast<IntOp*>(op3.get());
@@ -1207,4 +1211,53 @@ SUITE(Minsky)
         CHECK_EQUAL(2,model->numItems()); //intVar should not be deleted
         CHECK_EQUAL(0,model->numGroups());
       }
+
+    TEST_FIXTURE(TestFixture,renameAll)
+    {
+      auto gi=make_shared<GodleyIcon>();
+      model->addItem(gi);
+      GodleyTable& godley=gi->table;
+      godley.resize(3,4);
+      godley.cell(0,1)="c";
+      godley.cell(0,2)="d";
+      godley.cell(0,3)="e";
+      godley.cell(2,1)="a";
+      godley.cell(2,2)="b";
+      godley.cell(2,3)="f";
+      gi->update();
+
+      VariablePtr stockVar(VariableType::stock,"c");
+      model->addItem(stockVar)->variableCast();
+      canvas.item=stockVar;
+      canvas.renameAllInstances("newC");
+      CHECK_EQUAL("newC",stockVar->name());
+      CHECK_EQUAL("newC",godley.cell(0,1));
+      gi->update();
+
+      // renaming godley column should rename canvas stock vars
+      GodleyTableEditor ged(gi);
+      godley.cell(0,1)="c";
+      ged.selectedRow=0;
+      ged.selectedCol=1;
+      godley.savedText="newC";
+      ged.update();
+      CHECK_EQUAL("c",stockVar->name());
+      CHECK_EQUAL("c",godley.cell(0,1));
+
+      // renaming just the canvas variable should change  it's type
+      canvas.item=stockVar;
+      if (auto v=canvas.item->variableCast())
+        {
+          canvas.renameItem("foo");
+          CHECK(canvas.item && canvas.item->variableCast());
+          if (auto v1=canvas.item->variableCast())
+            {
+              CHECK_EQUAL("foo",v1->name());
+              CHECK_EQUAL(VariableType::flow, v1->type());
+              CHECK(model->findItem(*canvas.item));
+            }
+        }
+      CHECK_EQUAL("c",godley.cell(0,1));
+    }
+
 }

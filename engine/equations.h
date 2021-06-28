@@ -36,6 +36,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <cstddef>
 #include "integral.h"
 
 namespace minsky
@@ -274,7 +275,7 @@ namespace MathDAG
     ostream& latex(ostream& o) const override  {return o<<"locked";} 
     ostream& matlab(ostream& o) const override  {return o<<"";} 
     void render(ecolab::cairo::Surface& surf) const override;
-    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={});
+    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={}) override;
     int order(unsigned maxOrder) const override {return rhs->order(maxOrder-1)+1;}
     bool tensorEval() const override {return true;}
     std::shared_ptr<Node> derivative(SystemOfEquations&) const override
@@ -288,16 +289,16 @@ namespace MathDAG
     std::map<const Node*, NodePtr> reverseLookupCache;
   public:
     std::string key(const OperationBase& x) const {
-      return "op:"+std::to_string(size_t(x.ports(0).lock().get()));
+      return "op:"+std::to_string(std::size_t(x.ports(0).lock().get()));
     }
     std::string key(const VariableBase& x) const {
       return "var:"+x.valueId();
     }
     std::string key(const SwitchIcon& x) const {
-      return "switch:"+std::to_string(size_t(x.ports(0).lock().get()));
+      return "switch:"+std::to_string(std::size_t(x.ports(0).lock().get()));
     }
     std::string key(const Lock& x) const {
-      return "lock:"+std::to_string(size_t(x.ports(0).lock().get()));
+      return "lock:"+std::to_string(std::size_t(x.ports(0).lock().get()));
     }
     /// strings refer to variable names
     std::string key(const string& x) const {
@@ -329,7 +330,7 @@ namespace MathDAG
       else
         return VariableDAGPtr();
     }
-    size_t size() const {return cache.size()+integrationInputs.size();}
+    std::size_t size() const {return cache.size()+integrationInputs.size();}
     /// returns NodePtr corresponding to object \x, if it exists in cache, nullptr otherwise
     NodePtr reverseLookup(const Node& x) const {
       auto it=reverseLookupCache.find(&x);

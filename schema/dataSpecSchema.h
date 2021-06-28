@@ -28,14 +28,14 @@ namespace minsky
   struct DataSpecSchema
   {
     // these fields are only used for persistence. Need to be handled specially within schema code
-    size_t dataRowOffset, dataColOffset; 
+    std::size_t dataRowOffset, dataColOffset; 
     
     char separator=',', quote='"', escape='\\', decSeparator='.';
     bool mergeDelimiters=false;
     bool columnar=false;
     double missingValue=nan("");
     /// number of header rows
-    size_t headerRow=0;
+    std::size_t headerRow=0;
     std::string horizontalDimName="?";
     civita::Dimension horizontalDimension;
     

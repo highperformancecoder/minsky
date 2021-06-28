@@ -37,76 +37,105 @@ proc addToolTipToTearOff {text menu tornOffMenu} {
     }
 }
 
-image create photo godleyImg -file $minskyHome/icons/bank.gif
-button .wiring.menubar.godley -image godleyImg -height 24 -width 37 \
-    -command addGodley
-tooltip .wiring.menubar.godley "Godley table"
-set helpTopics(.wiring.menubar.godley)  GodleyIcon
+image create photo dataPng -file $minskyHome/icons/data.png
 
-image create photo integrateImg -file $minskyHome/icons/integrate.gif
-button .wiring.menubar.integrate -image integrateImg -width 37 -height 24 -command {
-    addOperation integrate}
-tooltip .wiring.menubar.integrate integrate
-set helpTopics(.wiring.menubar.integrate) IntOp
+set dataImportDialog 0
+button .wiring.menubar.data -image dataPng \
+    -height 24 -width 37 -command {
+        minsky.addVariable dataImport parameter
+        itemFromItemFocus
+        set dataImportDialog 1
+        CSVImportDialog
+    }
+tooltip .wiring.menubar.data "Import data"
+pack .wiring.menubar.data -side left 
+set helpTopics(.wiring.menubar.data) "Operation:csvImport"
 
-image create photo differentiateImg -file $minskyHome/icons/differentiate.gif
-button .wiring.menubar.differentiate -image differentiateImg -width 37 -height 24 -command {
-    addOperation differentiate}
-tooltip .wiring.menubar.differentiate differantiate
-set helpTopics(.wiring.menubar.differentiate) Operation:differentiate
+image create photo ravelImg -file $minskyHome/icons/ravel.gif
+button .wiring.menubar.ravel -image ravelImg \
+    -height 24 -width 37 -command {addRavel}
+tooltip .wiring.menubar.ravel "Ravel"
+pack .wiring.menubar.ravel -side left -padx {0 10}
 
-button .wiring.menubar.time -image timeImg -width 37 -height 24 -command {
-    addOperation time}
-tooltip .wiring.menubar.time time
-set helpTopics(.wiring.menubar.integrate) Operation:time
+image create photo plotImg -file $minskyHome/icons/plot.gif
+button .wiring.menubar.plot -image plotImg \
+    -height 24 -width 37 -command {addPlot}
+tooltip .wiring.menubar.plot "PlotWidget"
+pack .wiring.menubar.plot -side left 
+set helpTopics(.wiring.menubar.plot) "PlotWidget"
+
+image create photo sheetImg -file $minskyHome/icons/sheet.gif
+button .wiring.menubar.sheet -image sheetImg \
+    -height 24 -width 37 -command {addSheet}
+tooltip .wiring.menubar.sheet "Sheet"
+pack .wiring.menubar.sheet -side left 
+set helpTopics(.wiring.menubar.sheet) "Sheet"
 
 button .wiring.menubar.var -text var -foreground #9f0000 -command {
     tk_popup .wiring.menubar.var.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]} 
-tooltip .wiring.menubar.var "variable"
+tooltip .wiring.menubar.var "Variable"
 set helpTopics(.wiring.menubar.var) Variable
+pack .wiring.menubar.var -side left 
 
 menu .wiring.menubar.var.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "variable toolbar"}
 .wiring.menubar.var.menu add command -label "variable" -command addVariable
 .wiring.menubar.var.menu add command -label "constant" -command addConstant
 .wiring.menubar.var.menu add command -label "parameter" -command addParameter
 
+image create photo lockImg -file $minskyHome/icons/lock.gif
+button .wiring.menubar.lock -image lockImg \
+    -height 24 -width 37 -command {addLock}
+tooltip .wiring.menubar.lock "Lock Ravel"
+pack .wiring.menubar.lock -side left
+
+image create photo noteImg -file $minskyHome/icons/note.gif
+button .wiring.menubar.note -image noteImg \
+     -command {addNote "Enter your note here"}
+tooltip .wiring.menubar.note "Note"
+pack .wiring.menubar.note -side left 
+set helpTopics(.wiring.menubar.note) "Item"
+
+button .wiring.menubar.time -image timeImg -width 37 -height 24 -command {
+    addOperation time}
+tooltip .wiring.menubar.time Time
+set helpTopics(.wiring.menubar.integrate) Operation:time
+
 button .wiring.menubar.constops -image eulerImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.constops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.constops "fundamental constants"
+tooltip .wiring.menubar.constops "Fundamental constants"
 set helpTopics(.wiring.menubar.constops) Operations
 menu .wiring.menubar.constops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "fundamental constants toolbox"}
 
 button .wiring.menubar.binops -image addImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.binops "binary operations"
+tooltip .wiring.menubar.binops "Binary operations"
 set helpTopics(.wiring.menubar.binops) Operations
 menu .wiring.menubar.binops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "binary operations toolbox"}
 
 button .wiring.menubar.fnops -image sqrtImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.fnops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.fnops "functions"
+tooltip .wiring.menubar.fnops "Functions"
 set helpTopics(.wiring.menubar.fnops) Operations
 menu .wiring.menubar.fnops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "function toolbox"}
 
 button .wiring.menubar.reductionops -image sumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.reductionops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.reductionops "reductions"
+tooltip .wiring.menubar.reductionops "Reductions"
 set helpTopics(.wiring.menubar.reductionops) Operations
 menu .wiring.menubar.reductionops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "reduction operations toolbox"}
 
 button .wiring.menubar.scanops -image runningSumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.scanops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.scanops "scans"
+tooltip .wiring.menubar.scanops "Scans"
 set helpTopics(.wiring.menubar.scanops) Operations
-menu .wiring.menubar.scanops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff  "scans toolbox"}
+menu .wiring.menubar.scanops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff  "Scans toolbox"}
 
 button .wiring.menubar.tensorops -image outerProductImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.tensorops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.tensorops "tensor operations"
+tooltip .wiring.menubar.tensorops "Tensor operations"
 set helpTopics(.wiring.menubar.tensorops) Operations
-menu .wiring.menubar.tensorops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "tensor toolbox"}
+menu .wiring.menubar.tensorops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "Tensor toolbox"}
 
-pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
 pack .wiring.menubar.time .wiring.menubar.constops .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
 pack .wiring.menubar.scanops .wiring.menubar.tensorops -side left
 
@@ -127,6 +156,7 @@ foreach op [availableOperations] {
         "integrate"  -
         "differentiate" -
         "time" -
+        "userFunction" -
         "data" continue 
     }
 
@@ -152,54 +182,40 @@ tooltip .wiring.menubar.scanops.menu -index 0 "scans toolbox"
 tooltip .wiring.menubar.tensorops.menu -index 0 "tensor toolbox"
 
 
-button .wiring.menubar.data -image dataImg \
-    -height 24 -width 37 -command {addOperation data}
-tooltip .wiring.menubar.data "data"
-pack .wiring.menubar.data -side left 
-set helpTopics(.wiring.menubar.data) "Operation:data"
-
 image create photo switchImg -file $minskyHome/icons/switch.gif
-
-
 button .wiring.menubar.switch -image switchImg \
     -height 24 -width 37 -command {addSwitch}
 tooltip .wiring.menubar.switch "Switch"
 pack .wiring.menubar.switch -side left 
 set helpTopics(.wiring.menubar.switch) "SwitchIcon"
 
+button .wiring.menubar.userFunction -image userFunctionImg \
+    -height 24 -width 37 -command {addOperation userFunction}
+tooltip .wiring.menubar.userFunction "User Defined Function"
+pack .wiring.menubar.userFunction -side left -padx {0 10}
+set helpTopics(.wiring.menubar.userFunction) "Operation:userFunction"
 
-image create photo plotImg -file $minskyHome/icons/plot.gif
-button .wiring.menubar.plot -image plotImg \
-    -height 24 -width 37 -command {addPlot}
-tooltip .wiring.menubar.plot "PlotWidget"
-pack .wiring.menubar.plot -side left 
-set helpTopics(.wiring.menubar.plot) "PlotWidget"
 
-image create photo sheetImg -file $minskyHome/icons/sheet.gif
-button .wiring.menubar.sheet -image sheetImg \
-    -height 24 -width 37 -command {addSheet}
-tooltip .wiring.menubar.sheet "Sheet"
-pack .wiring.menubar.sheet -side left 
-set helpTopics(.wiring.menubar.sheet) "Sheet"
 
-image create photo noteImg -file $minskyHome/icons/note.gif
-button .wiring.menubar.note -image noteImg \
-    -height 24 -width 37 -command {addNote "Enter your note here"}
-tooltip .wiring.menubar.note "Note"
-pack .wiring.menubar.note -side left 
-set helpTopics(.wiring.menubar.note) "Item"
+image create photo godleyImg -file $minskyHome/icons/bank.gif
+button .wiring.menubar.godley -image godleyImg -height 24 -width 37 \
+    -command addGodley
+tooltip .wiring.menubar.godley "Godley table"
+set helpTopics(.wiring.menubar.godley)  GodleyIcon
 
-image create photo ravelImg -file $minskyHome/icons/ravel.gif
-button .wiring.menubar.ravel -image ravelImg \
-    -height 24 -width 37 -command {addRavel}
-tooltip .wiring.menubar.ravel "Ravel"
-pack .wiring.menubar.ravel -side left
+image create photo integrateImg -file $minskyHome/icons/integrate.gif
+button .wiring.menubar.integrate -image integrateImg -width 37 -height 24 -command {
+    addOperation integrate}
+tooltip .wiring.menubar.integrate Integrate
+set helpTopics(.wiring.menubar.integrate) IntOp
 
-image create photo lockImg -file $minskyHome/icons/lock.gif
-button .wiring.menubar.lock -image lockImg \
-    -height 24 -width 37 -command {addLock}
-tooltip .wiring.menubar.ravel "Lock Ravel"
-pack .wiring.menubar.lock -side left 
+image create photo differentiateImg -file $minskyHome/icons/differentiate.gif
+button .wiring.menubar.differentiate -image differentiateImg -width 37 -height 24 -command {
+    addOperation differentiate}
+tooltip .wiring.menubar.differentiate Differentiate
+set helpTopics(.wiring.menubar.differentiate) Operation:differentiate
+
+pack .wiring.menubar.godley .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
 
 pack .wiring.menubar -fill x
 
@@ -466,8 +482,12 @@ bind . <Key-ampersand> {if {![canvasKeyPress %N %A %s]} {addOperationKey integra
 bind . <Key-equal> {if {![canvasKeyPress %N %A %s]} {addNewGodleyItemKey}}
 bind . <Key-at> {if {![canvasKeyPress %N %A %s]} {addPlotKey}}
 
+array set modifiers {"Control_L" "1" "Control_R" "1" "Alt_L" "1" "Alt_R" "1"}
+
 #Clear canvas pan mode in case shift key is pressed to create a capitalized variable via textInput. for ticket 1112.
 bind . <Key> {
+    # ignore any modifier keys
+    if [info exists modifiers(%K)] return
     if {![canvasKeyPress %N %A %s]} {
         textInput %A
         .wiring.canvas configure -cursor {}
@@ -732,7 +752,7 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
-        "Operation*|IntOp|DataOp" {
+        "Operation*|IntOp|DataOp|UserFunction" {
             set portValues "unknown"
             catch {set portValues [$item.portValues]}
             .wiring.context add command -label "Port values $portValues" 
@@ -764,6 +784,8 @@ proc contextMenu {x y X Y} {
              set plotTabDisplay [$item.plotTabDisplay]            
             .wiring.context add checkbutton -label "Display plot on tab" -command "$item.togglePlotTabDisplay" -variable plotTabDisplay               
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
+            .wiring.context add command -label "Export resolution factor: [$item.resolutionScaleFactor]" -command "setExportResolutionFactor $item"
+
             .wiring.context add command -label "Export as Image" -command exportItemAsImg
         }
         "GodleyIcon" {
@@ -808,11 +830,8 @@ proc contextMenu {x y X Y} {
         Ravel {
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             global sortOrder
-            if {[minsky.canvas.item.handleSortableByValue] && [minsky.canvas.item.sortByValue]!="none"} {
-                set sortOrder [minsky.canvas.item.sortByValue]
-            } else {
-                set sortOrder [minsky.canvas.item.sortOrder]
-            }
+            set sortOrder [minsky.canvas.item.sortOrder]
+            .wiring.context add cascade -label "Set Next Aggregation" -menu .wiring.context.nextAggregationMenu
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
             if [llength [info commands minsky.canvas.item.lockGroup]] {
                 .wiring.context add command -label "Lock specific handles" -command lockSpecificHandles
@@ -920,6 +939,17 @@ proc lockSpecificHandles {} {
     }
 }
 
+set aggTypes {{"Σ" "sum"} {"Π" "prod"} {"av" "av"} {"σ" "stddev"} {"min" "min"} {"max" "max"}}
+menu .wiring.context.nextAggregationMenu
+foreach m $aggTypes {
+    .wiring.context.nextAggregationMenu add command -label [lindex $m 0] -command "minsky.canvas.item.nextReduction [lindex $m 1]"
+}
+
+menu .wiring.context.axisAggregationMenu
+foreach m $aggTypes {
+    .wiring.context.axisAggregationMenu add command -label [lindex $m 0] -command "minsky.canvas.item.handleSetReduction \[minsky.canvas.item.selectedHandle\] [lindex $m 1]"
+}
+
 menu .wiring.context.axisMenu 
 .wiring.context.axisMenu add command -label "Description" -command {
     textEntryPopup .wiring.context.axisMenu.desc [minsky.canvas.item.description] {
@@ -932,28 +962,23 @@ menu .wiring.context.axisMenu
     minsky.canvas.item.broadcastStateToLockGroup
     reset
 }
+.wiring.context.axisMenu add cascade -label "Set Aggregation" -menu .wiring.context.axisAggregationMenu
 menu .wiring.context.axisMenu.sort -postcommand populateSortOptions
 .wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort
 set sortOrder none
 
 proc populateSortOptions {} {
     set orders {none forward reverse}
-    if [minsky.canvas.item.handleSortableByValue] {
-        lappend orders "forward by value" "reverse by value"
-    }
     .wiring.context.axisMenu.sort delete 0 end
     foreach order $orders {
         .wiring.context.axisMenu.sort add radiobutton -label $order -command {
-            if [regexp "(.*) by value" $sortOrder dummy valueOrder] {
-                minsky.canvas.item.sortByValue $valueOrder
-            } else {
-                minsky.canvas.item.sortByValue none
-                minsky.canvas.item.setSortOrder $sortOrder
-            }
+            minsky.canvas.item.setSortOrder $sortOrder
             minsky.canvas.item.broadcastStateToLockGroup
             reset
         } -value "$order" -variable sortOrder
     }
+    .wiring.context.axisMenu.sort add command -label "forward by value" -command {minsky.canvas.item.sortByValue "forward"; reset}
+    .wiring.context.axisMenu.sort add command -label "reverse by value" -command {minsky.canvas.item.sortByValue "reverse"; reset}
 }
 
 .wiring.context.axisMenu add command -label "Pick Slices" -command setupPickMenu
@@ -1168,8 +1193,7 @@ proc deiconifyEditVar {} {
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
             retypeItem $editVarInput(Type)
-            # update name after type change, as it is needed when changing from constants. (ticket #1135)
-            $item.name $editVarInput(Name)
+            canvas.renameItem $editVarInput(Name)
                 
             makeVariablesConsistent
             catch reset
@@ -1620,7 +1644,7 @@ proc OKnote {item} {
     minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
     minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
     # update bounding box - see ticket #1164
-    minsky.canvas.$item.updateBoundingBox 
+    if [ string equal $item "item" ] then {minsky.canvas.$item.updateBoundingBox}
     closeEditWindow .wiring.note
 }
 

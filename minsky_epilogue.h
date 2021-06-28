@@ -17,13 +17,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef CIVITA_DIMENSION_H
-#include "dimension.cd"
-#include "dimension.xcd"
-#endif
-#ifdef CIVITA_INDEX_H
-#include "index.cd"
-#endif
 #ifdef RESTPROCESS_H
 
 namespace classdesc
@@ -102,6 +95,25 @@ namespace classdesc_access
   struct access_json_unpack<cd::RESTProcess_t>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
   
 }
+
+#endif
+
+#ifdef CIVITA_DIMENSION_H
+#include "dimension.cd"
+#include "dimension.xcd"
+#endif
+#ifdef CIVITA_INDEX_H
+#include "index.cd"
+#endif
+#ifdef CIVITA_TENSORINTERFACE_H
+#include "tensorInterface.cd"
+#endif
+#ifdef CIVITA_TENSORVAL_H
+#include "tensorVal.cd"
+#endif
+#ifdef CIVITA_HYPERCUBE_H
+#include "hypercube.cd"
+//#include "hypercube.xcd"
 #endif
 
 #ifdef JSON_PACK_BASE_H

@@ -30,7 +30,7 @@ To use, define the actions you want to happen for each type of expression
 
 namespace minsky
 {
-  inline bool operator>(size_t x, const UnitsExpressionWalker& y) {return false;}
+  inline bool operator>(std::size_t x, const UnitsExpressionWalker& y) {return false;}
   
   inline UnitsExpressionWalker pow(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
   {

@@ -21,6 +21,7 @@
 #include "variable.h"
 #include "cairoItems.h"
 #include "minsky.h"
+#include "equations.h"
 //#include "RESTProcess_base.h"
 #include <error.h>
 #include "minsky_epilogue.h"
@@ -49,8 +50,6 @@ namespace minsky
  }
 }
 
-
-VariableBase::~VariableBase() {}
 
 void VariableBase::addPorts()
 {
@@ -207,9 +206,7 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
         minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"",group.lock()));
       // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
       else
-        minsky().variableValues.emplace
-          (valueId,VariableValuePtr(type(),nm,vv->init,group.lock())).first->
-          second->tensorInit=vv->tensorInit;
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv));
     }
 }
 
@@ -249,6 +246,7 @@ string VariableBase::init(const string& x)
         }
       catch (...)
         {}
+      updateBoundingBox();
     }
   return x;
 }
@@ -422,7 +420,14 @@ bool VariableBase::visible() const
 	else return true;
   }  
   // ensure flow vars with out wires remain visible. for ticket 1275
-  if (attachedToDefiningVar() && !m_ports[0]->wires().empty()) return true;  
+  if (attachedToDefiningVar())
+    {
+      bool visibleOutWires=false;
+      for (auto w: m_ports[0]->wires())
+        visibleOutWires |= w->visible();
+      if (visibleOutWires)
+        return true;
+    }
   if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
      if (i->attachedToDefiningVar()) return true;
   return !controller.lock() && Item::visible();
@@ -496,6 +501,22 @@ bool VariableBase::onKeyPress(int keySym, const std::string&,int)
     }
 }
 
+std::string VariableBase::definition() const
+{
+  MathDAG::SystemOfEquations system(cminsky());	  
+  ostringstream o;
+	
+  auto varDAG=system.getNodeFromVar(*this);
+    
+  if (type()!=VariableType::parameter)
+    {
+      if (varDAG && varDAG->rhs && varDAG->type!=VariableType::constant && varDAG->type!=VariableType::integral)
+        o << varDAG->rhs->matlab();
+      else return system.getDefFromIntVar(*this).str();
+    }
+          
+  return o.str();	  
+}
 
 void VariableBase::draw(cairo_t *cairo) const
 {	
@@ -524,12 +545,10 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
     rv.show();
 
-    VariableValue vv;
-    if (VariableValue::isValueId(valueId()))
-      vv=*minsky::cminsky().variableValues[valueId()];
+    auto vv=vValue();
   
     // For feature 47
-    if (type()!=constant && !ioVar() && (vv.size()==1) )
+    if (type()!=constant && !ioVar() && vv && vv->size()==1)
       try
         {
           auto val=engExp();    
@@ -537,7 +556,7 @@ void VariableBase::draw(cairo_t *cairo) const
           Pango pangoVal(cairo);
           if (!isnan(value())) {
             pangoVal.setFontSize(6*scaleFactor*z);
-            if (sliderBoundsSet && vv.sliderVisible)
+            if (sliderBoundsSet && vv->sliderVisible)
               pangoVal.setMarkup
                 (mantissa(val,
                           int(1+
@@ -595,7 +614,7 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo_close_path(cairo);
       clipPath.reset(new cairo::Path(cairo));
       cairo_stroke(cairo);
-      if (vv.sliderVisible && vv.size()==1)
+      if (vv && vv->sliderVisible && vv->size()==1)
         {
           // draw slider
           CairoSave cs(cairo);

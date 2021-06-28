@@ -3,7 +3,7 @@
 proc CSVImportDialog {} {
     if {[llength [info commands minsky.canvas.item.valueId]]==0} return
     getValue [minsky.canvas.item.valueId]
-    global workDir csvParms
+    global workDir csvParms dataImportDialog
     set csvParms(url) [minsky.value.csvDialog.url]
     set csvParms(separator) [minsky.value.csvDialog.spec.separator]
     set csvParms(decSeparator) [minsky.value.csvDialog.spec.decSeparator]
@@ -18,6 +18,7 @@ proc CSVImportDialog {} {
     if {![winfo exists .wiring.csvImport]} {
         toplevel .wiring.csvImport
         minsky.canvas.item.deleteCallback "destroy .wiring.csvImport"
+        if {$dataImportDialog} {bind .wiring.csvImport <Destroy> "canvas.deleteItem; set dataImportDialog 0"}
         
         # file/url control
         frame .wiring.csvImport.fileUrl
@@ -163,7 +164,7 @@ proc CSVImportDialog {} {
 }
 
 proc csvImportDialogOK {} {
-    global csvParms
+    global csvParms dataImportDialog
     minsky.value.csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
     set csvImportFailed [catch {loadVariableFromCSV minsky.value.csvDialog.spec "$csvParms(url)"} err]	
     if $csvImportFailed {
@@ -175,6 +176,13 @@ proc csvImportDialogOK {} {
         .csvImportError.buttonBar.ok configure -text "Yes"
         .csvImportError.buttonBar.cancel configure -text "No"
     } else {
+        if {$dataImportDialog} {
+            minsky.canvas.item.name [file rootname [file tail [minsky.value.csvDialog.url]]]
+            # don't delete the variable we've so carefully populated
+            bind .wiring.csvImport <Destroy> ""
+            itemFocusFromItem
+            set dataImportDialog 0
+        }
         catch reset
         cancelWin .wiring.csvImport
     }
@@ -255,9 +263,7 @@ proc csvImportButton1Up {x y X Y} {
                     setupCombo [[minsky.value.csvDialog.spec.dimensions.@elem $col].units] \
                         "minsky.value.csvDialog.spec.dimensions($col).units" \
                         "Dimension units/format" "-values $units -state normal" $X $Y
-                    dimFormatPopdown .wiring.csvImport.text.combo [[minsky.value.csvDialog.spec.dimensions.@elem $col].type] {
-                        minsky.value.csvDialog.spec.dimensions($col).units [.wiring.csvImport.text.combo get]
-                    }
+                    dimFormatPopdown .wiring.csvImport.text.combo [[minsky.value.csvDialog.spec.dimensions.@elem $col].type] "minsky.value.csvDialog.spec.dimensions($col).units \[.wiring.csvImport.text.combo get\]"
                 }
             }
             3 {if {$col<[minsky.value.csvDialog.spec.dimensions.size]} {

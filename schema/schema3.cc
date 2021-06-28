@@ -334,6 +334,8 @@ namespace schema3
                       {
                         assert(itemMap.count(j.get()));
                         groups.back().items.push_back(itemMap[j.get()]);
+                        if (j==(*i)->displayPlot)
+                          groups.back().displayPlot=itemMap[j.get()];
                       }
                     for (auto& j: (*i)->groups)
                       groups.back().items.push_back(itemMap[j.get()]);
@@ -363,7 +365,7 @@ namespace schema3
     m.conversions=conversions;
     m.fileVersion=minskyVersion;
     
-    static_cast<minsky::RungeKutta&>(m)=rungeKutta;
+    static_cast<minsky::Simulation&>(m)=rungeKutta;
     return m;
   }
 
@@ -378,10 +380,12 @@ namespace schema3
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
+    x.itemTabX=y.itemTabX;
+    x.itemTabY=y.itemTabY;
     x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
-    if (y.width) x.iWidth(*y.width);
-    if (y.height) x.iHeight(*y.height);
+    x.iWidth(y.width);
+    x.iHeight(y.height);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
@@ -451,18 +455,15 @@ namespace schema3
         if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
         if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
           x1->toggleButtons();
-        if (y.width && *y.width>0) x1->iWidth(*y.width);
-        if (y.height && *y.height>0) x1->iHeight(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
-        if (y.width) x1->iWidth(*y.width);
-        if (y.height) x1->iHeight(*y.height);
         x1->bb.update(*x1);        
         if (y.name) x1->title=*y.name;
         if (y.logx) x1->logx=*y.logx;
         if (y.logy) x1->logy=*y.logy;
         if (y.ypercent) x1->percent=*y.ypercent;
+        if (y.plotTabDisplay) x1->plotTabDisplay=*y.plotTabDisplay;
         if (y.plotType) x1->plotType=*y.plotType;
         if (y.xlabel) x1->xlabel=*y.xlabel;
         if (y.ylabel) x1->ylabel=*y.ylabel;
@@ -476,6 +477,8 @@ namespace schema3
             x1->legend=true;
             x1->legendSide=*y.legend;
           }
+        if (y.legendGeometry)
+          y.legendGeometry->setLegendGeometry(*x1);
         if (y.palette) x1->palette=*y.palette;
       }
     if (auto x1=dynamic_cast<minsky::SwitchIcon*>(&x))
@@ -487,8 +490,6 @@ namespace schema3
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
-        if (y.width) x1->iWidth(*y.width);
-        if (y.height) x1->iHeight(*y.height);       
         x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
         if (y.bookmarks) x1->bookmarks=*y.bookmarks;
@@ -613,6 +614,12 @@ namespace schema3
                   {
                     newG->addItem(it->second, true/*inSchema*/);
                   }
+              }
+            if (i.displayPlot>=0)
+              {
+                auto it=itemMap.find(i.displayPlot);
+                if (it!=itemMap.end())
+                  newG->displayPlot=dynamic_pointer_cast<minsky::PlotWidget>(it->second);
               }
             if (i.inVariables)
               for (auto j: *i.inVariables)

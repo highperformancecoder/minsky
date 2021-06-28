@@ -794,6 +794,7 @@ namespace MathDAG
           result=tmpResult;
       }
 
+    if (!rhs) return result;
     auto input=rhs->addEvalOps(ev,result);
     if (lock.locked())
       {
@@ -1015,11 +1016,11 @@ namespace MathDAG
         integrals.push_back(Integral());
         assert(VariableValue::isValueId(vid));
         assert(minsky.variableValues.count(vid));
-        integrals.back().stock=*minsky.variableValues[vid];
+        integrals.back().stock=minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
-            integrals.back().input=*iInput->rhs->addEvalOps(equations);
+          integrals.back().setInput(*iInput->rhs->addEvalOps(equations));
       }
     assert(minsky.variableValues.validEntries());
   }
@@ -1046,6 +1047,10 @@ namespace MathDAG
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
          else if (auto s=dynamic_cast<Sheet*>(i->get()))
            for (auto w: s->ports(0).lock()->wires())
+               // ensure sheet inputs are evaluated
+               w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+         else if (auto r=dynamic_cast<Ravel*>(i->get()))
+           for (auto w: r->ports(1).lock()->wires())
                // ensure sheet inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
 

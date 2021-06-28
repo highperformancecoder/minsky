@@ -35,19 +35,19 @@ namespace minsky
   class EvalCommon
   {
     double* m_flowVars=nullptr;
-    size_t m_fvSize=0;
+    std::size_t m_fvSize=0;
     const double* m_stockVars=nullptr;
     ITensor::Timestamp m_timestamp;
   public:
     double* flowVars() const {return m_flowVars;}
-    size_t fvSize() const {return m_fvSize;}
+    std::size_t fvSize() const {return m_fvSize;}
     const double* stockVars() const {return m_stockVars;}
     ITensor::Timestamp timestamp() const {return m_timestamp;}
     /// initialise flow and stock var array pointers
     /// @param fv - pointer to flow variable vector
     /// @param n - size of flow variable vector
     /// @param sv - pointer to stock variable vector
-    void update(double* fv, size_t n, const double* sv)
+    void update(double* fv, std::size_t n, const double* sv)
     {
       m_flowVars=fv; m_fvSize=n; m_stockVars=sv; m_timestamp=ITensor::Timestamp::clock::now();
     }
@@ -86,9 +86,9 @@ namespace minsky
   struct DerivativeMixin
   {
     /// partial derivative of tensor component \a ti wrt flow variable \a fi
-    virtual double dFlow(size_t ti, size_t fi) const=0;
+    virtual double dFlow(std::size_t ti, std::size_t fi) const=0;
     /// partial derivative of tensor component \a ti wrt stock variable \a si
-    virtual double dStock(size_t ti, size_t si) const=0;
+    virtual double dStock(std::size_t ti, std::size_t si) const=0;
   };
   
   // a VariableValue that contains a references to overridable value vectors
@@ -104,18 +104,18 @@ namespace minsky
     
     /// 
     ITensor::Timestamp timestamp() const override {return ev->timestamp();}
-    double operator[](size_t i) const override {
+    double operator[](std::size_t i) const override {
       return value->isFlowVar()? ev->flowVars()[value->idx()+i]: ev->stockVars()[value->idx()+i];
     }
     TensorVarValBase(const std::shared_ptr<VV>& vv, const shared_ptr<EvalCommon>& ev):
       value(vv), ev(ev) {}
     const Hypercube& hypercube() const override {return value->hypercube();}
     const Index& index() const override {return value->index();}
-    size_t size() const override {return value->size();}
+    std::size_t size() const override {return value->size();}
    
-    double dFlow(size_t ti, size_t fi) const override 
+    double dFlow(std::size_t ti, std::size_t fi) const override 
     {return value->isFlowVar() && fi==ti+value->idx();}
-    double dStock(size_t ti, size_t si) const override 
+    double dStock(std::size_t ti, std::size_t si) const override 
     {return !value->isFlowVar() && si==ti+value->idx();}
   };
 
@@ -132,7 +132,7 @@ namespace minsky
     const Hypercube& hypercube(Hypercube&& hc) override {return value->hypercube(std::move(hc));}
     const Hypercube& hypercube() const override {return value->hypercube();}
     using ITensorVal::operator[];
-    double& operator[](size_t i) override {
+    double& operator[](std::size_t i) override {
       assert(value->isFlowVar());
       assert(
              (ev->flowVars()==ValueVector::flowVars.data() &&
@@ -168,8 +168,8 @@ namespace minsky
     } 
     TensorEval(const std::shared_ptr<VariableValue>& dest, const std::shared_ptr<VariableValue>& src);
                
-    void eval(double fv[], size_t,const double sv[]) override;
-    void deriv(double df[],size_t,const double ds[],const double sv[],const double fv[]) override;
+    void eval(double fv[], std::size_t,const double sv[]) override;
+    void deriv(double df[],std::size_t,const double ds[],const double sv[],const double fv[]) override;
   };
 }
   

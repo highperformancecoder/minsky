@@ -64,6 +64,8 @@ SUITE(ExpressionWalker)
       CHECK_THROW(expression.value(),std::exception);
       parser.compile("metre^2",expression);
       CHECK_EQUAL("m^2",expression.value().units.str());
+      parser.compile("pow(metre,2)",expression);
+      CHECK_EQUAL("m^2",expression.value().units.str());
 
 #define testFunction(f)                                 \
       parser.compile(#f "(metre)",expression);          \

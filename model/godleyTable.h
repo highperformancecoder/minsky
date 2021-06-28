@@ -49,7 +49,7 @@ namespace minsky
     void markEdited(); ///< mark model as having changed
     void _resize(unsigned rows, unsigned cols) {
       // resize existing
-      for (size_t i=0; i<data.size(); ++i) data[i].resize(cols);
+      for (std::size_t i=0; i<data.size(); ++i) data[i].resize(cols);
       data.resize(rows, vector<string>(cols));
       m_assetClass.resize(cols, noAssetClass);
     }
@@ -84,8 +84,8 @@ namespace minsky
 
     /// class of each column (used in DE compliant mode)
     const vector<AssetClass>& _assetClass() const {return m_assetClass;}
-    AssetClass _assetClass(size_t col) const;
-    AssetClass _assetClass(size_t col, AssetClass cls);
+    AssetClass _assetClass(std::size_t col) const;
+    AssetClass _assetClass(std::size_t col, AssetClass cls);
     
     /// Check whether more than one equity column is present
     /// irrespective of single or multiple equity column mode.
@@ -119,8 +119,8 @@ namespace minsky
     /// return true if row is empty apart from a value in column \a col
     bool singularRow(unsigned row, unsigned col);
     
-    size_t rows() const {return data.size();}
-    size_t cols() const {return data.empty()? 0: data[0].size();}
+    std::size_t rows() const {return data.size();}
+    std::size_t cols() const {return data.empty()? 0: data[0].size();}
 
     void clear() {data.clear(); m_assetClass.clear(); markEdited();}
     void resize(unsigned rows, unsigned cols){_resize(rows,cols); markEdited();}
@@ -160,7 +160,7 @@ namespace minsky
       return data[row][col];
     }
     bool cellInTable(int row, int col) const
-    {return row>=0 && size_t(row)<rows() && col>=0 && size_t(col)<cols();}
+    {return row>=0 && std::size_t(row)<rows() && col>=0 && std::size_t(col)<cols();}
     string getCell(unsigned row, unsigned col) const {
       if (row<rows() && col<cols())
         return cell(row,col);

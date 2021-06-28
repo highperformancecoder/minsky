@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta.15</minskyVersion>
+  <minskyVersion>2.21.0-beta49</minskyVersion>
   <wires>
   </wires>
   <items>
@@ -9,6 +9,8 @@
     <type>Variable:flow</type>
     <x>0</x>
     <y>0</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -25,12 +27,38 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>5</id>
     <type>Variable:flow</type>
     <x>9.0001</x>
     <y>53.0002</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -47,12 +75,38 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>8</id>
     <type>Variable:flow</type>
     <x>105</x>
     <y>2.0002</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -69,12 +123,38 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>11</id>
     <type>Variable:flow</type>
     <x>126</x>
     <y>75.0002</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -91,12 +171,38 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>14</id>
     <type>Variable:flow</type>
     <x>21.0001</x>
     <y>141</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -113,12 +219,38 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>17</id>
     <type>Variable:flow</type>
     <x>140.001</x>
     <y>162.001</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -135,12 +267,38 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>20</id>
     <type>Variable:flow</type>
     <x>111</x>
     <y>218.001</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -157,12 +315,38 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>23</id>
     <type>Variable:flow</type>
     <x>265.001</x>
     <y>155.001</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -179,6 +363,30 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
   </items>
   <groups>

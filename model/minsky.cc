@@ -24,67 +24,39 @@
 #include "mdlReader.h"
 
 #include "TCL_obj_stl.h"
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_odeiv2.h>
 #include <cairo_base.h>
 
-#include <schema/schema3.h>
-
+#include "schema3.h"
 
 //#include <thread>
 // std::thread apparently not supported on MXE for now...
 #include <boost/thread.hpp>
-using namespace std;
 
+#include "minskyVersion.h"
+
+#include "minsky_epilogue.h"
+
+#include <algorithm>
+
+using namespace std;
 using namespace minsky;
 using namespace classdesc;
 using namespace boost::posix_time;
 
 namespace
 {
-  const char* schemaURL="http://minsky.sf.net/minsky";
-
   inline bool isFinite(const double y[], size_t n)
   {
     for (size_t i=0; i<n; ++i)
       if (!isfinite(y[i])) return false;
     return true;
   }
-
-  /*
-    For using GSL Runge-Kutta routines
-  */
-
-  int RKfunction(double t, const double y[], double f[], void *params)
+  struct BusyCursor
   {
-    if (params==NULL) return GSL_EBADFUNC;
-    try
-      {
-        ((Minsky*)params)->evalEquations(f,t,y);
-      }
-    catch (std::exception& e)
-      {
-        ((Minsky*)params)->threadErrMsg=e.what();
-        return GSL_EBADFUNC;
-      }
-    return GSL_SUCCESS;
-  }
-
-  int jacobian(double t, const double y[], double * dfdy, double dfdt[], void * params)
-  {
-   if (params==NULL) return GSL_EBADFUNC;
-   Minsky::Matrix jac(ValueVector::stockVars.size(), dfdy);
-   try
-     {
-       ((Minsky*)params)->jacobian(jac,t,y);
-     }
-    catch (std::exception& e)
-     {
-       ((Minsky*)params)->threadErrMsg=e.what();
-       return GSL_EBADFUNC;
-     }   
-    return GSL_SUCCESS;
-  }
+    Minsky& minsky;
+    BusyCursor(Minsky& m): minsky(m) {minsky.setBusyCursor();}
+    ~BusyCursor() {minsky.clearBusyCursor();}
+  };
 
   /// list the possible string values of an enum (for TCL)
   template <class E> vector<string> enumVals()
@@ -95,71 +67,11 @@ namespace
       return r;
     }
 
-
 }
 
 namespace minsky
 {
 
-  struct RKdata
-  {
-    gsl_odeiv2_system sys;
-    gsl_odeiv2_driver* driver;
-
-    static void errHandler(const char* reason, const char* file, int line, int gsl_errno) {
-      throw error("gsl: %s:%d: %s",file,line,reason);
-    }
-
-    RKdata(Minsky* minsky) {
-      gsl_set_error_handler(errHandler);
-      sys.function=RKfunction;
-      sys.jacobian=jacobian;
-      sys.dimension=ValueVector::stockVars.size();
-      sys.params=minsky;
-      const gsl_odeiv2_step_type* stepper;
-      switch (minsky->order)
-        {
-        case 1: 
-          if (!minsky->implicit)
-            throw error("First order explicit solver not available");
-          stepper=gsl_odeiv2_step_rk1imp;
-          break;
-        case 2: 
-          stepper=minsky->implicit? gsl_odeiv2_step_rk2imp: gsl_odeiv2_step_rk2;
-          break;
-        case 4:
-          stepper=minsky->implicit? gsl_odeiv2_step_rk4imp: gsl_odeiv2_step_rkf45;
-          break;
-        default:
-          throw error("order %d solver not supported",minsky->order);
-        }
-      driver = gsl_odeiv2_driver_alloc_y_new
-        (&sys, stepper, minsky->stepMax, minsky->epsAbs, 
-         minsky->epsRel);
-      gsl_odeiv2_driver_set_hmax(driver, minsky->stepMax);
-      gsl_odeiv2_driver_set_hmin(driver, minsky->stepMin);
-    }
-    ~RKdata() {gsl_odeiv2_driver_free(driver);}
-  };
-
-  struct BusyCursor
-  {
-    Minsky& minsky;
-    BusyCursor(Minsky& m): minsky(m) {minsky.setBusyCursor();}
-    ~BusyCursor() {minsky.clearBusyCursor();}
-  };
-}
-
-#include "minskyVersion.h"
-
-#include "minsky_epilogue.h"
-
-
-#include <algorithm>
-using namespace std;
-
-namespace minsky
-{
   bool EquationDisplay::redraw(int x0, int y0, int width, int height)
   {
     if (surface.get()) {
@@ -289,11 +201,7 @@ namespace minsky
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
   {
     schema3::Minsky m(g);
-    ofstream os(fileName);
-    xml_pack_t packer(os, schemaURL);
-    xml_pack(packer, "Minsky", m);
-//    if (!of)
-//      throw runtime_error("cannot save to "+fileName);
+    Saver(fileName).save(m);
   }
 
   void Minsky::paste()
@@ -610,7 +518,7 @@ namespace minsky
         else if (d->second.type==xv.dimension.type)
           d->second.units=xv.dimension.units;
         else
-          message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog");
+          message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog, which can be found under the Edit menu.");
         
       }
     // set all such dimensions on Ravels to forward sort order
@@ -865,10 +773,7 @@ namespace minsky
       bool initialConditionRow(int row) const
       {return Super::operator*()->table.initialConditionRow(row);}
       string valueId(const std::string& x) const {
-        Variable<VariableBase::flow> tmp;
-        tmp.name(x);
-        tmp.group=Super::operator*()->group;
-        return tmp.valueId();
+        return VariableValue::valueIdFromScope(Super::operator*()->group.lock(), x);
       }
     };
   }
@@ -903,13 +808,7 @@ namespace minsky
     initGodleys();
 
     if (stockVars.size()>0)
-      {
-        if (order==1 && !implicit)
-          ode.reset(); // do explicit Euler
-        else
-          ode.reset(new RKdata(this)); // set up GSL ODE routines
-      }
-
+      RungeKutta::reset();
       
     // update flow variable
     evalEquations();
@@ -954,96 +853,10 @@ namespace minsky
     parameterTab.requestRedraw();    
   }
 
-  ecolab::array<double> Minsky::step()
+  vector<double> Minsky::step()
   {
-    ecolab::array<double> tValues(2);
-    if (reset_flag())
-      reset();
-    running=true;
     lastT=t;
-    
-    // create a private copy for worker thread use
-    vector<double> stockVarsCopy(stockVars);
-    RKThreadRunning=true;
-    int err=GSL_SUCCESS;
-    // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
-    boost::thread rkThread([&]() {
-      try
-        { 
-          double tp=reverse? -t: t;
-          if (ode)
-            {
-              gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
-              // we need to update Minsky's t synchronously to support the t operator
-              // potentially means t and stockVars out of sync on GUI, but should still be thread safe
-              err=gsl_odeiv2_driver_apply(ode->driver, &tp, numeric_limits<double>::max(), 
-                                          &stockVarsCopy[0]);
-            }
-          else // do explicit Euler method
-            {
-              vector<double> d(stockVarsCopy.size());
-              for (int i=0; i<nSteps; ++i, tp+=stepMax)
-                {
-                  evalEquations(&d[0], tp, &stockVarsCopy[0]);
-                  for (size_t j=0; j<d.size(); ++j)
-                    stockVarsCopy[j]+=d[j];
-                }
-            }
-          t=reverse? -tp:tp;
-        }
-      catch (const std::exception& ex)
-        {
-          // catch any thrown exception, and report back to GUI thread
-          threadErrMsg=ex.what();
-        }
-      catch (...)
-        {
-          threadErrMsg="Unknown exception thrown on ODE solver thread";
-        }
-      RKThreadRunning=false;
-    });
-
-    while (RKThreadRunning)
-      {
-        // while waiting for thread to finish, check and process any UI events
-        usleep(1000);
-        doOneEvent(false);
-      }
-    rkThread.join();
-
-    if (!threadErrMsg.empty())
-      {
-        runtime_error err(threadErrMsg);
-        threadErrMsg.clear();
-        // rethrow exception so message gets displayed to user
-        throw err;
-      }
-
-    tValues[0]=t;
-    tValues[1]=t - lastT;
-
-    if (reset_flag()) // in case reset() was called during the step evaluation
-      {
-        reset();
-        return tValues;
-      }
-
-    switch (err)
-      {
-      case GSL_SUCCESS: case GSL_EMAXITER: break;
-      case GSL_FAILURE:
-        throw error("unspecified error GSL_FAILURE returned");
-      case GSL_EBADFUNC: 
-        gsl_odeiv2_driver_reset(ode->driver);
-        throw error("Invalid arithmetic operation detected");
-      default:
-        throw error("gsl error: %s",gsl_strerror(err));
-      }
-
-    stockVars.swap(stockVarsCopy);
-
-    // update flow variables
-    evalEquations();
+    RungeKutta::step();
 
     logVariables();
 
@@ -1063,9 +876,10 @@ namespace minsky
         parameterTab.requestRedraw();        
         lastRedraw=microsec_clock::local_time();
       }
-    return tValues;
-  }
 
+    return {t, deltaT()};
+  }
+  
   string Minsky::diagnoseNonFinite() const
   {
     // firstly check if any variables are not finite
@@ -1081,81 +895,18 @@ namespace minsky
     return "";
   }
 
-  void Minsky::evalEquations(double result[], double t, const double vars[])
-  {
-    EvalOpBase::t=reverse? -t: t;
-    double reverseFactor=reverse? -1: 1;
-    // firstly evaluate the flow variables. Initialise to flowVars so
-    // that no input vars are correctly initialised
-    vector<double> flow(flowVars);
-    for (size_t i=0; i<equations.size(); ++i)
-      equations[i]->eval(&flow[0], flow.size(), vars);
-
-    // then create the result using the Godley table
-    for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
-    evalGodley.eval(result, &flow[0]);
-
-    // integrations are kind of a copy
-    for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
-      {
-        if (i->input.idx()<0)
-          {
-            if (i->operation)
-              displayErrorItem(*i->operation);
-            throw error("integral not wired");
-          }
-        // enable element-wise integration of tensor variables. for feature 147  
-	for (size_t j=0; j<i->input.size(); ++j)
-	    result[i->stock.idx()+j] = reverseFactor *
-	      (i->input.isFlowVar()? flow[i->input.idx()+j] : vars[i->input.idx()+j]);
-      } 
-  }
-
-  void Minsky::jacobian(Matrix& jac, double t, const double sv[])
-  {
-    EvalOpBase::t=reverse? -t: t;
-    double reverseFactor=reverse? -1: 1;
-    // firstly evaluate the flow variables. Initialise to flowVars so
-    // that no input vars are correctly initialised
-    vector<double> flow=flowVars;
-    for (size_t i=0; i<equations.size(); ++i)
-      equations[i]->eval(&flow[0], flow.size(), sv);
-
-    // then determine the derivatives with respect to variable j
-    for (size_t j=0; j<stockVars.size(); ++j)
-      {
-        vector<double> ds(stockVars.size()), df(flowVars.size());
-        ds[j]=1;
-        for (size_t i=0; i<equations.size(); ++i)
-          equations[i]->deriv(&df[0], df.size(), &ds[0], sv, &flow[0]);
-        vector<double> d(stockVars.size());
-        evalGodley.eval(&d[0], &df[0]);
-        for (vector<Integral>::iterator i=integrals.begin(); 
-             i!=integrals.end(); ++i)
-          {
-            assert(i->stock.idx()>=0 && i->input.idx()>=0);
-            d[i->stock.idx()] = 
-              i->input.isFlowVar()? df[i->input.idx()]: ds[i->input.idx()];
-          }
-        for (size_t i=0; i<stockVars.size(); i++)
-          jac(i,j)=reverseFactor*d[i];
-      }
-  
-  }
-
   void Minsky::save(const std::string& filename)
   {
-    ofstream of(filename);
-    xml_pack_t saveFile(of, schemaURL);
-    saveFile.prettyPrint=true;
     schema3::Minsky m(*this);
+    Saver saver(filename);
+    saver.packer.prettyPrint=true;
     try
       {
-        xml_pack(saveFile, "Minsky", m);
+        saver.save(m);
       }
     catch (...) {
       // if exception is due to file error, provide a more useful message
-      if (!of)
+      if (!saver.os)
         throw runtime_error("cannot save to "+filename);
       throw;
     }
@@ -1362,7 +1113,7 @@ namespace minsky
         history.emplace_back();
         buf.swap(history.back());
         historyPtr=history.size();
-        return true;
+        return false;
       }
     while (history.size()>maxHistory)
       history.pop_front();
@@ -1372,8 +1123,9 @@ namespace minsky
         ostringstream prev, curr;
         xml_pack_t prevXbuf(prev), currXbuf(curr);
         xml_pack(currXbuf,"Minsky",m);
-        history.back().reseto()>>m;
-        xml_pack(prevXbuf,"Minsky",m);
+        schema3::Minsky previousMinsky;
+        history.back().reseto()>>previousMinsky;
+        xml_pack(prevXbuf,"Minsky",previousMinsky);
 
         if (curr.str()!=prev.str())
           {
@@ -1388,6 +1140,17 @@ namespace minsky
             history.emplace_back();
             buf.swap(history.back());
             historyPtr=history.size();
+            if (autoSaver && doPushHistory)
+              try
+                {
+                  //autoSaver->packer.prettyPrint=true;
+                  autoSaver->save(m);
+                }
+              catch (...)
+                {
+                  autoSaver.reset();
+                  throw std::runtime_error("Unable to autosave to this location");
+                }
             return true;
           }
       }
@@ -1674,5 +1437,13 @@ namespace minsky
   }
 
 
+  void Minsky::setAutoSaveFile(const std::string& file) {
+    if (file.empty())
+      autoSaver.reset();
+    else
+      autoSaver.reset(new BackgroundSaver(file));
+  }
+
+  
 }
 

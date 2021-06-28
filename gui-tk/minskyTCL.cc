@@ -21,6 +21,7 @@
 #include "minskyTCL.h"
 #include "minskyTCLObj.h"
 #include "callableFunction.h"
+#include "userFunction.h"
 #include "CSVDialog.h"
 #include <ecolab.h>
 #include "minsky_epilogue.h"
@@ -306,6 +307,12 @@ namespace minsky
   {
     if (string(opName)=="switch")
       IconBase<SwitchIcon>(imageName).draw();
+    else if (string(opName)=="userFunction")
+      {
+        IconBase<UserFunction> uf(imageName);
+        uf.description("f(x)");
+        uf.draw();
+      }
     else
       IconBase<OperationIcon>(imageName, opName).draw();
   }

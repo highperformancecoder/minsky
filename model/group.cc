@@ -107,14 +107,24 @@ namespace minsky
 
   GroupPtr Group::copy() const
   {
-    auto r=make_shared<Group>();
-    r->self=r;
-    // make new group a sibling of this if possible
+    // make new group owned by the top level group to prevent
     if (auto g=group.lock())
-      g->addGroup(r);
+      return g->addGroup(copyUnowned());
     else
       return GroupPtr(); // do nothing if we attempt to clone the entire model
-    
+  }
+  
+  GroupPtr Group::copyUnowned() const
+  {
+    auto r=make_shared<Group>();
+    r->self=r;
+    r->moveTo(x(),y());
+    // make new group owned by the top level group to prevent snarlups when called recursively
+    if (group.lock())
+      const_cast<Group*>(this)->globalGroup().addGroup(r);
+    else
+      return GroupPtr(); // do nothing if we attempt to clone the entire model
+  
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
     map<IntOp*,bool> integrals;
@@ -124,7 +134,7 @@ namespace minsky
     for (auto& i: items)
       cloneMap[i.get()]=r->addItem(i->clone());
     for (auto& i: groups)
-      cloneMap[i.get()]=r->addGroup(i->copy());
+      cloneMap[i.get()]=r->addGroup(i->copyUnowned());
     for (auto& w: wires) 
       {
         auto f=w->from(), t=w->to();

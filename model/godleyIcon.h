@@ -67,6 +67,10 @@ namespace minsky
     static SVGRenderer svgRenderer;
     
     GodleyIcon() {iWidth(150); iHeight(150);}
+    GodleyIcon(const GodleyIcon&)=default;
+    GodleyIcon(GodleyIcon&&)=default;
+    GodleyIcon& operator=(const GodleyIcon&)=default;
+    GodleyIcon& operator=(GodleyIcon&&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
@@ -128,6 +132,9 @@ namespace minsky
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
 
+    /// return the A-L-E row sum for \a row
+    std::string rowSum(int row) const;
+    
     /// returns valueid for variable reference in table
     // TODO: this should be refactored to a more central location
     std::string valueId(const std::string& x) const {

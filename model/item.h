@@ -72,7 +72,9 @@ namespace minsky
   {
     ItemPortVector() {}
     ItemPortVector(const ItemPortVector&) {}
+    ItemPortVector(ItemPortVector&&) {}
     ItemPortVector& operator=(const ItemPortVector&) {return *this;}
+    ItemPortVector& operator=(ItemPortVector&&) {return *this;}
   };
 
   /// bounding box information (at zoom=1 scale)
@@ -98,14 +100,25 @@ namespace minsky
               public classdesc::PolyRESTProcessBase
   {
     double m_rotation=0; ///< rotation of icon, in degrees
+
   protected:
     // these need to be protected, not private to allow the setting of these in constructors.
     double m_width=10, m_height=10;
     ItemPortVector m_ports;
+    
+    mutable struct MemoisedRotator: public Rotate
+    {
+      MemoisedRotator(): Rotate(0,0,0) {}
+      void update(float a,float x, float y) {
+        if (!initialisedFrom(a,x,y))
+          Rotate::operator=(Rotate(a,x,y));
+      }
+    } memoisedRotator;
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
+    float itemTabX=nan(""), itemTabY=nan(""); ///< position on itemTab
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     bool onBorder=false; ///< true to indicate mouse hovering over border
@@ -114,27 +127,26 @@ namespace minsky
     classdesc::Exclude<std::weak_ptr<Group>> group;
 
     /// return a weak reference to the ith port
-    virtual std::weak_ptr<Port> ports(size_t i) const {
+    virtual std::weak_ptr<Port> ports(std::size_t i) const {
       assert(i<m_ports.size());
       return m_ports[i];
     }
     /// number of ports
-    size_t portsSize() const {return m_ports.size();}
-    float portX(size_t i) {
+    std::size_t portsSize() const {return m_ports.size();}
+    float portX(std::size_t i) {
       if (auto p=ports(i).lock()) return p->x();
       return 0;
     }
    
-    float portY(size_t i) {
+    float portY(std::size_t i) {
       if (auto p=ports(i).lock()) return p->y();
       return 0;
     }
     /// canvas bounding box.
     mutable BoundingBox bb;
     bool contains(float xx, float yy) {
-      if (!bb.valid()) bb.update(*this);
-      float invZ=1/zoomFactor();
-      return bb.contains((xx-x())*invZ, (yy-y())*invZ);
+      auto hz=resizeHandleSize(); // extend by resize handle size (which is also portRadius)
+      return left()-hz<=xx && right()+hz>=xx && top()-hz<=yy && bottom()+hz>=yy; 
     }
     void updateBoundingBox() {bb.update(*this);}
     
@@ -147,11 +159,7 @@ namespace minsky
     virtual double value() const {return 0;}
 
     double rotation() const {return m_rotation;}
-    double rotation(const double& r) {
-      m_rotation=r;
-      bb.update(*this);
-      return m_rotation;
-    }
+    double rotation(const double& r) {return m_rotation=r;}
     
     float iWidth() const {return m_width;}
     float iWidth(const float& w) {
@@ -193,12 +201,13 @@ namespace minsky
     virtual float y() const;
     virtual float zoomFactor() const;
     void ensureBBValid() const {if (!bb.valid()) bb.update(*this);}
-    float width()  const {ensureBBValid(); return bb.width()*zoomFactor();}
-    float height() const {ensureBBValid(); return bb.height()*zoomFactor();}
-    float left()   const {ensureBBValid(); return x()+bb.left()*zoomFactor();}
-    float right()  const {ensureBBValid(); return x()+bb.right()*zoomFactor();}
-    float top()    const {ensureBBValid(); return y()+bb.top()*zoomFactor();}
-    float bottom() const {ensureBBValid(); return y()+bb.bottom()*zoomFactor();}
+    float width()  const {return right()-left();}
+    float height() const {return bottom()-top();}
+    std::vector<Point> corners() const; // 4 corners of item
+    float left()   const;
+    float right()  const;
+    float top()    const;
+    float bottom() const;
 
     /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
@@ -254,12 +263,16 @@ namespace minsky
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
+
+    Item(const Item&)=default;
+    //Item(Item&&)=default;
+    Item& operator=(const Item&)=default;
+    //Item& operator=(Item&&)=default;
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
     virtual void drawResizeHandles(cairo_t* cairo) const;
-    virtual std::pair<double,Point> rotatedPoints() const;    
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);
@@ -329,12 +342,20 @@ namespace minsky
     void RESTProcess(classdesc::RESTProcess_t&,const std::string&) override;
     void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const override;
     void json_pack(classdesc::json_pack_t&) const override;
+    ItemT()=default;
+    ItemT(const ItemT&)=default;
+    ItemT& operator=(const ItemT&)=default;
+    // delete move operations to avoid the dreaded virtual-move-assign warning
+    ItemT(ItemT&&)=delete;
+    ItemT& operator=(ItemT&&)=delete;
   };
 
   struct BottomRightResizerItem: public Item
   {
     bool onResizeHandle(float x, float y) const override; 
     void drawResizeHandles(cairo_t* cairo) const override;
+    /// returns coordinates of the resizer handle
+    virtual Point resizeHandleCoords() const;
   };
   
 }

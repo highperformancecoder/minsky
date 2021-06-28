@@ -688,6 +688,16 @@ namespace minsky
       }
   }
 
+  void Canvas::renameItem(const std::string newName)
+  {
+    if (auto var=item->variableCast())
+      {
+        var->name(newName);
+        // check stock variables are defined, convert to flow if not
+        if (var->isStock() && !cminsky().definingVar(var->valueId()))
+          var->retype(VariableType::flow);
+      }
+  }
 
   void Canvas::copyItem()
   {

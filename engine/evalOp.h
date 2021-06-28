@@ -89,13 +89,13 @@ namespace minsky
        i, seed ds with 1 in the ith position, 0 every else, and
        initialise df to zero.
     */
-    virtual void deriv(double df[], size_t n, const double ds[], 
+    virtual void deriv(double df[], std::size_t n, const double ds[], 
                        const double sv[], const double fv[])=0;
 
     /// evaluate expression on sv and current value of fv, storing result
     /// in output variable (of \a fv)
     /// @param n - size of fv array
-    virtual void eval(double fv[]=&ValueVector::flowVars[0], size_t n=ValueVector::flowVars.size(), 
+    virtual void eval(double fv[]=&ValueVector::flowVars[0], std::size_t n=ValueVector::flowVars.size(), 
                       const double sv[]=&ValueVector::stockVars[0])=0;
  
 
@@ -112,10 +112,10 @@ namespace minsky
     /// factory method
     static ScalarEvalOp* create(Type op/*=numOps*/, const ItemPtr& state);
 
-    void deriv(double df[], size_t n, const double ds[], 
+    void deriv(double df[], std::size_t n, const double ds[], 
                        const double sv[], const double fv[]) override;
 
-    void eval(double fv[], size_t, const double sv[]) override;
+    void eval(double fv[], std::size_t, const double sv[]) override;
  
     /// evaluate expression on given arguments, returning result
     virtual double evaluate(double in1=0, double in2=0) const=0;
@@ -166,7 +166,7 @@ namespace minsky
       // override push_back for diagnostic purposes
 //       void push_back(const EvalOpPtr& x) {
 //         vector<EvalOpPtr>::push_back(x);
-//         for (size_t i=0; i<x->in1.size(); ++i)
+//         for (std::size_t i=0; i<x->in1.size(); ++i)
 //           {
 //             cout << OperationType::typeName(x->type())<<"(";
 //             if (x->numArgs()>0)

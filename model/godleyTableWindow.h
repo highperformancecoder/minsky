@@ -151,8 +151,8 @@ namespace minsky
     
     int textIdx(double x) const;
 
-    size_t maxHistory{100}; ///< maximum no. of history states to save
-    size_t historyPtr=0;
+    std::size_t maxHistory{100}; ///< maximum no. of history states to save
+    std::size_t historyPtr=0;
     // push state onto history if different
     void pushHistory();
     /// restore to state \a changes ago 
@@ -172,6 +172,8 @@ namespace minsky
     void navigateDown();
     /// @}
     
+    ClickType clickType(double x, double y) const;
+   
   protected:
     std::vector<ButtonWidget<row>> rowWidgets;
     std::vector<ButtonWidget<col>> colWidgets;
@@ -182,7 +184,6 @@ namespace minsky
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
     // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
     std::deque<GodleyTable> history;
-    ClickType clickType(double x, double y) const;
     void checkCell00(); ///<check if cell (0,0) is selected, and deselect if so
     /// handle delete or backspace. Cell assumed selected
     void handleBackspace();    

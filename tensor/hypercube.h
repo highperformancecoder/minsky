@@ -35,7 +35,7 @@ namespace civita
     Hypercube(std::vector<XVector>&& d): xvectors(std::move(d)) {}
     
     std::vector<XVector> xvectors;
-    size_t rank() const {return xvectors.size();}
+    std::size_t rank() const {return xvectors.size();}
 
     bool operator==(const Hypercube& x) const {return xvectors==x.xvectors;}
     bool operator!=(const Hypercube& x) const {return !operator==(x);}
@@ -46,7 +46,7 @@ namespace civita
     
     /// number of elements in the hypercube, equaly to the product of
     /// dimensions
-    size_t numElements() const;
+    std::size_t numElements() const;
       
     /// set the dimensions. 
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d);
@@ -57,14 +57,14 @@ namespace civita
     void makeConformant(const Hypercube& a);
 
     /// split lineal index into components along each dimension
-    std::vector<size_t> splitIndex(size_t) const;
+    std::vector<std::size_t> splitIndex(std::size_t) const;
     /// combine a split index into a lineal hypercube index
     template <class V>
-    size_t linealIndex(const V& splitIndex) const {
+    std::size_t linealIndex(const V& splitIndex) const {
       assert(dims().size()==splitIndex.size());
-      size_t index=0, stride=1;
+      std::size_t index=0, stride=1;
       auto ii=splitIndex.begin();
-      for (size_t i=0; i<xvectors.size(); ++i, ++ii)
+      for (std::size_t i=0; i<xvectors.size(); ++i, ++ii)
         {
           index+=*ii * stride;
           stride*=xvectors[i].size();

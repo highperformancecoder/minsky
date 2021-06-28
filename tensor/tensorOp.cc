@@ -435,14 +435,15 @@ namespace civita
     auto& axv=arg->hypercube().xvectors[m_axis];
     for (auto i: m_permutation)
       xv.push_back(axv[i]);
-    vector<unsigned> reverseIndex(axv.size(),axv.size());
+    map<unsigned,unsigned> reverseIndex;
     for (size_t i=0; i<m_permutation.size(); ++i)
       reverseIndex[m_permutation[i]]=i;
     map<size_t,size_t> indices;
     for (size_t i=0; i<arg->index().size(); ++i)
       {
         auto splitted=arg->hypercube().splitIndex(arg->index()[i]);
-        if ((splitted[m_axis]=reverseIndex[splitted[m_axis]])<axv.size())
+        auto ri=reverseIndex.find(splitted[m_axis]);
+        if (ri!=reverseIndex.end() && (splitted[m_axis]=ri->second)<axv.size())
           indices[hypercube().linealIndex(splitted)]=i;
       }
     m_index=indices;
@@ -593,12 +594,6 @@ namespace civita
         finalPivot->setArgument(chain.back());
         finalPivot->setOrientation(state.outputHandles);
         chain.push_back(finalPivot);
-      }
-    if (state.sortByValue!=ravel::HandleSort::none && chain.back()->rank()==1)
-      {
-        auto sortByValue=make_shared<SortByValue>(state.sortByValue);
-        sortByValue->setArgument(chain.back());
-        chain.push_back(sortByValue);
       }
     return chain;
   }

@@ -143,7 +143,7 @@ SUITE(CSVParser)
       spec.dimensionNames={"asset","liability","equity"};          
       spec.dimensionCols={1,2,3};      
           
-      VariableValue v;
+      VariableValue v(VariableType::parameter,":foo");
       loadValueFromCSVFile(v,is,spec);
 
       CHECK_EQUAL(1, v.rank()); 

@@ -47,10 +47,7 @@ namespace minsky
        {
          assert(it->plotWidgetCast());
          cairo::CairoSave cs(cairo);   
-         if (it==itemFocus) {
-           cairo_translate(cairo,xItem,yItem);  		    				    
-           itemCoords[itemFocus]=move(make_pair(xItem,yItem));
-         } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);      
+         cairo_translate(cairo,it->itemTabX, it->itemTabY);  		    				    
          it->draw(cairo);
        }              
   }

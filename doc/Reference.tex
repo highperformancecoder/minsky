@@ -64,50 +64,70 @@ ports are labelled $x$ and $y$, referring the the formula $x^y$.
 Symbolically differentiates its input with respect to system time, producing d/dt[input]. 
 For further explanation regarding differentiation, see \href{https://en.wikipedia.org/wiki/Derivative}{this wikipedia page}.
 
-\subsection{data }\label{Operation:data} \buttonIcon{data.eps} A data interpolation
-widget. The data can be imported from a file containing
-two values on each line, eg:
-\begin{quote}
-\begin{tabular}{rr}
-0.1 &0.3\\
-0.5 &0.7\\
-0.9 &1\\
-\end{tabular}
-\end{quote}
+%\subsection{data }\label{Operation:data} \buttonIcon{data.eps} A data interpolation
+%widget. The data can be imported from a file containing
+%two values on each line, eg:
+%\begin{quote}
+%\begin{tabular}{rr}
+%0.1 &0.3\\
+%0.5 &0.7\\
+%0.9 &1\\
+%\end{tabular}
+%\end{quote}
+%
+%If the input is less than the minimum key value (0.1 here), then the
+%operation outputs the corresponding value (0.3). Similarly if the
+%input is greater than the maximum (0.9), the corresponding value (1)
+%is output. If it lies in between two keys (eg 0.2), the the output is
+%linearly interpolated (0.4).
+%
+%Alternatively, the data block can be initialised by a random number
+%generator, which is a way of introducing random numbers\index{random
+%  numbers} into the simulation. The parameters, the
+%minimum and maximum values of the function's domain, and the number of
+%random samples over that domain, are all required.
+%
+%\begin{center}
+%  \begin{tabular}{cc}
+%  \resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}} &
+%  \resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}
+%  \end{tabular}
+%\end{center}
+%
+%More formally, a data block is an empirical function, based on a table
+%of pairs of values ($x_i, y_i, i=1\ldots n, x_{i+1}>x_i$) read in from
+%a file. The function's output is linearly interpolated from the data,
+%ie:
+%\begin{displaymath}
+%f(x) = \left\{
+%\begin{array}{cl}
+%y_1 & x < x_1\\
+%y_n & x\geq x_n\\
+%\frac{y_i(x_{i+1}-x)+y_{i+1}(x-x_i)}{x_{i+1}-x_i} & x_i \leq x <
+%x_{i+1}\\
+%\end{array}
+%\right.
+%\end{displaymath}
 
-If the input is less than the minimum key value (0.1 here), then the
-operation outputs the corresponding value (0.3). Similarly if the
-input is greater than the maximum (0.9), the corresponding value (1)
-is output. If it lies in between two keys (eg 0.2), the the output is
-linearly interpolated (0.4).
+\subsection{User defined function}\label{Operation:userFunction}
 
-Alternatively, the data block can be initialised by a random number
-generator, which is a way of introducing random numbers\index{random
-  numbers} into the simulation. The parameters, the
-minimum and maximum values of the function's domain, and the number of
-random samples over that domain, are all required.
+A user defined function is a functioned defined by an algebraic
+expression. Support for this feature is courtesy of the wonderful
+\htmladdnormallink{exprtk}{http://www.partow.net/programming/exprtk/index.html}
+library developed by Arash Partow.
 
-\begin{center}
-  \begin{tabular}{cc}
-  \resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}} &
-  \resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}
-  \end{tabular}
-\end{center}
+A user defined function has a {\em name}, {\em parameters} and an {\em
+  expression}. Example expressions are things like \verb'x+y' or
+\verb'sin(x)'. More details of the sorts of expressions possible can be
+found in the \htmlref{User Defined Functions}{ExprTk} section of the
+manual.
 
-More formally, a data block is an empirical function, based on a table
-of pairs of values ($x_i, y_i, i=1\ldots n, x_{i+1}>x_i$) read in from
-a file. The function's output is linearly interpolated from the data,
-ie:
-\begin{displaymath}
-f(x) = \left\{
-\begin{array}{cl}
-y_1 & x < x_1\\
-y_n & x\geq x_n\\
-\frac{y_i(x_{i+1}-x)+y_{i+1}(x-x_i)}{x_{i+1}-x_i} & x_i \leq x <
-x_{i+1}\\
-\end{array}
-\right.
-\end{displaymath}
+The parameters are specified as part of the name, so a user defined
+function adding x and y would be called \verb'useradd(a,y)' and the
+sin example might be called \verb'mysin(x)'. Functions with up to two
+arguments can be wired on the canvas. User defined functions can call other
+user defined functions, so specifiying more than 2 parameters can be a
+useful thing to do. 
 
 \subsection{copy}\label{Operation:copy} This just copies its input to its output,
 which is redundant on wiring diagrams, but is needed for internal

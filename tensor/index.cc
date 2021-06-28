@@ -20,6 +20,7 @@
 
 #include "index.h"
 #include <assert.h>
+using namespace std;
 
 using namespace std;
 

@@ -35,29 +35,23 @@ namespace minsky
     return dynamic_cast<GodleyIcon*>(i.get());
   }
   
+  ItemTab::ClickType GodleyTab::clickType(double x, double y) const
+  {
+    return internal;
+  }
+  
+  
   ItemPtr GodleyTab::itemAt(float x, float y)
   {
     ItemPtr item;                    
     auto minD=numeric_limits<float>::max();
-    for (auto& i: itemCoords)
+    for (auto& i: itemVector)
       {
-        if (auto g=dynamic_pointer_cast<GodleyIcon>(i.first))
+        if (auto g=dynamic_pointer_cast<GodleyIcon>(i))
           {
-            float xx=(i.second).first+offsx, yy=(i.second).second+offsy;   
-            if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));
-            ecolab::cairo::Surface surf
-              (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));			
-            try
-              {
-                g->godleyT->draw(surf.cairo());
-              }
-#ifndef NDEBUG
-            catch (const std::exception& e) 
-              {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
-            catch (...) {cerr<<"illegal exception caught in draw()";}
-#else
-            catch (...) {}
-#endif
+            if (!g->godleyT) continue;
+            
+            float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;   
             float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
             float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
             xx+=w;
@@ -67,7 +61,7 @@ namespace minsky
             if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
               {
                 minD=d;
-                item=i.first;
+                item=i;
               }
           }
       }
@@ -83,10 +77,7 @@ namespace minsky
           {
             if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));  
             cairo::CairoSave cs(cairo);   
-            if (it==itemFocus) {
-              cairo_translate(cairo,xItem,yItem);  		    				   
-              itemCoords[itemFocus]=move(make_pair(xItem,yItem));         
-            } else cairo_translate(cairo,itemCoords[it].first,itemCoords[it].second);
+            cairo_translate(cairo,it->itemTabX,it->itemTabY);  		    				   
             g->godleyT->disableButtons();
             g->godleyT->displayValues=minsky().displayValues;
             g->godleyT->draw(cairo);

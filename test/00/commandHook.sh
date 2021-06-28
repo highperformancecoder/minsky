@@ -31,6 +31,7 @@ trap "fail" 1 2 3 15
 # This test exercises the commandHook functionality in RESTService
 
 $here/RESTService/minsky-RESTService >output <<EOF
+/minsky/pushHistory
 /minsky/edited
 /minsky/nSteps
 /minsky/edited
@@ -48,6 +49,7 @@ EOF
 if [ $? -ne 0 ]; then fail; fi
 
 cat >reference <<EOF
+/minsky/pushHistory=>false
 /minsky/edited=>false
 /minsky/nSteps=>1
 /minsky/edited=>false

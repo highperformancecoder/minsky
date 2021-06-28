@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 
-<!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
-<HTML lang="EN">
+<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
+<HTML lang="en">
 <HEAD>
 <TITLE>New to system dynamics?</TITLE>
 <META NAME="description" CONTENT="New to system dynamics?">
@@ -11,7 +11,7 @@
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2019.2">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
@@ -78,8 +78,7 @@ depending on output (GDP), labor productivity and population. Then you
 could define a set of equations in a suitable program (like Mathcad):
 
 <P>
-<P></P>
-<DIV CLASS="mathdisplay">
+<DIV class=CENTER>
 <!-- MATH
  \begin{eqnarray*}
 \mathrm{GDP}&:=&100\\
@@ -90,8 +89,8 @@ could define a set of equations in a suitable program (like Mathcad):
 \mathrm{EmpRate}&=&1
 \end{eqnarray*}
  -->
-<IMG STYLE=""
- SRC="img24.png"
+<IMG
+ STYLE="height: 19.58ex; " SRC="img24.png"
  ALT="\begin{eqnarray*}
 \mathrm{GDP}&amp;:=&amp;100\\
 \mathrm{LaborProductivity}&amp;:=&amp;1\\
@@ -99,8 +98,6 @@ could define a set of equations in a suitable program (like Mathcad):
 ...&amp;\mathrm{Workers}\div\mathrm{Population}\\
 \mathrm{EmpRate}&amp;=&amp;1
 \end{eqnarray*}"></DIV>
-<BR CLEAR="ALL"><P></P>
-<BR CLEAR="ALL"><P></P>
 
 <P>
 Or you could define it using a block diagram, such as Minsky:
@@ -110,7 +107,8 @@ Or you could define it using a block diagram, such as Minsky:
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem1.eps}}$
  -->
-<IMG STYLE=""
+<IMG
+ WIDTH="533" HEIGHT="168" STYLE=""
  SRC="img25.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem1.eps}}">
 </DIV>
@@ -124,64 +122,61 @@ complex causal chain.
 <P>
 These causal chains always involve a relationship between stocks and
 flows. Economists normally model stocks and flows by adding an
-increment to a stock. For example, the level of capital <SPAN CLASS="MATH"><IMG STYLE="height: 1.61ex; vertical-align: -0.12ex; " SRC="img26.png"
+increment to a stock. For example, the level of capital <SPAN CLASS="MATH"><IMG
+ STYLE="height: 1.61ex; vertical-align: -0.12ex; " SRC="img26.png"
  ALT="$K$"></SPAN> is defined as
-a difference equation, where capital in year <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.12ex; " SRC="img11.png"
+a difference equation, where capital in year <SPAN CLASS="MATH"><IMG
+ STYLE="height: 1.54ex; vertical-align: -0.12ex; " SRC="img11.png"
  ALT="$t$"></SPAN> is shown as being 
-capital in year <SPAN CLASS="MATH"><IMG STYLE="height: 1.61ex; vertical-align: -0.31ex; " SRC="img27.png"
+capital in year <SPAN CLASS="MATH"><IMG
+ STYLE="height: 1.61ex; vertical-align: -0.22ex; " SRC="img27.png"
  ALT="$t-1$"></SPAN> plus the investment that took place that year:
 
 <P>
-<BR><P></P>
-<DIV CLASS="mathdisplay">
+<DIV CLASS="displaymath">
 <!-- MATH
  \begin{displaymath}
 K_t=K_{t-1}+I_{t-1}
 \end{displaymath}
  -->
 
-<IMG STYLE=""
- SRC="img28.png"
- ALT="\begin{displaymath}
-K_t=K_{t-1}+I_{t-1}
-\end{displaymath}">
+<IMG
+ STYLE="height: 2.03ex; vertical-align: -0.56ex; " SRC="img28.png"
+ ALT="$\displaystyle K_t=K_{t-1}+I_{t-1}
+$">
 </DIV>
-<BR CLEAR="ALL">
-<P></P>
 
 <P>
 The problem with this approach is that in reality, capital is
 accumulating on a daily, or even hourly, basis. It is better to model
 stock as continuous quantities and for this reason, all stocks and
 flows in Minsky are handled instead as integral equations. The amount
-of capital at time <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.12ex; " SRC="img11.png"
+of capital at time <SPAN CLASS="MATH"><IMG
+ STYLE="height: 1.54ex; vertical-align: -0.12ex; " SRC="img11.png"
  ALT="$t$"></SPAN> is shown as the integral of net investment
 between time 0 and today:
 
 <P>
-<BR><P></P>
-<DIV CLASS="mathdisplay">
+<DIV CLASS="displaymath">
 <!-- MATH
  \begin{displaymath}
 K(t)=\int_0^t I(s)ds
 \end{displaymath}
  -->
 
-<IMG STYLE=""
- SRC="img29.png"
- ALT="\begin{displaymath}
-K(t)=\int_0^t I(s)ds
-\end{displaymath}">
+<IMG
+ STYLE="height: 5.80ex; vertical-align: -2.23ex; " SRC="img29.png"
+ ALT="$\displaystyle K(t)=\int_0^t I(s)ds
+$">
 </DIV>
-<BR CLEAR="ALL">
-<P></P>
 
 <P>
 However, rather than being shown as an equation, the relationship is shown as a diagram:
 
 <P>
 <DIV class="CENTER">
-<IMG STYLE=""
+<IMG
+ WIDTH="155" HEIGHT="48" STYLE=""
  SRC="img30.png"
  ALT="\includegraphics{images/NewItem7.eps}">
 
@@ -214,7 +209,8 @@ simple examples distributed with the program Vissim:
 
 <P>
 <DIV class="CENTER">
-<IMG STYLE="" SRC="NewItem8.png"
+<IMG
+ STYLE="" SRC="NewItem8.png"
  ALT="144">
 
 </DIV>

@@ -36,9 +36,12 @@ namespace minsky
   inline double yearToPTime(double x) {return (x-1970)*yearLength;}
   
   using namespace ecolab;
-  // a container item for a plot widget
-  class PlotWidget: public ItemT<PlotWidget>,
-                    public ecolab::Plot, public ecolab::CairoSurface
+
+  struct PlotWidgetSuper: public ItemT<PlotWidget>,
+                          public ecolab::Plot, public ecolab::CairoSurface {};
+
+  /// a container item for a plot widget
+  class PlotWidget: public PlotWidgetSuper
   {
     static constexpr double portSpace=10; // allow space for ports
     double clickX, clickY, oldLegendLeft, oldLegendTop, oldLegendFontSz;
@@ -80,7 +83,10 @@ namespace minsky
     PlotType plotType=automatic;
     
     PlotWidget();
-
+    void addPorts();
+    PlotWidget(const PlotWidget& x): PlotWidgetSuper(x) {addPorts();}
+    PlotWidget(PlotWidget&& x): PlotWidgetSuper(x) {addPorts();}
+    
     // pick the Item width method, not ecolab::Plot's
     float width() const {return Item::width();}
     float height() const {return Item::height();}

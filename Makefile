@@ -18,30 +18,35 @@ ifeq ($(OS),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1
 endif
 
+ifdef DISTCC
+CPLUSPLUS=distcc
+# number of jobs to do sub-makes
+JOBS=-j 20
+else
+# number of jobs to do sub-makes
+JOBS=-j 4
+endif
+
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
-# submakes do not parallelise, so explicit force -j4 (reasonable compromise)
-build_ecolab:=$(shell cd ecolab && $(MAKE) -j4 $(MAKEOVERRIDES) all-without-models))
+build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) $(JOBS) all-without-models))
 $(warning $(build_ecolab))
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) -j4 $(MAKEOVERRIDES)))
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
 endif
 
 # override the install prefix here
 PREFIX=/usr/local
 
-ifdef DISTCC
-CPLUSPLUS=distcc
-endif
-
 # override MODLINK to remove tclmain.o, which allows us to provide a
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o lock.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o itemTab.o plotTab.o godleyTab.o variableInstanceList.o autoLayout.o userFunction.o userFunction_units.o renderNativeWindow.o windowInformation.o
-ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
-	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o mdlReader.o
+MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o lock.o minsky.o operation.o panopticon.o parameterTab.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o windowInformation.o wire.o 
+ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
+	godleyExport.o latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
+	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
@@ -55,7 +60,7 @@ EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
-LIBS+=-Wl,-framework -Wl,Security
+LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 endif
 
 FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
@@ -220,7 +225,7 @@ $(EXES): RavelCAPI/libravelCAPI.a
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.gcda *.gcno
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.rcd *.gcda *.gcno
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd
@@ -254,7 +259,7 @@ install: gui-tk/minsky$(EXE)
 
 # runs the regression tests
 sure: all tests
-	bash test/runtests.sh
+	xvfb-run bash test/runtests.sh
 
 # produce doxygen annotated web pages
 doxydoc: $(wildcard *.h) $(wildcard *.cc) \

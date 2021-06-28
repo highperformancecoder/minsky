@@ -28,7 +28,10 @@ namespace minsky
   class ParameterTab: public ItemTab
   {
   public:
-    bool itemSelector(const ItemPtr& i) override {if (auto v=i->variableCast()) return v->type()==VariableType::parameter; return false;} 
+    // replace definition column by dimensions
+    ParameterTab() {assert(varAttrib[1]=="Definition"); varAttrib[1]="Dimensions";}
+    bool itemSelector(const ItemPtr& i) override {if (auto v=i->variableCast()) return v->type()==VariableType::parameter; return false;}
+    ecolab::Pango& cell(unsigned row, unsigned col) override;
   };
   
 }

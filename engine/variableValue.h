@@ -106,12 +106,12 @@ namespace minsky
     // values are always live
     ITensor::Timestamp timestamp() const override {return Timestamp::clock::now();}
     
-    double operator[](size_t i) const override {return *(&valRef()+i);}
-    double& operator[](size_t i) override;
+    double operator[](std::size_t i) const override {return *(&valRef()+i);}
+    double& operator[](std::size_t i) override;
 
     const Index& index(Index&& i) override {
       assert(idx()==-1||idxInRange());
-      size_t prevNumElems = size();
+      std::size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
         allocValue();
@@ -123,7 +123,7 @@ namespace minsky
     template <class T>                                            
     void hypercube_(T x) {    
       assert(idx()==-1||idxInRange());
-      size_t prevNumElems = size();
+      std::size_t prevNumElems = size();
       ITensor::hypercube(x);    
       if (idx()==-1 || (prevNumElems<size()))    
         allocValue();
@@ -145,6 +145,11 @@ namespace minsky
     VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
 
+    VariableValue(VariableType::Type type, const VariableValue& vv):  VariableValue(vv) {
+      m_type=type;
+      m_idx=-1;
+    }
+    
 //    const VariableValue& operator=(double x) {valRef()=x; return *this;}
 //    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
 //    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
@@ -222,6 +227,8 @@ namespace minsky
   {
     VariableValuePtr(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()):
       std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,name,init,group)) {}
+    template <class... A>
+    VariableValuePtr(A... a): std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(std::forward<A>(a)...)) {}
   };
 
   struct VariableValues: public ConstMap<std::string, VariableValuePtr>

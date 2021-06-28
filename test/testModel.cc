@@ -254,7 +254,9 @@ SUITE(Group)
       model->addWire(new Wire(t->ports(0),a->ports(1)));
       group0->splitBoundaryCrossingWires();
       group0->addGroup(new Group);
+      group0->title="group0";
       auto g=model->addGroup(group0->copy());
+      g->title="g";
       // set same zoom factors to ensure copied items have same zooms
       group0->setZoom(1);
       g->setZoom(1);

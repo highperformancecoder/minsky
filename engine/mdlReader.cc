@@ -248,7 +248,7 @@ namespace minsky
     }
   }
 
-  void readMdl(Group& group, RungeKutta& simParms, istream& mdlFile)
+  void readMdl(Group& group, Simulation& simParms, istream& mdlFile)
   {
     set<string> integrationVariables;
     regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");

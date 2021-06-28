@@ -317,7 +317,7 @@ namespace minsky
     for (unsigned row=0; row<godleyIcon->table.rows(); ++row)    // perform row sum on stock var heading column too. for ticket 1285
       {
         if (row >0 && row<scrollRowStart) continue;                    
-        pango.setMarkup(latexToPango(godleyIcon->table.rowSum(row)));
+        pango.setMarkup(latexToPango(godleyIcon->rowSum(row)));
         colWidth=max(colWidth,pango.width());
         cairo_move_to(cairo,x,y);
         pango.show();

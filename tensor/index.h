@@ -22,6 +22,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <cstddef>
 
 #ifndef CLASSDESC_ACCESS
 #define CLASSDESC_ACCESS(x)

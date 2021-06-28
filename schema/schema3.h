@@ -35,7 +35,7 @@ but any renamed attributes require bumping the schema number.
 #include "classdesc.h"
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
-#include "rungeKutta.h"
+#include "simulation.h"
 
 #include <xsd_generate_base.h>
 #include <vector>
@@ -67,18 +67,20 @@ namespace schema3
     int id=-1;
     std::string type;
     float x=0, y=0; ///< position in canvas, or within group
+    float itemTabX=nan(""), itemTabY=nan(""); 
     float scaleFactor=1; ///< scale factor of item on canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
-    Optional<float> width, height;
+    float width=10, height=10;
     std::vector<int> ports;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), scaleFactor(it.m_sf),
+      x(it.m_x), y(it.m_y), itemTabX(it.itemTabX), itemTabY(it.itemTabY), scaleFactor(it.m_sf),
       rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type), x(it.x), y(it.y), 
-      rotation(it.rotation), width(it.width), height(it.height), ports(it.ports) {}
+      Note(it), id(it.id), type(type), x(it.x), y(it.y),
+      rotation(it.rotation), width(it.width? *it.width: 0), height(it.height?*it.height:0),
+      ports(it.ports) {}
   };
 
   struct Slider
@@ -91,7 +93,20 @@ namespace schema3
     Slider(const schema2::Slider& s):
       stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
   };
-    
+
+  struct LegendGeometry
+  {
+    double legendLeft=0.9, legendTop=0.95, legendFontSz=0.03;
+    LegendGeometry()=default;
+    LegendGeometry(const ecolab::Plot& plot):
+      legendLeft(plot.legendLeft), legendTop(plot.legendTop), legendFontSz(plot.legendFontSz) {}
+    void setLegendGeometry(ecolab::Plot& plot) const {
+      plot.legendLeft=legendLeft;
+      plot.legendTop=legendTop;
+      plot.legendFontSz=legendFontSz;
+    }
+  };
+  
   struct Item: public ItemBase
   {
     Optional<std::string> name; //name, description or title
@@ -116,12 +131,13 @@ namespace schema3
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
     Optional<bool> editorMode, buttonDisplay, variableDisplay;
     // Plot specific fields
-    Optional<bool> logx, logy, ypercent;
+    Optional<bool> logx, logy, ypercent, plotTabDisplay;
     Optional<minsky::PlotWidget::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;
     Optional<ecolab::Plot::Side> legend;
+    Optional<LegendGeometry> legendGeometry;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
@@ -149,35 +165,31 @@ namespace schema3
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      /*width(g.iWidth()), height(g.iHeight()),*/ name(g.table.title), data(g.table.getData()),
+      name(g.table.title), data(g.table.getData()),
       assetClasses(g.table._assetClass()),
       editorMode(g.editorMode()),
       buttonDisplay(g.buttonDisplay()), variableDisplay(g.variableDisplay) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      /*width(p.iWidth()), height(p.iHeight()),*/ name(p.title),
-      logx(p.logx), logy(p.logy), ypercent(p.percent),
+      ItemBase(id,static_cast<const minsky::Item&>(p),ports), name(p.title),
+      logx(p.logx), logy(p.logy), ypercent(p.percent), plotTabDisplay(p.plotTabDisplay),
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
       nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
-      exp_threshold(p.exp_threshold), palette(p.palette)
+      exp_threshold(p.exp_threshold), legendGeometry(p), palette(p.palette)
     {
       if (p.legend) legend=p.legendSide;
     }
-//    Item(int id, const minsky::Sheet& s, const std::vector<int>& ports):
-//      ItemBase(id,static_cast<const minsky::Item&>(s),ports),
-//      width(s.m_width), height(s.m_height) {}
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      /*width(g.iWidth()), height(g.iHeight()),*/ name(g.title), bookmarks(g.bookmarks) {} 
+      name(g.title), bookmarks(g.bookmarks) {} 
 
     static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
     Item(const schema2::Item& it):
-      ItemBase(it,it.type), /*width(it.width), height(it.height),*/ name(it.name), init(it.init),
+      ItemBase(it,it.type), name(it.name), init(it.init),
       units(it.units),
       slider(it.slider), intVar(it.intVar), dataOpData(it.dataOpData), filename(it.filename),
       ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
@@ -210,6 +222,7 @@ namespace schema3
   struct Group: public Item
   {
     vector<int> items;
+    int displayPlot=-1;
     Optional<vector<int>> inVariables, outVariables;
     Group() {}
     Group(int id, const minsky::Group& g): Item(id,g,std::vector<int>()) {}
@@ -227,7 +240,7 @@ namespace schema3
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
-    minsky::RungeKutta rungeKutta;
+    minsky::Simulation rungeKutta;
     double zoomFactor=1;
     vector<minsky::Bookmark> bookmarks;
     minsky::Dimensions dimensions;

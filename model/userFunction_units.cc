@@ -27,6 +27,15 @@ namespace minsky
   namespace {
     exprtk::parser<UnitsExpressionWalker> unitsParser;
 
+    struct ExprTkCallableFunction: public exprtk::ivararg_function<UnitsExpressionWalker>
+    {
+      std::weak_ptr<CallableFunction> f;
+      ExprTkCallableFunction(const std::weak_ptr<CallableFunction>& f): f(f) {}
+      UnitsExpressionWalker operator()(const std::vector<UnitsExpressionWalker>& x) {
+        // TODO (#1290) Actually call units checking on callable function
+        return {};
+      }
+    };
   }
 
   UnitsExpressionWalker timeUnit;
@@ -52,7 +61,8 @@ namespace minsky
       }
 
     std::vector<std::string> externalIds=symbolNames();
-
+    vector<ExprTkCallableFunction> externalFunctions;
+    
     externalUnits.reserve(externalIds.size());
     for (auto& i: externalIds)
       {
@@ -65,13 +75,14 @@ namespace minsky
             externalUnits.back().units=v->second->units;
             externalUnits.back().check=check;
             unknownVariables.add_variable(i, externalUnits.back());
+            continue;
           }
-        else
-          // TODO: add in references to user functions: for now, just return dimensionless in the case of unresolved variables. See ticket #1290
-          //if (check)
-          //  throw_error("unknown variable: "+i);
-          //else
-            return {};
+        auto f=minsky().userFunctions.find(id);
+        if (f!=minsky().userFunctions.end())
+          {
+            externalFunctions.emplace_back(f->second);
+            unknownVariables.add_function(i,externalFunctions.back());
+          }
       }
     unknownVariables.add_variable("time",minsky::timeUnit);
 

@@ -212,6 +212,8 @@ namespace minsky
     void selectAllVariables();
     /// rename all instances of variable as item to \a newName
     void renameAllInstances(const std::string newName);
+    /// rename variable as item to \a newName
+    void renameItem(const std::string newName);
 
     /// if item is a Group, move its contents to its parent and delete the group
     void ungroupItem();
