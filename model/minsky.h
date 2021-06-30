@@ -267,8 +267,6 @@ namespace minsky
     
     double lastT{0}; ///<previous timestep
     double deltaT() const {return t-lastT;}
-    bool running=false; ///< controls whether simulation is running
-    bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
     std::vector<double> step();  ///< step the equations (by n steps, default 1)
 
