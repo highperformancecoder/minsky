@@ -62,8 +62,8 @@ namespace minsky
     static int RKfunction(double, const double y[], double f[], void*);
     /// compute jacobian (internal use)
     static int jacobian(double, const double y[], double*, double dfdt[], void*);
-    void reset(); ///< reset the simulation
-    void step();  ///< step the equations (by n steps, default 1)
+    void rkreset(); ///< reset the simulation
+    void rkstep();  ///< step the equations (by n steps, default 1)
     /// evaluate the flow equations without stepping.
     /// @throw ecolab::error if equations are illdefined
     void evalEquations() {

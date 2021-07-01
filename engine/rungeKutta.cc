@@ -116,7 +116,7 @@ namespace minsky
     ~RKdata() {gsl_odeiv2_driver_free(driver);}
   };
 
-  void RungeKutta::reset()
+  void RungeKutta::rkreset()
   {
     if (order==1 && !implicit)
       ode.reset(); // do explicit Euler
@@ -124,7 +124,7 @@ namespace minsky
       ode.reset(new RKdata(this)); // set up GSL ODE routines
   }
 
-  void RungeKutta::step()
+  void RungeKutta::rkstep()
   {
     resetIfFlagged();
     running=true;

@@ -808,7 +808,7 @@ namespace minsky
     initGodleys();
 
     if (stockVars.size()>0)
-      RungeKutta::reset();
+      rkreset();
       
     // update flow variable
     evalEquations();
@@ -856,7 +856,7 @@ namespace minsky
   vector<double> Minsky::step()
   {
     lastT=t;
-    RungeKutta::step();
+    rkstep();
 
     logVariables();
 
