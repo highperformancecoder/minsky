@@ -54,9 +54,18 @@ namespace civita
   size_t Hypercube::numElements() const
     {
       size_t s=1;
-      for (auto& i: xvectors) s*=i.size();
+      for (auto& i: xvectors)
+        s*=i.size();
       return s;
     }
+
+  double Hypercube::logNumElements() const
+  {
+    double r=0;
+    for (auto& i: xvectors)
+      r+=log(i.size());
+    return r;
+  }
   
   void Hypercube::makeConformant(const Hypercube& a)
   {

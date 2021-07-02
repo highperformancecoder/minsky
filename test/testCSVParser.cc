@@ -129,28 +129,29 @@ SUITE(CSVParser)
       
       CHECK(osn.str().find("missing numerical data") != std::string::npos);
     }
-    
-   TEST_FIXTURE(CSVDialog,guessSpaceFile)
-    {
-      spec=DataSpec();
-      string fname="testEqGodley.csv";
-      spec.guessFromFile(fname);                                  
-      ifstream is(fname);
 
-      spec.separator=',';
-      spec.headerRow=1;
-      spec.setDataArea(3,2);     
-      spec.dimensionNames={"asset","liability","equity"};          
-      spec.dimensionCols={1,2,3};      
-          
-      VariableValue v(VariableType::parameter,":foo");
-      loadValueFromCSVFile(v,is,spec);
-
-      CHECK_EQUAL(1, v.rank()); 
-      spec.toggleDimension(2);
-      CHECK_EQUAL(2,spec.dimensionCols.size());  // equity column is empty
-         
-    }      
+  // disabled, because I don't think this test makes much sense
+//   TEST_FIXTURE(CSVDialog,guessSpaceFile)
+//    {
+//      spec=DataSpec();
+//      string fname="testEqGodley.csv";
+//      spec.guessFromFile(fname);                                  
+//      ifstream is(fname);
+//
+//      spec.separator=',';
+//      spec.headerRow=1;
+//      spec.setDataArea(3,2);     
+//      spec.dimensionNames={"asset","liability","equity"};          
+//      spec.dimensionCols={1,2,3};      
+//          
+//      VariableValue v(VariableType::parameter,":foo");
+//      loadValueFromCSVFile(v,is,spec);
+//
+//      CHECK_EQUAL(1, v.rank()); 
+//      spec.toggleDimension(2);
+//      CHECK_EQUAL(2,spec.dimensionCols.size());  // equity column is empty
+//         
+//    }      
 
   TEST_FIXTURE(CSVDialog,loadWebFile)
     {

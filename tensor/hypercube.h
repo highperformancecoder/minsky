@@ -44,9 +44,12 @@ namespace civita
     ///scalar variable has dims[0]=1, etc.
     std::vector<unsigned> dims() const;
     
-    /// number of elements in the hypercube, equaly to the product of
+    /// number of elements in the hypercube, equal to the product of
     /// dimensions
     std::size_t numElements() const;
+
+    /// logarithm of number of elements in the hypercube
+    double logNumElements() const;
       
     /// set the dimensions. 
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d);

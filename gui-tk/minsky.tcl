@@ -284,7 +284,7 @@ if {[tk windowingsystem] == "aqua"} {
         if {[llength $args]>0} {openNamedFile [lindex $args 0]}
     }
     proc ::tk::mac::ShowPreferences {} {showPreferences}
-    proc ::tk::mac::ShowHelp {} {help Introduction}
+    proc ::tk::mac::ShowHelp{} {help Introduction}
 } else {
     # keyboard accelerator introducer, which is different on macs
     set meta Control

@@ -20,6 +20,7 @@
 #include "CSVParser.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
+#include <sys/sysinfo.h>
 
 using namespace minsky;
 using namespace std;
@@ -423,6 +424,14 @@ namespace minsky
       {
         for (size_t row=0; getline(input, buf); ++row)
           {
+#if defined(__linux__) // TODO remove or generalise
+            {
+              struct sysinfo s;
+              sysinfo(&s);
+              if (s.freeram<1000000000)
+                throw runtime_error("exhausted memory");
+            }
+#endif
             // remove trailing carriage returns
             if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);//buf.erase(buf.end()-1);
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
@@ -538,16 +547,20 @@ namespace minsky
                   }
               }
           }
-                  
+
+        // remove zero length dimensions
+        for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
+          {
+            if (i->empty())
+              hc.xvectors.erase(i);
+            else
+              ++i;
+          }
+        
         for (auto& xv: hc.xvectors)
           xv.imposeDimension();
 
-        size_t numHyperCubeElems=1;
-        for (auto& i : hc.xvectors) numHyperCubeElems*=i.size();
-                           
-        double sparsityRatio =  static_cast<double>(1.0-static_cast<double>(tmpData.size())/numHyperCubeElems); 
-
-        if (sparsityRatio <= 0.5) 
+        if (log(tmpData.size())-hc.logNumElements()>=log(0.5)) 
           { // dense case
             v.index({});
             if (!cminsky().checkMemAllocation(hc.numElements()*sizeof(double)))
