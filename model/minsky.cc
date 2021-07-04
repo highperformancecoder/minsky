@@ -1467,7 +1467,7 @@ namespace minsky
 #ifdef MAC_OSX_TK
           execl("/usr/bin/pbcopy","pbcopy",nullptr);
 #else
-          execlp("xclip","xclip",nullptr);
+          execlp("xclip","xclip","-selection","clipboard",nullptr);
 #endif
         }
       else 
@@ -1504,7 +1504,7 @@ namespace minsky
 #ifdef MAC_OSX_TK
           execl("/usr/bin/pbpaste","pbpaste",nullptr);
 #else
-          execlp("xclip","xclip","-o",nullptr);
+          execlp("xclip","xclip","-o","-selection","clipboard",nullptr);
 #endif
         }
       else 
