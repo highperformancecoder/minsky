@@ -71,6 +71,8 @@
 #include "ravelWrap.xcd"
 #include "ravelState.rcd"
 #include "ravelState.xcd"
+#include "renderNativeWindow.rcd"
+#include "renderNativeWindow.xcd"
 #include "signature.h"
 #include "signature.xcd"
 #include "signature.rcd"

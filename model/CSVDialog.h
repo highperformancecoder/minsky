@@ -24,6 +24,7 @@
 #ifndef CSVDIALOG_H
 #define CSVDIALOG_H
 #include "CSVParser.h"
+#include "renderNativeWindow.h"
 #include <cairoSurfaceImage.h>
 
 #include <vector>
@@ -31,7 +32,7 @@
 
 namespace minsky
 {
-  class CSVDialog: public ecolab::CairoSurface
+  class CSVDialog: public RenderNativeWindow
   {
     std::vector<std::string> initialLines; ///< initial lines of file
     double rowHeight=0;

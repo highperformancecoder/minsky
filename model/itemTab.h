@@ -23,7 +23,7 @@
 #include "variable.h"
 #include "grid.h"
 #include <pango.h>
-#include <cairoSurfaceImage.h>
+#include "renderNativeWindow.h"
 #include "classdesc_access.h"
 
 namespace minsky
@@ -40,7 +40,7 @@ namespace minsky
     }
   };
 		 
-  class ItemTab: public ecolab::CairoSurface, public Grid<ecolab::Pango>
+  class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>
   {
     CLASSDESC_ACCESS(ItemTab);         
   protected:

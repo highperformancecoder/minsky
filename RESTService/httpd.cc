@@ -30,6 +30,7 @@ namespace http=beast::http;
 namespace net=boost::asio;
 using net::ip::tcp;
 using namespace std;
+using namespace classdesc;
 
 namespace minsky
 {

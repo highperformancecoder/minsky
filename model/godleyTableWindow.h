@@ -25,7 +25,7 @@
 #define GODLEYTABLEWINDOW_H
 #include "godleyIcon.h"
 #include "assetClass.h"
-#include <cairoSurfaceImage.h>
+#include "renderNativeWindow.h"
 #include <memory>
 #include <vector>
 
@@ -190,9 +190,10 @@ namespace minsky
     void handleDelete();
   };
 
-  class GodleyTableWindow: public ecolab::CairoSurface, public GodleyTableEditor
+  class GodleyTableWindow: public RenderNativeWindow, public GodleyTableEditor
   {
   public:
+    using GodleyTableEditor::draw;
     GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): GodleyTableEditor(g) {}
     bool redraw(int, int, int width, int height) override {
       if (surface.get()) {

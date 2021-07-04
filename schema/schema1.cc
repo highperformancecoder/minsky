@@ -23,6 +23,7 @@
 #include "str.h"
 #include "minsky_epilogue.h"
 #include <boost/regex.hpp>
+using namespace ecolab;
 
 namespace schema1
 {

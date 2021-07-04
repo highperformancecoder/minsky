@@ -53,8 +53,6 @@
 #include <ecolab.h>
 #include <xml_pack_base.h>
 #include <xml_unpack_base.h>
-using namespace ecolab;
-using namespace classdesc;
 
 namespace minsky
 {
@@ -67,7 +65,7 @@ namespace minsky
   class SaveThread;
   
   // handle the display of rendered equations on the screen
-  class EquationDisplay: public CairoSurface
+  class EquationDisplay: public RenderNativeWindow
   {
     Minsky& m;
     double m_width=0, m_height=0;
@@ -78,7 +76,7 @@ namespace minsky
     double width() const {return m_width;}
     double height() const {return m_height;}
     EquationDisplay(Minsky& m): m(m) {}
-    EquationDisplay& operator=(const EquationDisplay& x) {CairoSurface::operator=(x); return *this;}
+    EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
 
