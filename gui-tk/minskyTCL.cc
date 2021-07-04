@@ -178,92 +178,92 @@ namespace minsky
       TCL_obj_deregister("minsky.value");
   }
   
-    void MinskyTCL::putClipboard(const string& s) const
-    {
-#ifdef MAC_OSX_TK
-      int p[2];
-      pipe(p);
-      if (fork()==0)
-        {
-          dup2(p[0],0);
-          close(p[1]);
-          execl("/usr/bin/pbcopy","pbcopy",nullptr);
-        }
-      else 
-        {
-          close(p[0]);
-          write(p[1],s.c_str(),s.length());
-          close(p[1]);
-        }
-      int status;
-      wait(&status);
-#elif defined(_WIN32)
-      OpenClipboard(Tk_GetHWND(Tk_WindowId(Tk_MainWindow(interp()))));
-      EmptyClipboard();
-      HGLOBAL h=GlobalAlloc(GMEM_MOVEABLE, s.length()+1);
-      LPTSTR hh=static_cast<LPTSTR>(GlobalLock(h));
-      if (hh)
-        {
-          strcpy(hh,s.c_str());
-          GlobalUnlock(h);
-          if (SetClipboardData(CF_TEXT, h)==nullptr)
-            GlobalFree(h);
-        }
-      CloseClipboard();
-#else
-      Tk_Window mainWin=Tk_MainWindow(interp());
-      Tk_ClipboardClear(interp(), mainWin);
-      Atom utf8string=Tk_InternAtom(mainWin,"UTF8_STRING");
-      Tk_ClipboardAppend(interp(), mainWin, utf8string, utf8string, 
-                         const_cast<char*>(s.c_str()));
-#endif
-    }
-
-    string MinskyTCL::getClipboard() const
-    {
-#ifdef MAC_OSX_TK
-      int p[2];
-      pipe(p);
-      string r;
-      if (fork()==0)
-        {
-          dup2(p[1],1);
-          close(p[0]);
-          execl("/usr/bin/pbpaste","pbpaste",nullptr);
-        }
-      else 
-        {
-          close(p[1]);
-          char c;
-          while (read(p[0],&c,1)>0)
-            r+=c;
-          close(p[0]);
-        }
-      int status;
-      wait(&status);
-      return r;
-#elif defined(_WIN32)
-      string r;
-      OpenClipboard(nullptr);
-      if (HANDLE h=GetClipboardData(CF_TEXT))
-        {
-          r=static_cast<const char*>(GlobalLock(h));
-          GlobalUnlock(h);
-        }
-      CloseClipboard();
-      return r;
-#else
-      try
-        {
-		  // seems more stable in copying all items. for ticket 1180/1183	
-          return (tclcmd()<<"selection get -selection CLIPBOARD -type UTF8_STRING\n").result;
-        }
-      catch (...)
-        {
-          return {};
-        }
-#endif
-    }
+//    void MinskyTCL::putClipboard(const string& s) const
+//    {
+//#ifdef MAC_OSX_TK
+//      int p[2];
+//      pipe(p);
+//      if (fork()==0)
+//        {
+//          dup2(p[0],0);
+//          close(p[1]);
+//          execl("/usr/bin/pbcopy","pbcopy",nullptr);
+//        }
+//      else 
+//        {
+//          close(p[0]);
+//          write(p[1],s.c_str(),s.length());
+//          close(p[1]);
+//        }
+//      int status;
+//      wait(&status);
+//#elif defined(_WIN32)
+//      OpenClipboard(Tk_GetHWND(Tk_WindowId(Tk_MainWindow(interp()))));
+//      EmptyClipboard();
+//      HGLOBAL h=GlobalAlloc(GMEM_MOVEABLE, s.length()+1);
+//      LPTSTR hh=static_cast<LPTSTR>(GlobalLock(h));
+//      if (hh)
+//        {
+//          strcpy(hh,s.c_str());
+//          GlobalUnlock(h);
+//          if (SetClipboardData(CF_TEXT, h)==nullptr)
+//            GlobalFree(h);
+//        }
+//      CloseClipboard();
+//#else
+//      Tk_Window mainWin=Tk_MainWindow(interp());
+//      Tk_ClipboardClear(interp(), mainWin);
+//      Atom utf8string=Tk_InternAtom(mainWin,"UTF8_STRING");
+//      Tk_ClipboardAppend(interp(), mainWin, utf8string, utf8string, 
+//                         const_cast<char*>(s.c_str()));
+//#endif
+//    }
+//
+//    string MinskyTCL::getClipboard() const
+//    {
+//#ifdef MAC_OSX_TK
+//      int p[2];
+//      pipe(p);
+//      string r;
+//      if (fork()==0)
+//        {
+//          dup2(p[1],1);
+//          close(p[0]);
+//          execl("/usr/bin/pbpaste","pbpaste",nullptr);
+//        }
+//      else 
+//        {
+//          close(p[1]);
+//          char c;
+//          while (read(p[0],&c,1)>0)
+//            r+=c;
+//          close(p[0]);
+//        }
+//      int status;
+//      wait(&status);
+//      return r;
+//#elif defined(_WIN32)
+//      string r;
+//      OpenClipboard(nullptr);
+//      if (HANDLE h=GetClipboardData(CF_TEXT))
+//        {
+//          r=static_cast<const char*>(GlobalLock(h));
+//          GlobalUnlock(h);
+//        }
+//      CloseClipboard();
+//      return r;
+//#else
+//      try
+//        {
+//		  // seems more stable in copying all items. for ticket 1180/1183	
+//          return (tclcmd()<<"selection get -selection CLIPBOARD -type UTF8_STRING\n").result;
+//        }
+//      catch (...)
+//        {
+//          return {};
+//        }
+//#endif
+//    }
 
   namespace
   {

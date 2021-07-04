@@ -62,8 +62,8 @@ namespace minsky
     /// @param operationName
     void operationIcon(const char* imageName, const char* opName) const;
 
-    void putClipboard(const std::string& s) const override; 
-    std::string getClipboard() const override; 
+//    void putClipboard(const std::string& s) const override; 
+//    std::string getClipboard() const override; 
 
     std::set<string> matchingTableColumns(const std::string& currTable, GodleyAssetClass::AssetClass ac) {
       auto it=TCL_obj_properties().find(currTable);

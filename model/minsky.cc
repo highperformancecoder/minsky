@@ -43,6 +43,11 @@ using namespace minsky;
 using namespace classdesc;
 using namespace boost::posix_time;
 
+#ifndef _WIN32
+#include <unistd.h>
+#include <sys/wait.h>
+#endif
+
 namespace
 {
   inline bool isFinite(const double y[], size_t n)
@@ -1436,6 +1441,85 @@ namespace minsky
     return op->numPorts()-1;
   }
 
+    void Minsky::putClipboard(const string& s) const
+    {
+#if defined(_WIN32)
+      HWND hwnd=nullptr;//TODO enumerate top level windows to find one belonging to this
+      OpenClipboard(hwnd);
+      EmptyClipboard();
+      HGLOBAL h=GlobalAlloc(GMEM_MOVEABLE, s.length()+1);
+      LPTSTR hh=static_cast<LPTSTR>(GlobalLock(h));
+      if (hh)
+        {
+          strcpy(hh,s.c_str());
+          GlobalUnlock(h);
+          if (SetClipboardData(CF_TEXT, h)==nullptr)
+            GlobalFree(h);
+        }
+      CloseClipboard();
+#else
+      int p[2];
+      pipe(p);
+      if (fork()==0)
+        {
+          dup2(p[0],0);
+          close(p[1]);
+#ifdef MAC_OSX_TK
+          execl("/usr/bin/pbcopy","pbcopy",nullptr);
+#else
+          execlp("xclip","xclip",nullptr);
+#endif
+        }
+      else 
+        {
+          close(p[0]);
+          write(p[1],s.c_str(),s.length());
+          close(p[1]);
+        }
+      int status;
+      wait(&status);
+#endif
+    }
+
+    string Minsky::getClipboard() const
+    {
+#if defined(_WIN32)
+      string r;
+      OpenClipboard(nullptr);
+      if (HANDLE h=GetClipboardData(CF_TEXT))
+        {
+          r=static_cast<const char*>(GlobalLock(h));
+          GlobalUnlock(h);
+        }
+      CloseClipboard();
+      return r;
+#else
+      int p[2];
+      pipe(p);
+      string r;
+      if (fork()==0)
+        {
+          dup2(p[1],1);
+          close(p[0]);
+#ifdef MAC_OSX_TK
+          execl("/usr/bin/pbpaste","pbpaste",nullptr);
+#else
+          execlp("xclip","xclip","-o",nullptr);
+#endif
+        }
+      else 
+        {
+          close(p[1]);
+          char c;
+          while (read(p[0],&c,1)>0)
+            r+=c;
+          close(p[0]);
+        }
+      int status;
+      wait(&status);
+      return r;
+#endif
+    }
 
   void Minsky::setAutoSaveFile(const std::string& file) {
     if (file.empty())
