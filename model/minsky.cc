@@ -1460,6 +1460,7 @@ namespace minsky
 #else
       int p[2];
       pipe(p);
+
       if (fork()==0)
         {
           dup2(p[0],0);
@@ -1469,7 +1470,8 @@ namespace minsky
 #else
           execlp("xclip","xclip","-selection","clipboard",nullptr);
 #endif
-        }
+          exit(1); // abort on error
+       }
       else 
         {
           close(p[0]);
@@ -1478,6 +1480,8 @@ namespace minsky
         }
       int status;
       wait(&status);
+      if (!WIFEXITED(status) || WEXITSTATUS(status))
+        throw runtime_error("failed to call clipboard helper program");
 #endif
     }
 
@@ -1506,6 +1510,7 @@ namespace minsky
 #else
           execlp("xclip","xclip","-o","-selection","clipboard",nullptr);
 #endif
+          exit(1); // abort on error
         }
       else 
         {
@@ -1517,6 +1522,8 @@ namespace minsky
         }
       int status;
       wait(&status);
+      if (!WIFEXITED(status) || WEXITSTATUS(status))
+        throw runtime_error("failed to call clipboard helper program");
       return r;
 #endif
     }
