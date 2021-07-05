@@ -1468,7 +1468,7 @@ namespace minsky
 #ifdef MAC_OSX_TK
           execl("/usr/bin/pbcopy","pbcopy",nullptr);
 #else
-          execlp("xclip","xclip","-selection","clipboard",nullptr);
+          execlp("xclip","xclip","-selection","clipboard","-target","UTF8_STRING",nullptr);
 #endif
           exit(1); // abort on error
        }
@@ -1508,9 +1508,9 @@ namespace minsky
 #ifdef MAC_OSX_TK
           execl("/usr/bin/pbpaste","pbpaste",nullptr);
 #else
-          execlp("xclip","xclip","-o","-selection","clipboard",nullptr);
+          execlp("xclip","xclip","-o","-selection","clipboard","-target","UTF8_STRING",nullptr);
 #endif
-          exit(1); // abort on error
+          exit(127); // abort on error. Use code 127, as this usually means "command not found"
         }
       else 
         {
@@ -1522,7 +1522,7 @@ namespace minsky
         }
       int status;
       wait(&status);
-      if (!WIFEXITED(status) || WEXITSTATUS(status))
+      if (!WIFEXITED(status) || WEXITSTATUS(status)==127)
         throw runtime_error("failed to call clipboard helper program");
       return r;
 #endif
