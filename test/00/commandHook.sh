@@ -30,7 +30,7 @@ trap "fail" 1 2 3 15
 
 # This test exercises the commandHook functionality in RESTService
 
-$here/RESTService/minsky-RESTService >output <<EOF
+$here/RESTService/minsky-RESTService -batch >output <<EOF
 /minsky/pushHistory
 /minsky/edited
 /minsky/nSteps
