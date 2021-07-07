@@ -26,6 +26,8 @@
 #include "capiRenderer.h"
 #include "capiRenderer.cd"
 #include "capiRenderer.xcd"
+#include "cairoSurfaceImage.rcd"
+#include "cairoSurfaceImage.xcd"
 #include "callableFunction.h"
 #include "callableFunction.rcd"
 #include "callableFunction.xcd"

@@ -25,6 +25,8 @@
 #include "assetClass.rcd"
 #include "bookmark.rcd"
 #include "canvas.rcd"
+#include "cairoSurfaceImage.rcd"
+#include "cairoSurfaceImage.xcd"
 #include "callableFunction.rcd"
 #include "callableFunction.xcd"
 #include "CSVParser.rcd"

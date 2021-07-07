@@ -74,12 +74,12 @@ namespace classdesc_access
   template <> struct access_RESTProcess<ecolab::cairo::Surface>:
     public cd::NullDescriptor<cd::RESTProcess_t> {};
 
-  template <> struct access_json_pack<ecolab::CairoSurface>:
-    public cd::NullDescriptor<cd::json_pack_t> {};
-  template <> struct access_json_unpack<ecolab::CairoSurface>:
-    public cd::NullDescriptor<cd::json_unpack_t> {};
-  template <> struct access_RESTProcess<ecolab::CairoSurface>:
-    public cd::NullDescriptor<cd::RESTProcess_t> {};
+//  template <> struct access_json_pack<ecolab::CairoSurface>:
+//    public cd::NullDescriptor<cd::json_pack_t> {};
+//  template <> struct access_json_unpack<ecolab::CairoSurface>:
+//    public cd::NullDescriptor<cd::json_unpack_t> {};
+//  template <> struct access_RESTProcess<ecolab::CairoSurface>:
+//    public cd::NullDescriptor<cd::RESTProcess_t> {};
 
 #ifdef XVECTOR_H
   template <>
