@@ -312,6 +312,7 @@ namespace minsky
       canvas.openGroupInCanvas(canvas.item);
       TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);
     }
+    /// reinitialises canvas to the toplevel group
     void openModelInCanvas() {
       canvas.openGroupInCanvas(model);
       TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);

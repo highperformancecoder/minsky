@@ -425,6 +425,11 @@ namespace minsky
 
     void autoLayout(); ///< auto layout current open group and recentre
     void randomLayout(); ///< randomly layout current open group and recentre
+    /// reinitialises canvas to the group located in item
+    void openGroupInCanvas() {canvas.openGroupInCanvas(canvas.item);}
+    /// reinitialises canvas to the toplevel group
+    void openModelInCanvas() {canvas.openGroupInCanvas(model);}
+
   };
 
   /// global minsky object
