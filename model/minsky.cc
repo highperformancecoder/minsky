@@ -1158,7 +1158,7 @@ namespace minsky
               catch (...)
                 {
                   autoSaver.reset();
-                  throw std::runtime_error("Unable to autosave to this location");
+                  throw;
                 }
             return true;
           }
@@ -1211,17 +1211,6 @@ namespace minsky
           {
             bool modelChanged=pushHistory();
             if (modelChanged && command!="minsky.load" && command!="minsky.reverse") markEdited();
-            if (modelChanged && autoSaveFile.get())
-              try
-                {
-                  save(*autoSaveFile);
-                  markEdited(); // undo edited flag reset
-                }
-              catch(...)
-                { // unable to autosave
-                  autoSaveFile.reset();
-                  throw std::runtime_error("Unable to autosave to this location");
-                }
             return modelChanged;
           }
       }

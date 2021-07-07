@@ -289,7 +289,7 @@ namespace minsky
     int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvas during simulation
 
     /// name of an auto save file
-    std::unique_ptr<std::string> autoSaveFile;
+    std::string autoSaveFile() const {return autoSaver? autoSaver->fileName: std::string();}
     /// initialises auto saving
     /// empty \a file to turn off autosave
     void setAutoSaveFile(const std::string& file);
