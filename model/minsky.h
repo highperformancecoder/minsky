@@ -423,6 +423,8 @@ namespace minsky
     /// return list of available asset classes
     std::vector<std::string> assetClasses() const;
 
+    void autoLayout(); ///< auto layout current open group and recentre
+    void randomLayout(); ///< randomly layout current open group and recentre
   };
 
   /// global minsky object

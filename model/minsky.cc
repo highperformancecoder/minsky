@@ -1399,6 +1399,19 @@ namespace minsky
   vector<string> Minsky::assetClasses() const
   {return enumVals<GodleyTable::AssetClass>();}
 
+  void Minsky::autoLayout()
+  {
+    canvas.model->autoLayout();
+    canvas.recentre();
+  }
+  
+  void Minsky::randomLayout()
+  {
+    canvas.model->randomLayout();
+    canvas.recentre();
+  }
+
+  
   static std::unique_ptr<char[]> _defaultFont;
 
   string Minsky::defaultFont() const

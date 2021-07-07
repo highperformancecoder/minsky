@@ -722,8 +722,8 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 .menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
-.menubar.edit add command -label "Randomize layout" -command minsky.model.randomLayout
-.menubar.edit add command -label "Auto layout" -command minsky.model.autoLayout
+.menubar.edit add command -label "Randomize layout" -command minsky.randomLayout
+.menubar.edit add command -label "Auto layout" -command minsky.autoLayout
 
 proc togglePaste {} {
     if {[getClipboard]==""} {
