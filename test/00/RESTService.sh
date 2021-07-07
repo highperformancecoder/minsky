@@ -28,7 +28,7 @@ pass()
 
 trap "fail" 1 2 3 15
 
-$here/RESTService/minsky-RESTService >output <<EOF
+$here/RESTService/minsky-RESTService -batch >output <<EOF
 /minsky/variableValues/@elem/constant:one
 EOF
 if [ $? -ne 0 ]; then fail; fi

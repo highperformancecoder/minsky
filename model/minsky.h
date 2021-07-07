@@ -110,7 +110,7 @@ namespace minsky
      */
     std::deque<classdesc::pack_t> history;
     std::size_t historyPtr;
-
+    bool undone=false; //< flag indicating undo() was previous command 
   };
 
   enum ItemType {wire, op, var, group, godley, plot};
@@ -318,8 +318,9 @@ namespace minsky
     /// movements being added to recordings and undo history
     bool doPushHistory=true;
 
-    /// restore model to state \a changes ago 
-    void undo(int changes=1);
+    /// restore model to state \a changes ago
+    /// @return index of current state in history
+    long undo(int changes=1);
 
     /// set a Tk image to render equations to
     void renderEquationsToImage(const char* image);

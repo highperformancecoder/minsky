@@ -1108,6 +1108,10 @@ namespace minsky
   
   bool Minsky::pushHistory()
   {
+    // do not pushHistory after undo or redo
+    if (undone)
+      return undone=false;
+
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
     schema3::Minsky m(*this, false /* don't pack tensor data */);
@@ -1192,9 +1196,11 @@ namespace minsky
         command!="minsky.step" &&
         command!="minsky.running" &&
         command!="minsky.multipleEquities" &&
+        command!="minsky.undo" &&
         command.find("minsky.panopticon")==string::npos &&
         command.find("minsky.equationDisplay")==string::npos && 
         command.find("minsky.setGodleyDisplayValue")==string::npos && 
+        command.find(".renderFrame")==string::npos && 
         command.find(".get")==string::npos && 
         command.find(".@elem")==string::npos && 
         command.find(".mouseFocus")==string::npos
@@ -1223,7 +1229,7 @@ namespace minsky
   }
 
   
-  void Minsky::undo(int changes)
+  long Minsky::undo(int changes)
   {
     // save current state for later restoration if needed
     if (historyPtr==history.size())
@@ -1251,6 +1257,8 @@ namespace minsky
       }
     else
       historyPtr+=changes; // revert
+    undone=true; //ensure next pushHistory is ignored 
+    return historyPtr;
   }
 
   void Minsky::convertVarType(const string& name, VariableType::Type type)

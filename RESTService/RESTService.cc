@@ -24,8 +24,8 @@
 using namespace classdesc;
 using namespace std;
 
-//#include <readline/readline.h>
-//#include <readline/history.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 
 namespace minsky
@@ -53,54 +53,70 @@ namespace minsky
 
 using namespace minsky;
 
-int main()
-{
-  RESTMinsky minsky;
-  LocalMinsky lm(minsky);
-  RESTProcess(minsky.registry,"/minsky",minsky::minsky());
+RESTMinsky rminsky;
 
+void processBuffer(const string& buffer)
+{
+  if (buffer[0]=='#') return;
+  if (buffer[0]!='/')
+    {
+      cerr << buffer << "command doesn't starts with /"<<endl;
+      return;
+    }
+  if (buffer=="/list")
+    {
+      for (auto& i: rminsky.registry)
+        cout << i.first << endl;
+      return;
+    }
+
+  try
+    {
+      auto n=buffer.find(' ');
+      json_pack_t jin(json_spirit::mValue::null);
+      string cmd;
+      unsigned nargs=0;
+      if (n==string::npos)
+        cmd=buffer;
+      else
+        { // read argument(s)
+          cmd=buffer.substr(0,n);
+          read(buffer.substr(n),jin);
+          nargs = jin.type()==json_spirit::array_type? jin.get_array().size(): 1;
+        }
+      cout<<cmd<<"=>";
+      write(rminsky.registry.process(cmd, jin),cout);
+      cout << endl;
+      cmd.erase(0,1); // remove leading '/'
+      replace(cmd.begin(), cmd.end(), '/', '.');
+      rminsky.commandHook(cmd, nargs);
+    }
+  catch (const std::exception& ex)
+    {
+      cerr << "Exception: "<<ex.what() << endl;
+    }
+}
+
+int main(int argc, const char* argv[])
+{
+  LocalMinsky lm(rminsky);
+  RESTProcess(rminsky.registry,"/minsky",minsky::minsky());
+
+  bool batch=argc>1 && argv[1]==string("-batch");
+    
+  
   char* c;
   string buffer;
-  
-  //  while ((c=readline("cmd>"))!=nullptr)
-  while (getline(cin,buffer))
-    {
-      //      string buffer=c;
-      if (buffer[0]!='/')
-        cerr << buffer << "command doesn't starts with /"<<endl;
-      else if (buffer[0]=='#') continue;
-      else if (buffer=="/list")
-        for (auto& i: minsky.registry)
-          cout << i.first << endl;
-      else
-        {
-          try
-            {
-              auto n=buffer.find(' ');
-              json_pack_t jin(json_spirit::mValue::null);
-              string cmd;
-              unsigned nargs=0;
-              if (n==string::npos)
-                cmd=buffer;
-              else
-                { // read argument(s)
-                  cmd=buffer.substr(0,n);
-                  read(buffer.substr(n),jin);
-                  nargs = jin.type()==json_spirit::array_type? jin.get_array().size(): 1;
-                }
-              cout<<cmd<<"=>";
-              write(minsky.registry.process(cmd, jin),cout);
-              cout << endl;
-              cmd.erase(0,1); // remove leading '/'
-              replace(cmd.begin(), cmd.end(), '/', '.');
-              minsky.commandHook(cmd, nargs);
-            }
-          catch (const std::exception& ex)
-            {
-              cerr << "Exception: "<<ex.what() << endl;
-            }
-        }
-//      if (strlen(c)) add_history(c); 
-//      free(c);
+
+  if (batch)
+    while (getline(cin,buffer))
+      processBuffer(buffer);
+  else // interactive, use readline
+    while ((c=readline("cmd>"))!=nullptr)
+      {
+        string buffer=c;
+        processBuffer(buffer);
+        if (strlen(c)) add_history(c); 
+        free(c);
     }
 }

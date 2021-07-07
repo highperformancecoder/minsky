@@ -181,9 +181,14 @@ int main(int argc, const char* argv[])
                 http::response<http::string_body> res{http::status::ok, req.version()};
                 res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
                 res.set(http::field::content_type, "application/json");
-                res.body()=write(registry.process(req.target().to_string(),arguments));
+                auto cmd=req.target().to_string();
+                res.body()=write(registry.process(cmd,arguments));
                 res.keep_alive(req.keep_alive());
                 http::write(socket, res, ec);
+                int nargs=arguments.type()==json_spirit::array_type? arguments.get_array().size(): 1;
+                cmd.erase(0,1); // remove leading '/'
+                replace(cmd.begin(), cmd.end(), '/', '.');
+                minsky::minsky().commandHook(cmd,nargs);
               }
               break;
             default:
