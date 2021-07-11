@@ -71,7 +71,7 @@ namespace minsky
   {
     Minsky& m;
     double m_width=0, m_height=0;
-    void redraw(int x0, int y0, int width, int height) override;
+    bool redraw(int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(EquationDisplay);
   public:
     float offsx=0, offsy=0; // pan controls

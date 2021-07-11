@@ -248,7 +248,7 @@ namespace minsky
     //    void indicateItem() {itemIndicator=true;}
 
     /// redraw whole model
-    void redraw(int x0, int y0, int width, int height) override;
+    bool redraw(int x0, int y0, int width, int height) override;
     void redraw();
     /// region to be updated
     LassoBox updateRegion{0,0,0,0};

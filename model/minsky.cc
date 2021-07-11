@@ -69,7 +69,7 @@ using namespace std;
 
 namespace minsky
 {
-  void EquationDisplay::redraw(int x0, int y0, int width, int height)
+  bool EquationDisplay::redraw(int x0, int y0, int width, int height)
   {
     if (surface.get()) {
       m.setBusyCursor();
@@ -89,6 +89,7 @@ namespace minsky
         }
       m.clearBusyCursor();
     }
+    return surface.get();
   }
 
   

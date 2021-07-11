@@ -852,7 +852,7 @@ namespace minsky
     return false;
   }
 
-  void Canvas::redraw(int x0, int y0, int width, int height)
+  bool Canvas::redraw(int x0, int y0, int width, int height)
   {
     updateRegion.x0=x0;
     updateRegion.y0=y0;
@@ -875,6 +875,7 @@ namespace minsky
         // this leads to an endless loop...
         //requestRedraw();
       }
+    return true;
   }
   
   void Canvas::redraw()

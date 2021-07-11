@@ -201,7 +201,7 @@ namespace minsky
     }
   }
 
-  void ItemTab::redraw(int, int, int width, int height)
+  bool ItemTab::redraw(int, int, int width, int height)
   {
     if (surface.get()) {
       populateItemVector();			               
@@ -214,6 +214,7 @@ namespace minsky
       m_width=surf.width();
       m_height=surf.height();
     }
+    return surface.get();
   }    
 
 }

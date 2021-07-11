@@ -104,8 +104,8 @@ namespace minsky
     using ecolab::Plot::draw;
     void draw(cairo_t* cairo) const override;
     void requestRedraw(); ///< redraw plot using current data to all open windows
-    void redraw(int x0, int y0, int width, int height) override
-    {if (surface.get()) {Plot::draw(surface->cairo(),width,height); surface->blit();}}
+    bool redraw(int x0, int y0, int width, int height) override
+    {if (surface.get()) {Plot::draw(surface->cairo(),width,height); surface->blit();} return surface.get();}
     void redrawWithBounds() override {redraw(0,0,500,500);}    
     
     bool plotTabDisplay=true; // ensure plots persisted on plot tab, but can optionally be made hidden. for ticket 1298
