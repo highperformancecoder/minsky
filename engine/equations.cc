@@ -795,10 +795,9 @@ namespace MathDAG
       }
 
     if (!rhs) return result;
-    auto input=rhs->addEvalOps(ev,result);
     if (lock.locked())
       {
-        auto chain=createRavelChain(lock.lockedState, input);
+        auto chain=createRavelChain(lock.lockedState, rhs->addEvalOps(ev,nullptr));
         if (chain.empty()) return {};
         result->index(chain.back()->index());
         result->hypercube(chain.back()->hypercube());
@@ -806,7 +805,7 @@ namespace MathDAG
         return result;
       }
     else
-      return input;
+      return rhs->addEvalOps(ev,result);
   }
 
   

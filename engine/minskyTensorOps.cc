@@ -933,6 +933,7 @@ namespace minsky
           result.hypercube(rhs->hypercube());
           result.index(rhs->index());
           *v=result;
+          assert(result.size()==rhs->size());
         }
   }
   
@@ -961,6 +962,8 @@ namespace minsky
             fv=ValueVector::flowVars.data();
             n=ValueVector::flowVars.size();
           }
+        else if (n!=ValueVector::flowVars.size())
+          throw FlowVarsResized();
         result.ev->update(fv, n, sv);
         assert(result.size()==rhs->size());
         for (size_t i=0; i<rhs->size(); ++i)
