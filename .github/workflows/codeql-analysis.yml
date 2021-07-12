@@ -53,7 +53,7 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
- - name: Install prerequisties
+    - name: Install prerequisties
         run: |
           wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_${{ matrix.ubuntu_ver }}/Release.key
           sudo apt-key add - < Release.key
