@@ -181,6 +181,7 @@ int main(int argc, const char* argv[])
                 http::response<http::string_body> res{http::status::ok, req.version()};
                 res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
                 res.set(http::field::content_type, "application/json");
+                res.set(http::field::access_control_allow_origin, "*");
                 auto cmd=req.target().to_string();
                 res.body()=write(registry.process(cmd,arguments));
                 res.keep_alive(req.keep_alive());
