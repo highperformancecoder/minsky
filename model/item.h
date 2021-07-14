@@ -179,6 +179,8 @@ namespace minsky
     void flip() {rotation(rotation()+180);}
 
     virtual std::string classType() const {return "Item";}
+    /// return an id uniquely identifying this item
+    std::string id() const {return str(size_t(this));}
 
     /// @{ a more efficient replacement for dynamic_cast<VariableBase*>(this)
     virtual const VariableBase* variableCast() const {return nullptr;}
