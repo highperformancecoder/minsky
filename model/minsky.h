@@ -45,6 +45,7 @@
 #include "dimension.h"
 #include "rungeKutta.h"
 #include "saver.h"
+#include "stringKeyMap.h"
 
 #include <vector>
 #include <string>
@@ -436,6 +437,8 @@ namespace minsky
     std::shared_ptr<VariableInstanceList> variableInstanceList;
     void listAllInstances();
 
+    std::map<std::string,std::weak_ptr<Item>> namedItems;
+    void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
   };
 
   /// global minsky object
