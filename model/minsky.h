@@ -62,7 +62,8 @@ namespace minsky
   using namespace civita;
   
   struct CallableFunction;
-
+  class VariableInstanceList;
+  
   class SaveThread;
   
   // handle the display of rendered equations on the screen
@@ -430,6 +431,10 @@ namespace minsky
     void openGroupInCanvas() {canvas.openGroupInCanvas(canvas.item);}
     /// reinitialises canvas to the toplevel group
     void openModelInCanvas() {canvas.openGroupInCanvas(model);}
+
+    /// supports navigation to all instances of current variable
+    std::shared_ptr<VariableInstanceList> variableInstanceList;
+    void listAllInstances();
 
   };
 

@@ -22,6 +22,7 @@
 #include "flowCoef.h"
 #include "userFunction.h"
 #include "mdlReader.h"
+#include "variableInstanceList.h"
 
 #include "TCL_obj_stl.h"
 #include <cairo_base.h>
@@ -1409,6 +1410,17 @@ namespace minsky
   {
     canvas.model->randomLayout();
     canvas.recentre();
+  }
+
+  void Minsky::listAllInstances()
+  {
+    if (canvas.item)
+      if (auto v=canvas.item->variableCast())
+        {
+          variableInstanceList=std::make_shared<VariableInstanceList>(*canvas.model, v->valueId());
+          return;
+        }
+    variableInstanceList.reset();
   }
 
   
