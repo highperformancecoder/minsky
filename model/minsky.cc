@@ -140,6 +140,7 @@ namespace minsky
     stockVars.clear();
 
     dimensions.clear();
+    namedItems.clear();
     flags=reset_needed|fullEqnDisplay_needed;
     fileVersion=minskyVersion;
   }
