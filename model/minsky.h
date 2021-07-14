@@ -20,6 +20,7 @@
 #ifndef MINSKY_H
 #define MINSKY_H
 
+#include "stringKeyMap.h"
 #include "intrusiveMap.h"
 #include "bookmark.h"
 #include "selection.h"

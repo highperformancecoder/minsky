@@ -79,6 +79,7 @@
 #include "simulation.h"
 #include "simulation.rcd"
 #include "slider.rcd"
+#include "stringKeyMap.rcd"
 #include "SVGItem.rcd"
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
