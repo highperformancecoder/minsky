@@ -409,6 +409,8 @@ namespace minsky
   {
     size_t extraPen=2*numLines;
 
+    std::vector<std::vector<std::pair<double,std::string>>> newXticks;
+    
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
     for (auto& i: yvars)
@@ -442,7 +444,7 @@ namespace minsky
           else
             {
               xdefault.reserve(d[0]);
-              xticks.clear();
+              newXticks.emplace_back();
               if (yv->hypercube().rank()) // yv carries its own x-vector
                 {
                   auto& xv=yv->hypercube().xvectors[0];
@@ -452,7 +454,7 @@ namespace minsky
                     case Dimension::string:
                       for (size_t i=0; i<xv.size(); ++i)
                         {
-                          xticks.emplace_back(i, str(xv[i]));
+                          newXticks.back().emplace_back(i, str(xv[i]));
                           xdefault.push_back(i);
                         }
                       if (plotType==automatic)
@@ -475,7 +477,7 @@ namespace minsky
                         for (auto& i: xv)
                           {
                             double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
-                            xticks.emplace_back(tv,str(i,format));
+                            newXticks.back().emplace_back(tv,str(i,format));
                             xdefault.push_back(tv);
                           }
                       }
@@ -525,6 +527,23 @@ namespace minsky
             }
         }
     scalePlot();
+
+    if (newXticks.size()==1) // nothing to disambiguate
+      xticks=std::move(newXticks.front());
+    else
+      {
+        xticks.clear();
+        // now work out which xticks we'll use See Ravel #173
+        for (auto& i: newXticks)
+          if (i.empty())
+            {
+              xticks.clear();
+              break; // value axes trump all
+            }
+        // else select an xticks range that covers most of [minx,maxx]
+          else if (i.back().first>0.7*(maxx-minx)+minx && i.front().first<0.3*(maxx-minx)+minx)
+            xticks=std::move(i);
+      }
   }
 
   
