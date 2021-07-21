@@ -103,6 +103,9 @@ namespace minsky
     MinskyExclude(): historyPtr(0) {}
     MinskyExclude(const MinskyExclude&): historyPtr(0) {}
     MinskyExclude& operator=(const MinskyExclude&) {return *this;}
+
+    /// record nativeWindows that have requested redrawing
+    std::set<RenderNativeWindow*> nativeWindowsToRedraw;
     
   protected:
     /// save history of model for undo

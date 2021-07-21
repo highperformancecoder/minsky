@@ -31,7 +31,8 @@ namespace minsky
     CLASSDESC_ACCESS(RenderNativeWindow); 
     classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
 
-  public:    
+  public:
+    ~RenderNativeWindow();
     void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void draw();

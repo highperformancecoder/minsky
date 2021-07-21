@@ -205,5 +205,9 @@ int main(int argc, const char* argv[])
           res.body() = ex.what();
           http::write(socket, res);
         }
+      // redraw all surfaces that have requested it
+      for (auto i: minsky::minsky().nativeWindowsToRedraw)
+        i->draw();
+      minsky::minsky().nativeWindowsToRedraw.clear();
     }
 }

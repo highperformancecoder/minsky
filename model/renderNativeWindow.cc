@@ -28,6 +28,7 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 
 #include "renderNativeWindow.h"
 #include "windowInformation.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 
 #include <stdexcept>
@@ -55,18 +56,19 @@ namespace minsky
 
     public:
       NativeSurface(RenderNativeWindow &r, cairo_surface_t *s = nullptr, int width = -1, int height = -1) : cairo::Surface(s, width, height), renderNativeWindow(r) {}
-      void requestRedraw() override { renderNativeWindow.draw(); }
+      void requestRedraw() override { minsky().nativeWindowsToRedraw.insert(&renderNativeWindow); }
     };
   } // namespace
 
+    RenderNativeWindow::~RenderNativeWindow()
+    {
+      minsky().nativeWindowsToRedraw.erase(this);
+    }
+  
   void RenderNativeWindow::renderFrame(unsigned long parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    if (!(winInfoPtr.get()))
-    {
-      winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
-      //surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
-      // NOTE: Above does not work properly with the JS throttling
-    }
+    winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
+    surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
     draw();
   }
 

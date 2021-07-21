@@ -111,7 +111,7 @@ namespace minsky
     }
 #else
     {
-      windowSurface.reset(new cairo::Surface(cairo_xlib_surface_create(getDisplay(), childWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
+      windowSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, childWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
 
       bufferSurface.reset(new cairo::Surface(cairo_surface_create_similar(windowSurface->surface(), CAIRO_CONTENT_COLOR_ALPHA, childWidth, childHeight), childWidth, childHeight));
     }

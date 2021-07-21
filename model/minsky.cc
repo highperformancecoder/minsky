@@ -954,6 +954,7 @@ namespace minsky
       }
     catch (...) {}
     panopticon.requestRedraw();
+    canvas.requestRedraw();
     flags=reset_needed|fullEqnDisplay_needed;
   }
 
