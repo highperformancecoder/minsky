@@ -35,6 +35,7 @@ namespace minsky
   {
     std::vector<std::string> initialLines; ///< initial lines of file
     double rowHeight=0;
+    double m_tableWidth;
     CLASSDESC_ACCESS(DataSpec);
   public:
     static const unsigned numInitialLines=30;
@@ -44,6 +45,8 @@ namespace minsky
     DataSpec spec;
     /// filename, or web url
     std::string url;
+    /// width of table (in pixels)
+    double tableWidth() const {return m_tableWidth;}
 
     bool redraw(int, int, int width, int height) override;
     

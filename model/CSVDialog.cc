@@ -279,7 +279,7 @@ bool CSVDialog::redraw(int, int, int width, int height)
   pango.setFontSize(0.8*rowHeight);
   
   vector<vector<string>> parsedLines=parseLines();
-  
+
   // LHS row labels
   {
     Pango pango(cairo);
@@ -382,12 +382,13 @@ bool CSVDialog::redraw(int, int, int width, int height)
       x+=colWidth+5;
       y=0;
     }
+  m_tableWidth=(col-1)*(colWidth+5);
   for (size_t row=0; row<parsedLines.size()+5; ++row)
     {
       CairoSave cs(cairo);
       cairo_set_source_rgb(cairo,.5,.5,.5);
       cairo_move_to(cairo,xoffs-2.5,row*rowHeight);
-      cairo_rel_line_to(cairo,(col-1)*(colWidth+5),0);
+      cairo_rel_line_to(cairo,m_tableWidth,0);
       cairo_stroke(cairo);
     }
   return true;

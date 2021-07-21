@@ -37,6 +37,9 @@ proc CSVImportDialog {} {
                 minsky.value.csvDialog.loadFile
             }
             minsky.value.csvDialog.requestRedraw
+            # update to calculate tableWidth
+            update
+            .wiring.csvImport.hscroll configure -to [expr int([minsky.value.csvDialog.tableWidth])]
         }
         bind .wiring.csvImport.fileUrl.url <Key-Return> ".wiring.csvImport.fileUrl.load invoke"
         
