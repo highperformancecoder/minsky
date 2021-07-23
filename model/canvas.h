@@ -277,6 +277,11 @@ namespace minsky
   };
 }
 
+namespace classdesc
+{
+  template <> struct is_smart_ptr<minsky::Canvas::Model>: public true_type {};
+}
+
 #include "canvas.cd"
 #include "canvas.xcd"
 #endif

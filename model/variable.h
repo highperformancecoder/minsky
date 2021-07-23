@@ -286,8 +286,13 @@ namespace minsky
     /// make variable's type consistent with the type of the valueId
     void makeConsistentWithValue();
   };
-
 }
+
+namespace classdesc
+{
+  template <> struct is_smart_ptr<minsky::VariablePtr>: public true_type {};
+ }
+
 #include "variable.cd"
 #include "variable.xcd"
 #endif
