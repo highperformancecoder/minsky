@@ -95,8 +95,6 @@ namespace minsky
     Model model;
     
     Selection selection;
-    // we don't want surface to be reassigned every time a new model is loaded.
-    //NoAssign<Exclude<ecolab::cairo::SurfacePtr>> surface;
     ItemPtr itemFocus; ///< item selected by clicking
     WirePtr wireFocus; ///< wire that mouse is hovering over
     int handleSelected; ///< selected handle for handle moves, -ve = invalid 
@@ -116,6 +114,16 @@ namespace minsky
     LassoBox lasso{0,0,0,0};
 
     bool redrawAll=true; ///< if false, then only redraw graphs
+
+    void moveTo(float x, float y) {
+      model->moveTo(x,y);
+      requestRedraw();
+    }
+
+    void zoom(double x, double y, double z) {
+      model->zoom(x,y,z);
+      requestRedraw();
+    }
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
