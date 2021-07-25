@@ -20,7 +20,10 @@
 #include "CSVParser.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
+
+#if defined(__linux__)
 #include <sys/sysinfo.h>
+#endif
 
 using namespace minsky;
 using namespace std;
