@@ -57,8 +57,9 @@ namespace minsky
             xx+=w;
             yy+=h;
             float d=sqr(xx-x)+sqr(yy-y);
-          
-            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
+
+            // add an extra room to allow grabbing  the title. For ticket #1326.
+            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h+g->godleyT->rowHeight)
               {
                 minD=d;
                 item=i;
