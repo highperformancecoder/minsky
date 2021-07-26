@@ -1423,7 +1423,7 @@ proc openNamedFile {ofname} {
         eval minsky.load {[autoBackupName]}
     } else {
         eval minsky.load {$ofname}
-        file delete [autoBackupName]
+        file delete -- [autoBackupName]
     }
     doPushHistory 0
     setAutoSaveFile [autoBackupName]
@@ -1511,7 +1511,7 @@ proc save {} {
     if [string length $fname] {
         set workDir [file dirname $fname]
         eval minsky.save {$fname}
-        file delete [autoBackupName]
+        file delete -- [autoBackupName]
     }
 }
 
@@ -1799,7 +1799,7 @@ proc exit {} {
     if {[edited]||[file exists [autoBackupName]]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
-            no {file delete [autoBackupName]}
+            no {file delete -- [autoBackupName]}
             cancel {return -level [info level]}
         }
     }
