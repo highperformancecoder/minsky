@@ -63,6 +63,8 @@ SUITE(ExpressionWalker)
       CHECK_EQUAL("",expression.value().units.str());
       checkCompile("metre/second",expression);
       CHECK_EQUAL("m s^-1",expression.value().units.str());
+      checkCompile("metre%second",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
       checkCompile("x^3.5",expression);
       CHECK_EQUAL("",expression.value().units.str());
       checkCompile("metre^3.5",expression);
@@ -130,5 +132,6 @@ SUITE(ExpressionWalker)
       testLogicalOp(nand);
       testLogicalOp(nor);
       testLogicalOp(xor);
+      testLogicalOp(xnor);
     }
 }

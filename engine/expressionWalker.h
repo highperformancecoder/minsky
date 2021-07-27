@@ -30,7 +30,7 @@ To use, define the actions you want to happen for each type of expression
 
 namespace minsky
 {
-  inline bool operator>(std::size_t x, const UnitsExpressionWalker& y) {return false;}
+  inline bool operator>(std::size_t x, const UnitsExpressionWalker& y) {return x>y.value;}
   
   inline UnitsExpressionWalker pow(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
   {
@@ -144,7 +144,12 @@ namespace exprtk
       exprtk_define_binary_function(max);
       exprtk_define_binary_function(equal);
       exprtk_define_binary_function(nequal);
-      exprtk_define_binary_function(modulus);
+      
+      template <>                                                       \
+      inline minsky::UnitsExpressionWalker modulus                    \
+      (const minsky::UnitsExpressionWalker x, const minsky::UnitsExpressionWalker y) \
+      {return x;}
+
       exprtk_define_binary_function(pow);
       exprtk_define_binary_function(logn);
       exprtk_define_binary_function(root);
@@ -187,7 +192,7 @@ namespace exprtk
     exprtk_define_binary_op( sub,-)
     exprtk_define_binary_op( mul,*)
     exprtk_define_binary_op( div,/)
-    exprtk_define_binary_op( mod,%)
+    exprtk_define_binary_op_impl( mod, x)
     exprtk_define_binary_fun_op( pow, pow)
     exprtk_define_binary_fun_op(  lt,checkSameDims)
     exprtk_define_binary_fun_op( lte,checkSameDims)
