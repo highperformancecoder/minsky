@@ -77,13 +77,13 @@ namespace minsky
     UnitsExpressionWalker operator||(const UnitsExpressionWalker& x) const
     {checkSameDims(x);return x;}
     bool operator<(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
+    {checkSameDims(x); return value<x.value;}
     bool operator>(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
+    {checkSameDims(x); return value>x.value;}
     bool operator<=(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
+    {checkSameDims(x); return value<=x.value;}
     bool operator>=(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return true;}
+    {checkSameDims(x); return value>=x.value;}
     bool operator==(const UnitsExpressionWalker& x) const
     {return x.value==value;}
     bool operator!=(const UnitsExpressionWalker& x) const

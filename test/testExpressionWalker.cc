@@ -27,7 +27,13 @@ using namespace std;
 
 SUITE(ExpressionWalker)
 {
-
+  void checkCompile(const std::string& expr, exprtk::expression<UnitsExpressionWalker>& expression)
+  {
+    exprtk::parser<UnitsExpressionWalker> parser;
+    CHECK(parser.compile(expr,expression));
+    for (size_t i=0; i<parser.error_count(); ++i)
+      cout << parser.get_error(i).diagnostic<<endl;
+  }
   
   TEST(UnitsExpressionWalker)
     {
@@ -38,39 +44,42 @@ SUITE(ExpressionWalker)
       symbolTable.add_variable("second",second);
       symbolTable.add_variable("x",x);
 
-      exprtk::parser<UnitsExpressionWalker> parser;
       exprtk::expression<UnitsExpressionWalker> expression;
       expression.register_symbol_table(symbolTable);
       
-      parser.compile("metre+metre",expression);
+      checkCompile("metre+metre",expression);
       CHECK_EQUAL("m",expression.value().units.str());
-      parser.compile("metre+second",expression);
+      checkCompile("metre+second",expression);
       CHECK_THROW(expression.value(),std::exception);
-      parser.compile("metre-metre",expression);
+      checkCompile("metre-metre",expression);
       CHECK_EQUAL("m",expression.value().units.str());
-      parser.compile("metre-second",expression);
+      checkCompile("metre-second",expression);
       CHECK_THROW(expression.value(),std::exception);
-      parser.compile("metre*metre",expression);
+      checkCompile("metre*metre",expression);
       CHECK_EQUAL("m^2",expression.value().units.str());
-      parser.compile("metre*second",expression);
+      checkCompile("metre*second",expression);
       CHECK_EQUAL("m s",expression.value().units.str());
-      parser.compile("metre/metre",expression);
+      checkCompile("metre/metre",expression);
       CHECK_EQUAL("",expression.value().units.str());
-      parser.compile("metre/second",expression);
+      checkCompile("metre/second",expression);
       CHECK_EQUAL("m s^-1",expression.value().units.str());
-      parser.compile("x^3.5",expression);
+      checkCompile("x^3.5",expression);
       CHECK_EQUAL("",expression.value().units.str());
-      parser.compile("metre^3.5",expression);
+      checkCompile("metre^3.5",expression);
       CHECK_THROW(expression.value(),std::exception);
-      parser.compile("metre^2",expression);
+      checkCompile("metre^2",expression);
       CHECK_EQUAL("m^2",expression.value().units.str());
-      parser.compile("pow(metre,2)",expression);
+      checkCompile("pow(metre,2.0)",expression);
       CHECK_EQUAL("m^2",expression.value().units.str());
+      checkCompile("metre^64",expression);
+      CHECK_EQUAL("m^64",expression.value().units.str());
+      checkCompile("pow(metre,64)",expression);
+      CHECK_EQUAL("m^64",expression.value().units.str());
 
 #define testFunction(f)                                 \
-      parser.compile(#f "(metre)",expression);          \
+      checkCompile(#f "(metre)",expression);          \
       CHECK_THROW(expression.value(),std::exception);   \
-      parser.compile(#f "(x)",expression);              \
+      checkCompile(#f "(x)",expression);              \
       CHECK_EQUAL("",expression.value().units.str());
 
       //testFunction(abs); // TODO
@@ -105,9 +114,9 @@ SUITE(ExpressionWalker)
       testFunction(atan);
 
 #define testLogicalOp(op)                                 \
-      parser.compile("metre " #op " second",expression);  \
+      checkCompile("metre " #op " second",expression);  \
       CHECK_THROW(expression.value(),std::exception);     \
-      parser.compile("metre " #op " metre",expression);   \
+      checkCompile("metre " #op " metre",expression);   \
       CHECK_EQUAL("",expression.value().units.str()); 
 
       testLogicalOp(==);
