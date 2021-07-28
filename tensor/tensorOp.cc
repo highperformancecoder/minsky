@@ -138,6 +138,7 @@ namespace civita
   double ReductionOp::operator[](size_t i) const
   {
     assert(i<size());
+    if (!arg) return init;
     if (dimension>arg->rank())
       return ReduceAllOp::operator[](i);
     else

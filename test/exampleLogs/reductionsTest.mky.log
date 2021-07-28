@@ -1,0 +1,11 @@
+nsteps 10
+0.03 {:all} 1 {:any} 0 {:inf} 0.841471 {:infi} 0 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 0.287334 {:sum} 0.3 {:sup} 0.12 {:supi} 4 
+0.1 {:all} 1 {:any} 0 {:inf} 0.841471 {:infi} 0 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 0.876468 {:sum} 1 {:sup} 0.4 {:supi} 4 
+0.17 {:all} 1 {:any} 0 {:inf} 0.841471 {:infi} 0 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 1.38058 {:sum} 1.7 {:sup} 0.68 {:supi} 3 
+0.24 {:all} 1 {:any} 0 {:inf} 0.841471 {:infi} 0 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 1.82242 {:sum} 2.4 {:sup} 0.96 {:supi} 2 
+0.31 {:all} 0 {:any} 1 {:inf} 0.784316 {:infi} 4 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 2.21645 {:sum} 3.1 {:sup} 1.24 {:supi} 2 
+0.38 {:all} 0 {:any} 1 {:inf} 0.582331 {:infi} 4 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 2.57246 {:sum} 3.8 {:sup} 1.52 {:supi} 2 
+0.45 {:all} 0 {:any} 1 {:inf} 0.334988 {:infi} 4 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 2.89745 {:sum} 4.5 {:sup} 1.8 {:supi} 1 
+0.52 {:all} 0 {:any} 1 {:inf} 0.0615537 {:infi} 4 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 3.1966 {:sum} 5.2 {:sup} 2.08 {:supi} 1 
+0.59 {:all} 0 {:any} 1 {:inf} -0.216675 {:infi} 4 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 3.47385 {:sum} 5.9 {:sup} 2.36 {:supi} 1 
+0.66 {:all} 0 {:any} 1 {:inf} -0.478027 {:infi} 4 {:iota|0} 0 {:iota|1} 1 {:iota|2} 2 {:iota|3} 3 {:iota|4} 4 {:prod} 3.73229 {:sum} 6.6 {:sup} 2.64 {:supi} 1 
