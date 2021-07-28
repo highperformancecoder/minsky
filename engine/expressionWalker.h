@@ -32,8 +32,25 @@ namespace minsky
 {
   inline bool operator>(std::size_t x, const UnitsExpressionWalker& y) {return x>y.value;}
   
+  inline UnitsExpressionWalker root(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
+  {
+    if (x.units.empty()) return {};
+    int index=y.value;
+    if (index!=y.value)
+      throw std::runtime_error("index must be an integer for roots of dimensioned quanitites");
+    UnitsExpressionWalker r;
+    for (auto& i: x.units)
+      {
+        if (i.second % index)
+          throw std::runtime_error("input dimension "+i.first+" not a power to the index "+std::to_string(index));
+        r.units[i.first]=i.second/index;
+      }
+    return r;
+  }                                 
+
   inline UnitsExpressionWalker pow(const UnitsExpressionWalker& x, const UnitsExpressionWalker& y)
   {
+    if (y.value<1) return root(x,1/y.value);
     auto exponent=int(y.value);
     if (exponent==y.value)
       {
@@ -88,7 +105,12 @@ namespace exprtk
       inline minsky::UnitsExpressionWalker Function(const minsky::UnitsExpressionWalker x) \
       {x.checkDimensionless(); return x;}                                 
  
-      exprtk_define_unary_function(abs  )
+#define exprtk_define_unary_function_not_dimensionless(Function)                          \
+      template <>                                                       \
+      inline minsky::UnitsExpressionWalker Function(const minsky::UnitsExpressionWalker x) \
+      {return x;}                                 
+                     
+      exprtk_define_unary_function_not_dimensionless(abs )
       exprtk_define_unary_function(acos )
       exprtk_define_unary_function(acosh)
       exprtk_define_unary_function(asin )
@@ -107,11 +129,10 @@ namespace exprtk
       exprtk_define_unary_function(log1p)
       exprtk_define_unary_function(neg  )
       exprtk_define_unary_function(pos  )
-      exprtk_define_unary_function(round)
+      exprtk_define_unary_function_not_dimensionless(round)
       exprtk_define_unary_function(sin  )
       exprtk_define_unary_function(sinc )
       exprtk_define_unary_function(sinh )
-      exprtk_define_unary_function(sqrt )
       exprtk_define_unary_function(tan  )
       exprtk_define_unary_function(tanh )
       exprtk_define_unary_function(cot  )
@@ -122,13 +143,26 @@ namespace exprtk
       exprtk_define_unary_function(d2g  )
       exprtk_define_unary_function(g2d  )
       exprtk_define_unary_function(notl )
-      exprtk_define_unary_function(sgn  )
+      template <> inline minsky::UnitsExpressionWalker sgn(const minsky::UnitsExpressionWalker x) {return {};}                                 
       exprtk_define_unary_function(erf  )
       exprtk_define_unary_function(erfc )
       exprtk_define_unary_function(ncdf )
-      exprtk_define_unary_function(frac )
-      exprtk_define_unary_function(trunc)
+      exprtk_define_unary_function_not_dimensionless(frac )
+      exprtk_define_unary_function_not_dimensionless(trunc)
 
+      template <> inline minsky::UnitsExpressionWalker sqrt(const minsky::UnitsExpressionWalker x)
+      {
+        minsky::UnitsExpressionWalker r;
+        for (auto& i: x.units)
+          {
+            if (i.second % 2)
+              throw std::runtime_error("input dimension "+i.first+" not a square");
+            r.units[i.first]=i.second/2;
+          }
+        return r;
+      }                                 
+      
+      
       template <> inline int to_int32(const minsky::UnitsExpressionWalker x) {return int(x.value);}
       template <> inline _int64_t to_int64(const minsky::UnitsExpressionWalker x) {return int64_t(x.value);}
       template <> inline bool is_integer(const minsky::UnitsExpressionWalker x) {return int64_t(x.value)==x.value;}
@@ -139,21 +173,32 @@ namespace exprtk
       inline minsky::UnitsExpressionWalker Function                     \
       (const minsky::UnitsExpressionWalker x, const minsky::UnitsExpressionWalker y) \
       {x.checkSameDims(y); return x;}
+      
+#define exprtk_define_binary_function_first_arg(Function)                         \
+      template <>                                                       \
+      inline minsky::UnitsExpressionWalker Function                     \
+      (const minsky::UnitsExpressionWalker x, const minsky::UnitsExpressionWalker y) \
+      {return x;}
+      
+#define exprtk_define_binary_function_dimensionless(Function)                         \
+      template <>                                                       \
+      inline minsky::UnitsExpressionWalker Function                     \
+      (const minsky::UnitsExpressionWalker x, const minsky::UnitsExpressionWalker y) \
+      {x.checkSameDims(y); return {};}
 
       exprtk_define_binary_function(min);
       exprtk_define_binary_function(max);
-      exprtk_define_binary_function(equal);
-      exprtk_define_binary_function(nequal);
-      
-      template <>                                                       \
-      inline minsky::UnitsExpressionWalker modulus                    \
-      (const minsky::UnitsExpressionWalker x, const minsky::UnitsExpressionWalker y) \
-      {return x;}
-
+      exprtk_define_binary_function_dimensionless(equal);
+      exprtk_define_binary_function_dimensionless(nequal);
+      exprtk_define_binary_function_first_arg(modulus);
       exprtk_define_binary_function(pow);
       exprtk_define_binary_function(logn);
-      exprtk_define_binary_function(root);
-      exprtk_define_binary_function(roundn);
+
+      template <> inline minsky::UnitsExpressionWalker root
+      (const minsky::UnitsExpressionWalker x, const minsky::UnitsExpressionWalker y)
+      {return minsky:: root(x,y);}
+
+      exprtk_define_binary_function_first_arg(roundn);
       exprtk_define_binary_function(hypot);
       exprtk_define_binary_function(atan2);
       exprtk_define_binary_function(shr);
