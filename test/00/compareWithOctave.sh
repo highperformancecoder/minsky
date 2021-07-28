@@ -53,6 +53,7 @@ for i in examples/*.mky; do
             # derivative for tensor operations not yet implemented, so implicit methods not supported
             if [ $i = "examples/reductionExample.mky" -a $implicit ]; then continue; fi
             if [ $i = "examples/reductionsTest.mky" -a $implicit ]; then continue; fi
+            if [ $i = "examples/scansTest.mky" -a $implicit ]; then continue; fi
             if [ $i = "examples/indexing.mky" -a $implicit  ]; then continue; fi
             cat >extraOpts.tcl <<EOF
 minsky.implicit $implicit
