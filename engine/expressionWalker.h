@@ -127,8 +127,8 @@ namespace exprtk
       exprtk_define_unary_function(log10)
       exprtk_define_unary_function(log2 )
       exprtk_define_unary_function(log1p)
-      exprtk_define_unary_function(neg  )
-      exprtk_define_unary_function(pos  )
+      exprtk_define_unary_function_not_dimensionless(neg  )
+      exprtk_define_unary_function_not_dimensionless(pos  ) // apparently not used
       exprtk_define_unary_function_not_dimensionless(round)
       exprtk_define_unary_function(sin  )
       exprtk_define_unary_function(sinc )
