@@ -1184,8 +1184,6 @@ namespace minsky
         command!="minsky.canvas.mouseMove" && 
         command!="minsky.clearAll" &&
         command!="minsky.doPushHistory" &&
-        command!="minsky.model.moveTo" &&
-        command!="minsky.canvas.model.moveTo" &&
         command!="minsky.canvas.model.zoom" &&
         command!="minsky.model.zoom" &&
         command!="minsky.newGlobalGroupTCL" &&

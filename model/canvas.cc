@@ -317,7 +317,6 @@ namespace minsky
                                                         (*i)->onResizeHandles=ct==ClickType::onResize;
                                                         (*i)->onBorder = ct==ClickType::onItem;
                                                         (*i)->onMouseLeave();
-                                                        requestRedraw();
                                                       }
                                                   }
                                                 return false;

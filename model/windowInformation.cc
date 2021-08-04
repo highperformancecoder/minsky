@@ -77,9 +77,10 @@ namespace minsky
 
   WindowInformation::~WindowInformation()
   {
-    windowSurface.reset();
     bufferSurface.reset();
+    XFreeGC(display, graphicsContext);
     XDestroyWindow(display, childWindowId);
+    XDestroyWindow(display, bufferWindowId);
   }
 
   ecolab::cairo::SurfacePtr WindowInformation::getBufferSurface()
@@ -87,15 +88,12 @@ namespace minsky
     return bufferSurface;
   }
 
-   ecolab::cairo::SurfacePtr WindowInformation::getWindowSurface()
-  {
-    return windowSurface;
-  }
-
   void WindowInformation::copyBufferToMain()
   {
-    cairo_set_source_surface(windowSurface->cairo(), bufferSurface->surface(), 0, 0);
-    cairo_paint(windowSurface->cairo());
+    cairo_surface_flush(bufferSurface->surface());
+    XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
+    XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
+    XFlush(display);
   }
 
   void WindowInformation::createSurfaces()
@@ -111,9 +109,7 @@ namespace minsky
     }
 #else
     {
-      windowSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, childWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
-
-      bufferSurface.reset(new cairo::Surface(cairo_surface_create_similar(windowSurface->surface(), CAIRO_CONTENT_COLOR_ALPHA, childWidth, childHeight), childWidth, childHeight));
+      bufferSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, bufferWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
     }
 
 #endif
@@ -152,7 +148,9 @@ namespace minsky
     childHeight = cHeight;
 
     childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, MINSKY_CANVAS_BACKGROUND_COLOR);
-
+    bufferWindowId = XCreatePixmap(display, parentWin, childWidth, childHeight, wAttr.depth);
+    graphicsContext=XCreateGC(display, childWindowId, 0, nullptr);
+    
     XMapWindow(display, childWindowId);
 
     createSurfaces();

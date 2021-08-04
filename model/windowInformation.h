@@ -29,33 +29,33 @@ namespace minsky
   {
     bool isRendering;
     unsigned long parentWindowId;
-    unsigned long childWindowId;
+    unsigned long childWindowId, bufferWindowId;
     
     Display*	display; // Weak reference, returned by system
-    ecolab::cairo::SurfacePtr windowSurface;
+    GC graphicsContext;
+    //ecolab::cairo::SurfacePtr windowSurface;
     ecolab::cairo::SurfacePtr bufferSurface;
 
-  private:
-      void createSurfaces();
+    void createSurfaces();
   public: 
-      void clear();
-      int childWidth;
-      int childHeight;
-      int offsetLeft;
-      int offsetTop;
+    void clear();
+    int childWidth;
+    int childHeight;
+    int offsetLeft;
+    int offsetTop;
       
-      XWindowAttributes wAttr;
-      Display* getDisplay();
-      bool getRenderingFlag();
-      void setRenderingFlag(bool value);
-      void copyBufferToMain();
+    XWindowAttributes wAttr;
+    Display* getDisplay();
+    bool getRenderingFlag();
+    void setRenderingFlag(bool value);
+    void copyBufferToMain();
       
   public:
     ~WindowInformation();
     WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
     
     ecolab::cairo::SurfacePtr getBufferSurface();
-    ecolab::cairo::SurfacePtr getWindowSurface();
+    //ecolab::cairo::SurfacePtr getWindowSurface();
 
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;
