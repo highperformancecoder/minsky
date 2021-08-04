@@ -1179,6 +1179,9 @@ namespace minsky
         command!="minsky.canvas.focusFollowsMouse" &&
         command!="minsky.canvas.displayDelayedTooltip" &&
         command!="minsky.canvas.requestRedraw" &&
+        command!="minsky.model.moveTo" &&
+        command!="minsky.canvas.model.moveTo" &&
+        command!="minsky.canvas.moveTo" &&
         /* ensure we record mouse movements, but filter from history */
         command!="minsky.canvas.mouseDown"&&
         command!="minsky.canvas.mouseMove" && 
