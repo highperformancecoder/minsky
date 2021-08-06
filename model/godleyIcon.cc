@@ -153,43 +153,36 @@ namespace minsky
 
   void GodleyIcon::toggleEditorMode()
   {
-    if (editor)
+    if (m_editorMode)
       {
-        editor.reset();
         variableDisplay=true;
       }
     else
       if (auto g=group.lock())
         if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
           {
-            editor.reset(new GodleyTableEditor(icon));
-            editor->disableButtons();
+            editor.disableButtons();
             setEditorDisplayValues();
             variableDisplay=false;
           }
+    m_editorMode=!m_editorMode;
     updateBoundingBox();
   }
 
   void GodleyIcon::setEditorDisplayValues()
   {
-    if (editor)
-      {
-            editor->displayValues=cminsky().displayValues;
-            editor->displayStyle=cminsky().displayStyle;
-      }
+    editor.displayValues=cminsky().displayValues;
+    editor.displayStyle=cminsky().displayStyle;
   }
   
-  bool GodleyIcon::buttonDisplay() const {return editor && editor->drawButtons;}
+  bool GodleyIcon::buttonDisplay() const {return m_editorMode && editor.drawButtons;}
   void GodleyIcon::toggleButtons()
   {
-    if (editor)
-      {
-        if (editor->drawButtons)
-          editor->disableButtons();
-        else
-          editor->enableButtons();
-        updateBoundingBox();
-      }
+    if (editor.drawButtons)
+      editor.disableButtons();
+    else
+      editor.enableButtons();
+    updateBoundingBox();
   }
   
   void GodleyIcon::scaleIcon(float w, float h)
@@ -213,9 +206,11 @@ namespace minsky
   void GodleyIcon::removeControlledItems(Group& g) const
   {
     for (auto& i: m_flowVars)
-      g.removeItem(*i)->deleteAttachedWires();
+      if (auto item=g.removeItem(*i))
+        item->deleteAttachedWires();
     for (auto& i: m_stockVars)
-      g.removeItem(*i)->deleteAttachedWires();
+      if (auto item=g.removeItem(*i))
+        item->deleteAttachedWires();
   }
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
@@ -383,7 +378,7 @@ namespace minsky
     positionVariables();
     double titley;
     
-    if (editor.get())
+    if (m_editorMode)
       {
         CairoSave cs(cairo);
         cairo_rectangle(cairo, left, top, w, h);
@@ -401,8 +396,9 @@ namespace minsky
         cairo_rectangle(cairo, left+border, top-border, w-2*border, h-2*border);
         cairo_clip(cairo);
         cairo_translate(cairo,left+border,top+border+12*zoomFactor()/* space for title*/);
-        editor->zoomFactor=zoomFactor();
-        editor->draw(cairo);
+        double z=zoomFactor()/editor.zoomFactor;
+        cairo_scale(cairo, z,z);
+        const_cast<GodleyTableEditor&>(editor).draw(cairo);
         titley=-0.5*(bottomMargin()+h);
       }
     else
@@ -515,7 +511,7 @@ namespace minsky
   
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {
-    if (editor) return Item::clickType(x,y);
+    if (m_editorMode) return Item::clickType(x,y);
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
     auto z=zoomFactor()*scaleFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
@@ -535,39 +531,39 @@ namespace minsky
   {return yy-y()+0.5f*height()-border-12*zoomFactor();}
   
   void GodleyIcon::onMouseDown(float x, float y)
-  {if (editor) editor->mouseDown(toEditorX(x),toEditorY(y));}
+  {if (m_editorMode) editor.mouseDown(toEditorX(x),toEditorY(y));}
   
   void GodleyIcon::onMouseUp(float x, float y)
-  {if (editor) editor->mouseUp(toEditorX(x),toEditorY(y));}
+  {if (m_editorMode) editor.mouseUp(toEditorX(x),toEditorY(y));}
   
   bool GodleyIcon::onMouseMotion(float x, float y)
   {
-    if (editor) editor->mouseMoveB1(toEditorX(x),toEditorY(y));
+    if (m_editorMode) editor.mouseMoveB1(toEditorX(x),toEditorY(y));
     return false;
   }
   
   bool GodleyIcon::onMouseOver(float x, float y)
   {
-    if (editor) editor->mouseMove(toEditorX(x),toEditorY(y));
+    if (m_editorMode) editor.mouseMove(toEditorX(x),toEditorY(y));
     return false;
   }
   
   void GodleyIcon::onMouseLeave()
   {
-    if (editor)
+    if (m_editorMode)
       {
-        editor->mouseMove(-1,-1);
+        editor.mouseMove(-1,-1);
         // May be a bit overzealous, but it solves bug 1273, which is caused by a flow which has not yet fully come into existence....
-        editor->selectedCol=-1;
-        editor->selectedRow=-1;
-        editor->update();
+        editor.selectedCol=-1;
+        editor.selectedRow=-1;
+        editor.update();
       }
   }
 
   bool GodleyIcon::onKeyPress(int keySym, const std::string& utf8, int)
   {
-    if (editor) editor->keyPress(keySym, utf8);
-    return editor.get();
+    if (m_editorMode) editor.keyPress(keySym, utf8);
+    return m_editorMode;
   }
   
   SVGRenderer GodleyIcon::svgRenderer;

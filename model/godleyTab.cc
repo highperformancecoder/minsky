@@ -49,11 +49,10 @@ namespace minsky
       {
         if (auto g=dynamic_pointer_cast<GodleyIcon>(i))
           {
-            if (!g->godleyT) continue;
             
             float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;   
-            float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
-            float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
+            float w=0.5*g->editor.colLeftMargin[g->editor.colLeftMargin.size()-1];
+            float h=0.5*(g->editor.godleyIcon().table.rows())*g->editor.rowHeight;
             xx+=w;
             yy+=h;
             float d=sqr(xx-x)+sqr(yy-y);
@@ -75,12 +74,11 @@ namespace minsky
       {
         if (auto g=dynamic_pointer_cast<GodleyIcon>(it))
           {
-            if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));  
             cairo::CairoSave cs(cairo);   
             cairo_translate(cairo,it->itemTabX,it->itemTabY);  		    				   
-            g->godleyT->disableButtons();
-            g->godleyT->displayValues=minsky().displayValues;
-            g->godleyT->draw(cairo);
+            g->editor.disableButtons();
+            g->editor.displayValues=minsky().displayValues;
+            g->editor.draw(cairo);
             
             // draw title
             if (!g->table.title.empty())
@@ -89,7 +87,7 @@ namespace minsky
                 Pango pango(cairo);
                 pango.setMarkup("<b>"+latexToPango(g->table.title)+"</b>");
                 pango.setFontSize(12);
-                cairo_move_to(cairo,0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1],g->godleyT->topTableOffset-2*g->godleyT->rowHeight);
+                cairo_move_to(cairo,0.5*g->editor.colLeftMargin[g->editor.colLeftMargin.size()-1],g->editor.topTableOffset-2*g->editor.rowHeight);
                 pango.show();
               }                    
           }			   

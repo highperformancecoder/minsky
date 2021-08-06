@@ -1235,7 +1235,7 @@ SUITE(Minsky)
       gi->update();
 
       // renaming godley column should rename canvas stock vars
-      GodleyTableEditor ged(gi);
+      GodleyTableEditor& ged=gi->editor;
       godley.cell(0,1)="c";
       ged.selectedRow=0;
       ged.selectedCol=1;

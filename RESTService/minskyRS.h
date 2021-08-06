@@ -38,6 +38,8 @@
 #include "godleyIcon.rcd"
 #include "godleyTable.rcd"
 #include "godleyTableWindow.h"
+#include "godleyTableWindow.rcd"
+#include "godleyTableWindow.xcd"
 #include "godleyTab.rcd"
 #include "godleyTab.xcd"
 #include "grid.h"
