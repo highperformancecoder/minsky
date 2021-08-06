@@ -39,10 +39,6 @@ const float border=10;
 
 namespace minsky
 {
-  GodleyIcon::CopiableUniquePtr::CopiableUniquePtr() {}
-  GodleyIcon::CopiableUniquePtr::~CopiableUniquePtr() {}
-  GodleyIcon::CopiableUniquePtr::CopiableUniquePtr(const CopiableUniquePtr&) {}
-
   namespace
   {
     struct OrderByName

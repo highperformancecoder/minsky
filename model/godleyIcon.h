@@ -38,18 +38,6 @@ namespace minsky
 
   class GodleyIcon: public ItemT<GodleyIcon>
   {
-  public:
-    /// support godley edit window on canvas
-    struct CopiableUniquePtr: public std::unique_ptr<GodleyTableEditor>
-    {
-      // make this copiable, but do nothing on copying
-      CopiableUniquePtr();
-      ~CopiableUniquePtr();
-      CopiableUniquePtr(const CopiableUniquePtr&);
-      CopiableUniquePtr& operator=(const CopiableUniquePtr&) {return *this;}
-    };
-
-  private:
     
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0;
@@ -176,12 +164,6 @@ namespace minsky
     float toEditorX(float) const;
     float toEditorY(float) const;
   };
-}
-
-namespace classdesc
-{
-  // required to expose the godleyT member to RESTservice
-  template <> struct is_smart_ptr<minsky::GodleyIcon::CopiableUniquePtr>: public true_type {};
 }
 
 #ifdef CLASSDESC
