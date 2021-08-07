@@ -4,7 +4,7 @@
 
 - Its best to pull from the master branch of [my fork of MXE](https://github.com/highperformancecoder/mxe), as this is where I push any packages/changes I need. 
 
-- make MXE_TARGETS=x86_64-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/tcl.tk boost cairo tcl tk json_spirit gsl pango librsvg openssl
+- make MXE_TARGETS=x86_64-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/tcl.tk boost cairo tcl tk json_spirit gsl pango librsvg openssl readline
 - For Minsky 2.20 or less, MXE_TARGETS=i686-w64-mingw32.static
 
 - For Minsky 1.x, you will also need:
