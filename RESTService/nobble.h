@@ -63,6 +63,7 @@ NOBBLE(NOBBLE_TARG(std::chrono::duration<R,P>), NOBBLE_TARG(class R, class P))
 NOBBLE(std::istream,)
 NOBBLE(std::initializer_list<T>,class T)
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long unsigned int*, std::vector<T>>),class T)
+NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long long unsigned int*, std::vector<T>>),class T)
 NOBBLE(NOBBLE_TARG(boost::geometry::model::d2::point_xy<T,S>),NOBBLE_TARG(class T,class S))
 NOBBLE(boost::any,)
 

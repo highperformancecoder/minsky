@@ -22,22 +22,22 @@
   Boilerplate code for instantiating template for all subclasses of Item.
  */
 
-#ifndef ITEMTEMPLATEINSTANTIATION_H
-#define ITEMTEMPLATEINSTANTIATION_H
-#include "operation.h"
-#include "ravelWrap.h"
-#include "lock.h"
-#include "userFunction.h"
-#include "sheet.h"
-#include "switchIcon.h"
-#include "variable.h"
+#include "itemTemplateInstantiations.h"
 
-#define DEF(type, base)                                                 \
-  template void ItemT<type,base>::RESTProcess(RESTProcess_t&, const string&); \
-  template void ItemT<type,base>::RESTProcess(RESTProcess_t&, const string&) const; \
-  template void ItemT<type,base>::json_pack(json_pack_t&) const; 
-#define DEFOP(type) DEF(Operation<OperationType::type>, OperationBase)
-#define DEFVAR(type) DEF(Variable<VariableType::type>, VariableBase)
-
-#endif
-
+namespace minsky
+{
+  DEFVAR(undefined)
+  DEFVAR(constant)
+  DEFVAR(parameter)
+  DEFVAR(flow)
+  DEFVAR(integral)
+  DEFVAR(stock)
+  DEFVAR(tempFlow)
+  
+  DEF(GodleyIcon,Item)
+  DEF(Group,Item)
+  DEF(Lock,Item)
+  DEF(PlotWidget,Item)
+  DEF(Sheet,Item)
+  DEF(SwitchIcon,BottomRightResizerItem)
+}

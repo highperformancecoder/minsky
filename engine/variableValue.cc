@@ -24,9 +24,12 @@
 #include <iomanip>
 #include <error.h>
 
+using namespace ecolab;
+using namespace std;
+
 #ifdef WIN32
 // std::quoted not supported (yet) on MXE
-string quoted(const std::string& x)
+string quoted(const string& x)
 {
   string r="\"";
   for (auto& i: x)
@@ -38,8 +41,6 @@ string quoted(const std::string& x)
 }
 #endif
 
-using namespace ecolab;
-using namespace std;
 namespace minsky
 {
   std::vector<double> ValueVector::stockVars(1);

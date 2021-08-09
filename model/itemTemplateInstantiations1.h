@@ -22,22 +22,34 @@
   Boilerplate code for instantiating template for all subclasses of Item.
  */
 
-#ifndef ITEMTEMPLATEINSTANTIATION_H
-#define ITEMTEMPLATEINSTANTIATION_H
-#include "operation.h"
-#include "ravelWrap.h"
-#include "lock.h"
-#include "userFunction.h"
-#include "sheet.h"
-#include "switchIcon.h"
-#include "variable.h"
+#include "itemTemplateInstantiations.h"
 
-#define DEF(type, base)                                                 \
-  template void ItemT<type,base>::RESTProcess(RESTProcess_t&, const string&); \
-  template void ItemT<type,base>::RESTProcess(RESTProcess_t&, const string&) const; \
-  template void ItemT<type,base>::json_pack(json_pack_t&) const; 
-#define DEFOP(type) DEF(Operation<OperationType::type>, OperationBase)
-#define DEFVAR(type) DEF(Variable<VariableType::type>, VariableBase)
-
-#endif
-
+namespace minsky
+{
+  DEFOP(constant)
+  DEFOP(time)
+  DEFOP(integrate)
+  DEFOP(differentiate)
+  DEFOP(data)
+  DEFOP(ravel)
+  DEFOP(euler)
+  DEFOP(pi)
+  DEFOP(zero)
+  DEFOP(one)
+  DEFOP(inf)
+  DEFOP(percent)
+  DEFOP(add)
+  DEFOP(subtract)
+  DEFOP(multiply)
+  DEFOP(divide)
+  DEFOP(min)
+  DEFOP(max)
+  DEFOP(and_)
+  DEFOP(or_)
+  DEFOP(log)
+  DEFOP(pow)
+  DEFOP(polygamma)
+  DEFOP(lt)
+  DEFOP(le)
+  DEFOP(eq)
+}

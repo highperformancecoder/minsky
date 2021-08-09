@@ -22,14 +22,14 @@
 #include <stdexcept>
 #include <string>
 
-#if defined(CAIRO_HAS_XLIB_SURFACE) && !defined(MAC_OSX_TK)
+#if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
+#define USE_WIN32_SURFACE
+#elif defined(CAIRO_HAS_XLIB_SURFACE) && !defined(MAC_OSX_TK)
+#define USE_X11
 #include <cairo/cairo-xlib.h>
 #include <X11/Xlib.h>
 #endif
 
-#if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
-#define USE_WIN32_SURFACE
-#endif
 
 #ifdef _WIN32
 #undef Realloc
@@ -78,9 +78,11 @@ namespace minsky
   WindowInformation::~WindowInformation()
   {
     bufferSurface.reset();
+#ifdef USE_X11
     XFreeGC(display, graphicsContext);
     XDestroyWindow(display, childWindowId);
     XDestroyWindow(display, bufferWindowId);
+#endif
   }
 
   ecolab::cairo::SurfacePtr WindowInformation::getBufferSurface()
@@ -91,16 +93,19 @@ namespace minsky
   void WindowInformation::copyBufferToMain()
   {
     cairo_surface_flush(bufferSurface->surface());
+#ifdef USE_X11
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XFlush(display);
+#endif
   }
 
   void WindowInformation::createSurfaces()
   {
 #ifdef USE_WIN32_SURFACE
     {
-      /* TODO */
+      HDC hdc=GetDC(reinterpret_cast<HWND>(parentWindowId));
+      bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdc)));
     }
 #elif defined(MAC_OSX_TK)
 
@@ -117,7 +122,9 @@ namespace minsky
 
   void WindowInformation::clear()
   {
+#ifdef USE_X11
     XClearWindow(display, childWindowId);
+#endif
   }
 
   void WindowInformation::setRenderingFlag(bool value)
@@ -136,6 +143,10 @@ namespace minsky
     offsetLeft = left;
     offsetTop = top;
 
+    childWidth = cWidth;
+    childHeight = cHeight;
+
+#ifdef USE_X11
     static bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
     display = XOpenDisplay(nullptr);
     int err = XGetWindowAttributes(display, parentWin, &wAttr);
@@ -144,15 +155,13 @@ namespace minsky
 
     // TODO:: Do some sanity checks on dimensions 
 
-    childWidth = cWidth;
-    childHeight = cHeight;
-
     childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, MINSKY_CANVAS_BACKGROUND_COLOR);
     bufferWindowId = XCreatePixmap(display, parentWin, childWidth, childHeight, wAttr.depth);
     graphicsContext=XCreateGC(display, childWindowId, 0, nullptr);
     
     XMapWindow(display, childWindowId);
-
+#endif
+    
     createSurfaces();
     isRendering = false;
   }

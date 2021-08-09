@@ -17,7 +17,9 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "item.h"
+// broken into several .o files to get around XCOFF format limitations with the MXE build
+
+#include "itemRS.h"
 #include "item.rcd"
 #include "assetClass.h"
 #include "assetClass.rcd"
@@ -75,9 +77,6 @@
 #include "ravelState.xcd"
 #include "renderNativeWindow.rcd"
 #include "renderNativeWindow.xcd"
-#include "signature.h"
-#include "signature.xcd"
-#include "signature.rcd"
 #include "slider.rcd"
 #include "selection.h"
 #include "selection.rcd"
@@ -100,57 +99,9 @@
 #include "xvector.rcd"
 
 #include "nobble.h"
+
 #include "minsky_epilogue.h"
-
-using namespace std;
-
-namespace classdesc
-{
-  template <>
-  struct RESTProcessPtr<minsky::ItemPtr>: public RESTProcessBase
-  {
-    minsky::ItemPtr& ptr;
-    /// returns the RESTProcess item corresponding to this, if it exists, null if it doesn't
-    /// ownership not returned
-    RESTProcessBase* RPItem() const
-    {
-      RESTProcess_t rp;
-      ptr->RESTProcess(rp,"");
-      auto i=rp.find("");
-      if (i!=rp.end())
-        return i->second.get();
-      return nullptr;
-    }
-    
-    RESTProcessPtr(minsky::ItemPtr& ptr): ptr(ptr) {}
-    json_pack_t process(const string& remainder, const json_pack_t& arguments) override
-    {
-      if (auto rp=RPItem())
-        return rp->process(remainder, arguments);
-      return {};
-    }
-    json_pack_t signature() const override
-    {
-      json_pack_t r;
-      if (ptr)
-        {
-          vector<minsky::Signature> signature{{ptr->classType(),{}}, {ptr->classType(),{ptr->classType()}}};
-          r<<signature;
-        }
-      return r; 
-    }
-    json_pack_t list() const override {
-      if (auto rp=RPItem())
-        return rp->list();
-      return json_pack_t(json_spirit::mArray());
-    }
-    json_pack_t type() const override {
-      if (auto rp=RPItem())
-        return rp->type();
-      return json_pack_t("void");}
-
-  };
-}
+#include "itemTemplateInstantiations.h"
 
 namespace minsky
 {
@@ -173,24 +124,30 @@ namespace minsky
     ::json_pack(j,"",*this);
   }
 
-  template <class T, class B>
-  void ItemT<T,B>::RESTProcess(RESTProcess_t& rp, const string& d)
-  {
-    ::RESTProcess(rp,d,dynamic_cast<T&>(*this));
-  }
-
-  template <class T, class B>
-  void ItemT<T,B>::RESTProcess(RESTProcess_t& rp, const string& d) const
-  {
-    ::RESTProcess(rp,d,dynamic_cast<const T&>(*this));
-  }
-  
-  template <class T, class B>
-  void ItemT<T,B>::json_pack(json_pack_t& j) const
-  {
-    ::json_pack(j,"",dynamic_cast<const T&>(*this));
-  }
-
+  DEFOP(constant)
+  DEFOP(time)
+  DEFOP(integrate)
+  DEFOP(differentiate)
+  DEFOP(data)
+  DEFOP(ravel)
+  DEFOP(euler)
+  DEFOP(pi)
+  DEFOP(zero)
+  DEFOP(one)
+  DEFOP(inf)
+  DEFOP(percent)
+  DEFOP(add)
+  DEFOP(subtract)
+  DEFOP(multiply)
+  DEFOP(divide)
+  DEFOP(min)
+  DEFOP(max)
+  DEFOP(and_)
+  DEFOP(or_)
+  DEFOP(log)
+  DEFOP(pow)
+  DEFOP(polygamma)
+  DEFOP(lt)
+  DEFOP(le)
+  DEFOP(eq)
 }
-
-#include "itemTemplateInstantiations.h"  

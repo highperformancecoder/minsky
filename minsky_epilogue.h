@@ -31,6 +31,13 @@ namespace classdesc
   {
     static string name() {return "cairo_surface_t";}
   };
+
+  // needed for MXE
+  template <>
+  struct tn<typename std::vector<unsigned long long>::const_iterator>
+  {
+    static string name() {return "std::vector<unsigned long long>::const_iterator";}
+  };
 }
 
 namespace classdesc_access
@@ -153,6 +160,7 @@ namespace classdesc_access
   struct access_json_pack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_pack_t> {};
   template <>
   struct access_json_unpack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_unpack_t> {};
+
 }
 #endif
 

@@ -43,4 +43,6 @@ namespace minsky
   {}
 }
 
-#include "itemTemplateInstantiations.h"  
+#include "itemTemplateInstantiations1.h"  
+#include "itemTemplateInstantiations2.h"  
+#include "itemTemplateInstantiations3.h"  

@@ -190,9 +190,9 @@ namespace minsky
     virtual const OperationBase* operationCast() const {return nullptr;}
     virtual OperationBase* operationCast() {return nullptr;}
     /// @}
-    /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
-    virtual const SwitchIcon* switchIconCast() const {return nullptr;}
-    virtual SwitchIcon* switchIconCast() {return nullptr;}
+//    /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
+//    virtual const SwitchIcon* switchIconCast() const {return nullptr;}
+//    virtual SwitchIcon* switchIconCast() {return nullptr;}
     /// @}
     /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
     virtual const PlotWidget* plotWidgetCast() const {return nullptr;}

@@ -44,7 +44,9 @@ using namespace minsky;
 using namespace classdesc;
 using namespace boost::posix_time;
 
-#ifndef _WIN32
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
 #include <sys/wait.h>
 #endif

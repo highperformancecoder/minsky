@@ -19,6 +19,7 @@
 #include "geometry.h"
 #define OPNAMEDEF
 #include "operation.h"
+#include "dataOp.h"
 #include "userFunction.h"
 #include "ravelWrap.h"
 #include "minsky.h"
@@ -108,7 +109,6 @@ namespace minsky
 {
 
   // necessary for Classdesc reflection!
-  constexpr float IntOp::intVarOffset;
   constexpr float OperationBase::l;
   constexpr float OperationBase::h;
   constexpr float OperationBase::r;
@@ -157,7 +157,7 @@ namespace minsky
 
       auto t=type();
       // call the iconDraw method if data description is empty
-      if (t==OperationType::data && dynamic_cast<const DataOp&>(*this).description().empty())
+      if (t==OperationType::data && dynamic_cast<const NamedOp&>(*this).description().empty())
         t=OperationType::numOps;
 
       switch (t)
@@ -500,265 +500,6 @@ namespace minsky
     return r;
   }
 
-  IntOpAccessor::IntOpAccessor(): ecolab::TCLAccessor<IntOp, std::string>
-    ("description",(Getter)&IntOp::description,(Setter)&IntOp::description) {}
-  
-  Units IntOp::units(bool check) const {
-    Units r=m_ports[1]->units(check);
-    if (!cminsky().timeUnit.empty())
-      r[cminsky().timeUnit]++;
-    r.normalise();
-    return r;
-  }
-  
-  bool IntOp::attachedToDefiningVar() const
-  {
-	if (coupled()) return intVar->attachedToDefiningVar();
-    return Item::attachedToDefiningVar();
-  }    
- 
-  void IntOp::draw(cairo_t* cairo) const
-  { 	  
-      // if rotation is in 1st or 3rd quadrant, rotate as
-      // normal, otherwise flip the text so it reads L->R
-      double angle=rotation() * M_PI / 180.0;
-      double fm=std::fmod(rotation(),360);
-      bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
-      double coupledIntTranslation=0;
-      float z=zoomFactor();
-    
-      float l=OperationBase::l*z, r=OperationBase::r*z, 
-        h=OperationBase::h*z;
-      
-      if (fabs(l)<iWidth()*z) l=-iWidth()*z;        
-      if (r<iWidth()*z) r=iWidth()*z;    
-      if (h<iHeight()*z) h=iHeight()*z;   
-
-      if (coupled())
-        {
-          auto& iv=*intVar;
-          //            iv.zoomFactor=zoomFactor;
-          RenderVariable rv(iv,cairo);
-          // we need to add some translation if the variable is bound
-          cairo_rotate(cairo,rotation()*M_PI/180.0);
-          coupledIntTranslation=-0.5*(intVarOffset+2*rv.width()+2+r)*z;
-          if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
-          cairo_rotate(cairo,-rotation()*M_PI/180.0);
-        }
-    
-      cairo_save(cairo); 
-      cairo_scale(cairo,z,z);
-      double sf = scaleFactor();  
-      cairo_scale(cairo,sf,sf);		  
-      cairo_move_to(cairo,-7,4.5);
-      cairo_show_text(cairo,"\xE2\x88\xAB");
-      cairo_show_text(cairo,"dt"); 
-      cairo_restore(cairo);
-        
-      int intVarWidth=0;
-    
-      cairo_save(cairo);
-      cairo_rotate(cairo, angle); 
-    
-      cairo_move_to(cairo,l,h);
-      cairo_line_to(cairo,l,-h);
-      cairo_line_to(cairo,r,0);     
-    
-      cairo_close_path(cairo);		  	 
-    
-      cairo_set_source_rgb(cairo,0,0,1);    
-      cairo_stroke_preserve(cairo);    
-    
-      if (coupled())
-        {
-          float ivo=intVarOffset*z;
-          cairo_new_path(cairo);
-          cairo_move_to(cairo,r,0);
-          cairo_line_to(cairo,r+ivo,0);
-          cairo_set_source_rgb(cairo,0,0,0);
-          cairo_stroke(cairo);
-     
-          // display an integration variable next to it
-          RenderVariable rv(*intVar, cairo);
-          // save the render width for later use in setting the clip
-          intVarWidth=rv.width()*z;
-          if (rv.width()<intVar->iWidth()) intVarWidth=0.5*intVar->iWidth()*z;
-          // set the port location...
-          Rotate rot(rotation(), x(), y());
-          auto ivp=rot(x()+r+ivo+intVarWidth, y());
-          intVar->moveTo(ivp.x(), ivp.y());
-         
-          cairo_save(cairo);
-          cairo_translate(cairo,r+ivo+intVarWidth,0);
-          // to get text to render correctly, we need to set
-          // the var's rotation, then antirotate it
-          intVar->rotation(rotation());
-          cairo_rotate(cairo, -M_PI*rotation()/180.0);
-          rv.draw();
-          cairo_restore(cairo);
-	 
-          // build clip path the hard way grr...
-          cairo_move_to(cairo,l,h);
-          cairo_line_to(cairo,l,-h);
-          cairo_line_to(cairo,r,0);
-          cairo_line_to(cairo,r+ivo,0);
-          float rvw=rv.width()*z, rvh=rv.height()*z;
-          if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
-          if (rv.height()<intVar->iHeight()) rvh=intVar->iHeight()*z;
-          cairo_line_to(cairo,r+ivo,-rvh);
-          cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
-          cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
-          cairo_line_to(cairo,r+ivo+2*rvw,rvh);
-          cairo_line_to(cairo,r+ivo,rvh);
-          cairo_line_to(cairo,r+ivo,0);        
-          cairo_line_to(cairo,r,0);        
-          cairo_close_path(cairo);        
-        }
-    
-      cairo::Path clipPath(cairo); 
-    
-      double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
-        x2=l, y2=numPorts() > 2? h-3: 0;
-                  
-      if (textFlipped) swap(y1,y2);
-	
-      // adjust for integration variable
-      if (coupled())
-        x0+=intVarOffset+2*intVarWidth+2;
-	
-      cairo_save(cairo);
-      cairo_identity_matrix(cairo);
-      cairo_translate(cairo, x(), y());
-      cairo_rotate(cairo, angle);
-      cairo_user_to_device(cairo, &x0, &y0);
-      cairo_user_to_device(cairo, &x1, &y1);
-      cairo_user_to_device(cairo, &x2, &y2);
-      cairo_restore(cairo);
-    
-      if (numPorts()>0) 
-        m_ports[0]->moveTo(x0, y0);
-      if (numPorts()>1) 
-        m_ports[1]->moveTo(x1, y1);
-      if (numPorts()>2)
-        m_ports[2]->moveTo(x2, y2);
-	
-      cairo_translate(cairo,-coupledIntTranslation,0);        
-      cairo_restore(cairo); // undo rotation
-      if (mouseFocus)
-        {
-          drawPorts(cairo);
-          displayTooltip(cairo,tooltip);
-        }
-      if (onResizeHandles) drawResizeHandles(cairo);  
-	
-      cairo_new_path(cairo);
-      clipPath.appendToCurrent(cairo);
-      cairo_clip(cairo);          
-      if (selected) drawSelected(cairo);       
-  }
-  
-  void IntOp::resize(const LassoBox& b)
-  {
-    float invZ=1.0/zoomFactor();
-    this->moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-    iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
-    // Ensure int op height and var height similar to make gripping resize handle easier. for ticket 1203.
-    iHeight(0.25*std::abs(b.y1-b.y0)*invZ);
-    intVar->iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
-    intVar->iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
-    bb.update(*this);	  
-  }
-  
-  void IntOp::insertControlled(Selection& selection)
-  {
-    selection.ensureItemInserted(intVar);
-  }
-  
-  const IntOp& IntOp::operator=(const IntOp& x)
-  {
-    Super::operator=(x); 
-    intVar.reset(x.intVar->clone());
-    return *this;
-  }
-
-  void IntOp::removeControlledItems(minsky::Group& g) const
-  {
-    if (intVar)
-      g.removeItem(*intVar);
-  }
-  
-  string IntOp::description(const string& a_desc)
-  {
-    auto desc=a_desc;
-    
-    // set a default name if none given
-    if (desc.empty())
-      desc=minsky().variableValues.newName
-        (VariableValue::valueId(group.lock(),"int"));
-
-    // disallow global integration variables
-    if (desc[0]==':') desc=desc.substr(1);
-    
-    if (intVar && intVar->group.lock() == group.lock() && intVar->name()==desc)
-      return description(); // nothing to do
-
-    vector<Wire> savedWires;
-    if (intVar->portsSize()>0)
-      {
-        // save any attached wires for later use
-        for (auto w: intVar->ports(0).lock()->wires())
-          savedWires.push_back(*w);
-      }
-
-    // if the variable name exists, and already has a connected
-    // input, then it is not a candidate for being an integral
-    // variable, so generate a new name that doesn't currently
-    // exist
-
-    string vid=VariableValue::valueId(group.lock(),desc);
-    auto i=minsky().variableValues.find(vid);      
-    if (i!=minsky().variableValues.end()) 
-      {
-        if (i->second->type()!=VariableType::integral) 
-          try
-            {
-              minsky().convertVarType(vid, VariableType::integral);
-            }
-          catch (...)
-            {
-              desc=minsky().variableValues.newName(vid);
-            }
-        else
-          if (minsky().definingVar(vid))               // Also check that integral has input. for ticket 1068.
-            desc=minsky().variableValues.newName(vid);
-          else 
-            desc=vid; 
-        if (desc[0]==':') desc=desc.substr(1);// disallow global integration variables
-      }
-    
-    
-    ItemPtr oldIvar;
-    if (intVar)
-      oldIvar=minsky().model->removeItem(*intVar);
-
-    intVar.reset(new Variable<VariableType::integral>(desc));
-    if (auto g=group.lock())
-      intVar->controller=g->findItem(*this); // we're managing our own display
-    // initialise in toggled state
-    m_coupled=true;
-    
-    // recreate any previously attached wires, initially in global group.
-    for (auto& w: savedWires)
-      minsky().model->addWire(new Wire(intVar->ports(0), w.to(), w.coords()));
-
-    bb.update(*this); // adjust icon bounding box - see ticket #704
-    
-    // this should also adjust the wire's group ownership appropriately
-    if (auto g=group.lock())
-      g->addItem(intVar);
-    return description();
-  }
-
   namespace
   {
     OperationFactory<OperationBase, Operation> operationFactory;
@@ -778,38 +519,6 @@ namespace minsky
       case userFunction: return new UserFunction;
       default: return operationFactory.create(type);
       }
-  }
-
-  bool IntOp::toggleCoupled()
-  {
-    if (type()!=integrate) return false;
-
-    assert(intVar);
-
-    assert(m_ports.size()==3);
-    if (m_coupled) 
-      {
-        WirePtr newWire(new Wire(m_ports[0], intVar->ports(1)));
-        if (auto g=group.lock())
-          g->addWire(newWire);
-        else
-          minsky().model->addWire(newWire);
-        intVar->controller.reset();
-        intVar->rotation(rotation());
-      }
-    else
-      {
-        if (auto g=group.lock())
-          {
-            for (auto w: intVar->ports(1).lock()->wires())
-              g->removeWire(*w);
-            intVar->controller=g->findItem(*this);
-          }
-        intVar->mouseFocus=false; // prevent drawing of variable ports when coupled
-      }
-    m_coupled=!m_coupled;
-    bb.update(*this); // adjust bounding box for coupled integral operation - see ticket #1055  
-    return coupled();
   }
 
   string OperationBase::portValues() const
@@ -839,74 +548,6 @@ namespace minsky
     updateBB(); // adjust icon bounding box - see ticket #1121
     return m_description;
   }    
-
-  void DataOp::readData(const string& fileName)
-  {
-    ifstream f(fileName.c_str());
-    data.clear();
-    // for now, we just read pairs of numbers, separated by
-    // whitespace. Later, we need to add in the smarts to handle a
-    // variety of CSV formats
-    double x, y;
-    while (f>>x>>y)
-      data[x]=y; // TODO: throw if more than one equal value of x provided?
-
-    // trim any leading directory
-    size_t p=fileName.rfind('/');
-    // '/' is guaranteed not to be in fileName, so we can use that as
-    // a delimiter
-    description("\\verb/"+
-                ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
-  }
-
-  void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
-  {
-    data.clear();
-    double dx=(xmax-xmin)/numSamples;
-    for (double x=xmin; x<xmax; x+=dx) //NOLINT
-      data[x]=double(rand())/RAND_MAX;
-  }
-
-  double DataOp::interpolate(double x) const
-  {
-    // not terribly sensible, but need to return something
-    if (data.empty()) return 0;
-
-    map<double, double>::const_iterator v=data.lower_bound(x);
-    if (v==data.end())
-      return data.rbegin()->second;
-    else if (v==data.begin())
-      return v->second;
-    else if (v->first > x)
-      {
-        map<double, double>::const_iterator v0=v;
-        --v0;
-        return (x-v0->first)*(v->second-v0->second)/
-          (v->first-v0->first)+v0->second;
-      }
-    else
-      {
-        assert(v->first==x);
-        return v->second;
-      }
-  }
-
-  double DataOp::deriv(double x) const
-  {
-    map<double, double>::const_iterator v=data.lower_bound(x);
-    if (v==data.end() || v==data.begin())
-      return 0;
-    map<double, double>::const_iterator v1=v, v2=v; 
-    --v1;
-    if (v->first==x)
-      {
-        ++v2;
-        if (v2==data.end()) v2=v;
-        return (v2->second-v1->second)/(v2->first-v1->first);
-      }
-    else 
-      return (v->second-v1->second)/(v->first-v1->first);
-  }
 
   // virtual draw methods for operations - defined here rather than
   // operations.cc because it is more related to the functionality in
@@ -1513,15 +1154,4 @@ namespace minsky
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}
 
-  void IntOp::pack(pack_t& x, const string& d) const
-  {::pack(x,d,*this);}
-      
-  void IntOp::unpack(unpack_t& x, const string& d)
-  {::unpack(x,d,*this);}
-
-  void DataOp::pack(pack_t& x, const string& d) const
-  {::pack(x,d,*this);}
-      
-  void DataOp::unpack(unpack_t& x, const string& d)
-  {::unpack(x,d,*this);}
 }
