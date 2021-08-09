@@ -18,7 +18,7 @@
 */
 
 #include "dataOp.h"
-#include "intop.h"
+#include "intOp.h"
 #include "item.h"
 #include "selection.h"
 #include "minsky_epilogue.h"

@@ -19,7 +19,7 @@
 
 #ifndef INTEGRAL_H
 #define INTEGRAL_H
-#include "intop.h"
+#include "intOp.h"
 #include "variableValue.h"
 
 namespace minsky

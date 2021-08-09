@@ -18,7 +18,7 @@
 */
 
 #include "cairoItems.h"
-#include "intop.h"
+#include "intOp.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
 
