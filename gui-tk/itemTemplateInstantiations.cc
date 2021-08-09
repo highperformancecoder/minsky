@@ -17,6 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "dataOp.h"
+#include "intop.h"
 #include "item.h"
 #include "selection.h"
 #include "minsky_epilogue.h"
@@ -43,6 +45,90 @@ namespace minsky
   {}
 }
 
-#include "itemTemplateInstantiations1.h"  
-#include "itemTemplateInstantiations2.h"  
-#include "itemTemplateInstantiations3.h"  
+#include "itemTemplateInstantiations.h"
+
+namespace minsky
+{
+  DEFOP(constant)
+  DEFOP(time)
+  DEFOP(integrate)
+  DEFOP(differentiate)
+  DEFOP(data)
+  DEFOP(ravel)
+  DEFOP(euler)
+  DEFOP(pi)
+  DEFOP(zero)
+  DEFOP(one)
+  DEFOP(inf)
+  DEFOP(percent)
+  DEFOP(add)
+  DEFOP(subtract)
+  DEFOP(multiply)
+  DEFOP(divide)
+  DEFOP(min)
+  DEFOP(max)
+  DEFOP(and_)
+  DEFOP(or_)
+  DEFOP(log)
+  DEFOP(pow)
+  DEFOP(polygamma)
+  DEFOP(lt)
+  DEFOP(le)
+  DEFOP(eq)
+  DEFOP(userFunction)
+  DEFOP(copy)
+  DEFOP(sqrt)
+  DEFOP(exp)
+  DEFOP(ln)
+  DEFOP(sin)
+  DEFOP(cos)
+  DEFOP(tan)
+  DEFOP(asin)
+  DEFOP(acos)
+  DEFOP(atan)
+  DEFOP(sinh)
+  DEFOP(cosh)
+  DEFOP(tanh)
+  DEFOP(abs)
+  DEFOP(floor)
+  DEFOP(frac)
+  DEFOP(not_)
+  DEFOP(Gamma)
+  DEFOP(fact)
+  DEFOP(sum)
+  DEFOP(product)
+  DEFOP(infimum)
+  DEFOP(supremum)
+  DEFOP(any)
+  DEFOP(all)
+  DEFOP(infIndex)
+  DEFOP(supIndex)
+  DEFOP(runningSum)
+  DEFOP(runningProduct)
+  DEFOP(difference)
+  DEFOP(innerProduct)
+  DEFOP(outerProduct)
+  DEFOP(index)
+  DEFOP(gather)
+  DEFOP(numOps)
+
+  DEFVAR(undefined)
+  DEFVAR(constant)
+  DEFVAR(parameter)
+  DEFVAR(flow)
+  DEFVAR(integral)
+  DEFVAR(stock)
+  DEFVAR(tempFlow)
+  
+  DEF(GodleyIcon,Item)
+  DEF(Group,Item)
+  DEF(Lock,Item)
+  DEF(PlotWidget,Item)
+  DEF(Sheet,Item)
+  DEF(SwitchIcon,BottomRightResizerItem)
+
+  DEF(DataOp, Operation<OperationType::data>)
+  DEF(IntOp, Operation<OperationType::integrate>)
+  DEF(Ravel, Operation<OperationType::ravel>)
+  DEF(UserFunction, Operation<OperationType::userFunction>)
+}
