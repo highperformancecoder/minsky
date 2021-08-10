@@ -110,6 +110,7 @@ namespace minsky
     winInfoPtr->copyBufferToMain();
     winInfoPtr->setRenderingFlag(false);
 
+    
 #ifdef FPS_PROFILING_ON
     unsigned long t3_render_over = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 

@@ -87,13 +87,17 @@ namespace minsky
 
   ecolab::cairo::SurfacePtr WindowInformation::getBufferSurface()
   {
+    if (!bufferSurface) createSurfaces();
     return bufferSurface;
   }
 
   void WindowInformation::copyBufferToMain()
   {
     cairo_surface_flush(bufferSurface->surface());
-#ifdef USE_X11
+#ifdef USE_WIN32_SURFACE
+    ReleaseDC(reinterpret_cast<HWND>(parentWindowId), cairo_win32_surface_get_dc(bufferSurface->surface()));
+    bufferSurface.reset();
+#elif defined(USE_X11)
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XFlush(display);
@@ -105,7 +109,8 @@ namespace minsky
 #ifdef USE_WIN32_SURFACE
     {
       HDC hdc=GetDC(reinterpret_cast<HWND>(parentWindowId));
-      bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdc)));
+      bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdc),childWidth, childHeight));
+      cairo_surface_set_device_offset(bufferSurface->surface(), offsetLeft, offsetTop);
     }
 #elif defined(MAC_OSX_TK)
 
