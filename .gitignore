@@ -1,6 +1,7 @@
 *.o
 *.d
 *.cd
+*.exe
 *.xcd
 *.rcd
 *~
