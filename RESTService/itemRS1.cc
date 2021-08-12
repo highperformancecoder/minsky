@@ -86,4 +86,12 @@ namespace minsky
   DEFOP(lt)
   DEFOP(le)
   DEFOP(eq)
+  DEFOP(userFunction)
+  DEFOP(copy)
+  DEFOP(sqrt)
+  DEFOP(exp)
+  DEFOP(ln)
+  DEFOP(sin)
+  DEFOP(cos)
+  DEFOP(tan)
 }
