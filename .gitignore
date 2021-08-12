@@ -21,4 +21,6 @@ test/cmpFp
 gui-tk/minsky
 gui-tk/library/tcl
 gui-tk/library/tk
+RESTService/minsky-RESTService
+RESTService/minsky-httpd
 
