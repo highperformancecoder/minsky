@@ -22,6 +22,8 @@
 #include "latexMarkup.h"
 #include "group.h"
 #include "selection.h"
+#include "lasso.h"
+#include "variableValue.h"
 #include "minsky_epilogue.h"
 
 using namespace std;

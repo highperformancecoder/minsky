@@ -31,6 +31,8 @@
 // override EcoLab's default CLASSDESC_ACCESS macro
 #include "classdesc_access.h"
 
+#include "engNotation.h"
+
 #include "polyBase.h"
 #include <polyPackBase.h>
 #include "variableType.h"
@@ -126,15 +128,10 @@ namespace minsky
     std::string valueIdInCurrentScope(const std::string& nm) const;
     /// variableValue associated with this. nullptr if not associated with a variableValue
     std::shared_ptr<VariableValue> vValue() const;
-    std::vector<unsigned> dims() const {
-      if (auto v=vValue()) return v->hypercube().dims();
-      else return {};
-    }
-    
-    std::vector<std::string> dimLabels() const {
-      if (auto v=vValue()) return v->hypercube().dimLabels();
-      else return {};
-    }    
+    /// variable's tensor shape
+    std::vector<unsigned> dims() const;
+    /// labels along each axis
+    std::vector<std::string> dimLabels() const;
         
     std::pair<std::string,std::string> getDimLabelsPicked() const {return m_dimLabelsPicked;}   
     std::pair<std::string,std::string> setDimLabelsPicked(const std::string& dimLabel1, const std::string& dimLabel2) {

@@ -20,6 +20,7 @@
 #include "equations.h"
 #include "latexMarkup.h"
 #include "selection.h"
+#include "lasso.h"
 #include "userFunction.h"
 #include <pango.h>
 #include "minsky_epilogue.h"

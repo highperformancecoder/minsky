@@ -395,7 +395,7 @@ namespace minsky
     void randomLayout();
     
     /// plot widget used for group icon
-    std::shared_ptr<PlotWidget> displayPlot;
+    classdesc::Exclude<std::shared_ptr<PlotWidget>> displayPlot;
     /// remove the display plot
     void removeDisplayPlot() {
       displayPlot.reset();

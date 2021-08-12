@@ -1,7 +1,6 @@
 /*
   @copyright Steve Keen 2021
   @author Russell Standish
-  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it
@@ -18,30 +17,33 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parameterTab.h"
-#include "selection.h"
-#include "lasso.h"
-#include "plotWidget.h"
-#include "minsky_epilogue.h"
-using namespace std;
+#ifndef LASSO_H
+#define LASSO_H
+
 namespace minsky
 {
-  ecolab::Pango& ParameterTab::cell(unsigned row, unsigned col)
+  class Wire;
+
+  /// represents rectangular region of a lasso operation
+  struct LassoBox
   {
-    if (row>0 && col==1) // override the definition column
-      {
-        if (auto v=itemVector[row-1]->variableCast())
-          {
-            cellPtr.reset(surface->cairo());
-            string dimString;
-            auto dims=v->dims();
-            for (size_t i=0; i<dims.size(); ++i)
-              dimString+=(i?",":"")+to_string(dims[i]);
-            cellPtr->setText(dimString);
-          }
-        return *cellPtr;
-      }
-    else
-      return ItemTab::cell(row,col);
-  }
+    float x0=0, y0=0, x1=0, y1=0, angle=0;
+    LassoBox() {}
+    LassoBox(float x0, float y0, float x1, float y1); 
+    
+    /// returns whether item's icon overlaps the lasso
+    template <class Item>
+    bool intersects(const Item& item) const {
+      return item.right() >= x0 && item.left() <= x1 &&
+        item.bottom() >= y0 && item.top() <= y1;
+    }
+
+    /// return true if both endpoints of the wire lie
+    /// within the lasso
+    bool contains(const Wire& wire) const;
+  };
 }
+
+#include "lasso.cd"
+#include "lasso.xcd"
+#endif

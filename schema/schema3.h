@@ -175,7 +175,7 @@ namespace schema3
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
       nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
-      exp_threshold(p.exp_threshold), legendGeometry(p), palette(p.palette)
+      exp_threshold(p.exp_threshold), legendGeometry(LegendGeometry(p)), palette(p.palette)
     {
       if (p.legend) legend=p.legendSide;
     }

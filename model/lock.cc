@@ -20,6 +20,7 @@
 #include "lock.h"
 #include "wire.h"
 #include "selection.h"
+#include "lasso.h"
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;

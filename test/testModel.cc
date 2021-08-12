@@ -240,7 +240,7 @@ SUITE(Group)
       plot->makeDisplayPlot();
       CHECK(group0->displayPlot.get()==plot);
       group0->removeDisplayPlot();
-      CHECK(!group0->displayPlot);
+      CHECK(!group0->displayPlot.get());
     }
 
   TEST_FIXTURE(TestFixture, findGroup)

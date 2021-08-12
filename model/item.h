@@ -24,6 +24,7 @@
 #include "port.h"
 #include "intrusiveMap.h"
 #include "geometry.h"
+#include "str.h"
 #include "polyRESTProcessBase.h"
 
 #include <accessor.h>
@@ -96,8 +97,42 @@ namespace minsky
     float bottom() const {return m_bottom;}
   };
 
+  /// Item members excluded from reflection
+  struct ItemExclude
+  {
+    /// owning group of this item.
+    classdesc::Exclude<std::weak_ptr<Group>> group;
+
+    virtual ~ItemExclude() {}
+    
+    /// @{ a more efficient replacement for dynamic_cast<VariableBase*>(this)
+    virtual const VariableBase* variableCast() const {return nullptr;}
+    virtual VariableBase* variableCast() {return nullptr;}
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<OperationBase*>(this)
+    virtual const OperationBase* operationCast() const {return nullptr;}
+    virtual OperationBase* operationCast() {return nullptr;}
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
+    virtual const SwitchIcon* switchIconCast() const {return nullptr;}
+    virtual SwitchIcon* switchIconCast() {return nullptr;}
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
+    virtual PlotWidget* plotWidgetCast() {return nullptr;}
+    /// @}            
+
+    /// insert this items controlled or controller items are inserted
+    /// correctly into \a selection.
+    virtual void insertControlled(Selection& selection) {}
+    /// remove all controlled items from a group
+    virtual void removeControlledItems(Group&) const {}
+    /// remove all controlled items their owning group
+    void removeControlledItems() const;
+  };
+  
   class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>,
-              public classdesc::PolyRESTProcessBase
+              public classdesc::PolyRESTProcessBase, public classdesc::Exclude<ItemExclude>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
 
@@ -123,8 +158,6 @@ namespace minsky
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     bool onBorder=false; ///< true to indicate mouse hovering over border
     std::string deleteCallback; /// callback to be run when item deleted from group
-    /// owning group of this item.
-    classdesc::Exclude<std::weak_ptr<Group>> group;
 
     /// return a weak reference to the ith port
     virtual std::weak_ptr<Port> ports(std::size_t i) const {
@@ -181,23 +214,6 @@ namespace minsky
     virtual std::string classType() const {return "Item";}
     /// return an id uniquely identifying this item
     std::string id() const {return str(size_t(this));}
-
-    /// @{ a more efficient replacement for dynamic_cast<VariableBase*>(this)
-    virtual const VariableBase* variableCast() const {return nullptr;}
-    virtual VariableBase* variableCast() {return nullptr;}
-    /// @}
-    /// @{ a more efficient replacement for dynamic_cast<OperationBase*>(this)
-    virtual const OperationBase* operationCast() const {return nullptr;}
-    virtual OperationBase* operationCast() {return nullptr;}
-    /// @}
-//    /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
-//    virtual const SwitchIcon* switchIconCast() const {return nullptr;}
-//    virtual SwitchIcon* switchIconCast() {return nullptr;}
-    /// @}
-    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
-    virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
-    virtual PlotWidget* plotWidgetCast() {return nullptr;}
-    /// @}            
 
     virtual float x() const; 
     virtual float y() const;
@@ -307,13 +323,6 @@ namespace minsky
     }
     /// perform units consistency checks
     Units checkUnits() const {return units(true);}
-    /// insert this items controlled or controller items are inserted
-    /// correctly into \a selection.
-    virtual void insertControlled(Selection& selection) {}
-    /// remove all controlled items from a group
-    virtual void removeControlledItems(Group&) const {}
-    /// remove all controlled items their owning group
-    void removeControlledItems() const;
 
     /// return a shared_ptr to this
     ItemPtr itemPtrFromThis() const;
@@ -367,6 +376,17 @@ namespace minsky
 // not needed anyway
 #pragma omit pack minsky::Item
 #pragma omit unpack minsky::Item
+
+// omit ItemExclude to reduce the amount of boilerplate code needing to be compiled
+#pragma omit pack minsky::ItemExclude
+#pragma omit unpack minsky::ItemExclude
+#pragma omit json_pack minsky::ItemExclude
+#pragma omit json_unpack minsky::ItemExclude
+#pragma omit xml_pack minsky::ItemExclude
+#pragma omit xml_unpack minsky::ItemExclude
+#pragma omit TCL_obj minsky::ItemExclude
+#pragma omit RESTProcess minsky::ItemExclude
+
 #endif
 namespace classdesc_access
 {

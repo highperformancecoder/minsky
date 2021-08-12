@@ -153,6 +153,19 @@ shared_ptr<VariableValue> VariableBase::vValue() const
     return {};
 }
 
+vector<unsigned> VariableBase::dims() const
+{
+  if (auto v=vValue()) return v->hypercube().dims();
+  else return {};
+}
+    
+vector<string> VariableBase::dimLabels() const
+{
+  if (auto v=vValue()) return v->hypercube().dimLabels();
+  else return {};
+}    
+
+
 string VariableBase::valueId() const 
 {
   return VariableValue::valueId(group.lock(), m_name);

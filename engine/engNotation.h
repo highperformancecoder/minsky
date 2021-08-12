@@ -1,7 +1,6 @@
 /*
   @copyright Steve Keen 2021
   @author Russell Standish
-  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it
@@ -17,31 +16,17 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef ENG_NOTATION
+#define ENG_NOTATION
 
-#include "parameterTab.h"
-#include "selection.h"
-#include "lasso.h"
-#include "plotWidget.h"
-#include "minsky_epilogue.h"
-using namespace std;
+#include <string>
 namespace minsky
 {
-  ecolab::Pango& ParameterTab::cell(unsigned row, unsigned col)
-  {
-    if (row>0 && col==1) // override the definition column
-      {
-        if (auto v=itemVector[row-1]->variableCast())
-          {
-            cellPtr.reset(surface->cairo());
-            string dimString;
-            auto dims=v->dims();
-            for (size_t i=0; i<dims.size(); ++i)
-              dimString+=(i?",":"")+to_string(dims[i]);
-            cellPtr->setText(dimString);
-          }
-        return *cellPtr;
-      }
-    else
-      return ItemTab::cell(row,col);
-  }
+  struct EngNotation {int sciExp, engExp;};
+  /// return formatted mantissa and exponent in engineering format
+  EngNotation engExp(double value);
+  std::string mantissa(double value, const EngNotation&,int digits=3);
+  std::string expMultiplier(int exp);
 }
+
+#endif

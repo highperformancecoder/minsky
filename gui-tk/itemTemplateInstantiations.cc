@@ -20,8 +20,23 @@
 #include "dataOp.h"
 #include "intOp.h"
 #include "item.h"
+#include "lasso.h"
+#include "lock.h"
+#include "operation.h"
+#include "ravelWrap.h"
 #include "selection.h"
+#include "userFunction.h"
+#include "sheet.h"
+#include "switchIcon.h"
+#include "variable.h"
+
 #include "minsky_epilogue.h"
+
+namespace classdesc
+{
+  class RESTProcess_t;
+  class json_pack_t;
+}
 
 namespace minsky
 {

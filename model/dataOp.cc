@@ -19,6 +19,7 @@
 */
 #include "dataOp.h"
 #include "selection.h"
+#include "lasso.h"
 #include "minsky_epilogue.h"
 
 using namespace std;

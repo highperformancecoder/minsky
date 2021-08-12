@@ -24,18 +24,18 @@
 
 #ifndef ITEMTEMPLATEINSTANTIATION_H
 #define ITEMTEMPLATEINSTANTIATION_H
-#include "operation.h"
-#include "ravelWrap.h"
-#include "lock.h"
-#include "userFunction.h"
-#include "sheet.h"
-#include "switchIcon.h"
-#include "variable.h"
+//#include "operation.h"
+//#include "ravelWrap.h"
+//#include "lock.h"
+//#include "userFunction.h"
+//#include "sheet.h"
+//#include "switchIcon.h"
+//#include "variable.h"
 
 #define DEF(type, base)                                                 \
-  template void ItemT<type,base>::RESTProcess(RESTProcess_t&, const string&); \
-  template void ItemT<type,base>::RESTProcess(RESTProcess_t&, const string&) const; \
-  template void ItemT<type,base>::json_pack(json_pack_t&) const; 
+  template void ItemT<type,base>::RESTProcess(classdesc::RESTProcess_t&, const std::string&); \
+  template void ItemT<type,base>::RESTProcess(classdesc::RESTProcess_t&, const std::string&) const; \
+  template void ItemT<type,base>::json_pack(classdesc::json_pack_t&) const; 
 #define DEFOP(type) DEF(Operation<OperationType::type>, OperationBase)
 #define DEFVAR(type) DEF(Variable<VariableType::type>, VariableBase)
 

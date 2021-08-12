@@ -19,6 +19,7 @@
 #include "sheet.h"
 #include "str.h"
 #include "selection.h"
+#include "lasso.h"
 #include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>

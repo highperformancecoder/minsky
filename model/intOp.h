@@ -20,6 +20,7 @@
 #ifndef INTOP_H
 #define INTOP_H
 #include "operation.h"
+#include "variable.h"
 
 namespace minsky
 {

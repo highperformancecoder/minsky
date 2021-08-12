@@ -45,7 +45,7 @@ namespace minsky
 
   Ravel::Ravel()
   {
-    if (!*this)
+    if (!ravel::Ravel::operator bool())
       {
         tooltip="https://ravelation.hpcoders.com.au";
         detailedText=lastError();

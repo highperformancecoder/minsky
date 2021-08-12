@@ -20,6 +20,7 @@
 #ifndef ITEMRS_H
 #define ITEMRS_H
 #include "item.h"
+#include "lasso.h"
 #include "RESTProcess_base.h"
 #include "signature.h"
 #include "signature.xcd"

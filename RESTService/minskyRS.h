@@ -75,6 +75,7 @@
 #include "rungeKutta.rcd"
 #include "rungeKutta.xcd"
 #include "selection.rcd"
+#include "lasso.rcd"
 #include <signature.h>
 #include "signature.rcd"
 #include "signature.xcd"
@@ -97,6 +98,7 @@
 #include "variableValue.rcd"
 #include "variableType.rcd"
 #include "variableValueRS.h"
+#include "units.rcd"
 #include "xvector.h"
 #include "xvector.rcd"
 #include "wire.rcd"

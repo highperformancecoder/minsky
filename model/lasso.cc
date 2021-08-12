@@ -1,7 +1,6 @@
 /*
   @copyright Steve Keen 2021
   @author Russell Standish
-  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it
@@ -18,30 +17,25 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parameterTab.h"
-#include "selection.h"
+#include "item.h"
 #include "lasso.h"
-#include "plotWidget.h"
+#include "port.h"
+#include "wire.h"
 #include "minsky_epilogue.h"
-using namespace std;
-namespace minsky
+
+#include <utility>
+
+minsky::LassoBox::LassoBox(float x0, float y0, float x1, float y1): 
+  x0(x0), y0(y0), x1(x1), y1(y1)
 {
-  ecolab::Pango& ParameterTab::cell(unsigned row, unsigned col)
-  {
-    if (row>0 && col==1) // override the definition column
-      {
-        if (auto v=itemVector[row-1]->variableCast())
-          {
-            cellPtr.reset(surface->cairo());
-            string dimString;
-            auto dims=v->dims();
-            for (size_t i=0; i<dims.size(); ++i)
-              dimString+=(i?",":"")+to_string(dims[i]);
-            cellPtr->setText(dimString);
-          }
-        return *cellPtr;
-      }
-    else
-      return ItemTab::cell(row,col);
-  }
+  if (x0>x1) std::swap(this->x0,this->x1);
+  if (y0>y1) std::swap(this->y0,this->y1);
 }
+
+
+bool minsky::LassoBox::contains(const Wire& wire) const
+{
+  // Make sure both ends of wires are selected in all cases. For ticket 1147
+  return (intersects(wire.from()->item()) && intersects(wire.to()->item())); 
+}
+

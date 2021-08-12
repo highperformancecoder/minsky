@@ -27,6 +27,7 @@
 #include "classdesc_access.h"
 #include "SVGItem.h"
 #include "group.h"
+#include "variableValue.h"
 
 #include <map>
 #include <cairo.h>

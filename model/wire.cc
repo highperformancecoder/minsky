@@ -22,6 +22,7 @@
 #include "port.h"
 #include "group.h"
 #include "selection.h"
+#include "lasso.h"
 #include "operation.h"
 #include "plotWidget.h"
 #include "SVGItem.h"

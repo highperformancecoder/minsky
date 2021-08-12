@@ -19,11 +19,14 @@
 
 #include "schemaHelper.h"
 #include "selection.h"
+#include "lasso.h"
+#include "xml_common.h"
 #include "minsky_epilogue.h"
 #include "a85.h"
 #include "zStream.h"
 #include <zlib.h>
 using namespace std;
+using namespace classdesc;
 
 namespace minsky
 {
@@ -44,7 +47,7 @@ namespace minsky
   }
 
 
-  classdesc::CDATA encode(const classdesc::pack_t& buf)
+  CDATA encode(const pack_t& buf)
   {
     vector<unsigned char> zbuf(buf.size());
     DeflateZStream zs(buf, zbuf);

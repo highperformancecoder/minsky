@@ -49,6 +49,7 @@
 #include "intOp.rcd"
 #include "item.h"
 #include "item.rcd"
+#include "lasso.h"
 #include "noteBase.rcd"
 #include "operation.h"
 #include "operation.rcd"
@@ -86,8 +87,12 @@
 #include "wire.rcd"
 #include "xvector.rcd"
 
+#include "engNotation.rcd"
+#include "engNotation.xcd"
 #include "itemRS.h"
 #include "nobble.h"
+#include "units.h"
+#include "units.rcd"
 #include "minsky_epilogue.h"
 
 #include "itemTemplateInstantiations.h"

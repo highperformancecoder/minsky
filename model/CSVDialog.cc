@@ -19,10 +19,12 @@
 
 #include "CSVDialog.h"                                                           
 #include "group.h"                                                               
-#include "selection.h"                                                           
+#include "selection.h"
+#include "lasso.h"
 #include <pango.h>                                                               
 #include "minsky_epilogue.h"                                                     
-#include "zStream.h"                                                           
+#include "zStream.h"
+#include "dimension.h"
                                                                                  
 #include <boost/asio/ssl/error.hpp>                                              
 #include <boost/asio/ssl/stream.hpp>                                             
@@ -46,6 +48,7 @@
 
 using namespace std;
 using namespace minsky;
+using namespace civita;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 using tcp = boost::asio::ip::tcp;       

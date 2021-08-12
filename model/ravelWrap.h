@@ -23,6 +23,7 @@
 #include "operation.h"
 #include "cairoRenderer.h"
 #include "dynamicRavelCAPI.h"
+#include "hypercube.h"
 
 namespace minsky 
 {

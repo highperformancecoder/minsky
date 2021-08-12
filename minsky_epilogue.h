@@ -174,6 +174,6 @@ namespace classdesc_access
 #endif
 
 #ifdef ITEM_H
-#include "plotWidget.h"
+//#include "plotWidget.h"
 #endif
 #include <ecolab_epilogue.h>

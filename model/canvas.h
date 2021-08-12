@@ -28,6 +28,7 @@
 #include "switchIcon.h"
 #include "wire.h"
 #include "ravelWrap.h"
+#include "lasso.h"
 #include "lock.h"
 #include "sheet.h"
 #include "renderNativeWindow.h"

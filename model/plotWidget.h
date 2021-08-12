@@ -24,6 +24,7 @@
 #include "classdesc_access.h"
 #include "plot.h"
 #include "variable.h"
+#include "variableValue.h"
 #include "zoom.h"
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
