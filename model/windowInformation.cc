@@ -116,6 +116,16 @@ namespace minsky
 
     {
       /* TODO */
+      /* parentWindowId is an NSView*, which contains a gettable window member
+
+         ie reinterpret_cast<NSView*>(parentWindowId)->window
+
+         should be of type NSWindow*.
+
+         The follow code in ecolab/src/getcontext.cc to get the CGContextRef
+
+      */
+
     }
 #else
     {
