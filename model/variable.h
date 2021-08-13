@@ -82,6 +82,7 @@ namespace minsky
     mutable int unitsCtr=0; ///< for detecting reentrancy in units()
     static int stockVarsPassed; ///< for detecting reentrancy in units()
 
+    void insertControlled(Selection& selection) override;
   protected:
     void addPorts();
     
@@ -205,8 +206,6 @@ namespace minsky
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
     void importFromCSV(std::string filename, const DataSpec& spec);
-
-    void insertControlled(Selection& selection) override;
   };
 
   template <minsky::VariableType::Type T>

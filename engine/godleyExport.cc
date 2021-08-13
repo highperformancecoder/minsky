@@ -35,7 +35,7 @@ namespace minsky
   {
     string fcStr(const FlowCoef& fc)
     {
-      auto nm=VariableValue::uqName(fc.name);
+      auto nm=uqName(fc.name);
       if (fc.coef==1)
         return nm;
       else if (fc.coef==-1)
@@ -62,7 +62,7 @@ namespace minsky
   {
     s<<'"'<<g.getCell(0,0)<<'"';
     for (unsigned i=1; i<g.cols(); ++i)
-      s<<",\""<<trim(latexToPango(VariableValue::uqName(g.getCell(0,i))))<<'"';
+      s<<",\""<<trim(latexToPango(uqName(g.getCell(0,i))))<<'"';
     s<<'\n';
     if (g.doubleEntryCompliant)
       {
@@ -90,7 +90,7 @@ namespace minsky
     f<<"|}\n\\hline\n";
     f<<"Flows $\\downarrow$ / Stock Variables $\\rightarrow$";
     for (unsigned i=1; i<g.cols(); ++i)
-      f<<"&\\multicolumn{1}{|c|}{$"<<VariableValue::uqName(g.getCell(0,i))<<"$}";
+      f<<"&\\multicolumn{1}{|c|}{$"<<uqName(g.getCell(0,i))<<"$}";
 
     // asset class descriptors
     if (g.doubleEntryCompliant)

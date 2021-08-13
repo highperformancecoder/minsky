@@ -126,7 +126,7 @@ namespace minsky
     addTimeVariables(impl->symbols);
     for (auto& i: symbolNames())
       {
-        auto scopedName=VariableValue::valueIdFromScope(group.lock(),i);
+        auto scopedName=valueIdFromScope(group.lock(),i);
         auto v=minsky().variableValues.find(scopedName);
         if (v!=minsky().variableValues.end())
           {

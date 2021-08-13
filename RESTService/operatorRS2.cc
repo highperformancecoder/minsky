@@ -18,23 +18,6 @@
 */
 
 #include "itemRS.h"
-#include "item.rcd"
-
-#include "lasso.h"
-#include "lasso.rcd"
-#include "noteBase.rcd"
-#include "operation.h"
-#include "operation.rcd"
-#include "operationType.rcd"
-#include "port.rcd"
-#include "polyRESTProcessBase.rcd"
-#include "polyRESTProcessBase.xcd"
-#include "wire.h"
-#include "wire.rcd"
-#include "units.rcd"
-#include "nobble.h"
-
-#include "itemTemplateInstantiations.h"
 #include "minsky_epilogue.h"
 
 namespace minsky

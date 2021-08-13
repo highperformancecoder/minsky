@@ -317,8 +317,7 @@ namespace minsky
                 }
               else
                 // moving between unrelated groups
-                if (v->name()[0]==':' && VariableValue::valueId(destGroup,v->name()) !=
-                    VariableValue::valueId(origGroup,v->name()))
+                if (v->name()[0]==':' && valueId(destGroup,v->name()) != valueId(origGroup,v->name()))
                   // maintain linkage if possible, otherwise make local
                   v->name(v->name().substr(1));
             }
@@ -477,7 +476,7 @@ namespace minsky
   VariablePtr Group::addIOVar()
   {
     VariablePtr v(VariableType::flow,
-                  VariableValue::uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
+                  uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
     addItem(v,true);
     createdIOvariables.push_back(v);
     v->rotation(rotation());

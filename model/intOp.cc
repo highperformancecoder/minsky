@@ -219,8 +219,7 @@ namespace minsky
     
     // set a default name if none given
     if (desc.empty())
-      desc=minsky().variableValues.newName
-        (VariableValue::valueId(group.lock(),"int"));
+      desc=minsky().variableValues.newName(minsky::valueId(group.lock(),"int"));
 
     // disallow global integration variables
     if (desc[0]==':') desc=desc.substr(1);
@@ -241,7 +240,7 @@ namespace minsky
     // variable, so generate a new name that doesn't currently
     // exist
 
-    string vid=VariableValue::valueId(group.lock(),desc);
+    string vid=minsky::valueId(group.lock(),desc);
     auto i=minsky().variableValues.find(vid);      
     if (i!=minsky().variableValues.end()) 
       {

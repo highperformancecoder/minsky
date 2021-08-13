@@ -20,6 +20,7 @@
 #include "flowCoef.h"
 #include "str.h"
 #include "minsky.h"
+#include "valueId.h"
 #include "minsky_epilogue.h"
 #include <iomanip>
 #include <error.h>
@@ -149,13 +150,13 @@ namespace minsky
     throw error("invalid access of variable value reference: %s",name.c_str());
   }
   
-  TensorVal VariableValue::initValue
-  (const VariableValues& v, set<string>& visited) const
+  TensorVal VariableValues::initValue
+  (const VariableValue& v, set<string>& visited) const
   {
-    if (tensorInit.rank()>0)
-      return tensorInit;
+    if (v.tensorInit.rank()>0)
+      return v.tensorInit;
     
-    FlowCoef fc(init);
+    FlowCoef fc(v.init);
     if (trimWS(fc.name).empty())
       return fc.coef;
     else
@@ -215,115 +216,55 @@ namespace minsky
           }
         
         // resolve name
-        auto valueId=VariableValue::valueId(m_scope.lock(), fc.name);
+        auto valueId=minsky::valueId(v.m_scope.lock(), fc.name);
         if (visited.count(valueId))
           throw error("circular definition of initial value for %s",
                       fc.name.c_str());
-        VariableValues::const_iterator vv=v.end();
-        vv=v.find(valueId);
-        if (vv==v.end())
-          throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), name.c_str());
+        auto vv=find(valueId);
+        if (vv==end())
+          throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), v.name.c_str());
         else
           {
             visited.insert(valueId);
-            return fc.coef*vv->second->initValue(v, visited);
+            return fc.coef*initValue(*vv->second, visited);
           }
       }
   }
 
-  void VariableValue::reset(const VariableValues& v)
+  void VariableValues::resetValue(VariableValue& v)
   {
-      if (m_idx<0) allocValue();
+    if (v.idx()<0) v.allocValue();
       // initialise variable only if its variable is not defined or it is a stock
-      if (!isFlowVar() || !cminsky().definingVar(valueId()))
+      if (!v.isFlowVar() || !cminsky().definingVar(v.valueId()))
         {
-          if (tensorInit.size())
+          if (v.tensorInit.size())
             {
               // ensure dimensions are correct
-              auto hc=tensorInit.hypercube();
+              auto hc=v.tensorInit.hypercube();
               for (auto& xv: hc.xvectors)
                 {
                   auto dim=cminsky().dimensions.find(xv.name);
                   if (dim!=cminsky().dimensions.end())
                     xv.dimension=dim->second;
                 }
-              tensorInit.hypercube(hc);
+              v.tensorInit.hypercube(hc);
             }
-          if (tensorInit.rank()>0)
-            operator=(tensorInit);
+          if (v.tensorInit.rank()>0)
+            v=v.tensorInit;
           else
-            operator=(initValue(v));
+            v=initValue(v);
         }
-      assert(idxInRange());
+      assert(v.idxInRange());
   }
 
 
-  int VariableValue::scope(const std::string& name) 
-  {
-    smatch m;
-    auto nm=utf_to_utf<char>(name);
-    if (regex_search(nm, m, regex(R"((\d*)]?:.*)")))
-      if (m.size()>1 && m[1].matched && !m[1].str().empty())
-        {
-          int r;
-          sscanf(m[1].str().c_str(),"%d",&r);
-          return r;
-        }
-      else
-        return -1;
-    else
-      // no scope information is present
-      throw error("scope requested for local variable");
-  }
-
-  GroupPtr VariableValue::scope(GroupPtr scope, const std::string& a_name)
-  {
-    auto name=utf_to_utf<char>(stripActive(utf_to_utf<char>(a_name)));
-    if (name[0]==':' && scope)
-      {
-        // find maximum enclosing scope that has this same-named variable
-        for (auto g=scope->group.lock(); g; g=g->group.lock())
-          for (auto& i: g->items)
-            if (auto v=i->variableCast())
-              {
-                auto n=stripActive(v->name());
-                if (n==name.substr(1)) // without ':' qualifier
-                  {
-                    scope=g;
-                    goto break_outerloop;
-                  }
-              }
-        scope.reset(); // global var
-      break_outerloop: ;
-      }
-    return scope;
-  }
-  
-  
-  string VariableValue::valueIdFromScope(const GroupPtr& scope, const std::string& name)
-  {
-    if (name.empty() || !scope || !scope->group.lock())
-      return VariableValue::valueId(-1,utf_to_utf<char>(name)); // retain previous global var id
-    else
-      return VariableValue::valueId(size_t(scope.get()), utf_to_utf<char>(name));
-}
-  
-  std::string VariableValue::uqName(const std::string& name)
-  {
-    string::size_type p=name.rfind(':');
-    if (p==string::npos)
-      return utf_to_utf<char>(name);
-    else
-    return utf_to_utf<char>(name).substr(p+1);
-  }
- 
   string VariableValues::newName(const string& name) const
   {
     int i=1;
     string trialName;
     do
       trialName=utf_to_utf<char>(name)+to_string(i++);
-    while (count(VariableValue::valueId(trialName)));
+    while (count(valueId(trialName)));
     return trialName;
   }
 
@@ -334,7 +275,7 @@ namespace minsky
     ValueVector::flowVars.clear();
     for (auto& v: *this) {
       v.second->reset_idx();  // Set idx of all flowvars and stockvars to -1 on reset. For ticket 1049		
-      v.second->allocValue().reset(*this);
+      resetValue(v.second->allocValue());
       assert(v.second->idxInRange());
     }
 }
@@ -342,7 +283,7 @@ namespace minsky
   bool VariableValues::validEntries() const
   {
     for (auto& v: *this)
-      if (!v.second->isValueId(v.first))
+      if (!isValueId(v.first))
         return false;
     return true;
   }

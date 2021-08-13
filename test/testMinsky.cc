@@ -185,8 +185,7 @@ SUITE(Minsky)
       if (VarConstant* c=dynamic_cast<VarConstant*>(op5.get()))
         c->init("0.2");
 
-      constructEquations();
-      step();
+      reset();
 
       CHECK_CLOSE(0.1, var["g"]->value(), 1e-4);
       CHECK_CLOSE(0.3, var["h"]->value(), 1e-4);

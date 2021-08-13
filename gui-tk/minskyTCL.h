@@ -379,7 +379,7 @@ namespace minsky
       else Minsky::undo();
     }
 
-    string valueId(const string& x) {return VariableValue::valueId(x);}
+    string valueId(const string& x) {return minsky::valueId(x);}
 
     ecolab::Accessor<std::string> defaultFont{
       [this]() {return Minsky::defaultFont();},

@@ -33,7 +33,7 @@
 #include "variable.h"
 #include "equations.h"
 #include "latexMarkup.h"
-#include "variableValue.h"
+#include "variableValues.h"
 #include "canvas.h"
 #include "lock.h"
 #include "panopticon.h"

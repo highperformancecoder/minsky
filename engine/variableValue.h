@@ -23,10 +23,10 @@
 #include "tensorVal.h"
 #include "ecolab.h"
 #include "classdesc_access.h"
-#include "constMap.h"
 #include "str.h"
 #include "CSVDialog.h"
 #include "latexMarkup.h"
+#include "valueId.h"
 #include <regex> 
 #include <utility>
 #include <boost/locale.hpp>
@@ -142,8 +142,8 @@ namespace minsky
       m_hypercube.makeConformant(x.hypercube());
     }
     
-    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
-      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
+    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init=""/*, const GroupPtr& group=GroupPtr()*/): 
+      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name))/*, m_scope(scope(group,name))*/ {}
 
     VariableValue(VariableType::Type type, const VariableValue& vv):  VariableValue(vv) {
       m_type=type;
@@ -167,47 +167,6 @@ namespace minsky
     /// for importing CSV files
     CSVDialog csvDialog;
     
-    /// evaluates the initial value, based on the set of variables
-    /// contained in \a VariableManager. \a visited is used to check
-    /// for circular definitions
-    TensorVal initValue
-    (const VariableValues&, std::set<std::string>& visited) const;
-    TensorVal initValue(const VariableValues& v) const {
-      std::set<std::string> visited;
-      return initValue(v, visited);
-    }
-    void reset(const VariableValues&); 
-
-    /// check that name is a valid valueId (useful for assertions)
-    static bool isValueId(const std::string& name) {
-      static std::regex pattern("((constant)?\\d*:[^:\\ \f\n\r\t\v]+)");
-      return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-        std::regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
-    }
-
-    /// construct a valueId
-    static std::string valueId(int scope, std::string name) {
-      auto tmp=":"+utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
-      if (scope<0) return tmp;
-      else return std::to_string(scope)+tmp;
-    }
-    static std::string valueId(std::string name) {
-	  name=utf_to_utf<char>(name);	
-      return valueId(scope(name), name);
-    }
-    /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
-    /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
-    static GroupPtr scope(GroupPtr ref, const std::string& name);
-    static std::string valueId(const GroupPtr& ref, const std::string& name) 
-    {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(name));}
-    static std::string valueIdFromScope(const GroupPtr& scope, const std::string& name);
-    
-    /// extract scope from a qualified variable name
-    /// @throw if name is unqualified
-    static int scope(const std::string& name);
-    /// extract unqualified portion of name
-    static std::string uqName(const std::string& name);
-
     void exportAsCSV(const std::string& filename, const std::string& comment="") const;
   };
 
@@ -222,46 +181,6 @@ namespace minsky
     static std::vector<double> flowVars;
   };
 
-  /// a shared_ptr that default constructs a default target
-  struct VariableValuePtr: public std::shared_ptr<VariableValue>
-  {
-    VariableValuePtr(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()):
-      std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,name,init,group)) {}
-    template <class... A>
-    VariableValuePtr(A... a): std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(std::forward<A>(a)...)) {}
-  };
-
-  struct VariableValues: public ConstMap<std::string, VariableValuePtr>
-  {
-    VariableValues() {clear();}
-    void clear() {
-      ConstMap<std::string, mapped_type>::clear();
-      // add special values for zero and one, used for the derivative
-      // operator in SystemOfEquations
-      emplace("constant:zero", VariableValuePtr(VariableType::constant,"constant:zero","0"));
-      emplace("constant:one", VariableValuePtr(VariableType::constant,"constant:one","1"));
-    }
-    /// generate a new valueId not otherwise in the system
-    std::string newName(const std::string& name) const;
-    void reset();
-    /// checks that all entry names are valid
-    bool validEntries() const;
-    void resetUnitsCache() {
-      for (auto& i: *this)
-        i.second->unitsCached=false;
-    }
-  };
-}
-
-namespace classdesc
-{
-  template <>
-  struct is_associative_container<minsky::ConstMap<std::string, minsky::VariableValue> >: public classdesc::true_type {};
-}
-namespace ecolab
-{
-  // for TCL_obj processing
-  template <> struct is_map<minsky::ConstMap<std::string, minsky::VariableValue> >: public is_map_map {};
 }
 
 #include "variableValue.cd"
@@ -271,12 +190,6 @@ namespace ecolab
 #pragma omit pack minsky::VariableValue
 #pragma omit unpack minsky::VariableValue
 #endif
-
-namespace classdesc
-{
-  // allows for RESTProcess to recognise this as a smart pointer, and to process the target
-  template <> struct is_smart_ptr<minsky::VariableValuePtr>: public true_type {};
-}
 
 namespace classdesc_access
 {

@@ -96,6 +96,8 @@
 #include "variableTab.rcd"
 #include "variableTab.xcd"
 #include "variableValue.rcd"
+#include "variableValues.rcd"
+#include "variableValues.xcd"
 #include "variableType.rcd"
 #include "variableValueRS.h"
 #include "units.rcd"

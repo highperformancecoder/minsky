@@ -415,13 +415,13 @@ namespace minsky
       (&Group::items,
        [this](const Items&, Items::const_iterator it){
          if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
-           userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), f->name())]=f;
+           userFunctions[valueIdFromScope((*it)->group.lock(), f->name())]=f;
          return false;
        });
     model->recursiveDo
       (&Group::groups,
        [this](const Groups&, Groups::const_iterator it){
-         userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
+         userFunctions[valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
          return false;
        });
 
@@ -572,7 +572,7 @@ namespace minsky
                if (!gi->table.cell(0,i).empty())
                  {
                    auto v=gi->table.cell(0,i);
-                   auto scope=VariableValue::scope(gi->group.lock(),v);
+                   auto scope=minsky::scope(gi->group.lock(),v);
                    if (scope->higher(*godley.group.lock()))
                      v=':'+v;
                    else if (scope!=godley.group.lock())
@@ -691,10 +691,10 @@ namespace minsky
                        {
                          int scope=-1;
                          if (i->first.find(':')!=string::npos)
-                           VariableValue::scope(i->first);
+                           scope=minsky::scope(i->first);
                          FlowCoef df;
                          if (scope==-1 || !variableValues.count(i->first))
-                           df.name=VariableValue::uqName(i->first);
+                           df.name=uqName(i->first);
                          else
                            df.name=variableValues[i->first]->name;
                          df.coef=i->second-destFlows[i->first];
@@ -782,7 +782,7 @@ namespace minsky
       bool initialConditionRow(int row) const
       {return Super::operator*()->table.initialConditionRow(row);}
       string valueId(const std::string& x) const {
-        return VariableValue::valueIdFromScope(Super::operator*()->group.lock(), x);
+        return valueIdFromScope(Super::operator*()->group.lock(), x);
       }
     };
   }
@@ -1258,7 +1258,7 @@ namespace minsky
 
   void Minsky::convertVarType(const string& name, VariableType::Type type)
   {
-    assert(VariableValue::isValueId(name));
+    assert(isValueId(name));
     VariableValues::iterator i=variableValues.find(name);
     if (i==variableValues.end())
       throw error("variable %s doesn't exist",name.c_str());

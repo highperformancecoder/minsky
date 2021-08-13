@@ -18,33 +18,49 @@
 */
 
 #include "itemRS.h"
-#include "capiRenderer.h"
-#include "capiRenderer.cd"
-#include "capiRenderer.xcd"
+#include "cairoSurfaceImage.h"
+#include "cairoSurfaceImage.rcd"
+#include "cairoSurfaceImage.xcd"
+#include "CSVDialog.h"
+#include "CSVDialog.rcd"
+#include "CSVParser.rcd"
+#include "dataSpecSchema.h"
+#include "dataSpecSchema.rcd"
 #include "dimension.rcd"
-#include "dynamicRavelCAPI.h"
-#include "dynamicRavelCAPI.rcd"
-#include "dynamicRavelCAPI.xcd"
 #include "engNotation.h"
 #include "engNotation.rcd"
 #include "engNotation.xcd"
 #include "hypercube.h"
 #include "hypercube.rcd"
 #include "hypercube.xcd"
+#include "index.h"
+#include "index.rcd"
+#include "index.xcd"
 #include "renderNativeWindow.h"
 #include "renderNativeWindow.rcd"
 #include "renderNativeWindow.xcd"
-#include "ravelWrap.h"
-#include "ravelWrap.rcd"
-#include "ravelWrap.xcd"
-#include "ravelState.rcd"
-#include "ravelState.xcd"
+#include "slider.rcd"
+#include "tensorInterface.h"
+#include "tensorInterface.rcd"
+#include "tensorInterface.xcd"
+#include "tensorVal.h"
+#include "tensorVal.rcd"
+#include "tensorVal.xcd"
+#include "variable.h"
+#include "variable.rcd"
+#include "variableType.rcd"
+#include "variableValue.h"
+#include "variableValue.rcd"
 #include "xvector.rcd"
 #include "minsky_epilogue.h"
 
-#include "itemTemplateInstantiations.h"
-
 namespace minsky
 {
-  DEF(Ravel, Operation<OperationType::ravel>)
+  DEFVAR(undefined)
+  DEFVAR(constant)
+  DEFVAR(parameter)
+  DEFVAR(flow)
+  DEFVAR(integral)
+  DEFVAR(stock)
+  DEFVAR(tempFlow)
 }

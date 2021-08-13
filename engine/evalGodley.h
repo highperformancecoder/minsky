@@ -21,7 +21,8 @@
 
 #include "schema/assetClass.h"
 #include "classdesc_access.h"
-#include "variableValue.h"
+#include "constMap.h"
+#include "variableValues.h"
 #include "str.h"
 #include "flowCoef.h"
 

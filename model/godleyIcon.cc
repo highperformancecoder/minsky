@@ -281,7 +281,7 @@ namespace minsky
         for (size_t c=1; c<table.cols(); ++c)
           {
             string name=trimWS(table.cell(0,c));           
-            auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
+            auto vi=minsky().variableValues.find(minsky::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
             VariableValue& v=*vi->second;           
             v.godleyOverridden=false;
@@ -291,7 +291,7 @@ namespace minsky
                 FlowCoef fc(table.cell(r,c).substr(start));                                      
                 v.init=fc.str();              
                 // set initial value of stock var to init value of flow that is defined by a parameter or a constant. for ticket 1137
-                if (auto initVar=minsky().definingVar(VariableValue::valueId(group.lock(),fc.str())))
+                if (auto initVar=minsky().definingVar(minsky::valueId(group.lock(),fc.str())))
                   if (initVar->inputWired() && initVar->type()==VariableType::flow)
                     if (auto lhsVar=initVar->ports(1).lock()->wires()[0]->from()->item().variableCast()) {
                       FlowCoef fc1(lhsVar->vValue()->init);
@@ -451,7 +451,7 @@ namespace minsky
         double sum=0;
         for (size_t c=1; c<table.cols(); ++c)
           {
-            auto i=stockVars.find(VariableValue::valueIdFromScope(group.lock(), trimWS(table.cell(0,c))));
+            auto i=stockVars.find(valueIdFromScope(group.lock(), trimWS(table.cell(0,c))));
             if (i!=stockVars.end())
               sum+=(table.signConventionReversed(c)? -1: 1)*i->second->value();
           }

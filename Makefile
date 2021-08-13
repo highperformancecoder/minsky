@@ -45,14 +45,14 @@ PREFIX=/usr/local
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o panopticon.o parameterTab.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o windowInformation.o wire.o 
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
-	godleyExport.o latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
+	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
 GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
-RESTSERVICE_OBJS=minskyRS.o dataOpRS.o intOpRS.o itemRS1.o itemRS2.o itemRS3.o ravelRS.o RESTMinsky.o userFunctionRS.o
+RESTSERVICE_OBJS=minskyRS.o dataOpRS.o intOpRS.o operatorRS1.o operatorRS2.o variablesRS.o itemRS.o ravelRS.o RESTMinsky.o userFunctionRS.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o
 

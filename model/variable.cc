@@ -18,6 +18,7 @@
 */
 
 #include "geometry.h"
+#include "valueId.h"
 #include "variable.h"
 #include "cairoItems.h"
 #include "minsky.h"
@@ -168,12 +169,12 @@ vector<string> VariableBase::dimLabels() const
 
 string VariableBase::valueId() const 
 {
-  return VariableValue::valueId(group.lock(), m_name);
+  return minsky::valueId(group.lock(), m_name);
 }
 
 std::string VariableBase::valueIdInCurrentScope(const std::string& nm) const
 {
-  return VariableValue::valueId(group.lock(), nm);
+  return minsky::valueId(group.lock(), nm);
 }
 
 string VariableBase::name()  const
@@ -213,10 +214,11 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
   if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_" && 
       minsky().variableValues.count(valueId)==0)
     {
-      assert(VariableValue::isValueId(valueId));
+      assert(isValueId(valueId));
 	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
       if (vv==nullptr)
-        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"",group.lock()));
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"")).
+          first->second->m_scope=minsky::scope(group.lock(),name());
       // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
       else
         minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv));
@@ -246,7 +248,7 @@ string VariableBase::init() const
 string VariableBase::init(const string& x)
 {
   ensureValueExists(nullptr,""); 
-  if (VariableValue::isValueId(valueId()))
+  if (isValueId(valueId()))
     {
       VariableValue& val=*minsky().variableValues[valueId()];
       val.init=x;     
@@ -255,7 +257,7 @@ string VariableBase::init(const string& x)
         {
           if (type()==constant || type()==parameter ||
               (type()==flow && !cminsky().definingVar(valueId()))) 
-            val.reset(minsky().variableValues);
+            minsky().variableValues.resetValue(val);
         }
       catch (...)
         {}
@@ -266,7 +268,7 @@ string VariableBase::init(const string& x)
 
 double VariableBase::value() const
 {
-  if (VariableValue::isValueId(valueId()))
+  if (isValueId(valueId()))
     return minsky::cminsky().variableValues[valueId()]->value();
   else
     return 0;
@@ -274,7 +276,7 @@ double VariableBase::value() const
 
 double VariableBase::value(const double& x)
 {
-  if (!m_name.empty() && VariableValue::isValueId(valueId()))
+  if (!m_name.empty() && isValueId(valueId()))
     (*minsky().variableValues[valueId()])[0]=x;
   return x;
 }
@@ -330,7 +332,7 @@ Units VariableBase::units(bool check) const
                   if (!fc.name.empty())
                     {
                       // extract the valueid corresponding to the initialisation variable
-                      auto vid=VariableValue::valueId(vv->m_scope.lock(), fc.name);
+                      auto vid=minsky::valueId(vv->m_scope.lock(), fc.name);
                       // find the first variable matching vid, and check that the units match
                       if (auto initVar=cminsky().model->findAny
                           (&GroupItems::items, [&vid](const ItemPtr& i){
@@ -360,7 +362,7 @@ Units VariableBase::units(bool check) const
 
 void VariableBase::setUnits(const string& x)
 {
-  if (VariableValue::isValueId(valueId()))
+  if (isValueId(valueId()))
     minsky().variableValues[valueId()]->units=Units(x);
 }
 
@@ -384,11 +386,11 @@ void VariableBase::importFromCSV(std::string filename, const DataSpec& spec)
   }
 }
 
-
 void VariableBase::insertControlled(Selection& selection)
 {
   selection.ensureItemInserted(controller.lock());
 }
+
 
 namespace minsky
 {

@@ -27,6 +27,7 @@
 #include "classdesc_access.h"
 #include "SVGItem.h"
 #include "group.h"
+#include "valueId.h"
 #include "variableValue.h"
 
 #include <map>
@@ -133,9 +134,7 @@ namespace minsky
     
     /// returns valueid for variable reference in table
     // TODO: this should be refactored to a more central location
-    std::string valueId(const std::string& x) const {
-      return VariableValue::valueId(group.lock(), x);
-    }
+    std::string valueId(const std::string& x) const {return minsky::valueId(group.lock(), x);}
     /// performs dimensional analysis on stock var column \a stockName
     /// @param check indicates whether a consistency check is applied
     Units stockVarUnits(const std::string& stockName, bool check) const;

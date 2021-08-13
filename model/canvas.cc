@@ -602,7 +602,7 @@ namespace minsky
       {
         // cache name and valueId for later use as var gets invalidated in the recursiveDo
         auto valueId=var->valueId();
-        auto varScope=VariableValue::scope(var->group.lock(), valueId);
+        auto varScope=scope(var->group.lock(), valueId);
         string fromName=var->rawName();
         // unqualified versions of the names
         string uqFromName=fromName.substr(fromName[0]==':'? 1: 0);
@@ -624,10 +624,10 @@ namespace minsky
                          g->table.rename(uqFromName, uqNewName);
                        
                        // scope of an external ref in the Godley Table
-                       auto externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqNewName);
+                       auto externalVarScope=scope(g->group.lock(), ':'+uqNewName);
                        // if we didn't find it, perhaps the outerscope variable hasn't been changed
                        if (!externalVarScope)
-                         externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqFromName);
+                         externalVarScope=scope(g->group.lock(), ':'+uqFromName);
 
                        if (varScope==externalVarScope ||  (isGlobal(varScope) && isGlobal(externalVarScope)))
                          // fix external variable references

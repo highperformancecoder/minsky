@@ -20,7 +20,7 @@
 #ifndef INTEGRAL_H
 #define INTEGRAL_H
 #include "intOp.h"
-#include "variableValue.h"
+#include "variableValues.h"
 
 namespace minsky
 {

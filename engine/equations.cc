@@ -64,14 +64,14 @@ namespace MathDAG
           {
             result=r;
             // set the initial value of the actual variableValue (if it exists)
-            auto v=values.find(result->name);
+            auto v=values.find(result->valueId());
             if (v!=values.end())
               v->second->init=value;
           }
         else
           result=tmpResult;
         result->init=value;
-        *result=result->initValue(values);
+        values.resetValue(*result);
       }
     if (r && r->isFlowVar() && r!=result)
       ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
@@ -118,7 +118,7 @@ namespace MathDAG
   {
     if (!result || result->idx()<0)
       {
-        assert(VariableValue::isValueId(valueId));
+        assert(isValueId(valueId));
         auto ri=minsky::minsky().variableValues.find(valueId);
         if (ri==minsky::minsky().variableValues.end())
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValuePtr(VariableType::tempFlow)).first;
@@ -527,7 +527,7 @@ namespace MathDAG
                        }
                      catch (...) {}
                      if (auto v=dynamic_cast<VariableDAG*>(init.get()))
-                       iv->init(VariableValue::uqName(v->name));
+                       iv->init(uqName(v->name));
                      else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                        {
                          // slightly convoluted to prevent sliderSet from overriding c->value
@@ -669,7 +669,7 @@ namespace MathDAG
     if (expressionCache.exists(valueId))
       return expressionCache[valueId];
 
-    if (!VariableValue::isValueId(valueId))
+    if (!isValueId(valueId))
       throw runtime_error("Invalid valueId: "+valueId);
     assert(minsky.variableValues.count(valueId));
     auto vv=minsky.variableValues[valueId];
@@ -677,6 +677,7 @@ namespace MathDAG
     if (type==VariableType::constant)
       {
         NodePtr r(new ConstantDAG(vv->init));
+        r->result=vv;
         expressionCache.insert(valueId, r);
         return r;
       }
@@ -737,7 +738,7 @@ namespace MathDAG
             r->arguments.emplace_back();
             for (auto& i: uf->symbolNames())
               {
-                auto vv=minsky.variableValues.find(VariableValue::valueId(op.group.lock(), i));
+                auto vv=minsky.variableValues.find(valueId(op.group.lock(), i));
                 if (vv!=minsky.variableValues.end())
                   {
                     r->arguments.back().emplace_back(makeDAG(vv->first,vv->second->name,vv->second->type()));
@@ -1014,7 +1015,7 @@ namespace MathDAG
       {
         string vid=i->valueId;
         integrals.push_back(Integral());
-        assert(VariableValue::isValueId(vid));
+        assert(isValueId(vid));
         assert(minsky.variableValues.count(vid));
         integrals.back().stock=minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
@@ -1065,10 +1066,10 @@ namespace MathDAG
     for (size_t c=1; c<godley.cols(); ++c)
       {
         string colName=trimWS(godley.cell(0,c));
-        if (VariableValue::uqName(colName).empty())
+        if (uqName(colName).empty())
           continue; // ignore empty Godley columns
         // resolve scope
-        colName=VariableValue::valueId(gi.group.lock(), colName);
+        colName=valueId(gi.group.lock(), colName);
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];

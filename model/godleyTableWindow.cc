@@ -230,8 +230,7 @@ namespace minsky
                       try
                         {
                           auto vv=cminsky().variableValues
-                            [VariableValue::valueIdFromScope
-                             (m_godleyIcon.group.lock(),utf_to_utf<char>(fc.name))];
+                            [valueIdFromScope(m_godleyIcon.group.lock(),utf_to_utf<char>(fc.name))];
                           if (vv->idx()>=0)
                             {
                               double val=fc.coef*vv->value();

@@ -37,6 +37,8 @@ namespace minsky
     CLASSDESC_ACCESS(IntOp);
     friend struct SchemaHelper;
     bool m_coupled=true;
+    void insertControlled(Selection& selection) override;
+    void removeControlledItems(minsky::Group&) const override;
   public:
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;
@@ -86,8 +88,6 @@ namespace minsky
     void pack(classdesc::pack_t& x, const std::string& d) const override;
     void unpack(classdesc::unpack_t& x, const std::string& d) override;
 
-    void insertControlled(Selection& selection) override;
-    void removeControlledItems(minsky::Group&) const override;
     using Item::removeControlledItems;
   };
 
