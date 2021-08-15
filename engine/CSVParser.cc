@@ -431,7 +431,7 @@ namespace minsky
             {
               struct sysinfo s;
               sysinfo(&s);
-              if (s.freeram<1000000000)
+              if (s.freeram<1000000)
                 throw runtime_error("exhausted memory");
             }
 #endif
