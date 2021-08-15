@@ -52,7 +52,6 @@ namespace minsky
 #endif
     ecolab::cairo::SurfacePtr bufferSurface;
 
-    void createSurfaces();
   public: 
     int childWidth;
     int childHeight;
@@ -67,7 +66,7 @@ namespace minsky
     ~WindowInformation();
     WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
     
-    ecolab::cairo::SurfacePtr getBufferSurface();
+    const ecolab::cairo::SurfacePtr& getBufferSurface();
 
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;

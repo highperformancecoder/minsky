@@ -85,9 +85,8 @@ namespace minsky
 #endif
   }
 
-  ecolab::cairo::SurfacePtr WindowInformation::getBufferSurface()
+  const ecolab::cairo::SurfacePtr& WindowInformation::getBufferSurface()
   {
-    if (!bufferSurface) createSurfaces();
     return bufferSurface;
   }
 
