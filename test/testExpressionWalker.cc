@@ -47,6 +47,10 @@ SUITE(ExpressionWalker)
       exprtk::expression<UnitsExpressionWalker> expression;
       expression.register_symbol_table(symbolTable);
       
+      checkCompile("-metre",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+      checkCompile("+metre",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
       checkCompile("metre+metre",expression);
       CHECK_EQUAL("m",expression.value().units.str());
       checkCompile("metre+second",expression);
@@ -135,6 +139,8 @@ SUITE(ExpressionWalker)
       testFunction(sinc);
       testFunction(sinh);
       testFunction(sqrt);
+      testFunction(tan);
+      testFunction(tanh);
 
 #define testLogicalOp(op)                                 \
       checkCompile("metre " #op " second",expression);  \
