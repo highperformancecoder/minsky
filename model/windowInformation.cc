@@ -70,15 +70,15 @@ namespace minsky
   }
 #endif
 
-  Display *WindowInformation::getDisplay()
-  {
-    return display;
-  }
-
   WindowInformation::~WindowInformation()
   {
     bufferSurface.reset();
-#ifdef USE_X11
+#ifdef USE_WIN32_SURFACE
+    SelectObject(hdcMem, hOld);
+    DeleteObject(hbmMem);
+    DeleteDC(hdcMem);
+#elif defined(MAC_OSX_TK)
+#elif defined(USE_X11)
     XFreeGC(display, graphicsContext);
     XDestroyWindow(display, childWindowId);
     XDestroyWindow(display, bufferWindowId);
@@ -95,40 +95,13 @@ namespace minsky
   {
     cairo_surface_flush(bufferSurface->surface());
 #ifdef USE_WIN32_SURFACE
-    ReleaseDC(reinterpret_cast<HWND>(parentWindowId), cairo_win32_surface_get_dc(bufferSurface->surface()));
-    bufferSurface.reset();
+    HDC hdc=GetDC(parentWindowId);
+    BitBlt(hdc, offsetLeft, offsetTop, childWidth,childHeight,hdcMem,0,0,SRCCOPY);
+    ReleaseDC(parentWindowId, hdc);
 #elif defined(USE_X11)
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XFlush(display);
-#endif
-  }
-
-  void WindowInformation::createSurfaces()
-  {
-#ifdef USE_WIN32_SURFACE
-    {
-      HDC hdc=GetDC(reinterpret_cast<HWND>(parentWindowId));
-      bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdc),childWidth, childHeight));
-      cairo_surface_set_device_offset(bufferSurface->surface(), offsetLeft, offsetTop);
-    }
-#elif defined(MAC_OSX_TK)
-
-    {
-      /* TODO */
-    }
-#else
-    {
-      bufferSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, bufferWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
-    }
-
-#endif
-  }
-
-  void WindowInformation::clear()
-  {
-#ifdef USE_X11
-    XClearWindow(display, childWindowId);
 #endif
   }
 
@@ -144,14 +117,24 @@ namespace minsky
 
   WindowInformation::WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
   {
-    parentWindowId = parentWin;
+
     offsetLeft = left;
     offsetTop = top;
 
     childWidth = cWidth;
     childHeight = cHeight;
 
-#ifdef USE_X11
+#ifdef USE_WIN32_SURFACE
+    parentWindowId = reinterpret_cast<HWND>(parentWin);
+    HDC hdc=GetDC(parentWindowId);
+    hdcMem=CreateCompatibleDC(hdc);
+    hbmMem=CreateCompatibleBitmap(hdc, childWidth, childHeight);
+    ReleaseDC(parentWindowId, hdc);
+    hOld=SelectObject(hdcMem, hbmMem);
+    bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdcMem),childWidth, childHeight));
+#elif defined(MAC_OSX_TK)
+#elif defined(USE_X11)
+    parentWindowId = parentWin;
     static bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
     display = XOpenDisplay(nullptr);
     int err = XGetWindowAttributes(display, parentWin, &wAttr);
@@ -165,9 +148,9 @@ namespace minsky
     graphicsContext=XCreateGC(display, childWindowId, 0, nullptr);
     
     XMapWindow(display, childWindowId);
+    bufferSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, bufferWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
 #endif
     
-    createSurfaces();
     isRendering = false;
   }
 } // namespace minsky

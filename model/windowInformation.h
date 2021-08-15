@@ -21,31 +21,44 @@
 #define WINDOW_INFORMATION_H
 
 #include <cairoSurfaceImage.h>
+#if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
+#define USE_WIN32_SURFACE
+#include <windows.h>
+#include <wingdi.h>
+#elif defined(CAIRO_HAS_XLIB_SURFACE) && !defined(MAC_OSX_TK)
+#define USE_X11
+#include <cairo/cairo-xlib.h>
 #include <X11/Xlib.h>
+#endif
 
 namespace minsky
 {
   class WindowInformation
   {
     bool isRendering;
-    unsigned long parentWindowId;
-    unsigned long childWindowId, bufferWindowId;
+#ifdef USE_WIN32_SURFACE
+    HWND parentWindowId;
+    HDC hdcMem; // backing buffer bitmap device context
+    HBITMAP hbmMem; // backing buffer pixmap
+    HANDLE hOld;    // 
+#elif defined(MAC_OSX_TK)
+#elif defined(USE_X11)
+    Window parentWindowId;
+    Window childWindowId, bufferWindowId;
     
     Display*	display; // Weak reference, returned by system
     GC graphicsContext;
-    //ecolab::cairo::SurfacePtr windowSurface;
+    XWindowAttributes wAttr;
+#endif
     ecolab::cairo::SurfacePtr bufferSurface;
 
     void createSurfaces();
   public: 
-    void clear();
     int childWidth;
     int childHeight;
     int offsetLeft;
     int offsetTop;
       
-    XWindowAttributes wAttr;
-    Display* getDisplay();
     bool getRenderingFlag();
     void setRenderingFlag(bool value);
     void copyBufferToMain();
@@ -55,7 +68,6 @@ namespace minsky
     WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
     
     ecolab::cairo::SurfacePtr getBufferSurface();
-    //ecolab::cairo::SurfacePtr getWindowSurface();
 
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;
