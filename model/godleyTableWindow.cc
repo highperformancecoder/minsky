@@ -991,7 +991,9 @@ namespace {
                 {
                   auto savedItem=minsky().canvas.item;
                   minsky().canvas.item=sv;
-                  minsky().canvas.renameAllInstances(utf_to_utf<char>(godleyIcon->table.cell(selectedRow,selectedCol)));
+                  auto newName=utf_to_utf<char>(godleyIcon->table.cell(selectedRow,selectedCol));
+                  if (!newName.empty())
+                    minsky().canvas.renameAllInstances(newName);
                   savedItem.swap(minsky().canvas.item);
                 }
             minsky().importDuplicateColumn(godleyIcon->table, selectedCol);
