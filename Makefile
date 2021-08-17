@@ -44,7 +44,7 @@ PREFIX=/usr/local
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o grid.o godleyTable.o cairoItems.o godleyIcon.o lock.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o itemTab.o plotTab.o godleyTab.o variableInstanceList.o autoLayout.o userFunction.o userFunction_units.o parameterTab.o
-ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
+ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
@@ -109,7 +109,7 @@ endif
 EXES=gui-tk/minsky$(EXE)
 #RESTService/RESTService 
 
-LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit \
+LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit -lclipboard -lxcb\
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
