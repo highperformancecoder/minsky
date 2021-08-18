@@ -109,13 +109,15 @@ endif
 EXES=gui-tk/minsky$(EXE)
 #RESTService/RESTService 
 
-LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit -lclipboard -lxcb\
+LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit\
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
 LIBS+=-lcrypt32
+else
+LIBS+= -lclipboard -lxcb
 endif
 
 ifdef CPUPROFILE

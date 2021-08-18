@@ -20,36 +20,71 @@
 #include "clipboard.h"
 #include "libclipboard.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 using namespace std;
 
 namespace minsky
 {
   struct Clipboard::Impl
   {
+#ifndef _WIN32
     clipboard_c* clipboard;
     Impl(): clipboard(clipboard_new(nullptr)) {}
     ~Impl() {clipboard_free(clipboard);}
+#endif
   };
 
   Clipboard::Clipboard(): pimpl(make_shared<Impl>()) {}
   
   std::string Clipboard::getClipboard() const
   {
-    if (pimpl->clipboard)
+#if defined(_WIN32)
+      string r;
+      OpenClipboard(nullptr);
+      if (HANDLE h=GetClipboardData(CF_TEXT))
+        {
+          r=static_cast<const char*>(GlobalLock(h));
+          GlobalUnlock(h);
+        }
+      CloseClipboard();
+      return r;
+#else
+     if (pimpl->clipboard)
       {
         auto s=clipboard_text(pimpl->clipboard);
         return s? s: "";
       }
     return {};
+#endif
   }
   
   void Clipboard::putClipboard(const std::string& text) const
   {
+    // libclipboard didn't work on Windows???
+#if defined(_WIN32)
+      HWND hwnd=nullptr;//TODO enumerate top level windows to find one belonging to this
+      OpenClipboard(hwnd);
+      EmptyClipboard();
+      HGLOBAL h=GlobalAlloc(GMEM_MOVEABLE, text.length()+1);
+      LPTSTR hh=static_cast<LPTSTR>(GlobalLock(h));
+      if (hh)
+        {
+          strcpy(hh,text.c_str());
+          GlobalUnlock(h);
+          if (SetClipboardData(CF_TEXT, h)==nullptr)
+            GlobalFree(h);
+        }
+      CloseClipboard();
+#else
     if (pimpl->clipboard)
       if (text.empty())
         clipboard_clear(pimpl->clipboard, LCB_CLIPBOARD);
       else
         clipboard_set_text(pimpl->clipboard, text.c_str());
+#endif
   }
 
   
