@@ -174,14 +174,14 @@ namespace minsky
   void Minsky::copy() const
   {
     if (canvas.selection.empty())
-      putClipboard(""); // clear clipboard
+      clipboard.putClipboard(""); // clear clipboard
     else
       {
         schema3::Minsky m(canvas.selection);
         ostringstream os;
         xml_pack_t packer(os, schemaURL);
         xml_pack(packer, "Minsky", m);
-        putClipboard(os.str());
+        clipboard.putClipboard(os.str());
       }
   }
 
@@ -201,8 +201,9 @@ namespace minsky
   }
 
   void Minsky::paste()
+    try
   {
-    istringstream is(getClipboard());
+    istringstream is(clipboard.getClipboard());
     xml_unpack_t unpacker(is); 
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
@@ -295,7 +296,11 @@ namespace minsky
     canvas.model->removeGroup(*g);  
     canvas.requestRedraw();
   }  
-
+    catch (...)
+      {
+        throw runtime_error("clipboard data invalid");
+      }
+  
   namespace
   {
     /// checks if the input stream has the UTF-8 byte ordering marker,

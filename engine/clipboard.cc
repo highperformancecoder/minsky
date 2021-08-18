@@ -24,26 +24,32 @@ using namespace std;
 
 namespace minsky
 {
-  struct ClipBoard::Impl
+  struct Clipboard::Impl
   {
     clipboard_c* clipboard;
     Impl(): clipboard(clipboard_new(nullptr)) {}
     ~Impl() {clipboard_free(clipboard);}
   };
 
-  ClipBoard::ClipBoard(): pimpl(make_shared<Impl>()) {}
+  Clipboard::Clipboard(): pimpl(make_shared<Impl>()) {}
   
-  std::string ClipBoard::getClipboard() const
+  std::string Clipboard::getClipboard() const
   {
     if (pimpl->clipboard)
-      return clipboard_text(pimpl->clipboard);
+      {
+        auto s=clipboard_text(pimpl->clipboard);
+        return s? s: "";
+      }
     return {};
   }
   
-  void ClipBoard::putClipboard(const std::string& text) const
+  void Clipboard::putClipboard(const std::string& text) const
   {
     if (pimpl->clipboard)
-      clipboard_set_text(pimpl->clipboard, text.c_str());
+      if (text.empty())
+        clipboard_clear(pimpl->clipboard, LCB_CLIPBOARD);
+      else
+        clipboard_set_text(pimpl->clipboard, text.c_str());
   }
 
   

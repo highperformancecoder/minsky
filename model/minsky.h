@@ -20,30 +20,31 @@
 #ifndef MINSKY_H
 #define MINSKY_H
 
-#include "intrusiveMap.h"
 #include "bookmark.h"
-#include "selection.h"
-#include "godleyIcon.h"
-#include "operation.h"
-#include "evalOp.h"
-#include "wire.h"
-#include "plotWidget.h"
-#include "version.h"
-#include "variable.h"
-#include "equations.h"
-#include "latexMarkup.h"
-#include "variableValue.h"
 #include "canvas.h"
-#include "lock.h"
-#include "panopticon.h"
+#include "clipboard.h"
+#include "dimension.h"
+#include "evalOp.h"
+#include "equations.h"
 #include "fontDisplay.h"
-#include "variableTab.h"
+#include "godleyIcon.h"
+#include "godleyTab.h"
+#include "intrusiveMap.h"
+#include "latexMarkup.h"
+#include "lock.h"
+#include "operation.h"
+#include "panopticon.h"
 #include "parameterTab.h"
 #include "plotTab.h"
-#include "godleyTab.h"
-#include "dimension.h"
+#include "plotWidget.h"
 #include "rungeKutta.h"
 #include "saver.h"
+#include "selection.h"
+#include "version.h"
+#include "variable.h"
+#include "variableTab.h"
+#include "variableValue.h"
+#include "wire.h"
 
 #include <vector>
 #include <string>
@@ -95,7 +96,8 @@ namespace minsky
     std::vector<int> flagStack;
 
     std::map<std::string, std::shared_ptr<CallableFunction>> userFunctions;
-    
+
+    Clipboard clipboard; ///< clipboard manager
     
     // make copy operations just dummies, as assignment of Minsky's
     // doesn't need to change this
@@ -228,11 +230,6 @@ namespace minsky
     void paste();
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
     
-    /// @{ override to provide clipboard handling functionality
-    virtual void putClipboard(const string&) const {}
-    virtual std::string getClipboard() const {return "";}
-    /// @}
-
     void insertGroupFromFile(const char* file);
 
     void makeVariablesConsistent();
