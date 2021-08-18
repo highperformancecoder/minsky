@@ -1337,7 +1337,7 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(1, selectedCol);
       CHECK_EQUAL(0,insertIdx);
       CHECK(selectIdx>insertIdx);
-      CHECK(!cminsky().getClipboard().empty());
+      CHECK(!cminsky().clipboard.getClipboard().empty());
 
       
     }
@@ -1509,12 +1509,12 @@ SUITE(GodleyTableWindow)
       selectedRow=1;
       selectIdx=0;
       insertIdx=1;
-      cminsky().putClipboard("");
+      cminsky().clipboard.putClipboard("");
       keyPress(XK_Control_L,""); keyPress('c',"\x3"); //copy
-      CHECK_EQUAL("a",cminsky().getClipboard());
-      cminsky().putClipboard("");
+      CHECK_EQUAL("a",cminsky().clipboard.getClipboard());
+      cminsky().clipboard.putClipboard("");
       keyPress(XK_Control_L,""); keyPress('x',"\x18");  //cut
-      CHECK_EQUAL("a",cminsky().getClipboard());
+      CHECK_EQUAL("a",cminsky().clipboard.getClipboard());
       CHECK_EQUAL("bc",godleyIcon().table.cell(1,1));
       keyPress(XK_Control_L,""); keyPress('v',"\x16");  //paste
       CHECK_EQUAL("abc",godleyIcon().table.cell(1,1));

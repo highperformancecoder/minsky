@@ -739,10 +739,10 @@ namespace minsky
     if (!selectedCellInTable()) return;
     auto& str=m_godleyIcon.table.cell(selectedRow,selectedCol);
     if (selectIdx!=insertIdx)
-      cminsky().putClipboard
+      cminsky().clipboard.putClipboard
         (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
     else
-      cminsky().putClipboard(str);  
+      cminsky().clipboard.putClipboard(str);  
   }
 
   void GodleyTableEditor::paste()
@@ -750,7 +750,7 @@ namespace minsky
     if (!selectedCellInTable()) return;
     delSelection();
     auto& str=m_godleyIcon.table.cell(selectedRow,selectedCol); 
-    auto stringToInsert=cminsky().getClipboard();
+    auto stringToInsert=cminsky().clipboard.getClipboard();
     // only insert first line
     auto p=stringToInsert.find('\n');
     if (p!=string::npos)

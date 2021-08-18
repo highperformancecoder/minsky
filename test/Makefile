@@ -15,7 +15,7 @@ MINSKYOBJS=$(filter-out ../tclmain.o ../RESTService.o ../httpd.o ../itemTemplate
 FLAGS:=-I.. -I../RESTService -I../tensor -I../RavelCAPI $(FLAGS)
 FLAGS+=-std=c++14  -Wno-unused-local-typedefs -I../model -I../engine -I../schema
 LIBS+=-L../RavelCAPI -lravelCAPI -ljson_spirit -lboost_system -lboost_thread \
-	-lboost_regex -lboost_date_time -lboost_filesystem \
+	-lboost_regex -lboost_date_time -lboost_filesystem -lclipboard -lxcb -lX11 \
 	-lUnitTest++ -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
 
 # RSVG dependencies calculated here

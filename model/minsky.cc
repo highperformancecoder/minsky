@@ -187,14 +187,14 @@ namespace minsky
   void Minsky::copy() const
   {
     if (canvas.selection.empty())
-      putClipboard(""); // clear clipboard
+      clipboard.putClipboard(""); // clear clipboard
     else
       {
         schema3::Minsky m(canvas.selection);
         ostringstream os;
         xml_pack_t packer(os, schemaURL);
         xml_pack(packer, "Minsky", m);
-        putClipboard(os.str());
+        clipboard.putClipboard(os.str());
       }
   }
 
@@ -214,8 +214,9 @@ namespace minsky
   }
 
   void Minsky::paste()
+    try
   {
-    istringstream is(getClipboard());
+    istringstream is(clipboard.getClipboard());
     xml_unpack_t unpacker(is); 
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
@@ -308,7 +309,11 @@ namespace minsky
     canvas.model->removeGroup(*g);  
     canvas.requestRedraw();
   }  
-
+    catch (...)
+      {
+        throw runtime_error("clipboard data invalid");
+      }
+  
   namespace
   {
     /// checks if the input stream has the UTF-8 byte ordering marker,
@@ -1467,93 +1472,6 @@ namespace minsky
     OperationPtr op(o);
     return op->numPorts()-1;
   }
-
-    void Minsky::putClipboard(const string& s) const
-    {
-#if defined(_WIN32)
-      HWND hwnd=nullptr;//TODO enumerate top level windows to find one belonging to this
-      OpenClipboard(hwnd);
-      EmptyClipboard();
-      HGLOBAL h=GlobalAlloc(GMEM_MOVEABLE, s.length()+1);
-      LPTSTR hh=static_cast<LPTSTR>(GlobalLock(h));
-      if (hh)
-        {
-          strcpy(hh,s.c_str());
-          GlobalUnlock(h);
-          if (SetClipboardData(CF_TEXT, h)==nullptr)
-            GlobalFree(h);
-        }
-      CloseClipboard();
-#else
-      int p[2];
-      pipe(p);
-
-      if (fork()==0)
-        {
-          dup2(p[0],0);
-          close(p[1]);
-#ifdef MAC_OSX_TK
-          execl("/usr/bin/pbcopy","pbcopy",nullptr);
-#else
-          execlp("xclip","xclip","-selection","clipboard","-target","UTF8_STRING",nullptr);
-#endif
-          exit(1); // abort on error
-       }
-      else 
-        {
-          close(p[0]);
-          write(p[1],s.c_str(),s.length());
-          close(p[1]);
-        }
-      int status;
-      wait(&status);
-      if (!WIFEXITED(status) || WEXITSTATUS(status))
-        throw runtime_error("failed to call clipboard helper program");
-#endif
-    }
-
-    string Minsky::getClipboard() const
-    {
-#if defined(_WIN32)
-      string r;
-      OpenClipboard(nullptr);
-      if (HANDLE h=GetClipboardData(CF_TEXT))
-        {
-          r=static_cast<const char*>(GlobalLock(h));
-          GlobalUnlock(h);
-        }
-      CloseClipboard();
-      return r;
-#else
-      int p[2];
-      pipe(p);
-      string r;
-      if (fork()==0)
-        {
-          dup2(p[1],1);
-          close(p[0]);
-#ifdef MAC_OSX_TK
-          execl("/usr/bin/pbpaste","pbpaste",nullptr);
-#else
-          execlp("xclip","xclip","-o","-selection","clipboard","-target","UTF8_STRING",nullptr);
-#endif
-          exit(127); // abort on error. Use code 127, as this usually means "command not found"
-        }
-      else 
-        {
-          close(p[1]);
-          char c;
-          while (read(p[0],&c,1)>0)
-            r+=c;
-          close(p[0]);
-        }
-      int status;
-      wait(&status);
-      if (!WIFEXITED(status) || WEXITSTATUS(status)==127)
-        throw runtime_error("failed to call clipboard helper program");
-      return r;
-#endif
-    }
 
   void Minsky::setAutoSaveFile(const std::string& file) {
     if (file.empty())

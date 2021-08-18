@@ -725,6 +725,12 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Randomize layout" -command minsky.randomLayout
 .menubar.edit add command -label "Auto layout" -command minsky.autoLayout
 
+proc getClipboard {} {
+    set contents ""
+    catch {clipboard get -type UTF8_STRING} contents
+    return contents
+}
+
 proc togglePaste {} {
     if {[getClipboard]==""} {
 	.menubar.edit entryconfigure "Paste" -state disabled

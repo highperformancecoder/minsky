@@ -29,13 +29,10 @@ namespace
   struct TestFixture: public Minsky
   {
     LocalMinsky lm;
-    mutable string clipboard;
     string savedMessage;
     TestFixture(): lm(*this)
     {
     }
-    string getClipboard() const override {return clipboard;}
-    void putClipboard(const string& x) const override {clipboard=x;}
     void message(const string& x) override {savedMessage=x;}
   };
 }

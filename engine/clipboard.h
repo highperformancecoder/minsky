@@ -25,12 +25,12 @@
 namespace minsky
 {
   /// An RAII wrapper around jtanx's libclipboard (https://github.com/jtanx/libclipboard)
-  class ClipBoard
+  class Clipboard
   {
     struct Impl;
     std::shared_ptr<Impl> pimpl;
   public:
-    ClipBoard();
+    Clipboard();
     /// return clipboard contents as UTF8 text
     std::string getClipboard() const;
     /// puts UTF8 text string on clipboard
