@@ -18,6 +18,12 @@ LIBS+=-L../RavelCAPI -lravelCAPI -ljson_spirit -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lclipboard -lxcb -lX11 \
 	-lUnitTest++ -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
 
+ifdef MXE
+else
+LIBS+=-lxcb
+endif
+
+
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
 LIBS+=$(shell pkg-config --libs librsvg-2.0)
