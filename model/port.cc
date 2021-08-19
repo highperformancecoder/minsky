@@ -85,17 +85,20 @@ namespace minsky
 
   /// value associated with this port
   double Port::value() const {
-    auto vv=getVariableValue();
-    if (vv && vv->type()!=VariableType::undefined)
-      return vv->value();
     if (input())
       {
-        if (!m_wires.empty())
-          return m_wires[0]->from()->value();
-        return 0;
+        double r=identity();
+        for (auto w: m_wires)
+          combineInput(r, w->from()->value());
+        return r;
       }
     else
-      return item().value();
+      {
+        auto vv=getVariableValue();
+        if (vv && vv->type()!=VariableType::undefined)
+          return vv->value();
+        return item().value();
+      }
   }
 
   

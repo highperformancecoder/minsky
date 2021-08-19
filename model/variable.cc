@@ -59,10 +59,9 @@ void VariableBase::addPorts()
 #endif
   m_ports.clear();
   if (numPorts()>0)
-    m_ports.emplace_back(new Port(*this,Port::noFlags));
+    m_ports.emplace_back(make_shared<Port>(*this));
   for (size_t i=1; i<numPorts(); ++i)
-    m_ports.emplace_back
-      (new Port(*this, Port::inputPort));
+    m_ports.emplace_back(make_shared<InputPort>(*this));
 }
 
 bool VariableBase::inputWired() const

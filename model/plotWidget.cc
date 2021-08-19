@@ -71,7 +71,7 @@ namespace minsky
   void PlotWidget::addPorts()
   {
     for (unsigned i=0; i<4*numLines+nBoundsPorts; ++i)
-      m_ports.emplace_back(new Port(*this, Port::inputPort));
+      m_ports.emplace_back(make_shared<InputPort>(*this));
   }
   
   void PlotWidget::draw(cairo_t* cairo) const
