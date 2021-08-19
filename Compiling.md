@@ -62,7 +62,7 @@ Notes
 * json_spirit can also be built from [sources](https://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) instead of adding the opensuse build service as a repository. Github clones of json_spirit also exist. 
 * [libclipboard's source code](https://github.com/jtanx/libclipboard)
 
-* For building json_spirit, libclipboard and soci, you need cmake, which you can install from your package manager. On MinGW, you can use the normal Windows binary for CMake. Just type (cmake -G "Unix Makefiles" .) - if you don't specify the generator, it will default to Visual Studio.
+* For building json_spirit and libclipboard, you need cmake, which you can install from your package manager. On MinGW, you can use the normal Windows binary for CMake. Just type (cmake -G "Unix Makefiles" .) - if you don't specify the generator, it will default to Visual Studio.
 
 * Because of the antique version of Berkley DB installed by default on MacOS, you will probably need to install a modern 4.x version in order to get ecolab to build on MacOSX.
 
