@@ -79,7 +79,6 @@ namespace minsky
     DeleteDC(hdcMem);
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
-    releaseClipboard();
     XFreeGC(display, graphicsContext);
     XDestroyWindow(display, childWindowId);
     XDestroyWindow(display, bufferWindowId);

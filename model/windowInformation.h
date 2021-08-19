@@ -49,7 +49,6 @@ namespace minsky
     Display*	display; // Weak reference, returned by system
     GC graphicsContext;
     XWindowAttributes wAttr;
-    std::thread clipboardHandler;
 #endif
     ecolab::cairo::SurfacePtr bufferSurface;
 
