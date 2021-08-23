@@ -675,7 +675,9 @@ namespace schema3
                       }
                     catch (const std::exception& ex) {
                       val->tensorInit.hypercube({});
+#if !defined(NDEBUG) || !defined(_WIN32)
                       cout<<ex.what()<<endl;
+#endif
                     }
                     catch (...) {
                       val->tensorInit.hypercube({});
