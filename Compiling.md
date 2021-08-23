@@ -15,6 +15,7 @@ Dependencies
 * gmake
 * boost 1.66.0 or later 
 * json_spirit
+* jtanx's libclipboard
 * TCL/Tk
 * cairo
 * pango
@@ -53,16 +54,15 @@ librsvg2-doc/artful,artful 2.40.18-1 all
   SAX-based renderer library for SVG files (documentation)
 ~~~~
 
-* json_spirit and ecolab are available prebuilt for Linux from the [OpenSUSE build service](https://build.opensuse.org/project/show/home:hpcoder1). You will need to follow the instructions to add it as a software repository.
+* json_spirit, libclipboard and ecolab are available prebuilt for Linux from the [OpenSUSE build service](https://build.opensuse.org/project/show/home:hpcoder1). You will need to follow the instructions to add it as a software repository.
 
 Notes
 -----
 * If you're working on the development head of Minsky, you should really build from EcoLab's development head.
 * json_spirit can also be built from [sources](https://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) instead of adding the opensuse build service as a repository. Github clones of json_spirit also exist. 
+* [libclipboard's source code](https://github.com/jtanx/libclipboard)
 
-* For building json_spirit and soci, you need cmake, which you can install from your package manager. On MinGW, you can use the normal Windows binary for CMake. Just type (cmake -G "Unix Makefiles" .) - if you don't specify the generator, it will default to Visual Studio.
-
-* For building json_spirit and soci, you need cmake. On MinGW, you can use the normal Windows binary for CMake. Just type (cmake -G "Unix Makefiles" .) - if you don't specify the generator, it will default to Visual Studio. On unix systems, "cmake ." suffices.
+* For building json_spirit and libclipboard, you need cmake, which you can install from your package manager. On MinGW, you can use the normal Windows binary for CMake. Just type (cmake -G "Unix Makefiles" .) - if you don't specify the generator, it will default to Visual Studio.
 
 * Because of the antique version of Berkley DB installed by default on MacOS, you will probably need to install a modern 4.x version in order to get ecolab to build on MacOSX.
 

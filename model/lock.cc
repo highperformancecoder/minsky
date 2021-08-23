@@ -23,6 +23,7 @@
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;
+using namespace std;
 
 namespace minsky
 {
@@ -34,9 +35,9 @@ namespace minsky
     tooltip="Double click to lock/unlock";
     iWidth(30);
     iHeight(30);
-    m_ports.emplace_back(new Port(*this,Port::noFlags));
+    m_ports.emplace_back(make_shared<Port>(*this));
     m_ports[0]->moveTo(15,0);
-    m_ports.emplace_back(new Port(*this, Port::inputPort));
+    m_ports.emplace_back(make_shared<InputPort>(*this));
     m_ports[1]->moveTo(-15,0);
   }
 

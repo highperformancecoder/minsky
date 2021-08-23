@@ -33,13 +33,9 @@ namespace minsky
 
   class Port
   {
-  public:
-    enum Flags {noFlags=0, multiWire=1, inputPort=2};
   private:
     float m_x{0}, m_y{0};
     int flags{0};
-//    bool m_multiWireAllowed;
-//    bool m_input; ///<true if input port
     CLASSDESC_ACCESS(Port);
     friend struct SchemaHelper;
     Port(const Port&)=delete;
@@ -64,18 +60,26 @@ namespace minsky
     void eraseWire(Wire*);
     /// delete all attached wires
     void deleteWires();
-    
-    bool input() const {return flags&inputPort;}
+
+    /// true if input port
+    virtual bool input() const {return false;}
 
     /// true if multiple wires are allowed to connect to an input
     /// port, such as an input port of an add operation. Irrelevant,
     /// otherwise
-    bool multiWireAllowed() const {return flags&multiWire;}
+    virtual bool multiWireAllowed() const {return false;}
+    /// combine two input wires
+    /// @param x input to be updated
+    /// @param y input to be combined with x
+    virtual void combineInput(double& x, double y) const {}
+    /// input port value if no wire attached
+    virtual double identity() const {return 0;}
+
     float x() const;
     float y() const;
     void moveTo(float x, float y);
     //Port() {}
-    Port(Item& item, int f=noFlags): flags(f), m_item(item) {}
+    Port(Item& item): m_item(item) {}
 
     // destruction of this port must also destroy all attached wires
     ~Port() {deleteWires();}
@@ -89,6 +93,12 @@ namespace minsky
     Units units(bool) const;
     /// dimensional analysis with consistency check
     Units checkUnits() const {return units(true);}
+  };
+
+  struct InputPort: public Port
+  {
+    bool input() const override {return true;}
+    InputPort(Item& item): Port(item) {}
   };
 }
 

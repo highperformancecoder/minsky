@@ -33,7 +33,7 @@ const float border=10;
 
 Sheet::Sheet()
 {
-  m_ports.emplace_back(new Port(*this, Port::inputPort));
+  m_ports.emplace_back(make_shared<InputPort>(*this));
   iWidth(100);
   iHeight(100);	  
 }
