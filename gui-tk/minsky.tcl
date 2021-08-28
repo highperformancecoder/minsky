@@ -1024,6 +1024,7 @@ source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/csvImport.tcl
+source $minskyHome/ravel.tcl
 
 pack .wiring.canvas -fill both -expand 1
 
