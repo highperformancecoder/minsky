@@ -154,7 +154,14 @@ namespace minsky
     std::vector<std::weak_ptr<Ravel>> ravels;
     std::set<std::string> handlesToLock;
     /// populate \a handlesToLock by all handles present in the lock group
-    std::vector<std::string> allLockHandles();
+    std::vector<std::string> allLockHandles() const;
+
+    /// return tooltips of the ravels in this lockGroup
+    std::vector<std::string> ravelNames() const;
+
+    /// return the handle descriptions of of ravel \a ravel_idx in ravels
+    std::vector<std::string> handleNames(size_t ravel_idx) const;
+
     /// set handlesToLock to the handles in \a handles
     void setLockHandles(const std::vector<std::string>& handles);
     void removeFromGroup(const Ravel&);

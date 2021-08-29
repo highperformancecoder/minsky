@@ -561,7 +561,7 @@ namespace
       }
   }
 
-  vector<string> RavelLockGroup::allLockHandles()
+  vector<string> RavelLockGroup::allLockHandles() const
   {
     set<string> handles;
     for (auto& rr: ravels)
@@ -572,6 +572,28 @@ namespace
             handles.insert(h.description);
         }
     return {handles.begin(), handles.end()};
+  }
+  
+  std::vector<std::string> RavelLockGroup::ravelNames() const
+  {
+    std::vector<std::string> r;
+    int cnt=0;
+    for (auto& i: ravels)
+      if (auto rr=i.lock())
+        r.emplace_back(rr->tooltip.empty()? to_string(cnt++): rr->tooltip);
+      else
+        r.emplace_back("<invalid>");
+    return r;
+  }
+
+  std::vector<std::string> RavelLockGroup::handleNames(size_t ravel_idx) const
+  {
+    std::vector<std::string> r;
+    if (ravel_idx<ravels.size())
+      if (auto rr=ravels[ravel_idx].lock())
+        for (size_t i=0; i<rr->numHandles(); ++i)
+          r.push_back(rr->handleDescription(i));
+    return r;
   }
   
   void RavelLockGroup::setLockHandles(const std::vector<std::string>& handles)

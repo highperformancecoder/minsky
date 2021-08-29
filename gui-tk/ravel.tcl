@@ -51,6 +51,14 @@ proc setupPickDimMenu {} {
     grab set .wiring.context.pick
 }    
 
+proc lockAttributes {attribute numRows column} {
+    grid [label .wiring.context.lockHandles.grid.name$column -text $attribute] -row 0 -column $column
+    for {set i 0} {$i<[expr $numRows-1]} {incr i} {
+        grid [checkbutton .wiring.context.lockHandles.grid.name${column}_$i] -row [expr $i+1] -column $column
+        .wiring.context.lockHandles.grid.name${column}_$i select
+    }
+}
+
 proc lockSpecificHandles {} {
     global currentLockHandles
 
@@ -62,27 +70,32 @@ proc lockSpecificHandles {} {
     }    
     if {[winfo exists .wiring.context.lockHandles]} {destroy .wiring.context.lockHandles}
     toplevel .wiring.context.lockHandles
-    foreach h [minsky.canvas.item.lockGroup.allLockHandles] {
-        frame .wiring.context.lockHandles."$h"
-        checkbutton .wiring.context.lockHandles."$h".button -variable currentLockHandles($h)
-        label .wiring.context.lockHandles."$h".label -text $h -anchor w -width 50
-        grid .wiring.context.lockHandles."$h".button .wiring.context.lockHandles."$h".label
-        pack .wiring.context.lockHandles."$h"
-    }
-
-    # initialise currentLockHandles array to current lock handles state
-    foreach i [array names currentLockHandles] {
-        set currentLockHandles($i) 0
-    }
-    if [llength [minsky.canvas.item.lockGroup.handlesToLock.#members]] {
-        foreach i [minsky.canvas.item.lockGroup.handlesToLock.#members] {
-            set currentLockHandles($i) 1
+    frame .wiring.context.lockHandles.grid
+    pack .wiring.context.lockHandles.grid
+    set ravel 0
+    set maxRows 0
+    foreach r [minsky.canvas.item.lockGroup.ravelNames] {
+        grid [label .wiring.context.lockHandles.grid.name$ravel -text $r] -row 0 -column $ravel
+        set handles [minsky.canvas.item.lockGroup.handleNames $ravel]
+        for {set row 0} {$row<[llength $handles]} {incr row} {
+            grid [ttk::combobox .wiring.context.lockHandles.grid.handle${ravel}_$row -state readony -values [concat "-" $handles]] -row [expr $row+1] -column $ravel
+            if {$ravel==0} {
+                .wiring.context.lockHandles.grid.handle${ravel}_$row set [lindex $handles $row]
+            } else {
+                if {$row<[llength $handles] && [lsearch $handles [.wiring.context.lockHandles.grid.handle0_$row get]]>-1} {
+                    .wiring.context.lockHandles.grid.handle${ravel}_$row set [.wiring.context.lockHandles.grid.handle0_$row get]
+                }
+            }
         }
-    } else {
-        foreach i [minsky.canvas.item.lockGroup.allLockHandles] {
-            set currentLockHandles($i) 1
-        }
-    }        
+        if {[llength $handles] > $maxRows} {set maxRows [llength $handles]}
+        incr ravel
+    }
+    incr maxRows
+    
+    foreach attribute {"Slicer" "Orientation" "Calipers" "SortOrder"} {
+        lockAttributes $attribute $maxRows $ravel
+        incr ravel
+    }
 
     buttonBar .wiring.context.lockHandles {
         set lh {}
