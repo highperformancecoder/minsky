@@ -651,7 +651,6 @@ namespace
   void RavelLockGroup::setLockHandles(const std::vector<std::string>& handles)
   {
     handleLockInfo.clear();
-    handleLockInfo.resize(m_ravels.size());
     std::vector<std::set<std::string>> handleNames;
     for (auto& rp: m_ravels)
       if (auto r=rp.lock())
@@ -663,8 +662,11 @@ namespace
         handleNames.emplace_back();
     
     for (auto& h: handles)
-      for (size_t i=0; i<handleLockInfo.size(); ++i)
-        handleLockInfo[i].handleNames.push_back(handleNames[i].count(h)? h: "");
+      {
+        handleLockInfo.emplace_back();
+        for (size_t i=0; i<m_ravels.size(); ++i)
+          handleLockInfo.back().handleNames.push_back(handleNames[i].count(h)? h: "");
+      }
   }
 
   void RavelLockGroup::addRavel(const std::weak_ptr<Ravel>& ravel)
