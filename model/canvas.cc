@@ -455,13 +455,11 @@ namespace minsky
       lockGroup.reset(new RavelLockGroup);
     for (auto& r: ravelsToLock)
       {
-        lockGroup->ravels.push_back(r);
+        lockGroup->addRavel(r);
         r->leaveLockGroup();
         r->lockGroup=lockGroup;
       }
-    if (lockGroup && !lockGroup->ravels.empty())
-      if (auto r=lockGroup->ravels.front().lock())
-        r->broadcastStateToLockGroup();
+    if (lockGroup) lockGroup->initialBroadcast();
   }
 
   void Canvas::unlockRavelsInSelection()

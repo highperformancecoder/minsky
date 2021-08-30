@@ -521,50 +521,61 @@ namespace
 
   void Ravel::broadcastStateToLockGroup() const
   {
-    if (lockGroup)
-      {
-        auto state=getState();
-        // filter by handlesToLock
-        if (!lockGroup->handlesToLock.empty())
-          {
-            decltype(state.handleStates) handleStates;
-            for (auto& h: state.handleStates)
-              if (lockGroup->handlesToLock.count(h.description))
-                handleStates.push_back(h);
-            state.handleStates=std::move(handleStates);
-            // remove output handle if not locked
-            decltype(state.outputHandles) outputHandles;
-            for (auto& h: state.outputHandles)
-              if (lockGroup->handlesToLock.count(h))
-                outputHandles.push_back(h);
-            state.outputHandles=move(outputHandles); // restore state.outputHandles
-          }
-
-        for (auto& rr: lockGroup->ravels)
-          if (auto r=rr.lock())
-            if (r.get()!=this)
-              {
-                // stash state.outputHandles
-                auto stateOutputHandles=state.outputHandles;
-                if (!lockGroup->handlesToLock.empty())
-                  {
-                    auto currentOutputHandles=r->getState().outputHandles;
-                    // add currentoutputHandles not in locked handle list
-                    for (auto& i: currentOutputHandles)
-                      if (!lockGroup->handlesToLock.count(i))
-                        state.outputHandles.push_back(i);
-                  }
-                r->applyState(state);
-                r->redistributeHandles();
-                state.outputHandles=move(stateOutputHandles);
-              }
-      }
+    if (lockGroup) lockGroup->broadcast(*this);
+//      {
+//        auto state=getState();
+//        // filter by handlesToLock
+//        if (!lockGroup->handlesToLock.empty())
+//          {
+//            decltype(state.handleStates) handleStates;
+//            for (auto& h: state.handleStates)
+//              if (lockGroup->handlesToLock.count(h.description))
+//                handleStates.push_back(h);
+//            state.handleStates=std::move(handleStates);
+//            // remove output handle if not locked
+//            decltype(state.outputHandles) outputHandles;
+//            for (auto& h: state.outputHandles)
+//              if (lockGroup->handlesToLock.count(h))
+//                outputHandles.push_back(h);
+//            state.outputHandles=move(outputHandles); // restore state.outputHandles
+//          }
+//
+//        for (auto& rr: lockGroup->ravels)
+//          if (auto r=rr.lock())
+//            if (r.get()!=this)
+//              {
+//                // stash state.outputHandles
+//                auto stateOutputHandles=state.outputHandles;
+//                if (!lockGroup->handlesToLock.empty())
+//                  {
+//                    auto currentOutputHandles=r->getState().outputHandles;
+//                    // add currentoutputHandles not in locked handle list
+//                    for (auto& i: currentOutputHandles)
+//                      if (!lockGroup->handlesToLock.count(i))
+//                        state.outputHandles.push_back(i);
+//                  }
+//                r->applyState(state);
+//                r->redistributeHandles();
+//                state.outputHandles=move(stateOutputHandles);
+//              }
+//      }
   }
 
+  void RavelLockGroup::initialBroadcast()
+  {
+    if (!m_ravels.empty())
+      if (auto r=m_ravels.front().lock())
+        broadcast(*r);
+  }
+
+  void RavelLockGroup::broadcast(const Ravel& ravel)
+  {
+  }
+  
   vector<string> RavelLockGroup::allLockHandles() const
   {
     set<string> handles;
-    for (auto& rr: ravels)
+    for (auto& rr: m_ravels)
       if (auto r=rr.lock())
         {
           auto state=r->getState();
@@ -578,7 +589,7 @@ namespace
   {
     std::vector<std::string> r;
     int cnt=0;
-    for (auto& i: ravels)
+    for (auto& i: m_ravels)
       if (auto rr=i.lock())
         r.emplace_back(rr->tooltip.empty()? to_string(cnt++): rr->tooltip);
       else
@@ -589,8 +600,8 @@ namespace
   std::vector<std::string> RavelLockGroup::handleNames(size_t ravel_idx) const
   {
     std::vector<std::string> r;
-    if (ravel_idx<ravels.size())
-      if (auto rr=ravels[ravel_idx].lock())
+    if (ravel_idx<m_ravels.size())
+      if (auto rr=m_ravels[ravel_idx].lock())
         for (size_t i=0; i<rr->numHandles(); ++i)
           r.push_back(rr->handleDescription(i));
     return r;
@@ -598,22 +609,35 @@ namespace
   
   void RavelLockGroup::setLockHandles(const std::vector<std::string>& handles)
   {
-    handlesToLock.clear();
-    handlesToLock.insert(handles.begin(), handles.end());
+    handleLockInfo.clear();
+    handleLockInfo.resize(m_ravels.size());
+    std::vector<std::set<std::string>> handleNames;
+    for (auto& rp: m_ravels)
+      if (auto r=rp.lock())
+        {
+          auto names=r->handleNames();
+          handleNames.emplace_back(names.begin(), names.end());
+        }
+      else
+        handleNames.emplace_back();
+    
+    for (auto& h: handles)
+      for (size_t i=0; i<handleLockInfo.size(); ++i)
+        handleLockInfo[i].handleNames.push_back(handleNames[i].count(h)? h: "");
   }
 
   void RavelLockGroup::removeFromGroup(const Ravel& ravel)
   {
     vector<weak_ptr<Ravel>> newRavelList;
-    for (auto& i: ravels)
+    for (auto& i: m_ravels)
       {
         auto r=i.lock();
         if (r && r.get()!=&ravel)
           newRavelList.push_back(move(i));
       }
-    ravels.swap(newRavelList);
-    if (ravels.size()==1)
-      if (auto r=ravels[0].lock())
+    m_ravels.swap(newRavelList);
+    if (m_ravels.size()==1)
+      if (auto r=m_ravels[0].lock())
         r->lockGroup.reset(); // this may delete this, so should be last
   }
  

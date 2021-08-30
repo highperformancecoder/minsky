@@ -101,6 +101,14 @@ namespace minsky
     /// pick (selected) \a pick labels
     void pickSliceLabels(int axis, const std::vector<std::string>& pick);
 
+    /// return all handle names
+    std::vector<std::string> handleNames() const {
+      std::vector<std::string> r;
+      for (size_t i=0; i<numHandles(); ++i)
+        r.push_back(handleDescription(i));
+      return r;
+    }
+    
     /// dimension details associated with handle 
     Dimension dimension(int handle) const;
     
@@ -143,16 +151,28 @@ namespace minsky
 
   };
 
+  struct HandleLockInfo
+  {
+    bool slider=true, orientation=true, calipers=true, order=true;
+    std::vector<std::string> handleNames;
+  };
+  
   class RavelLockGroup
   {
     static unsigned nextColour;
     unsigned m_colour;
+    std::vector<std::weak_ptr<Ravel>> m_ravels;
   public:
     RavelLockGroup() {m_colour=nextColour++;}
-    // an identifyin tag used to colour locked ravels on canvas
+    void addRavel(const std::weak_ptr<Ravel>& ravel) {m_ravels.push_back(ravel);}
+    const std::vector<std::weak_ptr<Ravel>>& ravels() const {return m_ravels;}
+    /// broadcast first ravel's state to the remainder
+    void initialBroadcast();
+    /// broadcast state from \a ravel to the lock group
+    void broadcast(const Ravel& ravel);
+    /// an identifying tag used to colour locked ravels on canvas
     unsigned colour() const {return m_colour;}
-    std::vector<std::weak_ptr<Ravel>> ravels;
-    std::set<std::string> handlesToLock;
+    std::vector<HandleLockInfo> handleLockInfo;
     /// populate \a handlesToLock by all handles present in the lock group
     std::vector<std::string> allLockHandles() const;
 

@@ -170,7 +170,7 @@ namespace schema3
               if (r->lockGroup)
                 {
                   items.back().lockGroup=at(r->lockGroup.get());
-                  items.back().lockGroupHandles=r->lockGroup->handlesToLock;
+                  // TODO                  items.back().lockGroupHandles=r->lockGroup->handlesToLock;
                 }
               auto s=r->getState();
               if (!s.handleStates.empty())
@@ -583,9 +583,9 @@ namespace schema3
           if (auto r=dynamic_pointer_cast<minsky::Ravel>(itemMap[i.id]))
             {
               r->lockGroup=lockGroups[*i.lockGroup];
+              r->lockGroup->addRavel(r);
               if (i.lockGroupHandles)
-                r->lockGroup->handlesToLock=*i.lockGroupHandles;
-              r->lockGroup->ravels.push_back(r);
+                r->lockGroup->setLockHandles({i.lockGroupHandles->begin(), i.lockGroupHandles->end()});
             }
       }
         
