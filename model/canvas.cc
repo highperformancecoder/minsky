@@ -477,7 +477,7 @@ namespace minsky
         if (v && v->defined() && !v->varTabDisplay) {
           itemVector.push_back(i);
           v->toggleVarTabDisplay();	  
-	    }
+        }
       }
   }
   

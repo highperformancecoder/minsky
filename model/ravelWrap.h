@@ -153,7 +153,7 @@ namespace minsky
 
   struct HandleLockInfo
   {
-    bool slider=true, orientation=true, calipers=true, order=true;
+    bool slicer=true, orientation=true, calipers=true, order=true;
     std::vector<std::string> handleNames;
   };
   
@@ -164,7 +164,7 @@ namespace minsky
     std::vector<std::weak_ptr<Ravel>> m_ravels;
   public:
     RavelLockGroup() {m_colour=nextColour++;}
-    void addRavel(const std::weak_ptr<Ravel>& ravel) {m_ravels.push_back(ravel);}
+    void addRavel(const std::weak_ptr<Ravel>& ravel);
     const std::vector<std::weak_ptr<Ravel>>& ravels() const {return m_ravels;}
     /// broadcast first ravel's state to the remainder
     void initialBroadcast();
@@ -184,6 +184,8 @@ namespace minsky
 
     /// set handlesToLock to the handles in \a handles
     void setLockHandles(const std::vector<std::string>& handles);
+    /// add ravel's handles to handleLockInfo, for a ravel stashed in m_ravels
+    void addHandleInfo(const std::weak_ptr<Ravel>& ravel);
     void removeFromGroup(const Ravel&);
   };
 }
