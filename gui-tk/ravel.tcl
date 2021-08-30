@@ -54,8 +54,6 @@ proc setupPickDimMenu {} {
 proc lockAttributes {attribute numRows column} {
     grid [label .wiring.context.lockHandles.grid.name$column -text $attribute] -row 0 -column $column
     for {set i 0} {$i<[expr $numRows-1]} {incr i} {
-        grid [checkbutton .wiring.context.lockHandles.grid.name${column}_$i] -row [expr $i+1] -column $column
-        .wiring.context.lockHandles.grid.name${column}_$i select
     }
 }
 
@@ -72,40 +70,57 @@ proc lockSpecificHandles {} {
     toplevel .wiring.context.lockHandles
     frame .wiring.context.lockHandles.grid
     pack .wiring.context.lockHandles.grid
-    set ravel 0
-    set maxRows 0
-    foreach r [minsky.canvas.item.lockGroup.ravelNames] {
-        grid [label .wiring.context.lockHandles.grid.name$ravel -text $r] -row 0 -column $ravel
-        set handles [minsky.canvas.item.lockGroup.handleNames $ravel]
-        for {set row 0} {$row<[llength $handles]} {incr row} {
-            grid [ttk::combobox .wiring.context.lockHandles.grid.handle${ravel}_$row -state readony -values [concat "-" $handles]] -row [expr $row+1] -column $ravel
-            if {$ravel==0} {
-                .wiring.context.lockHandles.grid.handle${ravel}_$row set [lindex $handles $row]
-            } else {
-                if {$row<[llength $handles] && [lsearch $handles [.wiring.context.lockHandles.grid.handle0_$row get]]>-1} {
-                    .wiring.context.lockHandles.grid.handle${ravel}_$row set [.wiring.context.lockHandles.grid.handle0_$row get]
-                }
-            }
-        }
-        if {[llength $handles] > $maxRows} {set maxRows [llength $handles]}
-        incr ravel
-    }
-    incr maxRows
+
+    if {![minsky.canvas.item.lockGroup.handleLockInfo.size]} {
+        minsky.canvas.item.lockGroup.setLockHandles [minsky.canvas.item.lockGroup.allLockHandles]
+    }    
     
+    set col 0
+    set ravelNames [minsky.canvas.item.lockGroup.ravelNames]
+    foreach r $ravelNames {
+        grid [label .wiring.context.lockHandles.grid.name$col -text $r] -row 0 -column $col
+        incr col
+    }
+    global lockHandleAttributes 
+    set lockHandleAttributes {"slicer" "orientation" "calipers" "order"}
     foreach attribute {"Slicer" "Orientation" "Calipers" "SortOrder"} {
-        lockAttributes $attribute $maxRows $ravel
-        incr ravel
+        grid [label .wiring.context.lockHandles.grid.name$col -text $attribute] -row 0 -column $col
+        incr col
+    }
+
+    for {set row 1} {$row<=[minsky.canvas.item.lockGroup.handleLockInfo.size]} {incr row} {
+        set info [minsky.canvas.item.lockGroup.handleLockInfo.@elem [expr $row-1]]
+        set handles [$info.handleNames]
+        for {set col 0} {$col<[$handles.size]} {incr col} {
+            grid [ttk::combobox .wiring.context.lockHandles.grid.handle${col}_$row -state readony -values [concat "-" $handles]] -row $row -column $col
+            .wiring.context.lockHandles.grid.handle${col}_$row set [lindex $handles $col]
+
+            incr col
+        }
+        foreach attr $lockhandleAttributes  {
+            grid [checkbutton .wiring.context.lockHandles.grid.name${col}_$row] -row $row -column $col -variable lockHandleAttr($attr_$row)
+            if [$info.$attr] {
+                .wiring.context.lockHandles.grid.name${column}_$i select
+            } else {
+                .wiring.context.lockHandles.grid.name${column}_$i deselect
+            }
+            incr col
+        }
     }
 
     buttonBar .wiring.context.lockHandles {
-        set lh {}
-        global currentLockHandles
-        foreach i [array names currentLockHandles] {
-            if $currentLockHandles($i) {
-                lappend lh $i
+        global lockhandleAttributes lockHandleAttr
+        for {set row 1} {$row<=[minsky.canvas.item.lockGroup.handleLockInfo.size]} {incr row} {
+            set info [minsky.canvas.item.lockGroup.handleLockInfo.@elem [expr $row-1]]
+            set handleNames {}
+            for {set col 0} {$col<[llength [minsky.canvas.item.lockGroup.ravelNames]]} {incr col} {
+                lappend handleNames [.wiring.context.lockHandles.grid.name${col}_$row get]
+            }
+            $info.handleNames $handleNames
+            foreach attr $lockhandleAttributes {
+                $info.$attr $lockHandleAttr($attr_$row)
             }
         }
-        minsky.canvas.item.lockGroup.setLockHandles $lh
     }
 }
 
