@@ -86,7 +86,7 @@ proc lockSpecificHandles {} {
         set info [minsky.canvas.item.lockGroup.handleLockInfo.@elem [expr $row-1]]
         set handles [$info.handleNames]
         for {set col 0} {$col<[llength $ravelNames]} {incr col} {
-            grid [ttk::combobox .wiring.context.lockHandles.grid.handle${col}_$row -state readony -values [concat {-} $handles]] -row $row -column $col
+            grid [ttk::combobox .wiring.context.lockHandles.grid.handle${col}_$row -state readony -values [concat {-} [minsky.canvas.item.lockGroup.handleNames $col]]] -row $row -column $col
             .wiring.context.lockHandles.grid.handle${col}_$row set [lindex $handles $col]
         }
         foreach attr $lockHandleAttributes  {

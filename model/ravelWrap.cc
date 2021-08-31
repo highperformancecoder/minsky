@@ -560,11 +560,17 @@ namespace
       {
         auto hs=find_if(sourceState.handleStates.begin(), sourceState.handleStates.end(),
                         [&](const ravel::HandleState& hs){return hs.description==i.handleNames[ravelIdx];});
-        if (hs==sourceState.handleStates.end()) continue;
-        sourceHandleStates.emplace_back(&*hs);
-        if (!handlesAdded.insert(hs->description).second)
-          throw runtime_error("Multiple locks found on handle "+hs->description);
+        if (hs!=sourceState.handleStates.end())
+          {
+            sourceHandleStates.emplace_back(&*hs);
+            if (!handlesAdded.insert(hs->description).second)
+              throw runtime_error("Multiple locks found on handle "+hs->description);
+          }
+        else
+          sourceHandleStates.emplace_back(nullptr);
       }
+
+    assert(sourceHandleStates.size()==handleLockInfo.size());
     
     for (size_t ri=0; ri<m_ravels.size(); ++ri)
       if (auto r=m_ravels[ri].lock())
@@ -574,6 +580,7 @@ namespace
           set<string> outputHandles(state.outputHandles.begin(), state.outputHandles.end());
           for (size_t i=0; i<handleLockInfo.size(); ++i)
             {
+              if (!sourceHandleStates[i]) continue;
               auto& sourceHandleState=*sourceHandleStates[i];
               
               auto& hlInfo=handleLockInfo[i];
@@ -641,12 +648,9 @@ namespace
 
   std::vector<std::string> RavelLockGroup::handleNames(size_t ravel_idx) const
   {
-    std::vector<std::string> r;
-    if (ravel_idx<m_ravels.size())
-      if (auto rr=m_ravels[ravel_idx].lock())
-        for (size_t i=0; i<rr->numHandles(); ++i)
-          r.push_back(rr->handleDescription(i));
-    return r;
+    if (auto rr=m_ravels[ravel_idx].lock())
+      return rr->handleNames();
+    return {};
   }
   
   void RavelLockGroup::setLockHandles(const std::vector<std::string>& handles)
