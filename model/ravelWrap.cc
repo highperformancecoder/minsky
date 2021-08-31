@@ -539,7 +539,7 @@ namespace
       {
         lockedRavels.push_back(i.lock());
         if (lockedRavels.back().get()==&ravel)
-          ravelIdx=lockedRavels.size();
+          ravelIdx=lockedRavels.size()-1;
       }
     if (ravelIdx==m_ravels.size()) return; // not in lock group
     
@@ -569,6 +569,7 @@ namespace
     for (size_t ri=0; ri<m_ravels.size(); ++ri)
       if (auto r=m_ravels[ri].lock())
         {
+          if (r.get()==&ravel) continue;
           auto state=r->getState();
           set<string> outputHandles(state.outputHandles.begin(), state.outputHandles.end());
           for (size_t i=0; i<handleLockInfo.size(); ++i)
