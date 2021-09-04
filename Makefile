@@ -54,14 +54,15 @@ SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.
 GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
 RESTSERVICE_OBJS=minskyRS.o dataOpRS.o intOpRS.o operatorRS1.o operatorRS2.o variablesRS.o itemRS.o ravelRS.o RESTMinsky.o userFunctionRS.o
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o
-
-EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
-
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
+MODEL_OBJS+=getContext.o
 endif
+
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o
+
+EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
 
 FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
 
@@ -187,6 +188,9 @@ MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
 
 RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
+
+getContext.o: getContext.cc
+	g++ -ObjC++ -DMAC_OSX_TK -I/opt/local/include -Iinclude -c $< -o $@
 
 gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@
