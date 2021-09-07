@@ -18,21 +18,28 @@
 */
 
 /// Process an electron native window handle into a CGContext for Cairo
+#include "getContext.h"
+#include <Appkit/NSGraphicsContext.h>
+#include <Appkit/NSWindow.h>
 
-NSContext::NSContext(void* nativeHandle,int xoffs,int yoffs)
+namespace minsky
 {
-  NSWindow* w=[reinterpret_cast<NSView*>(nativeHandle) window];
-  NSGraphicsContext* g=[NSGraphicsContext graphicsContextWithWindow: w];
-  graphicsContext=g;
-  [g retain];
-  context=[g CGContext];
-  NSRect contentRect=[w contentRectForFrameRect: w.frame]; // allow for title bar
-  CGContextTranslateCTM(context,xoffs,contentRect.size.height-yoffs);
-  CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
-}
+  
+  NSContext::NSContext(void* nativeHandle,int xoffs,int yoffs)
+  {
+    NSWindow* w=[reinterpret_cast<NSView*>(nativeHandle) window];
+    NSGraphicsContext* g=[NSGraphicsContext graphicsContextWithWindow: w];
+    graphicsContext=g;
+    [g retain];
+    context=[g CGContext];
+    NSRect contentRect=[w contentRectForFrameRect: w.frame]; // allow for title bar
+    CGContextTranslateCTM(context,xoffs,contentRect.size.height-yoffs);
+    CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
+  }
 
-NSContext::~NSContext()
-{
-  [(NSGraphicsContext*)graphicsContext release];
-}
+  NSContext::~NSContext()
+  {
+    [(NSGraphicsContext*)graphicsContext release];
+  }
  
+}

@@ -19,8 +19,9 @@
 
 #ifndef GETCONTEXT_H
 #define GETCONTEXT_H
+#include <Carbon/Carbon.h>
 
-namespace ecolab
+namespace minsky
 {
   struct NSContext
   {
@@ -28,8 +29,8 @@ namespace ecolab
     void* graphicsContext;
     NSContext(void* nativeHandle,int xoffs,int yoffs);
     ~NSContext();
-    NSContext(const NXContext&)=delete;
-    void operator=(const NXContext&)=delete;
+    NSContext(const NSContext&)=delete;
+    void operator=(const NSContext&)=delete;
   };
 }
 #endif

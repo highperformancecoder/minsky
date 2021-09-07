@@ -190,7 +190,7 @@ RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
 getContext.o: getContext.cc
-	g++ -ObjC++ -DMAC_OSX_TK -I/opt/local/include -Iinclude -c $< -o $@
+	g++ -ObjC++ $(FLAGS) -DMAC_OSX_TK -I/opt/local/include -Iinclude -c $< -o $@
 
 gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@

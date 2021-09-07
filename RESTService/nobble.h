@@ -45,25 +45,20 @@
         public classdesc::NullDescriptor<classdesc::json_unpack_t> {};  \
   }                                                                     
 
-//#include <vector>
 #include <chrono>
-//#include <boost/geometry/geometries/point_xy.hpp>
-//#include "../ecolab/include/RESTProcess_base.h"
-//#include "../ecolab/include/json_pack_base.h"
-
-//namespace minsky
-//{
-//  template <class T,class A>
-//  using VectorIterator=typename std::vector<T,A>::iterator;
-//}
 
 // nobble various system types we're not going to expose to the REST API
 NOBBLE(NOBBLE_TARG(std::chrono::time_point<C,D>), NOBBLE_TARG(class C, class D))
 NOBBLE(NOBBLE_TARG(std::chrono::duration<R,P>), NOBBLE_TARG(class R, class P))
 NOBBLE(std::istream,)
 NOBBLE(std::initializer_list<T>,class T)
+#ifdef __GNU__
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long unsigned int*, std::vector<T>>),class T)
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long long unsigned int*, std::vector<T>>),class T)
+#elif defined(__clang__)
+NOBBLE(std::__1::__wrap_iter<const unsigned long *>,)
+//NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long long unsigned int*, std::vector<T>>),class T)
+#endif
 NOBBLE(NOBBLE_TARG(boost::geometry::model::d2::point_xy<T,S>),NOBBLE_TARG(class T,class S))
 NOBBLE(boost::any,)
 

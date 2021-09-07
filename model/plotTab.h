@@ -28,7 +28,7 @@ namespace minsky
   class PlotTab: public ItemTab
   {	  
   public:
-    ItemTab::ClickType clickType(double x, double y) const {return internal;}
+    ItemTab::ClickType clickType(double x, double y) const override {return internal;}
     bool itemSelector(const ItemPtr& i) override;
     void togglePlotDisplay() const;    
     void draw(cairo_t* cairo) override;    
