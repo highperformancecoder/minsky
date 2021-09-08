@@ -64,7 +64,7 @@ namespace minsky
       
   public:
     ~WindowInformation();
-    WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
+    WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight);
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
 

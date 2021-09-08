@@ -114,7 +114,7 @@ namespace minsky
     return isRendering;
   }
 
-  WindowInformation::WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
+  WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight)
   {
 
     offsetLeft = left;
