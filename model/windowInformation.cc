@@ -99,8 +99,8 @@ namespace minsky
     ReleaseDC(parentWindowId, hdc);
 #elif defined(USE_X11)
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
-    XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XFlush(display);
+    XRaiseWindow(display, childWindowId);
 #endif
   }
 
