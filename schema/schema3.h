@@ -51,7 +51,8 @@ namespace schema3
   using namespace classdesc;
   using classdesc::shared_ptr;
   using minsky::Optional;
-
+  using minsky::HandleLockInfo;  //for Ravel lock groups
+  
  
   struct Note
   {
@@ -105,6 +106,12 @@ namespace schema3
       plot.legendTop=legendTop;
       plot.legendFontSz=legendFontSz;
     }
+  };
+
+  struct LockGroup
+  {
+    vector<int> ravels;
+    vector<HandleLockInfo> handleLockInfo;
   };
   
   struct Item: public ItemBase
@@ -240,6 +247,7 @@ namespace schema3
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
+    vector<LockGroup> lockGroups;
     minsky::Simulation rungeKutta;
     double zoomFactor=1;
     vector<minsky::Bookmark> bookmarks;
@@ -286,5 +294,6 @@ using classdesc::xml_pack;
 
 #include "schema3.cd"
 #include "schema3.xcd"
+#include "handleLockInfo.xcd"
 
 #endif

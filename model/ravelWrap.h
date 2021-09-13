@@ -23,6 +23,7 @@
 #include "operation.h"
 #include "cairoRenderer.h"
 #include "dynamicRavelCAPI.h"
+#include "handleLockInfo.h"
 
 namespace minsky 
 {
@@ -151,12 +152,6 @@ namespace minsky
 
   };
 
-  struct HandleLockInfo
-  {
-    bool slicer=true, orientation=true, calipers=true, order=true;
-    std::vector<std::string> handleNames;
-  };
-  
   class RavelLockGroup
   {
     static unsigned nextColour;
