@@ -898,12 +898,21 @@ grid rowconfigure . 10 -weight 1
 # utility for creating OK/Cancel button bar
 proc buttonBar {window okProc} {
     frame $window.buttonBar
-    button $window.buttonBar.ok -text "OK" -command "$okProc; cancelWin $window"
+    button $window.buttonBar.ok -text "OK" -command "okAction \{$okProc\} $window"
     button $window.buttonBar.cancel -text "Cancel" -command "cancelWin $window"
     pack $window.buttonBar.cancel $window.buttonBar.ok -side left
     pack $window.buttonBar -side top
     bind $window <Key-Return> "$window.buttonBar.ok invoke"
     bind $window <Key-Escape> "$window.buttonBar.cancel invoke"
+}
+
+proc okAction {okProc window} {
+    if [catch $okProc msg] {
+        tk_messageBox  -icon error -parent $window -message $msg
+        raise $window
+        return
+    }
+    cancelWin $window
 }
 
 proc cancelWin window {

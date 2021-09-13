@@ -620,6 +620,26 @@ namespace
           r->applyState(state);
         }
   }
+
+  void RavelLockGroup::validateLockHandleInfo()
+  {
+    vector<set<string>> checkHandleNames(m_ravels.size());
+    for (auto& hl: handleLockInfo)
+      {
+        if (hl.handleNames.size()!=m_ravels.size())
+          throw runtime_error("Insufficient data on line");
+        for (size_t i=0; i<hl.handleNames.size(); ++i)
+          {
+            auto& nm=hl.handleNames[i];
+            // non-breaking space 0xa0 not treated as space by isspace
+            if (find_if(nm.begin(), nm.end(), [](char i){return !isspace(i)&&!i==0xa0;})==nm.end())
+              continue; // disregard wholly white space strings
+            if (!checkHandleNames[i].insert(nm).second) // check for duplicated handle names in a column
+              throw runtime_error("duplicate handle name "+nm);
+          }
+      }
+  }
+
   
   vector<string> RavelLockGroup::allLockHandles() const
   {

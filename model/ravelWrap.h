@@ -173,6 +173,11 @@ namespace minsky
     /// an identifying tag used to colour locked ravels on canvas
     unsigned colour() const {return m_colour;}
     std::vector<HandleLockInfo> handleLockInfo;
+
+    /// checks handleLockInfo for non repeated handles, etc
+    /// @throw if error
+    void validateLockHandleInfo();
+    
     /// populate \a handlesToLock by all handles present in the lock group
     std::vector<std::string> allLockHandles() const;
 
