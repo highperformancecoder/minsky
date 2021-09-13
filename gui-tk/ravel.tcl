@@ -77,8 +77,15 @@ proc lockSpecificHandles {} {
     }
     global lockHandleAttributes 
     set lockHandleAttributes {"slicer" "orientation" "calipers" "order"}
+    set tooltips {
+        "slicer includes whether a handle is an output handle or not"
+        "orientation includes whether a handle is collapsed or not"
+        ""
+        "order includes picked slices"
+    }
     foreach attribute {"Slicer" "Orientation" "Calipers" "SortOrder"} {
         grid [label .wiring.context.lockHandles.grid.name$col -text $attribute] -row 0 -column $col
+        tooltip .wiring.context.lockHandles.grid.name$col [lindex $tooltips [expr $col-[llength $ravelNames]]]
         incr col
     }
 
