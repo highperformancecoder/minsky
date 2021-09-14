@@ -102,7 +102,7 @@ SUITE(XVector)
   TEST(compareInvalidStoredType)
   {
     XVector a("a",{Dimension::string,""},{"foo","bar","foobar"}), b=a;
-    b[1]=2.0;
+    b[1]={2.0};
     CHECK(!(a==b));
   }
 
