@@ -82,8 +82,6 @@ namespace civita
             if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
               return false;
             break;
-          default:
-            throw error("unknown dimension type");
           }
       }
     return true;

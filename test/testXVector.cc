@@ -98,4 +98,58 @@ SUITE(XVector)
       CHECK_EQUAL("Q2-2002", str(t,"Q%Q-%Y"));
       CHECK_THROW(str(t,"Q%Q"), std::exception);
     }
+
+  TEST(compareInvalidStoredType)
+  {
+    XVector a("a",{Dimension::string,""},{"foo","bar","foobar"}), b=a;
+    b[1]=2.0;
+    CHECK(!(a==b));
+  }
+
+  TEST(anyValSanityChecking)
+  {
+    CHECK_THROW(anyVal({Dimension::time,"%Y-%Q"}, "2001-5"), std::exception);
+    CHECK_THROW(anyVal({Dimension::time,"%y:%d:%m"}, "foobar"), std::exception);
+    CHECK_THROW(anyVal({Dimension::time,"%y:%d:%m"}, "100:1:12"), std::exception);
+    CHECK_THROW(anyVal({Dimension::time,"%Y-%b-%d"}, "foobar"), std::exception);
+  }
+
+  TEST(incompatibleDiff)
+  {
+    boost::any x, y;
+    x=0.5; y="hello";
+    CHECK_THROW(diff(x,y), std::exception); // incompatible type
+    x=nullptr; y=nullptr;
+    CHECK_THROW(diff(x,y), std::exception); // type not supported
+  }
+
+  TEST(strFunnyType)
+  {
+    struct Foo {int a;};
+    boost::any x=Foo();
+    CHECK_EQUAL("",str(x,""));
+  }
+
+  TEST(timeFormat)
+  {
+    XVector x("hello",{Dimension::time,""});
+    CHECK_EQUAL("",x.timeFormat());
+    x.push_back("2000-01-01T01:01:00");
+    x.push_back("2000-01-01T01:01:01");
+    CHECK_EQUAL("%s",x.timeFormat());
+    x.push_back("2000-01-01T01:05:01");
+    CHECK_EQUAL("%M:%S",x.timeFormat());
+    x.push_back("2000-01-01T03:05:01");
+    CHECK_EQUAL("%H:%M",x.timeFormat());
+    x.push_back("2000-01-03T03:05:01");
+    CHECK_EQUAL("%d %H:%M",x.timeFormat());
+    x.push_back("2000-02-03T03:05:01");
+    CHECK_EQUAL("%d %b",x.timeFormat());
+    x.push_back("2000-09-03T03:05:01");
+    CHECK_EQUAL("%b",x.timeFormat());
+    x.push_back("2003-09-03T03:05:01");
+    CHECK_EQUAL("%b %Y",x.timeFormat());
+    x.push_back("2020-09-03T03:05:01");
+    CHECK_EQUAL("%Y",x.timeFormat());
+ }
 }
