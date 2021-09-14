@@ -843,7 +843,9 @@ namespace minsky
         }
       catch (const InvalidType&)
         {return {};}
-      catch (const TensorOpError& ex)
+      catch (const TensorOpError&)
+        {throw;}
+      catch (const FallBackToScalar&)
         {throw;}
       catch (const std::exception& ex)
         {

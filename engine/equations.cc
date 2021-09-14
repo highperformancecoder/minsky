@@ -241,17 +241,7 @@ namespace MathDAG
             break;
           }
       if (r.rank()>0)
-        {
-          // ensure dimensions are correct
-          auto hc=r.hypercube();
-          for (auto& i: argIdx)
-            for (auto& j: i)
-              hc.makeConformant(j.hypercube());
-          r.hypercube(hc);
-
-          if (r.rank()==0)
-            return; // no common intersection amongst arguments
-        }
+        throw runtime_error("Scalar processing not supported in tensor code, try adding an intermediate variable");
       if (r.idx()==-1) r.allocValue();
 
       // short circuit multiplications if any of the terms are constant zero
