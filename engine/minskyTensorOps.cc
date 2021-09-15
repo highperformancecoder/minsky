@@ -456,10 +456,6 @@ namespace minsky
             cachedResult[i+j*m]=v1*v2;			
  	 }
        }	     
-    		            
-//      if (cachedResult.size()==0) 
-//        for (size_t i=0; i<m*n; i++) 
-//          cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
@@ -530,8 +526,6 @@ namespace minsky
         return nan("");
       if (idx==maxIdx)
         return arg1->atHCIndex(idx*stride+offset);
-      else if (idx<0)
-        return arg1->atHCIndex(offset);
       else 
         {
           double s=idx-floor(idx);
@@ -541,7 +535,7 @@ namespace minsky
 
     double interpolateAny(const XVector& xv, const boost::any& x, size_t stride, size_t offset) const
     {
-      if (diff(x,xv.front())<0 || diff(x,xv.back())>0)
+      if (xv.size()<2 || diff(x,xv.front())<0 || diff(x,xv.back())>0)
         return nan("");
       else
         {

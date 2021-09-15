@@ -50,6 +50,9 @@ struct Eval: private std::shared_ptr<EvalCommon>, public TensorEval
 
 struct TestFixture
 {
+  Minsky dummyM;
+  LocalMinsky lm{dummyM};
+
   GroupPtr g{new Group}; // allow itemPtrFromThis() to work.
   VariablePtr from{VariableType::flow,"from"}, to{VariableType::flow,"to"};
   VariableValue& fromVal;
@@ -397,7 +400,26 @@ SUITE(TensorOps)
     }
 
   
-  
+    TEST_FIXTURE(MinskyFixture, gatherBackElement)
+    {
+      VariablePtr x(VariableType::parameter,"x"), i(VariableType::parameter,"i"), z(VariableType::flow,"z");
+      x->init("iota(5)");
+      i->init("4");
+      model->addItem(x);
+      model->addItem(i);
+      model->addItem(z);
+      OperationPtr gather(OperationType::gather);
+      model->addItem(gather);
+      model->addWire(*x,*gather,1);
+      model->addWire(*i,*gather,2);
+      model->addWire(*gather,*z,1);
+      model->addWire(*z, *model->addItem(new Sheet), 1);
+      reset();
+      auto& zz=*z->vValue();
+      CHECK_EQUAL(0, zz.rank());
+      CHECK_EQUAL(4, zz[0]);
+    }
+
   TEST_FIXTURE(TestFixture, indexGatherTensorStringArgs)
     {
       vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::string,""}},
@@ -591,6 +613,8 @@ SUITE(TensorOps)
           }
     }
 
+  
+  
   TEST_FIXTURE(MinskyFixture, tensorUnOpFactory)
     {
       TensorOpFactory factory;
@@ -1164,4 +1188,33 @@ SUITE(TensorOps)
     CHECK_EQUAL(expected.size(), hc.dimLabels().size());
     CHECK_ARRAY_EQUAL(expected, hc.dimLabels(), expected.size());
   }
+
+  TEST_FIXTURE(MinskyFixture, sparseOuterProduct)
+    {
+      VariablePtr x(VariableType::parameter,"x"), z(VariableType::flow,"z");
+      model->addItem(x);
+      model->addItem(z);
+      OperationPtr outer(OperationType::outerProduct);
+      model->addItem(outer);
+      model->addWire(*x,*outer,1);
+      model->addWire(*x,*outer,2);
+      model->addWire(*outer,*z,1);
+      auto& xx=x->vValue()->tensorInit;
+      xx.index({1,3});
+      xx.hypercube({5});
+      xx[0]=1;
+      xx[1]=3;
+      reset();
+      auto& zz=*z->vValue();
+      CHECK_EQUAL(2, zz.rank());
+      vector<unsigned> expectedIndex={6,8,16,18};
+      CHECK_EQUAL(expectedIndex.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      vector<double> zValues(&zz[0], &zz[0]+zz.size());
+      vector<double> expectedValues={1,3,3,9};
+      CHECK_EQUAL(expectedValues.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+    }
+    
+
 }
