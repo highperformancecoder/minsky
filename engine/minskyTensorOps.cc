@@ -540,9 +540,7 @@ namespace minsky
       else
         {
           auto i=xv.begin();
-          for (; i+1!=xv.end() && diff(x,*(i+1))>0; ++i);
-          if (i+1==xv.end())
-            return arg1->atHCIndex((xv.size()-1)*stride+offset);
+          for (; diff(x,*(i+1))>0; ++i); // loop will terminate b/c diff(x,xv.back())<=0
           double s=diff(x,*i)/diff(*(i+1),*i);
           return (1-s)*arg1->atHCIndex((i-xv.begin())*stride+offset) + s*arg1->atHCIndex((i-xv.begin()+1)*stride+offset);
         }
@@ -599,24 +597,23 @@ namespace minsky
       
       arg1=a1; arg2=a2;
       if (!arg1 || !arg2) return;
-      try
+      auto& xv=arg1->hypercube().xvectors;
+      dimension=find_if(xv.begin(), xv.end(), [&](const XVector& i)
+                        {return i.name==dim;})-xv.begin();
+                        
+      switch (arg1->rank())
         {
-          dimension=arg1->rank();
-          auto& xv=arg1->hypercube().xvectors;
-          for (auto i=xv.begin(); i!=xv.end(); ++i)
-            if (i->name==dim)
-              dimension=i-xv.begin();
+        case 0:
+          throw runtime_error("Cannot apply gather to a scalar");
+        case 1:
+          dimension=0;
+          break;
+        default:
+          if (dimension>=arg1->rank())
+            throw runtime_error("Need to specify which dimension to gather");
+          break;
         }
-      catch (...)
-        {}
-      if (arg1->rank()==0)
-        throw runtime_error("Cannot apply gather to a scalar");
-        
-      if (arg1->rank()<=1)
-        dimension=0;
-      if (dimension>=arg1->rank())
-        throw runtime_error("Need to specify which dimension to gather");
-
+      
       // find reduced dimensions of arg1
       auto arg1Dims=arg1->hypercube().dims();
       size_t lowerStride=1;
