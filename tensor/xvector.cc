@@ -143,10 +143,7 @@ namespace civita
                     {
                       
                       int v;
-                      try
-                        {v=stoi(val[i]);}
-                      catch (...)
-                        {throw runtime_error(val[i].str()+" is not an integer");}
+                      v=stoi(val[i]); // can't throw, because val[i] must always be sequence of digits
                       switch (m.str(i)[0])
                         {
                         case 'd': day=v; break;
