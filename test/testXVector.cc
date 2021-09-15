@@ -111,6 +111,9 @@ SUITE(XVector)
     CHECK_THROW(anyVal({Dimension::time,"%Y-%Q"}, "2001-5"), std::exception);
     CHECK_THROW(anyVal({Dimension::time,"%y:%d:%m"}, "foobar"), std::exception);
     CHECK_THROW(anyVal({Dimension::time,"%y:%d:%m"}, "100:1:12"), std::exception);
+    CHECK_THROW(anyVal({Dimension::time,"%y:%d:%m"}, "foo:1:bar"), std::exception);
+    CHECK_EQUAL("1999-12-01",str(anyVal({Dimension::time,"%y:%d:%m"}, "99:1:12"), "%Y-%m-%d"));
+    CHECK_EQUAL("2009-12-01",str(anyVal({Dimension::time,"%y:%d:%m"}, "09:1:12"), "%Y-%m-%d"));
     CHECK_THROW(anyVal({Dimension::time,"%Y-%b-%d"}, "foobar"), std::exception);
   }
 
