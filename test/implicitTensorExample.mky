@@ -3,28 +3,33 @@
   <minskyVersion>2.28.0</minskyVersion>
   <wires>
    <Wire>
-    <id>40</id>
-    <from>0</from>
-    <to>5</to>
-   </Wire>
-   <Wire>
-    <id>41</id>
+    <id>44</id>
     <from>2</from>
     <to>6</to>
    </Wire>
    <Wire>
-    <id>42</id>
+    <id>45</id>
     <from>8</from>
     <to>20</to>
    </Wire>
    <Wire>
-    <id>43</id>
-    <from>4</from>
+    <id>46</id>
+    <from>41</from>
+    <to>39</to>
+   </Wire>
+   <Wire>
+    <id>47</id>
+    <from>0</from>
     <to>38</to>
    </Wire>
    <Wire>
-    <id>44</id>
+    <id>48</id>
     <from>37</from>
+    <to>5</to>
+   </Wire>
+   <Wire>
+    <id>49</id>
+    <from>4</from>
     <to>11</to>
    </Wire>
   </wires>
@@ -79,8 +84,8 @@
    <Item>
     <id>3</id>
     <type>Operation:time</type>
-    <x>104</x>
-    <y>153</y>
+    <x>105</x>
+    <y>182</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -95,8 +100,8 @@
    <Item>
     <id>7</id>
     <type>Operation:multiply</type>
-    <x>189</x>
-    <y>131</y>
+    <x>235</x>
+    <y>134</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -113,8 +118,8 @@
    <Item>
     <id>10</id>
     <type>Variable:integral</type>
-    <x>360</x>
-    <y>129</y>
+    <x>413</x>
+    <y>125</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -154,8 +159,8 @@
    <Item>
     <id>13</id>
     <type>IntOp</type>
-    <x>313</x>
-    <y>129</y>
+    <x>366</x>
+    <y>125</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -173,8 +178,8 @@
    <Item>
     <id>36</id>
     <type>PlotWidget</type>
-    <x>490</x>
-    <y>183</y>
+    <x>542</x>
+    <y>181</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -303,10 +308,10 @@
     </palette>
    </Item>
    <Item>
-    <id>39</id>
-    <type>Operation:sum</type>
-    <x>244</x>
-    <y>130</y>
+    <id>40</id>
+    <type>Operation:add</type>
+    <x>182</x>
+    <y>117</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -316,8 +321,56 @@
     <ports>
      <int>37</int>
      <int>38</int>
+     <int>39</int>
     </ports>
     <arg>1</arg>
+   </Item>
+   <Item>
+    <id>43</id>
+    <type>Variable:integral</type>
+    <x>107</x>
+    <y>138</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>41</int>
+     <int>42</int>
+    </ports>
+    <name>int1</name>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
   </items>
   <groups>
