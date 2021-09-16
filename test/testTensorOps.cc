@@ -1215,6 +1215,4 @@ SUITE(TensorOps)
       CHECK_EQUAL(expectedValues.size(), zz.size());
       CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
     }
-    
-
 }

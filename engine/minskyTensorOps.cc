@@ -46,11 +46,13 @@ namespace minsky
     const char* what() const throw() {return "Derivative not defined";}
   };
   
-  struct TimeOp: public ITensor
+  struct TimeOp: public ITensor, public DerivativeMixin
   {
     size_t size() const override {return 1;}
     double operator[](size_t) const override {return EvalOpBase::t;}
     Timestamp timestamp() const override {return {};}
+    double dFlow(std::size_t, std::size_t) const override {return 0;}
+    double dStock(std::size_t, std::size_t) const override {return 0;}
   };
 
   // insert a setState virtual call for those that need
