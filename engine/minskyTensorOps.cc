@@ -417,10 +417,6 @@ namespace minsky
               }
             cachedResult[i+m*j]=tmpSum;
           }
-    		            
-      if (cachedResult.size()==0) 
-        for (size_t i=0; i<m*n; i++) 
-          cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,

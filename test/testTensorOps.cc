@@ -1189,21 +1189,32 @@ SUITE(TensorOps)
     CHECK_ARRAY_EQUAL(expected, hc.dimLabels(), expected.size());
   }
 
-  TEST_FIXTURE(MinskyFixture, sparseOuterProduct)
+  struct OuterFixture: public MinskyFixture
+  {
+    VariablePtr x{VariableType::parameter,"x"};
+    VariablePtr y{VariableType::parameter,"y"};
+    VariablePtr z{VariableType::flow,"z"};
+    OperationPtr outer{OperationType::outerProduct};
+    OuterFixture()
     {
-      VariablePtr x(VariableType::parameter,"x"), z(VariableType::flow,"z");
       model->addItem(x);
+      model->addItem(y);
       model->addItem(z);
-      OperationPtr outer(OperationType::outerProduct);
       model->addItem(outer);
-      model->addWire(*x,*outer,1);
-      model->addWire(*x,*outer,2);
-      model->addWire(*outer,*z,1);
       auto& xx=x->vValue()->tensorInit;
       xx.index({1,3});
       xx.hypercube({5});
       xx[0]=1;
       xx[1]=3;
+      y->init("iota(5)");
+    }
+  };
+  
+  TEST_FIXTURE(OuterFixture, sparseOuterProduct)
+    {
+      model->addWire(*x,*outer,1);
+      model->addWire(*x,*outer,2);
+      model->addWire(*outer,*z,1);
       reset();
       auto& zz=*z->vValue();
       CHECK_EQUAL(2, zz.rank());
@@ -1215,4 +1226,40 @@ SUITE(TensorOps)
       CHECK_EQUAL(expectedValues.size(), zz.size());
       CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
     }
+  
+
+
+TEST_FIXTURE(OuterFixture, sparse1OuterProduct)
+    {
+      model->addWire(*y,*outer,1);
+      model->addWire(*x,*outer,2);
+      model->addWire(*outer,*z,1);
+      reset();
+      auto& zz=*z->vValue();
+      CHECK_EQUAL(2, zz.rank());
+      vector<unsigned> expectedIndex={5,6,7,8,9,15,16,17,18,19};
+      CHECK_EQUAL(expectedIndex.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      vector<double> zValues(&zz[0], &zz[0]+zz.size());
+      vector<double> expectedValues={0,1,2,3,4,0,3,6,9,12};
+      CHECK_EQUAL(expectedValues.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+    }
+TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
+    {
+      model->addWire(*x,*outer,1);
+      model->addWire(*y,*outer,2);
+      model->addWire(*outer,*z,1);
+      reset();
+      auto& zz=*z->vValue();
+      CHECK_EQUAL(2, zz.rank());
+      vector<unsigned> expectedIndex={1,3,6,8,11,13,16,18,21,23};
+      CHECK_EQUAL(expectedIndex.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      vector<double> zValues(&zz[0], &zz[0]+zz.size());
+      vector<double> expectedValues={0,0,1,3,2,6,3,9,4,12};
+      CHECK_EQUAL(expectedValues.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+    }
+
 }
