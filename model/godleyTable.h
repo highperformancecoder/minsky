@@ -151,6 +151,7 @@ namespace minsky
     string& cell(unsigned row, unsigned col) {
       if (row>=rows() || col>=cols())
         _resize(row+1, col+1);
+      if (data[row].size()<=col) data[row].resize(cols());
       return data[row][col];
     }
     const string& cell(unsigned row, unsigned col) const {
