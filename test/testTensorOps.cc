@@ -50,6 +50,9 @@ struct Eval: private std::shared_ptr<EvalCommon>, public TensorEval
 
 struct TestFixture
 {
+  Minsky dummyM;
+  LocalMinsky lm{dummyM};
+
   GroupPtr g{new Group}; // allow itemPtrFromThis() to work.
   VariablePtr from{VariableType::flow,"from"}, to{VariableType::flow,"to"};
   VariableValue& fromVal;
@@ -397,11 +400,30 @@ SUITE(TensorOps)
     }
 
   
-  
+    TEST_FIXTURE(MinskyFixture, gatherBackElement)
+    {
+      VariablePtr x(VariableType::parameter,"x"), i(VariableType::parameter,"i"), z(VariableType::flow,"z");
+      x->init("iota(5)");
+      i->init("4");
+      model->addItem(x);
+      model->addItem(i);
+      model->addItem(z);
+      OperationPtr gather(OperationType::gather);
+      model->addItem(gather);
+      model->addWire(*x,*gather,1);
+      model->addWire(*i,*gather,2);
+      model->addWire(*gather,*z,1);
+      model->addWire(*z, *model->addItem(new Sheet), 1);
+      reset();
+      auto& zz=*z->vValue();
+      CHECK_EQUAL(0, zz.rank());
+      CHECK_EQUAL(4, zz[0]);
+    }
+
   TEST_FIXTURE(TestFixture, indexGatherTensorStringArgs)
     {
       vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::string,""}},
-                        {"z",{Dimension::string,""}}};
+                                                        {"z",{Dimension::string,""}}};
       for (int i=0; i<2; ++i) 
         x[0].push_back(to_string(i));
       for (int i=0; i<3; ++i) 
@@ -466,7 +488,7 @@ SUITE(TensorOps)
   TEST_FIXTURE(TestFixture, indexGatherTensorValueArgs)
     {
       vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::value,""}},
-                        {"z",{Dimension::string,""}}};
+                                                        {"z",{Dimension::string,""}}};
       for (int i=0; i<2; ++i) 
         x[0].push_back(to_string(i));
       x[1].push_back(1900.0); x[1].push_back(1950.0); x[1].push_back(1970.0);
@@ -530,7 +552,7 @@ SUITE(TensorOps)
   TEST_FIXTURE(TestFixture, indexGatherTensorTimeArgs)
     {
       vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::time,""}},
-                        {"z",{Dimension::string,""}}};
+                                                        {"z",{Dimension::string,""}}};
       for (int i=0; i<2; ++i) 
         x[0].push_back(to_string(i));
       x[1].push_back(ptime(date(1900,Jan,1))); x[1].push_back(ptime(date(1950,Jan,1))); x[1].push_back(ptime(date(1970,Jan,1)));
@@ -591,6 +613,8 @@ SUITE(TensorOps)
           }
     }
 
+  
+  
   TEST_FIXTURE(MinskyFixture, tensorUnOpFactory)
     {
       TensorOpFactory factory;
@@ -664,7 +688,7 @@ SUITE(TensorOps)
       CHECK_EQUAL(5,src2->vValue()->size());
       for (OperationType::Type op=OperationType::add; op<OperationType::copy;
            op=OperationType::Type(op+1))
-      {
+        {
           OperationPtr o(op);
           model->addItem(o);
           if (auto f=dynamic_cast<UserFunction*>(o.get()))
@@ -921,7 +945,7 @@ SUITE(TensorOps)
      
     }
 
-    TEST_FIXTURE(TensorValFixture, sparseSlicedRavel)
+  TEST_FIXTURE(TensorValFixture, sparseSlicedRavel)
     {
       state.outputHandles={"date","country"};
       auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
@@ -955,15 +979,15 @@ SUITE(TensorOps)
       CHECK_ARRAY_EQUAL(expectedf, *chain.back(),5);
     }
     
-    TEST_FIXTURE(TensorValFixture, calipered)
+  TEST_FIXTURE(TensorValFixture, calipered)
     {
       state.outputHandles={"date","country"};
       auto country=find_if(state.handleStates.begin(), state.handleStates.end(),
-                       [](const ravel::HandleState& i){return i.description=="country";});
+                           [](const ravel::HandleState& i){return i.description=="country";});
       country->minLabel="Canada";
       country->displayFilterCaliper=true;
       auto date=find_if(state.handleStates.begin(), state.handleStates.end(),
-                       [](const ravel::HandleState& i){return i.description=="date";});
+                        [](const ravel::HandleState& i){return i.description=="date";});
       date->maxLabel="2011";
       date->displayFilterCaliper=true;
       arg->index({0,4,8,12,16});
@@ -976,182 +1000,266 @@ SUITE(TensorOps)
       CHECK_ARRAY_EQUAL(dims, chain.back()->shape(), 2);
     }
 
-    TEST_FIXTURE(TensorValFixture, imposeDimensions)
-      {
-        Dimensions dimensions;
-        dimensions.emplace("date",Dimension{Dimension::time,"%Y"});
-        arg->imposeDimensions(dimensions);
-        auto& xv=arg->hypercube().xvectors[2];
-        CHECK_EQUAL("date",xv.name);
-        CHECK_EQUAL(Dimension::time,xv.dimension.type);
-        CHECK_EQUAL("%Y",xv.dimension.units);
-        for (auto& i: xv)
-          CHECK(boost::any_cast<boost::posix_time::ptime>(&i));
-      }
+  TEST_FIXTURE(TensorValFixture, imposeDimensions)
+    {
+      Dimensions dimensions;
+      dimensions.emplace("date",Dimension{Dimension::time,"%Y"});
+      arg->imposeDimensions(dimensions);
+      auto& xv=arg->hypercube().xvectors[2];
+      CHECK_EQUAL("date",xv.name);
+      CHECK_EQUAL(Dimension::time,xv.dimension.type);
+      CHECK_EQUAL("%Y",xv.dimension.units);
+      for (auto& i: xv)
+        CHECK(boost::any_cast<boost::posix_time::ptime>(&i));
+    }
 
-    TEST(sortByValue)
-      {
-        auto val=make_shared<TensorVal>(vector<unsigned>{5});
-        vector<double> data={3,2,4,5,1};
-        for (size_t i=0; i<data.size(); ++i) (*val)[i]=data[i];
-        val->updateTimestamp();
-        SortByValue forward(ravel::HandleSort::forward);
-        forward.setArgument(val);
-        CHECK_EQUAL(val->timestamp(), forward.timestamp());
-        CHECK_EQUAL(val->size(), forward.size());
-        for (size_t i=1; i<forward.size(); ++i)
-          CHECK(forward[i]>forward[i-1]);
-        vector<int> expected={4,1,0,2,3};
-        for (size_t i=0; i<forward.size(); ++i)
-          CHECK_EQUAL(expected[i], boost::any_cast<double>(forward.hypercube().xvectors[0][i]));
-        SortByValue reverse(ravel::HandleSort::reverse);
-        reverse.setArgument(val);
-        for (size_t i=1; i<reverse.size(); ++i)
-          CHECK(reverse[i]<reverse[i-1]);
-        expected={3,2,0,1,4};
-        for (size_t i=0; i<reverse.size(); ++i)
-          CHECK_EQUAL(expected[i], boost::any_cast<double>(reverse.hypercube().xvectors[0][i]));
-      }
+  TEST(sortByValue)
+  {
+    auto val=make_shared<TensorVal>(vector<unsigned>{5});
+    vector<double> data={3,2,4,5,1};
+    for (size_t i=0; i<data.size(); ++i) (*val)[i]=data[i];
+    val->updateTimestamp();
+    SortByValue forward(ravel::HandleSort::forward);
+    forward.setArgument(val);
+    CHECK_EQUAL(val->timestamp(), forward.timestamp());
+    CHECK_EQUAL(val->size(), forward.size());
+    for (size_t i=1; i<forward.size(); ++i)
+      CHECK(forward[i]>forward[i-1]);
+    vector<int> expected={4,1,0,2,3};
+    for (size_t i=0; i<forward.size(); ++i)
+      CHECK_EQUAL(expected[i], boost::any_cast<double>(forward.hypercube().xvectors[0][i]));
+    SortByValue reverse(ravel::HandleSort::reverse);
+    reverse.setArgument(val);
+    for (size_t i=1; i<reverse.size(); ++i)
+      CHECK(reverse[i]<reverse[i-1]);
+    expected={3,2,0,1,4};
+    for (size_t i=0; i<reverse.size(); ++i)
+      CHECK_EQUAL(expected[i], boost::any_cast<double>(reverse.hypercube().xvectors[0][i]));
+  }
 
-    TEST(tensorValVectorIndex)
-      {
-        TensorVal tv(vector<unsigned>{5,3,2});
-        for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
-        CHECK_EQUAL(8,tv({3,1,0}));
-        tv.index({1,4,8,12});
-        for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
-        CHECK_EQUAL(2,tv({3,1,0}));
-        CHECK(isnan(tv({2,1,0})));
-      }
+  TEST(tensorValVectorIndex)
+  {
+    TensorVal tv(vector<unsigned>{5,3,2});
+    for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
+    CHECK_EQUAL(8,tv({3,1,0}));
+    tv.index({1,4,8,12});
+    for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
+    CHECK_EQUAL(2,tv({3,1,0}));
+    CHECK(isnan(tv({2,1,0})));
+  }
     
-    TEST(tensorValAssignment)
-      {
-        auto arg=std::make_shared<TensorVal>(vector<unsigned>{5,3,2});
-        for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
-        Scan scan([](double& x,double y,size_t){x+=y;});
-        scan.setArgument(arg,"0",0);
-        CHECK_EQUAL(arg->rank(), scan.rank());
-        CHECK(scan.size()>1);
+  TEST(tensorValAssignment)
+  {
+    auto arg=std::make_shared<TensorVal>(vector<unsigned>{5,3,2});
+    for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
+    Scan scan([](double& x,double y,size_t){x+=y;});
+    scan.setArgument(arg,"0",0);
+    CHECK_EQUAL(arg->rank(), scan.rank());
+    CHECK(scan.size()>1);
         
-        TensorVal tv;
-        tv=scan;
+    TensorVal tv;
+    tv=scan;
 
-        CHECK_EQUAL(tv.size(), scan.size());
-        CHECK_ARRAY_EQUAL(tv.hypercube().dims(), scan.hypercube().dims(), scan.rank());
-        for (size_t i=0; i<tv.size(); ++i)
-          CHECK_EQUAL(scan[i], tv[i]);
+    CHECK_EQUAL(tv.size(), scan.size());
+    CHECK_ARRAY_EQUAL(tv.hypercube().dims(), scan.hypercube().dims(), scan.rank());
+    for (size_t i=0; i<tv.size(); ++i)
+      CHECK_EQUAL(scan[i], tv[i]);
+  }
+
+  TEST(permuteAxis)
+  {
+    // 5x5 example
+    Hypercube hc{5,5};
+    auto dense=make_shared<TensorVal>(hc);
+    for (size_t i=0; i<dense->size(); ++i) (*dense)[i]=i;
+    PermuteAxis pa;
+    pa.setArgument(dense,"0");
+    vector<size_t> permutation{1,4,3};
+    pa.setPermutation(permutation);
+    CHECK_EQUAL(2, pa.rank());
+    CHECK_EQUAL(3, pa.hypercube().dims()[0]);
+    CHECK_EQUAL(5, pa.hypercube().dims()[1]);
+    CHECK_EQUAL(15, pa.size());
+        
+    for (size_t i=0; i<pa.size(); ++i)
+      {
+        switch (i%3)
+          {
+          case 0:
+            CHECK_EQUAL(1, int(pa[i])%5);
+            break;
+          case 1:
+            CHECK_EQUAL(4, int(pa[i])%5);
+            break;
+          case 2:
+            CHECK_EQUAL(3, int(pa[i])%5);
+            break;
+          }
       }
 
-    TEST(permuteAxis)
+    pa.setArgument(dense,"1");
+    pa.setPermutation(permutation);
+    CHECK_EQUAL(2, pa.rank());
+    CHECK_EQUAL(5, pa.hypercube().dims()[0]);
+    CHECK_EQUAL(3, pa.hypercube().dims()[1]);
+    CHECK_EQUAL(15, pa.size());
+        
+    for (size_t i=0; i<pa.size(); ++i)
       {
-        // 5x5 example
-        Hypercube hc{5,5};
-        auto dense=make_shared<TensorVal>(hc);
-        for (size_t i=0; i<dense->size(); ++i) (*dense)[i]=i;
-        PermuteAxis pa;
-        pa.setArgument(dense,"0");
-        vector<size_t> permutation{1,4,3};
-        pa.setPermutation(permutation);
-        CHECK_EQUAL(2, pa.rank());
-        CHECK_EQUAL(3, pa.hypercube().dims()[0]);
-        CHECK_EQUAL(5, pa.hypercube().dims()[1]);
-        CHECK_EQUAL(15, pa.size());
-        
-        for (size_t i=0; i<pa.size(); ++i)
+        switch (i/5)
           {
-            switch (i%3)
-              {
-              case 0:
-                CHECK_EQUAL(1, int(pa[i])%5);
-                break;
-              case 1:
-                CHECK_EQUAL(4, int(pa[i])%5);
-                break;
-              case 2:
-                CHECK_EQUAL(3, int(pa[i])%5);
-                break;
-              }
+          case 0:
+            CHECK_EQUAL(1, int(pa[i])/5);
+            break;
+          case 1:
+            CHECK_EQUAL(4, int(pa[i])/5);
+            break;
+          case 2:
+            CHECK_EQUAL(3, int(pa[i])/5);
+            break;
           }
-
-        pa.setArgument(dense,"1");
-        pa.setPermutation(permutation);
-        CHECK_EQUAL(2, pa.rank());
-        CHECK_EQUAL(5, pa.hypercube().dims()[0]);
-        CHECK_EQUAL(3, pa.hypercube().dims()[1]);
-        CHECK_EQUAL(15, pa.size());
-        
-        for (size_t i=0; i<pa.size(); ++i)
-          {
-            switch (i/5)
-              {
-              case 0:
-                CHECK_EQUAL(1, int(pa[i])/5);
-                break;
-              case 1:
-                CHECK_EQUAL(4, int(pa[i])/5);
-                break;
-              case 2:
-                CHECK_EQUAL(3, int(pa[i])/5);
-                break;
-              }
-          }
-
-        
-        
-        auto sparse=make_shared<TensorVal>(hc);
-        sparse->index(std::set<size_t>{2,4,5,8,10,11,15,20});
-        for (size_t i=0; i<sparse->size(); ++i) (*sparse)[i]=sparse->index()[i];
-
-        pa.setArgument(sparse,"0");
-        pa.setPermutation(permutation);
-        CHECK_EQUAL(2, pa.rank());
-        CHECK_EQUAL(3, pa.hypercube().dims()[0]);
-        CHECK_EQUAL(5, pa.hypercube().dims()[1]);
-        CHECK_EQUAL(3, pa.size());
-        
-        for (size_t i=0; i<pa.size(); ++i)
-          {
-            auto splitted=pa.hypercube().splitIndex(pa.index()[i]);
-            switch (splitted[0])
-              {
-              case 0:
-                CHECK_EQUAL(1, int(pa[i])%5);
-                break;
-              case 1:
-                CHECK_EQUAL(4, int(pa[i])%5);
-                break;
-              case 2:
-                CHECK_EQUAL(3, int(pa[i])%5);
-                break;
-              default:
-                CHECK(false);
-              }
-          }
-        pa.setArgument(sparse,"1");
-        pa.setPermutation(permutation);
-        CHECK_EQUAL(2, pa.rank());
-        CHECK_EQUAL(3, pa.hypercube().dims()[1]);
-        CHECK_EQUAL(5, pa.hypercube().dims()[0]);
-        CHECK_EQUAL(4, pa.size());
-        
-        for (size_t i=0; i<pa.size(); ++i)
-          {
-            auto splitted=pa.hypercube().splitIndex(pa.index()[i]);
-            switch (splitted[1])
-              {
-              case 0:
-                CHECK_EQUAL(1, int(pa[i])/5);
-                break;
-              case 1:
-                CHECK_EQUAL(4, int(pa[i])/5);
-                break;
-              case 2:
-                CHECK_EQUAL(3, int(pa[i])/5);
-                break;
-              default:
-                CHECK(false);
-              }
-          }
-        
       }
+
+        
+        
+    auto sparse=make_shared<TensorVal>(hc);
+    sparse->index(std::set<size_t>{2,4,5,8,10,11,15,20});
+    for (size_t i=0; i<sparse->size(); ++i) (*sparse)[i]=sparse->index()[i];
+
+    pa.setArgument(sparse,"0");
+    pa.setPermutation(permutation);
+    CHECK_EQUAL(2, pa.rank());
+    CHECK_EQUAL(3, pa.hypercube().dims()[0]);
+    CHECK_EQUAL(5, pa.hypercube().dims()[1]);
+    CHECK_EQUAL(3, pa.size());
+        
+    for (size_t i=0; i<pa.size(); ++i)
+      {
+        auto splitted=pa.hypercube().splitIndex(pa.index()[i]);
+        switch (splitted[0])
+          {
+          case 0:
+            CHECK_EQUAL(1, int(pa[i])%5);
+            break;
+          case 1:
+            CHECK_EQUAL(4, int(pa[i])%5);
+            break;
+          case 2:
+            CHECK_EQUAL(3, int(pa[i])%5);
+            break;
+          default:
+            CHECK(false);
+          }
+      }
+    pa.setArgument(sparse,"1");
+    pa.setPermutation(permutation);
+    CHECK_EQUAL(2, pa.rank());
+    CHECK_EQUAL(3, pa.hypercube().dims()[1]);
+    CHECK_EQUAL(5, pa.hypercube().dims()[0]);
+    CHECK_EQUAL(4, pa.size());
+        
+    for (size_t i=0; i<pa.size(); ++i)
+      {
+        auto splitted=pa.hypercube().splitIndex(pa.index()[i]);
+        switch (splitted[1])
+          {
+          case 0:
+            CHECK_EQUAL(1, int(pa[i])/5);
+            break;
+          case 1:
+            CHECK_EQUAL(4, int(pa[i])/5);
+            break;
+          case 2:
+            CHECK_EQUAL(3, int(pa[i])/5);
+            break;
+          default:
+            CHECK(false);
+          }
+      }
+        
+  }
+
+  TEST(dimLabels)
+  {
+    vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::string,""}},
+                                                      {"z",{Dimension::string,""}}};
+    Hypercube hc(x);
+    vector<string> expected{"x","y","z"};
+    CHECK_EQUAL(expected.size(), hc.dimLabels().size());
+    CHECK_ARRAY_EQUAL(expected, hc.dimLabels(), expected.size());
+  }
+
+  struct OuterFixture: public MinskyFixture
+  {
+    VariablePtr x{VariableType::parameter,"x"};
+    VariablePtr y{VariableType::parameter,"y"};
+    VariablePtr z{VariableType::flow,"z"};
+    OperationPtr outer{OperationType::outerProduct};
+    OuterFixture()
+    {
+      model->addItem(x);
+      model->addItem(y);
+      model->addItem(z);
+      model->addItem(outer);
+      auto& xx=x->vValue()->tensorInit;
+      xx.index({1,3});
+      xx.hypercube({5});
+      xx[0]=1;
+      xx[1]=3;
+      y->init("iota(5)");
+    }
+  };
+  
+  TEST_FIXTURE(OuterFixture, sparseOuterProduct)
+    {
+      model->addWire(*x,*outer,1);
+      model->addWire(*x,*outer,2);
+      model->addWire(*outer,*z,1);
+      reset();
+      auto& zz=*z->vValue();
+      CHECK_EQUAL(2, zz.rank());
+      vector<unsigned> expectedIndex={6,8,16,18};
+      CHECK_EQUAL(expectedIndex.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      vector<double> zValues(&zz[0], &zz[0]+zz.size());
+      vector<double> expectedValues={1,3,3,9};
+      CHECK_EQUAL(expectedValues.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+    }
+  
+
+
+TEST_FIXTURE(OuterFixture, sparse1OuterProduct)
+    {
+      model->addWire(*y,*outer,1);
+      model->addWire(*x,*outer,2);
+      model->addWire(*outer,*z,1);
+      reset();
+      auto& zz=*z->vValue();
+      CHECK_EQUAL(2, zz.rank());
+      vector<unsigned> expectedIndex={5,6,7,8,9,15,16,17,18,19};
+      CHECK_EQUAL(expectedIndex.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      vector<double> zValues(&zz[0], &zz[0]+zz.size());
+      vector<double> expectedValues={0,1,2,3,4,0,3,6,9,12};
+      CHECK_EQUAL(expectedValues.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+    }
+TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
+    {
+      model->addWire(*x,*outer,1);
+      model->addWire(*y,*outer,2);
+      model->addWire(*outer,*z,1);
+      reset();
+      auto& zz=*z->vValue();
+      CHECK_EQUAL(2, zz.rank());
+      vector<unsigned> expectedIndex={1,3,6,8,11,13,16,18,21,23};
+      CHECK_EQUAL(expectedIndex.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      vector<double> zValues(&zz[0], &zz[0]+zz.size());
+      vector<double> expectedValues={0,0,1,3,2,6,3,9,4,12};
+      CHECK_EQUAL(expectedValues.size(), zz.size());
+      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+    }
+
 }

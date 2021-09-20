@@ -51,6 +51,18 @@ namespace civita
     }
   }
 
+  string anyStringCast(const boost::any& x)
+  {
+    try
+      {
+        return any_cast<string>(x);
+      }
+    catch (const bad_any_cast&)
+      {
+        return any_cast<const char*>(x);
+      }
+  }
+  
   bool XVector::operator==(const XVector& x) const
   {
     if (dimension.type!=x.dimension.type || name!=x.name ||
@@ -63,16 +75,8 @@ namespace civita
         switch (dimension.type)
           {
           case Dimension::string:
-            try
-              {
-                if (any_cast<string>(*i)!=any_cast<string>(*j))
-                  return false;
-              }
-            catch (const bad_any_cast&)
-              {
-                if (strcmp(any_cast<const char*>(*i), any_cast<const char*>(*j))!=0)
-                  return false;
-              }
+            if (anyStringCast(*i)!=anyStringCast(*j))
+              return false;
             break;
           case Dimension::value:
             if (any_cast<double>(*i)!=any_cast<double>(*j))
@@ -82,8 +86,6 @@ namespace civita
             if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
               return false;
             break;
-          default:
-            throw error("unknown dimension type");
           }
       }
     return true;
@@ -141,10 +143,7 @@ namespace civita
                     {
                       
                       int v;
-                      try
-                        {v=stoi(val[i]);}
-                      catch (...)
-                        {throw runtime_error(val[i].str()+" is not an integer");}
+                      v=stoi(val[i]); // can't throw, because val[i] must always be sequence of digits
                       switch (m.str(i)[0])
                         {
                         case 'd': day=v; break;

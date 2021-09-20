@@ -56,9 +56,6 @@ namespace civita
     
     std::vector<std::string> dimLabels() const;
     
-    /// removes elements of xVector not found in \a a
-    void makeConformant(const Hypercube& a);
-
     /// split lineal index into components along each dimension
     std::vector<std::size_t> splitIndex(std::size_t) const;
     /// combine a split index into a lineal hypercube index
