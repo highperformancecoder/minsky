@@ -195,7 +195,8 @@ namespace minsky
     std::string valueId() const 
     {return intVar->valueId();}
     
-    bool attachedToDefiningVar() const override;        
+    bool attachedToDefiningVar(std::set<const Item*>&) const override;
+    using Item::attachedToDefiningVar;
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;  
 

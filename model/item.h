@@ -233,7 +233,11 @@ namespace minsky
     virtual bool visible() const;
     
     /// whether this item is attached to a defining variable that is hidden
-    virtual bool attachedToDefiningVar() const;    
+    virtual bool attachedToDefiningVar(std::set<const Item*>& visited) const;
+    bool attachedToDefiningVar() const {
+      std::set<const Item*> visited;
+      return attachedToDefiningVar(visited);
+    }
 
     void moveTo(float x, float y);
 

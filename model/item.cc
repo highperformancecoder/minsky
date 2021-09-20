@@ -328,11 +328,12 @@ namespace minsky
     cairo_stroke(cairo);
   }
   
-  bool Item::attachedToDefiningVar() const
+  bool Item::attachedToDefiningVar(std::set<const Item*>& visited) const
   {
-	if (variableCast() || operationCast())  
+    if (!visited.insert(this).second) return false; // break network cycles
+    if (variableCast() || operationCast() && !m_ports.empty())  
       for (auto w: m_ports[0]->wires())
-        if (w->attachedToDefiningVar()) return true;
+        if (w->attachedToDefiningVar(visited)) return true;
     return false;
   }    
   

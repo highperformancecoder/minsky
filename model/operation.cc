@@ -580,10 +580,10 @@ namespace minsky
     return r;
   }
   
-  bool IntOp::attachedToDefiningVar() const
+  bool IntOp::attachedToDefiningVar(std::set<const Item*>& visited) const
   {
-    if (coupled()) return intVar->attachedToDefiningVar();
-    return Item::attachedToDefiningVar();
+    if (coupled()) return intVar->attachedToDefiningVar(visited);
+    return Item::attachedToDefiningVar(visited);
   }    
  
   void IntOp::draw(cairo_t* cairo) const

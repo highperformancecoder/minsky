@@ -368,11 +368,11 @@ namespace
     cairo_path_destroy (path);              
   }
   
-  bool Wire::attachedToDefiningVar() const
+  bool Wire::attachedToDefiningVar(std::set<const Item*>& visited) const
   {
     auto t=to();
     assert(t);             
-    if (t->item().attachedToDefiningVar()) return true;
+    if (t->item().attachedToDefiningVar(visited)) return true;
     return false;       
   }    
    

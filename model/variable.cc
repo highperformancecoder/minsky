@@ -214,7 +214,7 @@ string VariableBase::init() const
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end()) {   	
     // set initial value of int var to init value of input to second port. for ticket 1137
-    if (!m_ports[0]->wires().empty())
+    if (!m_ports.empty() && !m_ports[0]->wires().empty())
       if (auto i=dynamic_cast<IntOp*>(&m_ports[0]->wires()[0]->to()->item()))
         if (i->portsSize()>2 && !i->ports(2).lock()->wires().empty())
           if (auto lhsVar=i->ports(2).lock()->wires()[0]->from()->item().variableCast()) 
@@ -415,8 +415,8 @@ bool VariableBase::visible() const
   // ensure pars, constants and flows with invisible out wires are made invisible. for ticket 1275  
   if ((type()==constant || type()==parameter) && !m_ports[0]->wires().empty())
   {
-	if (std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(), [](Wire* w){return w->attachedToDefiningVar() && !w->visible();})) return false;
-	else return true;
+    if (std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(), [](Wire* w){return w->attachedToDefiningVar() && !w->visible();})) return false;
+    else return true;
   }  
   // ensure flow vars with out wires remain visible. for ticket 1275
   if (attachedToDefiningVar())
