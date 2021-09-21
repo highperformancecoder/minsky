@@ -527,7 +527,7 @@ namespace minsky
       else 
         {
           // expand range to skip over any nan in arg1
-          int lesser=idx, greater=idx+1;
+          unsigned lesser=idx, greater=idx+1;
           double lv=arg1->atHCIndex(lesser*stride+offset), gv=arg1->atHCIndex(greater*stride+offset);
           for (; lesser>0 && isnan(lv); --lesser, lv=arg1->atHCIndex(lesser*stride+offset));
           for (; greater<maxIdx && isnan(gv); ++greater, gv=arg1->atHCIndex(greater*stride+offset));
