@@ -526,8 +526,16 @@ namespace minsky
         return arg1->atHCIndex(idx*stride+offset);
       else 
         {
-          double s=idx-floor(idx);
-          return (1-s)*arg1->atHCIndex(idx*stride+offset)+s*arg1->atHCIndex((idx+1)*stride+offset);
+          // expand range to skip over any nan in arg1
+          int lesser=idx, greater=idx+1;
+          double lv=arg1->atHCIndex(lesser*stride+offset), gv=arg1->atHCIndex(greater*stride+offset);
+          for (; lesser>0 && isnan(lv); --lesser, lv=arg1->atHCIndex(lesser*stride+offset));
+          for (; greater<maxIdx && isnan(gv); ++greater, gv=arg1->atHCIndex(greater*stride+offset));
+          double s=(idx-lesser)/(greater-lesser);
+          // special cases to avoid unncessarily including nans/infs in the computation
+          if (s==0) return lv;
+          if (s==1) return gv;
+          return (1-s)*lv + s*gv;
         }
     }
 
@@ -539,8 +547,17 @@ namespace minsky
         {
           auto i=xv.begin();
           for (; diff(x,*(i+1))>0; ++i); // loop will terminate b/c diff(x,xv.back())<=0
-          double s=diff(x,*i)/diff(*(i+1),*i);
-          return (1-s)*arg1->atHCIndex((i-xv.begin())*stride+offset) + s*arg1->atHCIndex((i-xv.begin()+1)*stride+offset);
+          // expand i & i+1 to finite values on the hypercube, if possible
+          auto greater=i+1;
+          double lv=arg1->atHCIndex((i-xv.begin())*stride+offset);
+          double gv=arg1->atHCIndex((greater-xv.begin())*stride+offset);
+          for (; i>xv.begin() && isnan(lv); --i, lv=arg1->atHCIndex((i-xv.begin())*stride+offset));
+          for (; greater<xv.end() && isnan(gv); ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
+          double s=diff(x,*i)/diff(*greater,*i);
+          // special cases to avoid unncessarily including nans/infs in the computation
+          if (s==0) return lv;
+          if (s==1) return gv;
+          return (1-s)*lv + s*gv;
         }
     }
 
