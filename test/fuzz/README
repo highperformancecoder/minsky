@@ -2,7 +2,7 @@ TCL fuzzing:
 
 xvfb-run afl-fuzz -i fuzzTCL-input -o fuzzTCL-output -m 512 -t 2000 -M fuzz0 -- ../../gui-tk/minsky fuzzTCL.tcl  @@
 
-xvfb-run afl-fuzz -i fuzz-input -o fuzzTCL-output -m 512 -t 2000 -S fuzz1 -- ../../gui-tk/minsky fuzzTCL.tcl  @@
+xvfb-run afl-fuzz -i fuzzTCL-input -o fuzzTCL-output -m 512 -t 2000 -S fuzz1 -- ../../gui-tk/minsky fuzzTCL.tcl  @@
 
 MKY fuzzing:
 
