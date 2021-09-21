@@ -82,7 +82,8 @@ namespace minsky
       if (!i->inputWired())
         {
           if (r.str().size()>1) r<<",";
-          system.getNodeFromVar(*i)->matlab(r);
+          if (auto node=system.getNodeFromVar(*i))
+            node->matlab(r);
         }
     r<<")";
     return r.str();
