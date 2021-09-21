@@ -331,7 +331,7 @@ namespace minsky
   bool Item::attachedToDefiningVar(std::set<const Item*>& visited) const
   {
     if (!visited.insert(this).second) return false; // break network cycles
-    if (variableCast() || operationCast() && !m_ports.empty())  
+    if ((variableCast() || operationCast()) && !m_ports.empty())  
       for (auto w: m_ports[0]->wires())
         if (w->attachedToDefiningVar(visited)) return true;
     return false;
