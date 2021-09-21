@@ -650,6 +650,7 @@ namespace schema3
     for (auto& i: schema3VarMap)
       {
         auto it=itemMap.find(i.first);
+        if (!it->second) continue;
         if (auto v=it->second->variableCast())
           {
             if (i.second.init)
