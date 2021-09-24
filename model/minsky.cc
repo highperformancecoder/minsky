@@ -933,6 +933,7 @@ namespace minsky
     BusyCursor busy(*this);
     clearAllMaps();
 
+    cout << "load: "<<filename<<endl;
     ifstream inf(filename);
     if (!inf)
       throw runtime_error("failed to open "+filename);

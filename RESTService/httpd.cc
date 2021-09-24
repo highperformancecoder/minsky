@@ -175,6 +175,7 @@ int main(int argc, const char* argv[])
               break; 
             case http::verb::put:
               read(req.body(), arguments);
+              cout << "request body is "<<req.body()<<endl;
               [[fallthrough]];
             case http::verb::get:
               {
