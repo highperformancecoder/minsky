@@ -32,7 +32,7 @@ trap "fail" 1 2 3 15
 # use \$ in place of $ to refer to variable contents
 # exit 0 to indicate pass, and exit 1 to indicate failure
 cat >input.tcl <<EOF
-source $here/assert.tcl
+source $here/test/assert.tcl
 minsky.load $here/test/implicitTensorExample.mky
 minsky.nSteps 10
 minsky.step

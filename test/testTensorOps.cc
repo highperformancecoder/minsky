@@ -399,7 +399,37 @@ SUITE(TensorOps)
       CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
     }
 
-  
+   TEST_FIXTURE(TestFixture, sparseGather)
+    {
+      auto& toVal=*to->vValue();
+      fromVal.index({1,3,5});
+      for (auto& i: fromVal)
+        i=(&i-&fromVal[0])%2;
+
+      toVal.hypercube(Hypercube(vector<unsigned>{3}));
+      toVal[0]=0; toVal[1]=1; toVal[2]=3;
+      
+      // apply gather to the orignal vector.
+      OperationPtr gatherOp(OperationType::gather);
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+
+      auto& gathered=*gatheredVar.vValue();
+      Eval eval(gatheredVar, gatherOp);
+      eval();
+      
+      // replace nans with -1 to make comparison test simpler
+      for (auto& g: gathered)
+        if (!finite(g)) g=-1;
+      vector<double> expected={-1,0,1};
+      CHECK_EQUAL(expected.size(), gathered.size());
+      CHECK_ARRAY_EQUAL(expected,gathered.begin(),expected.size());
+
+    }
+
+ 
     TEST_FIXTURE(MinskyFixture, gatherBackElement)
     {
       VariablePtr x(VariableType::parameter,"x"), i(VariableType::parameter,"i"), z(VariableType::flow,"z");
@@ -750,6 +780,34 @@ SUITE(TensorOps)
         (-std::numeric_limits<double>::max(), [](double x,double y){return x>y? x: y;}, id);
       multiWireTest<OperationType::and_>(1, [](double x,double y){return x>0.5 && y>0.5;}, id);
       multiWireTest<OperationType::or_>(0, [](double x,double y){return x>0.5 || y>0.5;}, id);
+    }
+
+  TEST_FIXTURE(MinskyFixture, binOp)
+    {
+      // same example as examples/binaryInterpolation.mky
+      VariablePtr x1(VariableType::parameter,"x1"), x2(VariableType::parameter,"x2");
+      model->addItem(x1); model->addItem(x2);
+      auto& x1Val=*x1->vValue();
+      auto& x2Val=*x2->vValue();
+      Hypercube hc1({7}), hc2=hc1;
+       x1Val.hypercube(hc1);
+      x2Val.hypercube(hc2);
+      x1Val={1,2,2,1,3,2,1};
+      x2Val={3,4,5,6,7,8,2};
+      OperationPtr add(OperationType::add);
+      model->addItem(add);
+      VariablePtr result(VariableType::flow,"result");
+      model->addItem(result);
+      Wire w1(x1->ports(0),add->ports(1));
+      Wire w2(x2->ports(0),add->ports(2));
+      Wire w3(add->ports(0), result->ports(1));
+      auto ev=make_shared<EvalCommon>();
+      TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
+      eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
+      CHECK_EQUAL(x1Val.size(),result->vValue()->size());
+
+      vector<double> expected{4,6,7,7,10,10,3};
+      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 7, 0.001);
     }
 
   TEST_FIXTURE(MinskyFixture, binOpInterpolation1D)
