@@ -532,11 +532,16 @@ namespace schema3
             assert(dynamic_pointer_cast<minsky::IntOp>(itemMap[i.id]));
             if (auto integ=dynamic_cast<minsky::IntOp*>(itemMap[i.id].get()))
               {
+                assert(integ->intVar);
+                assert(integ->intVar->type()==minsky::VariableType::integral);
                 if (itemMap.count(*i.intVar))
                   {
                     if (integ->coupled()) integ->toggleCoupled();
                     g.removeItem(*integ->intVar);
                     integ->intVar=itemMap[*i.intVar];
+                    if (integ->intVar->type()!=minsky::VariableType::integral)
+                      // input mky file is corrupted at this point
+                      integ->description(integ->description());
                   }
                 auto iv=schema3VarMap.find(*i.intVar);
                 if (iv!=schema3VarMap.end())

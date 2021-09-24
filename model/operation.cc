@@ -768,7 +768,8 @@ namespace minsky
     // disallow global integration variables
     if (desc[0]==':') desc=desc.substr(1);
     
-    if (intVar && intVar->group.lock() == group.lock() && intVar->name()==desc)
+    if (intVar && intVar->type()==VariableType::integral &&
+        intVar->group.lock() == group.lock() && intVar->name()==desc)
       return description(); // nothing to do
 
     vector<Wire> savedWires;
