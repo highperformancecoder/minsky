@@ -589,7 +589,7 @@ namespace minsky
               cachedResult[i]=nan("");
         }
     }
-    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    Timestamp timestamp() const override {return max(arg1? arg1->timestamp(): Timestamp(), arg2? arg2->timestamp(): Timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const std::string& dim, double) override {
       
