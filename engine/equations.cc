@@ -100,7 +100,7 @@ namespace MathDAG
     }
   }
 
-  bool VariableDAG::tensorEval() const
+  bool VariableDAG::tensorEval(std::set<const Node*>&) const
   {
     return cminsky().variableValues[valueId]->rank()>0;
   }
@@ -200,8 +200,10 @@ namespace MathDAG
     return cachedOrder=order;
   }
 
-  bool OperationDAGBase::tensorEval() const 
+  bool OperationDAGBase::tensorEval(std::set<const Node*>& visited) const 
   {
+    if (!visited.insert(this).second)
+      return false; // cycle detected, break
     switch (OperationType::classify(type()))
       {
       case reduction: case scan: case tensor:
@@ -209,7 +211,7 @@ namespace MathDAG
       case general: case binop: case constop: case function:
         for (auto& i: arguments)
           for (auto j: i)
-            if (j && j->tensorEval()) return true;
+            if (j && j->tensorEval(visited)) return true;
         return false;
       default:
         assert(false);// above cases should exhaust

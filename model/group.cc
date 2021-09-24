@@ -50,7 +50,7 @@ namespace minsky
     auto iVar=inVariables.begin();
     for (auto v: p)
       {
-        while ((*iVar)->inputWired() && iVar!=inVariables.end()) ++iVar;
+        while (iVar!=inVariables.end() && (*iVar)->inputWired()) ++iVar;
         if (iVar==inVariables.end()) break;
         flow[(*iVar)->vValue()->idx()]=v;
       }

@@ -507,7 +507,7 @@ namespace minsky
       arg=a; cachedResult.index(a->index()); cachedResult.hypercube(a->hypercube());
     }
     
-    Timestamp timestamp() const override {return arg->timestamp();}
+    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
 
   template <>

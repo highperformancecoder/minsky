@@ -539,13 +539,13 @@ namespace schema3
                     if (integ->coupled()) integ->toggleCoupled();
                     g.removeItem(*integ->intVar);
                     integ->intVar=itemMap[*i.intVar];
-                    if (integ->intVar->type()!=minsky::VariableType::integral)
+                    if (!integ->intVar || integ->intVar->type()!=minsky::VariableType::integral)
                       // input mky file is corrupted at this point
                       integ->description(integ->description());
                   }
                 auto iv=schema3VarMap.find(*i.intVar);
                 if (iv!=schema3VarMap.end())
-                  if ((!i.ports.empty() && i.ports[0]==iv->second.ports[0]) != integ->coupled())
+                  if ((!i.ports.empty() && !iv->second.ports.empty() && i.ports[0]==iv->second.ports[0]) != integ->coupled())
                     integ->toggleCoupled();
                 // ensure that the correct port is inserted (may have been the deleted intVar)
                 if (!i.ports.empty())
