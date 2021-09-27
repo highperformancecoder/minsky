@@ -430,6 +430,38 @@ SUITE(TensorOps)
     }
 
  
+   TEST_FIXTURE(TestFixture, sparse2Gather)
+    {
+      auto& toVal=*to->vValue();
+      for (auto& i: fromVal)
+        i=(&i-&fromVal[0])%2;
+
+      toVal.index({1,3,5});
+      toVal.hypercube(Hypercube({6}));
+      toVal[0]=0; toVal[1]=1; toVal[2]=3;
+      
+      // apply gather to the orignal vector.
+      OperationPtr gatherOp(OperationType::gather);
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+
+      auto& gathered=*gatheredVar.vValue();
+      Eval eval(gatheredVar, gatherOp);
+      eval();
+      
+      // replace nans with -1 to make comparison test simpler
+      for (auto& g: gathered)
+        if (!finite(g)) g=-1;
+      vector<double> expected={0,1,1};
+      CHECK_EQUAL(expected.size(), gathered.size());
+      CHECK_ARRAY_EQUAL(expected,gathered.begin(),expected.size());
+      CHECK_ARRAY_EQUAL(gathered.index(), toVal.index(), toVal.index().size());                
+
+    }
+
+ 
     TEST_FIXTURE(MinskyFixture, gatherBackElement)
     {
       VariablePtr x(VariableType::parameter,"x"), i(VariableType::parameter,"i"), z(VariableType::flow,"z");
