@@ -393,7 +393,8 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO: tensors of arbitrary rank
-		   
+
+      if (!arg1 || !arg2) return;
       size_t m=1, n=1;   
       if (arg1->rank()>1)
         for (size_t i=0; i<arg1->rank()-1; i++)
@@ -418,7 +419,7 @@ namespace minsky
             cachedResult[i+m*j]=tmpSum;
           }
     }
-    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    Timestamp timestamp() const override {return max(arg1? arg1->timestamp(): Timestamp(), arg2? arg2->timestamp(): Timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const std::string&, double) override {
       arg1=a1; arg2=a2;
