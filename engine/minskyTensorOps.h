@@ -158,7 +158,6 @@ namespace minsky
   public:
     // not used, but required to make this a concrete type
     Type type() const override {assert(false); return OperationType::numOps;} 
-    TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev); 
     TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
       result.index(rhs->index());

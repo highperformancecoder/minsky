@@ -931,20 +931,6 @@ namespace minsky
     return r;
   }
 
-  TensorEval::TensorEval(const shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev):
-    result(v, ev)
-  {
-    if (auto var=cminsky().definingVar(v->valueId()))
-      if (var->lhs())
-        {
-          rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports(1).lock())[0];
-          result.hypercube(rhs->hypercube());
-          result.index(rhs->index());
-          *v=result;
-          assert(result.size()==rhs->size());
-        }
-  }
-  
   TensorEval::TensorEval(const shared_ptr<VariableValue>& dest, const shared_ptr<VariableValue>& src):
     result(dest,make_shared<EvalCommon>())
   {
