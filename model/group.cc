@@ -1076,7 +1076,7 @@ namespace minsky
   void Group::drawIORegion(cairo_t* cairo) const
   {
     cairo::CairoSave cs(cairo);
-    float left, right, z=zoomFactor(), es=edgeScale();
+    float left, right, z=zoomFactor();
     margins(left,right);    
     float y=notchY(inVariables), dy=topMargin*edgeScale();
     cairo_set_source_rgba(cairo,0,1,1,0.5);
