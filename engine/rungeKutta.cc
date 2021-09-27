@@ -126,6 +126,7 @@ namespace minsky
 
   void RungeKutta::step()
   {
+    if (nSteps<1) return;
     resetIfFlagged();
     running=true;
     

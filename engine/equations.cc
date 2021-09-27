@@ -585,8 +585,8 @@ namespace MathDAG
         integVarMap[g.first]=dynamic_cast<VariableDAG*>
           (makeDAG(g.first,
                    g.second.name, VariableValue::stock).get());
-        expressionCache.getIntegralInput(g.first)->rhs=
-          expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
+        if (auto integralInput=expressionCache.getIntegralInput(g.first))
+          integralInput->rhs=expressionCache.insertAnonymous(make_shared<GodleyColumnDAG>(g.second));
       }
 
     // fix up broken derivative computations, now that all stock vars
