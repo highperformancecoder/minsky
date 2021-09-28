@@ -430,6 +430,87 @@ SUITE(TensorOps)
     }
 
  
+   TEST_FIXTURE(TestFixture, sparse2Gather)
+    {
+      auto& toVal=*to->vValue();
+      for (auto& i: fromVal)
+        i=(&i-&fromVal[0])%2;
+
+      toVal.index({1,3,5});
+      toVal.hypercube(Hypercube({6}));
+      toVal[0]=0; toVal[1]=1; toVal[2]=3;
+      
+      // apply gather to the orignal vector.
+      OperationPtr gatherOp(OperationType::gather);
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+
+      auto& gathered=*gatheredVar.vValue();
+      Eval eval(gatheredVar, gatherOp);
+      eval();
+      
+      // replace nans with -1 to make comparison test simpler
+      for (auto& g: gathered)
+        if (!finite(g)) g=-1;
+      vector<double> expected={0,1,1};
+      CHECK_EQUAL(expected.size(), gathered.size());
+      CHECK_ARRAY_EQUAL(expected,gathered.begin(),expected.size());
+      CHECK_ARRAY_EQUAL(gathered.index(), toVal.index(), toVal.index().size());                
+
+    }
+
+    TEST_FIXTURE(TestFixture, sparse3DGather)
+    {
+      fromVal.hypercube(Hypercube({2,5,3}));
+      fromVal.index({4,11,16,21});
+      
+      auto& toVal=*to->vValue();
+      for (auto& i: fromVal)
+        i=(&i-&fromVal[0]);
+
+      toVal.index({0,2,3});
+      toVal.hypercube(Hypercube({6}));
+      toVal[0]=0; toVal[1]=2; toVal[2]=3;
+      
+      // apply gather to the orignal vector.
+      OperationPtr gatherOp(OperationType::gather);
+      gatherOp->axis="1";
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+
+      auto& gathered=*gatheredVar.vValue();
+      Eval eval(gatheredVar, gatherOp);
+      eval();
+      
+      double n=nan("");
+      vector<double> expected={n,n,0,n,n,n, n,n,n,n,n,n, n,n,n,2,n,n, 1,n,n,n,n,n, n,n,n,n,n,n, 3,n,n,n,n,n};
+      CHECK_EQUAL(expected.size(), gathered.hypercube().numElements());
+      for (size_t i=0; i<expected.size(); ++i)
+        if (isnan(expected[i]))
+          CHECK(isnan(gathered.atHCIndex(i)));
+        else
+          CHECK_EQUAL(expected[i], gathered.atHCIndex(i));
+    }
+
+    TEST_FIXTURE(TestFixture, gatherExceptions)
+      {
+        OperationPtr gatherOp(OperationType::gather);
+        Variable<VariableType::flow> gatheredVar("gathered");
+        Wire w1(from->ports(0), gatherOp->ports(1));
+        Wire w2(to->ports(0), gatherOp->ports(2));
+        Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+        
+        fromVal.hypercube(Hypercube());
+        CHECK_THROW(Eval(gatheredVar, gatherOp), std::exception);
+
+        fromVal.hypercube(Hypercube({3,4}));
+        CHECK_THROW(Eval(gatheredVar, gatherOp), std::exception);
+      }
+
     TEST_FIXTURE(MinskyFixture, gatherBackElement)
     {
       VariablePtr x(VariableType::parameter,"x"), i(VariableType::parameter,"i"), z(VariableType::flow,"z");

@@ -554,7 +554,7 @@ namespace minsky
           double lv=arg1->atHCIndex((i-xv.begin())*stride+offset);
           double gv=arg1->atHCIndex((greater-xv.begin())*stride+offset);
           for (; i>xv.begin() && isnan(lv); --i, lv=arg1->atHCIndex((i-xv.begin())*stride+offset));
-          for (; greater<xv.end() && isnan(gv); ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
+          for (; greater<xv.end()-1 && isnan(gv); ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
           double s=diff(x,*i)/diff(*greater,*i);
           // special cases to avoid unncessarily including nans/infs in the computation
           if (s==0) return lv;
@@ -603,7 +603,9 @@ namespace minsky
           {
             auto idx=(*arg2)[i];
             if (isfinite(idx))
-              cachedResult[i+arg2->size()*j]=interpolate(idx, offsets[j]);
+              {
+                cachedResult[i+arg2->size()*j]=interpolate(idx, offsets[j]);
+              }
             else
               cachedResult[i]=nan("");
         }
@@ -686,12 +688,12 @@ namespace minsky
                 if (j!=dimension)
                   {
                     outerIdx+=stride*splitIdx[j];
-                    stride*=dim[j];
+                    stride*=arg1Dims[j];
                   }
               if (outerIdx==lastOuter) continue;
               lastOuter=outerIdx;
               for (auto j: arg2Idx)
-                resultantIndex.insert(outerIdx*arg2->size()+j);
+                resultantIndex.insert(outerIdx*arg2NumElements+j);
             }
           cachedResult.index(resultantIndex);
         }
@@ -933,20 +935,6 @@ namespace minsky
     return r;
   }
 
-  TensorEval::TensorEval(const shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev):
-    result(v, ev)
-  {
-    if (auto var=cminsky().definingVar(v->valueId()))
-      if (var->lhs())
-        {
-          rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports(1).lock())[0];
-          result.hypercube(rhs->hypercube());
-          result.index(rhs->index());
-          *v=result;
-          assert(result.size()==rhs->size());
-        }
-  }
-  
   TensorEval::TensorEval(const shared_ptr<VariableValue>& dest, const shared_ptr<VariableValue>& src):
     result(dest,make_shared<EvalCommon>())
   {

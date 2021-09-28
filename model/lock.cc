@@ -62,7 +62,7 @@ namespace minsky
 
   void Lock::draw(cairo_t* cairo) const 
   {
-    SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
+    //    SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
     float z=zoomFactor()*scaleFactor();
     float w=iWidth()*z, h=iHeight()*z;
 
