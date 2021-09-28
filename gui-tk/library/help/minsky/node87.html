@@ -1,7 +1,7 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
-<HTML lang="en">
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
 <HEAD>
 <TITLE>running sum </TITLE>
 <META NAME="description" CONTENT="running sum ">
@@ -9,51 +9,53 @@
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node88.html">
 <LINK REL="previous" HREF="node86.html">
+<LINK REL="up" HREF="node78.html">
 <LINK REL="next" HREF="node88.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A
- HREF="node88.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node78.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node86.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<A NAME="tex2html1204"
+  HREF="node88.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1202"
+  HREF="node78.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1196"
+  HREF="node86.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A
- HREF="node88.html">running product</A>
-<B> Up:</B> <A
- HREF="node78.html">Tensor operations</A>
-<B> Previous:</B> <A
- HREF="node86.html">supindex</A>
+<B> Next:</B> <A NAME="tex2html1205"
+  HREF="node88.html">running product</A>
+<B> Up:</B> <A NAME="tex2html1203"
+  HREF="node78.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1197"
+  HREF="node86.html">supindex</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION00429000000000000000"></A><A ID="Operation:runningSum"></A>
+<H2><A NAME="SECTION00429000000000000000"></A><A NAME="Operation:runningSum"></A>
 <BR>
 running sum <SPAN CLASS="MATH"><IMG
- STYLE="height: 2.31ex; vertical-align: -0.70ex; " SRC="img19.png"
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img19.png"
  ALT="$\sum +$"></SPAN>
 </H2> Computes
 the running sum of the input tensor along a given axis. For example, take
 this rank 2 tensor:
 
 <P>
-<DIV CLASS="displaymath">
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
 \left(
@@ -67,21 +69,26 @@ this rank 2 tensor:
  -->
 
 <IMG
- STYLE="height: 8.46ex; vertical-align: -3.72ex; " SRC="img189.png"
- ALT="$\displaystyle \left(
+ WIDTH="116" HEIGHT="64" BORDER="0"
+ SRC="img192.png"
+ ALT="\begin{displaymath}
+\left(
 \begin{array}{cccc}
 1&amp; 2&amp; 3&amp; 4 \\
 5&amp; 4&amp; 3&amp; 2 \\
 8&amp; 7&amp; 6&amp; 5
 \end{array} \right)
-$">
+\end{displaymath}">
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
 The running sum of this tensor, along the horizontal dimension, is: 
 
 <P>
-<DIV CLASS="displaymath">
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
 \left(
@@ -95,15 +102,19 @@ The running sum of this tensor, along the horizontal dimension, is:
  -->
 
 <IMG
- STYLE="height: 8.46ex; vertical-align: -3.72ex; " SRC="img190.png"
- ALT="$\displaystyle \left(
+ WIDTH="140" HEIGHT="64" BORDER="0"
+ SRC="img193.png"
+ ALT="\begin{displaymath}
+\left(
 \begin{array}{cccc}
 1&amp; 3&amp; 6&amp; 10 \\
 5&amp; 9&amp; 12&amp; 14 \\
 8&amp; 15&amp; 21&amp; 26
 \end{array} \right)
-$">
+\end{displaymath}">
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
 <BR><HR>

@@ -1,7 +1,7 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
-<HTML lang="en">
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
 <HEAD>
 <TITLE>Creating an equation</TITLE>
 <META NAME="description" CONTENT="Creating an equation">
@@ -9,41 +9,41 @@
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node29.html">
 <LINK REL="previous" HREF="node27.html">
+<LINK REL="up" HREF="node25.html">
 <LINK REL="next" HREF="node29.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A
- HREF="node29.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node25.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node27.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<A NAME="tex2html494"
+  HREF="node29.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html492"
+  HREF="node25.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html486"
+  HREF="node27.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A
- HREF="node29.html">Wiring components together</A>
-<B> Up:</B> <A
- HREF="node25.html">Working with Minsky</A>
-<B> Previous:</B> <A
- HREF="node27.html">Inserting a model component</A>
+<B> Next:</B> <A NAME="tex2html495"
+  HREF="node29.html">Wiring components together</A>
+<B> Up:</B> <A NAME="tex2html493"
+  HREF="node25.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html487"
+  HREF="node27.html">Inserting a model component</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION00243000000000000000">
+<H2><A NAME="SECTION00243000000000000000">
 Creating an equation</A>
 </H2>
 
@@ -55,7 +55,8 @@ block is then the result of the equation.
 
 <P>
 For example, a simple equation like
-<DIV CLASS="displaymath">
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
 100/3 = 33.3
@@ -63,18 +64,22 @@ For example, a simple equation like
  -->
 
 <IMG
- STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img91.png"
- ALT="$\displaystyle 100/3 = 33.3
-$">
+ WIDTH="89" HEIGHT="29" BORDER="0"
+ SRC="img91.png"
+ ALT="\begin{displaymath}
+100/3 = 33.3
+\end{displaymath}">
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
 is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on<IMG
- STYLE="" SRC="NewItem130.png"
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem130.png"
  ALT="799"> :
 
 <P>
-<DIV class="CENTER">
+<DIV ALIGN="CENTER">
 <IMG
- WIDTH="533" HEIGHT="279" STYLE=""
+ WIDTH="551" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
  SRC="img92.png"
  ALT="\includegraphics{images/NewItem129.eps}">
 
@@ -84,7 +89,8 @@ is performed in Minsky by defining a constant block with a value of 100, definin
 If you click on the equation tab, you will see that it is:
 
 <P>
-<DIV CLASS="displaymath">
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
 \mathrm{Answer}=\frac{100}{3}
@@ -92,14 +98,18 @@ If you click on the equation tab, you will see that it is:
  -->
 
 <IMG
- STYLE="height: 4.76ex; vertical-align: -1.71ex; " SRC="img93.png"
- ALT="$\displaystyle \mathrm{Answer}=\frac{100}{3}
-$">
+ WIDTH="99" HEIGHT="39" BORDER="0"
+ SRC="img93.png"
+ ALT="\begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}">
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
-Very complex equations&mdash;including dynamic elements like integral
-blocks and Godley Tables&mdash;are designed by wiring up lots of
+Very complex equations--including dynamic elements like integral
+blocks and Godley Tables--are designed by wiring up lots of
 components, with the output of one being the input of the next. See
 the tutorial for examples.
 
