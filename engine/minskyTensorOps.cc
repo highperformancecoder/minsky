@@ -404,7 +404,7 @@ namespace minsky
         for (size_t i=1; i<arg2->rank(); i++)
           n*=arg2->hypercube().dims()[i];     
   	
-      size_t stride=arg2->hypercube().dims()[0];	 	 
+      size_t stride=arg2->rank()>0? arg2->hypercube().dims()[0]: 1;	 	 
       double tmpSum;
       for (size_t i=0; i< m; i++)
         for (size_t j=0; j< n; j++)
@@ -456,7 +456,8 @@ namespace minsky
  	 }
        }	     
     }
-    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    Timestamp timestamp() const override
+    {return max(arg1? arg1->timestamp(): Timestamp(), arg2? arg2->timestamp(): Timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const std::string&, double) override {
       arg1=a1; arg2=a2;

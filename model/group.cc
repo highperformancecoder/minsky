@@ -66,6 +66,7 @@ namespace minsky
     MathDAG::SystemOfEquations system(minsky(), *this);
     ostringstream o;
     auto node=system.getNodeFromVar(*outVariables[0]);
+    if (!node) return "0";
     if (node->rhs)
       node->rhs->matlab(o);
     else
