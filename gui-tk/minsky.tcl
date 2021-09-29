@@ -939,18 +939,32 @@ proc textEntryPopup {win init okproc} {
     
 }
 
+bind .tabs <<contextMenu>> {
+    set windows [.tabs tabs]
+    set idx [.tabs identify tab %x %y]
+    if {$idx<[llength $windows]} {
+        .wiring.context delete 0 end
+        .wiring.context add command -label Help -command "
+            help $helpTopics([lindex $windows $idx])"
+        tk_popup .wiring.context %X %Y
+    }
+}
+
 proc addTab {window label surface} {
     image create cairoSurface rendered$window -surface $surface
     ttk::frame .$window
-    global canvasHeight canvasWidth tabSurface
+    global canvasHeight canvasWidth tabSurface helpTopics
     label .$window.canvas -image rendered$window -height $canvasHeight -width $canvasWidth
     .tabs add .$window -text $label -padding 0
     set tabSurface($label) $surface
+    set helpTopics($window) tabs:$label
 }
 
 # add the tabbed windows
 addTab wiring "Wiring" minsky.canvas
+set helpTopics(.wiring) DesignCanvas
 addTab equations "Equations" minsky.equationDisplay
+set helpTopics(.equations) equationDisplay
 pack .equations.canvas -fill both -expand 1
 addTab parameters "Parameters" minsky.parameterTab
 pack .parameters.canvas -fill both -expand 1
@@ -1679,6 +1693,7 @@ set helpTopics(.controls.statusbar) SimTime
 set helpTopics(.controls.zoomOut) ZoomButtons
 set helpTopics(.controls.zoomIn) ZoomButtons
 set helpTopics(.controls.zoomOrig)  ZoomButtons
+set helpTopics(.controls.zoomFit)  ZoomButtons
 # TODO - the following association interferes with canvas item context menus
 # set helpTopics(.wiring.canvas) DesignCanvas
 

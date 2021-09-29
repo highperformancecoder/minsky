@@ -258,6 +258,15 @@ for demonstration/presentation purposes.
     mode.
 \end{enumerate}
 
+\subscetion{Recalculate button}
+\label {Recalculate}
+
+\htmladdimg{recalculate.png}
+
+The recalculate button computes the values of all variables at the
+start of simulation. It is particularly useful for recalculating the
+state of the model with tensor valued data.
+
 \subsection{Run Buttons}
 \label{RunButtons}
 
@@ -269,6 +278,9 @@ The Run buttons respectively:
 allowing you to pause the simulation \htmladdimg{NewItem23.png}.
 \item Stop a simulation and reset the simulation time to zero
 \item Step through the simulation one iteration at a time.
+\item Reverse checkbox changes the simulation time direction. Bear in
+  mind that a simulation will eventually diverge from its original
+  trajectory due to chaotic effects.
 \end{enumerate}
 
 %\subsection{Manipulating items on the canvas}
@@ -380,7 +392,11 @@ in a simulation.
 The Zoom buttons zoom in and out on the wiring canvas. The same functionality
 is accessed via the mouse scroll wheel. The reset zoom button
 \buttonIcon{zoomOrig.eps} resets the zoom level to 1, and also
-recentres the canvas. It can also be used to recentre the equation view.
+recentres the canvas. It can also be used to recentre the equation
+view.
+
+The zoom to fit button zooms the model so that it just fits in the
+current canvas window.
 
 \subsection{Simulation time}
 \label{SimTime}
@@ -640,13 +656,40 @@ is not differentiable.
 \end{description}
 
 \subsection{Design Canvas}
-\label{DesignCanvas}
+\label{DesignCanvas}\label{tabs:Wiring}
 
 The Design Canvas is where you develop your model. A model consists of
 a number of blocks---variables, constants and mathematical
 operators---connected by wires. 
 
 \fwhtmladdimg{NewItem19.png}
+
+\subsection{Equations tab}\label{tabs:Equations}
+
+This displays the mathematical representation of the model
+
+\subsection{Parameters tab}\label{tabs:Parameters}
+
+This displays the properties of all parameters defined in the model,
+in one place.
+
+\subsection{Variables tab}\label{tabs:Variables}
+
+This displays the properties of selected variables in the model. The
+variables can be displayed on the tab by selecting ``Display variable
+on tab'' in it's context menu. It may be hidden on the design canvas
+if it is not required for the definition of something else. This can
+be a place to keep less important variables ``out of sight''.
+
+\subsection{Plots tab}\label{tabs:Plots}
+
+Shows all plots in one place
+
+\subsection{Godleys tab}\label{tabs:Godleys}
+
+Shows all Godley tables in one place.
+
+
 
 \subsection{The Panopticon}\label{Panopticon}
 
