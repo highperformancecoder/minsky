@@ -957,14 +957,12 @@ proc addTab {window label surface} {
     label .$window.canvas -image rendered$window -height $canvasHeight -width $canvasWidth
     .tabs add .$window -text $label -padding 0
     set tabSurface($label) $surface
-    set helpTopics($window) tabs:$label
+    set helpTopics(.$window) tabs:$label
 }
 
 # add the tabbed windows
 addTab wiring "Wiring" minsky.canvas
-set helpTopics(.wiring) DesignCanvas
 addTab equations "Equations" minsky.equationDisplay
-set helpTopics(.equations) equationDisplay
 pack .equations.canvas -fill both -expand 1
 addTab parameters "Parameters" minsky.parameterTab
 pack .parameters.canvas -fill both -expand 1
