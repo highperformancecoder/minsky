@@ -56,6 +56,7 @@ button .wiring.menubar.ravel -image ravelImg \
     -height 24 -width 37 -command {addRavel}
 tooltip .wiring.menubar.ravel "Ravel"
 pack .wiring.menubar.ravel -side left -padx {0 10}
+set helpTopics(.wiring.menubar.ravel) "Ravel"
 
 image create photo plotImg -file $minskyHome/icons/plot.gif
 button .wiring.menubar.plot -image plotImg \
