@@ -50,7 +50,7 @@ Design Icons</A>
 <P>
 <IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem18.png"
- ALT="700">
+ ALT="698">
 
 <P>
 These are the &ldquo;nuts and bolts&rdquo; of any system dynamics program. The
@@ -59,49 +59,39 @@ now:
 
 <P>
 <DL>
-<DT><STRONG>Godley Table</STRONG></DT>
+<DT><STRONG>Import data</STRONG></DT>
+<DD>Opens an import CSV file dialog, allowing the
+  creation of a parameter from a CSV data file. See
+  <A HREF="node100.html#Operation:csvImport">Importing CSV files</A>.
+
+<P>
+</DD>
+<DT><STRONG>Ravel</STRONG></DT>
+<DD>See <A HREF="node113.html#Ravel">Ravel</A>.
+
+<P>
+</DD>
+<DT><STRONG>Plot widget</STRONG></DT>
 <DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/NewItem29.eps}}$
+ $\resizebox{!}{2ex}{\includegraphics{images/plot.eps}}$
  -->
 <IMG
  WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
  SRC="img45.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/NewItem29.eps}}">
-  . <A NAME="GodleyTable"></A> This is the
-fundamental element of Minsky that is not found (yet) in any other
-system dynamics program. 
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/plot.eps}}">
+   Add <A HREF="node105.html#PlotWidget">plots</A> to the canvas.
 
 <P>
-Clicking on it and placing the resulting Bank Icon on the Canvas
-enters a Godley table into your model:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="168" HEIGHT="160" ALIGN="BOTTOM" BORDER="0"
- SRC="img46.png"
- ALT="\includegraphics{images/NewItem29.eps}">
-
-</DIV>
-
-<P>
-Double-click on the Bank Icon (or right-click and choose &ldquo;Open Godley
-Table&rdquo; from the context menu) and you get a double-entry bookkeeping
-table we call a Godley Table, which looks like the following onscreen:
-
-<P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}$
+</DD>
+<DT><STRONG>Sheet widget</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/sheet.eps}}$
  -->
 <IMG
- WIDTH="401" HEIGHT="51" ALIGN="BOTTOM" BORDER="0"
- SRC="img47.png"
- ALT="\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}">
-</DIV>
-
-<P>
-Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the <A HREF="node40.html#tut:basicBankModel">Tutorial (Monetary)</A>.
+ WIDTH="23" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img46.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/sheet.eps}}">
+   Add a <A HREF="node106.html#Sheet">sheet</A> to the canvas.
 
 <P>
 </DD>
@@ -111,9 +101,15 @@ Use this table to enter the bank accounts and financial flows in your model. We 
  -->
 <IMG
  WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img48.png"
+ SRC="img47.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/var.eps}}">
-  . <A NAME="Variable"></A> This creates an entity
+  . <A NAME="Variable"></A>
+<P>
+This is a pull down menu, giving access to creating variables,
+constants and parameters.
+
+<P>
+Variables are entities
 whose value changes as a function of time and its relationship with
 other entities in your model. Click on it and a variable definition
 window will appear:
@@ -138,16 +134,7 @@ cursor to where you want to place the variable on the Canvas, click,
 and it will be placed in that location.
 
 <P>
-</DD>
-<DT><STRONG>Constant</STRONG></DT>
-<DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/const.eps}}$
- -->
-<IMG
- WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/const.eps}}">
-   <A NAME="Constant"></A> creates an entity whose
+Constants are entities whose
 value is unaffected by the simulation or other entities in the
 model. Click on it and a constant definition window will appear:
 
@@ -172,20 +159,18 @@ creating a constant or creating a variable, as you can switch the type
 using the type field.
 
 <P>
+Like the variable and constant button, the parameter button creates a
+variable defaulting to the parameter type. Parameters differ from flow
+variables in not having an input port, and differ from constants in
+having a name and being controllable by a slider during simulation.
+
+<P>
 </DD>
-<DT><STRONG>Parameter</STRONG></DT>
-<DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/param.eps}}$
- -->
-<IMG
- WIDTH="34" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img52.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/param.eps}}">
-   <A NAME="Parameter"></A> Like the
-  variable and constant button, this creates a variable defaulting to
-  the parameter type. Parameters differ from flow variables in not
-  having an input port, and differ from constants in having a name and
-  being controllable by a slider during simulation.
+<DT><STRONG>Lock</STRONG></DT>
+<DD>Lock widgets are used with <A HREF="node113.html#Ravel">Ravels</A>.
+</DD>
+<DT><STRONG>Notes</STRONG></DT>
+<DD>Add <A HREF="node107.html#Notes">textual annotations</A>
 
 <P>
 </DD>
@@ -195,7 +180,7 @@ using the type field.
  -->
 <IMG
  WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img53.png"
+ SRC="img50.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/time.eps}}">
    embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
@@ -213,8 +198,8 @@ for a substantial period:
  $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem36.eps}}$
  -->
 <IMG
- WIDTH="501" HEIGHT="253" ALIGN="BOTTOM" BORDER="0"
- SRC="img54.png"
+ WIDTH="500" HEIGHT="253" ALIGN="BOTTOM" BORDER="0"
+ SRC="img51.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem36.eps}}">
 </DIV>
 
@@ -230,9 +215,190 @@ to show a ten year range of the model only:
  -->
 <IMG
  WIDTH="513" HEIGHT="340" ALIGN="BOTTOM" BORDER="0"
- SRC="img55.png"
+ SRC="img52.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem37.eps}}">
 </DIV>
+
+<P>
+</DD>
+<DT><STRONG>Unary functions</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/sqrt.eps}}$
+ -->
+<IMG
+ WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img53.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/sqrt.eps}}">
+   These are a fairly standard
+complement of mathematical functions.
+
+<P>
+</DD>
+<DT><STRONG>Binary operations</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/add.eps}}$
+ -->
+<IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img54.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/add.eps}}">
+  . These execute the stated binary
+    mathematical operations. Each input can take multiple wires as
+    well--so that to add five numbers together, for example you can wire 1 input
+    to one port on the Add block, and the other four to the other
+    port. 
+
+<P>
+Min &amp; Max Functions These take the minimum and maximum values, respectively.
+These also allow multiple wires per input.
+
+<P>
+Pow and log. These are binary operations (taking two
+arguments). In the case of the power operation, the exponent is the
+top port, and the argument to be raised to that exponent is the bottom
+port. This is indicated by the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img55.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img56.png"
+ ALT="$y$"></SPAN> labels on the ports. In the
+case of logarithm, the bottom port (labelled <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img57.png"
+ ALT="$b$"></SPAN>) is the base of the
+logarithm.
+
+<P>
+Logical Operators <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img5.png"
+ ALT="$&lt;$"></SPAN> <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img6.png"
+ ALT="$\le $"></SPAN>, =, <SPAN CLASS="MATH"><IMG
+ WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img8.png"
+ ALT="$\wedge $"></SPAN> <SPAN CLASS="MATH"><IMG
+ WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img9.png"
+ ALT="$\vee $"></SPAN> <SPAN CLASS="MATH"><IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.png"
+ ALT="$\neg $"></SPAN> (and,
+  or, not)] These return 0 for false and 1 for true.
+
+<P>
+</DD>
+<DT><STRONG>Reduction operations</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/sum.eps}}$
+ -->
+<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img58.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/sum.eps}}">
+   This menu contains
+  operations that reduce a vector to a scalar, or reduce the rank of a
+  tensor. Typically sum, product, any, all etc.
+
+<P>
+</DD>
+<DT><STRONG>Scans</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/runningSum.eps}}$
+ -->
+<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img59.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/runningSum.eps}}">
+   These are running sums and the
+  difference operator
+
+<P>
+</DD>
+<DT><STRONG>Miscellaneous tensor operations</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/outerProduct.eps}}$
+ -->
+<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/outerProduct.eps}}">
+  
+  Any other tensor function not covered elsewhere.
+
+<P>
+</DD>
+<DT><STRONG>Switch</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
+ -->
+<IMG
+ WIDTH="19" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img61.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
+   Add <A HREF="node94.html#SwitchIcon">a piecewise-defined function block</A> 
+to the canvas. Also known as a hybrid function.
+
+<P>
+</DD>
+<DT><STRONG>User defined function</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/userFunction.eps}}$
+ -->
+<IMG
+ WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img62.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/userFunction.eps}}">
+   You can
+  define <A HREF="node60.html#Operation:userFunction">your own function</A> using an algebraic expression, such as <code>exp(-x^2</code>y)+.
+
+<P>
+</DD>
+<DT><STRONG>Godley Table</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/NewItem29.eps}}$
+ -->
+<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img63.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/NewItem29.eps}}">
+  . <A NAME="GodleyTable"></A> This is the
+fundamental element of Minsky that is not found (yet) in any other
+system dynamics program. 
+
+<P>
+Clicking on it and placing the resulting Bank Icon on the Canvas
+enters a Godley table into your model:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="168" HEIGHT="160" ALIGN="BOTTOM" BORDER="0"
+ SRC="img64.png"
+ ALT="\includegraphics{images/NewItem29.eps}">
+
+</DIV>
+
+<P>
+Double-click on the Bank Icon (or right-click and choose &ldquo;Open Godley
+Table&rdquo; from the context menu) and you get a double-entry bookkeeping
+table we call a Godley Table, which looks like the following onscreen:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}$
+ -->
+<IMG
+ WIDTH="401" HEIGHT="51" ALIGN="BOTTOM" BORDER="0"
+ SRC="img65.png"
+ ALT="\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}">
+</DIV>
+
+<P>
+Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the <A HREF="node40.html#tut:basicBankModel">Tutorial (Monetary)</A>.
 
 <P>
 </DD>
@@ -242,7 +408,7 @@ to show a ten year range of the model only:
  -->
 <IMG
  WIDTH="29" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img56.png"
+ SRC="img66.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/int.eps}}">
   .<A NAME="Integrate"></A>  This inserts a variable whose value depends on the integral of other
   variables in the system. This is the essential element for defining
@@ -254,7 +420,7 @@ to show a ten year range of the model only:
 <DIV ALIGN="CENTER">
 <IMG
  WIDTH="105" HEIGHT="50" ALIGN="BOTTOM" BORDER="0"
- SRC="img57.png"
+ SRC="img67.png"
  ALT="\includegraphics{images/NewItem39.eps}">
 
 </DIV>
@@ -291,7 +457,7 @@ The integrated variable block would now look like this:
 <DIV ALIGN="CENTER">
 <IMG
  WIDTH="191" HEIGHT="50" ALIGN="BOTTOM" BORDER="0"
- SRC="img60.png"
+ SRC="img70.png"
  ALT="\includegraphics{images/NewItem42.eps}">
 
 </DIV>
@@ -313,7 +479,7 @@ population, divided by its current level, equals 0.0097:
 
 <IMG
  WIDTH="309" HEIGHT="45" BORDER="0"
- SRC="img61.png"
+ SRC="img71.png"
  ALT="\begin{displaymath}
 \frac{1}{\mathrm{Population}(t)}\cdot\left(\frac{d}{dt}\mathrm{Population}(t)\right)=0.0097
 \end{displaymath}">
@@ -336,7 +502,7 @@ sides of this equation by Population to get:
 
 <IMG
  WIDTH="280" HEIGHT="39" BORDER="0"
- SRC="img62.png"
+ SRC="img72.png"
  ALT="\begin{displaymath}
 \frac{d}{dt}\mathrm{Population}(t)=0.0097\cdot\mathrm{Population}(t)
 \end{displaymath}">
@@ -360,7 +526,7 @@ dt
 
 <IMG
  WIDTH="356" HEIGHT="47" BORDER="0"
- SRC="img63.png"
+ SRC="img73.png"
  ALT="\begin{displaymath}
 \mathrm{Population}(T)=315+\int_0^T 0.0097\cdot\mathrm{Population}(t)
 dt
@@ -373,7 +539,7 @@ dt
 Here, 315 (million) equals the current population of the USA, the year
 zero is today, and <SPAN CLASS="MATH"><IMG
  WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img64.png"
+ SRC="img74.png"
  ALT="$T$"></SPAN> is some number of years from today. The same
 equation done as a block diagram looks like this: 
 
@@ -384,7 +550,7 @@ equation done as a block diagram looks like this:
  -->
 <IMG
  WIDTH="554" HEIGHT="142" ALIGN="BOTTOM" BORDER="0"
- SRC="img65.png"
+ SRC="img75.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem46.eps}}">
 </DIV>
 
@@ -401,7 +567,7 @@ equation this way:
  -->
 <IMG
  WIDTH="555" HEIGHT="126" ALIGN="BOTTOM" BORDER="0"
- SRC="img66.png"
+ SRC="img76.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem47.eps}}">
 </DIV>
 
@@ -418,213 +584,11 @@ rate of change and a differential equation.
  -->
 <IMG
  WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img67.png"
+ SRC="img77.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}">
    This operator symbolically differentiates its input,
 provided the input is differentiable. An error is generated if the input
 is not differentiable.
-
-<P>
-</DD>
-<DT><STRONG>Plus, Minus, Multiply and Divide blocks</STRONG></DT>
-<DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/add.eps}}$
- -->
-<IMG
- WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img68.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/add.eps}}">
-  
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/subtract.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img69.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/subtract.eps}}">
-  
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/multiply.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img70.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/multiply.eps}}">
-  
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/divide.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img71.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/divide.eps}}">
-  . These execute the stated binary
-    mathematical operations. Each input can take multiple wires as
-    well--so that to add five numbers together, for example you can wire 1 input
-    to one port on the Add block, and the other four to the other
-    port. 
-
-<P>
-</DD>
-<DT><STRONG>Min &amp; Max Functions</STRONG></DT>
-<DD>These take the minimum and maximum values, respectively.
-These also allow multiple wires per input.
-
-<P>
-</DD>
-<DT><STRONG>Power and Logarithm</STRONG></DT>
-<DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/pow.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img72.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/pow.eps}}">
-   and
-
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/log.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img73.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/log.eps}}">
-   These are binary operations (taking two
-arguments). In the case of the power operation, the exponent is the
-top port, and the argument to be raised to that exponent is the bottom
-port. This is indicated by the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img75.png"
- ALT="$y$"></SPAN> labels on the ports. In the
-case of logarithm, the bottom port (labelled <SPAN CLASS="MATH"><IMG
- WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img76.png"
- ALT="$b$"></SPAN>) is the base of the
-logarithm.
-
-<P>
-</DD>
-<DT><STRONG>Logical Operators <SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img5.png"
- ALT="$&lt;$"></SPAN> <SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img6.png"
- ALT="$\le $"></SPAN>, =, <SPAN CLASS="MATH"><IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img8.png"
- ALT="$\wedge $"></SPAN> <SPAN CLASS="MATH"><IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img9.png"
- ALT="$\vee $"></SPAN> <SPAN CLASS="MATH"><IMG
- WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img10.png"
- ALT="$\neg $"></SPAN> (and,
-  or, not)</STRONG></DT>
-<DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/lt.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img77.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/lt.eps}}">
-  , 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/le.eps}}$
- -->
-<IMG
- WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img78.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/le.eps}}">
-  ,
-  
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/eq.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/eq.eps}}">
-  , 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/and_.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img80.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/and_.eps}}">
-  , 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/or_.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img81.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/or_.eps}}">
-   and
-  
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/not_.eps}}$
- -->
-<IMG
- WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img82.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/not_.eps}}">
-  . These return 0 for false and 1 for true.
-
-<P>
-</DD>
-<DT><STRONG>Other functions</STRONG></DT>
-<DD>These are a fairly standard
-complement of mathematical functions.
-
-<P>
-</DD>
-<DT><STRONG>Data block</STRONG></DT>
-<DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/data.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img83.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/data.eps}}">
-   <A HREF="#Operation:data">A data
-block</A> interpolates a sequence of empirical values, which may
-be generated outside of Minsky, and imported as a CSV file. This
-effectively defines a piecewise linear function.
-
-<P>
-</DD>
-<DT><STRONG>Plot widget</STRONG></DT>
-<DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/plot.eps}}$
- -->
-<IMG
- WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img84.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/plot.eps}}">
-   Add <A HREF="node105.html#PlotWidget">plots</A> to the canvas.
-
-<P>
-</DD>
-<DT><STRONG>Switch</STRONG></DT>
-<DD><!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
- -->
-<IMG
- WIDTH="19" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img85.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
-   Add <A HREF="node94.html#SwitchIcon">a piecewise-defined function block</A> 
-to the canvas. Also known as a hybrid function.
-
-<P>
-</DD>
-<DT><STRONG>Notes</STRONG></DT>
-<DD>Add <A HREF="node107.html#Notes">textual annotations</A>
 
 <P>
 </DD>
