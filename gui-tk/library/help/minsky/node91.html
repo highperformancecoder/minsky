@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>gather</TITLE>
-<META NAME="description" CONTENT="gather">
+<TITLE>difference </TITLE>
+<META NAME="description" CONTENT="difference ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,52 +16,43 @@
 
 <LINK REL="next" HREF="node92.html">
 <LINK REL="previous" HREF="node90.html">
-<LINK REL="up" HREF="node78.html">
+<LINK REL="up" HREF="node80.html">
 <LINK REL="next" HREF="node92.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1247"
+<A NAME="tex2html1253"
   HREF="node92.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1245"
-  HREF="node78.html">
+<A NAME="tex2html1251"
+  HREF="node80.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1239"
+<A NAME="tex2html1245"
   HREF="node90.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1248"
-  HREF="node92.html">inner product</A>
-<B> Up:</B> <A NAME="tex2html1246"
-  HREF="node78.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1240"
-  HREF="node90.html">index</A>
+<B> Next:</B> <A NAME="tex2html1254"
+  HREF="node92.html">index</A>
+<B> Up:</B> <A NAME="tex2html1252"
+  HREF="node80.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1246"
+  HREF="node90.html">running product</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004213000000000000000"></A><A NAME="Operation:gather"></A>
+<H2><A NAME="SECTION004211000000000000000"></A><A NAME="Operation:difference"></A>
 <BR>
-gather
+difference <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img21.png"
+ ALT="$\Delta $"></SPAN>
 </H2>
-
-<P>
-Gather collects the values at index locations indexed by the second
-argument. The output tensor has the same shape as the second (index)
-argument.
-
-<P>
-If the index is not an integer, the gather will linearly interpolate between
-the values on either side. So <!-- MATH
- $x[2.5] = 0.5 (x[2]+x[3])$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="167" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img191.png"
- ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>.
+Computes the nearest neighbour difference along a given direction. The
+optional argument can be used to specify the number of neighbours to
+skip in computing the differences.
 
 <P>
 <BR><HR>
