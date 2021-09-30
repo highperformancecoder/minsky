@@ -22,5 +22,6 @@ jobs:
 
       - name: Run docker build
         run: |
-          docker build --network=host .
+          docker build --network=host -t build:latest .
+          docker run -w /root -e TRAVIS=1 -it build:latest make sure
 
