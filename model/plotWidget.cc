@@ -332,7 +332,7 @@ namespace minsky
       {
         if (yy>0 && yy<0.8*legendHeight)
           return ClickType::legendMove;
-        else if (yy>=0.8*legendHeight && yy<legendHeight)
+        else if (yy>=0.8*legendHeight && yy<legendHeight+6*z) // allow a bit of extra height for resize arrow
           return ClickType::legendResize;
       }
 
