@@ -929,8 +929,11 @@ namespace minsky
         model->recursiveDo(&Group::items, 
                            [&](Items&,Items::iterator i) {
                              if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-                               for (unsigned i=1; i<g->table.cols(); ++i)
-                                 balanceDuplicateColumns(*g,i);
+                               {
+                                 for (unsigned i=1; i<g->table.cols(); ++i)
+                                   balanceDuplicateColumns(*g,i);
+                                 g->update();
+                               }
                              return false;
                            });
     
@@ -938,6 +941,7 @@ namespace minsky
         reset();
       }
     catch (...) {}
+    canvas.requestRedraw();
     panopticon.requestRedraw();
     flags=reset_needed|fullEqnDisplay_needed;
   }

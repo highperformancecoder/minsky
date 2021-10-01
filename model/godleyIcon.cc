@@ -330,6 +330,9 @@ namespace minsky
         flowMargin=0;
         accumulateWidthHeight(m_stockVars, stockH, stockMargin);
         accumulateWidthHeight(m_flowVars, flowH, flowMargin);
+        // allow for notches on variables
+        stockMargin+=4;
+        flowMargin+=4;
         float iw=this->iWidth(), ih=this->iHeight();
         this->iWidth(max(iw, 1.8f*stockH));
         this->iHeight(max(ih, 1.8f*flowH));
@@ -378,19 +381,20 @@ namespace minsky
     return ItemPtr();
   }
 
+  
   void GodleyIcon::draw(cairo_t* cairo) const
   {
-    float z=zoomFactor()*scaleFactor();
-    float w=iWidth()*z, h=iHeight()*z, left=-0.5*(w-leftMargin()), top=-0.5*(bottomMargin()+h);
     positionVariables();
+    float z=zoomFactor()*scaleFactor();
+    float w=iWidth()*z+leftMargin(), h=iHeight()*z+bottomMargin(), left=-0.5*w, top=-0.5*h;
     double titley;
-    
+
     if (editor.get())
       {
         CairoSave cs(cairo);
         cairo_rectangle(cairo, left, top, w, h);
         cairo_stroke_preserve(cairo);
-        cairo_rectangle(cairo, left+border, top+border, w-2*border, h-2*border);
+        cairo_rectangle(cairo, left-border*z, top-border*z, w+2*border*z, h+2*border*z);
         cairo_stroke_preserve(cairo);
         if (onBorder)
           { // shadow the border when mouse is over it
@@ -400,18 +404,30 @@ namespace minsky
             cairo_fill(cairo);
           }
         cairo_new_path(cairo);
-        cairo_rectangle(cairo, left+border, top-border, w-2*border, h-2*border);
+        cairo_rectangle(cairo, left, top, w, h);
         cairo_clip(cairo);
-        cairo_translate(cairo,left+border,top+border+12*zoomFactor()/* space for title*/);
-        editor->zoomFactor=zoomFactor();
+        cairo_translate(cairo,left+border*z+leftMargin(),top+border*z+titleOffs()/* space for title*/);
+        // render to a recording surface to determine size of editor table
+        // TODO - paint the recording surface directly 
+        Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
+        editor->zoomFactor=1;
+        editor->draw(surf.cairo());
+        //        cairo_set_source_surface(cairo, surf.surface(),0,0);
+        editor->zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
+//        cairo_scale(cairo,scaleFactor,scaleFactor);
+//        cairo_paint(cairo);
         editor->draw(cairo);
-        titley=-0.5*(bottomMargin()+h);
+        titley=-0.5*h;//+titleOffs();
+        w+=2*border*z;
+        h+=2*border*z;
+        left-=border*z;
+        top-=border*z;
       }
     else
       {
         CairoSave cs(cairo);
-        cairo_translate(cairo,left,top);
-        cairo_scale(cairo, (w)/svgRenderer.width(), (h)/svgRenderer.height());
+        cairo_translate(cairo,left+leftMargin(),top);
+        cairo_scale(cairo, (w-leftMargin())/svgRenderer.width(), (h-bottomMargin())/svgRenderer.height());
         svgRenderer.render(cairo);
         titley=-0.5*bottomMargin()-0.35*(h);
       }
@@ -421,7 +437,7 @@ namespace minsky
         CairoSave cs(cairo);
         Pango pango(cairo);
         pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
-        pango.setFontSize(12*z);
+        pango.setFontSize(titleOffs());
         cairo_move_to(cairo,-0.5*(pango.width()*z-0.5*leftMargin()), titley);
         pango.show();
       }
@@ -532,9 +548,9 @@ namespace minsky
   }
 
   float GodleyIcon::toEditorX(float xx) const
-  {return xx-x()+0.5f*width()-border;}
+  {return xx-x()+0.5f*width()-border-leftMargin();}
   float GodleyIcon::toEditorY(float yy) const
-  {return yy-y()+0.5f*height()-border-12*zoomFactor();}
+  {return yy-y()+0.5f*height()-border-titleOffs();}
   
   void GodleyIcon::onMouseDown(float x, float y)
   {if (editor) editor->mouseDown(toEditorX(x),toEditorY(y));}

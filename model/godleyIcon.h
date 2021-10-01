@@ -59,6 +59,9 @@ namespace minsky
       bb.update(*this); 
       selected=wasSelected;
     }
+
+    double titleOffs() const {return !table.title.empty()? 15*zoomFactor(): 0;}
+    
   public:
     static SVGRenderer svgRenderer;
     
@@ -78,7 +81,7 @@ namespace minsky
     void toggleButtons(); 
 
     bool variableDisplay=true;
-    void toggleVariableDisplay() {variableDisplay=!variableDisplay; updateBoundingBox();}
+    void toggleVariableDisplay() {variableDisplay=!variableDisplay; update();}
 
     /// sets editor's display values attributes to current global preferences
     void setEditorDisplayValues();

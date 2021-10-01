@@ -110,6 +110,9 @@ namespace minsky
     {enableButtons(); adjustWidgets();}
 
     void draw(cairo_t* cairo);
+
+    double width() const {return colLeftMargin.empty()? 0: colLeftMargin.back();}
+    double height() const {return godleyIcon? godleyIcon->table.rows()*rowHeight: 0;}
     
     /// event handling 
     void mouseDown(double x, double y);
