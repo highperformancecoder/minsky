@@ -26,7 +26,7 @@ using namespace std;
 namespace civita
 {
   void BinOp::setArguments(const TensorPtr& a1, const TensorPtr& a2,
-                           const std::string& dimension, double)
+                           const std::string&, double)
   {
     arg1=a1; arg2=a2;
     if (arg1 && arg1->rank()!=0)
@@ -56,7 +56,7 @@ namespace civita
         hypercube(hc);
         size_t cnt=0;
         set<size_t> idx;
-        for (auto& i: a)
+        for (const auto& i: a)
           {
             if (i->rank()>0 && i->hypercube()!=hc)
               throw runtime_error("arguments not conformal");
@@ -72,7 +72,7 @@ namespace civita
     if (args.empty()) return init;
     assert(i<size());
     double r=init; 
-    for (auto j: args)
+    for (const auto& j: args)
       {
         auto x=j->rank()==0? (*j)[0]: (*j)[i];
         if (!isnan(x)) f(r, x);
@@ -83,7 +83,7 @@ namespace civita
   ITensor::Timestamp ReduceArguments::timestamp() const
   {
     Timestamp t;
-    for (auto& i: args)
+    for (const auto& i: args)
       t=max(t, i->timestamp());
     return t;
   }
@@ -141,37 +141,35 @@ namespace civita
     if (!arg) return init;
     if (dimension>arg->rank())
       return ReduceAllOp::operator[](i);
+
+    double r=init;
+    if (index().empty())
+      {
+        auto argDims=arg->shape();
+        size_t stride=1;
+        for (size_t j=0; j<dimension; ++j)
+          stride*=argDims[j];
+        auto quotRem=ldiv(i, stride); // quotient and remainder calc in one hit
+        auto start=quotRem.quot*stride*argDims[dimension] + quotRem.rem;
+        assert(stride*argDims[dimension]>0);
+        for (size_t j=0; j<argDims[dimension]; ++j)
+          {
+            double x=arg->atHCIndex(j*stride+start);
+            if (!isnan(x)) f(r,x,j);
+          }
+      }
     else
       {
-        double r=init;
-        if (index().empty())
-          {
-            auto argDims=arg->shape();
-            size_t stride=1;
-            for (size_t j=0; j<dimension; ++j)
-              stride*=argDims[j];
-            auto quotRem=ldiv(i, stride); // quotient and remainder calc in one hit
-            auto start=quotRem.quot*stride*argDims[dimension] + quotRem.rem;
-            assert(stride*argDims[dimension]>0);
-            for (size_t j=0; j<argDims[dimension]; ++j)
-              {
-                double x=arg->atHCIndex(j*stride+start);
-                if (!isnan(x)) f(r,x,j);
-              }
-          }
-        else
-          {
-            auto soi=sumOverIndices.find(index()[i]);
-            assert(soi!=sumOverIndices.end());
-            if (soi!=sumOverIndices.end())
-              for (auto j: soi->second)
-                {
-                  double x=(*arg)[j.index];
-                  if (!isnan(x)) f(r,x,j.dimIndex);
-                }
-          }
-        return r;
+        auto soi=sumOverIndices.find(index()[i]);
+        assert(soi!=sumOverIndices.end());
+        if (soi!=sumOverIndices.end())
+          for (auto j: soi->second)
+            {
+              double x=(*arg)[j.index];
+              if (!isnan(x)) f(r,x,j.dimIndex);
+            }
       }
+    return r;
   }
 
   double CachedTensorOp::operator[](size_t i) const

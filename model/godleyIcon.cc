@@ -58,7 +58,7 @@ namespace minsky
       DrawVars(cairo_t* cairo, float x, float y): 
         cairo(cairo), x(x), y(y) {}
       
-      void operator()(const GodleyIcon::Variables& vars)
+      void operator()(const GodleyIcon::Variables& vars) const
       {
         for (GodleyIcon::Variables::const_iterator v=vars.begin(); 
              v!=vars.end(); ++v)
@@ -77,7 +77,7 @@ namespace minsky
                                float& height, float& width)
     {
       float h=0;
-      for (auto& v: vars)
+      for (const auto& v: vars)
         { 
           RenderVariable rv(*v);
           h+=2*rv.height();
@@ -147,7 +147,7 @@ namespace minsky
       }
     // remove any previously existing variables
     if (auto g=group.lock())
-      for (auto& v: oldVars)
+      for (const auto& v: oldVars)
         g->deleteItem(*v);   
   }
 
@@ -212,10 +212,10 @@ namespace minsky
 
   void GodleyIcon::removeControlledItems(Group& g) const
   {
-    for (auto& i: m_flowVars)
+    for (const auto& i: m_flowVars)
       if (auto item=g.removeItem(*i))
         item->deleteAttachedWires();
-    for (auto& i: m_stockVars)
+    for (const auto& i: m_stockVars)
       if (auto item=g.removeItem(*i))
         item->deleteAttachedWires();
   }
@@ -296,7 +296,7 @@ namespace minsky
             if (vi==minsky().variableValues.end()) continue;
             VariableValue& v=*vi->second;           
             v.godleyOverridden=false;
-            string::size_type start=table.cell(r,c).find_first_not_of(" ");
+            string::size_type start=table.cell(r,c).find_first_not_of(' ');
             if (start!=string::npos)
               {
                 FlowCoef fc(table.cell(r,c).substr(start));                                      
@@ -304,7 +304,7 @@ namespace minsky
                 // set initial value of stock var to init value of flow that is defined by a parameter or a constant. for ticket 1137
                 if (auto initVar=minsky().definingVar(VariableValue::valueId(group.lock(),fc.str())))
                   if (initVar->inputWired() && initVar->type()==VariableType::flow)
-                    if (auto lhsVar=initVar->ports(1).lock()->wires()[0]->from()->item().variableCast()) {
+                    if (auto* lhsVar=initVar->ports(1).lock()->wires()[0]->from()->item().variableCast()) {
                       FlowCoef fc1(lhsVar->vValue()->init);
                       fc1.coef*=fc.coef;
                       v.init=fc1.str();	
@@ -348,7 +348,7 @@ namespace minsky
     float z=this->zoomFactor()*scaleFactor();
     float x= this->x() - 0.5*iWidth()*z+0.5*leftMargin();
     float y= this->y() - 0.5*bottomMargin()-0.15*iHeight()*z;
-    for (auto& v: m_flowVars)
+    for (const auto& v: m_flowVars)
       {
         // right justification if displayed, left otherwisw
         v->rotation(0);
@@ -358,7 +358,7 @@ namespace minsky
     x= this->x() + 0.55*leftMargin()-0.45*iWidth()*z;
     y= this->y() + 0.5*iHeight()*z-0.5*bottomMargin();
 
-    for (auto& v: m_stockVars)
+    for (const auto& v: m_stockVars)
       {
         // top justification at bottom of icon if displayed, bottom justified otherwise
         v->rotation(90);
@@ -371,10 +371,10 @@ namespace minsky
   {
 	if (variableDisplay)           // Disable selection of stock and flow vars when they are hidden. for tickets 1217 and 1220.
 	{   
-       for (auto& v: m_flowVars)
+       for (const auto& v: m_flowVars)
          if (v->contains(x,y)) 
            return v;
-       for (auto& v: m_stockVars)
+       for (const auto& v: m_stockVars)
          if (v->contains(x,y)) 
            return v; 
      }
@@ -471,7 +471,7 @@ namespace minsky
     if (row==0) // A-L-E sum values across stockvars
       {
         map<string,VariablePtr> stockVars;
-        for (auto& i: m_stockVars)
+        for (const auto& i: m_stockVars)
           stockVars[i->valueId()]=i;
         double sum=0;
         for (size_t c=1; c<table.cols(); ++c)
@@ -482,7 +482,7 @@ namespace minsky
           }
         return str(sum);
       }
-    else return table.rowSum(row);
+    return table.rowSum(row);
   }
   
   Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
@@ -506,7 +506,7 @@ namespace minsky
           {
             auto vid=valueId(fc.name);
             // find variable assciated with this flow
-            for (auto& v: flowVars())
+            for (const auto& v: flowVars())
               if (v->valueId()==vid)
                 {
                   auto flowUnits=v->units(check);
@@ -524,9 +524,9 @@ namespace minsky
 
   void GodleyIcon::insertControlled(Selection& selection)
   {
-    for (auto& i: flowVars())
+    for (const auto& i: flowVars())
       selection.ensureItemInserted(i);
-    for (auto& i: stockVars())
+    for (const auto& i: stockVars())
       selection.ensureItemInserted(i);
   }
   
@@ -542,8 +542,7 @@ namespace minsky
       return item->clickType(x,y);         
     if (dx < w && dy < h)
       return ClickType::onItem;
-    else
-      return ClickType::outside;
+    return ClickType::outside;
   }
 
   float GodleyIcon::toEditorX(float xx) const

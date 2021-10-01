@@ -127,7 +127,7 @@ namespace minsky
     ClickType::Type clickType(float x, float y) override;
 
     /// draw icon to \a context
-    void draw(cairo_t* context) const override;
+    void draw(cairo_t* cairo) const override;
 
     /// return the A-L-E row sum for \a row
     std::string rowSum(int row) const;

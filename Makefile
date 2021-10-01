@@ -303,7 +303,7 @@ lcov:
 	genhtml -o coverage lcovr.info
 
 compile_commands.json: Makefile
-	$(MAKE) clean
+	rm *.o
 	bear $(MAKE)
 
 clang-tidy: compile_commands.json

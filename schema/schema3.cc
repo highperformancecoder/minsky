@@ -38,7 +38,7 @@ namespace schema3
   void pack(classdesc::pack_t& b, const civita::XVector& a)
   {
     b<<a.name<<a.dimension<<uint64_t(a.size());
-    for (auto& i: a)
+    for (const auto& i: a)
       b<<civita::str(i,a.dimension.units);
   }
 
@@ -65,7 +65,7 @@ namespace schema3
       b<<uint64_t(i);
 
     b<<uint64_t(a.hypercube().xvectors.size());
-    for (auto& i: a.hypercube().xvectors)
+    for (const auto& i: a.hypercube().xvectors)
       pack(b, i);
   }
 
@@ -128,8 +128,7 @@ namespace schema3
       auto i=find(o);
       if (i==end())
         return emplace(o,nextId++).first->second;
-      else
-        return i->second;
+      return i->second;
     }
     int operator[](void* o) {return at(o);}
     vector<int> at(const minsky::Item& item) {
@@ -142,30 +141,30 @@ namespace schema3
     template <class T>
     bool emplaceIf(vector<Item>& items, minsky::Item* i)
     {
-      auto j=dynamic_cast<T*>(i);
+      auto* j=dynamic_cast<T*>(i);
       if (j)
         {
           items.emplace_back(at(i), *j, at(*j));
-          if (auto g=dynamic_cast<minsky::GodleyIcon*>(i))
+          if (auto* g=dynamic_cast<minsky::GodleyIcon*>(i))
             {
               // insert port references from flow/stock vars
               items.back().ports.clear();
-              for (auto& v: g->flowVars())
+              for (const auto& v: g->flowVars())
                 items.back().ports.push_back(at(v->ports(1).lock().get()));
-              for (auto& v: g->stockVars())
+              for (const auto& v: g->stockVars())
                 items.back().ports.push_back(at(v->ports(0).lock().get()));
             }
-          if (auto d=dynamic_cast<minsky::DataOp*>(i))
+          if (auto* d=dynamic_cast<minsky::DataOp*>(i))
             {
               items.back().dataOpData=d->data;
               items.back().name=d->description();
             }
-          if (auto d=dynamic_cast<minsky::UserFunction*>(i))
+          if (auto* d=dynamic_cast<minsky::UserFunction*>(i))
             {
               items.back().expression=d->expression;
               items.back().name=d->description();
             }
-          if (auto r=dynamic_cast<minsky::Ravel*>(i))
+          if (auto* r=dynamic_cast<minsky::Ravel*>(i))
             {
               if (r->lockGroup)
                 {
@@ -179,7 +178,7 @@ namespace schema3
                   items.back().dimensions=r->axisDimensions;
                 }
             }
-          if (auto l=dynamic_cast<minsky::Lock*>(i))
+          if (auto* l=dynamic_cast<minsky::Lock*>(i))
             if (l->locked())
               items.back().ravelState=l->lockedState;
         }
@@ -250,7 +249,7 @@ namespace schema3
   {
     map<int,schema1::UnionLayout> layout;
     Schema1Layout(const vector<shared_ptr<schema1::Layout>>& x) {
-      for (auto& i: x)
+      for (const auto& i: x)
         {
           // serialise to json, then deserialise to a UnionLayout
           json_pack_t jbuf;
@@ -292,7 +291,7 @@ namespace schema3
           itemMap.emplaceIf<minsky::Sheet>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Item>(items, i->get());
         if (packTensorData) //pack tensor data
-          if (auto v=(*i)->variableCast())
+          if (auto* v=(*i)->variableCast())
             if (!items.back().tensorData)
               items.back().packTensorInit(*v);
 
@@ -301,7 +300,7 @@ namespace schema3
     
     // search for and link up integrals to their variables, and Godley table ports
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
-        if (auto integ=dynamic_cast<minsky::IntOp*>(i->get()))
+        if (auto* integ=dynamic_cast<minsky::IntOp*>(i->get()))
           {
             int id=itemMap[i->get()];
             for (auto& j: items)
@@ -385,14 +384,14 @@ namespace schema3
     x.rotation(y.rotation);
     x.iWidth(y.width);
     x.iHeight(y.height);
-    if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
+    if (auto* x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
           x1->description(*y.name);
         if (y.dataOpData)
           x1->data=*y.dataOpData;
       }
-    if (auto x1=dynamic_cast<minsky::UserFunction*>(&x))
+    if (auto* x1=dynamic_cast<minsky::UserFunction*>(&x))
       {
         if (y.name)
           x1->description(*y.name);
@@ -400,7 +399,7 @@ namespace schema3
           x1->expression=*y.expression;
       }
     
-    if (auto x1=dynamic_cast<minsky::Ravel*>(&x))
+    if (auto* x1=dynamic_cast<minsky::Ravel*>(&x))
       {
         if (y.ravelState)
           {
@@ -412,12 +411,12 @@ namespace schema3
         if (y.dimensions)
           x1->axisDimensions=*y.dimensions;
       }
-    if (auto x1=dynamic_cast<minsky::Lock*>(&x))
+    if (auto* x1=dynamic_cast<minsky::Lock*>(&x))
       {
         if (y.ravelState)
             x1->lockedState=y.ravelState->toRavelRavelState();
       }
-    if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))
+    if (auto* x1=dynamic_cast<minsky::VariableBase*>(&x))
       {
         if (y.name)
           x1->name(*y.name);
@@ -431,12 +430,12 @@ namespace schema3
           }
         // variableValue attributes populated later once variable is homed in its group
       }
-    if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))
+    if (auto* x1=dynamic_cast<minsky::OperationBase*>(&x))
       {
         if (y.axis) x1->axis=*y.axis;
         if (y.arg) x1->arg=*y.arg;
       }
-   if (auto x1=dynamic_cast<minsky::GodleyIcon*>(&x))
+   if (auto* x1=dynamic_cast<minsky::GodleyIcon*>(&x))
       {	  
         std::vector<std::vector<std::string>> data;
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
@@ -455,7 +454,7 @@ namespace schema3
         if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
           x1->toggleButtons();
       }
-    if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
+    if (auto* x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
         x1->bb.update(*x1);        
         if (y.name) x1->title=*y.name;
@@ -480,14 +479,14 @@ namespace schema3
           y.legendGeometry->setLegendGeometry(*x1);
         if (y.palette) x1->palette=*y.palette;
       }
-    if (auto x1=dynamic_cast<minsky::SwitchIcon*>(&x))
+    if (auto* x1=dynamic_cast<minsky::SwitchIcon*>(&x))
       {
         auto r=fmod(y.rotation,360);
         x1->flipped=r>90 && r<270;
         if (y.ports.size()>=2)
           x1->setNumCases(y.ports.size()-2);
       }
-    if (auto x1=dynamic_cast<minsky::Group*>(&x))
+    if (auto* x1=dynamic_cast<minsky::Group*>(&x))
       {
         x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
@@ -514,7 +513,7 @@ namespace schema3
     MinskyItemFactory factory;
     map<int,LockGroupFactory> lockGroups;
     
-    for (auto& i: items)
+    for (const auto& i: items)
       if (auto newItem=itemMap[i.id]=g.addItem(factory.create(i.type)))
         {
           populateItem(*newItem,i);
@@ -524,13 +523,13 @@ namespace schema3
             schema3VarMap[i.id]=i;
         }
     // second loop over items to wire up integrals, and populate Godley table variables
-    for (auto& i: items)
+    for (const auto& i: items)
       {
         if ((i.type=="IntOp" || i.type=="Operation:integrate") && i.intVar)
           {
             assert(itemMap.count(i.id));
             assert(dynamic_pointer_cast<minsky::IntOp>(itemMap[i.id]));
-            if (auto integ=dynamic_cast<minsky::IntOp*>(itemMap[i.id].get()))
+            if (auto* integ=dynamic_cast<minsky::IntOp*>(itemMap[i.id].get()))
               {
                 assert(integ->intVar);
                 assert(integ->intVar->type()==minsky::VariableType::integral);
@@ -555,7 +554,7 @@ namespace schema3
         if (i.type=="GodleyIcon")
           {
             assert(itemMap.count(i.id));
-            if (auto godley=dynamic_cast<minsky::GodleyIcon*>(itemMap[i.id].get()))
+            if (auto* godley=dynamic_cast<minsky::GodleyIcon*>(itemMap[i.id].get()))
               {
                 minsky::GodleyIcon::Variables flowVars, stockVars;
                 for (auto p: i.ports)
@@ -594,18 +593,18 @@ namespace schema3
             }
       }
         
-    for (auto& w: wires)
+    for (const auto& w: wires)
       if (portMap.count(w.to) && portMap.count(w.from))
         {
           populateWire
             (*g.addWire(new minsky::Wire(portMap[w.from],portMap[w.to])),w);
         }
           
-    for (auto& i: groups)
+    for (const auto& i: groups)
       populateItem(*(itemMap[i.id]=g.addGroup(new minsky::Group)),i);
 
     // second loop over groups, because groups can contain other groups
-    for (auto& i: groups)
+    for (const auto& i: groups)
       {
         assert(itemMap.count(i.id));
         auto newG=dynamic_pointer_cast<minsky::Group>(itemMap[i.id]);
@@ -656,7 +655,7 @@ namespace schema3
       {
         auto it=itemMap.find(i.first);
         if (!it->second) continue;
-        if (auto v=it->second->variableCast())
+        if (auto* v=it->second->variableCast())
           {
             if (i.second.init)
               v->init(*i.second.init);

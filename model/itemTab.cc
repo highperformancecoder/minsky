@@ -130,7 +130,7 @@ namespace minsky
     if (row==0)
       cellPtr->setText(varAttrib[col]);
     else if (row-1<itemVector.size())
-      if (auto v=itemVector[row-1]->variableCast())
+      if (auto* v=itemVector[row-1]->variableCast())
         switch (col)
           {
           case 0:
@@ -158,7 +158,7 @@ namespace minsky
             cellPtr->setText(str(v->sliderMax));
             break;
           case 8:
-            if (v->dims().size())
+            if (!v->dims().empty())
               cellPtr->setText("<tensor>");
             else
               cellPtr->setText(str(v->value()));
@@ -204,7 +204,7 @@ namespace minsky
     }
   }
 
-  bool ItemTab::redraw(int, int, int width, int height)
+  bool ItemTab::redraw(int, int, int, int)
   {
     if (surface.get()) {
       populateItemVector();			               

@@ -26,8 +26,8 @@ using namespace classdesc;
 
 namespace minsky
 {
-  string OperationType::typeName(int op) 
-  {return enumKey<Type>(op);}
+  string OperationType::typeName(int type) 
+  {return enumKey<Type>(type);}
 
   OperationType::Group OperationType::classify(Type t)
   {

@@ -134,8 +134,8 @@ namespace minsky
     }
     
     using ITensorVal::operator=;
-    const VariableValue& operator=(TensorVal const&);
-    const VariableValue& operator=(const ITensor& x) override;
+    VariableValue& operator=(TensorVal const&);
+    VariableValue& operator=(const ITensor& x) override;
 
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
@@ -175,7 +175,7 @@ namespace minsky
     }
     /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
     /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
-    static GroupPtr scope(GroupPtr ref, const std::string& name);
+    static GroupPtr scope(GroupPtr scope, const std::string& a_name);
     static std::string valueId(const GroupPtr& ref, const std::string& name) 
     {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(name));}
     static std::string valueIdFromScope(const GroupPtr& scope, const std::string& name);
