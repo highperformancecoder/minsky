@@ -158,8 +158,14 @@ namespace schema2
       x=layout.x;
       y=layout.y;
       rotation=layout.rotation;
-      width.reset(new float(layout.width));
-      height.reset(new float(layout.height));
+      if (layout.width>=0)
+        width.reset(new float(layout.width));
+      else if (type=="PlotWidget")
+        width.reset(new float(150));
+      if (layout.height>=0)
+        height.reset(new float(layout.height));
+      else if (type=="PlotWidget")
+        height.reset(new float(150));
       if (layout.sliderBoundsSet)
         slider.reset(new Slider(layout.sliderVisible,layout.sliderStepRel,
                                 layout.sliderMin,layout.sliderMax,layout.sliderStep));

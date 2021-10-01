@@ -393,7 +393,6 @@ namespace minsky
       {
         CairoSave cs(cairo);
         cairo_rectangle(cairo, left, top, w, h);
-        cairo_stroke_preserve(cairo);
         cairo_rectangle(cairo, left-border*z, top-border*z, w+2*border*z, h+2*border*z);
         cairo_stroke_preserve(cairo);
         if (onBorder)
@@ -417,7 +416,7 @@ namespace minsky
 //        cairo_scale(cairo,scaleFactor,scaleFactor);
 //        cairo_paint(cairo);
         editor->draw(cairo);
-        titley=-0.5*h;//+titleOffs();
+        titley=-0.5*h;
         w+=2*border*z;
         h+=2*border*z;
         left-=border*z;
@@ -429,7 +428,7 @@ namespace minsky
         cairo_translate(cairo,left+leftMargin(),top);
         cairo_scale(cairo, (w-leftMargin())/svgRenderer.width(), (h-bottomMargin())/svgRenderer.height());
         svgRenderer.render(cairo);
-        titley=-0.5*bottomMargin()-0.35*(h);
+        titley=top+0.1*(h-bottomMargin());
       }
     
     if (!table.title.empty())
@@ -438,7 +437,7 @@ namespace minsky
         Pango pango(cairo);
         pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
         pango.setFontSize(titleOffs());
-        cairo_move_to(cairo,-0.5*(pango.width()*z-0.5*leftMargin()), titley);
+        cairo_move_to(cairo,-0.5*(pango.width()*z-leftMargin()), titley);
         pango.show();
       }
       

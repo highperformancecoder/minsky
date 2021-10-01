@@ -932,7 +932,6 @@ namespace minsky
                                {
                                  for (unsigned i=1; i<g->table.cols(); ++i)
                                    balanceDuplicateColumns(*g,i);
-                                 g->update();
                                }
                              return false;
                            });
