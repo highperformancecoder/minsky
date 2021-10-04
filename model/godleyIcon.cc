@@ -473,13 +473,17 @@ namespace minsky
         map<string,VariablePtr> stockVars;
         for (const auto& i: m_stockVars)
           stockVars[i->valueId()]=i;
-        double sum=0;
+        double sum=0, absSum=0;
         for (size_t c=1; c<table.cols(); ++c)
           {
             auto i=stockVars.find(VariableValue::valueIdFromScope(group.lock(), trimWS(table.cell(0,c))));
             if (i!=stockVars.end())
-              sum+=(table.signConventionReversed(c)? -1: 1)*i->second->value();
+              {
+                sum+=(table.signConventionReversed(c)? -1: 1)*i->second->value();
+                absSum+=abs(i->second->value());
+              }
           }
+        if (sum<1E-4*absSum) sum=0; // eschew excess precision. For #1328
         return str(sum);
       }
     return table.rowSum(row);
