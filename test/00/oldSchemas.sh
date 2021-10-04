@@ -62,6 +62,7 @@ for i in *; do
 done
 
 for i in */*.mky; do
+    echo "Rendering $i"
     $here/gui-tk/minsky $here/test/renderCanvas.tcl $i $tmp/$i.svg
     $here/test/compareSVG.sh $tmp/$i.svg $i.svg 
     if test $? -ne 0; then
