@@ -888,7 +888,7 @@ namespace minsky
   {
     if (!surface().get()) return;
     auto cairo=surface()->cairo();
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_rectangle(cairo,updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
     cairo_clip(cairo);
     cairo_set_line_width(cairo, 1);
@@ -899,11 +899,10 @@ namespace minsky
          auto& it=**i;
          if (it.visible() && updateRegion.intersects(it))
            {
-             cairo_save(cairo);
+             CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             cairo_restore(cairo);
            }
          return false;
        });
@@ -915,11 +914,10 @@ namespace minsky
          auto& it=**i;
          if (it.visible() && updateRegion.intersects(it))
            {
-             cairo_save(cairo);
+             CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             cairo_restore(cairo);
            }
          return false;
        });
@@ -941,7 +939,7 @@ namespace minsky
         cairo_line_to(cairo,termX,termY);
         cairo_stroke(cairo);
         // draw arrow
-        cairo_save(cairo);
+        CairoSave cs(cairo);
         cairo_translate(cairo, termX,termY);
         cairo_rotate(cairo,atan2(termY-fromPort->y(), termX-fromPort->x()));
         cairo_move_to(cairo,0,0);
@@ -950,7 +948,6 @@ namespace minsky
         cairo_line_to(cairo,-5,3);
         cairo_close_path(cairo);
         cairo_fill(cairo);
-        cairo_restore(cairo);
       }
 
     if (lassoMode!=LassoMode::none)
@@ -961,14 +958,12 @@ namespace minsky
 
     if (itemIndicator && item) // draw a red circle to indicate an error or other marker
       {
-        cairo_save(surface()->cairo());
+        CairoSave cs(surface()->cairo());
         cairo_set_source_rgb(surface()->cairo(),1,0,0);
         cairo_arc(surface()->cairo(),item->x(),item->y(),15,0,2*M_PI);
         cairo_stroke(surface()->cairo());
-        cairo_restore(surface()->cairo());
       }
 
-    cairo_restore(cairo);
     surface()->blit();
   }
 

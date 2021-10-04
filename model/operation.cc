@@ -37,6 +37,7 @@
 #endif
 
 using namespace ecolab;
+using ecolab::cairo::CairoSave;
 
 namespace
 {
@@ -85,7 +86,7 @@ namespace
     // x, y = position of symbol
     void drawPort(void (DrawBinOp::*symbol)() const, float x, float y, float rotation)  const
     {
-      cairo_save(cairo);
+      CairoSave cs(cairo);
       
       double angle=rotation * M_PI / 180.0;
       double fm=std::fmod(rotation,360);
@@ -99,7 +100,6 @@ namespace
       // and counter-rotate
       cairo_rotate(cairo, -angle);
       (this->*symbol)();
-      cairo_restore(cairo);
     }
   };
 }
@@ -215,7 +215,7 @@ namespace minsky
   }  
   
   void OperationBase::draw(cairo_t* cairo) const
-  {	  
+  {
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
     double angle=rotation() * M_PI / 180.0;
@@ -303,12 +303,14 @@ namespace minsky
       case OperationType::integrate:
         break;
       default:
-        cairo_save(cairo);
-        cairo_scale(cairo,z,z);
-        iconDraw(cairo);
-        cairo_restore(cairo);      
-      
-        cairo_save(cairo);
+        {
+          CairoSave cs(cairo);
+          cairo_scale(cairo,z,z);
+          iconDraw(cairo);
+        }
+
+        
+        CairoSave cs(cairo);
         cairo_rotate(cairo, angle);
         
         float l=OperationBase::l*z, r=OperationBase::r*z, 
@@ -338,14 +340,15 @@ namespace minsky
                       
         if (textFlipped) swap(y1,y2);
     
-        cairo_save(cairo);
-        cairo_identity_matrix(cairo);
-        cairo_translate(cairo, x(), y());
-        cairo_rotate(cairo, angle);
-        cairo_user_to_device(cairo, &x0, &y0);
-        cairo_user_to_device(cairo, &x1, &y1);
-        cairo_user_to_device(cairo, &x2, &y2);
-        cairo_restore(cairo);
+        {
+          CairoSave cs(cairo);
+          cairo_identity_matrix(cairo);
+          cairo_translate(cairo, x(), y());
+          cairo_rotate(cairo, angle);
+          cairo_user_to_device(cairo, &x0, &y0);
+          cairo_user_to_device(cairo, &x1, &y1);
+          cairo_user_to_device(cairo, &x2, &y2);
+        }
     
         if (numPorts()>0) 
           m_ports[0]->moveTo(x0, y0);
@@ -369,7 +372,7 @@ namespace minsky
               m_ports[2]->moveTo(x2, y2);
           }
 
-        cairo_restore(cairo); // undo rotation
+        cs.restore(); // undo rotation
         if (mouseFocus)
           {
             drawPorts(cairo);
@@ -615,18 +618,19 @@ namespace minsky
         cairo_rotate(cairo,-rotation()*M_PI/180.0);
       }
     
-    cairo_save(cairo); 
-    cairo_scale(cairo,z,z);
-    double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);		  
-    cairo_move_to(cairo,-7,4.5);
-    cairo_show_text(cairo,"\xE2\x88\xAB");
-    cairo_show_text(cairo,"dt"); 
-    cairo_restore(cairo);
+    {
+      CairoSave cs(cairo); 
+      cairo_scale(cairo,z,z);
+      double sf = scaleFactor();  
+      cairo_scale(cairo,sf,sf);		  
+      cairo_move_to(cairo,-7,4.5);
+      cairo_show_text(cairo,"\xE2\x88\xAB");
+      cairo_show_text(cairo,"dt"); 
+    }
         
     int intVarWidth=0;
     
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_rotate(cairo, angle); 
     
     cairo_move_to(cairo,l,h);
@@ -657,14 +661,15 @@ namespace minsky
         auto ivp=rot(x()+r+ivo+intVarWidth, y());
         intVar->moveTo(ivp.x(), ivp.y());
          
-        cairo_save(cairo);
-        cairo_translate(cairo,r+ivo+intVarWidth,0);
-        // to get text to render correctly, we need to set
-        // the var's rotation, then antirotate it
-        intVar->rotation(rotation());
-        cairo_rotate(cairo, -M_PI*rotation()/180.0);
-        rv.draw();
-        cairo_restore(cairo);
+        {
+          CairoSave cs(cairo);
+          cairo_translate(cairo,r+ivo+intVarWidth,0);
+          // to get text to render correctly, we need to set
+          // the var's rotation, then antirotate it
+          intVar->rotation(rotation());
+          cairo_rotate(cairo, -M_PI*rotation()/180.0);
+          rv.draw();
+        }
 	 
         // build clip path the hard way grr...
         cairo_move_to(cairo,l,h);
@@ -695,14 +700,15 @@ namespace minsky
     if (coupled())
       x0+=intVarOffset+2*intVarWidth+2;
 	
-    cairo_save(cairo);
-    cairo_identity_matrix(cairo);
-    cairo_translate(cairo, x(), y());
-    cairo_rotate(cairo, angle);
-    cairo_user_to_device(cairo, &x0, &y0);
-    cairo_user_to_device(cairo, &x1, &y1);
-    cairo_user_to_device(cairo, &x2, &y2);
-    cairo_restore(cairo);
+    {
+      CairoSave cs(cairo);
+      cairo_identity_matrix(cairo);
+      cairo_translate(cairo, x(), y());
+      cairo_rotate(cairo, angle);
+      cairo_user_to_device(cairo, &x0, &y0);
+      cairo_user_to_device(cairo, &x1, &y1);
+      cairo_user_to_device(cairo, &x2, &y2);
+    }
     
     if (numPorts()>0) 
       m_ports[0]->moveTo(x0, y0);
@@ -712,7 +718,7 @@ namespace minsky
       m_ports[2]->moveTo(x2, y2);
 	
     cairo_translate(cairo,-coupledIntTranslation,0);        
-    cairo_restore(cairo); // undo rotation
+    cs.restore(); // undo rotation
     if (mouseFocus)
       {
         drawPorts(cairo);
@@ -1083,7 +1089,7 @@ namespace minsky
   
   template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
   { 
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-7,-1);
@@ -1093,12 +1099,11 @@ namespace minsky
     cairo_set_line_width(cairo,0.5);cairo_stroke(cairo);
     cairo_move_to(cairo,-7,7);
     cairo_show_text(cairo,"dt");
-    cairo_restore(cairo);  
   }
 
   template <> void Operation<OperationType::sqrt>::iconDraw(cairo_t* cairo) const
   {	  
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);   
@@ -1109,7 +1114,6 @@ namespace minsky
     cairo_rel_line_to(cairo,5,0);
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_stroke(cairo);    
-    cairo_restore(cairo);  
   }
 
   template <> void Operation<OperationType::exp>::iconDraw(cairo_t* cairo) const
@@ -1189,7 +1193,7 @@ namespace minsky
 
   template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
   {	  
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	   
     cairo_set_source_rgb(cairo,0,0,0);
@@ -1197,12 +1201,11 @@ namespace minsky
     cairo_line_to(cairo,-1,-3);
     cairo_line_to(cairo,2,3);
     cairo_stroke(cairo);
-    cairo_restore(cairo);
   }
 
   template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
   {  
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 
     cairo_set_source_rgb(cairo,0,0,0);
@@ -1210,7 +1213,6 @@ namespace minsky
     cairo_line_to(cairo,-1,3);
     cairo_line_to(cairo,2,-3);
     cairo_stroke(cairo);
-    cairo_restore(cairo);
   }
 
   template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const

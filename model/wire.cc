@@ -30,6 +30,7 @@
 #include  <iterator>
 
 using namespace std;
+using ecolab::cairo::CairoSave;
 
 namespace minsky
 {
@@ -440,16 +441,17 @@ namespace
     cairo_stroke(cairo);
 
     // draw arrow
-    cairo_save(cairo);
-    cairo_translate(cairo, lastx, lasty);
-    cairo_rotate(cairo,angle);
-    cairo_move_to(cairo,0,0);
-    cairo_line_to(cairo,-5,-3); 
-    cairo_line_to(cairo,-3,0); 
-    cairo_line_to(cairo,-5,3);
-    cairo_close_path(cairo);
-    cairo_fill(cairo);
-    cairo_restore(cairo);
+    {
+      CairoSave cs(cairo);
+      cairo_translate(cairo, lastx, lasty);
+      cairo_rotate(cairo,angle);
+      cairo_move_to(cairo,0,0);
+      cairo_line_to(cairo,-5,-3); 
+      cairo_line_to(cairo,-3,0); 
+      cairo_line_to(cairo,-5,3);
+      cairo_close_path(cairo);
+      cairo_fill(cairo);
+    }
 
     // draw handles
     if (mouseFocus)

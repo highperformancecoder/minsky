@@ -31,6 +31,7 @@
 #include <exception>
 
 using ecolab::Pango;
+using ecolab::cairo::CairoSave;
 using namespace std;
 
 namespace minsky
@@ -257,7 +258,7 @@ namespace minsky
 
   void Item::drawPorts(cairo_t* cairo) const
   {
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_new_path(cairo);
     for (auto& p: m_ports)
       {
@@ -267,16 +268,14 @@ namespace minsky
     cairo_set_source_rgb(cairo, 0,0,0);
     cairo_set_line_width(cairo,1);
     cairo_stroke(cairo);
-    cairo_restore(cairo);
   }
 
   void Item::drawSelected(cairo_t* cairo) const
   {
     // implemented by filling the clip region with a transparent grey
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_set_source_rgba(cairo, 0.5,0.5,0.5,0.4);
     cairo_paint(cairo);
-    cairo_restore(cairo);
   }
 
   namespace

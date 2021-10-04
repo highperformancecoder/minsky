@@ -87,7 +87,7 @@ namespace minsky
         cairo_stroke(cairo);
       }
 
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_translate(cairo,-0.5*w,-0.5*h);
 
     double yoffs=0; // offset to allow for title
@@ -164,7 +164,7 @@ namespace minsky
       }
 
     Plot::draw(cairo,gw,gh); 
-    cairo_restore(cairo);
+    cs.restore();
     if (mouseFocus)
       {
         drawPorts(cairo);
