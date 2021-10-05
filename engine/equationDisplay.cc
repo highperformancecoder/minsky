@@ -275,7 +275,7 @@ namespace MathDAG
   void OperationDAG<OperationType::divide>::render(Surface& surf) const 
   {
     RecordingSurface num, den;
-    if (arguments.size()>0)
+    if (!arguments.empty())
       naryRender(num, arguments[0], BODMASlevel()," × ","1");
 
     if (arguments.size()>1)
@@ -643,9 +643,9 @@ namespace MathDAG
             cairo_rel_move_to(surf.cairo(), 0, 0.5*base.height());                        
             parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});   			  
           }
-         else
-            parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-		}
+        else
+          parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+      }
   }      
   
   template <>
@@ -879,7 +879,7 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::le>::render(Surface& surf) const
   {
-    if ((arguments.size()>0 && !arguments[0].empty() && arguments[0][0]) ||
+    if ((!arguments.empty() && !arguments[0].empty() && arguments[0][0]) ||
         (arguments.size()>1 && !arguments[1].empty() && arguments[1][0]))
       {
         OperationDAG<OperationType::lt> lt; lt.arguments=arguments;

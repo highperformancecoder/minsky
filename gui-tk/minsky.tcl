@@ -1440,8 +1440,10 @@ proc openNamedFile {ofname} {
     doPushHistory 0
     setAutoSaveFile [autoBackupName]
 
-    # minsky.load resets minsky.multipleEquities, so restore it to preferences
+    # minsky.load resets minsky.multipleEquities and other preference, so restore preferences
     minsky.multipleEquities $preferences(multipleEquities)
+    setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
+
     canvas.focusFollowsMouse $preferences(focusFollowsMouse)
     pushFlags
     recentreCanvas

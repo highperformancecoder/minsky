@@ -160,7 +160,7 @@ namespace minsky
     };
   }
   
-  bool OperationBase::multiWire()
+  bool OperationBase::multiWire() const
   {
     switch (type())
       {
@@ -481,7 +481,8 @@ namespace minsky
                     return vV->units; 
                   }
                 return r; 
-              } else return {};
+              }
+              return {};
             }     
           default:           
             return {};  
@@ -749,7 +750,7 @@ namespace minsky
     selection.ensureItemInserted(intVar);
   }
   
-  const IntOp& IntOp::operator=(const IntOp& x)
+  IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 
     intVar.reset(x.intVar->clone());
@@ -891,7 +892,7 @@ namespace minsky
   string OperationBase::portValues() const
   {
     string r="equations not yet constructed, please reset";
-    if (m_ports.size()>0 && m_ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
+    if (!m_ports.empty() && m_ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
       {
         std::stringstream ss;
         ss <<"[out]="<<m_ports[0]->value();		
@@ -951,20 +952,17 @@ namespace minsky
     map<double, double>::const_iterator v=data.lower_bound(x);
     if (v==data.end())
       return data.rbegin()->second;
-    else if (v==data.begin())
+    if (v==data.begin())
       return v->second;
-    else if (v->first > x)
+    if (v->first > x)
       {
         map<double, double>::const_iterator v0=v;
         --v0;
         return (x-v0->first)*(v->second-v0->second)/
           (v->first-v0->first)+v0->second;
       }
-    else
-      {
-        assert(v->first==x);
-        return v->second;
-      }
+    assert(v->first==x);
+    return v->second;
   }
 
   double DataOp::deriv(double x) const
@@ -980,8 +978,7 @@ namespace minsky
         if (v2==data.end()) v2=v;
         return (v2->second-v1->second)/(v2->first-v1->first);
       }
-    else 
-      return (v->second-v1->second)/(v->first-v1->first);
+    return (v->second-v1->second)/(v->first-v1->first);
   }
 
   // virtual draw methods for operations - defined here rather than

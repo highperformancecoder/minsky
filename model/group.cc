@@ -112,8 +112,7 @@ namespace minsky
     // make new group owned by the top level group to prevent
     if (auto g=group.lock())
       return g->addGroup(copyUnowned());
-    else
-      return GroupPtr(); // do nothing if we attempt to clone the entire model
+    return GroupPtr(); // do nothing if we attempt to clone the entire model
   }
   
   GroupPtr Group::copyUnowned() const
@@ -401,7 +400,7 @@ namespace minsky
         assert(iv->ports(1).lock()->input() && !iv->ports(1).lock()->multiWireAllowed());
         // firstly join wires that don't cross boundaries
         // determine if this is input or output var
-        if (iv->ports(1).lock()->wires().size()>0)
+        if (!iv->ports(1).lock()->wires().empty())
           {
             auto fromGroup=iv->ports(1).lock()->wires()[0]->from()->item().group.lock();
             if (fromGroup.get() == this)
@@ -499,12 +498,11 @@ namespace minsky
     float w=0.5*iWidth()*z,h=0.5*iHeight()*z;
     if (w-right<dx)
       return IORegion::output;
-    else if (-w+left>dx)
+    if (-w+left>dx)
       return IORegion::input;
-    else if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
+    if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
       return IORegion::topBottom;  
-    else     
-      return IORegion::none;
+    return IORegion::none;
   }
 
   void Group::checkAddIORegion(const ItemPtr& x)
@@ -671,7 +669,7 @@ namespace minsky
       return WirePtr();
 
     // check that multiple input wires are only to binary ops.
-    if (toP->wires().size()>=1 && !toP->multiWireAllowed())
+    if (!toP->wires().empty() && !toP->multiWireAllowed())
       return WirePtr();
 
     // check that a wire doesn't already exist connecting these two ports
@@ -693,12 +691,9 @@ namespace minsky
 
   bool Group::higher(const Group& x) const
   {
-    for (auto i: groups)
+    for (auto& i: groups)
       if (i.get()==&x) return true;
-    for (auto i: groups)
-      if (i->higher(x))
-        return true;
-    return false;
+    return any_of(groups.begin(), groups.end(), [&](const GroupPtr& i){return i->higher(x);});
   }
 
   unsigned Group::level() const

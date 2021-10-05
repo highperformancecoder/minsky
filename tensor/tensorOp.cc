@@ -303,8 +303,7 @@ namespace civita
         auto res=div(ssize_t(i), ssize_t(split));
         return arg->atHCIndex(res.quot*stride + sliceIndex*split + res.rem);
       }
-    else
-      return (*arg)[arg_index[i]];
+    return (*arg)[arg_index[i]];
   }
   
   void Pivot::setArgument(const TensorPtr& a,const std::string&,double)
@@ -372,7 +371,7 @@ namespace civita
     // convert to lineal indexing
     permutedIndex.clear();
     for (auto& i: pi) permutedIndex.push_back(i.second);
-    if (permutedIndex.size()) permutation.clear(); // not used in sparse case
+    if (!permutedIndex.empty()) permutation.clear(); // not used in sparse case
   }
 
   size_t Pivot::pivotIndex(size_t i) const
@@ -389,8 +388,7 @@ namespace civita
     assert(i<size());
     if (index().empty())
       return arg->atHCIndex(pivotIndex(i));
-    else
-      return (*arg)[permutedIndex[i]];
+    return (*arg)[permutedIndex[i]];
   }
 
   

@@ -71,10 +71,9 @@ namespace MathDAG
     // perform some constant optimisation
     if (dx==zero) 
       return zero;
-    else if (dx==one)
+    if (dx==one)
       return deriv;
-    else
-      return dx * deriv;
+    return dx * deriv;
   }
 
   template <>
@@ -225,17 +224,11 @@ namespace MathDAG
     assert(expr.arguments.size()==2);
     if (expr.arguments[0].empty())
       return zero;
-    else 
-      {
-        Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
-        if (expr.arguments[1].empty())
-          return x->derivative(*this)/x;
-        else
-          {
-            Expr b(expressionCache, expressionCache.reverseLookup(*expr.arguments[1][0]));
-            return (log(x)/log(b))->derivative(*this);
-          }
-      }
+    Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
+    if (expr.arguments[1].empty())
+      return x->derivative(*this)/x;
+    Expr b(expressionCache, expressionCache.reverseLookup(*expr.arguments[1][0]));
+    return (log(x)/log(b))->derivative(*this);
   }
 
 
@@ -247,18 +240,15 @@ namespace MathDAG
     assert(expr.arguments.size()==2);
     if (expr.arguments[0].empty())
       return zero;
-    else if (expr.arguments[1].empty())
+    if (expr.arguments[1].empty())
       {
         Expr x(expressionCache, expr.arguments[0][0]);
         Expr dx(expressionCache, x->derivative(*this));
         return dx * x;
       }
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        Expr y(expressionCache,  expr.arguments[1][0]);
-        return exp(y * log(x))->derivative(*this);
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    Expr y(expressionCache,  expr.arguments[1][0]);
+    return exp(y * log(x))->derivative(*this);
   }
 
   template <>
@@ -267,8 +257,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-       throw error("lt is not differentiable");
+    throw error("lt is not differentiable");
   }
 
   template <>
@@ -277,8 +266,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-       throw error("le is not differentiable");
+    throw error("le is not differentiable");
   }
 
   template <>
@@ -287,8 +275,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-       throw error("eq is not differentiable");
+    throw error("eq is not differentiable");
   }
 
   template <>
@@ -420,11 +407,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return (100*x)->derivative(*this);
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return (100*x)->derivative(*this);
   }
   
   template <>
@@ -433,8 +417,7 @@ namespace MathDAG
   {
     if (!expr.arguments[0].empty() && expr.arguments[0][0])
       return expr.arguments[0][0]->derivative(*this);
-    else
-      return zero;
+    return zero;
   }
 
   template <>
@@ -492,11 +475,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, 1/x);
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x, 1/x);
   }
 
   template <>
@@ -505,11 +485,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,cos(x));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x,cos(x));
   }
 
   template <>
@@ -518,11 +495,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,-1*sin(x));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x,-1*sin(x));
   }
 
  
@@ -532,12 +506,9 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        Expr secx=1/cos(x);
-        return chainRule(x,secx * secx);
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    Expr secx=1/cos(x);
+    return chainRule(x,secx * secx);
   }
 
   template <>
@@ -546,11 +517,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, 1/sqrt(1-x*x));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x, 1/sqrt(1-x*x));
   }
 
   template <>
@@ -559,11 +527,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, -1/sqrt(1-x*x));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x, -1/sqrt(1-x*x));
   }
 
   template <>
@@ -572,11 +537,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, 1/(1+x*x));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x, 1/(1+x*x));
   }
 
   template <>
@@ -585,11 +547,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, cosh(x));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x, cosh(x));
   }
 
   template <>
@@ -598,11 +557,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, sinh(x));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x, sinh(x));
   }
 
   template <>
@@ -611,12 +567,9 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        Expr sech=1/cosh(x);
-        return chainRule(x, sech*sech);
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    Expr sech=1/cosh(x);
+    return chainRule(x, sech*sech);
   }
 
   template <>
@@ -625,11 +578,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, (one-2*(x<=zero)));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x, (one-2*(x<=zero)));
   }
 
   template <>
@@ -638,9 +588,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      // should really be δ(x-⌊x⌋) 
-      throw error("floor is not differentiable");
+    // should really be δ(x-⌊x⌋) 
+    throw error("floor is not differentiable");
   }
 
   template <>
@@ -649,8 +598,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-       throw error("frac is not differentiable");
+    throw error("frac is not differentiable");
   }
   
   template <>
@@ -659,11 +607,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,polygamma(x,Expr(expressionCache,zero))*Gamma(x)); 
-      }                                                                                       
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x,polygamma(x,Expr(expressionCache,zero))*Gamma(x)); 
   }                                                                                         
 
   template <>
@@ -673,16 +618,10 @@ namespace MathDAG
       assert(expr.arguments.size()==2);
       if (expr.arguments[0].empty())
         return zero;
-      else 
-        {
-          Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
-          if (expr.arguments[1].empty())
-            return chainRule(x,polygamma(x,Expr(expressionCache, one)));
-          else
-            {
-              return chainRule(x,polygamma(x,1+Expr(expressionCache, expr.arguments[1][0])));
-            }
-        }
+      Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
+      if (expr.arguments[1].empty())
+        return chainRule(x,polygamma(x,Expr(expressionCache, one)));
+      return chainRule(x,polygamma(x,1+Expr(expressionCache, expr.arguments[1][0])));
     }
   
   template <>
@@ -691,11 +630,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,polygamma(1+x,Expr(expressionCache,zero))*Gamma(1+x));
-      }
+    Expr x(expressionCache, expr.arguments[0][0]);
+    return chainRule(x,polygamma(1+x,Expr(expressionCache,zero))*Gamma(1+x));
   }    
   
   template <>

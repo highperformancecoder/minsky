@@ -23,7 +23,6 @@
 #include "minsky_epilogue.h"
 #include "minsky.h"
 using namespace std;
-using ecolab::cairo::Surface;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 

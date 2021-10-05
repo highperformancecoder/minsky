@@ -271,13 +271,7 @@ namespace minsky
             wireFocus->editHandle(handleSelected,x,y);
             requestRedraw();
           }
-        else if (lassoMode==LassoMode::lasso)
-          {
-            lasso.x1=x;
-            lasso.y1=y;
-            requestRedraw();
-          }
-        else if (lassoMode==LassoMode::itemResize && item.get())
+        else if (lassoMode==LassoMode::lasso || (lassoMode==LassoMode::itemResize && item.get()))
           {
             lasso.x1=x;
             lasso.y1=y;
@@ -512,7 +506,7 @@ namespace minsky
        (&GroupItems::items, [&](const Items&,Items::const_iterator i)
         {
           if (auto p=(*i)->plotWidgetCast())
-            if (p->plotOnTab()==false) p->togglePlotTabDisplay();	 
+            if (!p->plotOnTab()) p->togglePlotTabDisplay();	 
           return false;
         });
   }    
@@ -639,7 +633,7 @@ namespace minsky
                    else
                      {
                        if (varScope==v->group.lock() ||
-                           (newName.size() && newName[0]==':') )
+                           (!newName.empty() && newName[0]==':') )
                          v->name(newName);
                        else
                          v->name(":"+newName);
@@ -688,7 +682,7 @@ namespace minsky
       }
   }
 
-  void Canvas::renameItem(const std::string newName)
+  void Canvas::renameItem(const std::string& newName)
   {
     if (auto var=item->variableCast())
       {
@@ -776,7 +770,7 @@ namespace minsky
     // Throw error if no stock/flow vars on Godley icon. For ticket 1039 
     if (!v.empty()) {    
 	  selection.clear();	
-      for (auto i: v)
+      for (auto& i: v)
         {
           RenderVariable rv(*i);
           widths.push_back(rv.width());
@@ -835,7 +829,7 @@ namespace minsky
           (&GroupItems::items, [&](const ItemPtr& i) {
             if (auto v=i->variableCast())
               return v->inputWired() && v->valueId()==iv->valueId();
-            else if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+            if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
               for (auto& v: g->stockVars())
                 {
                   if (v->valueId()==iv->valueId())

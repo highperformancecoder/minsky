@@ -138,8 +138,7 @@ namespace minsky
             wires.erase(i);
             return true;
           }
-        else
-          return false;
+        return false;
       }); 
     if (wp)
       dest.addWire(wp);
@@ -180,34 +179,34 @@ namespace
  } 	
 
 // For ticket 991. Construct tridoagonal matrix A which relates control points c and knots k (curved wire handles): Ac = k.
- vector<vector<float>> constructTriDiag(int length) {
-
+ vector<vector<float>> constructTriDiag(int length)
+ {
    vector<vector<float>> result(length,vector<float>(length));
    
    for (int i = 0; i < length; i++)  // rows
-      for (int j = 0; j < length; j++) {  // columns
+     for (int j = 0; j < length; j++) {  // columns
  		  
- 		//construct upper diagonal   
- 		   if (j > 0 && i == j-1 && i < length-1) result[i][j] = 1.0; 	 			
- 		   //construct main diagonal
- 		   else if (i == j) {
- 		      if (i == 0) result[i][j] = 2.0;
- 		      else if (i < length-1) result[i][j] = 4.0;
- 		      else if (i == length-1) result[i][j] = 7.0;
- 		   }   
- 		   //construct lower diagonal
- 	       else if (i == j+1) {
- 		   	if (j < length-2) result[i][j] = 1.0;
- 		   	else if (j == length-2) result[i][j] = 2.0;
- 		   }  
- 		   else result[i][j] = 0.0; 				
-  }
+       //construct upper diagonal   
+       if (j > 0 && i == j-1 && i < length-1) result[i][j] = 1.0; 	 			
+       //construct main diagonal
+       else if (i == j) {
+         if (i == 0) result[i][j] = 2.0;
+         else if (i < length-1) result[i][j] = 4.0;
+         else if (i == length-1) result[i][j] = 7.0;
+       }   
+       //construct lower diagonal
+       else if (i == j+1) {
+         if (j < length-2) result[i][j] = 1.0;
+         else if (j == length-2) result[i][j] = 2.0;
+       }  
+       else result[i][j] = 0.0; 				
+     }
   
-  return result;
+   return result;
  } 
 
 // For ticket 991. Vector of input knots k (all the handles on a curved wire).  
-  vector<pair<float,float>> constructTargetVector(int n, const vector<pair<float,float>> knots) {
+  vector<pair<float,float>> constructTargetVector(int n, const vector<pair<float,float>>& knots) {
 	  
 	assert(knots.size() > 2);  
 	  
@@ -282,7 +281,7 @@ namespace
  *      
  * (Source: http://www.industrial-maths.com/ms6021_thomas.pdf)
  */	 
- vector<pair<float,float>> computeControlPoints(vector<vector<float>> triDiag, const vector<pair<float,float>> knots, vector<pair<float,float>> target) {
+ vector<pair<float,float>> computeControlPoints(vector<vector<float>> triDiag, const vector<pair<float,float>>& knots, vector<pair<float,float>> target) {
   
     assert(knots.size() > 2); 
     
@@ -361,7 +360,6 @@ namespace
         cairoCoords.push_back(make_pair(data[1].point.x,data[1].point.y));
         break;
       case CAIRO_PATH_CURVE_TO:
-        break;
       case CAIRO_PATH_CLOSE_PATH:
         break;
       }
@@ -371,10 +369,8 @@ namespace
   
   bool Wire::attachedToDefiningVar(std::set<const Item*>& visited) const
   {
-    auto t=to();
-    assert(t);             
-    if (t->item().attachedToDefiningVar(visited)) return true;
-    return false;       
+    assert(to());             
+    return (to()->item().attachedToDefiningVar(visited));
   }    
    
   void Wire::draw(cairo_t* cairo) const
@@ -490,7 +486,7 @@ namespace
         if (fg!=tg && !from()->item().ioVar() && !to()->item().ioVar()) // crosses boundary
           {
             // check if this wire is in from group
-            auto cmp=[&](WirePtr w) {return w.get()==this;};
+            auto cmp=[&](const WirePtr& w) {return w.get()==this;};
             auto i=find_if(fg->wires.begin(), fg->wires.end(), cmp);
             if (i==fg->wires.end())
               {
@@ -523,7 +519,7 @@ namespace
         IncrDecrCounter idc(unitsCtr);
         return f->item().units(check);
       }
-    else return {};
+    return {};
   }
 
   namespace
@@ -549,27 +545,26 @@ namespace
     assert(c.size()>=4);
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
-    else {
-      // fixes for tickets 991/1095
-      vector<pair<float,float>> p=allHandleCoords(c);
-      if (!cairoCoords.empty()) p=cairoCoords;   
+
+    // fixes for tickets 991/1095
+    vector<pair<float,float>> p=allHandleCoords(c);
+    if (!cairoCoords.empty()) p=cairoCoords;   
          
-      unsigned k=0; // nearest index
-      float closestD=d2(p[0].first,p[0].second,x,y);      
-      for (size_t i=0; i<p.size(); i++)
-        {
-          float d=d2(p[i].first,p[i].second,x,y);
-          if (d<=closestD)
-            {
-              closestD=d;
-              k=i;
-            }
-        }
+    unsigned k=0; // nearest index
+    float closestD=d2(p[0].first,p[0].second,x,y);      
+    for (size_t i=0; i<p.size(); i++)
+      {
+        float d=d2(p[i].first,p[i].second,x,y);
+        if (d<=closestD)
+          {
+            closestD=d;
+            k=i;
+          }
+      }
       
-      // Check for proximity to line segments about index k
-      if (k>0 && k<p.size()-1)  
-        return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));      
-    }
+    // Check for proximity to line segments about index k
+    if (k>0 && k<p.size()-1)  
+      return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));      
     return false;
   }
 
