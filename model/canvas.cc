@@ -271,7 +271,7 @@ namespace minsky
             wireFocus->editHandle(handleSelected,x,y);
             requestRedraw();
           }
-        else if (lassoMode==LassoMode::lasso || lassoMode==LassoMode::itemResize && item.get())
+        else if (lassoMode==LassoMode::lasso || (lassoMode==LassoMode::itemResize && item.get()))
           {
             lasso.x1=x;
             lasso.y1=y;
