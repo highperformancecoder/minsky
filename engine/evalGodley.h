@@ -140,7 +140,7 @@ namespace minsky
             for (std::size_t col=1; col<g.data()[row].size(); ++col)
               {
                 FlowCoef fvc(g.data()[row][col]);
-                auto svName=trimWS(g.data()[0][col]);
+                auto svName=col<g.data()[0].size()? trimWS(g.data()[0][col]): "";
                 if (fvc.name.empty() || svName.empty()) continue;
                 fvc.name=g.valueId(fvc.name);
                 svName=g.valueId(svName);

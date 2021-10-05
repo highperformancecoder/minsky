@@ -50,7 +50,7 @@ namespace minsky
     auto iVar=inVariables.begin();
     for (auto v: p)
       {
-        while ((*iVar)->inputWired() && iVar!=inVariables.end()) ++iVar;
+        while (iVar!=inVariables.end() && (*iVar)->inputWired()) ++iVar;
         if (iVar==inVariables.end()) break;
         flow[(*iVar)->vValue()->idx()]=v;
       }
@@ -66,6 +66,7 @@ namespace minsky
     MathDAG::SystemOfEquations system(minsky(), *this);
     ostringstream o;
     auto node=system.getNodeFromVar(*outVariables[0]);
+    if (!node) return "0";
     if (node->rhs)
       node->rhs->matlab(o);
     else
@@ -82,7 +83,8 @@ namespace minsky
       if (!i->inputWired())
         {
           if (r.str().size()>1) r<<",";
-          system.getNodeFromVar(*i)->matlab(r);
+          if (auto node=system.getNodeFromVar(*i))
+            node->matlab(r);
         }
     r<<")";
     return r.str();
@@ -110,8 +112,7 @@ namespace minsky
     // make new group owned by the top level group to prevent
     if (auto g=group.lock())
       return g->addGroup(copyUnowned());
-    else
-      return GroupPtr(); // do nothing if we attempt to clone the entire model
+    return GroupPtr(); // do nothing if we attempt to clone the entire model
   }
   
   GroupPtr Group::copyUnowned() const
@@ -399,7 +400,7 @@ namespace minsky
         assert(iv->ports(1).lock()->input() && !iv->ports(1).lock()->multiWireAllowed());
         // firstly join wires that don't cross boundaries
         // determine if this is input or output var
-        if (iv->ports(1).lock()->wires().size()>0)
+        if (!iv->ports(1).lock()->wires().empty())
           {
             auto fromGroup=iv->ports(1).lock()->wires()[0]->from()->item().group.lock();
             if (fromGroup.get() == this)
@@ -497,12 +498,11 @@ namespace minsky
     float w=0.5*iWidth()*z,h=0.5*iHeight()*z;
     if (w-right<dx)
       return IORegion::output;
-    else if (-w+left>dx)
+    if (-w+left>dx)
       return IORegion::input;
-    else if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
+    if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
       return IORegion::topBottom;  
-    else     
-      return IORegion::none;
+    return IORegion::none;
   }
 
   void Group::checkAddIORegion(const ItemPtr& x)
@@ -669,7 +669,7 @@ namespace minsky
       return WirePtr();
 
     // check that multiple input wires are only to binary ops.
-    if (toP->wires().size()>=1 && !toP->multiWireAllowed())
+    if (!toP->wires().empty() && !toP->multiWireAllowed())
       return WirePtr();
 
     // check that a wire doesn't already exist connecting these two ports
@@ -691,12 +691,9 @@ namespace minsky
 
   bool Group::higher(const Group& x) const
   {
-    for (auto i: groups)
+    for (auto& i: groups)
       if (i.get()==&x) return true;
-    for (auto i: groups)
-      if (i->higher(x))
-        return true;
-    return false;
+    return any_of(groups.begin(), groups.end(), [&](const GroupPtr& i){return i->higher(x);});
   }
 
   unsigned Group::level() const
@@ -1075,7 +1072,7 @@ namespace minsky
   void Group::drawIORegion(cairo_t* cairo) const
   {
     cairo::CairoSave cs(cairo);
-    float left, right, z=zoomFactor(), es=edgeScale();
+    float left, right, z=zoomFactor();
     margins(left,right);    
     float y=notchY(inVariables), dy=topMargin*edgeScale();
     cairo_set_source_rgba(cairo,0,1,1,0.5);

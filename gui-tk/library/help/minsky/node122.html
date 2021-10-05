@@ -1,265 +1,96 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
-<HTML lang="en">
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
 <HEAD>
-<TITLE>General Purpose Functions</TITLE>
-<META NAME="description" CONTENT="General Purpose Functions">
+<TITLE>User defined functions</TITLE>
+<META NAME="description" CONTENT="User defined functions">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node123.html">
-<LINK REL="previous" HREF="node121.html">
+<LINK REL="previous" HREF="node48.html">
+<LINK REL="up" HREF="minsky.html">
 <LINK REL="next" HREF="node123.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A
- HREF="node123.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node118.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node121.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<A NAME="tex2html1579"
+  HREF="node123.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1577"
+  HREF="minsky.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1573"
+  HREF="node121.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A
- HREF="node123.html">Trigonometry Functions</A>
-<B> Up:</B> <A
- HREF="node118.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A
- HREF="node121.html">Boolean Operations</A>
+<B> Next:</B> <A NAME="tex2html1580"
+  HREF="node123.html">Introduction</A>
+<B> Up:</B> <A NAME="tex2html1578"
+  HREF="minsky.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html1574"
+  HREF="node121.html">Ravel</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION00554000000000000000">
-General Purpose Functions</A>
-</H2>
-
-<P>
-<TABLE class="PAD  BORDER" style="">
-<TR><TD CLASS="CENTER">FUNCTION</TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>DEFINITION</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>abs</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Absolute value of x.  (eg: <code>abs(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>avg</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Average of all the inputs. (eg: <code>avg(x,y,z,w,u,v) == (x + y + z + w + u + v) / 6</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>ceil</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Smallest integer that is greater than or equal to x.</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>clamp</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Clamp x in range between r0 and r1, where r0 &lt; r1. (eg:
-<code>clamp(r0,x,r1)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>equal</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Equality test between x and y using normalised epsilon</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>erf</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Error function of x.  (eg: <code>erf(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>erfc</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Complimentary error function of x.  (eg: <code>erfc(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>exp</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 1.68ex; vertical-align: -0.12ex; " SRC="img230.png"
- ALT="$e^x$"></SPAN> (eg: <code>exp(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>expm1</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 2.03ex; vertical-align: -0.12ex; " SRC="img231.png"
- ALT="$e^{x-1}$"></SPAN> where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> is very small. (eg: <code>expm1(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>floor</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Largest integer that is less than or equal to x. (eg: <code>floor(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>frac</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Fractional portion of x.  (eg: <code>frac(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>hypot</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><!-- MATH
- $\sqrt{x^2+y^2}$
- -->
-<SPAN CLASS="MATH"><IMG
- STYLE="height: 2.87ex; vertical-align: -0.77ex; " SRC="img232.png"
- ALT="$\sqrt{x^2+y^2}$"></SPAN> (eg: <code>hypot(x,y) = sqrt(x*x + y*y)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>iclamp</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Inverse-clamp x outside of the range r0 and r1. Where
-r0 &lt; r1. If x is within the range it will snap to the closest
-bound. (eg: <code>iclamp(r0,x,r1)</code>
-<!-- MATH
- \begin{math}
-=\left\{\begin{array}{ccc}
-r0 & \mathrm{if} & x\le r0\\
-x & \mathrm{if} & r0\le x \le r1\\
-r1 & \mathrm{if} & x\ge r1\\
-\end{array}\right.
-\end{math}
- -->
-<SPAN CLASS="MATH"><IMG
- STYLE="height: 8.32ex; vertical-align: -3.72ex; " SRC="img233.png"
- ALT="$=\left\{\begin{array}{ccc}
-r0 &amp; \mathrm{if} &amp; x\le r0\\
-x &amp; \mathrm{if} &amp; r0\le x \le r1\\
-r1 &amp; \mathrm{if} &amp; x\ge r1\\
-\end{array}\right.$"></SPAN>
-)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>inrange</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>In-range returns 'true' when <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> is within the range <SPAN CLASS="MATH"><IMG
- STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img234.png"
- ALT="$[r_0,r_1]$"></SPAN>. Where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.68ex; vertical-align: -0.46ex; " SRC="img235.png"
- ALT="$r_0 &lt; r_1$"></SPAN>.  (eg: <code>inrange(r0,x,r1)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>log</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Natural logarithm <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.68ex; vertical-align: -0.12ex; " SRC="img236.png"
- ALT="$\ln x$"></SPAN>.  (eg: <code>log(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>log10</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 2.24ex; vertical-align: -0.68ex; " SRC="img237.png"
- ALT="$\log_{10}x$"></SPAN>.  (eg: <code>log10(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>log1p</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img238.png"
- ALT="$\ln (1+x)$"></SPAN>, where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> is very small. (eg: <code>log1p(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>log2</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 2.17ex; vertical-align: -0.68ex; " SRC="img239.png"
- ALT="$\log_2x$"></SPAN>.  (eg: <code>log2(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>logn</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 2.24ex; vertical-align: -0.68ex; " SRC="img240.png"
- ALT="$\log_nx$"></SPAN>, where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img241.png"
- ALT="$n$"></SPAN> is a positive integer. (eg: <code>logn(x,8)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>max</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Largest value of all the inputs. (eg: <code>max(x,y,z,w,u,v)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>min</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Smallest value of all the inputs. (eg: <code>min(x,y,z,w,u)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>mul</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Product of all the inputs. (eg: <code>mul(x,y,z,w,u,v,t) == (x * y * z * w * u * v * t)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>ncdf</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Normal cumulative distribution function.  (eg: <code>ncdf(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>nequal</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Not-equal test between <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
- ALT="$y$"></SPAN> using normalised epsilon</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>pow</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 1.68ex; vertical-align: -0.12ex; " SRC="img4.png"
- ALT="$x^y$"></SPAN>.  (eg: <code>pow(x,y) == x ^ y</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>root</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 2.38ex; vertical-align: -0.67ex; " SRC="img242.png"
- ALT="$\sqrt[n]{x}$"></SPAN>, where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img241.png"
- ALT="$n$"></SPAN> is a positive integer. (eg: <code>root(x,3) == x^(1/3)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>round</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Round <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> to the nearest integer.  (eg: <code>round(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>roundn</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Round <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> to <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img241.png"
- ALT="$n$"></SPAN> decimal places  (eg: <code>roundn(x,3)</code>)
- where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.68ex; vertical-align: -0.21ex; " SRC="img243.png"
- ALT="$n &gt; 0$"></SPAN> is an integer. (eg: <code>roundn(1.2345678,4) == 1.2346</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>sgn</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Sign of <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.54ex; vertical-align: -0.15ex; " SRC="img244.png"
- ALT="$-1$"></SPAN> where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.68ex; vertical-align: -0.21ex; " SRC="img245.png"
- ALT="$x &lt; 0$"></SPAN>, +1 where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.68ex; vertical-align: -0.21ex; " SRC="img246.png"
- ALT="$x &gt; 0$"></SPAN>, else zero.
- (eg: <code>sgn(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>sqrt</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400><SPAN CLASS="MATH"><IMG
- STYLE="height: 2.38ex; vertical-align: -0.67ex; " SRC="img247.png"
- ALT="$\sqrt{x}$"></SPAN>, where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.68ex; vertical-align: -0.21ex; " SRC="img248.png"
- ALT="$x &gt;= 0$"></SPAN>.  (eg: <code>sqrt(x)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>sum</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Sum of all the inputs. (eg: <code>sum(x,y,z,w,u,v,t) == (x + y + z + w + u + v + t)</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>swap</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>&nbsp;</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>&lt;=&gt;</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Swap the values of the variables x and y and return the current value of y.  (eg: <code>swap(x,y)</code> or <code>x &lt;=&gt; y</code>)</TD>
-</TR>
-<TR><TD CLASS="CENTER"><code>trunc</code></TD>
-<TD CLASS="LEFT TOP"  WIDTH=400>Integer portion of x.  (eg: <code>trunc(x)</code>)</TD>
-</TR>
-</TABLE>
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A
- HREF="node123.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node118.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node121.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<H1><A NAME="SECTION00500000000000000000"></A><A NAME="ExprTk"></A>
 <BR>
-<B> Next:</B> <A
- HREF="node123.html">Trigonometry Functions</A>
-<B> Up:</B> <A
- HREF="node118.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A
- HREF="node121.html">Boolean Operations</A></DIV>
-<!--End of Navigation Panel-->
+User defined functions
+</H1>
+
+<P>
+<EM>Much of this chapter is exerpted from <A NAME="tex2html24"
+  HREF="https://github.com/ArashPartow/exprtk/blob/master/readme.txt">exprtk's
+read.txt
+file</A></EM>
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html1581"
+  HREF="node123.html">Introduction</A>
+<LI><A NAME="tex2html1582"
+  HREF="node124.html">Capabilities</A>
+<LI><A NAME="tex2html1583"
+  HREF="node125.html">Example expressions</A>
+<LI><A NAME="tex2html1584"
+  HREF="node126.html">Copyright notice</A>
+<LI><A NAME="tex2html1585"
+  HREF="node127.html">Built-in operations &amp; functions</A>
+<UL>
+<LI><A NAME="tex2html1586"
+  HREF="node128.html">Arithmetic &amp; Assignment Operators</A>
+<LI><A NAME="tex2html1587"
+  HREF="node129.html">Equalities &amp; Inequalities</A>
+<LI><A NAME="tex2html1588"
+  HREF="node130.html">Boolean Operations</A>
+<LI><A NAME="tex2html1589"
+  HREF="node131.html">General Purpose Functions</A>
+<LI><A NAME="tex2html1590"
+  HREF="node132.html">Trigonometry Functions</A>
+<LI><A NAME="tex2html1591"
+  HREF="node133.html">String Processing</A>
+<LI><A NAME="tex2html1592"
+  HREF="node134.html">Control Structures</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html1593"
+  HREF="node135.html">Fundamental types</A>
+</UL>
+<!--End of Table of Child-Links-->
+<BR><HR>
 
 </BODY>
 </HTML>

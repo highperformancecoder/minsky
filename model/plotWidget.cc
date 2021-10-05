@@ -87,7 +87,7 @@ namespace minsky
         cairo_stroke(cairo);
       }
 
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_translate(cairo,-0.5*w,-0.5*h);
 
     double yoffs=0; // offset to allow for title
@@ -164,7 +164,7 @@ namespace minsky
       }
 
     Plot::draw(cairo,gw,gh); 
-    cairo_restore(cairo);
+    cs.restore();
     if (mouseFocus)
       {
         drawPorts(cairo);
@@ -332,7 +332,7 @@ namespace minsky
       {
         if (yy>0 && yy<0.8*legendHeight)
           return ClickType::legendMove;
-        else if (yy>=0.8*legendHeight && yy<legendHeight)
+        if (yy>=0.8*legendHeight && yy<legendHeight+6*z) // allow a bit of extra height for resize arrow
           return ClickType::legendResize;
       }
 
@@ -414,9 +414,9 @@ namespace minsky
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
     for (auto& i: yvars)
-      if (i && xvars[&i-&yvars[0]] && i->hypercube().xvectors.size())
+      if (i && xvars[&i-&yvars[0]] && !i->hypercube().xvectors.empty())
         {
-          auto& xv=i->hypercube().xvectors[0];
+          const auto& xv=i->hypercube().xvectors[0];
           if (xv.dimension.type==Dimension::time)
             xIsSecsSinceEpoch=true;
         }
@@ -447,7 +447,7 @@ namespace minsky
               newXticks.emplace_back();
               if (yv->hypercube().rank()) // yv carries its own x-vector
                 {
-                  auto& xv=yv->hypercube().xvectors[0];
+                  const auto& xv=yv->hypercube().xvectors[0];
                   assert(xv.size()==d[0]);
                   switch (xv.dimension.type)
                     {
@@ -463,10 +463,10 @@ namespace minsky
                     case Dimension::value:
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
                         // interpret "year" as years since epoch (1/1/1970)
-                        for (auto& i: xv)
+                        for (const auto& i: xv)
                           xdefault.push_back(yearToPTime(any_cast<double>(i)));
                       else
-                        for (auto& i: xv)
+                        for (const auto& i: xv)
                           xdefault.push_back(any_cast<double>(i));
                       if (plotType==automatic)
                         Plot::plotType=Plot::line;
@@ -474,7 +474,7 @@ namespace minsky
                     case Dimension::time:
                       {
                         string format=xv.timeFormat();
-                        for (auto& i: xv)
+                        for (const auto& i: xv)
                           {
                             double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
                             newXticks.back().emplace_back(tv,str(i,format));
@@ -494,7 +494,7 @@ namespace minsky
           
           // higher rank y objects treated as multiple y vectors to plot
           auto startPen=extraPen;
-          auto& idx=yv->index();
+          const auto& idx=yv->index();
           if (idx.empty())
             for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
               {

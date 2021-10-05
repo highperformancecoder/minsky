@@ -45,10 +45,9 @@ namespace minsky
     double x=m_ports[1]->value();
     if (x<1)
       return 0;
-    else if (x>=numCases()-1)
+    if (x>=numCases()-1)
       return numCases()-1;
-    else
-      return unsigned(x);
+    return unsigned(x);
   }
 
   Units SwitchIcon::units(bool check) const 

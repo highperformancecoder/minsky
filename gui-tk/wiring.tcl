@@ -56,6 +56,7 @@ button .wiring.menubar.ravel -image ravelImg \
     -height 24 -width 37 -command {addRavel}
 tooltip .wiring.menubar.ravel "Ravel"
 pack .wiring.menubar.ravel -side left -padx {0 10}
+set helpTopics(.wiring.menubar.ravel) "Ravel"
 
 image create photo plotImg -file $minskyHome/icons/plot.gif
 button .wiring.menubar.plot -image plotImg \
@@ -87,6 +88,7 @@ button .wiring.menubar.lock -image lockImg \
     -height 24 -width 37 -command {addLock}
 tooltip .wiring.menubar.lock "Lock Ravel"
 pack .wiring.menubar.lock -side left
+set helpTopics(.wiring.menubar.lock) "Lock"
 
 image create photo noteImg -file $minskyHome/icons/note.gif
 button .wiring.menubar.note -image noteImg \
@@ -98,7 +100,7 @@ set helpTopics(.wiring.menubar.note) "Item"
 button .wiring.menubar.time -image timeImg -width 37 -height 24 -command {
     addOperation time}
 tooltip .wiring.menubar.time Time
-set helpTopics(.wiring.menubar.integrate) Operation:time
+set helpTopics(.wiring.menubar.time) Operation:time
 
 button .wiring.menubar.constops -image eulerImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.constops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}

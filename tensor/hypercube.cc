@@ -67,62 +67,18 @@ namespace civita
     return r;
   }
   
-  void Hypercube::makeConformant(const Hypercube& a)
+  /// split lineal index into components along each dimension
+  vector<size_t> Hypercube::splitIndex(size_t i) const
   {
-    for (auto& i: a.xvectors)
+    std::vector<size_t> splitIndex;
+    splitIndex.reserve(xvectors.size());
+    for (auto& xv: xvectors)
       {
-        size_t j=0;
-        for (j=0; j<xvectors.size(); ++j)
-          if (xvectors[j].name==i.name)
-            {
-              if (xvectors[j].dimension.type!=i.dimension.type)
-                throw ecolab::error("dimension %s has inconsistent type",i.name.c_str());
-              // only match labels for string dimensions. Other types are interpolated.
-              XVector newLabels;
-              switch (i.dimension.type)
-                {
-                case Dimension::string:
-                  {
-                    set<string> alabels;
-                    for (auto& k: i)
-                      alabels.insert(str(k));
-                    for (auto k: xvectors[j])
-                      if (alabels.count(str(k)))
-                        newLabels.push_back(k);
-                    break;
-                  }
-                default:
-                  {
-                    // set overlapping value ranges
-                    set<boost::any, AnyLess> vals(i.begin(), i.end());
-                    for (auto k: xvectors[j])
-                      if (diff(k, *vals.begin())>=0 && diff(k, *vals.rbegin())<=0)
-                        newLabels.push_back(k);
-                    break;
-                  }
-                }
-              xvectors[j].swap(newLabels);
-              break;
-            }
-        if (j==xvectors.size()) // axis not present on LHS, so increase rank
-          xvectors.push_back(i);
+        auto res=div(ssize_t(i),ssize_t(xv.size()));
+        splitIndex.push_back(res.rem);
+        i=res.quot;
       }
-    if (rank()==0 && a.rank()>0)
-      throw ecolab::error("tensors nonconformant");
+    return splitIndex;
   }
-
-    /// split lineal index into components along each dimension
-    vector<size_t> Hypercube::splitIndex(size_t i) const
-    {
-      std::vector<size_t> splitIndex;
-      splitIndex.reserve(xvectors.size());
-      for (auto& xv: xvectors)
-        {
-          auto res=div(ssize_t(i),ssize_t(xv.size()));
-          splitIndex.push_back(res.rem);
-          i=res.quot;
-        }
-      return splitIndex;
-    }
 }
 

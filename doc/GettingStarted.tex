@@ -258,6 +258,15 @@ for demonstration/presentation purposes.
     mode.
 \end{enumerate}
 
+\subsection{Recalculate button}
+\label {Recalculate}
+
+\htmladdimg{recalculate.png}
+
+The recalculate button computes the values of all variables at the
+start of simulation. It is particularly useful for recalculating the
+state of the model with tensor valued data.
+
 \subsection{Run Buttons}
 \label{RunButtons}
 
@@ -269,6 +278,9 @@ The Run buttons respectively:
 allowing you to pause the simulation \htmladdimg{NewItem23.png}.
 \item Stop a simulation and reset the simulation time to zero
 \item Step through the simulation one iteration at a time.
+\item Reverse checkbox changes the simulation time direction. Bear in
+  mind that a simulation will eventually diverge from its original
+  trajectory due to chaotic effects.
 \end{enumerate}
 
 %\subsection{Manipulating items on the canvas}
@@ -380,7 +392,11 @@ in a simulation.
 The Zoom buttons zoom in and out on the wiring canvas. The same functionality
 is accessed via the mouse scroll wheel. The reset zoom button
 \buttonIcon{zoomOrig.eps} resets the zoom level to 1, and also
-recentres the canvas. It can also be used to recentre the equation view.
+recentres the canvas. It can also be used to recentre the equation
+view.
+
+The zoom to fit button zooms the model so that it just fits in the
+current canvas window.
 
 \subsection{Simulation time}
 \label{SimTime}
@@ -406,30 +422,22 @@ number of icons will grow over time, but the key ones are implemented
 now: 
 
 \begin{description}
-\item[Godley Table] \buttonIcon{NewItem29.eps}. \label{GodleyTable} This is the
-fundamental element of Minsky that is not found (yet) in any other
-system dynamics program. 
+\item[Import data] Opens an import CSV file dialog, allowing the
+  creation of a parameter from a CSV data file. See
+  \htmlref{Importing CSV files}{Operation:csvImport}.
 
-Clicking on it and placing the resulting Bank Icon on the Canvas
-enters a Godley table into your model:
+\item[Ravel] See \htmlref{Ravel}{Ravel}.
+  
+\item[Plot widget] \buttonIcon{plot.eps} Add \htmlref{plots}{PlotWidget} to the canvas.
 
-\begin{center}
-\includegraphics{images/NewItem29.eps}
-\end{center}
+\item[Sheet widget] \buttonIcon{sheet.eps} Add a \htmlref{sheet}{Sheet} to the canvas.
 
-Double-click on the Bank Icon (or right-click and choose ``Open Godley
-Table'' from the context menu) and you get a double-entry bookkeeping
-table we call a Godley Table, which looks like the following onscreen:
+\item[Variable]  \buttonIcon{var.eps}. \label{Variable}
 
-%\fwhtmladdimg{NewItem30.png}
-\begin{center}
-  \scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}
-\end{center}
+This is a pull down menu, giving access to creating variables,
+constants and parameters.
 
- 
-Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the \htmlref{Tutorial (Monetary)}{tut:basicBankModel}.
-
-\item[Variable]  \buttonIcon{var.eps}. \label{Variable} This creates an entity
+  Variables are entities
 whose value changes as a function of time and its relationship with
 other entities in your model. Click on it and a variable definition
 window will appear:
@@ -450,7 +458,7 @@ cursor to where you want to place the variable on the Canvas, click,
 and it will be placed in that location.
 
 
-\item[Constant] \buttonIcon{const.eps} \label{Constant} creates an entity whose
+Constants are entities whose
 value is unaffected by the simulation or other entities in the
 model. Click on it and a constant definition window will appear:
 
@@ -469,11 +477,13 @@ variables. In fact there is no real conceptual difference between
 creating a constant or creating a variable, as you can switch the type
 using the type field.
 
-\item[Parameter] \buttonIcon{param.eps} \label{Parameter} Like the
-  variable and constant button, this creates a variable defaulting to
-  the parameter type. Parameters differ from flow variables in not
-  having an input port, and differ from constants in having a name and
-  being controllable by a slider during simulation.
+Like the variable and constant button, the parameter button creates a
+variable defaulting to the parameter type. Parameters differ from flow
+variables in not having an input port, and differ from constants in
+having a name and being controllable by a slider during simulation.
+
+\item[Lock] Lock widgets are used with \htmlref{Ravels}{Ravel}.
+\item[Notes] Add \htmlref{textual annotations}{Notes}
 
 \item[Time] \buttonIcon{time.eps} embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
@@ -496,7 +506,67 @@ to show a ten year range of the model only:
 \resizebox{\textwidth}{!}{\includegraphics{images/NewItem37.eps}}
 \end{center}
 
+\item[Unary functions]\buttonIcon{sqrt.eps} These are a fairly standard
+complement of mathematical functions.
 
+\item[Binary operations]
+    \buttonIcon{add.eps}. These execute the stated binary
+    mathematical operations. Each input can take multiple wires as
+    well---so that to add five numbers together, for example you can wire 1 input
+    to one port on the Add block, and the other four to the other
+    port. 
+
+Min \& Max Functions These take the minimum and maximum values, respectively.
+These also allow multiple wires per input.
+
+Pow and log. These are binary operations (taking two
+arguments). In the case of the power operation, the exponent is the
+top port, and the argument to be raised to that exponent is the bottom
+port. This is indicated by the $x$ and $y$ labels on the ports. In the
+case of logarithm, the bottom port (labelled $b$) is the base of the
+logarithm.
+
+Logical Operators $<$ $\le$, =, $\wedge$ $\vee$ $\neg$ (and,
+  or, not)] These return 0 for false and 1 for true.
+
+\item[Reduction operations]\buttonIcon{sum.eps} This menu contains
+  operations that reduce a vector to a scalar, or reduce the rank of a
+  tensor. Typically sum, product, any, all etc.
+
+\item[Scans]\buttonIcon{runningSum.eps} These are running sums and the
+  difference operator
+
+\item[Miscellaneous tensor operations]\buttonIcon{outerProduct.eps}
+  Any other tensor function not covered elsewhere.
+
+\item[Switch] \buttonIcon{switchIcon.eps} Add \htmlref{a piecewise-defined function block}{SwitchIcon} 
+to the canvas. Also known as a hybrid function.
+
+\item[User defined function]\buttonIcon{userFunction.eps} You can
+  define \htmlref{your own function}{Operation:userFunction} using an algebraic expression, such as \verb+exp(-x^2+y)+.
+
+\item[Godley Table] \buttonIcon{NewItem29.eps}. \label{GodleyTable} This is the
+fundamental element of Minsky that is not found (yet) in any other
+system dynamics program. 
+
+Clicking on it and placing the resulting Bank Icon on the Canvas
+enters a Godley table into your model:
+
+\begin{center}
+\includegraphics{images/NewItem29.eps}
+\end{center}
+
+Double-click on the Bank Icon (or right-click and choose ``Open Godley
+Table'' from the context menu) and you get a double-entry bookkeeping
+table we call a Godley Table, which looks like the following onscreen:
+
+%\fwhtmladdimg{NewItem30.png}
+\begin{center}
+  \scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}
+\end{center}
+
+ 
+Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the \htmlref{Tutorial (Monetary)}{tut:basicBankModel}.
 
 \item[Integration] \buttonIcon{int.eps}.\label{Integrate}
   This inserts a variable whose value depends on the integral of other
@@ -583,54 +653,43 @@ rate of change and a differential equation.
 provided the input is differentiable. An error is generated if the input
 is not differentiable.
 
-\item[Plus, Minus, Multiply and Divide blocks]
-    \buttonIcon{add.eps}\buttonIcon{subtract.eps}\buttonIcon{multiply.eps}\buttonIcon{divide.eps}. These execute the stated binary
-    mathematical operations. Each input can take multiple wires as
-    well---so that to add five numbers together, for example you can wire 1 input
-    to one port on the Add block, and the other four to the other
-    port. 
-
-\item[Min \& Max Functions] These take the minimum and maximum values, respectively.
-These also allow multiple wires per input.
-
-\item[Power and Logarithm] \buttonIcon{pow.eps} and
-\buttonIcon{log.eps} These are binary operations (taking two
-arguments). In the case of the power operation, the exponent is the
-top port, and the argument to be raised to that exponent is the bottom
-port. This is indicated by the $x$ and $y$ labels on the ports. In the
-case of logarithm, the bottom port (labelled $b$) is the base of the
-logarithm.
-
-\item[Logical Operators $<$ $\le$, =, $\wedge$ $\vee$ $\neg$ (and,
-  or, not)] \buttonIcon{lt.eps}, \buttonIcon{le.eps},
-  \buttonIcon{eq.eps}, \buttonIcon{and_.eps}, \buttonIcon{or_.eps} and
-  \buttonIcon{not_.eps}. These return 0 for false and 1 for true.
-
-\item[Other functions] These are a fairly standard
-complement of mathematical functions.
-
-\item[Data block] \buttonIcon{data.eps} \htmlref{A data
-block}{Operation:data} interpolates a sequence of empirical values, which may
-be generated outside of Minsky, and imported as a CSV file. This
-effectively defines a piecewise linear function.
-
-\item[Plot widget] \buttonIcon{plot.eps} Add \htmlref{plots}{PlotWidget} to the canvas.
-
-\item[Switch] \buttonIcon{switchIcon.eps} Add \htmlref{a piecewise-defined function block}{SwitchIcon} 
-to the canvas. Also known as a hybrid function.
-
-\item[Notes] Add \htmlref{textual annotations}{Notes}
-
 \end{description}
 
 \subsection{Design Canvas}
-\label{DesignCanvas}
+\label{DesignCanvas}\label{tabs:Wiring}
 
 The Design Canvas is where you develop your model. A model consists of
 a number of blocks---variables, constants and mathematical
 operators---connected by wires. 
 
 \fwhtmladdimg{NewItem19.png}
+
+\subsection{Equations tab}\label{tabs:Equations}
+
+This displays the mathematical representation of the model
+
+\subsection{Parameters tab}\label{tabs:Parameters}
+
+This displays the properties of all parameters defined in the model,
+in one place.
+
+\subsection{Variables tab}\label{tabs:Variables}
+
+This displays the properties of selected variables in the model. The
+variables can be displayed on the tab by selecting ``Display variable
+on tab'' in it's context menu. It may be hidden on the design canvas
+if it is not required for the definition of something else. This can
+be a place to keep less important variables ``out of sight''.
+
+\subsection{Plots tab}\label{tabs:Plots}
+
+Shows all plots in one place
+
+\subsection{Godleys tab}\label{tabs:Godleys}
+
+Shows all Godley tables in one place.
+
+
 
 \subsection{The Panopticon}\label{Panopticon}
 

@@ -233,7 +233,11 @@ namespace minsky
     virtual bool visible() const;
     
     /// whether this item is attached to a defining variable that is hidden
-    virtual bool attachedToDefiningVar() const;    
+    virtual bool attachedToDefiningVar(std::set<const Item*>& visited) const;
+    bool attachedToDefiningVar() const {
+      std::set<const Item*> visited;
+      return attachedToDefiningVar(visited);
+    }
 
     void moveTo(float x, float y);
 
@@ -262,7 +266,7 @@ namespace minsky
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
-    void drawSelected(cairo_t* cairo) const;
+    static void drawSelected(cairo_t* cairo);
     virtual void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.

@@ -1,66 +1,53 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
-<HTML lang="en">
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
 <HEAD>
-<TITLE>gather</TITLE>
-<META NAME="description" CONTENT="gather">
+<TITLE>any</TITLE>
+<META NAME="description" CONTENT="any">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node92.html">
 <LINK REL="previous" HREF="node90.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node92.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A
- HREF="node92.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node78.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node90.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<A NAME="tex2html1271"
+  HREF="node92.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1269"
+  HREF="node86.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1263"
+  HREF="node90.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A
- HREF="node92.html">inner product</A>
-<B> Up:</B> <A
- HREF="node78.html">Tensor operations</A>
-<B> Previous:</B> <A
- HREF="node90.html">index</A>
+<B> Next:</B> <A NAME="tex2html1272"
+  HREF="node92.html">all</A>
+<B> Up:</B> <A NAME="tex2html1270"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1264"
+  HREF="node90.html">supremum</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION004213000000000000000"></A><A ID="Operation:gather"></A>
+<H2><A NAME="SECTION00425000000000000000"></A><A NAME="Operation:any"></A>
 <BR>
-gather
-</H2>
-
-<P>
-Gather collects the values at index locations indexed by the second
-argument. The output tensor has the same shape as the second (index)
-argument.
-
-<P>
-If the index is not an integer, the gather will linearly interpolate between
-the values on either side. So <!-- MATH
- $x[2.5] = 0.5 (x[2]+x[3])$
- -->
-<SPAN CLASS="MATH"><IMG
- STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img194.png"
- ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>.
+any
+</H2> Return 1 if any value
+along a given axis is nonzero, otherwise return 0 if all are zero. 
 
 <P>
 <BR><HR>

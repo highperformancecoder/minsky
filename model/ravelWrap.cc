@@ -177,7 +177,7 @@ namespace
               xv.back().dimension=dim->second;
           }
         // else otherwise dimension is a string (default type)
-        for (auto i: labels)
+        for (auto& i: labels)
           xv.back().push_back(i);
       }
     return hc;
@@ -261,8 +261,7 @@ namespace
         auto state=getHandleState(h);
         return state.displayFilterCaliper;
       }
-    else
-      return false;
+    return false;
   }
     
   bool Ravel::setDisplayFilterCaliper(bool x)
@@ -335,8 +334,7 @@ namespace
         auto state=getHandleState(h);
         return state.order;
       }
-    else
-      return ravel::HandleSort::none;
+    return ravel::HandleSort::none;
   }
  
   ravel::HandleSort::Order Ravel::setSortOrder(ravel::HandleSort::Order x)
@@ -407,14 +405,12 @@ namespace
     auto i=axisDimensions.find(descr);
     if (i!=axisDimensions.end())
       return i->second.type;
-    else
-      {
-        auto i=cminsky().dimensions.find(descr);
-        if (i!=cminsky().dimensions.end())
-          return i->second.type;
-        else
-          return Dimension::string;
-      }
+    {
+      auto i=cminsky().dimensions.find(descr);
+      if (i!=cminsky().dimensions.end())
+        return i->second.type;
+    }
+    return Dimension::string;
   }
   
   std::string Ravel::dimensionUnitsFormat() const

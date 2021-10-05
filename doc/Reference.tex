@@ -1,7 +1,15 @@
 \chapter{Reference}
 
-\section{Operations}\label{operations}
+\section{Operations}\label{Operations}
 
+\subsection{Special
+  constants}\label{Operation:euler}\label{Operation:pi}\label{Operation:zero}\label{Operation:one}
+\label{Operation:inf}
+
+Some special constants ($e=2.72\ldots$, $\pi=3.14\ldots$, 0, 1,
+$\infty$).
+
+\subsection{Percent} \label{Operation:percent} Multiplies input by 100.
 
 \subsection{add +}\label{Operation:add} Add multiple numbers together. The input
   ports allow multiple wires, which are all summed. If an input port
@@ -109,7 +117,7 @@ For further explanation regarding differentiation, see \href{https://en.wikipedi
 %\right.
 %\end{displaymath}
 
-\subsection{User defined function}\label{Operation:userFunction}
+\subsection{User defined function}\label{Operation:userFunction}\label{UserFunction}
 
 A user defined function is a functioned defined by an algebraic
 expression. Support for this feature is courtesy of the wonderful
@@ -210,10 +218,10 @@ along a given axis is nonzero, otherwise return 0 if all are zero.
 \subsection{all}\label{Operation:all} Return 1 if all values
 along a given axis are nonzero, otherwise return 0 if any are zero. 
 
-\subsection{infindex}\label{Operation:infindex} Return the index of
+\subsection{infindex}\label{Operation:infIndex} Return the index of
 the least value along a given axis.
 
-\subsection{supindex}\label{Operation:supindex} Return the index of
+\subsection{supindex}\label{Operation:supIndex} Return the index of
 the greatest value along a given axis.
 
 \subsection{running sum $\sum+$}\label{Operation:runningSum} Computes
@@ -315,8 +323,6 @@ y_{j_1,\ldots,j_{r_y-1},k},
 \end{displaymath}
 where $a$ is the given axis, and $r_x$ and $r_y$ are the ranks of $x$ and $y$ respectively.
 
-Not currently implemented.
-
 \subsection{outer product $\otimes$}\label{Operation:outerProduct}
 Computes 
 \begin{displaymath}
@@ -324,8 +330,6 @@ z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
 x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
 \end{displaymath}
 where $r_x$ and $r_y$ are the ranks of $x$ and $y$ respectively.
-
-Not currently implemented.
 
 \section{Switch}\label{SwitchIcon}
 
@@ -452,8 +456,8 @@ Slider parameters are specified in the edit menu: max, min and step
 size. A relative slider means that the step size is expressed as a
 fraction of max-min.
 
-\subsection{Importing a parameter from a CSV file}\label{CSV
-  import}\index{CSV|import}
+\subsection{Importing a parameter from a CSV file}\label{CSV import}
+\index{CSV|import}\label{Operation:csvImport}
 
 After creating a parameter from the ``Variable'' drop-down in the
 ``Insert'' menu, right-clicking the parameter and selecting the option
@@ -786,7 +790,7 @@ outside of the plot are a number of input ports that can be wired.
 \end{description}
 
 \section{Sheet Widget}
- \label{Sheets} The Sheet widget displays input data as a
+ \label{Sheet} The Sheet widget displays input data as a
  number, rather than as a 2D graph, as in the case of the plot widget.
  To use the Sheet widget, simply wire a variable or other item on your
  canvas to the left-hand side of the sheet widget box. This will diplay
@@ -1008,7 +1012,7 @@ Or spelling it out in full:
 
 Note that metre and m are distinctly different units in Minsky.
 
-Consider the network introduced in the \hyperref[intro:new]{New to System Dynamics}
+Consider the network introduced in the \hyperref[ref]{New to System Dynamics}{New to System Dynamics}{}{intro:new}
 section of the Minsky manual. For GDP, one could enter \$/year for the units. Labor 
 Productivity should be expressed in terms of \$ per person year. If the system
 does not accept \$/person year, you can enter this as \verb+$ person^-1 year^-1+. 
@@ -1032,3 +1036,14 @@ bookmarks can be seen in the Bookmarks menu. To delete a bookmark,
 simply select ``Delete'' from the Bookmarks menu and select the
 desired bookmark. To open an existing bookmark, select one from the
 menu.
+
+\section{Ravel}\label{Ravel}\label{Lock}
+
+Ravel is a skunkworks project enabling the interactive manipulation of
+multidimensional datacubes. This is a commercial technology, and you
+will need a license to use the software, as well as a copy of the
+Ravel plugin. This is still under active development, but you can read
+some more about it at \htmladdnormallink{Ravelation}{https://ravelation.hpcoders.com.au}.
+
+The Lock widget is used to fix the output of a Ravel at a particular
+point in time, making it easy to compare two different ravel settings.

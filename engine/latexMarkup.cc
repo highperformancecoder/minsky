@@ -730,7 +730,7 @@ namespace
           push_back(x); // preserve bare braced pairs
           return;
         }
-      else if (*input=='{')
+      if (*input=='{')
         if (x=="rm") // fake an rm tag by deitalicising
           {
             *this+="<span style=\"normal\">";
@@ -773,17 +773,14 @@ namespace
 
     void process1arg(const string& tag, const char*& input)
     {
-      if (*input=='{')
+      if (*input=='{' || !tag.empty())
         push(tag, input);
-      else if (!tag.empty())
-        push(tag, input);
-      //        *this+="<"+tag+">"+*input+++"</"+tag+">";
       else
         *this+=*input++;
     }
 
     // extract the contents of an optional argument (contained with [])
-    string parseOpt(const char*& input)
+    static string parseOpt(const char*& input)
     {
       string r;
       if (*input=='[') ++input;

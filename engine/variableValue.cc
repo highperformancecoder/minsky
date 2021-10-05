@@ -57,7 +57,7 @@ namespace minsky
     return *(&valRef()+i);
   }
 
-  const VariableValue& VariableValue::operator=(minsky::TensorVal const& x)
+  VariableValue& VariableValue::operator=(minsky::TensorVal const& x)
   {
     index(x.index());
     hypercube(x.hypercube());
@@ -66,7 +66,7 @@ namespace minsky
     return *this;
   }
 
-  const VariableValue& VariableValue::operator=(const ITensor& x)
+  VariableValue& VariableValue::operator=(const ITensor& x)
   {
     index(x.index());
     hypercube(x.hypercube());
@@ -157,77 +157,73 @@ namespace minsky
     FlowCoef fc(init);
     if (trimWS(fc.name).empty())
       return fc.coef;
-    else
-      {
-        // special generator functions handled here
-        auto p=fc.name.find('(');
-        if (p!=string::npos)
-          {
-            string fn=fc.name.substr(0,p);
-            // unpack args
-            const char* x=fc.name.c_str()+p+1;
-            char* e;
-            vector<unsigned> dims;
-            for (;;)
-              {
-                auto tmp=strtol(x,&e,10);
-                if (tmp>0 && e>x && *e)
-                  {
-                    x=e+1;
-                    dims.push_back(tmp);
-                  }
-                else
-                  break;
-              }
-            TensorVal r(dims);
-            r.allocVal();
 
-            if (fn=="iota")
-              for (size_t i=0; i<r.size(); ++i)
-                r[i]=i;
-            else if (fn=="one")
-              for (size_t i=0; i<r.size(); ++i)
-                r[i]=1;
-            else if (fn=="zero" || fn=="eye")
-              {
-                for (size_t i=0; i<r.size(); ++i)
-                  r[i]=0;
-                if (fn=="eye")
-                  {
-                    // diagonal elements set to 1
-                    // find minimum dimension, and stride of diagonal elements
-                    size_t mind=r.size(), stride=1;
-                    for (auto i: dims)
-                      mind=min(mind, size_t(i));
-                    for (size_t i=0; i<dims.size()-1; ++i)
-                      stride*=(dims[i]+1);
-                    for (size_t i=0; i<mind; ++i)
-                      r[stride*i]=1;
-                  }
-              }
-            else if (fn=="rand")
-              {
-                for (size_t i=0; i<r.size(); ++i)
-                  r[i]=double(rand())/RAND_MAX;
-              }
-            return r;
-          }
-        
-        // resolve name
-        auto valueId=VariableValue::valueId(m_scope.lock(), fc.name);
-        if (visited.count(valueId))
-          throw error("circular definition of initial value for %s",
-                      fc.name.c_str());
-        VariableValues::const_iterator vv=v.end();
-        vv=v.find(valueId);
-        if (vv==v.end())
-          throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), name.c_str());
-        else
+    // special generator functions handled here
+    auto p=fc.name.find('(');
+    if (p!=string::npos)
+      {
+        string fn=fc.name.substr(0,p);
+        // unpack args
+        const char* x=fc.name.c_str()+p+1;
+        char* e;
+        vector<unsigned> dims;
+        for (;;)
           {
-            visited.insert(valueId);
-            return fc.coef*vv->second->initValue(v, visited);
+            auto tmp=strtol(x,&e,10);
+            if (tmp>0 && e>x && *e)
+              {
+                x=e+1;
+                dims.push_back(tmp);
+              }
+            else
+              break;
           }
+        TensorVal r(dims);
+        r.allocVal();
+
+        if (fn=="iota")
+          for (size_t i=0; i<r.size(); ++i)
+            r[i]=i;
+        else if (fn=="one")
+          for (size_t i=0; i<r.size(); ++i)
+            r[i]=1;
+        else if (fn=="zero" || fn=="eye")
+          {
+            for (size_t i=0; i<r.size(); ++i)
+              r[i]=0;
+            if (fn=="eye")
+              {
+                // diagonal elements set to 1
+                // find minimum dimension, and stride of diagonal elements
+                size_t mind=r.size(), stride=1;
+                for (auto i: dims)
+                  mind=min(mind, size_t(i));
+                for (size_t i=0; i<dims.size()-1; ++i)
+                  stride*=(dims[i]+1);
+                for (size_t i=0; i<mind; ++i)
+                  r[stride*i]=1;
+              }
+          }
+        else if (fn=="rand")
+          {
+            for (size_t i=0; i<r.size(); ++i)
+              r[i]=double(rand())/RAND_MAX;
+          }
+        return r;
       }
+        
+    // resolve name
+    auto valueId=VariableValue::valueId(m_scope.lock(), fc.name);
+    if (visited.count(valueId))
+      throw error("circular definition of initial value for %s",
+                  fc.name.c_str());
+    VariableValues::const_iterator vv=v.end();
+    vv=v.find(valueId);
+    if (vv==v.end())
+      throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), name.c_str());
+
+    visited.insert(valueId);
+    return fc.coef*vv->second->initValue(v, visited);
   }
 
   void VariableValue::reset(const VariableValues& v)
@@ -283,7 +279,7 @@ namespace minsky
         // find maximum enclosing scope that has this same-named variable
         for (auto g=scope->group.lock(); g; g=g->group.lock())
           for (auto& i: g->items)
-            if (auto v=i->variableCast())
+            if (auto* v=i->variableCast())
               {
                 auto n=stripActive(v->name());
                 if (n==name.substr(1)) // without ':' qualifier
@@ -303,8 +299,7 @@ namespace minsky
   {
     if (name.empty() || !scope || !scope->group.lock())
       return VariableValue::valueId(-1,utf_to_utf<char>(name)); // retain previous global var id
-    else
-      return VariableValue::valueId(size_t(scope.get()), utf_to_utf<char>(name));
+    return VariableValue::valueId(size_t(scope.get()), utf_to_utf<char>(name));
 }
   
   std::string VariableValue::uqName(const std::string& name)
@@ -312,7 +307,6 @@ namespace minsky
     string::size_type p=name.rfind(':');
     if (p==string::npos)
       return utf_to_utf<char>(name);
-    else
     return utf_to_utf<char>(name).substr(p+1);
   }
  
@@ -340,10 +334,11 @@ namespace minsky
 
   bool VariableValues::validEntries() const
   {
-    for (auto& v: *this)
-      if (!v.second->isValueId(v.first))
-        return false;
-    return true;
+    return all_of(begin(), end(), [](const value_type& v){return v.second->isValueId(v.first);});
+//    for (auto& v: *this)
+//      if (!v.second->isValueId(v.first))
+//        return false;
+//    return true;
   }
 
 
@@ -387,15 +382,15 @@ namespace minsky
     if (!comment.empty())
       of<<R"(""")"<<comment<<R"(""")"<<endl;
                
-    auto& xv=hypercube().xvectors;
+    const auto& xv=hypercube().xvectors;
     ostringstream os;
-    for (auto& i: xv)
+    for (const auto& i: xv)
       {
         if (&i>&xv[0]) os<<",";
         os<<json(static_cast<const NamedDimension&>(i));
       }
     of<<quoted("RavelHypercube=["+os.str()+"]")<<endl;
-    for (auto& i: hypercube().xvectors)
+    for (const auto& i: hypercube().xvectors)
       of<<"\""<<i.name<<"\",";
     of<<"value$\n";
 

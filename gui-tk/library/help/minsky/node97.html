@@ -1,63 +1,58 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
-<HTML lang="en">
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
 <HEAD>
-<TITLE>Initial conditions</TITLE>
-<META NAME="description" CONTENT="Initial conditions">
+<TITLE>difference </TITLE>
+<META NAME="description" CONTENT="difference ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node98.html">
 <LINK REL="previous" HREF="node96.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node98.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A
- HREF="node98.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node95.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node96.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<A NAME="tex2html1331"
+  HREF="node98.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1329"
+  HREF="node86.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1323"
+  HREF="node96.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A
- HREF="node98.html">Tensor valued initial conditions</A>
-<B> Up:</B> <A
- HREF="node95.html">Variables</A>
-<B> Previous:</B> <A
- HREF="node96.html">Variable names</A>
+<B> Next:</B> <A NAME="tex2html1332"
+  HREF="node98.html">index</A>
+<B> Up:</B> <A NAME="tex2html1330"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1324"
+  HREF="node96.html">running product</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION00442000000000000000"></A><A ID="var:init"></A><A ID="2463"></A>
+<H2><A NAME="SECTION004211000000000000000"></A><A NAME="Operation:difference"></A>
 <BR>
-Initial conditions
+difference <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img21.png"
+ ALT="$\Delta $"></SPAN>
 </H2>
-
-<P>
-Variable initial conditions can be defined through the &ldquo;init value&rdquo;
-field of the variable edit menu, or in the case of Godley table stock
-variables, through the initial condition row of the Godley table. An
-initial value can be a simple number, or it can be a multiple of
-another named variable (or parameter). In case of symbolic
-definitions, it would be possible to set up a circular reference where
-the initial value of variable A is defined in terms of the initial
-value of variable B, which in turn depends on the intial value of
-A. Such a pathological situation is detected when the system is reset.
+Computes the nearest neighbour difference along a given direction. The
+optional argument can be used to specify the number of neighbours to
+skip in computing the differences.
 
 <P>
 <BR><HR>

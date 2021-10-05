@@ -69,7 +69,7 @@ namespace minsky
     std::string portValues() const;
 
     // returns true if multiple input wires are allowed.
-    bool multiWire();
+    bool multiWire() const;
 
     // manage the port structures associated with this operation
     virtual void addPorts();
@@ -179,7 +179,7 @@ namespace minsky
       OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
     ~IntOp() {Item::removeControlledItems();}
     
-    const IntOp& operator=(const IntOp& x); 
+    IntOp& operator=(const IntOp& x); 
 
     /// @{ name of the associated integral variable
     std::string description(const std::string& desc);
@@ -195,7 +195,8 @@ namespace minsky
     std::string valueId() const 
     {return intVar->valueId();}
     
-    bool attachedToDefiningVar() const override;        
+    bool attachedToDefiningVar(std::set<const Item*>&) const override;
+    using Item::attachedToDefiningVar;
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;  
 

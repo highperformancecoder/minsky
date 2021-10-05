@@ -71,7 +71,7 @@ namespace minsky
     /// combine two input wires
     /// @param x input to be updated
     /// @param y input to be combined with x
-    virtual void combineInput(double& x, double y) const {}
+    virtual void combineInput(double& x, double y) const {x=y;}
     /// input port value if no wire attached
     virtual double identity() const {return 0;}
 

@@ -33,9 +33,9 @@
 #include "minsky_epilogue.h"
 
 #include <boost/locale.hpp>
-using boost::locale::conv::utf_to_utf;
 
 using namespace ecolab;
+using ecolab::cairo::CairoSave;
 using namespace std;
 using namespace minsky;
 using namespace boost::geometry;
@@ -102,7 +102,7 @@ double RenderVariable::handlePos() const
 void minsky::drawTriangle
 (cairo_t* cairo, double x, double y, const cairo::Colour& col, double angle)
 {
-  cairo_save(cairo);
+  CairoSave cs(cairo);
   cairo_new_path(cairo);
   cairo_set_source_rgba(cairo,col.r,col.g,col.b,col.a);
   cairo_translate(cairo,x,y);
@@ -111,6 +111,5 @@ void minsky::drawTriangle
   cairo_line_to(cairo,0,-3);
   cairo_line_to(cairo,0,3);
   cairo_fill(cairo);
-  cairo_restore(cairo);
 }
 

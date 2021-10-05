@@ -23,7 +23,6 @@
 #include "minsky_epilogue.h"
 #include "minsky.h"
 using namespace std;
-using ecolab::cairo::Surface;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 
@@ -52,8 +51,8 @@ namespace minsky
             if (!g->godleyT) continue;
             
             float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;   
-            float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
-            float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
+            float w=0.5*g->godleyT->width();
+            float h=0.5*g->godleyT->height();
             xx+=w;
             yy+=h;
             float d=sqr(xx-x)+sqr(yy-y);

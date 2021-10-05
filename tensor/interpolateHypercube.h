@@ -62,7 +62,7 @@ namespace civita
 
   public:
     void setArgument(const TensorPtr& a, const string& ax="",double ag=0) override;
-    double operator[](std::size_t) const;
+    double operator[](std::size_t) const override;
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
   

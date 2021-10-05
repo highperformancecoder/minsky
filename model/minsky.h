@@ -213,7 +213,7 @@ namespace minsky
     /// returns reference to variable defining (ie input wired) for valueId
     VariablePtr definingVar(const std::string& valueId) const;
 
-    void saveGroupAsFile(const Group&, const string& fileName) const;
+    static void saveGroupAsFile(const Group&, const string& fileName);
     void saveCanvasItemAsFile(const string& fileName) const
     {if (auto g=dynamic_cast<Group*>(canvas.item.get())) saveGroupAsFile(*g,fileName);}
 
@@ -274,7 +274,7 @@ namespace minsky
     /// load from a file
     void load(const std::string& filename);
 
-    void exportSchema(const char* filename, int schemaLevel=1);
+    void exportSchema(const char* filename, int schemaLevel=1) const; //NOLINT
 
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;

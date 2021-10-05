@@ -71,6 +71,7 @@ namespace minsky
         auto& gg=g->globalGroup();
         auto wires=m_wires; // save copy, as Group::removeWire mutates it
         vector<WirePtr> wireHold; // postpone actual wire destruction until after loop
+        wireHold.reserve(wires.size());
         for (auto& w: wires)
           wireHold.push_back(gg.removeWire(*w));
       }
@@ -88,17 +89,14 @@ namespace minsky
     if (input())
       {
         double r=identity();
-        for (auto w: m_wires)
+        for (auto* w: m_wires)
           combineInput(r, w->from()->value());
         return r;
       }
-    else
-      {
-        auto vv=getVariableValue();
-        if (vv && vv->type()!=VariableType::undefined)
-          return vv->value();
-        return item().value();
-      }
+    auto vv=getVariableValue();
+    if (vv && vv->type()!=VariableType::undefined)
+      return vv->value();
+    return item().value();
   }
 
   
@@ -106,8 +104,7 @@ namespace minsky
   {
     if (!wires().empty())
       return wires()[0]->units(check);
-    else
-      return {};
+    return {};
   }
 
   shared_ptr<VariableValue> Port::getVariableValue() const {

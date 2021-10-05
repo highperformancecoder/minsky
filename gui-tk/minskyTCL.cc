@@ -50,8 +50,7 @@ namespace minsky
     static MinskyTCL s_minsky;
     if (l_minsky)
       return *l_minsky;
-    else
-      return s_minsky;
+    return s_minsky;
   }
 
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
@@ -64,8 +63,7 @@ namespace minsky
       {
         if (info.isNativeObjectProc)
           return (cmd_data*)info.objClientData;
-        else
-          return (cmd_data*)info.clientData;
+        return (cmd_data*)info.clientData;
       }
     return nullptr;
   }
@@ -322,7 +320,7 @@ namespace minsky
     };
   }
 
-  void MinskyTCL::operationIcon(const char* imageName, const char* opName) const
+  void MinskyTCL::operationIcon(const char* imageName, const char* opName)
   {
     if (string(opName)=="switch")
       IconBase<SwitchIcon>(imageName).draw();
@@ -336,7 +334,7 @@ namespace minsky
       IconBase<OperationIcon>(imageName, opName).draw();
   }
 
-  int MinskyTCL::numOpArgs(OperationType::Type o) const
+  int MinskyTCL::numOpArgs(OperationType::Type o)
   {
     OperationPtr op(o);
     return op->numPorts()-1;

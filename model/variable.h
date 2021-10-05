@@ -165,7 +165,7 @@ namespace minsky
 
     /// sets/gets the units associated with this type
     Units units(bool check=false) const override;
-    void setUnits(const std::string&);
+    void setUnits(const std::string&) const;
     std::string unitsStr() const {return units().str();}
     
     bool onKeyPress(int, const std::string&, int) override; 
@@ -179,7 +179,8 @@ namespace minsky
 
     bool varTabDisplay=false;
     void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
-    bool attachedToDefiningVar() const override {return varTabDisplay;}
+    bool attachedToDefiningVar(std::set<const Item*>&) const override {return varTabDisplay;}
+    using Item::attachedToDefiningVar;
     /// formula defining this variable
     std::string definition() const;
     
@@ -207,7 +208,7 @@ namespace minsky
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
-    void importFromCSV(std::string filename, const DataSpec& spec);
+    void importFromCSV(std::string filename, const DataSpec& spec) const;
 
     void insertControlled(Selection& selection) override;
   };

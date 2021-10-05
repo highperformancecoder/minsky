@@ -337,6 +337,14 @@ SUITE(CSVParser)
       }
     }
 
+  TEST_FIXTURE(DataSpec, toggleDimensions)
+    {
+      toggleDimension(2);
+      CHECK_EQUAL(1,dimensionCols.count(2));
+      toggleDimension(2);
+      CHECK_EQUAL(0,dimensionCols.count(2));
+    }
+  
   TEST(guessFromVariableExport)
     {
       Hypercube hc;

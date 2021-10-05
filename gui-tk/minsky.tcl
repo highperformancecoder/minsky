@@ -948,13 +948,25 @@ proc textEntryPopup {win init okproc} {
     
 }
 
+bind .tabs <<contextMenu>> {
+    set windows [.tabs tabs]
+    set idx [.tabs identify tab %x %y]
+    if {$idx<[llength $windows]} {
+        .wiring.context delete 0 end
+        .wiring.context add command -label Help -command "
+            help $helpTopics([lindex $windows $idx])"
+        tk_popup .wiring.context %X %Y
+    }
+}
+
 proc addTab {window label surface} {
     image create cairoSurface rendered$window -surface $surface
     ttk::frame .$window
-    global canvasHeight canvasWidth tabSurface
+    global canvasHeight canvasWidth tabSurface helpTopics
     label .$window.canvas -image rendered$window -height $canvasHeight -width $canvasWidth
     .tabs add .$window -text $label -padding 0
     set tabSurface($label) $surface
+    set helpTopics(.$window) tabs:$label
 }
 
 # add the tabbed windows
@@ -1438,8 +1450,10 @@ proc openNamedFile {ofname} {
     doPushHistory 0
     setAutoSaveFile [autoBackupName]
 
-    # minsky.load resets minsky.multipleEquities, so restore it to preferences
+    # minsky.load resets minsky.multipleEquities and other preference, so restore preferences
     minsky.multipleEquities $preferences(multipleEquities)
+    setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
+
     canvas.focusFollowsMouse $preferences(focusFollowsMouse)
     pushFlags
     recentreCanvas
@@ -1689,6 +1703,7 @@ set helpTopics(.controls.statusbar) SimTime
 set helpTopics(.controls.zoomOut) ZoomButtons
 set helpTopics(.controls.zoomIn) ZoomButtons
 set helpTopics(.controls.zoomOrig)  ZoomButtons
+set helpTopics(.controls.zoomFit)  ZoomButtons
 # TODO - the following association interferes with canvas item context menus
 # set helpTopics(.wiring.canvas) DesignCanvas
 

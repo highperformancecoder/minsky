@@ -83,10 +83,9 @@ namespace minsky
       return minsky::str(coef);
     if (coef==1)
       return name;
-    else if (coef==-1)
+    if (coef==-1)
       return "-"+name;
-    else
-      return minsky::str(coef)+name;
+    return minsky::str(coef)+name;
   }
 
 }

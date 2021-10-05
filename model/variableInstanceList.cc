@@ -32,7 +32,7 @@ namespace minsky
     model.recursiveDo
       (&Group::items,
        [this,&valueId](const Items&, Items::const_iterator i) {
-         if (auto v=(*i)->variableCast())
+         if (const auto* v=(*i)->variableCast())
            if (v->valueId()==valueId)
              {
                bookmarks.emplace_back(this->model.x()-v->x()+50, this->model.y()-v->y()+50, v->zoomFactor(),

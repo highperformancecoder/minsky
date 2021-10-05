@@ -22,7 +22,6 @@
 #include "selection.h"
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
-using ecolab::cairo::CairoSave;
 using namespace std;
 
 namespace minsky
@@ -44,7 +43,7 @@ namespace minsky
   Ravel* Lock::ravelInput() const
   {
     if (auto inputPort=ports(1).lock())
-      if (inputPort->wires().size())
+      if (!inputPort->wires().empty())
         if (auto fromPort=inputPort->wires()[0]->from())
           return dynamic_cast<Ravel*>(&fromPort->item());
     return nullptr;
@@ -56,13 +55,13 @@ namespace minsky
     if (locked())
       lockedState.clear();
     else
-      if (auto r=ravelInput())
+      if (auto* r=ravelInput())
         lockedState=r->getState();
   }
 
   void Lock::draw(cairo_t* cairo) const 
   {
-    SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
+    //    SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
     float z=zoomFactor()*scaleFactor();
     float w=iWidth()*z, h=iHeight()*z;
 
@@ -100,7 +99,7 @@ namespace minsky
   {
     if (locked())
       {
-        if (auto r=ravelInput())
+        if (auto* r=ravelInput())
           if (auto p=r->ports(1).lock())
             {
               Units inputUnits=p->units(check);
@@ -108,7 +107,7 @@ namespace minsky
               size_t multiplier=1;
               // at this stage, gross up exponents by the handle size of each
               // reduced by product handles
-              for (auto& h: lockedState.handleStates)
+              for (const auto& h: lockedState.handleStates)
                 if (h.collapsed && h.reductionOp==ravel::Op::prod)
                   {
                     // find which handle number this is
@@ -128,8 +127,7 @@ namespace minsky
             }
         return {};
       }
-    else
-      return m_ports[1]->units(check);
+    return m_ports[1]->units(check);
   }
 
 }

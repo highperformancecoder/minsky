@@ -59,14 +59,15 @@ namespace minsky
       bb.update(*this); 
       selected=wasSelected;
     }
+
+    double titleOffs() const {return !table.title.empty()? 15*zoomFactor(): 0;}
+    
   public:
     static SVGRenderer svgRenderer;
     
     GodleyIcon() {iWidth(150); iHeight(150);}
     GodleyIcon(const GodleyIcon&)=default;
-    GodleyIcon(GodleyIcon&&)=default;
     GodleyIcon& operator=(const GodleyIcon&)=default;
-    GodleyIcon& operator=(GodleyIcon&&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
@@ -78,7 +79,7 @@ namespace minsky
     void toggleButtons(); 
 
     bool variableDisplay=true;
-    void toggleVariableDisplay() {variableDisplay=!variableDisplay; updateBoundingBox();}
+    void toggleVariableDisplay() {variableDisplay=!variableDisplay; update();}
 
     /// sets editor's display values attributes to current global preferences
     void setEditorDisplayValues();
@@ -126,7 +127,7 @@ namespace minsky
     ClickType::Type clickType(float x, float y) override;
 
     /// draw icon to \a context
-    void draw(cairo_t* context) const override;
+    void draw(cairo_t* cairo) const override;
 
     /// return the A-L-E row sum for \a row
     std::string rowSum(int row) const;

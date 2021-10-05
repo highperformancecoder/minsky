@@ -194,7 +194,7 @@ namespace minsky
           }));
   }
     
-  void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
+  void Minsky::saveGroupAsFile(const Group& g, const string& fileName)
   {
     schema3::Minsky m(g);
     Saver(fileName).save(m);
@@ -443,7 +443,7 @@ namespace minsky
              for (size_t i=0; i<p->portsSize(); ++i)
                {
                  auto pp=p->ports(i).lock();
-                 if (pp->wires().size()>0)
+                 if (!pp->wires().empty())
                    if (auto vv=pp->getVariableValue())
                      if (vv->idx()>=0)
                        p->connectVar(vv, i);
@@ -561,7 +561,7 @@ namespace minsky
                    auto v=gi->table.cell(0,i);
                    auto scope=VariableValue::scope(gi->group.lock(),v);
                    if (scope->higher(*godley.group.lock()))
-                     v=':'+v;
+                     v=':'+v; //NOLINT
                    else if (scope!=godley.group.lock())
                      continue; // variable is inaccessible
                    if (gi==&godley || r.count(v) || gi->table._assetClass(i)!=ac) 
@@ -762,7 +762,7 @@ namespace minsky
       const std::vector<std::vector<std::string> >& data() const {
         return Super::operator*()->table.getData();
       }
-      const GodleyAssetClass::AssetClass assetClass(size_t col) const
+      GodleyAssetClass::AssetClass assetClass(size_t col) const
       {return Super::operator*()->table._assetClass(col);}
       bool signConventionReversed(int col) const
       {return Super::operator*()->table.signConventionReversed(col);}
@@ -802,7 +802,7 @@ namespace minsky
 
     initGodleys();
 
-    if (stockVars.size()>0)
+    if (!stockVars.empty())
       RungeKutta::reset();
       
     // update flow variable
@@ -929,8 +929,10 @@ namespace minsky
         model->recursiveDo(&Group::items, 
                            [&](Items&,Items::iterator i) {
                              if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-                               for (unsigned i=1; i<g->table.cols(); ++i)
-                                 balanceDuplicateColumns(*g,i);
+                               {
+                                 for (unsigned i=1; i<g->table.cols(); ++i)
+                                   balanceDuplicateColumns(*g,i);
+                               }
                              return false;
                            });
     
@@ -938,11 +940,12 @@ namespace minsky
         reset();
       }
     catch (...) {}
+    canvas.requestRedraw();
     panopticon.requestRedraw();
     flags=reset_needed|fullEqnDisplay_needed;
   }
 
-  void Minsky::exportSchema(const char* filename, int schemaLevel)
+  void Minsky::exportSchema(const char* filename, int schemaLevel) const
   {
     xsd_generate_t x;
     switch (schemaLevel)
@@ -982,8 +985,7 @@ namespace minsky
                 cminsky().displayErrorItem(p->item());
                 return true;
               }
-            else
-              return false;
+            return false;
           }
         stack.push_back(p);
         pair<iterator,iterator> range=equal_range(p);
@@ -1000,9 +1002,9 @@ namespace minsky
   {
     // construct the network schematic
     Network net;
-    for (auto& w: model->findWires([](WirePtr){return true;}))
+    for (auto& w: model->findWires([](const WirePtr&){return true;}))
       net.emplace(w->from().get(), w->to().get());
-    for (auto& i: model->findItems([](ItemPtr){return true;}))
+    for (auto& i: model->findItems([](const ItemPtr&){return true;}))
       if (!dynamic_cast<IntOp*>(i.get()) && !dynamic_cast<GodleyIcon*>(i.get()))
         for (unsigned j=1; j<i->portsSize(); ++j)
           net.emplace(i->ports(j).lock().get(), i->ports(0).lock().get());
@@ -1196,22 +1198,22 @@ namespace minsky
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
            {
              if (type!=VariableType::flow)
-               for (auto v: g->flowVars())
+               for (auto& v: g->flowVars())
                  if (v->valueId()==name)
                    {
 		       newName=v->name()+"^{Flow}";
                        VariableValues::iterator iv=variableValues.find(newName);
                        if (iv==variableValues.end()) {g->table.renameFlows(v->name(),newName); v->retype(VariableType::flow);}
-					   else throw error("flow variables in Godley tables cannot be converted to a different type");
+                       else throw error("flow variables in Godley tables cannot be converted to a different type");
 		   }	
              if (type!=VariableType::stock)
-               for (auto v: g->stockVars())
+               for (auto& v: g->stockVars())
                  if (v->valueId()==name)
                    {
 		       newName=v->name()+"^{Stock}";
                        VariableValues::iterator iv=variableValues.find(newName);
                        if (iv==variableValues.end()) {g->table.renameStock(v->name(),newName); v->retype(VariableType::stock);}
-					   else throw error("stock variables in Godley tables cannot be converted to a different type");
+                       else throw error("stock variables in Godley tables cannot be converted to a different type");
 		   }
            }
          return false;
@@ -1288,9 +1290,9 @@ namespace minsky
                          if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
-                               p->exportAsCSV((prefix+"-"+p->title+".csv").c_str());
+                               p->exportAsCSV((prefix+"-"+p->title+".csv"));
                              else
-                               p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv").c_str());
+                               p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv"));
                            }
                          return false;
                        });

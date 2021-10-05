@@ -1,85 +1,53 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
-<HTML lang="en">
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
 <HEAD>
-<TITLE>inner product </TITLE>
-<META NAME="description" CONTENT="inner product ">
+<TITLE>all</TITLE>
+<META NAME="description" CONTENT="all">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node93.html">
 <LINK REL="previous" HREF="node91.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node93.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A
- HREF="node93.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node78.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node91.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<A NAME="tex2html1281"
+  HREF="node93.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1279"
+  HREF="node86.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1273"
+  HREF="node91.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A
- HREF="node93.html">outer product</A>
-<B> Up:</B> <A
- HREF="node78.html">Tensor operations</A>
-<B> Previous:</B> <A
- HREF="node91.html">gather</A>
+<B> Next:</B> <A NAME="tex2html1282"
+  HREF="node93.html">infindex</A>
+<B> Up:</B> <A NAME="tex2html1280"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1274"
+  HREF="node91.html">any</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION004214000000000000000"></A><A ID="Operation:innerProduct"></A>
+<H2><A NAME="SECTION00426000000000000000"></A><A NAME="Operation:all"></A>
 <BR>
-inner product <SPAN CLASS="MATH"><IMG
- STYLE="height: 0.28ex; vertical-align: 0.33ex; " SRC="img22.png"
- ALT="$\cdot $"></SPAN>
-</H2>
-Computes
-<DIV CLASS="displaymath">
-<!-- MATH
- \begin{displaymath}
-z_{i_1,\ldots,i_{r_x-1},j_1,\ldots,j_{r_y-1}} =
-\sum_k x_{i_1\ldots,i_{a-1},k,i_{a+1}\ldots,i_{r_x-1}}
-y_{j_1,\ldots,j_{r_y-1},k},
-\end{displaymath}
- -->
-
-<IMG
- STYLE="height: 5.04ex; vertical-align: -2.98ex; " SRC="img195.png"
- ALT="$\displaystyle z_{i_1,\ldots,i_{r_x-1},j_1,\ldots,j_{r_y-1}} =
-\sum_k x_{i_1\ldots,i_{a-1},k,i_{a+1}\ldots,i_{r_x-1}}
-y_{j_1,\ldots,j_{r_y-1},k},
-$">
-</DIV>
-where <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img119.png"
- ALT="$a$"></SPAN> is the given axis, and <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.47ex; vertical-align: -0.46ex; " SRC="img196.png"
- ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.75ex; vertical-align: -0.78ex; " SRC="img197.png"
- ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
- ALT="$y$"></SPAN> respectively.
-
-<P>
-Not currently implemented.
+all
+</H2> Return 1 if all values
+along a given axis are nonzero, otherwise return 0 if any are zero. 
 
 <P>
 <BR><HR>

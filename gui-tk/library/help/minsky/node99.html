@@ -1,63 +1,67 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
-<HTML lang="en">
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
 <HEAD>
-<TITLE>Sliders</TITLE>
-<META NAME="description" CONTENT="Sliders">
+<TITLE>gather</TITLE>
+<META NAME="description" CONTENT="gather">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node100.html">
 <LINK REL="previous" HREF="node98.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node100.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A
- HREF="node100.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node95.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node98.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<A NAME="tex2html1351"
+  HREF="node100.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1349"
+  HREF="node86.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1343"
+  HREF="node98.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A
- HREF="node100.html">Importing a parameter from</A>
-<B> Up:</B> <A
- HREF="node95.html">Variables</A>
-<B> Previous:</B> <A
- HREF="node98.html">Tensor valued initial conditions</A>
+<B> Next:</B> <A NAME="tex2html1352"
+  HREF="node100.html">inner product</A>
+<B> Up:</B> <A NAME="tex2html1350"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1344"
+  HREF="node98.html">index</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION00444000000000000000">
-Sliders</A>
+<H2><A NAME="SECTION004213000000000000000"></A><A NAME="Operation:gather"></A>
+<BR>
+gather
 </H2>
 
 <P>
-From the context menu, one can select a slider to be attached to a
-variable, which is a GUI &ldquo;knob&rdquo; allowing one to control a variable's
-initial value, or the value of a parameter or constant. Adjusting the
-slider of an integral (or stock) variable while the system is running
-actually adjusts the present value of the variable.
+Gather collects the values at index locations indexed by the second
+argument. The output tensor has the same shape as the second (index)
+argument.
 
 <P>
-Slider parameters are specified in the edit menu: max, min and step
-size. A relative slider means that the step size is expressed as a
-fraction of max-min.
+If the index is not an integer, the gather will linearly interpolate between
+the values on either side. So <!-- MATH
+ $x[2.5] = 0.5 (x[2]+x[3])$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="167" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img194.png"
+ ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>.
 
 <P>
 <BR><HR>

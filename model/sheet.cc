@@ -52,8 +52,7 @@ ClickType::Type Sheet::clickType(float x, float y)
   if (inItem(x,y)) return ClickType::inItem;                     
   if (dx < w && dy < h)
     return ClickType::onItem;
-  else 
-    return ClickType::outside;  
+  return ClickType::outside;  
   if (auto item=select(x,y))
     return item->clickType(x,y);      
   return Item::clickType(x,y);  

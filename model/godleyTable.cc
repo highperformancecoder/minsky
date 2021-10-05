@@ -233,8 +233,7 @@ string GodleyTable::rowSum(int row) const
   //if completely empty, substitute a zero
   if (ret.str().empty()) 
     return "0";
-  else 
-    return ret.str();
+  return ret.str();
 
 }
 
@@ -287,14 +286,14 @@ void GodleyTable::nameUnique()
     }
 }
 
-void GodleyTable::exportToLaTeX(const char* filename)
+void GodleyTable::exportToLaTeX(const char* filename) const
 {
   ofstream f(filename);
   minsky::exportToLaTeX(f, *this);
   if (!f) throw error("cannot save to %s",filename);
 }
 
-void GodleyTable::exportToCSV(const char* filename)
+void GodleyTable::exportToCSV(const char* filename) const
 {
   ofstream f(filename);
   minsky::exportToCSV(f, *this);

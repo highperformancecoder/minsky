@@ -125,10 +125,6 @@ namespace minsky
     {hypercube_(hc); return m_hypercube;}
     using ITensorVal::hypercube;
                                                                            
-    void makeXConformant(const ITensor& x) {
-      m_hypercube.makeConformant(x.hypercube());
-    }
-    
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
 
@@ -137,14 +133,9 @@ namespace minsky
       m_idx=-1;
     }
     
-//    const VariableValue& operator=(double x) {valRef()=x; return *this;}
-//    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
-//    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
     using ITensorVal::operator=;
-    const VariableValue& operator=(TensorVal const&);
-    const VariableValue& operator=(const ITensor& x) override;
-//    const VariableValue& operator+=(const TensorVal& x);
-//    const VariableValue& operator-=(const TensorVal& x);
+    VariableValue& operator=(TensorVal const&);
+    VariableValue& operator=(const ITensor& x) override;
 
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
@@ -184,7 +175,7 @@ namespace minsky
     }
     /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
     /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
-    static GroupPtr scope(GroupPtr ref, const std::string& name);
+    static GroupPtr scope(GroupPtr scope, const std::string& a_name);
     static std::string valueId(const GroupPtr& ref, const std::string& name) 
     {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(name));}
     static std::string valueIdFromScope(const GroupPtr& scope, const std::string& name);

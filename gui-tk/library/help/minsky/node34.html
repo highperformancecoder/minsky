@@ -1,195 +1,120 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2021 (Released January 1, 2021) -->
-<HTML lang="en">
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
 <HEAD>
-<TITLE>Defining flows</TITLE>
-<META NAME="description" CONTENT="Defining flows">
+<TITLE>Creating an equation</TITLE>
+<META NAME="description" CONTENT="Creating an equation">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2021">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node35.html">
 <LINK REL="previous" HREF="node33.html">
+<LINK REL="up" HREF="node31.html">
 <LINK REL="next" HREF="node35.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A
- HREF="node35.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node30.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node33.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
+<A NAME="tex2html576"
+  HREF="node35.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html574"
+  HREF="node31.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html568"
+  HREF="node33.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A
- HREF="node35.html">Copying Godley Table input</A>
-<B> Up:</B> <A
- HREF="node30.html">Creating a banking model</A>
-<B> Previous:</B> <A
- HREF="node33.html">Entering flows between accounts</A>
+<B> Next:</B> <A NAME="tex2html577"
+  HREF="node35.html">Wiring components together</A>
+<B> Up:</B> <A NAME="tex2html575"
+  HREF="node31.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html569"
+  HREF="node33.html">Inserting a model component</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A ID="SECTION00245400000000000000">
-Defining flows</A>
-</H3>
+<H2><A NAME="SECTION00243000000000000000">
+Creating an equation</A>
+</H2>
 
 <P>
-The entries in the Godley Table represent flows of money, which are
-denominated in money units per unit of time. The relevant time
-dimension for an economic simulation is a year (whereas in engineering
-applications, the relevant time dimension is a second), so whatever
-you enter there represents a flow of money per year.
+Equations are entered in Minsky graphically. Mathematical operations
+like addition, multiplication and subtraction are performed by wiring
+the inputs up to the relevant mathematical block. The output of the
+block is then the result of the equation. 
 
 <P>
-You define the value of flows by attaching a constant or variable to
-the input side of the flow into the bank as shown on the Canvas. For
-example, you could assign Lend a value of 10 (which would represent a
-loan of $10 per year by Patient to Impatient) by:
-
-<P>
-Create a constant with a value of 10, and attaching this to the input
-side of Lend:
-
-<P>
-<DIV class="CENTER">
+For example, a simple equation like
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
- $\scalebox{0.5}{\includegraphics{images/NewItem149.eps}}$
+ \begin{displaymath}
+100/3 = 33.3
+\end{displaymath}
  -->
+
 <IMG
- WIDTH="241" HEIGHT="231" STYLE=""
- SRC="img105.png"
- ALT="\scalebox{0.5}{\includegraphics{images/NewItem149.eps}}">
+ WIDTH="88" HEIGHT="29" BORDER="0"
+ SRC="img84.png"
+ ALT="\begin{displaymath}
+100/3 = 33.3
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem130.png"
+ ALT="779"> :
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="551" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
+ SRC="img85.png"
+ ALT="\includegraphics{images/NewItem129.eps}">
+
 </DIV>
 
 <P>
-What you have now defined is an annual flow from Patient to Impatient
-of $10. In the dynamic equations this model generates, Minsky
-converts all amounts in accounts to positive sums&mdash;it shows the
-financial system from the point of the overall economy, rather than
-from the point of view of the bank:
+If you click on the equation tab, you will see that it is:
 
 <P>
-<DIV class=CENTER>
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
- \begin{eqnarray*}
-\mathrm{Lend}&=&10\\
-\frac{d\mathrm{Impatient}}{dt}&=&\mathrm{Lend}\\
-\frac{d\mathrm{Patient}}{dt}&=&-\mathrm{Lend}\\
-\frac{d\mathrm{Reserves}}{dt}&=&\\
-\frac{d\mathrm{Safe}}{dt}&=&
-\end{eqnarray*}
+ \begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}
  -->
-<IMG
- STYLE="height: 24.48ex; " SRC="img106.png"
- ALT="\begin{eqnarray*}
-\mathrm{Lend}&amp;=&amp;10\\
-\frac{d\mathrm{Impatient}}{dt}&amp;=&amp;\mathrm...
-...\frac{d\mathrm{Reserves}}{dt}&amp;=&amp;\\
-\frac{d\mathrm{Safe}}{dt}&amp;=&amp;
-\end{eqnarray*}"></DIV>
 
-<P>
-If you attach a graph to the accounts at the bottom of the bank block,
-you will see the impact of this flow over time on the balances of the
-two accounts. Patient's account begins at $100 and falls at $10 per
-year, while Impatient's account begins at $0 and rises by $10 per
-year.
-
-<P>
-<DIV class="CENTER">
-<!-- MATH
- $\scalebox{0.7}{\includegraphics{images/NewItem151.eps}}$
- -->
 <IMG
- WIDTH="399" HEIGHT="487" STYLE=""
- SRC="img107.png"
- ALT="\scalebox{0.7}{\includegraphics{images/NewItem151.eps}}">
+ WIDTH="99" HEIGHT="39" BORDER="0"
+ SRC="img86.png"
+ ALT="\begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}">
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
-Obviously this will result in a negative total worth for Patient after
-10 years, so it is not a realistic model. A more sensible simple model
-would relate lending to the amount left in Patient's account (and a
-more complex model would relate this to many other variables in the
-model). That is done in the next example, where a constant &ldquo;lendrate&rdquo;
-has been defined and given the value of 0.1, and Lend is now defined
-as 0.1 times the balance in Patient's account. This now results in a
-smooth exponential decay of the amount in the Patient account, matched
-by a rise in the amount in Impatient account.
+Very complex equations--including dynamic elements like integral
+blocks and Godley Tables--are designed by wiring up lots of
+components, with the output of one being the input of the next. See
+the tutorial for examples.
 
 <P>
-<DIV class="CENTER">
-<!-- MATH
- $\scalebox{0.7}{\includegraphics{images/NewItem152.eps}}$
- -->
-<IMG
- WIDTH="460" HEIGHT="514" STYLE=""
- SRC="img108.png"
- ALT="\scalebox{0.7}{\includegraphics{images/NewItem152.eps}}">
-</DIV>
-
-<P>
-This is because the equation you have defined is identical to a
-radioactive decay equation, with the amount in the Patient account
-falling at 10 percent per year:
-
-<P>
-<DIV class=CENTER>
-<!-- MATH
- \begin{eqnarray*}
-\mathrm{Lend}&=&\mathrm{lendrate}\times\mathrm{Patient}\\
-\frac{d\mathrm{Impatient}}{dt}&=&\mathrm{Lend}\\
-\frac{d\mathrm{Patient}}{dt}&=&-\mathrm{Lend}\\
-\end{eqnarray*}
- -->
-<IMG
- STYLE="height: 13.29ex; " SRC="img109.png"
- ALT="\begin{eqnarray*}
-\mathrm{Lend}&amp;=&amp;\mathrm{lendrate}\times\mathrm{Patient}\\
-\fr...
-...mathrm{Lend}\\
-\frac{d\mathrm{Patient}}{dt}&amp;=&amp;-\mathrm{Lend}\\
-\end{eqnarray*}"></DIV>
-
-<P>
-Note however that there are now wires crossing over other wires? There
-is a neater way to define flows. 
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A
- HREF="node35.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node30.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node33.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A
- HREF="node35.html">Copying Godley Table input</A>
-<B> Up:</B> <A
- HREF="node30.html">Creating a banking model</A>
-<B> Previous:</B> <A
- HREF="node33.html">Entering flows between accounts</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>
