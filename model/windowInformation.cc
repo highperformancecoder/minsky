@@ -35,6 +35,7 @@
 #undef Realloc
 #include <windows.h>
 #include <wingdi.h>
+#include <winuser.h>
 #ifdef USE_WIN32_SURFACE
 #include <cairo/cairo-win32.h>
 #endif
@@ -77,6 +78,7 @@ namespace minsky
     SelectObject(hdcMem, hOld);
     DeleteObject(hbmMem);
     DeleteDC(hdcMem);
+    DestroyWindow(childWindowId);
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
     XFreeGC(display, graphicsContext);
@@ -94,9 +96,13 @@ namespace minsky
   {
     cairo_surface_flush(bufferSurface->surface());
 #ifdef USE_WIN32_SURFACE
-    HDC hdc=GetDC(parentWindowId);
-    BitBlt(hdc, offsetLeft, offsetTop, childWidth,childHeight,hdcMem,0,0,SRCCOPY);
-    ReleaseDC(parentWindowId, hdc);
+    HDC hdc=GetDC(childWindowId);
+    RECT bb;
+    GetWindowRect(parentWindowId, &bb);
+    BitBlt(hdc, bb.left+offsetLeft, bb.top+offsetTop, childWidth,childHeight,hdcMem,0,0,SRCCOPY);
+    //ReleaseDC(parentWindowId, hdc);
+    ReleaseDC(childWindowId, hdc);
+    //BringWindowToTop(childWindowId);
 #elif defined(USE_X11)
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XFlush(display);
@@ -125,7 +131,10 @@ namespace minsky
 
 #ifdef USE_WIN32_SURFACE
     parentWindowId = reinterpret_cast<HWND>(parentWin);
-    HDC hdc=GetDC(parentWindowId);
+    char className[1024];
+    GetClassNameA(parentWindowId,className,sizeof(className));
+    childWindowId=CreateWindowA(className, "", WS_CHILD, left, top, childWidth, childHeight, parentWindowId, nullptr, GetModuleHandleA(nullptr), nullptr);
+    HDC hdc=GetDC(childWindowId);
     hdcMem=CreateCompatibleDC(hdc);
     hbmMem=CreateCompatibleBitmap(hdc, childWidth, childHeight);
     ReleaseDC(parentWindowId, hdc);
@@ -149,7 +158,5 @@ namespace minsky
     XMapWindow(display, childWindowId);
     bufferSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, bufferWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
 #endif
-    
-    isRendering = false;
   }
 } // namespace minsky

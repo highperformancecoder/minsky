@@ -35,9 +35,9 @@ namespace minsky
 {
   class WindowInformation
   {
-    bool isRendering;
+    bool isRendering=false;
 #ifdef USE_WIN32_SURFACE
-    HWND parentWindowId;
+    HWND parentWindowId, childWindowId;
     HDC hdcMem; // backing buffer bitmap device context
     HBITMAP hbmMem; // backing buffer pixmap
     HANDLE hOld;    // 
