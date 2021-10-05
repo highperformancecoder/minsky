@@ -37,7 +37,7 @@ namespace MathDAG
     {
       unsigned maxOrder;
       VariableDefOrder(unsigned maxOrder): maxOrder(maxOrder) {}
-      bool operator()(const VariableDAG* x, const VariableDAG* y) {
+      bool operator()(const VariableDAG* x, const VariableDAG* y) const {
         return x->order(maxOrder)<y->order(maxOrder);
       }
     };

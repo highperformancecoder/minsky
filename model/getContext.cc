@@ -21,20 +21,28 @@
 #include "getContext.h"
 #include <Appkit/NSGraphicsContext.h>
 #include <Appkit/NSWindow.h>
+#include <iostream>
 
 namespace minsky
 {
   
   NSContext::NSContext(void* nativeHandle,int xoffs,int yoffs)
   {
+    std::cout << nativeHandle << std::endl;
+    std::cout << [reinterpret_cast<NSObject*>(nativeHandle) class] << std::endl;
+    std::cout << [NSStringFromClass([reinterpret_cast<NSView*>(nativeHandle) class]) cStringUsingEncoding:NSUTF8StringEncoding] << std::endl;
     NSWindow* w=[reinterpret_cast<NSView*>(nativeHandle) window];
+    std::cout << w << std::endl;
     NSGraphicsContext* g=[NSGraphicsContext graphicsContextWithWindow: w];
+    std::cout << g << std::endl;
     graphicsContext=g;
     [g retain];
     context=[g CGContext];
+    std::cout << context << std::endl;
     NSRect contentRect=[w contentRectForFrameRect: w.frame]; // allow for title bar
     CGContextTranslateCTM(context,xoffs,contentRect.size.height-yoffs);
     CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
+    std::cout << nativeHandle << " " << w << " " << g << " " << context << std::endl;
   }
 
   NSContext::~NSContext()

@@ -25,7 +25,9 @@
 #define USE_WIN32_SURFACE
 #include <windows.h>
 #include <wingdi.h>
-#elif defined(CAIRO_HAS_XLIB_SURFACE) && !defined(MAC_OSX_TK)
+#elif defined(MAC_OSX_TK)
+#include "getContext.h"
+#elif defined(CAIRO_HAS_XLIB_SURFACE)
 #define USE_X11
 #include <cairo/cairo-xlib.h>
 #include <X11/Xlib.h>
@@ -42,6 +44,7 @@ namespace minsky
     HBITMAP hbmMem; // backing buffer pixmap
     HANDLE hOld;    // 
 #elif defined(MAC_OSX_TK)
+    NSContext nsContext;
 #elif defined(USE_X11)
     Window parentWindowId;
     Window childWindowId, bufferWindowId;
@@ -64,7 +67,7 @@ namespace minsky
       
   public:
     ~WindowInformation();
-    WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
+    WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight);
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
 

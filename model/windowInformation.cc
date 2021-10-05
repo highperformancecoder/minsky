@@ -114,7 +114,10 @@ namespace minsky
     return isRendering;
   }
 
-  WindowInformation::WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight)
+  WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight)
+#ifdef MAC_OSX_TK
+    : nsContext(reinterpret_cast<void*>(parentWin),left,top)
+#endif
   {
 
     offsetLeft = left;
@@ -132,6 +135,7 @@ namespace minsky
     hOld=SelectObject(hdcMem, hbmMem);
     bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdcMem),childWidth, childHeight));
 #elif defined(MAC_OSX_TK)
+    bufferSurface.reset(new cairo::Surface(cairo_quartz_surface_create_for_cg_context(nsContext.context, cWidth, cHeight)));
 #elif defined(USE_X11)
     parentWindowId = parentWin;
     static bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
