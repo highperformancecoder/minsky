@@ -177,7 +177,7 @@ namespace minsky
       
       auto function=new UserFunction(name,definition);
       group.addItem(function); //ownership passed
-      for (auto i: function->symbolNames())
+      for (auto& i: function->symbolNames())
         {
           auto f=venSimFunctions.find(i);
           if (f!=venSimFunctions.end())
@@ -190,7 +190,7 @@ namespace minsky
         group.addWire(function->ports(0), port);
     }
     
-    void defineLookupFunction(Group& group, const std::string& name, std::string data)
+    void defineLookupFunction(Group& group, const std::string& name, const std::string& data)
     {
       regex lookupPairsPattern(R"((\[[^\]]*\],)?(\(.*\)))");
       smatch match; 
@@ -371,7 +371,7 @@ namespace minsky
               {
                 vector<string> spec;
                 for (size_t i=1; i<=match.size(); ++i) spec.push_back(match[i]);
-                if (spec.size()>0 && regex_match(spec[0],match,number))
+                if (!spec.empty() && regex_match(spec[0],match,number))
                   v->sliderMin=stod(spec[0]);
                 else
                   v->sliderMin=0.1*stod(definition);

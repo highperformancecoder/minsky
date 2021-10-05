@@ -46,7 +46,7 @@ namespace minsky
     vector<AssetClass> m_assetClass{noAssetClass, asset, liability, equity};
     Data data;
 
-    void markEdited(); ///< mark model as having changed
+    static void markEdited(); ///< mark model as having changed
     void _resize(unsigned rows, unsigned cols) {
       // resize existing
       for (std::size_t i=0; i<data.size(); ++i) data[i].resize(cols);
@@ -189,8 +189,8 @@ namespace minsky
     /// accessor for schema access
     const Data& getData() const {return data;}
 
-    void exportToLaTeX(const char* filename);
-    void exportToCSV(const char* filename);
+    void exportToLaTeX(const char* filename) const;
+    void exportToCSV(const char* filename) const;
 
     /// reorders columns into assets/liabilities and equities. Adds empty columns if an asset class is not present.
     void orderAssetClasses();

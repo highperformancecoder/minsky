@@ -26,7 +26,6 @@
 
 namespace schema1
 {
-  using minsky::SchemaHelper;
   const int Minsky::version;
 
   namespace
@@ -35,10 +34,10 @@ namespace schema1
     {
       set<int> ids;
       void insert(int id) {ids.insert(id);}
-      bool operator()(const Variable& v) {
+      bool operator()(const Variable& v) const {
         return ids.count(v.id);
       }
-      bool operator()(const shared_ptr<Layout>& l) {
+      bool operator()(const shared_ptr<Layout>& l) const {
         return l && ids.count(l->id);
       }
     };
@@ -81,7 +80,7 @@ namespace schema1
         model.wires.emplace_back(nextId, newPortIds[i.second.from], newPortIds[i.second.to]);
         layout.emplace_back(new WireLayout(nextId++, i.second));
       }
-    for (auto v: m.variables)
+    for (auto v: m.variables) //NOLINT - index var mutated in loop body
       {
         newVarIds[v.first]=nextId;
         v.second.m_outPort=newPortIds[v.second.m_outPort];

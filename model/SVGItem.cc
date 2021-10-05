@@ -46,6 +46,9 @@
 #include <librsvg-2.0/librsvg/rsvg-cairo.h>
 #endif
 
+#include <stdexcept>
+using namespace std;
+
 namespace minsky
 {
  
@@ -56,9 +59,10 @@ namespace minsky
     svg=rsvg_handle_new_from_file(resource.c_str(),&err);
     if (err)
       {
-        ecolab::error ex("SVGRenderer failed to initialise: %s",err->message);
+        std::string msg="SVGRenderer failed to initialise: ";
+        msg+=err->message;
         g_error_free(err);
-        throw ex;
+        throw runtime_error(msg);
       }
     RsvgDimensionData dims;
     rsvg_handle_get_dimensions(svg, &dims);

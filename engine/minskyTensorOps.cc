@@ -354,7 +354,7 @@ namespace minsky
     
     void computeTensor() const override
     {
-      if (argIndices.size())
+      if (!argIndices.empty())
         {
           assert(argIndices.size()==size());
           size_t idx=0;
@@ -526,41 +526,35 @@ namespace minsky
         return nan("");
       if (idx==maxIdx)
         return arg1->atHCIndex(idx*stride+offset);
-      else 
-        {
-          // expand range to skip over any nan in arg1
-          unsigned lesser=idx, greater=idx+1;
-          double lv=arg1->atHCIndex(lesser*stride+offset), gv=arg1->atHCIndex(greater*stride+offset);
-          for (; lesser>0 && isnan(lv); --lesser, lv=arg1->atHCIndex(lesser*stride+offset));
-          for (; greater<maxIdx && isnan(gv); ++greater, gv=arg1->atHCIndex(greater*stride+offset));
-          double s=(idx-lesser)/(greater-lesser);
-          // special cases to avoid unncessarily including nans/infs in the computation
-          if (s==0) return lv;
-          if (s==1) return gv;
-          return (1-s)*lv + s*gv;
-        }
+      // expand range to skip over any nan in arg1
+      unsigned lesser=idx, greater=idx+1;
+      double lv=arg1->atHCIndex(lesser*stride+offset), gv=arg1->atHCIndex(greater*stride+offset);
+      for (; lesser>0 && isnan(lv); --lesser, lv=arg1->atHCIndex(lesser*stride+offset));
+      for (; greater<maxIdx && isnan(gv); ++greater, gv=arg1->atHCIndex(greater*stride+offset));
+      double s=(idx-lesser)/(greater-lesser);
+      // special cases to avoid unncessarily including nans/infs in the computation
+      if (s==0) return lv;
+      if (s==1) return gv;
+      return (1-s)*lv + s*gv;
     }
 
     double interpolateAny(const XVector& xv, const boost::any& x, size_t stride, size_t offset) const
     {
       if (xv.size()<2 || diff(x,xv.front())<0 || diff(x,xv.back())>0)
         return nan("");
-      else
-        {
-          auto i=xv.begin();
-          for (; diff(x,*(i+1))>0; ++i); // loop will terminate b/c diff(x,xv.back())<=0
-          // expand i & i+1 to finite values on the hypercube, if possible
-          auto greater=i+1;
-          double lv=arg1->atHCIndex((i-xv.begin())*stride+offset);
-          double gv=arg1->atHCIndex((greater-xv.begin())*stride+offset);
-          for (; i>xv.begin() && isnan(lv); --i, lv=arg1->atHCIndex((i-xv.begin())*stride+offset));
-          for (; greater<xv.end()-1 && isnan(gv); ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
-          double s=diff(x,*i)/diff(*greater,*i);
-          // special cases to avoid unncessarily including nans/infs in the computation
-          if (s==0) return lv;
-          if (s==1) return gv;
-          return (1-s)*lv + s*gv;
-        }
+      auto i=xv.begin();
+      for (; diff(x,*(i+1))>0; ++i); // loop will terminate b/c diff(x,xv.back())<=0
+      // expand i & i+1 to finite values on the hypercube, if possible
+      auto greater=i+1;
+      double lv=arg1->atHCIndex((i-xv.begin())*stride+offset);
+      double gv=arg1->atHCIndex((greater-xv.begin())*stride+offset);
+      for (; i>xv.begin() && isnan(lv); --i, lv=arg1->atHCIndex((i-xv.begin())*stride+offset));
+      for (; greater<xv.end()-1 && isnan(gv); ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
+      double s=diff(x,*i)/diff(*greater,*i);
+      // special cases to avoid unncessarily including nans/infs in the computation
+      if (s==0) return lv;
+      if (s==1) return gv;
+      return (1-s)*lv + s*gv;
     }
 
     void computeTensor() const override
@@ -785,8 +779,7 @@ namespace minsky
         {
           if (args[idx]->rank()==0)
             return (*args[idx])[0];
-          else
-            return args[idx]->atHCIndex(index()[i]);
+          return args[idx]->atHCIndex(index()[i]);
         }
       return nan("");
     }
@@ -834,7 +827,7 @@ namespace minsky
 	      r->setArguments(tfp.tensorsFromPorts(*it));
 	      return r;
 	    }
-    else if (auto op=it->operationCast())
+    if (auto op=it->operationCast())
       try
         {
           TensorPtr r{create(op->type())};
@@ -909,10 +902,9 @@ namespace minsky
                 auto rhs=tensorsFromPort(*o->ports(1).lock());
                 if (rhs.empty() || rhs[0]->size()==1)
                   throw FallBackToScalar();
-                else
-                  // TODO - implement symbolic differentiation of
-                  // tensor operations
-                  throw std::runtime_error("Tensor derivative not implemented");
+                // TODO - implement symbolic differentiation of
+                // tensor operations
+                throw std::runtime_error("Tensor derivative not implemented");
               }
           }
         r.push_back(tensorOpFactory.create(item.itemPtrFromThis(), *this));

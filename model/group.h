@@ -150,7 +150,7 @@ namespace minsky
     WirePtr addWire(Wire* w) {return addWire(std::shared_ptr<Wire>(w));}
 
     /// adjust wire's group to be the least common ancestor of its ports
-    void adjustWiresGroup(Wire& w);
+    static void adjustWiresGroup(Wire& w);
 
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates

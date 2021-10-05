@@ -132,7 +132,7 @@ namespace civita
                 throw error("invalid quarter %d",quarter);
               return ptime(date(year, quarterMonth[quarter-1], 1));
             }
-          else if (regex_match(dim.units, m, screwyDates)) // handle dates with 1 or 2 digits see Ravel ticket #35
+          if (regex_match(dim.units, m, screwyDates)) // handle dates with 1 or 2 digits see Ravel ticket #35
             {
               static regex valParser{R"((\d+)\D(\d+)\D(\d+))"};
               smatch val;
@@ -157,13 +157,12 @@ namespace civita
                     }
                   return ptime(date(year,month,day));
                 }
-              else
-                throw runtime_error(s+" doesn't match "+dim.units);
+              throw runtime_error(s+" doesn't match "+dim.units);
             }
-          else if (!dim.units.empty())
+          if (!dim.units.empty())
             {
               istringstream is(s);
-              is.imbue(locale(is.getloc(), new time_input_facet(dim.units.c_str())));
+              is.imbue(locale(is.getloc(), new time_input_facet(dim.units)));
               ptime pt;
               is>>pt;
               if (pt.is_special())
@@ -186,8 +185,7 @@ namespace civita
               //              else
               //                throw error("invalid date/time: %s",s.c_str());
             }
-          else
-            return sToPtime(s);
+          return sToPtime(s);
           break;
         }
       }
@@ -246,11 +244,11 @@ namespace civita
     string::size_type pq;
     if (auto s=any_cast<std::string>(&v))
       return *s;
-    else if (auto s=any_cast<const char*>(&v))
+    if (auto s=any_cast<const char*>(&v))
       return *s;
-    else if (auto s=any_cast<double>(&v))
+    if (auto s=any_cast<double>(&v))
       return to_string(*s);
-    else if (auto s=any_cast<ptime>(&v))
+    if (auto s=any_cast<ptime>(&v))
       if (format.empty())
         return to_iso_extended_string(*s);
       else if ((pq=format.find("%Q"))!=string::npos)
@@ -268,8 +266,7 @@ namespace civita
           auto tm=to_tm(s->date());
           if (pq<pY)
             return formatString(sformat,tm.tm_mon/3+1, tm.tm_year+1900);
-          else
-            return formatString(sformat, tm.tm_year+1900, tm.tm_mon/3+1);
+          return formatString(sformat, tm.tm_year+1900, tm.tm_mon/3+1);
         }
       else
         {
@@ -294,20 +291,19 @@ namespace civita
     auto dt=b-f;
     if (dt > year*5)
       return "%Y";
-    else if (dt > year)
+    if (dt > year)
       return "%b %Y";
-    else if (dt > month*6)
+    if (dt > month*6)
       return "%b";
-    else if (dt > month)
+    if (dt > month)
       return "%d %b";
-    else if (dt > day)
+    if (dt > day)
       return "%d %H:%M";
-    else if (dt > hours(1))
+    if (dt > hours(1))
       return "%H:%M";
-    else if (dt > minutes(1))
+    if (dt > minutes(1))
       return "%M:%S";
-    else
-      return "%s";
+    return "%s";
   }
   
   void XVector::imposeDimension()

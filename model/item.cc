@@ -80,24 +80,21 @@ namespace minsky
   {
     if (auto g=group.lock()) 
       return zoomFactor()*m_x+g->x();
-    else
-      return m_x;
+    return m_x;
   }
 
   float Item::y() const 
   {
     if (auto g=group.lock())
       return zoomFactor()*m_y+g->y();
-    else
-      return m_y;
+    return m_y;
   }
 
   float Item::zoomFactor() const
   {
     if (auto g=group.lock())
       return g->zoomFactor()*g->relZoom;
-    else
-      return 1;
+    return 1;
   }
   
   float Item::scaleFactor() const
@@ -194,10 +191,9 @@ namespace minsky
   bool Item::onResizeHandle(float x, float y) const
   {
     float rhSize=resizeHandleSize();
-    for (auto& p: corners())
-      if (near(x,y,p.x(),p.y(),rhSize))
-        return true;
-    return false;
+    auto cnrs=corners();
+    return any_of(cnrs.begin(), cnrs.end(), [&](const Point& p)
+                  {return near(x,y,p.x(),p.y(),rhSize);});
   }
 
    bool BottomRightResizerItem::onResizeHandle(float x, float y) const
@@ -252,8 +248,7 @@ namespace minsky
     draw(dummySurf.cairo());
     if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
       return ClickType::onItem;               
-    else                  
-      return ClickType::outside;
+    return ClickType::outside;
   }
 
   void Item::drawPorts(cairo_t* cairo) const
@@ -270,7 +265,7 @@ namespace minsky
     cairo_stroke(cairo);
   }
 
-  void Item::drawSelected(cairo_t* cairo) const
+  void Item::drawSelected(cairo_t* cairo)
   {
     // implemented by filling the clip region with a transparent grey
     CairoSave cs(cairo);

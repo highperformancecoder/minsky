@@ -266,7 +266,7 @@ namespace minsky
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
-    void drawSelected(cairo_t* cairo) const;
+    static void drawSelected(cairo_t* cairo);
     virtual void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.

@@ -33,7 +33,6 @@
 #include "minsky_epilogue.h"
 
 #include <boost/locale.hpp>
-using boost::locale::conv::utf_to_utf;
 
 using namespace ecolab;
 using ecolab::cairo::CairoSave;
