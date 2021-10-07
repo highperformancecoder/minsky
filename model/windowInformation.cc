@@ -135,7 +135,6 @@ namespace minsky
     hOld=SelectObject(hdcMem, hbmMem);
     bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdcMem),childWidth, childHeight));
 #elif defined(MAC_OSX_TK)
-    bufferSurface.reset(new cairo::Surface(cairo_quartz_surface_create_for_cg_context(nsContext.context, cWidth, cHeight)));
 #elif defined(USE_X11)
     parentWindowId = parentWin;
     static bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);

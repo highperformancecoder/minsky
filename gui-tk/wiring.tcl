@@ -231,10 +231,22 @@ proc wrapHoverMouse {op x y} {
     catch {minsky.canvas.$op $x $y}
     after 3000 hoverMouse
 }
-  
-bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
+
+#bind .wiring.canvas <Double-Button-1> {doubleButton %x %y}
+set buttonDownHandler ""
+set buttonUpHandler ""
+set doubleClickTimeout 200
+bind .wiring.canvas <ButtonPress-1> {
+    if [catch {after info $buttonDownHandler}] {
+        set buttonDownHandler [after $doubleClickTimeout wrapHoverMouse mouseDown %x %y]
+    } else {
+        doubleButton %x %y
+        after cancel $buttonDownHandler
+        after cancel $buttonUpHandler
+    }
+}
+bind .wiring.canvas <ButtonRelease-1> {set buttonUpHandler [after $doubleClickTimeout wrapHoverMouse mouseUp %x %y]}
 bind .wiring.canvas <$meta-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
-bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}
 bind .wiring.canvas <Motion> {wrapHoverMouse mouseMove %x %y}
 bind .wiring.canvas <Leave> {after cancel hoverMouse}
 
@@ -588,7 +600,6 @@ proc saveSelection {} {
 }
 
 
-bind .wiring.canvas <Double-Button-1> {doubleButton %x %y}
 proc doubleButton {x y} {
     if [getItemAt $x $y] {
         if {[canvas.item.classType]=="Lock"} {
@@ -819,7 +830,6 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Ungroup" -command "canvas.ungroupItem; canvas.requestRedraw"
         }
         "Item" {
-            .wiring.context delete 0 end
             .wiring.context add command -label "Copy item" -command "canvas.copyItem"
         }
         SwitchIcon {
