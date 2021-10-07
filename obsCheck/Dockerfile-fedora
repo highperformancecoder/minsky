@@ -1,4 +1,4 @@
-FROM fedora:31
+FROM fedora
 ARG project=minsky
 ADD . /root
 RUN dnf install -y 'dnf-command(config-manager)'
