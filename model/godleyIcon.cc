@@ -437,7 +437,7 @@ namespace minsky
         Pango pango(cairo);
         pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
         pango.setFontSize(titleOffs());
-        cairo_move_to(cairo,-0.5*(pango.width()*z-leftMargin()), titley);
+        cairo_move_to(cairo,-0.5*(pango.width()-leftMargin()), titley);
         pango.show();
       }
       
