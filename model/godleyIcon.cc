@@ -550,9 +550,9 @@ namespace minsky
   }
 
   float GodleyIcon::toEditorX(float xx) const
-  {return xx-x()+0.5f*width()-border-leftMargin();}
+  {return xx-x()+0.5f*width()-2*border-leftMargin();}
   float GodleyIcon::toEditorY(float yy) const
-  {return yy-y()+0.5f*height()-border-titleOffs();}
+  {return yy-y()+0.5f*height()-2*border-titleOffs();}
   
   void GodleyIcon::onMouseDown(float x, float y)
   {if (editor) editor->mouseDown(toEditorX(x),toEditorY(y));}
