@@ -628,7 +628,7 @@ namespace
           {
             auto& nm=hl.handleNames[i];
             // non-breaking space 0xa0 not treated as space by isspace
-            if (find_if(nm.begin(), nm.end(), [](char i){return !isspace(i)&&!i==0xa0;})==nm.end())
+            if (find_if(nm.begin(), nm.end(), [](char i){return !isspace(i)&&i!=0xa0;})==nm.end())
               continue; // disregard wholly white space strings
             if (!checkHandleNames[i].insert(nm).second) // check for duplicated handle names in a column
               throw runtime_error("duplicate handle name "+nm);
@@ -701,7 +701,8 @@ namespace
   void RavelLockGroup::addHandleInfo(const std::weak_ptr<Ravel>& ravel)
   {
     auto ravelIdx=&ravel-&m_ravels[0];
-    if (ravelIdx<0 || ravelIdx>=m_ravels.size()) return;
+    assert(ravelIdx>=0);
+    if (ravelIdx<0 || size_t(ravelIdx)>=m_ravels.size()) return;
     if (auto r=ravel.lock())
       {
         auto names=r->handleNames();
