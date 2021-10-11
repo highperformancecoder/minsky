@@ -1,0 +1,10 @@
+{
+  "name": "minskyRESTService",
+  "version": "0.0.0",
+  "description": "nodejs embedded RESTService",
+  "main": "addon.js",
+  "private": true,
+  "dependencies": {
+    "node-addon-api": "^4.2.0"
+  }
+}
