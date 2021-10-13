@@ -50,7 +50,7 @@ namespace minsky
   int UserFunction::nextId=0;
 
 #pragma GCC visibility push(hidden)
-  namespace __attribute__((visibility("hidden"))) {
+  namespace {
     // include anonymously to reduce the number of exported linker symbols
 #include <exprtk/exprtk.hpp>
     // resolve overloads
