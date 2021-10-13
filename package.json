@@ -5,7 +5,7 @@
   "main": "testAddon.js",
   "private": true,
   "scripts": {
-    "start": "ts-node RESTService/testAddon"
+    "start": "ts-node test/testAddon"
   },
   "dependencies": {
     "node-addon-api": "^4.2.0",
