@@ -42,7 +42,9 @@ ifeq ($(HAVE_NODE),1)
   NODE_VERSION=$(shell node -v|sed -r -e 's/[^0-9]*([0-9]*).*/\1/')
   NODE_HEADER=$(call search,include/node$(NODE_VERSION))
   HAVE_NAPI=$(words $(NODE_HEADER))
+  FLAGS+=-fno-omit-frame-pointer
   NODE_FLAGS=-I$(NODE_HEADER) -Inode_modules/node-addon-api
+#-fno-rtti
   NODE_FLAGS+='-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS'
   NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS' '-DBUILDING_NODE_EXTENSION'
 
@@ -248,7 +250,7 @@ endif
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
 # N-API node embedded RESTService
-RESTService/addon.node: addon.o
+RESTService/addon.node: addon.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 	g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 
 addon.o: addon.cc

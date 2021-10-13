@@ -66,9 +66,13 @@ Value RESTCall(const Napi::CallbackInfo& info)
 
   try
     {
-      json_pack_t arguments;
+      json_pack_t arguments(json_spirit::mValue{});
       if (info.Length()>1)
-        read(info[1].ToString(), arguments);
+        {
+          string jsonArguments=info[1].ToString();
+          if (!jsonArguments.empty())
+            read(info[1].ToString(), arguments);
+        }
       string cmd=info[0].ToString();
       auto response=String::New(env, write(registry.process(cmd, arguments)));
       int nargs=arguments.type()==json_spirit::array_type? arguments.get_array().size(): 1;
@@ -78,16 +82,17 @@ Value RESTCall(const Napi::CallbackInfo& info)
       for (auto i: minsky::minsky().nativeWindowsToRedraw)
         i->draw();
       minsky::minsky().nativeWindowsToRedraw.clear();
+      return response;
     }
   catch (const std::exception& ex)
     {
       // throw C++ exception as Javascript exception
-      Napi::TypeError::New(env, ex.what()).ThrowAsJavaScriptException();
+      Napi::Error::New(env, ex.what()).ThrowAsJavaScriptException();
       return env.Null();
     }
   catch (...)
     {
-      Napi::TypeError::New(env, "unknown exception caught").ThrowAsJavaScriptException();
+      Napi::Error::New(env, "unknown exception caught").ThrowAsJavaScriptException();
       return env.Null();
     }
 }

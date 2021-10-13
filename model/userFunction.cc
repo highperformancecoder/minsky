@@ -23,14 +23,36 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 
-#include <exprtk/exprtk.hpp>
+// preload these system headers here, to prevent them from being loaded into anonymous namespace
+#include <algorithm>
+#include <cctype>
 #include <cmath>
+#include <complex>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <deque>
+#include <exception>
+#include <functional>
+#include <iterator>
+#include <limits>
+#include <list>
+#include <map>
+#include <set>
+#include <stack>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace minsky
 {
   int UserFunction::nextId=0;
-  
-  namespace {
+
+#pragma GCC visibility push(hidden)
+  namespace __attribute__((visibility("hidden"))) {
+    // include anonymously to reduce the number of exported linker symbols
+#include <exprtk/exprtk.hpp>
     // resolve overloads
     inline double isfinite(double x) {return std::isfinite(x);}
     inline double isinf(double x) {return std::isinf(x);}
@@ -63,6 +85,7 @@ namespace minsky
       }
     };
   }
+#pragma GCC visibility pop
 
   struct UserFunction::Impl
   {
