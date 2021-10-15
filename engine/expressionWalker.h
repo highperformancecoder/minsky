@@ -62,6 +62,7 @@ namespace minsky
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <deque>
 #include <exception>
 #include <functional>
@@ -75,6 +76,13 @@ namespace minsky
 #include <string>
 #include <utility>
 #include <vector>
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+#   include <windows.h>
+#else
+#   include <sys/time.h>
+#   include <sys/types.h>
+#endif
+
 // load into anonymous namespace to reduce the number of linker symbols being exported
 namespace
 {

@@ -40,11 +40,14 @@ HAVE_NODE=$(shell if which node>&/dev/null; then echo 1; fi)
 $(warning have node=$(HAVE_NODE))
 ifeq ($(HAVE_NODE),1)
   NODE_VERSION=$(shell node -v|sed -r -e 's/[^0-9]*([0-9]*).*/\1/')
+ifdef MXE
+  NODE_HEADER=/usr/include/node$(NODE_VERSION)
+else
   NODE_HEADER=$(call search,include/node$(NODE_VERSION))
+endif
   HAVE_NAPI=$(words $(NODE_HEADER))
   FLAGS+=-fno-omit-frame-pointer
   NODE_FLAGS=-I$(NODE_HEADER) -Inode_modules/node-addon-api
-#-fno-rtti
   NODE_FLAGS+='-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS'
   NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS' '-DBUILDING_NODE_EXTENSION'
 
@@ -52,6 +55,7 @@ ifeq ($(HAVE_NODE),1)
   ifeq ($(words $(wildcard node_modules/node-addon-api)),0)
      npm_install:=$(shell npm install)
   endif
+
 endif
 
 
@@ -122,9 +126,11 @@ endif
 ifdef MXE
 BOOST_EXT=-mt-x64
 EXE=.exe
+DL=dll
 FLAGS+=-Wa,-mbig-obj
 else
 EXE=
+DL=so
 BOOST_EXT=
 # try to autonomously figure out which boost extension we should be using
   ifeq ($(shell if $(CPLUSPLUS) test/testmain.cc $(LIBS) -lboost_system>&/dev/null; then echo 1; else echo 0; fi),0)
@@ -215,8 +221,8 @@ RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 getContext.o: getContext.cc
 	g++ -ObjC++ -DMAC_OSX_TK -I/opt/local/include -Iinclude -c $< -o $@
 
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
-	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@
+gui-tk/minsky$(EXE): $(GUI_TK_OBJS) libminsky.$(DL)
+	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. -lminsky $(LIBS) $(GUI_LIBS) -o $@
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
 # make a local copy the TCL libraries
@@ -225,11 +231,17 @@ ifdef MXE
 	cp -r $(TK_LIB) gui-tk/library/tk
 endif
 
-RESTService/minsky-RESTService$(EXE): RESTService.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
-	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
+RESTService/minsky-RESTService$(EXE): RESTService.o libminskyRESTService.$(DL)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. -lminskyRESTService -lminsky $(LIBS) -o $@
 
-RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
-	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
+RESTService/minsky-httpd$(EXE): httpd.o libminskyRESTService.$(DL)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. -lminskyRESTService -lminsky $(LIBS) -o $@
+
+libminsky.$(DL): $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) -shared $^ $(LIBS) -o $@
+
+libminskyRESTService.$(DL): $(RESTSERVICE_OBJS) libminsky.$(DL)
+	$(LINK) $(FLAGS) -shared $^ -L. -lminsky $(LIBS) -o $@
 
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
 	rm -f $@
@@ -250,8 +262,8 @@ endif
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
 # N-API node embedded RESTService
-RESTService/addon.node: addon.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
-	g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+RESTService/addon.node: addon.o
+	g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group -L. -lminskyRESTService -lminsky $(LIBS)
 
 addon.o: addon.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
