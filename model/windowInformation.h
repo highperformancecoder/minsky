@@ -35,9 +35,9 @@ namespace minsky
 {
   class WindowInformation
   {
-    bool isRendering;
+    bool isRendering=false;
 #ifdef USE_WIN32_SURFACE
-    HWND parentWindowId;
+    HWND parentWindowId, childWindowId;
     HDC hdcMem; // backing buffer bitmap device context
     HBITMAP hbmMem; // backing buffer pixmap
     HANDLE hOld;    // 
@@ -64,7 +64,7 @@ namespace minsky
       
   public:
     ~WindowInformation();
-    WindowInformation(unsigned long parentWin, int left, int top, int cWidth, int cHeight);
+    WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight);
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
 

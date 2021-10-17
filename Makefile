@@ -36,6 +36,25 @@ build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
 endif
 
+HAVE_NODE=$(shell if which node>&/dev/null; then echo 1; fi)
+$(warning have node=$(HAVE_NODE))
+ifeq ($(HAVE_NODE),1)
+  NODE_VERSION=$(shell node -v|sed -r -e 's/[^0-9]*([0-9]*).*/\1/')
+  NODE_HEADER=$(call search,include/node$(NODE_VERSION))
+  HAVE_NAPI=$(words $(NODE_HEADER))
+  FLAGS+=-fno-omit-frame-pointer
+  NODE_FLAGS=-I$(NODE_HEADER) -Inode_modules/node-addon-api
+#-fno-rtti
+  NODE_FLAGS+='-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS'
+  NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS' '-DBUILDING_NODE_EXTENSION'
+
+# ensure node-addon-api installed
+  ifeq ($(words $(wildcard node_modules/node-addon-api)),0)
+     npm_install:=$(shell npm install)
+  endif
+endif
+
+
 # override the install prefix here
 PREFIX=/usr/local
 
@@ -60,9 +79,13 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o addon.o
 
 EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
+
+ifeq ($(HAVE_NAPI),1)
+EXES+=RESTService/addon.node
+endif
 
 FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
 
@@ -225,6 +248,13 @@ ifndef TRAVIS
 endif
 
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
+
+# N-API node embedded RESTService
+RESTService/addon.node: addon.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
+	g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+
+addon.o: addon.cc
+	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
 $(EXES): RavelCAPI/libravelCAPI.a
 

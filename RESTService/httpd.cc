@@ -204,6 +204,7 @@ int main(int argc, const char* argv[])
           res.keep_alive(req.keep_alive());
           res.body() = ex.what();
           http::write(socket, res);
+          cout<<ex.what()<<endl;
         }
       // redraw all surfaces that have requested it
       for (auto i: minsky::minsky().nativeWindowsToRedraw)
