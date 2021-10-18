@@ -91,6 +91,7 @@ namespace minsky
     // Draw a white rectangle (should we go for transparent instead?) and set source rgb back to black
     // TODO:: Resetting the color be implemented in canvas class - as depending on context colors might change.
 
+    cairo_reset_clip(surface->cairo());
     cairo_set_source_rgb(surface->cairo(), 1, 1, 1);
     cairo_rectangle(surface->cairo(), 0, 0, surface->width(), surface->height());
     cairo_fill(surface->cairo());

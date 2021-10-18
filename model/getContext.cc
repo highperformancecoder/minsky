@@ -22,13 +22,39 @@
 #include <Appkit/NSGraphicsContext.h>
 #include <Appkit/NSWindow.h>
 #include <iostream>
+#include <exception>
+
+using namespace std;
 
 namespace minsky
 {
+
+  namespace
+  {
+    struct SetSignal
+    {
+      sig_t segvHandler;
+      SetSignal() {segvHandler=signal(SIGSEGV,signal_caught);}
+      ~SetSignal() {signal(SIGSEGV,segvHandler);}
+      static void signal_caught(int) {
+        throw runtime_error("Different process space not supported on MacOSX");
+      }
+    };
+  }
   
   NSContext::NSContext(void* nativeHandle,int xoffs,int yoffs)
   {
     std::cout << nativeHandle << std::endl;
+    NSView* view=reinterpret_cast<NSView*>(nativeHandle);
+    // check that we are passed a valid NSView pointer (must be an in-process call).
+    @try {
+      SetSignal sigHandler;
+      [view class];
+    }
+    @catch (NSException*)
+      {
+        throw runtime_error("Different process space not supported on MacOSX");
+      }
     std::cout << [reinterpret_cast<NSObject*>(nativeHandle) class] << std::endl;
     std::cout << [NSStringFromClass([reinterpret_cast<NSView*>(nativeHandle) class]) cStringUsingEncoding:NSUTF8StringEncoding] << std::endl;
     NSWindow* w=[reinterpret_cast<NSView*>(nativeHandle) window];
