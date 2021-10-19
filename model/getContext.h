@@ -20,15 +20,20 @@
 #ifndef GETCONTEXT_H
 #define GETCONTEXT_H
 #include <Carbon/Carbon.h>
+#include <cairo/cairo.h>
+#include <functional>
 
 namespace minsky
 {
+  struct ViewImpl;
+  class WindowInformation;
+  
   struct NSContext
   {
-    CGContextRef context;
-    void* graphicsContext;
-    NSContext(void* nativeHandle,int xoffs,int yoffs);
+    std::unique_ptr<ViewImpl> impl;
+    NSContext(void* nativeHandle,int xoffs,int yoffs,int width,int height,WindowInformation&);
     ~NSContext();
+    void requestRedraw();
     NSContext(const NSContext&)=delete;
     void operator=(const NSContext&)=delete;
   };

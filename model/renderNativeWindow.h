@@ -36,6 +36,7 @@ namespace minsky
     void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void draw();
+    void requestRedraw();
   };
 } // namespace minsky
 

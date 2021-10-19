@@ -19,16 +19,39 @@
 
 /// Process an electron native window handle into a CGContext for Cairo
 #include "getContext.h"
+#include "windowInformation.h"
 #include <Appkit/NSGraphicsContext.h>
 #include <Appkit/NSWindow.h>
+#include <AppKit/NSView.h>
+#include <cairo/cairo-quartz.h>
 #include <iostream>
 #include <exception>
+#include "minsky_epilogue.h"
 
 using namespace std;
+
+@interface CairoView: NSView
+{
+  minsky::WindowInformation* winfo;
+}
+-(void) drawRect: (NSRect)rect;
+// required to prevent the subview from stealing mouse events
+-(NSView*) hitTest: (NSPoint)aPoint;
+-(void) setWinfo: (minsky::WindowInformation*)winfo;
+@end
 
 namespace minsky
 {
 
+  struct ViewImpl
+  {
+    CairoView* cairoView;
+    ViewImpl(): cairoView([[CairoView alloc] init]) {[cairoView retain];}
+    ~ViewImpl() {[cairoView removeFromSuperview]; [cairoView release];}
+    ViewImpl(const ViewImpl&)=delete;
+    void operator=(const ViewImpl&)=delete;
+  };
+  
   namespace
   {
     struct SetSignal
@@ -42,7 +65,9 @@ namespace minsky
     };
   }
   
-  NSContext::NSContext(void* nativeHandle,int xoffs,int yoffs)
+  NSContext::NSContext(void* nativeHandle,int xoffs,int yoffs,int width,int height,
+                       WindowInformation& winfo)
+    
   {
     std::cout << nativeHandle << std::endl;
     NSView* view=reinterpret_cast<NSView*>(nativeHandle);
@@ -55,25 +80,45 @@ namespace minsky
       {
         throw runtime_error("Different process space not supported on MacOSX");
       }
-    std::cout << [reinterpret_cast<NSObject*>(nativeHandle) class] << std::endl;
-    std::cout << [NSStringFromClass([reinterpret_cast<NSView*>(nativeHandle) class]) cStringUsingEncoding:NSUTF8StringEncoding] << std::endl;
-    NSWindow* w=[reinterpret_cast<NSView*>(nativeHandle) window];
-    std::cout << w << std::endl;
-    NSGraphicsContext* g=[NSGraphicsContext graphicsContextWithWindow: w];
-    std::cout << g << std::endl;
-    graphicsContext=g;
-    [g retain];
-    context=[g CGContext];
-    std::cout << context << std::endl;
-    NSRect contentRect=[w contentRectForFrameRect: w.frame]; // allow for title bar
-    CGContextTranslateCTM(context,xoffs,contentRect.size.height-yoffs);
-    CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
-    std::cout << nativeHandle << " " << w << " " << g << " " << context << std::endl;
+
+    impl=make_unique<ViewImpl>();
+
+    //[impl->cairoView setFrameOrigin: NSMakePoint(xoffs, -yoffs)];
+    [impl->cairoView setFrameSize: NSMakeSize(width,height)];
+    [impl->cairoView setWinfo: &winfo];
+    [view addSubview: impl->cairoView];
   }
 
-  NSContext::~NSContext()
+  NSContext::~NSContext()=default;
+  
+  void NSContext::requestRedraw()
   {
-    [(NSGraphicsContext*)graphicsContext release];
+    cout << "redraw requested"<<endl;
+   [impl->cairoView setNeedsDisplay: true];
   }
- 
+
 }
+
+@implementation CairoView
+-(void) drawRect: (NSRect)rect
+{
+  if (winfo->getRenderingFlag()) return;
+  cout << "in drawRect"<<endl;
+  auto context = [[NSGraphicsContext currentContext] CGContext];
+  auto frame=[self frame];
+  CGContextTranslateCTM(context,0,NSHeight(frame));
+  CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
+  winfo->bufferSurface=make_shared<ecolab::cairo::Surface>(cairo_quartz_surface_create_for_cg_context(context, NSWidth(frame), NSHeight(frame)));
+  winfo->draw();
+  winfo->bufferSurface.reset();
+}
+- (NSView *) hitTest: (NSPoint) aPoint
+{
+  return nil;
+}
+
+-(void) setWinfo: (minsky::WindowInformation*)w
+{
+  winfo=w;
+}
+@end

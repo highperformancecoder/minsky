@@ -33,6 +33,8 @@
 #include <X11/Xlib.h>
 #endif
 
+#include <functional>
+
 namespace minsky
 {
   class WindowInformation
@@ -45,6 +47,7 @@ namespace minsky
     HANDLE hOld;    // 
 #elif defined(MAC_OSX_TK)
     NSContext nsContext;
+    friend struct NSContext;
 #elif defined(USE_X11)
     Window parentWindowId;
     Window childWindowId, bufferWindowId;
@@ -53,7 +56,6 @@ namespace minsky
     GC graphicsContext;
     XWindowAttributes wAttr;
 #endif
-    ecolab::cairo::SurfacePtr bufferSurface;
 
   public: 
     int childWidth;
@@ -61,15 +63,19 @@ namespace minsky
     int offsetLeft;
     int offsetTop;
       
+    ecolab::cairo::SurfacePtr bufferSurface;
+    std::function<void()> draw;
     bool getRenderingFlag();
     void setRenderingFlag(bool value);
     void copyBufferToMain();
       
   public:
     ~WindowInformation();
-    WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight);
+    // TODO refactor all these classes to avoid this dependency inversion
+    WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight,const std::function<void()>& draw);
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
+    void requestRedraw();
 
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;

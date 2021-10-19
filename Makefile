@@ -258,7 +258,7 @@ doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 # N-API node embedded RESTService
 RESTService/addon.node: addon.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 ifeq ($(OS),Darwin)
-	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.13 -arch x86_64 -stdlib=libc++  $^ $(LIBS)
+	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.13 -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
 else
 	g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif

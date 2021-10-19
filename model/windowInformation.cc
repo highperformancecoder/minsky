@@ -120,9 +120,10 @@ namespace minsky
     return isRendering;
   }
 
-  WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight)
+  WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight,
+                                       const std::function<void(void)>& draw)
 #ifdef MAC_OSX_TK
-    : nsContext(reinterpret_cast<void*>(parentWin),left,top)
+    : nsContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this), draw(draw)
 #endif
   {
 
@@ -162,4 +163,12 @@ namespace minsky
     bufferSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, bufferWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
 #endif
   }
+
+  void WindowInformation::requestRedraw()
+  {
+#ifdef MAC_OSX_TK
+    nsContext.requestRedraw();
+#endif
+  }
+
 } // namespace minsky

@@ -56,7 +56,7 @@ namespace minsky
 
     public:
       NativeSurface(RenderNativeWindow &r, cairo_surface_t *s = nullptr, int width = -1, int height = -1) : cairo::Surface(s, width, height), renderNativeWindow(r) {}
-      void requestRedraw() override { minsky().nativeWindowsToRedraw.insert(&renderNativeWindow); }
+      void requestRedraw() override { minsky().nativeWindowsToRedraw.insert(&renderNativeWindow); renderNativeWindow.requestRedraw();}
     };
   } // namespace
 
@@ -67,11 +67,19 @@ namespace minsky
   
   void RenderNativeWindow::renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
   {
-    winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight);
+    winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight, [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
-    draw();
+    surface->requestRedraw();
   }
 
+  void RenderNativeWindow::requestRedraw()
+  {
+#ifdef MAC_OSX_TK
+    if (winInfoPtr.get()) winInfoPtr->requestRedraw();
+#endif
+  }
+
+  
   void RenderNativeWindow::draw()
   {
     if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
@@ -83,21 +91,28 @@ namespace minsky
     unsigned long t0_render_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 #endif
 
-    winInfoPtr->setRenderingFlag(true);
 
     auto surfaceToDraw = winInfoPtr->getBufferSurface();
+    cout << "surface to draw is "<<hex<<surfaceToDraw.get()<<endl;
+    if (!surfaceToDraw) return;
+    winInfoPtr->setRenderingFlag(true);
     surfaceToDraw.swap(surface);
 
     // Draw a white rectangle (should we go for transparent instead?) and set source rgb back to black
     // TODO:: Resetting the color be implemented in canvas class - as depending on context colors might change.
 
+    cout << dec<<winInfoPtr->childWidth <<" "<< winInfoPtr->childHeight<<endl;
+    
     cairo_reset_clip(surface->cairo());
-    cairo_set_source_rgb(surface->cairo(), 1, 1, 1);
-    cairo_rectangle(surface->cairo(), 0, 0, surface->width(), surface->height());
+    cairo_set_source_rgba(surface->cairo(), .5, .5, .5, .3);
+    cairo_rectangle(surface->cairo(), 0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
     cairo_fill(surface->cairo());
     cairo_set_source_rgb(surface->cairo(), 0, 0, 0);
 
-    redraw(0, 0, surface->width(), surface->height());
+//  cairo_arc(surface->cairo(), 100,100,100,0,2*M_PI);
+//  cairo_set_source_rgb(surface->cairo(),1,0,0);
+//  cairo_fill(surface->cairo());
+    redraw(0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
 
 #ifdef FPS_PROFILING_ON
     unsigned long t1_png_stream_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
