@@ -68,7 +68,7 @@ namespace minsky
   class SaveThread;
   
   // handle the display of rendered equations on the screen
-  class EquationDisplay: public RenderNativeWindow
+  class EquationDisplay: public RenderNativeWindow, public EventInterface
   {
     Minsky& m;
     double m_width=0, m_height=0;

@@ -221,8 +221,8 @@ RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 getContext.o: getContext.cc
 	g++ -ObjC++ -DMAC_OSX_TK -I/opt/local/include -Iinclude -c $< -o $@
 
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS) libminsky.$(DL)
-	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. -lminsky $(LIBS) $(GUI_LIBS) -o $@
+gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
 # make a local copy the TCL libraries
@@ -231,11 +231,11 @@ ifdef MXE
 	cp -r $(TK_LIB) gui-tk/library/tk
 endif
 
-RESTService/minsky-RESTService$(EXE): RESTService.o libminskyRESTService.$(DL)
-	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. -lminskyRESTService -lminsky $(LIBS) -o $@
+RESTService/minsky-RESTService$(EXE): RESTService.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
 
-RESTService/minsky-httpd$(EXE): httpd.o libminskyRESTService.$(DL)
-	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. -lminskyRESTService -lminsky $(LIBS) -o $@
+RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
 
 libminsky.$(DL): $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) -shared $^ $(LIBS) -o $@
@@ -262,8 +262,8 @@ endif
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
 # N-API node embedded RESTService
-RESTService/addon.node: addon.o
-	g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group -L. -lminskyRESTService -lminsky $(LIBS)
+RESTService/addon.node: addon.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
+	g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group -L. $(LIBS)
 
 addon.o: addon.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
