@@ -972,7 +972,7 @@ pack .plts.canvas -fill both -expand 1
 bind .plts.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
 menu .plts.context -tearoff 0   
 
-bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDownCommon %x %y}
+bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDown %x %y}
 bind .plts.canvas <ButtonRelease-1> {wrapHoverMouseTab plotTab mouseUp %x %y}
 bind .plts.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab plotTab mouseMove %x %y}
 bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
@@ -981,7 +981,7 @@ bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
 addTab gdlys "Godleys" minsky.godleyTab
 pack .gdlys.canvas -fill both -expand 1
 
-bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDownCommon %x %y}
+bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDown %x %y}
 bind .gdlys.canvas <ButtonRelease-1> {wrapHoverMouseTab godleyTab mouseUp %x %y}
 bind .gdlys.canvas <Motion> {.gdlys.canvas configure -cursor {}; wrapHoverMouseTab godleyTab mouseMove %x %y}
 bind .gdlys.canvas <Leave> {after cancel hoverMouseTab godleyTab}
