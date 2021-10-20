@@ -39,9 +39,11 @@ endif
 HAVE_NODE=$(shell if which node>&/dev/null; then echo 1; fi)
 $(warning have node=$(HAVE_NODE))
 ifeq ($(HAVE_NODE),1)
+  NODE_API=
   NODE_VERSION=$(shell node -v|sed -r -e 's/[^0-9]*([0-9]*).*/\1/')
 ifdef MXE
   NODE_HEADER=/usr/include/node$(NODE_VERSION)
+  NODE_API+=node-api.o
 else
   NODE_HEADER=$(call search,include/node$(NODE_VERSION))
 endif
@@ -49,7 +51,9 @@ endif
   FLAGS+=-fno-omit-frame-pointer
   NODE_FLAGS=-I$(NODE_HEADER) -Inode_modules/node-addon-api
   NODE_FLAGS+='-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS'
-  NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS' '-DBUILDING_NODE_EXTENSION'
+  NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS'
+
+  $(warning node flags=$(NODE_FLAGS))
 
 # ensure node-addon-api installed
   ifeq ($(words $(wildcard node_modules/node-addon-api)),0)
@@ -87,11 +91,15 @@ ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJ
 
 EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
 
+DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
+MINSKYLIBS=-lminsky -lminskyEngine -lcivita
+
 ifeq ($(HAVE_NAPI),1)
-EXES+=RESTService/addon.node
+EXES+=RESTService/addon.node RESTService/dummy-addon.node
 endif
 
 FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
+#-fvisibility-inlines-hidden
 
 VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
 
@@ -127,7 +135,8 @@ ifdef MXE
 BOOST_EXT=-mt-x64
 EXE=.exe
 DL=dll
-FLAGS+=-Wa,-mbig-obj
+FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
+# -flto
 else
 EXE=
 DL=so
@@ -221,8 +230,8 @@ RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 getContext.o: getContext.cc
 	g++ -ObjC++ -DMAC_OSX_TK -I/opt/local/include -Iinclude -c $< -o $@
 
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS) libminsky.$(DL)
-	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. -lminsky $(LIBS) $(GUI_LIBS) -o $@
+gui-tk/minsky$(EXE): $(GUI_TK_OBJS)  $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 $(LIBS) $(GUI_LIBS) -o $@
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
 # make a local copy the TCL libraries
@@ -231,17 +240,11 @@ ifdef MXE
 	cp -r $(TK_LIB) gui-tk/library/tk
 endif
 
-RESTService/minsky-RESTService$(EXE): RESTService.o libminskyRESTService.$(DL)
-	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. -lminskyRESTService -lminsky $(LIBS) -o $@
+RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
-RESTService/minsky-httpd$(EXE): httpd.o libminskyRESTService.$(DL)
-	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. -lminskyRESTService -lminsky $(LIBS) -o $@
-
-libminsky.$(DL): $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
-	$(LINK) $(FLAGS) -shared $^ $(LIBS) -o $@
-
-libminskyRESTService.$(DL): $(RESTSERVICE_OBJS) libminsky.$(DL)
-	$(LINK) $(FLAGS) -shared $^ -L. -lminsky $(LIBS) -o $@
+RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
 	rm -f $@
@@ -262,10 +265,27 @@ endif
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
 # N-API node embedded RESTService
-RESTService/addon.node: addon.o
-	g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group -L. -lminskyRESTService -lminsky $(LIBS)
+RESTService/addon.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+ifdef MXE
+	$(LINK) -shared -o $@ $^ $(LIBS) 
+else
+	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+endif
+
+RESTService/dummy-addon.node: dummy-addon.o $(NODE_API)
+ifdef MXE
+	$(LINK) -shared -o $@ $^
+else
+	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group 
+endif
 
 addon.o: addon.cc
+	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
+
+dummy-addon.o: dummy-addon.cc
+	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
+
+node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
 $(EXES): RavelCAPI/libravelCAPI.a
@@ -273,7 +293,7 @@ $(EXES): RavelCAPI/libravelCAPI.a
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.rcd *.gcda *.gcno
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.rcd *.gcda *.gcno *.so *.dll *.dylib
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd
