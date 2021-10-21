@@ -74,10 +74,12 @@ namespace minsky
 
   void RenderNativeWindow::draw()
   {
+    cout << "draw"<<endl;
     if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
     {
       return;
     }
+    cout << "rendering"<<endl;
 
 #ifdef FPS_PROFILING_ON
     unsigned long t0_render_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();

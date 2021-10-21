@@ -131,9 +131,7 @@ namespace minsky
 
 #ifdef USE_WIN32_SURFACE
     parentWindowId = reinterpret_cast<HWND>(parentWin);
-    char className[1024];
-    GetClassNameA(parentWindowId,className,sizeof(className));
-    childWindowId=CreateWindowA(className, "", WS_CHILD, left, top, childWidth, childHeight, parentWindowId, nullptr, GetModuleHandleA(nullptr), nullptr);
+    childWindowId=CreateWindowA("", "", WS_CHILD, left, top, childWidth, childHeight, parentWindowId, nullptr, GetModuleHandleA(nullptr), nullptr);
     HDC hdc=GetDC(childWindowId);
     hdcMem=CreateCompatibleDC(hdc);
     hbmMem=CreateCompatibleBitmap(hdc, childWidth, childHeight);
