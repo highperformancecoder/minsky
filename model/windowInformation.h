@@ -31,6 +31,9 @@
 #include <X11/Xlib.h>
 #endif
 
+#include <thread>
+#include <atomic>
+
 namespace minsky
 {
   class WindowInformation
@@ -48,6 +51,17 @@ namespace minsky
     Display*	display; // Weak reference, returned by system
     GC graphicsContext;
     XWindowAttributes wAttr;
+
+    struct EventThread: std::thread
+    {
+      WindowInformation& winfo;
+      std::atomic<bool> running{true};
+      void run();
+      EventThread(WindowInformation& w): thread([this]{run();}), winfo(w) {}
+      ~EventThread() {running=false; join();}
+    };
+
+    std::unique_ptr<EventThread> eventThread;
 #endif
     ecolab::cairo::SurfacePtr bufferSurface;
 
@@ -69,6 +83,7 @@ namespace minsky
     WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight);
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
+    void blit(int x, int y, int width, int height);
 
     
     

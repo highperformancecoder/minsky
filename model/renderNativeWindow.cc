@@ -110,8 +110,8 @@ namespace minsky
 #endif
 
     surfaceToDraw.swap(surface);
-    winInfoPtr->copyBufferToMain();
     winInfoPtr->setRenderingFlag(false);
+    winInfoPtr->copyBufferToMain();
 
     
 #ifdef FPS_PROFILING_ON

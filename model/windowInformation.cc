@@ -100,9 +100,7 @@ namespace minsky
     InvalidateRect(childWindowId,nullptr,true);
     PostMessageA(childWindowId,WM_PAINT,0,0);
 #elif defined(USE_X11)
-    XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
-    XFlush(display);
-    XRaiseWindow(display, childWindowId);
+    blit(0,0,childWidth,childHeight);
 #endif
   }
 
@@ -125,16 +123,47 @@ namespace minsky
       {
       case WM_PAINT:
         {
-          PAINTSTRUCT ps;
-          HDC dc=BeginPaint(hwnd, &ps);
-          BitBlt(dc, /*bb.left+winfo->offsetLeft*/0, /*bb.top+winfo->offsetTop*/0, winfo->childWidth,winfo->childHeight,winfo->hdcMem,0,0,SRCCOPY);
-          EndPaint(hwnd, &ps);
+          RECT r;
+          if (GetUpdateRect(hwnd,&r,false))
+            winfo->blit(r.left, r.top, r.right-r.left, r.bottom-r.top);
         }
         return 0;
       case WM_NCHITTEST:
         return HTTRANSPARENT;
       default:
         return DefWindowProc(hwnd, msg, wparam, lparam);
+      }
+  }
+#endif
+
+  void WindowInformation::blit(int x, int y, int width, int height)
+  {
+#ifdef USE_WIN32_SURFACE
+    PAINTSTRUCT ps;
+    HDC dc=BeginPaint(childWindowId, &ps);
+    BitBlt(dc, x, y, width,height,hdcMem,x,y,SRCCOPY);
+    EndPaint(childWindowId, &ps);
+#elif defined(USE_X11)
+    XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, x, y, width, height, x, y);
+    XFlush(display);
+    XRaiseWindow(display, childWindowId);
+#endif
+  }
+
+#if defined(USE_X11)
+  void WindowInformation::EventThread::run()
+  {
+    while (running)
+      {
+        XEvent event;
+        if (winfo.getRenderingFlag() || winfo.childWindowId==-1 || !XCheckWindowEvent(winfo.display, winfo.childWindowId, ExposureMask, &event))
+          {
+            this_thread::sleep_for(50ms); //thottle, to avoid starving other threads
+            continue;
+          }
+        cout << "event "<<event.type<<" received"<<endl;
+        if (event.type==Expose)
+          winfo.blit(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
       }
   }
 #endif
@@ -171,14 +200,19 @@ namespace minsky
     if (err > 1)
       throw runtime_error("Invalid window: " + to_string(parentWin));
 
-    // TODO:: Do some sanity checks on dimensions 
-
+    // TODO:: Do some sanity checks on dimensions
+ 
     childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, MINSKY_CANVAS_BACKGROUND_COLOR);
     bufferWindowId = XCreatePixmap(display, parentWin, childWidth, childHeight, wAttr.depth);
     graphicsContext=XCreateGC(display, childWindowId, 0, nullptr);
     
     XMapWindow(display, childWindowId);
     bufferSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, bufferWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
+
+    // listen to expose events
+    XSelectInput(display, childWindowId, ExposureMask);
+    eventThread.reset(new EventThread(*this)); // delay construction of this until after the window is created
+
 #endif
   }
 } // namespace minsky
