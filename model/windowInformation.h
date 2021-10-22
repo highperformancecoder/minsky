@@ -38,7 +38,6 @@ namespace minsky
     bool isRendering=false;
 #ifdef USE_WIN32_SURFACE
     HWND parentWindowId, childWindowId;
-    HDC hdcMem; // backing buffer bitmap device context
     HBITMAP hbmMem; // backing buffer pixmap
     HANDLE hOld;    // 
 #elif defined(MAC_OSX_TK)
@@ -53,6 +52,9 @@ namespace minsky
     ecolab::cairo::SurfacePtr bufferSurface;
 
   public: 
+#ifdef USE_WIN32_SURFACE
+    HDC hdcMem; // backing buffer bitmap device context
+#endif
     int childWidth;
     int childHeight;
     int offsetLeft;
@@ -68,6 +70,8 @@ namespace minsky
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
 
+    
+    
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;
   };

@@ -94,7 +94,7 @@ namespace minsky
     // TODO:: Resetting the color be implemented in canvas class - as depending on context colors might change.
 
     cairo_reset_clip(surface->cairo());
-    cairo_set_source_rgb(surface->cairo(), 1, 1, 1);
+    cairo_set_source_rgb(surface->cairo(), .8, .8, .8);
     cairo_rectangle(surface->cairo(), 0, 0, surface->width(), surface->height());
     cairo_fill(surface->cairo());
     cairo_set_source_rgb(surface->cairo(), 0, 0, 0);

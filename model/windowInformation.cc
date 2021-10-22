@@ -34,6 +34,7 @@
 #ifdef _WIN32
 #undef Realloc
 #include <windows.h>
+#include <windowsx.h>
 #include <wingdi.h>
 #include <winuser.h>
 #ifdef USE_WIN32_SURFACE
@@ -96,13 +97,8 @@ namespace minsky
   {
     cairo_surface_flush(bufferSurface->surface());
 #ifdef USE_WIN32_SURFACE
-    HDC hdc=GetDC(childWindowId);
-    RECT bb;
-    GetWindowRect(parentWindowId, &bb);
-    BitBlt(hdc, bb.left+offsetLeft, bb.top+offsetTop, childWidth,childHeight,hdcMem,0,0,SRCCOPY);
-    //ReleaseDC(parentWindowId, hdc);
-    ReleaseDC(childWindowId, hdc);
-    //BringWindowToTop(childWindowId);
+    InvalidateRect(childWindowId,nullptr,true);
+    PostMessageA(childWindowId,WM_PAINT,0,0);
 #elif defined(USE_X11)
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, 0, 0, childWidth, childHeight, 0, 0);
     XFlush(display);
@@ -120,6 +116,29 @@ namespace minsky
     return isRendering;
   }
 
+#ifdef USE_WIN32_SURFACE
+  LRESULT CALLBACK windowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+  {
+    WindowInformation* winfo=reinterpret_cast<WindowInformation*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+    //cout << "msg received "<<msg<<endl;
+    switch (msg)
+      {
+      case WM_PAINT:
+        {
+          PAINTSTRUCT ps;
+          HDC dc=BeginPaint(hwnd, &ps);
+          BitBlt(dc, /*bb.left+winfo->offsetLeft*/0, /*bb.top+winfo->offsetTop*/0, winfo->childWidth,winfo->childHeight,winfo->hdcMem,0,0,SRCCOPY);
+          EndPaint(hwnd, &ps);
+        }
+        return 0;
+      case WM_NCHITTEST:
+        return HTTRANSPARENT;
+      default:
+        return DefWindowProc(hwnd, msg, wparam, lparam);
+      }
+  }
+#endif
+  
   WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight)
   {
 
@@ -131,13 +150,18 @@ namespace minsky
 
 #ifdef USE_WIN32_SURFACE
     parentWindowId = reinterpret_cast<HWND>(parentWin);
-    childWindowId=CreateWindowA("", "", WS_CHILD, left, top, childWidth, childHeight, parentWindowId, nullptr, GetModuleHandleA(nullptr), nullptr);
+    auto style=GetWindowLong(parentWindowId, GWL_STYLE);
+    SetWindowLongPtrA(parentWindowId, GWL_STYLE, style|WS_CLIPCHILDREN);
+    childWindowId=CreateWindowA("Button", "", WS_CHILD | WS_VISIBLE|WS_CLIPSIBLINGS, left, top, childWidth, childHeight, parentWindowId, nullptr, nullptr, nullptr);
+    SetWindowRgn(childWindowId,CreateRectRgn(0,0,childWidth, childHeight),true);
     HDC hdc=GetDC(childWindowId);
     hdcMem=CreateCompatibleDC(hdc);
     hbmMem=CreateCompatibleBitmap(hdc, childWidth, childHeight);
     ReleaseDC(parentWindowId, hdc);
     hOld=SelectObject(hdcMem, hbmMem);
     bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdcMem),childWidth, childHeight));
+    SetWindowLongPtrA(childWindowId, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+    SetWindowLongPtrA(childWindowId, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(windowProc));
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
     parentWindowId = parentWin;
