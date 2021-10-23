@@ -20,6 +20,7 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
+#include "eventInterface.h"
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
@@ -48,7 +49,7 @@ namespace minsky
     NoAssign& operator=(const U& x) {T::operator=(x); return *this;}
   };
   
-  class Canvas: public RenderNativeWindow
+  class Canvas: public RenderNativeWindow, public EventInterface
   {
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
@@ -132,17 +133,11 @@ namespace minsky
     ecolab::cairo::SurfacePtr& surface() {return ecolab::CairoSurface::surface;}
     
     /// event handling for the canvas
-    void mouseDown(float x, float y);
-    void controlMouseDown(float x, float y);
-    void mouseUp(float x, float y);
-    void mouseMove(float x, float y);
-    /// handle key press over current itemFocus,
-    /// @param keySym the X key sym code
-    /// @param utf8 utf8 encoded character
-    /// @param state modifer state 1=shift, 2=caps lock, 4=ctrl, 8=alt
-    /// @param x & y contain mouse coordinates
-    /// @return true if event handled
-    bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn);
+    void mouseDown(float x, float y) override;
+    void controlMouseDown(float x, float y) override;
+    void mouseUp(float x, float y) override;
+    void mouseMove(float x, float y) override;
+    bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn) override;
     void displayDelayedTooltip(float x, float y);
     
     /// return closest visible port to (x,y). nullptr is nothing suitable

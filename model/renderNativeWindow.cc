@@ -74,10 +74,12 @@ namespace minsky
 
   void RenderNativeWindow::draw()
   {
+    cout << "draw"<<endl;
     if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
     {
       return;
     }
+    cout << "rendering"<<endl;
 
 #ifdef FPS_PROFILING_ON
     unsigned long t0_render_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -92,7 +94,7 @@ namespace minsky
     // TODO:: Resetting the color be implemented in canvas class - as depending on context colors might change.
 
     cairo_reset_clip(surface->cairo());
-    cairo_set_source_rgb(surface->cairo(), 1, 1, 1);
+    cairo_set_source_rgb(surface->cairo(), .8, .8, .8);
     cairo_rectangle(surface->cairo(), 0, 0, surface->width(), surface->height());
     cairo_fill(surface->cairo());
     cairo_set_source_rgb(surface->cairo(), 0, 0, 0);
@@ -108,8 +110,8 @@ namespace minsky
 #endif
 
     surfaceToDraw.swap(surface);
-    winInfoPtr->copyBufferToMain();
     winInfoPtr->setRenderingFlag(false);
+    winInfoPtr->copyBufferToMain();
 
     
 #ifdef FPS_PROFILING_ON

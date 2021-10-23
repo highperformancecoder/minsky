@@ -62,7 +62,7 @@ namespace minsky
     return (colX(x)>=0 && rowY(y)>=0)? internal: background;
   }
       
-  void ItemTab::mouseDownCommon(float x, float y)
+  void ItemTab::mouseDown(float x, float y)
   {
     switch (clickType(x-offsx,y-offsy))
       {

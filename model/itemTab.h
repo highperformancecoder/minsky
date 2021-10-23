@@ -23,6 +23,7 @@
 #include "variable.h"
 #include "grid.h"
 #include <pango.h>
+#include "eventInterface.h"
 #include "renderNativeWindow.h"
 #include "classdesc_access.h"
 
@@ -40,7 +41,7 @@ namespace minsky
     }
   };
 		 
-  class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>
+  class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>, public EventInterface
   {
     CLASSDESC_ACCESS(ItemTab);         
   protected:
@@ -81,10 +82,9 @@ namespace minsky
     bool redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
 
-    /// event handling for the canvas
-    void mouseDownCommon(float x, float y);
-    void mouseUp(float x, float y);
-    void mouseMove(float x, float y);    
+    void mouseDown(float x, float y) override;
+    void mouseUp(float x, float y) override;
+    void mouseMove(float x, float y) override;    
     virtual ItemPtr itemAt(float x, float y);
     void displayDelayedTooltip(float x, float y);        
        
