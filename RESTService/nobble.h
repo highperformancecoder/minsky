@@ -52,7 +52,7 @@ NOBBLE(NOBBLE_TARG(std::chrono::time_point<C,D>), NOBBLE_TARG(class C, class D))
 NOBBLE(NOBBLE_TARG(std::chrono::duration<R,P>), NOBBLE_TARG(class R, class P))
 NOBBLE(std::istream,)
 NOBBLE(std::initializer_list<T>,class T)
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long unsigned int*, std::vector<T>>),class T)
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long long unsigned int*, std::vector<T>>),class T)
 #elif defined(__clang__)
