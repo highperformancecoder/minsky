@@ -34,6 +34,8 @@
 #include "dataSpecSchema.rcd"
 #include "dimension.rcd"
 #include "evalGodley.rcd"
+#include "eventInterface.rcd"
+#include "eventInterface.xcd"
 #include "fontDisplay.rcd"
 #include "godleyIcon.rcd"
 #include "godleyTable.rcd"

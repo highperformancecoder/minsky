@@ -34,6 +34,8 @@
 #endif
 
 #include <functional>
+#include <thread>
+#include <atomic>
 
 namespace minsky
 {
@@ -42,7 +44,6 @@ namespace minsky
     bool isRendering=false;
 #ifdef USE_WIN32_SURFACE
     HWND parentWindowId, childWindowId;
-    HDC hdcMem; // backing buffer bitmap device context
     HBITMAP hbmMem; // backing buffer pixmap
     HANDLE hOld;    // 
 #elif defined(MAC_OSX_TK)
@@ -55,9 +56,23 @@ namespace minsky
     Display*	display; // Weak reference, returned by system
     GC graphicsContext;
     XWindowAttributes wAttr;
+
+    struct EventThread: std::thread
+    {
+      WindowInformation& winfo;
+      std::atomic<bool> running{true};
+      void run();
+      EventThread(WindowInformation& w): thread([this]{run();}), winfo(w) {}
+      ~EventThread() {running=false; join();}
+    };
+
+    std::unique_ptr<EventThread> eventThread;
 #endif
 
   public: 
+#ifdef USE_WIN32_SURFACE
+    HDC hdcMem; // backing buffer bitmap device context
+#endif
     int childWidth;
     int childHeight;
     int offsetLeft;
@@ -76,7 +91,8 @@ namespace minsky
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
     void requestRedraw();
-
+    void blit(int x, int y, int width, int height);
+    
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;
   };
