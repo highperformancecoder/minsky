@@ -29,7 +29,11 @@ endif
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
-build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) $(JOBS) all-without-models))
+build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) $(JOBS) all-without-models; echo $$?)
+ifneq ($(build_ecolab),0)
+$(error Making ecolab failed with code: $(build_ecolab))
+exit 1
+endif
 $(warning $(build_ecolab))
 include $(ECOLAB_HOME)/include/Makefile
 build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
