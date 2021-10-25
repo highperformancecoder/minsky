@@ -43,11 +43,11 @@ ifeq ($(HAVE_NODE),1)
 ifeq ($(OS),Darwin)
   NODE_HEADER=/usr/local/include/node
 else
+  NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
 ifdef MXE
   NODE_HEADER=/usr/include/node$(NODE_VERSION)
   NODE_API+=node-api.o
 else
-  NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
   NODE_HEADER=$(call search,include/node$(NODE_VERSION))
 endif
 endif
