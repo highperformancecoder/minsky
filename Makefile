@@ -101,7 +101,7 @@ DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
 MINSKYLIBS=-lminsky -lminskyEngine -lcivita
 
 ifeq ($(HAVE_NAPI),1)
-EXES+=RESTService/addon.node
+EXES+=RESTService/minskyRESTService.node
 endif
 
 FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
@@ -271,14 +271,14 @@ endif
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
 # N-API node embedded RESTService
-RESTService/addon.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+RESTService/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
 else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.13 -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
 else
-	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
 endif
 
@@ -332,7 +332,7 @@ install: gui-tk/minsky$(EXE)
 	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
 	mkdir -p $(PREFIX)/lib/minsky
 	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
-
+	cp RESTService/minskyRESTService.node $(PREFIX)/lib/minsky
 
 
 # runs the regression tests
