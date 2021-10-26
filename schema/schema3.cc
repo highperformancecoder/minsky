@@ -381,8 +381,14 @@ namespace schema3
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
-    x.itemTabX=y.itemTabX;
-    x.itemTabY=y.itemTabY;
+    if (isnan(y.itemTabX))
+      x.itemTabInitialised=false;
+    else
+      {
+        x.itemTabX=y.itemTabX;
+        x.itemTabY=y.itemTabY;
+        x.itemTabInitialised=true;
+      }
     x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
     x.iWidth(y.width);
