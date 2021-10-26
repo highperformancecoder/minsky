@@ -36,7 +36,7 @@ build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
 endif
 
-HAVE_NODE=$(shell if which node>&/dev/null; then echo 1; fi)
+HAVE_NODE=$(shell if which node >/dev/null 2>&1; then echo 1; fi)
 $(warning have node=$(HAVE_NODE))
 ifeq ($(HAVE_NODE),1)
   NODE_API=
@@ -49,6 +49,12 @@ ifdef MXE
   NODE_API+=node-api.o
 else
   NODE_HEADER=$(call search,include/node$(NODE_VERSION))
+  ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs
+    NODE_HEADER=$(call search,include/node)
+  endif
+  ifeq ($(NODE_HEADER),) 
+    $(error Can't find node header files)
+  endif
 endif
 endif
   HAVE_NAPI=$(words $(NODE_HEADER))
