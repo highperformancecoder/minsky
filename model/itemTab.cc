@@ -38,11 +38,12 @@ namespace minsky
                                          if (itemSelector(*i)) 
                                            {		                                 
                                              itemVector.emplace_back(*i);
-                                             if (isnan((*i)->itemTabX) || isnan((*i)->itemTabY))
+                                             if (!(*i)->itemTabInitialised)
                                                {
                                                  // NANs used to indicate the position on tab has not yet been initialised
                                                  (*i)->itemTabX=(*i)->x();
                                                  (*i)->itemTabY=(*i)->y();
+                                                 (*i)->itemTabInitialised=true;
                                                }
                                            }
                                          return false;
