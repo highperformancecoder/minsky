@@ -36,6 +36,12 @@ build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
 endif
 
+JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
+ifneq ($(JSON_SPIRIT_HEADER),)
+  FLAGS+=-I$(JSON_SPIRIT_HEADER)
+endif
+FLAGS+=-DJSON_SPIRIT_MVALUE_ENABLED
+
 ifneq ($(MAKECMDGOALS),clean)
   HAVE_NODE=$(shell if which node >/dev/null 2>&1; then echo 1; fi)
   $(warning have node=$(HAVE_NODE))
