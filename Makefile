@@ -371,6 +371,14 @@ MINSKY_VERSION=$(shell git describe)
 
 dist:
 	git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ HEAD -o /tmp/Minsky-$(MINSKY_VERSION).tar
+# add node api headers
+ifeq ($(HAVE_NODE),1)
+	rm -rf /tmp/$$
+	mkdir -p /tmp/$$/Minsky-$(MINSKY_VERSION)/node_modules
+	cp -r node_modules/node-addon-api /tmp/$$/Minsky-$(MINSKY_VERSION)/node_modules
+	cp -r $(NODE_HEADER)/* /tmp/$$/Minsky-$(MINSKY_VERSION)/node_modules/node-addon-api
+	tar rf /tmp/Minsky-$(MINSKY_VERSION).tar -C /tmp/$$ Minsky-$(MINSKY_VERSION)
+endif
 # add submodules
 	cd ecolab; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
