@@ -59,8 +59,10 @@ ifneq ($(MAKECMDGOALS),clean)
         ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs
           NODE_HEADER=$(call search,include/node)
         endif
-        ifeq ($(NODE_HEADER),) 
-          $(error Can't find node header files')
+        ifeq ($(NODE_HEADER),)
+          ifeq ($(words $(wildcard  node_modules/node-addon-api/node_api.h)),0)
+            $(error Can't find node header files')
+          endif
         endif
       endif
     endif
