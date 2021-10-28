@@ -63,12 +63,13 @@ ifneq ($(MAKECMDGOALS),clean)
           ifeq ($(words $(wildcard  node_modules/node-addon-api/node_api.h)),0)
             $(error Can't find node header files')
           endif
+        else
+          FLAGS+=-I$(NODE_HEADER)
         endif
       endif
     endif
-    HAVE_NAPI=$(words $(NODE_HEADER))
     FLAGS+=-fno-omit-frame-pointer
-    NODE_FLAGS=-I$(NODE_HEADER) -Inode_modules/node-addon-api
+    NODE_FLAGS=-Inode_modules/node-addon-api
     NODE_FLAGS+='-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS'
     NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS'
 
@@ -114,7 +115,7 @@ EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky
 DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
 MINSKYLIBS=-lminsky -lminskyEngine -lcivita
 
-ifeq ($(HAVE_NAPI),1)
+ifeq ($(HAVE_NODE),1)
 EXES+=RESTService/minskyRESTService.node
 endif
 
