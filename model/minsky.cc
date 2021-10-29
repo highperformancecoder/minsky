@@ -535,14 +535,16 @@ namespace minsky
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;
+    GodleyAssetClass::AssetClass target_ac;
     // matching liability with assets and vice-versa
     switch (ac)
       {
       case GodleyAssetClass::liability:
-        ac=GodleyAssetClass::asset;
+      case GodleyAssetClass::equity:
+        target_ac=GodleyAssetClass::asset;
         break;
       case GodleyAssetClass::asset:
-        ac=GodleyAssetClass::liability;
+        target_ac=GodleyAssetClass::liability;
         break;
       default:
         return r; // other types do not match anything
@@ -564,12 +566,15 @@ namespace minsky
                      v=':'+v; //NOLINT
                    else if (scope!=godley.group.lock())
                      continue; // variable is inaccessible
-                   if (gi==&godley || r.count(v) || gi->table._assetClass(i)!=ac) 
+                   if (r.count(v) || gi->table._assetClass(i)!=target_ac) 
                      {
                        r.erase(v); // column already duplicated, or in current, nothing to match
                        duplicatedColumns.insert(v);
                      }
-                   else if (!duplicatedColumns.count(v))
+                   else if (!duplicatedColumns.count(v) && gi->table._assetClass(i)==target_ac &&
+                            // insert unmatched asset columns from this table only for equity (feature #174)
+                            // otherwise matches are between separate tables
+                            ((ac!=GodleyAssetClass::equity && gi!=&godley) || (ac==GodleyAssetClass::equity && gi==&godley) ))
                      r.insert(v);
                  }
            }

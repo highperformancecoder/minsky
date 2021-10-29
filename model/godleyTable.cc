@@ -138,7 +138,8 @@ vector<string> GodleyTable::getColumnVariables() const
       string var=trimWS(cell(0,c));
       if (!var.empty())
         {
-          if (!uvars.insert(var).second)
+          // disable duplicate column test on equity columns (feature #174)
+          if (_assetClass(c)!=AssetClass::equity && !uvars.insert(var).second)
             throw error("Duplicate column label detected");
           vars.push_back(var);
         }
