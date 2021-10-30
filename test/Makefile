@@ -22,6 +22,12 @@ LIBS+=-L../RavelCAPI -lravelCAPI -ljson_spirit -lboost_system -lboost_thread \
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
 LIBS+=$(shell pkg-config --libs librsvg-2.0)
 
+JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
+ifneq ($(JSON_SPIRIT_HEADER),)
+  FLAGS+=-I$(JSON_SPIRIT_HEADER)
+endif
+FLAGS+=-DJSON_SPIRIT_MVALUE_ENABLED
+
 EXES=cmpFp checkSchemasAreSame
 #testDatabase testGroup 
 
