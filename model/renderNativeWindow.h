@@ -37,6 +37,8 @@ namespace minsky
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void draw();
     void requestRedraw();
+    // do not clobber winInfoPtr on load of model
+    RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
   };
 } // namespace minsky
 

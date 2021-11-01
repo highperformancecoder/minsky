@@ -154,6 +154,7 @@ namespace minsky
     /// indicate model has been changed since last saved
     void markEdited() {
       flags |= is_edited | reset_needed | fullEqnDisplay_needed;
+      canvas.requestRedraw();
       canvas.model.updateTimestamp();
     }
 

@@ -182,7 +182,7 @@ LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit\
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
-LIBS+=-lcrypt32
+LIBS+=-lcrypt32 -lshcore
 else
 LIBS+=-lclipboard -lxcb -lX11
 endif

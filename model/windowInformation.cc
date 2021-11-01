@@ -16,6 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#define NTDDI_VERSION NTDDI_WINBLUE
 #include "windowInformation.h"
 #include "minsky_epilogue.h"
 
@@ -37,6 +38,7 @@
 #include <windowsx.h>
 #include <wingdi.h>
 #include <winuser.h>
+#include <shellscalingapi.h>
 #ifdef USE_WIN32_SURFACE
 #include <cairo/cairo-win32.h>
 #endif
@@ -74,6 +76,7 @@ namespace minsky
 
   WindowInformation::~WindowInformation()
   {
+    //cout << "~WindowInformation()"<<endl;
     bufferSurface.reset();
 #ifdef USE_WIN32_SURFACE
     SelectObject(hdcMem, hOld);
@@ -82,10 +85,16 @@ namespace minsky
     DestroyWindow(childWindowId);
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
+    cout << "resetting eventThread"<<endl;
+    eventThread.reset(); //shut thread down before destroying window
+    cout << "XFreeGC()"<<endl;
     XFreeGC(display, graphicsContext);
+    cout << "XDestroyWindow(display, childWindowId)"<<endl;
     XDestroyWindow(display, childWindowId);
+    cout << "XDestroyWindow(display, bufferWindowId)"<<endl;
     XDestroyWindow(display, bufferWindowId);
 #endif
+    //cout << "leaving ~WindowInformation()"<<endl;
   }
 
   const ecolab::cairo::SurfacePtr& WindowInformation::getBufferSurface()
@@ -118,7 +127,6 @@ namespace minsky
   LRESULT CALLBACK windowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   {
     WindowInformation* winfo=reinterpret_cast<WindowInformation*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-    //cout << "msg received "<<msg<<endl;
     switch (msg)
       {
       case WM_PAINT:
@@ -144,9 +152,13 @@ namespace minsky
     BitBlt(dc, x, y, width,height,hdcMem,x,y,SRCCOPY);
     EndPaint(childWindowId, &ps);
 #elif defined(USE_X11)
+    cout << "copy area" << endl;
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, x, y, width, height, x, y);
+    cout << "flush" << endl;
     XFlush(display);
+    cout << "raise" << endl;
     XRaiseWindow(display, childWindowId);
+    cout << "finished blit"<<endl;
 #endif
   }
 
@@ -154,17 +166,31 @@ namespace minsky
   void WindowInformation::EventThread::run()
   {
     while (running)
+      try
       {
         XEvent event;
-        if (winfo.getRenderingFlag() || winfo.childWindowId==-1 || !XCheckWindowEvent(winfo.display, winfo.childWindowId, ExposureMask, &event))
+        if (winfo.getRenderingFlag() || winfo.childWindowId==-1 || !XCheckWindowEvent(winfo.display, winfo.childWindowId, ExposureMask|StructureNotifyMask, &event))
           {
             this_thread::sleep_for(50ms); //thottle, to avoid starving other threads
             continue;
           }
         cout << "event "<<event.type<<" received"<<endl;
-        if (event.type==Expose)
-          winfo.blit(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
+        switch (event.type)
+          {
+          case Expose:
+            cout << "Expose"<<endl;
+            winfo.blit(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
+            break;
+          case DestroyNotify:
+            cout << "Destroy"<<endl;
+            return; // exit thread, window has gone away
+          }
       }
+      catch (const std::exception& ex)
+        {
+          // absorb and log, not much else we can do with X11 errors at this point
+          cerr << ex.what() << endl;
+        }
   }
 #endif
   
@@ -174,7 +200,7 @@ namespace minsky
     : nsContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this), draw(draw)
 #endif
   {
-
+    //cout << "WindowInformation()"<<endl;
     offsetLeft = left;
     offsetTop = top;
 
@@ -183,6 +209,16 @@ namespace minsky
 
 #ifdef USE_WIN32_SURFACE
     parentWindowId = reinterpret_cast<HWND>(parentWin);
+
+    // adjust everything by the monitor scale factor
+    DEVICE_SCALE_FACTOR scaleFactor;
+    GetScaleFactorForMonitor(MonitorFromWindow(parentWindowId, MONITOR_DEFAULTTONEAREST), &scaleFactor);
+    double sf=scaleFactor/100.0;
+    top*=sf;
+    left*=sf;
+    childWidth*=sf;
+    childHeight*=sf;
+    
     auto style=GetWindowLong(parentWindowId, GWL_STYLE);
     SetWindowLongPtrA(parentWindowId, GWL_STYLE, style|WS_CLIPCHILDREN);
     childWindowId=CreateWindowA("Button", "", WS_CHILD | WS_VISIBLE|WS_CLIPSIBLINGS, left, top, childWidth, childHeight, parentWindowId, nullptr, nullptr, nullptr);
@@ -193,6 +229,8 @@ namespace minsky
     ReleaseDC(parentWindowId, hdc);
     hOld=SelectObject(hdcMem, hbmMem);
     bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdcMem),childWidth, childHeight));
+    if (scaleFactor>0)
+      cairo_surface_set_device_scale(bufferSurface->surface(), sf, sf);
     SetWindowLongPtrA(childWindowId, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
     SetWindowLongPtrA(childWindowId, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(windowProc));
 #elif defined(MAC_OSX_TK)
@@ -218,6 +256,7 @@ namespace minsky
     eventThread.reset(new EventThread(*this)); // delay construction of this until after the window is created
 
 #endif
+    //cout << "leaving WindowInformation()"<<endl;
   }
 
   void WindowInformation::requestRedraw()
