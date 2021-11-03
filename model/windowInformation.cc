@@ -195,7 +195,7 @@ namespace minsky
 #endif
   
   WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight,
-                                       const std::function<void(void)>& draw)
+                                       double sf,const std::function<void(void)>& draw)
 #ifdef MAC_OSX_TK
     : nsContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this), draw(draw)
 #endif
@@ -210,18 +210,31 @@ namespace minsky
 #ifdef USE_WIN32_SURFACE
     parentWindowId = reinterpret_cast<HWND>(parentWin);
 
-    // adjust everything by the monitor scale factor
-    DEVICE_SCALE_FACTOR scaleFactor;
-    GetScaleFactorForMonitor(MonitorFromWindow(parentWindowId, MONITOR_DEFAULTTONEAREST), &scaleFactor);
-    double sf=scaleFactor/100.0;
-    top*=sf;
-    left*=sf;
-    childWidth*=sf;
-    childHeight*=sf;
+    if (sf<=0)
+      {
+        // adjust everything by the monitor scale factor
+        DEVICE_SCALE_FACTOR scaleFactor;
+        GetScaleFactorForMonitor(MonitorFromWindow(parentWindowId, MONITOR_DEFAULTTONEAREST), &scaleFactor);
+        sf=scaleFactor/100.0;
+      }
+    cout << "scaling factor = "<<sf<<endl;
+    if (sf>0)
+      {
+        offsetLeft*=sf;
+        offsetTop*=sf;
+        childWidth*=sf;
+        childHeight*=sf;
+      }
+
+    {
+      RECT bb;
+      GetWindowRect(parentWindowId, &bb);
+      cout << "Parent width="<<(bb.right-bb.left)<<" height="<<(bb.bottom-bb.top)<<endl;
+    }
     
     auto style=GetWindowLong(parentWindowId, GWL_STYLE);
     SetWindowLongPtrA(parentWindowId, GWL_STYLE, style|WS_CLIPCHILDREN);
-    childWindowId=CreateWindowA("Button", "", WS_CHILD | WS_VISIBLE|WS_CLIPSIBLINGS, left, top, childWidth, childHeight, parentWindowId, nullptr, nullptr, nullptr);
+    childWindowId=CreateWindowA("Button", "", WS_CHILD | WS_VISIBLE|WS_CLIPSIBLINGS, offsetLeft, offsetTop, childWidth, childHeight, parentWindowId, nullptr, nullptr, nullptr);
     SetWindowRgn(childWindowId,CreateRectRgn(0,0,childWidth, childHeight),true);
     HDC hdc=GetDC(childWindowId);
     hdcMem=CreateCompatibleDC(hdc);
@@ -229,7 +242,7 @@ namespace minsky
     ReleaseDC(parentWindowId, hdc);
     hOld=SelectObject(hdcMem, hbmMem);
     bufferSurface.reset(new cairo::Surface(cairo_win32_surface_create(hdcMem),childWidth, childHeight));
-    if (scaleFactor>0)
+    if (sf>0)
       cairo_surface_set_device_scale(bufferSurface->surface(), sf, sf);
     SetWindowLongPtrA(childWindowId, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
     SetWindowLongPtrA(childWindowId, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(windowProc));
