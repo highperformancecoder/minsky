@@ -130,10 +130,10 @@ namespace minsky
         else
           {
             // move existing variable
+            assert(*v);
             vars.push_back(*v);
             alreadyAdded.insert(newVar->valueId());
             oldVars.erase(v);
-            assert(*v);
             if (myGroup) myGroup->removeItem(*newVar);
           }
         if (myGroup) myGroup->addItem(vars.back(),true);

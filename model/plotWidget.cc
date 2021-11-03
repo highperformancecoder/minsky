@@ -412,7 +412,7 @@ namespace minsky
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
     for (auto& i: yvars)
-      if (i && xvars[&i-&yvars[0]] && i->hypercube().xvectors.size())
+      if (i && !i->hypercube().xvectors.empty())
         {
           auto& xv=i->hypercube().xvectors[0];
           if (xv.dimension.type==Dimension::time)

@@ -83,12 +83,11 @@ namespace minsky
   
   void RenderNativeWindow::draw()
   {
-    cout << "draw"<<endl;
     if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
     {
       return;
     }
-    cout << "rendering"<<endl;
+    lock_guard<mutex> lock(winInfoPtr->rendering);
 
 #ifdef FPS_PROFILING_ON
     unsigned long t0_render_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -96,7 +95,6 @@ namespace minsky
 
 
     auto surfaceToDraw = winInfoPtr->getBufferSurface();
-    cout << "surface to draw is "<<hex<<surfaceToDraw.get()<<endl;
     if (!surfaceToDraw) return;
     winInfoPtr->setRenderingFlag(true);
     surfaceToDraw.swap(surface);
@@ -104,8 +102,6 @@ namespace minsky
     // Draw a white rectangle (should we go for transparent instead?) and set source rgb back to black
     // TODO:: Resetting the color be implemented in canvas class - as depending on context colors might change.
 
-    cout << dec<<winInfoPtr->childWidth <<" "<< winInfoPtr->childHeight<<endl;
-    
     cairo_reset_clip(surface->cairo());
     cairo_set_source_rgb(surface->cairo(), .8, .8, .8);
     cairo_rectangle(surface->cairo(), 0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);

@@ -33,15 +33,18 @@
 #include <X11/Xlib.h>
 #endif
 
-#include <functional>
-#include <thread>
 #include <atomic>
+#include <functional>
+#include <mutex>
+#include <thread>
 
 namespace minsky
 {
   class WindowInformation
   {
+    friend class RenderNativeWindow;
     bool isRendering=false;
+    std::mutex rendering;
 #ifdef USE_WIN32_SURFACE
     HWND parentWindowId, childWindowId;
     HBITMAP hbmMem; // backing buffer pixmap

@@ -210,7 +210,7 @@ namespace minsky
           {
             if (row>0 && row<scrollRowStart) continue;
 
-            if (drawButtons && col==0 && row>0 && col<rowWidgets.size())
+            if (drawButtons && col==0 && row>0 && row<rowWidgets.size())
               {
                 CairoSave cs(cairo);
                 cairo_move_to(cairo, 0, y);
@@ -220,7 +220,7 @@ namespace minsky
             CairoSave cs(cairo);
             if (row!=0 || col!=0)               
               {
-				// Make sure non-utf8 chars converted to utf8 as far as possible. for ticket 1166.  
+                // Make sure non-utf8 chars converted to utf8 as far as possible. for ticket 1166.  
                 string text=utf_to_utf<char>(m_godleyIcon.table.cell(row,col));
                 if (!text.empty())
                   {

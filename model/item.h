@@ -132,7 +132,8 @@ namespace minsky
   };
   
   class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>,
-              public classdesc::PolyRESTProcessBase, public classdesc::Exclude<ItemExclude>
+              public classdesc::PolyRESTProcessBase,
+              public classdesc::Exclude<ItemExclude>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
 

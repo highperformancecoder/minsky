@@ -71,7 +71,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
         {
           string jsonArguments=info[1].ToString();
           if (!jsonArguments.empty())
-            read(info[1].ToString(), arguments);
+            read(jsonArguments, arguments);
         }
       string cmd=info[0].ToString();
       auto response=String::New(env, write(registry.process(cmd, arguments)));

@@ -313,9 +313,9 @@ namespace minsky
       case 2: case 3: width=digits+2; decimal_places=digits-3; break;
       default: return ""; // shouldn't be here...
       }
-    char val[10];
+    char val[80];
     const char conv[]="%*.*f";
-    sprintf(val,conv,width,decimal_places,value*pow(10,-e.engExp));
+    snprintf(val,sizeof(val),conv,width,decimal_places,value*pow(10,-e.engExp));
     return val;
   }
   

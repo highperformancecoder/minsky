@@ -22,6 +22,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <mutex>
 
 #if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
 #define USE_WIN32_SURFACE
@@ -76,7 +77,6 @@ namespace minsky
 
   WindowInformation::~WindowInformation()
   {
-    //cout << "~WindowInformation()"<<endl;
     bufferSurface.reset();
 #ifdef USE_WIN32_SURFACE
     SelectObject(hdcMem, hOld);
@@ -85,16 +85,11 @@ namespace minsky
     DestroyWindow(childWindowId);
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
-    cout << "resetting eventThread"<<endl;
     eventThread.reset(); //shut thread down before destroying window
-    cout << "XFreeGC()"<<endl;
     XFreeGC(display, graphicsContext);
-    cout << "XDestroyWindow(display, childWindowId)"<<endl;
     XDestroyWindow(display, childWindowId);
-    cout << "XDestroyWindow(display, bufferWindowId)"<<endl;
     XDestroyWindow(display, bufferWindowId);
 #endif
-    //cout << "leaving ~WindowInformation()"<<endl;
   }
 
   const ecolab::cairo::SurfacePtr& WindowInformation::getBufferSurface()
@@ -152,37 +147,51 @@ namespace minsky
     BitBlt(dc, x, y, width,height,hdcMem,x,y,SRCCOPY);
     EndPaint(childWindowId, &ps);
 #elif defined(USE_X11)
-    cout << "copy area" << endl;
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, x, y, width, height, x, y);
-    cout << "flush" << endl;
     XFlush(display);
-    cout << "raise" << endl;
     XRaiseWindow(display, childWindowId);
-    cout << "finished blit"<<endl;
 #endif
   }
 
 #if defined(USE_X11)
   void WindowInformation::EventThread::run()
   {
+    this_thread::sleep_for(1000ms); //why? Even though this thread is
+                                    //created at the end of
+                                    //WindowInformation, it appears
+                                    //the object is still in a fragile
+                                    //state wil the unique_ptr is
+                                    //being constructed.
     while (running)
       try
       {
         XEvent event;
-        if (winfo.getRenderingFlag() || winfo.childWindowId==-1 || !XCheckWindowEvent(winfo.display, winfo.childWindowId, ExposureMask|StructureNotifyMask, &event))
-          {
-            this_thread::sleep_for(50ms); //thottle, to avoid starving other threads
-            continue;
-          }
-        cout << "event "<<event.type<<" received"<<endl;
+//        if (winfo.getRenderingFlag() || winfo.childWindowId==-1) 
+//          {
+//            this_thread::sleep_for(50ms); //thottle, to avoid starving other threads
+//            continue;
+//          }
+        bool eventReceived;
+        {
+          static std::mutex xMutex; // mutex to guard the not thread-safe XCheckWindowEvent
+          lock_guard<mutex> lock(xMutex);
+          lock_guard<mutex> renderLock(winfo.rendering);
+          eventReceived=XCheckWindowEvent(winfo.display, winfo.childWindowId, ExposureMask|StructureNotifyMask, &event);
+        }
+        if (!eventReceived)
+            {
+              this_thread::sleep_for(50ms); //thottle, to avoid starving other threads
+              continue;
+            }
         switch (event.type)
           {
           case Expose:
-            cout << "Expose"<<endl;
-            winfo.blit(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
+            {
+              lock_guard<mutex> lock(winfo.rendering);
+              winfo.blit(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
+            }
             break;
           case DestroyNotify:
-            cout << "Destroy"<<endl;
             return; // exit thread, window has gone away
           }
       }
@@ -200,7 +209,6 @@ namespace minsky
     : nsContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this), draw(draw)
 #endif
   {
-    //cout << "WindowInformation()"<<endl;
     offsetLeft = left;
     offsetTop = top;
 
@@ -252,11 +260,10 @@ namespace minsky
     bufferSurface.reset(new cairo::Surface(cairo_xlib_surface_create(display, bufferWindowId, wAttr.visual, childWidth, childHeight), childWidth, childHeight));
 
     // listen to expose events
-    XSelectInput(display, childWindowId, ExposureMask);
+    XSelectInput(display, childWindowId, ExposureMask|StructureNotifyMask);
     eventThread.reset(new EventThread(*this)); // delay construction of this until after the window is created
 
 #endif
-    //cout << "leaving WindowInformation()"<<endl;
   }
 
   void WindowInformation::requestRedraw()
