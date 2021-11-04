@@ -58,8 +58,8 @@ librsvg2-doc/artful,artful 2.40.18-1 all
 
 Notes
 -----
-* If you're working on the development head of Minsky, you should really build from EcoLab's development head.
-* json_spirit can also be built from [sources](https://www.codeproject.com/Articles/20027/JSON-Spirit-A-C-JSON-Parser-Generator-Implemented) instead of adding the opensuse build service as a repository. Github clones of json_spirit also exist. 
+* Use "git submodule update --init --recursive" to pick up the correct version of ecolab.
+* json_spirit can also be built from [sources](hhttps://github.com/highperformancecoder/json_spirit) instead of adding the opensuse build service as a repository. Other github clones of json_spirit also exist, but the highperformancecoder version has some modifications needed for Minsky, which have been pull requested upstream. 
 * [libclipboard's source code](https://github.com/jtanx/libclipboard)
 
 * For building json_spirit and libclipboard, you need cmake, which you can install from your package manager. On MinGW, you can use the normal Windows binary for CMake. Just type (cmake -G "Unix Makefiles" .) - if you don't specify the generator, it will default to Visual Studio.
