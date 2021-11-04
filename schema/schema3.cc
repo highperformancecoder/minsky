@@ -354,10 +354,10 @@ namespace schema3
                   });
   }
       
-  Minsky::operator minsky::Minsky() const
+  void Minsky::populateMinsky(minsky::Minsky& m) const
   {
-    minsky::Minsky m;
     minsky::LocalMinsky lm(m);
+    m.model->clear();
     populateGroup(*m.model);
 
     m.model->setZoom(zoomFactor);
@@ -367,7 +367,6 @@ namespace schema3
     m.fileVersion=minskyVersion;
     
     static_cast<minsky::Simulation&>(m)=rungeKutta;
-    return m;
   }
 
   void populateNote(minsky::NoteBase& x, const Note& y)

@@ -271,7 +271,8 @@ namespace schema3
       conversions(m.conversions) {}
     
     /// create a Minsky model from this
-    operator minsky::Minsky() const;
+    void populateMinsky(minsky::Minsky&) const;
+    
     /// populate a group object from this. This mutates the ids in a
     /// consistent way into the free id space of the global minsky
     /// object

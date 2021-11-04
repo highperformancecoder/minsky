@@ -939,7 +939,7 @@ namespace minsky
     stripByteOrderingMarker(inf);
     xml_unpack_t saveFile(inf);
     schema3::Minsky currentSchema(saveFile);
-    *this=currentSchema;
+    currentSchema.populateMinsky(*this);
     if (currentSchema.schemaVersion<currentSchema.version)
       message("You are converting the model from an older version of Minsky. "
               "Once you save this file, you may not be able to open this file"

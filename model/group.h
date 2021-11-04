@@ -60,13 +60,16 @@ namespace minsky
     Wires wires;
     std::vector<VariablePtr> inVariables, outVariables;
     GroupItems() {}
-    virtual ~GroupItems() {}
+    virtual ~GroupItems() {clear();}
     // copy operations not deleted to allow ItemT<Group> to compile
     GroupItems(const GroupItems& x) {};
     GroupItems& operator=(const GroupItems&) {return *this;}
     classdesc::Exclude<std::weak_ptr<Group>> self; ///< weak ref to this
     
     void clear() {
+      // controlled items need to be removed from a copy
+      auto itemsCopy=items;
+      for (auto& i: itemsCopy) i->removeControlledItems();
       items.clear();
       groups.clear();
       wires.clear();
