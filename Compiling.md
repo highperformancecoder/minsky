@@ -22,6 +22,7 @@ Dependencies
 * GSL (GNU Scientific Library) 
 * librsvg
 * openSSL
+* readline
 
 Hint: - if building on a Linux system, you can take a sneak peek at either [minsky.spec](https://build.opensuse.org/package/view_file/home:hpcoder1/minsky/minsky.dsc?expand=1) (for Redhat/Fedora/CentOS/OpenSUSE) or [minsky.dsc](https://build.opensuse.org/package/view_file/home:hpcoder1/minsky/minsky.dsc?expand=1) (for Debian/Ubuntu) at  to see what packages you can install to get your dependencies installed via the system's built-in package manager.
 
