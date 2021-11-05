@@ -359,7 +359,7 @@ namespace schema3
     minsky::LocalMinsky lm(m);
     m.model->clear();
     populateGroup(*m.model);
-    m.camvas.model=m.model;
+    m.canvas.model=m.model;
 
     m.model->setZoom(zoomFactor);
     m.model->bookmarks=bookmarks;
