@@ -62,17 +62,20 @@ ifneq ($(MAKECMDGOALS),clean)
         ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs
           NODE_HEADER=$(call search,include/node)
         endif
-        ifeq ($(NODE_HEADER),)
-          ifeq ($(words $(wildcard  node_modules/node-addon-api/node_api.h)),0)
-            $(error Can't find node header files')
-          endif
-        else
-          FLAGS+=-I$(NODE_HEADER)
-        endif
       endif
     endif
+    # if we haven't found an installed version of the Node SDK, then
+    # check if it has been copied into node-addon-api, as is done with
+    # release tarballs
+    ifeq ($(NODE_HEADER),)
+      ifeq ($(words $(wildcard  node_modules/node-addon-api/node_api.h)),0)
+        $(error Can't find node header files')
+      endif
+    else
+      NODE_FLAGS+=-I$(NODE_HEADER)
+    endif
     FLAGS+=-fno-omit-frame-pointer
-    NODE_FLAGS=-Inode_modules/node-addon-api
+    NODE_FLAGS+=-Inode_modules/node-addon-api
     NODE_FLAGS+='-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS'
     NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS'
 
