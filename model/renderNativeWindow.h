@@ -34,7 +34,9 @@ namespace minsky
   public:
     ~RenderNativeWindow();
     void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
-    void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight);
+    void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor);
+    void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
+    {renderFrame(parentWindowId,offsetLeft,offsetTop,childWidth,childHeight,0);}
     void draw();
     void requestRedraw();
     // do not clobber winInfoPtr on load of model

@@ -55,6 +55,9 @@ ifneq ($(MAKECMDGOALS),clean)
         NODE_HEADER=/usr/include/node$(NODE_VERSION)
         NODE_API+=node-api.o
       else
+        ifeq ($(OS),CYGWIN)
+          NODE_API+=node-api.o
+        endif
         NODE_HEADER=$(call search,include/node$(NODE_VERSION))
         ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs
           NODE_HEADER=$(call search,include/node)
@@ -171,6 +174,10 @@ BOOST_EXT=
     endif
   endif
 $(warning Boost extension=$(BOOST_EXT))
+endif
+
+ifeq ($(OS),CYGWIN)
+FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
 #EXES=gui-tk/minsky$(EXE)
