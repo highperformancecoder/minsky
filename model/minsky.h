@@ -405,6 +405,11 @@ namespace minsky
     std::string defaultFont(const std::string& x);
     /// @}
 
+    /// @{ an extra scaling factor of Pango fonts
+    double fontScale() const;
+    double fontScale(double);
+    /// @}
+    
     int numOpArgs(OperationType::Type o) const;
     OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
 

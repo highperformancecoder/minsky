@@ -1447,6 +1447,11 @@ namespace minsky
     return x;
   }
 
+  double Minsky::fontScale() const
+  {return ecolab::Pango::scaleFactor;}
+  
+  double Minsky::fontScale(double s)
+  {return ecolab::Pango::scaleFactor=s;}
   
   void Minsky::latex(const char* filename, bool wrapLaTeXLines) 
   {
