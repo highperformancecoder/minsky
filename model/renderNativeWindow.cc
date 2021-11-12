@@ -42,6 +42,8 @@ using namespace ecolab;
 
 namespace minsky
 {
+  ecolab::cairo::Colour RenderNativeWindow::backgroundColour{0.8,0.8,0.8,1};
+  
   static cairo_status_t appendDataToBufferNOP(void *p, const unsigned char *data, unsigned length)
   {
     return CAIRO_STATUS_SUCCESS;
@@ -99,11 +101,8 @@ namespace minsky
     winInfoPtr->setRenderingFlag(true);
     surfaceToDraw.swap(surface);
 
-    // Draw a white rectangle (should we go for transparent instead?) and set source rgb back to black
-    // TODO:: Resetting the color be implemented in canvas class - as depending on context colors might change.
-
     cairo_reset_clip(surface->cairo());
-    cairo_set_source_rgb(surface->cairo(), .8, .8, .8);
+    cairo_set_source_rgba(surface->cairo(), backgroundColour.r,backgroundColour.g,backgroundColour.b,backgroundColour.a);
     cairo_rectangle(surface->cairo(), 0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
     cairo_fill(surface->cairo());
     cairo_set_source_rgb(surface->cairo(), 0, 0, 0);
