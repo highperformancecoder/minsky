@@ -21,6 +21,7 @@
 #define RENDER_NATIVE_WINDOW_H
 
 #include <cairoSurfaceImage.h>
+#include <plot.h>
 
 namespace minsky
 {  
@@ -32,6 +33,8 @@ namespace minsky
     classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
 
   public:
+    static ecolab::cairo::Colour backgroundColour;
+    
     ~RenderNativeWindow();
     void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor);
