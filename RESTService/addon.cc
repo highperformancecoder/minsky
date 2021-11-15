@@ -54,6 +54,27 @@ namespace minsky
 
 RESTProcess_t registry;
 
+mutex redrawMutex;
+
+// delay process redrawing to throttle redrawing
+struct RedrawThread: public thread
+{
+  RedrawThread(): thread([this]{run();}) {}
+  ~RedrawThread() {join();}
+  atomic<bool> running; //< flag indicating thread is still running
+  void run() {
+    running=true;
+    this_thread::sleep_for(50ms);
+    lock_guard<mutex> lock(redrawMutex);
+    for (auto i: minsky::minsky().nativeWindowsToRedraw)
+      i->draw();
+    minsky::minsky().nativeWindowsToRedraw.clear();
+    running=false;
+  }
+};
+
+unique_ptr<RedrawThread> redrawThread(new RedrawThread);
+
 
 Value RESTCall(const Napi::CallbackInfo& info)
 {
@@ -74,14 +95,20 @@ Value RESTCall(const Napi::CallbackInfo& info)
             read(jsonArguments, arguments);
         }
       string cmd=info[0].ToString();
-      auto response=String::New(env, write(registry.process(cmd, arguments)));
-      int nargs=arguments.type()==json_spirit::array_type? arguments.get_array().size(): 1;
-      cmd.erase(0,1); // remove leading '/'
-      replace(cmd.begin(), cmd.end(), '/', '.');
-      minsky::minsky().commandHook(cmd,nargs);
-      for (auto i: minsky::minsky().nativeWindowsToRedraw)
-        i->draw();
-      minsky::minsky().nativeWindowsToRedraw.clear();
+      Value response;
+      {
+        lock_guard<mutex> lock(redrawMutex);
+        response=String::New(env, write(registry.process(cmd, arguments)));
+        int nargs=arguments.type()==json_spirit::array_type? arguments.get_array().size(): 1;
+        cmd.erase(0,1); // remove leading '/'
+        replace(cmd.begin(), cmd.end(), '/', '.');
+        minsky::minsky().commandHook(cmd,nargs);
+      }
+      if (!minsky::minsky().nativeWindowsToRedraw.empty())
+        if (redrawThread->running)
+          this_thread::yield(); // yield to the render thread
+        else
+          redrawThread.reset(new RedrawThread); // start a new render thread
       return response;
     }
   catch (const std::exception& ex)

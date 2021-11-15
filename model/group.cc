@@ -881,6 +881,7 @@ namespace minsky
           i->zoom(i->x(), i->y(), factor);
         m_displayContentsChanged|=i->displayContentsChanged();
       }
+    minsky().canvas.requestRedraw();
   }
 
   ClickType::Type Group::clickType(float x, float y)
