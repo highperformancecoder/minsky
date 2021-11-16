@@ -30,7 +30,9 @@ namespace minsky
     virtual void controlMouseDown(float x, float y) {mouseDown(x,y);}
     virtual void mouseUp(float x, float y) {}
     virtual void mouseMove(float x, float y) {}
+    virtual void zoom(double x, double y, double z) {}
 
+    
     /// handle key press over current itemFocus,
     /// @param keySym the X key sym code
     /// @param utf8 utf8 encoded character

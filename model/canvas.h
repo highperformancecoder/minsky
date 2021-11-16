@@ -122,7 +122,7 @@ namespace minsky
       requestRedraw();
     }
 
-    void zoom(double x, double y, double z) {
+    void zoom(double x, double y, double z) override {
       model->zoom(x,y,z);
       requestRedraw();
     }
