@@ -77,7 +77,7 @@ namespace minsky
             cairo::CairoSave cs(cairo);   
             cairo_translate(cairo,it->itemTabX,it->itemTabY);  		    				   
             g->editor.disableButtons();
-            g->editor.displayValues=minsky().displayValues;
+            g->editor.displayValues(minsky().displayValues);
             g->editor.draw(cairo);
             
             // draw title

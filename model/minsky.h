@@ -122,7 +122,15 @@ namespace minsky
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  class Minsky: public Exclude<MinskyExclude>, public RungeKutta
+  struct Minsky_multipleEquities: public ecolab::TCLAccessor<Minsky,bool>
+  {
+    Minsky_multipleEquities(const std::string& name, ecolab::TCLAccessor<Minsky,bool>::Getter g,
+                            ecolab::TCLAccessor<Minsky,bool>::Setter s):
+      ecolab::TCLAccessor<Minsky,bool>(name,g,s) {}  
+  };
+
+  
+  class Minsky: public Exclude<MinskyExclude>, public RungeKutta, public Minsky_multipleEquities
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -135,6 +143,7 @@ namespace minsky
 
     Exclude<boost::posix_time::ptime> lastRedraw;
 
+    bool m_multipleEquities=false;    
     
   public:
     EquationDisplay equationDisplay;
@@ -144,9 +153,11 @@ namespace minsky
     VariableTab variableTab;
     PlotTab plotTab;
     GodleyTab godleyTab;
-        // Allow multiple equity columns.
-    bool multipleEquities=false;    
-
+    
+    // Allow multiple equity columns.
+    bool multipleEquities() const {return m_multipleEquities;}
+    bool multipleEquities(const bool& m);
+    
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
     /// true if reset needs to be called prior to numerical integration
@@ -202,7 +213,9 @@ namespace minsky
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
-    Minsky(): equationDisplay(*this) {
+    Minsky():
+      ECOLAB_ACESSOR_INIT(Minsky, multipleEquities),
+      equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
       model->iHeight(std::numeric_limits<float>::max());
       model->iWidth(std::numeric_limits<float>::max());

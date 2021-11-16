@@ -99,7 +99,7 @@ namespace minsky
   void ButtonWidget<ButtonWidgetEnums::col>::invoke(double x)
   {
     int button=x/buttonSpacing;
-    if (!cminsky().multipleEquities && godleyIcon.table.singleEquity()) {  // no column widgets on equity column in single equity column mode
+    if (!cminsky().multipleEquities() && godleyIcon.table.singleEquity()) {  // no column widgets on equity column in single equity column mode
       if (pos!=last)
         switch (button)
          {
@@ -226,7 +226,7 @@ namespace minsky
                   {
                     string value;
                     FlowCoef fc(text);
-                    if (displayValues && col!=0)  // Do not add value "= 0.0" to first column. For tickets 1064/1274
+                    if (displayValues() && col!=0)  // Do not add value "= 0.0" to first column. For tickets 1064/1274
                       try
                         {
                           auto vv=cminsky().variableValues
@@ -254,7 +254,7 @@ namespace minsky
                           { // handle DR/CR mode and colouring of text
                             if (fc.coef<0)
                               cairo_set_source_rgb(cairo,1,0,0);
-                            if (displayStyle==GodleyTable::DRCR)
+                            if (displayStyle()==GodleyTable::DRCR)
                               {
                                 if (assetClass==GodleyAssetClass::asset ||
                                     assetClass==GodleyAssetClass::noAssetClass)
@@ -273,7 +273,7 @@ namespace minsky
                       }
                     else
                       //Display values of parameters used as initial conditions in Godley tables. for ticket 1126.  
-                      if (m_godleyIcon.table.initialConditionRow(row) && displayValues) text=defang(text+value);
+                      if (m_godleyIcon.table.initialConditionRow(row) && displayValues()) text=defang(text+value);
                       else text=defang(text);
                   }
                 pango.setMarkup(text);
@@ -1102,7 +1102,7 @@ namespace {
   {	    
     CairoSave cs(cairo);
     int idx=0;
-    if (rowCol==row || (!cminsky().multipleEquities && godleyIcon.table.singleEquity())) {  // no column widgets on equity column in single equity column mode
+    if (rowCol==row || (!cminsky().multipleEquities() && godleyIcon.table.singleEquity())) {  // no column widgets on equity column in single equity column mode
       if (rowCol == row || (rowCol == col && pos!=last)) 
         drawButton(cairo,"+",0,1,0,idx++);
       if ((rowCol == row && pos!=first && pos!=firstAndLast) || (rowCol == col && pos!=last)) 	// no delete button for first row containing initial conditions. For ticket 1064

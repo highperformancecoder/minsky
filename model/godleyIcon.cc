@@ -167,8 +167,10 @@ namespace minsky
 
   void GodleyIcon::setEditorDisplayValues()
   {
-    editor.displayValues=cminsky().displayValues;
-    editor.displayStyle=cminsky().displayStyle;
+    editor.displayValues(cminsky().displayValues);
+    editor.displayStyle(cminsky().displayStyle);
+    popup.displayValues(cminsky().displayValues);
+    popup.displayStyle(cminsky().displayStyle);
   }
   
   bool GodleyIcon::buttonDisplay() const {return m_editorMode && editor.drawButtons;}
