@@ -310,9 +310,8 @@ tcl-cov:
 	cd test; $(MAKE) tcl-cov
 	sh test/run-tcl-cov.sh
 
-MINSKY_VERSION=$(shell git describe)
-
 dist:
+<<<<<<< HEAD
 	git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ HEAD -o /tmp/Minsky-$(MINSKY_VERSION).tar
 # add submodules
 	cd ecolab; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/ HEAD -o /tmp/$$.tar
@@ -328,6 +327,9 @@ dist:
 	cd exprtk; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/exprtk/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
+=======
+	sh makeDist.sh $(NODE_HEADER)
+>>>>>>> 6018c70c (Fix up make dist to handle new submodules.)
 
 lcov:
 	$(MAKE) clean
