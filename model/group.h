@@ -382,12 +382,8 @@ namespace minsky
       if (i<bookmarks.size())
         bookmarks.erase(bookmarks.begin()+i);
     }
-    void gotoBookmark_b(const Bookmark& b) {
-      moveTo(b.x, b.y);
-      zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
-    }
-    void gotoBookmark(std::size_t i) 
-    {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
+    void gotoBookmark_b(const Bookmark& b);
+    void gotoBookmark(std::size_t i) {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
 
     /// return default extension for this group - .mky if no ravels in group, .rvl otherwise
     std::string defaultExtension() const;
