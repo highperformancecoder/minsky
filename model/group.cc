@@ -1210,6 +1210,14 @@ namespace minsky
   return vector<string>(r.begin(),r.end());
 }
 
+  void Group::gotoBookmark_b(const Bookmark& b)
+  {
+    moveTo(b.x, b.y);
+    zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
+    // TODO add canvas::gotoBookmark to avoid dependency inversion
+    if (this==cminsky().canvas.model.get()) minsky().canvas.requestRedraw();
+  }
+  
   std::string Group::defaultExtension() const
   {
     if (findAny(&GroupItems::items, [](const ItemPtr& i){return dynamic_cast<Ravel*>(i.get());}))
