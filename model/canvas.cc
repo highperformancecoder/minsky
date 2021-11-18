@@ -480,6 +480,7 @@ namespace minsky
           v->toggleVarTabDisplay();	  
 	    }
       }
+    requestRedraw();
   }
   
   void Canvas::showDefiningVarsOnCanvas()
@@ -502,7 +503,8 @@ namespace minsky
              return false;
            });
 	}      
-    itemVector.clear();  
+    itemVector.clear();
+    requestRedraw();
   }
   
   void Canvas::showPlotsOnTab()
