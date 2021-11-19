@@ -228,7 +228,7 @@ namespace minsky
       return description(); // nothing to do
 
     vector<Wire> savedWires;
-    if (intVar->portsSize()>0)
+    if (intVar && intVar->portsSize()>0)
       {
         // save any attached wires for later use
         for (auto w: intVar->ports(0).lock()->wires())
