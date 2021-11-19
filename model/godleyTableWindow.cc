@@ -416,7 +416,7 @@ namespace minsky
 
   int GodleyTableEditor::colX(double x) const
   {
-    if (x<colLeftMargin[0]) return -1;
+    if (colLeftMargin.size()<2 || x<colLeftMargin[0]) return -1;
     if (x<colLeftMargin[1]) return 0;
     auto p=std::upper_bound(colLeftMargin.begin(), colLeftMargin.end(), x);
     size_t r=p-colLeftMargin.begin()-2+scrollColStart;
