@@ -460,6 +460,7 @@ namespace minsky
   {
     x/=zoomFactor;
     y/=zoomFactor;
+    requestRedrawCanvas();
     switch (clickType(x,y))
       {
       case rowWidget:
@@ -535,6 +536,7 @@ namespace minsky
       }
     else if (selectIdx!=insertIdx)
       copy();
+    requestRedrawCanvas();
   }
 
   void GodleyTableEditor::mouseMoveB1(double x, double y)
@@ -544,6 +546,7 @@ namespace minsky
     motionCol=colX(x), motionRow=rowY(y);
     if (motionCol==selectedCol && motionRow==selectedRow)
       selectIdx=textIdx(x);
+    requestRedrawCanvas();
   }
 
   void GodleyTableEditor::mouseMove(double x, double y)
@@ -561,6 +564,7 @@ namespace minsky
           unsigned r=rowY(y);
           if (r<rowWidgets.size())
             rowWidgets[r].hover(x);
+          requestRedrawCanvas();
           break;
         }
       case colWidget:
@@ -568,6 +572,7 @@ namespace minsky
           unsigned c=colX(x);
           if (c<colWidgets.size())
             colWidgets[c].hover(x-colLeftMargin[c]);
+          requestRedrawCanvas();
           break;
         }
       case background:
@@ -684,6 +689,7 @@ namespace minsky
             return; // early return, no need to redraw
           }
       }
+    requestRedrawCanvas();
   }
 
   void GodleyTableEditor::delSelection()
