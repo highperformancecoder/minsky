@@ -146,6 +146,7 @@ namespace minsky
     HDC dc=BeginPaint(childWindowId, &ps);
     BitBlt(dc, x, y, width,height,hdcMem,x,y,SRCCOPY);
     EndPaint(childWindowId, &ps);
+    SetWindowPos(childWindowId,HWND_TOP,offsetLeft,offsetTop,childWidth,childHeight,0);
 #elif defined(USE_X11)
     XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, x, y, width, height, x, y);
     XFlush(display);
