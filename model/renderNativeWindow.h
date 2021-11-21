@@ -34,6 +34,7 @@ namespace minsky
 
   public:
     static ecolab::cairo::Colour backgroundColour;
+    bool enabled=true; ///< disable for non-active tab handling
     
     ~RenderNativeWindow();
     void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);

@@ -64,7 +64,8 @@ struct RedrawThread: public thread
   atomic<bool> running; //< flag indicating thread is still running
   void run() {
     running=true;
-    this_thread::sleep_for(chrono::milliseconds(50));
+    // sleep slightly to throttle requests on this service
+    this_thread::sleep_for(chrono::milliseconds(10));
     lock_guard<mutex> lock(redrawMutex);
     for (auto i: minsky::minsky().nativeWindowsToRedraw)
       i->draw();

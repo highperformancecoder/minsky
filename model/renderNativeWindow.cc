@@ -73,6 +73,7 @@ namespace minsky
     winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight, scalingFactor, [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
     surface->requestRedraw();
+    enabled=true;
   }
 
   void RenderNativeWindow::requestRedraw()
@@ -85,7 +86,7 @@ namespace minsky
   
   void RenderNativeWindow::draw()
   {
-    if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
+    if (!enabled || !winInfoPtr.get() || winInfoPtr->getRenderingFlag())
     {
       return;
     }
