@@ -1,1 +1,1 @@
-#define MINSKY_VERSION "2.22.0-rest.26"
+#define MINSKY_VERSION "2.22.0-rest.27"
