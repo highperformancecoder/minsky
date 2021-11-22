@@ -245,7 +245,7 @@ namespace minsky
     void paste();
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
     
-    void insertGroupFromFile(const char* file);
+    void insertGroupFromFile(const string& file);
 
     void makeVariablesConsistent();
 

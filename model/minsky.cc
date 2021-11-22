@@ -339,7 +339,7 @@ namespace minsky
     }
   }
 
-  void Minsky::insertGroupFromFile(const char* file)
+  void Minsky::insertGroupFromFile(const string& file)
   {
     ifstream inf(file);
     if (!inf)
