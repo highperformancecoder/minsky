@@ -128,11 +128,13 @@ namespace minsky
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
     map<IntOp*,bool> integrals;
-    for (auto& i: items)
+    // cloning IntOps mutates items, as intVars get inserted and removed
+    auto itemsCopy=items;
+    for (auto& i: itemsCopy)
       if (auto integ=dynamic_cast<IntOp*>(i.get()))
         integrals.emplace(integ, integ->coupled());
-    for (auto& i: items)
-      cloneMap[i.get()]=r->addItem(i->clone());
+    for (auto& i: itemsCopy)
+        cloneMap[i.get()]=r->addItem(i->clone());
     for (auto& i: groups)
       cloneMap[i.get()]=r->addGroup(i->copyUnowned());
     for (auto& w: wires) 
