@@ -287,18 +287,18 @@ void GodleyTable::nameUnique()
     }
 }
 
-void GodleyTable::exportToLaTeX(const char* filename)
+void GodleyTable::exportToLaTeX(const string& filename)
 {
   ofstream f(filename);
   minsky::exportToLaTeX(f, *this);
-  if (!f) throw error("cannot save to %s",filename);
+  if (!f) throw runtime_error("cannot save to "+filename);
 }
 
-void GodleyTable::exportToCSV(const char* filename)
+void GodleyTable::exportToCSV(const string& filename)
 {
   ofstream f(filename);
   minsky::exportToCSV(f, *this);
-  if (!f) throw error("cannot save to %s",filename);
+  if (!f) throw runtime_error("cannot save to "+filename);
 }
 
 void GodleyTable::orderAssetClasses()
