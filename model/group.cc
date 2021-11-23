@@ -176,7 +176,7 @@ namespace minsky
     return r;
   }
 
-  ItemPtr Group::removeItem(const Item& it)
+  ItemPtr GroupItems::removeItem(const Item& it)
   {
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)

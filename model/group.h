@@ -59,6 +59,7 @@ namespace minsky
     Groups groups;
     Wires wires;
     std::vector<VariablePtr> inVariables, outVariables;
+    std::vector<VariablePtr> createdIOvariables;
     GroupItems() {}
     virtual ~GroupItems() {clear();}
     // copy operations not deleted to allow ItemT<Group> to compile
@@ -69,7 +70,7 @@ namespace minsky
     void clear() {
       // controlled items need to be removed from a copy
       auto itemsCopy=items;
-      for (auto& i: itemsCopy) i->removeControlledItems();
+      for (auto& i: itemsCopy) i->removeControlledItems(*this);
       items.clear();
       groups.clear();
       wires.clear();
@@ -145,6 +146,7 @@ namespace minsky
         @param inSchema - if building a group from schema processing, rather than generally
     */
     ItemPtr addItem(const std::shared_ptr<Item>&, bool inSchema=false);
+    ItemPtr removeItem(const Item&);
 
     GroupPtr addGroup(const std::shared_ptr<Group>&);
     GroupPtr addGroup(Group* g) {return addGroup(std::shared_ptr<Group>(g));}
@@ -174,6 +176,13 @@ namespace minsky
     std::size_t numWires() const; 
     /// total number of groups in this and child groups
     std::size_t numGroups() const; 
+    /// plot widget used for group icon
+    classdesc::Exclude<std::shared_ptr<PlotWidget>> displayPlot;
+    /// remove the display plot
+    void removeDisplayPlot() {
+      displayPlot.reset();
+    }
+    
   };
 
   template <class G, class M, class O>
@@ -210,7 +219,6 @@ namespace minsky
     std::string arguments() const;
     
     Group() {iWidth(100); iHeight(100);}
-    std::vector<VariablePtr> createdIOvariables;
     
     bool nocycles() const override; 
 
@@ -254,7 +262,6 @@ namespace minsky
     void addInputVar() {inVariables.push_back(addIOVar());}
     void addOutputVar() {outVariables.push_back(addIOVar());}
 
-    ItemPtr removeItem(const Item&);
     /// remove item from group, and also all attached wires.
     void deleteItem(const Item&);
 
@@ -392,13 +399,6 @@ namespace minsky
     void autoLayout();
     /// randomly lay out items in this group
     void randomLayout();
-    
-    /// plot widget used for group icon
-    classdesc::Exclude<std::shared_ptr<PlotWidget>> displayPlot;
-    /// remove the display plot
-    void removeDisplayPlot() {
-      displayPlot.reset();
-    }
     
   };
 

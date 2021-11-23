@@ -45,6 +45,7 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
+  struct GroupItems;
   class Group; 
   class VariablePtr;
   class VariableBase;
@@ -126,7 +127,7 @@ namespace minsky
     /// correctly into \a selection.
     virtual void insertControlled(Selection& selection) {}
     /// remove all controlled items from a group
-    virtual void removeControlledItems(Group&) const {}
+    virtual void removeControlledItems(GroupItems&) const {}
     /// remove all controlled items their owning group
     void removeControlledItems() const;
   };

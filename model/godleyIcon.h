@@ -95,7 +95,7 @@ namespace minsky
     float bottomMargin() const {return variableDisplay? stockMargin*scaleFactor()*zoomFactor(): 0;}
 
     void resize(const LassoBox&) override;
-    void removeControlledItems(Group&) const override;
+    void removeControlledItems(GroupItems&) const override;
  
     /// set cell(row,col) with contents val
     void setCell(int row, int col, const string& val);

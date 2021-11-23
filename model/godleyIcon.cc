@@ -201,7 +201,7 @@ namespace minsky
     updateBoundingBox();
   }
 
-  void GodleyIcon::removeControlledItems(Group& g) const
+  void GodleyIcon::removeControlledItems(GroupItems& g) const
   {
     for (auto& i: m_flowVars)
       if (auto item=g.removeItem(*i))

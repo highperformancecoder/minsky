@@ -207,7 +207,7 @@ namespace minsky
     return *this;
   }
 
-  void IntOp::removeControlledItems(minsky::Group& g) const
+  void IntOp::removeControlledItems(minsky::GroupItems& g) const
   {
     if (intVar)
       g.removeItem(*intVar);
