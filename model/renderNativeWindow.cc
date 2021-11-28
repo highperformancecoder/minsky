@@ -58,7 +58,7 @@ namespace minsky
 
     public:
       NativeSurface(RenderNativeWindow &r, cairo_surface_t *s = nullptr, int width = -1, int height = -1) : cairo::Surface(s, width, height), renderNativeWindow(r) {}
-      void requestRedraw() override { minsky().nativeWindowsToRedraw.insert(&renderNativeWindow); renderNativeWindow.requestRedraw();}
+      void requestRedraw() override {renderNativeWindow.requestRedraw();}
     };
   } // namespace
 
@@ -80,6 +80,8 @@ namespace minsky
   {
 #ifdef MAC_OSX_TK
     if (winInfoPtr.get()) winInfoPtr->requestRedraw();
+#else
+    minsky().nativeWindowsToRedraw.insert(this);
 #endif
   }
 
