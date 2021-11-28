@@ -161,8 +161,8 @@ namespace minsky
     ItemPtr item;
     WirePtr wire;
     ItemPtr itemAt(float x, float y);
-    void getItemAt(float x, float y) {item=itemAt(x,y);}
-    void getWireAt(float x, float y);
+    void getItemAt(float x, float y) override {item=itemAt(x,y);}
+    void getWireAt(float x, float y) override;
 
     double defaultRotation=0;
     void addOperation(OperationType::Type op) {

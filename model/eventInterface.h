@@ -19,6 +19,9 @@
 
 #ifndef EVENTINTERFACE_H
 #define EVENTINTERFACE_H
+#include "item.h"
+#include "wire.h"
+
 #include <string>
 
 namespace minsky
@@ -41,6 +44,13 @@ namespace minsky
     /// @return true if event handled
     virtual bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn)
     {return false;}
+
+    /// @{ item or wire obtained by get*At() calls
+    ItemPtr item;
+    WirePtr wire;
+    virtual void getItemAt(float x, float y) {}
+    virtual void getWireAt(float x, float y) {}
+
 
   };
 }
