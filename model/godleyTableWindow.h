@@ -24,6 +24,7 @@
 #ifndef GODLEYTABLEWINDOW_H
 #define GODLEYTABLEWINDOW_H
 #include "assetClass.h"
+#include "eventInterface.h"
 #include "godleyTable.h"
 #include "renderNativeWindow.h"
 #include <accessor.h>
@@ -226,7 +227,7 @@ namespace minsky
     virtual void requestRedrawCanvas() {} // request redraw of canvas if a canvas
   };
 
-  class GodleyTableWindow: public RenderNativeWindow, public GodleyTableEditor
+  class GodleyTableWindow: public RenderNativeWindow, public EventInterface, public GodleyTableEditor
   {
   public:
     using GodleyTableEditor::draw;
@@ -240,6 +241,12 @@ namespace minsky
     }
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     void requestRedrawCanvas() override {requestRedraw();}
+
+    void mouseDown(float x, float y) override {GodleyTableEditor::mouseDown(x,y);}
+    void mouseUp(float x, float y) override {GodleyTableEditor::mouseUp(x,y);}
+    void mouseMove(float x, float y) override {GodleyTableEditor::mouseMove(x,y);}
+    void zoom(double, double, double z) override {zoomFactor*=z;}
+    using GodleyTableEditor::keyPress;
   };
 
 }
