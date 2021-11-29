@@ -69,6 +69,7 @@ namespace minsky
   
   void RenderNativeWindow::renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor)
   {
+    cout << "sf="<<scalingFactor<<endl;
     winInfoPtr.reset();
     winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight, scalingFactor, [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
