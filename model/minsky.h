@@ -289,7 +289,7 @@ namespace minsky
     /// load from a file
     void load(const std::string& filename);
 
-    void exportSchema(const char* filename, int schemaLevel=1);
+    void exportSchema(const std::string& filename, int schemaLevel=1);
 
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
@@ -339,7 +339,7 @@ namespace minsky
     long undo(int changes=1);
 
     /// set a Tk image to render equations to
-    void renderEquationsToImage(const char* image);
+    void renderEquationsToImage(const std::string& image);
 
     /// Converts variable(s) named by \a name into a variable of type \a type.
     /// @throw if conversion is disallowed
@@ -353,15 +353,15 @@ namespace minsky
     bool inputWired(const std::string& name) const {return definingVar(name).get();}
 
     /// render canvas to a postscript file
-    void renderCanvasToPS(const char* filename) {canvas.renderToPS(filename);}
+    void renderCanvasToPS(const std::string& filename) {canvas.renderToPS(filename);}
     /// render canvas to a PDF file
-    void renderCanvasToPDF(const char* filename) {canvas.renderToPDF(filename);}
+    void renderCanvasToPDF(const std::string& filename) {canvas.renderToPDF(filename);}
     /// render canvas to an SVG file
-    void renderCanvasToSVG(const char* filename) {canvas.renderToSVG(filename);}
+    void renderCanvasToSVG(const std::string& filename) {canvas.renderToSVG(filename);}
     /// render canvas to a PNG image file
-    void renderCanvasToPNG(const char* filename) {canvas.renderToPNG(filename);}
+    void renderCanvasToPNG(const std::string& filename) {canvas.renderToPNG(filename);}
     /// render canvas to a EMF image file (Windows only)
-    void renderCanvasToEMF(const char* filename) {canvas.renderToEMF(filename);}
+    void renderCanvasToEMF(const std::string& filename) {canvas.renderToEMF(filename);}
     
     /// render all plots 
     void renderAllPlotsAsSVG(const string& prefix) const;
@@ -426,16 +426,16 @@ namespace minsky
     int numOpArgs(OperationType::Type o) const;
     OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
 
-    void latex(const char* filename, bool wrapLaTeXLines);
+    void latex(const std::string& filename, bool wrapLaTeXLines);
 
-    void matlab(const char* filename) {
+    void matlab(const std::string& filename) {
       if (cycleCheck()) throw error("cyclic network detected");
       ofstream f(filename);
       MathDAG::SystemOfEquations(*this).matlab(f);
     }
 
     // for testing purposes
-    string latex2pango(const char* x) {return latexToPango(x);}
+    string latex2pango(const std::string& x) {return latexToPango(x.c_str());}
 
     /// list of available operations
     std::vector<std::string> availableOperations() const;

@@ -409,9 +409,9 @@ namespace minsky
     variableValues.reset();
   }
 
-  void Minsky::renderEquationsToImage(const char* image)
+  void Minsky::renderEquationsToImage(const string& image)
   {
-    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
+    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image.c_str()));
     cairo_move_to(surf.cairo(),0,0);
     MathDAG::SystemOfEquations system(*this);
     system.renderEquations(surf, surf.height());
@@ -977,7 +977,7 @@ namespace minsky
     flags=reset_needed|fullEqnDisplay_needed;
   }
 
-  void Minsky::exportSchema(const char* filename, int schemaLevel)
+  void Minsky::exportSchema(const string& filename, int schemaLevel)
   {
     xsd_generate_t x;
     switch (schemaLevel)
@@ -1465,7 +1465,7 @@ namespace minsky
   double Minsky::fontScale(double s)
   {return ecolab::Pango::scaleFactor=s;}
   
-  void Minsky::latex(const char* filename, bool wrapLaTeXLines) 
+  void Minsky::latex(const string& filename, bool wrapLaTeXLines) 
   {
     if (cycleCheck()) throw error("cyclic network detected");
     ofstream f(filename);
