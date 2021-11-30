@@ -61,26 +61,14 @@ namespace minsky
 
   void Lock::draw(cairo_t* cairo) const 
   {
-    //    SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
+    SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
     float z=zoomFactor()*scaleFactor();
     float w=iWidth()*z, h=iHeight()*z;
 
-    // Windows flubs rendering the padlock icon correctly, so temporily replace by simple text representation
-//    {
-//      CairoSave cs(cairo);
-//      cairo_translate(cairo,-0.5*w,-0.5*h);
-//      cairo_scale(cairo, w/icon->width(), h/icon->height());
-//      icon->render(cairo);
-//    }
-    cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
-    if (locked())
-      {
-        cairo_move_to(cairo,-0.5*w,-0.5*h);
-        cairo_line_to(cairo,0.5*w,0.5*h);
-        cairo_move_to(cairo,-0.5*w,0.5*h);
-        cairo_line_to(cairo,0.5*w,-0.5*h);
-      }
-    cairo_stroke(cairo);
+    ecolab::cairo::CairoSave cs(cairo);
+    cairo_translate(cairo,-0.5*w,-0.5*h);
+    cairo_scale(cairo, w/icon->width(), h/icon->height());
+    icon->render(cairo);
     
     if (mouseFocus)
       { 		  
