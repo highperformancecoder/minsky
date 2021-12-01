@@ -32,12 +32,20 @@ namespace minsky
 {
   namespace
   {
+    struct AddOnMinsky: public Minsky
+    {
+      FunctionReference messageCallback;
+      unique_ptr<Env> env;
+      void message(const std::string& msg) override
+      {if (env) messageCallback({String::New(*env,msg),Array::New(*env)});}
+    };
+    
     Minsky* l_minsky=NULL;
   }
 
   Minsky& minsky()
   {
-    static Minsky s_minsky;
+    static AddOnMinsky s_minsky;
     if (l_minsky)
       return *l_minsky;
     else
@@ -76,6 +84,20 @@ struct RedrawThread: public thread
 
 unique_ptr<RedrawThread> redrawThread(new RedrawThread);
 
+Value setMessageCallback(const Napi::CallbackInfo& info)
+{
+  Env env = info.Env();
+  if (info.Length()<1 || !info[0].IsFunction())
+    {
+      Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+    }
+  if (auto m=dynamic_cast<minsky::AddOnMinsky*>(&minsky::minsky()))
+    {
+      m->env.reset(new Env(env));
+      m->messageCallback=Persistent(info[0].As<Function>());
+    }
+  return env.Null();
+}
 
 Value RESTCall(const Napi::CallbackInfo& info)
 {
@@ -129,6 +151,7 @@ Object Init(Env env, Object exports) {
   RESTProcess(registry,"/minsky",minsky::minsky());
   
   exports.Set(String::New(env, "call"), Function::New(env, RESTCall));
+  exports.Set(String::New(env, "setMessageCallback"), Function::New(env, setMessageCallback));
   return exports;
 }
 
