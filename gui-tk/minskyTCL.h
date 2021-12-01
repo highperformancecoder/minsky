@@ -392,9 +392,6 @@ namespace minsky
     void message(const std::string& m) override
     {(tclcmd()<<"if [llength [info command tk_messageBox]] {tk_messageBox -message \"")|m|"\" -type ok}\n";}
 
-    void redrawAllGodleyTables() override 
-    {tclcmd()<<"if [llength [info command redrawAllGodleyTables]] redrawAllGodleyTables\n";}
-
     void runItemDeletedCallback(const Item& item) override
     {tclcmd()<<item.deleteCallback<<'\n';}
     

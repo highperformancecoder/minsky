@@ -383,14 +383,15 @@ namespace minsky
     /// import a Vensim file
     void importVensim(const std::string&);
     
+    /// request all Godley table windows to redraw
+    void redrawAllGodleyTables();
+
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
 
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
-    /// request all Godley table windows to redraw
-    virtual void redrawAllGodleyTables() {}
 
     /// run callback attached to \a item
     virtual void runItemDeletedCallback(const Item&) {}

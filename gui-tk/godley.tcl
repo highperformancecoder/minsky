@@ -292,12 +292,6 @@ proc setGodleyTitleOK id {
     wm title .$id "Godley Table:[$id.table.title]"
 }
     
-proc redrawAllGodleyTables {} {
-    foreach c [info commands godleyWindow*.popup.requestRedraw] {
-        $c
-    }
-}
-
 # sets each individual Godley table displayValue preference
 proc setGodleyDisplay {} {
     global preferences

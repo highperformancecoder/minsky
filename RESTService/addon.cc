@@ -20,6 +20,7 @@
 /// @file An nodejs-embedded REST Service
 #include <napi.h>
 #include "minskyRS.h"
+#include "RESTMinsky.h"
 #include "minsky_epilogue.h"
 
 #include <exception>
@@ -32,9 +33,10 @@ namespace minsky
 {
   namespace
   {
-    struct AddOnMinsky: public Minsky
+    struct AddOnMinsky: public RESTMinsky
     {
       FunctionReference messageCallback;
+      FunctionReference busyCursorCallback;
       unique_ptr<Env> env;
       void message(const std::string& msg) override
       {if (env) messageCallback({String::New(*env,msg),Array::New(*env)});}
@@ -51,7 +53,10 @@ namespace minsky
           }
         return r;
       }
-      
+      void setBusyCursor() override
+      {if (env) busyCursorCallback({Boolean::New(*env,true)});}
+      void clearBusyCursor() override
+      {if (env) busyCursorCallback({Boolean::New(*env,false)});}
     };
     
     Minsky* l_minsky=NULL;
@@ -113,6 +118,21 @@ Value setMessageCallback(const Napi::CallbackInfo& info)
   return env.Null();
 }
 
+Value setBusyCursorCallback(const Napi::CallbackInfo& info)
+{
+  Env env = info.Env();
+  if (info.Length()<1 || !info[0].IsFunction())
+    {
+      Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+    }
+  if (auto m=dynamic_cast<minsky::AddOnMinsky*>(&minsky::minsky()))
+    {
+      m->env.reset(new Env(env));
+      m->busyCursorCallback=Persistent(info[0].As<Function>());
+    }
+  return env.Null();
+}
+
 Value RESTCall(const Napi::CallbackInfo& info)
 {
   Env env = info.Env();
@@ -166,6 +186,7 @@ Object Init(Env env, Object exports) {
   
   exports.Set(String::New(env, "call"), Function::New(env, RESTCall));
   exports.Set(String::New(env, "setMessageCallback"), Function::New(env, setMessageCallback));
+  exports.Set(String::New(env, "setBusyCursorCallback"), Function::New(env, setBusyCursorCallback));
   return exports;
 }
 

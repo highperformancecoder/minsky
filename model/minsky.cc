@@ -111,13 +111,7 @@ namespace minsky
   bool Minsky::multipleEquities(const bool& m) {
     m_multipleEquities=m;
     canvas.requestRedraw();
-    // ensure all popup godley tables are redrawn
-    model->recursiveDo(&Group::items, 
-                       [&](Items&,Items::iterator i) {
-                         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-                           g->popup.requestRedraw();
-                         return false;
-                       });
+    redrawAllGodleyTables();
     return m_multipleEquities;
   }
   
@@ -1447,6 +1441,16 @@ namespace minsky
           return;
         }
     variableInstanceList.reset();
+  }
+  
+  void Minsky::redrawAllGodleyTables()
+  {
+    model->recursiveDo(&Group::items, 
+                       [&](Items&,Items::iterator i) {
+                         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+                           g->popup.requestRedraw();
+                         return false;
+                       });
   }
 
   size_t Minsky::physicalMem()
