@@ -399,7 +399,10 @@ namespace minsky
     /// \a bytes of memory. Implemented in MinskyTCL
     virtual bool checkMemAllocation(size_t bytes) const {return true;}
 
-        vector<string> listFonts() const {
+    /// returns amount of memory installed on system
+    static std::size_t physicalMem();
+    
+    vector<string> listFonts() const {
       vector<string> r;
 #ifdef PANGO
       PangoFontFamily **families;
@@ -457,6 +460,11 @@ namespace minsky
 
     std::map<std::string,std::weak_ptr<Item>> namedItems;
     void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
+
+    /// trigger checkMem callback for testing purposes
+    bool triggerCheckMemAllocationCallback() const
+    {return checkMemAllocation(std::numeric_limits<size_t>::max());}
+      
   };
 
   /// global minsky object

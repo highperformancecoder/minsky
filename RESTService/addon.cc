@@ -38,6 +38,20 @@ namespace minsky
       unique_ptr<Env> env;
       void message(const std::string& msg) override
       {if (env) messageCallback({String::New(*env,msg),Array::New(*env)});}
+      bool checkMemAllocation(std::size_t bytes) const override {
+        bool r=true;
+        if (env && bytes>0.2*physicalMem())
+          {
+            auto buttons=Array::New(*env);
+            buttons[0U]=String::New(*env,"No");
+            buttons[1U]=String::New(*env,"Yes");
+            r=messageCallback({
+                String::New(*env,"Allocation will use more than 50% of available memory. Do you want to proceed?"),
+                  buttons}).As<Number>().Int32Value();
+          }
+        return r;
+      }
+      
     };
     
     Minsky* l_minsky=NULL;

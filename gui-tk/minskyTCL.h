@@ -39,8 +39,6 @@ namespace minsky
   ecolab::TCL_obj_t& minskyTCL_obj();
   void setTCL_objAttributes();
 
-  std::size_t physicalMem();
-  
   struct MinskyTCL: public Minsky
   {
     bool rebuildTCLcommands=false;

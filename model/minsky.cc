@@ -51,6 +51,10 @@ using namespace boost::posix_time;
 #include <sys/wait.h>
 #endif
 
+#if defined(__linux__)
+#include <sys/sysinfo.h>
+#endif
+
 namespace
 {
   inline bool isFinite(const double y[], size_t n)
@@ -1445,6 +1449,32 @@ namespace minsky
     variableInstanceList.reset();
   }
 
+  size_t Minsky::physicalMem()
+  {
+#if defined(__linux__)
+    struct sysinfo s;
+    sysinfo(&s);
+    return s.totalram;
+#elif defined(WIN32)
+    MEMORYSTATUSEX s;
+    GlobalMemoryStatusEx(&s);
+    return s.ullTotalPhys;
+//#elif defined(__APPLE__)
+//    int mib[2];
+//    int64_t physical_memory;
+//    size_t length;
+//
+//    // Get the Physical memory size
+//    mib[0] = CTL_HW;
+//    mib[1] = HW_MEMSIZE;
+//    length = sizeof(int64_t);
+//    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+//    return physical_memory;
+#else
+    // all else fails, return max value
+    return ~0UL;}
+#endif  
+  }
   
   static std::unique_ptr<char[]> _defaultFont;
 
