@@ -41,7 +41,7 @@ proc openGodley {id} {
         bind .$id.table <Enter> "$id.popup.adjustWidgets; $id.popup.update; $id.popup.requestRedraw"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
-        bind .$id.table <Key> "$id.popup.keyPress %N [encoding convertto utf-8 %A]; $id.popup.requestRedraw"
+        bind .$id.table <Key> "$id.popup.keyPress %N [encoding convertto utf-8 %A] 0 0 0; $id.popup.requestRedraw"
         global meta meta_menu
         bind .$id.table <$meta-y> "$id.popup.undo -1; $id.popup.requestRedraw"
         bind .$id.table <$meta-z> "$id.popup.undo 1; $id.popup.requestRedraw"
