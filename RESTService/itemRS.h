@@ -86,7 +86,7 @@ namespace classdesc
     json_pack_t list() const override {
       if (auto rp=RPItem())
         return rp->list();
-      return json_pack_t(json_spirit::mArray());
+      return json_pack_t(json5_parser::mArray());
     }
     json_pack_t type() const override {
       if (auto rp=RPItem())

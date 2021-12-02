@@ -159,7 +159,7 @@ int main(int argc, const char* argv[])
                 }
             }
       
-          json_pack_t arguments(json_spirit::mValue{});
+          json_pack_t arguments(json5_parser::mValue{});
           switch (req.method())
             {
             case http::verb::head:
@@ -186,7 +186,7 @@ int main(int argc, const char* argv[])
                 res.body()=write(registry.process(cmd,arguments));
                 res.keep_alive(req.keep_alive());
                 http::write(socket, res, ec);
-                int nargs=arguments.type()==json_spirit::array_type? arguments.get_array().size(): 1;
+                int nargs=arguments.type()==json5_parser::array_type? arguments.get_array().size(): 1;
                 cmd.erase(0,1); // remove leading '/'
                 replace(cmd.begin(), cmd.end(), '/', '.');
                 minsky::minsky().commandHook(cmd,nargs);

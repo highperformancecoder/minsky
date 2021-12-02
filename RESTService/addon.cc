@@ -144,7 +144,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
 
   try
     {
-      json_pack_t arguments(json_spirit::mValue{});
+      json_pack_t arguments(json5_parser::mValue{});
       if (info.Length()>1)
         {
           string jsonArguments=info[1].ToString();
@@ -156,7 +156,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
       {
         lock_guard<mutex> lock(redrawMutex);
         response=String::New(env, write(registry.process(cmd, arguments)));
-        int nargs=arguments.type()==json_spirit::array_type? arguments.get_array().size(): 1;
+        int nargs=arguments.type()==json5_parser::array_type? arguments.get_array().size(): 1;
         cmd.erase(0,1); // remove leading '/'
         replace(cmd.begin(), cmd.end(), '/', '.');
         minsky::minsky().commandHook(cmd,nargs);

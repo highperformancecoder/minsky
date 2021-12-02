@@ -73,7 +73,7 @@ void processBuffer(const string& buffer)
   try
     {
       auto n=buffer.find(' ');
-      json_pack_t jin(json_spirit::mValue::null);
+      json_pack_t jin(json5_parser::mValue::null);
       string cmd;
       unsigned nargs=0;
       if (n==string::npos)
@@ -82,7 +82,7 @@ void processBuffer(const string& buffer)
         { // read argument(s)
           cmd=buffer.substr(0,n);
           read(buffer.substr(n),jin);
-          nargs = jin.type()==json_spirit::array_type? jin.get_array().size(): 1;
+          nargs = jin.type()==json5_parser::array_type? jin.get_array().size(): 1;
         }
       cout<<cmd<<"=>";
       write(rminsky.registry.process(cmd, jin),cout);
