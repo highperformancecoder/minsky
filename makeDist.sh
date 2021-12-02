@@ -3,7 +3,7 @@ MINSKY_VERSION=Minsky-`git describe`
 git archive --format=tar --prefix=$MINSKY_VERSION/ HEAD -o /tmp/$MINSKY_VERSION.tar
 
 # package node headers. Pass node header path as arg 1
-if $# -ge 1; then
+if [ $# -ge 1 ]; then
 	rm -rf /tmp/$$
 	mkdir -p /tmp/$$/$MINSKY_VERSION/node_modules
 	cp -r node_modules/node-addon-api /tmp/$$/$MINSKY_VERSION/node_modules
