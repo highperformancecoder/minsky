@@ -246,7 +246,7 @@ namespace minsky
     void mouseUp(float x, float y) override {GodleyTableEditor::mouseUp(x,y);}
     void mouseMove(float x, float y) override {GodleyTableEditor::mouseMove(x,y);}
     void zoom(double, double, double z) override {zoomFactor*=z;}
-    bool keyPress(int keySym, const std::string& utf8, int state=0, float x=0, float yn=0)
+    bool keyPress(int keySym, const std::string& utf8, int state=0, float x=0, float yn=0) override
     {GodleyTableEditor::keyPress(keySym,utf8); return true;}
   };
 
