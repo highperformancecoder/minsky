@@ -45,6 +45,22 @@
 #include <utility>
 #include <vector>
 
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+#   ifndef NOMINMAX
+#      define NOMINMAX
+#   endif
+#   ifndef WIN32_LEAN_AND_MEAN
+#      define WIN32_LEAN_AND_MEAN
+#   endif
+#   include <windows.h>
+#   include <ctime>
+#else
+#   include <ctime>
+#   include <sys/time.h>
+#   include <sys/types.h>
+#endif
+
+
 namespace minsky
 {
   int UserFunction::nextId=0;
