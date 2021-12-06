@@ -1483,7 +1483,7 @@ namespace minsky
 //    return physical_memory;
 #else
     // all else fails, return max value
-    return ~0UL;}
+    return ~0UL;
 #endif  
   }
   

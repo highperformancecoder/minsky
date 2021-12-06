@@ -47,6 +47,8 @@ extern "C"
 
 
   
+  NAPIFN(napi_create_array, (napi_env env, napi_value* result), (env,result));
+
   NAPIFN(napi_create_function, (napi_env env, const char* utf8name, size_t length,
                                 napi_callback cb, void* data, napi_value* result),
          (env,utf8name,length,cb,data,result));
@@ -83,6 +85,16 @@ extern "C"
 
   NAPIFN(napi_get_undefined,(napi_env env, napi_value* result), (env,result));
   NAPIFN(napi_get_null, (napi_env env, napi_value* result), (env,result));
+
+  NAPIFN(napi_typeof,(napi_env env,napi_value value,napi_valuetype* result),
+         (env,value,result));
+  
+  NAPIFN(napi_get_boolean, (napi_env env,bool value, napi_value* result),(env,value,result));
+
+  NAPIFN(napi_get_value_uint32,(napi_env env,napi_value value,uint32_t* result),
+         (env,value,result));
+  NAPIFN(napi_get_value_int32,(napi_env env,napi_value value,int32_t* result),
+         (env,value,result));
 
   NAPIFN(napi_async_destroy, (napi_env env, napi_async_context async_context), (env,async_context));
   
@@ -124,6 +136,9 @@ extern "C"
   VOID_NAPIFN(napi_module_register, (napi_module* mod), (mod));
 
   NAPIFN(napi_coerce_to_string,(napi_env env,napi_value value,napi_value* result),(env,value,result));
+  
+  NAPIFN(napi_set_element, (napi_env env, napi_value object,uint32_t index, napi_value value),
+         (env,object,index,value));
 
 }
 
