@@ -1430,6 +1430,7 @@ proc openNamedFile {ofname} {
         eval minsky.load {$ofname}
         file delete [autoBackupName]
     }
+    # setting simulationDelay causes the edited (dirty) flag to be set, amongst other things
     doPushHistory 0
     setAutoSaveFile [autoBackupName]
 
@@ -1445,8 +1446,6 @@ proc openNamedFile {ofname} {
     canvas.requestRedraw
     # not sure why this is needed, but initial draw doesn't happen without it
     event generate .wiring.canvas <Expose>
-    # setting simulationDelay causes the edited (dirty) flag to be set
-    pushHistory
     doPushHistory 1
     popFlags
 }
@@ -1968,5 +1967,5 @@ if {[llength [info commands afterMinskyStarted]]>0} {
 setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
 disableEventProcessing
 popFlags
-pushHistory
+#pushHistory
 

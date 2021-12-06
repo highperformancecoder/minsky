@@ -35,9 +35,18 @@ namespace minsky
   {
     struct AddOnMinsky: public RESTMinsky
     {
+      unique_ptr<Env> env;
       FunctionReference messageCallback;
       FunctionReference busyCursorCallback;
-      unique_ptr<Env> env;
+
+      ~AddOnMinsky() {
+        // because this object is used as a static object, suppress
+        // the callback destructors to avoid freeing the references at
+        // shutdown time.
+        messageCallback.SuppressDestruct();
+        busyCursorCallback.SuppressDestruct();
+      }
+      
       void message(const std::string& msg) override
       {if (env) messageCallback({String::New(*env,msg),Array::New(*env)});}
       bool checkMemAllocation(std::size_t bytes) const override {
@@ -79,7 +88,7 @@ namespace minsky
 }
 
 
-RESTProcess_t registry;
+minsky::AddOnMinsky& addOnMinsky=static_cast<minsky::AddOnMinsky&>(minsky::minsky());
 
 mutex redrawMutex;
 
@@ -155,7 +164,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
       Value response;
       {
         lock_guard<mutex> lock(redrawMutex);
-        response=String::New(env, write(registry.process(cmd, arguments)));
+        response=String::New(env, write(addOnMinsky.registry.process(cmd, arguments)));
         int nargs=arguments.type()==json5_parser::array_type? arguments.get_array().size(): 1;
         cmd.erase(0,1); // remove leading '/'
         replace(cmd.begin(), cmd.end(), '/', '.');
@@ -182,7 +191,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
 }
 
 Object Init(Env env, Object exports) {
-  RESTProcess(registry,"/minsky",minsky::minsky());
+  RESTProcess(addOnMinsky.registry,"/minsky",minsky::minsky());
   
   exports.Set(String::New(env, "call"), Function::New(env, RESTCall));
   exports.Set(String::New(env, "setMessageCallback"), Function::New(env, setMessageCallback));

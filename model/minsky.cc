@@ -155,6 +155,7 @@ namespace minsky
     namedItems.clear();
     flags=reset_needed|fullEqnDisplay_needed;
     fileVersion=minskyVersion;
+    clearHistory();
   }
 
 
@@ -973,6 +974,7 @@ namespace minsky
     panopticon.requestRedraw();
     canvas.requestRedraw();
     flags=reset_needed|fullEqnDisplay_needed;
+    pushHistory();
   }
 
   void Minsky::exportSchema(const string& filename, int schemaLevel)
@@ -1142,7 +1144,7 @@ namespace minsky
         history.emplace_back();
         buf.swap(history.back());
         historyPtr=history.size();
-        return false;
+        return true;
       }
     while (history.size()>maxHistory)
       history.pop_front();
@@ -1214,14 +1216,19 @@ namespace minsky
         command!="minsky.setGodleyIconResource" &&
         command!="minsky.setGroupIconResource" &&
         command!="minsky.setLockIconResource" &&
+        command!="minsky.setAutoSaveFile" &&
         command!="minsky.step" &&
         command!="minsky.running" &&
         command!="minsky.multipleEquities" &&
         command!="minsky.undo" &&
+        command!="minsky.load" &&
+        command!="minsky.reverse" &&
+        command!="minsky.redrawAllGodleyTables" &&
         command.find("minsky.panopticon")==string::npos &&
         command.find("minsky.equationDisplay")==string::npos && 
         command.find("minsky.setGodleyDisplayValue")==string::npos && 
         command.find(".renderFrame")==string::npos && 
+        command.find(".backgroundColour")==string::npos && 
         command.find(".get")==string::npos && 
         command.find(".@elem")==string::npos && 
         command.find(".mouseFocus")==string::npos
@@ -1231,7 +1238,7 @@ namespace minsky
         if (t==generic || (t==is_setterGetter && nargs>0))
           {
             bool modelChanged=pushHistory();
-            if (modelChanged && command!="minsky.load" && command!="minsky.reverse") markEdited();
+            if (modelChanged) markEdited();
             return modelChanged;
           }
       }
