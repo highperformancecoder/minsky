@@ -36,22 +36,19 @@
 #include <atomic>
 #include <functional>
 #include <mutex>
+#include <future>
 #include <thread>
 
 namespace minsky
 {
-  class WindowInformation
+  struct Winfo
   {
-    friend class RenderNativeWindow;
-    bool isRendering=false;
-    std::mutex rendering;
 #ifdef USE_WIN32_SURFACE
     HWND parentWindowId, childWindowId;
     HBITMAP hbmMem; // backing buffer pixmap
     HANDLE hOld;    // 
 #elif defined(MAC_OSX_TK)
     NSContext nsContext;
-    friend struct NSContext;
 #elif defined(USE_X11)
     Window parentWindowId;
     Window childWindowId, bufferWindowId;
@@ -59,14 +56,22 @@ namespace minsky
     Display*	display; // Weak reference, returned by system
     GC graphicsContext;
     XWindowAttributes wAttr;
-
-    struct EventThread: std::thread
+#endif
+  };
+  
+  class WindowInformation: public Winfo
+  {
+    friend class RenderNativeWindow;
+    bool isRendering=false;
+    std::mutex rendering;
+#if defined(MAC_OSX_TK)
+    friend struct NSContext;
+#elif defined(USE_X11)
+    struct EventThread: public Winfo, public  std::thread
     {
-      WindowInformation& winfo;
-      std::atomic<bool> running{true};
       void run();
-      EventThread(WindowInformation& w): thread([this]{run();}), winfo(w) {}
-      ~EventThread() {running=false; join();}
+      EventThread(const Winfo& w): Winfo(w), thread([this]{run();}) {}
+      ~EventThread() {XDestroyWindow(display, childWindowId); join();}
     };
 
     std::unique_ptr<EventThread> eventThread;
@@ -94,7 +99,7 @@ namespace minsky
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
     void requestRedraw();
-    void blit(int x, int y, int width, int height);
+    //    void blit(int x, int y, int width, int height);
     
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;

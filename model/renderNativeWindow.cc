@@ -76,6 +76,10 @@ namespace minsky
     enabled=true;
   }
 
+  void RenderNativeWindow::destroyFrame() {winInfoPtr.reset();}
+
+
+  
   void RenderNativeWindow::requestRedraw()
   {
 #ifdef MAC_OSX_TK

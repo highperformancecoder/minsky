@@ -99,12 +99,25 @@ struct RedrawThread: public thread
   ~RedrawThread() {join();}
   atomic<bool> running; //< flag indicating thread is still running
   void run() {
+#if defined(_PTHREAD_H) && defined(__USE_GNU)
+    pthread_setname_np(pthread_self(),"redraw thread");
+#endif
     running=true;
     // sleep slightly to throttle requests on this service
     this_thread::sleep_for(chrono::milliseconds(10));
     lock_guard<mutex> lock(redrawMutex);
     for (auto i: minsky::minsky().nativeWindowsToRedraw)
-      i->draw();
+      try
+        {
+          i->draw();
+        }
+      catch (const std::exception& ex)
+        {
+          /* absorb and log any exceptions, cannot do anything anyway */
+          cerr << ex.what() << endl;
+          break;
+        }
+      catch (...) {break;}
     minsky::minsky().nativeWindowsToRedraw.clear();
     running=false;
   }
@@ -150,6 +163,10 @@ Value RESTCall(const Napi::CallbackInfo& info)
     Napi::TypeError::New(env, "Needs to be call(endpoint[, arguments])").ThrowAsJavaScriptException();
     return env.Null();
   }
+  
+#if defined(_PTHREAD_H) && defined(__USE_GNU)
+    pthread_setname_np(pthread_self(),"addon thread");
+#endif
 
   try
     {

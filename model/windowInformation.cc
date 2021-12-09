@@ -64,17 +64,40 @@ using namespace ecolab;
 namespace minsky
 {
 
+  namespace
+  {
 #ifdef USE_WIN32_SURFACE
 #elif defined(MAC_OSX_TK)
 #else
-  int throwOnXError(Display *, XErrorEvent *ev)
-  {
-    char errorMessage[256];
-    XGetErrorText(ev->display, ev->error_code, errorMessage, sizeof(errorMessage));
-    throw runtime_error(errorMessage);
-  }
+    int throwOnXError(Display *, XErrorEvent *ev)
+    {
+      char errorMessage[256];
+      XGetErrorText(ev->display, ev->error_code, errorMessage, sizeof(errorMessage));
+      throw runtime_error(errorMessage);
+    }
+    
+    int xinitThreadsStatus=XInitThreads();
 #endif
 
+    void blit(const Winfo& winfo, int x, int y, int width, int height)
+    {
+      cout << "blitting "<<x<<" "<<y<<" "<<width<<" "<<height<<endl;
+#ifdef USE_WIN32_SURFACE
+      PAINTSTRUCT ps;
+      HDC dc=BeginPaint(winfo.childWindowId, &ps);
+      BitBlt(dc, x, y, width,height,winfo.hdcMem,x,y,SRCCOPY);
+      EndPaint(winfo.childWindowId, &ps);
+      SetWindowPos(winfo.childWindowId,HWND_TOP,winfo.offsetLeft,winfo.offsetTop,winfo.childWidth,winfo.childHeight,0);
+#elif defined(USE_X11)
+      static mutex blitting;
+      lock_guard<mutex> lock(blitting);
+      XCopyArea(winfo.display, winfo.bufferWindowId, winfo.childWindowId, winfo.graphicsContext, x, y, width, height, x, y);
+      XFlush(winfo.display);
+      XRaiseWindow(winfo.display, winfo.childWindowId);
+#endif
+    }
+  }
+  
   WindowInformation::~WindowInformation()
   {
     bufferSurface.reset();
@@ -85,7 +108,7 @@ namespace minsky
     DestroyWindow(childWindowId);
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
-    eventThread.reset(); //shut thread down before destroying window
+    //eventThread.reset(); //shut thread down before destroying window
     XFreeGC(display, graphicsContext);
     XDestroyWindow(display, childWindowId);
     XDestroyWindow(display, bufferWindowId);
@@ -104,7 +127,27 @@ namespace minsky
     InvalidateRect(childWindowId,nullptr,true);
     PostMessageA(childWindowId,WM_PAINT,0,0);
 #elif defined(USE_X11)
-    blit(0,0,childWidth,childHeight);
+    try {
+      blit(*this,0,0,childWidth,childHeight);
+    }
+    catch (...) {}
+    return;
+
+    XEvent event;
+    XExposeEvent& expose=event.xexpose;
+    expose.type=Expose;
+    expose.x=expose.y=0;
+    expose.width=childWidth;
+    expose.height=childHeight;
+    expose.window=childWindowId;
+    expose.display=display;
+    expose.count=0;
+    expose.serial=0;
+    try
+      {
+        XSendEvent(display,childWindowId,false,ExposureMask,&event);
+      }
+    catch (...) {}
 #endif
   }
 
@@ -128,7 +171,7 @@ namespace minsky
         {
           RECT r;
           if (GetUpdateRect(hwnd,&r,false))
-            winfo->blit(r.left, r.top, r.right-r.left, r.bottom-r.top);
+            blit(r.left, r.top, r.right-r.left, r.bottom-r.top);
         }
         return 0;
       case WM_NCHITTEST:
@@ -139,31 +182,20 @@ namespace minsky
   }
 #endif
 
-  void WindowInformation::blit(int x, int y, int width, int height)
-  {
-#ifdef USE_WIN32_SURFACE
-    PAINTSTRUCT ps;
-    HDC dc=BeginPaint(childWindowId, &ps);
-    BitBlt(dc, x, y, width,height,hdcMem,x,y,SRCCOPY);
-    EndPaint(childWindowId, &ps);
-    SetWindowPos(childWindowId,HWND_TOP,offsetLeft,offsetTop,childWidth,childHeight,0);
-#elif defined(USE_X11)
-    XCopyArea(display, bufferWindowId, childWindowId, graphicsContext, x, y, width, height, x, y);
-    XFlush(display);
-    XRaiseWindow(display, childWindowId);
-#endif
-  }
-
 #if defined(USE_X11)
   void WindowInformation::EventThread::run()
   {
+#if defined(_PTHREAD_H) && defined(__USE_GNU)
+    pthread_setname_np(pthread_self(),"event handler");
+#endif
     this_thread::sleep_for(1000ms); //why? Even though this thread is
                                     //created at the end of
                                     //WindowInformation, it appears
                                     //the object is still in a fragile
-                                    //state wil the unique_ptr is
+                                    //state while the unique_ptr is
                                     //being constructed.
-    while (running)
+    //while (running)
+    for (;;)
       try
       {
         XEvent event;
@@ -175,9 +207,9 @@ namespace minsky
         bool eventReceived;
         {
           static std::mutex xMutex; // mutex to guard the not thread-safe XCheckWindowEvent
-          lock_guard<mutex> lock(xMutex);
-          lock_guard<mutex> renderLock(winfo.rendering);
-          eventReceived=XCheckWindowEvent(winfo.display, winfo.childWindowId, ExposureMask|StructureNotifyMask, &event);
+//          lock_guard<mutex> lock(xMutex);
+//          lock_guard<mutex> renderLock(winfo.rendering);
+          eventReceived=XCheckWindowEvent(display, childWindowId, ExposureMask|StructureNotifyMask, &event);
         }
         if (!eventReceived)
             {
@@ -187,10 +219,7 @@ namespace minsky
         switch (event.type)
           {
           case Expose:
-            {
-              lock_guard<mutex> lock(winfo.rendering);
-              winfo.blit(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
-            }
+              blit(*this,event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
             break;
           case DestroyNotify:
             return; // exit thread, window has gone away
@@ -200,7 +229,9 @@ namespace minsky
         {
           // absorb and log, not much else we can do with X11 errors at this point
           cerr << ex.what() << endl;
+          return;
         }
+      catch (...) {return;}
   }
 #endif
   
