@@ -212,15 +212,17 @@ string VariableBase::init() const
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end()) {   	
     // set initial value of int var to init value of input to second port. for ticket 1137
-    if (!m_ports.empty() && !m_ports[0]->wires().empty())
-      if (auto i=dynamic_cast<IntOp*>(&m_ports[0]->wires()[0]->to()->item()))
-        if (i->portsSize()>2 && !i->ports(2).lock()->wires().empty())
-          if (auto lhsVar=i->ports(2).lock()->wires()[0]->from()->item().variableCast()) 
-            {
-              value->second->init=lhsVar->vValue()->init;
-              // Since integral takes initial value from second port, the intVar should have the same intial value. for ticket 1257
-              if (i->intVar->vValue()->init!=lhsVar->vValue()->init) i->intVar->vValue()->init=lhsVar->vValue()->init;  
-            }
+    if (type()==integral)
+      {
+        // find attached integral
+        auto i=dynamic_cast<IntOp*>(controller.lock().get());
+        if (!i && !m_ports[1]->wires().empty())
+          i=dynamic_cast<IntOp*>(&(m_ports[1]->wires()[0]->from()->item()));
+        if (i && i->portsSize()>2 && !i->ports(2).lock()->wires().empty())
+          if (auto lhsVar=i->ports(2).lock()->wires()[0]->from()->item().variableCast())
+          // Since integral takes initial value from second port, the intVar should have the same intial value.
+            if (vValue()->init!=lhsVar->vValue()->init) vValue()->init=lhsVar->vValue()->init;
+      }
     return value->second->init;
   }
   return "0";
