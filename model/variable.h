@@ -206,6 +206,10 @@ namespace minsky
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
     void importFromCSV(std::string filename, const DataSpec& spec);
+
+    /// clean up popup window structures on window close
+    void destroyFrame();
+
   };
 
   template <minsky::VariableType::Type T>

@@ -386,6 +386,12 @@ void VariableBase::importFromCSV(std::string filename, const DataSpec& spec)
   }
 }
 
+void VariableBase::destroyFrame()
+{
+  if (auto vv=vValue())
+    vv->csvDialog.destroyFrame();
+}
+
 void VariableBase::insertControlled(Selection& selection)
 {
   selection.ensureItemInserted(controller.lock());

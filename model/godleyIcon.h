@@ -152,6 +152,9 @@ namespace minsky
     bool onKeyPress(int, const std::string&, int) override;
     bool inItem(float, float) const override;
 
+    /// clean up popup window structures on window close
+    void destroyFrame() {popup.destroyFrame();}
+
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 
