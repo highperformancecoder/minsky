@@ -171,7 +171,7 @@ namespace minsky
         {
           RECT r;
           if (GetUpdateRect(hwnd,&r,false))
-            blit(r.left, r.top, r.right-r.left, r.bottom-r.top);
+            blit(*winfo, r.left, r.top, r.right-r.left, r.bottom-r.top);
         }
         return 0;
       case WM_NCHITTEST:

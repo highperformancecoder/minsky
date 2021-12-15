@@ -46,6 +46,7 @@ namespace minsky
 #ifdef USE_WIN32_SURFACE
     HWND parentWindowId, childWindowId;
     HBITMAP hbmMem; // backing buffer pixmap
+    HDC hdcMem; // backing buffer bitmap device context
     HANDLE hOld;    // 
 #elif defined(MAC_OSX_TK)
     NSContext nsContext;
@@ -57,6 +58,10 @@ namespace minsky
     GC graphicsContext;
     XWindowAttributes wAttr;
 #endif
+    int childWidth;
+    int childHeight;
+    int offsetLeft;
+    int offsetTop;
   };
   
   class WindowInformation: public Winfo
@@ -78,13 +83,6 @@ namespace minsky
 #endif
 
   public: 
-#ifdef USE_WIN32_SURFACE
-    HDC hdcMem; // backing buffer bitmap device context
-#endif
-    int childWidth;
-    int childHeight;
-    int offsetLeft;
-    int offsetTop;
       
     ecolab::cairo::SurfacePtr bufferSurface;
     std::function<void()> draw;
