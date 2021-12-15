@@ -238,7 +238,7 @@ namespace minsky
   WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight,
                                        double sf,const std::function<void(void)>& draw)
 #ifdef MAC_OSX_TK
-    : nsContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this), draw(draw)
+    : Winfo(NSContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this)), draw(draw)
 #endif
   {
     offsetLeft = left;

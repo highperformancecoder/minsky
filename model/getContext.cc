@@ -51,6 +51,9 @@ namespace minsky
     ViewImpl(const ViewImpl&)=delete;
     void operator=(const ViewImpl&)=delete;
   };
+
+  NSContext::NSContext(NSContext&&)=default;
+
   
   namespace
   {

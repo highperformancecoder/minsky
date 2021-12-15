@@ -50,6 +50,7 @@ namespace minsky
     HANDLE hOld;    // 
 #elif defined(MAC_OSX_TK)
     NSContext nsContext;
+    Winfo(NSContext&& nsContext): nsContext(std::move(nsContext)) {}
 #elif defined(USE_X11)
     Window parentWindowId;
     Window childWindowId, bufferWindowId;

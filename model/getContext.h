@@ -35,6 +35,7 @@ namespace minsky
     ~NSContext();
     void requestRedraw();
     NSContext(const NSContext&)=delete;
+    NSContext(NSContext&&);
     void operator=(const NSContext&)=delete;
   };
 }

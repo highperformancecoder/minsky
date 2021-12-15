@@ -188,10 +188,12 @@ Value RESTCall(const Napi::CallbackInfo& info)
         minsky::minsky().commandHook(cmd,nargs);
       }
       if (!minsky::minsky().nativeWindowsToRedraw.empty())
-        if (redrawThread->running)
-          this_thread::yield(); // yield to the render thread
-        else
-          redrawThread.reset(new RedrawThread); // start a new render thread
+        {
+          if (redrawThread->running)
+            this_thread::yield(); // yield to the render thread
+          else
+            redrawThread.reset(new RedrawThread); // start a new render thread
+        }
       return response;
     }
   catch (const std::exception& ex)
