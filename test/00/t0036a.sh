@@ -49,10 +49,12 @@ proc afterMinskyStarted {} {uplevel #0 {
   assert {[model.numGroups]==1}
   assert {[model.numItems]==8}
   assert {[model.numWires]==8}
+  file delete [autoBackupName]
   tcl_exit
 }}
 EOF
 
+rm $here/examples/GoodwinLinear02.mky#
 $here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 

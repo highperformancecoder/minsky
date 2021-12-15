@@ -49,7 +49,7 @@ EOF
 if [ $? -ne 0 ]; then fail; fi
 
 cat >reference <<EOF
-/minsky/pushHistory=>false
+/minsky/pushHistory=>true
 /minsky/edited=>false
 /minsky/nSteps=>1
 /minsky/edited=>false

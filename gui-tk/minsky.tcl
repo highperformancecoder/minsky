@@ -1531,7 +1531,7 @@ proc saveAs {} {
 
 proc newSystem {} {
     doPushHistory 0
-    if {[edited] || [file exists [autoBackupName]]} {
+    if {[edited]} {
         switch [tk_messageBox -message "Save?" -type yesnocancel] {
             yes save
             no {}
@@ -1547,6 +1547,7 @@ proc newSystem {} {
     recentreCanvas
     global fname progName
     set fname ""
+    file delete [autoBackupName]
     wm title . "$progName: New System"
     popFlags
     doPushHistory 1
