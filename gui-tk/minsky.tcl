@@ -1431,13 +1431,13 @@ proc openNamedFile {ofname} {
         file delete [autoBackupName]
     }
     # setting simulationDelay causes the edited (dirty) flag to be set, amongst other things
+    pushFlags
     doPushHistory 0
     setAutoSaveFile [autoBackupName]
 
     # minsky.load resets minsky.multipleEquities, so restore it to preferences
     minsky.multipleEquities $preferences(multipleEquities)
     canvas.focusFollowsMouse $preferences(focusFollowsMouse)
-    pushFlags
     recentreCanvas
 
    .controls.simSpeed set [simulationDelay]
@@ -1446,7 +1446,9 @@ proc openNamedFile {ofname} {
     canvas.requestRedraw
     # not sure why this is needed, but initial draw doesn't happen without it
     event generate .wiring.canvas <Expose>
+    update
     doPushHistory 1
+    pushHistory
     popFlags
 }
 
@@ -1800,7 +1802,7 @@ proc deleteSubsidiaryTopLevels {} {
 
 proc exit {} {
     # check if the model has been saved yet
-    if {[edited]||[file exists [autoBackupName]]} {
+    if {[edited]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
             no {file delete [autoBackupName]}

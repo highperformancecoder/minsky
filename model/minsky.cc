@@ -972,7 +972,9 @@ namespace minsky
       }
     catch (...) {}
     panopticon.requestRedraw();
+    canvas.recentre();
     canvas.requestRedraw();
+    canvas.moveTo(0,0); // force placement of ports
     flags=reset_needed|fullEqnDisplay_needed;
     pushHistory();
   }
@@ -1163,11 +1165,11 @@ namespace minsky
             // This bit of code outputs an XML representation that can be
             //        used for debugging issues related to unnecessary
             //        history pushes.
-            //  buf.reseto()>>m;
-            //  xml_pack_t tb(cout);
-            //  tb.prettyPrint=true;
-            //  xml_pack(tb,"Minsky",m); 
-            //  cout<<"------"<<endl;
+            //buf.reseto()>>m;
+            //xml_pack_t tb(cout);
+            //tb.prettyPrint=true;
+            //xml_pack(tb,"Minsky",m); 
+            //cout<<"------"<<endl;
             history.emplace_back();
             buf.swap(history.back());
             historyPtr=history.size();
