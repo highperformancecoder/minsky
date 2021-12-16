@@ -194,7 +194,7 @@ namespace minsky
           {
             CairoSave cs(cairo);
             cairo_move_to(cairo, x, columnButtonsOffset);
-        	colWidgets[col].draw(cairo);   
+            colWidgets[col].draw(cairo);   
           }
       
         if (col>1)

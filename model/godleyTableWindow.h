@@ -115,7 +115,7 @@ namespace minsky
     void disableButtons() {drawButtons=false; leftTableOffset=0; topTableOffset=20; requestRedrawCanvas();}
     void enableButtons() {
       drawButtons=true; leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
-      topTableOffset=30;requestRedrawCanvas();
+      topTableOffset=30;adjustWidgets();requestRedrawCanvas();
     }
 
     /// starting row/col number of the scrolling region
