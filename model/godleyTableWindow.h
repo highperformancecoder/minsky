@@ -98,6 +98,7 @@ namespace minsky
     GodleyIcon& m_godleyIcon; ///< Godley icon that owns this
     bool m_displayValues=false;
     DisplayStyle m_displayStyle=GodleyTable::sign;
+    bool button1=false; ///< mouse button pressed
    public:
     static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window

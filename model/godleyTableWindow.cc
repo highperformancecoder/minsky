@@ -458,6 +458,7 @@ namespace minsky
 
   void GodleyTableEditor::mouseDown(double x, double y)
   {
+    button1=true;
     x/=zoomFactor;
     y/=zoomFactor;
     requestRedrawCanvas();
@@ -508,6 +509,7 @@ namespace minsky
 
   void GodleyTableEditor::mouseUp(double x, double y)
   {
+    button1=false;
     x/=zoomFactor;
     y/=zoomFactor;
     int c=colX(x), r=rowY(y);
@@ -551,6 +553,11 @@ namespace minsky
 
   void GodleyTableEditor::mouseMove(double x, double y)
   {
+    if (button1)
+      {
+        mouseMoveB1(x,y);
+        return;
+      }
     x/=zoomFactor;
     y/=zoomFactor;
     // clear any existing marks
