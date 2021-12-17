@@ -375,13 +375,14 @@ void VariableBase::exportAsCSV(const std::string& filename) const
     value->second->exportAsCSV(filename, name());
 }
 
-void VariableBase::importFromCSV(std::string filename, const DataSpec& spec)
+void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spec)
 {
   if (auto v=vValue()) {
     if (filename.find("://")!=std::string::npos)
       filename = v->csvDialog.loadWebFile(filename);
     std::ifstream is(filename);
-    loadValueFromCSVFile(*v, is, spec);
+    v->csvDialog.spec=spec;
+    loadValueFromCSVFile(*v, is, v->csvDialog.spec);
     minsky().populateMissingDimensionsFromVariable(*v);
   }
 }
