@@ -96,7 +96,6 @@ namespace minsky
     {
       return;
     }
-    lock_guard<mutex> lock(winInfoPtr->rendering);
 
 #ifdef FPS_PROFILING_ON
     unsigned long t0_render_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();

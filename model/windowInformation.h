@@ -69,7 +69,6 @@ namespace minsky
   {
     friend class RenderNativeWindow;
     bool isRendering=false;
-    std::mutex rendering;
 #if defined(MAC_OSX_TK)
     friend struct NSContext;
 #elif defined(USE_X11)

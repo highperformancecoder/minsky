@@ -81,7 +81,6 @@ namespace minsky
 
     void blit(const Winfo& winfo, int x, int y, int width, int height)
     {
-      cout << "blitting "<<x<<" "<<y<<" "<<width<<" "<<height<<endl;
 #ifdef USE_WIN32_SURFACE
       PAINTSTRUCT ps;
       HDC dc=BeginPaint(winfo.childWindowId, &ps);
@@ -185,7 +184,7 @@ namespace minsky
 #if defined(USE_X11)
   void WindowInformation::EventThread::run()
   {
-#if defined(_PTHREAD_H) && defined(__USE_GNU)
+#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
     pthread_setname_np(pthread_self(),"event handler");
 #endif
     this_thread::sleep_for(1000ms); //why? Even though this thread is
@@ -199,18 +198,8 @@ namespace minsky
       try
       {
         XEvent event;
-//        if (winfo.getRenderingFlag() || winfo.childWindowId==-1) 
-//          {
-//            this_thread::sleep_for(50ms); //thottle, to avoid starving other threads
-//            continue;
-//          }
         bool eventReceived;
-        {
-          static std::mutex xMutex; // mutex to guard the not thread-safe XCheckWindowEvent
-//          lock_guard<mutex> lock(xMutex);
-//          lock_guard<mutex> renderLock(winfo.rendering);
-          eventReceived=XCheckWindowEvent(display, childWindowId, ExposureMask|StructureNotifyMask, &event);
-        }
+        eventReceived=XCheckWindowEvent(display, childWindowId, ExposureMask|StructureNotifyMask, &event);
         if (!eventReceived)
             {
               this_thread::sleep_for(50ms); //thottle, to avoid starving other threads

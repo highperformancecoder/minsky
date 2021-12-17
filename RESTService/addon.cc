@@ -99,12 +99,12 @@ struct RedrawThread: public thread
   ~RedrawThread() {join();}
   atomic<bool> running; //< flag indicating thread is still running
   void run() {
-#if defined(_PTHREAD_H) && defined(__USE_GNU)
+#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
     pthread_setname_np(pthread_self(),"redraw thread");
 #endif
     running=true;
     // sleep slightly to throttle requests on this service
-    this_thread::sleep_for(chrono::milliseconds(10));
+    this_thread::sleep_for(chrono::milliseconds(minsky::minsky().running? 300: 10));
     lock_guard<mutex> lock(redrawMutex);
     for (auto i: minsky::minsky().nativeWindowsToRedraw)
       try
@@ -164,7 +164,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
     return env.Null();
   }
   
-#if defined(_PTHREAD_H) && defined(__USE_GNU)
+#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
     pthread_setname_np(pthread_self(),"addon thread");
 #endif
 
