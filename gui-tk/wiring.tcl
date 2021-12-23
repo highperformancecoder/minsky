@@ -509,10 +509,11 @@ array set modifiers {"Control_L" "1" "Control_R" "1" "Alt_L" "1" "Alt_R" "1"}
 #Clear canvas pan mode in case shift key is pressed to create a capitalized variable via textInput. for ticket 1112.
 bind . <Key> {
     # ignore any modifier keys
-    if [info exists modifiers(%K)] return
-    if {![canvasKeyPress %N %A %s]} {
-        textInput %A
-        .wiring.canvas configure -cursor {}
+    if {![info exists modifiers(%K)]} {
+        if {![canvasKeyPress %N %A %s]} {
+            textInput %A
+            .wiring.canvas configure -cursor {}
+        }
     }
 }  
 
