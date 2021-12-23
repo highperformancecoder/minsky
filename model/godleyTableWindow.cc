@@ -997,14 +997,16 @@ namespace {
                 }
             minsky().importDuplicateColumn(godleyIcon->table, selectedCol);
           }
-        else if (godleyIcon->table.initialConditionRow(selectedRow))
-          {
-            // if the contents of the cell are cleared, set the cell to "0". For #1181
-            if (!godleyIcon->table.savedText.empty() && godleyIcon->table.cell(selectedRow,selectedCol).empty())
-              godleyIcon->table.cell(selectedRow,selectedCol)="0";
-          }
         else
-          minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
+          {
+            if (godleyIcon->table.initialConditionRow(selectedRow))
+              {
+                // if the contents of the cell are cleared, set the cell to "0". For #1181
+                if (!godleyIcon->table.savedText.empty() && godleyIcon->table.cell(selectedRow,selectedCol).empty())
+                  godleyIcon->table.cell(selectedRow,selectedCol)="0";
+              }
+            minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
+          }
         // get list of GodleyIcons first, rather than doing recursiveDo, as update munges the items vectors
         auto godleyTables=minsky().model->findItems
           ([](const ItemPtr& i){return dynamic_cast<GodleyIcon*>(i.get());});
