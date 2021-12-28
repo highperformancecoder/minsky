@@ -220,7 +220,8 @@ namespace minsky
                         }
                     }
                 if (auto g=itemFocus->group.lock())
-                  g->checkAddIORegion(itemFocus);
+                  if (g!=model)
+                    g->checkAddIORegion(itemFocus);
                 requestRedraw();
                 return;
               case ClickType::onSlider:
