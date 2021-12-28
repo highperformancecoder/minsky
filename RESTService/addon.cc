@@ -35,7 +35,7 @@ namespace minsky
   {
     struct AddOnMinsky: public RESTMinsky
     {
-      unique_ptr<Env> env;
+      Env* env=nullptr;
       FunctionReference messageCallback;
       FunctionReference busyCursorCallback;
 
@@ -132,11 +132,7 @@ Value setMessageCallback(const Napi::CallbackInfo& info)
     {
       Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
     }
-  if (auto m=dynamic_cast<minsky::AddOnMinsky*>(&minsky::minsky()))
-    {
-      m->env.reset(new Env(env));
-      m->messageCallback=Persistent(info[0].As<Function>());
-    }
+  addOnMinsky.messageCallback=Persistent(info[0].As<Function>());
   return env.Null();
 }
 
@@ -147,13 +143,15 @@ Value setBusyCursorCallback(const Napi::CallbackInfo& info)
     {
       Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
     }
-  if (auto m=dynamic_cast<minsky::AddOnMinsky*>(&minsky::minsky()))
-    {
-      m->env.reset(new Env(env));
-      m->busyCursorCallback=Persistent(info[0].As<Function>());
-    }
+  addOnMinsky.busyCursorCallback=Persistent(info[0].As<Function>());
   return env.Null();
 }
+
+struct SetMinskyEnv
+{
+  SetMinskyEnv(Env& env) {addOnMinsky.env=&env;}
+  ~SetMinskyEnv() {addOnMinsky.env=nullptr;}
+};
 
 Value RESTCall(const Napi::CallbackInfo& info)
 {
@@ -181,6 +179,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
       Value response;
       {
         lock_guard<mutex> lock(redrawMutex);
+        SetMinskyEnv minskyEnv(env);
         response=String::New(env, write(addOnMinsky.registry.process(cmd, arguments)));
         int nargs=arguments.type()==json5_parser::array_type? arguments.get_array().size(): 1;
         cmd.erase(0,1); // remove leading '/'
