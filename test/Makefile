@@ -26,7 +26,6 @@ JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
 ifneq ($(JSON_SPIRIT_HEADER),)
   FLAGS+=-I$(JSON_SPIRIT_HEADER)
 endif
-FLAGS+=-DJSON_SPIRIT_MVALUE_ENABLED
 
 EXES=cmpFp checkSchemasAreSame
 #testDatabase testGroup 
