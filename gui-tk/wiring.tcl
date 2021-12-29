@@ -1414,9 +1414,11 @@ proc deiconifyNote {} {
     if {![winfo exists .wiring.note]} {
         toplevel .wiring.note
         frame .wiring.note.tooltip
+        label .wiring.note.tooltip.bookmark -text "Bookmark?"
+        checkbutton .wiring.note.tooltip.bookmarkCheck
         label .wiring.note.tooltip.label -text "Short description"
         entry .wiring.note.tooltip.entry -width 40 -justify left
-        pack .wiring.note.tooltip.label .wiring.note.tooltip.entry -side left
+        pack .wiring.note.tooltip.bookmark .wiring.note.tooltip.bookmarkCheck .wiring.note.tooltip.label .wiring.note.tooltip.entry -side left
         text .wiring.note.text -wrap word
         frame .wiring.note.buttons
         button .wiring.note.buttons.cancel -text "Cancel" -command {closeEditWindow .wiring.note}
@@ -1429,6 +1431,7 @@ proc deiconifyNote {} {
     }
 }
 
+set bookmarkCheck 0
 proc postNote {item} {
     deiconifyNote
     .wiring.note.tooltip.entry delete 0 end
@@ -1436,6 +1439,8 @@ proc postNote {item} {
     .wiring.note.text delete 1.0 end
     .wiring.note.text insert 1.0 [minsky.canvas.$item.detailedText]
     .wiring.note.buttons.ok configure -command "OKnote $item"
+    global bookmarkCheck
+    set bookmarkCheck [minsky.canvas.$item.bookmark]
     ensureWindowVisible .wiring.note
     grab set .wiring.note
     wm transient .wiring.note
@@ -1444,6 +1449,9 @@ proc postNote {item} {
 proc OKnote {item} {
     minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
     minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
+    global bookmarkCheck
+    minsky.canvas.$item.bookmark $bookmarkCheck
+    minsky.canvas.$item.adjustBookmark
     # update bounding box - see ticket #1164
     if [ string equal $item "item" ] then {minsky.canvas.$item.updateBoundingBox}
     closeEditWindow .wiring.note

@@ -30,6 +30,8 @@ namespace minsky
     Bookmark() {}
     Bookmark(float x, float y, float z,const std::string& n):
       x(x), y(y), zoom(z), name(n) {}
+    bool operator<(const Bookmark& x) const
+    {return name<x.name;}
   };
 }
 

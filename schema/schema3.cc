@@ -370,7 +370,7 @@ namespace schema3
     minsky::LocalMinsky lm(m);
     populateGroup(*m.model);
     m.model->setZoom(zoomFactor);
-    m.model->bookmarks=bookmarks;
+    m.model->bookmarks.insert(bookmarks.begin(), bookmarks.end());
     m.dimensions=dimensions;
     m.conversions=conversions;
     m.fileVersion=minskyVersion;
@@ -396,6 +396,7 @@ namespace schema3
     x.rotation(y.rotation);
     x.iWidth(y.width);
     x.iHeight(y.height);
+    x.bookmark=y.bookmark;
     if (auto* x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
@@ -502,7 +503,11 @@ namespace schema3
       {
         x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
-        if (y.bookmarks) x1->bookmarks=*y.bookmarks;
+        if (y.bookmarks)
+          {
+            x1->bookmarks.clear();
+            x1->bookmarks.insert(y.bookmarks->begin(), y.bookmarks->end());
+          }
       }
   }
 

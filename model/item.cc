@@ -40,7 +40,7 @@ namespace minsky
   void BoundingBox::update(const Item& x)
   {
     ecolab::cairo::Surface surf
-       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     auto savedMouseFocus=x.mouseFocus;
     x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
     x.onResizeHandles=false;
@@ -124,7 +124,7 @@ namespace minsky
     {
       return near(x0,y0,r.x(x1,y1),r.y(x1,y1),d);
     }
-}
+  }
 
   std::vector<Point> Item::corners() const
   {
@@ -133,59 +133,68 @@ namespace minsky
     auto top=y()+bb.top()*zoomFactor(), bottom=y()+bb.bottom()*zoomFactor();
     memoisedRotator.update(rotation(),x(),y());
     return {memoisedRotator(left,top),memoisedRotator(left,bottom),
-      memoisedRotator(right,bottom),memoisedRotator(right,top)};
+        memoisedRotator(right,bottom),memoisedRotator(right,top)};
   }
   
-    float Item::left()   const
-    {
-      auto left=x();
-      for (auto& p: corners())
-        if (p.x()<left) left=p.x();
-      return left;
-    }
-    float Item::right()   const
-    {
-      auto right=x();
-      for (auto& p: corners())
-        if (p.x()>right) right=p.x();
-      return right;
-    }
-    float Item::top()   const
-    {
-      auto top=y();
-      for (auto& p: corners())
-        if (p.y()<top) top=p.y();
-      return top;
-    }
-    float Item::bottom()   const
-    {
-      auto bottom=y();
-      for (auto& p: corners())
-        if (p.y()>bottom) bottom=p.y();
-      return bottom;
-    }
+  float Item::left()   const
+  {
+    auto left=x();
+    for (auto& p: corners())
+      if (p.x()<left) left=p.x();
+    return left;
+  }
+  float Item::right()   const
+  {
+    auto right=x();
+    for (auto& p: corners())
+      if (p.x()>right) right=p.x();
+    return right;
+  }
+  float Item::top()   const
+  {
+    auto top=y();
+    for (auto& p: corners())
+      if (p.y()<top) top=p.y();
+    return top;
+  }
+  float Item::bottom()   const
+  {
+    auto bottom=y();
+    for (auto& p: corners())
+      if (p.y()>bottom) bottom=p.y();
+    return bottom;
+  }
 
-   Point BottomRightResizerItem::resizeHandleCoords() const
-   {
-     // ensure resize handle is always active on the same corner of variable/items. for ticket 1232
-     ensureBBValid();
-     memoisedRotator.update(rotation(),x(),y());
-     auto left=x()+bb.left()*zoomFactor(), right=x()+bb.right()*zoomFactor();
-     auto top=y()+bb.top()*zoomFactor(), bottom=y()+bb.bottom()*zoomFactor();
-     switch (quadrant(rotation()))
-       {
-       case 0:
-         return memoisedRotator(right,bottom);
-       case 1:
-         return memoisedRotator(right,top);
-       case 2:
-         return memoisedRotator(left,top);
-       case 3:
-         return memoisedRotator(left,bottom);
-       default:
-         assert(false);
-         return {};
-       }
+  void Item::adjustBookmark() const
+  {
+    auto& bookmarks=minsky().model->bookmarks;
+    if (bookmark)
+      minsky().model->addBookmarkXY(left(),top(),bookmarkId());
+    else
+      bookmarks.erase(Bookmark(0,0,0,bookmarkId()));
+  }
+  
+  Point BottomRightResizerItem::resizeHandleCoords() const
+  {
+    // ensure resize handle is always active on the same corner of variable/items. for ticket 1232
+    ensureBBValid();
+    memoisedRotator.update(rotation(),x(),y());
+    auto left=x()+bb.left()*zoomFactor(), right=x()+bb.right()*zoomFactor();
+    auto top=y()+bb.top()*zoomFactor(), bottom=y()+bb.bottom()*zoomFactor();
+    switch (quadrant(rotation()))
+      {
+      case 0:
+        return memoisedRotator(right,bottom);
+      case 1:
+        return memoisedRotator(right,top);
+      case 2:
+        return memoisedRotator(left,top);
+      case 3:
+        return memoisedRotator(left,bottom);
+      default:
+        assert(false);
+        return {};
+      }
   }
   
   bool Item::onResizeHandle(float x, float y) const
@@ -196,7 +205,7 @@ namespace minsky
                   {return near(x,y,p.x(),p.y(),rhSize);});
   }
 
-   bool BottomRightResizerItem::onResizeHandle(float x, float y) const
+  bool BottomRightResizerItem::onResizeHandle(float x, float y) const
   {
     Point p=resizeHandleCoords();
     return near(x,y,p.x(),p.y(),resizeHandleSize());
@@ -205,7 +214,7 @@ namespace minsky
  
   bool Item::visible() const 
   {
-	if (attachedToDefiningVar()) return false;   
+    if (attachedToDefiningVar()) return false;   
     auto g=group.lock();
     return (!g || g->displayContents());
   }
@@ -224,6 +233,7 @@ namespace minsky
         m_x=x;
         m_y=y;
       }
+    if (bookmark) adjustBookmark();
     assert(abs(x-this->x())<1 && abs(y-this->y())<1);
   }
 
@@ -244,7 +254,7 @@ namespace minsky
     if (inItem(x,y)) return ClickType::inItem;
     
     ecolab::cairo::Surface dummySurf
-                                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
+      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     draw(dummySurf.cairo());
     if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
       return ClickType::onItem;               

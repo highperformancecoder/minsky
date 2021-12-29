@@ -365,27 +365,38 @@ namespace minsky
     /// could be connected to
     std::vector<std::string> accessibleVars() const;
 
-    std::vector<Bookmark> bookmarks;
+    std::set<Bookmark> bookmarks;
     /// returns list of bookmark names for populating menu 
     std::vector<std::string> bookmarkList() {
       std::vector<std::string> r;
       for (auto& b: bookmarks) r.push_back(b.name);
       return r;
     }
-    void addBookmark(const std::string& name) {
-      bookmarks.emplace_back(x(), y(), relZoom*zoomFactor(), name);
+    void addBookmarkXY(float dx, float dy, const std::string& name) {
+      bookmarks.erase(Bookmark{0,0,0,name});
+      bookmarks.emplace(x()-dx, y()-dy, relZoom*zoomFactor(), name);
     }
+    void addBookmark(const std::string& name) {addBookmarkXY(0,0,name);}
     void deleteBookmark(std::size_t i) {
       if (i<bookmarks.size())
-        bookmarks.erase(bookmarks.begin()+i);
+        {
+          auto j=bookmarks.begin();
+          std::advance(j, i);
+          bookmarks.erase(j);
+        }
     }
     void gotoBookmark_b(const Bookmark& b) {
       moveTo(b.x, b.y);
       zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
     }
-    void gotoBookmark(std::size_t i) 
-    {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
-
+    void gotoBookmark(std::size_t i) {
+      if (i<bookmarks.size()) {
+          auto j=bookmarks.begin();
+          std::advance(j, i);
+          gotoBookmark_b(*j);
+      }
+    }
+    
     /// return default extension for this group - .mky if no ravels in group, .rvl otherwise
     std::string defaultExtension() const;
 
