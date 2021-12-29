@@ -310,25 +310,7 @@ tcl-cov:
 	sh test/run-tcl-cov.sh
 
 dist:
-<<<<<<< HEAD
-	git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ HEAD -o /tmp/Minsky-$(MINSKY_VERSION).tar
-# add submodules
-	cd ecolab; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd ecolab/classdesc; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/classdesc/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd ecolab/graphcode; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/graphcode/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd certify; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/certify/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd RavelCAPI; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/RavelCAPI/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd exprtk; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/exprtk/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
-=======
 	sh makeDist.sh $(NODE_HEADER)
->>>>>>> 6018c70c (Fix up make dist to handle new submodules.)
 
 lcov:
 	$(MAKE) clean
