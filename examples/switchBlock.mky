@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.29.0</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>46</id>
@@ -48,6 +48,7 @@
     <ports>
      <int>0</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -66,6 +67,7 @@
      <int>3</int>
      <int>4</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>14</intVar>
     <arg>1</arg>
    </Item>
@@ -83,6 +85,7 @@
     <ports>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
     <init>0.5</init>
     <slider>
      <stepRel>false</stepRel>
@@ -129,6 +132,7 @@
     <ports>
      <int>8</int>
     </ports>
+    <bookmark>false</bookmark>
     <init>1.5</init>
     <slider>
      <stepRel>false</stepRel>
@@ -176,6 +180,7 @@
      <int>10</int>
      <int>11</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>2p1</name>
     <init>2:p1</init>
     <slider>
@@ -224,6 +229,7 @@
      <int>2</int>
      <int>13</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>int1</name>
     <init>0</init>
     <slider>
@@ -271,6 +277,7 @@
     <ports>
      <int>15</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>p1</name>
     <init>1.25</init>
     <slider>
@@ -339,6 +346,7 @@
      <int>37</int>
      <int>38</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -455,6 +463,7 @@
      <int>43</int>
      <int>44</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
   </items>
   <groups>

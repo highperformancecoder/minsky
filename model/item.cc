@@ -171,7 +171,7 @@ namespace minsky
     if (bookmark)
       minsky().model->addBookmarkXY(left(),top(),bookmarkId());
     else
-      bookmarks.erase(Bookmark(0,0,0,bookmarkId()));
+      bookmarks.erase(bookmarkId());
   }
   
   Point BottomRightResizerItem::resizeHandleCoords() const

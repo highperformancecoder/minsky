@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.29.0</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>39</id>
@@ -120,6 +120,7 @@
     <ports>
      <int>0</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>rand(5)</name>
     <init>rand(5,3)</init>
     <slider>
@@ -167,6 +168,7 @@
     <ports>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>6</id>
@@ -183,6 +185,7 @@
      <int>4</int>
      <int>5</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -200,6 +203,7 @@
      <int>7</int>
      <int>8</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x1</name>
     <slider>
      <stepRel>false</stepRel>
@@ -247,6 +251,7 @@
      <int>10</int>
      <int>11</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x2</name>
     <slider>
      <stepRel>false</stepRel>
@@ -294,6 +299,7 @@
      <int>13</int>
      <int>14</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x3</name>
     <slider>
      <stepRel>false</stepRel>
@@ -341,6 +347,7 @@
      <int>16</int>
      <int>17</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x4</name>
     <slider>
      <stepRel>false</stepRel>
@@ -388,6 +395,7 @@
      <int>19</int>
      <int>20</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -405,6 +413,7 @@
      <int>22</int>
      <int>23</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -422,6 +431,7 @@
      <int>25</int>
      <int>26</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -439,6 +449,7 @@
      <int>28</int>
      <int>29</int>
     </ports>
+    <bookmark>false</bookmark>
     <axis>1</axis>
     <arg>1</arg>
    </Item>
@@ -456,6 +467,7 @@
     <ports>
      <int>31</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>36</id>
@@ -473,6 +485,7 @@
      <int>34</int>
      <int>35</int>
     </ports>
+    <bookmark>false</bookmark>
     <axis>1</axis>
     <arg>1</arg>
    </Item>
@@ -490,6 +503,7 @@
     <ports>
      <int>37</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
   </items>
   <groups>

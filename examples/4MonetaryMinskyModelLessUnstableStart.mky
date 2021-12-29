@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.29.0</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>593</id>
@@ -803,6 +803,7 @@
      <int>1</int>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -821,6 +822,7 @@
      <int>5</int>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -839,6 +841,7 @@
      <int>9</int>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -857,6 +860,7 @@
      <int>13</int>
      <int>14</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -875,6 +879,7 @@
      <int>17</int>
      <int>18</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -893,6 +898,7 @@
      <int>21</int>
      <int>22</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -911,6 +917,7 @@
      <int>25</int>
      <int>26</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -929,6 +936,7 @@
      <int>29</int>
      <int>30</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -947,6 +955,7 @@
      <int>33</int>
      <int>34</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -965,6 +974,7 @@
      <int>37</int>
      <int>38</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -982,6 +992,7 @@
      <int>40</int>
      <int>41</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1000,6 +1011,7 @@
      <int>44</int>
      <int>45</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1018,6 +1030,7 @@
      <int>48</int>
      <int>49</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1036,6 +1049,7 @@
      <int>52</int>
      <int>53</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1054,6 +1068,7 @@
      <int>56</int>
      <int>57</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1072,6 +1087,7 @@
      <int>60</int>
      <int>61</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1090,6 +1106,7 @@
      <int>64</int>
      <int>65</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1108,6 +1125,7 @@
      <int>68</int>
      <int>69</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1126,6 +1144,7 @@
      <int>72</int>
      <int>73</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1144,6 +1163,7 @@
      <int>76</int>
      <int>77</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1162,6 +1182,7 @@
      <int>80</int>
      <int>81</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1180,6 +1201,7 @@
      <int>84</int>
      <int>85</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1198,6 +1220,7 @@
      <int>88</int>
      <int>89</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1216,6 +1239,7 @@
      <int>92</int>
      <int>93</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1234,6 +1258,7 @@
      <int>96</int>
      <int>97</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1252,6 +1277,7 @@
      <int>100</int>
      <int>101</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1270,6 +1296,7 @@
      <int>104</int>
      <int>105</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1288,6 +1315,7 @@
      <int>108</int>
      <int>109</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1306,6 +1334,7 @@
      <int>112</int>
      <int>113</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1324,6 +1353,7 @@
      <int>116</int>
      <int>117</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1342,6 +1372,7 @@
      <int>120</int>
      <int>121</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1360,6 +1391,7 @@
      <int>124</int>
      <int>125</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1378,6 +1410,7 @@
      <int>128</int>
      <int>129</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1396,6 +1429,7 @@
      <int>132</int>
      <int>133</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1414,6 +1448,7 @@
      <int>136</int>
      <int>137</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1432,6 +1467,7 @@
      <int>140</int>
      <int>141</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1450,6 +1486,7 @@
      <int>144</int>
      <int>145</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1468,6 +1505,7 @@
      <int>148</int>
      <int>149</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1486,6 +1524,7 @@
      <int>152</int>
      <int>153</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1504,6 +1543,7 @@
      <int>156</int>
      <int>157</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1522,6 +1562,7 @@
      <int>160</int>
      <int>161</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1540,6 +1581,7 @@
      <int>164</int>
      <int>165</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1558,6 +1600,7 @@
      <int>168</int>
      <int>169</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1576,6 +1619,7 @@
      <int>172</int>
      <int>173</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1594,6 +1638,7 @@
      <int>176</int>
      <int>177</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1612,6 +1657,7 @@
      <int>180</int>
      <int>181</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1630,6 +1676,7 @@
      <int>184</int>
      <int>185</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1648,6 +1695,7 @@
      <int>188</int>
      <int>189</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1665,6 +1713,7 @@
      <int>191</int>
      <int>192</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1683,6 +1732,7 @@
      <int>195</int>
      <int>196</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1701,6 +1751,7 @@
      <int>199</int>
      <int>200</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1719,6 +1770,7 @@
      <int>203</int>
      <int>204</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1737,6 +1789,7 @@
      <int>207</int>
      <int>208</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1755,6 +1808,7 @@
      <int>211</int>
      <int>212</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1773,6 +1827,7 @@
      <int>215</int>
      <int>216</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1790,6 +1845,7 @@
      <int>218</int>
      <int>219</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1807,6 +1863,7 @@
      <int>221</int>
      <int>222</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1825,6 +1882,7 @@
      <int>225</int>
      <int>226</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1843,6 +1901,7 @@
      <int>229</int>
      <int>230</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1861,6 +1920,7 @@
      <int>233</int>
      <int>234</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1879,6 +1939,7 @@
      <int>237</int>
      <int>238</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1895,6 +1956,7 @@
     <ports>
      <int>240</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BC</name>
     <init>0</init>
     <slider>
@@ -1942,6 +2004,7 @@
     <ports>
      <int>242</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BPL</name>
     <init>0</init>
     <slider>
@@ -1989,6 +2052,7 @@
     <ports>
      <int>244</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FL</name>
     <init>0</init>
     <slider>
@@ -2036,6 +2100,7 @@
     <ports>
      <int>246</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FD</name>
     <init>0</init>
     <slider>
@@ -2083,6 +2148,7 @@
     <ports>
      <int>248</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:WD</name>
     <init>0</init>
     <slider>
@@ -2130,6 +2196,7 @@
     <ports>
      <int>250</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:N</name>
     <init>300</init>
     <slider>
@@ -2177,6 +2244,7 @@
     <ports>
      <int>252</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:a</name>
     <init>1</init>
     <slider>
@@ -2224,6 +2292,7 @@
     <ports>
      <int>254</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Kr</name>
     <init>900</init>
     <slider>
@@ -2271,6 +2340,7 @@
     <ports>
      <int>256</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
@@ -2318,6 +2388,7 @@
     <ports>
      <int>258</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:W</name>
     <init>1</init>
     <slider>
@@ -2365,6 +2436,7 @@
     <ports>
      <int>260</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\lambda</name>
     <init>0</init>
     <slider>
@@ -2413,6 +2485,7 @@
      <int>262</int>
      <int>263</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:I</name>
     <init>0</init>
     <slider>
@@ -2461,6 +2534,7 @@
      <int>265</int>
      <int>266</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:J</name>
     <init>0</init>
     <slider>
@@ -2509,6 +2583,7 @@
      <int>268</int>
      <int>269</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:B</name>
     <init>0</init>
     <slider>
@@ -2557,6 +2632,7 @@
      <int>271</int>
      <int>272</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:A</name>
     <init>0</init>
     <slider>
@@ -2605,6 +2681,7 @@
      <int>274</int>
      <int>275</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:C</name>
     <init>0</init>
     <slider>
@@ -2653,6 +2730,7 @@
      <int>277</int>
      <int>278</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:D</name>
     <init>0</init>
     <slider>
@@ -2701,6 +2779,7 @@
      <int>280</int>
      <int>281</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:E</name>
     <init>0</init>
     <slider>
@@ -2749,6 +2828,7 @@
      <int>283</int>
      <int>284</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:F</name>
     <init>0</init>
     <slider>
@@ -2797,6 +2877,7 @@
      <int>286</int>
      <int>287</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:G</name>
     <init>0</init>
     <slider>
@@ -2845,6 +2926,7 @@
      <int>289</int>
      <int>290</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:H</name>
     <init>0</init>
     <slider>
@@ -2893,6 +2975,7 @@
      <int>292</int>
      <int>293</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_N</name>
     <init>0</init>
     <slider>
@@ -2941,6 +3024,7 @@
      <int>295</int>
      <int>296</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_a</name>
     <init>0</init>
     <slider>
@@ -2989,6 +3073,7 @@
      <int>298</int>
      <int>299</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_{Kr}</name>
     <init>0</init>
     <slider>
@@ -3037,6 +3122,7 @@
      <int>301</int>
      <int>302</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_{PC}</name>
     <init>0</init>
     <slider>
@@ -3085,6 +3171,7 @@
      <int>304</int>
      <int>305</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_W</name>
     <init>0</init>
     <slider>
@@ -3133,6 +3220,7 @@
      <int>307</int>
      <int>308</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_\lambda</name>
     <init>0</init>
     <slider>
@@ -3180,6 +3268,7 @@
     <ports>
      <int>310</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:W</name>
     <init>1</init>
     <slider>
@@ -3227,6 +3316,7 @@
     <ports>
      <int>312</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:a</name>
     <init>1</init>
     <slider>
@@ -3275,6 +3365,7 @@
      <int>314</int>
      <int>315</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Ph(\lambda)</name>
     <init>0</init>
     <slider>
@@ -3322,6 +3413,7 @@
     <ports>
      <int>317</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\lambda</name>
     <init>0</init>
     <slider>
@@ -3370,6 +3462,7 @@
      <int>319</int>
      <int>320</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\alpha</name>
     <init>0</init>
     <slider>
@@ -3418,6 +3511,7 @@
      <int>322</int>
      <int>323</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\alpha</name>
     <init>0</init>
     <slider>
@@ -3466,6 +3560,7 @@
      <int>325</int>
      <int>326</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\beta</name>
     <init>0</init>
     <slider>
@@ -3514,6 +3609,7 @@
      <int>328</int>
      <int>329</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:g</name>
     <init>0.0405595</init>
     <slider>
@@ -3562,6 +3658,7 @@
      <int>331</int>
      <int>332</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:g-(\alpha+\beta)</name>
     <init>0</init>
     <slider>
@@ -3610,6 +3707,7 @@
      <int>334</int>
      <int>335</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:g-(\alpha+\beta)</name>
     <init>0</init>
     <slider>
@@ -3657,6 +3755,7 @@
     <ports>
      <int>337</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
@@ -3704,6 +3803,7 @@
     <ports>
      <int>339</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:W</name>
     <init>1</init>
     <slider>
@@ -3751,6 +3851,7 @@
     <ports>
      <int>341</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:a</name>
     <init>1</init>
     <slider>
@@ -3798,6 +3899,7 @@
     <ports>
      <int>343</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:WD</name>
     <init>0</init>
     <slider>
@@ -3845,6 +3947,7 @@
     <ports>
      <int>345</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FL</name>
     <init>0</init>
     <slider>
@@ -3892,6 +3995,7 @@
     <ports>
      <int>347</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FD</name>
     <init>0</init>
     <slider>
@@ -3939,6 +4043,7 @@
     <ports>
      <int>349</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FL</name>
     <init>0</init>
     <slider>
@@ -3986,6 +4091,7 @@
     <ports>
      <int>351</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BC</name>
     <init>0</init>
     <slider>
@@ -4034,6 +4140,7 @@
      <int>353</int>
      <int>354</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:g</name>
     <init>0.0405595</init>
     <slider>
@@ -4082,6 +4189,7 @@
      <int>356</int>
      <int>357</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\pi_r</name>
     <init>0</init>
     <slider>
@@ -4130,6 +4238,7 @@
      <int>359</int>
      <int>360</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:v</name>
     <init>3</init>
     <slider>
@@ -4178,6 +4287,7 @@
      <int>362</int>
      <int>363</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Yr</name>
     <init>300</init>
     <slider>
@@ -4226,6 +4336,7 @@
      <int>365</int>
      <int>366</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:v</name>
     <init>3</init>
     <slider>
@@ -4273,6 +4384,7 @@
     <ports>
      <int>368</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Kr</name>
     <init>900</init>
     <slider>
@@ -4321,6 +4433,7 @@
      <int>370</int>
      <int>371</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:L</name>
     <init>0</init>
     <slider>
@@ -4368,6 +4481,7 @@
     <ports>
      <int>373</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:a</name>
     <init>1</init>
     <slider>
@@ -4415,6 +4529,7 @@
     <ports>
      <int>375</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
@@ -4463,6 +4578,7 @@
      <int>377</int>
      <int>378</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Yr</name>
     <init>300</init>
     <slider>
@@ -4510,6 +4626,7 @@
     <ports>
      <int>380</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:W</name>
     <init>1</init>
     <slider>
@@ -4558,6 +4675,7 @@
      <int>382</int>
      <int>383</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:L</name>
     <init>0</init>
     <slider>
@@ -4606,6 +4724,7 @@
      <int>385</int>
      <int>386</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:rL</name>
     <init>0.05</init>
     <slider>
@@ -4653,6 +4772,7 @@
     <ports>
      <int>388</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FL</name>
     <init>0</init>
     <slider>
@@ -4701,6 +4821,7 @@
      <int>390</int>
      <int>391</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:rD</name>
     <init>0.01</init>
     <slider>
@@ -4748,6 +4869,7 @@
     <ports>
      <int>393</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FD</name>
     <init>0</init>
     <slider>
@@ -4795,6 +4917,7 @@
     <ports>
      <int>395</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
@@ -4843,6 +4966,7 @@
      <int>397</int>
      <int>398</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Yr</name>
     <init>300</init>
     <slider>
@@ -4891,6 +5015,7 @@
      <int>400</int>
      <int>401</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Inv(\pi_r)</name>
     <init>0</init>
     <slider>
@@ -4939,6 +5064,7 @@
      <int>403</int>
      <int>404</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:v</name>
     <init>3</init>
     <slider>
@@ -4987,6 +5113,7 @@
      <int>406</int>
      <int>407</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\delta</name>
     <init>0</init>
     <slider>
@@ -5035,6 +5162,7 @@
      <int>409</int>
      <int>410</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:g</name>
     <init>0.0405595</init>
     <slider>
@@ -5083,6 +5211,7 @@
      <int>412</int>
      <int>413</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:rD</name>
     <init>0.01</init>
     <slider>
@@ -5131,6 +5260,7 @@
      <int>415</int>
      <int>416</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Yr</name>
     <init>300</init>
     <slider>
@@ -5179,6 +5309,7 @@
      <int>418</int>
      <int>419</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Inv(\pi_r)</name>
     <init>0</init>
     <slider>
@@ -5227,6 +5358,7 @@
      <int>421</int>
      <int>422</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:rL</name>
     <init>0.05</init>
     <slider>
@@ -5275,6 +5407,7 @@
      <int>424</int>
      <int>425</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{RL}(\pi_r)</name>
     <init>0</init>
     <slider>
@@ -5323,6 +5456,7 @@
      <int>427</int>
      <int>428</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{LC}(\pi_r)</name>
     <init>0</init>
     <slider>
@@ -5371,6 +5505,7 @@
      <int>430</int>
      <int>431</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{RL}(\pi_r)</name>
     <init>0</init>
     <slider>
@@ -5419,6 +5554,7 @@
      <int>433</int>
      <int>434</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{LC}(\pi_r)</name>
     <init>0</init>
     <slider>
@@ -5466,6 +5602,7 @@
     <ports>
      <int>436</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BC</name>
     <init>0</init>
     <slider>
@@ -5513,6 +5650,7 @@
     <ports>
      <int>438</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BPL</name>
     <init>0</init>
     <slider>
@@ -5560,6 +5698,7 @@
     <ports>
      <int>440</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FL</name>
     <init>0</init>
     <slider>
@@ -5607,6 +5746,7 @@
     <ports>
      <int>442</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FD</name>
     <init>0</init>
     <slider>
@@ -5654,6 +5794,7 @@
     <ports>
      <int>444</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:WD</name>
     <init>0</init>
     <slider>
@@ -5701,6 +5842,7 @@
     <ports>
      <int>446</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:N</name>
     <init>300</init>
     <slider>
@@ -5748,6 +5890,7 @@
     <ports>
      <int>448</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:a</name>
     <init>1</init>
     <slider>
@@ -5795,6 +5938,7 @@
     <ports>
      <int>450</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Kr</name>
     <init>900</init>
     <slider>
@@ -5842,6 +5986,7 @@
     <ports>
      <int>452</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:PC</name>
     <init>1.25</init>
     <slider>
@@ -5889,6 +6034,7 @@
     <ports>
      <int>454</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:W</name>
     <init>1</init>
     <slider>
@@ -5937,6 +6083,7 @@
      <int>456</int>
      <int>457</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:A</name>
     <init>0</init>
     <slider>
@@ -5985,6 +6132,7 @@
      <int>459</int>
      <int>460</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:B</name>
     <init>0</init>
     <slider>
@@ -6033,6 +6181,7 @@
      <int>462</int>
      <int>463</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:C</name>
     <init>0</init>
     <slider>
@@ -6081,6 +6230,7 @@
      <int>465</int>
      <int>466</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:D</name>
     <init>0</init>
     <slider>
@@ -6129,6 +6279,7 @@
      <int>468</int>
      <int>469</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:E</name>
     <init>0</init>
     <slider>
@@ -6177,6 +6328,7 @@
      <int>471</int>
      <int>472</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:F</name>
     <init>0</init>
     <slider>
@@ -6225,6 +6377,7 @@
      <int>474</int>
      <int>475</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:G</name>
     <init>0</init>
     <slider>
@@ -6273,6 +6426,7 @@
      <int>477</int>
      <int>478</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:H</name>
     <init>0</init>
     <slider>
@@ -6321,6 +6475,7 @@
      <int>480</int>
      <int>481</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:I</name>
     <init>0</init>
     <slider>
@@ -6369,6 +6524,7 @@
      <int>483</int>
      <int>484</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:J</name>
     <init>0</init>
     <slider>
@@ -6417,6 +6573,7 @@
      <int>486</int>
      <int>487</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_W</name>
     <init>0</init>
     <slider>
@@ -6465,6 +6622,7 @@
      <int>489</int>
      <int>490</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_a</name>
     <init>0</init>
     <slider>
@@ -6513,6 +6671,7 @@
      <int>492</int>
      <int>493</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_N</name>
     <init>0</init>
     <slider>
@@ -6561,6 +6720,7 @@
      <int>495</int>
      <int>496</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_{Kr}</name>
     <init>0</init>
     <slider>
@@ -6609,6 +6769,7 @@
      <int>498</int>
      <int>499</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_{PC}</name>
     <init>0</init>
     <slider>
@@ -6657,6 +6818,7 @@
      <int>501</int>
      <int>502</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:ode_\lambda</name>
     <init>0</init>
     <slider>
@@ -6704,6 +6866,7 @@
     <ports>
      <int>504</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\lambda</name>
     <init>0</init>
     <slider>
@@ -6751,6 +6914,7 @@
     <ports>
      <int>506</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\beta_0</name>
     <init>0.02</init>
     <slider>
@@ -6798,6 +6962,7 @@
     <ports>
      <int>508</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_B</name>
     <init>1</init>
     <slider>
@@ -6845,6 +7010,7 @@
     <ports>
      <int>510</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_W</name>
     <init>0.0384615</init>
     <slider>
@@ -6892,6 +7058,7 @@
     <ports>
      <int>512</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:-\tau_{Pc}</name>
     <init>-1</init>
     <slider>
@@ -6939,6 +7106,7 @@
     <ports>
      <int>514</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\omega</name>
     <init>0.1</init>
     <slider>
@@ -6986,6 +7154,7 @@
     <ports>
      <int>516</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:1-s</name>
     <init>0.73</init>
     <slider>
@@ -7033,6 +7202,7 @@
     <ports>
      <int>518</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:xval</name>
     <init>0.96</init>
     <slider>
@@ -7080,6 +7250,7 @@
     <ports>
      <int>520</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:yval</name>
     <init>0</init>
     <slider>
@@ -7127,6 +7298,7 @@
     <ports>
      <int>522</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:sval</name>
     <init>2</init>
     <slider>
@@ -7174,6 +7346,7 @@
     <ports>
      <int>524</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:min</name>
     <init>-0.04</init>
     <slider>
@@ -7221,6 +7394,7 @@
     <ports>
      <int>526</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:0.04</name>
     <init>0.04</init>
     <slider>
@@ -7268,6 +7442,7 @@
     <ports>
      <int>528</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:50</name>
     <init>50</init>
     <slider>
@@ -7315,6 +7490,7 @@
     <ports>
      <int>530</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:0.04</name>
     <init>0.04</init>
     <slider>
@@ -7362,6 +7538,7 @@
     <ports>
      <int>532</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:0.03</name>
     <init>0.03</init>
     <slider>
@@ -7409,6 +7586,7 @@
     <ports>
      <int>534</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:14.285744</name>
     <init>14.2857</init>
     <slider>
@@ -7456,6 +7634,7 @@
     <ports>
      <int>536</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:-33.33333333</name>
     <init>-33.3333</init>
     <slider>
@@ -7503,6 +7682,7 @@
     <ports>
      <int>538</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:1.5</name>
     <init>1.5</init>
     <slider>
@@ -7550,6 +7730,7 @@
     <ports>
      <int>540</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:7</name>
     <init>7</init>
     <slider>
@@ -7597,6 +7778,7 @@
     <ports>
      <int>542</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:3</name>
     <init>3</init>
     <slider>
@@ -7644,6 +7826,7 @@
     <ports>
      <int>544</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:0.5</name>
     <init>0.5</init>
     <slider>
@@ -7712,6 +7895,7 @@
      <int>566</int>
      <int>567</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -7844,6 +8028,7 @@
      <int>589</int>
      <int>590</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -7981,6 +8166,7 @@
      <int>454</int>
      <int>504</int>
     </ports>
+    <bookmark>false</bookmark>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>

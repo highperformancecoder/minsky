@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.29.0</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>64</id>
@@ -103,6 +103,7 @@
      <int>1</int>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -121,6 +122,7 @@
      <int>5</int>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -139,6 +141,7 @@
      <int>9</int>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -155,6 +158,7 @@
     <ports>
      <int>12</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Vault</name>
     <init>99</init>
     <slider>
@@ -202,6 +206,7 @@
     <ports>
      <int>14</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>0</init>
     <slider>
@@ -249,6 +254,7 @@
     <ports>
      <int>16</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Firms</name>
     <init>0</init>
     <slider>
@@ -296,6 +302,7 @@
     <ports>
      <int>18</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Safe</name>
     <init>0</init>
     <slider>
@@ -344,6 +351,7 @@
      <int>20</int>
      <int>21</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loan</name>
     <init>0</init>
     <slider>
@@ -392,6 +400,7 @@
      <int>23</int>
      <int>24</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:IntLoan</name>
     <init>0</init>
     <slider>
@@ -440,6 +449,7 @@
      <int>26</int>
      <int>27</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FirmInt</name>
     <init>0</init>
     <slider>
@@ -487,6 +497,7 @@
     <ports>
      <int>29</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Vault</name>
     <init>99</init>
     <slider>
@@ -535,6 +546,7 @@
      <int>31</int>
      <int>32</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loan</name>
     <init>0</init>
     <slider>
@@ -582,6 +594,7 @@
     <ports>
      <int>34</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:rD</name>
     <init>0.01</init>
     <slider>
@@ -629,6 +642,7 @@
     <ports>
      <int>36</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:rL</name>
     <init>0.05</init>
     <slider>
@@ -676,6 +690,7 @@
     <ports>
      <int>38</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_\mathrm{vault}</name>
     <init>0.5</init>
     <slider>
@@ -744,6 +759,7 @@
      <int>60</int>
      <int>61</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -861,6 +877,7 @@
      <int>16</int>
      <int>18</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>Godleyitem44746400</name>
     <data>
      <vector>

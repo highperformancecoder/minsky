@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.29.0</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>127</id>
@@ -144,6 +144,7 @@
      <int>1</int>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -162,6 +163,7 @@
      <int>5</int>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -180,6 +182,7 @@
      <int>9</int>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -198,6 +201,7 @@
      <int>13</int>
      <int>14</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -216,6 +220,7 @@
      <int>17</int>
      <int>18</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -232,6 +237,7 @@
     <ports>
      <int>20</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Firms</name>
     <init>0</init>
     <slider>
@@ -279,6 +285,7 @@
     <ports>
      <int>22</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>0</init>
     <slider>
@@ -326,6 +333,7 @@
     <ports>
      <int>24</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Safe</name>
     <init>0</init>
     <slider>
@@ -373,6 +381,7 @@
     <ports>
      <int>26</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Vault</name>
     <init>100</init>
     <slider>
@@ -420,6 +429,7 @@
     <ports>
      <int>28</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Workers</name>
     <init>0</init>
     <slider>
@@ -468,6 +478,7 @@
      <int>30</int>
      <int>31</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:A</name>
     <init>0</init>
     <slider>
@@ -516,6 +527,7 @@
      <int>33</int>
      <int>34</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:B</name>
     <init>0</init>
     <slider>
@@ -564,6 +576,7 @@
      <int>36</int>
      <int>37</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:C</name>
     <init>0</init>
     <slider>
@@ -612,6 +625,7 @@
      <int>39</int>
      <int>40</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:D</name>
     <init>0</init>
     <slider>
@@ -660,6 +674,7 @@
      <int>42</int>
      <int>43</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:E</name>
     <init>0</init>
     <slider>
@@ -707,6 +722,7 @@
     <ports>
      <int>45</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Firms</name>
     <init>0</init>
     <slider>
@@ -754,6 +770,7 @@
     <ports>
      <int>47</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>0</init>
     <slider>
@@ -801,6 +818,7 @@
     <ports>
      <int>49</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Safe</name>
     <init>0</init>
     <slider>
@@ -848,6 +866,7 @@
     <ports>
      <int>51</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Vault</name>
     <init>100</init>
     <slider>
@@ -895,6 +914,7 @@
     <ports>
      <int>53</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Workers</name>
     <init>0</init>
     <slider>
@@ -943,6 +963,7 @@
      <int>55</int>
      <int>56</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:A</name>
     <init>0</init>
     <slider>
@@ -991,6 +1012,7 @@
      <int>58</int>
      <int>59</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:B</name>
     <init>0</init>
     <slider>
@@ -1039,6 +1061,7 @@
      <int>61</int>
      <int>62</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:C</name>
     <init>0</init>
     <slider>
@@ -1087,6 +1110,7 @@
      <int>64</int>
      <int>65</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:D</name>
     <init>0</init>
     <slider>
@@ -1135,6 +1159,7 @@
      <int>67</int>
      <int>68</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:E</name>
     <init>0</init>
     <slider>
@@ -1182,6 +1207,7 @@
     <ports>
      <int>70</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:v</name>
     <init>0.5</init>
     <slider>
@@ -1229,6 +1255,7 @@
     <ports>
      <int>72</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:rL</name>
     <init>0.05</init>
     <slider>
@@ -1276,6 +1303,7 @@
     <ports>
      <int>74</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:w</name>
     <init>3</init>
     <slider>
@@ -1323,6 +1351,7 @@
     <ports>
      <int>76</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:wc</name>
     <init>26</init>
     <slider>
@@ -1370,6 +1399,7 @@
     <ports>
      <int>78</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:bc</name>
     <init>1</init>
     <slider>
@@ -1438,6 +1468,7 @@
      <int>100</int>
      <int>101</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -1570,6 +1601,7 @@
      <int>123</int>
      <int>124</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -1690,6 +1722,7 @@
      <int>51</int>
      <int>53</int>
     </ports>
+    <bookmark>false</bookmark>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>

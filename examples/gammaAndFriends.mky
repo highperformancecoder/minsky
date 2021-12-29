@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.29.0</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>58</id>
@@ -74,6 +74,7 @@
      <int>0</int>
      <int>1</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -111,6 +112,7 @@
      <int>23</int>
      <int>24</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -222,6 +224,7 @@
     <ports>
      <int>26</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -240,6 +243,7 @@
      <int>29</int>
      <int>30</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -256,6 +260,7 @@
     <ports>
      <int>32</int>
     </ports>
+    <bookmark>false</bookmark>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -304,6 +309,7 @@
      <int>35</int>
      <int>36</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -320,6 +326,7 @@
     <ports>
      <int>38</int>
     </ports>
+    <bookmark>false</bookmark>
     <init>1</init>
     <slider>
      <stepRel>false</stepRel>
@@ -367,6 +374,7 @@
      <int>40</int>
      <int>41</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>int1</name>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
@@ -409,6 +417,7 @@
      <int>43</int>
      <int>44</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>42</intVar>
     <arg>1</arg>
    </Item>
@@ -427,6 +436,7 @@
      <int>46</int>
      <int>47</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>int2</name>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
@@ -469,6 +479,7 @@
      <int>49</int>
      <int>50</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>48</intVar>
     <arg>1</arg>
    </Item>
@@ -487,6 +498,7 @@
      <int>52</int>
      <int>53</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>int3</name>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
@@ -529,6 +541,7 @@
      <int>55</int>
      <int>56</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>54</intVar>
     <arg>1</arg>
    </Item>

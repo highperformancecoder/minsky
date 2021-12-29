@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.29.0</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>85</id>
@@ -88,6 +88,7 @@
      <int>3</int>
      <int>4</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>7</id>
@@ -103,6 +104,7 @@
     <ports>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>a</name>
     <init>iota(5)</init>
     <slider>
@@ -150,6 +152,7 @@
     <ports>
      <int>8</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>b</name>
     <init>rand(5)</init>
     <slider>
@@ -199,6 +202,7 @@
     <ports>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>c</name>
     <init>one(5)</init>
     <slider>
@@ -246,6 +250,7 @@
     <ports>
      <int>12</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -283,6 +288,7 @@
      <int>34</int>
      <int>35</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -394,6 +400,7 @@
     <ports>
      <int>37</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>iota(5)</name>
     <init>iota(5)</init>
     <slider>
@@ -441,6 +448,7 @@
     <ports>
      <int>39</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -459,6 +467,7 @@
      <int>42</int>
      <int>43</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -480,6 +489,7 @@
      <int>48</int>
      <int>49</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>52</id>
@@ -495,6 +505,7 @@
     <ports>
      <int>51</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>a</name>
     <init>iota(5)</init>
     <slider>
@@ -542,6 +553,7 @@
     <ports>
      <int>53</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>b</name>
     <init>rand(5)</init>
     <slider>
@@ -591,6 +603,7 @@
     <ports>
      <int>55</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>c</name>
     <init>one(5)</init>
     <slider>
@@ -638,6 +651,7 @@
     <height>0</height>
     <ports>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <detailedText>Tensor&#32;switch&#32;with&#32;tensor&#32;selector</detailedText>
@@ -653,6 +667,7 @@
     <height>0</height>
     <ports>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>81</id>
@@ -689,6 +704,7 @@
      <int>79</int>
      <int>80</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -801,6 +817,7 @@
      <int>82</int>
      <int>83</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
   </items>
