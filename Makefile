@@ -43,7 +43,6 @@ JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
 ifneq ($(JSON_SPIRIT_HEADER),)
   FLAGS+=-I$(JSON_SPIRIT_HEADER)
 endif
-FLAGS+=-DJSON_SPIRIT_MVALUE_ENABLED
 
 HAVE_NODE=$(shell if which node>&/dev/null; then echo 1; fi)
 $(warning have node=$(HAVE_NODE))
@@ -313,24 +312,8 @@ tcl-cov:
 	cd test; $(MAKE) tcl-cov
 	sh test/run-tcl-cov.sh
 
-MINSKY_VERSION=$(shell git describe)
-
 dist:
-	git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ HEAD -o /tmp/Minsky-$(MINSKY_VERSION).tar
-# add submodules
-	cd ecolab; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd ecolab/classdesc; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/classdesc/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd ecolab/graphcode; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/graphcode/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd certify; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/certify/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd RavelCAPI; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/RavelCAPI/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	cd exprtk; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/exprtk/ HEAD -o /tmp/$$.tar
-	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
-	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
+	sh makeDist.sh $(NODE_HEADER)
 
 lcov:
 	$(MAKE) clean

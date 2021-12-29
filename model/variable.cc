@@ -220,8 +220,10 @@ string VariableBase::init() const
           i=dynamic_cast<IntOp*>(&(m_ports[1]->wires()[0]->from()->item()));
         if (i && i->portsSize()>2 && !i->ports(2).lock()->wires().empty())
           if (auto lhsVar=i->ports(2).lock()->wires()[0]->from()->item().variableCast())
-          // Since integral takes initial value from second port, the intVar should have the same intial value.
-            if (vValue()->init!=lhsVar->vValue()->init) vValue()->init=lhsVar->vValue()->init;
+            if (auto vv=vValue())
+              if (auto lhsVv=lhsVar->vValue())
+                // Since integral takes initial value from second port, the intVar should have the same intial value.
+                if (vv->init!=lhsVv->init) vv->init=lhsVv->init;
       }
     return value->second->init;
   }
@@ -330,7 +332,10 @@ Units VariableBase::units(bool check) const
       else
         // updates units in the process
         if (m_ports.size()>1 && !m_ports[1]->wires().empty())
-          vv->units=m_ports[1]->wires()[0]->from()->item().units(check);
+          {
+            assert(m_ports[1]->wires()[0]->from());
+            vv->units=m_ports[1]->wires()[0]->from()->item().units(check);
+          }
         else if (auto v=cminsky().definingVar(valueId()))
           vv->units=v->units(check);
 
