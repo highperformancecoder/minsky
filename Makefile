@@ -36,11 +36,6 @@ build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
 endif
 
-JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
-ifneq ($(JSON_SPIRIT_HEADER),)
-  FLAGS+=-I$(JSON_SPIRIT_HEADER)
-endif
-
 HAVE_NODE=$(shell if which node>&/dev/null; then echo 1; fi)
 $(warning have node=$(HAVE_NODE))
 ifeq ($(HAVE_NODE),1)
@@ -147,7 +142,7 @@ endif
 EXES=gui-tk/minsky$(EXE)
 #RESTService/RESTService 
 
-LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit \
+LIBS+=	-LRavelCAPI -lravelCAPI \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
