@@ -287,6 +287,12 @@ namespace minsky
         colLeftMargin.push_back(x);
         x+=colWidth;
       }
+
+    // display pulldown for last column
+    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+    pango.setMarkup("▼");
+    pango.show();
+
   
     pango.setMarkup
       (capitalise(enumKey<GodleyAssetClass::AssetClass>(assetClass)));
@@ -767,7 +773,7 @@ namespace minsky
   
     if (r==0)
       {
-        if (colLeftMargin[c+1]-x < pulldownHot && c!=int(godleyIcon->table.cols())-1) //Disable importStock on Equity column. For ticket 1154
+        if (colLeftMargin[c+1]-x < pulldownHot)
           return importStock;
         return row0;
       }

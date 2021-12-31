@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta49</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>12</id>
@@ -33,6 +33,7 @@
     <ports>
      <int>0</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>dense</name>
     <slider>
      <stepRel>false</stepRel>
@@ -81,6 +82,7 @@
     <ports>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>sparse</name>
     <slider>
      <stepRel>false</stepRel>
@@ -129,6 +131,7 @@
     <ports>
      <int>4</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>7</id>
@@ -144,6 +147,7 @@
     <ports>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>9</id>
@@ -159,6 +163,7 @@
     <ports>
      <int>8</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>iota5</name>
     <init>iota(5)</init>
     <slider>
@@ -206,10 +211,13 @@
     <ports>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
   </items>
   <groups>
   </groups>
+  <lockGroups>
+  </lockGroups>
   <rungeKutta>
    <stepMin>0</stepMin>
    <stepMax>0.01</stepMax>

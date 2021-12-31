@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2018
+  @copyright Steve Keen 2021
   @author Russell Standish
   This file is part of Minsky.
 
@@ -17,25 +17,19 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BOOKMARK_H
-#define BOOKMARK_H
+#ifndef HANDLOCKINFO_H
+#define HANDLOCKINFO_H
+
 #include <string>
+#include <vector>
 
 namespace minsky
 {
-  struct Bookmark
+  struct HandleLockInfo
   {
-    float x=0, y=0, zoom=1;
-    std::string name;
-    Bookmark() {}
-    Bookmark(const std::string& n): name(n) {}
-    Bookmark(float x, float y, float z,const std::string& n):
-      x(x), y(y), zoom(z), name(n) {}
-    bool operator<(const Bookmark& x) const
-    {return name<x.name;}
+    bool slicer=true, orientation=true, calipers=true, order=true;
+    std::vector<std::string> handleNames;
   };
 }
-
-#include "bookmark.cd"
-#include "bookmark.xcd"
+#include "handleLockInfo.cd"
 #endif

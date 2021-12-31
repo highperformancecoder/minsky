@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta49</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>454</id>
@@ -365,6 +365,7 @@
      <int>1</int>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -383,6 +384,7 @@
      <int>5</int>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -401,6 +403,7 @@
      <int>9</int>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -419,6 +422,7 @@
      <int>13</int>
      <int>14</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -437,6 +441,7 @@
      <int>17</int>
      <int>18</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -455,6 +460,7 @@
      <int>21</int>
      <int>22</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -473,6 +479,7 @@
      <int>25</int>
      <int>26</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -491,6 +498,7 @@
      <int>29</int>
      <int>30</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -509,6 +517,7 @@
      <int>33</int>
      <int>34</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -527,6 +536,7 @@
      <int>37</int>
      <int>38</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -545,6 +555,7 @@
      <int>41</int>
      <int>42</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -563,6 +574,7 @@
      <int>45</int>
      <int>46</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -581,6 +593,7 @@
      <int>49</int>
      <int>50</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -599,6 +612,7 @@
      <int>53</int>
      <int>54</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -617,6 +631,7 @@
      <int>57</int>
      <int>58</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -635,6 +650,7 @@
      <int>61</int>
      <int>62</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -653,6 +669,7 @@
      <int>65</int>
      <int>66</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -671,6 +688,7 @@
      <int>69</int>
      <int>70</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -689,6 +707,7 @@
      <int>73</int>
      <int>74</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -707,13 +726,14 @@
      <int>77</int>
      <int>78</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
     <id>81</id>
     <type>Variable:stock</type>
-    <x>1361.5</x>
-    <y>547.906</y>
+    <x>1363.7</x>
+    <y>545.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -723,6 +743,7 @@
     <ports>
      <int>80</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Reserves</name>
     <init>90</init>
     <slider>
@@ -759,8 +780,8 @@
    <Item>
     <id>83</id>
     <type>Variable:stock</type>
-    <x>1421.5</x>
-    <y>541.906</y>
+    <x>1423.7</x>
+    <y>539.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -770,6 +791,7 @@
     <ports>
      <int>82</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Patient</name>
     <init>90</init>
     <slider>
@@ -806,8 +828,8 @@
    <Item>
     <id>85</id>
     <type>Variable:stock</type>
-    <x>1451.5</x>
-    <y>549.906</y>
+    <x>1453.7</x>
+    <y>547.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -817,6 +839,7 @@
     <ports>
      <int>84</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Impatient</name>
     <init>10</init>
     <slider>
@@ -853,8 +876,8 @@
    <Item>
     <id>87</id>
     <type>Variable:stock</type>
-    <x>1481.5</x>
-    <y>545.906</y>
+    <x>1483.7</x>
+    <y>543.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -864,6 +887,7 @@
     <ports>
      <int>86</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Workers</name>
     <init>0</init>
     <slider>
@@ -900,8 +924,8 @@
    <Item>
     <id>89</id>
     <type>Variable:stock</type>
-    <x>1511.5</x>
-    <y>543.906</y>
+    <x>1513.7</x>
+    <y>541.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -911,6 +935,7 @@
     <ports>
      <int>88</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:NW_{Bank}</name>
     <init>0</init>
     <slider>
@@ -947,8 +972,8 @@
    <Item>
     <id>92</id>
     <type>Variable:flow</type>
-    <x>1309.54</x>
-    <y>110.713</y>
+    <x>1311.54</x>
+    <y>108.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -959,6 +984,7 @@
      <int>90</int>
      <int>91</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Lend</name>
     <init>0</init>
     <slider>
@@ -995,8 +1021,8 @@
    <Item>
     <id>95</id>
     <type>Variable:flow</type>
-    <x>1317.54</x>
-    <y>140.713</y>
+    <x>1319.54</x>
+    <y>138.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1007,6 +1033,7 @@
      <int>93</int>
      <int>94</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Int</name>
     <init>0</init>
     <slider>
@@ -1043,8 +1070,8 @@
    <Item>
     <id>98</id>
     <type>Variable:flow</type>
-    <x>1305.54</x>
-    <y>170.713</y>
+    <x>1307.54</x>
+    <y>168.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1055,6 +1082,7 @@
      <int>96</int>
      <int>97</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Repay</name>
     <init>0</init>
     <slider>
@@ -1091,8 +1119,8 @@
    <Item>
     <id>101</id>
     <type>Variable:flow</type>
-    <x>1299.54</x>
-    <y>200.713</y>
+    <x>1301.54</x>
+    <y>198.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1103,6 +1131,7 @@
      <int>99</int>
      <int>100</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Wages_P</name>
     <init>0</init>
     <slider>
@@ -1139,8 +1168,8 @@
    <Item>
     <id>104</id>
     <type>Variable:flow</type>
-    <x>1301.54</x>
-    <y>234.713</y>
+    <x>1303.54</x>
+    <y>232.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1151,6 +1180,7 @@
      <int>102</int>
      <int>103</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Wages_I</name>
     <init>0</init>
     <slider>
@@ -1187,8 +1217,8 @@
    <Item>
     <id>107</id>
     <type>Variable:flow</type>
-    <x>1306.54</x>
-    <y>268.713</y>
+    <x>1308.54</x>
+    <y>266.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1199,6 +1229,7 @@
      <int>105</int>
      <int>106</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_I</name>
     <init>0</init>
     <slider>
@@ -1235,8 +1266,8 @@
    <Item>
     <id>110</id>
     <type>Variable:flow</type>
-    <x>1304.54</x>
-    <y>302.713</y>
+    <x>1306.54</x>
+    <y>300.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1247,6 +1278,7 @@
      <int>108</int>
      <int>109</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_P</name>
     <init>0</init>
     <slider>
@@ -1283,8 +1315,8 @@
    <Item>
     <id>113</id>
     <type>Variable:flow</type>
-    <x>1299.54</x>
-    <y>336.713</y>
+    <x>1301.54</x>
+    <y>334.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1295,6 +1327,7 @@
      <int>111</int>
      <int>112</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{WP}</name>
     <init>0</init>
     <slider>
@@ -1331,8 +1364,8 @@
    <Item>
     <id>116</id>
     <type>Variable:flow</type>
-    <x>1301.54</x>
-    <y>370.713</y>
+    <x>1303.54</x>
+    <y>368.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1343,6 +1376,7 @@
      <int>114</int>
      <int>115</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{WI}</name>
     <init>0</init>
     <slider>
@@ -1379,8 +1413,8 @@
    <Item>
     <id>119</id>
     <type>Variable:flow</type>
-    <x>1300.54</x>
-    <y>404.713</y>
+    <x>1302.54</x>
+    <y>402.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1391,6 +1425,7 @@
      <int>117</int>
      <int>118</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{BP}</name>
     <init>0</init>
     <slider>
@@ -1427,8 +1462,8 @@
    <Item>
     <id>122</id>
     <type>Variable:flow</type>
-    <x>1302.54</x>
-    <y>438.713</y>
+    <x>1304.54</x>
+    <y>436.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1439,6 +1474,7 @@
      <int>120</int>
      <int>121</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{BI}</name>
     <init>0</init>
     <slider>
@@ -1475,8 +1511,8 @@
    <Item>
     <id>124</id>
     <type>Variable:stock</type>
-    <x>818.178</x>
-    <y>263.423</y>
+    <x>820.378</x>
+    <y>261.423</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1486,6 +1522,7 @@
     <ports>
      <int>123</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Patient</name>
     <init>90</init>
     <slider>
@@ -1522,8 +1559,8 @@
    <Item>
     <id>127</id>
     <type>Variable:flow</type>
-    <x>770.728</x>
-    <y>38.9082</y>
+    <x>772.728</x>
+    <y>36.9082</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1534,6 +1571,7 @@
      <int>125</int>
      <int>126</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_I</name>
     <init>0</init>
     <slider>
@@ -1570,8 +1608,8 @@
    <Item>
     <id>130</id>
     <type>Variable:flow</type>
-    <x>768.728</x>
-    <y>72.9082</y>
+    <x>770.728</x>
+    <y>70.9082</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1582,6 +1620,7 @@
      <int>128</int>
      <int>129</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_P</name>
     <init>0</init>
     <slider>
@@ -1618,8 +1657,8 @@
    <Item>
     <id>133</id>
     <type>Variable:flow</type>
-    <x>764.728</x>
-    <y>106.908</y>
+    <x>766.728</x>
+    <y>104.908</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1630,6 +1669,7 @@
      <int>131</int>
      <int>132</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{BP}</name>
     <init>0</init>
     <slider>
@@ -1666,8 +1706,8 @@
    <Item>
     <id>136</id>
     <type>Variable:flow</type>
-    <x>763.728</x>
-    <y>140.908</y>
+    <x>765.728</x>
+    <y>138.908</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1678,6 +1718,7 @@
      <int>134</int>
      <int>135</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{WP}</name>
     <init>0</init>
     <slider>
@@ -1714,8 +1755,8 @@
    <Item>
     <id>139</id>
     <type>Variable:flow</type>
-    <x>763.728</x>
-    <y>174.908</y>
+    <x>765.728</x>
+    <y>172.908</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1726,6 +1767,7 @@
      <int>137</int>
      <int>138</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Wages_P</name>
     <init>0</init>
     <slider>
@@ -1762,8 +1804,8 @@
    <Item>
     <id>141</id>
     <type>Variable:stock</type>
-    <x>848.178</x>
-    <y>255.423</y>
+    <x>850.378</x>
+    <y>253.423</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1773,6 +1815,7 @@
     <ports>
      <int>140</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:NW_P</name>
     <init>90</init>
     <slider>
@@ -1809,8 +1852,8 @@
    <Item>
     <id>143</id>
     <type>Variable:stock</type>
-    <x>829.913</x>
-    <y>764.823</y>
+    <x>832.113</x>
+    <y>762.823</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1820,6 +1863,7 @@
     <ports>
      <int>142</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Impatient</name>
     <init>10</init>
     <slider>
@@ -1856,8 +1900,8 @@
    <Item>
     <id>146</id>
     <type>Variable:flow</type>
-    <x>782.433</x>
-    <y>437.538</y>
+    <x>784.433</x>
+    <y>435.538</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1868,6 +1912,7 @@
      <int>144</int>
      <int>145</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_I</name>
     <init>0</init>
     <slider>
@@ -1904,8 +1949,8 @@
    <Item>
     <id>149</id>
     <type>Variable:flow</type>
-    <x>780.433</x>
-    <y>471.538</y>
+    <x>782.433</x>
+    <y>469.538</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1916,6 +1961,7 @@
      <int>147</int>
      <int>148</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_P</name>
     <init>0</init>
     <slider>
@@ -1952,8 +1998,8 @@
    <Item>
     <id>152</id>
     <type>Variable:flow</type>
-    <x>778.433</x>
-    <y>505.538</y>
+    <x>780.433</x>
+    <y>503.538</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1964,6 +2010,7 @@
      <int>150</int>
      <int>151</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{BI}</name>
     <init>0</init>
     <slider>
@@ -2000,8 +2047,8 @@
    <Item>
     <id>155</id>
     <type>Variable:flow</type>
-    <x>777.434</x>
-    <y>539.538</y>
+    <x>779.434</x>
+    <y>537.538</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2012,6 +2059,7 @@
      <int>153</int>
      <int>154</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{WI}</name>
     <init>0</init>
     <slider>
@@ -2048,8 +2096,8 @@
    <Item>
     <id>158</id>
     <type>Variable:flow</type>
-    <x>793.433</x>
-    <y>573.538</y>
+    <x>795.433</x>
+    <y>571.538</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2060,6 +2108,7 @@
      <int>156</int>
      <int>157</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Int</name>
     <init>0</init>
     <slider>
@@ -2096,8 +2145,8 @@
    <Item>
     <id>161</id>
     <type>Variable:flow</type>
-    <x>785.433</x>
-    <y>603.538</y>
+    <x>787.433</x>
+    <y>601.538</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2108,6 +2157,7 @@
      <int>159</int>
      <int>160</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Lend</name>
     <init>0</init>
     <slider>
@@ -2144,8 +2194,8 @@
    <Item>
     <id>164</id>
     <type>Variable:flow</type>
-    <x>781.433</x>
-    <y>633.538</y>
+    <x>783.433</x>
+    <y>631.538</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2156,6 +2206,7 @@
      <int>162</int>
      <int>163</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Repay</name>
     <init>0</init>
     <slider>
@@ -2192,8 +2243,8 @@
    <Item>
     <id>167</id>
     <type>Variable:flow</type>
-    <x>777.434</x>
-    <y>663.538</y>
+    <x>779.434</x>
+    <y>661.538</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2204,6 +2255,7 @@
      <int>165</int>
      <int>166</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Wages_I</name>
     <init>0</init>
     <slider>
@@ -2240,8 +2292,8 @@
    <Item>
     <id>169</id>
     <type>Variable:stock</type>
-    <x>859.913</x>
-    <y>752.823</y>
+    <x>862.113</x>
+    <y>750.823</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2251,6 +2303,7 @@
     <ports>
      <int>168</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>10</init>
     <slider>
@@ -2287,8 +2340,8 @@
    <Item>
     <id>171</id>
     <type>Variable:stock</type>
-    <x>889.913</x>
-    <y>746.823</y>
+    <x>892.113</x>
+    <y>744.823</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2298,6 +2351,7 @@
     <ports>
      <int>170</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:NW_I</name>
     <init>0</init>
     <slider>
@@ -2334,8 +2388,8 @@
    <Item>
     <id>173</id>
     <type>Variable:stock</type>
-    <x>1391.5</x>
-    <y>537.906</y>
+    <x>1393.7</x>
+    <y>535.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2345,6 +2399,7 @@
     <ports>
      <int>172</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>10</init>
     <slider>
@@ -2393,6 +2448,7 @@
      <int>174</int>
      <int>175</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Lend</name>
     <init>0</init>
     <slider>
@@ -2441,6 +2497,7 @@
      <int>177</int>
      <int>178</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Int</name>
     <init>0</init>
     <slider>
@@ -2489,6 +2546,7 @@
      <int>180</int>
      <int>181</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Repay</name>
     <init>0</init>
     <slider>
@@ -2537,6 +2595,7 @@
      <int>183</int>
      <int>184</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Wages_P</name>
     <init>0</init>
     <slider>
@@ -2585,6 +2644,7 @@
      <int>186</int>
      <int>187</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Wages_I</name>
     <init>0</init>
     <slider>
@@ -2633,6 +2693,7 @@
      <int>189</int>
      <int>190</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_I</name>
     <init>0</init>
     <slider>
@@ -2681,6 +2742,7 @@
      <int>192</int>
      <int>193</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_P</name>
     <init>0</init>
     <slider>
@@ -2729,6 +2791,7 @@
      <int>195</int>
      <int>196</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{WP}</name>
     <init>0</init>
     <slider>
@@ -2777,6 +2840,7 @@
      <int>198</int>
      <int>199</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{WI}</name>
     <init>0</init>
     <slider>
@@ -2825,6 +2889,7 @@
      <int>201</int>
      <int>202</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{BP}</name>
     <init>0</init>
     <slider>
@@ -2873,6 +2938,7 @@
      <int>204</int>
      <int>205</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{BI}</name>
     <init>0</init>
     <slider>
@@ -2920,6 +2986,7 @@
     <ports>
      <int>207</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>10</init>
     <slider>
@@ -2967,6 +3034,7 @@
     <ports>
      <int>209</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_L</name>
     <init>7</init>
     <slider>
@@ -3014,6 +3082,7 @@
     <ports>
      <int>211</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Patient</name>
     <init>90</init>
     <slider>
@@ -3061,6 +3130,7 @@
     <ports>
      <int>213</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Impatient</name>
     <init>10</init>
     <slider>
@@ -3108,6 +3178,7 @@
     <ports>
      <int>215</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Workers</name>
     <init>0</init>
     <slider>
@@ -3155,6 +3226,7 @@
     <ports>
      <int>217</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:NW_{Bank}</name>
     <init>0</init>
     <slider>
@@ -3202,6 +3274,7 @@
     <ports>
      <int>219</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:r_L</name>
     <init>0.05</init>
     <slider>
@@ -3249,6 +3322,7 @@
     <ports>
      <int>221</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>10</init>
     <slider>
@@ -3296,6 +3370,7 @@
     <ports>
      <int>223</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>10</init>
     <slider>
@@ -3343,6 +3418,7 @@
     <ports>
      <int>225</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_R</name>
     <init>9</init>
     <slider>
@@ -3390,6 +3466,7 @@
     <ports>
      <int>227</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{M\rightarrow&#32;M+}</name>
     <init>0.3</init>
     <slider>
@@ -3438,6 +3515,7 @@
      <int>229</int>
      <int>230</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Y_P</name>
     <init>0</init>
     <slider>
@@ -3486,6 +3564,7 @@
      <int>232</int>
      <int>233</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Y_I</name>
     <init>0</init>
     <slider>
@@ -3533,6 +3612,7 @@
     <ports>
      <int>235</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:w_s</name>
     <init>0.7</init>
     <slider>
@@ -3580,6 +3660,7 @@
     <ports>
      <int>237</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:w_s</name>
     <init>0.7</init>
     <slider>
@@ -3627,6 +3708,7 @@
     <ports>
      <int>239</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{WC}</name>
     <init>0.02</init>
     <slider>
@@ -3675,6 +3757,7 @@
      <int>241</int>
      <int>242</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:W_C</name>
     <init>0</init>
     <slider>
@@ -3722,6 +3805,7 @@
     <ports>
      <int>244</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:P_S</name>
     <init>0.5</init>
     <slider>
@@ -3769,6 +3853,7 @@
     <ports>
      <int>246</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:P_S</name>
     <init>0.5</init>
     <slider>
@@ -3816,6 +3901,7 @@
     <ports>
      <int>248</int>
     </ports>
+    <bookmark>false</bookmark>
     <init>1</init>
     <slider>
      <stepRel>false</stepRel>
@@ -3862,6 +3948,7 @@
     <ports>
      <int>250</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{BC}</name>
     <init>1</init>
     <slider>
@@ -3910,6 +3997,7 @@
      <int>252</int>
      <int>253</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:B_C</name>
     <init>0</init>
     <slider>
@@ -3957,6 +4045,7 @@
     <ports>
      <int>255</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:P_S</name>
     <init>0.5</init>
     <slider>
@@ -4004,6 +4093,7 @@
     <ports>
      <int>257</int>
     </ports>
+    <bookmark>false</bookmark>
     <init>1</init>
     <slider>
      <stepRel>false</stepRel>
@@ -4050,6 +4140,7 @@
     <ports>
      <int>259</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:P_S</name>
     <init>0.5</init>
     <slider>
@@ -4097,6 +4188,7 @@
     <ports>
      <int>261</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Patient</name>
     <init>90</init>
     <slider>
@@ -4144,6 +4236,7 @@
     <ports>
      <int>263</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Impatient</name>
     <init>10</init>
     <slider>
@@ -4191,6 +4284,7 @@
     <ports>
      <int>265</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{PC}</name>
     <init>2</init>
     <slider>
@@ -4238,6 +4332,7 @@
     <ports>
      <int>267</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{IC}</name>
     <init>0.75</init>
     <slider>
@@ -4285,6 +4380,7 @@
     <ports>
      <int>269</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Patient</name>
     <init>90</init>
     <slider>
@@ -4332,6 +4428,7 @@
     <ports>
      <int>271</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Impatient</name>
     <init>10</init>
     <slider>
@@ -4380,6 +4477,7 @@
      <int>273</int>
      <int>274</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Y_P</name>
     <init>0</init>
     <slider>
@@ -4428,6 +4526,7 @@
      <int>276</int>
      <int>277</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Y_I</name>
     <init>0</init>
     <slider>
@@ -4476,6 +4575,7 @@
      <int>279</int>
      <int>280</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:GDP</name>
     <init>0</init>
     <slider>
@@ -4524,6 +4624,7 @@
      <int>282</int>
      <int>283</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:GDP</name>
     <init>0</init>
     <slider>
@@ -4571,6 +4672,7 @@
     <ports>
      <int>285</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>10</init>
     <slider>
@@ -4618,6 +4720,7 @@
     <ports>
      <int>287</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_L</name>
     <init>7</init>
     <slider>
@@ -4665,6 +4768,7 @@
     <ports>
      <int>289</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_R</name>
     <init>9</init>
     <slider>
@@ -4712,6 +4816,7 @@
     <ports>
      <int>291</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Patient</name>
     <init>90</init>
     <slider>
@@ -4759,6 +4864,7 @@
     <ports>
      <int>293</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Impatient</name>
     <init>10</init>
     <slider>
@@ -4806,6 +4912,7 @@
     <ports>
      <int>295</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Workers</name>
     <init>0</init>
     <slider>
@@ -4853,6 +4960,7 @@
     <ports>
      <int>297</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:NW_{Bank}</name>
     <init>0</init>
     <slider>
@@ -4901,6 +5009,7 @@
      <int>299</int>
      <int>300</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Money</name>
     <init>0</init>
     <slider>
@@ -4949,6 +5058,7 @@
      <int>302</int>
      <int>303</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Money</name>
     <init>0</init>
     <slider>
@@ -4996,6 +5106,7 @@
     <ports>
      <int>305</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Loans</name>
     <init>10</init>
     <slider>
@@ -5043,6 +5154,7 @@
     <ports>
      <int>307</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Workers</name>
     <init>0</init>
     <slider>
@@ -5090,6 +5202,7 @@
     <ports>
      <int>309</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:NW_{Bank}</name>
     <init>0</init>
     <slider>
@@ -5137,6 +5250,7 @@
     <ports>
      <int>311</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_{M\rightarrow&#32;M+}</name>
     <init>0.3</init>
     <slider>
@@ -5173,8 +5287,8 @@
    <Item>
     <id>314</id>
     <type>Variable:stock</type>
-    <x>1319.18</x>
-    <y>892.728</y>
+    <x>1321.38</x>
+    <y>890.728</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5184,6 +5298,7 @@
     <ports>
      <int>313</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Workers</name>
     <init>0</init>
     <slider>
@@ -5220,8 +5335,8 @@
    <Item>
     <id>317</id>
     <type>Variable:flow</type>
-    <x>1266.73</x>
-    <y>701.517</y>
+    <x>1268.73</x>
+    <y>699.517</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5232,6 +5347,7 @@
      <int>315</int>
      <int>316</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{WI}</name>
     <init>0</init>
     <slider>
@@ -5268,8 +5384,8 @@
    <Item>
     <id>320</id>
     <type>Variable:flow</type>
-    <x>1264.73</x>
-    <y>735.517</y>
+    <x>1266.73</x>
+    <y>733.517</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5280,6 +5396,7 @@
      <int>318</int>
      <int>319</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Cons_{WP}</name>
     <init>0</init>
     <slider>
@@ -5316,8 +5433,8 @@
    <Item>
     <id>323</id>
     <type>Variable:flow</type>
-    <x>1266.73</x>
-    <y>769.517</y>
+    <x>1268.73</x>
+    <y>767.517</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5328,6 +5445,7 @@
      <int>321</int>
      <int>322</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Wages_I</name>
     <init>0</init>
     <slider>
@@ -5364,8 +5482,8 @@
    <Item>
     <id>326</id>
     <type>Variable:flow</type>
-    <x>1264.73</x>
-    <y>803.517</y>
+    <x>1266.73</x>
+    <y>801.517</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5376,6 +5494,7 @@
      <int>324</int>
      <int>325</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:Wages_P</name>
     <init>0</init>
     <slider>
@@ -5412,8 +5531,8 @@
    <Item>
     <id>328</id>
     <type>Variable:stock</type>
-    <x>1349.18</x>
-    <y>899.728</y>
+    <x>1351.38</x>
+    <y>897.728</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5423,6 +5542,7 @@
     <ports>
      <int>327</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:NW_{Workers}</name>
     <init>-0</init>
     <slider>
@@ -5471,6 +5591,7 @@
      <int>329</int>
      <int>330</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:d_r</name>
     <init>0</init>
     <slider>
@@ -5519,6 +5640,7 @@
      <int>332</int>
      <int>333</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:d_r</name>
     <init>0</init>
     <slider>
@@ -5587,6 +5709,7 @@
      <int>355</int>
      <int>356</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>Capitalist&#32;Bank&#32;Accounts</name>
     <logx>false</logx>
     <logy>false</logy>
@@ -5722,6 +5845,7 @@
      <int>378</int>
      <int>379</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>GDP&#32;and&#32;Loans</name>
     <logx>false</logx>
     <logy>false</logy>
@@ -5857,6 +5981,7 @@
      <int>401</int>
      <int>402</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>Money&#32;and&#32;Loans</name>
     <logx>false</logx>
     <logy>false</logy>
@@ -5992,6 +6117,7 @@
      <int>424</int>
      <int>425</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>Worker&#32;and&#32;Bank</name>
     <logx>false</logx>
     <logy>false</logy>
@@ -6127,6 +6253,7 @@
      <int>447</int>
      <int>448</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>Debt&#32;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
@@ -6257,6 +6384,7 @@
      <int>86</int>
      <int>88</int>
     </ports>
+    <bookmark>false</bookmark>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -6409,6 +6537,7 @@
      <int>123</int>
      <int>140</int>
     </ports>
+    <bookmark>false</bookmark>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -6499,6 +6628,7 @@
      <int>168</int>
      <int>170</int>
     </ports>
+    <bookmark>false</bookmark>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -6590,6 +6720,7 @@
      <int>313</int>
      <int>327</int>
     </ports>
+    <bookmark>false</bookmark>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -6641,6 +6772,8 @@
   </items>
   <groups>
   </groups>
+  <lockGroups>
+  </lockGroups>
   <rungeKutta>
    <stepMin>0</stepMin>
    <stepMax>0.01</stepMax>

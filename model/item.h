@@ -200,6 +200,13 @@ namespace minsky
     float top()    const;
     float bottom() const;
 
+    /// Is this item also a bookmark?
+    bool bookmark=false;
+    /// Id of bookmark associated with this
+    std::string bookmarkId() const {return tooltip.empty()? std::to_string(size_t(this)): tooltip;}
+    /// adjust bookmark list to reflect current configuration
+    void adjustBookmark() const;
+    
     /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
     /// @return true is (x,y) is located on a resize handle

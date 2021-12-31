@@ -124,6 +124,7 @@ namespace schema3
   struct IdMap: public map<void*,int>
   {
     int nextId=0;
+    set<minsky::RavelLockGroup*> lockGroups;
     int at(void* o) {
       auto i=find(o);
       if (i==end())
@@ -167,10 +168,7 @@ namespace schema3
           if (auto* r=dynamic_cast<minsky::Ravel*>(i))
             {
               if (r->lockGroup)
-                {
-                  items.back().lockGroup=at(r->lockGroup.get());
-                  items.back().lockGroupHandles=r->lockGroup->handlesToLock;
-                }
+                lockGroups.insert(r->lockGroup.get());
               auto s=r->getState();
               if (!s.handleStates.empty())
                 {
@@ -350,6 +348,20 @@ namespace schema3
                       }
                     return false;
                   });
+
+    // process lock groups
+    for (auto lg: itemMap.lockGroups)
+      {
+        lockGroups.emplace_back();
+        auto& slg=lockGroups.back();
+        for (auto& wr: lg->ravels())
+          if (auto r=wr.lock())
+            slg.ravels.push_back(itemMap.at(static_cast<minsky::Item*>(r.get())));
+          else
+            slg.ravels.push_back(-1); // indicate invalidity
+        for (auto& hli: lg->handleLockInfo)
+          slg.handleLockInfo.emplace_back(hli);
+      }
   }
       
   Minsky::operator minsky::Minsky() const
@@ -358,7 +370,7 @@ namespace schema3
     minsky::LocalMinsky lm(m);
     populateGroup(*m.model);
     m.model->setZoom(zoomFactor);
-    m.model->bookmarks=bookmarks;
+    m.model->bookmarks.insert(bookmarks.begin(), bookmarks.end());
     m.dimensions=dimensions;
     m.conversions=conversions;
     m.fileVersion=minskyVersion;
@@ -384,6 +396,7 @@ namespace schema3
     x.rotation(y.rotation);
     x.iWidth(y.width);
     x.iHeight(y.height);
+    x.bookmark=y.bookmark;
     if (auto* x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
@@ -490,7 +503,11 @@ namespace schema3
       {
         x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
-        if (y.bookmarks) x1->bookmarks=*y.bookmarks;
+        if (y.bookmarks)
+          {
+            x1->bookmarks.clear();
+            x1->bookmarks.insert(y.bookmarks->begin(), y.bookmarks->end());
+          }
       }
   }
 
@@ -586,13 +603,29 @@ namespace schema3
         if (i.type=="Ravel" && i.lockGroup)
           if (auto r=dynamic_pointer_cast<minsky::Ravel>(itemMap[i.id]))
             {
+              // note: legacy lock group format handling
               r->lockGroup=lockGroups[*i.lockGroup];
+              r->lockGroup->addRavel(r);
               if (i.lockGroupHandles)
-                r->lockGroup->handlesToLock=*i.lockGroupHandles;
-              r->lockGroup->ravels.push_back(r);
+                r->lockGroup->setLockHandles({i.lockGroupHandles->begin(), i.lockGroupHandles->end()});
             }
       }
-        
+  
+    // add in new lockGroup info
+    for (auto& lgi: this->lockGroups)
+      {
+        auto lockGroup=make_shared<minsky::RavelLockGroup>();
+        for (auto i: lgi.ravels)
+          if (auto r=dynamic_pointer_cast<minsky::Ravel>(itemMap[i]))
+            {
+              lockGroup->addRavel(r);
+              r->lockGroup=lockGroup;
+            }
+          else
+            lockGroup->addRavel({});
+        lockGroup->handleLockInfo=lgi.handleLockInfo;
+      }
+    
     for (const auto& w: wires)
       if (portMap.count(w.to) && portMap.count(w.from))
         {
