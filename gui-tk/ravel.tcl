@@ -30,6 +30,7 @@ proc setupPickDimMenu {} {
         pack .wiring.context.pick.select.vscroll -fill y -expand y -side left
         pack .wiring.context.pick.select
         buttonBar .wiring.context.pick {
+            global dimLabelPicked
             set pick {}
             foreach i [.wiring.context.pick.select.lb curselection] {
                 lappend pick [lindex $dimLabelPicked $i]
@@ -224,6 +225,7 @@ proc setupPickMenu {} {
         pack .wiring.context.axisMenu.pick.select.vscroll -fill y -expand y -side left
         pack .wiring.context.axisMenu.pick.select
         buttonBar .wiring.context.axisMenu.pick {
+            global labelPicked pickHandle
             set pick {}
             foreach i [.wiring.context.axisMenu.pick.select.lb curselection] {
                 lappend pick [lindex $labelPicked $i]
