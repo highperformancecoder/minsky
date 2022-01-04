@@ -40,7 +40,7 @@ set canvasWidth 600
 set canvasHeight 800
 set backgroundColour lightGray
 set preferences(nRecentFiles) 10
-set preferences(panopticon) 1
+set preferences(panopticon) 0
 set preferences(focusFollowsMouse) 0
 set preferences(multipleEquities) 0
 set recentFiles {}
