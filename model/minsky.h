@@ -194,6 +194,9 @@ namespace minsky
 
     /// find any duplicate column, and use it as a source column for balanceDuplicateColumns
     void importDuplicateColumn(GodleyTable& srcTable, int srcCol);
+    /// balance two Godley columns
+    void balanceColumns(const GodleyIcon& srcGodley, int srcCol, GodleyIcon& destGodley, int destCol) const;
+
     /// makes all duplicated columns consistent with \a srcTable, \a srcCol
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 

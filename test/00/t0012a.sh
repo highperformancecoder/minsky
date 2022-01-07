@@ -90,6 +90,9 @@ assert {"[minsky.canvas.item.table.getVariables]"=="f22"} ""
 assert {[minsky.canvas.item.table.rows]==4} ""
 assert {[minsky.canvas.item.table.cols]==4} ""
 # reset all columsn to "asset"
+\$item.setCell 0 1 s1
+\$item.setCell 0 2 s2
+\$item.setCell 0 3 s3
 \$item.setCell 1 0 "Initial Conditions"
 \$item.setCell 1 1 10
 \$item.setCell 1 3 -10

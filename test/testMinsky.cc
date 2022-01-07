@@ -962,6 +962,9 @@ SUITE(Minsky)
       auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
       godley1.resize(6,4);
+      godley1.cell(0,1)="s0";
+      godley1.cell(0,2)="s1";
+      godley1.cell(0,3)="s2";
       godley1.cell(1,1)="a";
       godley1.cell(1,2)="2b";
       godley1.cell(1,3)="-c";
