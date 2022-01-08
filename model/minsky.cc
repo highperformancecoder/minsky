@@ -140,7 +140,7 @@ namespace minsky
         
       
 
-  void Minsky::clearAllMaps()
+  void Minsky::clearAllMaps(bool doClearHistory)
   {
     model->clear();
     equations.clear();
@@ -155,7 +155,7 @@ namespace minsky
     namedItems.clear();
     flags=reset_needed|fullEqnDisplay_needed;
     fileVersion=minskyVersion;
-    clearHistory();
+    if (doClearHistory) clearHistory();
   }
 
 
@@ -1260,7 +1260,7 @@ namespace minsky
         history[historyPtr-1].reseto()>>m;
         // stash tensorInit data for later restoration
         auto stashedValues=move(variableValues);
-        clearAllMaps();
+        clearAllMaps(false);
         model->clear();
         m.populateGroup(*model);
         // restore tensorInit data

@@ -225,7 +225,7 @@ namespace minsky
     GroupPtr model{new Group};
     Canvas canvas{model};
 
-    void clearAllMaps();
+    void clearAllMaps(bool clearHistory=true);
 
     /// returns reference to variable defining (ie input wired) for valueId
     VariablePtr definingVar(const std::string& valueId) const;
