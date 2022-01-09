@@ -1408,9 +1408,10 @@ namespace minsky
   {
     this->displayValues=displayValues;
     this->displayStyle=displayStyle;
+    canvas.requestRedraw();
     model->recursiveDo(&GroupItems::items, [](Items&,Items::iterator i) {
       if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-        g->setEditorDisplayValues();
+        g->popup.requestRedraw();
       return false;
     });
   }

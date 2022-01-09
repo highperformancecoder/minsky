@@ -74,30 +74,12 @@ namespace minsky
 
   class GodleyTableEditor;
 
-  struct GodleyTableEditor_displayValues: public ecolab::TCLAccessor<GodleyTableEditor,bool>
-  {
-    GodleyTableEditor_displayValues(const std::string& name,
-                                    ecolab::TCLAccessor<GodleyTableEditor,bool>::Getter g,
-                                    ecolab::TCLAccessor<GodleyTableEditor,bool>::Setter s):
-      ecolab::TCLAccessor<GodleyTableEditor,bool>(name,g,s) {}  
-  };
-  struct GodleyTableEditor_displayStyle: public ecolab::TCLAccessor<GodleyTableEditor,GodleyAssetClass::DisplayStyle>
-  {
-    GodleyTableEditor_displayStyle(const std::string& name,
-                                   ecolab::TCLAccessor<GodleyTableEditor,GodleyAssetClass::DisplayStyle>::Getter g,
-                                   ecolab::TCLAccessor<GodleyTableEditor,GodleyAssetClass::DisplayStyle>::Setter s):
-      ecolab::TCLAccessor<GodleyTableEditor,GodleyAssetClass::DisplayStyle>(name,g,s) {}  
-  };
-  
   // This class is intended to be owned by a Godley Icon
-  class GodleyTableEditor: public ButtonWidgetEnums, public GodleyAssetClass,
-                           public GodleyTableEditor_displayValues, public GodleyTableEditor_displayStyle
+  class GodleyTableEditor: public ButtonWidgetEnums, public GodleyAssetClass
   {
     
     CLASSDESC_ACCESS(GodleyTableEditor);
     GodleyIcon& m_godleyIcon; ///< Godley icon that owns this
-    bool m_displayValues=false;
-    DisplayStyle m_displayStyle=GodleyTable::sign;
     bool button1=false; ///< mouse button pressed
    public:
     static constexpr double columnButtonsOffset=12;
@@ -133,17 +115,9 @@ namespace minsky
     /// location of insertion pointer in selected cell, as well as
     /// other end of selection (if mouse-swiped)
     unsigned insertIdx=0, selectIdx=0;
-    bool displayValues() const {return m_displayValues;}
-    bool displayValues(const bool& d) {requestRedrawCanvas(); return m_displayValues=d;}
-   GodleyAssetClass::DisplayStyle displayStyle() const {return m_displayStyle;}
-    GodleyAssetClass::DisplayStyle displayStyle(const GodleyAssetClass::DisplayStyle& d)
-    {requestRedrawCanvas(); return m_displayStyle=d;}
     double zoomFactor=1; ///< zoom the display
 
-    GodleyTableEditor(GodleyIcon& g):
-      ECOLAB_ACESSOR_INIT(GodleyTableEditor, displayValues), 
-      ECOLAB_ACESSOR_INIT(GodleyTableEditor, displayStyle), 
-      m_godleyIcon(g)
+    GodleyTableEditor(GodleyIcon& g): m_godleyIcon(g)
     {enableButtons(); adjustWidgets();}
 
     void draw(cairo_t* cairo);

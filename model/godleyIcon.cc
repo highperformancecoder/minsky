@@ -158,21 +158,12 @@ namespace minsky
         if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
           {
             editor.disableButtons();
-            setEditorDisplayValues();
             variableDisplay=false;
           }
     m_editorMode=!m_editorMode;
     updateBoundingBox();
   }
 
-  void GodleyIcon::setEditorDisplayValues()
-  {
-    editor.displayValues(cminsky().displayValues);
-    editor.displayStyle(cminsky().displayStyle);
-    popup.displayValues(cminsky().displayValues);
-    popup.displayStyle(cminsky().displayStyle);
-  }
-  
   bool GodleyIcon::buttonDisplay() const {return m_editorMode && editor.drawButtons;}
   void GodleyIcon::toggleButtons()
   {

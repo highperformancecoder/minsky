@@ -226,7 +226,7 @@ namespace minsky
                   {
                     string value;
                     FlowCoef fc(text);
-                    if (displayValues() && col!=0)  // Do not add value "= 0.0" to first column. For tickets 1064/1274
+                    if (cminsky().displayValues && col!=0)  // Do not add value "= 0.0" to first column. For tickets 1064/1274
                       try
                         {
                           auto vv=cminsky().variableValues
@@ -254,7 +254,7 @@ namespace minsky
                           { // handle DR/CR mode and colouring of text
                             if (fc.coef<0)
                               cairo_set_source_rgb(cairo,1,0,0);
-                            if (displayStyle()==GodleyTable::DRCR)
+                            if (cminsky().displayStyle==GodleyTable::DRCR)
                               {
                                 if (assetClass==GodleyAssetClass::asset ||
                                     assetClass==GodleyAssetClass::noAssetClass)
@@ -273,7 +273,7 @@ namespace minsky
                       }
                     else
                       //Display values of parameters used as initial conditions in Godley tables. for ticket 1126.  
-                      if (m_godleyIcon.table.initialConditionRow(row) && displayValues()) text=defang(text+value);
+                      if (m_godleyIcon.table.initialConditionRow(row) && cminsky().displayValues) text=defang(text+value);
                       else text=defang(text);
                   }
                 pango.setMarkup(text);

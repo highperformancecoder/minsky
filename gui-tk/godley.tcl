@@ -112,10 +112,6 @@ proc openGodley {id} {
         .$id.menubar add cascade -label Options -menu .$id.menubar.options -underline 0
         .$id.menubar add command -label Help -command {help GodleyTable} -underline 0
        
-        global preferences
-        $id.popup.displayValues $preferences(godleyDisplay)
-        $id.popup.displayStyle $preferences(godleyDisplayStyle)
-        
     }
     wm deiconify .$id
     raise .$id .
@@ -295,12 +291,6 @@ proc setGodleyTitleOK id {
 # sets each individual Godley table displayValue preference
 proc setGodleyDisplay {} {
     global preferences
-    foreach c [info commands godleyWindow*.displayValues] {
-        $c $preferences(godleyDisplay)
-    }
-    foreach c [info commands godleyWindow*.displayStyle] {
-        $c $preferences(godleyDisplayStyle)
-    }
     setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
     multipleEquities $preferences(multipleEquities)
     redrawAllGodleyTables

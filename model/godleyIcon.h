@@ -76,9 +76,6 @@ namespace minsky
     bool variableDisplay=true;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay; updateBoundingBox();}
 
-    /// sets editor's display values attributes to current global preferences
-    void setEditorDisplayValues();
-
     /// table data. Must be declared before editor
     GodleyTable table;
     /// rendering as a godley table
