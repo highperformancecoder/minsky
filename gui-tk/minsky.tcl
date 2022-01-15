@@ -1539,7 +1539,7 @@ proc newSystem {} {
         }
     }    
     catch {reset}
-    clearAllMaps 1
+    clearAllMapsTCL
     pushFlags
     deleteSubsidiaryTopLevels
     clearHistory

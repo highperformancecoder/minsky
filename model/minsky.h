@@ -225,8 +225,11 @@ namespace minsky
     GroupPtr model{new Group};
     Canvas canvas{model};
 
-    void clearAllMaps(bool clearHistory=true);
-
+    void clearAllMaps(bool clearHistory);
+    void clearAllMaps() {clearAllMaps(true);}
+    // for TCL use
+    void clearAllMapsTCL() {clearAllMaps(true);}
+    
     /// returns reference to variable defining (ie input wired) for valueId
     VariablePtr definingVar(const std::string& valueId) const;
 
