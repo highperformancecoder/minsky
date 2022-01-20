@@ -33,7 +33,7 @@ async function checkSignature() {
     ) {
       console.log(
         red(
-          `\n 🚀🚀🚀🚀 Signature changed for /minsky${l} ................ 🚀🚀🚀🚀 \n`
+          `\n Signature changed for /minsky${l} ................ \n`
         )
       );
 
@@ -41,13 +41,12 @@ async function checkSignature() {
         green(`\n    Before: ${JSON.stringify(_signature[l])}     \n`)
       );
       console.log(red(`\n    After: ${JSON.stringify(signature)}    \n`));
-      return;
+//      return;
     }
+  console.log('No Change In Signature of /minsky'+l+' \n');
   }
 
-  console.log(
-    green('\n 🚀🚀🚀🚀 No Change In Signature................ 🚀🚀🚀🚀 \n')
-  );
+  console.log('\n No Change In Signatures................ \n');
 }
 
 (async () => {
