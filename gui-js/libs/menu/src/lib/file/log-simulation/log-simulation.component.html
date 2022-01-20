@@ -1,0 +1,27 @@
+<div class="popup-wrapper">
+  <div class="form-wrapper">
+    <form [formGroup]="form">
+      <div class="form-control form-buttons">
+        <button mat-raised-button class="btn ok-btn" (click)="handleSubmit()">
+          OK
+        </button>
+        <input
+          type="checkbox"
+          id="logSimulationTableShowValues"
+          formControlName="all"
+        />
+        <label for="allSimulation">All</label>
+      </div>
+      <div class="keys" formArrayName="keys">
+        <div *ngFor="let control of keysControl.controls; let i = index">
+          <ng-container formGroupName="{{ i }}">
+            <input type="checkbox" id="{{ i }}" formControlName="isSelected" />
+            <label for="allSimulation">{{
+              keysControl.controls[i].get('key').value
+            }}</label>
+          </ng-container>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

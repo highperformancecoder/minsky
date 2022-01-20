@@ -1,0 +1,66 @@
+<div class="popup-wrapper">
+  <div class="form-wrapper">
+    <div class="form-buttons">
+      <button type="button" mat-raised-button (click)="closeWindow()">
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        class="submit"
+        mat-raised-button
+        (click)="handleSubmit()"
+      >
+        OK
+      </button>
+    </div>
+    <form [formGroup]="form">
+      <div class="align">
+        <span class="form-control dimension">Dimension</span>
+        <span class="form-control type">Type</span>
+        <span class="form-control autocomplete">Units/Format</span>
+      </div>
+      <ng-container
+        formArrayName="dimensions"
+        *ngFor="let control of dimensions.controls; let i = index"
+      >
+        <div *ngIf="dimensions.value.length" [formGroupName]="i" class="align">
+          <input
+            class="form-control dimension"
+            formControlName="dimension"
+            type="text"
+          />
+          <select
+            class="form-control type"
+            name="i"
+            id="i"
+            formControlName="type"
+          >
+            <option *ngFor="let type of types" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+
+          <input
+            type="text"
+            formControlName="units"
+            [matAutocomplete]="auto"
+            class="form-control autocomplete"
+          />
+          <mat-autocomplete #auto="matAutocomplete">
+            <ng-container
+              *ngIf="dimensions.controls[i].get('type').value === 'time'"
+            >
+              <mat-option
+                *ngFor="let tfs of timeFormatStrings"
+                [value]="tfs.value"
+              >
+                {{ tfs.label }}
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>

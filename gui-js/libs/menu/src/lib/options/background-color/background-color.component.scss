@@ -1,0 +1,36 @@
+@import '../../../../../shared/src/lib/theme/variables.scss';
+@import '../../../../../shared/src/lib/theme/common-style.scss';
+
+.grid {
+  display: grid;
+  grid-template-rows: 1fr 3fr 1fr;
+  gap: $padding;
+  align-items: center;
+  justify-content: center;
+  .title {
+    font-size: $secondary-font;
+    align-self: center;
+    justify-self: center;
+  }
+  .selection-wrapper {
+    margin-bottom: 0.25rem;
+    .selection {
+      font-size: $primary-font;
+    }
+  }
+}
+
+.background-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.background-buttons {
+  text-align: center;
+  button {
+    margin: $margin;
+  }
+}

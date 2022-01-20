@@ -1,0 +1,43 @@
+<div class="toolbar-controls">
+  <div class="record-controls m-a-0">
+    <button
+      class="btn record-btn"
+      [ngClass]="{ focus: isRecordingOn }"
+      title="Record"
+      (click)="recordButton()"
+    >
+      <img src="assets/images/icons/record.svg" alt="" class="btn-icon" />
+    </button>
+    <button
+      class="btn replay-btn"
+      [ngClass]="{ focus: isReplayRecordingOn }"
+      title="Simulate/Recording Replay"
+      (click)="recordingReplyButton()"
+    >
+      <img src="assets/images/icons/replay.svg" alt="" class="btn-icon" />
+    </button>
+  </div>
+
+  <div class="simulation-controls">
+    <div class="checkbox-control">
+      <div class="checkbox-wrapper">
+        <input
+          type="checkbox"
+          id="reverseSimulationCheckbox"
+          class="reverse-simulation-checkbox"
+          (click)="reverseCheckboxButton($event)"
+        />
+      </div>
+      <label for="reverseSimulationCheckbox">Reverse</label>
+    </div>
+  </div>
+  <div class="toolbar">
+    <minsky-toolbar
+      (toolbarEvent)="handleToolbarEvent($event)"
+    ></minsky-toolbar>
+  </div>
+  <div class="time-info">
+    <span class="time">t:{{ commService.t }}</span>
+    <span class="delta-time">&Delta;t:{{ commService.deltaT }}</span>
+  </div>
+</div>

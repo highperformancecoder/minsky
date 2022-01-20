@@ -1,0 +1,89 @@
+@import '../../../../shared/src/lib/theme/variables.scss';
+
+.toolbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2px 10px;
+  .simulation-controls {
+    display: flex;
+    align-items: center;
+    margin: $margin * 2;
+    .checkbox-control {
+      font-size: $primary-font;
+      display: initial;
+      margin-right: $margin * 5;
+      .checkbox-wrapper {
+        display: inline-block;
+        height: $dimensions * 2.5;
+        width: $dimensions * 2.5;
+        line-height: 4;
+        order: 0;
+        position: relative;
+        left: 5px;
+        vertical-align: middle;
+        white-space: nowrap;
+        flex-shrink: 0;
+        text-align: center;
+
+        input {
+          cursor: pointer;
+          user-select: none;
+          height: $dimensions * 1.5;
+          width: $dimensions * 1.5;
+          border: 2px solid $toolbar-box;
+        }
+      }
+    }
+  }
+  .time-info {
+    display: flex;
+    margin-left: auto;
+    .time,
+    .delta-time {
+      margin: auto 10px;
+      user-select: none;
+    }
+  }
+
+  .btn {
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    height: $button-size;
+    width: $button-size;
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid $toolbar-box;
+    border-radius: 0.25rem;
+    background-color: $toolbar-bg;
+    .btn-icon {
+      max-width: 100%;
+    }
+    &:focus {
+      outline: none;
+    }
+    &:active {
+      outline: none;
+      background: $white;
+
+      transform: scale(0.98);
+      /* Scaling button to 0.98 to its original size */
+      box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+      /* Lowering the shadow */
+    }
+  }
+
+  .focus {
+    outline: none;
+    border-left: 2px solid $toolbar-border-focus;
+    border-top: 2px solid $toolbar-box;
+    border-bottom: 1px solid $toolbar-bg;
+    border-right: 1px solid $toolbar-bg;
+    background: $white;
+  }
+
+  .m-a-0 {
+    margin: auto 0;
+  }
+}

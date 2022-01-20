@@ -1,0 +1,22 @@
+@import '../../../../shared/src/lib/theme/variables.scss';
+
+.instance {
+  margin: $margin;
+  padding: $padding;
+  cursor: pointer;
+}
+
+.instance_container {
+  min-height: calc(100vh - 50px);
+  max-height: calc(100vh - 50px);
+  overflow-y: auto;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  button {
+    min-height: 30px;
+  }
+}

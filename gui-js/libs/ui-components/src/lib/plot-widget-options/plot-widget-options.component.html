@@ -1,0 +1,85 @@
+<div class="form-wrapper">
+  <br />
+  <form [formGroup]="form">
+    <div class="form-control">
+      <label for="title">Title</label>
+      <input type="text" id="title" formControlName="title" />
+    </div>
+
+    <div class="form-control">
+      <label for="xLabel">X Label</label>
+      <input type="text" id="xLabel" formControlName="xLabel" />
+    </div>
+    <div class="form-control">
+      <label for="yLabel">Y Label</label>
+      <input type="text" id="yLabel" formControlName="yLabel" />
+    </div>
+    <div class="form-control">
+      <label for="rhsYLabel">RHS Y Label</label>
+      <input type="text" id="rhsYLabel" formControlName="rhsYLabel" />
+    </div>
+
+    <div class="form-control">
+      <label for="plotType">Plot type</label>
+      <select name="plotType" id="plotType" formControlName="plotType">
+        <option value="automatic">Automatic</option>
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+      </select>
+    </div>
+
+    <div class="form-control">
+      <label for="numberOfXTicks">Number of x ticks</label>
+      <input type="text" id="numberOfXTicks" formControlName="numberOfXTicks" />
+    </div>
+
+    <div class="form-control">
+      <label for="numberOfYTicks">Number of y ticks</label>
+      <input type="text" id="numberOfYTicks" formControlName="numberOfYTicks" />
+    </div>
+
+    <div class="form-control checkboxes">
+      <span>
+        <label for="grid">Grid</label>
+        <input type="checkbox" id="grid" formControlName="grid" />
+      </span>
+
+      <span>
+        <label for="subgrid">Sub Grid</label>
+        <input type="checkbox" id="subgrid" formControlName="subGrid" />
+      </span>
+
+      <span>
+        <label for="legend">Legend</label>
+        <input type="checkbox" id="legend" formControlName="legend" />
+      </span>
+    </div>
+
+    <div class="form-control checkboxes">
+      <span>
+        <label for="xLogScale">X Log Scale</label>
+        <input type="checkbox" id="xLogScale" formControlName="xLogScale" />
+      </span>
+
+      <span>
+        <label for="yLogScale">Y Log Scale</label>
+        <input type="checkbox" id="yLogScale" formControlName="yLogScale" />
+      </span>
+    </div>
+
+    <div class="form-buttons">
+      <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
+        Cancel
+      </button>
+
+      <button
+        mat-raised-button
+        class="btn ok-btn submit"
+        type="submit"
+        (click)="handleSave()"
+      >
+        OK
+      </button>
+    </div>
+  </form>
+</div>
