@@ -16,6 +16,7 @@ abstract class HelpFilesManager {
   }
 
   private static async processFileOrDirectory(fName: string) {
+  console.log("processFileOrDirectory ",fName);
     let stat = null;
     try {
       stat = await fsPromises.lstat(fName);
@@ -42,11 +43,13 @@ abstract class HelpFilesManager {
   }
 
   private static async processDocumentFile(fName: string) {
+    console.log("processDocumentFile ",fName);
     const buffer = await fsPromises.readFile(fName);
     if (buffer) {
       const contents = buffer.toString();
-      const matches = contents.matchAll(/<A[ \t]+ID="([^"]*)"/g);
+      const matches = contents.matchAll(/<A[ \t]+NAME="([^"]*)"/g);
       for (const match of matches) {
+        console.log("Adding ",match[1],path.basename(fName));
         this.topicNodeMap[match[1]] = path.basename(fName);
       }
     }
