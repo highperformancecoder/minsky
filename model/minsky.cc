@@ -730,54 +730,55 @@ namespace minsky
        [&](Items& m, Items::iterator i)
        {
          if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
-           if (&gi->table==&srcTable) // if source table, then check for duplicated asset/equity columns
-             {
+           {
+             if (&gi->table==&srcTable) // if source table, then check for duplicated asset/equity columns
+               {
+                 for (size_t col=1; col<gi->table.cols(); col++)
+                   if (col==size_t(srcCol)) continue; // skip over source column
+                   else if (srcGodley.valueId(trimWS(srcTable.cell(0,col)))==colName)
+                     {
+                       switch (srcGodley.table._assetClass(srcCol))
+                         {
+                         case GodleyAssetClass::asset:
+                           if (srcTable._assetClass(col)!=GodleyAssetClass::equity)
+                             throw error("asset column %s matches a non-liability column",colName.c_str());
+                           break;
+                         case GodleyAssetClass::equity:
+                           if (srcTable._assetClass(col)!=GodleyAssetClass::asset)
+                             throw error("equity column %s matches a non-asset column",colName.c_str());
+                           break;
+                         default:
+                           throw error("invalid asset class for duplicate column %s",colName.c_str());
+                         }
+                       balanceColumns(srcGodley, srcCol, *gi, col);
+                     }
+               }
+             else  // match asset/liability columns on different Godley tables
                for (size_t col=1; col<gi->table.cols(); col++)
-                 if (col==srcCol) continue; // skip over source column
-                 else if (srcGodley.valueId(trimWS(srcTable.cell(0,col)))==colName)
+                 if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
                    {
+                     // checks asset class rules
                      switch (srcGodley.table._assetClass(srcCol))
                        {
                        case GodleyAssetClass::asset:
-                         if (srcTable._assetClass(col)!=GodleyAssetClass::equity)
+                         if (gi->table._assetClass(col)!=GodleyAssetClass::liability)
                            throw error("asset column %s matches a non-liability column",colName.c_str());
                          break;
-                       case GodleyAssetClass::equity:
-                         if (srcTable._assetClass(col)!=GodleyAssetClass::asset)
-                           throw error("equity column %s matches a non-asset column",colName.c_str());
+                       case GodleyAssetClass::liability:
+                         if (gi->table._assetClass(col)!=GodleyAssetClass::asset)
+                           throw error("liability column %s matches a non-asset column",colName.c_str());
                          break;
                        default:
                          throw error("invalid asset class for duplicate column %s",colName.c_str());
                        }
+
+                     // checks that nom more than two duplicated columns exist
+                     if (matchFound)
+                       throw error("more than one duplicated column detected for %s",colName.c_str());
+                     matchFound=true;
                      balanceColumns(srcGodley, srcCol, *gi, col);
                    }
-             }
-           else  // match asset/liability columns on different Godley tables
-             for (size_t col=1; col<gi->table.cols(); col++)
-               if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
-                 {
-                   // checks asset class rules
-                   switch (srcGodley.table._assetClass(srcCol))
-                     {
-                     case GodleyAssetClass::asset:
-                       if (gi->table._assetClass(col)!=GodleyAssetClass::liability)
-                         throw error("asset column %s matches a non-liability column",colName.c_str());
-                       break;
-                     case GodleyAssetClass::liability:
-                       if (gi->table._assetClass(col)!=GodleyAssetClass::asset)
-                         throw error("liability column %s matches a non-asset column",colName.c_str());
-                       break;
-                     default:
-                       throw error("invalid asset class for duplicate column %s",colName.c_str());
-                     }
-
-                   // checks that nom more than two duplicated columns exist
-                   if (matchFound)
-                     throw error("more than one duplicated column detected for %s",colName.c_str());
-                   matchFound=true;
-                   balanceColumns(srcGodley, srcCol, *gi, col);
-                 }
-
+           }
          return false;
        });  // TODO - this lambda is FAR too long!
   }
