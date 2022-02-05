@@ -67,6 +67,9 @@ Notes
 
 * For building json_spirit and libclipboard, you need cmake, which you can install from your package manager. On MinGW, you can use the normal Windows binary for CMake. Just type (cmake -G "Unix Makefiles" .) - if you don't specify the generator, it will default to Visual Studio.
 
+* If you build json_spirit as a library, then enable JSON_SPIRIT_MVALUE_ENABLED : eg
+"cmake -DJSON_SPIRIT_MVALUE_ENABLED=ON .."
+
 * Because of the antique version of Berkley DB installed by default on MacOS, you will probably need to install a modern 4.x version in order to get ecolab to build on MacOSX.
 
 * These packages can be installed to /usr/local or $(HOME)/usr according to preference when built from source code. EcoLab will look first in $(HOME)/usr then in /usr/local, then finally in /usr. This allows the user to selectively override their own build environment, the global build environment according to their permissions.
