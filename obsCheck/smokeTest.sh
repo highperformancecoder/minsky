@@ -17,5 +17,4 @@ done
 wait
 docker container prune -f
 cat *.log
-grep FAILED *.log
 exit $[!$?]
