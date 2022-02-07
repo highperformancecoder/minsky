@@ -17,5 +17,6 @@ done
 wait
 docker container prune -f
 cat *.log
-grep FAILED *.log
+# check if any child process failed, and emit an appropriate status code
+grep FAILED *.log &>/dev/null
 exit $[!$?]
