@@ -43,24 +43,24 @@ SUITE(Ravel)
     CHECK(c->lockGroup);
     CHECK(a->lockGroup==b->lockGroup && a->lockGroup==c->lockGroup);
     auto lockGroup=a->lockGroup;
-    CHECK_EQUAL(3, lockGroup->ravels.size());
+    CHECK_EQUAL(3, lockGroup->ravels().size());
     typedef weak_ptr<Ravel> W;
-    CHECK(find_if(lockGroup->ravels.begin(), lockGroup->ravels.end(),
-                  [&](W w){return w.lock()==a;}) != lockGroup->ravels.end());
-    CHECK(find_if(lockGroup->ravels.begin(), lockGroup->ravels.end(),
-                  [&](W w){return w.lock()==b;}) != lockGroup->ravels.end());
-    CHECK(find_if(lockGroup->ravels.begin(), lockGroup->ravels.end(),
-                  [&](W w){return w.lock()==c;}) != lockGroup->ravels.end());
+    CHECK(find_if(lockGroup->ravels().begin(), lockGroup->ravels().end(),
+                  [&](W w){return w.lock()==a;}) != lockGroup->ravels().end());
+    CHECK(find_if(lockGroup->ravels().begin(), lockGroup->ravels().end(),
+                  [&](W w){return w.lock()==b;}) != lockGroup->ravels().end());
+    CHECK(find_if(lockGroup->ravels().begin(), lockGroup->ravels().end(),
+                  [&](W w){return w.lock()==c;}) != lockGroup->ravels().end());
 
     a->leaveLockGroup();
     CHECK(!a->lockGroup);
-    CHECK_EQUAL(2, lockGroup->ravels.size());
-    CHECK(find_if(lockGroup->ravels.begin(), lockGroup->ravels.end(),
-                  [&](W w){return w.lock()==a;}) == lockGroup->ravels.end());
-    CHECK(find_if(lockGroup->ravels.begin(), lockGroup->ravels.end(),
-                  [&](W w){return w.lock()==b;}) != lockGroup->ravels.end());
-    CHECK(find_if(lockGroup->ravels.begin(), lockGroup->ravels.end(),
-                  [&](W w){return w.lock()==c;}) != lockGroup->ravels.end());
+    CHECK_EQUAL(2, lockGroup->ravels().size());
+    CHECK(find_if(lockGroup->ravels().begin(), lockGroup->ravels().end(),
+                  [&](W w){return w.lock()==a;}) == lockGroup->ravels().end());
+    CHECK(find_if(lockGroup->ravels().begin(), lockGroup->ravels().end(),
+                  [&](W w){return w.lock()==b;}) != lockGroup->ravels().end());
+    CHECK(find_if(lockGroup->ravels().begin(), lockGroup->ravels().end(),
+                  [&](W w){return w.lock()==c;}) != lockGroup->ravels().end());
 
     // create a different group
     selection.items={a,d};
@@ -69,7 +69,7 @@ SUITE(Ravel)
     CHECK(a->lockGroup);
     CHECK(lockGroup!=a->lockGroup);
     CHECK(a->lockGroup==d->lockGroup);
-    CHECK_EQUAL(2, lockGroup1->ravels.size());
+    CHECK_EQUAL(2, lockGroup1->ravels().size());
 
     // now try combining a and b into a group. This should create a 3rd lockGroup, and dissolve the first two
     selection.items={a,b};

@@ -26,6 +26,7 @@
 #include "minsky_epilogue.h"
 using namespace ecolab;
 using ecolab::cairo::Surface;
+using ecolab::cairo::CairoSave;
 
 namespace MathDAG
 {
@@ -63,13 +64,13 @@ namespace MathDAG
     // move current point to RHS of text, and returns the height
     double print(cairo_t* cairo, const string& text, Anchor anchor)
     {
-      cairo_save(cairo);
       Pango pango(cairo);
-      //      pango.setFontSize(10);
-      pango.setMarkup(text);
-      moveToAnchor(cairo, pango, anchor);
-      pango.show();
-      cairo_restore(cairo);
+      {
+        CairoSave cs(cairo);
+        pango.setMarkup(text);
+        moveToAnchor(cairo, pango, anchor);
+        pango.show();
+      }
       cairo_rel_move_to(cairo, pango.width(), 0);
       return pango.height();
     }
@@ -276,7 +277,7 @@ namespace MathDAG
   void OperationDAG<OperationType::divide>::render(Surface& surf) const 
   {
     RecordingSurface num, den;
-    if (arguments.size()>0)
+    if (!arguments.empty())
       naryRender(num, arguments[0], BODMASlevel()," × ","1");
 
     if (arguments.size()>1)
@@ -296,10 +297,11 @@ namespace MathDAG
            
             cairo_move_to(surf.cairo(), x, y+0.5*num.height()+5);
             cairo_rel_line_to(surf.cairo(), solidusLength, 0);
-            cairo_save(surf.cairo());
-            cairo_set_line_width(surf.cairo(),1);
-            cairo_stroke(surf.cairo());
-            cairo_restore(surf.cairo());
+            {
+              CairoSave cs(surf.cairo());
+              cairo_set_line_width(surf.cairo(),1);
+              cairo_stroke(surf.cairo());
+            }
             cairo_move_to(surf.cairo(),x+solidusLength,y);
           }
         else // denominator =1, so just render the numerator
@@ -438,23 +440,25 @@ namespace MathDAG
         arguments[0][0]->render(arg);
 
         // display a scaled surd.
-        cairo_save(surf.cairo());
         Pango pango(surf.cairo());
-        double oldFs=pango.getFontSize();
-        pango.setFontSize(arg.height());
-        pango.setMarkup("√");
-        cairo_rel_move_to(surf.cairo(),0,oldFs-arg.height());
-        pango.show();
-        cairo_restore(surf.cairo());
+        {
+          CairoSave cs(surf.cairo());
+          double oldFs=pango.getFontSize();
+          pango.setFontSize(arg.height());
+          pango.setMarkup("√");
+          cairo_rel_move_to(surf.cairo(),0,oldFs-arg.height());
+          pango.show();
+        }
         cairo_rel_move_to(surf.cairo(),pango.width(),0);
         // draw an overbar
         double x,y;
         cairo_get_current_point(surf.cairo(),&x,&y);
-        cairo_save(surf.cairo());
-        cairo_rel_line_to(surf.cairo(),arg.width(),0);
-        cairo_set_line_width(surf.cairo(),1);
-        cairo_stroke(surf.cairo());
-        cairo_restore(surf.cairo());
+        {
+          CairoSave cs(surf.cairo());
+          cairo_rel_line_to(surf.cairo(),arg.width(),0);
+          cairo_set_line_width(surf.cairo(),1);
+          cairo_stroke(surf.cairo());
+        }
         
         cairo_move_to(surf.cairo(),x,y-arg.top()+2);
         //displaySurface(surf.cairo(),arg,Anchor::nw);
@@ -641,9 +645,9 @@ namespace MathDAG
             cairo_rel_move_to(surf.cairo(), 0, 0.5*base.height());                        
             parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});   			  
           }
-         else
-            parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-		}
+        else
+          parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+      }
   }      
   
   template <>
@@ -877,7 +881,7 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::le>::render(Surface& surf) const
   {
-    if ((arguments.size()>0 && !arguments[0].empty() && arguments[0][0]) ||
+    if ((!arguments.empty() && !arguments[0].empty() && arguments[0][0]) ||
         (arguments.size()>1 && !arguments[1].empty() && arguments[1][0]))
       {
         OperationDAG<OperationType::lt> lt; lt.arguments=arguments;

@@ -9,7 +9,7 @@ endif
 
 VPATH= .. ../schema ../model ../engine ../tensor ../RESTService ../RavelCAPI $(ECOLAB_HOME)/include
 
-UNITTESTOBJS=main.o testModel.o testMinsky.o testItemTab.o testGrid.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testLockGroup.o testCSVParser.o testTensorOps.o testStr.o testExpressionWalker.o testMdl.o testUserFunction.o
+UNITTESTOBJS=main.o testCSVParser.o testDerivative.o testExpressionWalker.o testGrid.o testItemTab.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testXVector.o
 
 MINSKYOBJS=$(filter-out ../tclmain.o ../RESTService.o ../httpd.o ../addon.o ../dummy-addon.o ../itemTemplateInstantiations.o,$(wildcard ../*.o))
 FLAGS:=-I.. -I../RESTService -I../tensor -I../RavelCAPI $(FLAGS)
@@ -27,6 +27,11 @@ endif
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
 LIBS+=$(shell pkg-config --libs librsvg-2.0)
+
+JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
+ifneq ($(JSON_SPIRIT_HEADER),)
+  FLAGS+=-I$(JSON_SPIRIT_HEADER)
+endif
 
 EXES=cmpFp checkSchemasAreSame
 #testDatabase testGroup 

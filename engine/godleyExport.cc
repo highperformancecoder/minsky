@@ -38,12 +38,11 @@ namespace minsky
       auto nm=uqName(fc.name);
       if (fc.coef==1)
         return nm;
-      else if (fc.coef==-1)
+      if (fc.coef==-1)
         return "-"+nm;
-      else if (fc.coef==0)
+      if (fc.coef==0)
         return "";
-      else
-        return str(fc.coef)+nm;
+      return str(fc.coef)+nm;
     }
 
   // trim enclosing <i> tags
@@ -53,8 +52,7 @@ namespace minsky
         x=x.substr(3);
       if (x.length()>=4 && x.substr(x.length()-4)=="</i>")
         return x.substr(0,x.length()-4);
-      else
-        return x;
+      return x;
     }
 }
 

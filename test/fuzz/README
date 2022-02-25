@@ -1,14 +1,14 @@
 TCL fuzzing:
 
-xvfb-run afl-fuzz -i fuzzTCL-input -o fuzzTCL-output -m 512 -t 2000 -M fuzz0 -- ../../gui-tk/minsky fuzzTCL.tcl  @@
+xvfb-run afl-fuzz -i fuzzTCL-input -o fuzzTCL-output -m 512 -t 2000+ -M fuzz0 -- ../../gui-tk/minsky fuzzTCL.tcl  @@
 
-xvfb-run afl-fuzz -i fuzz-input -o fuzzTCL-output -m 512 -t 2000 -S fuzz1 -- ../../gui-tk/minsky fuzzTCL.tcl  @@
+xvfb-run afl-fuzz -i fuzzTCL-input -o fuzzTCL-output -m 512 -t 2000+ -S fuzz1 -- ../../gui-tk/minsky fuzzTCL.tcl  @@
 
 MKY fuzzing:
 
 xvfb-run afl-cmin -i fuzzMKY-input1 -o fuzzMKY-input -m 512 -t 2000 -- ../../gui-tk/minsky fuzzMKY.tcl  @@
 
-xvfb-run afl-fuzz -i fuzzMKY-input -o fuzzMKY-output -m 512 -t 2000 -M fuzz0 -x xml.dict -- ../../gui-tk/minsky fuzzMKY.tcl  @@
+xvfb-run afl-fuzz -i fuzzMKY-input -o fuzzMKY-output -m 512 -t 2000+ -M fuzz0 -x xml.dict -- ../../gui-tk/minsky fuzzMKY.tcl  @@
 
-xvfb-run afl-fuzz -i fuzzMKY-input -o fuzzMKY-output -m 512 -t 2000 -S fuzz1 -x xml.dict -- ../../gui-tk/minsky fuzzMKY.tcl  @@
+xvfb-run afl-fuzz -i fuzzMKY-input -o fuzzMKY-output -m 512 -t 2000+ -S fuzz1 -x xml.dict -- ../../gui-tk/minsky fuzzMKY.tcl  @@
 

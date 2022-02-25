@@ -52,8 +52,9 @@ namespace minsky
             if (colAssetType[name]!=liability)
               throwInvalidAssetLiabilityPair(name);
             break;
+          case equity:
+            break; // do not check duplicate column
           default:
-
             throw error("duplicated column %s detected",name.c_str());
           }
         // At this point, a shared pair of columns is OK

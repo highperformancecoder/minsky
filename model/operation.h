@@ -69,7 +69,7 @@ namespace minsky
     std::string portValues() const;
 
     // returns true if multiple input wires are allowed.
-    bool multiWire();
+    bool multiWire() const;
 
     // manage the port structures associated with this operation
     virtual void addPorts();

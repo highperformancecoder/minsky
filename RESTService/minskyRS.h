@@ -23,6 +23,7 @@
 #include "minsky.rcd"
 #include "assetClass.h"
 #include "assetClass.rcd"
+#include "bookmark.h"
 #include "bookmark.rcd"
 #include "canvas.rcd"
 #include "cairoSurfaceImage.rcd"

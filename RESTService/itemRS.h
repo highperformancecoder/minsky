@@ -27,6 +27,8 @@
 #include "signature.rcd"
 #include "item.rcd"
 
+#include "group.h"
+#include "group.rcd"
 #include "lasso.h"
 #include "lasso.rcd"
 #include "noteBase.rcd"

@@ -41,7 +41,6 @@ namespace minsky
           }
         return *cellPtr;
       }
-    else
-      return ItemTab::cell(row,col);
+    return ItemTab::cell(row,col);
   }
 }

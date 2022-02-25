@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta49</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>128</id>
@@ -156,6 +156,7 @@
      <int>1</int>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -174,6 +175,7 @@
      <int>5</int>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -192,6 +194,7 @@
      <int>9</int>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -210,6 +213,7 @@
      <int>13</int>
      <int>14</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -228,6 +232,7 @@
      <int>17</int>
      <int>18</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -246,6 +251,7 @@
      <int>21</int>
      <int>22</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -264,6 +270,7 @@
      <int>25</int>
      <int>26</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -282,6 +289,7 @@
      <int>29</int>
      <int>30</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -298,6 +306,7 @@
     <ports>
      <int>32</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BS</name>
     <init>0</init>
     <slider>
@@ -345,6 +354,7 @@
     <ports>
      <int>34</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BV</name>
     <init>100</init>
     <slider>
@@ -392,6 +402,7 @@
     <ports>
      <int>36</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FD</name>
     <init>0</init>
     <slider>
@@ -439,6 +450,7 @@
     <ports>
      <int>38</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FL</name>
     <init>0</init>
     <slider>
@@ -486,6 +498,7 @@
     <ports>
      <int>40</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:WD</name>
     <init>0</init>
     <slider>
@@ -534,6 +547,7 @@
      <int>42</int>
      <int>43</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:A</name>
     <init>0</init>
     <slider>
@@ -582,6 +596,7 @@
      <int>45</int>
      <int>46</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:B</name>
     <init>0</init>
     <slider>
@@ -630,6 +645,7 @@
      <int>48</int>
      <int>49</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:C</name>
     <init>0</init>
     <slider>
@@ -678,6 +694,7 @@
      <int>51</int>
      <int>52</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:D</name>
     <init>0</init>
     <slider>
@@ -726,6 +743,7 @@
      <int>54</int>
      <int>55</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:E</name>
     <init>0</init>
     <slider>
@@ -774,6 +792,7 @@
      <int>57</int>
      <int>58</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:F</name>
     <init>0</init>
     <slider>
@@ -810,8 +829,8 @@
    <Item>
     <id>61</id>
     <type>Variable:stock</type>
-    <x>422.35</x>
-    <y>263.8</y>
+    <x>424.55</x>
+    <y>261.8</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -821,6 +840,7 @@
     <ports>
      <int>60</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BV</name>
     <init>100</init>
     <slider>
@@ -857,8 +877,8 @@
    <Item>
     <id>63</id>
     <type>Variable:stock</type>
-    <x>452.35</x>
-    <y>262.8</y>
+    <x>454.55</x>
+    <y>260.8</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -868,6 +888,7 @@
     <ports>
      <int>62</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FL</name>
     <init>0</init>
     <slider>
@@ -904,8 +925,8 @@
    <Item>
     <id>65</id>
     <type>Variable:stock</type>
-    <x>482.35</x>
-    <y>263.8</y>
+    <x>484.55</x>
+    <y>261.8</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -915,6 +936,7 @@
     <ports>
      <int>64</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:FD</name>
     <init>0</init>
     <slider>
@@ -951,8 +973,8 @@
    <Item>
     <id>67</id>
     <type>Variable:stock</type>
-    <x>512.35</x>
-    <y>265.8</y>
+    <x>514.55</x>
+    <y>263.8</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -962,6 +984,7 @@
     <ports>
      <int>66</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:WD</name>
     <init>0</init>
     <slider>
@@ -998,8 +1021,8 @@
    <Item>
     <id>69</id>
     <type>Variable:stock</type>
-    <x>542.35</x>
-    <y>263.8</y>
+    <x>544.55</x>
+    <y>261.8</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1009,6 +1032,7 @@
     <ports>
      <int>68</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:BS</name>
     <init>0</init>
     <slider>
@@ -1045,8 +1069,8 @@
    <Item>
     <id>72</id>
     <type>Variable:flow</type>
-    <x>387.5</x>
-    <y>51.26</y>
+    <x>389.5</x>
+    <y>49.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1057,6 +1081,7 @@
      <int>70</int>
      <int>71</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:A</name>
     <init>0</init>
     <slider>
@@ -1093,8 +1118,8 @@
    <Item>
     <id>75</id>
     <type>Variable:flow</type>
-    <x>387.5</x>
-    <y>81.26</y>
+    <x>389.5</x>
+    <y>79.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1105,6 +1130,7 @@
      <int>73</int>
      <int>74</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:B</name>
     <init>0</init>
     <slider>
@@ -1141,8 +1167,8 @@
    <Item>
     <id>78</id>
     <type>Variable:flow</type>
-    <x>387.5</x>
-    <y>111.26</y>
+    <x>389.5</x>
+    <y>109.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1153,6 +1179,7 @@
      <int>76</int>
      <int>77</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:C</name>
     <init>0</init>
     <slider>
@@ -1189,8 +1216,8 @@
    <Item>
     <id>81</id>
     <type>Variable:flow</type>
-    <x>387.5</x>
-    <y>141.26</y>
+    <x>389.5</x>
+    <y>139.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1201,6 +1228,7 @@
      <int>79</int>
      <int>80</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:D</name>
     <init>0</init>
     <slider>
@@ -1237,8 +1265,8 @@
    <Item>
     <id>84</id>
     <type>Variable:flow</type>
-    <x>388.5</x>
-    <y>171.26</y>
+    <x>390.5</x>
+    <y>169.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1249,6 +1277,7 @@
      <int>82</int>
      <int>83</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:E</name>
     <init>0</init>
     <slider>
@@ -1285,8 +1314,8 @@
    <Item>
     <id>87</id>
     <type>Variable:flow</type>
-    <x>388.5</x>
-    <y>201.26</y>
+    <x>390.5</x>
+    <y>199.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1297,6 +1326,7 @@
      <int>85</int>
      <int>86</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:F</name>
     <init>0</init>
     <slider>
@@ -1344,6 +1374,7 @@
     <ports>
      <int>88</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_W</name>
     <init>0.1</init>
     <slider>
@@ -1391,6 +1422,7 @@
     <ports>
      <int>90</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_V</name>
     <init>0.5</init>
     <slider>
@@ -1438,6 +1470,7 @@
     <ports>
      <int>92</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:rL</name>
     <init>0</init>
     <slider>
@@ -1485,6 +1518,7 @@
     <ports>
      <int>94</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_S</name>
     <init>0.25</init>
     <slider>
@@ -1532,6 +1566,7 @@
     <ports>
      <int>96</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:s</name>
     <init>0.3</init>
     <slider>
@@ -1579,6 +1614,7 @@
     <ports>
      <int>98</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:1</name>
     <init>1</init>
     <slider>
@@ -1626,6 +1662,7 @@
     <ports>
      <int>100</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_B</name>
     <init>1</init>
     <slider>
@@ -1673,6 +1710,7 @@
     <ports>
      <int>102</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:\tau_L</name>
     <init>7</init>
     <slider>
@@ -1741,6 +1779,7 @@
      <int>124</int>
      <int>125</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -1862,6 +1901,7 @@
      <int>66</int>
      <int>68</int>
     </ports>
+    <bookmark>false</bookmark>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -1991,6 +2031,8 @@
   </items>
   <groups>
   </groups>
+  <lockGroups>
+  </lockGroups>
   <rungeKutta>
    <stepMin>0</stepMin>
    <stepMax>0.001</stepMax>

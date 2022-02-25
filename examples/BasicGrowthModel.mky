@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta49</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>74</id>
@@ -95,6 +95,7 @@
      <int>1</int>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -113,6 +114,7 @@
      <int>5</int>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>37</intVar>
     <arg>1</arg>
    </Item>
@@ -132,6 +134,7 @@
      <int>9</int>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -150,6 +153,7 @@
      <int>13</int>
      <int>14</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -168,6 +172,7 @@
      <int>17</int>
      <int>18</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -185,6 +190,7 @@
      <int>20</int>
      <int>21</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -202,6 +208,7 @@
      <int>23</int>
      <int>24</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -220,6 +227,7 @@
      <int>27</int>
      <int>28</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -237,6 +245,7 @@
      <int>30</int>
      <int>31</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:O(t)&#32;-&#32;Output&#32;at&#32;time&#32;t</name>
     <init>0</init>
     <slider>
@@ -285,6 +294,7 @@
      <int>33</int>
      <int>34</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:I(t)&#32;-&#32;Investment&#32;at&#32;time&#32;t</name>
     <init>0</init>
     <slider>
@@ -333,6 +343,7 @@
      <int>4</int>
      <int>36</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
@@ -381,6 +392,7 @@
      <int>38</int>
      <int>39</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
@@ -429,6 +441,7 @@
      <int>41</int>
      <int>42</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:L(t)&#32;-&#32;Labor&#32;at&#32;time&#32;t</name>
     <init>100</init>
     <slider>
@@ -477,6 +490,7 @@
      <int>44</int>
      <int>45</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
@@ -524,6 +538,7 @@
     <ports>
      <int>47</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:s&#32;-&#32;Savings&#32;Rate</name>
     <init>0.3</init>
     <slider>
@@ -571,6 +586,7 @@
     <ports>
      <int>49</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>:d&#32;-&#32;Depreciation&#32;Rate</name>
     <init>0.25</init>
     <slider>
@@ -639,6 +655,7 @@
      <int>71</int>
      <int>72</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -739,6 +756,8 @@
   </items>
   <groups>
   </groups>
+  <lockGroups>
+  </lockGroups>
   <rungeKutta>
    <stepMin>0</stepMin>
    <stepMax>0.1</stepMax>

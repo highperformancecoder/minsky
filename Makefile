@@ -29,8 +29,11 @@ endif
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
-build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) $(JOBS) all-without-models))
+build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) $(JOBS) all-without-models >build.log 2>&1; then echo "ecolab built"; fi)
 $(warning $(build_ecolab))
+ifneq ($(build_ecolab),ecolab built)
+$(error "Making ecolab failed: check ecolab/build.log")
+endif
 include $(ECOLAB_HOME)/include/Makefile
 build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
@@ -185,7 +188,7 @@ endif
 #EXES=gui-tk/minsky$(EXE)
 #RESTService/RESTService 
 
-LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit\
+LIBS+=	-LRavelCAPI -lravelCAPI \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
@@ -402,7 +405,7 @@ lcov:
 	genhtml -o coverage lcovr.info
 
 compile_commands.json: Makefile
-	$(MAKE) clean
+	rm *.o
 	bear $(MAKE)
 
 clang-tidy: compile_commands.json

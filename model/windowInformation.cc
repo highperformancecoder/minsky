@@ -193,7 +193,6 @@ namespace minsky
                                     //the object is still in a fragile
                                     //state while the unique_ptr is
                                     //being constructed.
-    //while (running)
     for (;;)
       try
       {
@@ -246,7 +245,6 @@ namespace minsky
         GetScaleFactorForMonitor(MonitorFromWindow(parentWindowId, MONITOR_DEFAULTTONEAREST), &scaleFactor);
         sf=scaleFactor/100.0;
       }
-    cout << "scaling factor = "<<sf<<endl;
     if (sf>0)
       {
         offsetLeft*=sf;
@@ -258,7 +256,6 @@ namespace minsky
     {
       RECT bb;
       GetWindowRect(parentWindowId, &bb);
-      cout << "Parent width="<<(bb.right-bb.left)<<" height="<<(bb.bottom-bb.top)<<endl;
     }
     
     auto style=GetWindowLong(parentWindowId, GWL_STYLE);

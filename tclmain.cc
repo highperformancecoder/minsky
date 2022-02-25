@@ -32,11 +32,11 @@
 
 using boost::filesystem::path;
 
-extern "C"
-{
-  typedef void (*__sighandler_t) (int);
-  extern __sighandler_t signal (int __sig, __sighandler_t __handler);
-}
+//extern "C"
+//{
+//  typedef void (*__sighandler_t) (int);
+//  extern __sighandler_t signal (int __sig, __sighandler_t __handler);
+//}
 
 #ifndef SIG_DFL
 #define SIG_DFL	((__sighandler_t) 0)		/* Default action.  */
@@ -267,7 +267,7 @@ namespace TCLcmd
       signal(signo,sighand);
     }
 
-    void aborthand(int s) {throw error("Fatal Error: Execution recovered");}
+    void aborthand(int) {throw error("Fatal Error: Execution recovered");}
 
     NEWCMD(trapabort,-1)
     {
@@ -357,8 +357,7 @@ namespace TCLcmd
 
   // support double-click opening of files on Macintosh, by adding a
   // handler for the open event
-  int tk_mac_OpenDocument(ClientData cd,Tcl_Interp *interp,
-                           int argc, const char** argv)
+  int tk_mac_OpenDocument(ClientData,Tcl_Interp*,int argc,const char** argv)
   {
     if (argc>1)
       {

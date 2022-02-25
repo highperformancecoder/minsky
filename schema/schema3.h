@@ -51,7 +51,8 @@ namespace schema3
   using namespace classdesc;
   using classdesc::shared_ptr;
   using minsky::Optional;
-
+  using minsky::HandleLockInfo;  //for Ravel lock groups
+  
  
   struct Note
   {
@@ -72,11 +73,12 @@ namespace schema3
     double rotation=0; ///< rotation of icon, in degrees
     float width=10, height=10;
     std::vector<int> ports;
+    bool bookmark=false;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
       x(it.m_x), y(it.m_y), itemTabX(it.itemTabX), itemTabY(it.itemTabY), scaleFactor(it.m_sf),
-      rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports) {}
+      rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports), bookmark(it.bookmark) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
       Note(it), id(it.id), type(type), x(it.x), y(it.y),
       rotation(it.rotation), width(it.width? *it.width: 0), height(it.height?*it.height:0),
@@ -105,6 +107,12 @@ namespace schema3
       plot.legendTop=legendTop;
       plot.legendFontSz=legendFontSz;
     }
+  };
+
+  struct LockGroup
+  {
+    vector<int> ravels;
+    vector<HandleLockInfo> handleLockInfo;
   };
   
   struct Item: public ItemBase
@@ -184,7 +192,7 @@ namespace schema3
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      name(g.title), bookmarks(g.bookmarks) {} 
+      name(g.title), bookmarks(std::vector<minsky::Bookmark>(g.bookmarks.begin(), g.bookmarks.end())) {} 
 
     static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
@@ -240,6 +248,7 @@ namespace schema3
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
+    vector<LockGroup> lockGroups;
     minsky::Simulation rungeKutta;
     double zoomFactor=1;
     vector<minsky::Bookmark> bookmarks;
@@ -249,11 +258,11 @@ namespace schema3
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g, bool packTensorData=true);
     Minsky(const minsky::Minsky& m, bool packTensorData=true):
-      Minsky(*m.model,packTensorData)  {
+      Minsky(*m.model,packTensorData) {
       minskyVersion=m.minskyVersion;
       rungeKutta=m;
       zoomFactor=m.model->zoomFactor();
-      bookmarks=m.model->bookmarks;
+      bookmarks.insert(bookmarks.end(), m.model->bookmarks.begin(), m.model->bookmarks.end());
       dimensions=m.dimensions;
       conversions=m.conversions;
     }
@@ -287,5 +296,6 @@ using classdesc::xml_pack;
 
 #include "schema3.cd"
 #include "schema3.xcd"
+#include "handleLockInfo.xcd"
 
 #endif

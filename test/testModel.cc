@@ -175,29 +175,29 @@ SUITE(Group)
       model->addBookmark("bookmark0");
       CHECK_EQUAL("bookmark0",model->bookmarkList()[model->bookmarks.size()-1]);
       CHECK_EQUAL(1,model->bookmarks.size());
-      auto& b0=model->bookmarks[model->bookmarks.size()-1];
+      auto& b0=*model->bookmarks.begin();
       double x0 =b0.x, y0=b0.y;	  
       model->moveTo(100,100);
       model->addBookmark("bookmark1");
-      CHECK_EQUAL("bookmark1",model->bookmarkList()[model->bookmarks.size()-1]);
+      CHECK_EQUAL("bookmark1",model->bookmarkList().back());
       CHECK_EQUAL(2,model->bookmarks.size());
-      auto& b1=model->bookmarks[model->bookmarks.size()-1];
+      auto& b1=*model->bookmarks.find(Bookmark("bookmark1"));
       double x1=b1.x,y1=b1.y;
       CHECK_EQUAL(x1,model->x());
       CHECK_EQUAL(y1,model->y());
       model->moveTo(200,200);
       model->addBookmark("bookmark2");
-      CHECK_EQUAL("bookmark2",model->bookmarkList()[model->bookmarks.size()-1]);
+      CHECK_EQUAL("bookmark2",model->bookmarkList().back());
       CHECK_EQUAL(3,model->bookmarks.size());
-      auto& b2=model->bookmarks[model->bookmarks.size()-1];
+      auto& b2=*model->bookmarks.find(Bookmark("bookmark2"));
       double x2=b2.x,y2=b2.y;
       CHECK_EQUAL(x2,model->x());
       CHECK_EQUAL(y2,model->y());
       model->moveTo(300,300);
       model->addBookmark("bookmark3");
-      CHECK_EQUAL("bookmark3",model->bookmarkList()[model->bookmarks.size()-1]);
+      CHECK_EQUAL("bookmark3",model->bookmarkList().back());
       CHECK_EQUAL(4,model->bookmarks.size());
-      auto& b3=model->bookmarks[model->bookmarks.size()-1];
+      auto& b3=*model->bookmarks.find(Bookmark("bookmark3"));
       double x3=b3.x,y3=b3.y;
       CHECK_EQUAL(x3,model->x());
       CHECK_EQUAL(y3,model->y());	  
@@ -1024,7 +1024,7 @@ SUITE(GodleyIcon)
       update();
       // TODO - shouldn't be needed, but there is some font problem causing bottomMargin to be calculated incorrectly
       
-      scaleIcon(2.5*bottomMargin(),2.5*leftMargin());
+      scaleIcon(5*bottomMargin(),5*leftMargin());
       update();
       CHECK_EQUAL(1,flowVars().size());
       CHECK_EQUAL(1,stockVars().size());
@@ -1706,4 +1706,6 @@ SUITE(GodleyTableWindow)
       
      }
 
+     
+     
 }

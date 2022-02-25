@@ -197,7 +197,7 @@ namespace minsky
   
   double UserFunction::evaluate(double in1, double in2)
   {
-    if (argVals.size()>0) argVals[0]=in1;
+    if (!argVals.empty()) argVals[0]=in1;
     if (argVals.size()>1) argVals[1]=in2;
     for (size_t i=2; i<argVals.size(); ++i) argVals[i]=0;
     return impl->compiledExpression.value();

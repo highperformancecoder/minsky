@@ -97,7 +97,7 @@ namespace MathDAG
       }
     if (arguments.size()>1)
       {
-        if (arguments[0].size()>0 && arguments[1].size()) o<<"+";
+        if (!arguments[0].empty() && !arguments[1].empty()) o<<"+";
         for (size_t i=0; i<arguments[1].size(); ++i)
           {
             checkArg(1,i);
@@ -121,7 +121,7 @@ namespace MathDAG
         if (i>0) o<<"+";
         o<<arguments[0][i]->matlab();
       }
-    if (arguments.size()>1 && arguments[1].size()>0) 
+    if (arguments.size()>1 && !arguments[1].empty()>0) 
       {
         o<<"-(";
         for (size_t i=0; i<arguments[1].size(); ++i)
@@ -148,7 +148,7 @@ namespace MathDAG
         if (i>0) o<<"*";
         o<<"("<<arguments[0][i]->matlab()<<")";
       }
-    if (arguments[0].size()>0 && arguments[1].size()>0) o<<"*";
+    if (!arguments[0].empty() && !arguments[1].empty()) o<<"*";
     for (size_t i=0; i<arguments[1].size(); ++i)
       {
         checkArg(1,i);
@@ -165,7 +165,7 @@ namespace MathDAG
         (arguments[0].empty() &&
          (arguments.size()<2||arguments[1].empty())))
       return o<<1;
-    if (arguments[0].size()==0) 
+    if (arguments[0].empty()) 
       o<<"1";
     for (size_t i=0; i<arguments[0].size(); ++i)
       {
@@ -173,7 +173,7 @@ namespace MathDAG
         if (i>0) o<<"*";
         o<<"("<<arguments[0][i]->matlab()<<")";
       }
-    if (arguments.size()>1 && arguments[1].size()>0) 
+    if (arguments.size()>1 && !arguments[1].empty()) 
       {
         o<<"/(";
         for (size_t i=0; i<arguments[1].size(); ++i)
@@ -205,7 +205,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::lt>::matlab(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       o<<"(("<<arguments[0][0]->matlab()<<")";
     else
       o<<"(0";
@@ -219,7 +219,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::le>::matlab(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       o<<"(("<<arguments[0][0]->matlab()<<")";
     else
       o<<"(0";
@@ -233,7 +233,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::eq>::matlab(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       o<<"(("<<arguments[0][0]->matlab()<<")";
     else
       o<<"(0";
@@ -247,7 +247,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::min>::matlab(ostream& o) const
   {
-    if (arguments.size()>0  && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty()  && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
         o<<"min("<<arguments[0][0]->matlab()<<"," <<
           arguments[1][0]->matlab()<<")";
@@ -264,7 +264,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::max>::matlab(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
         o<<"max("<<arguments[0][0]->matlab()<<"," <<
           arguments[1][0]->matlab()<<")";
@@ -293,7 +293,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::or_>::matlab(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
         o<<"(("<<arguments[0][0]->matlab()<<")>=0.5 || (" <<
           arguments[1][0]->matlab()<<")>=0.5)";
@@ -310,7 +310,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::not_>::matlab(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       o<<"(("<<arguments[0][0]->matlab()<<")<0.5)";
     else
       o<<"1";
@@ -363,7 +363,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::copy>::matlab(ostream& o) const
   {
-    if (arguments.size()>0 && arguments[0].size()>=1)
+    if (!arguments.empty() && !arguments[0].empty())
       {
         assert(arguments[0][0]);
         o<<arguments[0][0]->matlab();
@@ -528,10 +528,9 @@ namespace MathDAG
   {
     if (arguments.empty() || arguments[0].empty())
       return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"()";
-    else if (arguments.size()<2 || arguments[1].empty())
+    if (arguments.size()<2 || arguments[1].empty())
       return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<")";
-    else
-      return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<","<<arguments[1][0]->matlab()<<")";
+    return o<<dynamic_cast<UserFunction*>(state.get())->name()<<"("<<arguments[0][0]->matlab()<<","<<arguments[1][0]->matlab()<<")";
   }    
 
   

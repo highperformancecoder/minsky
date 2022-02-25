@@ -39,7 +39,7 @@ namespace civita
   vector<size_t> InterpolateHC::splitAndRotate(size_t hcIndex) const
   {
     vector<size_t> r(rank());
-    auto& h=hypercube();
+    const auto& h=hypercube();
     for (size_t dim=0; dim<rank(); ++dim)
       r[rotation[dim]] = (hcIndex/strides[dim]) % h.xvectors[dim].size();
     return r;
@@ -54,7 +54,7 @@ namespace civita
     // reorder hypercube for type and name
     interimHC.xvectors.clear();
     size_t stride=1;
-    auto& targetHC=hypercube().xvectors;
+    const auto& targetHC=hypercube().xvectors;
     rotation.clear();
     rotation.resize(rank(), rank());
     // ensure rotation vector will contain unique indices
@@ -62,11 +62,11 @@ namespace civita
     // construct interim hypercube and its rotation permutation
     for (size_t i=0; i<rank(); ++i)
       {
-        auto& src=arg->hypercube().xvectors[i];
+        const auto& src=arg->hypercube().xvectors[i];
         sortAndAdd(src);
         if (src.name.empty())
           {
-            auto& dst=targetHC[i];
+            const auto& dst=targetHC[i];
             if (!dst.name.empty() || src.dimension.type!=dst.dimension.type ||
                 src.dimension.units!=dst.dimension.units) //TODO handle conversion between different units
               throw runtime_error("mismatch between unnamed dimensions");
@@ -127,7 +127,7 @@ namespace civita
       {
         if (weightedIndices[idx].empty()) return nan("");
         double r=0;
-        for (auto& i: weightedIndices[idx])
+        for (const auto& i: weightedIndices[idx])
           {
             assert(i.index<arg->hypercube().numElements());
             r+=i.weight * arg->atHCIndex(i.index);
@@ -144,7 +144,7 @@ namespace civita
       throw runtime_error("Ranks > "+to_string(sizeof(size_t)*8)+" not supported");
     size_t numNeighbours=size_t(1)<<rank();
     vector<size_t> iIdx=splitAndRotate(destIdx);
-    auto& argHC=arg->hypercube();
+    const auto& argHC=arg->hypercube();
     // loop over the nearest neighbours in argument hypercube space of
     // this point in interimHypercube space
     double sumWeight=0;
@@ -158,7 +158,7 @@ namespace civita
         size_t idx=0;
         for (size_t dim=0, stride=1; dim<rank(); stride*=argHC.xvectors[dim].size(), ++dim)
           {
-            auto& x=sortedArgHC[dim].first;
+            const auto& x=sortedArgHC[dim].first;
             assert(!x.empty());
             assert(sorted(x.begin(),x.end()));
             auto v=interimHC.xvectors[dim][iIdx[dim]];

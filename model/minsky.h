@@ -233,7 +233,7 @@ namespace minsky
     /// returns reference to variable defining (ie input wired) for valueId
     VariablePtr definingVar(const std::string& valueId) const;
 
-    void saveGroupAsFile(const Group&, const string& fileName) const;
+    static void saveGroupAsFile(const Group&, const string& fileName);
     void saveCanvasItemAsFile(const string& fileName) const
     {if (auto g=dynamic_cast<Group*>(canvas.item.get())) saveGroupAsFile(*g,fileName);}
 

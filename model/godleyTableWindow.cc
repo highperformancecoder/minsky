@@ -289,6 +289,12 @@ namespace minsky
         colLeftMargin.push_back(x);
         x+=colWidth;
       }
+
+    // display pulldown for last column
+    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+    pango.setMarkup("▼");
+    pango.show();
+
   
     pango.setMarkup
       (capitalise(enumKey<GodleyAssetClass::AssetClass>(assetClass)));
@@ -413,6 +419,11 @@ namespace minsky
         }
     }
   }
+  
+  double GodleyTableEditor::height() const
+  {
+    return godleyIcon().table.rows()*rowHeight;
+  }
 
   int GodleyTableEditor::colX(double x) const
   {
@@ -517,7 +528,7 @@ namespace minsky
     // Cannot swap cell(1,0) with another. For ticket 1064. Also cannot move cells outside an existing Godley table to create new rows or columns. For ticket 1066. 
     if ((selectedCol==0 && selectedRow==1) || (c==0 && r==1) || size_t(selectedRow)>=(m_godleyIcon.table.rows()) || size_t(r)>=(m_godleyIcon.table.rows()) || size_t(c)>=(m_godleyIcon.table.cols()) || size_t(selectedCol)>=(m_godleyIcon.table.cols()))
       return;  
-    else if (selectedRow==0)
+    if (selectedRow==0)
       {  
 		// Disallow moving flow labels column and prevent columns from moving when import stockvar dropdown button is pressed in empty column. For tickets 1053/1064/1066
         if (c>0 && size_t(c)<m_godleyIcon.table.cols() && selectedCol>0 && size_t(selectedCol)<m_godleyIcon.table.cols() && c!=selectedCol && !(colLeftMargin[c+1]-x < pulldownHot)) 
@@ -782,7 +793,7 @@ namespace minsky
   
     if (r==0)
       {
-        if (colLeftMargin[c+1]-x < pulldownHot && c!=int(m_godleyIcon.table.cols())-1) //Disable importStock on Equity column. For ticket 1154
+        if (colLeftMargin[c+1]-x < pulldownHot)
           return importStock;
         return row0;
       }
@@ -840,9 +851,8 @@ namespace minsky
 namespace {
   string constructMessage(GodleyAssetClass::AssetClass& targetAC, GodleyAssetClass::AssetClass& oldAC, string& var)
   {
-	  string tmpStr="";
-	  tmpStr="This will convert "+var+" from "+classdesc::enumKey<GodleyAssetClass::AssetClass>(oldAC)+" to "+classdesc::enumKey<GodleyAssetClass::AssetClass>(targetAC)+". Are you sure?";
-	  return tmpStr;
+    string tmpStr="This will convert "+var+" from "+classdesc::enumKey<GodleyAssetClass::AssetClass>(oldAC)+" to "+classdesc::enumKey<GodleyAssetClass::AssetClass>(targetAC)+". Are you sure?";
+    return tmpStr;
   }	  
 }
   
@@ -851,7 +861,7 @@ namespace {
     x/=zoomFactor;
     y/=zoomFactor;
     unsigned c=colX(x);
-    string tmpStr="";
+    string tmpStr;
     if (c>=m_godleyIcon.table.cols()) return tmpStr;
     if (clickType(x,y)==colWidget) {
       unsigned visibleCol=c-scrollColStart+1;
@@ -864,7 +874,7 @@ namespace {
           if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3 && oldAssetClass!=GodleyAssetClass::equity) {
             if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
               tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
-            else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
+            else if (targetAssetClassPlus==GodleyAssetClass::noAssetClass && !moveVar.empty())
               tmpStr="Cannot convert stock variable to an equity class";    
           }
           else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==GodleyAssetClass::asset && oldAssetClass!=GodleyAssetClass::equity && targetAssetClassMinus!=GodleyAssetClass::asset) {
@@ -882,11 +892,11 @@ namespace {
     return tmpStr;	    		 	
   }
   
-  string GodleyTableEditor::swapAssetClass(double x, double y) 
+  string GodleyTableEditor::swapAssetClass(double x, double) 
   {  
     x/=zoomFactor;
     int c=colX(x);	
-    string tmpStr="";	  
+    string tmpStr;	  
     if (selectedRow==0 && size_t(selectedCol)<m_godleyIcon.table.cols())
       {
         // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
@@ -1000,29 +1010,33 @@ namespace {
           {
             // rename all instances of the stock variable if updated. For ticket #956
             // find stock variable if it exists
-            for (auto& sv: m_godleyIcon.stockVars())
+            for (const auto& sv: m_godleyIcon.stockVars())
               if (sv->valueId()==m_godleyIcon.valueId(m_godleyIcon.table.savedText))
                 {
                   auto savedItem=minsky().canvas.item;
                   minsky().canvas.item=sv;
-                  minsky().canvas.renameAllInstances(utf_to_utf<char>(m_godleyIcon.table.cell(selectedRow,selectedCol)));
+                  auto newName=utf_to_utf<char>(m_godleyIcon.table.cell(selectedRow,selectedCol));
+                  if (!newName.empty())
+                    minsky().canvas.renameAllInstances(newName);
                   savedItem.swap(minsky().canvas.item);
                 }
             minsky().importDuplicateColumn(m_godleyIcon.table, selectedCol);
           }
-        else if (m_godleyIcon.table.initialConditionRow(selectedRow))
-          {
-            // if the contents of the cell are cleared, set the cell to "0". For #1181
-            if (!m_godleyIcon.table.savedText.empty() && m_godleyIcon.table.cell(selectedRow,selectedCol).empty())
-              m_godleyIcon.table.cell(selectedRow,selectedCol)="0";
-          }
         else
-          minsky().balanceDuplicateColumns(m_godleyIcon,selectedCol);
+          {
+            if (m_godleyIcon.table.initialConditionRow(selectedRow))
+              {
+                // if the contents of the cell are cleared, set the cell to "0". For #1181
+                if (!m_godleyIcon.table.savedText.empty() && m_godleyIcon.table.cell(selectedRow,selectedCol).empty())
+                  m_godleyIcon.table.cell(selectedRow,selectedCol)="0";
+              }
+            minsky().balanceDuplicateColumns(m_godleyIcon,selectedCol);
+          }
         // get list of GodleyIcons first, rather than doing recursiveDo, as update munges the items vectors
         auto godleyTables=minsky().model->findItems
           ([](const ItemPtr& i){return dynamic_cast<GodleyIcon*>(i.get());});
         for (auto& i: godleyTables)
-          if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+          if (auto* g=dynamic_cast<GodleyIcon*>(i.get()))
             g->update();
       }
     minsky().canvas.requestRedraw();

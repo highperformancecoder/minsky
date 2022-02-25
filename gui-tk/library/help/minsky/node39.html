@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Basic System Dynamics model</TITLE>
-<META NAME="description" CONTENT="Basic System Dynamics model">
+<TITLE>Entering flows between accounts</TITLE>
+<META NAME="description" CONTENT="Entering flows between accounts">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,13 +16,18 @@
 
 <LINK REL="next" HREF="node40.html">
 <LINK REL="previous" HREF="node38.html">
+<<<<<<< HEAD
 <LINK REL="up" HREF="node38.html">
+=======
+<LINK REL="up" HREF="node36.html">
+>>>>>>> Graeber
 <LINK REL="next" HREF="node40.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
+<<<<<<< HEAD
 <A NAME="tex2html610"
   HREF="node40.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
@@ -39,10 +44,29 @@
   HREF="node38.html">Tutorial</A>
 <B> Previous:</B> <A NAME="tex2html603"
   HREF="node38.html">Tutorial</A>
+=======
+<A NAME="tex2html631"
+  HREF="node40.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html629"
+  HREF="node36.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html623"
+  HREF="node38.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html632"
+  HREF="node40.html">Defining flows</A>
+<B> Up:</B> <A NAME="tex2html630"
+  HREF="node36.html">Creating a banking model</A>
+<B> Previous:</B> <A NAME="tex2html624"
+  HREF="node38.html">Entering accounts</A>
+>>>>>>> Graeber
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
+<<<<<<< HEAD
 <H1><A NAME="SECTION00310000000000000000">
 Basic System Dynamics model</A>
 </H1>
@@ -727,26 +751,50 @@ That looks messy, but notice the blue dot on the wire? Click and drag
 on that and you will turn the straight line connector into a curve: 
 
 <P>
+=======
+<H3><A NAME="SECTION00245300000000000000">
+Entering flows between accounts</A>
+</H3>
+
+<P>
+Flows between accounts are entered by typing text labels in the
+accounts involved. The source label is entered as a simple name--for
+example, if Patient is lending money to Impatient, the word &ldquo;Lend&rdquo;
+could be used to describe this action. Firstly you need to create a
+row beneath the &ldquo;Initial Conditions&rdquo; row (which records the amount of
+money in each account when the simulation begins). You do this by
+clicking on the `+' key on the Initial Conditions row. This creates a
+blank row for recording a flow between accounts.
+
+<P>
+>>>>>>> Graeber
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem111.eps}}$
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts1.eps}}$
  -->
 <IMG
+<<<<<<< HEAD
  WIDTH="556" HEIGHT="169" ALIGN="BOTTOM" BORDER="0"
  SRC="img156.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem111.eps}}">
+=======
+ WIDTH="483" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img92.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts1.eps}}">
+>>>>>>> Graeber
 </DIV>
 
 <P>
-The second approach, which I personally prefer (it's neater, and it
-precisely emulates the integral equation), yields this result: 
+The cell below &ldquo;Initial Conditions&rdquo; is used to give a verbal
+description of what the flow is: 
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem112.eps}}$
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts2.eps}}$
  -->
 <IMG
+<<<<<<< HEAD
  WIDTH="556" HEIGHT="171" ALIGN="BOTTOM" BORDER="0"
  SRC="img157.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem112.eps}}">
@@ -761,27 +809,49 @@ firstly create the variable Wage Bill, and put it well below where <SPAN CLASS="
  SRC="img122.png"
  ALT="$w$"></SPAN>
 currently is on your diagram: 
+=======
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img93.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts2.eps}}">
+</DIV>
+
+<P>
+The flows between accounts are then recorded in the relevant cells
+underneath the columns. Here we will start with putting the label
+&ldquo;-Lend&rdquo; into the Patient column. It is negative, because Patient is
+lending to Impatient.
+>>>>>>> Graeber
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem113.eps}}$
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts3.eps}}$
  -->
 <IMG
+<<<<<<< HEAD
  WIDTH="556" HEIGHT="352" ALIGN="BOTTOM" BORDER="0"
  SRC="img158.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem113.eps}}">
+=======
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img94.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts3.eps}}">
+>>>>>>> Graeber
 </DIV>
 
 <P>
-Now right-click on <B><EM>WageBill</EM></B> and choose &ldquo;Flip&rdquo;. This rotates
-the block through 180 degrees (any arbitrary rotation can be applied
-from the variable definition window itself). Now right-click on
-<B><EM>Labor</EM></B>, which you've already defined some time ago, and choose
-&ldquo;Copy&rdquo;. Place the copy of <B><EM>Labor</EM></B> to the right of <B><EM>WageBill</EM></B>:
+Notice that the program shows that the Row Sum for this transaction is
+currently &ldquo;Lend&rdquo;, when it should be zero to obey the double-entry
+bookkeeping rule that all rows must balance. This is because a
+destination for &ldquo;Lend&rdquo; has not yet been specified. Please note that different
+asset class columns follow different +ve and -ve rules, so an asset and a liability
+with the same value might need to both be +ve or both -ve to sum to zero. The destination
+is Impatient's account, and to balance the row to zero this part of
+the transaction must be entered as &ldquo;Lend&rdquo;: 
 
 <P>
 <DIV ALIGN="CENTER">
+<<<<<<< HEAD
 <IMG
  WIDTH="279" HEIGHT="90" ALIGN="BOTTOM" BORDER="0"
  SRC="img159.png"
@@ -800,23 +870,33 @@ you can also manipulate, as I have done below:
 
 <P>
 <DIV ALIGN="CENTER">
+=======
+>>>>>>> Graeber
 <!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem114.eps}}$
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts4.eps}}$
  -->
 <IMG
+<<<<<<< HEAD
  WIDTH="555" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
  SRC="img160.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem114.eps}}">
+=======
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img95.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts4.eps}}">
+>>>>>>> Graeber
 </DIV>
 
 <P>
-The next step is to subtract the <B><EM>WageBill</EM></B> from <B><EM>GDP</EM></B>
-to define <B><EM>Profits</EM></B>. Take a copy of <B><EM>GDP</EM></B>, insert it
-above <B><EM>WageBill</EM></B>, insert a subtract block, and wire it up to
-define the variable <B><EM>Profits</EM></B>:
+The accounting equation also applies to the Initial Conditions (the amount of money
+in each of the accounts prior to the flows between accounts): the
+Initial Conditions must balance. This requires that there are
+entries on the Asset side of the Banking ledger that exactly match the
+sum of Liabilities and Equity: 
 
 <P>
 <DIV ALIGN="CENTER">
+<<<<<<< HEAD
 <IMG
  WIDTH="313" HEIGHT="124" ALIGN="BOTTOM" BORDER="0"
  SRC="img161.png"
@@ -841,16 +921,26 @@ icon. Right-click or double-click on it to rename <EM>int2</EM> to <EM>Capital</
 
 <P>
 <DIV ALIGN="CENTER">
+=======
+>>>>>>> Graeber
 <!-- MATH
- $\scalebox{0.5}{\htmladdimg{NewItem102.png}}$
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}$
  -->
+<<<<<<< HEAD
+=======
+<IMG
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img96.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}">
+>>>>>>> Graeber
 </DIV>
 
 <P>
-Wire this up to Investment:
+As you enter flows, these appear on the left hand side of the bank block:
 
 <P>
 <DIV ALIGN="CENTER">
+<<<<<<< HEAD
 <IMG
  WIDTH="528" HEIGHT="50" ALIGN="BOTTOM" BORDER="0"
  SRC="img163.png"
@@ -902,10 +992,13 @@ than reaching equilibrium, the model cycles constantly:
 
 <P>
 <DIV ALIGN="CENTER">
+=======
+>>>>>>> Graeber
 <!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem116.eps}}$
+ $\scalebox{0.5}{\includegraphics{images/NewItem147.eps}}$
  -->
 <IMG
+<<<<<<< HEAD
  WIDTH="555" HEIGHT="254" ALIGN="BOTTOM" BORDER="0"
  SRC="img166.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem116.eps}}">
@@ -971,6 +1064,33 @@ focus on particular parts of the system.
   HREF="node38.html">Tutorial</A>
 <B> Previous:</B> <A NAME="tex2html603"
   HREF="node38.html">Tutorial</A></DIV>
+=======
+ WIDTH="196" HEIGHT="231" ALIGN="BOTTOM" BORDER="0"
+ SRC="img97.png"
+ ALT="\scalebox{0.5}{\includegraphics{images/NewItem147.eps}}">
+</DIV>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html631"
+  HREF="node40.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html629"
+  HREF="node36.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html623"
+  HREF="node38.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html632"
+  HREF="node40.html">Defining flows</A>
+<B> Up:</B> <A NAME="tex2html630"
+  HREF="node36.html">Creating a banking model</A>
+<B> Previous:</B> <A NAME="tex2html624"
+  HREF="node38.html">Entering accounts</A></DIV>
+>>>>>>> Graeber
 <!--End of Navigation Panel-->
 
 </BODY>

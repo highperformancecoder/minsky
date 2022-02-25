@@ -38,6 +38,7 @@
 #endif
 
 using namespace ecolab;
+using ecolab::cairo::CairoSave;
 
 namespace
 {
@@ -86,7 +87,7 @@ namespace
     // x, y = position of symbol
     void drawPort(void (DrawBinOp::*symbol)() const, float x, float y, float rotation)  const
     {
-      cairo_save(cairo);
+      CairoSave cs(cairo);
       
       double angle=rotation * M_PI / 180.0;
       double fm=std::fmod(rotation,360);
@@ -100,7 +101,6 @@ namespace
       // and counter-rotate
       cairo_rotate(cairo, -angle);
       (this->*symbol)();
-      cairo_restore(cairo);
     }
   };
 }
@@ -113,7 +113,54 @@ namespace minsky
   constexpr float OperationBase::h;
   constexpr float OperationBase::r;
 
-  bool OperationBase::multiWire()
+  namespace
+  {
+    struct SumInputPort: public InputPort
+    {
+      bool multiWireAllowed() const override {return true;}
+      void combineInput(double& x, double y) const override {x+=y;}
+      SumInputPort(Item& item): InputPort(item) {}    
+    };
+
+    struct MulInputPort: public InputPort
+    {
+      bool multiWireAllowed() const override {return true;}
+      void combineInput(double& x, double y) const override {x*=y;}
+      MulInputPort(Item& item): InputPort(item) {}    
+      double identity() const override {return 1;}
+    };
+
+    struct MaxInputPort: public InputPort
+    {
+      bool multiWireAllowed() const override {return true;}
+      void combineInput(double& x, double y) const override {if (y>x) x=y;}
+      MaxInputPort(Item& item): InputPort(item) {}
+      double identity() const override {return -std::numeric_limits<double>::max();}
+    };
+
+    struct MinInputPort: public InputPort
+    {
+      bool multiWireAllowed() const override {return true;}
+      void combineInput(double& x, double y) const override {if (y<x) x=y;}
+      MinInputPort(Item& item): InputPort(item) {}    
+      double identity() const override {return std::numeric_limits<double>::min();}
+    };
+    struct AndInputPort: public InputPort
+    {
+      bool multiWireAllowed() const override {return true;}
+      void combineInput(double& x, double y) const override {x=(x>0.5)&&(y>0.5);}
+      AndInputPort(Item& item): InputPort(item) {}    
+      double identity() const override {return 1;}
+    };
+    struct OrInputPort: public InputPort
+    {
+      bool multiWireAllowed() const override {return true;}
+      void combineInput(double& x, double y) const override {x=(x>0.5)||(y>0.5);}
+      OrInputPort(Item& item): InputPort(item) {}    
+    };
+  }
+  
+  bool OperationBase::multiWire() const
   {
     switch (type())
       {
@@ -131,10 +178,32 @@ namespace minsky
   {
     m_ports.clear();
     if (numPorts()>0)
-      m_ports.emplace_back(new Port(*this,Port::noFlags));
+      m_ports.emplace_back(make_shared<Port>(*this));
     for (size_t i=1; i<numPorts(); ++i)
-      m_ports.emplace_back
-        (new Port(*this, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
+      switch (type())
+        {
+        case add: case subtract: 
+          m_ports.emplace_back(make_shared<SumInputPort>(*this));
+          break;
+        case multiply: case divide:
+          m_ports.emplace_back(make_shared<MulInputPort>(*this));
+          break;
+        case min:
+          m_ports.emplace_back(make_shared<MinInputPort>(*this));
+          break;
+        case max:
+          m_ports.emplace_back(make_shared<MaxInputPort>(*this));
+          break;
+        case and_:
+          m_ports.emplace_back(make_shared<AndInputPort>(*this));
+          break;
+        case or_:
+          m_ports.emplace_back(make_shared<OrInputPort>(*this));
+          break;
+        default:
+          m_ports.emplace_back(make_shared<InputPort>(*this));
+          break;
+        }
   }
   
   float OperationBase::scaleFactor() const
@@ -146,174 +215,177 @@ namespace minsky
   }  
   
   void OperationBase::draw(cairo_t* cairo) const
-  {	  
-      // if rotation is in 1st or 3rd quadrant, rotate as
-      // normal, otherwise flip the text so it reads L->R
-      double angle=rotation() * M_PI / 180.0;
-      double fm=std::fmod(rotation(),360);
-      bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
-      double coupledIntTranslation=0;
-      float z=zoomFactor();
+  {
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    double angle=rotation() * M_PI / 180.0;
+    double fm=std::fmod(rotation(),360);
+    bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
+    double coupledIntTranslation=0;
+    float z=zoomFactor();
 
-      auto t=type();
-      // call the iconDraw method if data description is empty
-      if (t==OperationType::data && dynamic_cast<const NamedOp&>(*this).description().empty())
-        t=OperationType::numOps;
+    auto t=type();
+    // call the iconDraw method if data description is empty
+    if (t==OperationType::data && dynamic_cast<const NamedOp&>(*this).description().empty())
+      t=OperationType::numOps;
 
-      switch (t)
+    switch (t)
+      {
+        // at the moment its too tricky to get all the information
+        // together for rendering constants
+      case OperationType::data:
+      case OperationType::userFunction:
         {
-          // at the moment its too tricky to get all the information
-          // together for rendering constants
-        case OperationType::data:
-        case OperationType::userFunction:
-          {
         
-            auto& c=dynamic_cast<const NamedOp&>(*this);
+          auto& c=dynamic_cast<const NamedOp&>(*this);
           
-            Pango pango(cairo);
-            pango.setFontSize(10*scaleFactor()*z);
-            pango.setMarkup(latexToPango(c.description()));
-            pango.angle=angle + (textFlipped? M_PI: 0);
-            Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
+          Pango pango(cairo);
+          pango.setFontSize(10*scaleFactor()*z);
+          pango.setMarkup(latexToPango(c.description()));
+          pango.angle=angle + (textFlipped? M_PI: 0);
+          Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
 
-            // parameters of icon in userspace (unscaled) coordinates
-            float w, h, hoffs;
-            w=0.5*pango.width()+2*z; 
-            h=0.5*pango.height()+4*z;        
-            hoffs=pango.top()/z;
+          // parameters of icon in userspace (unscaled) coordinates
+          float w, h, hoffs;
+          w=0.5*pango.width()+2*z; 
+          h=0.5*pango.height()+4*z;        
+          hoffs=pango.top()/z;
     
-            {
-              cairo::CairoSave cs(cairo);
-              cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
-              pango.show();
-            }
-
-            cairo_rotate(cairo, angle);
-               
-            cairo_set_source_rgb(cairo,0,0,1);
-            cairo_move_to(cairo,-w,-h);
-            cairo_line_to(cairo,-w,h);
-            cairo_line_to(cairo,w,h);
-
-            cairo_line_to(cairo,w+2*z,0);
-            cairo_line_to(cairo,w,-h);
-            cairo_close_path(cairo);
-            cairo::Path clipPath(cairo);
-            cairo_stroke(cairo);
-          
-            cairo_rotate(cairo,-angle); // undo rotation
-
-            // set the output ports coordinates
-            // compute port coordinates relative to the icon's
-            // point of reference
-            Rotate rr(rotation(),0,0);
-
-            m_ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
-            switch (numPorts())
-              {
-              case 1: break;
-              case 2: 
-                m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
-                break;
-              case 3: default:
-                m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,-h+3));
-                m_ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,h-3));
-                break;
-              }
-            if (mouseFocus)
-              {
-                drawPorts(cairo);
-                displayTooltip(cairo,tooltip);
-                if (onResizeHandles) drawResizeHandles(cairo);             
-              }
-            clipPath.appendToCurrent(cairo);
-            cairo_clip(cairo);
-            if (selected) drawSelected(cairo);
-            return;
+          {
+            cairo::CairoSave cs(cairo);
+            cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
+            pango.show();
           }
-        case OperationType::integrate:
-          break;
-        default:
-          cairo_save(cairo);
+
+          cairo_rotate(cairo, angle);
+               
+          cairo_set_source_rgb(cairo,0,0,1);
+          cairo_move_to(cairo,-w,-h);
+          cairo_line_to(cairo,-w,h);
+          cairo_line_to(cairo,w,h);
+
+          cairo_line_to(cairo,w+2*z,0);
+          cairo_line_to(cairo,w,-h);
+          cairo_close_path(cairo);
+          cairo::Path clipPath(cairo);
+          cairo_stroke(cairo);
+          
+          cairo_rotate(cairo,-angle); // undo rotation
+
+          // set the output ports coordinates
+          // compute port coordinates relative to the icon's
+          // point of reference
+          Rotate rr(rotation(),0,0);
+
+          m_ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
+          switch (numPorts())
+            {
+            case 1: break;
+            case 2: 
+              m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+              break;
+            case 3: default:
+              m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,-h+3));
+              m_ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,h-3));
+              break;
+            }
+          if (mouseFocus)
+            {
+              drawPorts(cairo);
+              displayTooltip(cairo,tooltip);
+              if (onResizeHandles) drawResizeHandles(cairo);             
+            }
+          clipPath.appendToCurrent(cairo);
+          cairo_clip(cairo);
+          if (selected) drawSelected(cairo);
+          return;
+        }
+      case OperationType::integrate:
+        break;
+      default:
+        {
+          CairoSave cs(cairo);
           cairo_scale(cairo,z,z);
           iconDraw(cairo);
-          cairo_restore(cairo);      
-      
-          cairo_save(cairo);
-          cairo_rotate(cairo, angle);
+        }
+
         
-          float l=OperationBase::l*z, r=OperationBase::r*z, 
-            h=OperationBase::h*z;
+        CairoSave cs(cairo);
+        cairo_rotate(cairo, angle);
+        
+        float l=OperationBase::l*z, r=OperationBase::r*z, 
+          h=OperationBase::h*z;
           
-          if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
-          if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
-          if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
+        if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
+        if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
+        if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
         
-          cairo_move_to(cairo,-r,-h);
-          cairo_line_to(cairo,-r,h);
-          cairo_line_to(cairo,r,h);
-          cairo_line_to(cairo,r+2*z,0);
-          cairo_line_to(cairo,r,-h);      
+        cairo_move_to(cairo,-r,-h);
+        cairo_line_to(cairo,-r,h);
+        cairo_line_to(cairo,r,h);
+        cairo_line_to(cairo,r+2*z,0);
+        cairo_line_to(cairo,r,-h);      
     	
-          cairo_close_path(cairo);		  	 
+        cairo_close_path(cairo);		  	 
     
-          cairo_set_source_rgb(cairo,0,0,1);
-          cairo_stroke_preserve(cairo);
+        cairo_set_source_rgb(cairo,0,0,1);
+        cairo_stroke_preserve(cairo);
         
-          cairo::Path clipPath(cairo);
+        cairo::Path clipPath(cairo);
     
-          // compute port coordinates relative to the icon's
-          // point of reference. Move outport 2 pixels right for ticket For ticket 362.
-          double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
-            x2=l, y2=numPorts() > 2? h-3: 0;
+        // compute port coordinates relative to the icon's
+        // point of reference. Move outport 2 pixels right for ticket For ticket 362.
+        double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+          x2=l, y2=numPorts() > 2? h-3: 0;
                       
-          if (textFlipped) swap(y1,y2);
+        if (textFlipped) swap(y1,y2);
     
-          cairo_save(cairo);
+        {
+          CairoSave cs(cairo);
           cairo_identity_matrix(cairo);
           cairo_translate(cairo, x(), y());
           cairo_rotate(cairo, angle);
           cairo_user_to_device(cairo, &x0, &y0);
           cairo_user_to_device(cairo, &x1, &y1);
           cairo_user_to_device(cairo, &x2, &y2);
-          cairo_restore(cairo);
-    
-          if (numPorts()>0) 
-            m_ports[0]->moveTo(x0, y0);
-          if (numPorts()>1) 
-            {
-#ifdef DISPLAY_POW_UPSIDE_DOWN
-              if (type()==OperationType::pow)
-                ports[1]->moveTo(x2, y2);
-              else
-#endif
-                m_ports[1]->moveTo(x1, y1);
-            }
-    
-          if (numPorts()>2)
-            {
-#ifdef DISPLAY_POW_UPSIDE_DOWN
-              if (type()==OperationType::pow)
-                ports[2]->moveTo(x1, y1);
-              else
-#endif
-                m_ports[2]->moveTo(x2, y2);
-            }
-
-          cairo_restore(cairo); // undo rotation
-          if (mouseFocus)
-            {
-              drawPorts(cairo);
-              displayTooltip(cairo,tooltip);
-              if (onResizeHandles) drawResizeHandles(cairo);
-            }
-          
-          cairo_new_path(cairo);          
-          clipPath.appendToCurrent(cairo);          
-          cairo_clip(cairo);          
-          if (selected) drawSelected(cairo);          
-          break;
         }
+    
+        if (numPorts()>0) 
+          m_ports[0]->moveTo(x0, y0);
+        if (numPorts()>1) 
+          {
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+            if (type()==OperationType::pow)
+              ports[1]->moveTo(x2, y2);
+            else
+#endif
+              m_ports[1]->moveTo(x1, y1);
+          }
+    
+        if (numPorts()>2)
+          {
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+            if (type()==OperationType::pow)
+              ports[2]->moveTo(x1, y1);
+            else
+#endif
+              m_ports[2]->moveTo(x2, y2);
+          }
+
+        cs.restore(); // undo rotation
+        if (mouseFocus)
+          {
+            drawPorts(cairo);
+            displayTooltip(cairo,tooltip);
+            if (onResizeHandles) drawResizeHandles(cairo);
+          }
+          
+        cairo_new_path(cairo);          
+        clipPath.appendToCurrent(cairo);          
+        cairo_clip(cairo);          
+        if (selected) drawSelected(cairo);          
+        break;
+      }
   }    
   
   void OperationBase::resize(const LassoBox& b)
@@ -409,7 +481,8 @@ namespace minsky
                     return vV->units; 
                   }
                 return r; 
-              } else return {};
+              }
+              return {};
             }     
           default:           
             return {};  
@@ -524,7 +597,7 @@ namespace minsky
   string OperationBase::portValues() const
   {
     string r="equations not yet constructed, please reset";
-    if (m_ports.size()>0 && m_ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
+    if (!m_ports.empty() && m_ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
       {
         std::stringstream ss;
         ss <<"[out]="<<m_ports[0]->value();		
@@ -654,7 +727,7 @@ namespace minsky
   
   template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
   { 
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-7,-1);
@@ -664,12 +737,11 @@ namespace minsky
     cairo_set_line_width(cairo,0.5);cairo_stroke(cairo);
     cairo_move_to(cairo,-7,7);
     cairo_show_text(cairo,"dt");
-    cairo_restore(cairo);  
   }
 
   template <> void Operation<OperationType::sqrt>::iconDraw(cairo_t* cairo) const
   {	  
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);   
@@ -680,7 +752,6 @@ namespace minsky
     cairo_rel_line_to(cairo,5,0);
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_stroke(cairo);    
-    cairo_restore(cairo);  
   }
 
   template <> void Operation<OperationType::exp>::iconDraw(cairo_t* cairo) const
@@ -760,7 +831,7 @@ namespace minsky
 
   template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
   {	  
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	   
     cairo_set_source_rgb(cairo,0,0,0);
@@ -768,12 +839,11 @@ namespace minsky
     cairo_line_to(cairo,-1,-3);
     cairo_line_to(cairo,2,3);
     cairo_stroke(cairo);
-    cairo_restore(cairo);
   }
 
   template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
   {  
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 
     cairo_set_source_rgb(cairo,0,0,0);
@@ -781,7 +851,6 @@ namespace minsky
     cairo_line_to(cairo,-1,3);
     cairo_line_to(cairo,2,-3);
     cairo_stroke(cairo);
-    cairo_restore(cairo);
   }
 
   template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
@@ -1031,7 +1100,7 @@ namespace minsky
     cairo_show_text(cairo,"inf");
   }
 
- template <> void Operation<OperationType::supremum>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::supremum>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
@@ -1049,7 +1118,7 @@ namespace minsky
     cairo_show_text(cairo,"infi");
   }
 
- template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
@@ -1076,7 +1145,7 @@ namespace minsky
     cairo_show_text(cairo,"all");
   }
 
- template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-7,-7);
@@ -1086,7 +1155,7 @@ namespace minsky
     pango.show();
   }
 
- template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-6,-7);
@@ -1096,7 +1165,7 @@ namespace minsky
     pango.show();
   }
 
- template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);

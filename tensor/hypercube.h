@@ -44,18 +44,18 @@ namespace civita
     ///scalar variable has dims[0]=1, etc.
     std::vector<unsigned> dims() const;
     
-    /// number of elements in the hypercube, equaly to the product of
+    /// number of elements in the hypercube, equal to the product of
     /// dimensions
     std::size_t numElements() const;
+
+    /// logarithm of number of elements in the hypercube
+    double logNumElements() const;
       
     /// set the dimensions. 
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d);
     
     std::vector<std::string> dimLabels() const;
     
-    /// removes elements of xVector not found in \a a
-    void makeConformant(const Hypercube& a);
-
     /// split lineal index into components along each dimension
     std::vector<std::size_t> splitIndex(std::size_t) const;
     /// combine a split index into a lineal hypercube index

@@ -246,7 +246,7 @@ namespace schema1
 
   struct SizeLayout
   {
-    double width=100, height=100;
+    double width=-1, height=-1; // -ve indicates schema file does not supply sizelayout info
     SizeLayout() {}
     template <class T>
     SizeLayout(const T& x): width(x.width), height(x.height) {}
@@ -288,7 +288,7 @@ namespace schema1
 
   struct PlotLayout: public SPoly<PlotLayout, PositionLayout, SizeLayout>
   {
-    PlotLayout() {width=150; height=150;}
+    PlotLayout() {}
     PlotLayout(int id, const schema0::PlotWidget& p):
       Layout(id), PositionLayout(id, p), SizeLayout(p) {}
   };

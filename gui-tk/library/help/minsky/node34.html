@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Defining flows</TITLE>
-<META NAME="description" CONTENT="Defining flows">
+<TITLE>Creating an equation</TITLE>
+<META NAME="description" CONTENT="Creating an equation">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,13 +16,18 @@
 
 <LINK REL="next" HREF="node35.html">
 <LINK REL="previous" HREF="node33.html">
+<<<<<<< HEAD
 <LINK REL="up" HREF="node30.html">
+=======
+<LINK REL="up" HREF="node31.html">
+>>>>>>> Graeber
 <LINK REL="next" HREF="node35.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
+<<<<<<< HEAD
 <A NAME="tex2html559"
   HREF="node35.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
@@ -39,22 +44,46 @@
   HREF="node30.html">Creating a banking model</A>
 <B> Previous:</B> <A NAME="tex2html552"
   HREF="node33.html">Entering flows between accounts</A>
+=======
+<A NAME="tex2html576"
+  HREF="node35.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html574"
+  HREF="node31.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html568"
+  HREF="node33.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html577"
+  HREF="node35.html">Wiring components together</A>
+<B> Up:</B> <A NAME="tex2html575"
+  HREF="node31.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html569"
+  HREF="node33.html">Inserting a model component</A>
+>>>>>>> Graeber
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
+<<<<<<< HEAD
 <H3><A NAME="SECTION00245400000000000000">
 Defining flows</A>
 </H3>
+=======
+<H2><A NAME="SECTION00243000000000000000">
+Creating an equation</A>
+</H2>
+>>>>>>> Graeber
 
 <P>
-The entries in the Godley Table represent flows of money, which are
-denominated in money units per unit of time. The relevant time
-dimension for an economic simulation is a year (whereas in engineering
-applications, the relevant time dimension is a second), so whatever
-you enter there represents a flow of money per year.
+Equations are entered in Minsky graphically. Mathematical operations
+like addition, multiplication and subtraction are performed by wiring
+the inputs up to the relevant mathematical block. The output of the
+block is then the result of the equation. 
 
 <P>
+<<<<<<< HEAD
 You define the value of flows by attaching a constant or variable to
 the input side of the flow into the bank as shown on the Canvas. For
 example, you could assign Lend a value of 10 (which would represent a
@@ -66,16 +95,38 @@ side of Lend:
 
 <P>
 <DIV ALIGN="CENTER">
+=======
+For example, a simple equation like
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+>>>>>>> Graeber
 <!-- MATH
- $\scalebox{0.5}{\includegraphics{images/NewItem149.eps}}$
+ \begin{displaymath}
+100/3 = 33.3
+\end{displaymath}
  -->
+
 <IMG
+<<<<<<< HEAD
  WIDTH="240" HEIGHT="231" ALIGN="BOTTOM" BORDER="0"
  SRC="img105.png"
  ALT="\scalebox{0.5}{\includegraphics{images/NewItem149.eps}}">
+=======
+ WIDTH="88" HEIGHT="29" BORDER="0"
+ SRC="img84.png"
+ ALT="\begin{displaymath}
+100/3 = 33.3
+\end{displaymath}">
+>>>>>>> Graeber
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
+is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem130.png"
+ ALT="779"> :
 
 <P>
+<<<<<<< HEAD
 What you have now defined is an annual flow from Patient to Impatient
 of $10. In the dynamic equations this model generates, Minsky
 converts all amounts in accounts to positive sums--it shows the
@@ -122,24 +173,32 @@ year.
  WIDTH="398" HEIGHT="486" ALIGN="BOTTOM" BORDER="0"
  SRC="img107.png"
  ALT="\scalebox{0.7}{\includegraphics{images/NewItem151.eps}}">
+=======
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="551" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
+ SRC="img85.png"
+ ALT="\includegraphics{images/NewItem129.eps}">
+
+>>>>>>> Graeber
 </DIV>
 
 <P>
-Obviously this will result in a negative total worth for Patient after
-10 years, so it is not a realistic model. A more sensible simple model
-would relate lending to the amount left in Patient's account (and a
-more complex model would relate this to many other variables in the
-model). That is done in the next example, where a constant &ldquo;lendrate&rdquo;
-has been defined and given the value of 0.1, and Lend is now defined
-as 0.1 times the balance in Patient's account. This now results in a
-smooth exponential decay of the amount in the Patient account, matched
-by a rise in the amount in Impatient account.
+If you click on the equation tab, you will see that it is:
 
 <P>
+<<<<<<< HEAD
 <DIV ALIGN="CENTER">
+=======
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+>>>>>>> Graeber
 <!-- MATH
- $\scalebox{0.7}{\includegraphics{images/NewItem152.eps}}$
+ \begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}
  -->
+<<<<<<< HEAD
 <IMG
  WIDTH="460" HEIGHT="513" ALIGN="BOTTOM" BORDER="0"
  SRC="img108.png"
@@ -172,12 +231,27 @@ falling at 10 percent per year:
 \end{eqnarray*}"></DIV>
 <BR CLEAR="ALL"><P></P>
 <BR CLEAR="ALL"><P></P>
+=======
+
+<IMG
+ WIDTH="99" HEIGHT="39" BORDER="0"
+ SRC="img86.png"
+ ALT="\begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+>>>>>>> Graeber
 
 <P>
-Note however that there are now wires crossing over other wires? There
-is a neater way to define flows. 
+Very complex equations--including dynamic elements like integral
+blocks and Godley Tables--are designed by wiring up lots of
+components, with the output of one being the input of the next. See
+the tutorial for examples.
 
 <P>
+<<<<<<< HEAD
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
@@ -198,6 +272,9 @@ is a neater way to define flows.
 <B> Previous:</B> <A NAME="tex2html552"
   HREF="node33.html">Entering flows between accounts</A></DIV>
 <!--End of Navigation Panel-->
+=======
+<BR><HR>
+>>>>>>> Graeber
 
 </BODY>
 </HTML>

@@ -138,7 +138,8 @@ vector<string> GodleyTable::getColumnVariables() const
       string var=trimWS(cell(0,c));
       if (!var.empty())
         {
-          if (!uvars.insert(var).second)
+          // disable duplicate column test on equity columns (feature #174)
+          if (_assetClass(c)!=AssetClass::equity && !uvars.insert(var).second)
             throw error("Duplicate column label detected");
           vars.push_back(var);
         }
@@ -233,8 +234,7 @@ string GodleyTable::rowSum(int row) const
   //if completely empty, substitute a zero
   if (ret.str().empty()) 
     return "0";
-  else 
-    return ret.str();
+  return ret.str();
 
 }
 
@@ -340,15 +340,8 @@ void GodleyTable::orderAssetClasses()
 
 void GodleyTable::rename(const std::string& from, const std::string& to)
 {
-  // handle stock vars separately, as their not FlowCoef cells
-  for (size_t c=1; c<cols(); ++c)
-    if (cell(0,c)==from)
-      {
-        cell(0,c)=to;
-        return;
-      }
   // if no stock vars found, check flow var cells.
-  for (size_t r=1; r<rows(); ++r)
+  for (size_t r=0; r<rows(); ++r)
     for (size_t c=1; c<cols(); ++c)
       {
         FlowCoef fc(cell(r,c));

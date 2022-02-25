@@ -27,7 +27,13 @@ using namespace std;
 
 SUITE(ExpressionWalker)
 {
-
+  void checkCompile(const std::string& expr, exprtk::expression<UnitsExpressionWalker>& expression)
+  {
+    exprtk::parser<UnitsExpressionWalker> parser;
+    CHECK(parser.compile(expr,expression));
+    for (size_t i=0; i<parser.error_count(); ++i)
+      cout << parser.get_error(i).diagnostic<<endl;
+  }
   
   TEST(UnitsExpressionWalker)
     {
@@ -38,76 +44,108 @@ SUITE(ExpressionWalker)
       symbolTable.add_variable("second",second);
       symbolTable.add_variable("x",x);
 
-      exprtk::parser<UnitsExpressionWalker> parser;
       exprtk::expression<UnitsExpressionWalker> expression;
       expression.register_symbol_table(symbolTable);
       
-      parser.compile("metre+metre",expression);
+      checkCompile("-metre",expression);
       CHECK_EQUAL("m",expression.value().units.str());
-      parser.compile("metre+second",expression);
-      CHECK_THROW(expression.value(),std::exception);
-      parser.compile("metre-metre",expression);
+      checkCompile("+metre",expression);
       CHECK_EQUAL("m",expression.value().units.str());
-      parser.compile("metre-second",expression);
+      checkCompile("metre+metre",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+      checkCompile("metre+second",expression);
       CHECK_THROW(expression.value(),std::exception);
-      parser.compile("metre*metre",expression);
+      checkCompile("metre-metre",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+      checkCompile("metre-second",expression);
+      CHECK_THROW(expression.value(),std::exception);
+      checkCompile("metre*metre",expression);
       CHECK_EQUAL("m^2",expression.value().units.str());
-      parser.compile("metre*second",expression);
+      checkCompile("metre*second",expression);
       CHECK_EQUAL("m s",expression.value().units.str());
-      parser.compile("metre/metre",expression);
+      checkCompile("metre/metre",expression);
       CHECK_EQUAL("",expression.value().units.str());
-      parser.compile("metre/second",expression);
+      checkCompile("metre/second",expression);
       CHECK_EQUAL("m s^-1",expression.value().units.str());
-      parser.compile("x^3.5",expression);
+      checkCompile("metre%second",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+      checkCompile("x^3.5",expression);
       CHECK_EQUAL("",expression.value().units.str());
-      parser.compile("metre^3.5",expression);
+      checkCompile("metre^3.5",expression);
       CHECK_THROW(expression.value(),std::exception);
-      parser.compile("metre^2",expression);
+      checkCompile("metre^2",expression);
       CHECK_EQUAL("m^2",expression.value().units.str());
-      parser.compile("pow(metre,2)",expression);
+      checkCompile("pow(metre,2.0)",expression);
       CHECK_EQUAL("m^2",expression.value().units.str());
+      checkCompile("metre^64",expression);
+      CHECK_EQUAL("m^64",expression.value().units.str());
+      checkCompile("pow(metre,64)",expression);
+      CHECK_EQUAL("m^64",expression.value().units.str());
 
 #define testFunction(f)                                 \
-      parser.compile(#f "(metre)",expression);          \
+      checkCompile(#f "(metre)",expression);          \
       CHECK_THROW(expression.value(),std::exception);   \
-      parser.compile(#f "(x)",expression);              \
+      checkCompile(#f "(x)",expression);              \
       CHECK_EQUAL("",expression.value().units.str());
 
-      //testFunction(abs); // TODO
+      checkCompile("abs(metre)",expression); 
+      CHECK_EQUAL("m",expression.value().units.str());
+      
+      checkCompile("avg(metre,metre)",expression); 
+      CHECK_EQUAL("m",expression.value().units.str());
+
       testFunction(ceil);
-      // testFunction(clamp); //TODO
-      //testFunction(equal); //TODO
       testFunction(erf);
       testFunction(erfc);
       testFunction(exp);
       testFunction(expm1);
       testFunction(floor);
-      testFunction(frac);
+      checkCompile("frac(metre)",expression); 
+      CHECK_EQUAL("m",expression.value().units.str());
       testFunction(log);
       testFunction(log10);
       testFunction(log1p);
       testFunction(log2);
-      //testFunction(logn); // TODO
-      //testFunction(max); //TODO
-      //testFunction(min); //TODO
-      //testFunction(mul); //TODO
       testFunction(ncdf);
-      //testFunction(root); //TODO
-      testFunction(round);
-      //testFunction(roundn); //TODO
-      testFunction(sgn);
-      testFunction(sqrt);
-      testFunction(trunc);
+
+      checkCompile("sgn(metre)",expression);            \
+      CHECK_EQUAL("",expression.value().units.str());
+      checkCompile("sgn(x)",expression);              \
+      CHECK_EQUAL("",expression.value().units.str());
+      
+      checkCompile("sqrt(metre^2)",expression);
+      CHECK_EQUAL("m",expression.value().units.str()); 
+
+      checkCompile("trunc(metre)",expression);
+      CHECK_EQUAL("m",expression.value().units.str()); 
 
       testFunction(acos);
       testFunction(acosh);
       testFunction(asin);
+      testFunction(asinh);
       testFunction(atan);
+      testFunction(atanh);
+      testFunction(cos);
+      testFunction(cosh);
+      testFunction(cot);
+      testFunction(sec);
+      testFunction(csc);
+      testFunction(rad2deg);
+      testFunction(deg2rad);
+      testFunction(deg2grad);
+      testFunction(grad2deg);
+      testFunction(not);
+      testFunction(sin);
+      testFunction(sinc);
+      testFunction(sinh);
+      testFunction(sqrt);
+      testFunction(tan);
+      testFunction(tanh);
 
 #define testLogicalOp(op)                                 \
-      parser.compile("metre " #op " second",expression);  \
+      checkCompile("metre " #op " second",expression);  \
       CHECK_THROW(expression.value(),std::exception);     \
-      parser.compile("metre " #op " metre",expression);   \
+      checkCompile("metre " #op " metre",expression);   \
       CHECK_EQUAL("",expression.value().units.str()); 
 
       testLogicalOp(==);
@@ -121,5 +159,58 @@ SUITE(ExpressionWalker)
       testLogicalOp(nand);
       testLogicalOp(nor);
       testLogicalOp(xor);
+      testLogicalOp(xnor);
+
+#define testBinaryFunction(f)                                 \
+      checkCompile(#f "(metre, second)",expression);  \
+      CHECK_THROW(expression.value(),std::exception);     \
+      checkCompile(#f "(x, x)",expression);  \
+      CHECK_EQUAL("",expression.value().units.str()); 
+
+      testBinaryFunction(atan2);
+      testBinaryFunction(equal);
+      checkCompile("equal(metre, metre)",expression);
+      CHECK_EQUAL("",expression.value().units.str());
+
+      // parser doesn't seem to understand nequal
+      //      checkCompile("nequal(metre, metre)",expression);
+      //      CHECK_EQUAL("",expression.value().units.str()); 
+    
+      
+      testBinaryFunction(hypot);
+      testBinaryFunction(logn);
+      testBinaryFunction(shr);
+      testBinaryFunction(shl);
+      testBinaryFunction(root);
+
+      checkCompile("root(metre^3, 3)",expression);
+      CHECK_EQUAL("m",expression.value().units.str()); 
+
+      checkCompile("roundn(metre, 3)",expression);
+      CHECK_EQUAL("m",expression.value().units.str()); 
+      checkCompile("round(metre)",expression);
+      CHECK_EQUAL("m",expression.value().units.str()); 
+  
+      checkCompile("mod(metre,second)",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+
+      checkCompile("clamp(metre,metre,3*metre)",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+      checkCompile("iclamp(metre,metre,3*metre)",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+      checkCompile("inrange(metre,metre,3*metre)",expression);
+      CHECK_EQUAL("",expression.value().units.str());
+
+      testBinaryFunction(max);
+      checkCompile("max(metre,metre)",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+      testBinaryFunction(min);
+      checkCompile("min(metre,metre)",expression);
+      CHECK_EQUAL("m",expression.value().units.str());
+      checkCompile("mul(metre,metre)",expression);
+      CHECK_EQUAL("m^2",expression.value().units.str());
+      checkCompile("mul(metre,second)",expression);
+      CHECK_EQUAL("m s",expression.value().units.str());
+
     }
 }

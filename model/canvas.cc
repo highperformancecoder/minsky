@@ -220,7 +220,8 @@ namespace minsky
                         }
                     }
                 if (auto g=itemFocus->group.lock())
-                  g->checkAddIORegion(itemFocus);
+                  if (g!=model)
+                    g->checkAddIORegion(itemFocus);
                 requestRedraw();
                 return;
               case ClickType::onSlider:
@@ -271,13 +272,7 @@ namespace minsky
             wireFocus->editHandle(handleSelected,x,y);
             requestRedraw();
           }
-        else if (lassoMode==LassoMode::lasso)
-          {
-            lasso.x1=x;
-            lasso.y1=y;
-            requestRedraw();
-          }
-        else if (lassoMode==LassoMode::itemResize && item.get())
+        else if (lassoMode==LassoMode::lasso || (lassoMode==LassoMode::itemResize && item.get()))
           {
             lasso.x1=x;
             lasso.y1=y;
@@ -454,13 +449,11 @@ namespace minsky
       lockGroup.reset(new RavelLockGroup);
     for (auto& r: ravelsToLock)
       {
-        lockGroup->ravels.push_back(r);
+        lockGroup->addRavel(r);
         r->leaveLockGroup();
         r->lockGroup=lockGroup;
       }
-    if (lockGroup && !lockGroup->ravels.empty())
-      if (auto r=lockGroup->ravels.front().lock())
-        r->broadcastStateToLockGroup();
+    if (lockGroup) lockGroup->initialBroadcast();
   }
 
   void Canvas::unlockRavelsInSelection()
@@ -478,7 +471,7 @@ namespace minsky
         if (v && v->defined() && !v->varTabDisplay) {
           itemVector.push_back(i);
           v->toggleVarTabDisplay();	  
-	    }
+        }
       }
     requestRedraw();
   }
@@ -513,7 +506,7 @@ namespace minsky
        (&GroupItems::items, [&](const Items&,Items::const_iterator i)
         {
           if (auto p=(*i)->plotWidgetCast())
-            if (p->plotOnTab()==false) p->togglePlotTabDisplay();	 
+            if (!p->plotOnTab()) p->togglePlotTabDisplay();	 
           return false;
         });
   }    
@@ -640,7 +633,7 @@ namespace minsky
                    else
                      {
                        if (varScope==v->group.lock() ||
-                           (newName.size() && newName[0]==':') )
+                           (!newName.empty() && newName[0]==':') )
                          v->name(newName);
                        else
                          v->name(":"+newName);
@@ -689,7 +682,7 @@ namespace minsky
       }
   }
 
-  void Canvas::renameItem(const std::string newName)
+  void Canvas::renameItem(const std::string& newName)
   {
     if (auto var=item->variableCast())
       {
@@ -777,7 +770,7 @@ namespace minsky
     // Throw error if no stock/flow vars on Godley icon. For ticket 1039 
     if (!v.empty()) {    
 	  selection.clear();	
-      for (auto i: v)
+      for (auto& i: v)
         {
           RenderVariable rv(*i);
           widths.push_back(rv.width());
@@ -836,7 +829,7 @@ namespace minsky
           (&GroupItems::items, [&](const ItemPtr& i) {
             if (auto v=i->variableCast())
               return v->inputWired() && v->valueId()==iv->valueId();
-            else if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+            if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
               for (auto& v: g->stockVars())
                 {
                   if (v->valueId()==iv->valueId())
@@ -876,7 +869,7 @@ namespace minsky
         // this leads to an endless loop...
         //requestRedraw();
       }
-      return false;
+    return false;
   }
   
   bool Canvas::redraw()
@@ -893,7 +886,7 @@ namespace minsky
     }
     m_redrawRequested=false;
     auto cairo=surface()->cairo();
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_rectangle(cairo,updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
     cairo_clip(cairo);
     cairo_set_line_width(cairo, 1);
@@ -905,11 +898,10 @@ namespace minsky
          if (it.visible() && updateRegion.intersects(it))
            {
              didDrawSomething = true;
-             cairo_save(cairo);
+             CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             cairo_restore(cairo);
            }
          return false;
        });
@@ -922,11 +914,10 @@ namespace minsky
          if (it.visible() && updateRegion.intersects(it))
            {
              didDrawSomething = true;
-             cairo_save(cairo);
+             CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             cairo_restore(cairo);
            }
          return false;
        });
@@ -951,7 +942,7 @@ namespace minsky
         cairo_line_to(cairo,termX,termY);
         cairo_stroke(cairo);
         // draw arrow
-        cairo_save(cairo);
+        CairoSave cs(cairo);
         cairo_translate(cairo, termX,termY);
         cairo_rotate(cairo,atan2(termY-fromPort->y(), termX-fromPort->x()));
         cairo_move_to(cairo,0,0);
@@ -960,7 +951,6 @@ namespace minsky
         cairo_line_to(cairo,-5,3);
         cairo_close_path(cairo);
         cairo_fill(cairo);
-        cairo_restore(cairo);
       }
 
     if (lassoMode!=LassoMode::none)
@@ -972,15 +962,12 @@ namespace minsky
 
     if (itemIndicator && item) // draw a red circle to indicate an error or other marker
       {
-        //didDrawSomething = true;
-        cairo_save(surface()->cairo());
+        CairoSave cs(surface()->cairo());
         cairo_set_source_rgb(surface()->cairo(),1,0,0);
         cairo_arc(surface()->cairo(),item->x(),item->y(),15,0,2*M_PI);
         cairo_stroke(surface()->cairo());
-        cairo_restore(surface()->cairo());
       }
 
-    cairo_restore(cairo);
     surface()->blit();
     return didDrawSomething;
   }

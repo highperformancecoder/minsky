@@ -76,17 +76,24 @@ namespace minsky
     void eraseWire(Wire*);
     /// delete all attached wires
     void deleteWires();
-    
-    bool input() const {return PortExclude::input();}
+
+    /// true if input port
+    virtual bool input() const {return false;}
 
     /// true if multiple wires are allowed to connect to an input
     /// port, such as an input port of an add operation. Irrelevant,
     /// otherwise
-    bool multiWireAllowed() const {return flags&multiWire;}
+    virtual bool multiWireAllowed() const {return false;}
+    /// combine two input wires
+    /// @param x input to be updated
+    /// @param y input to be combined with x
+    virtual void combineInput(double& x, double y) const {x=y;}
+    /// input port value if no wire attached
+    virtual double identity() const {return 0;}
+
     float x() const;
     float y() const;
     void moveTo(float x, float y);
-    //Port() {}
     Port(Item& item, int f=noFlags): classdesc::Exclude<PortExclude>(item) {flags=f;}
 
     // destruction of this port must also destroy all attached wires
@@ -97,6 +104,12 @@ namespace minsky
     Units units(bool) const;
     /// dimensional analysis with consistency check
     Units checkUnits() const {return units(true);}
+  };
+
+  struct InputPort: public Port
+  {
+    bool input() const override {return true;}
+    InputPort(Item& item): Port(item) {}
   };
 }
 

@@ -180,7 +180,11 @@ namespace minsky
 //       }
   };
 
-
+  /// exception throw if flowVars vector unexpectedly resized during evalEquations
+  struct FlowVarsResized: public std::exception
+  {
+    const char* what() const noexcept {return "FlowVars unexpectedly resized";}
+  };
 }
 
 #include "evalOp.cd"

@@ -71,7 +71,7 @@ namespace minsky
   void PlotWidget::addPorts()
   {
     for (unsigned i=0; i<4*numLines+nBoundsPorts; ++i)
-      m_ports.emplace_back(new Port(*this, Port::inputPort));
+      m_ports.emplace_back(make_shared<InputPort>(*this));
   }
   
   void PlotWidget::draw(cairo_t* cairo) const
@@ -87,7 +87,7 @@ namespace minsky
         cairo_stroke(cairo);
       }
 
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_translate(cairo,-0.5*w,-0.5*h);
 
     double yoffs=0; // offset to allow for title
@@ -164,7 +164,7 @@ namespace minsky
       }
 
     Plot::draw(cairo,gw,gh); 
-    cairo_restore(cairo);
+    cs.restore();
     if (mouseFocus)
       {
         drawPorts(cairo);
@@ -332,7 +332,7 @@ namespace minsky
       {
         if (yy>0 && yy<0.8*legendHeight)
           return ClickType::legendMove;
-        else if (yy>=0.8*legendHeight && yy<legendHeight)
+        if (yy>=0.8*legendHeight && yy<legendHeight+6*z) // allow a bit of extra height for resize arrow
           return ClickType::legendResize;
       }
 
@@ -409,12 +409,14 @@ namespace minsky
   {
     size_t extraPen=2*numLines;
 
+    std::vector<std::vector<std::pair<double,std::string>>> newXticks;
+    
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
     for (auto& i: yvars)
-      if (i && !i->hypercube().xvectors.empty())
+      if (i && xvars[&i-&yvars[0]] && !i->hypercube().xvectors.empty())
         {
-          auto& xv=i->hypercube().xvectors[0];
+          const auto& xv=i->hypercube().xvectors[0];
           if (xv.dimension.type==Dimension::time)
             xIsSecsSinceEpoch=true;
         }
@@ -442,17 +444,17 @@ namespace minsky
           else
             {
               xdefault.reserve(d[0]);
-              xticks.clear();
+              newXticks.emplace_back();
               if (yv->hypercube().rank()) // yv carries its own x-vector
                 {
-                  auto& xv=yv->hypercube().xvectors[0];
+                  const auto& xv=yv->hypercube().xvectors[0];
                   assert(xv.size()==d[0]);
                   switch (xv.dimension.type)
                     {
                     case Dimension::string:
                       for (size_t i=0; i<xv.size(); ++i)
                         {
-                          xticks.emplace_back(i, str(xv[i]));
+                          newXticks.back().emplace_back(i, str(xv[i]));
                           xdefault.push_back(i);
                         }
                       if (plotType==automatic)
@@ -461,10 +463,10 @@ namespace minsky
                     case Dimension::value:
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
                         // interpret "year" as years since epoch (1/1/1970)
-                        for (auto& i: xv)
+                        for (const auto& i: xv)
                           xdefault.push_back(yearToPTime(any_cast<double>(i)));
                       else
-                        for (auto& i: xv)
+                        for (const auto& i: xv)
                           xdefault.push_back(any_cast<double>(i));
                       if (plotType==automatic)
                         Plot::plotType=Plot::line;
@@ -472,10 +474,10 @@ namespace minsky
                     case Dimension::time:
                       {
                         string format=xv.timeFormat();
-                        for (auto& i: xv)
+                        for (const auto& i: xv)
                           {
                             double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
-                            xticks.emplace_back(tv,str(i,format));
+                            newXticks.back().emplace_back(tv,str(i,format));
                             xdefault.push_back(tv);
                           }
                       }
@@ -492,7 +494,7 @@ namespace minsky
           
           // higher rank y objects treated as multiple y vectors to plot
           auto startPen=extraPen;
-          auto& idx=yv->index();
+          const auto& idx=yv->index();
           if (idx.empty())
             for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
               {
@@ -525,6 +527,23 @@ namespace minsky
             }
         }
     scalePlot();
+
+    if (newXticks.size()==1) // nothing to disambiguate
+      xticks=std::move(newXticks.front());
+    else
+      {
+        xticks.clear();
+        // now work out which xticks we'll use See Ravel #173
+        for (auto& i: newXticks)
+          if (i.empty())
+            {
+              xticks.clear();
+              break; // value axes trump all
+            }
+        // else select an xticks range that covers most of [minx,maxx]
+          else if (i.back().first>0.7*(maxx-minx)+minx && i.front().first<0.3*(maxx-minx)+minx)
+            xticks=std::move(i);
+      }
   }
 
   

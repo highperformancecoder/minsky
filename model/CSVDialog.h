@@ -36,6 +36,7 @@ namespace minsky
   {
     std::vector<std::string> initialLines; ///< initial lines of file
     double rowHeight=0;
+    double m_tableWidth;
     CLASSDESC_ACCESS(DataSpec);
   public:
     static const unsigned numInitialLines=30;
@@ -45,6 +46,8 @@ namespace minsky
     DataSpec spec;
     /// filename, or web url
     std::string url;
+    /// width of table (in pixels)
+    double tableWidth() const {return m_tableWidth;}
 
     bool redraw(int, int, int width, int height) override;
     
@@ -55,17 +58,17 @@ namespace minsky
     /// guess the spec, then load an initial sequence of like loadFile()
     void guessSpecAndLoadFile();
     /// common implementation of loading the initial sequence of lines
-    void loadFileFromName(const std::string& fileName);
+    void loadFileFromName(const std::string& fname);
     
     /// Return file name after downloading a CSV file from the
     /// web. Result is cached for 5 minutes.
-    std::string loadWebFile(const std::string& url); 
-    void reportFromFile(const std::string& input, const std::string& output);
+    static std::string loadWebFile(const std::string& url); 
+    void reportFromFile(const std::string& input, const std::string& output) const;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// return column mouse is over
-    std::size_t columnOver(double x);
+    std::size_t columnOver(double x) const;
     /// return row mouse is over
-    std::size_t rowOver(double x);
+    std::size_t rowOver(double y) const;
     void copyHeaderRowToDimNames(std::size_t row);
     std::string headerForCol(std::size_t col) const;
     std::vector<std::vector<std::string> > parseLines() const;

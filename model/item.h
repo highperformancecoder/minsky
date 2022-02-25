@@ -230,6 +230,13 @@ namespace minsky
     float top()    const;
     float bottom() const;
 
+    /// Is this item also a bookmark?
+    bool bookmark=false;
+    /// Id of bookmark associated with this
+    std::string bookmarkId() const {return tooltip.empty()? std::to_string(size_t(this)): tooltip;}
+    /// adjust bookmark list to reflect current configuration
+    void adjustBookmark() const;
+    
     /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
     /// @return true is (x,y) is located on a resize handle
@@ -263,7 +270,11 @@ namespace minsky
     virtual bool visible() const;
     
     /// whether this item is attached to a defining variable that is hidden
-    virtual bool attachedToDefiningVar() const;    
+    virtual bool attachedToDefiningVar(std::set<const Item*>& visited) const;
+    bool attachedToDefiningVar() const {
+      std::set<const Item*> visited;
+      return attachedToDefiningVar(visited);
+    }
 
     void moveTo(float x, float y);
 
@@ -292,7 +303,7 @@ namespace minsky
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
-    void drawSelected(cairo_t* cairo) const;
+    static void drawSelected(cairo_t* cairo);
     virtual void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.

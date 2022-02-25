@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta49</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>66</id>
@@ -58,6 +58,7 @@
     <ports>
      <int>0</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>iota(5)</name>
     <init>iota(5)</init>
     <slider>
@@ -126,6 +127,7 @@
      <int>22</int>
      <int>23</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -237,6 +239,7 @@
     <ports>
      <int>25</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -255,6 +258,7 @@
      <int>28</int>
      <int>29</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -272,6 +276,7 @@
      <int>31</int>
      <int>32</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -289,6 +294,7 @@
      <int>34</int>
      <int>35</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -307,6 +313,7 @@
      <int>38</int>
      <int>39</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>42</intVar>
     <arg>1</arg>
    </Item>
@@ -325,6 +332,7 @@
      <int>37</int>
      <int>41</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>y</name>
     <slider>
      <stepRel>false</stepRel>
@@ -392,6 +400,7 @@
      <int>63</int>
      <int>64</int>
     </ports>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -492,6 +501,8 @@
   </items>
   <groups>
   </groups>
+  <lockGroups>
+  </lockGroups>
   <rungeKutta>
    <stepMin>0</stepMin>
    <stepMax>0.01</stepMax>

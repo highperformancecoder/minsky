@@ -50,11 +50,11 @@ for i in examples/*.mky; do
             # This example needs higher order solvers
             if [ $i = "examples/4MonetaryMinskyModelLessUnstableStart.mky" -a \
                     $order -eq 1 ]; then continue; fi
-            # derivative for tensor operations not yet implemented
-            #            if [ $i = "examples/reductionExample.mky" -a $implicit -eq 1 ]; then continue; fi
-            # TODO reenable this test for tensor ops.
-            if [ $i = "examples/reductionExample.mky" ]; then continue; fi
-            if [ $i = "examples/indexing.mky" ]; then continue; fi
+            # derivative for tensor operations not yet implemented, so implicit methods not supported
+            if [ $i = "examples/reductionExample.mky" -a $implicit ]; then continue; fi
+            if [ $i = "examples/reductionsTest.mky" -a $implicit ]; then continue; fi
+            if [ $i = "examples/scansTest.mky" -a $implicit ]; then continue; fi
+            if [ $i = "examples/indexing.mky" -a $implicit  ]; then continue; fi
             cat >extraOpts.tcl <<EOF
 minsky.implicit $implicit
 minsky.order $order

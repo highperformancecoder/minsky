@@ -37,6 +37,9 @@ proc CSVImportDialog {} {
                 minsky.value.csvDialog.loadFile
             }
             minsky.value.csvDialog.requestRedraw
+            # update to calculate tableWidth
+            update
+            .wiring.csvImport.hscroll configure -to [expr int([minsky.value.csvDialog.tableWidth])]
         }
         bind .wiring.csvImport.fileUrl.url <Key-Return> ".wiring.csvImport.fileUrl.load invoke"
         
@@ -172,7 +175,7 @@ proc csvImportDialogOK {} {
         label .csvImportError.errMsg -text $err
         label .csvImportError.msg -text "Would you like to generate a report?"
         pack .csvImportError.errMsg .csvImportError.msg -side top
-        buttonBar .csvImportError "doReport {$csvParms(url)}"                
+        buttonBar .csvImportError "global csvParms; doReport {$csvParms(url)}"                
         .csvImportError.buttonBar.ok configure -text "Yes"
         .csvImportError.buttonBar.cancel configure -text "No"
     } else {

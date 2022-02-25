@@ -37,10 +37,11 @@ namespace minsky
     return r;
   }
   
-  bool IntOp::attachedToDefiningVar() const
+  bool IntOp::attachedToDefiningVar(std::set<const minsky::Item*>& visited) const
   {
-	if (coupled()) return intVar->attachedToDefiningVar();
-    return Item::attachedToDefiningVar();
+    visited.insert(this);
+    if (coupled()) return intVar->attachedToDefiningVar(visited);
+    return Item::attachedToDefiningVar(visited);
   }    
  
   void IntOp::draw(cairo_t* cairo) const
@@ -200,7 +201,7 @@ namespace minsky
     selection.ensureItemInserted(intVar);
   }
   
-  const IntOp& IntOp::operator=(const IntOp& x)
+  IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 
     intVar.reset(x.intVar->clone());

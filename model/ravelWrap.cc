@@ -177,7 +177,7 @@ namespace
               xv.back().dimension=dim->second;
           }
         // else otherwise dimension is a string (default type)
-        for (auto i: labels)
+        for (auto& i: labels)
           xv.back().push_back(i);
       }
     return hc;
@@ -261,8 +261,7 @@ namespace
         auto state=getHandleState(h);
         return state.displayFilterCaliper;
       }
-    else
-      return false;
+    return false;
   }
     
   bool Ravel::setDisplayFilterCaliper(bool x)
@@ -335,8 +334,7 @@ namespace
         auto state=getHandleState(h);
         return state.order;
       }
-    else
-      return ravel::HandleSort::none;
+    return ravel::HandleSort::none;
   }
  
   ravel::HandleSort::Order Ravel::setSortOrder(ravel::HandleSort::Order x)
@@ -407,14 +405,12 @@ namespace
     auto i=axisDimensions.find(descr);
     if (i!=axisDimensions.end())
       return i->second.type;
-    else
-      {
-        auto i=cminsky().dimensions.find(descr);
-        if (i!=cminsky().dimensions.end())
-          return i->second.type;
-        else
-          return Dimension::string;
-      }
+    {
+      auto i=cminsky().dimensions.find(descr);
+      if (i!=cminsky().dimensions.end())
+        return i->second.type;
+    }
+    return Dimension::string;
   }
   
   std::string Ravel::dimensionUnitsFormat() const
@@ -521,50 +517,130 @@ namespace
 
   void Ravel::broadcastStateToLockGroup() const
   {
-    if (lockGroup)
-      {
-        auto state=getState();
-        // filter by handlesToLock
-        if (!lockGroup->handlesToLock.empty())
-          {
-            decltype(state.handleStates) handleStates;
-            for (auto& h: state.handleStates)
-              if (lockGroup->handlesToLock.count(h.description))
-                handleStates.push_back(h);
-            state.handleStates=std::move(handleStates);
-            // remove output handle if not locked
-            decltype(state.outputHandles) outputHandles;
-            for (auto& h: state.outputHandles)
-              if (lockGroup->handlesToLock.count(h))
-                outputHandles.push_back(h);
-            state.outputHandles=move(outputHandles); // restore state.outputHandles
-          }
+    if (lockGroup) lockGroup->broadcast(*this);
+  }
 
-        for (auto& rr: lockGroup->ravels)
-          if (auto r=rr.lock())
-            if (r.get()!=this)
-              {
-                // stash state.outputHandles
-                auto stateOutputHandles=state.outputHandles;
-                if (!lockGroup->handlesToLock.empty())
-                  {
-                    auto currentOutputHandles=r->getState().outputHandles;
-                    // add currentoutputHandles not in locked handle list
-                    for (auto& i: currentOutputHandles)
-                      if (!lockGroup->handlesToLock.count(i))
-                        state.outputHandles.push_back(i);
-                  }
-                r->applyState(state);
-                r->redistributeHandles();
-                state.outputHandles=move(stateOutputHandles);
-              }
+  void RavelLockGroup::initialBroadcast()
+  {
+    if (!m_ravels.empty())
+      if (auto r=m_ravels.front().lock())
+        broadcast(*r);
+  }
+
+  void RavelLockGroup::broadcast(const Ravel& ravel)
+  {
+    vector<shared_ptr<Ravel>> lockedRavels;
+    size_t ravelIdx=m_ravels.size();
+    for (auto& i: m_ravels)
+      {
+        lockedRavels.push_back(i.lock());
+        if (lockedRavels.back().get()==&ravel)
+          ravelIdx=lockedRavels.size()-1;
+      }
+    if (ravelIdx==m_ravels.size()) return; // not in lock group
+    
+    const auto sourceState=ravel.getState();
+
+    if (handleLockInfo.empty()) // default is all handles are lock
+      {
+        for (auto& i: m_ravels)
+          if (auto r=i.lock())
+            r->applyState(sourceState);
+        return;
+      }
+
+    // reorder source handle states according to handleLockInfo
+    vector<const ravel::HandleState*> sourceHandleStates;
+    set<string> handlesAdded;
+    for (auto& i: handleLockInfo)
+      {
+        auto hs=find_if(sourceState.handleStates.begin(), sourceState.handleStates.end(),
+                        [&](const ravel::HandleState& hs){return hs.description==i.handleNames[ravelIdx];});
+        if (hs!=sourceState.handleStates.end())
+          {
+            sourceHandleStates.emplace_back(&*hs);
+            if (!handlesAdded.insert(hs->description).second)
+              throw runtime_error("Multiple locks found on handle "+hs->description);
+          }
+        else
+          sourceHandleStates.emplace_back(nullptr);
+      }
+
+    assert(sourceHandleStates.size()==handleLockInfo.size());
+    
+    for (size_t ri=0; ri<m_ravels.size(); ++ri)
+      if (auto r=m_ravels[ri].lock())
+        {
+          if (r.get()==&ravel) continue;
+          auto state=r->getState();
+          set<string> outputHandles(state.outputHandles.begin(), state.outputHandles.end());
+          for (size_t i=0; i<handleLockInfo.size(); ++i)
+            {
+              if (!sourceHandleStates[i]) continue;
+              auto& sourceHandleState=*sourceHandleStates[i];
+              
+              auto& hlInfo=handleLockInfo[i];
+              auto handleState=find_if(state.handleStates.begin(), state.handleStates.end(),
+                                            [&](ravel::HandleState& s){return s.description==hlInfo.handleNames[ri];});
+              if (handleState!=state.handleStates.end())
+                {
+                  if (hlInfo.slicer)
+                    {
+                      handleState->sliceLabel=sourceHandleState.sliceLabel;
+                      if (find(sourceState.outputHandles.begin(), sourceState.outputHandles.end(), sourceHandleState.description)!=sourceState.outputHandles.end())
+                        // is an output handle
+                        outputHandles.insert(handleState->description);
+                      else
+                        outputHandles.erase(handleState->description);
+                    }
+                  if (hlInfo.orientation)
+                    {
+                      handleState->x=sourceHandleState.x;
+                      handleState->y=sourceHandleState.y;
+                      handleState->collapsed=sourceHandleState.collapsed;
+                      handleState->reductionOp=sourceHandleState.reductionOp;
+                    }
+                  if (hlInfo.calipers)
+                    {
+                      handleState->displayFilterCaliper=sourceHandleState.displayFilterCaliper;
+                      handleState->minLabel=sourceHandleState.minLabel;
+                      handleState->maxLabel=sourceHandleState.maxLabel;
+                    }
+                  if (hlInfo.order)
+                    {
+                      handleState->order=sourceHandleState.order;
+                      handleState->customOrder=sourceHandleState.customOrder;
+                    }
+                }
+            }
+          r->applyState(state);
+        }
+  }
+
+  void RavelLockGroup::validateLockHandleInfo()
+  {
+    vector<set<string>> checkHandleNames(m_ravels.size());
+    for (auto& hl: handleLockInfo)
+      {
+        if (hl.handleNames.size()!=m_ravels.size())
+          throw runtime_error("Insufficient data on line");
+        for (size_t i=0; i<hl.handleNames.size(); ++i)
+          {
+            auto& nm=hl.handleNames[i];
+            // non-breaking space 0xa0 not treated as space by isspace
+            if (find_if(nm.begin(), nm.end(), [](char i){return !isspace(i)&&i!=0xa0;})==nm.end())
+              continue; // disregard wholly white space strings
+            if (!checkHandleNames[i].insert(nm).second) // check for duplicated handle names in a column
+              throw runtime_error("duplicate handle name "+nm);
+          }
       }
   }
 
-  vector<string> RavelLockGroup::allLockHandles()
+  
+  vector<string> RavelLockGroup::allLockHandles() const
   {
     set<string> handles;
-    for (auto& rr: ravels)
+    for (auto& rr: m_ravels)
       if (auto r=rr.lock())
         {
           auto state=r->getState();
@@ -574,24 +650,104 @@ namespace
     return {handles.begin(), handles.end()};
   }
   
+  std::vector<std::string> RavelLockGroup::ravelNames() const
+  {
+    std::vector<std::string> r;
+    int cnt=0;
+    for (auto& i: m_ravels)
+      if (auto rr=i.lock())
+        r.emplace_back(rr->tooltip.empty()? to_string(cnt++): rr->tooltip);
+      else
+        r.emplace_back("<invalid>");
+    return r;
+  }
+
+  std::vector<std::string> RavelLockGroup::handleNames(size_t ravel_idx) const
+  {
+    if (auto rr=m_ravels[ravel_idx].lock())
+      return rr->handleNames();
+    return {};
+  }
+  
   void RavelLockGroup::setLockHandles(const std::vector<std::string>& handles)
   {
-    handlesToLock.clear();
-    handlesToLock.insert(handles.begin(), handles.end());
+    handleLockInfo.clear();
+    std::vector<std::set<std::string>> handleNames;
+    for (auto& rp: m_ravels)
+      if (auto r=rp.lock())
+        {
+          auto names=r->handleNames();
+          handleNames.emplace_back(names.begin(), names.end());
+        }
+      else
+        handleNames.emplace_back();
+    
+    for (auto& h: handles)
+      {
+        handleLockInfo.emplace_back();
+        for (size_t i=0; i<m_ravels.size(); ++i)
+          handleLockInfo.back().handleNames.push_back(handleNames[i].count(h)? h: "");
+      }
+  }
+
+  void RavelLockGroup::addRavel(const std::weak_ptr<Ravel>& ravel)
+  {
+    m_ravels.push_back(ravel);
+    for (auto& i: handleLockInfo)
+      i.handleNames.resize(m_ravels.size());
+    addHandleInfo(m_ravels.back());
+  }
+  
+  void RavelLockGroup::addHandleInfo(const std::weak_ptr<Ravel>& ravel)
+  {
+    auto ravelIdx=&ravel-&m_ravels[0];
+    assert(ravelIdx>=0);
+    if (ravelIdx<0 || size_t(ravelIdx)>=m_ravels.size()) return;
+    if (auto r=ravel.lock())
+      {
+        auto names=r->handleNames();
+        set<string> handleNames(names.begin(), names.end());
+        if (names.size()!=handleNames.size())
+          r->throw_error("Ambiguous handle names");
+        // add corresponding handles to what's already there
+        for (auto& hli: handleLockInfo)
+          {
+            assert(hli.handleNames.size()==m_ravels.size());
+            set<string> lockNames(hli.handleNames.begin(), hli.handleNames.end());
+            for (auto& l: lockNames)
+              {
+                auto hn=handleNames.find(l);
+                if (hn!=handleNames.end())
+                  {
+                    hli.handleNames[ravelIdx]=l;
+                    handleNames.erase(hn);
+                  }
+              }
+          }
+        // now add in any extras
+        for (auto& h: handleNames)
+          {
+            handleLockInfo.emplace_back();
+            handleLockInfo.back().handleNames.resize(m_ravels.size());
+            handleLockInfo.back().handleNames[ravelIdx]=h;
+          }
+      }
   }
 
   void RavelLockGroup::removeFromGroup(const Ravel& ravel)
   {
-    vector<weak_ptr<Ravel>> newRavelList;
-    for (auto& i: ravels)
-      {
-        auto r=i.lock();
-        if (r && r.get()!=&ravel)
-          newRavelList.push_back(move(i));
-      }
-    ravels.swap(newRavelList);
-    if (ravels.size()==1)
-      if (auto r=ravels[0].lock())
+    auto found=find_if(m_ravels.begin(), m_ravels.end(),
+                    [&](const weak_ptr<Ravel>& i){
+                      if (auto r=i.lock())
+                        return r.get()==&ravel;
+                      return false;
+                    });
+    if (found==m_ravels.end()) return;
+    for (auto& i: handleLockInfo)
+      i.handleNames.erase(i.handleNames.begin()+(found-m_ravels.begin()));
+    m_ravels.erase(found);
+    if (m_ravels.size()==1)
+      if (auto r=m_ravels[0].lock())
         r->lockGroup.reset(); // this may delete this, so should be last
   }
  

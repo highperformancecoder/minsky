@@ -58,7 +58,7 @@ namespace minsky
     /// fill in a Tk image with the icon for a specific operation
     /// @param Tk imageName
     /// @param operationName
-    void operationIcon(const char* imageName, const char* opName) const;
+    static void operationIcon(const char* imageName, const char* opName);
 
     std::set<string> matchingTableColumns(const std::string& currTable, GodleyAssetClass::AssetClass ac) {
       auto it=TCL_obj_properties().find(currTable);
@@ -405,6 +405,11 @@ namespace minsky
         }
       return r;
     }
+    
+    static int numOpArgs(OperationType::Type o);
+    OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
+  private:
+    std::unique_ptr<char[]> _defaultFont;
 
     CmdData getCommandData(const std::string& command) const override {
       auto t=minsky::getCommandData(command);

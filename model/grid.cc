@@ -26,7 +26,7 @@ namespace minsky
 {
   namespace
   {
-    static constexpr double padx=2; ///< padding between cells
+    constexpr double padx=2; ///< padding between cells
   }
   
   template <class Cell>

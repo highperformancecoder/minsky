@@ -23,7 +23,6 @@
 #include "minsky_epilogue.h"
 #include "minsky.h"
 using namespace std;
-using ecolab::cairo::Surface;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 
@@ -51,13 +50,14 @@ namespace minsky
           {
             
             float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;   
-            float w=0.5*g->editor.colLeftMargin[g->editor.colLeftMargin.size()-1];
-            float h=0.5*(g->editor.godleyIcon().table.rows())*g->editor.rowHeight;
+            float w=0.5*g->editor.width();
+            float h=0.5*g->editor.height();
             xx+=w;
             yy+=h;
             float d=sqr(xx-x)+sqr(yy-y);
-          
-            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h)
+
+            // add an extra room to allow grabbing  the title. For ticket #1326.
+            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h+g->editor.rowHeight)
               {
                 minD=d;
                 item=i;

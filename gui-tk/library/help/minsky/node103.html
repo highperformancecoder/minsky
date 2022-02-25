@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Tensor values</TITLE>
-<META NAME="description" CONTENT="Tensor values">
+<TITLE>Variables</TITLE>
+<META NAME="description" CONTENT="Variables">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,15 +14,20 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node104.html">
+<LINK REL="next" HREF="node110.html">
 <LINK REL="previous" HREF="node102.html">
+<<<<<<< HEAD
 <LINK REL="up" HREF="node42.html">
+=======
+<LINK REL="up" HREF="node48.html">
+>>>>>>> Graeber
 <LINK REL="next" HREF="node104.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
+<<<<<<< HEAD
 <A NAME="tex2html1366"
   HREF="node104.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
@@ -39,16 +44,39 @@
   HREF="node42.html">Reference</A>
 <B> Previous:</B> <A NAME="tex2html1359"
   HREF="node102.html">Wires</A>
+=======
+<A NAME="tex2html1389"
+  HREF="node104.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1387"
+  HREF="node48.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1381"
+  HREF="node102.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1390"
+  HREF="node104.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html1388"
+  HREF="node48.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1382"
+  HREF="node102.html">Switch</A>
+>>>>>>> Graeber
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
+<<<<<<< HEAD
 <H1><A NAME="SECTION00460000000000000000"></A><A NAME="2530"></A>
+=======
+<H1><A NAME="SECTION00440000000000000000"></A><A NAME="Variable:constant"></A><A NAME="Variable:parameter"></A><A NAME="Variable:flow"></A><A NAME="Variable:integral"></A><A NAME="Variable:stock"></A>
+>>>>>>> Graeber
 <BR>
-Tensor values
+Variables
 </H1>
 
 <P>
+<<<<<<< HEAD
 Variables may have tensor values, or sets of data. Different tensors
 are sorted by rank. For example, a tensor of rank 0 may appear as a
 single number, let's refer to it as <SPAN CLASS="MATH"><IMG
@@ -193,15 +221,75 @@ in their x-vectors. In the above case, where the x-vectors were
  WIDTH="54" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
  SRC="img227.png"
  ALT="$x_1+y_2$"></SPAN>.
+=======
+Variables represent values in a calculation, and come in a number of
+varieties:
+<DL>
+<DT><STRONG>Constants</STRONG></DT>
+<DD>represent an explicit numerical value, and do not
+have a name. Their graphical representation shows the actual value of
+the constant.
+</DD>
+<DT><STRONG>Parameters</STRONG></DT>
+<DD>are named constants. All instances of a given name
+  represent the same value, as with all other named variables, so
+  changing the value of one parameter, either through its edit menu,
+  or through a slider, will affect all the others of that
+  name. Parameters may be <A HREF="#CSV_____import">imported from a CSV file</A>, which is one way of inserting a tensor into the
+  simulation.
+</DD>
+<DT><STRONG>Flow variables</STRONG></DT>
+<DD>have an input port that defines how the value is
+to be calculated. Only one flow variable of a given name can have its
+input port connected, as they all refer to the same quantity. If no
+input ports are connected, then flow variables act just like
+parameters.
+</DD>
+<DT><STRONG>Integral variables</STRONG></DT>
+<DD>represent the result of integrating its
+input over time  by means of the differential
+equation solver. The integrand is represented by the input to an
+integral operator that is attached to the integral variable.
+</DD>
+<DT><STRONG>Stock variables</STRONG></DT>
+<DD>are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up the
+column.
+</DD>
+</DL>
+>>>>>>> Graeber
 
 <P>
-It goes without saying that the type of the x-vector for each axis
-must also match.
+Variables may be converted between types in the variable edit menu,
+available from the context menu, subject to certain rules. For example,
+a variable whose input is wired anywhere on the canvas cannot be
+changed from &ldquo;flow&rdquo;. Stock variables need to be defined in a Godley
+table, and so on.
 
 <P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html1391"
+  HREF="node104.html">Variable names</A>
+<LI><A NAME="tex2html1392"
+  HREF="node105.html">Initial conditions</A>
+<LI><A NAME="tex2html1393"
+  HREF="node106.html">Tensor valued initial conditions</A>
+<LI><A NAME="tex2html1394"
+  HREF="node107.html">Sliders</A>
+<LI><A NAME="tex2html1395"
+  HREF="node108.html">Importing a parameter from a CSV file</A>
+<LI><A NAME="tex2html1396"
+  HREF="node109.html">Duplicate keys</A>
+</UL>
+<!--End of Table of Child-Links-->
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
+<<<<<<< HEAD
 <A NAME="tex2html1366"
   HREF="node104.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
@@ -218,6 +306,24 @@ must also match.
   HREF="node42.html">Reference</A>
 <B> Previous:</B> <A NAME="tex2html1359"
   HREF="node102.html">Wires</A></DIV>
+=======
+<A NAME="tex2html1389"
+  HREF="node104.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1387"
+  HREF="node48.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1381"
+  HREF="node102.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1390"
+  HREF="node104.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html1388"
+  HREF="node48.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1382"
+  HREF="node102.html">Switch</A></DIV>
+>>>>>>> Graeber
 <!--End of Navigation Panel-->
 
 </BODY>

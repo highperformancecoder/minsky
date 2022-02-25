@@ -35,7 +35,6 @@ using namespace classdesc;
 using namespace ecolab;
 
 using namespace minsky;
-using ecolab::array;
 using namespace ecolab::cairo;
 
 namespace minsky
@@ -60,10 +59,9 @@ void VariableBase::addPorts()
 #endif
   m_ports.clear();
   if (numPorts()>0)
-    m_ports.emplace_back(new Port(*this,Port::noFlags));
+    m_ports.emplace_back(make_shared<Port>(*this));
   for (size_t i=1; i<numPorts(); ++i)
-    m_ports.emplace_back
-      (new Port(*this, Port::inputPort));
+    m_ports.emplace_back(make_shared<InputPort>(*this));
 }
 
 bool VariableBase::inputWired() const
@@ -150,8 +148,7 @@ shared_ptr<VariableValue> VariableBase::vValue() const
   auto vv=minsky().variableValues.find(valueId());
   if (vv!=minsky().variableValues.end())
     return vv->second;
-  else
-    return {};
+  return {};
 }
 
 vector<unsigned> VariableBase::dims() const
@@ -230,19 +227,22 @@ string VariableBase::init() const
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end()) {   	
     // set initial value of int var to init value of input to second port. for ticket 1137
-    if (!m_ports.empty() && !m_ports[0]->wires().empty())
-      if (auto i=dynamic_cast<IntOp*>(&m_ports[0]->wires()[0]->to()->item()))
-        if (i->portsSize()>2 && !i->ports(2).lock()->wires().empty())
-          if (auto lhsVar=i->ports(2).lock()->wires()[0]->from()->item().variableCast()) 
-            {
-              value->second->init=lhsVar->vValue()->init;
-              // Since integral takes initial value from second port, the intVar should have the same intial value. for ticket 1257
-              if (i->intVar->vValue()->init!=lhsVar->vValue()->init) i->intVar->vValue()->init=lhsVar->vValue()->init;  
-            }
+    if (type()==integral)
+      {
+        // find attached integral
+        auto i=dynamic_cast<IntOp*>(controller.lock().get());
+        if (!i && !m_ports[1]->wires().empty())
+          i=dynamic_cast<IntOp*>(&(m_ports[1]->wires()[0]->from()->item()));
+        if (i && i->portsSize()>2 && !i->ports(2).lock()->wires().empty())
+          if (auto lhsVar=i->ports(2).lock()->wires()[0]->from()->item().variableCast())
+            if (auto vv=vValue())
+              if (auto lhsVv=lhsVar->vValue())
+                // Since integral takes initial value from second port, the intVar should have the same intial value.
+                if (vv->init!=lhsVv->init) vv->init=lhsVv->init;
+      }
     return value->second->init;
   }
-  else 
-    return "0";
+  return "0";
 }
 
 string VariableBase::init(const string& x)
@@ -270,8 +270,7 @@ double VariableBase::value() const
 {
   if (isValueId(valueId()))
     return minsky::cminsky().variableValues[valueId()]->value();
-  else
-    return 0;
+  return 0;
 }
 
 double VariableBase::value(const double& x)
@@ -348,7 +347,10 @@ Units VariableBase::units(bool check) const
       else
         // updates units in the process
         if (m_ports.size()>1 && !m_ports[1]->wires().empty())
-          vv->units=m_ports[1]->wires()[0]->from()->item().units(check);
+          {
+            assert(m_ports[1]->wires()[0]->from());
+            vv->units=m_ports[1]->wires()[0]->from()->item().units(check);
+          }
         else if (auto v=cminsky().definingVar(valueId()))
           vv->units=v->units(check);
 
@@ -356,11 +358,10 @@ Units VariableBase::units(bool check) const
       vv->unitsCached=true;
       return vv->units;
     }
-  else
-    return Units();
+  return Units();
 }
 
-void VariableBase::setUnits(const string& x)
+void VariableBase::setUnits(const string& x) const
 {
   if (isValueId(valueId()))
     minsky().variableValues[valueId()]->units=Units(x);
@@ -435,11 +436,12 @@ bool VariableBase::visible() const
   auto g=group.lock();
   //toplevel i/o items always visible
   if ((!g || !g->group.lock()) && g==controller.lock()) return true;
+  if (!Item::visible()) return false;
   // ensure pars, constants and flows with invisible out wires are made invisible. for ticket 1275  
   if ((type()==constant || type()==parameter) && !m_ports[0]->wires().empty())
   {
-	if (std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(), [](Wire* w){return w->attachedToDefiningVar() && !w->visible();})) return false;
-	else return true;
+    return !std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(), [](Wire* w)
+                       {return w->attachedToDefiningVar() && !w->visible();});
   }  
   // ensure flow vars with out wires remain visible. for ticket 1275
   if (attachedToDefiningVar())
@@ -452,7 +454,7 @@ bool VariableBase::visible() const
     }
   if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
      if (i->attachedToDefiningVar()) return true;
-  return !controller.lock() && Item::visible();
+  return !controller.lock();
 }
 
 
@@ -652,7 +654,7 @@ void VariableBase::draw(cairo_t *cairo) const
 
     double x0=w, y0=0, x1=-w+2, y1=0;
     double sa=sin(angle), ca=cos(angle);
-    if (m_ports.size()>0)
+    if (!m_ports.empty())
       m_ports[0]->moveTo(x()+(x0*ca-y0*sa), 
                        y()+(y0*ca+x0*sa));
     if (m_ports.size()>1)

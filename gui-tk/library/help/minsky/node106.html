@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Sheet Widget</TITLE>
-<META NAME="description" CONTENT="Sheet Widget">
+<TITLE>Tensor valued initial conditions</TITLE>
+<META NAME="description" CONTENT="Tensor valued initial conditions">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,13 +16,18 @@
 
 <LINK REL="next" HREF="node107.html">
 <LINK REL="previous" HREF="node105.html">
+<<<<<<< HEAD
 <LINK REL="up" HREF="node42.html">
+=======
+<LINK REL="up" HREF="node103.html">
+>>>>>>> Graeber
 <LINK REL="next" HREF="node107.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
+<<<<<<< HEAD
 <A NAME="tex2html1396"
   HREF="node107.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
@@ -39,27 +44,106 @@
   HREF="node42.html">Reference</A>
 <B> Previous:</B> <A NAME="tex2html1389"
   HREF="node105.html">Plot widget</A>
+=======
+<A NAME="tex2html1425"
+  HREF="node107.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1423"
+  HREF="node103.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1417"
+  HREF="node105.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1426"
+  HREF="node107.html">Sliders</A>
+<B> Up:</B> <A NAME="tex2html1424"
+  HREF="node103.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html1418"
+  HREF="node105.html">Initial conditions</A>
+>>>>>>> Graeber
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
+<<<<<<< HEAD
 <H1><A NAME="SECTION00490000000000000000"></A>
  <A NAME="Sheets"></A>
+=======
+<H2><A NAME="SECTION00443000000000000000"></A><A NAME="tensor-init"></A><A NAME="2483"></A>
+>>>>>>> Graeber
 <BR>
-Sheet Widget
-</H1> The Sheet widget displays input data as a
- number, rather than as a 2D graph, as in the case of the plot widget.
- To use the Sheet widget, simply wire a variable or other item on your
- canvas to the left-hand side of the sheet widget box. This will diplay
- the input data as a number. Note that only one wire can be connected to
- a sheet, as the sheet can only display a single input value.
+Tensor valued initial conditions
+</H2>
 
 <P>
+<<<<<<< HEAD
 The sheet widget can also display rank 0, 1 and rank 2 tensors. These ranks are
  single values, a string of values, or a 2D matrix of values, respectively.
  For example, if you create a parameter, and set the initial condition to rand(3,5)
  (for reference, see section (&#167;<A HREF="node98.html#tensor-init">4.4.3</A>) ), you can wire that into a sheet.
  The sheet will then diplay the data in a grid display within the widget box.
+=======
+There is also a simple functional language, which allows for the
+generation of tensor-valued operations. These functions take the form
+<EM>func</EM><!-- MATH
+ $(n_1,n_2,\ldots,n_r)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="109" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img201.png"
+ ALT="$(n_1,n_2,\ldots,n_r)$"></SPAN> where <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img202.png"
+ ALT="$r$"></SPAN> is the desired rank, and
+<SPAN CLASS="MATH"><IMG
+ WIDTH="49" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img203.png"
+ ALT="$n_1,n_2,$"></SPAN> etc are the dimensions of the tensor. Available
+functions include:
+
+<P>
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="RIGHT">name</TD>
+<TD ALIGN="LEFT">description</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>one</code></TD>
+<TD ALIGN="LEFT">the tensor is filled with `1'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>zero</code></TD>
+<TD ALIGN="LEFT">the tensor is filled with `0'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>iota</code></TD>
+<TD ALIGN="LEFT">the arithmetic sequence <!-- MATH
+ $(0,1,...\prod_in_i)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="100" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img204.png"
+ ALT="$(0,1,...\prod_in_i)$"></SPAN></TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>eye</code></TD>
+<TD ALIGN="LEFT">diagonal elements filled with `1', offdiagonal `0'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>rand</code></TD>
+<TD ALIGN="LEFT">tensor filled with random numbers in the range <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img205.png"
+ ALT="$[0,1)$"></SPAN></TD>
+</TR>
+</TABLE>
+<A NAME="2488"></A><A NAME="2489"></A><A NAME="2490"></A><A NAME="2491"></A><A NAME="2492"></A>
+
+<P>
+
+<UL>
+<LI><code>eye</code> is equivalent to <code>one</code> for vectors.
+</LI>
+<LI><code>rand</code> generates different random numbers each time the simulation
+  is reset, and uses the clib <code>rand()</code> function.
+</LI>
+</UL>
+>>>>>>> Graeber
 
 <P>
 <BR><HR>

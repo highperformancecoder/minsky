@@ -14,5 +14,6 @@ cp -f images/*.png minsky
 sed -i -e 's/^\(  HREF=[^>]*\)>/\1 target="content">/' minsky/minsky.html
 
 #check for any broken links
+# install via: pip3 install git+https://github.com/linkchecker/linkchecker.git
 linkchecker -f ../linkcheckerrc minsky.html
-echo $?
+exit $?
