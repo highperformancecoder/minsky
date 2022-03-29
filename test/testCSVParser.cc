@@ -155,7 +155,9 @@ SUITE(CSVParser)
 
   TEST_FIXTURE(CSVDialog,loadWebFile)
     {
-      string url="https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv";
+      // a recent change to sourceforge means it returns an unknown payload length in the http header, causing loadWebFile to throw a partialMessage exceptiion
+      //      string url="https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv";
+      string url="https://www.hpcoders.com.au/BIS_GDP.csv";
       CHECK(loadWebFile(url)!="");      
     }     
   
