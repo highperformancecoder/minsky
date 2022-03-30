@@ -215,7 +215,7 @@ namespace minsky
       }
         
     // resolve name
-    auto valueId=VariableValue::valueId(v.m_scope.lock(), fc.name);
+    auto valueId=minsky::valueId(v.m_scope.lock(), fc.name);
     if (visited.count(valueId))
       throw error("circular definition of initial value for %s",
                   fc.name.c_str());
@@ -254,63 +254,6 @@ namespace minsky
   }
 
 
-  int VariableValue::scope(const std::string& name) 
-  {
-    smatch m;
-    auto nm=utf_to_utf<char>(name);
-    if (regex_search(nm, m, regex(R"((\d*)]?:.*)")))
-      if (m.size()>1 && m[1].matched && !m[1].str().empty())
-        {
-          int r;
-          sscanf(m[1].str().c_str(),"%d",&r);
-          return r;
-        }
-      else
-        return -1;
-    else
-      // no scope information is present
-      throw error("scope requested for local variable");
-  }
-
-  GroupPtr VariableValue::scope(GroupPtr scope, const std::string& a_name)
-  {
-    auto name=utf_to_utf<char>(stripActive(utf_to_utf<char>(a_name)));
-    if (name[0]==':' && scope)
-      {
-        // find maximum enclosing scope that has this same-named variable
-        for (auto g=scope->group.lock(); g; g=g->group.lock())
-          for (auto& i: g->items)
-            if (auto* v=i->variableCast())
-              {
-                auto n=stripActive(v->name());
-                if (n==name.substr(1)) // without ':' qualifier
-                  {
-                    scope=g;
-                    goto break_outerloop;
-                  }
-              }
-        scope.reset(); // global var
-      break_outerloop: ;
-      }
-    return scope;
-  }
-  
-  
-  string VariableValue::valueIdFromScope(const GroupPtr& scope, const std::string& name)
-  {
-    if (name.empty() || !scope || !scope->group.lock())
-      return VariableValue::valueId(-1,utf_to_utf<char>(name)); // retain previous global var id
-    return VariableValue::valueId(size_t(scope.get()), utf_to_utf<char>(name));
-}
-  
-  std::string VariableValue::uqName(const std::string& name)
-  {
-    string::size_type p=name.rfind(':');
-    if (p==string::npos)
-      return utf_to_utf<char>(name);
-    return utf_to_utf<char>(name).substr(p+1);
-  }
- 
   string VariableValues::newName(const string& name) const
   {
     int i=1;
@@ -335,7 +278,7 @@ namespace minsky
 
   bool VariableValues::validEntries() const
   {
-    return all_of(begin(), end(), [](const value_type& v){return v.second->isValueId(v.first);});
+    return all_of(begin(), end(), [](const value_type& v){return isValueId(v.first);});
   }
 
 

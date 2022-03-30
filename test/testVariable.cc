@@ -28,7 +28,7 @@ using namespace minsky;
 
 SUITE(Variable)
 {
-  TEST_FIXTURE(VariableValue, scoping)
+  TEST(scoping)
     {
       CHECK_EQUAL(0, scope(":foo"));
       CHECK_EQUAL(1, scope("furry[1]:foo"));
