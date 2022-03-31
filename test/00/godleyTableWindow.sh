@@ -34,11 +34,12 @@ minsky.defaultFont Sans
 proc afterMinskyStarted {} {
   minsky.load $here/examples/1Free.mky
   minsky.multipleEquities 1
+  minsky.displayStyle sign
+  minsky.displayValues 1
   findObject GodleyIcon
   set id [minsky.openGodley]
   openGodley \$id
-  minsky.displayStyle sign
-  minsky.displayValues 1
+  \$id.popup.enableButtons
   \$id.popup.renderToSVG 1FreeBase.svg
   \$id.popup.selectedCol 1
   \$id.popup.selectedRow 2
@@ -62,6 +63,7 @@ proc afterMinskyStarted {} {
   set id [minsky.openGodley]
   minsky.displayStyle DRCR
   minsky.displayValues 0
+  \$id.popup.enableButtons
   \$id.popup.renderToSVG LoanableFundsBase.svg
 
   tcl_exit
