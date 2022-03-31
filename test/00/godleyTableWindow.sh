@@ -37,8 +37,8 @@ proc afterMinskyStarted {} {
   findObject GodleyIcon
   set id [minsky.openGodley]
   openGodley \$id
-  \$id.popup.displayStyle sign
-  \$id.popup.displayValues 1
+  minsky.displayStyle sign
+  minsky.displayValues 1
   \$id.popup.renderToSVG 1FreeBase.svg
   \$id.popup.selectedCol 1
   \$id.popup.selectedRow 2
@@ -47,7 +47,7 @@ proc afterMinskyStarted {} {
   \$id.popup.hoverRow 2
   \$id.popup.hoverCol 2
   \$id.popup.mouseMoveB1 [expr [lindex [\$id.popup.colLeftMargin] 2]+10] [expr 4*[\$id.popup.rowHeight]+[\$id.popup.topTableOffset]]
-  \$id.popup.displayStyle DRCR
+  minsky.displayStyle DRCR
   \$id.popup.renderToSVG 1Free11Selected.svg
   \$id.popup.selectedCol 0
   \$id.popup.renderToSVG 1FreeSelectedRow.svg
@@ -60,8 +60,8 @@ proc afterMinskyStarted {} {
   minsky.load $here/examples/LoanableFunds.mky
   findObject GodleyIcon
   set id [minsky.openGodley]
-  \$id.popup.displayStyle DRCR
-  \$id.popup.displayValues 0
+  minsky.displayStyle DRCR
+  minsky.displayValues 0
   \$id.popup.renderToSVG LoanableFundsBase.svg
 
   tcl_exit
