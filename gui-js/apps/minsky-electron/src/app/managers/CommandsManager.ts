@@ -1100,7 +1100,7 @@ export class CommandsManager {
 
   static async destroyFrame(uid: number) {
     await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.GET_NAMED_ITEM}/${uid}/second/destroyFrame`,
+      command: `${commandsMapping.GET_NAMED_ITEM}/"${uid}"/second/destroyFrame`,
     });
   }
 
@@ -1205,7 +1205,7 @@ export class CommandsManager {
       });
 
       await RestServiceManager.handleMinskyProcess({
-        command: `${commandsMapping.GET_NAMED_ITEM}/${itemInfo.id}/second/popup/adjustWidgets`,
+        command: `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second/popup/adjustWidgets`,
       });
 
       systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;

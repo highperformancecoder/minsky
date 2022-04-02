@@ -169,7 +169,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async getValueId() {
-    const command = `/minsky/namedItems/@elem/${this.itemId}/second/valueId`;
+    const command = `/minsky/namedItems/@elem/"${this.itemId}"/second/valueId`;
 
     const valueId = (await this.electronService.sendMinskyCommandAndRender({
       command,

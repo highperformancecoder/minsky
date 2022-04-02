@@ -19,7 +19,7 @@ export class GodleyMenuManager {
     itemInfo: CanvasItem
   ) {
     const scope = this;
-    const itemAccessor = `${commandsMapping.GET_NAMED_ITEM}/${itemInfo.id}/second`;
+    const itemAccessor = `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second`;
     const menu = Menu.buildFromTemplate([
       scope.getGodleyFileMenuItem(itemAccessor),
       scope.getGodleyEditMenuItem(itemInfo, itemAccessor),
@@ -178,9 +178,9 @@ export class GodleyMenuManager {
             const [x, y] = window.getContentSize();
 
             await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.GET_NAMED_ITEM}/${
+              command: `${commandsMapping.GET_NAMED_ITEM}/"${
                 itemInfo.id
-              }/second/popup/zoom [${x / 2},${y / 2},${ZOOM_IN_FACTOR}]`,
+              }"/second/popup/zoom [${x / 2},${y / 2},${ZOOM_IN_FACTOR}]`,
             });
           },
         },
@@ -190,9 +190,9 @@ export class GodleyMenuManager {
           click: async () => {
             const [x, y] = window.getContentSize();
             await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.GET_NAMED_ITEM}/${
+              command: `${commandsMapping.GET_NAMED_ITEM}/"${
                 itemInfo.id
-              }/second/popup/zoom [${x / 2},${y / 2},${ZOOM_OUT_FACTOR}]`,
+              }"/second/popup/zoom [${x / 2},${y / 2},${ZOOM_OUT_FACTOR}]`,
             });
           },
         },

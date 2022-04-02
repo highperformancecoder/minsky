@@ -56,7 +56,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.namedItemSubCommand = `${commandsMapping.GET_NAMED_ITEM}/${this.itemId}/second/popup`;
+    this.namedItemSubCommand = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/popup`;
     this.getWindowRectInfo();
     this.renderFrame();
     this.initEvents();
@@ -176,7 +176,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     const { deltaY } = event;
     const zoomIn = deltaY < 0;
 
-    const command = `${commandsMapping.GET_NAMED_ITEM}/${this.itemId}/second/popup/zoom`;
+    const command = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/popup/zoom`;
 
     const zoomFactor = zoomIn ? ZOOM_IN_FACTOR : ZOOM_OUT_FACTOR;
 
@@ -195,11 +195,11 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     //TODO: throttle here if required
 
     const cols = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.GET_NAMED_ITEM}/${this.itemId}/second/table/cols`,
+      command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/table/cols`,
     })) as number;
 
     const rows = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.GET_NAMED_ITEM}/${this.itemId}/second/table/rows`,
+      command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/table/rows`,
     })) as number;
 
     const stepX = this.godleyCanvasContainer.scrollHeight / cols;

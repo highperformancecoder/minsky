@@ -29,9 +29,9 @@ export class EditGodleyTitleComponent implements OnDestroy {
     if (this.electronService.isElectron) {
       if (this.itemId) {
         await this.electronService.sendMinskyCommandAndRender({
-          command: `${commandsMapping.GET_NAMED_ITEM}/${
+          command: `${commandsMapping.GET_NAMED_ITEM}/"${
             this.itemId
-          }/second/table/title "${replaceBackSlash(newTitle)}"`,
+          }"/second/table/title "${replaceBackSlash(newTitle)}"`,
         });
       } else {
         await this.electronService.sendMinskyCommandAndRender({
