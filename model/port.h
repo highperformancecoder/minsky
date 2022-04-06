@@ -38,11 +38,12 @@ namespace minsky
     enum Flags {noFlags=0, multiWire=1, inputPort=2};
     // const_cast hack required to work around classdesc::Exclude API
     PortExclude(const Item& item): m_item(const_cast<Item&>(item)) {}
+    virtual ~PortExclude()=default;
     /// sets the VariableValue associated with this port. Only for output ports
     void setVariableValue(const std::shared_ptr<VariableValue>& v);
     /// returns the variableValue associated with this port. May be null if not applicable
     std::shared_ptr<VariableValue> getVariableValue() const;
-    bool input() const {return flags&inputPort;}
+    virtual bool input() const=0;
     GroupPtr group() const;
   protected:
     Item& m_item;
