@@ -181,7 +181,18 @@ Value RESTCall(const Napi::CallbackInfo& info)
         lock_guard<mutex> lock(redrawMutex);
         SetMinskyEnv minskyEnv(env);
         response=String::New(env, write(addOnMinsky.registry.process(cmd, arguments)));
-        int nargs=arguments.type()==json5_parser::array_type? arguments.get_array().size(): 1;
+        int nargs=1;
+        switch (arguments.type())
+          {
+          case json5_parser::array_type:
+            nargs=arguments.get_array().size();
+            break;
+          case json5_parser::null_type:
+            nargs=0;
+            break;
+          default:
+            break;
+          }
         cmd.erase(0,1); // remove leading '/'
         replace(cmd.begin(), cmd.end(), '/', '.');
         minsky::minsky().commandHook(cmd,nargs);
