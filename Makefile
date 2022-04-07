@@ -344,10 +344,11 @@ clean:
 	-cd ecolab; $(MAKE) clean
 	-cd RavelCAPI; $(MAKE) clean
 
-mac-dist: gui-tk/minsky
+mac-dist: gui-tk/minsky gui-js/node-addons/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only
-	mkdir -p minsky.app/Contents/MacOS
-	sh -v mkMacDist.sh
+#	mkdir -p minsky.app/Contents/MacOS
+#	sh -v mkMacDist.sh
+	sh -v mkMacRESTService.sh
 
 minsky.xsd: gui-tk/minsky
 	gui-tk/minsky exportSchema.tcl 3

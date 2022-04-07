@@ -22,6 +22,7 @@
 #include "minsky.h"
 #include "godleyTableWindow.h"
 #include "variableInstanceList.h"
+#include "classdesc_access.h"
 #include <fstream>
 #include <memory>
 
@@ -408,6 +409,8 @@ namespace minsky
     
     static int numOpArgs(OperationType::Type o);
     OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
+
+    CLASSDESC_ACCESS(MinskyTCL);
   private:
     std::unique_ptr<char[]> _defaultFont;
 

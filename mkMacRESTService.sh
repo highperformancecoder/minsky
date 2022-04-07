@@ -13,7 +13,7 @@ if ! nm ecolab/lib/libecolab.a|c++filt|grep NSContext::NSContext|grep T; then
     exit 1
 fi
 
-MAC_DIST_DIR=minskyRESTService
+MAC_DIST_DIR=gui-js/node-addons
 version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'`
 if [ $version = '"unknown"' ]; then
     version=0.0.0.0
@@ -58,15 +58,14 @@ rewrite_dylibs()
     install_name_tool -id @loader_path/${target##*/} $target
 }
 
-rm -rf $MAC_DIST_DIR
+rm -rf $MAC_DIST_DIR/*.dylib
 mkdir -p $MAC_DIST_DIR
-cp RESTService/minskyRESTService.node $MAC_DIST_DIR
+
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 
 # due to the presence of -isystem /usr/local/lib, which is needed for other idiocies, libjson_spirit is not correctly rewritten by the above
-rewrite_dylib /usr/local/lib/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
-install_name_tool -change libjson_spirit.dylib @loader_path/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
+#rewrite_dylib /usr/local/lib/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
+#install_name_tool -change libjson_spirit.dylib @loader_path/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
 
-tar zcvf minskyRESTService.tar.gz $MAC_DIST_DIR
 exit
 
