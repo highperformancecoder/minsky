@@ -393,6 +393,9 @@ tcl-cov:
 dist:
 	sh makeDist.sh $(NODE_HEADER)
 
+js-dist:
+	sh makeJsDist.sh
+
 lcov:
 	$(MAKE) clean
 	-$(MAKE) GCOV=1 tests
