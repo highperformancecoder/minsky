@@ -17,7 +17,7 @@
 │   ├── minsky-server [The Socket.IO server (We are no longer using this. Kept here as a backup)]
 │   ├── shared [Shared Resources across projects (like shared constants, functions,interfaces, css themes etc)]
 │   └── ui-components [Angular UI components for context menus, non menu popups etc]
-├── minsky-docs [git submodule for HELP menu related resources]
+├── minsky-docs [HELP menu related resources]
 ├── README.md
 ├── package.json
 ├── signature.json [The signature file used to compare signatures between minsky-httpd binaries]

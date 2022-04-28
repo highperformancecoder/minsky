@@ -106,7 +106,7 @@ ipcMain.on(events.ADD_RECENT_FILE, (event, filePath: string) => {
 
 # Folder structure
 
-## [folder structure](FOLDER_STRUCTURE.md)
+## [folder structure](folder-structure.md)
 
 # Other important packages that we are using
 
