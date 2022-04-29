@@ -72,6 +72,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     await this.commService.sendEvent(this.headerEvent, event);
   }
 
+  recalculateButton() {
+    this.commService.sendEvent(this.headerEvent, {
+      action: 'CLICKED',
+      target: 'RESET',
+    });
+  }
+
   recordButton() {
     this.commService.sendEvent(this.headerEvent, {
       action: 'CLICKED',
