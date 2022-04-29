@@ -545,7 +545,7 @@ export class ApplicationMenuManager {
           label: 'PDF',
           click: async () => {
             await scope.exportCanvas(
-              'psd',
+              'pdf',
               commandsMapping.RENDER_CANVAS_TO_PDF
             );
           },
