@@ -374,6 +374,11 @@ export class CommandsManager {
   }
 
   static async postNote(type: string) {
+    const bookmark =
+      ((await RestServiceManager.handleMinskyProcess({
+        command: `/minsky/canvas/${type}/bookmark`,
+      })) as boolean) || '';
+
     const tooltip =
       ((await RestServiceManager.handleMinskyProcess({
         command: `/minsky/canvas/${type}/tooltip`,
@@ -386,7 +391,7 @@ export class CommandsManager {
 
     WindowManager.createPopupWindowWithRouting({
       title: `Description`,
-      url: `#/headless/edit-description?type=${type}&tooltip=${tooltip}&detailedText=${detailedText}`,
+      url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${detailedText}`,
     });
   }
 

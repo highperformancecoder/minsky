@@ -1,10 +1,21 @@
 <div class="container" [formGroup]="editDescriptionForm">
   <div>
-    <input
-      type="text"
-      formControlName="tooltip"
-      placeholder="Short Description"
-    />
+    <table>
+      <tr>
+        <td width="85%"><input
+              type="text"
+              formControlName="tooltip"
+              placeholder="Short Description"
+              />
+        </td>
+        <td>Bookmark?</td>
+        <td width="20"><input
+              type="checkbox"
+              formControlName="bookmark"
+              />
+        </td>
+      </tr>
+    </table>
   </div>
   <div>
     <textarea
