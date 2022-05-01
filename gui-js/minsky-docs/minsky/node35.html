@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Copying Godley Table input &amp; outputs</TITLE>
-<META NAME="description" CONTENT="Copying Godley Table input &amp; outputs">
+<TITLE>Wiring components together</TITLE>
+<META NAME="description" CONTENT="Wiring components together">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,88 +16,77 @@
 
 <LINK REL="next" HREF="node36.html">
 <LINK REL="previous" HREF="node34.html">
-<LINK REL="up" HREF="node30.html">
+<LINK REL="up" HREF="node31.html">
 <LINK REL="next" HREF="node36.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html569"
+<A NAME="tex2html587"
   HREF="node36.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html567"
-  HREF="node30.html">
+<A NAME="tex2html585"
+  HREF="node31.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html561"
+<A NAME="tex2html579"
   HREF="node34.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html570"
-  HREF="node36.html">Using &ldquo;Time Constants&rdquo;</A>
-<B> Up:</B> <A NAME="tex2html568"
-  HREF="node30.html">Creating a banking model</A>
-<B> Previous:</B> <A NAME="tex2html562"
-  HREF="node34.html">Defining flows</A>
+<B> Next:</B> <A NAME="tex2html588"
+  HREF="node36.html">Creating a banking model</A>
+<B> Up:</B> <A NAME="tex2html586"
+  HREF="node31.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html580"
+  HREF="node34.html">Creating an equation</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00245500000000000000">
-Copying Godley Table input &amp; outputs</A>
-</H3>
+<H2><A NAME="SECTION00244000000000000000">
+Wiring components together</A>
+</H2>
 
 <P>
-Right-click on the inputs and outputs of a Godley Table and choose
-&ldquo;copy&rdquo; from the drop-down menu:
+A model is constructed by wiring one component to another in a way
+that defines an equation. Wires are drawn from the output port of one
+block to the input port of another. Ports are circles on the blocks to
+which wires can be attached, which can be seen when hovering the
+pointer over the block. Variables have an input and an output
+port; constants and parameters only have an output port. A
+mathematical operator has as many input ports as are needed to define
+the operation.
+
+<P>
+To construct an equation, such as Fred - Wilma = Barney:
+
+<P>
+Click the mouse near the output port of one block and drag the
+cursor to the input port of another while holding the mouse button
+down. An arrow extends out from the output port. Release the mouse
+button near the required input port of the operator. A connection will
+be made.
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem153.png"
- ALT="630">
+ WIDTH="221" HEIGHT="141" ALIGN="BOTTOM" BORDER="0"
+ SRC="img87.png"
+ ALT="\includegraphics{images/NewItem181.eps}"> 
 
 </DIV>
 
 <P>
-Place the copied flows and accounts and place them away from the
-table. Then wire up your definition there:
+The equation is completed by wiring up the other components in the same way.
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- WIDTH="339" HEIGHT="104" ALIGN="BOTTOM" BORDER="0"
- SRC="img110.png"
- ALT="\includegraphics{images/NewItem154.eps}">
+ WIDTH="354" HEIGHT="141" ALIGN="BOTTOM" BORDER="0"
+ SRC="img88.png"
+ ALT="\includegraphics{images/NewItem182.eps}"> 
 
 </DIV>
-
-<P>
-This now results in a much neater model. The same process can be used
-to tidy up graphs as well:
-
-<P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem155.eps}}$
- -->
-<IMG
- WIDTH="556" HEIGHT="471" ALIGN="BOTTOM" BORDER="0"
- SRC="img111.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem155.eps}}">
-</DIV>
-
-<P>
-A more complex model would have many more flows, and these in turn
-would depend on other entities in the model, and be time-varying
-rather than using a constant &ldquo;lendrate&rdquo; as in this example--see the
-Tutorial on a <A HREF="node40.html#tut:basicBankModel">Basic Banking Model</A> for an
-example. This example uses the engineering concept of a
-<A HREF="node36.html#time-constants">&ldquo;time constant&rdquo;</A>, which is explained in the
-next section. Please note that right-clicking godley table variables and
-selecting "copy flow variables" creates a new group, which, when clicked and
-selecting "open in canvas", changes the canvas to show just that group. The normal
-canvas can be brought back by right-clicking and selecting "open master group".
 
 <P>
 <BR><HR>

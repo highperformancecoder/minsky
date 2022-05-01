@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Tensor valued initial conditions</TITLE>
-<META NAME="description" CONTENT="Tensor valued initial conditions">
+<TITLE>index</TITLE>
+<META NAME="description" CONTENT="index">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,98 +16,81 @@
 
 <LINK REL="next" HREF="node99.html">
 <LINK REL="previous" HREF="node97.html">
-<LINK REL="up" HREF="node95.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node99.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1318"
+<A NAME="tex2html1342"
   HREF="node99.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1316"
-  HREF="node95.html">
+<A NAME="tex2html1340"
+  HREF="node86.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1310"
+<A NAME="tex2html1334"
   HREF="node97.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1319"
-  HREF="node99.html">Sliders</A>
-<B> Up:</B> <A NAME="tex2html1317"
-  HREF="node95.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1311"
-  HREF="node97.html">Initial conditions</A>
+<B> Next:</B> <A NAME="tex2html1343"
+  HREF="node99.html">gather</A>
+<B> Up:</B> <A NAME="tex2html1341"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1335"
+  HREF="node97.html">difference</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00443000000000000000"></A><A NAME="tensor-init"></A><A NAME="2466"></A>
+<H2><A NAME="SECTION004212000000000000000"></A><A NAME="Operation:index"></A>
 <BR>
-Tensor valued initial conditions
+index
 </H2>
 
 <P>
-There is also a simple functional language, which allows for the
-generation of tensor-valued operations. These functions take the form
-<EM>func</EM><!-- MATH
- $(n_1,n_2,\ldots,n_r)$
+Returns the index within the hypecube where the input is true (ie
+<SPAN CLASS="MATH"><IMG
+ WIDTH="41" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img192.png"
+ ALT="$&gt;0.5$"></SPAN>). For example, where
+<P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{eqnarray*}
+\iota(3,3) &=& \left(\begin{array}{ccc}
+  0 & 3 & 6 \\
+  1 & 4 & 7 \\
+  2 & 5 & 8 \\
+  \end{array}\right),\\
+  \mathrm{idx}(\iota(3,3)<5) &=&
+  \left(\begin{array}{ccc}
+    0 & 3 &\\
+    1 & 4 &\\
+    2 & &
+  \end{array}\right),\\
+\end{eqnarray*}
  -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="108" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img204.png"
- ALT="$(n_1,n_2,\ldots,n_r)$"></SPAN> where <SPAN CLASS="MATH"><IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img205.png"
- ALT="$r$"></SPAN> is the desired rank, and
-<SPAN CLASS="MATH"><IMG
- WIDTH="49" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img206.png"
- ALT="$n_1,n_2,$"></SPAN> etc are the dimensions of the tensor. Available
-functions include:
+<IMG
+ WIDTH="255" HEIGHT="134" BORDER="0"
+ SRC="img193.png"
+ ALT="\begin{eqnarray*}
+\iota(3,3) &amp;=&amp; \left(\begin{array}{ccc}
+0 &amp; 3 &amp; 6 \\
+1 &amp; 4...
+...ray}{ccc}
+0 &amp; 3 &amp;\\
+1 &amp; 4 &amp;\\
+2 &amp; &amp;
+\end{array}\right),\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+<BR CLEAR="ALL"><P></P>
+Note that the output array has the same shape as the input, with
+unused values padded with NANs (missing value).
 
 <P>
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="RIGHT">name</TD>
-<TD ALIGN="LEFT">description</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>one</code></TD>
-<TD ALIGN="LEFT">the tensor is filled with `1'</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>zero</code></TD>
-<TD ALIGN="LEFT">the tensor is filled with `0'</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>iota</code></TD>
-<TD ALIGN="LEFT">the arithmetic sequence <!-- MATH
- $(0,1,...\prod_in_i)$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="100" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img207.png"
- ALT="$(0,1,...\prod_in_i)$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>eye</code></TD>
-<TD ALIGN="LEFT">diagonal elements filled with `1', offdiagonal `0'</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>rand</code></TD>
-<TD ALIGN="LEFT">tensor filled with random numbers in the range <SPAN CLASS="MATH"><IMG
- WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img208.png"
- ALT="$[0,1)$"></SPAN></TD>
-</TR>
-</TABLE>
-<A NAME="2471"></A><A NAME="2472"></A><A NAME="2473"></A><A NAME="2474"></A><A NAME="2475"></A>
-
-<P>
-
-<UL>
-<LI><code>eye</code> is equivalent to <code>one</code> for vectors.
-</LI>
-<LI><code>rand</code> generates different random numbers each time the simulation
-  is reset, and uses the clib <code>rand()</code> function.
-</LI>
-</UL>
+Dimension and argument parameters are unused.
 
 <P>
 <BR><HR>

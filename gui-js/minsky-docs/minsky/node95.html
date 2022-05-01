@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Variables</TITLE>
-<META NAME="description" CONTENT="Variables">
+<TITLE>running sum </TITLE>
+<META NAME="description" CONTENT="running sum ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,124 +14,110 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node102.html">
+<LINK REL="next" HREF="node96.html">
 <LINK REL="previous" HREF="node94.html">
-<LINK REL="up" HREF="node42.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node96.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1282"
+<A NAME="tex2html1312"
   HREF="node96.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1280"
-  HREF="node42.html">
+<A NAME="tex2html1310"
+  HREF="node86.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1274"
+<A NAME="tex2html1304"
   HREF="node94.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1283"
-  HREF="node96.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1281"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1275"
-  HREF="node94.html">Switch</A>
+<B> Next:</B> <A NAME="tex2html1313"
+  HREF="node96.html">running product</A>
+<B> Up:</B> <A NAME="tex2html1311"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1305"
+  HREF="node94.html">supindex</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00440000000000000000"></A><A NAME="Variable:constant"></A><A NAME="Variable:parameter"></A><A NAME="Variable:flow"></A><A NAME="Variable:integral"></A><A NAME="Variable:stock"></A>
+<H2><A NAME="SECTION00429000000000000000"></A><A NAME="Operation:runningSum"></A>
 <BR>
-Variables
-</H1>
+running sum <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img19.png"
+ ALT="$\sum +$"></SPAN>
+</H2> Computes
+the running sum of the input tensor along a given axis. For example, take
+this rank 2 tensor:
 
 <P>
-Variables represent values in a calculation, and come in a number of
-varieties:
-<DL>
-<DT><STRONG>Constants</STRONG></DT>
-<DD>represent an explicit numerical value, and do not
-have a name. Their graphical representation shows the actual value of
-the constant.
-</DD>
-<DT><STRONG>Parameters</STRONG></DT>
-<DD>are named constants. All instances of a given name
-  represent the same value, as with all other named variables, so
-  changing the value of one parameter, either through its edit menu,
-  or through a slider, will affect all the others of that
-  name. Parameters may be <A HREF="#CSV_____import">imported from a CSV file</A>, which is one way of inserting a tensor into the
-  simulation.
-</DD>
-<DT><STRONG>Flow variables</STRONG></DT>
-<DD>have an input port that defines how the value is
-to be calculated. Only one flow variable of a given name can have its
-input port connected, as they all refer to the same quantity. If no
-input ports are connected, then flow variables act just like
-parameters.
-</DD>
-<DT><STRONG>Integral variables</STRONG></DT>
-<DD>represent the result of integrating its
-input over time  by means of the differential
-equation solver. The integrand is represented by the input to an
-integral operator that is attached to the integral variable.
-</DD>
-<DT><STRONG>Stock variables</STRONG></DT>
-<DD>are the columns of Godley tables, and represent
-the integral over time of the sum of the flow variables making up the
-column.
-</DD>
-</DL>
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\left(
+  \begin{array}{cccc}
+    1& 2& 3& 4 \\
+    5& 4& 3& 2 \\
+    8& 7& 6& 5
+  \end{array}
+  \right)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="116" HEIGHT="64" BORDER="0"
+ SRC="img189.png"
+ ALT="\begin{displaymath}
+\left(
+\begin{array}{cccc}
+1&amp; 2&amp; 3&amp; 4 \\
+5&amp; 4&amp; 3&amp; 2 \\
+8&amp; 7&amp; 6&amp; 5
+\end{array} \right)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
-Variables may be converted between types in the variable edit menu,
-available from the context menu, subject to certain rules. For example,
-a variable whose input is wired anywhere on the canvas cannot be
-changed from &ldquo;flow&rdquo;. Stock variables need to be defined in a Godley
-table, and so on.
+The running sum of this tensor, along the horizontal dimension, is: 
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\left(
+  \begin{array}{cccc}
+    1& 3& 6& 10 \\
+    5& 9& 12& 14 \\
+    8& 15& 21& 26
+  \end{array}
+  \right)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="139" HEIGHT="64" BORDER="0"
+ SRC="img190.png"
+ ALT="\begin{displaymath}
+\left(
+\begin{array}{cccc}
+1&amp; 3&amp; 6&amp; 10 \\
+5&amp; 9&amp; 12&amp; 14 \\
+8&amp; 15&amp; 21&amp; 26
+\end{array} \right)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
 <BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html1284"
-  HREF="node96.html">Variable names</A>
-<LI><A NAME="tex2html1285"
-  HREF="node97.html">Initial conditions</A>
-<LI><A NAME="tex2html1286"
-  HREF="node98.html">Tensor valued initial conditions</A>
-<LI><A NAME="tex2html1287"
-  HREF="node99.html">Sliders</A>
-<LI><A NAME="tex2html1288"
-  HREF="node100.html">Importing a parameter from a CSV file</A>
-<LI><A NAME="tex2html1289"
-  HREF="node101.html">Duplicate keys</A>
-</UL>
-<!--End of Table of Child-Links-->
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1282"
-  HREF="node96.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1280"
-  HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1274"
-  HREF="node94.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1283"
-  HREF="node96.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1281"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1275"
-  HREF="node94.html">Switch</A></DIV>
-<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

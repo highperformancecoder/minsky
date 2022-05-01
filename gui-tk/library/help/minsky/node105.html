@@ -16,144 +16,39 @@
 
 <LINK REL="next" HREF="node106.html">
 <LINK REL="previous" HREF="node104.html">
-<<<<<<< HEAD
-<LINK REL="up" HREF="node42.html">
-=======
 <LINK REL="up" HREF="node103.html">
->>>>>>> Graeber
 <LINK REL="next" HREF="node106.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<<<<<<< HEAD
-<A NAME="tex2html1386"
+<A NAME="tex2html1416"
   HREF="node106.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1384"
-  HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1378"
-  HREF="node104.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1387"
-  HREF="node106.html">Sheet Widget</A>
-<B> Up:</B> <A NAME="tex2html1385"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1379"
-  HREF="node104.html">Groups</A>
-=======
-<A NAME="tex2html1415"
-  HREF="node106.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1413"
+<A NAME="tex2html1414"
   HREF="node103.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1407"
+<A NAME="tex2html1408"
   HREF="node104.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1416"
+<B> Next:</B> <A NAME="tex2html1417"
   HREF="node106.html">Tensor valued initial conditions</A>
-<B> Up:</B> <A NAME="tex2html1414"
+<B> Up:</B> <A NAME="tex2html1415"
   HREF="node103.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1408"
+<B> Previous:</B> <A NAME="tex2html1409"
   HREF="node104.html">Variable names</A>
->>>>>>> Graeber
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<<<<<<< HEAD
-<H1><A NAME="SECTION00480000000000000000"></A>
-<A NAME="PlotWidget"></A>
-=======
-<H2><A NAME="SECTION00442000000000000000"></A><A NAME="var:init"></A><A NAME="2480"></A>
->>>>>>> Graeber
+<H2><A NAME="SECTION00442000000000000000"></A><A NAME="var:init"></A><A NAME="2484"></A>
 <BR>
 Initial conditions
 </H2>
 
 <P>
-<<<<<<< HEAD
-A plot widget embeds a dynamic plot into the canvas. Around the
-outside of the plot are a number of input ports that can be wired.
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="241" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
- SRC="img228.png"
- ALT="\includegraphics{images/plotWidget.eps}">
-
-</DIV>
-
-<P>
-<DL>
-<DT><STRONG>left hand edge</STRONG></DT>
-<DD>Up to 4 quantities can be plotted on the graph
-  simultaneously, with line colour given by the colour of the input
-  port
-</DD>
-<DT><STRONG>right hand edge</STRONG></DT>
-<DD>Another 4 quantities can be added to the
-  plot. These are shown on a different scale to the left hand inputs,
-  allowing very different magnitudes to be compared on the one plot.
-</DD>
-<DT><STRONG>bottom edge</STRONG></DT>
-<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
- ALT="$x$"></SPAN>-coordinates of the
-  curves. The colours match up with the colour of the pen being
-  controlled.
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="529" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
- SRC="img229.png"
- ALT="\includegraphics{images/plotLissajous.eps}">
-
-</DIV>
-
-<P>
-If only one bottom port is connected, then that controls all pens
-  simultaneously, and if no ports are connected, then the simulation
-  time is used to provide the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
- ALT="$x$"></SPAN> coordinates
-</DD>
-<DT><STRONG>corners</STRONG></DT>
-<DD>Corner ports control the scale. You can wire up
-  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
- ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img75.png"
- ALT="$y$"></SPAN> and right hand
-  <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img75.png"
- ALT="$y$"></SPAN> axes. If left unwired, the scales are determined automatically
-  from the data. This can be used, for example, to implement a sliding
-  window graph
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="480" HEIGHT="424" ALIGN="BOTTOM" BORDER="0"
- SRC="img230.png"
- ALT="\includegraphics{images/plotSlidingWindow.eps}">
-
-</DIV>
-</DD>
-</DL>
-=======
 Variable initial conditions can be defined through the &ldquo;init value&rdquo;
 field of the variable edit menu, or in the case of Godley table stock
 variables, through the initial condition row of the Godley table. An
@@ -163,29 +58,9 @@ definitions, it would be possible to set up a circular reference where
 the initial value of variable A is defined in terms of the initial
 value of variable B, which in turn depends on the intial value of
 A. Such a pathological situation is detected when the system is reset.
->>>>>>> Graeber
 
 <P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1386"
-  HREF="node106.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1384"
-  HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1378"
-  HREF="node104.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1387"
-  HREF="node106.html">Sheet Widget</A>
-<B> Up:</B> <A NAME="tex2html1385"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1379"
-  HREF="node104.html">Groups</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>
