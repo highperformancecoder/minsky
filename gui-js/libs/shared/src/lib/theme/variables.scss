@@ -1,0 +1,81 @@
+// basic color
+$black: #000000;
+$white: #ffffff;
+
+// yellow color
+$primary-yellow: #f0ad4e;
+
+//grey
+$primary-grey: #696969;
+$primary-light-grey: #fafafa;
+$primary-header: #e7e8ea;
+
+// $base-color: #c6538c;
+$brand-primary: #00468c !default; // #337ab7
+$brand-success: #18a518 !default; //#5cb85c
+$brand-info: #5bc0de !default;
+$brand-warning: $primary-yellow !default;
+$brand-danger: #ed3330 !default;
+
+$body-bg: $white !default;
+// $text-color: $gray-dark !default;
+
+//** Global textual link color.
+$link-color: $brand-primary !default;
+$btn-color: $white !default;
+
+$toolbar-color: #777 !default;
+$toolbar-bg: #e0e0e0 !default;
+$toolbar-border-light: #d8d8d8 !default;
+$toolbar-border: #cecdcd !default;
+$toolbar-border-focus: #332f2f !default;
+$toolbar-hover: #dedede !default;
+$toolbar-box: #928484 !default;
+
+// toolbar
+$toolbar-link-color: grey !default;
+$toolbar-link-hover-color: $brand-primary !default;
+$toolbar-link-hover-bg: transparent !default;
+$toolbar-link-active-color: #555 !default;
+// $toolbar-link-active-bg: darken($toolbar-bg, 6.5%) !default;
+$toolbar-link-disabled-color: #ccc !default;
+$toolbar-link-disabled-bg: transparent !default;
+
+// toolbar brand label
+$toolbar-brand-color: $toolbar-link-color !default;
+// $toolbar-brand-hover-color: darken($toolbar-brand-color, 10%) !default;
+$toolbar-brand-hover-bg: transparent !default;
+
+// toolbar toggle
+$toolbar-toggle-hover-bg: #ddd !default;
+$toolbar-toggle-icon-bar-bg: #888 !default;
+$toolbar-toggle-border-color: #ddd !default;
+
+// Text color
+$text: $black !default;
+
+// Border color
+$default-solid: $black !default;
+
+// global fontSize
+$primary-font: 14px;
+$secondary-font: 30px;
+
+// Font-family
+$font-family: Arial, Helvetica, sans-serif;
+
+// btn size
+$button-size: 2rem;
+
+// app
+$app-width: 100vw;
+$app-height: 100vh;
+
+// common
+$dimensions: 1rem;
+
+// app margin
+$margin: 0.125rem;
+
+// app margin
+$padding: 0.5rem;

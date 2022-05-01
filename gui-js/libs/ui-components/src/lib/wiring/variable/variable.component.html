@@ -1,0 +1,19 @@
+<button
+  class="tab"
+  [matMenuTriggerFor]="variable"
+  aria-label="Tensor Operations"
+>
+  <img src="assets/images/icons/var.gif" alt="Variable" title="Variable" />
+</button>
+
+<mat-menu yPosition="above" #variable="matMenu">
+  <span mat-menu-item class="tab" (click)="createVariable('flow')">
+    Variable
+  </span>
+  <span mat-menu-item class="tab" (click)="createVariable('constant')">
+    Constant
+  </span>
+  <span mat-menu-item class="tab" (click)="createVariable('parameter')">
+    Parameter
+  </span>
+</mat-menu>

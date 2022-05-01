@@ -1,0 +1,37 @@
+@import '../../../../../shared/src/lib/theme/common-style.scss';
+@import '../../../../../shared/src/lib/theme/variables.scss';
+
+.align {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+select {
+  height: 1.25rem;
+}
+
+.type {
+  margin-right: 1.125rem;
+  margin-left: 1.125rem;
+  width: 8rem;
+}
+
+.autocomplete {
+  width: 11.125rem;
+}
+
+.dimension {
+  width: 8rem;
+}
+
+button {
+  margin-right: 1rem;
+}
+
+::ng-deep .mat-option-text {
+  font-size: 0.7rem !important;
+}
+
+::ng-deep .mat-option {
+  height: 25px !important;
+}

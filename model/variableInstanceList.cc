@@ -20,12 +20,17 @@
 #include "variableInstanceList.h"
 #include "group.h"
 #include "selection.h"
+#include "variableInstanceList.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 
 using namespace std;
 
 namespace minsky
 {
+  // should not really be used, but compiler requuires it
+  VariableInstanceList::VariableInstanceList(): model(*minsky().model) {}
+  
   VariableInstanceList::VariableInstanceList(Group& model, const string& valueId):
     model(model)
   {

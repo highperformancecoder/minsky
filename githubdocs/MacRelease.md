@@ -33,21 +33,14 @@ Because we need to use an internal function with tk when compiling Minsky for Aq
 - ./configure --prefix=$HOME/usr --disable-shared --enable-aqua
 - make -j install
 
-# compile json_spirit from source code (install boost and cmake first)
-- tar xvf json_spirit_v4.08.tar.gz
-- cd json_spirit_v4.08
-- cmake .
-- make -j
-- sudo make install
-
-# compile EcoLab
-Note - EcoLab is now included with Minsky as a git submodule, so this section is only needed for older versions
-MAC_OSC_TK=1 enables the Aqua build.
-  - make -j MAC_OSX_TK=1 BDB= install 
-  - note disabling BDB is required, as MacOSX has a positively ancient version of Berkeley DB installed.
   
 # compile Minsky
 By default, Minsky builds in Aqua mode. This may cause build errors if the prerequisites are built for X11. To disable Aqua, specify MAC_OSX_TK= on the make command line.
   - make MAC_OSX_TK=1 mac-dist
   
-This should leave a .pkg file suitable for distribution in the top level directory.
+This builds the minskyRESTService.node, and rewrites the dynamic library references. This can be run over an ssh connection if nexecessary.
+
+
+- cd gui-js
+- npm run export:package:mac
+This produces a dmg file in dist/executables. This step must be run on the Macintosh console, as it makes use of code signing, which has to be run on the console.

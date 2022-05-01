@@ -87,10 +87,21 @@ if [ $productName = "Minsky" -o $productName = "Ravel" -o $productName = "RavelB
                </ProgId>
 EOF
 fi
-pushd gui-tk
 id=0
 fid=0
 # add in plain files
+pushd RESTService
+for i in *.exe; do
+	if [ -f $i -a ! -d $i ]; then
+	    let fid++
+	    cat >>$minskyWxs <<EOF
+	<File Id='fid$fid' Source='RESTService/$i' Name='$i' KeyPath='no' />
+EOF
+        fi
+done
+popd
+
+pushd gui-tk
 for i in *.tcl *.dll accountingRules; do
 	if [ -f $i -a ! -d $i -a $i != "minsky.exe" ]; then
 	    let fid++
@@ -99,6 +110,9 @@ for i in *.tcl *.dll accountingRules; do
 EOF
         fi
 done
+
+
+
 echo "    </Component>">> $minskyWxs
 builddir ()
 {

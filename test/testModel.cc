@@ -240,7 +240,7 @@ SUITE(Group)
       plot->makeDisplayPlot();
       CHECK(group0->displayPlot.get()==plot);
       group0->removeDisplayPlot();
-      CHECK(!group0->displayPlot);
+      CHECK(!group0->displayPlot.get());
     }
 
   TEST_FIXTURE(TestFixture, findGroup)
@@ -1282,9 +1282,14 @@ SUITE(GodleyTableWindow)
       CHECK(table.getData()==saveData);
     }
 
-  struct GodleyTableWindowFixture: public GodleyTableWindow
+  struct EmbedGodleyIcon
   {
-    GodleyTableWindowFixture(): GodleyTableWindow(make_shared<GodleyIcon>())
+    GodleyIcon embeddedGodleyIcon;
+  };
+  
+  struct GodleyTableWindowFixture: private EmbedGodleyIcon, public GodleyTableWindow
+  {
+    GodleyTableWindowFixture(): GodleyTableWindow(embeddedGodleyIcon)
     {
       Tk_Init(interp()); // required for clipboard operations
     }
@@ -1292,7 +1297,7 @@ SUITE(GodleyTableWindow)
   
   TEST_FIXTURE(GodleyTableWindowFixture, mouseMove)
     {
-      godleyIcon->table.cell(1,1)="hello";
+      godleyIcon().table.cell(1,1)="hello";
       surface.reset(new ecolab::cairo::Surface
                     (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
       redraw(0,0,0,0);
@@ -1303,7 +1308,7 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(1, hoverRow);
       CHECK_EQUAL(1, hoverCol);
       x=2*ButtonWidget<row>::buttonSpacing+1;
-      CHECK_EQUAL(rowWidget, clickType(x,y));
+      CHECK_EQUAL(rowWidget, GodleyTableWindow::clickType(x,y));
       mouseMove(x,y);
       CHECK_EQUAL(2,rowWidgets[1].mouseOver());
       x=colLeftMargin[1]+ButtonWidget<row>::buttonSpacing+1;
@@ -1318,7 +1323,7 @@ SUITE(GodleyTableWindow)
   TEST_FIXTURE(GodleyTableWindowFixture, mouseSelect)
     {
       Tk_Init(interp()); // required for clipboard operations
-      godleyIcon->table.cell(1,1)="hello";
+      godleyIcon().table.cell(1,1)="hello";
       surface.reset(new ecolab::cairo::Surface
                     (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
       redraw(0,0,0,0);
@@ -1332,22 +1337,22 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(1, selectedCol);
       CHECK_EQUAL(0,insertIdx);
       CHECK(selectIdx>insertIdx);
-      CHECK(!cminsky().getClipboard().empty());
+      CHECK(!cminsky().clipboard.getClipboard().empty());
 
       
     }
   
   TEST_FIXTURE(GodleyTableWindowFixture, mouseButtons)
     {
-      godleyIcon->table.resize(4,4);
-      godleyIcon->table.cell(0,1)="col1";  
-      godleyIcon->table.cell(0,2)="col2";
-      godleyIcon->table.cell(1,1)="r1c1";
-      godleyIcon->table.cell(1,2)="r1c2";
-      godleyIcon->table.cell(2,1)="r2c1";
-      godleyIcon->table.cell(2,2)="r2c2";
-      godleyIcon->table.cell(3,1)="r3c1";
-      godleyIcon->table.cell(3,2)="r3c2";      
+      godleyIcon().table.resize(4,4);
+      godleyIcon().table.cell(0,1)="col1";  
+      godleyIcon().table.cell(0,2)="col2";
+      godleyIcon().table.cell(1,1)="r1c1";
+      godleyIcon().table.cell(1,2)="r1c2";
+      godleyIcon().table.cell(2,1)="r2c1";
+      godleyIcon().table.cell(2,2)="r2c2";
+      godleyIcon().table.cell(3,1)="r3c1";
+      godleyIcon().table.cell(3,2)="r3c2";      
       
       surface.reset(new ecolab::cairo::Surface
                     (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
@@ -1356,38 +1361,38 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(colWidget, clickType(x,y));
       mouseDown(x,y);
       // should have invoked moving column 1 left
-      CHECK_EQUAL("r1c2",godleyIcon->table.cell(1,2));
-      CHECK_EQUAL("r2c2",godleyIcon->table.cell(2,2));
-      CHECK_EQUAL("r1c1",godleyIcon->table.cell(1,3));
-      CHECK_EQUAL("r2c1",godleyIcon->table.cell(2,3));
+      CHECK_EQUAL("r1c2",godleyIcon().table.cell(1,2));
+      CHECK_EQUAL("r2c2",godleyIcon().table.cell(2,2));
+      CHECK_EQUAL("r1c1",godleyIcon().table.cell(1,3));
+      CHECK_EQUAL("r2c1",godleyIcon().table.cell(2,3));
       
       x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+rowHeight;
       CHECK_EQUAL(rowWidget, clickType(x,y));
       mouseDown(x,y);
       // Row 1 cannot move down. For ticket 1064
-      CHECK_EQUAL("r2c2",godleyIcon->table.cell(2,2));
-      CHECK_EQUAL("r1c2",godleyIcon->table.cell(1,2));
+      CHECK_EQUAL("r2c2",godleyIcon().table.cell(2,2));
+      CHECK_EQUAL("r1c2",godleyIcon().table.cell(1,2));
       
       x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+2*rowHeight;
       CHECK_EQUAL(rowWidget, clickType(x,y));
       mouseDown(x,y);
       // should have invoked moving row 2 down, in effect swapping row 2 and 3's contents
-      CHECK_EQUAL("r3c2",godleyIcon->table.cell(2,2));
-      CHECK_EQUAL("r2c2",godleyIcon->table.cell(3,2));
+      CHECK_EQUAL("r3c2",godleyIcon().table.cell(2,2));
+      CHECK_EQUAL("r2c2",godleyIcon().table.cell(3,2));
       
     }
   
   TEST_FIXTURE(GodleyTableWindowFixture, moveRowColCell)
     {
-      godleyIcon->table.resize(3,4);
-      godleyIcon->table.cell(0,1)="col1";
-      godleyIcon->table.cell(0,2)="col2";
-      godleyIcon->table.cell(1,0)="row1";
-      godleyIcon->table.cell(2,0)="row2";
-      godleyIcon->table.cell(1,1)="r1c1";
-      godleyIcon->table.cell(1,2)="r1c2";
-      godleyIcon->table.cell(2,1)="r2c1";
-      godleyIcon->table.cell(2,2)="r2c2";
+      godleyIcon().table.resize(3,4);
+      godleyIcon().table.cell(0,1)="col1";
+      godleyIcon().table.cell(0,2)="col2";
+      godleyIcon().table.cell(1,0)="row1";
+      godleyIcon().table.cell(2,0)="row2";
+      godleyIcon().table.cell(1,1)="r1c1";
+      godleyIcon().table.cell(1,2)="r1c2";
+      godleyIcon().table.cell(2,1)="r2c1";
+      godleyIcon().table.cell(2,2)="r2c2";
       surface.reset(new ecolab::cairo::Surface
                     (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
       redraw(0,0,0,0);
@@ -1399,7 +1404,7 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(2,colX(x));
       mouseMoveB1(x,y);
       mouseUp(x,y);
-      CHECK_EQUAL("col1",godleyIcon->table.cell(0,3));
+      CHECK_EQUAL("col1",godleyIcon().table.cell(0,3));
 
       x=leftTableOffset+10;
       y=topTableOffset+rowHeight+5;
@@ -1410,21 +1415,21 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(2,rowY(y));
       mouseMoveB1(x,y);
       mouseUp(x,y);
-      CHECK_EQUAL("row1",godleyIcon->table.cell(1,0));  //Cannot swap cells (1,0) and (2,0) by click dragging. For ticket 1064/1066
-      CHECK_EQUAL("row2",godleyIcon->table.cell(2,0));
+      CHECK_EQUAL("row1",godleyIcon().table.cell(1,0));  //Cannot swap cells (1,0) and (2,0) by click dragging. For ticket 1064/1066
+      CHECK_EQUAL("row2",godleyIcon().table.cell(2,0));
 
       // check moving a cell
       x=colLeftMargin[1]+10;
       y=topTableOffset+rowHeight+5;
       CHECK_EQUAL(1,colX(x));
       CHECK_EQUAL(1,rowY(y));
-      godleyIcon->table.cell(1,1)="cell11";
+      godleyIcon().table.cell(1,1)="cell11";
       mouseDown(x,y);
       x=colLeftMargin[2]+10;
       y+=rowHeight;
       mouseMoveB1(x,y);
       mouseUp(x,y);
-      CHECK_EQUAL("cell11",godleyIcon->table.cell(2,2));
+      CHECK_EQUAL("cell11",godleyIcon().table.cell(2,2));
     }
 
 #define XK_MISCELLANY
@@ -1433,29 +1438,29 @@ SUITE(GodleyTableWindow)
   
   TEST_FIXTURE(GodleyTableWindowFixture, keyPress)
     {
-      godleyIcon->table.resize(3,4);
+      godleyIcon().table.resize(3,4);
       selectedCol=1;
       selectedRow=1;
       selectIdx=insertIdx=0;
       keyPress('a',"a"); keyPress('b',"b"); keyPress('b',"b"); insertIdx=2; keyPress(XK_Delete,"");
       keyPress('c',"c"); keyPress('c',"c"); keyPress(XK_BackSpace,"");
-      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+      CHECK_EQUAL("abc",godleyIcon().table.cell(1,1));
 
-      godleyIcon->table.cell(0,0)="stock1";
-      CHECK_EQUAL(0,godleyIcon->stockVars().size());
+      godleyIcon().table.cell(0,0)="stock1";
+      CHECK_EQUAL(0,godleyIcon().stockVars().size());
       keyPress(XK_Return,""); // should cause update to be called
       // unfortunately, this is a freestanding GodleyIcon, so update has no effect
-//      CHECK_EQUAL(1,godleyIcon->stockVars().size());
-//      CHECK_EQUAL("stock1",godleyIcon->stockVars()[0]->name());
+//      CHECK_EQUAL(1,godleyIcon().stockVars().size());
+//      CHECK_EQUAL("stock1",godleyIcon().stockVars()[0]->name());
       CHECK_EQUAL(-1,selectedCol);
       CHECK_EQUAL(-1,selectedRow);
 
       
       selectedCol=1;
       selectedRow=1;
-      godleyIcon->table.savedText="abc";
+      godleyIcon().table.savedText="abc";
       keyPress('d',"d"); keyPress(XK_Escape,""); // should revert to previous
-      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+      CHECK_EQUAL("abc",godleyIcon().table.cell(1,1));
       CHECK_EQUAL(-1,selectedCol);
       CHECK_EQUAL(-1,selectedRow);
 
@@ -1504,15 +1509,15 @@ SUITE(GodleyTableWindow)
       selectedRow=1;
       selectIdx=0;
       insertIdx=1;
-      cminsky().putClipboard("");
+      cminsky().clipboard.putClipboard("");
       keyPress(XK_Control_L,""); keyPress('c',"\x3"); //copy
-      CHECK_EQUAL("a",cminsky().getClipboard());
-      cminsky().putClipboard("");
+      CHECK_EQUAL("a",cminsky().clipboard.getClipboard());
+      cminsky().clipboard.putClipboard("");
       keyPress(XK_Control_L,""); keyPress('x',"\x18");  //cut
-      CHECK_EQUAL("a",cminsky().getClipboard());
-      CHECK_EQUAL("bc",godleyIcon->table.cell(1,1));
+      CHECK_EQUAL("a",cminsky().clipboard.getClipboard());
+      CHECK_EQUAL("bc",godleyIcon().table.cell(1,1));
       keyPress(XK_Control_L,""); keyPress('v',"\x16");  //paste
-      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+      CHECK_EQUAL("abc",godleyIcon().table.cell(1,1));
 
       // initial cell movement when nothing selected
       selectedCol=-1; selectedRow=-1;
@@ -1555,7 +1560,7 @@ SUITE(GodleyTableWindow)
       double x=colLeftMargin[1]+10, y=topTableOffset+5+rowHeight;
       CHECK_EQUAL(1,colX(x));
       CHECK_EQUAL(1,rowY(y));
-      auto& t=godleyIcon->table;
+      auto& t=godleyIcon().table;
       t.cell(1,0)="row1";
       t.cell(0,1)="col1";
       t.cell(0,2)="col2";
@@ -1586,7 +1591,7 @@ SUITE(GodleyTableWindow)
 
    TEST_FIXTURE(GodleyTableWindowFixture, undoRedo)
      {
-       auto& t=godleyIcon->table;
+       auto& t=godleyIcon().table;
        t.cell(1,0)="row1";
        pushHistory();
        t.cell(1,0)="xxx";
@@ -1616,7 +1621,7 @@ SUITE(GodleyTableWindow)
        godley1->update();
        godley2->update();
 
-       GodleyTableWindow gw(godley1);
+       GodleyTableWindow gw(*godley1);
        // render GodleyTableWindow to compute column/row boundaries
        ecolab::cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
        gw.draw(surf.cairo());

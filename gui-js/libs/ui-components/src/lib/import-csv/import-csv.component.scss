@@ -1,0 +1,120 @@
+@import '../../../../shared/src/lib/theme/variables.scss';
+@import '../../../../shared/src/lib/theme/common-style.scss';
+
+.grid {
+  display: grid;
+  height: 100vh;
+  grid-template-rows: 50px 25px 25px auto 50px;
+  align-items: center;
+
+  .import-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .import {
+      .url {
+        width: 35rem;
+      }
+    }
+  }
+
+  .options-row {
+    padding: $padding;
+    input[type='text'] {
+      width: 5.5rem;
+    }
+    margin: 1rem;
+  }
+
+  .options-row-one {
+    display: flex;
+    justify-content: space-between;
+    span {
+      input[type='checkbox'] {
+        width: 2rem;
+        padding-left: 0.5rem;
+      }
+    }
+    margin-bottom: 2 * $padding;
+  }
+
+  .options-row-two {
+    display: flex;
+    justify-content: space-between;
+    input[type='number'] {
+      width: 3rem;
+    }
+    #duplicate-key-action {
+      width: 8rem;
+    }
+  }
+
+  .canvas-container {
+    height: 100%;
+    overflow: scroll;
+  }
+}
+
+button {
+  margin: $margin;
+}
+
+label,
+input,
+select {
+  margin-right: $padding;
+}
+
+.form-buttons {
+  margin: 0;
+}
+
+.autocomplete {
+  width: 11.125rem;
+}
+
+::ng-deep .mat-option-text {
+  font-size: 0.7rem !important;
+}
+
+::ng-deep .mat-option {
+  height: 25px !important;
+}
+
+::ng-deep .cdk-overlay-pane {
+  height: 4.5rem !important;
+}
+
+table {
+  border-collapse: collapse;
+  user-select: none;
+}
+
+td {
+  border: 1px solid black;
+  user-select: none;
+  min-width: 171px;
+
+  input[type='text'] {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+  input[type='checkbox'] {
+    width: auto;
+    padding: 0;
+  }
+  select {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.header {
+  cursor: pointer;
+}
+
+.checkbox-container {
+  text-align: center;
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json",
+  "extraResources": [
+    {
+      "from": "apps/minsky-electron/src/assets",
+      "to": "assets",
+      "filter": ["**/*.svg"]
+    },
+    {
+      "from": "minsky-docs",
+      "to": "minsky-docs",
+      "filter": ["**/*.*"]
+    },
+    {
+      "from": "node-addons",
+      "to": "node-addons",
+      "filter": ["**/*.*"]
+    }
+  ]
+}

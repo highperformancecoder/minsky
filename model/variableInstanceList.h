@@ -37,7 +37,9 @@ namespace minsky
     Group& model;
     std::vector<Bookmark> bookmarks;
     std::vector<ItemPtr> items;
+    CLASSDESC_ACCESS(VariableInstanceList);
   public:
+    VariableInstanceList();
     /// @param model top level group to obtain instances from
     /// @param valueId id of variables to obtain the instances of
     VariableInstanceList(Group& model, const std::string& valueId);

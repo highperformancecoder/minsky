@@ -24,6 +24,7 @@
 #include "latexMarkup.h"
 #include "geometry.h"
 #include "selection.h"
+#include "lasso.h"
 #include "minsky.h"
 #include <pango.h>
 #include <cairo_base.h>
@@ -420,7 +421,7 @@ namespace minsky
     return r;
   }
 
-  void Item::removeControlledItems() const
+  void ItemExclude::removeControlledItems() const
   {
     if (auto g=group.lock())
       removeControlledItems(*g);

@@ -1,0 +1,15 @@
+@import '../../../../shared/src/lib/theme/variables.scss';
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+button {
+  margin-right: $margin;
+}
+input {
+  width: 100%;
+}

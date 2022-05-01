@@ -39,7 +39,6 @@ namespace minsky
     friend struct SchemaHelper;
     friend class GodleyIcon;
     typedef std::vector<std::vector<string>> Data;
-    enum DisplayStyle {DRCR, sign}; ///< how to display -ve data in table
   private:
     CLASSDESC_ACCESS(GodleyTable);
     /// class of each column (used in DE compliant mode)
@@ -54,7 +53,8 @@ namespace minsky
       m_assetClass.resize(cols, noAssetClass);
     }
   public:
-
+    typedef GodleyAssetClass::AssetClass AssetClass;
+    
     bool doubleEntryCompliant;
 
     std::string title;
@@ -189,8 +189,8 @@ namespace minsky
     /// accessor for schema access
     const Data& getData() const {return data;}
 
-    void exportToLaTeX(const char* filename) const;
-    void exportToCSV(const char* filename) const;
+    void exportToLaTeX(const std::string& filename);
+    void exportToCSV(const std::string& filename);
 
     /// reorders columns into assets/liabilities and equities. Adds empty columns if an asset class is not present.
     void orderAssetClasses();

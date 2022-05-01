@@ -54,31 +54,6 @@ namespace minsky
     bool contains(const ItemPtr& item) const;
   };
 
-  /// represents rectangular region of a lasso operation
-  struct LassoBox
-  {
-    float x0=0, y0=0, x1=0, y1=0, angle=0;
-    LassoBox() {}
-    LassoBox(float x0, float y0, float x1, float y1): 
-      x0(x0), y0(y0), x1(x1), y1(y1) {
-      if (x0>x1) std::swap(this->x0,this->x1);
-      if (y0>y1) std::swap(this->y0,this->y1);
-    }
-    
-    /// returns whether item's icon overlaps the lasso
-    template <class Item>
-    bool intersects(const Item& item) const {
-      return item.right() >= x0 && item.left() <= x1 &&
-        item.bottom() >= y0 && item.top() <= y1;
-    }
-
-    /// return true if both endpoints of the wire lie
-    /// within the lasso
-    bool contains(const Wire& wire) const { // Make sure both ends of wires are selected in all cases. For ticket 1147
-     return (intersects(wire.from()->item()) && intersects(wire.to()->item())); 
-    }
-
-  };
 }
 
 #include "selection.cd"

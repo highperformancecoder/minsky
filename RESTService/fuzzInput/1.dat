@@ -1,0 +1,7 @@
+# an input file for RESTService suitable for fuzz testing
+/minsky/@list
+/minsky/edited
+/minsky/reset_flag
+/minsky/markEdited
+/minsky/edited
+/minsky/reset_flag

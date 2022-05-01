@@ -18,6 +18,7 @@
 */
 #define OPNAMEDEF
 #include "cairoItems.h"
+#include "dataOp.h"
 #include "evalOp.h"
 #include "variable.h"
 #include "userFunction.h"

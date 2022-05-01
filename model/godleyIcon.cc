@@ -39,10 +39,6 @@ const float border=10;
 
 namespace minsky
 {
-  GodleyIcon::CopiableUniquePtr::CopiableUniquePtr() {}
-  GodleyIcon::CopiableUniquePtr::~CopiableUniquePtr() {}
-  GodleyIcon::CopiableUniquePtr::CopiableUniquePtr(const CopiableUniquePtr&) {}
-
   namespace
   {
     struct OrderByName
@@ -134,10 +130,10 @@ namespace minsky
         else
           {
             // move existing variable
+            assert(*v);
             vars.push_back(*v);
             alreadyAdded.insert(newVar->valueId());
             oldVars.erase(v);
-            assert(*v);
             if (myGroup) myGroup->removeItem(*newVar);
           }
         if (myGroup) myGroup->addItem(vars.back(),true);
@@ -153,43 +149,29 @@ namespace minsky
 
   void GodleyIcon::toggleEditorMode()
   {
-    if (editor)
+    if (m_editorMode)
       {
-        editor.reset();
         variableDisplay=true;
       }
     else
       if (auto g=group.lock())
         if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
           {
-            editor.reset(new GodleyTableEditor(icon));
-            editor->disableButtons();
-            setEditorDisplayValues();
+            editor.disableButtons();
             variableDisplay=false;
           }
+    m_editorMode=!m_editorMode;
     updateBoundingBox();
   }
 
-  void GodleyIcon::setEditorDisplayValues()
-  {
-    if (editor)
-      {
-            editor->displayValues=cminsky().displayValues;
-            editor->displayStyle=cminsky().displayStyle;
-      }
-  }
-  
-  bool GodleyIcon::buttonDisplay() const {return editor && editor->drawButtons;}
+  bool GodleyIcon::buttonDisplay() const {return m_editorMode && editor.drawButtons;}
   void GodleyIcon::toggleButtons()
   {
-    if (editor)
-      {
-        if (editor->drawButtons)
-          editor->disableButtons();
-        else
-          editor->enableButtons();
-        updateBoundingBox();
-      }
+    if (editor.drawButtons)
+      editor.disableButtons();
+    else
+      editor.enableButtons();
+    updateBoundingBox();
   }
   
   void GodleyIcon::scaleIcon(float w, float h)
@@ -210,12 +192,12 @@ namespace minsky
     updateBoundingBox();
   }
 
-  void GodleyIcon::removeControlledItems(Group& g) const
+  void GodleyIcon::removeControlledItems(GroupItems& g) const
   {
-    for (const auto& i: m_flowVars)
+    for (auto& i: m_flowVars)
       if (auto item=g.removeItem(*i))
         item->deleteAttachedWires();
-    for (const auto& i: m_stockVars)
+    for (auto& i: m_stockVars)
       if (auto item=g.removeItem(*i))
         item->deleteAttachedWires();
   }
@@ -292,7 +274,7 @@ namespace minsky
         for (size_t c=1; c<table.cols(); ++c)
           {
             string name=trimWS(table.cell(0,c));           
-            auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
+            auto vi=minsky().variableValues.find(minsky::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
             VariableValue& v=*vi->second;           
             v.godleyOverridden=false;
@@ -302,7 +284,7 @@ namespace minsky
                 FlowCoef fc(table.cell(r,c).substr(start));                                      
                 v.init=fc.str();              
                 // set initial value of stock var to init value of flow that is defined by a parameter or a constant. for ticket 1137
-                if (auto initVar=minsky().definingVar(VariableValue::valueId(group.lock(),fc.str())))
+                if (auto initVar=minsky().definingVar(minsky::valueId(group.lock(),fc.str())))
                   if (initVar->inputWired() && initVar->type()==VariableType::flow)
                     if (auto* lhsVar=initVar->ports(1).lock()->wires()[0]->from()->item().variableCast()) {
                       FlowCoef fc1(lhsVar->vValue()->init);
@@ -388,8 +370,8 @@ namespace minsky
     float z=zoomFactor()*scaleFactor();
     float w=iWidth()*z+leftMargin(), h=iHeight()*z+bottomMargin(), left=-0.5*w, top=-0.5*h;
     double titley;
-
-    if (editor.get())
+    
+    if (m_editorMode)
       {
         CairoSave cs(cairo);
         cairo_rectangle(cairo, left, top, w, h);
@@ -407,15 +389,15 @@ namespace minsky
         cairo_clip(cairo);
         cairo_translate(cairo,left+border*z+leftMargin(),top+border*z+titleOffs()/* space for title*/);
         // render to a recording surface to determine size of editor table
-        // TODO - paint the recording surface directly 
+        // TODO - maybe move this stuff into update()
         Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
-        editor->zoomFactor=1;
-        editor->draw(surf.cairo());
+        const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
+        const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
         //        cairo_set_source_surface(cairo, surf.surface(),0,0);
-        editor->zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
+        const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
 //        cairo_scale(cairo,scaleFactor,scaleFactor);
 //        cairo_paint(cairo);
-        editor->draw(cairo);
+        const_cast<GodleyTableEditor&>(editor).draw(cairo);
         titley=-0.5*h;
         w+=2*border*z;
         h+=2*border*z;
@@ -476,7 +458,7 @@ namespace minsky
         double sum=0, absSum=0;
         for (size_t c=1; c<table.cols(); ++c)
           {
-            auto i=stockVars.find(VariableValue::valueIdFromScope(group.lock(), trimWS(table.cell(0,c))));
+            auto i=stockVars.find(valueIdFromScope(group.lock(), trimWS(table.cell(0,c))));
             if (i!=stockVars.end())
               {
                 sum+=(table.signConventionReversed(c)? -1: 1)*i->second->value();
@@ -536,7 +518,7 @@ namespace minsky
   
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {
-    if (editor) return Item::clickType(x,y);
+    if (m_editorMode) return Item::clickType(x,y);
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
     auto z=zoomFactor()*scaleFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
@@ -555,39 +537,39 @@ namespace minsky
   {return yy-y()+0.5f*height()-2*border-titleOffs();}
   
   void GodleyIcon::onMouseDown(float x, float y)
-  {if (editor) editor->mouseDown(toEditorX(x),toEditorY(y));}
+  {if (m_editorMode) editor.mouseDown(toEditorX(x),toEditorY(y));}
   
   void GodleyIcon::onMouseUp(float x, float y)
-  {if (editor) editor->mouseUp(toEditorX(x),toEditorY(y));}
+  {if (m_editorMode) editor.mouseUp(toEditorX(x),toEditorY(y));}
   
   bool GodleyIcon::onMouseMotion(float x, float y)
   {
-    if (editor) editor->mouseMoveB1(toEditorX(x),toEditorY(y));
+    if (m_editorMode) editor.mouseMoveB1(toEditorX(x),toEditorY(y));
     return false;
   }
   
   bool GodleyIcon::onMouseOver(float x, float y)
   {
-    if (editor) editor->mouseMove(toEditorX(x),toEditorY(y));
+    if (m_editorMode) editor.mouseMove(toEditorX(x),toEditorY(y));
     return false;
   }
   
   void GodleyIcon::onMouseLeave()
   {
-    if (editor)
+    if (m_editorMode)
       {
-        editor->mouseMove(-1,-1);
+        editor.mouseMove(-1,-1);
         // May be a bit overzealous, but it solves bug 1273, which is caused by a flow which has not yet fully come into existence....
-        editor->selectedCol=-1;
-        editor->selectedRow=-1;
-        editor->update();
+        editor.selectedCol=-1;
+        editor.selectedRow=-1;
+        editor.update();
       }
   }
 
   bool GodleyIcon::onKeyPress(int keySym, const std::string& utf8, int)
   {
-    if (editor) editor->keyPress(keySym, utf8);
-    return editor.get();
+    if (m_editorMode) editor.keyPress(keySym, utf8);
+    return m_editorMode;
   }
   
   SVGRenderer GodleyIcon::svgRenderer;

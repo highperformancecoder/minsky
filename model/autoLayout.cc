@@ -19,6 +19,7 @@
 
 #include "autoLayout.h"
 #include "selection.h"
+#include "lasso.h"
 #include "userFunction.h"
 #include "minsky_epilogue.h"
 

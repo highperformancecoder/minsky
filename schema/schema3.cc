@@ -16,6 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "dataOp.h"
 #include "schema3.h"
 #include "sheet.h"
 #include "userFunction.h"
@@ -364,11 +365,13 @@ namespace schema3
       }
   }
       
-  Minsky::operator minsky::Minsky() const
+  void Minsky::populateMinsky(minsky::Minsky& m) const
   {
-    minsky::Minsky m;
     minsky::LocalMinsky lm(m);
+    m.model->clear();
     populateGroup(*m.model);
+    m.canvas.model=m.model;
+
     m.model->setZoom(zoomFactor);
     m.model->bookmarks.insert(bookmarks.begin(), bookmarks.end());
     m.dimensions=dimensions;
@@ -376,7 +379,6 @@ namespace schema3
     m.fileVersion=minskyVersion;
     
     static_cast<minsky::Simulation&>(m)=rungeKutta;
-    return m;
   }
 
   void populateNote(minsky::NoteBase& x, const Note& y)
@@ -390,8 +392,14 @@ namespace schema3
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
-    x.itemTabX=y.itemTabX;
-    x.itemTabY=y.itemTabY;
+    if (isnan(y.itemTabX))
+      x.itemTabInitialised=false;
+    else
+      {
+        x.itemTabX=y.itemTabX;
+        x.itemTabY=y.itemTabY;
+        x.itemTabInitialised=true;
+      }
     x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
     x.iWidth(y.width);

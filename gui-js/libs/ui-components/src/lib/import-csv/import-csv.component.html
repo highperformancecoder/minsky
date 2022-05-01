@@ -1,0 +1,292 @@
+<div class="grid" [formGroup]="form">
+  <!-- HEADER START -->
+  <div class="import-container">
+    <span class="import">
+      <button mat-raised-button type="button" (click)="selectFile()">
+        File
+      </button>
+      or URL
+      <input class="url" type="text" formControlName="url" />
+      <button mat-raised-button type="button" (click)="load()">Load</button>
+    </span>
+  </div>
+
+  <div class="options-row-one options-row">
+    <span>
+      <label for="columnar">Columnar</label>
+      <input id="columnar" type="checkbox" formControlName="columnar" />
+    </span>
+
+    <span>
+      <label for="separator">Separator</label>
+      <input
+        id="separator"
+        type="text"
+        formControlName="separator"
+        [matAutocomplete]="autocompleteSeparator"
+        class="form-control autocomplete"
+      />
+      <mat-autocomplete
+        [panelWidth]="'10rem'"
+        #autocompleteSeparator="matAutocomplete"
+      >
+        <mat-option value=",">,</mat-option>
+        <mat-option value=";">;</mat-option>
+        <mat-option [innerText]="'<tab>'" value="'<tab>'"></mat-option>
+        <mat-option [innerText]="'<space>'" value="'<space>'"></mat-option>
+      </mat-autocomplete>
+    </span>
+
+    <span>
+      <label for="decimal-separator">Decimal Separator</label>
+      <input
+        id="decimal-separator"
+        type="text"
+        formControlName="decSeparator"
+        [matAutocomplete]="decSeparator"
+        class="form-control autocomplete"
+      />
+      <mat-autocomplete [panelWidth]="'10rem'" #decSeparator="matAutocomplete">
+        <mat-option value=".">.</mat-option>
+        <mat-option value=",">,</mat-option>
+      </mat-autocomplete>
+    </span>
+
+    <span>
+      <label for="escape">Escape</label>
+      <input
+        id="escape"
+        type="text"
+        formControlName="escape"
+        [matAutocomplete]="escape"
+        class="form-control autocomplete"
+      />
+      <mat-autocomplete [panelWidth]="'10rem'" #escape="matAutocomplete">
+        <mat-option value="\">\</mat-option>
+      </mat-autocomplete>
+    </span>
+
+    <span>
+      <label for="quote">Quote</label>
+      <input
+        id="quote"
+        type="text"
+        formControlName="quote"
+        [matAutocomplete]="quote"
+        class="form-control autocomplete"
+      />
+      <mat-autocomplete [panelWidth]="'10rem'" #quote="matAutocomplete">
+        <mat-option value="'">'</mat-option>
+        <mat-option value='"'>"</mat-option>
+      </mat-autocomplete>
+    </span>
+
+    <span>
+      <label for="merge-delimeters">Merge Delimiters</label>
+      <input
+        id="merge-delimeters"
+        type="checkbox"
+        formControlName="mergeDelimiters"
+      />
+    </span>
+  </div>
+
+  <div class="options-row-two options-row">
+    <span>
+      <label for="missing-value">Missing Value</label>
+      <input
+        id="missing-value"
+        type="text"
+        formControlName="missingValue"
+        [matAutocomplete]="missingValue"
+        class="form-control autocomplete"
+      />
+      <mat-autocomplete [panelWidth]="'10rem'" #missingValue="matAutocomplete">
+        <mat-option value="NaN">NaN</mat-option>
+        <mat-option value="0">0</mat-option>
+      </mat-autocomplete>
+    </span>
+
+    <span>
+      <label for="duplicate-key-action">Duplicate Key Action</label>
+      <input
+        id="duplicate-key-action"
+        type="text"
+        formControlName="duplicateKeyAction"
+        [matAutocomplete]="duplicateKeyAction"
+        class="form-control autocomplete"
+      />
+      <mat-autocomplete
+        [panelWidth]="'10rem'"
+        #duplicateKeyAction="matAutocomplete"
+      >
+        <mat-option value="throwException">throwException</mat-option>
+        <mat-option value="sumProducts">sumProducts</mat-option>
+        <mat-option value="min">min</mat-option>
+        <mat-option value="max">max</mat-option>
+        <mat-option value="av">av</mat-option>
+      </mat-autocomplete>
+    </span>
+
+    <span>
+      <label for="horizontal-dimension">Horizontal Dimension</label>
+      <input
+        id="horizontal-dimension"
+        type="text"
+        formControlName="horizontalDimName"
+      />
+    </span>
+    <ng-container [formGroup]="horizontalDimension">
+      <span>
+        <label for="type">Type</label>
+        <select id="type" formControlName="type">
+          <option value="string">string</option>
+          <option value="value">value</option>
+          <option value="time">time</option>
+        </select>
+      </span>
+
+      <span>
+        <label for="format">Format</label>
+        <input
+          id="units"
+          type="text"
+          formControlName="units"
+          [matAutocomplete]="auto"
+          class="form-control autocomplete"
+        />
+        <mat-autocomplete [panelWidth]="'10rem'" #auto="matAutocomplete">
+          <ng-container *ngIf="type.value === 'time'">
+            <mat-option
+              *ngFor="let tfs of timeFormatStrings"
+              [value]="tfs.value"
+            >
+              {{ tfs.label }}
+            </mat-option>
+          </ng-container>
+        </mat-autocomplete>
+      </span>
+    </ng-container>
+  </div>
+  <!-- HEADER END -->
+
+  <!-- Table START -->
+  <div id="import-csv-canvas-container" class="canvas-container">
+    <table *ngIf="parsedLines.length">
+      <tr>
+        <th>Dimension</th>
+        <td
+          *ngFor="let col of csvCols; let i = index"
+          class="checkbox-container"
+        >
+          <input
+            *ngIf="selectedCol > i"
+            type="checkbox"
+            name="{{ i }}"
+            id="{{ i }}"
+            (change)="updatedCheckBoxValue($event, i)"
+          />
+        </td>
+      </tr>
+
+      <tr>
+        <th>Type</th>
+        <td *ngFor="let col of csvCols; let i = index">
+          <ng-container *ngIf="selectedCol > i && checkboxes[i]">
+            <select
+              value="{{ spec?.dimensions[i]?.type }}"
+              (change)="spec.dimensions[i].type = $event.target.value"
+            >
+              <option value="string">string</option>
+              <option value="value">value</option>
+              <option value="time">time</option>
+            </select>
+          </ng-container>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Format</th>
+        <td *ngFor="let col of csvCols; let i = index">
+          <input
+            *ngIf="selectedCol > i && checkboxes[i]"
+            type="text"
+            [matAutocomplete]="autocompleteFormat"
+            class="form-control"
+            (change)="spec.dimensions[i].units = $event.target.value"
+          />
+          <mat-autocomplete
+            id="format_{{ i }}"
+            [panelWidth]="'10rem'"
+            #autocompleteFormat="matAutocomplete"
+            (optionSelected)="spec.dimensions[i].units = $event.option.value"
+          >
+            <ng-container *ngIf="spec?.dimensions[i]?.type === 'time'">
+              <mat-option
+                *ngFor="let tfs of timeFormatStrings"
+                [value]="tfs.value"
+              >
+                {{ tfs.label }}
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Name</th>
+        <td *ngFor="let col of csvCols; let i = index">
+          <input
+            *ngIf="selectedCol > i && checkboxes[i]"
+            type="text"
+            [matAutocomplete]="autocompleteName"
+            class="form-control"
+            value="{{ initialDimensionNames[i] }}"
+            (change)="spec.dimensionNames[i] = $event.target.value"
+          />
+          <mat-autocomplete
+            id="name_{{ i }}"
+            [panelWidth]="'10rem'"
+            #autocompleteName="matAutocomplete"
+            (optionSelected)="spec.dimensionNames[i] = $event.option.value"
+          >
+            <mat-option [value]="parsedLines[selectedHeader][i]"
+              >{{ parsedLines[selectedHeader][i] }}
+            </mat-option>
+          </mat-autocomplete>
+        </td>
+      </tr>
+
+      <tr *ngFor="let row of parsedLines; let rowIndex = index">
+        <th class="header" (click)="selectHeader(rowIndex)">
+          <ng-container *ngIf="rowIndex === selectedHeader"
+            >Header</ng-container
+          >
+        </th>
+        <td
+          *ngFor="let rowElement of row; let colIndex = index"
+          (click)="selectRowAndCol(rowIndex, colIndex)"
+          [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
+        >
+          {{ rowElement }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  <!-- Table END -->
+
+  <div class="form-buttons">
+    <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
+      Cancel
+    </button>
+
+    <button
+      mat-raised-button
+      class="btn ok-btn submit"
+      type="submit"
+      (click)="handleSubmit()"
+    >
+      Import
+    </button>
+  </div>
+</div>

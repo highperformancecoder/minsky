@@ -24,6 +24,7 @@ namespace minsky
   struct GodleyAssetClass
   {
     enum AssetClass {noAssetClass, asset, liability, equity};
+    enum DisplayStyle {DRCR, sign}; ///< how to display -ve data in table
   };
 }
 

@@ -21,11 +21,14 @@
 
 #include "variable.h"
 #include "godleyTable.h"
+#include "godleyTableWindow.h"
 #include "zoom.h"
 #include "intrusiveMap.h"
 #include "classdesc_access.h"
 #include "SVGItem.h"
 #include "group.h"
+#include "valueId.h"
+#include "variableValue.h"
 
 #include <map>
 #include <cairo.h>
@@ -37,21 +40,13 @@ namespace minsky
 
   class GodleyIcon: public ItemT<GodleyIcon>
   {
+    
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0;
+    bool m_editorMode=false;
     CLASSDESC_ACCESS(GodleyIcon);
     friend struct SchemaHelper;
 
-    /// support godley edit window on canvas
-    struct CopiableUniquePtr: public std::unique_ptr<GodleyTableEditor>
-    {
-      // make this copiable, but do nothing on copying
-      CopiableUniquePtr();
-      ~CopiableUniquePtr();
-      CopiableUniquePtr(const CopiableUniquePtr&);
-      CopiableUniquePtr& operator=(const CopiableUniquePtr&) {return *this;}
-    };
-    CopiableUniquePtr editor;
 
     void updateBB() {
       auto wasSelected=selected;
@@ -65,13 +60,13 @@ namespace minsky
   public:
     static SVGRenderer svgRenderer;
     
-    GodleyIcon() {iWidth(150); iHeight(150);}
+    GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets();}
     GodleyIcon(const GodleyIcon&)=default;
     GodleyIcon& operator=(const GodleyIcon&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
-    bool editorMode() const {return editor.get();}
+    bool editorMode() const {return m_editorMode;}
     void toggleEditorMode();
 
     /// enable/disable drawing buttons in table on canvas display
@@ -81,11 +76,13 @@ namespace minsky
     bool variableDisplay=true;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay; update();}
 
-    /// sets editor's display values attributes to current global preferences
-    void setEditorDisplayValues();
+    /// table data. Must be declared before editor
+    GodleyTable table;
+    /// rendering as a godley table
+    GodleyTableEditor editor{*this};
+    /// for rendering the popup window
+    GodleyTableWindow popup{*this};
     
-    CopiableUniquePtr godleyT;    
-
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
     
@@ -95,7 +92,7 @@ namespace minsky
     float bottomMargin() const {return variableDisplay? stockMargin*scaleFactor()*zoomFactor(): 0;}
 
     void resize(const LassoBox&) override;
-    void removeControlledItems(Group&) const override;
+    void removeControlledItems(GroupItems&) const override;
  
     /// set cell(row,col) with contents val
     void setCell(int row, int col, const string& val);
@@ -109,7 +106,7 @@ namespace minsky
     typedef std::vector<VariablePtr> Variables;
     const Variables& flowVars() const {return m_flowVars;}
     const Variables& stockVars() const {return m_stockVars;}
-    GodleyTable table;
+
     /// updates the variable lists with the Godley table
     void update();
     
@@ -134,9 +131,7 @@ namespace minsky
     
     /// returns valueid for variable reference in table
     // TODO: this should be refactored to a more central location
-    std::string valueId(const std::string& x) const {
-      return VariableValue::valueId(group.lock(), x);
-    }
+    std::string valueId(const std::string& x) const {return minsky::valueId(group.lock(), x);}
     /// performs dimensional analysis on stock var column \a stockName
     /// @param check indicates whether a consistency check is applied
     Units stockVarUnits(const std::string& stockName, bool check) const;
@@ -153,6 +148,9 @@ namespace minsky
     void onMouseLeave() override;
     bool onKeyPress(int, const std::string&, int) override;
     bool inItem(float, float) const override;
+
+    /// clean up popup window structures on window close
+    void destroyFrame() {popup.destroyFrame();}
 
   private:
     void updateVars(Variables& vars, 

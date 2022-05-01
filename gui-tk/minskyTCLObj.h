@@ -52,60 +52,14 @@ namespace minsky
               gtw->pushHistory();
         return;
       }
-    if (m.doPushHistory &&
-        argv0!="minsky.availableOperations" &&
-        argv0!="minsky.canvas.select" &&
-        argv0!="minsky.canvas.recentre" &&
-        argv0!="minsky.canvas.focusFollowsMouse" &&
-        argv0!="minsky.canvas.displayDelayedTooltip" &&
-        (argv0!="minsky.canvas.requestRedraw" || m.eventRecord.get()) &&
-        /* ensure we record mouse movements, but filter from history */
-        (argv0!="minsky.canvas.mouseDown" || m.eventRecord.get()) &&
-        (argv0!="minsky.canvas.mouseMove" || m.eventRecord.get()) && 
-        argv0!="minsky.clearAll" &&
-        argv0!="minsky.doPushHistory" &&
-        argv0!="minsky.model.moveTo" &&
-        argv0!="minsky.canvas.model.moveTo" &&
-        argv0!="minsky.canvas.model.zoom" &&
-        argv0!="minsky.model.zoom" &&
-        argv0!="minsky.newGlobalGroupTCL" &&
-        argv0!="minsky.popFlags" &&
-        argv0!="minsky.pushFlags" &&
-        argv0!="minsky.select" &&
-        argv0!="minsky.selectVar" &&
-        argv0!="minsky.setGodleyIconResource" &&
-        argv0!="minsky.setGroupIconResource" &&
-        argv0!="minsky.setLockIconResource" &&
-        argv0!="minsky.step" &&
-        argv0!="minsky.running" &&
-        argv0!="minsky.multipleEquities" &&
-        argv0.find("minsky.panopticon")==string::npos &&
-        argv0.find("minsky.equationDisplay")==string::npos && 
-        argv0.find("minsky.setGodleyDisplayValue")==string::npos && 
-        (argv0.find(".get")==string::npos  || m.eventRecord.get()) && 
-        argv0.find(".@elem")==string::npos && 
-        argv0.find(".mouseFocus")==string::npos
-        )
+
+    if (m.commandHook(argv0,argc-1) && m.eventRecord.get() && argv0!="minsky.startRecording")
       {
-        auto t=getCommandData(argv0);
-        if (!t || (!t->is_const && (!t->is_setterGetter || argc>1)))
-          {
-            //            cmdHist[argv0]++;
-            bool modelChanged=m.pushHistory();
-            if (modelChanged && argv0!="minsky.load" && argv0!="minsky.reverse" && argv0!="minsky.save") m.markEdited();
-            if (m.eventRecord.get() && argv0!="minsky.startRecording" &&
-                (modelChanged ||
-                 argv0.find("minsky.canvas.mouse")!=string::npos ||
-                 argv0=="minsky.getItemAt" ||
-                 argv0=="minsky.getItemAtFocus" ||
-                 argv0=="minsky.getWireAt"))
-              {
-                for (int i=0; i<argc; ++i)
-                  (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
-                (*m.eventRecord)<<endl;
-              }
-          }
+        for (int i=0; i<argc; ++i)
+          (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
+        (*m.eventRecord)<<endl;
       }
+
     if (m.rebuildTCLcommands)
       {
         TCL_obj(minskyTCL_obj(), "minsky", m);

@@ -1,0 +1,20 @@
+<div class="instance_container">
+  <div
+    class="instance"
+    (click)="goToInstance(i)"
+    *ngFor="let instance of instances; index as i"
+  >
+    {{ instance }}
+  </div>
+</div>
+
+<footer>
+  <button
+    mat-raised-button
+    type="submit"
+    class="submit"
+    (click)="closeWindow()"
+  >
+    OK
+  </button>
+</footer>

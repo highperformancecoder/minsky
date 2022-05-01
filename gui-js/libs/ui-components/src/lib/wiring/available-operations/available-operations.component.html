@@ -1,0 +1,25 @@
+<ng-container *ngIf="title && operations.length">
+  <button class="tab" [matMenuTriggerFor]="opMenu" aria-label="{{ title }}">
+    <img
+      src="assets/images/icons/{{ operations[0] }}.gif"
+      alt="{{ title }}"
+      title="{{ title }}"
+    />
+  </button>
+
+  <mat-menu yPosition="above" #opMenu="matMenu" class="horizontal">
+    <ng-container *ngFor="let operation of operations">
+      <button
+        mat-menu-item
+        class="tab"
+        (click)="communicationService.addOperation(operation)"
+      >
+        <img
+          src="assets/images/icons/{{ operation }}.gif"
+          alt="{{ operation }}"
+          title="{{ operation }}"
+        />
+      </button>
+    </ng-container>
+  </mat-menu>
+</ng-container>

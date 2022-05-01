@@ -1,0 +1,43 @@
+@import './variables.scss';
+
+.popup-wrapper {
+  font-family: $font-family;
+  margin: 0 auto;
+  max-width: fit-content;
+}
+
+.popup-title {
+  margin: 30px 0;
+  text-align: center;
+  font-size: $secondary-font;
+}
+
+.form-control {
+  margin-bottom: 10px;
+}
+
+.form-control label {
+  min-width: 160px;
+  display: inline-block;
+  text-align: right;
+  margin-right: 10px;
+}
+
+input {
+  width: 120px;
+}
+
+.form-buttons {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.form-buttons .btn {
+  display: inline-block;
+}
+
+.submit {
+  // Do not add css properties here
+  // this is required to handle submit form on click of enter
+  // the app component gets the element by className and clicks it
+}

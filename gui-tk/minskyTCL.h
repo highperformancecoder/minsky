@@ -22,6 +22,7 @@
 #include "minsky.h"
 #include "godleyTableWindow.h"
 #include "variableInstanceList.h"
+#include "classdesc_access.h"
 #include <fstream>
 #include <memory>
 
@@ -39,27 +40,9 @@ namespace minsky
   ecolab::TCL_obj_t& minskyTCL_obj();
   void setTCL_objAttributes();
 
-  std::size_t physicalMem();
-  
   struct MinskyTCL: public Minsky
   {
     bool rebuildTCLcommands=false;
-
-    /// list the possible string values of an enum (for TCL)
-    template <class E> void enumVals()
-    {
-      tclreturn r;
-      for (std::size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
-        r << enum_keysData<E>::keysData[i].name;
-    }
-
-    /// list of available operations
-    void availableOperations() {enumVals<OperationType::Type>();}
-    /// list of available variable types
-    void variableTypes() {enumVals<VariableType::Type>();}
-
-    /// return list of available asset classes
-    void assetClasses() {enumVals<GodleyTable::AssetClass>();}
 
     /// generate a TCL_obj referring to variableValues[valueId]
     void getValue(const std::string& valueId);
@@ -73,15 +56,10 @@ namespace minsky
       eventRecord.reset();
     }
 
-    
-
     /// fill in a Tk image with the icon for a specific operation
     /// @param Tk imageName
     /// @param operationName
     static void operationIcon(const char* imageName, const char* opName);
-
-    void putClipboard(const std::string& s) const override; 
-    std::string getClipboard() const override; 
 
     std::set<string> matchingTableColumns(const std::string& currTable, GodleyAssetClass::AssetClass ac) {
       auto it=TCL_obj_properties().find(currTable);
@@ -333,6 +311,7 @@ namespace minsky
       canvas.openGroupInCanvas(canvas.item);
       TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);
     }
+    /// reinitialises canvas to the toplevel group
     void openModelInCanvas() {
       canvas.openGroupInCanvas(model);
       TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);
@@ -346,13 +325,7 @@ namespace minsky
           std::string name="godleyWindow"+to_string(std::size_t(canvas.item.get()));
           if (TCL_obj_properties().count(name)==0)
             {
-              auto godley=new GodleyTableWindow(gi);
-              // pass ownership of object to TCL interpreter
-              Tcl_CreateCommand
-                (ecolab::interp(), (name+".delete").c_str(),
-                 (Tcl_CmdProc*)deleteTclObject<GodleyTableWindow>,
-                 (ClientData)godley,NULL);
-              TCL_obj(minskyTCL_obj(),name,*godley);
+              TCL_obj(minskyTCL_obj(),name,*gi);
             }
           return name;
         }
@@ -386,7 +359,7 @@ namespace minsky
           if (auto v=canvas.item->variableCast())
             {
               setBusyCursor();
-              v->importFromCSV(filename, *spec->memberptr);
+              v->importFromCSV(filename, spec->memberptr->toSchema());
               clearBusyCursor();
             }
     }
@@ -399,47 +372,18 @@ namespace minsky
       rebuildTCLcommands=true;
     }
 
-    void latex(const char* filename, bool wrapLaTeXLines);
-
-    void matlab(const char* filename) {
-      if (cycleCheck()) throw error("cyclic network detected");
-      ofstream f(filename);
-      MathDAG::SystemOfEquations(*this).matlab(f);
-    }
-
-    // for testing purposes
-    string latex2pango(const char* x) {return latexToPango(x);}
-
     /// restore model to state \a changes ago 
     void undo(TCL_args args) {
       if (args.count) Minsky::undo(args);
       else Minsky::undo();
     }
 
-    string valueId(const string& x) {return VariableValue::valueId(x);}
-
-    vector<string> listFonts() const {
-      vector<string> r;
-#ifdef PANGO
-      PangoFontFamily **families;
-      int num;
-      pango_font_map_list_families(pango_cairo_font_map_get_default(),
-                                   &families,&num);
-      for (int i=0; i<num; ++i)
-        r.push_back(pango_font_family_get_name(families[i]));
-      g_free(families);
-#endif
-      return r;
-    }
+    string valueId(const string& x) {return minsky::valueId(x);}
 
     ecolab::Accessor<std::string> defaultFont{
-      [this]() {return _defaultFont? _defaultFont.get(): "";},
-      [this](const std::string& x) {
-        _defaultFont.reset(new char[x.length()+1]);
-        strcpy(_defaultFont.get(),x.c_str());
-        ecolab::Pango::defaultFamily=_defaultFont.get();
-        return x;
-      }};
+      [this]() {return Minsky::defaultFont();},
+      [this](const std::string& x) {return Minsky::defaultFont(x);}
+    };
 
     void setBusyCursor() override
     {tclcmd()<<"setCursor watch\n";}
@@ -448,9 +392,6 @@ namespace minsky
 
     void message(const std::string& m) override
     {(tclcmd()<<"if [llength [info command tk_messageBox]] {tk_messageBox -message \"")|m|"\" -type ok}\n";}
-
-    void redrawAllGodleyTables() override 
-    {tclcmd()<<"if [llength [info command redrawAllGodleyTables]] redrawAllGodleyTables\n";}
 
     void runItemDeletedCallback(const Item& item) override
     {tclcmd()<<item.deleteCallback<<'\n';}
@@ -468,9 +409,19 @@ namespace minsky
     
     static int numOpArgs(OperationType::Type o);
     OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
+
+    CLASSDESC_ACCESS(MinskyTCL);
   private:
     std::unique_ptr<char[]> _defaultFont;
 
+    CmdData getCommandData(const std::string& command) const override {
+      auto t=minsky::getCommandData(command);
+      if (!t) return no_command;
+      if (t->is_const) return is_const;
+      if (t->is_setterGetter) return is_setterGetter;
+      return generic;
+    }
+    
   };
 }
 

@@ -20,6 +20,7 @@
 #include "variableType.h"
 #include "evalOp.h"
 #include "selection.h"
+#include "lasso.h"
 #include "xvector.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>

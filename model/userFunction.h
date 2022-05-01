@@ -54,7 +54,7 @@ namespace  minsky
     std::string name() const override;
 
     // required by the compiler
-    static UserFunction* create(Type t) 
+    static UserFunction* create(OperationType::Type t) 
     {return (t==OperationType::userFunction)? new UserFunction: nullptr;}
     
   };

@@ -45,7 +45,7 @@ namespace minsky
 
   Ravel::Ravel()
   {
-    if (!*this)
+    if (!ravel::Ravel::operator bool())
       {
         tooltip="https://ravelation.hpcoders.com.au";
         detailedText=lastError();
@@ -628,7 +628,7 @@ namespace
           {
             auto& nm=hl.handleNames[i];
             // non-breaking space 0xa0 not treated as space by isspace
-            if (find_if(nm.begin(), nm.end(), [](char i){return !isspace(i)&&i!=0xa0;})==nm.end())
+            if (find_if(nm.begin(), nm.end(), [](unsigned char i){return !isspace(i)&&i!=0xa0;})==nm.end())
               continue; // disregard wholly white space strings
             if (!checkHandleNames[i].insert(nm).second) // check for duplicated handle names in a column
               throw runtime_error("duplicate handle name "+nm);

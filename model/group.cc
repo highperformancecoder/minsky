@@ -129,11 +129,13 @@ namespace minsky
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
     map<IntOp*,bool> integrals;
-    for (auto& i: items)
+    // cloning IntOps mutates items, as intVars get inserted and removed
+    auto itemsCopy=items;
+    for (auto& i: itemsCopy)
       if (auto integ=dynamic_cast<IntOp*>(i.get()))
         integrals.emplace(integ, integ->coupled());
-    for (auto& i: items)
-      cloneMap[i.get()]=r->addItem(i->clone());
+    for (auto& i: itemsCopy)
+        cloneMap[i.get()]=r->addItem(i->clone());
     for (auto& i: groups)
       cloneMap[i.get()]=r->addGroup(i->copyUnowned());
     for (auto& w: wires) 
@@ -175,7 +177,7 @@ namespace minsky
     return r;
   }
 
-  ItemPtr Group::removeItem(const Item& it)
+  ItemPtr GroupItems::removeItem(const Item& it)
   {
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
@@ -318,8 +320,7 @@ namespace minsky
                 }
               else
                 // moving between unrelated groups
-                if (v->name()[0]==':' && VariableValue::valueId(destGroup,v->name()) !=
-                    VariableValue::valueId(origGroup,v->name()))
+                if (v->name()[0]==':' && valueId(destGroup,v->name()) != valueId(origGroup,v->name()))
                   // maintain linkage if possible, otherwise make local
                   v->name(v->name().substr(1));
             }
@@ -478,7 +479,7 @@ namespace minsky
   VariablePtr Group::addIOVar()
   {
     VariablePtr v(VariableType::flow,
-                  VariableValue::uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
+                  uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
     addItem(v,true);
     createdIOvariables.push_back(v);
     v->rotation(rotation());
@@ -879,6 +880,7 @@ namespace minsky
           i->zoom(i->x(), i->y(), factor);
         m_displayContentsChanged|=i->displayContentsChanged();
       }
+    //    minsky().canvas.requestRedraw();
   }
 
   ClickType::Type Group::clickType(float x, float y)
@@ -1207,6 +1209,14 @@ namespace minsky
   return vector<string>(r.begin(),r.end());
 }
 
+  void Group::gotoBookmark_b(const Bookmark& b)
+  {
+    moveTo(b.x, b.y);
+    zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
+    // TODO add canvas::gotoBookmark to avoid dependency inversion
+    if (this==cminsky().canvas.model.get()) minsky().canvas.requestRedraw();
+  }
+  
   std::string Group::defaultExtension() const
   {
     if (findAny(&GroupItems::items, [](const ItemPtr& i){return dynamic_cast<Ravel*>(i.get());}))

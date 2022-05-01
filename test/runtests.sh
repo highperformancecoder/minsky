@@ -14,7 +14,7 @@ for i in test/00/*.sh; do
     # greek characters in variable names cause problems in docker containers
     if [ "$TRAVIS" = 1 -a $i = test/00/compareSimulationWithLogged.sh ]; then echo disabled; continue; fi
     # disable RESTProcess for now
-    if [ $i = test/00/RESTService.sh ]; then echo disabled; continue; fi
+#    if [ $i = test/00/RESTService.sh ]; then echo disabled; continue; fi
     # we need to expose output generated here to prevent a build timeout
     if [ "$TRAVIS" = 1 -a $i = test/00/checkOverrides.sh ]; then
         sh $i

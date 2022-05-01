@@ -27,7 +27,7 @@
 #include "classdesc_access.h"
 
 #include "item.h"
-#include "variable.h"
+//#include "variable.h"
 #include "slider.h"
 
 #include <vector>
@@ -154,74 +154,7 @@ namespace minsky
     Units units(bool check) const override {return m_ports[1]->units(check);}
   };
 
-  class IntOp;
-  struct IntOpAccessor: public ecolab::TCLAccessor<minsky::IntOp, std::string>
-  {IntOpAccessor();};
-  
-  class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>,
-               public IntOpAccessor
-  {
-    typedef Operation<OperationType::integrate> Super;
-    // integrals have named integration variables
-    ///integration variable associated with this op.
-    CLASSDESC_ACCESS(IntOp);
-    friend struct SchemaHelper;
-    bool m_coupled=true;
-  public:
-    // offset for coupled integration variable, tr
-    static constexpr float intVarOffset=10;
-
-    IntOp() {
-      description("");
-    }
-    // ensure that copies create a new integral variable
-    IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
-    ~IntOp() {Item::removeControlledItems();}
-    
-    IntOp& operator=(const IntOp& x); 
-
-    /// @{ name of the associated integral variable
-    std::string description(const std::string& desc);
-    std::string description() const {return intVar? intVar->name(): "";}
-    /// @}
-
-    std::weak_ptr<Port> ports(std::size_t i) const override {
-      // if coupled, the output port is the intVar's output
-      if (i==0 && coupled() && intVar) return intVar->ports(0);
-      return Item::ports(i);
-    }
-      
-    std::string valueId() const 
-    {return intVar->valueId();}
-    
-    bool attachedToDefiningVar(std::set<const Item*>&) const override;
-    using Item::attachedToDefiningVar;
-    void draw(cairo_t*) const override;
-    void resize(const LassoBox& b) override;  
-
-    /// return reference to integration variable
-    VariablePtr intVar; 
-
-    bool onKeyPress(int keySym, const std::string& utf8, int state) override {
-      if (intVar) return intVar->onKeyPress(keySym, utf8, state);
-      return false;
-    }
-
-    /// toggles coupled state of integration variable. Only valid for integrate
-    /// @return coupled state
-    bool toggleCoupled();
-    bool coupled() const {return m_coupled;}
-    Units units(bool) const override;
-
-    void pack(classdesc::pack_t& x, const std::string& d) const override;
-    void unpack(classdesc::unpack_t& x, const std::string& d) override;
-
-    void insertControlled(Selection& selection) override;
-    void removeControlledItems(minsky::Group&) const override;
-    using Item::removeControlledItems;
-  };
-
+  /// base class for operations that have names
   class NamedOp: public ecolab::TCLAccessor<NamedOp,std::string>
   {
   protected:
@@ -240,36 +173,6 @@ namespace minsky
 
   };
   
-  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>,
-                public NamedOp
-  {
-    CLASSDESC_ACCESS(DataOp);
-    friend struct SchemaHelper;
-    void updateBB() override {bb.update(*this);}
-  public:
-    ~DataOp() {}
-    
-    const DataOp& operator=(const DataOp& x); 
-
-    std::map<double, double> data;
-    void readData(const std::string& fileName);
-    /// initialise with uniform random numbers 
-    void initRandom(double xmin, double xmax, unsigned numSamples);
-    /// interpolates y data between x values bounding the argument
-    double interpolate(double) const;
-    /// derivative of the interpolate function. At the data points, the
-    /// derivative is defined as the weighted average of the left & right
-    /// derivatives, weighted by the respective intervals
-    double deriv(double) const;
-    Units units(bool check) const override {return m_ports[1]->units(check);}
-
-    /// called to initialise a variable value when no input wire is connected
-    //    void initOutputVariableValue(VariableValue&) const;
-    
-    void pack(classdesc::pack_t& x, const std::string& d) const override;
-    void unpack(classdesc::unpack_t& x, const std::string& d) override;
-  };
-
   /// shared_ptr class for polymorphic operation objects. Note, you
   /// may assume that this pointer is always valid, although currently
   /// the implementation doesn't guarantee it (eg reset() is exposed).

@@ -34,35 +34,37 @@ minsky.defaultFont Sans
 proc afterMinskyStarted {} {
   minsky.load $here/examples/1Free.mky
   minsky.multipleEquities 1
+  minsky.displayStyle sign
+  minsky.displayValues 1
   findObject GodleyIcon
   set id [minsky.openGodley]
   openGodley \$id
-  \$id.displayStyle sign
-  \$id.displayValues 1
-  \$id.renderToSVG 1FreeBase.svg
-  \$id.selectedCol 1
-  \$id.selectedRow 2
-  \$id.insertIdx 0
-  \$id.selectIdx 3
-  \$id.hoverRow 2
-  \$id.hoverCol 2
-  \$id.mouseMoveB1 [expr [lindex [\$id.colLeftMargin] 2]+10] [expr 4*[\$id.rowHeight]+[\$id.topTableOffset]]
-  \$id.displayStyle DRCR
-  \$id.renderToSVG 1Free11Selected.svg
-  \$id.selectedCol 0
-  \$id.renderToSVG 1FreeSelectedRow.svg
-  \$id.selectedCol 1
-  \$id.selectedRow 0
-  \$id.mouseMoveB1 [expr [lindex [\$id.colLeftMargin] 2]+10] [expr 3*[\$id.rowHeight]+[\$id.topTableOffset]]
-  \$id.renderToSVG 1FreeSelectedCol.svg
+  \$id.popup.enableButtons
+  \$id.popup.renderToSVG 1FreeBase.svg
+  \$id.popup.selectedCol 1
+  \$id.popup.selectedRow 2
+  \$id.popup.insertIdx 0
+  \$id.popup.selectIdx 3
+  \$id.popup.hoverRow 2
+  \$id.popup.hoverCol 2
+  \$id.popup.mouseMoveB1 [expr [lindex [\$id.popup.colLeftMargin] 2]+10] [expr 4*[\$id.popup.rowHeight]+[\$id.popup.topTableOffset]]
+  minsky.displayStyle DRCR
+  \$id.popup.renderToSVG 1Free11Selected.svg
+  \$id.popup.selectedCol 0
+  \$id.popup.renderToSVG 1FreeSelectedRow.svg
+  \$id.popup.selectedCol 1
+  \$id.popup.selectedRow 0
+  \$id.popup.mouseMoveB1 [expr [lindex [\$id.popup.colLeftMargin] 2]+10] [expr 3*[\$id.popup.rowHeight]+[\$id.popup.topTableOffset]]
+  \$id.popup.renderToSVG 1FreeSelectedCol.svg
   
 
   minsky.load $here/examples/LoanableFunds.mky
   findObject GodleyIcon
   set id [minsky.openGodley]
-  \$id.displayStyle DRCR
-  \$id.displayValues 0
-  \$id.renderToSVG LoanableFundsBase.svg
+  minsky.displayStyle DRCR
+  minsky.displayValues 0
+  \$id.popup.enableButtons
+  \$id.popup.renderToSVG LoanableFundsBase.svg
 
   tcl_exit
 }

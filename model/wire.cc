@@ -17,11 +17,12 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "geometry.h"
 #include "wire.h"
+#include "geometry.h"
 #include "port.h"
 #include "group.h"
 #include "selection.h"
+#include "lasso.h"
 #include "operation.h"
 #include "plotWidget.h"
 #include "SVGItem.h"

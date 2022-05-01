@@ -722,8 +722,14 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 .menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
-.menubar.edit add command -label "Randomize layout" -command minsky.model.randomLayout
-.menubar.edit add command -label "Auto layout" -command minsky.model.autoLayout
+.menubar.edit add command -label "Randomize layout" -command minsky.randomLayout
+.menubar.edit add command -label "Auto layout" -command minsky.autoLayout
+
+proc getClipboard {} {
+    set contents ""
+    catch {clipboard get -type UTF8_STRING} contents
+    return contents
+}
 
 proc togglePaste {} {
     if {[getClipboard]==""} {
@@ -987,7 +993,7 @@ pack .plts.canvas -fill both -expand 1
 bind .plts.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
 menu .plts.context -tearoff 0   
 
-bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDownCommon %x %y}
+bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDown %x %y}
 bind .plts.canvas <ButtonRelease-1> {wrapHoverMouseTab plotTab mouseUp %x %y}
 bind .plts.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab plotTab mouseMove %x %y}
 bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
@@ -996,7 +1002,7 @@ bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
 addTab gdlys "Godleys" minsky.godleyTab
 pack .gdlys.canvas -fill both -expand 1
 
-bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDownCommon %x %y}
+bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDown %x %y}
 bind .gdlys.canvas <ButtonRelease-1> {wrapHoverMouseTab godleyTab mouseUp %x %y}
 bind .gdlys.canvas <Motion> {.gdlys.canvas configure -cursor {}; wrapHoverMouseTab godleyTab mouseMove %x %y}
 bind .gdlys.canvas <Leave> {after cancel hoverMouseTab godleyTab}
@@ -1357,10 +1363,9 @@ proc step {} {
     } else {
         # run simulation
         global preferences
-        set lastt [t]
         if {[catch minsky.step errMsg options] && [running]} {runstop}
         if {[minsky.t0]>[t] || [minsky.tmax]<[t]} {runstop}
-        .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
+        .controls.statusbar configure -text "t: [t] Δt: [format %g [deltaT]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
         update
         return -options $options $errMsg
@@ -1447,6 +1452,8 @@ proc openNamedFile {ofname} {
         eval minsky.load {$ofname}
         file delete -- [autoBackupName]
     }
+    # setting simulationDelay causes the edited (dirty) flag to be set, amongst other things
+    pushFlags
     doPushHistory 0
     setAutoSaveFile [autoBackupName]
 
@@ -1455,7 +1462,6 @@ proc openNamedFile {ofname} {
     setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
 
     canvas.focusFollowsMouse $preferences(focusFollowsMouse)
-    pushFlags
     recentreCanvas
 
    .controls.simSpeed set [simulationDelay]
@@ -1464,9 +1470,9 @@ proc openNamedFile {ofname} {
     canvas.requestRedraw
     # not sure why this is needed, but initial draw doesn't happen without it
     event generate .wiring.canvas <Expose>
-    # setting simulationDelay causes the edited (dirty) flag to be set
-    pushHistory
+    update
     doPushHistory 1
+    pushHistory
     popFlags
 }
 
@@ -1549,7 +1555,7 @@ proc saveAs {} {
 
 proc newSystem {} {
     doPushHistory 0
-    if {[edited] || [file exists [autoBackupName]]} {
+    if {[edited]} {
         switch [tk_messageBox -message "Save?" -type yesnocancel] {
             yes save
             no {}
@@ -1557,7 +1563,7 @@ proc newSystem {} {
         }
     }    
     catch {reset}
-    clearAllMaps
+    clearAllMapsTCL
     pushFlags
     deleteSubsidiaryTopLevels
     clearHistory
@@ -1565,6 +1571,7 @@ proc newSystem {} {
     recentreCanvas
     global fname progName
     set fname ""
+    file delete [autoBackupName]
     wm title . "$progName: New System"
     popFlags
     doPushHistory 1
@@ -1821,7 +1828,7 @@ proc deleteSubsidiaryTopLevels {} {
 
 proc exit {} {
     # check if the model has been saved yet
-    if {[edited]||[file exists [autoBackupName]]} {
+    if {[edited]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
             no {file delete -- [autoBackupName]}
@@ -1988,5 +1995,5 @@ if {[llength [info commands afterMinskyStarted]]>0} {
 setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
 disableEventProcessing
 popFlags
-pushHistory
+#pushHistory
 

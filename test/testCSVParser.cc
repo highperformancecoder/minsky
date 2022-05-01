@@ -19,10 +19,14 @@
 #include "CSVDialog.h"
 #include "group.h"
 #include "selection.h"
+#include "dimension.h"
+#include "lasso.h"
+#include "variableValue.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 using namespace std;
+using namespace civita;
 
 SUITE(CSVParser)
 {

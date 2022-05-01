@@ -137,7 +137,7 @@ SUITE(ItemTab)
 
       TEST_FIXTURE(MockItemTab, mouseDownUp)
       {
-        mouseDownCommon(50,50);
+        mouseDown(50,50);
         mouseUp(60,75);
         CHECK_EQUAL(60,itemVector[1]->itemTabX);
         CHECK_EQUAL(75,itemVector[1]->itemTabY);

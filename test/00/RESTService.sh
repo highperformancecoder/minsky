@@ -28,16 +28,13 @@ pass()
 
 trap "fail" 1 2 3 15
 
-$here/RESTService/RESTService >output <<EOF
-/minsky/variableValues/@elem/constant:one
-
+$here/RESTService/minsky-RESTService -batch >output <<EOF
+/minsky/variableValues/@elem/"constant:one"
 EOF
 if [ $? -ne 0 ]; then fail; fi
 
 cat >reference <<EOF
-cmd>/minsky/variableValues/@elem/constant:one
-{"first":"constant:one","second":{"godleyOverridden":false,"init":"1","name":"constant:one","tensorInit":{"data":[],"dims":[]},"units":[],"unitsCached":false,"xVector":[]}}
-cmd>
+/minsky/variableValues/@elem/"constant:one"=>{"first":"constant:one","second":{"csvDialog":{"backgroundColour":{"a":1,"b":0.80000000000000004,"g":0.80000000000000004,"r":0.80000000000000004},"colWidth":50,"enabled":true,"flashNameRow":false,"resolutionScaleFactor":1,"spec":{"columnar":false,"dataColOffset":0,"dataRowOffset":0,"decSeparator":".","dimensionCols":[],"dimensionNames":[],"dimensions":[],"duplicateKeyAction":"throwException","escape":"\\\\","headerRow":0,"horizontalDimName":"?","horizontalDimension":{"type":"string","units":""},"mergeDelimiters":false,"missingValue":NaN,"quote":"\"","separator":","},"url":"","xoffs":80},"godleyOverridden":false,"init":"1","name":"constant:one","sliderVisible":false,"tensorInit":{},"units":[],"unitsCached":false}}
 EOF
 
 diff -q -w output reference

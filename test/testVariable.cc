@@ -20,15 +20,17 @@
 #include "variableValue.h"
 #include "group.h"
 #include "selection.h"
+#include "lasso.h"
+#include "valueId.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;
 
 SUITE(Variable)
 {
-  TEST_FIXTURE(VariableValue, scoping)
+  TEST(scoping)
     {
-      CHECK_EQUAL(-1, scope(":foo"));
+      CHECK_EQUAL(0, scope(":foo"));
       CHECK_EQUAL(1, scope("furry[1]:foo"));
       CHECK_EQUAL(1, scope("1:foo"));
       CHECK_THROW(scope("foo"), ecolab::error);
@@ -38,11 +40,11 @@ SUITE(Variable)
       CHECK_EQUAL("foo", uqName("1:foo"));
       CHECK_EQUAL("foo", uqName("foo"));
 
-      CHECK_EQUAL(":foo",valueId(-1,"foo"));
-      CHECK_EQUAL("1:foo",valueId(1,"foo"));
-      CHECK_EQUAL("1:foo",valueId("furry[1]:foo"));
-      CHECK_EQUAL(":foo",valueId(":foo"));
-      CHECK_THROW(valueId("foo"), ecolab::error);
+      CHECK_EQUAL(":foo",minsky::valueId(0,"foo"));
+      CHECK_EQUAL("1:foo",minsky::valueId(1,"foo"));
+      CHECK_EQUAL("1:foo",minsky::valueId("furry[1]:foo"));
+      CHECK_EQUAL(":foo",minsky::valueId(":foo"));
+      CHECK_THROW(minsky::valueId("foo"), ecolab::error);
 
     }
 }

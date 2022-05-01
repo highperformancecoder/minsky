@@ -1,12 +1,16 @@
 *.o
 *.d
 *.cd
+*.exe
 *.xcd
+*.rcd
 *~
 *.aux
 *.dvi
 *.log
 *.out
+.vscode
+doxydoc
 test/unittests
 test/tcl-cov
 test/testDatabase
@@ -17,4 +21,6 @@ test/cmpFp
 gui-tk/minsky
 gui-tk/library/tcl
 gui-tk/library/tk
+RESTService/minsky-RESTService
+RESTService/minsky-httpd
 

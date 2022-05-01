@@ -22,21 +22,38 @@
 #include "flowCoef.h"
 #include "userFunction.h"
 #include "mdlReader.h"
+#include "variableInstanceList.h"
 
 #include "TCL_obj_stl.h"
 #include <cairo_base.h>
 
-#include <schema/schema3.h>
-
+#include "schema3.h"
 
 //#include <thread>
 // std::thread apparently not supported on MXE for now...
 #include <boost/thread.hpp>
-using namespace std;
 
+#include "minskyVersion.h"
+
+#include "minsky_epilogue.h"
+
+#include <algorithm>
+
+using namespace std;
 using namespace minsky;
 using namespace classdesc;
 using namespace boost::posix_time;
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <sys/wait.h>
+#endif
+
+#if defined(__linux__)
+#include <sys/sysinfo.h>
+#endif
 
 namespace
 {
@@ -46,26 +63,23 @@ namespace
       if (!isfinite(y[i])) return false;
     return true;
   }
-}
-
-namespace minsky
-{
-
   struct BusyCursor
   {
     Minsky& minsky;
     BusyCursor(Minsky& m): minsky(m) {minsky.setBusyCursor();}
     ~BusyCursor() {minsky.clearBusyCursor();}
   };
+
+  /// list the possible string values of an enum (for TCL)
+  template <class E> vector<string> enumVals()
+    {
+      vector<string> r;
+      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
+        r.push_back(enum_keysData<E>::keysData[i].name);
+      return r;
+    }
+
 }
-
-#include "minskyVersion.h"
-
-#include "minsky_epilogue.h"
-
-
-#include <algorithm>
-using namespace std;
 
 namespace minsky
 {
@@ -88,10 +102,17 @@ namespace minsky
           m.flags &= ~Minsky::fullEqnDisplay_needed;
         }
       m.clearBusyCursor();
+      return true;
     }
     return surface.get();
   }
 
+  bool Minsky::multipleEquities(const bool& m) {
+    m_multipleEquities=m;
+    canvas.requestRedraw();
+    redrawAllGodleyTables();
+    return m_multipleEquities;
+  }
   
   void Minsky::openLogFile(const string& name)
   {
@@ -118,7 +139,7 @@ namespace minsky
         
       
 
-  void Minsky::clearAllMaps()
+  void Minsky::clearAllMaps(bool doClearHistory)
   {
     model->clear();
     equations.clear();
@@ -130,12 +151,14 @@ namespace minsky
     stockVars.clear();
 
     dimensions.clear();
+    namedItems.clear();
     flags=reset_needed|fullEqnDisplay_needed;
     fileVersion=minskyVersion;
+    if (doClearHistory) clearHistory();
   }
 
 
-  const char* Minsky::minskyVersion=MINSKY_VERSION;
+  const std::string Minsky::minskyVersion=MINSKY_VERSION;
 
   void Minsky::cut()
   {
@@ -174,14 +197,14 @@ namespace minsky
   void Minsky::copy() const
   {
     if (canvas.selection.empty())
-      putClipboard(""); // clear clipboard
+      clipboard.putClipboard(""); // clear clipboard
     else
       {
         schema3::Minsky m(canvas.selection);
         ostringstream os;
         xml_pack_t packer(os, schemaURL);
         xml_pack(packer, "Minsky", m);
-        putClipboard(os.str());
+        clipboard.putClipboard(os.str());
       }
   }
 
@@ -201,8 +224,9 @@ namespace minsky
   }
 
   void Minsky::paste()
+    try
   {
-    istringstream is(getClipboard());
+    istringstream is(clipboard.getClipboard());
     xml_unpack_t unpacker(is); 
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
@@ -295,7 +319,11 @@ namespace minsky
     canvas.model->removeGroup(*g);  
     canvas.requestRedraw();
   }  
-
+    catch (...)
+      {
+        throw runtime_error("clipboard data invalid");
+      }
+  
   namespace
   {
     /// checks if the input stream has the UTF-8 byte ordering marker,
@@ -309,7 +337,7 @@ namespace minsky
     }
   }
 
-  void Minsky::insertGroupFromFile(const char* file)
+  void Minsky::insertGroupFromFile(const string& file)
   {
     ifstream inf(file);
     if (!inf)
@@ -379,9 +407,9 @@ namespace minsky
     variableValues.reset();
   }
 
-  void Minsky::renderEquationsToImage(const char* image)
+  void Minsky::renderEquationsToImage(const string& image)
   {
-    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
+    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image.c_str()));
     cairo_move_to(surf.cairo(),0,0);
     MathDAG::SystemOfEquations system(*this);
     system.renderEquations(surf, surf.height());
@@ -401,16 +429,16 @@ namespace minsky
     model->recursiveDo
       (&Group::items,
        [this](const Items&, Items::const_iterator it){
-        if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
-          userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), f->name())]=f;
-        return false;
-      });
+         if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
+           userFunctions[valueIdFromScope((*it)->group.lock(), f->name())]=f;
+         return false;
+       });
     model->recursiveDo
       (&Group::groups,
        [this](const Groups&, Groups::const_iterator it){
-        userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
-        return false;
-      });
+         userFunctions[valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
+         return false;
+       });
 
     try
       {
@@ -561,7 +589,7 @@ namespace minsky
                if (!gi->table.cell(0,i).empty())
                  {
                    auto v=gi->table.cell(0,i);
-                   auto scope=VariableValue::scope(gi->group.lock(),v);
+                   auto scope=minsky::scope(gi->group.lock(),v);
                    if (scope->higher(*godley.group.lock()))
                      v=':'+v; //NOLINT
                    else if (scope!=godley.group.lock())
@@ -646,10 +674,10 @@ namespace minsky
         {
           int scope=-1;
           if (i->first.find(':')!=string::npos)
-            VariableValue::scope(i->first);
+            minsky::scope(i->first);
           FlowCoef df;
           if (scope==-1 || !variableValues.count(i->first))
-            df.name=VariableValue::uqName(i->first);
+            df.name=uqName(i->first);
           else
             df.name=variableValues[i->first]->name;
           df.coef=i->second-destFlows[i->first];
@@ -801,7 +829,7 @@ namespace minsky
       bool initialConditionRow(int row) const
       {return Super::operator*()->table.initialConditionRow(row);}
       string valueId(const std::string& x) const {
-        return VariableValue::valueIdFromScope(Super::operator*()->group.lock(), x);
+        return valueIdFromScope(Super::operator*()->group.lock(), x);
       }
     };
   }
@@ -827,6 +855,7 @@ namespace minsky
     canvas.itemIndicator=false;
     BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
+    lastT=t0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
     // make the simulation proceed
@@ -835,7 +864,7 @@ namespace minsky
     initGodleys();
 
     if (!stockVars.empty())
-      RungeKutta::reset();
+      rkreset();
       
     // update flow variable
     evalEquations();
@@ -880,9 +909,10 @@ namespace minsky
     parameterTab.requestRedraw();    
   }
 
-  void Minsky::step()
+  vector<double> Minsky::step()
   {
-    RungeKutta::step();
+    lastT=t;
+    rkstep();
 
     logVariables();
 
@@ -902,6 +932,8 @@ namespace minsky
         parameterTab.requestRedraw();        
         lastRedraw=microsec_clock::local_time();
       }
+
+    return {t, deltaT()};
   }
   
   string Minsky::diagnoseNonFinite() const
@@ -949,7 +981,7 @@ namespace minsky
     stripByteOrderingMarker(inf);
     xml_unpack_t saveFile(inf);
     schema3::Minsky currentSchema(saveFile);
-    *this=currentSchema;
+    currentSchema.populateMinsky(*this);
     if (currentSchema.schemaVersion<currentSchema.version)
       message("You are converting the model from an older version of Minsky. "
               "Once you save this file, you may not be able to open this file"
@@ -974,10 +1006,14 @@ namespace minsky
     catch (...) {}
     canvas.requestRedraw();
     panopticon.requestRedraw();
+    canvas.recentre();
+    canvas.requestRedraw();
+    canvas.moveTo(0,0); // force placement of ports
     flags=reset_needed|fullEqnDisplay_needed;
+    pushHistory();
   }
 
-  void Minsky::exportSchema(const char* filename, int schemaLevel) const
+  void Minsky::exportSchema(const string& filename, int schemaLevel)
   {
     xsd_generate_t x;
     switch (schemaLevel)
@@ -1129,6 +1165,10 @@ namespace minsky
   
   bool Minsky::pushHistory()
   {
+    // do not pushHistory after undo or redo
+    if (undone)
+      return undone=false;
+
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
     schema3::Minsky m(*this, false /* don't pack tensor data */);
@@ -1139,7 +1179,7 @@ namespace minsky
         history.emplace_back();
         buf.swap(history.back());
         historyPtr=history.size();
-        return false;
+        return true;
       }
     while (history.size()>maxHistory)
       history.pop_front();
@@ -1158,11 +1198,11 @@ namespace minsky
             // This bit of code outputs an XML representation that can be
             //        used for debugging issues related to unnecessary
             //        history pushes.
-            //  buf.reseto()>>m;
-            //  xml_pack_t tb(cout);
-            //  tb.prettyPrint=true;
-            //  xml_pack(tb,"Minsky",m); 
-            //  cout<<"------"<<endl;
+            //buf.reseto()>>m;
+            //xml_pack_t tb(cout);
+            //tb.prettyPrint=true;
+            //xml_pack(tb,"Minsky",m); 
+            //cout<<"------"<<endl;
             history.emplace_back();
             buf.swap(history.back());
             historyPtr=history.size();
@@ -1175,7 +1215,7 @@ namespace minsky
               catch (...)
                 {
                   autoSaver.reset();
-                  throw std::runtime_error("Unable to autosave to this location");
+                  throw;
                 }
             return true;
           }
@@ -1183,8 +1223,65 @@ namespace minsky
     historyPtr=history.size();
     return false;
   }
+
+  bool Minsky::commandHook(const std::string& command, unsigned nargs)
+  {
+    if (doPushHistory &&
+        command!="minsky.availableOperations" &&
+        command!="minsky.canvas.select" &&
+        command!="minsky.canvas.recentre" &&
+        command!="minsky.canvas.focusFollowsMouse" &&
+        command!="minsky.canvas.displayDelayedTooltip" &&
+        command!="minsky.canvas.requestRedraw" &&
+        command!="minsky.model.moveTo" &&
+        command!="minsky.canvas.model.moveTo" &&
+        command!="minsky.canvas.moveTo" &&
+        /* ensure we record mouse movements, but filter from history */
+        command!="minsky.canvas.mouseDown"&&
+        command!="minsky.canvas.mouseMove" && 
+        command!="minsky.clearAll" &&
+        command!="minsky.doPushHistory" &&
+        command!="minsky.canvas.model.zoom" &&
+        command!="minsky.model.zoom" &&
+        command!="minsky.newGlobalGroupTCL" &&
+        command!="minsky.popFlags" &&
+        command!="minsky.pushFlags" &&
+        command!="minsky.select" &&
+        command!="minsky.selectVar" &&
+        command!="minsky.setGodleyIconResource" &&
+        command!="minsky.setGroupIconResource" &&
+        command!="minsky.setLockIconResource" &&
+        command!="minsky.setAutoSaveFile" &&
+        command!="minsky.step" &&
+        command!="minsky.running" &&
+        command!="minsky.multipleEquities" &&
+        command!="minsky.undo" &&
+        command!="minsky.load" &&
+        command!="minsky.reverse" &&
+        command!="minsky.redrawAllGodleyTables" &&
+        command.find("minsky.panopticon")==string::npos &&
+        command.find("minsky.equationDisplay")==string::npos && 
+        command.find("minsky.setGodleyDisplayValue")==string::npos && 
+        command.find(".renderFrame")==string::npos && 
+        command.find(".backgroundColour")==string::npos && 
+        command.find(".get")==string::npos && 
+        command.find(".@elem")==string::npos && 
+        command.find(".mouseFocus")==string::npos
+        )
+      {
+        auto t=getCommandData(command);
+        if (t==generic || (t==is_setterGetter && nargs>0))
+          {
+            bool modelChanged=pushHistory();
+            if (modelChanged) markEdited();
+            return modelChanged;
+          }
+      }
+    return command=="minsky.canvas.requestRedraw" || command=="minsky.canvas.mouseDown" || command=="minsky.canvas.mouseMove" || command.find(".get")!=string::npos;
+  }
+
   
-  void Minsky::undo(int changes)
+  long Minsky::undo(int changes)
   {
     // save current state for later restoration if needed
     if (historyPtr==history.size())
@@ -1196,7 +1293,7 @@ namespace minsky
         history[historyPtr-1].reseto()>>m;
         // stash tensorInit data for later restoration
         auto stashedValues=move(variableValues);
-        clearAllMaps();
+        clearAllMaps(false);
         model->clear();
         m.populateGroup(*model);
         // restore tensorInit data
@@ -1212,11 +1309,13 @@ namespace minsky
       }
     else
       historyPtr+=changes; // revert
+    undone=true; //ensure next pushHistory is ignored 
+    return historyPtr;
   }
 
   void Minsky::convertVarType(const string& name, VariableType::Type type)
   {
-    assert(VariableValue::isValueId(name));
+    assert(isValueId(name));
     VariableValues::iterator i=variableValues.find(name);
     if (i==variableValues.end())
       throw error("variable %s doesn't exist",name.c_str());
@@ -1342,11 +1441,12 @@ namespace minsky
   {
     this->displayValues=displayValues;
     this->displayStyle=displayStyle;
+    canvas.requestRedraw();
     model->recursiveDo(&GroupItems::items, [](Items&,Items::iterator i) {
-        if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-          g->setEditorDisplayValues();
-        return false;
-      });
+      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+        g->popup.requestRedraw();
+      return false;
+    });
   }
 
   void Minsky::importVensim(const string& filename)
@@ -1354,6 +1454,117 @@ namespace minsky
     ifstream f(filename);
     readMdl(*model,*this,f);
     canvas.requestRedraw();
+  }
+
+  vector<string> Minsky::availableOperations() const
+  {return enumVals<OperationType::Type>();}
+  vector<string> Minsky::variableTypes() const
+  {return enumVals<VariableType::Type>();}
+  vector<string> Minsky::assetClasses() const
+  {return enumVals<GodleyTable::AssetClass>();}
+
+  void Minsky::autoLayout()
+  {
+    canvas.model->autoLayout();
+    canvas.recentre();
+  }
+  
+  void Minsky::randomLayout()
+  {
+    canvas.model->randomLayout();
+    canvas.recentre();
+  }
+
+  void Minsky::listAllInstances()
+  {
+    if (canvas.item)
+      if (auto v=canvas.item->variableCast())
+        {
+          variableInstanceList=std::make_shared<VariableInstanceList>(*canvas.model, v->valueId());
+          return;
+        }
+    variableInstanceList.reset();
+  }
+  
+  void Minsky::redrawAllGodleyTables()
+  {
+    model->recursiveDo(&Group::items, 
+                       [&](Items&,Items::iterator i) {
+                         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+                           g->popup.requestRedraw();
+                         return false;
+                       });
+  }
+
+  size_t Minsky::physicalMem()
+  {
+#if defined(__linux__)
+    struct sysinfo s;
+    sysinfo(&s);
+    return s.totalram;
+#elif defined(WIN32)
+    MEMORYSTATUSEX s;
+    GlobalMemoryStatusEx(&s);
+    return s.ullTotalPhys;
+//#elif defined(__APPLE__)
+//    int mib[2];
+//    int64_t physical_memory;
+//    size_t length;
+//
+//    // Get the Physical memory size
+//    mib[0] = CTL_HW;
+//    mib[1] = HW_MEMSIZE;
+//    length = sizeof(int64_t);
+//    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+//    return physical_memory;
+#else
+    // all else fails, return max value
+    return ~0UL;
+#endif  
+  }
+  
+  static std::unique_ptr<char[]> _defaultFont;
+
+  string Minsky::defaultFont() const
+  {return _defaultFont? _defaultFont.get(): "";}
+  
+  string Minsky::defaultFont(const std::string& x)
+  {
+    _defaultFont.reset(new char[x.length()+1]);
+    strcpy(_defaultFont.get(),x.c_str());
+    ecolab::Pango::defaultFamily=_defaultFont.get();
+    return x;
+  }
+
+  double Minsky::fontScale() const
+  {return ecolab::Pango::scaleFactor;}
+  
+  double Minsky::fontScale(double s)
+  {return ecolab::Pango::scaleFactor=s;}
+  
+  void Minsky::latex(const string& filename, bool wrapLaTeXLines) 
+  {
+    if (cycleCheck()) throw error("cyclic network detected");
+    ofstream f(filename);
+
+    f<<"\\documentclass{article}\n";
+    if (wrapLaTeXLines)
+      {
+        f<<"\\usepackage{breqn}\n\\begin{document}\n";
+        MathDAG::SystemOfEquations(*this).latexWrapped(f);
+      }
+    else
+      {
+        f<<"\\begin{document}\n";
+          MathDAG::SystemOfEquations(*this).latex(f);
+      }
+    f<<"\\end{document}\n";
+  }
+
+  int Minsky::numOpArgs(OperationType::Type o) const
+  {
+    OperationPtr op(o);
+    return op->numPorts()-1;
   }
 
   void Minsky::setAutoSaveFile(const std::string& file) {

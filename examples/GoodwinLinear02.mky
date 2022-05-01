@@ -42,16 +42,16 @@
     <from>8</from>
     <to>31</to>
     <coords>
-     <float>444.002</float>
-     <float>49.0004</float>
-     <float>452.065</float>
-     <float>56.058</float>
-     <float>488.365</float>
-     <float>67.149</float>
-     <float>471.222</float>
-     <float>124.62</float>
-     <float>479.5</float>
-     <float>155</float>
+     <float>448.002</float>
+     <float>63.0004</float>
+     <float>456.065</float>
+     <float>70.058</float>
+     <float>492.365</float>
+     <float>81.149</float>
+     <float>475.222</float>
+     <float>138.62</float>
+     <float>483.5</float>
+     <float>169</float>
     </coords>
    </Wire>
    <Wire>
@@ -69,12 +69,12 @@
     <from>16</from>
     <to>40</to>
     <coords>
-     <float>26.0001</float>
-     <float>174</float>
-     <float>-2.18963</float>
-     <float>104.533</float>
-     <float>3.9999</float>
-     <float>67.0002</float>
+     <float>30.0001</float>
+     <float>188</float>
+     <float>1.81037</float>
+     <float>118.533</float>
+     <float>7.9999</float>
+     <float>81.0002</float>
     </coords>
    </Wire>
    <Wire>
@@ -97,14 +97,14 @@
     <from>30</from>
     <to>59</to>
     <coords>
-     <float>400.5</float>
-     <float>155</float>
-     <float>352.995</float>
-     <float>27.6639</float>
-     <float>17.0225</float>
-     <float>99.167</float>
-     <float>187</float>
-     <float>80.75</float>
+     <float>404.5</float>
+     <float>169</float>
+     <float>356.995</float>
+     <float>41.6639</float>
+     <float>21.0225</float>
+     <float>113.167</float>
+     <float>191</float>
+     <float>94.75</float>
     </coords>
    </Wire>
    <Wire>
@@ -117,12 +117,12 @@
     <from>84</from>
     <to>13</to>
     <coords>
-     <float>163.734</float>
-     <float>305.335</float>
-     <float>115.515</float>
-     <float>173.243</float>
-     <float>90.0002</float>
-     <float>143</float>
+     <float>167.734</float>
+     <float>319.335</float>
+     <float>119.515</float>
+     <float>187.243</float>
+     <float>94.0002</float>
+     <float>157</float>
     </coords>
    </Wire>
    <Wire>
@@ -130,12 +130,12 @@
     <from>84</from>
     <to>60</to>
     <coords>
-     <float>163.734</float>
-     <float>305.335</float>
-     <float>106.036</float>
-     <float>189.833</float>
-     <float>187</float>
-     <float>118.25</float>
+     <float>167.734</float>
+     <float>319.335</float>
+     <float>110.036</float>
+     <float>203.833</float>
+     <float>191</float>
+     <float>132.25</float>
     </coords>
    </Wire>
    <Wire>
@@ -143,12 +143,12 @@
     <from>30</from>
     <to>100</to>
     <coords>
-     <float>400.5</float>
-     <float>155</float>
-     <float>417.547</float>
-     <float>278.99</float>
-     <float>333.5</float>
-     <float>305.335</float>
+     <float>404.5</float>
+     <float>169</float>
+     <float>421.547</float>
+     <float>292.99</float>
+     <float>337.5</float>
+     <float>319.335</float>
     </coords>
    </Wire>
    <Wire>
@@ -176,14 +176,14 @@
     <from>84</from>
     <to>93</to>
     <coords>
-     <float>163.734</float>
-     <float>305.335</float>
-     <float>166.597</float>
-     <float>256.386</float>
-     <float>169.193</float>
-     <float>255.054</float>
-     <float>230.522</float>
-     <float>313.51</float>
+     <float>167.734</float>
+     <float>319.335</float>
+     <float>170.424</float>
+     <float>273.351</float>
+     <float>172.862</float>
+     <float>272.1</float>
+     <float>230.886</float>
+     <float>322.056</float>
     </coords>
    </Wire>
    <Wire>

@@ -1,0 +1,37 @@
+.command {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.half-width {
+  width: 45%;
+}
+
+.center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.output {
+  max-height: 17rem;
+  padding: 1rem;
+  overflow-y: scroll;
+}
+
+mat-form-field {
+  width: 30%;
+  input {
+    height: 25px;
+  }
+}
+
+.autocomplete {
+  width: 65%;
+  height: 30px;
+}
+
+button {
+  margin-right: 24px;
+}

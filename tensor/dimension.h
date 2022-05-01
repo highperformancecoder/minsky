@@ -22,6 +22,7 @@
 #include <string>
 #include <map>
 #include <stdexcept>
+
 namespace civita
 {
   struct Dimension
@@ -33,7 +34,13 @@ namespace civita
     Dimension(Type t,const std::string& s): type(t), units(s) {}
   };
 
-  typedef std::map<std::string, Dimension> Dimensions;
+#ifdef STRINGKEYMAP_H
+  using classdesc::StringKeyMap;
+#else
+  template <class T> using StringKeyMap=std::map<std::string, T>;
+#endif
+
+  typedef StringKeyMap<Dimension> Dimensions;
 
   typedef std::map<std::string, double> ConversionsMap;
   struct Conversions: public ConversionsMap

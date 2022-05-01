@@ -1,0 +1,50 @@
+<div class="popup-wrapper">
+  <div class="form-wrapper">
+    <form [formGroup]="form">
+      <ng-container
+        formArrayName="pens"
+        *ngFor="let control of pens.controls; let i = index"
+      >
+        <div *ngIf="pens.value.length" class="form-control" [formGroupName]="i">
+          <input
+            [colorPicker]="pens.controls[i]?.get('colour')?.value"
+            [style.background]="pens.controls[i]?.get('colour')?.value"
+            [style.color]="pens.controls[i]?.get('colour')?.value"
+            [cpOutputFormat]="'rgba'"
+            [cpAlphaChannel]="'always'"
+            (colorPickerChange)="
+              pens.controls[i]?.get('colour')?.setValue($event)
+            "
+            formControlName="colour"
+            [type]="hidden"
+            class="palette"
+          />
+          <input type="number" formControlName="width" class="palette width" />
+
+          <select class="palette" name="i" id="i" formControlName="dashStyle">
+            <option *ngFor="let item of dashStyles" [value]="item">
+              {{ item }}
+            </option>
+          </select>
+        </div>
+      </ng-container>
+
+      <div class="form-control form-buttons">
+        <button type="button" mat-raised-button (click)="addPen()">+</button>
+
+        <button type="button" mat-raised-button (click)="closeWindow()">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="submit"
+          mat-raised-button
+          (click)="handleSubmit()"
+        >
+          OK
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -167,13 +167,15 @@ namespace minsky
 //       void push_back(const EvalOpPtr& x) {
 //         vector<EvalOpPtr>::push_back(x);
 //         for (std::size_t i=0; i<x->in1.size(); ++i)
+//           if (auto s=dynamic_cast<ScalarEvalOp*>(x.get()))
 //           {
-//             cout << OperationType::typeName(x->type())<<"(";
-//             if (x->numArgs()>0)
-//               cout << x->in1[i]<<(x->flow1?"":"s");
-//             if (x->numArgs()>1)
-//               cout<<","<<x->in2[i]<<(x->flow2?"":"s");
-//             cout <<")->"<<x->out+i<<endl;
+//             cout << OperationType::typeName(s->type())<<"(";
+//             if (s->numArgs()>0)
+//               cout << s->in1[i]<<(s->flow1?"":"s");
+//             if (s->numArgs()>1)
+//               for (auto& i: s->in2[i])
+//                 cout<<","<<i.idx<<"("<<i.weight<<")"<<(s->flow2?"":"s");
+//             cout <<")->"<<s->out+i<<endl;
 //           }
 //       }
   };

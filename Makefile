@@ -1,4 +1,4 @@
-.SUFFIXES: .xcd $(SUFFIXES)
+.SUFFIXES: .xcd .rcd $(SUFFIXES)
 
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
@@ -39,38 +39,58 @@ build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
 endif
 
-HAVE_NODE=$(shell if which node>&/dev/null; then echo 1; fi)
-$(warning have node=$(HAVE_NODE))
-ifeq ($(HAVE_NODE),1)
-  NODE_API=
-ifeq ($(OS),Darwin)
-  NODE_HEADER=/usr/local/include/node
-else
-  NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
-ifdef MXE
-  NODE_HEADER=/usr/include/node$(NODE_VERSION)
-  NODE_API+=node-api.o
-else
-  NODE_HEADER=$(call search,include/node$(NODE_VERSION))
+JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
+ifneq ($(JSON_SPIRIT_HEADER),)
+  FLAGS+=-I$(JSON_SPIRIT_HEADER)
 endif
-endif
-  HAVE_NAPI=$(words $(NODE_HEADER))
-  FLAGS+=-fno-omit-frame-pointer
-  NODE_FLAGS=-I$(NODE_HEADER) -Inode_modules/node-addon-api
-  NODE_FLAGS+='-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS'
-  NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS'
 
-  $(warning node flags=$(NODE_FLAGS))
+ifneq ($(MAKECMDGOALS),clean)
+  HAVE_NODE=$(shell if which node >/dev/null 2>&1; then echo 1; fi)
+  $(warning have node=$(HAVE_NODE))
+  ifeq ($(HAVE_NODE),1)
+    NODE_API=
+    ifeq ($(OS),Darwin)
+      NODE_HEADER=/usr/local/include/node
+    else
+      NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
+      ifdef MXE
+        NODE_HEADER=/usr/include/node$(NODE_VERSION)
+        NODE_API+=node-api.o
+      else
+        ifeq ($(OS),CYGWIN)
+          NODE_API+=node-api.o
+        endif
+        NODE_HEADER=$(call search,include/node$(NODE_VERSION))
+        ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs
+          NODE_HEADER=$(call search,include/node)
+        endif
+      endif
+    endif
+    # if we haven't found an installed version of the Node SDK, then
+    # check if it has been copied into node-addon-api, as is done with
+    # release tarballs
+    ifeq ($(NODE_HEADER),)
+      ifeq ($(words $(wildcard  node_modules/node-addon-api/node_api.h)),0)
+        $(error Can't find node header files')
+      endif
+    else
+      NODE_FLAGS+=-I$(NODE_HEADER)
+    endif
+    FLAGS+=-fno-omit-frame-pointer
+    NODE_FLAGS+=-Inode_modules/node-addon-api
+    NODE_FLAGS+='-DV8_DEPRECATION_WARNINGS' '-DV8_IMMINENT_DEPRECATION_WARNINGS'
+    NODE_FLAGS+='-D__STDC_FORMAT_MACROS' '-DNAPI_CPP_EXCEPTIONS'
 
-  FLAGS+=$(NODE_FLAGS) 
-  $(warning $(NODE_FLAGS))
-# ensure node-addon-api installed
-  ifeq ($(words $(wildcard node_modules/node-addon-api)),0)
-     npm_install:=$(shell npm install)
+    $(warning node flags=$(NODE_FLAGS))
+
+    FLAGS+=$(NODE_FLAGS) 
+    # ensure node-addon-api installed
+    ifeq ($(words $(wildcard node_modules/node-addon-api)),0)
+      npm_install:=$(shell npm install)
+    endif
+
   endif
-
 endif
-
 
 # override the install prefix here
 PREFIX=/usr/local
@@ -79,33 +99,49 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o grid.o godleyTable.o cairoItems.o godleyIcon.o lock.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o itemTab.o plotTab.o godleyTab.o variableInstanceList.o autoLayout.o userFunction.o userFunction_units.o parameterTab.o
-ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
-	godleyExport.o latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
+MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o panopticon.o parameterTab.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o windowInformation.o wire.o 
+ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
+	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
-GUI_TK_OBJS=tclmain.o minskyTCL.o
-RESTSERVICE_OBJS=RESTService.o
-
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS)
+GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
+RESTSERVICE_OBJS=minskyRS.o dataOpRS.o intOpRS.o operatorRS1.o operatorRS2.o variablesRS.o itemRS.o ravelRS.o RESTMinsky.o userFunctionRS.o
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
+MODEL_OBJS+=getContext.o
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o addon.o
+
+EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
+
+DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
+MINSKYLIBS=-lminsky -lminskyEngine -lcivita
+
+ifeq ($(HAVE_NODE),1)
+EXES+=gui-js/node-addons/minskyRESTService.node
+endif
+
+FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
+#-fvisibility-inlines-hidden
 
 VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
 	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -i $< xml_pack xml_unpack xsd_generate \
-	json_pack json_unpack >$@
+	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -i $< \
+	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
+
+.h.rcd:
+	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
+	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
+	RESTProcess >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
@@ -127,9 +163,12 @@ endif
 ifdef MXE
 BOOST_EXT=-mt-x64
 EXE=.exe
-FLAGS+=-Wa,-mbig-obj
+DL=dll
+FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
+# -flto
 else
 EXE=
+DL=so
 BOOST_EXT=
 # try to autonomously figure out which boost extension we should be using
   ifeq ($(shell if $(CPLUSPLUS) test/testmain.cc $(LIBS) -lboost_system>&/dev/null; then echo 1; else echo 0; fi),0)
@@ -142,7 +181,11 @@ BOOST_EXT=
 $(warning Boost extension=$(BOOST_EXT))
 endif
 
-EXES=gui-tk/minsky$(EXE)
+ifeq ($(OS),CYGWIN)
+FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
+endif
+
+#EXES=gui-tk/minsky$(EXE)
 #RESTService/RESTService 
 
 LIBS+=	-LRavelCAPI -lravelCAPI \
@@ -151,7 +194,9 @@ LIBS+=	-LRavelCAPI -lravelCAPI \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
-LIBS+=-lcrypt32
+LIBS+=-lcrypt32 -lshcore
+else
+LIBS+=-lclipboard -lxcb -lX11
 endif
 
 ifdef CPUPROFILE
@@ -168,10 +213,12 @@ GUI_LIBS=
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 ifndef AEGIS
-# just build the Minsky executable
-default: gui-tk/minsky$(EXE)
+default: $(EXES)
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
+
+# this dependency is not worked out automatically because they're hidden by a #ifdef in minsky_epilogue.h
+$(MODEL_OBJS): plot.xcd signature.xcd
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
@@ -213,8 +260,11 @@ MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
 RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
-	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@
+getContext.o: getContext.cc
+	g++ -ObjC++ $(FLAGS) -DMAC_OSX_TK -I/opt/local/include -Iinclude -c $< -o $@
+
+gui-tk/minsky$(EXE): $(GUI_TK_OBJS)  $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 $(LIBS) $(GUI_LIBS) -o $@
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
 # make a local copy the TCL libraries
@@ -223,8 +273,11 @@ ifdef MXE
 	cp -r $(TK_LIB) gui-tk/library/tk
 endif
 
-RESTService/RESTService: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
-	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
+RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
+
+RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
 	rm -f $@
@@ -244,12 +297,41 @@ endif
 
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
+# N-API node embedded RESTService
+gui-js/node-addons/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	mkdir -p gui-js/node-addons
+ifdef MXE
+	$(LINK) -shared -o $@ $^ $(LIBS)
+else
+ifeq ($(OS),Darwin)
+	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.13 -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
+else
+	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+endif
+endif
+
+RESTService/dummy-addon.node: dummy-addon.o $(NODE_API)
+ifdef MXE
+	$(LINK) -shared -o $@ $^
+else
+	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=addon.node -o $@ -Wl,--start-group $^ -Wl,--end-group 
+endif
+
+addon.o: addon.cc
+	$(CPLUSPLUS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
+
+dummy-addon.o: dummy-addon.cc
+	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
+
+node-api.o: node-api.cc
+	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
+
 $(EXES): RavelCAPI/libravelCAPI.a
 
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.gcda *.gcno
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.rcd *.gcda *.gcno *.so *.dll *.dylib
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd
@@ -262,10 +344,11 @@ clean:
 	-cd ecolab; $(MAKE) clean
 	-cd RavelCAPI; $(MAKE) clean
 
-mac-dist: gui-tk/minsky
+mac-dist: gui-tk/minsky gui-js/node-addons/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only
-	mkdir -p minsky.app/Contents/MacOS
-	sh -v mkMacDist.sh
+#	mkdir -p minsky.app/Contents/MacOS
+#	sh -v mkMacDist.sh
+	sh -v mkMacRESTService.sh
 
 minsky.xsd: gui-tk/minsky
 	gui-tk/minsky exportSchema.tcl 3
@@ -278,7 +361,7 @@ install: gui-tk/minsky$(EXE)
 	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
 	mkdir -p $(PREFIX)/lib/minsky
 	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
-
+	cp RESTService/minskyRESTService.node $(PREFIX)/lib/minsky
 
 
 # runs the regression tests
@@ -309,6 +392,9 @@ tcl-cov:
 
 dist:
 	sh makeDist.sh $(NODE_HEADER)
+
+js-dist:
+	sh makeJsDist.sh
 
 lcov:
 	$(MAKE) clean

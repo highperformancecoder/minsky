@@ -16,9 +16,11 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "dataOp.h"
 #include "equations.h"
 #include "latexMarkup.h"
 #include "selection.h"
+#include "lasso.h"
 #include "userFunction.h"
 #include <pango.h>
 #include "minsky_epilogue.h"

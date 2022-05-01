@@ -29,13 +29,10 @@ namespace
   struct TestFixture: public Minsky
   {
     LocalMinsky lm;
-    mutable string clipboard;
     string savedMessage;
     TestFixture(): lm(*this)
     {
     }
-    string getClipboard() const override {return clipboard;}
-    void putClipboard(const string& x) const override {clipboard=x;}
     void message(const string& x) override {savedMessage=x;}
   };
 }
@@ -185,8 +182,7 @@ SUITE(Minsky)
       if (VarConstant* c=dynamic_cast<VarConstant*>(op5.get()))
         c->init("0.2");
 
-      constructEquations();
-      step();
+      reset();
 
       CHECK_CLOSE(0.1, var["g"]->value(), 1e-4);
       CHECK_CLOSE(0.3, var["h"]->value(), 1e-4);
@@ -785,8 +781,8 @@ SUITE(Minsky)
       godley2.cell(2,1)="2:a";
       godley3.cell(2,1)=":a";
       godley3.cell(3,1)=":a";
-      variableValues[":a"]=VariableValue(VariableType::flow).allocValue();
-      variableValues[":hello2"]=VariableValue(VariableType::stock).allocValue();
+      (variableValues[":a"]=VariableValuePtr(VariableType::flow))->allocValue();
+      (variableValues[":hello2"]=VariableValuePtr(VariableType::stock))->allocValue();
 
       initGodleys();
 
@@ -1247,7 +1243,7 @@ SUITE(Minsky)
       gi->update();
 
       // renaming godley column should rename canvas stock vars
-      GodleyTableEditor ged(gi);
+      GodleyTableEditor& ged=gi->editor;
       godley.cell(0,1)="c";
       ged.selectedRow=0;
       ged.selectedCol=1;

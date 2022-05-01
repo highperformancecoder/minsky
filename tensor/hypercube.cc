@@ -80,5 +80,9 @@ namespace civita
       }
     return splitIndex;
   }
+
+  template 
+  size_t Hypercube::linealIndex<vector<size_t>>(const vector<size_t>& splitIndex) const;
+
 }
 

@@ -19,9 +19,7 @@
 
 #ifndef VARIABLETYPE_H
 #define VARIABLETYPE_H
-#include <string>
-#include <ostream>
-#include <map>
+#include "units.h"
 
 namespace minsky
 {
@@ -32,46 +30,6 @@ namespace minsky
   };
   inline std::ostream& operator<<(std::ostream& o, VariableType::Type t)
   {return o<<VariableType::typeName(t);}
-
-  /// represents the units (in sense of dimensional analysis) of a
-  /// variable.
-  /**
-  first argument is the base unit (eg metre, second), and the second
-   is it's power (eg {{"m",1},{"s",-1}} => m/s)
-  **/
-  struct Units: public std::map<std::string,int>
-  {
-    Units() {}
-    Units(const std::string&);
-    std::string str() const;
-    /// insert braces around exponents for LaTeX processing
-    std::string latexStr() const;
-    // remove entries that are unitary
-    void normalise() {
-      for (auto i=begin(); i!=end(); ) {
-        auto j=i; ++i;
-        if (j->second==0 || j->first.empty()) erase(j);
-      }
-    }
-  
-  };
-
-  inline std::ostream& operator<<(std::ostream& o, const Units& u)
-  {
-    bool first=true;
-    for (auto& i: u)
-      {
-        if (i.first.empty() || i.second==0) continue; // don't display empty units
-        if (!first) o<<" ";
-        first=false;
-        o<<i.first;
-        if (i.second!=1)
-          o<<"^"<<i.second;
-      }
-    return o;
-  }
-  
-
 }
 
 

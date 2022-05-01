@@ -19,12 +19,12 @@
 
 #ifndef PANOPTICON_H
 #define PANOPTICON_H
-#include <cairoSurfaceImage.h>
+#include "renderNativeWindow.h"
 #include <canvas.h>
 
 namespace minsky
 {
-  struct Panopticon: public ecolab::CairoSurface
+  struct Panopticon: public RenderNativeWindow
   {
     double cleft=0, ctop=0, cwidth=0, cheight=0;
     Exclude<Canvas::Timestamp> lastBoundsCheck;

@@ -23,6 +23,7 @@
 #include "operation.h"
 #include "cairoRenderer.h"
 #include "dynamicRavelCAPI.h"
+#include "hypercube.h"
 #include "handleLockInfo.h"
 
 namespace minsky 
@@ -160,7 +161,7 @@ namespace minsky
   public:
     RavelLockGroup() {m_colour=nextColour++;}
     void addRavel(const std::weak_ptr<Ravel>& ravel);
-    const std::vector<std::weak_ptr<Ravel>>& ravels() const {return m_ravels;}
+    const std::vector<std::weak_ptr<Ravel> >& ravels() const {return m_ravels;}
     /// broadcast first ravel's state to the remainder
     void initialBroadcast();
     /// broadcast state from \a ravel to the lock group

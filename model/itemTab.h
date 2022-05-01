@@ -23,7 +23,8 @@
 #include "variable.h"
 #include "grid.h"
 #include <pango.h>
-#include <cairoSurfaceImage.h>
+#include "eventInterface.h"
+#include "renderNativeWindow.h"
 #include "classdesc_access.h"
 
 namespace minsky
@@ -40,7 +41,7 @@ namespace minsky
     }
   };
 		 
-  class ItemTab: public ecolab::CairoSurface, public Grid<ecolab::Pango>
+  class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>, public EventInterface
   {
     CLASSDESC_ACCESS(ItemTab);         
   protected:
@@ -73,18 +74,17 @@ namespace minsky
     void moveItemTo(float x, float y);  
          
     float moveOffsX, moveOffsY,xItem,yItem;
-    ItemPtr itemFocus,item;      
-    void getItemAt(float x, float y) {item=itemAt(x,y);}  
+    ItemPtr itemFocus;      
+    void getItemAt(float x, float y) override {item=itemAt(x,y);}  
     enum ClickType {background, internal};    
     virtual ClickType clickType(double x, double y) const;         
     virtual void draw(cairo_t* cairo); 
     bool redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
 
-    /// event handling for the canvas
-    void mouseDownCommon(float x, float y);
-    void mouseUp(float x, float y);
-    void mouseMove(float x, float y);    
+    void mouseDown(float x, float y) override;
+    void mouseUp(float x, float y) override;
+    void mouseMove(float x, float y) override;    
     virtual ItemPtr itemAt(float x, float y);
     void displayDelayedTooltip(float x, float y);        
        
