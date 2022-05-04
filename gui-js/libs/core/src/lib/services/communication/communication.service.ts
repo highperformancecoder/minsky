@@ -13,6 +13,7 @@ import {
   TypeValueName,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
+  green
 } from '@minsky/shared';
 import { BehaviorSubject } from 'rxjs';
 import { WindowUtilityService } from '../WindowUtility/window-utility.service';
@@ -696,6 +697,8 @@ export class CommunicationService {
       mouseY: this.mouseY,
       location: event.location,
     };
+
+    console.log(green("handleKeyDown "),event.key.charCodeAt(0)," command=",command);
 
     if (!isMainWindow) {
       await this.electronService.sendMinskyCommandAndRender(

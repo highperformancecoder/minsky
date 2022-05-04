@@ -82,6 +82,7 @@ menu .wiring.menubar.var.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "v
 .wiring.menubar.var.menu add command -label "variable" -command addVariable
 .wiring.menubar.var.menu add command -label "constant" -command addConstant
 .wiring.menubar.var.menu add command -label "parameter" -command addParameter
+.wiring.menubar.var.menu add command -label "browser" -command variablePane
 
 image create photo lockImg -file $minskyHome/icons/lock.gif
 button .wiring.menubar.lock -image lockImg \

@@ -39,7 +39,7 @@ namespace minsky
   class Group;
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
-  
+
   class VariableValue: public VariableType, public civita::ITensorVal
   {
     CLASSDESC_ACCESS(VariableValue);
