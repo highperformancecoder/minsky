@@ -18,6 +18,8 @@
 */
 
 #include "grid.h"
+#include "variablePane.h"
+#include "lasso.h"
 #include <pango.h>
 #include "minsky_epilogue.h"
 #include <algorithm>
@@ -110,5 +112,6 @@ namespace minsky
 
   template class Grid<ICell>;
   template class Grid<ecolab::Pango>;
-  
+  template class Grid<VariablePaneCell>;
+
 }

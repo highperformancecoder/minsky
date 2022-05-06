@@ -1574,13 +1574,5 @@ namespace minsky
       autoSaver.reset(new BackgroundSaver(file));
   }
 
-  void Minsky::updateVariablePane() {
-    variablePane.clear();
-    for (auto& v: variableValues)
-      {
-        if (v.first.empty() || v.first.find("constant:")==0) continue; // ignore constants
-        variablePane.emplace_back(*v.second);
-      }
-  }
 }
 

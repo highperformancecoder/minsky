@@ -45,7 +45,7 @@
 #include "saver.h"
 #include "stringKeyMap.h"
 #include "variableTab.h"
-#include "variableNameRender.h"
+#include "variablePane.h"
 #include "version.h"
 
 #include <vector>
@@ -473,8 +473,7 @@ namespace minsky
     bool triggerCheckMemAllocationCallback() const
     {return checkMemAllocation(std::numeric_limits<size_t>::max());}
 
-    std::vector<VariableNameRender> variablePane;
-    void updateVariablePane();
+    VariablePane variablePane;
   };
 
   /// global minsky object
