@@ -57,8 +57,8 @@ namespace minsky
     bool mousePressed=false; ///< true if mouse button pressed
     std::set<Type> selection;
     VariablePane() {selection={parameter, flow, integral, stock};}
-    void select(Type x) {selection.insert(x);}
-    void deselect(Type x) {selection.erase(x);}
+    void select(VariableType::Type x) {selection.insert(x);}
+    void deselect(VariableType::Type x) {selection.erase(x);}
     VariablePaneCell& cell(unsigned row, unsigned col) override;
     /// update variables from model, given a window of size \a width and \a height pixels
     void update(unsigned width,unsigned height);

@@ -98,6 +98,8 @@
 #include "variableInstanceList.xcd"
 #include "variableTab.rcd"
 #include "variableTab.xcd"
+#include "variablePane.rcd"
+#include "variablePane.xcd"
 #include "variableValue.rcd"
 #include "variableValues.rcd"
 #include "variableValues.xcd"
