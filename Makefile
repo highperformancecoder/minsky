@@ -164,8 +164,7 @@ ifdef MXE
 BOOST_EXT=-mt-x64
 EXE=.exe
 DL=dll
-FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
-# -flto
+FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
 else
 EXE=
 DL=so

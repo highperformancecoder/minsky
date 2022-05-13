@@ -32,9 +32,11 @@ proc variablePane {} {
         bind .variablePane.canvas <ButtonRelease-1> {minsky.variablePane.mouseUp %x %y}
         bind .variablePane.canvas <B1-Motion> {minsky.variablePane.mouseMove %x %y}
     }
-    minsky.variablePane.update [.variablePane.canvas cget -width] [.variablePane.canvas cget -height]
     raise .variablePane
+    updateVariablePane
 }
+
+proc updateVariablePane {} {minsky.variablePane.update [winfo width .variablePane] [winfo height .variablePane]}
 
 proc variablePaneButtonProc {type} {
     global variablePaneButtons
@@ -43,5 +45,5 @@ proc variablePaneButtonProc {type} {
     } else {
         minsky.variablePane.deselect $type
     }
-    minsky.variablePane.update [.variablePane.canvas cget -width] [.variablePane.canvas cget -height]
+    updateVariablePane
 }

@@ -42,6 +42,7 @@ namespace minsky
   void VariablePaneCell::show()
   {
     if (!cachedCairo || !var || var->type()==VariableType::undefined) return;
+    var->sliderBoundsSet=0; //TODO, this should be the case by default anyway
     RenderVariable rv(*var, cachedCairo);
     ecolab::cairo::CairoSave cs(cachedCairo);
     cairo_translate(cachedCairo,0.5*m_width,0.5*m_height);
