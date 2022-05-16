@@ -58,6 +58,8 @@ namespace minsky
     else
       if (auto* r=ravelInput())
         lockedState=r->getState();
+      else
+        throw_error("Locks can only be applied to Ravels");
   }
 
   void Lock::draw(cairo_t* cairo) const 

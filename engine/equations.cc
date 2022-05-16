@@ -805,19 +805,17 @@ namespace MathDAG
   {
     auto r=make_shared<LockDAG>(l);
     expressionCache.insert(l,r);
-    if (auto ravel=l.ravelInput())
+    auto ravel=l.ravelInput();
+    if (ravel && l.locked())
       {
-        if (l.locked())
-          {
-            if (auto p=ravel->ports(1).lock())
-              if (!p->wires().empty())
-                r->rhs=getNodeFromWire(*p->wires()[0]);
-          }
-        else
-          if (auto p=l.ports(1).lock())
-            if (!p->wires().empty())
-              r->rhs=getNodeFromWire(*p->wires()[0]);
+        if (auto p=ravel->ports(1).lock())
+          if (!p->wires().empty())
+            r->rhs=getNodeFromWire(*p->wires()[0]);
       }
+    else
+      if (auto p=l.ports(1).lock())
+        if (!p->wires().empty())
+          r->rhs=getNodeFromWire(*p->wires()[0]);
     return r;
   }
 
