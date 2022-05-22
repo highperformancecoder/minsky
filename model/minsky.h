@@ -408,7 +408,7 @@ namespace minsky
     virtual bool checkMemAllocation(size_t bytes) const {return true;}
 
     /// returns amount of memory installed on system
-    static std::size_t physicalMem();
+    /*static*/ std::size_t physicalMem() const;
     
     vector<string> listFonts() const {
       vector<string> r;

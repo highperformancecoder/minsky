@@ -1496,7 +1496,7 @@ namespace minsky
                        });
   }
 
-  size_t Minsky::physicalMem()
+  size_t Minsky::physicalMem() const
   {
 #if defined(__linux__)
     struct sysinfo s;
