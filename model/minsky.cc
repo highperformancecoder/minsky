@@ -1503,8 +1503,9 @@ namespace minsky
     sysinfo(&s);
     return s.totalram;
 #elif defined(WIN32)
-    MEMORYSTATUSEX s;
+    MEMORYSTATUSEX s{sizeof(MEMORYSTATUSEX)};
     GlobalMemoryStatusEx(&s);
+    cout << "physical mem="<<s.ullTotalPhys<<","<<sizeof(s.ullTotalPhys)<<endl;
     return s.ullTotalPhys;
 //#elif defined(__APPLE__)
 //    int mib[2];
