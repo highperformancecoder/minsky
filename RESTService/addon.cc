@@ -178,7 +178,11 @@ Value RESTCall(const Napi::CallbackInfo& info)
       string cmd=info[0].ToString();
       Value response;
       {
+        bool redrawWasRunning=redrawThread->running;
         lock_guard<mutex> lock(redrawMutex);
+        // add a small delay after obtaining the lock to ensure the pango cleanup routines are run. See ticket #1358. 
+        if (redrawWasRunning)
+          this_thread::sleep_for(chrono::milliseconds(5));
         SetMinskyEnv minskyEnv(env);
         response=String::New(env, write(addOnMinsky.registry.process(cmd, arguments)));
         int nargs=1;
