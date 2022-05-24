@@ -746,7 +746,7 @@ namespace minsky
     y1=-numeric_limits<float>::max();
 
     for (auto& i: items)
-      if (!i->ioVar() && i->visible())
+      if (!i->ioVar() && i->visibleWithinGroup())
         {
           if (i->left()<x0) x0=i->left();
           if (i->right()>x1) x1=i->right();
@@ -765,7 +765,6 @@ namespace minsky
    
     // if there are no contents, result is not finite. In this case,
     // set the content bounds to a 10x10 sized box around the centroid of the I/O variables.
-
     if (x0==numeric_limits<float>::max())
       {
         float cx=0, cy=0;

@@ -219,6 +219,10 @@ namespace minsky
     auto g=group.lock();
     return (!g || g->displayContents());
   }
+
+  bool Item::visibleWithinGroup() const 
+  {return !attachedToDefiningVar();}
+
   
 
   void Item::moveTo(float x, float y)

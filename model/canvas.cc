@@ -425,8 +425,8 @@ namespace minsky
       r->addItem(i);
     for (auto& i: selection.groups)
       r->addItem(i);
-    r->resizeOnContents();
     r->splitBoundaryCrossingWires();
+    r->resizeOnContents();
   }
 
   void Canvas::lockRavelsInSelection()
