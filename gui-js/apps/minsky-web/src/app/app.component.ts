@@ -56,8 +56,10 @@ export class AppComponent implements AfterViewInit {
     (document.activeElement as HTMLElement).blur();
     //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)
 
-    const currentWindow = this.electronService.remote.getCurrentWindow();
-    if (currentWindow.id !== 1) {
+    const currentWindow =
+    this.electronService.remote.getCurrentWindow();
+    // disable closing be means of dontCloseOnEscape property
+    if (currentWindow.id !== 1 && !currentWindow.hasOwnProperty("dontCloseOnEscape")) {
       currentWindow.close();
       event.preventDefault();
     }
