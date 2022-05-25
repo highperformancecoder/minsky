@@ -618,9 +618,10 @@ namespace minsky
         z=zoomFactor();     // recalculate zoomFactor because relZoom changed above. for ticket 1243
         double x0, x1, y0, y1;
         contentBounds(x0,y0,x1,y1);
-        double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);    
-        resizeItems(items,sx,sy);
-        resizeItems(groups,sx,sy);
+        double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);
+        sx=std::min(sx,sy);
+        resizeItems(items,sx,sx);
+        resizeItems(groups,sx,sx);
       }
     
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
