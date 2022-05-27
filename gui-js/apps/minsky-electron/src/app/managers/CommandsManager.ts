@@ -1209,7 +1209,7 @@ export class CommandsManager {
                 modal: false,
             });
 
-            window.dontCloseOnEscape=true;
+            Object.defineProperty(window,'dontCloseOnEscape',{value: true,writable:false});
             await RestServiceManager.handleMinskyProcess({
                 command: `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second/popup/adjustWidgets`,
             });
