@@ -2,7 +2,13 @@
   "name": "minsky",
   "version":"2.36.0-beta.6",
   "build": {
-    "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}-${version}.${ext}",
+      "mac": {
+          "icon": "../gui-tk/icons/MinskyLogo.iconset"
+      },
+      "win": {
+          "icon": "apps/minsky-electron/src/assets/MinskyLogo.ico"
+      }
   },
   "license": "MIT",
   "scripts": {
