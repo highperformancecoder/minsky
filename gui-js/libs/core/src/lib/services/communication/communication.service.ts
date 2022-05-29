@@ -566,6 +566,9 @@ export class CommunicationService {
         params.sliderStepSize || 0
       }`,
     });
+    await this.electronService.sendMinskyCommandAndRender({
+      command: "/minsky/canvas/itemFocus/sliderBoundsSet true",
+    });
   }
 
   async importData() {
