@@ -30,6 +30,12 @@ To compile Minsky, you will need a suitable posix compliant system, [with a numb
 
 Notes on using the [REST Service](RESTService.md).
 
+## JS frontend debugging notes
+
+- `console.log` works on minsky-electron code
+- for minsky-web code, use `process.stdout.write`, which takes a single string argument
+- use `green(`*some string*`)` or `red(`*some string*`)` to colorise log output to make it easier to spot your messages. With console.log, you ony need to colourise the first argument.
+
 ## Roadmap
 
 - Finalising the Malthus iteration, due end of August.
