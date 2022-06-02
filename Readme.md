@@ -39,8 +39,9 @@ Notes on using the [REST Service](RESTService.md).
 
 ## Roadmap
 
-- Finalising the Malthus iteration, due end of August.
-- Starting the Say iteration.
-- Javascript implementation of Minsky in electron.
+
+- Javascript implementation of Minsky in electron. Almost complete, small number of tickets left before Graeber equivalent
+- Refactor Civita library into standalone library
+- Refactor Classdesc RESTProcess to generate Typescript API, and refactor Minsky JS frontend to use it
 - Emscripten classdesc descriptor to support Minsky in a browser.
 
