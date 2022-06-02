@@ -413,3 +413,6 @@ compile_commands.json: Makefile
 
 clang-tidy: compile_commands.json
 	run-clang-tidy
+
+compile-ts:
+	cd gui-js && npx tsc | sed -e 's/\x1b\[[0-9;]*m//g'|sed -e 's/(\([0-9]*\),[0-9]*)/:\1/g'

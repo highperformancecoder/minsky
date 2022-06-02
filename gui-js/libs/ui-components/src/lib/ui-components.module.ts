@@ -12,6 +12,7 @@ import { EditUserFunctionComponent } from './edit-user-function/edit-user-functi
 import { EquationsComponent } from './equations/equations.component';
 import { FindAllInstancesComponent } from './find-all-instances/find-all-instances.component';
 import { GodleyWidgetViewComponent } from './godley-widget-view/godley-widget-view.component';
+import { VariablePaneComponent } from './variable-pane/variable-pane.component';
 import { HeaderComponent } from './header/header.component';
 import { ImportCsvComponent } from './import-csv/import-csv.component';
 import { InputModalComponent } from './input-modal/input-modal.component';
