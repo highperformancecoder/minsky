@@ -13,7 +13,7 @@ export const RESET_ZOOM_FACTOR = 1;
 
 export const USE_FRONTEND_DRIVEN_RENDERING = false; // We can retire this now?
 
-export const OPEN_DEV_TOOLS_IN_DEV_BUILD = false;
+export const OPEN_DEV_TOOLS_IN_DEV_BUILD = true;
 
 export const commandsMapping = {
   ADD_BOOKMARK: '/minsky/model/addBookmark',
@@ -375,6 +375,7 @@ export const dateTimeFormats = [
   { label: '31/12/99', value: '%d/%m/%y' },
   { label: '31/12/1999', value: '%d/%m/%Y' },
   { label: '1999-12-31T13:37:46', value: '%Y-%m-%dT%H:%M:%S' },
+  { label: '1999-12-31 13:37:46', value: '%Y-%m-%dT%H:%M:%S' },
   { label: '12/31/1999 01:37 PM', value: '%m/%d/%Y %I:%M %p' },
   { label: '12/31/99 01:37 PM', value: '%m/%d/%y %I:%M %p' },
   { label: '12/31/1999 13:37 PM', value: '%m/%d/%Y %H:%M %p' },
