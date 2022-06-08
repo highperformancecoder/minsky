@@ -135,38 +135,32 @@ namespace civita
           // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
           static regex thisTimeFormat{"%([mdyYHMS])"}, otherTimeFormats{"%[^mdyYHMS]"};
           smatch val;
-          if (!regex_search(dim.units, val,otherTimeFormats)) // handle dates with 1 or 2 digits see Ravel ticket #35
+          if (!dim.units.empty() && !regex_search(dim.units, val,otherTimeFormats)) // handle dates with 1 or 2 digits see Ravel ticket #35
             {
               smatch match;
-              vector<string> m{""};
+              string format;
               for (string formatStr=dim.units; regex_search(formatStr, match, thisTimeFormat); formatStr=match.suffix())
-                {m.push_back(match[1]);}
-              static regex valParser{R"((\d+)\D|$)"};
-              for (; regex_search(s, val, valParser); s=val.suffix())
+                {format.push_back(match.str(1)[0]);}
+              static regex valParser{"(\\d+)"};
+              int day=0, month=0, year=0, hours=0, minutes=0, seconds=0;
+              for (int i=0; i<format.size() && regex_search(s, val, valParser); s=val.suffix(), ++i)
                 {
-                  int day=0, month=0, year=0, hours=0, minutes=0, seconds=0;
-                  for (size_t i=1; i<val.size(); ++i)
+                  int v=stoi(val[1]); // can't throw, because val[i] must always be sequence of digits
+                  switch (format[i])
                     {
-                      
-                      int v;
-                      v=stoi(val[i]); // can't throw, because val[i] must always be sequence of digits
-                      switch (m[i][0])
-                        {
-                        case 'd': day=v; break;
-                        case 'm': month=v; break;
-                        case 'y':
-                          if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
-                          year=v>68? v+1900: v+2000;
-                          break;
-                        case 'Y': year=v; break;
-                        case 'H': hours=v; break;
-                        case 'M': minutes=v; break;
-                        case 'S': seconds=v; break;
-                        }
+                    case 'd': day=v; break;
+                    case 'm': month=v; break;
+                    case 'y':
+                      if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
+                      year=v>68? v+1900: v+2000;
+                      break;
+                    case 'Y': year=v; break;
+                    case 'H': hours=v; break;
+                    case 'M': minutes=v; break;
+                    case 'S': seconds=v; break;
                     }
-                  return ptime(date(year,month,day),time_duration(hours,minutes,seconds));
                 }
-              throw runtime_error(s+" doesn't match "+dim.units);
+              return ptime(date(year,month,day),time_duration(hours,minutes,seconds));
             }
           if (!dim.units.empty())
             {
