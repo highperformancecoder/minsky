@@ -108,6 +108,7 @@ namespace minsky
     surfaceToDraw.swap(surface);
 
     cairo_reset_clip(surface->cairo());
+    ecolab::cairo::CairoSave cs(surface->cairo());
     cairo_set_source_rgba(surface->cairo(), backgroundColour.r,backgroundColour.g,backgroundColour.b,backgroundColour.a);
     cairo_rectangle(surface->cairo(), 0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
     cairo_fill(surface->cairo());
