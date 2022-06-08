@@ -28,7 +28,7 @@
 namespace civita
 {
   /// convert string rep to an any rep
-  boost::any anyVal(const Dimension&, const std::string&);
+  boost::any anyVal(const Dimension&, std::string);
 
   /// \a format - can be any format string suitable for a
   /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"

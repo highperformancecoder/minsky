@@ -117,6 +117,11 @@ SUITE(XVector)
     CHECK_EQUAL("1999-12-01",str(anyVal({Dimension::time,"%y:%d:%m"}, "99:1:12"), "%Y-%m-%d"));
     CHECK_EQUAL("2009-12-01",str(anyVal({Dimension::time,"%y:%d:%m"}, "09:1:12"), "%Y-%m-%d"));
     CHECK_THROW(anyVal({Dimension::time,"%Y-%b-%d"}, "foobar"), std::exception);
+
+    //screwy dates
+    CHECK_EQUAL("2009-09-01",str(anyVal({Dimension::time,"%m/%d/%Y"}, "9/1/2009"), "%Y-%m-%d"));
+   
+
   }
 
   TEST(incompatibleDiff)
