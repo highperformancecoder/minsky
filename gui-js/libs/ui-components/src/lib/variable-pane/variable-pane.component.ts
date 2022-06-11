@@ -74,12 +74,13 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     const clientRect = this.variablePaneContainer.getBoundingClientRect();
 
     this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = Math.round(
-      this.windowUtilityService.getElectronMenuBarHeight()
-    );
-
+//    this.topOffset = Math.round(
+//      this.windowUtilityService.getElectronMenuBarHeight()
+//    );
+      this.topOffset = 20;
+      
     this.height = Math.round(this.variablePaneContainer.clientHeight);
-      this.width = Math.round(this.variablePaneContainer.clientWidth);
+      this.width = Math.round(this.variablePaneContainer.clientWidth-this.topOffset);
   }
 
   renderFrame() {
@@ -184,6 +185,10 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       }
   };
 
+    select(event) {
+        process.stdout.write(JSON.stringify(event.target));
+    }
+    
 //  onMouseWheelZoom = async (event: WheelEvent) => {
 //    event.preventDefault();
 //    const { deltaY } = event;

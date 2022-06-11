@@ -2,7 +2,13 @@
   id="variable-pane-wrapper"
   #variablePaneWrapper
   (window:resize)="windowResize()"
->
+  >
+  <div class="selector-buttons">
+    <input type="checkbox" id="flow" class="select" (click)="select($event)"/>Flows
+    <input type="checkbox" (click)="select($event)"/>Parameters
+    <input type="checkbox" (click)="select($event)"/>Stocks
+    <input type="checkbox" (click)="select($event)"/>Integrals
+  </div>
   <div id="variable-pane" class="variable-pane">
     <p>&nbsp;</p>
   </div>
