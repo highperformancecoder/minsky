@@ -109,7 +109,6 @@ namespace civita
       case Dimension::time:
         {
           string::size_type pq;
-          //          static regex screwyDates{R"(%([mdyY])[^%]%([mdyY])[^%]%([mdyY]))"};
           if ((pq=dim.units.find("%Q"))!=string::npos)
             {
               // year quarter format expected. Takes the first %Y (or
@@ -132,18 +131,23 @@ namespace civita
               return ptime(date(year, quarterMonth[quarter-1], 1));
             }
 
-          // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
-          static regex thisTimeFormat{"%([mdyYHMS])"}, otherTimeFormats{"%[^mdyYHMS]"};
           smatch val;
-          if (!dim.units.empty() && !regex_search(dim.units, val,otherTimeFormats)) // handle dates with 1 or 2 digits see Ravel ticket #35
+          runtime_error error("invalid date/time: "+s+" for format "+dim.units);
+                        
+          // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
+          if (!regex_search(dim.units, val,regex{"%[^mdyYHMS]"})) // handle dates with 1 or 2 digits see Ravel ticket #35
             {
               smatch match;
               string format;
-              for (string formatStr=dim.units; regex_search(formatStr, match, thisTimeFormat); formatStr=match.suffix())
+              static regex thisTimeFormat{"%([mdyYHMS])"};
+              for (string formatStr=dim.units.empty()? "%Y %m %d %H %M %S": dim.units;
+                   regex_search(formatStr, match, thisTimeFormat);
+                   formatStr=match.suffix())
                 {format.push_back(match.str(1)[0]);}
               static regex valParser{"(\\d+)"};
-              int day=0, month=0, year=0, hours=0, minutes=0, seconds=0;
-              for (int i=0; i<format.size() && regex_search(s, val, valParser); s=val.suffix(), ++i)
+              int day=1, month=1, year=0, hours=0, minutes=0, seconds=0;
+              int i=0;
+              for (; i<format.size() && regex_search(s, val, valParser); s=val.suffix(), ++i)
                 {
                   int v=stoi(val[1]); // can't throw, because val[i] must always be sequence of digits
                   switch (format[i])
@@ -160,38 +164,24 @@ namespace civita
                     case 'S': seconds=v; break;
                     }
                 }
+              if (!dim.units.empty() && i<format.size()) throw error;
               return ptime(date(year,month,day),time_duration(hours,minutes,seconds));
             }
-          if (!dim.units.empty())
-            {
-              istringstream is(s);
-              is.imbue(locale(is.getloc(), new time_input_facet(dim.units)));
-              ptime pt;
-              is>>pt;
-              if (pt.is_special())
-                throw error("invalid date/time: %s",s.c_str());
-              return pt;
-              // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
-              // strptime is not available on Windows alas
-              //              struct tm tm;
-              //              memset(&tm,0,sizeof(tm));
-              //              if (char* next=strptime(s.c_str(), dim.units.c_str(), &tm))
-              //                try
-              //                  {
-              //                    return ptime(date(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday), time_duration(tm.tm_hour,tm.tm_min,tm.tm_sec));
-              //                  }
-              //                catch (...)
-              //                  {
-              //                    cout << s << " " << tm.tm_year<<tm.tm_mon << " " << tm.tm_mday << endl;
-              //                    throw;
-              //                  }
-              //              else
-              //                throw error("invalid date/time: %s",s.c_str());
+
+          // default case - delegate to std::time_input_facet
+          istringstream is(s);
+          is.imbue(locale(is.getloc(), new time_input_facet(dim.units)));
+          ptime pt;
+          is>>pt;
+          if (pt.is_special())
+            throw error;
+          return pt;
+
+          // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
+          // strptime is not available on Windows alas
             }
-          return sToPtime(s);
-          break;
-        }
       }
+
     assert(false);
     return any(); // shut up compiler warning
   }

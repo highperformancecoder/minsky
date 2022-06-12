@@ -46,7 +46,7 @@ namespace civita
   };
 
   /// default parsing of a time string
-  boost::posix_time::ptime sToPtime(const std::string& s);
+  //  boost::posix_time::ptime sToPtime(const std::string& s);
 
   struct NamedDimension
   {

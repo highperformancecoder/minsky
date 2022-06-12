@@ -73,6 +73,17 @@ SUITE(XVector)
       CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
       CHECK_THROW(push_back("2-2018"),std::exception);
 
+      // test some wonky dates and times
+      dimension.units="%d/%m/%Y";
+      push_back("1/4/2018");
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_THROW(push_back("2-2018"),std::exception);
+
+      dimension.units="%d/%m/%Y %H:%M:%S";
+      push_back("1/4/2018 12:52:13");
+      CHECK_EQUAL(ptime(date(2018,Apr,1),time_duration(12,52,13)), any_cast<ptime>(back()));
+      CHECK_THROW(push_back("2-2018"),std::exception);
+      
       dimension.units.clear();
       push_back("2018-04-01");
       CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
