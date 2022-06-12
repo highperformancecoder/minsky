@@ -185,8 +185,18 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       }
   };
 
-    select(event) {
-        process.stdout.write(JSON.stringify(event.target));
+    async select(id) {
+        if (document.forms["variablePane"]["variablePane::"+id].checked)
+            await this.electronService.sendMinskyCommandAndRender({
+                command:`/minsky/variablePane/select "${id}"`
+            });
+        else
+            await this.electronService.sendMinskyCommandAndRender({
+                command:`/minsky/variablePane/deselect "${id}"`
+            });
+        this.electronService.sendMinskyCommandAndRender({
+            command: `/minsky/variablePane/update [${this.width},${this.height}]`,
+        });
     }
     
 //  onMouseWheelZoom = async (event: WheelEvent) => {
