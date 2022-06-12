@@ -61,7 +61,10 @@ namespace minsky
   {
     auto idx=row+m_numRows*col;
     if (idx>=vars.size())
-      throw out_of_range("invalid cell @("+to_string(row)+","+to_string(col)+")");
+      {
+        static VariablePaneCell emptyCell;
+        return emptyCell;
+      }
     return vars[idx];
   }
 
