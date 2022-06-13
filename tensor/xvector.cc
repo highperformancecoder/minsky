@@ -135,7 +135,9 @@ namespace civita
           runtime_error error("invalid date/time: "+s+" for format "+dim.units);
                         
           // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
-          if (!regex_search(dim.units, val,regex{"%[^mdyYHMS]"})) // handle dates with 1 or 2 digits see Ravel ticket #35
+          // handle dates with 1 or 2 digits see Ravel ticket #35.
+          // Delegate to std::time_facet if time fields abut or more complicated formatting is requested
+          if (!regex_search(dim.units, val,regex{"%[^mdyYHMS]|%[mdyYHMS]%[mdyYHMS]"})) 
             {
               smatch match;
               string format;

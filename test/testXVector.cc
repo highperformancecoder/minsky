@@ -131,6 +131,7 @@ SUITE(XVector)
 
     //screwy dates
     CHECK_EQUAL("2009-09-01",str(anyVal({Dimension::time,"%m/%d/%Y"}, "9/1/2009"), "%Y-%m-%d"));
+    CHECK_EQUAL("2009-09-01",str(anyVal({Dimension::time,"%Y%m%d"}, "20090901"), "%Y-%m-%d"));
    
 
   }
