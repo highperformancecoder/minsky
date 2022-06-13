@@ -62,6 +62,8 @@
 #include "pango.rcd"
 #include "pango.xcd"
 #include "panopticon.rcd"
+#include "pannableTab.rcd"
+#include "pannableTab.xcd"
 #include "parameterTab.rcd"
 #include "parameterTab.xcd"
 #include "plot.rcd"

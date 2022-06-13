@@ -20,12 +20,13 @@
 
 #ifndef VARIABLETAB_H
 #define VARIABLETAB_H
-#include <itemTab.h>
+#include "itemTab.h"
+#include "pannableTab.h"
 
 namespace minsky
 {
 	 
-  class VariableTab: public ItemTab
+  class VariableTab: public PannableTab<ItemTab>
   {	  
   public:
     bool itemSelector(const ItemPtr& i) override {if (auto v=i->variableCast()) return v->type()!=VariableType::parameter && v->attachedToDefiningVar(); return false;}  

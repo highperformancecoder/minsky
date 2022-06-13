@@ -147,7 +147,7 @@ namespace minsky
     bool m_multipleEquities=false;    
     
   public:
-    EquationDisplay equationDisplay;
+    PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
     ParameterTab parameterTab;

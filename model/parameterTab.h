@@ -20,12 +20,13 @@
 
 #ifndef PARAMETERTAB_H
 #define PARAMETERTAB_H
-#include <itemTab.h>
+#include "itemTab.h"
+#include "pannableTab.h"
 
 namespace minsky
 {
 	 
-  class ParameterTab: public ItemTab
+  class ParameterTab: public PannableTab<ItemTab>
   {
   public:
     // replace definition column by dimensions
