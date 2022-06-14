@@ -34,7 +34,8 @@ namespace minsky
     virtual void mouseUp(float x, float y) {}
     virtual void mouseMove(float x, float y) {}
     virtual void zoom(double x, double y, double z) {}
-
+    /// move this so that (x,y) is centred
+    virtual void moveTo(float x, float y) {}
     
     /// handle key press over current itemFocus,
     /// @param keySym the X key sym code

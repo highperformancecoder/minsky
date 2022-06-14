@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommunicationService, ElectronService } from '@minsky/core';
+import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
 import { commandsMapping, events, MainRenderingTabs } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { ResizedEvent } from 'angular-resize-event';
@@ -16,13 +16,15 @@ const logInfo = debug('minsky:web:info');
 })
 export class AppComponent implements AfterViewInit {
   loader = false;
-  MainRenderingTabs = MainRenderingTabs;
+    MainRenderingTabs = MainRenderingTabs;
+    private windowUtilityService: WindowUtilityService;
   constructor(
     private electronService: ElectronService,
     private cmService: CommunicationService,
     private translate: TranslateService,
     public router: Router
   ) {
+      this.windowUtilityService=new WindowUtilityService(electronService);
     this.translate.setDefaultLang('en');
     logInfo('AppConfig', AppConfig);
   }
@@ -93,8 +95,11 @@ export class AppComponent implements AfterViewInit {
     });
 
     this.cmService.currentTab = tab;
-
     if (this.electronService.isElectron) {
+      var container=this.windowUtilityService.getMinskyContainerElement();
+      const scrollableArea=this.windowUtilityService.getScrollableArea();
+      container.scrollTop=scrollableArea.height / 2;
+      container.scrollLeft=scrollableArea.width / 2;
       const payload = { newTab: tab };
       this.electronService.ipcRenderer.send(events.CHANGE_MAIN_TAB, payload);
     }

@@ -71,14 +71,14 @@ export class WiringComponent implements OnInit, OnDestroy {
           const posX = scrollableArea.width / 2 - scrollLeft;
           const posY = scrollableArea.height / 2 - scrollTop;
           await this.electronService.sendMinskyCommandAndRender({
-            command: commandsMapping.MOVE_TO,
+            command: 'moveTo',
             mouseX: posX,
             mouseY: posY,
           });
         };
 
-        minskyCanvasContainer.addEventListener('scroll', async () => {
-          // TODO: handle scroll for different tabs
+          minskyCanvasContainer.addEventListener('scroll', async () => {
+              console.log('scroll received');
           await handleScroll(
             minskyCanvasContainer.scrollTop,
             minskyCanvasContainer.scrollLeft

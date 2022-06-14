@@ -117,7 +117,7 @@ namespace minsky
 
     bool redrawAll=true; ///< if false, then only redraw graphs
 
-    void moveTo(float x, float y) {
+    void moveTo(float x, float y) override {
       model->moveTo(x,y);
       requestRedraw();
     }

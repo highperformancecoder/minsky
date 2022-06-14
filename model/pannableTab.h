@@ -55,6 +55,13 @@ namespace minsky
           Base::requestRedraw();
         }
     }
+    void moveTo(float x, float y) override
+    {
+      Base::offsx=x;
+      Base::offsy=y;
+      Base::requestRedraw();
+    }
+
   };
 }
 
