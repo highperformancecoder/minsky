@@ -1515,11 +1515,7 @@ SUITE(GodleyTableWindow)
       cminsky().clipboard.putClipboard("");
       keyPress(XK_Control_L,""); keyPress('x',"\x18");  //cut
       CHECK_EQUAL("a",cminsky().clipboard.getClipboard());
-<<<<<<< HEAD
-      CHECK_EQUAL("bc",godleyIcon->table.cell(1,1));
-=======
       CHECK_EQUAL("bc",godleyIcon().table.cell(1,1));
->>>>>>> 0987374a05b2671f3a0417e82f96950de6bc18d4
       keyPress(XK_Control_L,""); keyPress('v',"\x16");  //paste
       CHECK_EQUAL("abc",godleyIcon().table.cell(1,1));
 

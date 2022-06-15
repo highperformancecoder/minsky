@@ -416,3 +416,6 @@ clang-tidy: compile_commands.json
 
 compile-ts:
 	cd gui-js && npx tsc | sed -e 's/\x1b\[[0-9;]*m//g'|sed -e 's/(\([0-9]*\),[0-9]*)/:\1/g'
+
+windows-package:
+	sh mkWindowsDist.sh
