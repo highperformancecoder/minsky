@@ -40,7 +40,7 @@ set canvasWidth 600
 set canvasHeight 800
 set backgroundColour lightGray
 set preferences(nRecentFiles) 10
-set preferences(panopticon) 1
+set preferences(panopticon) 0
 set preferences(focusFollowsMouse) 0
 set preferences(multipleEquities) 0
 set recentFiles {}
@@ -722,8 +722,14 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 .menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
-.menubar.edit add command -label "Randomize layout" -command minsky.model.randomLayout
-.menubar.edit add command -label "Auto layout" -command minsky.model.autoLayout
+.menubar.edit add command -label "Randomize layout" -command minsky.randomLayout
+.menubar.edit add command -label "Auto layout" -command minsky.autoLayout
+
+proc getClipboard {} {
+    set contents ""
+    catch {clipboard get -type UTF8_STRING} contents
+    return contents
+}
 
 proc getClipboard {} {
     set contents ""
@@ -904,12 +910,21 @@ grid rowconfigure . 10 -weight 1
 # utility for creating OK/Cancel button bar
 proc buttonBar {window okProc} {
     frame $window.buttonBar
-    button $window.buttonBar.ok -text "OK" -command "$okProc; cancelWin $window"
+    button $window.buttonBar.ok -text "OK" -command "okAction \{$okProc\} $window"
     button $window.buttonBar.cancel -text "Cancel" -command "cancelWin $window"
     pack $window.buttonBar.cancel $window.buttonBar.ok -side left
     pack $window.buttonBar -side top
     bind $window <Key-Return> "$window.buttonBar.ok invoke"
     bind $window <Key-Escape> "$window.buttonBar.cancel invoke"
+}
+
+proc okAction {okProc window} {
+    if [catch $okProc msg] {
+        tk_messageBox  -icon error -parent $window -message $msg
+        raise $window
+        return
+    }
+    cancelWin $window
 }
 
 proc cancelWin window {
@@ -945,13 +960,25 @@ proc textEntryPopup {win init okproc} {
     
 }
 
+bind .tabs <<contextMenu>> {
+    set windows [.tabs tabs]
+    set idx [.tabs identify tab %x %y]
+    if {$idx<[llength $windows]} {
+        .wiring.context delete 0 end
+        .wiring.context add command -label Help -command "
+            help $helpTopics([lindex $windows $idx])"
+        tk_popup .wiring.context %X %Y
+    }
+}
+
 proc addTab {window label surface} {
     image create cairoSurface rendered$window -surface $surface
     ttk::frame .$window
-    global canvasHeight canvasWidth tabSurface
+    global canvasHeight canvasWidth tabSurface helpTopics
     label .$window.canvas -image rendered$window -height $canvasHeight -width $canvasWidth
     .tabs add .$window -text $label -padding 0
     set tabSurface($label) $surface
+    set helpTopics(.$window) tabs:$label
 }
 
 # add the tabbed windows
@@ -972,7 +999,7 @@ pack .plts.canvas -fill both -expand 1
 bind .plts.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
 menu .plts.context -tearoff 0   
 
-bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDownCommon %x %y}
+bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDown %x %y}
 bind .plts.canvas <ButtonRelease-1> {wrapHoverMouseTab plotTab mouseUp %x %y}
 bind .plts.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab plotTab mouseMove %x %y}
 bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
@@ -981,7 +1008,7 @@ bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
 addTab gdlys "Godleys" minsky.godleyTab
 pack .gdlys.canvas -fill both -expand 1
 
-bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDownCommon %x %y}
+bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDown %x %y}
 bind .gdlys.canvas <ButtonRelease-1> {wrapHoverMouseTab godleyTab mouseUp %x %y}
 bind .gdlys.canvas <Motion> {.gdlys.canvas configure -cursor {}; wrapHoverMouseTab godleyTab mouseMove %x %y}
 bind .gdlys.canvas <Leave> {after cancel hoverMouseTab godleyTab}
@@ -1030,6 +1057,8 @@ source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/csvImport.tcl
+source $minskyHome/ravel.tcl
+source $minskyHome/variablePane.tcl
 
 pack .wiring.canvas -fill both -expand 1
 
@@ -1341,10 +1370,9 @@ proc step {} {
     } else {
         # run simulation
         global preferences
-        set lastt [t]
         if {[catch minsky.step errMsg options] && [running]} {runstop}
         if {[minsky.t0]>[t] || [minsky.tmax]<[t]} {runstop}
-        .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
+        .controls.statusbar configure -text "t: [t] Δt: [format %g [deltaT]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
         update
         return -options $options $errMsg
@@ -1431,13 +1459,16 @@ proc openNamedFile {ofname} {
         eval minsky.load {$ofname}
         file delete -- [autoBackupName]
     }
+    # setting simulationDelay causes the edited (dirty) flag to be set, amongst other things
+    pushFlags
     doPushHistory 0
     setAutoSaveFile [autoBackupName]
 
-    # minsky.load resets minsky.multipleEquities, so restore it to preferences
+    # minsky.load resets minsky.multipleEquities and other preference, so restore preferences
     minsky.multipleEquities $preferences(multipleEquities)
+    setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
+
     canvas.focusFollowsMouse $preferences(focusFollowsMouse)
-    pushFlags
     recentreCanvas
 
    .controls.simSpeed set [simulationDelay]
@@ -1446,9 +1477,9 @@ proc openNamedFile {ofname} {
     canvas.requestRedraw
     # not sure why this is needed, but initial draw doesn't happen without it
     event generate .wiring.canvas <Expose>
-    # setting simulationDelay causes the edited (dirty) flag to be set
-    pushHistory
+    update
     doPushHistory 1
+    pushHistory
     popFlags
 }
 
@@ -1531,7 +1562,7 @@ proc saveAs {} {
 
 proc newSystem {} {
     doPushHistory 0
-    if {[edited] || [file exists [autoBackupName]]} {
+    if {[edited]} {
         switch [tk_messageBox -message "Save?" -type yesnocancel] {
             yes save
             no {}
@@ -1539,7 +1570,7 @@ proc newSystem {} {
         }
     }    
     catch {reset}
-    clearAllMaps
+    clearAllMapsTCL
     pushFlags
     deleteSubsidiaryTopLevels
     clearHistory
@@ -1547,6 +1578,7 @@ proc newSystem {} {
     recentreCanvas
     global fname progName
     set fname ""
+    file delete [autoBackupName]
     wm title . "$progName: New System"
     popFlags
     doPushHistory 1
@@ -1685,6 +1717,7 @@ set helpTopics(.controls.statusbar) SimTime
 set helpTopics(.controls.zoomOut) ZoomButtons
 set helpTopics(.controls.zoomIn) ZoomButtons
 set helpTopics(.controls.zoomOrig)  ZoomButtons
+set helpTopics(.controls.zoomFit)  ZoomButtons
 # TODO - the following association interferes with canvas item context menus
 # set helpTopics(.wiring.canvas) DesignCanvas
 
@@ -1802,7 +1835,7 @@ proc deleteSubsidiaryTopLevels {} {
 
 proc exit {} {
     # check if the model has been saved yet
-    if {[edited]||[file exists [autoBackupName]]} {
+    if {[edited]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
             no {file delete -- [autoBackupName]}
@@ -1969,5 +2002,5 @@ if {[llength [info commands afterMinskyStarted]]>0} {
 setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
 disableEventProcessing
 popFlags
-pushHistory
+#pushHistory
 

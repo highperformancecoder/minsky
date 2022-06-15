@@ -19,10 +19,12 @@
 
 #include "CSVDialog.h"                                                           
 #include "group.h"                                                               
-#include "selection.h"                                                           
+#include "selection.h"
+#include "lasso.h"
 #include <pango.h>                                                               
 #include "minsky_epilogue.h"                                                     
-#include "zStream.h"                                                           
+#include "zStream.h"
+#include "dimension.h"
                                                                                  
 #include <boost/asio/ssl/error.hpp>                                              
 #include <boost/asio/ssl/stream.hpp>                                             
@@ -46,6 +48,7 @@
 
 using namespace std;
 using namespace minsky;
+using namespace civita;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 using tcp = boost::asio::ip::tcp;       
@@ -54,7 +57,7 @@ namespace http = boost::beast::http;
 
 const unsigned CSVDialog::numInitialLines;
 
-void CSVDialog::reportFromFile(const std::string& input, const std::string& output)
+void CSVDialog::reportFromFile(const std::string& input, const std::string& output) const
 {
   ifstream is(input);
   ofstream of(output);
@@ -68,7 +71,7 @@ namespace
   {
     chrono::time_point<chrono::system_clock> timestamp;
     string url, filename;
-    CacheEntry(string url): timestamp(chrono::system_clock::now()), url(url),
+    CacheEntry(const string& url): timestamp(chrono::system_clock::now()), url(url),
                             filename(boost::filesystem::unique_path().string()) {}
     ~CacheEntry() {boost::filesystem::remove(filename);}
     bool operator<(const CacheEntry& x) const {return url<x.url;}
@@ -80,7 +83,7 @@ namespace
     using set<CacheEntry>::find;
     using set<CacheEntry>::end;
     using set<CacheEntry>::erase;
-    iterator emplace(string url)
+    iterator emplace(const string& url)
     {
       if (size()>=10)
         {
@@ -109,8 +112,8 @@ std::string CSVDialog::loadWebFile(const std::string& url)
     {
       if (chrono::system_clock::now() < cacheEntry->timestamp + chrono::minutes(5))
         return cacheEntry->filename;
-      else // expire the entry
-        cache.erase(cacheEntry);
+      // expire the entry
+      cache.erase(cacheEntry);
     }
   
   // Parse input URL. Also handles URLs of the type username:password@example.com/pathname#section. See https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
@@ -189,7 +192,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   if (res.result_int() >= 400) throw runtime_error("Invalid HTTP response. Response code: " + std::to_string(res.result_int()));
                           
   // Dump the outstream into a temporary file for loading it into Minsky' CSV parser 
-  const std::string tempStr = cache.emplace(url)->filename;
+  std::string tempStr = cache.emplace(url)->filename;
 
   std::ofstream outFile(tempStr, std::ofstream::binary);  
   
@@ -243,7 +246,7 @@ template <class Parser>
 vector<vector<string>> parseLines(const Parser& parser, const vector<string>& lines)
 {
   vector<vector<string>> r;
-  for (auto& line: lines)
+  for (const auto& line: lines)
     {
       r.emplace_back();
       boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
@@ -271,7 +274,7 @@ namespace
   };
 }
 
-bool CSVDialog::redraw(int, int, int width, int height)
+bool CSVDialog::redraw(int, int, int, int)
 {
   cairo_t* cairo=surface->cairo();
   CroppedPango pango(cairo, colWidth);
@@ -394,12 +397,12 @@ bool CSVDialog::redraw(int, int, int width, int height)
   return true;
 }
 
-size_t CSVDialog::columnOver(double x)
+size_t CSVDialog::columnOver(double x) const
 {
   return size_t((x-xoffs)/(colWidth+5));
 }
 
-size_t CSVDialog::rowOver(double y)
+size_t CSVDialog::rowOver(double y) const
 {
   return size_t(y/rowHeight);
 }

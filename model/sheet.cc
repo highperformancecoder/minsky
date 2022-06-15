@@ -19,6 +19,7 @@
 #include "sheet.h"
 #include "str.h"
 #include "selection.h"
+#include "lasso.h"
 #include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>
@@ -33,7 +34,7 @@ const float border=10;
 
 Sheet::Sheet()
 {
-  m_ports.emplace_back(new Port(*this, Port::inputPort));
+  m_ports.emplace_back(make_shared<InputPort>(*this));
   iWidth(100);
   iHeight(100);	  
 }
@@ -52,8 +53,7 @@ ClickType::Type Sheet::clickType(float x, float y)
   if (inItem(x,y)) return ClickType::inItem;                     
   if (dx < w && dy < h)
     return ClickType::onItem;
-  else 
-    return ClickType::outside;  
+  return ClickType::outside;  
   if (auto item=select(x,y))
     return item->clickType(x,y);      
   return Item::clickType(x,y);  

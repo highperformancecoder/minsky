@@ -1,0 +1,28 @@
+name: OBS smoke test
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  Regression-test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu_ver: [20.04]
+
+    name: ubuntu-${{ matrix.ubuntu_ver }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Run smoke test
+        run: |
+          cd obsCheck
+          bash smokeTest.sh

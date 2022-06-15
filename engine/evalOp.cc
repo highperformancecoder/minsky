@@ -18,6 +18,7 @@
 */
 #define OPNAMEDEF
 #include "cairoItems.h"
+#include "dataOp.h"
 #include "evalOp.h"
 #include "variable.h"
 #include "userFunction.h"
@@ -31,8 +32,6 @@
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/special_functions/polygamma.hpp>
 
-using boost::any;
-using boost::any_cast;
 using namespace boost::posix_time;
 using namespace boost::math;
 

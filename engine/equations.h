@@ -108,7 +108,10 @@ namespace MathDAG
     /// @param maxOrder is used to limit the recursion depth
     virtual int order(unsigned maxOrder) const=0;
     /// returns true if the evaluation of this involves tensor processing
-    virtual bool tensorEval() const=0;
+    /// @param visited set to break graph cycles
+    virtual bool tensorEval(std::set<const Node*>& visited) const=0;
+    /// returns true if the evaluation of this involves tensor processing
+    bool tensorEval() {std::set<const Node*> visited; return tensorEval(visited);}
     mutable int cachedOrder=-1;
     /// used within io streaming
     LaTeXManip latex() const {return LaTeXManip(*this);}
@@ -155,7 +158,7 @@ namespace MathDAG
     ConstantDAG(double value): value(str(value)) {}
     int BODMASlevel() const  override {return 0;}
     int order(unsigned maxOrder) const  override {return 0;}
-    bool tensorEval() const override {return false;}
+    bool tensorEval(std::set<const Node*>&) const override {return false;}
     ostream& latex(ostream& o) const  override {return o<<value;}
     ostream& matlab(ostream& o) const  override {return o<<value;}
     void render(ecolab::cairo::Surface& surf) const override;
@@ -186,7 +189,8 @@ namespace MathDAG
       else
         return 0;
     }
-    bool tensorEval() const override;
+    bool tensorEval(std::set<const Node*>&) const override;
+    using Node::tensorEval;
     using Node::latex;
     using Node::matlab;
     using Node::addEvalOps;
@@ -220,7 +224,8 @@ namespace MathDAG
     /// factory method 
     static OperationDAGBase* create(Type type, const string& name="");
     int order(unsigned maxOrder) const override;
-    bool tensorEval() const override;
+    bool tensorEval(std::set<const Node*>&) const override;
+    using Node::tensorEval;
     std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>&) override;
     void checkArg(unsigned i, unsigned j) const;
   };
@@ -276,8 +281,8 @@ namespace MathDAG
     ostream& matlab(ostream& o) const override  {return o<<"";} 
     void render(ecolab::cairo::Surface& surf) const override;
     std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={}) override;
-    int order(unsigned maxOrder) const override {return rhs->order(maxOrder-1)+1;}
-    bool tensorEval() const override {return true;}
+    int order(unsigned maxOrder) const override {return rhs? rhs->order(maxOrder-1)+1:0;}
+    bool tensorEval(std::set<const Node*>&) const override {return true;}
     std::shared_ptr<Node> derivative(SystemOfEquations&) const override
     {lock.throw_error("derivative not defined for locked objects");}
   };
@@ -362,7 +367,7 @@ namespace MathDAG
     /// create a variable DAG. returns cached value if previously called
     NodePtr makeDAG(const string& valueId, const string& name, VariableType::Type type);
     NodePtr makeDAG(VariableBase& v)
-    {v.ensureValueExists(v.vValue().get(),v.name()); return makeDAG(v.valueId(),VariableValue::uqName(v.name()),v.type());}
+    {v.ensureValueExists(v.vValue().get(),v.name()); return makeDAG(v.valueId(),uqName(v.name()),v.type());}
     /// create an operation DAG. returns cached value if previously called
     NodePtr makeDAG(const OperationBase& op);
     NodePtr makeDAG(const SwitchIcon& op);

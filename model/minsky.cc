@@ -22,21 +22,38 @@
 #include "flowCoef.h"
 #include "userFunction.h"
 #include "mdlReader.h"
+#include "variableInstanceList.h"
 
 #include "TCL_obj_stl.h"
 #include <cairo_base.h>
 
-#include <schema/schema3.h>
-
+#include "schema3.h"
 
 //#include <thread>
 // std::thread apparently not supported on MXE for now...
 #include <boost/thread.hpp>
-using namespace std;
 
+#include "minskyVersion.h"
+
+#include "minsky_epilogue.h"
+
+#include <algorithm>
+
+using namespace std;
 using namespace minsky;
 using namespace classdesc;
 using namespace boost::posix_time;
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <sys/wait.h>
+#endif
+
+#if defined(__linux__)
+#include <sys/sysinfo.h>
+#endif
 
 namespace
 {
@@ -46,26 +63,23 @@ namespace
       if (!isfinite(y[i])) return false;
     return true;
   }
-}
-
-namespace minsky
-{
-
   struct BusyCursor
   {
     Minsky& minsky;
     BusyCursor(Minsky& m): minsky(m) {minsky.setBusyCursor();}
     ~BusyCursor() {minsky.clearBusyCursor();}
   };
+
+  /// list the possible string values of an enum (for TCL)
+  template <class E> vector<string> enumVals()
+    {
+      vector<string> r;
+      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
+        r.push_back(enum_keysData<E>::keysData[i].name);
+      return r;
+    }
+
 }
-
-#include "minskyVersion.h"
-
-#include "minsky_epilogue.h"
-
-
-#include <algorithm>
-using namespace std;
 
 namespace minsky
 {
@@ -88,10 +102,17 @@ namespace minsky
           m.flags &= ~Minsky::fullEqnDisplay_needed;
         }
       m.clearBusyCursor();
+      return true;
     }
     return surface.get();
   }
 
+  bool Minsky::multipleEquities(const bool& m) {
+    m_multipleEquities=m;
+    canvas.requestRedraw();
+    redrawAllGodleyTables();
+    return m_multipleEquities;
+  }
   
   void Minsky::openLogFile(const string& name)
   {
@@ -118,7 +139,7 @@ namespace minsky
         
       
 
-  void Minsky::clearAllMaps()
+  void Minsky::clearAllMaps(bool doClearHistory)
   {
     model->clear();
     equations.clear();
@@ -130,12 +151,14 @@ namespace minsky
     stockVars.clear();
 
     dimensions.clear();
+    namedItems.clear();
     flags=reset_needed|fullEqnDisplay_needed;
     fileVersion=minskyVersion;
+    if (doClearHistory) clearHistory();
   }
 
 
-  const char* Minsky::minskyVersion=MINSKY_VERSION;
+  const std::string Minsky::minskyVersion=MINSKY_VERSION;
 
   void Minsky::cut()
   {
@@ -189,12 +212,12 @@ namespace minsky
   {
     return dynamic_pointer_cast<VariableBase>
       (model->findAny(&Group::items, [&](const ItemPtr& x) {
-            auto v=x->variableCast();
-            return v && v->valueId()==valueId && v->defined();
-          }));
+          auto v=x->variableCast();
+          return v && v->valueId()==valueId && v->defined();
+        }));
   }
     
-  void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
+  void Minsky::saveGroupAsFile(const Group& g, const string& fileName)
   {
     schema3::Minsky m(g);
     Saver(fileName).save(m);
@@ -212,10 +235,10 @@ namespace minsky
     // stash values of parameters in copied group, as they are reset for some unknown reason later on. for ticket 1258
     map<string,string> existingParms; 
     for (auto& i: g->items) {
-        auto v=i->variableCast(); 
-        if (v && v->type()==VariableType::parameter) 
-			existingParms.emplace(v->valueId(),v->init());
-	}
+      auto v=i->variableCast(); 
+      if (v && v->type()==VariableType::parameter) 
+        existingParms.emplace(v->valueId(),v->init());
+    }
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();
     // The following is only necessary if one pastes into an existing model. For ticket 1258   
@@ -271,17 +294,17 @@ namespace minsky
 
     // leave newly ungrouped items in selection
     for (auto& i: copyOfItems) {
-       canvas.selection.ensureItemInserted(i);
-       // ensure that initial values of pasted parameters are correct. for ticket 1258
-       if (auto v=i->variableCast())
-		 if (v->type()==VariableType::parameter && !existingParms.empty()) 
-		 {
-		   auto it=existingParms.find(v->valueId());
-		   if (it!=existingParms.end()) v->init(it->second);
-	   }
-	}
+      canvas.selection.ensureItemInserted(i);
+      // ensure that initial values of pasted parameters are correct. for ticket 1258
+      if (auto v=i->variableCast())
+        if (v->type()==VariableType::parameter && !existingParms.empty()) 
+          {
+            auto it=existingParms.find(v->valueId());
+            if (it!=existingParms.end()) v->init(it->second);
+          }
+    }
 	
-	if (!existingParms.empty()) existingParms.clear();
+    if (!existingParms.empty()) existingParms.clear();
 	
     // Attach mouse focus only to first visible item in selection. For ticket 1098.      
     for (auto& i: canvas.selection.items)
@@ -314,7 +337,7 @@ namespace minsky
     }
   }
 
-  void Minsky::insertGroupFromFile(const char* file)
+  void Minsky::insertGroupFromFile(const string& file)
   {
     ifstream inf(file);
     if (!inf)
@@ -384,9 +407,9 @@ namespace minsky
     variableValues.reset();
   }
 
-  void Minsky::renderEquationsToImage(const char* image)
+  void Minsky::renderEquationsToImage(const string& image)
   {
-    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
+    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image.c_str()));
     cairo_move_to(surf.cairo(),0,0);
     MathDAG::SystemOfEquations system(*this);
     system.renderEquations(surf, surf.height());
@@ -407,13 +430,13 @@ namespace minsky
       (&Group::items,
        [this](const Items&, Items::const_iterator it){
          if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
-           userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), f->name())]=f;
+           userFunctions[valueIdFromScope((*it)->group.lock(), f->name())]=f;
          return false;
        });
     model->recursiveDo
       (&Group::groups,
        [this](const Groups&, Groups::const_iterator it){
-         userFunctions[VariableValue::valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
+         userFunctions[valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
          return false;
        });
 
@@ -448,7 +471,7 @@ namespace minsky
              for (size_t i=0; i<p->portsSize(); ++i)
                {
                  auto pp=p->ports(i).lock();
-                 if (pp->wires().size()>0)
+                 if (!pp->wires().empty())
                    if (auto vv=pp->getVariableValue())
                      if (vv->idx()>=0)
                        p->connectVar(vv, i);
@@ -528,26 +551,28 @@ namespace minsky
       varDimensions.insert(xv.name);
     model->recursiveDo
       (&Group::items,[&](Items& m, Items::iterator it)
-      {
-        if (auto ri=dynamic_cast<Ravel*>(it->get()))
-          for (size_t i=0; i<ri->numHandles(); ++i)
-            if (varDimensions.count(ri->handleDescription(i)))
-              ri->setHandleSortOrder(ravel::HandleSort::forward, i);
-        return false;
-      });
+       {
+         if (auto ri=dynamic_cast<Ravel*>(it->get()))
+           for (size_t i=0; i<ri->numHandles(); ++i)
+             if (varDimensions.count(ri->handleDescription(i)))
+               ri->setHandleSortOrder(ravel::HandleSort::forward, i);
+         return false;
+       });
   }
   
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;
+    GodleyAssetClass::AssetClass target_ac;
     // matching liability with assets and vice-versa
     switch (ac)
       {
       case GodleyAssetClass::liability:
-        ac=GodleyAssetClass::asset;
+      case GodleyAssetClass::equity:
+        target_ac=GodleyAssetClass::asset;
         break;
       case GodleyAssetClass::asset:
-        ac=GodleyAssetClass::liability;
+        target_ac=GodleyAssetClass::liability;
         break;
       default:
         return r; // other types do not match anything
@@ -564,22 +589,25 @@ namespace minsky
                if (!gi->table.cell(0,i).empty())
                  {
                    auto v=gi->table.cell(0,i);
-                   auto scope=VariableValue::scope(gi->group.lock(),v);
+                   auto scope=minsky::scope(gi->group.lock(),v);
                    if (scope->higher(*godley.group.lock()))
-                     v=':'+v;
+                     v=':'+v; //NOLINT
                    else if (scope!=godley.group.lock())
                      continue; // variable is inaccessible
-                   if (gi==&godley || r.count(v) || gi->table._assetClass(i)!=ac) 
+                   if (r.count(v) || gi->table._assetClass(i)!=target_ac) 
                      {
                        r.erase(v); // column already duplicated, or in current, nothing to match
                        duplicatedColumns.insert(v);
                      }
-                   else if (!duplicatedColumns.count(v))
+                   else if (!duplicatedColumns.count(v) && gi->table._assetClass(i)==target_ac &&
+                            // insert unmatched asset columns from this table only for equity (feature #174)
+                            // otherwise matches are between separate tables
+                            ((ac!=GodleyAssetClass::equity && gi!=&godley) || (ac==GodleyAssetClass::equity && gi==&godley) ))
                      r.insert(v);
                  }
            }
-        return false;
-      });
+         return false;
+       });
     return r;
   }
 
@@ -611,6 +639,111 @@ namespace minsky
       }
   }
 
+  void Minsky::balanceColumns(const GodleyIcon& srcGodley, int srcCol, GodleyIcon& destGodley, int destCol) const
+  {
+    auto& srcTable=srcGodley.table;
+    auto& destTable=destGodley.table;
+    // reverse lookup tables for mapping flow variable to destination row numbers via row labels
+    map<string,string> srcRowLabels;
+    map<string, int> destRowLabels;
+    for (size_t row=1; row!=srcTable.rows(); ++row)
+      if (!srcTable.initialConditionRow(row) && !srcTable.cell(row,0).empty() &&
+          !srcTable.cell(row,srcCol).empty())
+        {
+          FlowCoef fc(srcTable.cell(row,srcCol));
+          if (!fc.name.empty())
+            srcRowLabels[srcGodley.valueId(fc.name)]=
+              trimWS(srcTable.cell(row,0));
+        }
+      else if (srcTable.initialConditionRow(row))
+        // copy directly into destination initial condition,
+        for (size_t r=1; r<destTable.rows(); ++r)
+          if (destTable.initialConditionRow(r))
+            destTable.cell(r,destCol)=srcTable.cell(row,srcCol);
+    for (size_t row=1; row!=destTable.rows(); ++row)
+      if (!destTable.initialConditionRow(row) && !destTable.cell(row,0).empty())
+        destRowLabels[trimWS(destTable.cell(row,0))]=row;
+
+
+    // compute column signature for both src and destination columns
+    map<string,double> srcFlows=srcGodley.flowSignature(srcCol), 
+      destFlows=destGodley.flowSignature(destCol);
+    // items to add
+    for (map<string,double>::iterator i=srcFlows.begin(); i!=srcFlows.end(); ++i)
+      if (i->second != destFlows[i->first])
+        {
+          int scope=-1;
+          if (i->first.find(':')!=string::npos)
+            minsky::scope(i->first);
+          FlowCoef df;
+          if (scope==-1 || !variableValues.count(i->first))
+            df.name=uqName(i->first);
+          else
+            df.name=variableValues[i->first]->name;
+          df.coef=i->second-destFlows[i->first];
+          if (df.coef==0) continue;
+          string flowEntry=df.str();
+          string rowLabel=srcRowLabels[srcGodley.valueId(i->first)];
+          map<string,int>::iterator dr=destRowLabels.find(rowLabel);
+          if (dr!=destRowLabels.end())
+            if (FlowCoef(destTable.cell(dr->second, destCol)).coef==0)
+              destTable.cell(dr->second, destCol) = flowEntry;
+            else
+              // add a new blank labelled flow line
+              {
+                destTable.resize(destTable.rows()+1,destTable.cols());
+                destTable.cell(destTable.rows()-1, destCol) = flowEntry;
+              }
+          else
+            // labels don't match, so add a new labelled line
+            {
+              destTable.resize(destTable.rows()+1,destTable.cols());
+              destTable.cell(destTable.rows()-1, 0) = rowLabel;
+              destRowLabels[rowLabel] = destTable.rows()-1;
+              destTable.cell(destTable.rows()-1, destCol) = flowEntry;
+            }
+        }
+    // items to delete
+    set<size_t> rowsToDelete;
+    for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
+      if (i->second!=0 && srcFlows[i->first]==0)
+        for (size_t row=1; row<destTable.rows(); ++row)
+          {
+            FlowCoef fc(destTable.cell(row, destCol));
+            if (!fc.name.empty())
+              fc.name=destGodley.valueId(fc.name);
+            if (fc.name==destGodley.valueId(i->first))
+              {
+                destTable.cell(row, destCol).clear();
+                // if this leaves an empty row, delete entire row
+                for (size_t c=0; c<destTable.cols(); ++c)
+                  if (!destTable.cell(row, c).empty())
+                    goto rowNotEmpty;
+                rowsToDelete.insert(row);
+              rowNotEmpty:;
+              }
+          }
+    // amalgamate unlabelled rows with singular value
+    map<string,double> unlabelledSigs;
+    for (size_t row=1; row<destTable.rows(); ++row)
+      {
+        if (!destTable.singularRow(row, destCol)) continue;
+        FlowCoef fc(destTable.cell(row, destCol));
+        unlabelledSigs[fc.name]+=fc.coef;
+        rowsToDelete.insert(row);
+      }
+    // append amalgamated rows
+    for (auto& i: unlabelledSigs)
+      if (i.second!=0)
+        {
+          destTable.insertRow(destTable.rows());
+          destTable.cell(destTable.rows()-1,destCol)=FlowCoef(i.second,i.first).str();
+        }
+                   
+    for (auto row=rowsToDelete.rbegin(); row!=rowsToDelete.rend(); ++row)
+      destTable.deleteRow(*row);
+  }
+  
   void Minsky::balanceDuplicateColumns(const GodleyIcon& srcGodley, int srcCol)
   {
     const GodleyTable& srcTable=srcGodley.table;
@@ -625,133 +758,55 @@ namespace minsky
        [&](Items& m, Items::iterator i)
        {
          if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
-           if (&gi->table!=&srcTable) // skip source table
-             for (size_t col=1; col<gi->table.cols(); col++)
-               if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
-                 {
-                   // checks asset class rules
-                   switch (srcGodley.table._assetClass(srcCol))
+           {
+             if (&gi->table==&srcTable) // if source table, then check for duplicated asset/equity columns
+               {
+                 for (size_t col=1; col<gi->table.cols(); col++)
+                   if (col==size_t(srcCol)) continue; // skip over source column
+                   else if (srcGodley.valueId(trimWS(srcTable.cell(0,col)))==colName)
                      {
-                     case GodleyAssetClass::asset:
-                       if (gi->table._assetClass(col)!=GodleyAssetClass::liability)
-                         throw error("asset column %s matches a non-liability column",colName.c_str());
-                       break;
-                     case GodleyAssetClass::liability:
-                       if (gi->table._assetClass(col)!=GodleyAssetClass::asset)
-                         throw error("liability column %s matches a non-asset column",colName.c_str());
-                       break;
-                     default:
-                       throw error("invalid asset class for duplicate column %s",colName.c_str());
-                     }
-
-                   // checks that nom more than two duplicated columns exist
-                   if (matchFound)
-                     throw error("more than one duplicated column detected for %s",colName.c_str());
-                   matchFound=true;
-                   
-                   GodleyTable& destTable=gi->table;
-
-
-                   // reverse lookup tables for mapping flow variable to destination row numbers via row labels
-                   map<string,string> srcRowLabels;
-                   map<string, int> destRowLabels;
-                   for (size_t row=1; row!=srcTable.rows(); ++row)
-                     if (!srcTable.initialConditionRow(row) && !srcTable.cell(row,0).empty() &&
-                         !srcTable.cell(row,srcCol).empty())
-                       {
-                         FlowCoef fc(srcTable.cell(row,srcCol));
-                         if (!fc.name.empty())
-                           srcRowLabels[srcGodley.valueId(fc.name)]=
-                             trimWS(srcTable.cell(row,0));
-                       }
-                     else if (srcTable.initialConditionRow(row))
-                       // copy directly into destination initial condition,
-                       for (size_t r=1; r<destTable.rows(); ++r)
-                         if (destTable.initialConditionRow(r))
-                           destTable.cell(r,col)=srcTable.cell(row,srcCol);
-                   for (size_t row=1; row!=destTable.rows(); ++row)
-                     if (!destTable.initialConditionRow(row) && !destTable.cell(row,0).empty())
-                       destRowLabels[trimWS(destTable.cell(row,0))]=row;
-
-
-                   // compute column signature for both src and destination columns
-                   map<string,double> srcFlows=srcGodley.flowSignature(srcCol), 
-                     destFlows=gi->flowSignature(col);
-                   // items to add
-                   for (map<string,double>::iterator i=srcFlows.begin(); i!=srcFlows.end(); ++i)
-                     if (i->second != destFlows[i->first])
-                       {
-                         int scope=-1;
-                         if (i->first.find(':')!=string::npos)
-                           VariableValue::scope(i->first);
-                         FlowCoef df;
-                         if (scope==-1 || !variableValues.count(i->first))
-                           df.name=VariableValue::uqName(i->first);
-                         else
-                           df.name=variableValues[i->first]->name;
-                         df.coef=i->second-destFlows[i->first];
-                         if (df.coef==0) continue;
-                         string flowEntry=df.str();
-                         string rowLabel=srcRowLabels[srcGodley.valueId(i->first)];
-                         map<string,int>::iterator dr=destRowLabels.find(rowLabel);
-                         if (dr!=destRowLabels.end())
-                           if (FlowCoef(destTable.cell(dr->second, col)).coef==0)
-                             destTable.cell(dr->second, col) = flowEntry;
-                           else
-                             // add a new blank labelled flow line
-                             {
-                               destTable.resize(destTable.rows()+1,destTable.cols());
-                               destTable.cell(destTable.rows()-1, col) = flowEntry;
-                             }
-                         else
-                           // labels don't match, so add a new labelled line
-                           {
-                             destTable.resize(destTable.rows()+1,destTable.cols());
-                             destTable.cell(destTable.rows()-1, 0) = rowLabel;
-                             destRowLabels[rowLabel] = destTable.rows()-1;
-                             destTable.cell(destTable.rows()-1, col) = flowEntry;
-                           }
-                       }
-                   // items to delete
-                   set<size_t> rowsToDelete;
-                   for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
-                     if (i->second!=0 && srcFlows[i->first]==0)
-                       for (size_t row=1; row<destTable.rows(); ++row)
+                       switch (srcGodley.table._assetClass(srcCol))
                          {
-                           FlowCoef fc(destTable.cell(row, col));
-                           if (!fc.name.empty())
-                             fc.name=gi->valueId(fc.name);
-                           if (fc.name==gi->valueId(i->first))
-                             {
-                               destTable.cell(row, col).clear();
-                               // if this leaves an empty row, delete entire row
-                               for (size_t c=0; c<destTable.cols(); ++c)
-                                 if (!destTable.cell(row, c).empty())
-                                   goto rowNotEmpty;
-                               rowsToDelete.insert(row);
-                             rowNotEmpty:;
-                             }
+                         case GodleyAssetClass::asset:
+                           if (srcTable._assetClass(col)!=GodleyAssetClass::equity)
+                             throw error("asset column %s matches a non-liability column",colName.c_str());
+                           break;
+                         case GodleyAssetClass::equity:
+                           if (srcTable._assetClass(col)!=GodleyAssetClass::asset)
+                             throw error("equity column %s matches a non-asset column",colName.c_str());
+                           break;
+                         default:
+                           throw error("invalid asset class for duplicate column %s",colName.c_str());
                          }
-                   // amalgamate unlabelled rows with singular value
-                   map<string,double> unlabelledSigs;
-                   for (size_t row=1; row<destTable.rows(); ++row)
-                     {
-                       if (!destTable.singularRow(row, col)) continue;
-                       FlowCoef fc(destTable.cell(row, col));
-                       unlabelledSigs[fc.name]+=fc.coef;
-                       rowsToDelete.insert(row);
+                       balanceColumns(srcGodley, srcCol, *gi, col);
                      }
-                   // append amalgamated rows
-                   for (auto& i: unlabelledSigs)
-                     if (i.second!=0)
+               }
+             else  // match asset/liability columns on different Godley tables
+               for (size_t col=1; col<gi->table.cols(); col++)
+                 if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
+                   {
+                     // checks asset class rules
+                     switch (srcGodley.table._assetClass(srcCol))
                        {
-                         destTable.insertRow(destTable.rows());
-                         destTable.cell(destTable.rows()-1,col)=FlowCoef(i.second,i.first).str();
+                       case GodleyAssetClass::asset:
+                         if (gi->table._assetClass(col)!=GodleyAssetClass::liability)
+                           throw error("asset column %s matches a non-liability column",colName.c_str());
+                         break;
+                       case GodleyAssetClass::liability:
+                         if (gi->table._assetClass(col)!=GodleyAssetClass::asset)
+                           throw error("liability column %s matches a non-asset column",colName.c_str());
+                         break;
+                       default:
+                         throw error("invalid asset class for duplicate column %s",colName.c_str());
                        }
-                   
-                   for (auto row=rowsToDelete.rbegin(); row!=rowsToDelete.rend(); ++row)
-                     destTable.deleteRow(*row);
-                 }   
+
+                     // checks that nom more than two duplicated columns exist
+                     if (matchFound)
+                       throw error("more than one duplicated column detected for %s",colName.c_str());
+                     matchFound=true;
+                     balanceColumns(srcGodley, srcCol, *gi, col);
+                   }
+           }
          return false;
        });  // TODO - this lambda is FAR too long!
   }
@@ -767,14 +822,14 @@ namespace minsky
       const std::vector<std::vector<std::string> >& data() const {
         return Super::operator*()->table.getData();
       }
-      const GodleyAssetClass::AssetClass assetClass(size_t col) const
+      GodleyAssetClass::AssetClass assetClass(size_t col) const
       {return Super::operator*()->table._assetClass(col);}
       bool signConventionReversed(int col) const
       {return Super::operator*()->table.signConventionReversed(col);}
       bool initialConditionRow(int row) const
       {return Super::operator*()->table.initialConditionRow(row);}
       string valueId(const std::string& x) const {
-        return VariableValue::valueIdFromScope(Super::operator*()->group.lock(), x);
+        return valueIdFromScope(Super::operator*()->group.lock(), x);
       }
     };
   }
@@ -800,6 +855,7 @@ namespace minsky
     canvas.itemIndicator=false;
     BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
+    lastT=t0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
     // make the simulation proceed
@@ -807,8 +863,8 @@ namespace minsky
 
     initGodleys();
 
-    if (stockVars.size()>0)
-      RungeKutta::reset();
+    if (!stockVars.empty())
+      rkreset();
       
     // update flow variable
     evalEquations();
@@ -853,9 +909,10 @@ namespace minsky
     parameterTab.requestRedraw();    
   }
 
-  void Minsky::step()
+  vector<double> Minsky::step()
   {
-    RungeKutta::step();
+    lastT=t;
+    rkstep();
 
     logVariables();
 
@@ -875,6 +932,8 @@ namespace minsky
         parameterTab.requestRedraw();        
         lastRedraw=microsec_clock::local_time();
       }
+
+    return {t, deltaT()};
   }
   
   string Minsky::diagnoseNonFinite() const
@@ -922,7 +981,7 @@ namespace minsky
     stripByteOrderingMarker(inf);
     xml_unpack_t saveFile(inf);
     schema3::Minsky currentSchema(saveFile);
-    *this=currentSchema;
+    currentSchema.populateMinsky(*this);
     if (currentSchema.schemaVersion<currentSchema.version)
       message("You are converting the model from an older version of Minsky. "
               "Once you save this file, you may not be able to open this file"
@@ -934,8 +993,10 @@ namespace minsky
         model->recursiveDo(&Group::items, 
                            [&](Items&,Items::iterator i) {
                              if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-                               for (unsigned i=1; i<g->table.cols(); ++i)
-                                 balanceDuplicateColumns(*g,i);
+                               {
+                                 for (unsigned i=1; i<g->table.cols(); ++i)
+                                   balanceDuplicateColumns(*g,i);
+                               }
                              return false;
                            });
     
@@ -943,11 +1004,16 @@ namespace minsky
         reset();
       }
     catch (...) {}
+    canvas.requestRedraw();
     panopticon.requestRedraw();
+    canvas.recentre();
+    canvas.requestRedraw();
+    canvas.moveTo(0,0); // force placement of ports
     flags=reset_needed|fullEqnDisplay_needed;
+    pushHistory();
   }
 
-  void Minsky::exportSchema(const char* filename, int schemaLevel)
+  void Minsky::exportSchema(const string& filename, int schemaLevel)
   {
     xsd_generate_t x;
     switch (schemaLevel)
@@ -987,8 +1053,7 @@ namespace minsky
                 cminsky().displayErrorItem(p->item());
                 return true;
               }
-            else
-              return false;
+            return false;
           }
         stack.push_back(p);
         pair<iterator,iterator> range=equal_range(p);
@@ -1005,9 +1070,9 @@ namespace minsky
   {
     // construct the network schematic
     Network net;
-    for (auto& w: model->findWires([](WirePtr){return true;}))
+    for (auto& w: model->findWires([](const WirePtr&){return true;}))
       net.emplace(w->from().get(), w->to().get());
-    for (auto& i: model->findItems([](ItemPtr){return true;}))
+    for (auto& i: model->findItems([](const ItemPtr&){return true;}))
       if (!dynamic_cast<IntOp*>(i.get()) && !dynamic_cast<GodleyIcon*>(i.get()))
         for (unsigned j=1; j<i->portsSize(); ++j)
           net.emplace(i->ports(j).lock().get(), i->ports(0).lock().get());
@@ -1031,7 +1096,7 @@ namespace minsky
       if (auto eo=dynamic_cast<const ScalarEvalOp*>(e.get()))
         {
           if (eo->out < 0|| (eo->numArgs()>0 && eo->in1.empty()) ||
-            (eo->numArgs() > 1 && eo->in2.empty()))
+              (eo->numArgs() > 1 && eo->in2.empty()))
             {
               //cerr << "Incorrectly wired operation "<<opIdOfEvalOp(eo)<<endl;
               return false;
@@ -1062,11 +1127,11 @@ namespace minsky
             
               fvInit[eo->out]=
                 (!eo->flow1 ||  fvInit[eo->in1[0]]) && (!eo->flow2 ||  fvInit[eo->in2[0][0].idx]);
-            break;
+              break;
             default: break;
-          }
-//        if (!fvInit[eo.out])
-//          cerr << "Operation "<<opIdOfEvalOp(eo)<<" out of order"<<endl;
+            }
+          //        if (!fvInit[eo.out])
+          //          cerr << "Operation "<<opIdOfEvalOp(eo)<<" out of order"<<endl;
         }
     
     return all(fvInit);
@@ -1100,6 +1165,10 @@ namespace minsky
   
   bool Minsky::pushHistory()
   {
+    // do not pushHistory after undo or redo
+    if (undone)
+      return undone=false;
+
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
     schema3::Minsky m(*this, false /* don't pack tensor data */);
@@ -1110,7 +1179,7 @@ namespace minsky
         history.emplace_back();
         buf.swap(history.back());
         historyPtr=history.size();
-        return false;
+        return true;
       }
     while (history.size()>maxHistory)
       history.pop_front();
@@ -1129,11 +1198,11 @@ namespace minsky
             // This bit of code outputs an XML representation that can be
             //        used for debugging issues related to unnecessary
             //        history pushes.
-            //  buf.reseto()>>m;
-            //  xml_pack_t tb(cout);
-            //  tb.prettyPrint=true;
-            //  xml_pack(tb,"Minsky",m); 
-            //  cout<<"------"<<endl;
+            //buf.reseto()>>m;
+            //xml_pack_t tb(cout);
+            //tb.prettyPrint=true;
+            //xml_pack(tb,"Minsky",m); 
+            //cout<<"------"<<endl;
             history.emplace_back();
             buf.swap(history.back());
             historyPtr=history.size();
@@ -1146,7 +1215,7 @@ namespace minsky
               catch (...)
                 {
                   autoSaver.reset();
-                  throw std::runtime_error("Unable to autosave to this location");
+                  throw;
                 }
             return true;
           }
@@ -1154,8 +1223,65 @@ namespace minsky
     historyPtr=history.size();
     return false;
   }
+
+  bool Minsky::commandHook(const std::string& command, unsigned nargs)
+  {
+    if (doPushHistory &&
+        command!="minsky.availableOperations" &&
+        command!="minsky.canvas.select" &&
+        command!="minsky.canvas.recentre" &&
+        command!="minsky.canvas.focusFollowsMouse" &&
+        command!="minsky.canvas.displayDelayedTooltip" &&
+        command!="minsky.canvas.requestRedraw" &&
+        command!="minsky.model.moveTo" &&
+        command!="minsky.canvas.model.moveTo" &&
+        command!="minsky.canvas.moveTo" &&
+        /* ensure we record mouse movements, but filter from history */
+        command!="minsky.canvas.mouseDown"&&
+        command!="minsky.canvas.mouseMove" && 
+        command!="minsky.clearAll" &&
+        command!="minsky.doPushHistory" &&
+        command!="minsky.canvas.model.zoom" &&
+        command!="minsky.model.zoom" &&
+        command!="minsky.newGlobalGroupTCL" &&
+        command!="minsky.popFlags" &&
+        command!="minsky.pushFlags" &&
+        command!="minsky.select" &&
+        command!="minsky.selectVar" &&
+        command!="minsky.setGodleyIconResource" &&
+        command!="minsky.setGroupIconResource" &&
+        command!="minsky.setLockIconResource" &&
+        command!="minsky.setAutoSaveFile" &&
+        command!="minsky.step" &&
+        command!="minsky.running" &&
+        command!="minsky.multipleEquities" &&
+        command!="minsky.undo" &&
+        command!="minsky.load" &&
+        command!="minsky.reverse" &&
+        command!="minsky.redrawAllGodleyTables" &&
+        command.find("minsky.panopticon")==string::npos &&
+        command.find("minsky.equationDisplay")==string::npos && 
+        command.find("minsky.setGodleyDisplayValue")==string::npos && 
+        command.find(".renderFrame")==string::npos && 
+        command.find(".backgroundColour")==string::npos && 
+        command.find(".get")==string::npos && 
+        command.find(".@elem")==string::npos && 
+        command.find(".mouseFocus")==string::npos
+        )
+      {
+        auto t=getCommandData(command);
+        if (t==generic || (t==is_setterGetter && nargs>0))
+          {
+            bool modelChanged=pushHistory();
+            if (modelChanged) markEdited();
+            return modelChanged;
+          }
+      }
+    return command=="minsky.canvas.requestRedraw" || command=="minsky.canvas.mouseDown" || command=="minsky.canvas.mouseMove" || command.find(".get")!=string::npos;
+  }
+
   
-  void Minsky::undo(int changes)
+  long Minsky::undo(int changes)
   {
     // save current state for later restoration if needed
     if (historyPtr==history.size())
@@ -1167,7 +1293,7 @@ namespace minsky
         history[historyPtr-1].reseto()>>m;
         // stash tensorInit data for later restoration
         auto stashedValues=move(variableValues);
-        clearAllMaps();
+        clearAllMaps(false);
         model->clear();
         m.populateGroup(*model);
         // restore tensorInit data
@@ -1183,11 +1309,13 @@ namespace minsky
       }
     else
       historyPtr+=changes; // revert
+    undone=true; //ensure next pushHistory is ignored 
+    return historyPtr;
   }
 
   void Minsky::convertVarType(const string& name, VariableType::Type type)
   {
-    assert(VariableValue::isValueId(name));
+    assert(isValueId(name));
     VariableValues::iterator i=variableValues.find(name);
     if (i==variableValues.end())
       throw error("variable %s doesn't exist",name.c_str());
@@ -1201,22 +1329,22 @@ namespace minsky
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
            {
              if (type!=VariableType::flow)
-               for (auto v: g->flowVars())
+               for (auto& v: g->flowVars())
                  if (v->valueId()==name)
                    {
-		       newName=v->name()+"^{Flow}";
-                       VariableValues::iterator iv=variableValues.find(newName);
-                       if (iv==variableValues.end()) {g->table.renameFlows(v->name(),newName); v->retype(VariableType::flow);}
-					   else throw error("flow variables in Godley tables cannot be converted to a different type");
+                     newName=v->name()+"^{Flow}";
+                     VariableValues::iterator iv=variableValues.find(newName);
+                     if (iv==variableValues.end()) {g->table.renameFlows(v->name(),newName); v->retype(VariableType::flow);}
+                     else throw error("flow variables in Godley tables cannot be converted to a different type");
 		   }	
              if (type!=VariableType::stock)
-               for (auto v: g->stockVars())
+               for (auto& v: g->stockVars())
                  if (v->valueId()==name)
                    {
-		       newName=v->name()+"^{Stock}";
-                       VariableValues::iterator iv=variableValues.find(newName);
-                       if (iv==variableValues.end()) {g->table.renameStock(v->name(),newName); v->retype(VariableType::stock);}
-					   else throw error("stock variables in Godley tables cannot be converted to a different type");
+                     newName=v->name()+"^{Stock}";
+                     VariableValues::iterator iv=variableValues.find(newName);
+                     if (iv==variableValues.end()) {g->table.renameStock(v->name(),newName); v->retype(VariableType::stock);}
+                     else throw error("stock variables in Godley tables cannot be converted to a different type");
 		   }
            }
          return false;
@@ -1225,7 +1353,7 @@ namespace minsky
     if (auto var=definingVar(name))
       // we want to be able to convert stock vars to flow vars when their input is wired. condition is only met when newName has not been changed above. for ticket 1272
       if (name==newName && var->type() != type && (!var->isStock() || var->controller.lock()))
-         throw error("cannot convert a variable to a type other than its defined type");
+        throw error("cannot convert a variable to a type other than its defined type");
 
     // filter out invalid targets
     switch (type)
@@ -1293,9 +1421,9 @@ namespace minsky
                          if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
-                               p->exportAsCSV((prefix+"-"+p->title+".csv").c_str());
+                               p->exportAsCSV((prefix+"-"+p->title+".csv"));
                              else
-                               p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv").c_str());
+                               p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv"));
                            }
                          return false;
                        });
@@ -1313,9 +1441,10 @@ namespace minsky
   {
     this->displayValues=displayValues;
     this->displayStyle=displayStyle;
+    canvas.requestRedraw();
     model->recursiveDo(&GroupItems::items, [](Items&,Items::iterator i) {
       if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-        g->setEditorDisplayValues();
+        g->popup.requestRedraw();
       return false;
     });
   }
@@ -1327,6 +1456,117 @@ namespace minsky
     canvas.requestRedraw();
   }
 
+  vector<string> Minsky::availableOperations() const
+  {return enumVals<OperationType::Type>();}
+  vector<string> Minsky::variableTypes() const
+  {return enumVals<VariableType::Type>();}
+  vector<string> Minsky::assetClasses() const
+  {return enumVals<GodleyTable::AssetClass>();}
+
+  void Minsky::autoLayout()
+  {
+    canvas.model->autoLayout();
+    canvas.recentre();
+  }
+  
+  void Minsky::randomLayout()
+  {
+    canvas.model->randomLayout();
+    canvas.recentre();
+  }
+
+  void Minsky::listAllInstances()
+  {
+    if (canvas.item)
+      if (auto v=canvas.item->variableCast())
+        {
+          variableInstanceList=std::make_shared<VariableInstanceList>(*canvas.model, v->valueId());
+          return;
+        }
+    variableInstanceList.reset();
+  }
+  
+  void Minsky::redrawAllGodleyTables()
+  {
+    model->recursiveDo(&Group::items, 
+                       [&](Items&,Items::iterator i) {
+                         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+                           g->popup.requestRedraw();
+                         return false;
+                       });
+  }
+
+  size_t Minsky::physicalMem() const
+  {
+#if defined(__linux__)
+    struct sysinfo s;
+    sysinfo(&s);
+    return s.totalram;
+#elif defined(WIN32)
+    MEMORYSTATUSEX s{sizeof(MEMORYSTATUSEX)};
+    GlobalMemoryStatusEx(&s);
+    return s.ullTotalPhys;
+//#elif defined(__APPLE__)
+//    int mib[2];
+//    int64_t physical_memory;
+//    size_t length;
+//
+//    // Get the Physical memory size
+//    mib[0] = CTL_HW;
+//    mib[1] = HW_MEMSIZE;
+//    length = sizeof(int64_t);
+//    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+//    return physical_memory;
+#else
+    // all else fails, return max value
+    return ~0UL;
+#endif  
+  }
+  
+  static std::unique_ptr<char[]> _defaultFont;
+
+  string Minsky::defaultFont() const
+  {return _defaultFont? _defaultFont.get(): "";}
+  
+  string Minsky::defaultFont(const std::string& x)
+  {
+    _defaultFont.reset(new char[x.length()+1]);
+    strcpy(_defaultFont.get(),x.c_str());
+    ecolab::Pango::defaultFamily=_defaultFont.get();
+    return x;
+  }
+
+  double Minsky::fontScale() const
+  {return ecolab::Pango::scaleFactor;}
+  
+  double Minsky::fontScale(double s)
+  {return ecolab::Pango::scaleFactor=s;}
+  
+  void Minsky::latex(const string& filename, bool wrapLaTeXLines) 
+  {
+    if (cycleCheck()) throw error("cyclic network detected");
+    ofstream f(filename);
+
+    f<<"\\documentclass{article}\n";
+    if (wrapLaTeXLines)
+      {
+        f<<"\\usepackage{breqn}\n\\begin{document}\n";
+        MathDAG::SystemOfEquations(*this).latexWrapped(f);
+      }
+    else
+      {
+        f<<"\\begin{document}\n";
+          MathDAG::SystemOfEquations(*this).latex(f);
+      }
+    f<<"\\end{document}\n";
+  }
+
+  int Minsky::numOpArgs(OperationType::Type o) const
+  {
+    OperationPtr op(o);
+    return op->numPorts()-1;
+  }
+
   void Minsky::setAutoSaveFile(const std::string& file) {
     if (file.empty())
       autoSaver.reset();
@@ -1334,6 +1574,5 @@ namespace minsky
       autoSaver.reset(new BackgroundSaver(file));
   }
 
-  
 }
 

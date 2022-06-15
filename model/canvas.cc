@@ -220,7 +220,8 @@ namespace minsky
                         }
                     }
                 if (auto g=itemFocus->group.lock())
-                  g->checkAddIORegion(itemFocus);
+                  if (g!=model)
+                    g->checkAddIORegion(itemFocus);
                 requestRedraw();
                 return;
               case ClickType::onSlider:
@@ -271,13 +272,7 @@ namespace minsky
             wireFocus->editHandle(handleSelected,x,y);
             requestRedraw();
           }
-        else if (lassoMode==LassoMode::lasso)
-          {
-            lasso.x1=x;
-            lasso.y1=y;
-            requestRedraw();
-          }
-        else if (lassoMode==LassoMode::itemResize && item.get())
+        else if (lassoMode==LassoMode::lasso || (lassoMode==LassoMode::itemResize && item.get()))
           {
             lasso.x1=x;
             lasso.y1=y;
@@ -317,7 +312,6 @@ namespace minsky
                                                         (*i)->onResizeHandles=ct==ClickType::onResize;
                                                         (*i)->onBorder = ct==ClickType::onItem;
                                                         (*i)->onMouseLeave();
-                                                        requestRedraw();
                                                       }
                                                   }
                                                 return false;
@@ -431,8 +425,8 @@ namespace minsky
       r->addItem(i);
     for (auto& i: selection.groups)
       r->addItem(i);
-    r->resizeOnContents();
     r->splitBoundaryCrossingWires();
+    r->resizeOnContents();
   }
 
   void Canvas::lockRavelsInSelection()
@@ -455,13 +449,11 @@ namespace minsky
       lockGroup.reset(new RavelLockGroup);
     for (auto& r: ravelsToLock)
       {
-        lockGroup->ravels.push_back(r);
+        lockGroup->addRavel(r);
         r->leaveLockGroup();
         r->lockGroup=lockGroup;
       }
-    if (lockGroup && !lockGroup->ravels.empty())
-      if (auto r=lockGroup->ravels.front().lock())
-        r->broadcastStateToLockGroup();
+    if (lockGroup) lockGroup->initialBroadcast();
   }
 
   void Canvas::unlockRavelsInSelection()
@@ -479,8 +471,9 @@ namespace minsky
         if (v && v->defined() && !v->varTabDisplay) {
           itemVector.push_back(i);
           v->toggleVarTabDisplay();	  
-	    }
+        }
       }
+    requestRedraw();
   }
   
   void Canvas::showDefiningVarsOnCanvas()
@@ -503,7 +496,8 @@ namespace minsky
              return false;
            });
 	}      
-    itemVector.clear();  
+    itemVector.clear();
+    requestRedraw();
   }
   
   void Canvas::showPlotsOnTab()
@@ -512,7 +506,7 @@ namespace minsky
        (&GroupItems::items, [&](const Items&,Items::const_iterator i)
         {
           if (auto p=(*i)->plotWidgetCast())
-            if (p->plotOnTab()==false) p->togglePlotTabDisplay();	 
+            if (!p->plotOnTab()) p->togglePlotTabDisplay();	 
           return false;
         });
   }    
@@ -603,7 +597,7 @@ namespace minsky
       {
         // cache name and valueId for later use as var gets invalidated in the recursiveDo
         auto valueId=var->valueId();
-        auto varScope=VariableValue::scope(var->group.lock(), valueId);
+        auto varScope=scope(var->group.lock(), valueId);
         string fromName=var->rawName();
         // unqualified versions of the names
         string uqFromName=fromName.substr(fromName[0]==':'? 1: 0);
@@ -625,10 +619,10 @@ namespace minsky
                          g->table.rename(uqFromName, uqNewName);
                        
                        // scope of an external ref in the Godley Table
-                       auto externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqNewName);
+                       auto externalVarScope=scope(g->group.lock(), ':'+uqNewName);
                        // if we didn't find it, perhaps the outerscope variable hasn't been changed
                        if (!externalVarScope)
-                         externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqFromName);
+                         externalVarScope=scope(g->group.lock(), ':'+uqFromName);
 
                        if (varScope==externalVarScope ||  (isGlobal(varScope) && isGlobal(externalVarScope)))
                          // fix external variable references
@@ -639,7 +633,7 @@ namespace minsky
                    else
                      {
                        if (varScope==v->group.lock() ||
-                           (newName.size() && newName[0]==':') )
+                           (!newName.empty() && newName[0]==':') )
                          v->name(newName);
                        else
                          v->name(":"+newName);
@@ -675,7 +669,13 @@ namespace minsky
                   if (v && v->type()==VariableType::parameter) 
                     existingParms.emplace(v->valueId(),v->init());
                 }
-		       
+
+                // blow up containe items so they appear in same relative locationsat parent scalefactor
+                auto scaleFactor=1/g->relZoom;
+                for (auto& i: g->items)
+                  i->moveTo((i->x()-g->x())*scaleFactor+g->x(), (i->y()-g->y())*scaleFactor+g->y());
+                for (auto& i: g->groups)
+                  i->moveTo((i->x()-g->x())*scaleFactor+g->x(), (i->y()-g->y())*scaleFactor+g->y());
                 p->moveContents(*g);
                 deleteItem();
                	    
@@ -688,7 +688,7 @@ namespace minsky
       }
   }
 
-  void Canvas::renameItem(const std::string newName)
+  void Canvas::renameItem(const std::string& newName)
   {
     if (auto var=item->variableCast())
       {
@@ -776,7 +776,7 @@ namespace minsky
     // Throw error if no stock/flow vars on Godley icon. For ticket 1039 
     if (!v.empty()) {    
 	  selection.clear();	
-      for (auto i: v)
+      for (auto& i: v)
         {
           RenderVariable rv(*i);
           widths.push_back(rv.width());
@@ -835,7 +835,7 @@ namespace minsky
           (&GroupItems::items, [&](const ItemPtr& i) {
             if (auto v=i->variableCast())
               return v->inputWired() && v->valueId()==iv->valueId();
-            else if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+            if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
               for (auto& v: g->stockVars())
                 {
                   if (v->valueId()==iv->valueId())
@@ -861,7 +861,7 @@ namespace minsky
     // redraw of canvas may throw if called during a reset operation
     try
       {
-        redrawUpdateRegion();
+        return redrawUpdateRegion();
       }
 #ifndef NDEBUG
     catch (std::exception& ex)
@@ -875,20 +875,24 @@ namespace minsky
         // this leads to an endless loop...
         //requestRedraw();
       }
-    return true;
+    return false;
   }
   
-  void Canvas::redraw()
+  bool Canvas::redraw()
   {
     // nb using maxint here doesn't seem to work
-    redraw(-1e9,-1e9,2e9,2e9);
+    return redraw(-1e9,-1e9,2e9,2e9);
   }
 
-  void Canvas::redrawUpdateRegion()
+  bool Canvas::redrawUpdateRegion()
   {
-    if (!surface().get()) return;
+    bool didDrawSomething = false;
+    if (!surface().get()) {
+      return didDrawSomething;
+    }
+    m_redrawRequested=false;
     auto cairo=surface()->cairo();
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     cairo_rectangle(cairo,updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
     cairo_clip(cairo);
     cairo_set_line_width(cairo, 1);
@@ -899,11 +903,11 @@ namespace minsky
          auto& it=**i;
          if (it.visible() && updateRegion.intersects(it))
            {
-             cairo_save(cairo);
+             didDrawSomething = true;
+             CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             cairo_restore(cairo);
            }
          return false;
        });
@@ -915,11 +919,11 @@ namespace minsky
          auto& it=**i;
          if (it.visible() && updateRegion.intersects(it))
            {
-             cairo_save(cairo);
+             didDrawSomething = true;
+             CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             cairo_restore(cairo);
            }
          return false;
        });
@@ -930,18 +934,21 @@ namespace minsky
       (&GroupItems::wires, [&](const Wires&, Wires::const_iterator i)
        {
          const Wire& w=**i;
-         if (w.visible()/* && updateRegion.intersects(w)*/)
+         if (w.visible()/* && updateRegion.intersects(w)*/) {
+           //didDrawSomething = true;
            w.draw(cairo);
+         }
          return false;
        });
 
     if (fromPort.get()) // we're in process of creating a wire
       {
+        didDrawSomething = true;
         cairo_move_to(cairo,fromPort->x(),fromPort->y());
         cairo_line_to(cairo,termX,termY);
         cairo_stroke(cairo);
         // draw arrow
-        cairo_save(cairo);
+        CairoSave cs(cairo);
         cairo_translate(cairo, termX,termY);
         cairo_rotate(cairo,atan2(termY-fromPort->y(), termX-fromPort->x()));
         cairo_move_to(cairo,0,0);
@@ -950,26 +957,25 @@ namespace minsky
         cairo_line_to(cairo,-5,3);
         cairo_close_path(cairo);
         cairo_fill(cairo);
-        cairo_restore(cairo);
       }
 
     if (lassoMode!=LassoMode::none)
       {
+        didDrawSomething = true;
         cairo_rectangle(cairo,lasso.x0,lasso.y0,lasso.x1-lasso.x0,lasso.y1-lasso.y0);
         cairo_stroke(cairo);
       }
 
     if (itemIndicator && item) // draw a red circle to indicate an error or other marker
       {
-        cairo_save(surface()->cairo());
+        CairoSave cs(surface()->cairo());
         cairo_set_source_rgb(surface()->cairo(),1,0,0);
         cairo_arc(surface()->cairo(),item->x(),item->y(),15,0,2*M_PI);
         cairo_stroke(surface()->cairo());
-        cairo_restore(surface()->cairo());
       }
 
-    cairo_restore(cairo);
     surface()->blit();
+    return didDrawSomething;
   }
 
   void Canvas::recentre()

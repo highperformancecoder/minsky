@@ -1,0 +1,31 @@
+<div class="popup-wrapper">
+  <div class="popup-title">Add Bookmark</div>
+
+  <div class="form-wrapper">
+    <div class="form-control">
+      <label for="add-bookmark-name">Name</label>
+      <input
+        type="text"
+        class="name"
+        id="add-bookmark-name"
+        [formControl]="bookmarkName"
+      />
+    </div>
+
+    <div class="form-buttons">
+      <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
+        Cancel
+      </button>
+
+      <button
+        mat-raised-button
+        class="btn ok-btn submit"
+        type="submit"
+        (click)="handleSubmit()"
+        [disabled]="!bookmarkName.valid"
+      >
+        OK
+      </button>
+    </div>
+  </div>
+</div>

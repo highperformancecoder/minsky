@@ -23,7 +23,6 @@
 #include "minsky_epilogue.h"
 #include "minsky.h"
 using namespace std;
-using ecolab::cairo::Surface;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 
@@ -49,17 +48,16 @@ namespace minsky
       {
         if (auto g=dynamic_pointer_cast<GodleyIcon>(i))
           {
-            if (!g->godleyT) continue;
             
             float xx=i->itemTabX+offsx, yy=i->itemTabY+offsy;   
-            float w=0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1];
-            float h=0.5*(g->godleyT->godleyIcon->table.rows())*g->godleyT->rowHeight;
+            float w=0.5*g->editor.width();
+            float h=0.5*g->editor.height();
             xx+=w;
             yy+=h;
             float d=sqr(xx-x)+sqr(yy-y);
 
             // add an extra room to allow grabbing  the title. For ticket #1326.
-            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h+g->godleyT->rowHeight)
+            if (d<minD && fabs(xx-x)<w && fabs(yy-y)<h+g->editor.rowHeight)
               {
                 minD=d;
                 item=i;
@@ -76,12 +74,10 @@ namespace minsky
       {
         if (auto g=dynamic_pointer_cast<GodleyIcon>(it))
           {
-            if (!g->godleyT) g->godleyT.reset(new GodleyTableEditor(g));  
             cairo::CairoSave cs(cairo);   
             cairo_translate(cairo,it->itemTabX,it->itemTabY);  		    				   
-            g->godleyT->disableButtons();
-            g->godleyT->displayValues=minsky().displayValues;
-            g->godleyT->draw(cairo);
+            g->editor.disableButtons();
+            g->editor.draw(cairo);
             
             // draw title
             if (!g->table.title.empty())
@@ -90,7 +86,7 @@ namespace minsky
                 Pango pango(cairo);
                 pango.setMarkup("<b>"+latexToPango(g->table.title)+"</b>");
                 pango.setFontSize(12);
-                cairo_move_to(cairo,0.5*g->godleyT->colLeftMargin[g->godleyT->colLeftMargin.size()-1],g->godleyT->topTableOffset-2*g->godleyT->rowHeight);
+                cairo_move_to(cairo,0.5*g->editor.colLeftMargin[g->editor.colLeftMargin.size()-1],g->editor.topTableOffset-2*g->editor.rowHeight);
                 pango.show();
               }                    
           }			   

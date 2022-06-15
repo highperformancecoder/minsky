@@ -23,8 +23,6 @@
 #include "minsky_epilogue.h"
 #include "minsky.h"
 using namespace std;
-using ecolab::cairo::Surface;
-using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 
 namespace minsky
@@ -32,13 +30,15 @@ namespace minsky
 
   bool PlotTab::itemSelector(const ItemPtr& i)
   {
-	if (auto p=i->plotWidgetCast()) return p->plotOnTab();
+	if (auto* p=i->plotWidgetCast()) return p->plotOnTab();
 	return false;
   }	
 
   void PlotTab::togglePlotDisplay() const      
   {
-    if (auto p=item->plotWidgetCast()) p->togglePlotTabDisplay();
+    if (item)
+      if (auto p=item->plotWidgetCast())
+        p->togglePlotTabDisplay();
   }	
 	 
   void PlotTab::draw(cairo_t* cairo)

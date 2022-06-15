@@ -18,6 +18,8 @@
 */
 
 #include "grid.h"
+#include "variablePane.h"
+#include "lasso.h"
 #include <pango.h>
 #include "minsky_epilogue.h"
 #include <algorithm>
@@ -26,7 +28,7 @@ namespace minsky
 {
   namespace
   {
-    static constexpr double padx=2; ///< padding between cells
+    constexpr double padx=2; ///< padding between cells
   }
   
   template <class Cell>
@@ -110,5 +112,6 @@ namespace minsky
 
   template class Grid<ICell>;
   template class Grid<ecolab::Pango>;
-  
+  template class Grid<VariablePaneCell>;
+
 }

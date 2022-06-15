@@ -22,6 +22,7 @@
 #include "wire.h"
 #include "group.h"
 #include "selection.h"
+#include "lasso.h"
 #include "operation.h"
 #include "plotWidget.h"
 #include "SVGItem.h"
@@ -48,9 +49,9 @@ namespace minsky
     m_y=y-item().y();
   }
 
-  GroupPtr Port::group() const
+  GroupPtr PortExclude::group() const
   {
-    return item().group.lock();
+    return m_item.group.lock();
   }
 
   void Port::eraseWire(Wire* w) 
@@ -71,6 +72,7 @@ namespace minsky
         auto& gg=g->globalGroup();
         auto wires=m_wires; // save copy, as Group::removeWire mutates it
         vector<WirePtr> wireHold; // postpone actual wire destruction until after loop
+        wireHold.reserve(wires.size());
         for (auto& w: wires)
           wireHold.push_back(gg.removeWire(*w));
       }
@@ -78,24 +80,24 @@ namespace minsky
   }
   
   /// sets the VariableValue associated with this port
-  void Port::setVariableValue(const std::shared_ptr<VariableValue>& v) {
+  void PortExclude::setVariableValue(const std::shared_ptr<VariableValue>& v) {
     if (!input())
       variableValue=v;
   }
 
   /// value associated with this port
   double Port::value() const {
+    if (input())
+      {
+        double r=identity();
+        for (auto* w: m_wires)
+          combineInput(r, w->from()->value());
+        return r;
+      }
     auto vv=getVariableValue();
     if (vv && vv->type()!=VariableType::undefined)
       return vv->value();
-    if (input())
-      {
-        if (!m_wires.empty())
-          return m_wires[0]->from()->value();
-        return 0;
-      }
-    else
-      return item().value();
+    return item().value();
   }
 
   
@@ -103,11 +105,10 @@ namespace minsky
   {
     if (!wires().empty())
       return wires()[0]->units(check);
-    else
-      return {};
+    return {};
   }
 
-  shared_ptr<VariableValue> Port::getVariableValue() const {
+  shared_ptr<VariableValue> PortExclude::getVariableValue() const {
     if (input() && !m_wires.empty())
       return m_wires[0]->from()->getVariableValue();
     return variableValue.lock();

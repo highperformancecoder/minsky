@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.21.0-beta49</minskyVersion>
+  <minskyVersion>2.34.0</minskyVersion>
   <wires>
    <Wire>
     <id>55</id>
@@ -88,6 +88,7 @@
     <ports>
      <int>0</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x1</name>
     <slider>
      <stepRel>false</stepRel>
@@ -136,6 +137,7 @@
     <ports>
      <int>2</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x2</name>
     <slider>
      <stepRel>false</stepRel>
@@ -184,6 +186,7 @@
     <ports>
      <int>4</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>7</id>
@@ -199,6 +202,7 @@
     <ports>
      <int>6</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>9</id>
@@ -214,6 +218,7 @@
     <ports>
      <int>8</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x1</name>
     <slider>
      <stepRel>false</stepRel>
@@ -262,6 +267,7 @@
     <ports>
      <int>10</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x2</name>
     <slider>
      <stepRel>false</stepRel>
@@ -312,6 +318,7 @@
      <int>13</int>
      <int>14</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -328,6 +335,7 @@
     <ports>
      <int>16</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>19</id>
@@ -343,6 +351,7 @@
     <ports>
      <int>18</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x3</name>
     <slider>
      <stepRel>false</stepRel>
@@ -405,6 +414,7 @@
     <ports>
      <int>20</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>23</id>
@@ -420,6 +430,7 @@
     <ports>
      <int>22</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x4</name>
     <slider>
      <stepRel>false</stepRel>
@@ -482,6 +493,7 @@
     <ports>
      <int>24</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>27</id>
@@ -497,6 +509,7 @@
     <ports>
      <int>26</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x3</name>
     <slider>
      <stepRel>false</stepRel>
@@ -559,6 +572,7 @@
     <ports>
      <int>28</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>x4</name>
     <slider>
      <stepRel>false</stepRel>
@@ -623,6 +637,7 @@
      <int>31</int>
      <int>32</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
@@ -641,6 +656,7 @@
      <int>35</int>
      <int>36</int>
     </ports>
+    <bookmark>false</bookmark>
     <axis>sex</axis>
     <arg>1</arg>
    </Item>
@@ -658,6 +674,7 @@
     <ports>
      <int>38</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>0</name>
     <slider>
      <stepRel>false</stepRel>
@@ -704,6 +721,7 @@
     <ports>
      <int>40</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>44</id>
@@ -720,6 +738,7 @@
      <int>42</int>
      <int>43</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>int1</name>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
@@ -762,6 +781,7 @@
      <int>45</int>
      <int>46</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>44</intVar>
     <arg>1</arg>
    </Item>
@@ -779,6 +799,7 @@
     <height>10</height>
     <ports>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>51</id>
@@ -795,6 +816,7 @@
      <int>49</int>
      <int>50</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>int2</name>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
@@ -837,12 +859,15 @@
      <int>52</int>
      <int>53</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>51</intVar>
     <arg>1</arg>
    </Item>
   </items>
   <groups>
   </groups>
+  <lockGroups>
+  </lockGroups>
   <rungeKutta>
    <stepMin>0</stepMin>
    <stepMax>0.01</stepMax>

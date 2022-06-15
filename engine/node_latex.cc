@@ -33,8 +33,7 @@ namespace MathDAG
         if (exponent<0) exponent++;
         return str(x/pow(10.0,exponent))+"\\times10^{"+str(exponent)+"}";
       }
-    else
-      return str(x);
+    return str(x);
   }
 
   // named constants for group identities
@@ -48,14 +47,13 @@ namespace MathDAG
       
     // process % chars
     string::size_type pc;
-    if ((pc=nm.find_first_of("%"))!=string::npos)
+    if ((pc=nm.find_first_of('%'))!=string::npos)
       return mathrm(nm.substr(0, pc)) + "\\" + nm[pc] + mathrm(nm.substr(pc+1));      
     
     // if its a single letter variable, or contains LaTeX codes, process as is
     if (nm.length()==1 || nm.find('\\')!=string::npos)
       return nm;
-    else
-      return "\\mathrm{"+nm+"}";
+    return "\\mathrm{"+nm+"}";
   }
 
   namespace
@@ -76,7 +74,7 @@ namespace MathDAG
     if (init.empty()) return "0";
     VariableValue v;
     v.init=init;
-    auto t=v.initValue(cminsky().variableValues);
+    auto t=cminsky().variableValues.initValue(v);
     string r;
     switch (t.rank())
       {
@@ -120,22 +118,21 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::ravel>::latex(ostream& o) const
   {
     o<<mathrm(name);
-    if (arguments.size() && arguments[0].size())
+    if (!arguments.empty() && !arguments[0].empty())
       return o<<"("<<arguments[0][0]->latex()<<")";
-    else
-      return o;
+    return o;
   }
 
   template <>
   ostream& OperationDAG<OperationType::add>::latex(ostream& o) const
   {
-    for (size_t i=0; arguments.size()>0 && i<arguments[0].size(); ++i)
+    for (size_t i=0; !arguments.empty() && i<arguments[0].size(); ++i)
       {
         checkArg(0,i);
         if (i>0) o<<"+";
         o<<arguments[0][i]->latex();
       }
-    if (arguments.size()>1 && arguments[0].size()>0 && arguments[1].size()) o<<"+";
+    if (arguments.size()>1 && !arguments[0].empty() && !arguments[1].empty()) o<<"+";
     for (size_t i=0; arguments.size()>1 && i<arguments[1].size(); ++i)
       {
         checkArg(1,i);
@@ -148,13 +145,13 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::subtract>::latex(ostream& o) const
   {
-    for (size_t i=0; arguments.size()>0 && i<arguments[0].size(); ++i)
+    for (size_t i=0; !arguments.empty() && i<arguments[0].size(); ++i)
       {
         checkArg(0,i);
         if (i>0) o<<"+";
         o<<arguments[0][i]->latex();
       }
-    if (arguments.size()>1 && arguments[1].size()>0) 
+    if (arguments.size()>1 && !arguments[1].empty()) 
       {
         checkArg(1,0);
         o<<"-";
@@ -173,14 +170,14 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::multiply>::latex(ostream& o) const
   {
-    for (size_t i=0; arguments.size()>0 && i<arguments[0].size(); ++i)
+    for (size_t i=0; !arguments.empty() && i<arguments[0].size(); ++i)
       {
         checkArg(0,i);
         if (i>0) o<<"\\times ";
         ParenIf p(o, arguments[0][i]->BODMASlevel()>BODMASlevel());
         o<<arguments[0][i]->latex();
       }
-    if (arguments.size()>1 && arguments[0].size()>0 && arguments[1].size()>0) o<<"\\times ";
+    if (arguments.size()>1 && !arguments[0].empty() && !arguments[1].empty()) o<<"\\times ";
     for (size_t i=0; arguments.size()>1 && i<arguments[1].size(); ++i)
       {
         checkArg(1,i);
@@ -196,7 +193,7 @@ namespace MathDAG
   {
     if (arguments.empty()) return o;
     if (arguments.size()>1) o<< "\\frac{";
-    if (arguments[0].size()==0) o<<"1";
+    if (arguments[0].empty()) o<<"1";
     for (size_t i=0; i<arguments[0].size(); ++i)
       {
         checkArg(0,i);
@@ -207,7 +204,7 @@ namespace MathDAG
     if (arguments.size()>1) 
       {
         o<<"}{";
-        if (arguments[1].size()==0) o<<"1";
+        if (arguments[1].empty()) o<<"1";
         for (size_t i=0; i<arguments[1].size(); ++i)
           {
             checkArg(1,i);
@@ -242,7 +239,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::lt>::latex(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         o<<"\\theta\\left(";
         if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
@@ -266,7 +263,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::eq>::latex(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
         {
           o<<"\\delta\\left("<<arguments[0][0]->latex()<<"-";
@@ -289,7 +286,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::le>::latex(ostream& o) const
   {
-    if ((arguments.size()>0 && !arguments[0].empty() && arguments[0][0]) ||
+    if ((!arguments.empty() && !arguments[0].empty() && arguments[0][0]) ||
         (arguments.size()>1 && !arguments[1].empty() && arguments[1][0]))
       {
         OperationDAG<OperationType::lt> lt; lt.arguments=arguments;
@@ -298,14 +295,14 @@ namespace MathDAG
         o<<"+";
         return eq.latex(o);
       }
-    else return o<<"1"<<endl;
+    return o<<"1"<<endl;
   }
 
 
   template <>
   ostream& OperationDAG<OperationType::min>::latex(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
         o<<"\\min\\left("<<arguments[0][0]->latex()<<"," <<
           arguments[1][0]->latex()<<"\\right)";
@@ -322,7 +319,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::max>::latex(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
         o<<"\\max\\left("<<arguments[0][0]->latex()<<"," <<
           arguments[1][0]->latex()<<"\\right)";
@@ -351,7 +348,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::or_>::latex(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
         o<<"\\max\\left(\\theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)," <<
           "\\theta\\left("<<arguments[1][0]->latex()<<"\\right)\\right)";
@@ -368,7 +365,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::not_>::latex(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       o<<"\\left(1-\\theta\\left(0.5-"<<arguments[0][0]->latex()<<"\\right)\\right)";
     else
       o<<"1";
@@ -426,13 +423,13 @@ namespace MathDAG
   }
 
   template <>
-  ostream& OperationDAG<OperationType::integrate>::latex(ostream& o) const
+  ostream& OperationDAG<OperationType::integrate>::latex(ostream&) const
   {
     throw error("shouldn't be executed");
   }
         
   template <>
-  ostream& OperationDAG<OperationType::differentiate>::latex(ostream& o) const
+  ostream& OperationDAG<OperationType::differentiate>::latex(ostream&) const
   {
     throw error("derivative operator should not appear in LaTeX output");
   }
@@ -570,10 +567,9 @@ namespace MathDAG
     auto desc=mathrm(dynamic_cast<UserFunction&>(*state).description());
     if (arguments.empty() || arguments[0].empty())
       return o<<desc<<"()";
-    else if (arguments.size()<2 || arguments[1].empty())
+    if (arguments.size()<2 || arguments[1].empty())
       return o<<desc<<"\\left("<<arguments[0][0]->latex()<<"\\right)";
-    else
-      return o<<desc<<"\\left("<<arguments[0][0]->latex()<<","<<arguments[1][0]->latex()<<"\\right)";
+    return o<<desc<<"\\left("<<arguments[0][0]->latex()<<","<<arguments[1][0]->latex()<<"\\right)";
   }    
 
   template <>

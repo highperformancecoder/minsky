@@ -25,6 +25,12 @@
 using namespace minsky;
 using namespace std;
 
+struct MinskyFixture: public Minsky
+{
+  LocalMinsky lm{*this};
+};
+
+
 SUITE(UserFunction)
 {
   TEST(symbolNames1)
@@ -34,20 +40,18 @@ SUITE(UserFunction)
       CHECK(f.symbolNames()==expected);
     }
 
-  TEST(referenceMinskyVariables)
+  TEST_FIXTURE(MinskyFixture, referenceMinskyVariables)
     {
-      Minsky minsky;
-      LocalMinsky lm(minsky);
-      minsky.variableValues.emplace(":foo", VariableValue{VariableType::flow});
-      minsky.variableValues.emplace(":bar", VariableValue{VariableType::flow});
-      minsky.variableValues[":foo"]->allocValue()=3.0;
-      minsky.variableValues[":bar"]->allocValue()=5.0;
+      variableValues.emplace(":foo", VariableValue{VariableType::flow});
+      variableValues.emplace(":bar", VariableValue{VariableType::flow});
+      variableValues[":foo"]->allocValue()=3.0;
+      variableValues[":bar"]->allocValue()=5.0;
       UserFunction f("test","foo+bar");
       f.compile();
       CHECK_EQUAL(8, f({}));
     }
 
-  TEST(arguments)
+  TEST_FIXTURE(MinskyFixture, arguments)
     {
       UserFunction f("test","x+y");
       f.argNames={"x","y"};
@@ -55,14 +59,14 @@ SUITE(UserFunction)
       CHECK_EQUAL(7, f({3,4}));
     }  
 
-  TEST(error)
+  TEST_FIXTURE(MinskyFixture, error)
     {
       UserFunction f("test","x+");
       f.argNames={"x","y"};
       CHECK_THROW(f.compile(), std::exception);
     }  
 
-  TEST(stringProcessing)
+  TEST_FIXTURE(MinskyFixture, stringProcessing)
     {
        UserFunction f("test(x)","x:='foo\\'s bar'[]");
        f.compile(); // checks this is syntactically valid
@@ -71,17 +75,15 @@ SUITE(UserFunction)
        CHECK_EQUAL("x",sn[0]);
     }
 
-  TEST(units)
+  TEST_FIXTURE(MinskyFixture, units)
     {
-      Minsky minsky;
-      LocalMinsky lm(minsky);
-      minsky.variableValues.emplace(":foo", VariableValue{VariableType::flow});
-      minsky.variableValues.emplace(":bar", VariableValue{VariableType::flow});
-      minsky.variableValues[":foo"]->allocValue()=3.0;
-      minsky.variableValues[":bar"]->allocValue()=5.0;
-      minsky.variableValues[":foo"]->setUnits("m");
-      minsky.variableValues[":bar"]->setUnits("s");
-      minsky.timeUnit="s";
+      variableValues.emplace(":foo", VariableValue{VariableType::flow});
+      variableValues.emplace(":bar", VariableValue{VariableType::flow});
+      variableValues[":foo"]->allocValue()=3.0;
+      variableValues[":bar"]->allocValue()=5.0;
+      variableValues[":foo"]->setUnits("m");
+      variableValues[":bar"]->setUnits("s");
+      timeUnit="s";
       UserFunction f("test","foo+bar");
       CHECK_THROW(f.units(true),std::exception);
       f.expression="bar+time";

@@ -20,6 +20,7 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
+#include "eventInterface.h"
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
@@ -28,9 +29,10 @@
 #include "switchIcon.h"
 #include "wire.h"
 #include "ravelWrap.h"
+#include "lasso.h"
 #include "lock.h"
 #include "sheet.h"
-#include <cairoSurfaceImage.h>
+#include "renderNativeWindow.h"
 
 #include <chrono>
 
@@ -47,13 +49,15 @@ namespace minsky
     NoAssign& operator=(const U& x) {T::operator=(x); return *this;}
   };
   
-  class Canvas: public ecolab::CairoSurface
+  class Canvas: public RenderNativeWindow, public EventInterface
   {
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
     void reportDrawTime(double) override;
     void mouseDownCommon(float x, float y);
 
+    /// flag indicating that a redraw is requested, but not yet redrawn
+    bool m_redrawRequested=false;
   public:
     typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
     struct Model: public GroupPtr
@@ -93,8 +97,6 @@ namespace minsky
     Model model;
     
     Selection selection;
-    // we don't want surface to be reassigned every time a new model is loaded.
-    //NoAssign<Exclude<ecolab::cairo::SurfacePtr>> surface;
     ItemPtr itemFocus; ///< item selected by clicking
     WirePtr wireFocus; ///< wire that mouse is hovering over
     int handleSelected; ///< selected handle for handle moves, -ve = invalid 
@@ -114,6 +116,16 @@ namespace minsky
     LassoBox lasso{0,0,0,0};
 
     bool redrawAll=true; ///< if false, then only redraw graphs
+
+    void moveTo(float x, float y) override {
+      model->moveTo(x,y);
+      requestRedraw();
+    }
+
+    void zoom(double x, double y, double z) override {
+      model->zoom(x,y,z);
+      requestRedraw();
+    }
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
@@ -121,17 +133,11 @@ namespace minsky
     ecolab::cairo::SurfacePtr& surface() {return ecolab::CairoSurface::surface;}
     
     /// event handling for the canvas
-    void mouseDown(float x, float y);
-    void controlMouseDown(float x, float y);
-    void mouseUp(float x, float y);
-    void mouseMove(float x, float y);
-    /// handle key press over current itemFocus,
-    /// @param keySym the X key sym code
-    /// @param utf8 utf8 encoded character
-    /// @param state modifer state 1=shift, 2=caps lock, 4=ctrl, 8=alt
-    /// @param x & y contain mouse coordinates
-    /// @return true if event handled
-    bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn);
+    void mouseDown(float x, float y) override;
+    void controlMouseDown(float x, float y) override;
+    void mouseUp(float x, float y) override;
+    void mouseMove(float x, float y) override;
+    bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn) override;
     void displayDelayedTooltip(float x, float y);
     
     /// return closest visible port to (x,y). nullptr is nothing suitable
@@ -155,15 +161,17 @@ namespace minsky
     ItemPtr item;
     WirePtr wire;
     ItemPtr itemAt(float x, float y);
-    void getItemAt(float x, float y) {item=itemAt(x,y);}
-    void getWireAt(float x, float y);
+    void getItemAt(float x, float y) override {item=itemAt(x,y);}
+    void getWireAt(float x, float y) override;
 
     double defaultRotation=0;
     void addOperation(OperationType::Type op) {
+      if (op==OperationType::numOps) return;
       setItemFocus(model->addItem(OperationBase::create(op)));
       itemFocus->rotation(defaultRotation);
     }
     void addVariable(const std::string& name, VariableType::Type type) {
+      if (type==VariableType::undefined || type==VariableType::numVarTypes) return;
       setItemFocus(model->addItem(VariablePtr(type,name)));
       itemFocus->rotation(defaultRotation);
     }
@@ -209,7 +217,7 @@ namespace minsky
     /// rename all instances of variable as item to \a newName
     void renameAllInstances(const std::string newName);
     /// rename variable as item to \a newName
-    void renameItem(const std::string newName);
+    void renameItem(const std::string& newName);
 
     /// if item is a Group, move its contents to its parent and delete the group
     void ungroupItem();
@@ -249,18 +257,25 @@ namespace minsky
 
     /// redraw whole model
     bool redraw(int x0, int y0, int width, int height) override;
-    void redraw();
+    bool redraw();
     /// region to be updated
     LassoBox updateRegion{0,0,0,0};
     /// update region given by updateRegion
-    void redrawUpdateRegion();
+    bool redrawUpdateRegion();
 
     /// adjust canvas so that -ve coordinates appear on canvas
     void recentre();
-    
+
+    /// flag indicating that a redraw is requested, but not yet redrawn
+    bool redrawRequested() const {return m_redrawRequested;}
     /// request a redraw on the screen
-    void requestRedraw() {if (surface().get()) surface()->requestRedraw();}
+    void requestRedraw() {m_redrawRequested=true; if (surface().get()) surface()->requestRedraw();}
   };
+}
+
+namespace classdesc
+{
+  template <> struct is_smart_ptr<minsky::Canvas::Model>: public true_type {};
 }
 
 #include "canvas.cd"

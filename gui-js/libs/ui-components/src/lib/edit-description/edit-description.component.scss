@@ -1,0 +1,26 @@
+@import '../../../../shared/src/lib/theme/variables.scss';
+
+.container {
+  display: grid;
+  grid-template-rows: 2rem 1fr 3rem;
+  grid-template-columns: 1fr;
+  height: 100vh;
+  width: 100vw;
+  grid-auto-columns: 1fr;
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+input {
+  width: 100%;
+}
+textarea {
+  width: 100%;
+  height: 24.5rem;
+}
+button {
+  margin: $margin;
+}

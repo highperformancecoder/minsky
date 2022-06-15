@@ -246,7 +246,7 @@ namespace schema1
 
   struct SizeLayout
   {
-    double width=100, height=100;
+    double width=-1, height=-1; // -ve indicates schema file does not supply sizelayout info
     SizeLayout() {}
     template <class T>
     SizeLayout(const T& x): width(x.width), height(x.height) {}
@@ -288,7 +288,7 @@ namespace schema1
 
   struct PlotLayout: public SPoly<PlotLayout, PositionLayout, SizeLayout>
   {
-    PlotLayout() {width=150; height=150;}
+    PlotLayout() {}
     PlotLayout(int id, const schema0::PlotWidget& p):
       Layout(id), PositionLayout(id, p), SizeLayout(p) {}
   };
@@ -377,7 +377,7 @@ namespace classdesc
 namespace classdesc_access
 {
   namespace cd=classdesc;
-  template <> struct access_xml_pack<shared_ptr<schema1::Layout> >
+  template <> struct access_xml_pack<std::shared_ptr<schema1::Layout> >
   {
     template <class U>
     void operator()(cd::xml_pack_t& x, const cd::string& d, U& a)
@@ -385,7 +385,7 @@ namespace classdesc_access
   };
 
   /// unpack into a UnionLayout structure, so everything's at hand 
-  template <>struct access_xml_unpack<shared_ptr<schema1::Layout> >
+  template <>struct access_xml_unpack<std::shared_ptr<schema1::Layout> >
   {
     template <class U>
     void operator()(cd::xml_unpack_t& x, const cd::string& d, U& a)
@@ -405,14 +405,14 @@ using classdesc::xsd_generate;
 #pragma omit xsd_generate schema1::SPoly
 #endif
 
-inline void xsd_generate(classdesc::xsd_generate_t&,const string&,const schema1::SPolyBase&) {}
+inline void xsd_generate(classdesc::xsd_generate_t&,const std::string&,const schema1::SPolyBase&) {}
 template <class T, class B1, class B2>
-void xsd_generate(classdesc::xsd_generate_t& x,const string& d, 
+void xsd_generate(classdesc::xsd_generate_t& x,const std::string& d, 
                   const schema1::SPoly<T,B1,B2>& a) 
 {xsd_generate(x,d,static_cast<const B1&>(a));}
 
 // Layout is end of the line, no need to process further
-inline void xsd_generate(classdesc::xsd_generate_t& x,const string& d, 
+inline void xsd_generate(classdesc::xsd_generate_t& x,const std::string& d, 
                   const schema1::SPoly<schema1::Layout,schema1::SPolyBase>& a) 
 {}
 

@@ -20,6 +20,7 @@
 #include "variableType.h"
 #include "evalOp.h"
 #include "selection.h"
+#include "lasso.h"
 #include "xvector.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
@@ -72,6 +73,17 @@ SUITE(XVector)
       CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
       CHECK_THROW(push_back("2-2018"),std::exception);
 
+      // test some wonky dates and times
+      dimension.units="%d/%m/%Y";
+      push_back("1/4/2018");
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_THROW(push_back("2-2018"),std::exception);
+
+      dimension.units="%d/%m/%Y %H:%M:%S";
+      push_back("1/4/2018 12:52:13");
+      CHECK_EQUAL(ptime(date(2018,Apr,1),time_duration(12,52,13)), any_cast<ptime>(back()));
+      CHECK_THROW(push_back("2-2018"),std::exception);
+      
       dimension.units.clear();
       push_back("2018-04-01");
       CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
@@ -98,4 +110,68 @@ SUITE(XVector)
       CHECK_EQUAL("Q2-2002", str(t,"Q%Q-%Y"));
       CHECK_THROW(str(t,"Q%Q"), std::exception);
     }
+
+  TEST(compareInvalidStoredType)
+  {
+    XVector a("a",{Dimension::string,""},{"foo","bar","foobar"}), b=a;
+    b[0]=string("1.0"); // ensure we have mixed types
+    b[1]="2.0";
+    CHECK(!(a==b));
+  }
+
+  TEST(anyValSanityChecking)
+  {
+    CHECK_THROW(anyVal({Dimension::time,"%Y-%Q"}, "2001-5"), std::exception);
+    CHECK_THROW(anyVal({Dimension::time,"%y:%d:%m"}, "foobar"), std::exception);
+    CHECK_THROW(anyVal({Dimension::time,"%y:%d:%m"}, "100:1:12"), std::exception);
+    CHECK_THROW(anyVal({Dimension::time,"%y:%d:%m"}, "foo:1:bar"), std::exception);
+    CHECK_EQUAL("1999-12-01",str(anyVal({Dimension::time,"%y:%d:%m"}, "99:1:12"), "%Y-%m-%d"));
+    CHECK_EQUAL("2009-12-01",str(anyVal({Dimension::time,"%y:%d:%m"}, "09:1:12"), "%Y-%m-%d"));
+    CHECK_THROW(anyVal({Dimension::time,"%Y-%b-%d"}, "foobar"), std::exception);
+
+    //screwy dates
+    CHECK_EQUAL("2009-09-01",str(anyVal({Dimension::time,"%m/%d/%Y"}, "9/1/2009"), "%Y-%m-%d"));
+    CHECK_EQUAL("2009-09-01",str(anyVal({Dimension::time,"%Y%m%d"}, "20090901"), "%Y-%m-%d"));
+   
+
+  }
+
+  TEST(incompatibleDiff)
+  {
+    boost::any x, y;
+    x=0.5; y="hello";
+    CHECK_THROW(diff(x,y), std::exception); // incompatible type
+    x=nullptr; y=nullptr;
+    CHECK_THROW(diff(x,y), std::exception); // type not supported
+  }
+
+  TEST(strFunnyType)
+  {
+    struct Foo {int a;};
+    boost::any x=Foo();
+    CHECK_EQUAL("",str(x,""));
+  }
+
+  TEST(timeFormat)
+  {
+    XVector x("hello",{Dimension::time,""});
+    CHECK_EQUAL("",x.timeFormat());
+    x.push_back("2000-01-01T01:01:00");
+    x.push_back("2000-01-01T01:01:01");
+    CHECK_EQUAL("%s",x.timeFormat());
+    x.push_back("2000-01-01T01:05:01");
+    CHECK_EQUAL("%M:%S",x.timeFormat());
+    x.push_back("2000-01-01T03:05:01");
+    CHECK_EQUAL("%H:%M",x.timeFormat());
+    x.push_back("2000-01-03T03:05:01");
+    CHECK_EQUAL("%d %H:%M",x.timeFormat());
+    x.push_back("2000-02-03T03:05:01");
+    CHECK_EQUAL("%d %b",x.timeFormat());
+    x.push_back("2000-09-03T03:05:01");
+    CHECK_EQUAL("%b",x.timeFormat());
+    x.push_back("2003-09-03T03:05:01");
+    CHECK_EQUAL("%b %Y",x.timeFormat());
+    x.push_back("2020-09-03T03:05:01");
+    CHECK_EQUAL("%Y",x.timeFormat());
+ }
 }

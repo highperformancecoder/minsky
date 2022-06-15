@@ -80,10 +80,12 @@ namespace minsky
       CloseClipboard();
 #else
     if (pimpl->clipboard)
-      if (text.empty())
-        clipboard_clear(pimpl->clipboard, LCB_CLIPBOARD);
-      else
-        clipboard_set_text(pimpl->clipboard, text.c_str());
+      {
+        if (text.empty())
+          clipboard_clear(pimpl->clipboard, LCB_CLIPBOARD);
+        else
+          clipboard_set_text(pimpl->clipboard, text.c_str());
+      }
 #endif
   }
 

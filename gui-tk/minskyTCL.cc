@@ -50,8 +50,7 @@ namespace minsky
     static MinskyTCL s_minsky;
     if (l_minsky)
       return *l_minsky;
-    else
-      return s_minsky;
+    return s_minsky;
   }
 
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
@@ -64,8 +63,7 @@ namespace minsky
       {
         if (info.isNativeObjectProc)
           return (cmd_data*)info.objClientData;
-        else
-          return (cmd_data*)info.clientData;
+        return (cmd_data*)info.clientData;
       }
     return nullptr;
   }
@@ -127,38 +125,6 @@ namespace minsky
       t->is_const=true;
  }
 
-#if defined(__linux__)
-  size_t physicalMem()
-  {
-    struct sysinfo s;
-    sysinfo(&s);
-    return s.totalram;
-  }
-#elif defined(WIN32)
-   size_t physicalMem()
-  {
-    MEMORYSTATUSEX s;
-    GlobalMemoryStatusEx(&s);
-    return s.ullTotalPhys;
-  } 
-//#elif defined(__APPLE__)
-//  size_t physicalMem()
-//  {
-//    int mib[2];
-//    int64_t physical_memory;
-//    size_t length;
-//
-//    // Get the Physical memory size
-//    mib[0] = CTL_HW;
-//    mib[1] = HW_MEMSIZE;
-//    length = sizeof(int64_t);
-//    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
-//    return physical_memory;
-//  }
-#else
-  // all else fails, return max value
-  size_t physicalMem() {return ~0UL;}
-#endif  
 
   tclvar TCL_obj_lib("ecolab_library",ECOLAB_LIB);
   int TCL_obj_minsky=
@@ -178,112 +144,6 @@ namespace minsky
       TCL_obj_deregister("minsky.value");
   }
   
-//    void MinskyTCL::putClipboard(const string& s) const
-//    {
-//#ifdef MAC_OSX_TK
-//      int p[2];
-//      pipe(p);
-//      if (fork()==0)
-//        {
-//          dup2(p[0],0);
-//          close(p[1]);
-//          execl("/usr/bin/pbcopy","pbcopy",nullptr);
-//        }
-//      else 
-//        {
-//          close(p[0]);
-//          write(p[1],s.c_str(),s.length());
-//          close(p[1]);
-//        }
-//      int status;
-//      wait(&status);
-//#elif defined(_WIN32)
-//      OpenClipboard(Tk_GetHWND(Tk_WindowId(Tk_MainWindow(interp()))));
-//      EmptyClipboard();
-//      HGLOBAL h=GlobalAlloc(GMEM_MOVEABLE, s.length()+1);
-//      LPTSTR hh=static_cast<LPTSTR>(GlobalLock(h));
-//      if (hh)
-//        {
-//          strcpy(hh,s.c_str());
-//          GlobalUnlock(h);
-//          if (SetClipboardData(CF_TEXT, h)==nullptr)
-//            GlobalFree(h);
-//        }
-//      CloseClipboard();
-//#else
-//      Tk_Window mainWin=Tk_MainWindow(interp());
-//      Tk_ClipboardClear(interp(), mainWin);
-//      Atom utf8string=Tk_InternAtom(mainWin,"UTF8_STRING");
-//      Tk_ClipboardAppend(interp(), mainWin, utf8string, utf8string, 
-//                         const_cast<char*>(s.c_str()));
-//#endif
-//    }
-//
-//    string MinskyTCL::getClipboard() const
-//    {
-//#ifdef MAC_OSX_TK
-//      int p[2];
-//      pipe(p);
-//      string r;
-//      if (fork()==0)
-//        {
-//          dup2(p[1],1);
-//          close(p[0]);
-//          execl("/usr/bin/pbpaste","pbpaste",nullptr);
-//        }
-//      else 
-//        {
-//          close(p[1]);
-//          char c;
-//          while (read(p[0],&c,1)>0)
-//            r+=c;
-//          close(p[0]);
-//        }
-//      int status;
-//      wait(&status);
-//      return r;
-//#elif defined(_WIN32)
-//      string r;
-//      OpenClipboard(nullptr);
-//      if (HANDLE h=GetClipboardData(CF_TEXT))
-//        {
-//          r=static_cast<const char*>(GlobalLock(h));
-//          GlobalUnlock(h);
-//        }
-//      CloseClipboard();
-//      return r;
-//#else
-//      try
-//        {
-//		  // seems more stable in copying all items. for ticket 1180/1183	
-//          return (tclcmd()<<"selection get -selection CLIPBOARD -type UTF8_STRING\n").result;
-//        }
-//      catch (...)
-//        {
-//          return {};
-//        }
-//#endif
-//    }
-
-  void MinskyTCL::latex(const char* filename, bool wrapLaTeXLines) 
-  {
-    if (cycleCheck()) throw error("cyclic network detected");
-    ofstream f(filename);
-
-    f<<"\\documentclass{article}\n";
-    if (wrapLaTeXLines)
-      {
-        f<<"\\usepackage{breqn}\n\\begin{document}\n";
-        MathDAG::SystemOfEquations(*this).latexWrapped(f);
-      }
-    else
-      {
-        f<<"\\begin{document}\n";
-          MathDAG::SystemOfEquations(*this).latex(f);
-      }
-    f<<"\\end{document}\n";
-  }
-
   namespace
   {
     template <class T>
@@ -322,7 +182,7 @@ namespace minsky
     };
   }
 
-  void MinskyTCL::operationIcon(const char* imageName, const char* opName) const
+  void MinskyTCL::operationIcon(const char* imageName, const char* opName)
   {
     if (string(opName)=="switch")
       IconBase<SwitchIcon>(imageName).draw();
@@ -336,7 +196,7 @@ namespace minsky
       IconBase<OperationIcon>(imageName, opName).draw();
   }
 
-  int MinskyTCL::numOpArgs(OperationType::Type o) const
+  int MinskyTCL::numOpArgs(OperationType::Type o)
   {
     OperationPtr op(o);
     return op->numPorts()-1;

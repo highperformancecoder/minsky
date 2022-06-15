@@ -182,8 +182,7 @@ SUITE(Minsky)
       if (VarConstant* c=dynamic_cast<VarConstant*>(op5.get()))
         c->init("0.2");
 
-      constructEquations();
-      step();
+      reset();
 
       CHECK_CLOSE(0.1, var["g"]->value(), 1e-4);
       CHECK_CLOSE(0.3, var["h"]->value(), 1e-4);
@@ -733,22 +732,22 @@ SUITE(Minsky)
 
       godley1.resize(4,4);
       godley1.cell(0,1)=":hello"; godley1._assetClass(1, GodleyAssetClass::asset);
-      godley1.cell(0,2)=":foo"; godley1._assetClass(2, GodleyAssetClass::equity);
-      godley1.cell(0,3)=":bar"; godley1._assetClass(3, GodleyAssetClass::liability);
+      godley1.cell(0,2)=":bar"; godley1._assetClass(2, GodleyAssetClass::liability);
+      godley1.cell(0,3)=":foo"; godley1._assetClass(3, GodleyAssetClass::equity);
 
       // should still be no problem
       initGodleys();
 
       godley2.resize(4,4);
       godley2.cell(0,1)=":hello2"; godley2._assetClass(1, GodleyAssetClass::asset);
-      godley2.cell(0,2)=":foo2"; godley2._assetClass(2, GodleyAssetClass::equity);
-      godley2.cell(0,3)=":bar2"; godley2._assetClass(3, GodleyAssetClass::liability);
+      godley2.cell(0,2)=":bar2"; godley2._assetClass(2, GodleyAssetClass::liability);
+      godley2.cell(0,3)=":foo2"; godley2._assetClass(3, GodleyAssetClass::equity);
 
       godley3.resize(4,4);
       godley3.cell(0,1)=":hello3"; godley3._assetClass(1, GodleyAssetClass::asset);
-      godley3.cell(0,2)=":foo3"; godley3._assetClass(2, GodleyAssetClass::equity);
-      godley3.cell(0,3)=":bar3"; godley3._assetClass(3, GodleyAssetClass::liability);
- 
+      godley3.cell(0,2)=":bar3"; godley3._assetClass(2, GodleyAssetClass::liability);
+      godley3.cell(0,3)=":foo3"; godley3._assetClass(3, GodleyAssetClass::equity);
+
       // should be no problem - all columns are different
       initGodleys();
 
@@ -774,7 +773,7 @@ SUITE(Minsky)
       initGodleys();
 
       // now conflict that pair
-      godley2.cell(0,3)=":bar3";
+      godley2.cell(0,3)=":bar3";godley2._assetClass(3, GodleyAssetClass::asset);
       CHECK_THROW(initGodleys(), ecolab::error);
       godley2.cell(0,3)=":bar2";
   
@@ -782,8 +781,8 @@ SUITE(Minsky)
       godley2.cell(2,1)="2:a";
       godley3.cell(2,1)=":a";
       godley3.cell(3,1)=":a";
-      variableValues[":a"]=VariableValue(VariableType::flow).allocValue();
-      variableValues[":hello2"]=VariableValue(VariableType::stock).allocValue();
+      (variableValues[":a"]=VariableValuePtr(VariableType::flow))->allocValue();
+      (variableValues[":hello2"]=VariableValuePtr(VariableType::stock))->allocValue();
 
       initGodleys();
 
@@ -832,6 +831,13 @@ SUITE(Minsky)
       cols=matchingTableColumns(*g1,GodleyAssetClass::liability);
       CHECK_EQUAL(0, cols.size());
 
+      cols=matchingTableColumns(*g1,GodleyAssetClass::equity);
+      CHECK_EQUAL(1, cols.size());
+      CHECK_EQUAL("a1", *cols.begin());
+
+      cols=matchingTableColumns(*g2,GodleyAssetClass::equity);
+      CHECK_EQUAL(0, cols.size());
+
       cols=matchingTableColumns(*g3,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l2", *cols.begin());
@@ -839,6 +845,8 @@ SUITE(Minsky)
       cols=matchingTableColumns(*g3,GodleyAssetClass::liability);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("a1", *cols.begin());
+
+      
 
       model->addItem(VariablePtr(VariableType::flow, ":a"));
       model->addItem(VariablePtr(VariableType::flow, ":b"));
@@ -950,6 +958,9 @@ SUITE(Minsky)
       auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
       godley1.resize(6,4);
+      godley1.cell(0,1)="s0";
+      godley1.cell(0,2)="s1";
+      godley1.cell(0,3)="s2";
       godley1.cell(1,1)="a";
       godley1.cell(1,2)="2b";
       godley1.cell(1,3)="-c";
@@ -1232,7 +1243,7 @@ SUITE(Minsky)
       gi->update();
 
       // renaming godley column should rename canvas stock vars
-      GodleyTableEditor ged(gi);
+      GodleyTableEditor& ged=gi->editor;
       godley.cell(0,1)="c";
       ged.selectedRow=0;
       ged.selectedCol=1;

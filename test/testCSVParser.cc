@@ -19,10 +19,14 @@
 #include "CSVDialog.h"
 #include "group.h"
 #include "selection.h"
+#include "dimension.h"
+#include "lasso.h"
+#include "variableValue.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 using namespace std;
+using namespace civita;
 
 SUITE(CSVParser)
 {
@@ -155,7 +159,9 @@ SUITE(CSVParser)
 
   TEST_FIXTURE(CSVDialog,loadWebFile)
     {
-      string url="https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv";
+      // a recent change to sourceforge means it returns an unknown payload length in the http header, causing loadWebFile to throw a partialMessage exceptiion
+      //      string url="https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv";
+      string url="https://www.hpcoders.com.au/BIS_GDP.csv";
       CHECK(loadWebFile(url)!="");      
     }     
   
@@ -337,6 +343,14 @@ SUITE(CSVParser)
       }
     }
 
+  TEST_FIXTURE(DataSpec, toggleDimensions)
+    {
+      toggleDimension(2);
+      CHECK_EQUAL(1,dimensionCols.count(2));
+      toggleDimension(2);
+      CHECK_EQUAL(0,dimensionCols.count(2));
+    }
+  
   TEST(guessFromVariableExport)
     {
       Hypercube hc;

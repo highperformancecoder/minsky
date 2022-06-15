@@ -23,14 +23,52 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 
-#include <exprtk/exprtk.hpp>
+// preload these system headers here, to prevent them from being loaded into anonymous namespace
+#include <algorithm>
+#include <cctype>
 #include <cmath>
+#include <complex>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <deque>
+#include <exception>
+#include <functional>
+#include <iterator>
+#include <limits>
+#include <list>
+#include <map>
+#include <set>
+#include <stack>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+#   ifndef NOMINMAX
+#      define NOMINMAX
+#   endif
+#   ifndef WIN32_LEAN_AND_MEAN
+#      define WIN32_LEAN_AND_MEAN
+#   endif
+#   include <windows.h>
+#   include <ctime>
+#else
+#   include <ctime>
+#   include <sys/time.h>
+#   include <sys/types.h>
+#endif
+
 
 namespace minsky
 {
   int UserFunction::nextId=0;
-  
+
+#pragma GCC visibility push(hidden)
   namespace {
+    // include anonymously to reduce the number of exported linker symbols
+#include <exprtk/exprtk.hpp>
     // resolve overloads
     inline double isfinite(double x) {return std::isfinite(x);}
     inline double isinf(double x) {return std::isinf(x);}
@@ -63,6 +101,7 @@ namespace minsky
       }
     };
   }
+#pragma GCC visibility pop
 
   struct UserFunction::Impl
   {
@@ -126,7 +165,7 @@ namespace minsky
     addTimeVariables(impl->symbols);
     for (auto& i: symbolNames())
       {
-        auto scopedName=VariableValue::valueIdFromScope(group.lock(),i);
+        auto scopedName=valueIdFromScope(group.lock(),i);
         auto v=minsky().variableValues.find(scopedName);
         if (v!=minsky().variableValues.end())
           {
@@ -158,7 +197,7 @@ namespace minsky
   
   double UserFunction::evaluate(double in1, double in2)
   {
-    if (argVals.size()>0) argVals[0]=in1;
+    if (!argVals.empty()) argVals[0]=in1;
     if (argVals.size()>1) argVals[1]=in2;
     for (size_t i=2; i<argVals.size(); ++i) argVals[i]=0;
     return impl->compiledExpression.value();

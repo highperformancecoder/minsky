@@ -24,18 +24,28 @@
 #include "port.h"
 #include "intrusiveMap.h"
 #include "geometry.h"
-//#include "RESTProcess_base.h"
+#include "str.h"
+#include "polyRESTProcessBase.h"
+
 #include <accessor.h>
 #include <TCL_obj_base.h>
+#include <json_pack_base.h>
 
 #include <cairo.h>
 #include <vector>
 #include <cairo_base.h>
 
+namespace classdesc
+{
+  //  class json_pack_t;
+  class RESTProcess_t;
+}
+
 namespace minsky 
 {
   struct LassoBox;
   struct Selection;
+  struct GroupItems;
   class Group; 
   class VariablePtr;
   class VariableBase;
@@ -88,7 +98,43 @@ namespace minsky
     float bottom() const {return m_bottom;}
   };
 
-  class Item: public virtual NoteBase, public ecolab::TCLAccessor<Item,double>
+  /// Item members excluded from reflection
+  struct ItemExclude
+  {
+    /// owning group of this item.
+    classdesc::Exclude<std::weak_ptr<Group>> group;
+
+    virtual ~ItemExclude() {}
+    
+    /// @{ a more efficient replacement for dynamic_cast<VariableBase*>(this)
+    virtual const VariableBase* variableCast() const {return nullptr;}
+    virtual VariableBase* variableCast() {return nullptr;}
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<OperationBase*>(this)
+    virtual const OperationBase* operationCast() const {return nullptr;}
+    virtual OperationBase* operationCast() {return nullptr;}
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
+    virtual const SwitchIcon* switchIconCast() const {return nullptr;}
+    virtual SwitchIcon* switchIconCast() {return nullptr;}
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
+    virtual PlotWidget* plotWidgetCast() {return nullptr;}
+    /// @}            
+
+    /// insert this items controlled or controller items are inserted
+    /// correctly into \a selection.
+    virtual void insertControlled(Selection& selection) {}
+    /// remove all controlled items from a group
+    virtual void removeControlledItems(GroupItems&) const {}
+    /// remove all controlled items their owning group
+    void removeControlledItems() const;
+  };
+  
+  class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>,
+              public classdesc::PolyRESTProcessBase,
+              public classdesc::Exclude<ItemExclude>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
 
@@ -109,13 +155,12 @@ namespace minsky
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    float itemTabX=nan(""), itemTabY=nan(""); ///< position on itemTab
+    float itemTabX=0, itemTabY=0; ///< position on itemTab
+    bool itemTabInitialised=false;
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     bool onBorder=false; ///< true to indicate mouse hovering over border
     std::string deleteCallback; /// callback to be run when item deleted from group
-    /// owning group of this item.
-    classdesc::Exclude<std::weak_ptr<Group>> group;
 
     /// return a weak reference to the ith port
     virtual std::weak_ptr<Port> ports(std::size_t i) const {
@@ -170,23 +215,8 @@ namespace minsky
     void flip() {rotation(rotation()+180);}
 
     virtual std::string classType() const {return "Item";}
-
-    /// @{ a more efficient replacement for dynamic_cast<VariableBase*>(this)
-    virtual const VariableBase* variableCast() const {return nullptr;}
-    virtual VariableBase* variableCast() {return nullptr;}
-    /// @}
-    /// @{ a more efficient replacement for dynamic_cast<OperationBase*>(this)
-    virtual const OperationBase* operationCast() const {return nullptr;}
-    virtual OperationBase* operationCast() {return nullptr;}
-    /// @}
-    /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
-    virtual const SwitchIcon* switchIconCast() const {return nullptr;}
-    virtual SwitchIcon* switchIconCast() {return nullptr;}
-    /// @}
-    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
-    virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
-    virtual PlotWidget* plotWidgetCast() {return nullptr;}
-    /// @}            
+    /// return an id uniquely identifying this item
+    std::string id() const {return str(size_t(this));}
 
     virtual float x() const; 
     virtual float y() const;
@@ -200,6 +230,13 @@ namespace minsky
     float top()    const;
     float bottom() const;
 
+    /// Is this item also a bookmark?
+    bool bookmark=false;
+    /// Id of bookmark associated with this
+    std::string bookmarkId() const {return tooltip.empty()? std::to_string(size_t(this)): tooltip;}
+    /// adjust bookmark list to reflect current configuration
+    void adjustBookmark() const;
+    
     /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
     /// @return true is (x,y) is located on a resize handle
@@ -231,9 +268,17 @@ namespace minsky
 
     /// whether this item is visible on the canvas. 
     virtual bool visible() const;
+
+    /// whether this item is visible if the group is expended to display items.
+    virtual bool visibleWithinGroup() const;
+    
     
     /// whether this item is attached to a defining variable that is hidden
-    virtual bool attachedToDefiningVar() const;    
+    virtual bool attachedToDefiningVar(std::set<const Item*>& visited) const;
+    bool attachedToDefiningVar() const {
+      std::set<const Item*> visited;
+      return attachedToDefiningVar(visited);
+    }
 
     void moveTo(float x, float y);
 
@@ -262,7 +307,7 @@ namespace minsky
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
-    void drawSelected(cairo_t* cairo) const;
+    static void drawSelected(cairo_t* cairo);
     virtual void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
@@ -275,14 +320,13 @@ namespace minsky
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
     virtual std::shared_ptr<Item> select(float x, float y) const {return {};}
-    virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
+    /// runs the TCL_obj descriptor suitable for this type
+    virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
-    /// returns a RESTProcessor appropriate for this item type
-//    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
-//    {
-//      return std::unique_ptr<classdesc::RESTProcessBase>
-//        (new classdesc::RESTProcessObject<Item>(*this));
-//    }
+    /// runs the RESTProcess descriptor suitable for this type
+    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&);
+    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const;
+    virtual void json_pack(classdesc::json_pack_t&) const;
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
@@ -297,13 +341,6 @@ namespace minsky
     }
     /// perform units consistency checks
     Units checkUnits() const {return units(true);}
-    /// insert this items controlled or controller items are inserted
-    /// correctly into \a selection.
-    virtual void insertControlled(Selection& selection) {}
-    /// remove all controlled items from a group
-    virtual void removeControlledItems(Group&) const {}
-    /// remove all controlled items their owning group
-    void removeControlledItems() const;
 
     /// return a shared_ptr to this
     ItemPtr itemPtrFromThis() const;
@@ -329,19 +366,17 @@ namespace minsky
       r->group.reset();
       return r;
     }
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
+    void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d) override 
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
+    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) override;
+    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const override;
+    void json_pack(classdesc::json_pack_t&) const override;
     ItemT()=default;
     ItemT(const ItemT&)=default;
     ItemT& operator=(const ItemT&)=default;
     // delete move operations to avoid the dreaded virtual-move-assign warning
     ItemT(ItemT&&)=delete;
     ItemT& operator=(ItemT&&)=delete;
-//    std::unique_ptr<classdesc::RESTProcessBase> restProcess() override
-//    {
-//      return std::unique_ptr<classdesc::RESTProcessBase>
-//        (new classdesc::RESTProcessObject<T>(dynamic_cast<T&>(*this)));
-//    }
   };
 
   struct BottomRightResizerItem: public Item
@@ -359,6 +394,17 @@ namespace minsky
 // not needed anyway
 #pragma omit pack minsky::Item
 #pragma omit unpack minsky::Item
+
+// omit ItemExclude to reduce the amount of boilerplate code needing to be compiled
+#pragma omit pack minsky::ItemExclude
+#pragma omit unpack minsky::ItemExclude
+#pragma omit json_pack minsky::ItemExclude
+#pragma omit json_unpack minsky::ItemExclude
+#pragma omit xml_pack minsky::ItemExclude
+#pragma omit xml_unpack minsky::ItemExclude
+#pragma omit TCL_obj minsky::ItemExclude
+#pragma omit RESTProcess minsky::ItemExclude
+
 #endif
 namespace classdesc_access
 {

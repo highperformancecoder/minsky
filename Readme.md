@@ -24,7 +24,7 @@ To compile Minsky, you will need a suitable posix compliant system, [with a numb
 
 - [Windows](githubdocs/WindowsRelease.md)
 - [MacOSX](githubdocs/MacRelease.md)
-- Linux: Linux distributions are managed through the [OpenSUSE build service](https://build.opensuse.org/package/show/home:hpcoder1/minsky) which won't be documented here.
+- [Linux](githubdocs/LinuxRelease.md)
 
 ## Using the REST Service
 

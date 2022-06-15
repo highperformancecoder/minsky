@@ -31,6 +31,8 @@
 // override EcoLab's default CLASSDESC_ACCESS macro
 #include "classdesc_access.h"
 
+#include "engNotation.h"
+
 #include "polyBase.h"
 #include <polyPackBase.h>
 #include "variableType.h"
@@ -80,6 +82,7 @@ namespace minsky
     mutable int unitsCtr=0; ///< for detecting reentrancy in units()
     static int stockVarsPassed; ///< for detecting reentrancy in units()
 
+    void insertControlled(Selection& selection) override;
   protected:
     void addPorts();
     
@@ -99,6 +102,7 @@ namespace minsky
     /// reference to a controlling item - eg GodleyIcon, IntOp or a Group if an IOVar.
     classdesc::Exclude<std::weak_ptr<Item>> controller;
     bool visible() const override;
+    bool visibleWithinGroup() const override;
 
     const VariableBase* variableCast() const override {return this;}
     VariableBase* variableCast() override {return this;}
@@ -126,15 +130,10 @@ namespace minsky
     std::string valueIdInCurrentScope(const std::string& nm) const;
     /// variableValue associated with this. nullptr if not associated with a variableValue
     std::shared_ptr<VariableValue> vValue() const;
-    std::vector<unsigned> dims() const {
-      if (auto v=vValue()) return v->hypercube().dims();
-      else return {};
-    }
-    
-    std::vector<std::string> dimLabels() const {
-      if (auto v=vValue()) return v->hypercube().dimLabels();
-      else return {};
-    }    
+    /// variable's tensor shape
+    std::vector<unsigned> dims() const;
+    /// labels along each axis
+    std::vector<std::string> dimLabels() const;
         
     std::pair<std::string,std::string> getDimLabelsPicked() const {return m_dimLabelsPicked;}   
     std::pair<std::string,std::string> setDimLabelsPicked(const std::string& dimLabel1, const std::string& dimLabel2) {
@@ -165,7 +164,7 @@ namespace minsky
 
     /// sets/gets the units associated with this type
     Units units(bool check=false) const override;
-    void setUnits(const std::string&);
+    void setUnits(const std::string&) const;
     std::string unitsStr() const {return units().str();}
     
     bool onKeyPress(int, const std::string&, int) override; 
@@ -179,7 +178,8 @@ namespace minsky
 
     bool varTabDisplay=false;
     void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
-    bool attachedToDefiningVar() const override {return varTabDisplay;}
+    bool attachedToDefiningVar(std::set<const Item*>&) const override {return varTabDisplay;}
+    using Item::attachedToDefiningVar;
     /// formula defining this variable
     std::string definition() const;
     
@@ -207,9 +207,11 @@ namespace minsky
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
-    void importFromCSV(std::string filename, const DataSpec& spec);
+    void importFromCSV(std::string filename, const DataSpecSchema& spec);
 
-    void insertControlled(Selection& selection) override;
+    /// clean up popup window structures on window close
+    void destroyFrame();
+
   };
 
   template <minsky::VariableType::Type T>
@@ -277,7 +279,7 @@ namespace minsky
       // check for incorrect type assignment
       assert(!var || *this);
     }
-    VariablePtr(const PtrBase& x): PtrBase(x) {}
+    VariablePtr(const classdesc::shared_ptr<VariableBase>& x): PtrBase(x) {}
     VariablePtr(const VariableBase& x): PtrBase(x.clone()) {}
     /// changes type of variable to \a type
     void retype(VariableBase::Type type);
@@ -286,8 +288,13 @@ namespace minsky
     /// make variable's type consistent with the type of the valueId
     void makeConsistentWithValue();
   };
-
 }
+
+namespace classdesc
+{
+  template <> struct is_smart_ptr<minsky::VariablePtr>: public true_type {};
+ }
+
 #include "variable.cd"
 #include "variable.xcd"
 #endif

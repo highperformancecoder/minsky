@@ -95,6 +95,7 @@ SUITE(Derivative)
     model->addWire(new Wire(minus->ports(0), f->ports(1)));
 
     reset(); 
+    running=true;
     nSteps=1;step(); // ensure f is evaluated
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
@@ -117,7 +118,8 @@ SUITE(Derivative)
     CHECK_THROW(reset(),std::exception);
     model->addWire(new Wire(tsq->ports(0),pow->ports(2)));
 
-    reset(); 
+    reset();
+    running=true;
     nSteps=1;step(); // ensure f is evaluated
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
@@ -148,10 +150,12 @@ SUITE(Derivative)
 
     
     reset(); 
+    running=true;
     nSteps=1;step(); // ensure f is evaluated
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
     integ.intVar->value(f0);
+    running=true;
     nSteps=1000; step();
     CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
     CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
@@ -188,8 +192,9 @@ SUITE(Derivative)
           model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
         model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
         model->addWire(new Wire(opp->ports(0), f->ports(1)));
-   
+
         reset(); 
+        running=true;
         nSteps=1;step(); // ensure f is evaluated
         CHECK_EQUAL(0, df->value());
         model->deleteItem(*opp);
@@ -205,6 +210,7 @@ SUITE(Derivative)
 
         // no inputs should evaluate to zero
         reset(); 
+        running=true;
         nSteps=1;step(); // ensure f is evaluated
         CHECK_EQUAL(0, df->value());
         
@@ -214,10 +220,12 @@ SUITE(Derivative)
         // check first with single input wired
         save(OperationType::typeName(op)+".mky");
         reset(); 
+        running=true;
         nSteps=1;step(); // ensure f is evaluated
         // set the constant of integration to the value of f at t=0
         double f0=f->value();
         integ.intVar->value(f0);
+        running=true;
         nSteps=1000; step();
         CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
         CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
@@ -226,10 +234,12 @@ SUITE(Derivative)
         model->removeWire(*opWire);
         model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
         reset(); 
+        running=true;
         nSteps=1;step(); // ensure f is evaluated
         // set the constant of integration to the value of f at t=0
         f0=f->value();
         integ.intVar->value(f0);
+        running=true;
         nSteps=1000; step();
         CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
         CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
@@ -237,6 +247,7 @@ SUITE(Derivative)
         // now check with two inputs wired
         model->addWire(new Wire(t->ports(0),opp->ports(1)));
         reset(); 
+        running=true;
         nSteps=1;step(); // ensure f is evaluated
         // set the constant of integration to the value of f at t=0
         f0=f->value();
@@ -290,13 +301,14 @@ SUITE(Derivative)
             default:
               reset(); 
             }
-             nSteps=1;step(); // ensure f is evaluated
-             // set the constant of integration to the value of f at t=0
-             double f0=f->value();
-             integ.intVar->value(f0);			  
-             nSteps=1000; step();
-             CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-             CHECK(abs(f->value()-f0)>0.00000000001*f0); // checks that evolution of function value occurs                          
+          running=true;
+          nSteps=1;step(); // ensure f is evaluated
+          // set the constant of integration to the value of f at t=0
+          double f0=f->value();
+          integ.intVar->value(f0);			  
+          nSteps=1000; step();
+          CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+          CHECK(abs(f->value()-f0)>0.00000000001*f0); // checks that evolution of function value occurs
         }
     }
   

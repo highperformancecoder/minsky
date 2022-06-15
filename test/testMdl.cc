@@ -19,6 +19,7 @@
 #include <UnitTest++/UnitTest++.h>
 #include "group.h"
 #include "selection.h"
+#include "lasso.h"
 #include "userFunction.h"
 #include "mdlReader.h"
 #include "minsky_epilogue.h"

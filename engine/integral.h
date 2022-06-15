@@ -19,8 +19,8 @@
 
 #ifndef INTEGRAL_H
 #define INTEGRAL_H
-#include "operation.h"
-#include "variableValue.h"
+#include "intOp.h"
+#include "variableValues.h"
 
 namespace minsky
 {

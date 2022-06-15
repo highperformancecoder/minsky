@@ -1,4 +1,4 @@
-FROM centos:8
+FROM rockylinux:latest
 ARG project=minsky
 ADD . /root
 RUN yum install -y wget

@@ -19,11 +19,12 @@
 #ifndef PLOTWIDGET_H
 #define PLOTWIDGET_H
 #include <cairo_base.h>
-#include <cairoSurfaceImage.h>
+#include "renderNativeWindow.h"
 #include <TCL_obj_base.h>
 #include "classdesc_access.h"
 #include "plot.h"
 #include "variable.h"
+#include "variableValue.h"
 #include "zoom.h"
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
@@ -38,7 +39,7 @@ namespace minsky
   using namespace ecolab;
 
   struct PlotWidgetSuper: public ItemT<PlotWidget>,
-                          public ecolab::Plot, public ecolab::CairoSurface {};
+                          public ecolab::Plot, public RenderNativeWindow {};
 
   /// a container item for a plot widget
   class PlotWidget: public PlotWidgetSuper

@@ -37,7 +37,7 @@ namespace MathDAG
     {
       unsigned maxOrder;
       VariableDefOrder(unsigned maxOrder): maxOrder(maxOrder) {}
-      bool operator()(const VariableDAG* x, const VariableDAG* y) {
+      bool operator()(const VariableDAG* x, const VariableDAG* y) const {
         return x->order(maxOrder)<y->order(maxOrder);
       }
     };
@@ -64,14 +64,14 @@ namespace MathDAG
           {
             result=r;
             // set the initial value of the actual variableValue (if it exists)
-            auto v=values.find(result->name);
+            auto v=values.find(result->valueId());
             if (v!=values.end())
               v->second->init=value;
           }
         else
           result=tmpResult;
         result->init=value;
-        *result=result->initValue(values);
+        values.resetValue(*result);
       }
     if (r && r->isFlowVar() && r!=result)
       ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
@@ -100,7 +100,7 @@ namespace MathDAG
     }
   }
 
-  bool VariableDAG::tensorEval() const
+  bool VariableDAG::tensorEval(std::set<const Node*>&) const
   {
     return cminsky().variableValues[valueId]->rank()>0;
   }
@@ -118,7 +118,7 @@ namespace MathDAG
   {
     if (!result || result->idx()<0)
       {
-        assert(VariableValue::isValueId(valueId));
+        assert(isValueId(valueId));
         auto ri=minsky::minsky().variableValues.find(valueId);
         if (ri==minsky::minsky().variableValues.end())
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValuePtr(VariableType::tempFlow)).first;
@@ -200,8 +200,10 @@ namespace MathDAG
     return cachedOrder=order;
   }
 
-  bool OperationDAGBase::tensorEval() const 
+  bool OperationDAGBase::tensorEval(std::set<const Node*>& visited) const 
   {
+    if (!visited.insert(this).second)
+      return false; // cycle detected, break
     switch (OperationType::classify(type()))
       {
       case reduction: case scan: case tensor:
@@ -209,7 +211,7 @@ namespace MathDAG
       case general: case binop: case constop: case function:
         for (auto& i: arguments)
           for (auto j: i)
-            if (j && j->tensorEval()) return true;
+            if (j && j->tensorEval(visited)) return true;
         return false;
       default:
         assert(false);// above cases should exhaust
@@ -234,24 +236,14 @@ namespace MathDAG
       // check if any arguments have x-vectors, and if so, initialise r.xVector
       // For feature 47
       for (auto& i: argIdx)
-        if (i.size())
+        if (!i.empty())
           {
             // initialise r's xVector
             r.hypercube(i[0].hypercube());
             break;
           }
       if (r.rank()>0)
-        {
-          // ensure dimensions are correct
-          auto hc=r.hypercube();
-          for (auto& i: argIdx)
-            for (auto& j: i)
-              hc.makeConformant(j.hypercube());
-          r.hypercube(hc);
-
-          if (r.rank()==0)
-            return; // no common intersection amongst arguments
-        }
+        throw runtime_error("Scalar processing not supported in tensor code, try adding an intermediate variable");
       if (r.idx()==-1) r.allocValue();
 
       // short circuit multiplications if any of the terms are constant zero
@@ -270,7 +262,7 @@ namespace MathDAG
                 }
         }
       
-      if (argIdx.size()>0 && !argIdx[0].empty())
+      if (!argIdx.empty() && !argIdx[0].empty())
         {
           size_t i=0;
           if (accum==OperationType::add)
@@ -399,7 +391,7 @@ namespace MathDAG
                 ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
                 break;
               case data:
-                if (argIdx.size()>0 && argIdx[0].size()==1)
+                if (!argIdx.empty() && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
@@ -498,7 +490,7 @@ namespace MathDAG
                  VariableDAG* v=integVarMap[iv->valueId()]=
                    dynamic_cast<VariableDAG*>(makeDAG(*iv).get());
                  v->intOp=i;
-                 if (i->ports(1).lock()->wires().size()>0)
+                 if (!i->ports(1).lock()->wires().empty())
                    {
                      // with integrals, we need to create a distinct variable to
                      // prevent infinite recursion of order() in the case of graph cycles
@@ -516,7 +508,7 @@ namespace MathDAG
                        }
                    }
                 
-                 if (i->ports(2).lock()->wires().size()>0)
+                 if (!i->ports(2).lock()->wires().empty())
                    {
                      // second port can be attached to a variable,
                      // which supplies an init string
@@ -527,7 +519,7 @@ namespace MathDAG
                        }
                      catch (...) {}
                      if (auto v=dynamic_cast<VariableDAG*>(init.get()))
-                       iv->init(VariableValue::uqName(v->name));
+                       iv->init(uqName(v->name));
                      else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                        {
                          // slightly convoluted to prevent sliderSet from overriding c->value
@@ -593,8 +585,8 @@ namespace MathDAG
         integVarMap[g.first]=dynamic_cast<VariableDAG*>
           (makeDAG(g.first,
                    g.second.name, VariableValue::stock).get());
-        expressionCache.getIntegralInput(g.first)->rhs=
-          expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
+        if (auto integralInput=expressionCache.getIntegralInput(g.first))
+          integralInput->rhs=expressionCache.insertAnonymous(make_shared<GodleyColumnDAG>(g.second));
       }
 
     // fix up broken derivative computations, now that all stock vars
@@ -634,7 +626,7 @@ namespace MathDAG
 
     if (&group==m.model.get())
       {
-        for (VariableValues::value_type v: m.variableValues)
+        for (auto& v: m.variableValues)
           if (v.second->isFlowVar())
             if (auto vv=dynamic_cast<VariableDAG*>
                 (makeDAG(v.first, v.second->name, v.second->type()).get()))
@@ -669,7 +661,7 @@ namespace MathDAG
     if (expressionCache.exists(valueId))
       return expressionCache[valueId];
 
-    if (!VariableValue::isValueId(valueId))
+    if (!isValueId(valueId))
       throw runtime_error("Invalid valueId: "+valueId);
     assert(minsky.variableValues.count(valueId));
     auto vv=minsky.variableValues[valueId];
@@ -677,6 +669,7 @@ namespace MathDAG
     if (type==VariableType::constant)
       {
         NodePtr r(new ConstantDAG(vv->init));
+        r->result=vv;
         expressionCache.insert(valueId, r);
         return r;
       }
@@ -705,7 +698,7 @@ namespace MathDAG
       {
         assert(op.portsSize()==2);
         NodePtr expr;
-        if (op.ports(1).lock()->wires().size()==0 || !(expr=getNodeFromWire(*op.ports(1).lock()->wires()[0])))
+        if (op.ports(1).lock()->wires().empty() || !(expr=getNodeFromWire(*op.ports(1).lock()->wires()[0])))
           op.throw_error("derivative not wired");
         try
           {
@@ -737,7 +730,7 @@ namespace MathDAG
             r->arguments.emplace_back();
             for (auto& i: uf->symbolNames())
               {
-                auto vv=minsky.variableValues.find(VariableValue::valueId(op.group.lock(), i));
+                auto vv=minsky.variableValues.find(valueId(op.group.lock(), i));
                 if (vv!=minsky.variableValues.end())
                   {
                     r->arguments.back().emplace_back(makeDAG(vv->first,vv->second->name,vv->second->type()));
@@ -755,7 +748,7 @@ namespace MathDAG
     for (unsigned i=1; i<sw.portsSize(); ++i)
       {
         auto& w=sw.ports(i).lock()->wires();
-        if (w.size()==0)
+        if (w.empty())
           {
             minsky.displayErrorItem(sw);
             throw error("input port not wired");
@@ -804,8 +797,7 @@ namespace MathDAG
         ev.emplace_back(EvalOpPtr(new TensorEval(result, make_shared<EvalCommon>(), chain.back())));
         return result;
       }
-    else
-      return rhs->addEvalOps(ev,result);
+    return rhs->addEvalOps(ev,result);
   }
 
   
@@ -813,19 +805,17 @@ namespace MathDAG
   {
     auto r=make_shared<LockDAG>(l);
     expressionCache.insert(l,r);
-    if (auto ravel=l.ravelInput())
+    auto ravel=l.ravelInput();
+    if (ravel && l.locked())
       {
-        if (l.locked())
-          {
-            if (auto p=ravel->ports(1).lock())
-              if (!p->wires().empty())
-                r->rhs=getNodeFromWire(*p->wires()[0]);
-          }
-        else
-          if (auto p=l.ports(1).lock())
-            if (!p->wires().empty())
-              r->rhs=getNodeFromWire(*p->wires()[0]);
+        if (auto p=ravel->ports(1).lock())
+          if (!p->wires().empty())
+            r->rhs=getNodeFromWire(*p->wires()[0]);
       }
+    else
+      if (auto p=l.ports(1).lock())
+        if (!p->wires().empty())
+          r->rhs=getNodeFromWire(*p->wires()[0]);
     return r;
   }
 
@@ -838,32 +828,28 @@ namespace MathDAG
           {
             if (expressionCache.exists(*o))
               return expressionCache[*o];
-            else
-              // we're wired to an operation
-              return makeDAG(*o);
+            // we're wired to an operation
+            return makeDAG(*o);
           }
-        else if (auto v=item.variableCast())
+        if (auto v=item.variableCast())
           {
             if (expressionCache.exists(*v))
               return expressionCache[*v];
-            else
-              if (v && v->type()!=VariableBase::undefined) 
-                // we're wired to a variable
-                return makeDAG(*v);
+            if (v && v->type()!=VariableBase::undefined) 
+              // we're wired to a variable
+              return makeDAG(*v);
           }
         else if (auto s=dynamic_cast<SwitchIcon*>(&item))
           {
             if (expressionCache.exists(*s))
               return expressionCache[*s];
-            else
-              return makeDAG(*s);
+            return makeDAG(*s);
           }
         else if (auto l=dynamic_cast<Lock*>(&item))
           {
             if (expressionCache.exists(*l))
               return expressionCache[*l];
-            else
-              return makeDAG(*l);
+            return makeDAG(*l);
           }
       }
     return {};
@@ -874,7 +860,7 @@ namespace MathDAG
     NodePtr r;
     if (expressionCache.exists(v))
       return dynamic_pointer_cast<VariableDAG>(expressionCache[v]);
-    else if (v.type()!=VariableBase::undefined) r=makeDAG(const_cast<VariableBase&>(v));
+    if (v.type()!=VariableBase::undefined) r=makeDAG(const_cast<VariableBase&>(v));
     return dynamic_pointer_cast<VariableDAG>(r);
   }         
 
@@ -1013,7 +999,7 @@ namespace MathDAG
       {
         string vid=i->valueId;
         integrals.push_back(Integral());
-        assert(VariableValue::isValueId(vid));
+        assert(isValueId(vid));
         assert(minsky.variableValues.count(vid));
         integrals.back().stock=minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
@@ -1064,10 +1050,10 @@ namespace MathDAG
     for (size_t c=1; c<godley.cols(); ++c)
       {
         string colName=trimWS(godley.cell(0,c));
-        if (VariableValue::uqName(colName).empty())
+        if (uqName(colName).empty())
           continue; // ignore empty Godley columns
         // resolve scope
-        colName=VariableValue::valueId(gi.group.lock(), colName);
+        colName=valueId(gi.group.lock(), colName);
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];

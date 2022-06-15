@@ -22,6 +22,8 @@
 #include "latexMarkup.h"
 #include "group.h"
 #include "selection.h"
+#include "lasso.h"
+#include "variableValue.h"
 #include "minsky_epilogue.h"
 
 using namespace std;
@@ -33,15 +35,14 @@ namespace minsky
   {
     string fcStr(const FlowCoef& fc)
     {
-      auto nm=VariableValue::uqName(fc.name);
+      auto nm=uqName(fc.name);
       if (fc.coef==1)
         return nm;
-      else if (fc.coef==-1)
+      if (fc.coef==-1)
         return "-"+nm;
-      else if (fc.coef==0)
+      if (fc.coef==0)
         return "";
-      else
-        return str(fc.coef)+nm;
+      return str(fc.coef)+nm;
     }
 
   // trim enclosing <i> tags
@@ -51,8 +52,7 @@ namespace minsky
         x=x.substr(3);
       if (x.length()>=4 && x.substr(x.length()-4)=="</i>")
         return x.substr(0,x.length()-4);
-      else
-        return x;
+      return x;
     }
 }
 
@@ -60,7 +60,7 @@ namespace minsky
   {
     s<<'"'<<g.getCell(0,0)<<'"';
     for (unsigned i=1; i<g.cols(); ++i)
-      s<<",\""<<trim(latexToPango(VariableValue::uqName(g.getCell(0,i))))<<'"';
+      s<<",\""<<trim(latexToPango(uqName(g.getCell(0,i))))<<'"';
     s<<'\n';
     if (g.doubleEntryCompliant)
       {
@@ -88,7 +88,7 @@ namespace minsky
     f<<"|}\n\\hline\n";
     f<<"Flows $\\downarrow$ / Stock Variables $\\rightarrow$";
     for (unsigned i=1; i<g.cols(); ++i)
-      f<<"&\\multicolumn{1}{|c|}{$"<<VariableValue::uqName(g.getCell(0,i))<<"$}";
+      f<<"&\\multicolumn{1}{|c|}{$"<<uqName(g.getCell(0,i))<<"$}";
 
     // asset class descriptors
     if (g.doubleEntryCompliant)

@@ -40,6 +40,7 @@ but any renamed attributes require bumping the schema number.
 
 #include <xsd_generate_base.h>
 #include "xml_common.xcd"
+//#include "plot.xcd"
 #include <vector>
 #include <string>
 
@@ -113,7 +114,7 @@ namespace schema2
     Optional<float> iconScale; // for handling legacy schemas
     // Plot specific fields
     Optional<bool> logx, logy, ypercent;
-    Optional<Plot::PlotType> plotType;
+    Optional<ecolab::Plot::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;
@@ -158,8 +159,14 @@ namespace schema2
       x=layout.x;
       y=layout.y;
       rotation=layout.rotation;
-      width.reset(new float(layout.width));
-      height.reset(new float(layout.height));
+      if (layout.width>=0)
+        width.reset(new float(layout.width));
+      else if (type=="PlotWidget")
+        width.reset(new float(150));
+      if (layout.height>=0)
+        height.reset(new float(layout.height));
+      else if (type=="PlotWidget")
+        height.reset(new float(150));
       if (layout.sliderBoundsSet)
         slider.reset(new Slider(layout.sliderVisible,layout.sliderStepRel,
                                 layout.sliderMin,layout.sliderMax,layout.sliderStep));

@@ -50,7 +50,7 @@ namespace minsky
     auto iVar=inVariables.begin();
     for (auto v: p)
       {
-        while ((*iVar)->inputWired() && iVar!=inVariables.end()) ++iVar;
+        while (iVar!=inVariables.end() && (*iVar)->inputWired()) ++iVar;
         if (iVar==inVariables.end()) break;
         flow[(*iVar)->vValue()->idx()]=v;
       }
@@ -66,6 +66,7 @@ namespace minsky
     MathDAG::SystemOfEquations system(minsky(), *this);
     ostringstream o;
     auto node=system.getNodeFromVar(*outVariables[0]);
+    if (!node) return "0";
     if (node->rhs)
       node->rhs->matlab(o);
     else
@@ -82,7 +83,8 @@ namespace minsky
       if (!i->inputWired())
         {
           if (r.str().size()>1) r<<",";
-          system.getNodeFromVar(*i)->matlab(r);
+          if (auto node=system.getNodeFromVar(*i))
+            node->matlab(r);
         }
     r<<")";
     return r.str();
@@ -110,8 +112,7 @@ namespace minsky
     // make new group owned by the top level group to prevent
     if (auto g=group.lock())
       return g->addGroup(copyUnowned());
-    else
-      return GroupPtr(); // do nothing if we attempt to clone the entire model
+    return GroupPtr(); // do nothing if we attempt to clone the entire model
   }
   
   GroupPtr Group::copyUnowned() const
@@ -128,11 +129,13 @@ namespace minsky
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
     map<IntOp*,bool> integrals;
-    for (auto& i: items)
+    // cloning IntOps mutates items, as intVars get inserted and removed
+    auto itemsCopy=items;
+    for (auto& i: itemsCopy)
       if (auto integ=dynamic_cast<IntOp*>(i.get()))
         integrals.emplace(integ, integ->coupled());
-    for (auto& i: items)
-      cloneMap[i.get()]=r->addItem(i->clone());
+    for (auto& i: itemsCopy)
+        cloneMap[i.get()]=r->addItem(i->clone());
     for (auto& i: groups)
       cloneMap[i.get()]=r->addGroup(i->copyUnowned());
     for (auto& w: wires) 
@@ -174,7 +177,7 @@ namespace minsky
     return r;
   }
 
-  ItemPtr Group::removeItem(const Item& it)
+  ItemPtr GroupItems::removeItem(const Item& it)
   {
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
@@ -317,8 +320,7 @@ namespace minsky
                 }
               else
                 // moving between unrelated groups
-                if (v->name()[0]==':' && VariableValue::valueId(destGroup,v->name()) !=
-                    VariableValue::valueId(origGroup,v->name()))
+                if (v->name()[0]==':' && valueId(destGroup,v->name()) != valueId(origGroup,v->name()))
                   // maintain linkage if possible, otherwise make local
                   v->name(v->name().substr(1));
             }
@@ -399,7 +401,7 @@ namespace minsky
         assert(iv->ports(1).lock()->input() && !iv->ports(1).lock()->multiWireAllowed());
         // firstly join wires that don't cross boundaries
         // determine if this is input or output var
-        if (iv->ports(1).lock()->wires().size()>0)
+        if (!iv->ports(1).lock()->wires().empty())
           {
             auto fromGroup=iv->ports(1).lock()->wires()[0]->from()->item().group.lock();
             if (fromGroup.get() == this)
@@ -477,7 +479,7 @@ namespace minsky
   VariablePtr Group::addIOVar()
   {
     VariablePtr v(VariableType::flow,
-                  VariableValue::uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
+                  uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
     addItem(v,true);
     createdIOvariables.push_back(v);
     v->rotation(rotation());
@@ -497,12 +499,11 @@ namespace minsky
     float w=0.5*iWidth()*z,h=0.5*iHeight()*z;
     if (w-right<dx)
       return IORegion::output;
-    else if (-w+left>dx)
+    if (-w+left>dx)
       return IORegion::input;
-    else if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
+    if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
       return IORegion::topBottom;  
-    else     
-      return IORegion::none;
+    return IORegion::none;
   }
 
   void Group::checkAddIORegion(const ItemPtr& x)
@@ -617,9 +618,10 @@ namespace minsky
         z=zoomFactor();     // recalculate zoomFactor because relZoom changed above. for ticket 1243
         double x0, x1, y0, y1;
         contentBounds(x0,y0,x1,y1);
-        double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);    
-        resizeItems(items,sx,sy);
-        resizeItems(groups,sx,sy);
+        double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);
+        sx=std::min(sx,sy);
+        resizeItems(items,sx,sx);
+        resizeItems(groups,sx,sx);
       }
     
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
@@ -669,7 +671,7 @@ namespace minsky
       return WirePtr();
 
     // check that multiple input wires are only to binary ops.
-    if (toP->wires().size()>=1 && !toP->multiWireAllowed())
+    if (!toP->wires().empty() && !toP->multiWireAllowed())
       return WirePtr();
 
     // check that a wire doesn't already exist connecting these two ports
@@ -691,12 +693,9 @@ namespace minsky
 
   bool Group::higher(const Group& x) const
   {
-    for (auto i: groups)
+    for (auto& i: groups)
       if (i.get()==&x) return true;
-    for (auto i: groups)
-      if (i->higher(x))
-        return true;
-    return false;
+    return any_of(groups.begin(), groups.end(), [&](const GroupPtr& i){return i->higher(x);});
   }
 
   unsigned Group::level() const
@@ -748,7 +747,7 @@ namespace minsky
     y1=-numeric_limits<float>::max();
 
     for (auto& i: items)
-      if (!i->ioVar())
+      if (!i->ioVar() && i->visibleWithinGroup())
         {
           if (i->left()<x0) x0=i->left();
           if (i->right()>x1) x1=i->right();
@@ -757,6 +756,7 @@ namespace minsky
         }  		
 			  
     for (auto& i: groups)
+      if (i->visible())
       {
         if (i->left()<x0) x0=i->left();
         if (i->right()>x1) x1=i->right();
@@ -766,7 +766,6 @@ namespace minsky
    
     // if there are no contents, result is not finite. In this case,
     // set the content bounds to a 10x10 sized box around the centroid of the I/O variables.
-
     if (x0==numeric_limits<float>::max())
       {
         float cx=0, cy=0;
@@ -882,6 +881,7 @@ namespace minsky
           i->zoom(i->x(), i->y(), factor);
         m_displayContentsChanged|=i->displayContentsChanged();
       }
+    //    minsky().canvas.requestRedraw();
   }
 
   ClickType::Type Group::clickType(float x, float y)
@@ -1075,7 +1075,7 @@ namespace minsky
   void Group::drawIORegion(cairo_t* cairo) const
   {
     cairo::CairoSave cs(cairo);
-    float left, right, z=zoomFactor(), es=edgeScale();
+    float left, right, z=zoomFactor();
     margins(left,right);    
     float y=notchY(inVariables), dy=topMargin*edgeScale();
     cairo_set_source_rgba(cairo,0,1,1,0.5);
@@ -1210,6 +1210,14 @@ namespace minsky
   return vector<string>(r.begin(),r.end());
 }
 
+  void Group::gotoBookmark_b(const Bookmark& b)
+  {
+    moveTo(b.x, b.y);
+    zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
+    // TODO add canvas::gotoBookmark to avoid dependency inversion
+    if (this==cminsky().canvas.model.get()) minsky().canvas.requestRedraw();
+  }
+  
   std::string Group::defaultExtension() const
   {
     if (findAny(&GroupItems::items, [](const ItemPtr& i){return dynamic_cast<Ravel*>(i.get());}))

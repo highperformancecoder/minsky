@@ -1,0 +1,13 @@
+@import '../../../../shared/src/lib/theme/variables.scss';
+
+#godley-cairo-canvas-wrapper {
+  height: 100vh;
+  width: 100vw;
+  border: 1px solid $toolbar-box;
+  overflow: scroll;
+}
+
+.godley-cairo-canvas {
+  height: 400vh;
+  width: 400vw;
+}

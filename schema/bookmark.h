@@ -25,11 +25,14 @@ namespace minsky
 {
   struct Bookmark
   {
-    float x, y, zoom;
+    float x=0, y=0, zoom=1;
     std::string name;
     Bookmark() {}
+    Bookmark(const std::string& n): name(n) {}
     Bookmark(float x, float y, float z,const std::string& n):
       x(x), y(y), zoom(z), name(n) {}
+    bool operator<(const Bookmark& x) const
+    {return name<x.name;}
   };
 }
 

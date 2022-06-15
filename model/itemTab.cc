@@ -38,11 +38,12 @@ namespace minsky
                                          if (itemSelector(*i)) 
                                            {		                                 
                                              itemVector.emplace_back(*i);
-                                             if (isnan((*i)->itemTabX) || isnan((*i)->itemTabY))
+                                             if (!(*i)->itemTabInitialised)
                                                {
                                                  // NANs used to indicate the position on tab has not yet been initialised
                                                  (*i)->itemTabX=(*i)->x();
                                                  (*i)->itemTabY=(*i)->y();
+                                                 (*i)->itemTabInitialised=true;
                                                }
                                            }
                                          return false;
@@ -62,7 +63,7 @@ namespace minsky
     return (colX(x)>=0 && rowY(y)>=0)? internal: background;
   }
       
-  void ItemTab::mouseDownCommon(float x, float y)
+  void ItemTab::mouseDown(float x, float y)
   {
     switch (clickType(x-offsx,y-offsy))
       {
@@ -70,8 +71,7 @@ namespace minsky
         itemFocus.reset();
         break;
       case internal:
-        itemFocus=itemAt(x-offsx,y-offsy);
-        if (itemFocus)
+        if (itemFocus=itemAt(x-offsx,y-offsy))
           {
             moveOffsX=x-itemFocus->itemTabX;
             moveOffsY=y-itemFocus->itemTabY;
@@ -130,7 +130,7 @@ namespace minsky
     if (row==0)
       cellPtr->setText(varAttrib[col]);
     else if (row-1<itemVector.size())
-      if (auto v=itemVector[row-1]->variableCast())
+      if (auto* v=itemVector[row-1]->variableCast())
         switch (col)
           {
           case 0:
@@ -158,7 +158,7 @@ namespace minsky
             cellPtr->setText(str(v->sliderMax));
             break;
           case 8:
-            if (v->dims().size())
+            if (!v->dims().empty())
               cellPtr->setText("<tensor>");
             else
               cellPtr->setText(str(v->value()));
@@ -204,7 +204,7 @@ namespace minsky
     }
   }
 
-  bool ItemTab::redraw(int, int, int width, int height)
+  bool ItemTab::redraw(int, int, int, int)
   {
     if (surface.get()) {
       populateItemVector();			               

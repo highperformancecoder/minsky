@@ -21,7 +21,8 @@
 
 #include "schema/assetClass.h"
 #include "classdesc_access.h"
-#include "variableValue.h"
+#include "constMap.h"
+#include "variableValues.h"
 #include "str.h"
 #include "flowCoef.h"
 
@@ -91,7 +92,8 @@ namespace minsky
   /// for checking shared columns between tables
   struct SharedColumnCheck: public GodleyAssetClass
   {
-
+    typedef GodleyAssetClass::AssetClass AssetClass;
+    
     /// asset type of previously seen column of this name
     std::map<string, AssetClass> colAssetType;
     /// indicates a column is shared between Godley tables
@@ -140,7 +142,7 @@ namespace minsky
             for (std::size_t col=1; col<g.data()[row].size(); ++col)
               {
                 FlowCoef fvc(g.data()[row][col]);
-                auto svName=trimWS(g.data()[0][col]);
+                auto svName=col<g.data()[0].size()? trimWS(g.data()[0][col]): "";
                 if (fvc.name.empty() || svName.empty()) continue;
                 fvc.name=g.valueId(fvc.name);
                 svName=g.valueId(svName);

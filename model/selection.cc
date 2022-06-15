@@ -18,6 +18,8 @@
 */
 
 #include "selection.h"
+#include "lasso.h"
+#include "plotWidget.h"
 #include "minsky_epilogue.h"
 using namespace std;
 

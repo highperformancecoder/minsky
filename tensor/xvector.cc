@@ -51,6 +51,18 @@ namespace civita
     }
   }
 
+  string anyStringCast(const boost::any& x)
+  {
+    try
+      {
+        return any_cast<string>(x);
+      }
+    catch (const bad_any_cast&)
+      {
+        return any_cast<const char*>(x);
+      }
+  }
+  
   bool XVector::operator==(const XVector& x) const
   {
     if (dimension.type!=x.dimension.type || name!=x.name ||
@@ -63,16 +75,8 @@ namespace civita
         switch (dimension.type)
           {
           case Dimension::string:
-            try
-              {
-                if (any_cast<string>(*i)!=any_cast<string>(*j))
-                  return false;
-              }
-            catch (const bad_any_cast&)
-              {
-                if (strcmp(any_cast<const char*>(*i), any_cast<const char*>(*j))!=0)
-                  return false;
-              }
+            if (anyStringCast(*i)!=anyStringCast(*j))
+              return false;
             break;
           case Dimension::value:
             if (any_cast<double>(*i)!=any_cast<double>(*j))
@@ -82,8 +86,6 @@ namespace civita
             if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
               return false;
             break;
-          default:
-            throw error("unknown dimension type");
           }
       }
     return true;
@@ -94,7 +96,7 @@ namespace civita
     V::push_back(anyVal(dimension, s));
   }
 
-  boost::any anyVal(const Dimension& dim, const std::string& s)
+  boost::any anyVal(const Dimension& dim, std::string s)
   {
     switch (dim.type)
       {
@@ -107,8 +109,6 @@ namespace civita
       case Dimension::time:
         {
           string::size_type pq;
-          static regex screwyDates{R"(%([mdyY])[^%]%([mdyY])[^%]%([mdyY]))"};
-          smatch m;
           if ((pq=dim.units.find("%Q"))!=string::npos)
             {
               // year quarter format expected. Takes the first %Y (or
@@ -130,68 +130,60 @@ namespace civita
                 throw error("invalid quarter %d",quarter);
               return ptime(date(year, quarterMonth[quarter-1], 1));
             }
-          else if (regex_match(dim.units, m, screwyDates)) // handle dates with 1 or 2 digits see Ravel ticket #35
+
+          smatch val;
+          runtime_error error("invalid date/time: "+s+" for format "+dim.units);
+                        
+          // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
+          // handle dates with 1 or 2 digits see Ravel ticket #35.
+          // Delegate to std::time_facet if time fields abut or more complicated formatting is requested
+          if (!regex_search(dim.units, val,regex{"%[^mdyYHMS]|%[mdyYHMS]%[mdyYHMS]"})) 
             {
-              static regex valParser{R"((\d+)\D(\d+)\D(\d+))"};
-              smatch val;
-              if (regex_match(s, val, valParser))
+              smatch match;
+              string format;
+              static regex thisTimeFormat{"%([mdyYHMS])"};
+              for (string formatStr=dim.units.empty()? "%Y %m %d %H %M %S": dim.units;
+                   regex_search(formatStr, match, thisTimeFormat);
+                   formatStr=match.suffix())
+                {format.push_back(match.str(1)[0]);}
+              static regex valParser{"(\\d+)"};
+              int day=1, month=1, year=0, hours=0, minutes=0, seconds=0;
+              int i=0;
+              for (; i<format.size() && regex_search(s, val, valParser); s=val.suffix(), ++i)
                 {
-                  int day=0, month=0, year=0;
-                  for (size_t i=1; i<val.size(); ++i)
+                  int v=stoi(val[1]); // can't throw, because val[i] must always be sequence of digits
+                  switch (format[i])
                     {
-                      
-                      int v;
-                      try
-                        {v=stoi(val[i]);}
-                      catch (...)
-                        {throw runtime_error(val[i].str()+" is not an integer");}
-                      switch (m.str(i)[0])
-                        {
-                        case 'd': day=v; break;
-                        case 'm': month=v; break;
-                        case 'y':
-                          if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
-                          year=v>68? v+1900: v+2000;
-                          break;
-                        case 'Y': year=v; break;
-                        }
+                    case 'd': day=v; break;
+                    case 'm': month=v; break;
+                    case 'y':
+                      if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
+                      year=v>68? v+1900: v+2000;
+                      break;
+                    case 'Y': year=v; break;
+                    case 'H': hours=v; break;
+                    case 'M': minutes=v; break;
+                    case 'S': seconds=v; break;
                     }
-                  return ptime(date(year,month,day));
                 }
-              else
-                throw runtime_error(s+" doesn't match "+dim.units);
+              if (!dim.units.empty() && i<format.size()) throw error;
+              return ptime(date(year,month,day),time_duration(hours,minutes,seconds));
             }
-          else if (!dim.units.empty())
-            {
-              istringstream is(s);
-              is.imbue(locale(is.getloc(), new time_input_facet(dim.units.c_str())));
-              ptime pt;
-              is>>pt;
-              if (pt.is_special())
-                throw error("invalid date/time: %s",s.c_str());
-              return pt;
-              // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
-              // strptime is not available on Windows alas
-              //              struct tm tm;
-              //              memset(&tm,0,sizeof(tm));
-              //              if (char* next=strptime(s.c_str(), dim.units.c_str(), &tm))
-              //                try
-              //                  {
-              //                    return ptime(date(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday), time_duration(tm.tm_hour,tm.tm_min,tm.tm_sec));
-              //                  }
-              //                catch (...)
-              //                  {
-              //                    cout << s << " " << tm.tm_year<<tm.tm_mon << " " << tm.tm_mday << endl;
-              //                    throw;
-              //                  }
-              //              else
-              //                throw error("invalid date/time: %s",s.c_str());
+
+          // default case - delegate to std::time_input_facet
+          istringstream is(s);
+          is.imbue(locale(is.getloc(), new time_input_facet(dim.units)));
+          ptime pt;
+          is>>pt;
+          if (pt.is_special())
+            throw error;
+          return pt;
+
+          // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
+          // strptime is not available on Windows alas
             }
-          else
-            return sToPtime(s);
-          break;
-        }
       }
+
     assert(false);
     return any(); // shut up compiler warning
   }
@@ -247,11 +239,11 @@ namespace civita
     string::size_type pq;
     if (auto s=any_cast<std::string>(&v))
       return *s;
-    else if (auto s=any_cast<const char*>(&v))
+    if (auto s=any_cast<const char*>(&v))
       return *s;
-    else if (auto s=any_cast<double>(&v))
+    if (auto s=any_cast<double>(&v))
       return to_string(*s);
-    else if (auto s=any_cast<ptime>(&v))
+    if (auto s=any_cast<ptime>(&v))
       if (format.empty())
         return to_iso_extended_string(*s);
       else if ((pq=format.find("%Q"))!=string::npos)
@@ -269,8 +261,7 @@ namespace civita
           auto tm=to_tm(s->date());
           if (pq<pY)
             return formatString(sformat,tm.tm_mon/3+1, tm.tm_year+1900);
-          else
-            return formatString(sformat, tm.tm_year+1900, tm.tm_mon/3+1);
+          return formatString(sformat, tm.tm_year+1900, tm.tm_mon/3+1);
         }
       else
         {
@@ -295,20 +286,19 @@ namespace civita
     auto dt=b-f;
     if (dt > year*5)
       return "%Y";
-    else if (dt > year)
+    if (dt > year)
       return "%b %Y";
-    else if (dt > month*6)
+    if (dt > month*6)
       return "%b";
-    else if (dt > month)
+    if (dt > month)
       return "%d %b";
-    else if (dt > day)
+    if (dt > day)
       return "%d %H:%M";
-    else if (dt > hours(1))
+    if (dt > hours(1))
       return "%H:%M";
-    else if (dt > minutes(1))
+    if (dt > minutes(1))
       return "%M:%S";
-    else
-      return "%s";
+    return "%s";
   }
   
   void XVector::imposeDimension()

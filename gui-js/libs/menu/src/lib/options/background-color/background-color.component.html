@@ -1,0 +1,27 @@
+<div class="grid">
+  <span class="title">Background Color</span>
+
+  <div class="background-wrapper">
+    <input
+      [colorPicker]="colorCtr.value"
+      [style.background]="colorCtr.value"
+      [style.color]="colorCtr.value"
+      [cpAlphaChannel]="'disabled'"
+      (colorPickerChange)="colorCtr.setValue($event)"
+      [formControl]="colorCtr"
+      [cpDialogDisplay]="'inline'"
+      [cpToggle]="true"
+      type="hidden"
+    />
+  </div>
+
+  <div class="background-buttons">
+    <button mat-raised-button class="btn ok-btn" (click)="closeWindow()">
+      Cancel
+    </button>
+
+    <button mat-raised-button class="btn ok-btn submit" (click)="onClickOk()">
+      Apply
+    </button>
+  </div>
+</div>

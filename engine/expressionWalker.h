@@ -71,6 +71,38 @@ namespace minsky
   {x.checkSameDims(y); auto tmp=x; tmp.units.clear(); return tmp;}
 }
 
+// preload these system headers here, to prevent them from being loaded into anonymous namespace
+#include <algorithm>
+#include <cctype>
+#include <cmath>
+#include <complex>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <deque>
+#include <exception>
+#include <functional>
+#include <iterator>
+#include <limits>
+#include <list>
+#include <map>
+#include <set>
+#include <stack>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+#   include <windows.h>
+#else
+#   include <sys/time.h>
+#   include <sys/types.h>
+#endif
+
+// load into anonymous namespace to reduce the number of linker symbols being exported
+namespace
+{
 namespace exprtk
 {
   namespace details
@@ -259,5 +291,6 @@ namespace exprtk
 #undef exprtk_define_binary_op
 #undef exprtk_define_binary_fun_op
 #undef exprtk_define_binary_fun_op_impl
+}
 }
 #endif

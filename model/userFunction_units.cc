@@ -31,7 +31,7 @@ namespace minsky
     {
       std::weak_ptr<CallableFunction> f;
       ExprTkCallableFunction(const std::weak_ptr<CallableFunction>& f): f(f) {}
-      UnitsExpressionWalker operator()(const std::vector<UnitsExpressionWalker>& x) {
+      UnitsExpressionWalker operator()(const std::vector<UnitsExpressionWalker>&) {
         // TODO (#1290) Actually call units checking on callable function
         return {};
       }
@@ -40,12 +40,11 @@ namespace minsky
 
   UnitsExpressionWalker timeUnit;
   bool UnitsExpressionWalker::check=true;
-  
   Units UserFunction::units(bool check) const
   {
     UnitsExpressionWalker::check=check;
     vector<UnitsExpressionWalker> args(argNames.size());
-    if (args.size()>0) args[0].units=m_ports[1]->units(check);
+    if (!args.empty()) args[0].units=m_ports[1]->units(check);
     if (args.size()>1) args[1].units=m_ports[2]->units(check);
     
     timeUnit.units=Units(cminsky().timeUnit);
@@ -68,7 +67,7 @@ namespace minsky
     for (auto& i: externalIds)
       {
         if (find(argNames.begin(), argNames.end(), i)!=argNames.end()) continue; // skip arguments
-        auto id=VariableValue::valueIdFromScope(group.lock(),i);
+        auto id=valueIdFromScope(group.lock(),i);
         auto v=minsky().variableValues.find(id);
         if (v!=minsky().variableValues.end())
           {

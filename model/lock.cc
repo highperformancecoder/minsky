@@ -20,9 +20,10 @@
 #include "lock.h"
 #include "wire.h"
 #include "selection.h"
+#include "lasso.h"
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
-using ecolab::cairo::CairoSave;
+using namespace std;
 
 namespace minsky
 {
@@ -34,16 +35,16 @@ namespace minsky
     tooltip="Double click to lock/unlock";
     iWidth(30);
     iHeight(30);
-    m_ports.emplace_back(new Port(*this,Port::noFlags));
+    m_ports.emplace_back(make_shared<Port>(*this));
     m_ports[0]->moveTo(15,0);
-    m_ports.emplace_back(new Port(*this, Port::inputPort));
+    m_ports.emplace_back(make_shared<InputPort>(*this));
     m_ports[1]->moveTo(-15,0);
   }
 
   Ravel* Lock::ravelInput() const
   {
     if (auto inputPort=ports(1).lock())
-      if (inputPort->wires().size())
+      if (!inputPort->wires().empty())
         if (auto fromPort=inputPort->wires()[0]->from())
           return dynamic_cast<Ravel*>(&fromPort->item());
     return nullptr;
@@ -55,32 +56,24 @@ namespace minsky
     if (locked())
       lockedState.clear();
     else
-      if (auto r=ravelInput())
+      if (auto* r=ravelInput())
         lockedState=r->getState();
+      else
+        throw_error("Locks can only be applied to Ravels");
   }
 
   void Lock::draw(cairo_t* cairo) const 
   {
-    SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
     float z=zoomFactor()*scaleFactor();
     float w=iWidth()*z, h=iHeight()*z;
 
-    // Windows flubs rendering the padlock icon correctly, so temporily replace by simple text representation
-//    {
-//      CairoSave cs(cairo);
-//      cairo_translate(cairo,-0.5*w,-0.5*h);
-//      cairo_scale(cairo, w/icon->width(), h/icon->height());
-//      icon->render(cairo);
-//    }
-    cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
-    if (locked())
-      {
-        cairo_move_to(cairo,-0.5*w,-0.5*h);
-        cairo_line_to(cairo,0.5*w,0.5*h);
-        cairo_move_to(cairo,-0.5*w,0.5*h);
-        cairo_line_to(cairo,0.5*w,-0.5*h);
-      }
-    cairo_stroke(cairo);
+    {
+      ecolab::cairo::CairoSave cs(cairo);
+      cairo_translate(cairo,-0.5*w,-0.5*h);
+      SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
+      cairo_scale(cairo, w/icon->width(), h/icon->height());
+      icon->render(cairo);
+    }
     
     if (mouseFocus)
       { 		  
@@ -99,7 +92,7 @@ namespace minsky
   {
     if (locked())
       {
-        if (auto r=ravelInput())
+        if (auto* r=ravelInput())
           if (auto p=r->ports(1).lock())
             {
               Units inputUnits=p->units(check);
@@ -107,7 +100,7 @@ namespace minsky
               size_t multiplier=1;
               // at this stage, gross up exponents by the handle size of each
               // reduced by product handles
-              for (auto& h: lockedState.handleStates)
+              for (const auto& h: lockedState.handleStates)
                 if (h.collapsed && h.reductionOp==ravel::Op::prod)
                   {
                     // find which handle number this is
@@ -127,8 +120,7 @@ namespace minsky
             }
         return {};
       }
-    else
-      return m_ports[1]->units(check);
+    return m_ports[1]->units(check);
   }
 
 }

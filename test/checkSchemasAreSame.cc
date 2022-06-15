@@ -25,6 +25,7 @@
 using namespace schema2;
 using namespace std;
 
+
 namespace minsky {void doOneEvent(bool) {}}
 namespace ecolab {Tk_Window mainWin=0;}
 

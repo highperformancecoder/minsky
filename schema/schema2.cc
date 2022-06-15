@@ -63,10 +63,19 @@ namespace schema2
     Schema1Layout(const vector<shared_ptr<schema1::Layout>>& x) {
       for (auto& i: x)
         {
-          // serialise to json, then deserialise to a UnionLayout
-          json_pack_t jbuf;
-          i->json_pack(jbuf,"");
-          json_unpack(jbuf,"",layout[i->id]);
+          if (auto ul=dynamic_cast<schema1::UnionLayout*>(i.get()))
+            layout[i->id]=*ul;
+          else
+            {
+              // TODO: I don't think this code will ever be executed?
+              // serialise to XML, then deserialise to a UnionLayout
+              ostringstream is;
+              xml_pack_t xmlPackBuf(is);
+              i->xml_pack(xmlPackBuf,"");
+              istringstream os(is.str());
+              xml_unpack_t xmlUnpackBuf(os);
+              xml_unpack(xmlUnpackBuf,"",layout[i->id]);
+            }
         }
     }
     template <class V, class O>

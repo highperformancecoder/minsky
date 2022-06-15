@@ -20,19 +20,24 @@
 #include "variableInstanceList.h"
 #include "group.h"
 #include "selection.h"
+#include "variableInstanceList.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 
 using namespace std;
 
 namespace minsky
 {
+  // should not really be used, but compiler requuires it
+  VariableInstanceList::VariableInstanceList(): model(*minsky().model) {}
+  
   VariableInstanceList::VariableInstanceList(Group& model, const string& valueId):
     model(model)
   {
     model.recursiveDo
       (&Group::items,
        [this,&valueId](const Items&, Items::const_iterator i) {
-         if (auto v=(*i)->variableCast())
+         if (const auto* v=(*i)->variableCast())
            if (v->valueId()==valueId)
              {
                bookmarks.emplace_back(this->model.x()-v->x()+50, this->model.y()-v->y()+50, v->zoomFactor(),

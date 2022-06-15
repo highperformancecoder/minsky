@@ -1,0 +1,44 @@
+<div (window:resize)="windowResize($event)">
+  <div *ngIf="loader" class="spinner">
+    <mat-spinner color="#ffa600" mode="indeterminate"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="router.url.includes('headless'); else container_with_toolbar">
+    <router-outlet></router-outlet>
+  </ng-container>
+
+  <ng-template #container_with_toolbar>
+    <minsky-header></minsky-header>
+    <div class="tabs-section">
+      <div class="tabs example-button-row">
+        <button (click)="changeTab(MainRenderingTabs.canvas)" class="wiring" mat-raised-button>
+          <label>Wiring</label>
+        </button>
+        <button (click)="changeTab(MainRenderingTabs.equations)" class="equations" mat-raised-button>
+          <label>Equations</label>
+        </button>
+        <button (click)="changeTab(MainRenderingTabs.parameters)" class="parameters" mat-raised-button>
+          <label>Parameters</label>
+        </button>
+        <button (click)="changeTab(MainRenderingTabs.variables)" class="variables" mat-raised-button>
+          <label>Variables</label>
+        </button>
+
+        <button (click)="changeTab(MainRenderingTabs.plot)" class="plot" mat-raised-button>
+          <label>Plots</label>
+        </button>
+
+        <button (click)="changeTab(MainRenderingTabs.godley)" class="godley" mat-raised-button>
+          <label>Godleys</label>
+        </button>
+
+        <span class="spacer"></span>
+
+        <button class="variables minsky-service" mat-raised-button (click)="startTerminal()">
+          Terminal
+        </button>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </ng-template>
+</div>

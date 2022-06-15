@@ -20,6 +20,8 @@
 
 #include "parameterTab.h"
 #include "selection.h"
+#include "lasso.h"
+#include "plotWidget.h"
 #include "minsky_epilogue.h"
 using namespace std;
 namespace minsky
@@ -39,7 +41,6 @@ namespace minsky
           }
         return *cellPtr;
       }
-    else
-      return ItemTab::cell(row,col);
+    return ItemTab::cell(row,col);
   }
 }

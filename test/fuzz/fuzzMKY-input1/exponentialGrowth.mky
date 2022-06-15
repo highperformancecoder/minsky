@@ -1,15 +1,16 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
-  <schemaVersion>2</schemaVersion>
+  <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.21.0-beta49</minskyVersion>
   <wires>
    <Wire>
     <id>35</id>
     <from>4</from>
     <to>1</to>
     <coords>
-     <float>66</float>
+     <float>64</float>
      <float>13</float>
-     <float>15.8898</float>
-     <float>29.7034</float>
+     <float>13.9714</float>
+     <float>29.6762</float>
      <float>64</float>
      <float>48</float>
     </coords>
@@ -19,10 +20,10 @@
     <from>0</from>
     <to>6</to>
     <coords>
-     <float>128</float>
+     <float>124.5</float>
      <float>57</float>
-     <float>199.247</float>
-     <float>19.0015</float>
+     <float>192.332</float>
+     <float>20.8227</float>
      <float>84</float>
      <float>22</float>
     </coords>
@@ -44,35 +45,49 @@
     <type>IntOp</type>
     <x>72</x>
     <y>57</y>
-    <zoomFactor>1</zoomFactor>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>0</int>
      <int>1</int>
      <int>2</int>
     </ports>
     <intVar>9</intVar>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>7</id>
     <type>Operation:multiply</type>
     <x>76</x>
     <y>13</y>
-    <zoomFactor>1</zoomFactor>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>4</int>
      <int>5</int>
      <int>6</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>9</id>
     <type>Variable:integral</type>
-    <x>111</x>
+    <x>109</x>
     <y>57</y>
-    <zoomFactor>1</zoomFactor>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>0</int>
      <int>8</int>
@@ -80,39 +95,93 @@
     <name>y</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>11</id>
     <type>VarConstant</type>
     <x>143</x>
     <y>0</y>
-    <zoomFactor>1</zoomFactor>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
+    <width>0</width>
+    <height>0</height>
     <ports>
      <int>10</int>
     </ports>
     <init>-0.1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-0.1</min>
      <max>-0.1</max>
      <step>0.01</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>34</id>
     <type>PlotWidget</type>
     <x>277</x>
     <y>75</y>
-    <zoomFactor>1</zoomFactor>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>150</width>
+    <height>150</height>
     <ports>
      <int>12</int>
      <int>13</int>
@@ -137,10 +206,102 @@
      <int>32</int>
      <int>33</int>
     </ports>
-    <width>150</width>
-    <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
+    <plotTabDisplay>true</plotTabDisplay>
+    <plotType>line</plotType>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <legendGeometry>
+     <legendLeft>0.1</legendLeft>
+     <legendTop>0.95</legendTop>
+     <legendFontSz>0.03</legendFontSz>
+    </legendGeometry>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+    </palette>
    </Item>
   </items>
   <groups>
@@ -154,9 +315,15 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
-   <maxWaitMS>100</maxWaitMS>
+   <timeUnit></timeUnit>
+   <tmax>INF</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

@@ -1,0 +1,28 @@
+@import '../../../../shared/src/lib/theme/common-style.scss';
+
+select {
+  width: 125px;
+}
+
+button {
+  margin: $margin;
+}
+
+.checkboxes {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  span {
+    label {
+      min-width: auto;
+      text-align: start;
+      margin-right: 5px;
+    }
+    input {
+      width: 10px;
+
+      margin-right: 10px;
+    }
+    display: flex;
+  }
+}

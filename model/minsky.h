@@ -20,6 +20,8 @@
 #ifndef MINSKY_H
 #define MINSKY_H
 
+#include "stringKeyMap.h"
+#include "intrusiveMap.h"
 #include "bookmark.h"
 #include "canvas.h"
 #include "clipboard.h"
@@ -31,6 +33,8 @@
 #include "godleyTab.h"
 #include "intrusiveMap.h"
 #include "latexMarkup.h"
+#include "variableValues.h"
+#include "canvas.h"
 #include "lock.h"
 #include "operation.h"
 #include "panopticon.h"
@@ -39,12 +43,10 @@
 #include "plotWidget.h"
 #include "rungeKutta.h"
 #include "saver.h"
-#include "selection.h"
-#include "version.h"
-#include "variable.h"
+#include "stringKeyMap.h"
 #include "variableTab.h"
-#include "variableValue.h"
-#include "wire.h"
+#include "variablePane.h"
+#include "version.h"
 
 #include <vector>
 #include <string>
@@ -54,8 +56,6 @@
 #include <ecolab.h>
 #include <xml_pack_base.h>
 #include <xml_unpack_base.h>
-using namespace ecolab;
-using namespace classdesc;
 
 namespace minsky
 {
@@ -64,11 +64,12 @@ namespace minsky
   using namespace civita;
   
   struct CallableFunction;
-
+  class VariableInstanceList;
+  
   class SaveThread;
   
   // handle the display of rendered equations on the screen
-  class EquationDisplay: public CairoSurface
+  class EquationDisplay: public RenderNativeWindow, public EventInterface
   {
     Minsky& m;
     double m_width=0, m_height=0;
@@ -79,7 +80,7 @@ namespace minsky
     double width() const {return m_width;}
     double height() const {return m_height;}
     EquationDisplay(Minsky& m): m(m) {}
-    EquationDisplay& operator=(const EquationDisplay& x) {CairoSurface::operator=(x); return *this;}
+    EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
 
@@ -104,6 +105,9 @@ namespace minsky
     MinskyExclude(): historyPtr(0) {}
     MinskyExclude(const MinskyExclude&): historyPtr(0) {}
     MinskyExclude& operator=(const MinskyExclude&) {return *this;}
+
+    /// record nativeWindows that have requested redrawing
+    std::set<RenderNativeWindow*> nativeWindowsToRedraw;
     
   protected:
     /// save history of model for undo
@@ -114,12 +118,20 @@ namespace minsky
      */
     std::deque<classdesc::pack_t> history;
     std::size_t historyPtr;
-
+    bool undone=false; //< flag indicating undo() was previous command 
   };
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  class Minsky: public Exclude<MinskyExclude>, public RungeKutta
+  struct Minsky_multipleEquities: public ecolab::TCLAccessor<Minsky,bool>
+  {
+    Minsky_multipleEquities(const std::string& name, ecolab::TCLAccessor<Minsky,bool>::Getter g,
+                            ecolab::TCLAccessor<Minsky,bool>::Setter s):
+      ecolab::TCLAccessor<Minsky,bool>(name,g,s) {}  
+  };
+
+  
+  class Minsky: public Exclude<MinskyExclude>, public RungeKutta, public Minsky_multipleEquities
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -132,18 +144,21 @@ namespace minsky
 
     Exclude<boost::posix_time::ptime> lastRedraw;
 
+    bool m_multipleEquities=false;    
     
   public:
-    EquationDisplay equationDisplay;
+    PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
     ParameterTab parameterTab;
     VariableTab variableTab;
     PlotTab plotTab;
     GodleyTab godleyTab;
-        // Allow multiple equity columns.
-    bool multipleEquities=false;    
-
+    
+    // Allow multiple equity columns.
+    bool multipleEquities() const {return m_multipleEquities;}
+    bool multipleEquities(const bool& m);
+    
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
     /// true if reset needs to be called prior to numerical integration
@@ -151,6 +166,7 @@ namespace minsky
     /// indicate model has been changed since last saved
     void markEdited() {
       flags |= is_edited | reset_needed | fullEqnDisplay_needed;
+      canvas.requestRedraw();
       canvas.model.updateTimestamp();
     }
 
@@ -163,8 +179,6 @@ namespace minsky
       }
     }
     /// @}
-
-    void step();  ///< step the equations (by n steps, default 1)
 
     bool resetIfFlagged() override {
       if (reset_flag())
@@ -196,11 +210,16 @@ namespace minsky
 
     /// find any duplicate column, and use it as a source column for balanceDuplicateColumns
     void importDuplicateColumn(GodleyTable& srcTable, int srcCol);
+    /// balance two Godley columns
+    void balanceColumns(const GodleyIcon& srcGodley, int srcCol, GodleyIcon& destGodley, int destCol) const;
+
     /// makes all duplicated columns consistent with \a srcTable, \a srcCol
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
-    Minsky(): equationDisplay(*this) {
+    Minsky():
+      ECOLAB_ACESSOR_INIT(Minsky, multipleEquities),
+      equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
       model->iHeight(std::numeric_limits<float>::max());
       model->iWidth(std::numeric_limits<float>::max());
@@ -210,12 +229,15 @@ namespace minsky
     GroupPtr model{new Group};
     Canvas canvas{model};
 
-    void clearAllMaps();
-
+    void clearAllMaps(bool clearHistory);
+    void clearAllMaps() {clearAllMaps(true);}
+    // for TCL use
+    void clearAllMapsTCL() {clearAllMaps(true);}
+    
     /// returns reference to variable defining (ie input wired) for valueId
     VariablePtr definingVar(const std::string& valueId) const;
 
-    void saveGroupAsFile(const Group&, const string& fileName) const;
+    static void saveGroupAsFile(const Group&, const string& fileName);
     void saveCanvasItemAsFile(const string& fileName) const
     {if (auto g=dynamic_cast<Group*>(canvas.item.get())) saveGroupAsFile(*g,fileName);}
 
@@ -230,7 +252,7 @@ namespace minsky
     void paste();
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
     
-    void insertGroupFromFile(const char* file);
+    void insertGroupFromFile(const string& file);
 
     void makeVariablesConsistent();
 
@@ -264,20 +286,23 @@ namespace minsky
     bool checkEquationOrder() const;
 
     
+    double lastT{0}; ///<previous timestep
+    double deltaT() const {return t-lastT;}
     void reset(); ///<resets the variables back to their initial values
+    std::vector<double> step();  ///< step the equations (by n steps, default 1)
 
     /// save to a file
     void save(const std::string& filename);
     /// load from a file
     void load(const std::string& filename);
 
-    void exportSchema(const char* filename, int schemaLevel=1);
+    void exportSchema(const std::string& filename, int schemaLevel=1);
 
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
 
     /// return the AEGIS assigned version number
-    static const char* minskyVersion;
+    static const std::string minskyVersion;
     std::string ecolabVersion() const {return VERSION;}
     std::string ravelVersion() const {return ravel::Ravel::version();}
 
@@ -286,6 +311,12 @@ namespace minsky
     unsigned maxHistory{100}; ///< maximum no. of history states to save
     int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvas during simulation
 
+    /// name of an auto save file
+    std::string autoSaveFile() const {return autoSaver? autoSaver->fileName: std::string();}
+    /// initialises auto saving
+    /// empty \a file to turn off autosave
+    void setAutoSaveFile(const std::string& file);
+    
     /// clear history
     void clearHistory() {history.clear(); historyPtr=0;}
     /// called periodically to ensure history up to date
@@ -294,16 +325,28 @@ namespace minsky
     /// push current model state onto history if it differs from previous
     bool pushHistory();
 
+    /// Executed after each interpreter command to maintain undo/redo stack, edited flag, autosaving etc.
+    /// @param command '.' separated command
+    /// @param nargs number of arguments
+    /// @return whether to save the command when recording events
+    bool commandHook(const std::string& command, unsigned nargs);
+
+    enum CmdData {no_command, is_const, is_setterGetter, generic};
+
+    /// return meta information on a given command
+    virtual CmdData getCommandData(const std::string& command) const {return generic;}
+    
     /// flag to indicate whether a TCL should be pushed onto the
     /// history stack, or logged in a recording. This is used to avoid
     /// movements being added to recordings and undo history
     bool doPushHistory=true;
 
-    /// restore model to state \a changes ago 
-    void undo(int changes=1);
+    /// restore model to state \a changes ago
+    /// @return index of current state in history
+    long undo(int changes=1);
 
     /// set a Tk image to render equations to
-    void renderEquationsToImage(const char* image);
+    void renderEquationsToImage(const std::string& image);
 
     /// Converts variable(s) named by \a name into a variable of type \a type.
     /// @throw if conversion is disallowed
@@ -317,15 +360,15 @@ namespace minsky
     bool inputWired(const std::string& name) const {return definingVar(name).get();}
 
     /// render canvas to a postscript file
-    void renderCanvasToPS(const char* filename) {canvas.renderToPS(filename);}
+    void renderCanvasToPS(const std::string& filename) {canvas.renderToPS(filename);}
     /// render canvas to a PDF file
-    void renderCanvasToPDF(const char* filename) {canvas.renderToPDF(filename);}
+    void renderCanvasToPDF(const std::string& filename) {canvas.renderToPDF(filename);}
     /// render canvas to an SVG file
-    void renderCanvasToSVG(const char* filename) {canvas.renderToSVG(filename);}
+    void renderCanvasToSVG(const std::string& filename) {canvas.renderToSVG(filename);}
     /// render canvas to a PNG image file
-    void renderCanvasToPNG(const char* filename) {canvas.renderToPNG(filename);}
+    void renderCanvasToPNG(const std::string& filename) {canvas.renderToPNG(filename);}
     /// render canvas to a EMF image file (Windows only)
-    void renderCanvasToEMF(const char* filename) {canvas.renderToEMF(filename);}
+    void renderCanvasToEMF(const std::string& filename) {canvas.renderToEMF(filename);}
     
     /// render all plots 
     void renderAllPlotsAsSVG(const string& prefix) const;
@@ -347,26 +390,90 @@ namespace minsky
     /// import a Vensim file
     void importVensim(const std::string&);
     
+    /// request all Godley table windows to redraw
+    void redrawAllGodleyTables();
+
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
 
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
-    /// request all Godley table windows to redraw
-    virtual void redrawAllGodleyTables() {}
 
     /// run callback attached to \a item
     virtual void runItemDeletedCallback(const Item&) {}
     
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL
-    virtual bool checkMemAllocation(std::size_t bytes) const {return true;}
+    virtual bool checkMemAllocation(size_t bytes) const {return true;}
 
-    /// initialises auto saving
-    /// empty \a file to turn off autosave
-    void setAutoSaveFile(const std::string& file);
+    /// returns amount of memory installed on system
+    /*static*/ std::size_t physicalMem() const;
     
+    vector<string> listFonts() const {
+      vector<string> r;
+#ifdef PANGO
+      PangoFontFamily **families;
+      int num;
+      pango_font_map_list_families(pango_cairo_font_map_get_default(),
+                                   &families,&num);
+      for (int i=0; i<num; ++i)
+        r.push_back(pango_font_family_get_name(families[i]));
+      g_free(families);
+#endif
+      return r;
+    }
+
+    /// @{ the default used by Pango
+    std::string defaultFont() const;
+    std::string defaultFont(const std::string& x);
+    /// @}
+
+    /// @{ an extra scaling factor of Pango fonts
+    double fontScale() const;
+    double fontScale(double);
+    /// @}
+    
+    int numOpArgs(OperationType::Type o) const;
+    OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
+
+    void latex(const std::string& filename, bool wrapLaTeXLines);
+
+    void matlab(const std::string& filename) {
+      if (cycleCheck()) throw error("cyclic network detected");
+      ofstream f(filename);
+      MathDAG::SystemOfEquations(*this).matlab(f);
+    }
+
+    // for testing purposes
+    string latex2pango(const std::string& x) {return latexToPango(x.c_str());}
+
+    /// list of available operations
+    std::vector<std::string> availableOperations() const;
+    /// list of available variable types
+    std::vector<std::string> variableTypes() const;
+    /// return list of available asset classes
+    std::vector<std::string> assetClasses() const;
+
+    void autoLayout(); ///< auto layout current open group and recentre
+    void randomLayout(); ///< randomly layout current open group and recentre
+    /// reinitialises canvas to the group located in item
+    void openGroupInCanvas() {canvas.openGroupInCanvas(canvas.item);}
+    /// reinitialises canvas to the toplevel group
+    void openModelInCanvas() {canvas.openGroupInCanvas(model);}
+
+    /// supports navigation to all instances of current variable
+    std::shared_ptr<VariableInstanceList> variableInstanceList;
+    void listAllInstances();
+
+    std::map<std::string,std::weak_ptr<Item>> namedItems;
+    void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
+
+    /// trigger checkMem callback for testing purposes
+    bool triggerCheckMemAllocationCallback() const
+    {return checkMemAllocation(std::numeric_limits<size_t>::max());}
+
+    VariablePane variablePane;
   };
 
   /// global minsky object
