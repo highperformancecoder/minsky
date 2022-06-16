@@ -181,9 +181,9 @@ struct NoDataColumns: public std::exception
 struct DuplicateKey: public std::exception
 {
   std::string msg="Duplicate key";
-  DuplicateKey(const vector<string>& x) {
+  DuplicateKey(const vector<boost::any>& x) {
     for (auto& i: x)
-      msg+=":"+i;
+      msg+=":"+str(i);
   }
   const char* what() const noexcept override {return msg.c_str();}
 };
@@ -450,7 +450,7 @@ namespace minsky
   template <class P>
   void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec)
   {
-    typedef vector<string> Key;
+    typedef std::vector<std::string> Key;
     map<Key,string> lines;
     multimap<Key,string> duplicateLines;
     string buf;
@@ -521,10 +521,10 @@ namespace minsky
   {
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
-    typedef vector<string> Key;
-    map<Key,double> tmpData;
-    map<Key,int> tmpCnt;
-    vector<map<string,size_t>> dimLabels(spec.dimensionCols.size());
+    typedef vector<boost::any> Key;
+    map<Key,double,AnyVectorLess> tmpData;
+    map<Key,int,AnyVectorLess> tmpCnt;
+    vector<map<boost::any,size_t,AnyLess>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     Hypercube hc;
     vector<string> horizontalLabels;
@@ -576,7 +576,7 @@ namespace minsky
                     {
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
-                      key.push_back(*field);
+                      key.push_back(anyVal(hc.xvectors[i].dimension,*field));
                       try
                         {
                           if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
@@ -597,7 +597,7 @@ namespace minsky
                 for (size_t col=0; field != tok.end(); ++field, ++col)
                   {
                     if (tabularFormat)
-                      key.push_back(horizontalLabels[col]);
+                      key.push_back(anyVal(hc.xvectors[col].dimension,horizontalLabels[col]));
                     else if (col)
                       break; // only 1 value column, everything to right ignored
                     

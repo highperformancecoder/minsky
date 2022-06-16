@@ -41,10 +41,14 @@ namespace civita
   double diff(const boost::any& x, const boost::any& y);
   struct AnyLess
   {
-    bool operator()(const boost::any& x, const boost::any& y) const
-    {return diff(x,y)<0;}
+    bool operator()(const boost::any& x, const boost::any& y) const;
   };
-
+  struct AnyVectorLess
+  {
+    bool operator()(const std::vector<boost::any>& x, const std::vector<boost::any>& y)
+    {return std::lexicographical_compare(x.begin(),x.end(),y.begin(),y.end(),AnyLess());}
+  };
+  
   /// default parsing of a time string
   //  boost::posix_time::ptime sToPtime(const std::string& s);
 
