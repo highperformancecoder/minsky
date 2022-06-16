@@ -19,6 +19,8 @@ if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
+target=gui-js/dist/executables/minsky-$version.dmg
+
 # determine release or beta depending on the number of fields separated by '-' in the version string
 numFields=`echo $version|tr - ' '|wc -w`
 if [ $numFields -le 1 ]; then
@@ -66,6 +68,20 @@ rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 # due to the presence of -isystem /usr/local/lib, which is needed for other idiocies, libjson_spirit is not correctly rewritten by the above
 #rewrite_dylib /usr/local/lib/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
 #install_name_tool -change libjson_spirit.dylib @loader_path/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
+
+pushd gui-js
+npm run export:package:mac
+popd
+
+echo xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $target
+xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $target
+echo "Sleeping for a bit for software to be notarised"
+sleep 60
+xcrun stapler staple $target
+if [ $? -ne 0 ]; then
+    echo "Manually staple with:"
+    echo "xcrun stapler staple $target"
+fi
 
 exit
 
