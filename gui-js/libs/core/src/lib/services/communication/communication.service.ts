@@ -683,7 +683,7 @@ export class CommunicationService {
 
     if (
       isMainWindow &&
-      ((this.dialogRef && event.ctrlKey) || (this.dialogRef && event.altKey))
+      ((this.dialogRef && event.ctrlKey) || (this.dialogRef && event.altKey) || (this.dialogRef && event.metaKey))
     ) {
       // return when dialog is open anything is pressed with ctrl or alt
       return;
@@ -724,10 +724,11 @@ export class CommunicationService {
 
       if (
         !isKeyHandled &&
-        event.key.length === 1 &&
-        event.key.match(asciiRegex) &&
-        !event.altKey &&
-        !event.ctrlKey
+          event.key.length === 1 &&
+          event.key.match(asciiRegex) &&
+          !event.altKey &&
+          !event.ctrlKey &&
+          !event.metaKey
       ) {
         this.dialogRef = this.dialog.open(DialogComponent, {
           width: '600px',
