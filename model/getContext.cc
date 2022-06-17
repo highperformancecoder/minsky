@@ -86,7 +86,6 @@ namespace minsky
 
     impl=make_unique<ViewImpl>();
 
-    //[impl->cairoView setFrameOrigin: NSMakePoint(xoffs, -yoffs)];
     [impl->cairoView setFrameSize: NSMakeSize(width,height)];
     [impl->cairoView setWinfo: &winfo];
     [view addSubview: impl->cairoView];
@@ -96,7 +95,6 @@ namespace minsky
   
   void NSContext::requestRedraw()
   {
-    cout << "redraw requested"<<endl;
    [impl->cairoView setNeedsDisplay: true];
   }
 
@@ -106,12 +104,11 @@ namespace minsky
 -(void) drawRect: (NSRect)rect
 {
   if (winfo->getRenderingFlag()) return;
-  cout << "in drawRect"<<endl;
   auto context = [[NSGraphicsContext currentContext] CGContext];
   auto frame=[self frame];
   CGContextTranslateCTM(context,0,NSHeight(frame));
   CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
-  winfo->bufferSurface=make_shared<ecolab::cairo::Surface>(cairo_quartz_surface_create_for_cg_context(context, NSWidth(frame), NSHeight(frame)));
+  winfo->bufferSurface=make_shared<ecolab::cairo::Surface>(cairo_quartz_surface_create_for_cg_context(context, NSWidth(frame), NSHeight(frame)-20));
   winfo->draw();
   winfo->bufferSurface.reset();
 }
