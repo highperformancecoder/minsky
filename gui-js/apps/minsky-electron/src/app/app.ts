@@ -8,7 +8,7 @@ import {
   rendererAppURL,
 } from '@minsky/shared';
 import * as debug from 'debug';
-import { BrowserWindow, dialog, screen } from 'electron';
+import { BrowserWindow, Display, dialog, screen } from 'electron';
 import * as log from 'electron-log';
 import { join } from 'path';
 import { format } from 'url';
@@ -16,7 +16,7 @@ import { ApplicationMenuManager } from './managers/ApplicationMenuManager';
 import { CommandsManager } from './managers/CommandsManager';
 import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
-import { RestServiceManager } from './managers/RestServiceManager';
+import { RestServiceManager, callRESTApi} from './managers/RestServiceManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
 import { Utility } from './utility';
@@ -206,7 +206,7 @@ export default class App {
     //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
     // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
     // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-    App.application.commandLine.appendSwitch('force-device-scale-factor', '1');
+    App.application.commandLine.appendSwitch('force-device-scale-factor', callRESTApi("/minsky/canvas/scaleFactor").toString());
 
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data

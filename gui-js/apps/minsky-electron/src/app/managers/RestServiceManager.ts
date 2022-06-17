@@ -63,7 +63,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
 });
 
 // TODO refactor to use command and arguments separately
-function callRESTApi(command: string) {
+export function callRESTApi(command: string) {
   const {
     leftOffset,
     canvasWidth,
