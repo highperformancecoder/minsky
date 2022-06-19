@@ -281,7 +281,7 @@ namespace MathDAG
     ostream& matlab(ostream& o) const override  {return o<<"";} 
     void render(ecolab::cairo::Surface& surf) const override;
     std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={}) override;
-    int order(unsigned maxOrder) const override {return rhs->order(maxOrder-1)+1;}
+    int order(unsigned maxOrder) const override {return rhs? rhs->order(maxOrder-1)+1:0;}
     bool tensorEval(std::set<const Node*>&) const override {return true;}
     std::shared_ptr<Node> derivative(SystemOfEquations&) const override
     {lock.throw_error("derivative not defined for locked objects");}

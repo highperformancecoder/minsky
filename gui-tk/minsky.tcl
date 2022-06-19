@@ -731,6 +731,12 @@ proc getClipboard {} {
     return contents
 }
 
+proc getClipboard {} {
+    set contents ""
+    catch {clipboard get -type UTF8_STRING} contents
+    return contents
+}
+
 proc togglePaste {} {
     if {[getClipboard]==""} {
 	.menubar.edit entryconfigure "Paste" -state disabled

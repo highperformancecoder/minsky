@@ -618,9 +618,10 @@ namespace minsky
         z=zoomFactor();     // recalculate zoomFactor because relZoom changed above. for ticket 1243
         double x0, x1, y0, y1;
         contentBounds(x0,y0,x1,y1);
-        double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);    
-        resizeItems(items,sx,sy);
-        resizeItems(groups,sx,sy);
+        double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);
+        sx=std::min(sx,sy);
+        resizeItems(items,sx,sx);
+        resizeItems(groups,sx,sx);
       }
     
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
@@ -746,7 +747,7 @@ namespace minsky
     y1=-numeric_limits<float>::max();
 
     for (auto& i: items)
-      if (!i->ioVar())
+      if (!i->ioVar() && i->visibleWithinGroup())
         {
           if (i->left()<x0) x0=i->left();
           if (i->right()>x1) x1=i->right();
@@ -755,6 +756,7 @@ namespace minsky
         }  		
 			  
     for (auto& i: groups)
+      if (i->visible())
       {
         if (i->left()<x0) x0=i->left();
         if (i->right()>x1) x1=i->right();
@@ -764,7 +766,6 @@ namespace minsky
    
     // if there are no contents, result is not finite. In this case,
     // set the content bounds to a 10x10 sized box around the centroid of the I/O variables.
-
     if (x0==numeric_limits<float>::max())
       {
         float cx=0, cy=0;

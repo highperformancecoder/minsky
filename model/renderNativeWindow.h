@@ -46,6 +46,7 @@ namespace minsky
     void requestRedraw();
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
+    double scaleFactor() const;
   };
 } // namespace minsky
 

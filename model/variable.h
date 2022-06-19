@@ -102,6 +102,7 @@ namespace minsky
     /// reference to a controlling item - eg GodleyIcon, IntOp or a Group if an IOVar.
     classdesc::Exclude<std::weak_ptr<Item>> controller;
     bool visible() const override;
+    bool visibleWithinGroup() const override;
 
     const VariableBase* variableCast() const override {return this;}
     VariableBase* variableCast() override {return this;}

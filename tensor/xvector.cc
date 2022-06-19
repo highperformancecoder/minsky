@@ -96,7 +96,7 @@ namespace civita
     V::push_back(anyVal(dimension, s));
   }
 
-  boost::any anyVal(const Dimension& dim, const std::string& s)
+  boost::any anyVal(const Dimension& dim, std::string s)
   {
     switch (dim.type)
       {
@@ -109,8 +109,6 @@ namespace civita
       case Dimension::time:
         {
           string::size_type pq;
-          static regex screwyDates{R"(%([mdyY])[^%]%([mdyY])[^%]%([mdyY]))"};
-          smatch m;
           if ((pq=dim.units.find("%Q"))!=string::npos)
             {
               // year quarter format expected. Takes the first %Y (or
@@ -132,63 +130,60 @@ namespace civita
                 throw error("invalid quarter %d",quarter);
               return ptime(date(year, quarterMonth[quarter-1], 1));
             }
-          if (regex_match(dim.units, m, screwyDates)) // handle dates with 1 or 2 digits see Ravel ticket #35
+
+          smatch val;
+          runtime_error error("invalid date/time: "+s+" for format "+dim.units);
+                        
+          // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
+          // handle dates with 1 or 2 digits see Ravel ticket #35.
+          // Delegate to std::time_facet if time fields abut or more complicated formatting is requested
+          if (!regex_search(dim.units, val,regex{"%[^mdyYHMS]|%[mdyYHMS]%[mdyYHMS]"})) 
             {
-              static regex valParser{R"((\d+)\D(\d+)\D(\d+))"};
-              smatch val;
-              if (regex_match(s, val, valParser))
+              smatch match;
+              string format;
+              static regex thisTimeFormat{"%([mdyYHMS])"};
+              for (string formatStr=dim.units.empty()? "%Y %m %d %H %M %S": dim.units;
+                   regex_search(formatStr, match, thisTimeFormat);
+                   formatStr=match.suffix())
+                {format.push_back(match.str(1)[0]);}
+              static regex valParser{"(\\d+)"};
+              int day=1, month=1, year=0, hours=0, minutes=0, seconds=0;
+              int i=0;
+              for (; i<format.size() && regex_search(s, val, valParser); s=val.suffix(), ++i)
                 {
-                  int day=0, month=0, year=0;
-                  for (size_t i=1; i<val.size(); ++i)
+                  int v=stoi(val[1]); // can't throw, because val[i] must always be sequence of digits
+                  switch (format[i])
                     {
-                      
-                      int v;
-                      v=stoi(val[i]); // can't throw, because val[i] must always be sequence of digits
-                      switch (m.str(i)[0])
-                        {
-                        case 'd': day=v; break;
-                        case 'm': month=v; break;
-                        case 'y':
-                          if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
-                          year=v>68? v+1900: v+2000;
-                          break;
-                        case 'Y': year=v; break;
-                        }
+                    case 'd': day=v; break;
+                    case 'm': month=v; break;
+                    case 'y':
+                      if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
+                      year=v>68? v+1900: v+2000;
+                      break;
+                    case 'Y': year=v; break;
+                    case 'H': hours=v; break;
+                    case 'M': minutes=v; break;
+                    case 'S': seconds=v; break;
                     }
-                  return ptime(date(year,month,day));
                 }
-              throw runtime_error(s+" doesn't match "+dim.units);
+              if (!dim.units.empty() && i<format.size()) throw error;
+              return ptime(date(year,month,day),time_duration(hours,minutes,seconds));
             }
-          if (!dim.units.empty())
-            {
-              istringstream is(s);
-              is.imbue(locale(is.getloc(), new time_input_facet(dim.units)));
-              ptime pt;
-              is>>pt;
-              if (pt.is_special())
-                throw error("invalid date/time: %s",s.c_str());
-              return pt;
-              // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
-              // strptime is not available on Windows alas
-              //              struct tm tm;
-              //              memset(&tm,0,sizeof(tm));
-              //              if (char* next=strptime(s.c_str(), dim.units.c_str(), &tm))
-              //                try
-              //                  {
-              //                    return ptime(date(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday), time_duration(tm.tm_hour,tm.tm_min,tm.tm_sec));
-              //                  }
-              //                catch (...)
-              //                  {
-              //                    cout << s << " " << tm.tm_year<<tm.tm_mon << " " << tm.tm_mday << endl;
-              //                    throw;
-              //                  }
-              //              else
-              //                throw error("invalid date/time: %s",s.c_str());
+
+          // default case - delegate to std::time_input_facet
+          istringstream is(s);
+          is.imbue(locale(is.getloc(), new time_input_facet(dim.units)));
+          ptime pt;
+          is>>pt;
+          if (pt.is_special())
+            throw error;
+          return pt;
+
+          // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
+          // strptime is not available on Windows alas
             }
-          return sToPtime(s);
-          break;
-        }
       }
+
     assert(false);
     return any(); // shut up compiler warning
   }

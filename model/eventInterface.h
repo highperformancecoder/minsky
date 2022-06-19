@@ -34,7 +34,8 @@ namespace minsky
     virtual void mouseUp(float x, float y) {}
     virtual void mouseMove(float x, float y) {}
     virtual void zoom(double x, double y, double z) {}
-
+    /// move this so that (x,y) is centred
+    virtual void moveTo(float x, float y) {}
     
     /// handle key press over current itemFocus,
     /// @param keySym the X key sym code
@@ -42,7 +43,7 @@ namespace minsky
     /// @param state modifer state 1=shift, 2=caps lock, 4=ctrl, 8=alt
     /// @param x & y contain mouse coordinates
     /// @return true if event handled
-    virtual bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn)
+    virtual bool keyPress(int keySym, const std::string& utf8, int state, float x, float y)
     {return false;}
 
     /// @{ item or wire obtained by get*At() calls

@@ -63,7 +63,8 @@ export enum ClassType {
   Ravel = 'Ravel',
   Lock = 'Lock',
   Sheet = 'Sheet',
-  UserFunction = 'UserFunction',
+    UserFunction = 'UserFunction',
+    VariablePane = 'VariablePane',
 }
 
 export enum RecordingStatus {

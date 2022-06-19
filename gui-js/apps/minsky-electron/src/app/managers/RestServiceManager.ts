@@ -63,7 +63,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
 });
 
 // TODO refactor to use command and arguments separately
-function callRESTApi(command: string) {
+export function callRESTApi(command: string) {
   const {
     leftOffset,
     canvasWidth,
@@ -282,31 +282,17 @@ export class RestServiceManager {
         ipcMain.emit(events.ADD_RECENT_FILE, null, payload.filePath);
         break;
 
-      case commandsMapping.MOUSEMOVE_SUBCOMMAND:
-        stdinCommand = `${this.currentTab}/${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
-        break;
-
       case commandsMapping.MOVE_TO:
         stdinCommand = `${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
         break;
-
+        
+      case commandsMapping.MOUSEMOVE_SUBCOMMAND:
       case commandsMapping.MOVE_TO_SUBCOMMAND:
-        stdinCommand = `${this.currentTab}/${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
-        break;
-
       case commandsMapping.MOUSEDOWN_SUBCOMMAND:
-        // eslint-disable-next-line no-case-declarations
-        const actualMouseDownCmd =
-          this.currentTab === MainRenderingTabs.canvas
-            ? payload.command
-            : commandsMapping.MOUSEDOWN_FOR_OTHER_TABS;
-
-        stdinCommand = `${this.currentTab}/${actualMouseDownCmd} [${payload.mouseX}, ${payload.mouseY}]`;
-        break;
-
       case commandsMapping.MOUSEUP_SUBCOMMAND:
         stdinCommand = `${this.currentTab}/${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
         break;
+
 
       case commandsMapping.ZOOM_IN:
         stdinCommand = `${this.currentTab}/zoom [${payload.args.x}, ${payload.args.y}, ${payload.args.zoomFactor}]`;

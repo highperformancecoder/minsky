@@ -9,6 +9,7 @@ export * from './lib/edit-user-function/edit-user-function.component';
 export * from './lib/equations/equations.component';
 export * from './lib/find-all-instances/find-all-instances.component';
 export * from './lib/godley-widget-view/godley-widget-view.component';
+export * from './lib/variable-pane/variable-pane.component';
 export * from './lib/header/header.component';
 export * from './lib/import-csv/import-csv.component';
 export * from './lib/input-modal/input-modal.component';

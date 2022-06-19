@@ -1496,14 +1496,14 @@ namespace minsky
                        });
   }
 
-  size_t Minsky::physicalMem()
+  size_t Minsky::physicalMem() const
   {
 #if defined(__linux__)
     struct sysinfo s;
     sysinfo(&s);
     return s.totalram;
 #elif defined(WIN32)
-    MEMORYSTATUSEX s;
+    MEMORYSTATUSEX s{sizeof(MEMORYSTATUSEX)};
     GlobalMemoryStatusEx(&s);
     return s.ullTotalPhys;
 //#elif defined(__APPLE__)
@@ -1574,13 +1574,5 @@ namespace minsky
       autoSaver.reset(new BackgroundSaver(file));
   }
 
-  void Minsky::updateVariablePane() {
-    variablePane.clear();
-    for (auto& v: variableValues)
-      {
-        if (v.first.empty() || v.first.find("constant:")==0) continue; // ignore constants
-        variablePane.emplace_back(*v.second);
-      }
-  }
 }
 

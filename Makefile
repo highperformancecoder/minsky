@@ -99,7 +99,7 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o panopticon.o parameterTab.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variableNameRender.o windowInformation.o wire.o 
+MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o panopticon.o parameterTab.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
 ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
@@ -127,7 +127,7 @@ ifeq ($(HAVE_NODE),1)
 EXES+=gui-js/node-addons/minskyRESTService.node
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
+FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas
 #-fvisibility-inlines-hidden
 
 VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
@@ -164,8 +164,7 @@ ifdef MXE
 BOOST_EXT=-mt-x64
 EXE=.exe
 DL=dll
-FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
-# -flto
+FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
 else
 EXE=
 DL=so
@@ -414,3 +413,9 @@ compile_commands.json: Makefile
 
 clang-tidy: compile_commands.json
 	run-clang-tidy
+
+compile-ts:
+	cd gui-js && npx tsc | sed -e 's/\x1b\[[0-9;]*m//g'|sed -e 's/(\([0-9]*\),[0-9]*)/:\1/g'
+
+windows-package:
+	sh mkWindowsDist.sh

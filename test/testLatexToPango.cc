@@ -30,7 +30,7 @@ TEST(LaTeXToPango)
     {"x^{yy}z","<i>x<sup>yy</sup>z</i>"},
     {"x^\\mathtt{yy}z","<i>x<sup><tt>yy</tt></sup>z</i>"},
     {"x^{\\mathbf{yy}}z","<i>x<sup><b>yy</b></sup>z</i>"},
-    {"\\mathrm{xxx}", "<i><span style=\"normal\">xxx</span></i>"},
+    {"\\mathrm{xxx}", "<i>xxx</i>"},
     {"\\mathit{xxx}", "<i><i>xxx</i></i>"},
     {"\\mathcal{xxx}", "<i><i>xxx</i></i>"},
     {"x_yz", "<i>x<sub>y</sub>z</i>"},
@@ -46,7 +46,7 @@ TEST(LaTeXToPango)
      "<i><tt>a_b^y\\mathrm &lt;&gt;&amp;&apos;&quot;</tt></i>"},
     {"\\\"u","<i>ü</i>"},
     {"\\\"{u}","<i>ü</i>"},
-    {"a_\\mathrm1","<i>a<sub><span style=\"normal\">1</span></sub></i>"},
+    {"a_\\mathrm1","<i>a<sub>1</sub></i>"},
     {"a{bcd}","<i>abcd</i>"},
     {"a_1","<i>a<sub>1</sub></i>"},
   };

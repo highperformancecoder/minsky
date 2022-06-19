@@ -108,8 +108,12 @@ export class WindowManager {
     onCloseCallback?: (ev : Electron.Event) => void
   ): BrowserWindow {
     const window = WindowManager.createWindow(payload, onCloseCallback);
-    const url = this.getWindowUrl(payload.url);
-    window.loadURL(url);
+      // strip off leading #, as URL doesn't know how to handle it. Add dummy protocol and host
+      const url = new URL(payload.url[0]=='#'? payload.url.slice(1): payload.url,"http://localhost");
+      
+      url.searchParams.set('systemWindowId',WindowManager.getSystemWindowId(window).toString());
+      const relativeUrlString=(payload.url[0]=='#'?'#':'') +  url.pathname+'?'+url.searchParams.toString();
+      window.loadURL(this.getWindowUrl(relativeUrlString)); 
     return window;
   }
 

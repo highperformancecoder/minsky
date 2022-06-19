@@ -1,0 +1,25 @@
+<div
+  id="variable-pane-wrapper"
+  #variablePaneWrapper
+  (window:resize)="windowResize()"
+  >
+  <div class="selector-buttons">
+    <form name="variablePane">
+      <input type="checkbox" id="variablePane::flow" checked="true"
+             (click)="select('flow')"/>
+      <label for="variablePane::flow">Flows</label>
+      <input type="checkbox" id="variablePane::parameter" checked="true"
+             (click)="select('parameter')"/>
+      <label for="variablePane::parameter">Parameters</label>
+      <input type="checkbox" id="variablePane::stock" checked="true"
+             (click)="select('stock')"/>
+      <label for="variablePane::stock">Stocks</label>
+      <input type="checkbox" id="variablePane::integral" checked="true"
+             (click)="select('integral')"/>
+      <label for="variablePane::integral">Integrals</label>
+    </form>
+  </div>
+  <div id="variable-pane" class="variable-pane">
+    <p>&nbsp;</p>
+  </div>
+</div>

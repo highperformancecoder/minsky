@@ -233,6 +233,9 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     await this.electronService.sendMinskyCommandAndRender({
       command: `${commandsMapping.CANVAS_ITEM_SLIDER_STEP_REL} ${this.sliderStepRel.value}`,
     });
+    await this.electronService.sendMinskyCommandAndRender({
+      command: "/minsky/canvas/item/sliderBoundsSet true",
+    });
 
     this.closeWindow();
   }

@@ -12,7 +12,6 @@ export class VariableComponent {
     public communicationService: CommunicationService,
     private electronService: ElectronService
   ) {}
-
   createVariable(type: string) {
     if (this.electronService.isElectron) {
       let url = '';
@@ -39,5 +38,14 @@ export class VariableComponent {
         height: 650,
       });
     }
+  }
+    openVariablePane() {
+       this.electronService.ipcRenderer.send(events.CREATE_MENU_POPUP, {
+        title: 'Variables',
+           url: "#/headless/variable-pane",
+        width: 500,
+        height: 650,
+      });
+       
   }
 }

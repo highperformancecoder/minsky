@@ -19,7 +19,8 @@ import {
   PlotWidgetViewComponent,
   RenameAllInstancesComponent,
   VariablesComponent,
-  WiringComponent,
+  VariablePaneComponent,
+  WiringComponent,        
 } from '@minsky/ui-components';
 
 const routes: Routes = [
@@ -83,6 +84,10 @@ const routes: Routes = [
   {
     path: 'headless/find-all-instances',
     component: FindAllInstancesComponent,
+  },
+  {
+    path: 'headless/variable-pane',
+    component: VariablePaneComponent,
   },
   {
     path: 'headless/plot-widget-view',

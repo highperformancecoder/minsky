@@ -268,6 +268,10 @@ namespace minsky
 
     /// whether this item is visible on the canvas. 
     virtual bool visible() const;
+
+    /// whether this item is visible if the group is expended to display items.
+    virtual bool visibleWithinGroup() const;
+    
     
     /// whether this item is attached to a defining variable that is hidden
     virtual bool attachedToDefiningVar(std::set<const Item*>& visited) const;

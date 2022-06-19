@@ -561,6 +561,7 @@ namespace minsky
     {
       size_t d=dimension;
       if (d>=rank()) d=0;
+      if (!arg1 || arg1->hypercube().xvectors.size()<=d) return;
       auto& xv=arg1->hypercube().xvectors[d];
       function<double(double,size_t)> interpolate;
       

@@ -205,7 +205,7 @@ namespace
         if (redistribute) redistributeHandles();
       }
 #ifndef NDEBUG
-    if (state.empty())
+    if (static_cast<ravel::Ravel&>(*this) && state.empty())
       {
         auto d=hc.dims();
         assert(d.size()==rank());

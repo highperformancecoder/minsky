@@ -148,7 +148,7 @@ export class KeyBindingsManager {
       PageUp: 0xff55,
       PageDown: 0xff56,
       Tab: 0xff09,
-      BackTab: 0xfd05,
+      BackTab: 0xfe20,
       Escape: 0xff1b,
       Return: 0xff0d,
       KP_Enter: 0xff8d,

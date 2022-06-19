@@ -45,7 +45,7 @@
 #include "saver.h"
 #include "stringKeyMap.h"
 #include "variableTab.h"
-#include "variableNameRender.h"
+#include "variablePane.h"
 #include "version.h"
 
 #include <vector>
@@ -147,7 +147,7 @@ namespace minsky
     bool m_multipleEquities=false;    
     
   public:
-    EquationDisplay equationDisplay;
+    PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
     ParameterTab parameterTab;
@@ -408,7 +408,7 @@ namespace minsky
     virtual bool checkMemAllocation(size_t bytes) const {return true;}
 
     /// returns amount of memory installed on system
-    static std::size_t physicalMem();
+    /*static*/ std::size_t physicalMem() const;
     
     vector<string> listFonts() const {
       vector<string> r;
@@ -473,8 +473,7 @@ namespace minsky
     bool triggerCheckMemAllocationCallback() const
     {return checkMemAllocation(std::numeric_limits<size_t>::max());}
 
-    std::vector<VariableNameRender> variablePane;
-    void updateVariablePane();
+    VariablePane variablePane;
   };
 
   /// global minsky object

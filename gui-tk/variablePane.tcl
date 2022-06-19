@@ -1,55 +1,49 @@
+set checkButtons {}
+set varTypes {parameter flow integral stock}
+
 proc variablePane {} {
+    global varTypes checkButtons
     if {![winfo exists .variablePane]} {
         toplevel .variablePane
-        scrollbar .variablePane.scroll  -orient vertical -command variablePaneScroll
-        frame .variablePane.images
-        pack .variablePane.scroll .variablePane.images -side left -fill y
-        bind .variablePane <Enter> updateVariablePane
-        bind .variablePane <Leave> {set doUpdateVariablePane 1}
+        wm title .variablePane "Variables"
+        # selection buttons 
+        frame .variablePane.buttons
+        button .variablePane.buttons.all -text All -command {
+            foreach button $checkButtons {$button select}
+            minsky.variablePane.selection $varTypes
+            minsky.variablePane.update [.variablePane.canvas cget -width] [.variablePane.canvas cget -height]
+        }
+        pack .variablePane.buttons.all -side left
+        foreach type $varTypes {
+            label .variablePane.buttons.${type}Text -text $type
+            checkbutton .variablePane.buttons.$type -variable variablePaneButtons($type) -command "variablePaneButtonProc $type"
+            lappend checkButtons .variablePane.buttons.$type
+            .variablePane.buttons.$type select
+            pack .variablePane.buttons.$type .variablePane.buttons.${type}Text  -side left
+        }
+        pack .variablePane.buttons
+        image create cairoSurface variableImage -surface minsky.variablePane
+        label .variablePane.canvas -image variableImage -width 300 -height 1000
+        pack .variablePane.canvas -fill both -expand 1
+        bind .variablePane.canvas <Configure> {minsky.variablePane.update %w %h}
+        bind .variablePane <KeyPress-Shift_L> {minsky.variablePane.shift 1; .variablePane.canvas configure -cursor $panIcon}
+        bind .variablePane <KeyRelease-Shift_L> {minsky.variablePane.shift 0; .variablePane.canvas configure -cursor {}}
+        bind .variablePane.canvas <ButtonPress-1> {catch {minsky.variablePane.mouseDown %x %y}}
+        bind .variablePane.canvas <ButtonRelease-1> {minsky.variablePane.mouseUp %x %y}
+        bind .variablePane.canvas <B1-Motion> {minsky.variablePane.mouseMove %x %y}
     }
-    updateVariablePane
     raise .variablePane
+    updateVariablePane
 }
 
-set doUpdateVariablePane 1
-set variablePaneStart 0
-proc updateVariablePane {} {
-    global doUpdateVariablePane variablePaneStart
-    # <Enter> is triggered too often, so only do it the first time after a <Leave>
-    if {!$doUpdateVariablePane} return
-    set doUpdateVariablePane 0
-    foreach w [winfo children .variablePane.images] {destroy $w}
-    foreach i [image names] {
-        if [string match variableImage* $i] {
-            image delete $i
-        }
-    }
-    minsky.updateVariablePane
-    set h 0
-    set viewMax 0
-    for {set i $variablePaneStart} {$i<[minsky.variablePane.size]} {incr i} {
-        set surface [minsky.variablePane.@elem $i]
-        image create cairoSurface variableImage$i -surface $surface
-        label .variablePane.images.variableImage$i -image variableImage$i -width [$surface.width] -height [$surface.height]
-        incr h [expr [$surface.height]+3]
-        bind .variablePane.images.variableImage$i <Button-1> $surface.emplace
-        if {$h<[winfo screenheight .]} {
-            pack .variablePane.images.variableImage$i
-            set viewMax $h
-        }
-    }
-    if {$h>0} {
-        .variablePane.scroll set [expr double($variablePaneStart)/[minsky.variablePane.size]] [expr double($viewMax)/$h]
-    }
-}
+proc updateVariablePane {} {minsky.variablePane.update [winfo width .variablePane] [winfo height .variablePane]}
 
-proc variablePaneScroll {cmd args} {
-    global doUpdateVariablePane variablePaneStart
-    switch $cmd {
-        moveto {set variablePaneStart [expr int([lindex $args 0]*[minsky.variablePane.size])]}
-        scroll {incr variablePaneStart [lindex $args 0]}
+proc variablePaneButtonProc {type} {
+    global variablePaneButtons
+    if {$variablePaneButtons($type)} {
+        minsky.variablePane.select $type
+    } else {
+        minsky.variablePane.deselect $type
     }
-    if {$variablePaneStart<0} {set variablePaneStart 0}
-    set doUpdateVariablePane 1
     updateVariablePane
 }

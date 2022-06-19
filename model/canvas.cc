@@ -425,8 +425,8 @@ namespace minsky
       r->addItem(i);
     for (auto& i: selection.groups)
       r->addItem(i);
-    r->resizeOnContents();
     r->splitBoundaryCrossingWires();
+    r->resizeOnContents();
   }
 
   void Canvas::lockRavelsInSelection()
@@ -669,7 +669,13 @@ namespace minsky
                   if (v && v->type()==VariableType::parameter) 
                     existingParms.emplace(v->valueId(),v->init());
                 }
-		       
+
+                // blow up containe items so they appear in same relative locationsat parent scalefactor
+                auto scaleFactor=1/g->relZoom;
+                for (auto& i: g->items)
+                  i->moveTo((i->x()-g->x())*scaleFactor+g->x(), (i->y()-g->y())*scaleFactor+g->y());
+                for (auto& i: g->groups)
+                  i->moveTo((i->x()-g->x())*scaleFactor+g->x(), (i->y()-g->y())*scaleFactor+g->y());
                 p->moveContents(*g);
                 deleteItem();
                	    
