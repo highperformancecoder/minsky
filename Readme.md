@@ -30,10 +30,18 @@ To compile Minsky, you will need a suitable posix compliant system, [with a numb
 
 Notes on using the [REST Service](RESTService.md).
 
+## JS frontend debugging notes
+
+- `console.log` works on minsky-electron code
+- for minsky-web code, use `process.stdout.write`, which takes a single string argument
+- use `green(`*some string*`)` or `red(`*some string*`)` to colorise log output to make it easier to spot your messages. With console.log, you ony need to colourise the first argument.
+- enable front end debugging tools by setting `OPEN_DEV_TOOLS_IN_DEV_BUILD = true` in `libs/shared/src/lib/constants/constants.ts`
+
 ## Roadmap
 
-- Finalising the Malthus iteration, due end of August.
-- Starting the Say iteration.
-- Javascript implementation of Minsky in electron.
+
+- Javascript implementation of Minsky in electron. Almost complete, small number of tickets left before Graeber equivalent
+- Refactor Civita library into standalone library
+- Refactor Classdesc RESTProcess to generate Typescript API, and refactor Minsky JS frontend to use it
 - Emscripten classdesc descriptor to support Minsky in a browser.
 
