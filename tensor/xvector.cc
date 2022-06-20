@@ -148,7 +148,7 @@ namespace civita
                 {format.push_back(match.str(1)[0]);}
               static regex valParser{"(\\d+)"};
               int day=1, month=1, year=0, hours=0, minutes=0, seconds=0;
-              int i=0;
+              size_t i=0;
               for (; i<format.size() && regex_search(s, val, valParser); s=val.suffix(), ++i)
                 {
                   int v=stoi(val[1]); // can't throw, because val[i] must always be sequence of digits
