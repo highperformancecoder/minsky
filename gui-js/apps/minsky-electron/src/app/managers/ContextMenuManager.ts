@@ -607,12 +607,6 @@ export class ContextMenuManager {
       command: commandsMapping.CANVAS_ITEM_GET_EDITOR_MODE,
     })) as boolean;
 
-    console.log(
-      displayVariableChecked,
-      rowColButtonsChecked,
-      editorModeChecked
-    );
-
     const menuItems = [
       new MenuItem({
         label: 'Open Godley Table',

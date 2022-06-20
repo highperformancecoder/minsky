@@ -72,8 +72,6 @@ export function callRESTApi(command: string) {
     scaleFactor,
   } = WindowManager;
 
-  //console.log('In callRESTApi::', command, ' | Window Values: left offset = ', leftOffset, '| Canvas Dims =', canvasWidth, canvasHeight, '| ETO=', electronTopOffset, '| Scale Factor = ', scaleFactor);
-
   if (!command) {
     log.error('callRESTApi called without any command');
     return {};
@@ -187,7 +185,6 @@ export class RestServiceManager {
     // TODO:: Take into account Tab when merging commands
     if (payload.command === commandsMapping.MOUSEMOVE_SUBCOMMAND) {
       if (this.lastMouseMovePayload !== null) {
-        // console.log("Merging mouse move commands");
         this.lastMouseMovePayload.mouseX = payload.mouseX;
         this.lastMouseMovePayload.mouseY = payload.mouseY;
       } else {

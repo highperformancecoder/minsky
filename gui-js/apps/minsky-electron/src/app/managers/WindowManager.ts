@@ -222,20 +222,10 @@ export class WindowManager {
   }
 
   static onAppLayoutChanged(payload: AppLayoutPayload) {
-    console.log(green('Setting the offset and height width of canvas'));
 
     this.topOffset = Math.round(payload.offset.top);
     this.leftOffset = Math.round(payload.offset.left);
     this.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
-
-    console.log(
-      '🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀SF = ',
-      this.scaleFactor,
-      ' Menu bar height = ',
-      payload.offset.electronMenuBarHeight,
-      ' Offset Top=',
-      payload.offset.top
-    );
 
     this.electronTopOffset = Math.round(
       payload.offset.electronMenuBarHeight + payload.offset.top

@@ -55,7 +55,6 @@ export default class App {
 
   private static async initMinskyService() {
     const windowId = WindowManager.activeWindows.get(1).systemWindowId;
-    console.log('🚀🚀🚀🚀🚀' + green(` WindowId -> ${windowId}`));
     await RestServiceManager.startMinskyService();
   }
 
@@ -158,7 +157,6 @@ export default class App {
     // TODO: test it on Russell's machine
     // TODO: do the same thing for child windows (godley,plot)
     App.mainWindow.on('focus', async () => {
-      console.log(green('On Focus'));
       await CommandsManager.requestRedraw();
     });
 

@@ -267,9 +267,6 @@ export class ApplicationMenuManager {
         {
           label: 'Redraw',
           async click() {
-            console.log(
-              'File menu: Redraw: ' + commandsMapping.RENDER_FRAME_SUBCOMMAND
-            );
             await RestServiceManager.handleMinskyProcess({
               //command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
               command: commandsMapping.RENDER_FRAME_SUBCOMMAND,

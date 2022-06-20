@@ -229,8 +229,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       command: `${this.variableValuesSubCommand}/csvDialog/spec`,
     })) as Record<string, unknown>;
     this.initialDimensionNames = this.spec.dimensionNames as string[];
-
-    console.log('🚀 this.CSVDialogSpec', this.spec);
   }
 
   async parseLines() {
@@ -334,10 +332,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       separator,
       horizontalDimension,
     };
-    console.log(
-      '🚀 ~ file: import-csv.component.ts ~ line 327 ~ ImportCsvComponent ~ handleSubmit ~ spec',
-      spec
-    );
     const res = await this.electronService.sendMinskyCommandAndRender({
       command: `${
         commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV

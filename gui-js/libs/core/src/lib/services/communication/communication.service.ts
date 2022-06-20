@@ -273,7 +273,7 @@ export class CommunicationService {
 
     const currentDelay: number = 12 - (speed * 12) / (150 - 0);
 
-    this.delay = Math.round(Math.pow(10, currentDelay / 4));
+    this.delay = currentDelay? Math.round(Math.pow(10, currentDelay / 4)): 0;
   }
 
   private async stepSimulation() {
@@ -291,6 +291,11 @@ export class CommunicationService {
   }
 
   private startSimulation() {
+    this.syncRunUntilTime();
+    this.isSimulationOn=true;
+    this.simulate();
+  }
+  private simulate() {
     setTimeout(async () => {
       if (this.isSimulationOn) {
         const [
@@ -301,10 +306,9 @@ export class CommunicationService {
         })) as number[];
 
         this.updateSimulationTime(t, deltaT);
-
-        this.startSimulation();
+        this.simulate();
       }
-    }, this.delay || 1);
+    }, this.delay);
   }
 
   private async pauseSimulation() {
@@ -332,7 +336,6 @@ export class CommunicationService {
   }
 
   private updateSimulationTime(t: number, deltaT: number) {
-    this.syncRunUntilTime();
 
     this.t = t.toFixed(2);
 
@@ -701,8 +704,6 @@ export class CommunicationService {
       location: event.location,
     };
 
-    console.log(green("handleKeyDown "),event.key.charCodeAt(0)," command=",command);
-
     if (!isMainWindow) {
       await this.electronService.sendMinskyCommandAndRender(
         payload,
@@ -736,10 +737,6 @@ export class CommunicationService {
         });
 
         this.dialogRef.afterClosed().subscribe(async (multipleKeyString) => {
-          console.log(
-            '🚀 ~ file: communication.service.ts ~ line 691 ~ CommunicationService ~ this.dialogRef.afterClosed ~ multipleKeyString',
-            multipleKeyString
-          );
           this.dialogRef = null;
           await this.handleTextInputSubmit(multipleKeyString);
         });

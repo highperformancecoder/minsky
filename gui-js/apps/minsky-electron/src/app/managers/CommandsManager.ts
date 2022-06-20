@@ -154,7 +154,6 @@ export class CommandsManager {
     const id = await this.getCurrentItemId();
 
     const itemInfo: CanvasItem = { classType, value, id };
-    console.log(green(JSON5.stringify(itemInfo)));
     return itemInfo;
   }
 

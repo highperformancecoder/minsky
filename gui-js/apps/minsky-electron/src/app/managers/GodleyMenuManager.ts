@@ -251,7 +251,6 @@ export class GodleyMenuManager {
             await RestServiceManager.handleMinskyProcess({
               command: `${itemAccessor}/popup/cut`,
             });
-            console.log(green('here'));
           },
         },
         {
