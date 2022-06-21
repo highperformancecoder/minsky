@@ -576,10 +576,11 @@ namespace minsky
                     {
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
-                      key.push_back(anyVal(hc.xvectors[i].dimension,*field));
+                      key.push_back(anyVal(hc.xvectors[dim].dimension,*field));
                       try
                         {
-                          if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
+                          if (dimLabels[dim].emplace(anyVal(hc.xvectors[dim].dimension,*field),
+                                                     dimLabels[dim].size()).second)
                             hc.xvectors[dim].push_back(*field);
                         }
                       catch (...)
@@ -591,6 +592,8 @@ namespace minsky
                       dim++;
                     }
                     
+                cout << "row: "<<row<<" "<<"tmpData.size()="<<tmpData.size()<<" key[0]="<<str(key[0])<<endl;
+
                 if (field==tok.end())
                   throw NoDataColumns();
           
@@ -714,6 +717,13 @@ namespace minsky
                 assert(dimLabels.size()==dims.size());
                 for (int j=dims.size()-1; j>=0; --j)
                   {
+                    if (!dimLabels[j].count(i.first[j]))
+                      {
+                        cout<<"i.first="<<str(i.first[j])<<endl;
+                        for (auto& i: dimLabels[j])
+                          cout<<str(i.first)<<",";
+                        cout << endl;
+                      }
                     assert(dimLabels[j].count(i.first[j]));
                     idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
                   }
