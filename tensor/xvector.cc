@@ -65,23 +65,15 @@ namespace civita
 
   bool AnyLess::operator()(const boost::any& x, const boost::any& y) const
   {
-    try
-      {
-        return anyStringCast(x)<anyStringCast(y);
-      }
-    catch (const bad_any_cast&)
-      {
-        if (x.type().before(y.type()))
-          return true;
-        if (y.type().before(x.type()))
-          return false;
-        if (auto v=any_cast<double>(&x))
-          return *v<any_cast<double>(y);
-        if (auto t=any_cast<ptime>(&x))
-          return *t<any_cast<ptime>(y);
-        assert(!"unexpected any types compared");
-        throw; // shouldn't be here
-      }          
+    if (x.type().before(y.type()))
+      return true;
+    if (y.type().before(x.type()))
+      return false;
+    if (auto v=any_cast<double>(&x))
+      return *v<any_cast<double>(y);
+    if (auto t=any_cast<ptime>(&x))
+      return *t<any_cast<ptime>(y);
+    return anyStringCast(x)<anyStringCast(y);
   }
   
   bool XVector::operator==(const XVector& x) const
@@ -298,6 +290,16 @@ namespace civita
       return "";
   }
 
+  size_t anyHash(const boost::any& x)
+  {
+    if (auto v=any_cast<double>(&x))
+      return std::hash<double>()(*v);
+    if (auto t=any_cast<ptime>(&x))
+      return std::hash<size_t>()((*t-ptime()).ticks());
+    return std::hash<string>()(anyStringCast(x));
+  }
+
+  
   string XVector::timeFormat() const
   {
     if (dimension.type!=Dimension::time || empty()) return "";
