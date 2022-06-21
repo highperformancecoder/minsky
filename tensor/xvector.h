@@ -34,6 +34,7 @@ namespace civita
   /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
   std::string str(const boost::any&, const std::string& format="");
 
+  bool anyEqual(const boost::any& x, const boost::any& y);
   size_t anyHash(const boost::any&);
   
   /// return absolute difference between any elements

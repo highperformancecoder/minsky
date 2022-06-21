@@ -75,6 +75,16 @@ namespace civita
       return *t<any_cast<ptime>(y);
     return anyStringCast(x)<anyStringCast(y);
   }
+
+  bool anyEqual(const boost::any& x, const boost::any& y)
+  {
+    if (x.type()!=y.type()) return false;
+    if (auto v=any_cast<double>(&x))
+      return *v==any_cast<double>(y);
+    if (auto t=any_cast<ptime>(&x))
+      return *t==any_cast<ptime>(y);
+    return anyStringCast(x)==anyStringCast(y);
+  }
   
   bool XVector::operator==(const XVector& x) const
   {

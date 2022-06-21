@@ -179,8 +179,10 @@ namespace
   struct Any: public boost::any
   {
     Any()=default;
-    Any(const boost::any& x): boost::any(x) {}
+    Any(const boost::any& x): boost::any(x), hash(anyHash(x)) {}
     bool operator<(const Any& x) const {return AnyLess()(*this,x);}
+    bool operator==(const Any& x) const {return anyEqual(*this,x);}
+    size_t hash;
   };
 
   std::string str(const Any& x) {return minsky::str(static_cast<const boost::any&>(x));}
@@ -265,6 +267,25 @@ namespace
       if (!v[i].empty()) return false;
     return true;
   }
+}
+
+namespace std
+{
+  template <>
+  struct hash<Any>
+  {
+    size_t operator()(const Any& x) const {return x.hash;}
+  };
+  template <>
+  struct hash<vector<Any>>
+  {
+    size_t operator()(const vector<Any>& x) const {
+      size_t r=0;
+      for (auto& i: x) r^=i.hash;
+      return r;
+    }
+  };
+ 
 }
 
 void DataSpec::setDataArea(size_t row, size_t col)
@@ -531,9 +552,9 @@ namespace minsky
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
     typedef vector<Any> Key;
-    map<Key,double> tmpData;
-    map<Key,int> tmpCnt;
-    vector<map<Any, size_t>> dimLabels(spec.dimensionCols.size());
+    unordered_map<Key,double> tmpData;
+    unordered_map<Key,int> tmpCnt;
+    vector<unordered_map<Any, size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     Hypercube hc;
     vector<string> horizontalLabels;
@@ -601,7 +622,7 @@ namespace minsky
                       dim++;
                     }
                     
-                if (row%100==0)
+                if (row%10000==0)
                   cout << "row: "<<row<<" "<<"tmpData.size()="<<tmpData.size()<<" key[0]="<<str(key[0])<<endl;
 
                 if (field==tok.end())
@@ -727,13 +748,6 @@ namespace minsky
                 assert(dimLabels.size()==dims.size());
                 for (int j=dims.size()-1; j>=0; --j)
                   {
-                    if (!dimLabels[j].count(i.first[j]))
-                      {
-                        cout<<"i.first="<<str(i.first[j])<<endl;
-                        for (auto& i: dimLabels[j])
-                          cout<<str(i.first)<<",";
-                        cout << endl;
-                      }
                     assert(dimLabels[j].count(i.first[j]));
                     idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
                   }
