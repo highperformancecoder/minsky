@@ -174,22 +174,31 @@ struct SpaceSeparatorParser
   void reset() {}
 };
 
-struct NoDataColumns: public std::exception
-{
-  const char* what() const noexcept override {return "No data columns";}
-};
-struct DuplicateKey: public std::exception
-{
-  std::string msg="Duplicate key";
-  DuplicateKey(const vector<boost::any>& x) {
-    for (auto& i: x)
-      msg+=":"+str(i);
-  }
-  const char* what() const noexcept override {return msg.c_str();}
-};
-
 namespace
 {
+  struct Any: public boost::any
+  {
+    Any()=default;
+    Any(const boost::any& x): boost::any(x) {}
+    bool operator<(const Any& x) const {return AnyLess()(*this,x);}
+  };
+
+  std::string str(const Any& x) {return minsky::str(static_cast<const boost::any&>(x));}
+  
+  struct NoDataColumns: public std::exception
+  {
+    const char* what() const noexcept override {return "No data columns";}
+  };
+  struct DuplicateKey: public std::exception
+  {
+    std::string msg="Duplicate key";
+    DuplicateKey(const vector<Any>& x) {
+      for (auto& i: x)
+        msg+=":"+str(i);
+    }
+    const char* what() const noexcept override {return msg.c_str();}
+  };
+
   const size_t maxRowsToAnalyse=100;
   
   double quotedStoD(const string& s,size_t& charsProcd)
@@ -521,10 +530,10 @@ namespace minsky
   {
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
-    typedef vector<boost::any> Key;
-    map<Key,double,AnyVectorLess> tmpData;
-    map<Key,int,AnyVectorLess> tmpCnt;
-    vector<map<boost::any,size_t,AnyLess>> dimLabels(spec.dimensionCols.size());
+    typedef vector<Any> Key;
+    map<Key,double> tmpData;
+    map<Key,int> tmpCnt;
+    vector<map<Any, size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     Hypercube hc;
     vector<string> horizontalLabels;
@@ -564,7 +573,7 @@ namespace minsky
                     for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
                     dimLabels.emplace_back();
                     for (size_t i=0; i<horizontalLabels.size(); ++i)
-                      dimLabels.back()[horizontalLabels[i]]=i;
+                      dimLabels.back()[Any(horizontalLabels[i])]=i;
                   }
               }
             else if (row>=spec.nRowAxes())// in data section
