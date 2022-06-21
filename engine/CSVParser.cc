@@ -592,7 +592,8 @@ namespace minsky
                       dim++;
                     }
                     
-                cout << "row: "<<row<<" "<<"tmpData.size()="<<tmpData.size()<<" key[0]="<<str(key[0])<<endl;
+                if (row%100==0)
+                  cout << "row: "<<row<<" "<<"tmpData.size()="<<tmpData.size()<<" key[0]="<<str(key[0])<<endl;
 
                 if (field==tok.end())
                   throw NoDataColumns();

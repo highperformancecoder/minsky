@@ -159,7 +159,8 @@ namespace civita
           // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
           // handle dates with 1 or 2 digits see Ravel ticket #35.
           // Delegate to std::time_facet if time fields abut or more complicated formatting is requested
-          if (!regex_search(dim.units, val,regex{"%[^mdyYHMS]|%[mdyYHMS]%[mdyYHMS]"})) 
+          static regex nonStandardDateTimes{"%[^mdyYHMS]|%[mdyYHMS]%[mdyYHMS]"};
+          if (!regex_search(dim.units, val,nonStandardDateTimes)) 
             {
               smatch match;
               string format;
