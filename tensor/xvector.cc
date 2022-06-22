@@ -59,14 +59,10 @@ namespace civita
 
   string anyStringCast(const boost::any& x)
   {
-    try
-      {
-        return any_cast<string>(x);
-      }
-    catch (const bad_any_cast&)
-      {
-        return any_cast<const char*>(x);
-      }
+    if (auto s=any_cast<string>(&x))
+      return *s;
+    else
+      return any_cast<const char*>(x);
   }
 
   bool AnyLess::operator()(const boost::any& x, const boost::any& y) const
