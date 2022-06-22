@@ -198,9 +198,11 @@ namespace civita
               static regex valParser{"(\\d+)"};
               int day=1, month=1, year=0, hours=0, minutes=0, seconds=0;
               int i=0;
-              for (std::string ss=s; i<format.size() && regex_search(ss, val, valParser); ss=val.suffix(), ++i)
+              for (auto ss=s.c_str(); i<format.size(); ++i)
                 {
-                  int v=stoi(val[1]); // can't throw, because val[i] must always be sequence of digits
+                  for (; *ss && !isdigit(*ss); ++ss); // skip to next integer field
+                  if (!*ss) break;
+                  int v=strtol(ss, const_cast<char**>(&ss),10);
                   switch (format[i])
                     {
                     case 'd': day=v; break;

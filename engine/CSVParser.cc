@@ -624,7 +624,7 @@ namespace minsky
                       dim++;
                     }
                     
-                if (row%10000==0)
+                if (row%100000==0)
                   cout << "row: "<<row<<" "<<"tmpData.size()="<<tmpData.size()<<" key[0]="<<str(key[0])<<endl;
 
                 if (field==tok.end())
