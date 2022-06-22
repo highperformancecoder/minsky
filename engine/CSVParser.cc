@@ -558,12 +558,14 @@ namespace minsky
     bool tabularFormat=false;
     Hypercube hc;
     vector<string> horizontalLabels;
+    vector<AnyVal> anyVal;
 
     for (size_t i=0; i<spec.nColAxes(); ++i)
       if (spec.dimensionCols.count(i))
         {
           hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
           hc.xvectors.back().dimension=spec.dimensions[i];
+          anyVal.emplace_back(spec.dimensions[i]);
         }
     try
       {
@@ -591,6 +593,7 @@ namespace minsky
                     horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
                     hc.xvectors.emplace_back(spec.horizontalDimName);
                     hc.xvectors.back().dimension=spec.horizontalDimension;
+                    anyVal.emplace_back(spec.horizontalDimension);
                     for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
                     dimLabels.emplace_back();
                     for (size_t i=0; i<horizontalLabels.size(); ++i)
@@ -606,11 +609,10 @@ namespace minsky
                     {
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
-                      key.push_back(anyVal(hc.xvectors[dim].dimension,*field));
+                      key.push_back(anyVal[dim](*field));
                       try
                         {
-                          if (dimLabels[dim].emplace(anyVal(hc.xvectors[dim].dimension,*field),
-                                                     dimLabels[dim].size()).second)
+                          if (dimLabels[dim].emplace(anyVal[dim](*field), dimLabels[dim].size()).second)
                             hc.xvectors[dim].push_back(*field);
                         }
                       catch (...)
@@ -631,7 +633,7 @@ namespace minsky
                 for (size_t col=0; field != tok.end(); ++field, ++col)
                   {
                     if (tabularFormat)
-                      key.push_back(anyVal(hc.xvectors[col].dimension,horizontalLabels[col]));
+                      key.push_back(anyVal[col](horizontalLabels[col]));
                     else if (col)
                       break; // only 1 value column, everything to right ignored
                     
