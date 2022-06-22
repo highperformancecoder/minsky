@@ -27,8 +27,26 @@
 
 namespace civita
 {
+
   /// convert string rep to an any rep
-  boost::any anyVal(const Dimension&, std::string);
+  ///two phase caching data independent computation for ptime conversion 
+  class AnyVal
+  {
+    Dimension dim;
+    std::string format;
+    std::string::size_type pq;
+    enum TimeType {quarter, regular, time_input_facet} timeType=time_input_facet;
+    
+  public:
+    AnyVal()=default;
+    AnyVal(const Dimension& dim) {setDimension(dim);}
+    void setDimension(const Dimension&);
+    boost::any operator()(const std::string&) const;
+  };
+
+  /// convert string rep to an any rep
+  inline boost::any anyVal(const Dimension& dim, const std::string& s)
+  {return AnyVal(dim)(s);}
 
   /// \a format - can be any format string suitable for a
   /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
