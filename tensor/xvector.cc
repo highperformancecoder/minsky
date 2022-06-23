@@ -193,7 +193,7 @@ namespace civita
               smatch val;
               static regex valParser{"(\\d+)"};
               int day=1, month=1, year=0, hours=0, minutes=0, seconds=0;
-              int i=0;
+              size_t i=0;
               for (auto ss=s.c_str(); i<format.size(); ++i)
                 {
                   for (; *ss && !isdigit(*ss); ++ss); // skip to next integer field
@@ -204,7 +204,7 @@ namespace civita
                     case 'd': day=v; break;
                     case 'm': month=v; break;
                     case 'y':
-                      if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
+                      if (v>99) throw runtime_error(to_string(v)+" is out of range for %y");
                       year=v>68? v+1900: v+2000;
                       break;
                     case 'Y': year=v; break;

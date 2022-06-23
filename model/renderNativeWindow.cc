@@ -39,6 +39,15 @@ using namespace std;
 using namespace ecolab;
 
 #define FPS_PROFILING_ON
+#ifdef WIN32
+#include <windows.h>
+//#include <windowsx.h>
+//#include <wingdi.h>
+//#include <winuser.h>
+#undef NTDDI_VERSION
+#define NTDDI_VERSION NTDDI_WINBLUE
+#include <shellscalingapi.h>
+#endif
 
 namespace minsky
 {
@@ -147,4 +156,16 @@ namespace minsky
   {
     // TODO:: To be implemented... need to recreate child window
   }
+
+      double RenderNativeWindow::scaleFactor() const
+      {
+#ifdef WIN32
+        DEVICE_SCALE_FACTOR scaleFactor;
+        GetScaleFactorForMonitor(MonitorFromPoint(POINT{0,0}, MONITOR_DEFAULTTOPRIMARY), &scaleFactor);
+        return scaleFactor/100.0;
+#else
+        return 1;
+#endif
+      }
+
 } // namespace minsky
