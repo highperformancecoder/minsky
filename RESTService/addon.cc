@@ -104,7 +104,7 @@ struct RedrawThread: public thread
 #endif
     running=true;
     // sleep slightly to throttle requests on this service
-    this_thread::sleep_for(chrono::milliseconds(minsky::minsky().running? 300: 10));
+    this_thread::sleep_for(chrono::milliseconds(10));
     lock_guard<mutex> lock(redrawMutex);
     for (auto i: minsky::minsky().nativeWindowsToRedraw)
       try
@@ -205,6 +205,16 @@ Value RESTCall(const Napi::CallbackInfo& info)
         {
           if (redrawThread->running)
             this_thread::yield(); // yield to the render thread
+          else if (minsky::minsky().running)
+            { // in-thread rendering whilst simulation is running
+              for (auto& i: minsky::minsky().nativeWindowsToRedraw)
+                try
+                  {
+                    i->draw();
+                  }
+                catch(...) {}
+              minsky::minsky().nativeWindowsToRedraw.clear();
+            }
           else
             redrawThread.reset(new RedrawThread); // start a new render thread
         }

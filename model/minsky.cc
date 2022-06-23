@@ -929,7 +929,6 @@ namespace minsky
         godleyTab.requestRedraw();
         plotTab.requestRedraw();
         variableTab.requestRedraw();
-        parameterTab.requestRedraw();        
         lastRedraw=microsec_clock::local_time();
       }
 

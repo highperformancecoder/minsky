@@ -91,6 +91,7 @@ namespace minsky
   
   void RenderNativeWindow::requestRedraw()
   {
+    if (!enabled) return;
 #ifdef MAC_OSX_TK
     if (winInfoPtr.get()) winInfoPtr->requestRedraw();
 #else
