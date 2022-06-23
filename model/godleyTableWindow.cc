@@ -597,7 +597,9 @@ namespace minsky
         break;
       default:
         hoverRow=rowY(y);
+        if (hoverRow>0) hoverRow-=scrollRowStart-1;
         hoverCol=colX(x);
+        if (hoverCol>0) hoverCol-=scrollColStart-1;
         break;
       }
   }

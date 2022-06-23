@@ -204,11 +204,11 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
       command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/table/rows`,
     })) as number;
 
-    const stepX = this.godleyCanvasContainer.scrollHeight / cols;
-    const stepY = this.godleyCanvasContainer.scrollHeight / rows;
+    const stepX = this.godleyCanvasContainer.scrollHeight / (cols-1);
+    const stepY = this.godleyCanvasContainer.scrollHeight / (rows-1);
 
-    const currentStepX = Math.round(scrollLeft / stepX);
-    const currentStepY = Math.round(scrollTop / stepY);
+    const currentStepX = Math.round(scrollLeft / stepX)+1;
+    const currentStepY = Math.round(scrollTop / stepY)+1;
 
     await this.electronService.sendMinskyCommandAndRender({
       command: `${this.namedItemSubCommand}/scrollColStart ${currentStepX}`,
