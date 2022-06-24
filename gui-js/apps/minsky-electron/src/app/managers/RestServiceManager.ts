@@ -123,11 +123,11 @@ export class RestServiceManager {
         command: this.currentTab + '/enabled false',
       });
       this.currentTab = tab;
-      this.render = true;
+      //this.render = true;
       this.lastMouseMovePayload = null;
       this.lastModelMoveToPayload = null;
       this.lastZoomPayload = null;
-      this.handleMinskyProcess({
+      await this.handleMinskyProcess({
         command: commandsMapping.RENDER_FRAME_SUBCOMMAND,
       });
     }
@@ -351,8 +351,8 @@ export class RestServiceManager {
       if (payload.command === commandsMapping.RENDER_FRAME_SUBCOMMAND) {
         // Render called explicitly
         this.render = false;
-        callRESTApi(this.getRenderCommand());
-        return callRESTApi(this.getRequestRedrawCommand());
+        return callRESTApi(this.getRenderCommand());
+        //return callRESTApi(this.getRequestRedrawCommand());
         // TODO:: Check which of the above command's response we should return
       }
 

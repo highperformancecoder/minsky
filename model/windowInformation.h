@@ -97,7 +97,6 @@ namespace minsky
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
     void requestRedraw();
-    //    void blit(int x, int y, int width, int height);
     
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;

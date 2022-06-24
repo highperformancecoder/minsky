@@ -81,8 +81,9 @@ namespace minsky
     winInfoPtr.reset();
     winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight, scalingFactor, [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
-    surface->requestRedraw();
+    //requestRedraw();
     enabled=true;
+    draw();
   }
 
   void RenderNativeWindow::destroyFrame() {winInfoPtr.reset();}

@@ -54,13 +54,6 @@
 using namespace std;
 using namespace ecolab;
 
-//#define MINSKY_CANVAS_BACKGROUND_COLOR 0xee5a5add
-//#define MINSKY_CANVAS_BACKGROUND_COLOR_OTHER 0xee5add5a
-
-#define MINSKY_CANVAS_BACKGROUND_COLOR 0x00ffffff
-
-// TODO:: Child surface should be transparent --- or -- there has to be provision to set background color as FE has that option
-
 namespace minsky
 {
 
@@ -175,6 +168,8 @@ namespace minsky
         return 0;
       case WM_NCHITTEST:
         return HTTRANSPARENT;
+      case WM_ERASEBKGND:
+        return 0; // do nothing, to prevent ugly black flashes
       default:
         return DefWindowProc(hwnd, msg, wparam, lparam);
       }
@@ -282,8 +277,8 @@ namespace minsky
       throw runtime_error("Invalid window: " + to_string(parentWin));
 
     // TODO:: Do some sanity checks on dimensions
- 
-    childWindowId = XCreateSimpleWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, 0, MINSKY_CANVAS_BACKGROUND_COLOR);
+
+    childWindowId = XCreateWindow(display, parentWin, offsetLeft, offsetTop, childWidth, childHeight, 0, CopyFromParent, CopyFromParent, CopyFromParent, 0, nullptr);
     bufferWindowId = XCreatePixmap(display, parentWin, childWidth, childHeight, wAttr.depth);
     graphicsContext=XCreateGC(display, childWindowId, 0, nullptr);
     
