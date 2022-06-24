@@ -358,6 +358,7 @@ export class CommandsManager {
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
       url: `#/headless/edit-godley-title?title=${title || ''}&itemId=${itemId}`,
+      useContentSize: true,
       height: 100,
       width: 400,
     });
@@ -367,6 +368,7 @@ export class CommandsManager {
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley currency`,
       url: `#/headless/edit-godley-currency`,
+      useContentSize: true,
       height: 100,
       width: 400,
     });

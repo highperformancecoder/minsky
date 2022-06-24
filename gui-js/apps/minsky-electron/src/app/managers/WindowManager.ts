@@ -107,6 +107,7 @@ export class WindowManager {
     // eslint-disable-next-line @typescript-eslint/ban-types
     onCloseCallback?: (ev : Electron.Event) => void
   ): BrowserWindow {
+    console.log(payload);
     const window = WindowManager.createWindow(payload, onCloseCallback);
       // strip off leading #, as URL doesn't know how to handle it. Add dummy protocol and host
       const url = new URL(payload.url[0]=='#'? payload.url.slice(1): payload.url,"http://localhost");
