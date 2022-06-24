@@ -1,6 +1,7 @@
 import {
   availableOperations,
   commandsMapping,
+  electronMenuBarHeightForWindows,
   isWindows,
   normalizeFilePathForPlatform,
 } from '@minsky/shared';
@@ -642,7 +643,8 @@ export class ApplicationMenuManager {
           click() {
             WindowManager.createPopupWindowWithRouting({
               width: 500,
-              height: 450,
+              useContentSize: true,
+              height: 550+(isWindows()? electronMenuBarHeightForWindows:0),
               title: 'Preferences',
               url: `#/headless/menu/options/preferences`,
             });

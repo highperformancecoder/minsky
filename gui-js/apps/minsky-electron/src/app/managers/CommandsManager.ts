@@ -18,6 +18,7 @@ import { Utility } from '../utility';
 import { HelpFilesManager } from './HelpFilesManager';
 import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
+import {electronMenuBarHeightForWindows, isWindows } from '@minsky/shared';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<number, CanvasItem>();
@@ -359,7 +360,7 @@ export class CommandsManager {
       title: `Edit godley title`,
       url: `#/headless/edit-godley-title?title=${title || ''}&itemId=${itemId}`,
       useContentSize: true,
-      height: 100,
+      height: 100+(isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
     });
   }
@@ -369,7 +370,7 @@ export class CommandsManager {
       title: `Edit godley currency`,
       url: `#/headless/edit-godley-currency`,
       useContentSize: true,
-      height: 100,
+      height: 100+(isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
     });
   }
