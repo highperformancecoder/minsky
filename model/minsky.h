@@ -420,6 +420,7 @@ namespace minsky
       for (int i=0; i<num; ++i)
         r.push_back(pango_font_family_get_name(families[i]));
       g_free(families);
+      std::sort(r.begin(),r.end());
 #endif
       return r;
     }
