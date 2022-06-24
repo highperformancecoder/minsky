@@ -82,7 +82,6 @@ export class CommunicationService {
   private async syncRunUntilTime() {
     this.runUntilTime = (await this.electronService.sendMinskyCommandAndRender({
       command: commandsMapping.T_MAX,
-      render: false,
     })) as number;
   }
 
@@ -324,12 +323,10 @@ export class CommunicationService {
 
     const t = (await this.electronService.sendMinskyCommandAndRender({
       command: commandsMapping.T,
-      render: false,
     })) as number;
 
     const deltaT = (await this.electronService.sendMinskyCommandAndRender({
       command: commandsMapping.DELTA_T,
-      render: false,
     })) as number;
 
     this.updateSimulationTime(t, deltaT);
@@ -818,7 +815,6 @@ export class CommunicationService {
       this.availableOperations = {};
       const list = (await this.electronService.sendMinskyCommandAndRender({
         command: commandsMapping.AVAILABLE_OPERATIONS,
-        render: false,
       })) as string[];
 
       list.forEach((value) => {

@@ -49,7 +49,6 @@ export class EditUserFunctionComponent implements OnInit {
 
   private async updateFormValues() {
     const name = (await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_DESCRIPTION,
     })) as string;
 
@@ -58,13 +57,11 @@ export class EditUserFunctionComponent implements OnInit {
     this.name.setValue(name);
 
     const rotation = await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_ROTATION,
     });
     this.rotation.setValue(rotation);
 
     const expression = (await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_EXPRESSION,
     })) as string;
     this.expression.setValue(expression);

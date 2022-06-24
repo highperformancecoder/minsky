@@ -50,7 +50,6 @@ export class WiringComponent implements OnInit, OnDestroy {
     this.availableOperationsMapping = (await this.electronService.sendMinskyCommandAndRender(
       {
         command: commandsMapping.AVAILABLE_OPERATIONS_MAPPING,
-        render: false,
       }
     )) as Record<string, string[]>;
 

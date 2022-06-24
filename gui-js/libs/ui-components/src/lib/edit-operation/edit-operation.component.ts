@@ -49,26 +49,22 @@ export class EditOperationComponent implements OnInit {
 
   private async updateFormValues() {
     const type = (await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_TYPE,
     })) as string;
 
     this.itemType = type;
 
     const rotation = await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_ROTATION,
     });
     this.rotation.setValue(rotation);
 
     const axis = (await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_AXIS,
     })) as string;
     this.axis.setValue(axis);
 
     const arg = (await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_ARG,
     })) as number;
     this.argument.setValue(arg);

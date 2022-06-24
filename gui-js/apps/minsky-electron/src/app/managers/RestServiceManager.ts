@@ -5,7 +5,6 @@ import {
   MainRenderingTabs,
   MinskyProcessPayload,
   normalizeFilePathForPlatform,
-  USE_FRONTEND_DRIVEN_RENDERING,
 } from '@minsky/shared';
 import { dialog, ipcMain } from 'electron';
 import * as log from 'electron-log';
@@ -110,7 +109,7 @@ export class RestServiceManager {
   private static payloadDataQueue: Array<QueueItem> = [];
   private static runningCommand = false;
   private static isQueueEnabled = true;
-  private static render = true;
+  private static canvasReady=false;
   private static lastZoomPayload: MinskyProcessPayload = null;
   static availableOperationsMappings: Record<string, string[]> = {};
 
@@ -267,108 +266,96 @@ export class RestServiceManager {
   ): Promise<unknown> {
     let stdinCommand = null;
 
+    if (!this.canvasReady && this.getRenderCommand()) {
+      callRESTApi(this.getRenderCommand());
+      this.canvasReady=true;
+    }
+    
     switch (payload.command) {
-      case commandsMapping.LOAD:
-        stdinCommand = `${payload.command} ${payload.filePath}`;
-        this.render = true;
-        break;
+    case commandsMapping.LOAD:
+      stdinCommand = `${payload.command} ${payload.filePath}`;
+      break;
 
-      case commandsMapping.SAVE:
-        stdinCommand = `${payload.command} ${payload.filePath}`;
-        this.currentMinskyModelFilePath = payload.filePath;
-        ipcMain.emit(events.ADD_RECENT_FILE, null, payload.filePath);
-        break;
+    case commandsMapping.SAVE:
+      stdinCommand = `${payload.command} ${payload.filePath}`;
+      this.currentMinskyModelFilePath = payload.filePath;
+      ipcMain.emit(events.ADD_RECENT_FILE, null, payload.filePath);
+      break;
 
-      case commandsMapping.MOVE_TO:
-        stdinCommand = `${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
-        break;
+    case commandsMapping.MOVE_TO:
+      stdinCommand = `${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
+      break;
         
-      case commandsMapping.MOUSEMOVE_SUBCOMMAND:
-      case commandsMapping.MOVE_TO_SUBCOMMAND:
-      case commandsMapping.MOUSEDOWN_SUBCOMMAND:
-      case commandsMapping.MOUSEUP_SUBCOMMAND:
-        stdinCommand = `${this.currentTab}/${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
-        break;
-
-
-      case commandsMapping.ZOOM_IN:
-        stdinCommand = `${this.currentTab}/zoom [${payload.args.x}, ${payload.args.y}, ${payload.args.zoomFactor}]`;
-        break;
-
-      case commandsMapping.SET_GODLEY_ICON_RESOURCE:
-        // eslint-disable-next-line no-case-declarations
-        const godleyIconFilePath = normalizeFilePathForPlatform(
-          Utility.isDevelopmentMode()
-            ? `${join(__dirname, 'assets/godley.svg')}`
-            : `${join(process.resourcesPath, 'assets/godley.svg')}`
-        );
-        stdinCommand = `${payload.command} ${godleyIconFilePath}`;
-
-        break;
-
-      case commandsMapping.SET_GROUP_ICON_RESOURCE:
-        // eslint-disable-next-line no-case-declarations
-        const groupIconFilePath = normalizeFilePathForPlatform(
-          Utility.isDevelopmentMode()
-            ? `${join(__dirname, 'assets/group.svg')}`
-            : `${join(process.resourcesPath, 'assets/group.svg')}`
-        );
-
-        stdinCommand = `${payload.command} ${groupIconFilePath}`;
-        break;
-
-      case commandsMapping.SET_LOCK_ICON_RESOURCE:
-        // eslint-disable-next-line no-case-declarations
-        const lockIconFilePath = normalizeFilePathForPlatform(
-          Utility.isDevelopmentMode()
-            ? `${join(__dirname, 'assets/locked.svg')}`
-            : `${join(process.resourcesPath, 'assets/locked.svg')}`
-        );
-
-        // eslint-disable-next-line no-case-declarations
-        const unlockIconFilePath = normalizeFilePathForPlatform(
-          Utility.isDevelopmentMode()
-            ? `${join(__dirname, 'assets/unlocked.svg')}`
-            : `${join(process.resourcesPath, 'assets/unlocked.svg')}`
-        );
-
-        stdinCommand = `${payload.command} [${lockIconFilePath},${unlockIconFilePath}]`;
-        break;
-
-      case commandsMapping.REQUEST_REDRAW_SUBCOMMAND:
-        stdinCommand = this.getRequestRedrawCommand();
-        break;
-
-      default:
-        stdinCommand = payload.command;
-        break;
+    case commandsMapping.MOUSEMOVE_SUBCOMMAND:
+    case commandsMapping.MOVE_TO_SUBCOMMAND:
+    case commandsMapping.MOUSEDOWN_SUBCOMMAND:
+    case commandsMapping.MOUSEUP_SUBCOMMAND:
+      stdinCommand = `${this.currentTab}/${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
+      break;
+      
+      
+    case commandsMapping.ZOOM_IN:
+      stdinCommand = `${this.currentTab}/zoom [${payload.args.x}, ${payload.args.y}, ${payload.args.zoomFactor}]`;
+      break;
+      
+    case commandsMapping.SET_GODLEY_ICON_RESOURCE:
+      // eslint-disable-next-line no-case-declarations
+      const godleyIconFilePath = normalizeFilePathForPlatform(
+        Utility.isDevelopmentMode()
+          ? `${join(__dirname, 'assets/godley.svg')}`
+          : `${join(process.resourcesPath, 'assets/godley.svg')}`
+      );
+      stdinCommand = `${payload.command} ${godleyIconFilePath}`;
+      
+      break;
+      
+    case commandsMapping.SET_GROUP_ICON_RESOURCE:
+      // eslint-disable-next-line no-case-declarations
+      const groupIconFilePath = normalizeFilePathForPlatform(
+        Utility.isDevelopmentMode()
+          ? `${join(__dirname, 'assets/group.svg')}`
+          : `${join(process.resourcesPath, 'assets/group.svg')}`
+      );
+      
+      stdinCommand = `${payload.command} ${groupIconFilePath}`;
+      break;
+      
+    case commandsMapping.SET_LOCK_ICON_RESOURCE:
+      // eslint-disable-next-line no-case-declarations
+      const lockIconFilePath = normalizeFilePathForPlatform(
+        Utility.isDevelopmentMode()
+          ? `${join(__dirname, 'assets/locked.svg')}`
+          : `${join(process.resourcesPath, 'assets/locked.svg')}`
+      );
+      
+      // eslint-disable-next-line no-case-declarations
+      const unlockIconFilePath = normalizeFilePathForPlatform(
+        Utility.isDevelopmentMode()
+          ? `${join(__dirname, 'assets/unlocked.svg')}`
+          : `${join(process.resourcesPath, 'assets/unlocked.svg')}`
+      );
+      
+      stdinCommand = `${payload.command} [${lockIconFilePath},${unlockIconFilePath}]`;
+      break;
+      
+    case commandsMapping.REQUEST_REDRAW_SUBCOMMAND:
+      stdinCommand = this.getRequestRedrawCommand();
+      break;
+      
+    case commandsMapping.RENDER_FRAME_SUBCOMMAND:
+      stdinCommand = this.getRenderCommand();
+      break;
+      
+    default:
+      stdinCommand = payload.command;
+      break;
     }
     if (stdinCommand) {
       if (RecordingManager.isRecording) {
         RecordingManager.record(stdinCommand);
       }
 
-      if (payload.command === commandsMapping.RENDER_FRAME_SUBCOMMAND) {
-        // Render called explicitly
-        this.render = false;
-        return callRESTApi(this.getRenderCommand());
-        //return callRESTApi(this.getRequestRedrawCommand());
-        // TODO:: Check which of the above command's response we should return
-      }
-
-      const res = callRESTApi(stdinCommand);
-      const { render = true } = payload;
-
-      if ((USE_FRONTEND_DRIVEN_RENDERING && render) || this.render) {
-        // TODO:: Let us retire unused flags and clean the flow
-        const renderCommand = this.getRenderCommand();
-        if (renderCommand) {
-          callRESTApi(this.getRenderCommand());
-          callRESTApi(this.getRequestRedrawCommand());
-          this.render = false;
-        }
-      }
-      return res;
+      return callRESTApi(stdinCommand);
     }
     log.error('Command was null or undefined');
   }
@@ -426,15 +413,14 @@ export class RestServiceManager {
     const initPayload: MinskyProcessPayload = {
       command: commandsMapping.START_MINSKY_PROCESS,
       showServiceStartedDialog,
-      render: false,
     };
 
+    
     await scope.handleMinskyProcess(initPayload);
 
     const setGroupIconResource = async () => {
       const groupIconResourcePayload: MinskyProcessPayload = {
         command: commandsMapping.SET_GROUP_ICON_RESOURCE,
-        render: false,
       };
 
       await scope.handleMinskyProcess(groupIconResourcePayload);
@@ -443,7 +429,6 @@ export class RestServiceManager {
     const setGodleyIconResource = async () => {
       const godleyIconPayload: MinskyProcessPayload = {
         command: commandsMapping.SET_GODLEY_ICON_RESOURCE,
-        render: false,
       };
 
       await scope.handleMinskyProcess(godleyIconPayload);
@@ -452,7 +437,6 @@ export class RestServiceManager {
     const setLockIconResource = async () => {
       const lockIconPayload: MinskyProcessPayload = {
         command: commandsMapping.SET_LOCK_ICON_RESOURCE,
-        render: false,
       };
 
       await scope.handleMinskyProcess(lockIconPayload);

@@ -20,7 +20,6 @@ export interface MinskyProcessPayload {
   ctrl?: boolean;
   alt?: boolean;
   args?: Record<string, unknown>;
-  render?: boolean;
   location?: number;
 }
 

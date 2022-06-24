@@ -45,14 +45,12 @@ export class EditGroupComponent implements OnInit {
 
   private async updateFormValues() {
     const title = (await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_TITLE,
     })) as string;
 
     this.name.setValue(title);
 
     const rotation = await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_ROTATION,
     });
     this.rotation.setValue(rotation);

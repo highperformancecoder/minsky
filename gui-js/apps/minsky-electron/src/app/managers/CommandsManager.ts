@@ -782,7 +782,6 @@ export class CommandsManager {
   > {
     const availableOperations = (await RestServiceManager.handleMinskyProcess({
       command: commandsMapping.AVAILABLE_OPERATIONS,
-      render: false,
     })) as string[];
 
     const mapping = {
@@ -813,7 +812,6 @@ export class CommandsManager {
 
       const type = (await RestServiceManager.handleMinskyProcess({
         command,
-        render: false,
       })) as string;
 
       switch (type) {

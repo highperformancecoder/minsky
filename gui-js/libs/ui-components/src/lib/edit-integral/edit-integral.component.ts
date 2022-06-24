@@ -58,7 +58,6 @@ export class EditIntegralComponent implements OnInit {
 
   private async updateFormValues() {
     const name = (await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_DESCRIPTION,
     })) as string;
 
@@ -66,25 +65,21 @@ export class EditIntegralComponent implements OnInit {
     this.name.setValue(name);
 
     const rotation = await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_ROTATION,
     });
     this.rotation.setValue(rotation);
 
     const initialValue = await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_INT_VAR_INIT,
     });
     this.initialValue.setValue(initialValue);
 
     const units = await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_INT_VAR_UNITS_STR,
     });
     this.units.setValue(units);
 
     const relative = await this.electronService.sendMinskyCommandAndRender({
-      render: false,
       command: commandsMapping.CANVAS_ITEM_INT_VAR_SLIDER_STEP_REL,
     });
     this.relative.setValue(relative);
