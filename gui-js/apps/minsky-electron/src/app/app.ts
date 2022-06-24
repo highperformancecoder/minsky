@@ -148,6 +148,13 @@ export default class App {
         if (!canProceed) {
           return;
         }
+        
+        WindowManager.activeWindows.forEach((window) => {
+          if (!window.isMainWindow) {
+            window.context.close();
+          }
+        });
+   
         App.directlyClose = true;
         App.mainWindow.close();
       }

@@ -199,54 +199,6 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
         });
     }
     
-//  onMouseWheelZoom = async (event: WheelEvent) => {
-//    event.preventDefault();
-//    const { deltaY } = event;
-//    const zoomIn = deltaY < 0;
-//
-//    const command = "/minsky/variablePane/zoom";
-//
-//    const zoomFactor = zoomIn ? ZOOM_IN_FACTOR : ZOOM_OUT_FACTOR;
-//
-//    const [
-//      x,
-//      y,
-//    ] = this.electronService.remote.getCurrentWindow().getContentSize();
-//
-//    //TODO: throttle here if required
-//    await this.electronService.sendMinskyCommandAndRender({
-//      command: `${command} [${x / 2},${y / 2},${zoomFactor}]`,
-//    });
-//  };
-
-//  async handleScroll(scrollTop: number, scrollLeft: number) {
-//    //TODO: throttle here if required
-//
-//    const cols = (await this.electronService.sendMinskyCommandAndRender({
-//      command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/table/cols`,
-//    })) as number;
-//
-//    const rows = (await this.electronService.sendMinskyCommandAndRender({
-//      command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/table/rows`,
-//    })) as number;
-//
-//    const stepX = this.godleyCanvasContainer.scrollHeight / cols;
-//    const stepY = this.godleyCanvasContainer.scrollHeight / rows;
-//
-//    const currentStepX = Math.round(scrollLeft / stepX);
-//    const currentStepY = Math.round(scrollTop / stepY);
-//
-//    await this.electronService.sendMinskyCommandAndRender({
-//      command: `${this.namedItemSubCommand}/scrollColStart ${currentStepX}`,
-//    });
-//
-//    await this.electronService.sendMinskyCommandAndRender({
-//      command: `${this.namedItemSubCommand}/scrollRowStart ${currentStepY}`,
-//    });
-//
-//    this.redraw();
-//  }
-
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
   ngOnDestroy() {}
 }
