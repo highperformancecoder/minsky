@@ -49,18 +49,43 @@ namespace civita
       var1=stoi(match[1]);
       var2=stoi(match[2]);
     }
+
+    struct InvalidDate: public std::runtime_error
+    {
+      InvalidDate(const std::string& dateString, const std::string& format):
+        runtime_error("invalid date/time: "+dateString+" for format "+format) {}
+    };
   }
 
   string anyStringCast(const boost::any& x)
   {
-    try
-      {
-        return any_cast<string>(x);
-      }
-    catch (const bad_any_cast&)
-      {
-        return any_cast<const char*>(x);
-      }
+    if (auto s=any_cast<string>(&x))
+      return *s;
+    else
+      return any_cast<const char*>(x);
+  }
+
+  bool AnyLess::operator()(const boost::any& x, const boost::any& y) const
+  {
+    if (x.type().before(y.type()))
+      return true;
+    if (y.type().before(x.type()))
+      return false;
+    if (auto v=any_cast<double>(&x))
+      return *v<any_cast<double>(y);
+    if (auto t=any_cast<ptime>(&x))
+      return *t<any_cast<ptime>(y);
+    return anyStringCast(x)<anyStringCast(y);
+  }
+
+  bool anyEqual(const boost::any& x, const boost::any& y)
+  {
+    if (x.type()!=y.type()) return false;
+    if (auto v=any_cast<double>(&x))
+      return *v==any_cast<double>(y);
+    if (auto t=any_cast<ptime>(&x))
+      return *t==any_cast<ptime>(y);
+    return anyStringCast(x)==anyStringCast(y);
   }
   
   bool XVector::operator==(const XVector& x) const
@@ -90,33 +115,66 @@ namespace civita
       }
     return true;
   }
+
   
   void XVector::push_back(const std::string& s)
   {
     V::push_back(anyVal(dimension, s));
   }
 
-  boost::any anyVal(const Dimension& dim, std::string s)
+  void AnyVal::setDimension(const Dimension& dim)
+  {
+    this->dim=dim;
+    switch (dim.type)
+      {
+      case Dimension::string:
+      case Dimension::value:
+        return;
+      case Dimension::time:
+        if ((pq=dim.units.find("%Q"))!=string::npos)
+          {
+            timeType=quarter;
+            return;
+          }
+        // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
+        // handle dates with 1 or 2 digits see Ravel ticket #35.
+        // Delegate to std::time_facet if time fields abut or more complicated formatting is requested
+        static regex nonStandardDateTimes{"%[^mdyYHMS]|%[mdyYHMS]%[mdyYHMS]"};
+        smatch match;
+        if (!regex_search(dim.units, match,nonStandardDateTimes)) 
+          {
+            timeType=regular;
+            static regex thisTimeFormat{"%([mdyYHMS])"};
+            for (string formatStr=dim.units.empty()? "%Y %m %d %H %M %S": dim.units;
+                 regex_search(formatStr, match, thisTimeFormat);
+                 formatStr=match.suffix())
+              {format.push_back(match.str(1)[0]);}
+            return;
+          }
+        timeType=time_input_facet;
+        return;
+      }
+  }
+
+  boost::any AnyVal::operator()(const std::string& s) const
   {
     switch (dim.type)
       {
       case Dimension::string:
         return s;
-        break;
       case Dimension::value:
         return stod(s);
-        break;
       case Dimension::time:
-        {
-          string::size_type pq;
-          if ((pq=dim.units.find("%Q"))!=string::npos)
+        switch (timeType)
+          {
+          case quarter: 
             {
               // year quarter format expected. Takes the first %Y (or
               // %y) and first %Q for year and quarter
               // respectively. Everything else is passed to regex, which
               // can be used to match complicated patterns.
               string pattern;
-              greg_month quarterMonth[]={Jan,Apr,Jul,Oct};
+              static greg_month quarterMonth[]={Jan,Apr,Jul,Oct};
               int year, quarter;
               auto pY=dim.units.find("%Y");
               if (pY>=0)
@@ -130,34 +188,23 @@ namespace civita
                 throw error("invalid quarter %d",quarter);
               return ptime(date(year, quarterMonth[quarter-1], 1));
             }
-
-          smatch val;
-          runtime_error error("invalid date/time: "+s+" for format "+dim.units);
-                        
-          // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
-          // handle dates with 1 or 2 digits see Ravel ticket #35.
-          // Delegate to std::time_facet if time fields abut or more complicated formatting is requested
-          if (!regex_search(dim.units, val,regex{"%[^mdyYHMS]|%[mdyYHMS]%[mdyYHMS]"})) 
+          case regular: // handle date formats with any combination of %Y, %m, %d, %H, %M, %S
             {
-              smatch match;
-              string format;
-              static regex thisTimeFormat{"%([mdyYHMS])"};
-              for (string formatStr=dim.units.empty()? "%Y %m %d %H %M %S": dim.units;
-                   regex_search(formatStr, match, thisTimeFormat);
-                   formatStr=match.suffix())
-                {format.push_back(match.str(1)[0]);}
+              smatch val;
               static regex valParser{"(\\d+)"};
               int day=1, month=1, year=0, hours=0, minutes=0, seconds=0;
               size_t i=0;
-              for (; i<format.size() && regex_search(s, val, valParser); s=val.suffix(), ++i)
+              for (auto ss=s.c_str(); i<format.size(); ++i)
                 {
-                  int v=stoi(val[1]); // can't throw, because val[i] must always be sequence of digits
+                  for (; *ss && !isdigit(*ss); ++ss); // skip to next integer field
+                  if (!*ss) break;
+                  int v=strtol(ss, const_cast<char**>(&ss),10);
                   switch (format[i])
                     {
                     case 'd': day=v; break;
                     case 'm': month=v; break;
                     case 'y':
-                      if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
+                      if (v>99) throw runtime_error(to_string(v)+" is out of range for %y");
                       year=v>68? v+1900: v+2000;
                       break;
                     case 'Y': year=v; break;
@@ -166,22 +213,23 @@ namespace civita
                     case 'S': seconds=v; break;
                     }
                 }
-              if (!dim.units.empty() && i<format.size()) throw error;
+              if (!dim.units.empty() && i<format.size()) throw InvalidDate(s, dim.units);
               return ptime(date(year,month,day),time_duration(hours,minutes,seconds));
             }
-
-          // default case - delegate to std::time_input_facet
-          istringstream is(s);
-          is.imbue(locale(is.getloc(), new time_input_facet(dim.units)));
-          ptime pt;
-          is>>pt;
-          if (pt.is_special())
-            throw error;
-          return pt;
-
-          // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
-          // strptime is not available on Windows alas
+          case time_input_facet:
+            {
+              // default case - delegate to std::time_input_facet
+              istringstream is(s);
+              is.imbue(locale(is.getloc(), new boost::posix_time::time_input_facet(dim.units)));
+              ptime pt;
+              is>>pt;
+              if (pt.is_special())
+                throw InvalidDate(s, dim.units);
+              return pt;
             }
+            // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
+            // strptime is not available on Windows alas
+          }
       }
 
     assert(false);
@@ -275,6 +323,16 @@ namespace civita
       return "";
   }
 
+  size_t anyHash(const boost::any& x)
+  {
+    if (auto v=any_cast<double>(&x))
+      return std::hash<double>()(*v);
+    if (auto t=any_cast<ptime>(&x))
+      return std::hash<size_t>()((*t-ptime()).ticks());
+    return std::hash<string>()(anyStringCast(x));
+  }
+
+  
   string XVector::timeFormat() const
   {
     if (dimension.type!=Dimension::time || empty()) return "";

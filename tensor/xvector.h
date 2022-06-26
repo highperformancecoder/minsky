@@ -27,13 +27,34 @@
 
 namespace civita
 {
+
   /// convert string rep to an any rep
-  boost::any anyVal(const Dimension&, std::string);
+  ///two phase caching data independent computation for ptime conversion 
+  class AnyVal
+  {
+    Dimension dim;
+    std::string format;
+    std::string::size_type pq;
+    enum TimeType {quarter, regular, time_input_facet} timeType=time_input_facet;
+    
+  public:
+    AnyVal()=default;
+    AnyVal(const Dimension& dim) {setDimension(dim);}
+    void setDimension(const Dimension&);
+    boost::any operator()(const std::string&) const;
+  };
+
+  /// convert string rep to an any rep
+  inline boost::any anyVal(const Dimension& dim, const std::string& s)
+  {return AnyVal(dim)(s);}
 
   /// \a format - can be any format string suitable for a
   /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
   std::string str(const boost::any&, const std::string& format="");
 
+  bool anyEqual(const boost::any& x, const boost::any& y);
+  size_t anyHash(const boost::any&);
+  
   /// return absolute difference between any elements
   /// for strings, returns hamming distance
   /// for time, returns seconds
@@ -41,10 +62,14 @@ namespace civita
   double diff(const boost::any& x, const boost::any& y);
   struct AnyLess
   {
-    bool operator()(const boost::any& x, const boost::any& y) const
-    {return diff(x,y)<0;}
+    bool operator()(const boost::any& x, const boost::any& y) const;
   };
-
+  struct AnyVectorLess
+  {
+    bool operator()(const std::vector<boost::any>& x, const std::vector<boost::any>& y)
+    {return std::lexicographical_compare(x.begin(),x.end(),y.begin(),y.end(),AnyLess());}
+  };
+    
   /// default parsing of a time string
   //  boost::posix_time::ptime sToPtime(const std::string& s);
 

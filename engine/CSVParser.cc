@@ -174,22 +174,33 @@ struct SpaceSeparatorParser
   void reset() {}
 };
 
-struct NoDataColumns: public std::exception
-{
-  const char* what() const noexcept override {return "No data columns";}
-};
-struct DuplicateKey: public std::exception
-{
-  std::string msg="Duplicate key";
-  DuplicateKey(const vector<string>& x) {
-    for (auto& i: x)
-      msg+=":"+i;
-  }
-  const char* what() const noexcept override {return msg.c_str();}
-};
-
 namespace
 {
+  struct Any: public boost::any
+  {
+    Any()=default;
+    Any(const boost::any& x): boost::any(x), hash(anyHash(x)) {}
+    bool operator<(const Any& x) const {return AnyLess()(*this,x);}
+    bool operator==(const Any& x) const {return anyEqual(*this,x);}
+    size_t hash;
+  };
+
+  std::string str(const Any& x) {return minsky::str(static_cast<const boost::any&>(x));}
+  
+  struct NoDataColumns: public std::exception
+  {
+    const char* what() const noexcept override {return "No data columns";}
+  };
+  struct DuplicateKey: public std::exception
+  {
+    std::string msg="Duplicate key";
+    DuplicateKey(const vector<Any>& x) {
+      for (auto& i: x)
+        msg+=":"+str(i);
+    }
+    const char* what() const noexcept override {return msg.c_str();}
+  };
+
   const size_t maxRowsToAnalyse=100;
   
   double quotedStoD(const string& s,size_t& charsProcd)
@@ -256,6 +267,25 @@ namespace
       if (!v[i].empty()) return false;
     return true;
   }
+}
+
+namespace std
+{
+  template <>
+  struct hash<Any>
+  {
+    size_t operator()(const Any& x) const {return x.hash;}
+  };
+  template <>
+  struct hash<vector<Any>>
+  {
+    size_t operator()(const vector<Any>& x) const {
+      size_t r=0;
+      for (auto& i: x) r^=i.hash;
+      return r;
+    }
+  };
+ 
 }
 
 void DataSpec::setDataArea(size_t row, size_t col)
@@ -450,7 +480,7 @@ namespace minsky
   template <class P>
   void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec)
   {
-    typedef vector<string> Key;
+    typedef std::vector<std::string> Key;
     map<Key,string> lines;
     multimap<Key,string> duplicateLines;
     string buf;
@@ -521,19 +551,21 @@ namespace minsky
   {
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
-    typedef vector<string> Key;
-    map<Key,double> tmpData;
-    map<Key,int> tmpCnt;
-    vector<map<string,size_t>> dimLabels(spec.dimensionCols.size());
+    typedef vector<Any> Key;
+    unordered_map<Key,double> tmpData;
+    unordered_map<Key,int> tmpCnt;
+    vector<unordered_map<Any, size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     Hypercube hc;
     vector<string> horizontalLabels;
+    vector<AnyVal> anyVal;
 
     for (size_t i=0; i<spec.nColAxes(); ++i)
       if (spec.dimensionCols.count(i))
         {
           hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
           hc.xvectors.back().dimension=spec.dimensions[i];
+          anyVal.emplace_back(spec.dimensions[i]);
         }
     try
       {
@@ -561,10 +593,11 @@ namespace minsky
                     horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
                     hc.xvectors.emplace_back(spec.horizontalDimName);
                     hc.xvectors.back().dimension=spec.horizontalDimension;
+                    anyVal.emplace_back(spec.horizontalDimension);
                     for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
                     dimLabels.emplace_back();
                     for (size_t i=0; i<horizontalLabels.size(); ++i)
-                      dimLabels.back()[horizontalLabels[i]]=i;
+                      dimLabels.back()[Any(horizontalLabels[i])]=i;
                   }
               }
             else if (row>=spec.nRowAxes())// in data section
@@ -576,10 +609,10 @@ namespace minsky
                     {
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
-                      key.push_back(*field);
+                      key.push_back(anyVal[dim](*field));
                       try
                         {
-                          if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
+                          if (dimLabels[dim].emplace(anyVal[dim](*field), dimLabels[dim].size()).second)
                             hc.xvectors[dim].push_back(*field);
                         }
                       catch (...)
@@ -597,7 +630,7 @@ namespace minsky
                 for (size_t col=0; field != tok.end(); ++field, ++col)
                   {
                     if (tabularFormat)
-                      key.push_back(horizontalLabels[col]);
+                      key.push_back(anyVal[col](horizontalLabels[col]));
                     else if (col)
                       break; // only 1 value column, everything to right ignored
                     
