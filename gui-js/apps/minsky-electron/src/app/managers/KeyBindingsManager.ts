@@ -7,7 +7,6 @@ import {
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
 } from '@minsky/shared';
-import * as KeysymMapper from 'keysym';
 import * as utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
@@ -110,62 +109,65 @@ export class KeyBindingsManager {
     return _utf8;
   }
 
-  private static getX11KeysymAndName(keyName: string, location: number) {
-    // Returns X11 Keysym and a mapped name. Events that we need are especially handled.
-    // Keysyms needed in Minsky: https://gitlab.com/varun_coditas/minsky-angular/-/issues/174
-    // Backspace, Escape, Return, KP_Enter, 4 arrow keys, Tab, BackTab, Page Up, Page Down
+    private static getX11KeysymAndName(keyName: string, location: number) {
+        // Returns X11 Keysym and a mapped name. Events that we need are especially handled.
+        // Keysyms needed in Minsky: https://gitlab.com/varun_coditas/minsky-angular/-/issues/174
+        // Backspace, Escape, Return, KP_Enter, 4 arrow keys, Tab, BackTab, Page Up, Page Down
 
-    const JSToX11KeynameMap = {
-      ArrowLeft: { 0: 'Left' },
-      ArrowUp: { 0: 'Up' },
-      ArrowRight: { 0: 'Right' },
-      ArrowDown: { 0: 'Down' },
-      Shift: { 1: 'Shift_L', 2: 'Shift_R' },
-      Enter: { 0: 'Return', 3: 'KP_Enter' },
-    };
+        const JSToX11KeynameMap = {
+            ArrowLeft: { 0: 'Left' },
+            ArrowUp: { 0: 'Up' },
+            ArrowRight: { 0: 'Right' },
+            ArrowDown: { 0: 'Down' },
+            Shift: { 1: 'Shift_L', 2: 'Shift_R' },
+            Enter: { 0: 'Return', 3: 'KP_Enter' },
+        };
+        
+        /* The numeric parameter in the map above is "location" returned by Javascript */
+        // location:: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+        // DOM_KEY_LOCATION_STANDARD -> 0
+        // DOM_KEY_LOCATION_LEFT -> 1,
+        // DOM_KEY_LOCATION_RIGHT -> 2,
+        // DOM_KEY_LOCATION_NUMPAD -> 3
 
-    /* The numeric parameter in the map above is "location" returned by Javascript */
-    // location:: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
-    // DOM_KEY_LOCATION_STANDARD -> 0
-    // DOM_KEY_LOCATION_LEFT -> 1,
-    // DOM_KEY_LOCATION_RIGHT -> 2,
-    // DOM_KEY_LOCATION_NUMPAD -> 3
-
-    const renameKeyOptions = JSToX11KeynameMap[keyName];
-    if (renameKeyOptions) {
-      if (location in renameKeyOptions) {
-        keyName = renameKeyOptions[location];
-      }
+        const renameKeyOptions = JSToX11KeynameMap[keyName];
+        if (renameKeyOptions) {
+            if (location in renameKeyOptions) {
+                keyName = renameKeyOptions[location];
+            }
+        }
+        
+        /* Taken from https://www.cl.cam.ac.uk/~mgk25/ucs/keysymdef.h */
+        const customKeysymMap = {
+            Backspace: 0xff08,
+            Left: 0xff51,
+            Up: 0xff52,
+            Right: 0xff53,
+            Down: 0xff54,
+            PageUp: 0xff55,
+            PageDown: 0xff56,
+            Tab: 0xff09,
+            BackTab: 0xfe20,
+            Escape: 0xff1b,
+            Return: 0xff0d,
+            KP_Enter: 0xff8d,
+            Shift_L: 0xffe1,
+            Shift_R: 0xffe2,
+        };
+        
+        let _keysym = customKeysymMap[keyName];
+        
+        if (!_keysym && keyName.length==1) {
+            // we make the assumption that UTF16 characters map
+            // verbatim to XKeySyms - only a problem for UTF16
+            // characters in the range 0xff00 to 0xffff.
+            _keysym = keyName.charCodeAt(0);
+        }
+        return {
+            keysym: _keysym,
+            name: keyName,
+        };
     }
-
-    /* Taken from https://www.cl.cam.ac.uk/~mgk25/ucs/keysymdef.h */
-    const customKeysymMap = {
-      Backspace: 0xff08,
-      Left: 0xff51,
-      Up: 0xff52,
-      Right: 0xff53,
-      Down: 0xff54,
-      PageUp: 0xff55,
-      PageDown: 0xff56,
-      Tab: 0xff09,
-      BackTab: 0xfe20,
-      Escape: 0xff1b,
-      Return: 0xff0d,
-      KP_Enter: 0xff8d,
-      Shift_L: 0xffe1,
-      Shift_R: 0xffe2,
-    };
-
-    // We first lookup in our customKeysymMap, else fallback to what keysym library provides
-    let _keysym = customKeysymMap[keyName];
-    if (!_keysym) {
-      _keysym = KeysymMapper.fromName(keyName)?.keysym;
-    }
-    return {
-      keysym: _keysym,
-      name: keyName,
-    };
-  }
 
   private static isCtrlPayload(payload: MinskyProcessPayload) {
     return payload.ctrl && !payload.alt && !payload.shift;
