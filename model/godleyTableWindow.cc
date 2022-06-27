@@ -809,6 +809,13 @@ namespace minsky
     return background;
   }
 
+  std::set<string> GodleyTableEditor::matchingTableColumns(double x)
+  {
+    int col=colXZoomed(x);
+    if (col<0||col>=godleyIcon().table.cols()) return {};
+    return minsky().matchingTableColumns(godleyIcon(), godleyIcon().table._assetClass(col));
+  }
+
   void GodleyTableEditor::addStockVar(double x)
   {
     int c=colX(x);

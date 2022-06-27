@@ -187,6 +187,8 @@ namespace minsky
     /// @}
     
     ClickType clickType(double x, double y) const;
+    /// return list of matching table columns for column at \a x
+    std::set<string> matchingTableColumns(double x);
    
   protected:
     std::vector<ButtonWidget<row>> rowWidgets;

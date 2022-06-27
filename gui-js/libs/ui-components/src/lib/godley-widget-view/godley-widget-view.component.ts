@@ -15,6 +15,7 @@ import {
   commandsMapping,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
+  events,
   green
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -127,11 +128,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
     this.godleyCanvasContainer.addEventListener('mousedown', (event) => {
       const { clientX, clientY } = event;
-      this.sendMouseEvent(
-        clientX,
-        clientY,
-        commandsMapping.MOUSEDOWN_SUBCOMMAND
-      );
+      this.electronService.sendMinskyCommandAndRender({command: this.namedItemSubCommand, mouseX: clientX, mouseY: clientY}, events.GODLEY_VIEW_MOUSEDOWN);
     });
 
     this.godleyCanvasContainer.addEventListener('mouseup', async (event) => {

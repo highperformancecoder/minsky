@@ -103,6 +103,12 @@ ipcMain.on(
   }
 );
 
+ipcMain.handle(
+  events.GODLEY_VIEW_MOUSEDOWN,async (event, payload: MinskyProcessPayload) => {
+    GodleyMenuManager.mouseDown(payload.command,payload.mouseX,payload.mouseY);
+  }
+);
+
 ipcMain.on(events.ADD_RECENT_FILE, (event, filePath: string) => {
   RecentFilesManager.addFileToRecentFiles(filePath);
 });

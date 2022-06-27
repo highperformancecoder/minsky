@@ -303,4 +303,25 @@ export class GodleyMenuManager {
       ],
     });
   }
+
+  /// handle mouse down events in a Godley view
+  static async mouseDown(namedItem: string, x: number, y: number) {
+    var clickType=
+        await RestServiceManager.handleMinskyProcess({command: `${namedItem}/clickType [${x},${y}]`});
+    if (clickType==="importStock")
+    {
+      var importOptions=await RestServiceManager.handleMinskyProcess({command: `${namedItem}/matchingTableColumns ${x}`}) as string[];
+      var menu=new Menu();
+      for (var v in importOptions) 
+        menu.append(new MenuItem({
+          label: importOptions[v],
+          click: async (item) => {
+            await RestServiceManager.handleMinskyProcess({command: `${namedItem}/importStockVar ["${item.label}",${x}]`})
+          }
+        }));
+      menu.popup();
+    } else {
+      await RestServiceManager.handleMinskyProcess({command: `${namedItem}/mouseDown [${x},${y}]`});
+    }
+  }
 }
