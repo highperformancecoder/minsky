@@ -136,7 +136,7 @@ proc zoomIn id {
 
 proc mouseDown {id x y X Y} {
     if {[$id.popup.clickTypeZoomed $x $y]=="importStock"} {
-        set importOptions [matchingTableColumns $id.popup.godleyIcon [$id.table.assetClass [$id.popup.colXZoomed $x] ]]
+        set importOptions [matchingTableColumns $id [$id.table.assetClass [$id.popup.colXZoomed $x] ]]
         if {[llength $importOptions]>0} {
             if {![llength [info commands .$id.import]]} {menu .$id.import}
             .$id.import delete 0 end
@@ -247,7 +247,7 @@ proc godleyContext {id x y X Y} {
             .$id.context add cascade -label "Import variable" -menu .$id.context.import
             .$id.context add command -label "Delete stock variable" -command "$id.popup.deleteStockVar $x; $id.popup.requestRedraw"
             .$id.context.import delete 0 end
-            foreach var [matchingTableColumns $id.godleyIcon [$id.table.assetClass [$id.colXZoomed $x] ]] {
+            foreach var [matchingTableColumns $id [$id.table.assetClass [$id.colXZoomed $x] ]] {
                 .$id.context.import add command -label $var -command "$id.popup.importStockVar $var $x; $id.popup.requestRedraw"
             }
         }
