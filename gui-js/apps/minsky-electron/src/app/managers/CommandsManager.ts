@@ -967,7 +967,9 @@ export class CommandsManager {
           command: commandsMapping.LOAD,
           filePath,
         });
-
+        
+       
+        
         ipcMain.emit(events.ADD_RECENT_FILE, null, filePath);
 
         unlinkSync(autoBackupFileName);
@@ -980,9 +982,9 @@ export class CommandsManager {
 
     RestServiceManager.currentMinskyModelFilePath = filePath;
 
-    await RestServiceManager.handleMinskyProcess({
+     setTimeout(()=>{RestServiceManager.handleMinskyProcess({
       command: commandsMapping.RECENTER,
-    });
+     });},100);
 
     WindowManager.getMainWindow().setTitle(filePath);
   }
@@ -1198,38 +1200,45 @@ export class CommandsManager {
     }
   }
 
-    static async openGodleyTable(itemInfo: CanvasItem) {
-        if (!WindowManager.focusIfWindowIsPresent(itemInfo.id as number)) {
-            let systemWindowId = null;
-            // TODO:: Can use godley title (if set) in window title
-            const window = await this.initializePopupWindow({
-                customTitle: `Godley Table : ${itemInfo.id}`,
-                itemInfo,
-                url: `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`,
-                modal: false,
-            });
+  static async openGodleyTable(itemInfo: CanvasItem) {
+    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id as number)) {
+      let systemWindowId = null;
+      var title=await RestServiceManager.handleMinskyProcess({
+        //command: `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second/table/title`,
+        command: `/minsky/canvas/item/table/title`,
+      });
 
-            Object.defineProperty(window,'dontCloseOnEscape',{value: true,writable:false});
-            await RestServiceManager.handleMinskyProcess({
-                command: `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second/popup/adjustWidgets`,
-            });
+      if (!title)
+        title=itemInfo.id;
+          
+      const window = await this.initializePopupWindow({
+        customTitle: `Godley Table : ${title}`,
+        itemInfo,
+        url: `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`,
+        modal: false,
+      });
 
-            systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
-            
-            window.loadURL(
-                WindowManager.getWindowUrl(
-                    `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`
-                )
-            );
+      Object.defineProperty(window,'dontCloseOnEscape',{value: true,writable:false});
+      await RestServiceManager.handleMinskyProcess({
+        command: `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second/popup/adjustWidgets`,
+      });
 
-            ipcMain.emit(events.INIT_MENU_FOR_GODLEY_VIEW, null, {
-                window,
-                itemInfo,
-            });
-
-            this.activeGodleyWindowItems.set(itemInfo.id, itemInfo);
-        }
+      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      
+      window.loadURL(
+        WindowManager.getWindowUrl(
+          `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`
+        )
+      );
+      
+      ipcMain.emit(events.INIT_MENU_FOR_GODLEY_VIEW, null, {
+        window,
+        itemInfo,
+      });
+      
+      this.activeGodleyWindowItems.set(itemInfo.id, itemInfo);
     }
+  }
 
   static async expandPlot(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id as number)) {

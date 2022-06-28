@@ -7,6 +7,7 @@ interface MinskyPreferences {
   enableMultipleEquityColumns: boolean;
   numberOfRecentFilesToDisplay: number;
   wrapLongEquationsInLatexExport: boolean;
+  font: string;
   // focusFollowsMouse: boolean;
 }
 
@@ -28,6 +29,7 @@ class StoreManager {
         enableMultipleEquityColumns: false,
         numberOfRecentFilesToDisplay: 10,
         wrapLongEquationsInLatexExport: false,
+        font: "",
         // focusFollowsMouse: false,
       },
     },
