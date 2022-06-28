@@ -24,6 +24,7 @@
 #include "minsky_epilogue.h"
 
 #include <exception>
+#include <atomic>
 
 using namespace Napi;
 using namespace std;
