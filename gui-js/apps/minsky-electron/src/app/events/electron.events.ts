@@ -21,7 +21,7 @@ import { GodleyMenuManager } from '../managers/GodleyMenuManager';
 import { KeyBindingsManager } from '../managers/KeyBindingsManager';
 import { RecentFilesManager } from '../managers/RecentFilesManager';
 import { RestServiceManager } from '../managers/RestServiceManager';
-import { StoreManager } from '../managers/StoreManager';
+import { StoreManager, MinskyPreferences } from '../managers/StoreManager';
 import { WindowManager } from '../managers/WindowManager';
 
 const logUpdateEvent = debug('minsky:electron_update_event');
@@ -132,12 +132,12 @@ ipcMain.handle(events.GET_PREFERENCES, () => {
 
 ipcMain.handle(
   events.UPDATE_PREFERENCES,
-  async (event, preferencesPayload: Record<string, unknown>) => {
-    const { font, ...preferences } = preferencesPayload;
+  async (event, preferences: MinskyPreferences) => {
     const {
       enableMultipleEquityColumns,
       godleyTableShowValues,
       godleyTableOutputStyle,
+      font,
     } = preferences;
 
     StoreManager.store.set('preferences', preferences);
