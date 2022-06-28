@@ -1272,7 +1272,11 @@ namespace minsky
         if (t==generic || (t==is_setterGetter && nargs>0))
           {
             bool modelChanged=pushHistory();
-            if (modelChanged) markEdited();
+            if (modelChanged)
+              {
+                markEdited();
+                if (running) flags&=~reset_needed; // don't reset when running
+              }
             return modelChanged;
           }
       }

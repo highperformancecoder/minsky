@@ -285,6 +285,7 @@ export class CommunicationService {
 
   private async initSimulation() {
     this.isSimulationOn = true;
+    await this.electronService.sendMinskyCommandAndRender({command: "/minsky/running true"});
 
     this.startSimulation();
   }
@@ -312,10 +313,12 @@ export class CommunicationService {
 
   private async pauseSimulation() {
     this.isSimulationOn = false;
+    await this.electronService.sendMinskyCommandAndRender({command: "/minsky/running false"});
   }
 
   private async stopSimulation() {
     this.isSimulationOn = false;
+    await this.electronService.sendMinskyCommandAndRender({command: "/minsky/running false"});
 
     await this.electronService.sendMinskyCommandAndRender({
       command: commandsMapping.RESET,
