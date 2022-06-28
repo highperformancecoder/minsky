@@ -967,7 +967,9 @@ export class CommandsManager {
           command: commandsMapping.LOAD,
           filePath,
         });
-
+        
+       
+        
         ipcMain.emit(events.ADD_RECENT_FILE, null, filePath);
 
         unlinkSync(autoBackupFileName);
@@ -980,9 +982,9 @@ export class CommandsManager {
 
     RestServiceManager.currentMinskyModelFilePath = filePath;
 
-    await RestServiceManager.handleMinskyProcess({
+     setTimeout(()=>{RestServiceManager.handleMinskyProcess({
       command: commandsMapping.RECENTER,
-    });
+     });},100);
 
     WindowManager.getMainWindow().setTitle(filePath);
   }
