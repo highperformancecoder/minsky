@@ -50,7 +50,7 @@ export class ApplicationMenuManager {
           click() {
             WindowManager.createPopupWindowWithRouting({
               width: 420,
-              height: 440,
+              height: 500,
               title: '',
               url: `#/headless/menu/file/about`,
             });
