@@ -92,9 +92,8 @@ export function callRESTApi(command: string) {
     arg = command.substring(command.indexOf(' ') + 1);
   }
   try {
-    log.info('Rest API Call: ' + cmd + ': ' + arg);
     const response = restService.call(cmd, arg);
-    log.info('Rest API Response: ' + response);
+    log.info('Rest API: ',cmd,"=>",response);
     return JSON5.parse(response);
   } catch (error) {
     if (cmd === commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV) {
