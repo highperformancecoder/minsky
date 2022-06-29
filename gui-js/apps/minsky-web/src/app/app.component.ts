@@ -4,10 +4,7 @@ import { CommunicationService, ElectronService, WindowUtilityService } from '@mi
 import { commandsMapping, events, MainRenderingTabs } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { ResizedEvent } from 'angular-resize-event';
-import * as debug from 'debug';
 import { AppConfig } from '../environments/environment';
-
-const logInfo = debug('minsky:web:info');
 
 @Component({
   selector: 'minsky-root',
@@ -26,7 +23,6 @@ export class AppComponent implements AfterViewInit {
   ) {
       this.windowUtilityService=new WindowUtilityService(electronService);
     this.translate.setDefaultLang('en');
-    logInfo('AppConfig', AppConfig);
   }
 
   ngAfterViewInit() {
@@ -85,7 +81,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   async windowResize(event: ResizedEvent) {
-    logInfo('Got a resize event ', event);
     await this.cmService.setWindowSizeAndCanvasOffsets(true);
   }
 

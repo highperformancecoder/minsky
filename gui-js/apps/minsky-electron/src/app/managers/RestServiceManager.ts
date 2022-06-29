@@ -8,8 +8,8 @@ import {
   version
 } from '@minsky/shared';
 import { dialog, ipcMain } from 'electron';
-import * as log from 'electron-log';
 import { join } from 'path';
+import * as elog from 'electron-log';
 import { Utility } from '../utility';
 import { RecordingManager } from './RecordingManager';
 import { MinskyPreferences, StoreManager } from './StoreManager';
@@ -19,6 +19,11 @@ const JSON5 = require('json5');
 const addonDir = Utility.isPackaged()
   ? '../../node-addons'
   : '../../../node-addons';
+
+var log=elog;
+if (!Utility.isDevelopmentMode()) { //clobber logging in production
+  log.info=function(...args: any[]){};
+};
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
@@ -107,7 +112,6 @@ if (callRESTApi("/minsky/minskyVersion")!=version)
     dialog.showMessageBoxSync({
       message: "Mismatch of front end and back end versions",
       type: 'warning',
-//      buttons: [],
     });
   },1000);
 
@@ -132,7 +136,6 @@ export class RestServiceManager {
         command: this.currentTab + '/enabled false',
       });
       this.currentTab = tab;
-      //this.render = true;
       this.lastMouseMovePayload = null;
       this.lastModelMoveToPayload = null;
       this.lastZoomPayload = null;
@@ -390,8 +393,6 @@ export class RestServiceManager {
     if (!tab) {
       tab = this.currentTab;
     }
-
-    log.info('canvasHeight=', canvasHeight, ' canvasWidth=', canvasWidth);
 
     if (!canvasHeight || !canvasWidth) {
       return null;

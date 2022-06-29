@@ -161,7 +161,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   }
 
   onKeyDown = async (event: KeyboardEvent) => {
-    console.log(green("godley window "),event.key.charCodeAt(0));
     await this.communicationService.handleKeyDown({
       event,
       command: this.namedItemSubCommand,

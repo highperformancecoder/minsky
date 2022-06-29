@@ -38,7 +38,7 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 using namespace std;
 using namespace ecolab;
 
-#define FPS_PROFILING_ON
+//#define FPS_PROFILING_ON
 #ifdef WIN32
 #include <windows.h>
 //#include <windowsx.h>

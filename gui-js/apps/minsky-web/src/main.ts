@@ -5,6 +5,7 @@ import { AppModule } from './app/app.module';
 import { AppConfig } from './environments/environment';
 
 if (AppConfig.production) {
+  process.stdout.write('in production');
   enableProdMode();
 }
 
