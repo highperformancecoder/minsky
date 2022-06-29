@@ -1,6 +1,6 @@
 import { Component, OnInit, VERSION } from '@angular/core';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping } from '@minsky/shared';
+import { commandsMapping, version } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-about',
@@ -11,6 +11,7 @@ export class AboutComponent implements OnInit {
   angularVersion = VERSION.full;
   ecolabVersion: string;
   minskyVersion: string;
+  frontEndVersion: string;
   ravelVersion: string;
 
   constructor(private electronService: ElectronService) {}
@@ -40,6 +41,7 @@ export class AboutComponent implements OnInit {
       )) as string;
 
       this.minskyVersion = this.normalizeVersion(_minskyVersion);
+      this.frontEndVersion=version;
     })();
   }
 

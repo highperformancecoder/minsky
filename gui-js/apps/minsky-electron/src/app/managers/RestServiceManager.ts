@@ -5,6 +5,7 @@ import {
   MainRenderingTabs,
   MinskyProcessPayload,
   normalizeFilePathForPlatform,
+  version
 } from '@minsky/shared';
 import { dialog, ipcMain } from 'electron';
 import * as log from 'electron-log';
@@ -100,6 +101,15 @@ export function callRESTApi(command: string) {
     }
   }
 }
+
+if (callRESTApi("/minsky/minskyVersion")!=version)
+  setTimeout(()=>{
+    dialog.showMessageBoxSync({
+      message: "Mismatch of front end and back end versions",
+      type: 'warning',
+//      buttons: [],
+    });
+  },1000);
 
 export class RestServiceManager {
   static currentMinskyModelFilePath: string;
