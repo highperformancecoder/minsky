@@ -9,4 +9,5 @@ module.exports = {
     '<rootDir>/libs/minsky-server',
     '<rootDir>/libs/ui-components',
   ],
+  collectCoverage: true,
 };
