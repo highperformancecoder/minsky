@@ -406,16 +406,11 @@ export class CommunicationService {
     this.mouseX = clientX;
     this.mouseY = clientY - Math.round(offset.top);
 
-    // const clickData = {
-    //   type,
-    //   clientX,
-    //   clientY,
-    // };
-
     if (event === 'contextmenu') {
       this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
         x: this.mouseX,
         y: this.mouseY,
+        type: "canvas",
       });
       return;
     }

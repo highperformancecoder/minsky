@@ -10,6 +10,8 @@ import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
+import { GodleyPopup } from './GodleyMenuManager';
+import * as log from 'electron-log';
 
 export class ContextMenuManager {
   private static x: number = null;
@@ -17,28 +19,41 @@ export class ContextMenuManager {
 
   private static showAllPlotsOnTabChecked = false;
 
-  public static async initContextMenu(x: number, y: number) {
-    const mainWindow = WindowManager.getMainWindow();
-    this.x = x;
-    this.y = y;
-
-    const currentTab = RestServiceManager.getCurrentTab();
-
-    switch (currentTab) {
-      case MainRenderingTabs.canvas:
-        await this.initContextMenuForWiring(mainWindow);
-        break;
-
-      case MainRenderingTabs.variables:
-        await this.initContextMenuForVariableTab(mainWindow);
-        break;
-
-      case MainRenderingTabs.plot:
-        await this.initContextMenuForPlotTab(mainWindow);
-        break;
-
+  public static async initContextMenu(x: number, y: number, type: string, command: string) {
+    switch (type)
+    {
+      case "canvas":
+      {
+        const mainWindow = WindowManager.getMainWindow();
+        this.x = x;
+        this.y = y;
+        
+        const currentTab = RestServiceManager.getCurrentTab();
+        
+        switch (currentTab) {
+        case MainRenderingTabs.canvas:
+          await this.initContextMenuForWiring(mainWindow);
+          break;
+          
+        case MainRenderingTabs.variables:
+          await this.initContextMenuForVariableTab(mainWindow);
+          break;
+          
+        case MainRenderingTabs.plot:
+          await this.initContextMenuForPlotTab(mainWindow);
+          break;
+          
+        default:
+          break;
+        }
+      }
+      break;
+      case "godley":
+      this.initContextMenuForGodleyPopup(command,x,y);
+      break;
       default:
-        break;
+      log.warn("Unknown context menu for ",type);
+      break;
     }
   }
 
@@ -1064,4 +1079,101 @@ export class ContextMenuManager {
 
     return menuItems;
   }
+
+  private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
+  {
+    var menu=new Menu();
+    menu.append(new MenuItem({
+      label: "Help",
+      click: async ()=> {await CommandsManager.loadHelpFile("GodleyTable");},
+    }));
+
+    var id=await RestServiceManager.handleMinskyProcess({
+      command: `${namedItemSubCommand}/id`,
+    }) as number;
+    menu.append(new MenuItem({
+      label: "Title",
+      click: async ()=> {await CommandsManager.editGodleyTitle(id);},
+    }));
+
+    var popup=new GodleyPopup(`${namedItemSubCommand}/popup`);
+    
+    switch (popup.clickTypeZoomed(x,y))
+    {
+      case "background": break;
+      case "row0":
+      menu.append(new MenuItem({
+        label: "Add new stock variable",
+        click: async ()=> {popup.addStockVar(x);},
+      }));
+
+      var importMenu=new Menu();
+      var importables=popup.matchingTableColumns(x);
+      for (var i in importables)
+        importMenu.append(new MenuItem({
+          label: importables[i],
+          click: async (item)=> {popup.importStockVar(item.label,x);},
+        }));
+
+      menu.append(new MenuItem({
+        label: "Import variable",
+        submenu: importMenu,
+      }));
+        
+       menu.append(new MenuItem({
+        label: "Delete stock variable",
+         click: async ()=> {popup.deleteStockVar(x);},
+       }));
+      break;
+      case "col0":
+       menu.append(new MenuItem({
+        label: "Add flow",
+         click: async ()=> {popup.addFlow(y);},
+       }));
+       menu.append(new MenuItem({
+        label: "Delete flow",
+         click: async ()=> {popup.deleteFlow(y);},
+       }));
+      break;
+      case "internal": break;
+    } // switch clickTypeZoomed
+
+    var r=popup.rowYZoomed(y);
+    var c=popup.colXZoomed(x);
+    if (r!=popup.selectedRow() || c!=popup.selectedCol())
+    {
+      popup.selectedRow(r);
+      popup.selectedCol(c);
+      popup.insertIdx(0);
+      popup.selectedIdx(0);
+    }
+    var cell=await RestServiceManager.handleMinskyProcess({
+      command: `${namedItemSubCommand}/table/getCell [${r},${c}]`,
+    }) as string;
+    if (cell.length>0 && (r!=1 || c!=0))
+    {
+      menu.append(new MenuItem({
+        label: "Cut",
+        click: async ()=> {popup.cut();}
+      }));
+      menu.append(new MenuItem({
+        label: "Copy",
+        click: async ()=> {popup.copy();}
+      }));
+    }
+
+    if (r!=1 || c!=0)
+    {
+      var clip=await RestServiceManager.handleMinskyProcess({
+      command: "/minsky/clipboardEmpty",
+      }) as boolean;
+      menu.append(new MenuItem({
+        label: "Paste",
+        enabled: !clip,
+        click: async ()=> {popup.paste();}
+      }));
+    }
+    menu.popup();
+  }
+
 }

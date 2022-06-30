@@ -33,6 +33,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   itemId: number;
   systemWindowId: number;
+  namedItem: string;
   namedItemSubCommand: string;
 
   leftOffset = 0;
@@ -58,7 +59,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.namedItemSubCommand = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/popup`;
+    this.namedItem = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second`;
+    this.namedItemSubCommand = `${this.namedItem}/popup`;
     this.getWindowRectInfo();
     this.renderFrame();
     this.initEvents();
@@ -138,6 +140,15 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
         clientY,
         commandsMapping.MOUSEUP_SUBCOMMAND
       );
+    });
+
+    this.godleyCanvasContainer.addEventListener('contextmenu', async (event) => {
+      this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
+        x: this.mouseX,
+        y: this.mouseY,
+        type: "godley",
+        command: this.namedItem,
+      });
     });
 
     this.godleyCanvasContainer.onwheel = this.onMouseWheelZoom;

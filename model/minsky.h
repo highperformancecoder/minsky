@@ -250,6 +250,8 @@ namespace minsky
     /// paste clipboard as a new group or ungrouped items on the canvas. canvas.itemFocus is set to
     /// refer to the new group or items.
     void paste();
+    /// return true if nothing available in clipboard
+    bool clipboardEmpty() const {return clipboard.getClipboard().empty();}
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
     
     void insertGroupFromFile(const string& file);

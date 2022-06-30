@@ -10,7 +10,7 @@ import {
 } from '@minsky/shared';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
+import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { StoreManager } from './StoreManager';
 
 export class GodleyMenuManager {
@@ -324,4 +324,41 @@ export class GodleyMenuManager {
       await RestServiceManager.handleMinskyProcess({command: `${namedItem}/mouseDown [${x},${y}]`});
     }
   }
+}
+
+export class GodleyPopup {
+  command: string;
+  constructor(command: string) {this.command=command;}
+  clickTypeZoomed(x:number, y:number) {return callRESTApi(`${this.command}/clickTypeZoomed [${x},${y}]`);}
+  addStockVar(x: number) {return callRESTApi(`${this.command}/addStockVar ${x}`);}
+  matchingTableColumns(x: number) {return callRESTApi(`${this.command}/matchingTableColumns ${x}`);}
+  importStockVar(name: string, x: number) {return callRESTApi(`${this.command}/importStockVar [${name},${x}]`);}
+  deleteStockVar(x: number) {return callRESTApi(`${this.command}/deleteStockVar ${x}`);}
+  addFlow(y: number) {return callRESTApi(`${this.command}/addFlow ${y}`);}
+  deleteFlow(y: number) {return callRESTApi(`${this.command}/deleteFlow ${y}`);}
+  colXZoomed(x: number) {return callRESTApi(`${this.command}/colXZoomed ${x}`);}
+  rowYZoomed(y: number) {return callRESTApi(`${this.command}/rowYZoomed ${y}`);}
+  selectedRow(r?: number) {
+    if (r)
+      return callRESTApi(`${this.command}/selectedRow ${r}`);
+    return callRESTApi(`${this.command}/selectedRow`);
+  }
+  selectedCol(c?: number) {
+    if (c)
+      return callRESTApi(`${this.command}/selectedCol ${c}`);
+    return callRESTApi(`${this.command}/selectedCol`);
+  }
+  insertIdx(i?: number) {
+    if (i)
+      return callRESTApi(`${this.command}/insertIdx ${i}`);
+    return callRESTApi(`${this.command}/insertIdx`);
+  }
+  selectedIdx(c?: number) {
+    if (c)
+      return callRESTApi(`${this.command}/selectedIdx ${c}`);
+    return callRESTApi(`${this.command}/selectedIdx`);
+  }
+  cut() {return callRESTApi(`${this.command}/cut`); }
+  copy() {return callRESTApi(`${this.command}/copy`)}
+  paste() {return callRESTApi(`${this.command}/paste`);}
 }
