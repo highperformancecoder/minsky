@@ -812,7 +812,7 @@ namespace minsky
   std::set<string> GodleyTableEditor::matchingTableColumns(double x)
   {
     int col=colXZoomed(x);
-    if (col<0||col>=godleyIcon().table.cols()) return {};
+    if (col<0||col>=static_cast<int>(godleyIcon().table.cols())) return {};
     return minsky().matchingTableColumns(godleyIcon(), godleyIcon().table._assetClass(col));
   }
 
