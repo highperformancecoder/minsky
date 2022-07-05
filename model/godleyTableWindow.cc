@@ -161,7 +161,10 @@ namespace minsky
     double x=leftTableOffset;
     double lastAssetBoundary=x;
     auto assetClass=GodleyAssetClass::noAssetClass;
-    colLeftMargin.clear();
+    // only recalculate colmn widths when no cell is selected.
+    bool resizeGrid=selectedCol<0 || selectedRow<0;
+    if (resizeGrid)
+      colLeftMargin.clear();
   
     for (unsigned col=0; col<m_godleyIcon.table.cols(); ++col)
       {
@@ -286,8 +289,13 @@ namespace minsky
           }
         colWidth+=5;
 
-        colLeftMargin.push_back(x);
-        x+=colWidth;
+        if (resizeGrid)
+          {
+            colLeftMargin.push_back(x);
+            x+=colWidth;
+          }
+        else if (col+1<colLeftMargin.size())
+          x=colLeftMargin[col+1];
       }
 
     // display pulldown for last column
@@ -498,10 +506,19 @@ namespace minsky
             }
           return;
         }
+      background:
+        selectIdx=insertIdx=0;
+        selectedCol=selectedRow=-1;
+        break;
       default:
         // catch exception, as the intention here is to allow the user to fix a problem
         try {update();}
         catch (...) {}
+        if (selectedRow>=0 && selectedCol>=0)
+          { // if cell already selected, deselect to allow the chance to redraw
+            selectedCol=selectedRow=-1;
+            break;
+          }
         selectedCol=colX(x);
         selectedRow=rowY(y);
         if (selectedCellInTable() && (selectedRow!=1 || selectedCol!=0)) // Cannot save text in cell(1,0). For ticket 1064

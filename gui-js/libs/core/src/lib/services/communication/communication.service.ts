@@ -666,6 +666,7 @@ export class CommunicationService {
         'ArrowDown',
         'PageUp',
         'PageDown',
+        ' ',
       ].includes(event.key)
     ) {
       // this is to prevent scroll events on press if arrow and page up/down keys
