@@ -307,7 +307,7 @@ export class GodleyMenuManager {
   /// handle mouse down events in a Godley view
   static async mouseDown(namedItem: string, x: number, y: number) {
     var clickType=
-        await RestServiceManager.handleMinskyProcess({command: `${namedItem}/clickType [${x},${y}]`});
+        await RestServiceManager.handleMinskyProcess({command: `${namedItem}/clickTypeZoomed [${x},${y}]`});
     if (clickType==="importStock")
     {
       var importOptions=await RestServiceManager.handleMinskyProcess({command: `${namedItem}/matchingTableColumns ${x}`}) as string[];
