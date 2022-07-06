@@ -11,7 +11,7 @@ proc variablePane {} {
         button .variablePane.buttons.all -text All -command {
             foreach button $checkButtons {$button select}
             minsky.variablePane.selection $varTypes
-            minsky.variablePane.update [.variablePane.canvas cget -width] [.variablePane.canvas cget -height]
+            minsky.variablePane.updateWithHeight [.variablePane.canvas cget -height]
         }
         pack .variablePane.buttons.all -side left
         foreach type $varTypes {
@@ -25,7 +25,7 @@ proc variablePane {} {
         image create cairoSurface variableImage -surface minsky.variablePane
         label .variablePane.canvas -image variableImage -width 300 -height 1000
         pack .variablePane.canvas -fill both -expand 1
-        bind .variablePane.canvas <Configure> {minsky.variablePane.update %w %h}
+        bind .variablePane.canvas <Configure> {minsky.variablePane.updateWithHeight %h}
         bind .variablePane <KeyPress-Shift_L> {minsky.variablePane.shift 1; .variablePane.canvas configure -cursor $panIcon}
         bind .variablePane <KeyRelease-Shift_L> {minsky.variablePane.shift 0; .variablePane.canvas configure -cursor {}}
         bind .variablePane.canvas <ButtonPress-1> {catch {minsky.variablePane.mouseDown %x %y}}
@@ -36,7 +36,7 @@ proc variablePane {} {
     updateVariablePane
 }
 
-proc updateVariablePane {} {minsky.variablePane.update [winfo width .variablePane] [winfo height .variablePane]}
+proc updateVariablePane {} {minsky.variablePane.updateWithHeight [winfo height .variablePane]}
 
 proc variablePaneButtonProc {type} {
     global variablePaneButtons

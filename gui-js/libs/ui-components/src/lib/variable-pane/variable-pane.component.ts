@@ -94,7 +94,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
         .scaleFactor;
 
       this.electronService.sendMinskyCommandAndRender({
-          command: `/minsky/variablePane/update [${this.width},${this.height}]`,
+          command: `/minsky/variablePane/updateWithHeight ${this.height}`,
       });
 
       this.electronService.sendMinskyCommandAndRender({
@@ -195,7 +195,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
                 command:`/minsky/variablePane/deselect "${id}"`
             });
         this.electronService.sendMinskyCommandAndRender({
-            command: `/minsky/variablePane/update [${this.width},${this.height}]`,
+            command: `/minsky/variablePane/updateWithHeight ${this.height}`,
         });
     }
     

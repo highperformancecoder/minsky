@@ -60,8 +60,10 @@ namespace minsky
     void select(VariableType::Type x) {selection.insert(x);}
     void deselect(VariableType::Type x) {selection.erase(x);}
     VariablePaneCell& cell(unsigned row, unsigned col) override;
-    /// update variables from model, given a window of size \a width and \a height pixels
-    void update(unsigned width,unsigned height);
+    /// update variables from model, given a window of \a height pixels
+    void updateWithHeight(unsigned height);
+    /// update variables from model, using previous height value
+    void update();
     bool redraw(int, int, int width, int height) override;
     unsigned numRows() const override {return m_numRows;}
     unsigned numCols() const override {return m_numCols;}

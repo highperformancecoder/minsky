@@ -212,13 +212,13 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
       minsky().variableValues.count(valueId)==0)
     {
       assert(isValueId(valueId));
-	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
+      // Ensure value of variable is preserved after rename. 	      
       if (vv==nullptr)
         minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"")).
           first->second->m_scope=minsky::scope(group.lock(),name());
-      // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
+      // Ensure variable names are updated correctly everywhere they appear. 
       else
-        minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv));
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv)).first->second->name=nm;
     }
 }
 
