@@ -184,6 +184,7 @@
             type="checkbox"
             name="{{ i }}"
             id="{{ i }}"
+            checked="{{checkboxes[i]}}"
             (change)="updatedCheckBoxValue($event, i)"
           />
         </td>

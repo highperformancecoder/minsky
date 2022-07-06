@@ -34,7 +34,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRow = -1;
   selectedCol = -1;
   checkboxes: Array<boolean> = [];
-  spec: Record<string, unknown>;
+  dialogState: any;
   initialDimensionNames: string[];
 
   public get url(): AbstractControl {
@@ -123,8 +123,9 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
       await this.getCSVDialogSpec();
       this.updateForm();
-      this.selectedHeader = this.spec.headerRow as number;
-
+      this.selectedHeader = this.dialogState.spec.headerRow as number;
+      this.load();
+      this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
       this.setupListenerForCleanup();
     })();
   }
@@ -157,15 +158,18 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateForm() {
-    this.columnar.setValue(this.spec.columnar);
-    this.decSeparator.setValue(this.spec.decSeparator);
-    this.duplicateKeyAction.setValue(this.spec.duplicateKeyAction);
-    this.escape.setValue(this.spec.escape);
-    this.horizontalDimName.setValue(this.spec.horizontalDimName);
-    this.mergeDelimiters.setValue(this.spec.mergeDelimiters);
-    this.missingValue.setValue(this.spec.missingValue);
-    this.quote.setValue(this.spec.quote);
-    this.separator.setValue(this.spec.separator);
+    this.url.setValue(this.dialogState.url);
+    
+    this.columnar.setValue(this.dialogState.spec.columnar);
+    this.decSeparator.setValue(this.dialogState.spec.decSeparator);
+    this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
+    this.escape.setValue(this.dialogState.spec.escape);
+    this.horizontalDimName.setValue(this.dialogState.spec.horizontalDimName);
+    this.mergeDelimiters.setValue(this.dialogState.spec.mergeDelimiters);
+    this.missingValue.setValue(this.dialogState.spec.missingValue);
+    this.quote.setValue(this.dialogState.spec.quote);
+    this.separator.setValue(this.dialogState.spec.separator);
+
   }
 
   async getValueId() {
@@ -193,6 +197,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     const filePath = fileDialog.filePaths[0].toString();
 
     this.url.setValue(filePath);
+    this.dialogState.url=filePath;
   }
 
   async load() {
@@ -225,10 +230,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async getCSVDialogSpec() {
-    this.spec = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog/spec`,
+    this.electronService.sendMinskyCommandAndRender({
+      command: `${this.variableValuesSubCommand}/csvDialog/spec/toSchema`,
+    });
+    this.dialogState = (await this.electronService.sendMinskyCommandAndRender({
+      command: `${this.variableValuesSubCommand}/csvDialog`,
     })) as Record<string, unknown>;
-    this.initialDimensionNames = this.spec.dimensionNames as string[];
+    this.initialDimensionNames = this.dialogState.spec.dimensionNames as string[];
   }
 
   async parseLines() {
@@ -238,22 +246,26 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.csvCols = new Array(this.parsedLines[0]?.length);
     this.checkboxes = new Array(this.parsedLines[0]?.length - 1).fill(false);
+      for (var i in this.dialogState.spec.dimensionCols as Array<number>)
+      {
+        var col=this.dialogState.spec.dimensionCols[i];
+          process.stdout.write("this.checkboxes.length="+this.checkboxes.length.toString());
+        if (col<this.checkboxes.length)
+          this.checkboxes[col]=true;
+      }
   }
 
   async selectHeader(index: number) {
     this.selectedHeader = index;
-
-    this.spec.headerRow = this.selectedHeader;
-
-    // await this.parseLines();
+    this.dialogState.spec.headerRow = this.selectedHeader;
   }
 
   async selectRowAndCol(rowIndex: number, colIndex: number) {
     this.selectedRow = rowIndex;
-    this.spec.dataRowOffset = rowIndex;
+    this.dialogState.spec.dataRowOffset = rowIndex;
 
     this.selectedCol = colIndex;
-    this.spec.dataColOffset = colIndex;
+    this.dialogState.spec.dataColOffset = colIndex;
 
     for (let i = this.selectedCol + 1; i <= this.parsedLines.length - 1; i++) {
       this.checkboxes[i] = false;
@@ -289,14 +301,14 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateDimColsAndNames() {
-    this.spec.dimensionCols = this.checkboxes
+    this.dialogState.spec.dimensionCols = this.checkboxes
       .map((c, index) => (c ? index : false))
       .filter((v) => v !== false);
 
-    this.spec.dimensionNames = this.parsedLines[
+    this.dialogState.spec.dimensionNames = this.parsedLines[
       this.selectedHeader
     ].filter((value, index) =>
-      (this.spec.dimensionCols as number[]).includes(index)
+      (this.dialogState.spec.dimensionCols as number[]).includes(index)
     );
   }
 
@@ -320,7 +332,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     } = this.form.value;
 
     const spec = {
-      ...this.spec,
+      ...this.dialogState.spec,
       columnar,
       decSeparator,
       duplicateKeyAction,

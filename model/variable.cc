@@ -383,6 +383,7 @@ void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spe
       filename = v->csvDialog.loadWebFile(filename);
     std::ifstream is(filename);
     v->csvDialog.spec=spec;
+    v->csvDialog.url=filename;
     loadValueFromCSVFile(*v, is, v->csvDialog.spec);
     minsky().populateMissingDimensionsFromVariable(*v);
   }
