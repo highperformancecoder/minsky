@@ -522,7 +522,7 @@ namespace minsky
                   stride*=d[i];
                 }
               if (pen>=numLines)
-                assignSide(extraPen,Side::right);
+                assignSide(startPen,Side::right);
               labelPen(startPen,defang(label));
             }
         }
