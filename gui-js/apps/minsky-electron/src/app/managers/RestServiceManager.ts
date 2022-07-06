@@ -67,6 +67,13 @@ restService.setBusyCursorCallback(function (busy: boolean) {
   );
 });
 
+function logFilter(c: string) {
+  const logFilter=["mouseMove$", "requestRedraw$"];
+  for (var i in logFilter)
+    if (c.match(logFilter[i])) return false;
+  return true;
+}
+
 // TODO refactor to use command and arguments separately
 export function callRESTApi(command: string) {
   const {
@@ -93,7 +100,8 @@ export function callRESTApi(command: string) {
   }
   try {
     const response = restService.call(cmd, arg);
-    log.info('Rest API: ',cmd,"=>",response);
+    if (logFilter(cmd))
+      log.info('Rest API: ',cmd,arg,"=>",response);
     return JSON5.parse(response);
   } catch (error) {
     if (cmd === commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV) {
