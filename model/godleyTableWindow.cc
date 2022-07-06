@@ -847,6 +847,8 @@ namespace minsky
       {
         m_godleyIcon.table.cell(0,c)=name;
         minsky().importDuplicateColumn(m_godleyIcon.table, c);
+        adjustWidgets();
+        update(); //TODO I don't know why this is insufficient to update icon on canvas
       }
   }
 
