@@ -171,11 +171,11 @@
   <!-- HEADER END -->
 
   <!-- Table START -->
-  <div id="import-csv-canvas-container" class="canvas-container">
+  <div #importCsvCanvasContainer id="import-csv-canvas-container" class="canvas-container">
     <table *ngIf="parsedLines.length">
       <tr>
         <th>Dimension</th>
-        <td
+        <td #checkboxRow
           *ngFor="let col of csvCols; let i = index"
           class="checkbox-container"
         >
@@ -183,8 +183,8 @@
             *ngIf="selectedCol > i"
             type="checkbox"
             name="{{ i }}"
-            id="{{ i }}"
-            checked="{{checkboxes[i]}}"
+            id="import-csv-checkbox-{{ i }}"
+            checked="checkbox[i]"
             (change)="updatedCheckBoxValue($event, i)"
           />
         </td>

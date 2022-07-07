@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -36,6 +36,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   checkboxes: Array<boolean> = [];
   dialogState: any;
   initialDimensionNames: string[];
+  @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
+  @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
 
   public get url(): AbstractControl {
     return this.form.get('url');
@@ -129,7 +131,19 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       this.setupListenerForCleanup();
     })();
   }
-
+  ngAfterViewChecked() 	{
+    // set state of checkboxes to reflect checkboxes array
+    if (this.inputCsvCanvasContainer)
+    {
+      var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
+      for (var i=0; i<this.checkboxes.length; ++i)
+      {
+        var input=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
+        input.checked=this.checkboxes[i];
+      }
+    }
+  }
+  
   private setupListenerForCleanup() {
     this.electronService.remote.getCurrentWindow().on('close', async () => {
       if (this.isInvokedUsingToolbar) {
@@ -246,15 +260,16 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.csvCols = new Array(this.parsedLines[0]?.length);
     this.checkboxes = new Array(this.parsedLines[0]?.length - 1).fill(false);
-      for (var i in this.dialogState.spec.dimensionCols as Array<number>)
-      {
-        var col=this.dialogState.spec.dimensionCols[i];
-          process.stdout.write("this.checkboxes.length="+this.checkboxes.length.toString());
-        if (col<this.checkboxes.length)
-          this.checkboxes[col]=true;
-      }
+    for (var i in this.dialogState.spec.dimensionCols as Array<number>)
+    {
+      var col=this.dialogState.spec.dimensionCols[i];
+      if (col<this.checkboxes.length)
+        this.checkboxes[col]=true;
+    }
+    
+    this.updateDimColsAndNames();
   }
-
+  
   async selectHeader(index: number) {
     this.selectedHeader = index;
     this.dialogState.spec.headerRow = this.selectedHeader;
@@ -268,7 +283,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dialogState.spec.dataColOffset = colIndex;
 
     for (let i = this.selectedCol + 1; i <= this.parsedLines.length - 1; i++) {
-      this.checkboxes[i] = false;
+     this.checkboxes[i] = false;
     }
   }
 
@@ -312,6 +327,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  
   updatedCheckBoxValue(event: any, index: number) {
     this.checkboxes[index] = event.target.checked;
     this.updateDimColsAndNames();
