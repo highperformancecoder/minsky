@@ -298,7 +298,7 @@ export class RestServiceManager {
 
     case commandsMapping.SAVE:
       stdinCommand = `${payload.command} ${payload.filePath}`;
-      this.currentMinskyModelFilePath = payload.filePath;
+      this.currentMinskyModelFilePath = JSON5.parse(payload.filePath);
       ipcMain.emit(events.ADD_RECENT_FILE, null, payload.filePath);
       break;
 

@@ -11,11 +11,12 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
+  SaveDialogOptions,
   shell,
 } from 'electron';
 import * as JSON5 from 'json5';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
+import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
 
@@ -38,6 +39,23 @@ export class ApplicationMenuManager {
 
     Menu.setApplicationMenu(menu);
     return menu;
+  }
+
+  private static defaultSaveOptions(): SaveDialogOptions {
+    const defaultExtension = callRESTApi(commandsMapping.DEFAULT_EXTENSION) as string;
+    return {
+              filters: [
+                {
+                  name: defaultExtension,
+                  extensions: [defaultExtension.slice(1)],
+                },
+                { name: 'All', extensions: ['*'] },
+              ],
+              defaultPath:
+                RestServiceManager.currentMinskyModelFilePath ||
+                `model${defaultExtension}`,
+              properties: ['showOverwriteConfirmation'],
+    }
   }
 
   private static getFileMenu(): MenuItemConstructorOptions {
@@ -135,7 +153,7 @@ export class ApplicationMenuManager {
                 RestServiceManager.currentMinskyModelFilePath
               );
             } else {
-              const saveDialog = await dialog.showSaveDialog({});
+              const saveDialog = await dialog.showSaveDialog(ApplicationMenuManager.defaultSaveOptions());
 
               const { canceled, filePath: _filePath } = saveDialog;
               const filePath = normalizeFilePathForPlatform(_filePath);
@@ -155,23 +173,7 @@ export class ApplicationMenuManager {
           label: 'Save As',
           accelerator: 'CmdOrCtrl + Shift + S',
           async click() {
-            const defaultExtension = (await RestServiceManager.handleMinskyProcess(
-              { command: commandsMapping.DEFAULT_EXTENSION }
-            )) as string;
-
-            const saveDialog = await dialog.showSaveDialog({
-              filters: [
-                {
-                  name: defaultExtension,
-                  extensions: [defaultExtension.slice(1)],
-                },
-                { name: 'All', extensions: ['*'] },
-              ],
-              defaultPath:
-                JSON5.parse(RestServiceManager.currentMinskyModelFilePath) ||
-                `model${defaultExtension}`,
-              properties: ['showOverwriteConfirmation'],
-            });
+            const saveDialog = await dialog.showSaveDialog(ApplicationMenuManager.defaultSaveOptions());
 
             const { canceled, filePath: _filePath } = saveDialog;
             const filePath = normalizeFilePathForPlatform(_filePath);
