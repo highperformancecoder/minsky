@@ -597,14 +597,15 @@ namespace minsky
                     for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
                     dimLabels.emplace_back();
                     for (size_t i=0; i<horizontalLabels.size(); ++i)
-                      dimLabels.back()[Any(horizontalLabels[i])]=i;
+                      dimLabels.back()[AnyVal(spec.horizontalDimension)(horizontalLabels[i])]=i;
                   }
               }
             else if (row>=spec.nRowAxes())// in data section
               {
                 Key key;
                 auto field=tok.begin();
-                for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
+                size_t dim=0;
+                for (size_t i=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
                   if (spec.dimensionCols.count(i))
                     {
                       if (dim>=hc.xvectors.size())
@@ -630,7 +631,7 @@ namespace minsky
                 for (size_t col=0; field != tok.end(); ++field, ++col)
                   {
                     if (tabularFormat)
-                      key.push_back(anyVal[col](horizontalLabels[col]));
+                      key.push_back(anyVal[dim](horizontalLabels[col]));
                     else if (col)
                       break; // only 1 value column, everything to right ignored
                     
