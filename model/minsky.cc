@@ -1228,19 +1228,21 @@ namespace minsky
     if (doPushHistory &&
         command!="minsky.availableOperations" &&
         command!="minsky.canvas.select" &&
+        command!="minsky.canvas.scaleFactor" &&
         command!="minsky.canvas.recentre" &&
         command!="minsky.canvas.focusFollowsMouse" &&
         command!="minsky.canvas.displayDelayedTooltip" &&
         command!="minsky.canvas.requestRedraw" &&
         command!="minsky.model.moveTo" &&
         command!="minsky.canvas.model.moveTo" &&
+        command!="minsky.canvas.model.zoom" &&
         command!="minsky.canvas.moveTo" &&
         /* ensure we record mouse movements, but filter from history */
         command!="minsky.canvas.mouseDown"&&
         command!="minsky.canvas.mouseMove" && 
         command!="minsky.clearAll" &&
         command!="minsky.doPushHistory" &&
-        command!="minsky.canvas.model.zoom" &&
+        command!="minsky.fontScale" &&
         command!="minsky.model.zoom" &&
         command!="minsky.newGlobalGroupTCL" &&
         command!="minsky.popFlags" &&
