@@ -195,8 +195,8 @@
         <td *ngFor="let col of csvCols; let i = index">
           <ng-container *ngIf="selectedCol > i && checkboxes[i]">
             <select
-              value="{{ spec?.dimensions[i]?.type }}"
-              (change)="spec.dimensions[i].type = $event.target.value"
+              value="{{ dialogState.spec?.dimensions[i]?.type }}"
+              (change)="dialogState.spec.dimensions[i].type = $event.target.value"
             >
               <option value="string">string</option>
               <option value="value">value</option>
@@ -214,15 +214,15 @@
             type="text"
             [matAutocomplete]="autocompleteFormat"
             class="form-control"
-            (change)="spec.dimensions[i].units = $event.target.value"
+            (change)="dialogState.spec.dimensions[i].units = $event.target.value"
           />
           <mat-autocomplete
             id="format_{{ i }}"
             [panelWidth]="'10rem'"
             #autocompleteFormat="matAutocomplete"
-            (optionSelected)="spec.dimensions[i].units = $event.option.value"
+            (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
           >
-            <ng-container *ngIf="spec?.dimensions[i]?.type === 'time'">
+            <ng-container *ngIf="dialogState.spec?.dimensions[i]?.type === 'time'">
               <mat-option
                 *ngFor="let tfs of timeFormatStrings"
                 [value]="tfs.value"
@@ -242,14 +242,14 @@
             type="text"
             [matAutocomplete]="autocompleteName"
             class="form-control"
-            value="{{ initialDimensionNames[i] }}"
-            (change)="spec.dimensionNames[i] = $event.target.value"
+            value="{{ dialogState.spec.dimensionNames[i] }}"
+            (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
           />
           <mat-autocomplete
             id="name_{{ i }}"
             [panelWidth]="'10rem'"
             #autocompleteName="matAutocomplete"
-            (optionSelected)="spec.dimensionNames[i] = $event.option.value"
+            (optionSelected)="dialogState.spec.dimensionNames[i] = $event.option.value"
           >
             <mat-option [value]="parsedLines[selectedHeader][i]"
               >{{ parsedLines[selectedHeader][i] }}

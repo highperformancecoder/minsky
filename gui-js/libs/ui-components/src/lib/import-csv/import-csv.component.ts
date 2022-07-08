@@ -138,10 +138,18 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
       for (var i=0; i<this.checkboxes.length; ++i)
       {
-        var input=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
-        input.checked=this.checkboxes[i];
+          var input=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
+          input.checked=this.checkboxes[i];
+          var type=table.rows[1].cells[i+1].children[0] as HTMLSelectElement;
+          type.value=this.dialogState.spec.dimensions[i].type;
+          process.stdout.write("setting type field "+i.toString()+" to "+this.dialogState.spec.dimensions[i].type+"\n");
+          var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
+          format.value=this.dialogState.spec.dimensions[i].units;
+          var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
+          name.value=this.dialogState.spec.dimensionNames[i];
       }
     }
+      // set type, format name
   }
   
   private setupListenerForCleanup() {
