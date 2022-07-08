@@ -506,7 +506,7 @@ namespace minsky
             }
           return;
         }
-      background:
+      case background:
         selectIdx=insertIdx=0;
         selectedCol=selectedRow=-1;
         break;
