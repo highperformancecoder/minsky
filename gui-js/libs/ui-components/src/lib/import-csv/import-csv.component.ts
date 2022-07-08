@@ -137,19 +137,21 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
       for (var i=0; i<this.checkboxes.length; ++i)
-      {
-          var input=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
-          input.checked=this.checkboxes[i];
-          var type=table.rows[1].cells[i+1].children[0] as HTMLSelectElement;
-          type.value=this.dialogState.spec.dimensions[i].type;
-          process.stdout.write("setting type field "+i.toString()+" to "+this.dialogState.spec.dimensions[i].type+"\n");
-          var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
-          format.value=this.dialogState.spec.dimensions[i].units;
-          var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
-          name.value=this.dialogState.spec.dimensionNames[i];
-      }
+        {
+            var input=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
+            if (input)
+                input.checked=this.checkboxes[i];
+            if (this.checkboxes[i])
+            {
+                var type=table.rows[1].cells[i+1].children[0] as HTMLSelectElement;
+                type.value=this.dialogState.spec.dimensions[i].type;
+                var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
+                format.value=this.dialogState.spec.dimensions[i].units;
+                var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
+                name.value=this.dialogState.spec.dimensionNames[i];
+            }
+        }
     }
-      // set type, format name
   }
   
   private setupListenerForCleanup() {
@@ -180,18 +182,21 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateForm() {
-    this.url.setValue(this.dialogState.url);
+      this.url.setValue(this.dialogState.url);
     
-    this.columnar.setValue(this.dialogState.spec.columnar);
-    this.decSeparator.setValue(this.dialogState.spec.decSeparator);
-    this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
-    this.escape.setValue(this.dialogState.spec.escape);
-    this.horizontalDimName.setValue(this.dialogState.spec.horizontalDimName);
-    this.mergeDelimiters.setValue(this.dialogState.spec.mergeDelimiters);
-    this.missingValue.setValue(this.dialogState.spec.missingValue);
-    this.quote.setValue(this.dialogState.spec.quote);
-    this.separator.setValue(this.dialogState.spec.separator);
-
+      this.columnar.setValue(this.dialogState.spec.columnar);
+      this.decSeparator.setValue(this.dialogState.spec.decSeparator);
+      this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
+      this.escape.setValue(this.dialogState.spec.escape);
+      this.horizontalDimName.setValue(this.dialogState.spec.horizontalDimName);
+      this.mergeDelimiters.setValue(this.dialogState.spec.mergeDelimiters);
+      this.missingValue.setValue(this.dialogState.spec.missingValue);
+      this.quote.setValue(this.dialogState.spec.quote);
+      this.separator.setValue(this.dialogState.spec.separator);
+      this.horizontalDimension.setValue({
+          type: this.dialogState.spec.horizontalDimension.type,
+         units:this.dialogState.spec.horizontalDimension.units
+      });
   }
 
   async getValueId() {
@@ -267,7 +272,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     })) as string[][];
 
     this.csvCols = new Array(this.parsedLines[0]?.length);
-    this.checkboxes = new Array(this.parsedLines[0]?.length - 1).fill(false);
+    this.checkboxes = new Array(this.parsedLines[0]?.length).fill(false);
     for (var i in this.dialogState.spec.dimensionCols as Array<number>)
     {
       var col=this.dialogState.spec.dimensionCols[i];
