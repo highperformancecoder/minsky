@@ -41,23 +41,6 @@ export class ApplicationMenuManager {
     return menu;
   }
 
-  private static defaultSaveOptions(): SaveDialogOptions {
-    const defaultExtension = callRESTApi(commandsMapping.DEFAULT_EXTENSION) as string;
-    return {
-              filters: [
-                {
-                  name: defaultExtension,
-                  extensions: [defaultExtension.slice(1)],
-                },
-                { name: 'All', extensions: ['*'] },
-              ],
-              defaultPath:
-                RestServiceManager.currentMinskyModelFilePath ||
-                `model${defaultExtension}`,
-              properties: ['showOverwriteConfirmation'],
-    }
-  }
-
   private static getFileMenu(): MenuItemConstructorOptions {
     const scope = this;
     return {
@@ -145,49 +128,14 @@ export class ApplicationMenuManager {
           },
         },
         {
-          label: 'Save',
-          accelerator: 'CmdOrCtrl + S',
-          async click() {
-            if (RestServiceManager.currentMinskyModelFilePath) {
-              await CommandsManager.saveFile(
-                RestServiceManager.currentMinskyModelFilePath
-              );
-            } else {
-              const saveDialog = await dialog.showSaveDialog(ApplicationMenuManager.defaultSaveOptions());
-
-              const { canceled, filePath: _filePath } = saveDialog;
-              const filePath = normalizeFilePathForPlatform(_filePath);
-
-              if (canceled || !filePath) {
-                return;
-              }
-
-              await RestServiceManager.handleMinskyProcess({
-                command: commandsMapping.SAVE,
-                filePath,
-              });
-            }
-          },
+            label: 'Save',
+            accelerator: 'CmdOrCtrl + S',
+            async click() {await CommandsManager.save();}
         },
         {
-          label: 'Save As',
-          accelerator: 'CmdOrCtrl + Shift + S',
-          async click() {
-            const saveDialog = await dialog.showSaveDialog(ApplicationMenuManager.defaultSaveOptions());
-
-            const { canceled, filePath: _filePath } = saveDialog;
-            const filePath = normalizeFilePathForPlatform(_filePath);
-
-            if (canceled || !filePath) {
-              return;
-            }
-
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.SAVE} ${filePath}`,
-            });
-
-            RestServiceManager.currentMinskyModelFilePath = filePath;
-          },
+            label: 'Save As',
+            accelerator: 'CmdOrCtrl + Shift + S',
+            async click() {await CommandsManager.saveAs();}
         },
         {
           label: 'Insert File as Group',

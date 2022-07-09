@@ -10,13 +10,13 @@ import {
   isMacOS,
   normalizeFilePathForPlatform,
 } from '@minsky/shared';
-import { dialog, ipcMain, Menu, MenuItem } from 'electron';
+import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import * as JSON5 from 'json5';
 import { join } from 'path';
 import { Utility } from '../utility';
 import { HelpFilesManager } from './HelpFilesManager';
-import { RestServiceManager } from './RestServiceManager';
+import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import {electronMenuBarHeightForWindows, isWindows } from '@minsky/shared';
 
@@ -728,21 +728,8 @@ export class CommandsManager {
       // Cancel
       return false;
     }
-    const saveModelDialog = await dialog.showSaveDialog({
-      title: 'Save Model?',
-      properties: ['showOverwriteConfirmation', 'createDirectory'],
-    });
 
-    const { canceled, filePath: _filePath } = saveModelDialog;
-    const filePath = normalizeFilePathForPlatform(_filePath);
-
-    if (canceled || !filePath) {
-      return false;
-    }
-
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.SAVE} ${filePath}`,
-    });
+    await CommandsManager.save();
     return true;
   }
 
@@ -931,7 +918,6 @@ export class CommandsManager {
   }
 
   static async openNamedFile(filePath: string) {
-    filePath = normalizeFilePathForPlatform(filePath);
     const autoBackupFileName = filePath + '#';
 
     await this.createNewSystem();
@@ -987,14 +973,6 @@ export class CommandsManager {
      });},100);
 
     WindowManager.getMainWindow().setTitle(filePath);
-  }
-
-  static async saveFile(filePath: string) {
-    filePath = normalizeFilePathForPlatform(filePath);
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.SAVE}`,
-      filePath: filePath,
-    });
   }
 
   static async help(x: number, y: number) {
@@ -1402,4 +1380,48 @@ export class CommandsManager {
       command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
     });
   };
+
+  private static defaultSaveOptions(): SaveDialogOptions {
+    const defaultExtension = callRESTApi(commandsMapping.DEFAULT_EXTENSION) as string;
+    return {
+              filters: [
+                {
+                  name: defaultExtension,
+                  extensions: [defaultExtension.slice(1)],
+                },
+                { name: 'All', extensions: ['*'] },
+              ],
+              defaultPath:
+                RestServiceManager.currentMinskyModelFilePath ||
+                `model${defaultExtension}`,
+              properties: ['showOverwriteConfirmation'],
+    }
+  }
+
+    static async save() {
+        console.log("+++",RestServiceManager.currentMinskyModelFilePath);
+        if (RestServiceManager.currentMinskyModelFilePath) {
+            await RestServiceManager.handleMinskyProcess({
+                command: commandsMapping.SAVE,
+                filePath: RestServiceManager.currentMinskyModelFilePath,
+            });
+        }
+        else
+            await this.saveAs();
+    }
+    
+    static async saveAs() {
+        const saveDialog = await dialog.showSaveDialog(CommandsManager.defaultSaveOptions());
+
+        const { canceled, filePath: filePath } = saveDialog;
+
+        if (canceled || !filePath) {
+            return;
+        }
+
+        await RestServiceManager.handleMinskyProcess({
+            command: commandsMapping.SAVE,
+            filePath: filePath,
+        });
+    }
 }

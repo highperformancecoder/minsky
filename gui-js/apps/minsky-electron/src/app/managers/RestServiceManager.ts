@@ -293,13 +293,14 @@ export class RestServiceManager {
     
     switch (payload.command) {
     case commandsMapping.LOAD:
-      stdinCommand = `${payload.command} ${payload.filePath}`;
+      stdinCommand = `${payload.command} ${JSON5.stringify(payload.filePath)}`;
+      this.currentMinskyModelFilePath = payload.filePath;
       break;
 
     case commandsMapping.SAVE:
-      stdinCommand = `${payload.command} ${payload.filePath}`;
-      this.currentMinskyModelFilePath = JSON5.parse(payload.filePath);
-      ipcMain.emit(events.ADD_RECENT_FILE, null, payload.filePath);
+        stdinCommand = `${payload.command} ${JSON5.stringify(payload.filePath)}`;
+        this.currentMinskyModelFilePath = payload.filePath;
+        ipcMain.emit(events.ADD_RECENT_FILE, null, payload.filePath);
       break;
 
     case commandsMapping.MOVE_TO:
