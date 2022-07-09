@@ -32,9 +32,7 @@ export default class App {
   static directlyClose = false;
 
   private static onWindowAllClosed() {
-    if (!isMacOS()) {
       App.application.quit();
-    }
   }
   
   private static async onReady() {
@@ -143,7 +141,7 @@ export default class App {
 
     App.mainWindow.on('close', async (e) => {
       if (!App.directlyClose) {
-        e.preventDefault();
+          e.preventDefault();
         const canProceed = await CommandsManager.canCurrentSystemBeClosed();
         if (!canProceed) {
           return;
@@ -155,10 +153,10 @@ export default class App {
           }
         });
    
-        App.directlyClose = true;
-        App.mainWindow.close();
+          App.directlyClose = true;
+          App.mainWindow.close();
       }
-      //WindowManager.activeWindows.delete(App.mainWindow.id); // Is this needed?
+      WindowManager.activeWindows.delete(App.mainWindow.id); // Is this needed?
     });
 
     // TODO: test it on Russell's machine
