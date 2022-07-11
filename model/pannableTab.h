@@ -61,7 +61,10 @@ namespace minsky
       Base::offsy=y;
       Base::requestRedraw();
     }
-
+    std::vector<float> position() const override
+    {
+      return {Base::offsx, Base::offsy};
+    }
   };
 }
 
