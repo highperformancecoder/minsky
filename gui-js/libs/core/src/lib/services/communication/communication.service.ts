@@ -67,6 +67,8 @@ export class CommunicationService {
   private dialogRef: MatDialogRef<DialogComponent, any> = null;
   availableOperations = null;
 
+  resetScroll=()=>{}; // callback to reset canvas scrollbars
+  
   constructor(
     // private socket: Socket,
     private electronService: ElectronService,
@@ -170,86 +172,89 @@ export class CommunicationService {
         let autoHandleMinskyProcess = true;
 
         switch (target) {
-          case 'ZOOM_OUT':
-            autoHandleMinskyProcess = false;
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${command} [${canvasWidth / 2}, ${
+        case 'ZOOM_OUT':
+          autoHandleMinskyProcess = false;
+          await this.electronService.sendMinskyCommandAndRender({
+            command: `${command} [${canvasWidth / 2}, ${
                 canvasHeight / 2
               }, ${ZOOM_OUT_FACTOR}]`,
-            });
-            await this.electronService.sendMinskyCommandAndRender({
-              command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-            });
-            break;
-          case 'ZOOM_IN':
-            autoHandleMinskyProcess = false;
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${command} [${canvasWidth / 2}, ${
+          });
+          await this.electronService.sendMinskyCommandAndRender({
+            command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
+          });
+          break;
+          this.resetScroll();
+        case 'ZOOM_IN':
+          autoHandleMinskyProcess = false;
+          await this.electronService.sendMinskyCommandAndRender({
+            command: `${command} [${canvasWidth / 2}, ${
                 canvasHeight / 2
               }, ${ZOOM_IN_FACTOR}]`,
-            });
-            await this.electronService.sendMinskyCommandAndRender({
-              command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-            });
-            break;
-          case 'RESET_ZOOM':
-            autoHandleMinskyProcess = false;
-            await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
-
-            break;
-          case 'ZOOM_TO_FIT':
-            autoHandleMinskyProcess = false;
-            await this.zoomToFit(canvasWidth, canvasHeight);
-            break;
-
-          case 'SIMULATION_SPEED':
-            autoHandleMinskyProcess = false;
-            await this.updateSimulationSpeed(message);
-
-            break;
-
-          case 'PLAY':
-            autoHandleMinskyProcess = false;
-
-            this.currentReplayJSON.length
-              ? this.continueReplay()
-              : this.initSimulation();
-
-            break;
-
-          case 'PAUSE':
-            autoHandleMinskyProcess = false;
-
-            this.currentReplayJSON.length
-              ? this.pauseReplay()
-              : await this.pauseSimulation();
-
-            break;
-
-          case 'RESET':
-            autoHandleMinskyProcess = false;
-
-            this.showPlayButton$.next(true);
-            this.currentReplayJSON.length
-              ? this.stopReplay()
-              : await this.stopSimulation();
-
-            break;
-
-          case 'STEP':
-            autoHandleMinskyProcess = false;
-            this.currentReplayJSON.length
-              ? this.stepReplay()
-              : await this.stepSimulation();
-
-            break;
-
-          case 'REVERSE_CHECKBOX':
-            command = `${command} ${message.value}`;
-            break;
-
-          default:
-            break;
+          });
+          await this.electronService.sendMinskyCommandAndRender({
+            command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
+          });
+          this.resetScroll();
+          break;
+        case 'RESET_ZOOM':
+          autoHandleMinskyProcess = false;
+          await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
+          this.resetScroll();
+          break;
+        case 'ZOOM_TO_FIT':
+          autoHandleMinskyProcess = false;
+          await this.zoomToFit(canvasWidth, canvasHeight);
+          this.resetScroll();
+          break;
+          
+        case 'SIMULATION_SPEED':
+          autoHandleMinskyProcess = false;
+          await this.updateSimulationSpeed(message);
+          
+          break;
+          
+        case 'PLAY':
+          autoHandleMinskyProcess = false;
+          
+          this.currentReplayJSON.length
+            ? this.continueReplay()
+            : this.initSimulation();
+          
+          break;
+          
+        case 'PAUSE':
+          autoHandleMinskyProcess = false;
+          
+          this.currentReplayJSON.length
+            ? this.pauseReplay()
+            : await this.pauseSimulation();
+          
+          break;
+          
+        case 'RESET':
+          autoHandleMinskyProcess = false;
+          
+          this.showPlayButton$.next(true);
+          this.currentReplayJSON.length
+            ? this.stopReplay()
+            : await this.stopSimulation();
+          
+          break;
+          
+        case 'STEP':
+          autoHandleMinskyProcess = false;
+          this.currentReplayJSON.length
+            ? this.stepReplay()
+            : await this.stepSimulation();
+          
+          break;
+          
+        case 'REVERSE_CHECKBOX':
+          command = `${command} ${message.value}`;
+          break;
+          
+        default:
+          break;
         }
 
         if (command && autoHandleMinskyProcess) {
@@ -640,6 +645,7 @@ export class CommunicationService {
     await this.electronService.sendMinskyCommandAndRender({
       command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
     });
+    this.resetScroll();
   };
 
   async handleKeyUp(event: KeyboardEvent) {

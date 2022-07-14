@@ -311,6 +311,7 @@ export class RestServiceManager {
     case commandsMapping.MOVE_TO_SUBCOMMAND:
     case commandsMapping.MOUSEDOWN_SUBCOMMAND:
     case commandsMapping.MOUSEUP_SUBCOMMAND:
+    case 'position':
       stdinCommand = `${this.currentTab}/${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
       break;
       

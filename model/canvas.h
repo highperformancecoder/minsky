@@ -122,6 +122,10 @@ namespace minsky
       requestRedraw();
     }
 
+    std::vector<float> position() const override {
+      return {model->x(), model->y()};
+    }
+
     void zoom(double x, double y, double z) override {
       model->zoom(x,y,z);
       requestRedraw();
