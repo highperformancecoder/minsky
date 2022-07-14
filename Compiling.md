@@ -74,7 +74,7 @@ Notes
 
 * Because of the antique version of Berkley DB installed by default on MacOS, you will probably need to install a modern 4.x version in order to get ecolab to build on MacOSX.
 
-* These packages can be installed to /usr/local or $(HOME)/usr according to preference when built from source code. EcoLab will look first in $(HOME)/usr then in /usr/local, then finally in /usr. This allows the user to selectively override their own build environment, the global build environment according to their permissions.
+* These packages can be installed to `/usr/local` or `$HOME/usr` according to preference when built from source code. EcoLab will look first in `$HOME/usr` then in `/usr/local`, then finally in `/usr`. This allows the user to selectively override their own build environment, the global build environment according to their permissions.
 
 * Once the dependencies have been installed, type `make` (`make -j9` for parallel build) in the top level directory. This creates the `minskyRESTService.node` addon file, and places it in `gui-js/node-addons`, which is the Minsky backend.
 
