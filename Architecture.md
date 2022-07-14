@@ -49,10 +49,6 @@ PostScript, PDF, and SVG file output. Experimental backends include OpenGL, BeOS
 
 Schemas for main model entities (ie. data containers) such as `Variable`, `Port`, `Wire`, `Operation`, ...
 
-### server
-
-A Web HTTP server, passing messages over websockets and storing models in an SQL Database.
-
 ### test
 
 Various tests
