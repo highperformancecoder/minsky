@@ -41,6 +41,6 @@ By default, Minsky builds in Aqua mode. This may cause build errors if the prere
 This builds the minskyRESTService.node, and rewrites the dynamic library references. This can be run over an ssh connection if nexecessary.
 
 
-- cd gui-js
-- npm run export:package:mac
+- `cd gui-js`
+- `npm run export:package:mac`
 This produces a dmg file in dist/executables. This step must be run on the Macintosh console, as it makes use of code signing, which has to be run on the console.
