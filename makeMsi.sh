@@ -20,7 +20,7 @@ if [ $numFields -le 1 ]; then
     else
         upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
         productName=Minsky
-        license=license.rtf
+        license=license_.rtf
     fi
 else
     # remove last digit, and add in beta
@@ -37,7 +37,7 @@ else
     else
         upgradeId=cba7e03a-c692-400d-9c75-2da0307c3efc
         productName=MinskyBeta
-        license=license.rtf
+        license=license_.rtf
     fi
 fi
 
