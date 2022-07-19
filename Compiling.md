@@ -23,6 +23,8 @@ Dependencies
 * librsvg
 * openSSL
 * readline
+* nodeJS development (for building gui-js). Perform `npm install` in top level directory before building to ensure node-addon-api is installed.
+* unittest++ (for building tests)
 * Xss - sometimes you need to explicitly install this - required by Tk on XWindows systems
 
 Hint: - if building on a Linux system, you can take a sneak peek at either [minsky.spec](https://build.opensuse.org/package/view_file/home:hpcoder1/minsky/minsky.dsc?expand=1) (for Redhat/Fedora/CentOS/OpenSUSE) or [minsky.dsc](https://build.opensuse.org/package/view_file/home:hpcoder1/minsky/minsky.dsc?expand=1) (for Debian/Ubuntu) at  to see what packages you can install to get your dependencies installed via the system's built-in package manager.
@@ -72,8 +74,15 @@ Notes
 
 * Because of the antique version of Berkley DB installed by default on MacOS, you will probably need to install a modern 4.x version in order to get ecolab to build on MacOSX.
 
-* These packages can be installed to /usr/local or $(HOME)/usr according to preference when built from source code. EcoLab will look first in $(HOME)/usr then in /usr/local, then finally in /usr. This allows the user to selectively override their own build environment, the global build environment according to their permissions.
+* These packages can be installed to `/usr/local` or `$HOME/usr` according to preference when built from source code. EcoLab will look first in `$HOME/usr` then in `/usr/local`, then finally in `/usr`. This allows the user to selectively override their own build environment, the global build environment according to their permissions.
 
-* Once the dependencies have been installed, cd to the Minsky source directory, and type "make", which builds the executable "minsky" at that location.
+* Once the dependencies have been installed, type `make` (`make -j9` for parallel build) in the top level directory. This creates the `minskyRESTService.node` addon file, and places it in `gui-js/node-addons`, which is the Minsky backend.
 
-* The macosx build of Tcl/Tk, including the prebuilt ActiveTCL distribution is threaded. This causes thread safety problems with Tk. See ticket 13. Unfortunately, turning off threading is not possible in the macosx build, so the unix Tcl/Tk build should be used instead. For development purposes, use the standard X11 build of Tk. Tk for Aqua can be built in the unix folder by specifying --with-aqua on the configure line, but this can only be used for 32 bit builds (not 64). This is how the Minsky Mac binary distritbuion is built. 
+
+Javascript Front End
+--------------------
+
+* cd into `gui-js`
+* First time, run `npm install` to install the development environment
+* To run minsky, type `npm start`, which compiles and runs the front end.
+* To create a built, installable version, type `npm run export:package:$os` where `os` is one of `windows`, `linux` or `mac`
