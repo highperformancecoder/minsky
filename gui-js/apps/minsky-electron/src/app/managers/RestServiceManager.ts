@@ -140,7 +140,7 @@ export class RestServiceManager {
     if (tab !== this.currentTab) {
       // disable the old tab
       this.handleMinskyProcess({
-        command: this.currentTab + '/enabled false',
+        command: this.currentTab + '/disable',
       });
       this.currentTab = tab;
       this.lastMouseMovePayload = null;

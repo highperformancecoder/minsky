@@ -74,10 +74,11 @@ ipcMain.on(
       WindowManager.onAppLayoutChanged(payload);
     }
 
-    if (payload.isResizeEvent) {
-      // TODO:: We need to throttle the re-invocation of renderFrame
-      await RestServiceManager.reInvokeRenderFrame();
-    }
+    // arrange for renderFrame to be called, throttled
+    if (!WindowManager.renderFrameRedraw)
+      WindowManager.renderFrameRedraw=setTimeout(()=>{RestServiceManager.reInvokeRenderFrame();}, 200);
+    console.log("refreshed");
+    WindowManager.renderFrameRedraw.refresh();
   }
 );
 
