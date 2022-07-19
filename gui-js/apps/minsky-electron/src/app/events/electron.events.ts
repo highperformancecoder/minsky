@@ -76,7 +76,7 @@ ipcMain.on(
 
     // arrange for renderFrame to be called, throttled
     if (!WindowManager.renderFrameRedraw)
-      WindowManager.renderFrameRedraw=setTimeout(()=>{RestServiceManager.reInvokeRenderFrame();}, 200);
+      WindowManager.renderFrameRedraw=setTimeout(()=>{RestServiceManager.reInvokeRenderFrame();}, 10);
     console.log("refreshed");
     WindowManager.renderFrameRedraw.refresh();
   }
