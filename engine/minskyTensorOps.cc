@@ -560,7 +560,7 @@ namespace minsky
     void computeTensor() const override
     {
       size_t d=dimension;
-      if (d>=rank()) d=0;
+      if (arg1 && d>=arg1->rank()) d=0;
       if (!arg1 || arg1->hypercube().xvectors.size()<=d) return;
       auto& xv=arg1->hypercube().xvectors[d];
       function<double(double,size_t)> interpolate;
@@ -599,6 +599,7 @@ namespace minsky
             auto idx=(*arg2)[i];
             if (isfinite(idx))
               {
+                assert(i+arg2->size()*j<cachedResult.size());
                 cachedResult[i+arg2->size()*j]=interpolate(idx, offsets[j]);
               }
             else
@@ -631,7 +632,7 @@ namespace minsky
       // find reduced dimensions of arg1
       auto arg1Dims=arg1->hypercube().dims();
       size_t lowerStride=1;
-      for (size_t i=0; i<dimension; ++i)
+      for (size_t i=0; i+1<dimension; ++i)
         lowerStride*=arg1Dims[i];
       size_t upperStride=1;
       for (size_t i=dimension+1; i<arg1Dims.size(); ++i)
@@ -641,9 +642,10 @@ namespace minsky
       set<size_t> offsetSet;
       if (arg1->index().empty()) //dense case
         {
+          size_t numLower=dimension? arg1Dims[dimension-1]: 1;
           for (size_t i=0; i<upperStride; ++i)
-            for (size_t j=0; j<lowerStride; ++j)
-              offsetSet.insert(i*lowerStride*arg1Dims[dimension]+j);
+            for (size_t j=0; j<numLower; ++j)
+              offsetSet.insert(lowerStride*(i*arg1Dims[dimension]+j));
         }
       else
         for (auto i: arg1->index())
