@@ -294,6 +294,7 @@ void DataSpec::setDataArea(size_t row, size_t col)
   m_nColAxes=col;
   if (headerRow>=row)
     headerRow=row>0? row-1: 0;
+  if (row==headerRow) row++; //TODO handle no header properly
   if (dimensions.size()<nColAxes()) dimensions.resize(nColAxes());
   if (dimensionNames.size()<nColAxes()) dimensionNames.resize(nColAxes());
   // remove any dimensionCols > nColAxes
