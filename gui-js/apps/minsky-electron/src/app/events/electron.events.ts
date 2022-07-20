@@ -72,13 +72,8 @@ ipcMain.on(
   async (event, payload: AppLayoutPayload) => {
     if (event.sender.id === WindowManager.getMainWindow().id) {
       WindowManager.onAppLayoutChanged(payload);
+      RestServiceManager.reInvokeRenderFrame();
     }
-
-    // arrange for renderFrame to be called, throttled
-    if (!WindowManager.renderFrameRedraw)
-      WindowManager.renderFrameRedraw=setTimeout(()=>{RestServiceManager.reInvokeRenderFrame();}, 10);
-    console.log("refreshed");
-    WindowManager.renderFrameRedraw.refresh();
   }
 );
 

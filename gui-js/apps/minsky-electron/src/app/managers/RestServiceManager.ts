@@ -135,6 +135,7 @@ export class RestServiceManager {
   static availableOperationsMappings: Record<string, string[]> = {};
 
   private static currentTab: MainRenderingTabs = MainRenderingTabs.canvas;
+  static renderFrameRedraw: any;
 
   public static async setCurrentTab(tab: MainRenderingTabs) {
     if (tab !== this.currentTab) {
@@ -156,10 +157,13 @@ export class RestServiceManager {
     return this.currentTab;
   }
 
+  // arrange for renderFrame to be called, throttled
   public static async reInvokeRenderFrame() {
-    await this.handleMinskyProcess({
+    if (!this.renderFrameRedraw)
+        this.renderFrameRedraw=setTimeout(async ()=>{await this.handleMinskyProcess({
       command: commandsMapping.RENDER_FRAME_SUBCOMMAND,
-    });
+        })}, 10);
+    this.renderFrameRedraw.refresh();
   }
 
   private static async processCommandsInQueue(): Promise<unknown> {

@@ -25,8 +25,7 @@ export class WindowManager {
   static canvasHeight: number;
   static canvasWidth: number;
   static scaleFactor: number;
-  static renderFrameRedraw: any;
-  
+
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<number, ActiveWindow>();
 

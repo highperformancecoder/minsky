@@ -86,7 +86,6 @@ export class WiringComponent implements OnInit, OnDestroy {
         };
 
         minskyCanvasContainer.addEventListener('scroll', async () => {
-          process.stdout.write(`scroll ${minskyCanvasContainer.scrollTop}, ${minskyCanvasContainer.scrollLeft}`);
           await handleScroll(
             minskyCanvasContainer.scrollTop,
             minskyCanvasContainer.scrollLeft
