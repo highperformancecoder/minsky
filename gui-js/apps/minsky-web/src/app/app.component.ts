@@ -97,6 +97,7 @@ export class AppComponent implements AfterViewInit {
       container.scrollLeft=scrollableArea.width / 2;
       const payload = { newTab: tab };
       this.electronService.ipcRenderer.send(events.CHANGE_MAIN_TAB, payload);
+      this.cmService.resetScroll();
     }
   }
 
