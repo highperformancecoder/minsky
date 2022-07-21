@@ -680,6 +680,8 @@ export class CommunicationService {
     }
 
     const isMainWindow = this.windowUtilityService.isMainWindow();
+    if (isMainWindow && (event.ctrlKey || event.metaKey) && event.key=='q')
+      return; // let the system quit
 
     if (event.shiftKey && isMainWindow) {
       this.isShiftPressed = true;
@@ -706,6 +708,7 @@ export class CommunicationService {
       location: event.location,
     };
 
+    
     if (!isMainWindow) {
       await this.electronService.sendMinskyCommandAndRender(
         payload,
