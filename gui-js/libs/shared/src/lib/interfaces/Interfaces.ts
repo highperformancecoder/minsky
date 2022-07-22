@@ -23,6 +23,13 @@ export interface MinskyProcessPayload {
   location?: number;
 }
 
+export interface DescriptionPayload {
+  item: string;
+  tooltip: string;
+  detailedText: string;
+  bookmark: boolean;
+}
+
 export interface ElectronCanvasOffset {
   left: number;
   top: number;

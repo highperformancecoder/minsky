@@ -347,6 +347,7 @@ export const events = {
   IMPORT_CSV: 'import-csv',
   INIT_MENU_FOR_GODLEY_VIEW: 'init-menu-for-godley-view',
   GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
+  SAVE_DESCRIPTION: 'save-description',
 };
 
 // add non exposed commands here to get intellisense on the terminal popup

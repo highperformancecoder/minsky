@@ -9,6 +9,7 @@ import {
   ChangeTabPayload,
   commandsMapping,
   events,
+  DescriptionPayload,
   MinskyProcessPayload,
 } from '@minsky/shared';
 import * as debug from 'debug';
@@ -116,6 +117,14 @@ ipcMain.handle(
     return await KeyBindingsManager.handleOnKeyPress(payload);
   }
 );
+
+ipcMain.handle(
+  events.SAVE_DESCRIPTION,
+  async (event, payload: DescriptionPayload) => {
+    return await BookmarkManager.saveDescription(payload);
+  }
+);
+
 
 ipcMain.on(events.KEY_PRESS, async (event, payload: MinskyProcessPayload) => {
   // this is a synchronous handler for events.KEY_PRESS
