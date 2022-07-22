@@ -38,6 +38,7 @@
 #include "minsky_epilogue.h"
 
 #include <algorithm>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 using namespace minsky;
@@ -137,7 +138,12 @@ namespace minsky
       }
   }        
         
-      
+  Minsky::~Minsky()
+  {
+    if (edited())
+      // if we're at this point, then the user has already been asked to save, and chosen no.
+      boost::filesystem::remove(autoSaver->fileName);
+  }
 
   void Minsky::clearAllMaps(bool doClearHistory)
   {
@@ -967,6 +973,8 @@ namespace minsky
     }
     flags &= ~is_edited;
     fileVersion=minskyVersion;
+    if (autoSaver)
+      boost::filesystem::remove(autoSaver->fileName);
   }
 
   void Minsky::load(const std::string& filename) 

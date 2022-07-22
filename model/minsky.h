@@ -226,7 +226,8 @@ namespace minsky
       model->iWidth(std::numeric_limits<float>::max());
       model->self=model;
     }
-
+    ~Minsky();
+    
     GroupPtr model{new Group};
     Canvas canvas{model};
 
