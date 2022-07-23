@@ -325,7 +325,8 @@ namespace minsky
                   v->name(v->name().substr(1));
             }
         v->init(init); //NB calls ensureValueExists()
-        v->setUnits(units);
+        // if value didn't exist before, units will be empty. Do not overwrite any previous units set. For #1461.
+        if (units.length()) v->setUnits(units);
       }
      
     // move wire to highest common group
