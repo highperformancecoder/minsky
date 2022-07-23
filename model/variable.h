@@ -223,7 +223,7 @@ namespace minsky
     Type type() const override {return T;}
     std::size_t numPorts() const override;
 
-    Variable(const Variable& x): VariableBase(x) {this->addPorts();}
+    Variable(const Variable& x): ItemT<Variable<T>, VariableBase>(x) {this->addPorts();}
     Variable& operator=(const Variable& x) {
       VariableBase::operator=(x);
       this->addPorts();
