@@ -140,7 +140,7 @@ namespace minsky
         
   Minsky::~Minsky()
   {
-    if (edited())
+    if (edited() && autoSaver)
       // if we're at this point, then the user has already been asked to save, and chosen no.
       boost::filesystem::remove(autoSaver->fileName);
   }
