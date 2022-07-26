@@ -1186,9 +1186,6 @@ export class CommandsManager {
         command: `/minsky/canvas/item/table/title`,
       });
 
-      if (!title)
-        title=itemInfo.id;
-          
       const window = await this.initializePopupWindow({
         customTitle: `Godley Table : ${title}`,
         itemInfo,
