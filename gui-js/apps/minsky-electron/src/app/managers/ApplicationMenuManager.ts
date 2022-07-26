@@ -19,6 +19,7 @@ import { CommandsManager } from './CommandsManager';
 import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
+import { BookmarkManager } from './BookmarkManager';
 
 const logError = debug('minsky:electron_error');
 
@@ -68,7 +69,8 @@ export class ApplicationMenuManager {
           label: 'New System',
           accelerator: 'CmdOrCtrl + Shift + N',
           async click() {
-            await CommandsManager.createNewSystem();
+              await CommandsManager.createNewSystem();
+              BookmarkManager.updateBookmarkList();
           },
         },
         {
@@ -96,6 +98,7 @@ export class ApplicationMenuManager {
             } catch (error) {
               logError(error);
             }
+              BookmarkManager.updateBookmarkList();
           },
         },
         {

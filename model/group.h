@@ -58,6 +58,7 @@ namespace minsky
     Items items;
     Groups groups;
     Wires wires;
+    std::set<Bookmark> bookmarks;
     std::vector<VariablePtr> inVariables, outVariables;
     std::vector<VariablePtr> createdIOvariables;
     GroupItems() {}
@@ -76,6 +77,7 @@ namespace minsky
       wires.clear();
       inVariables.clear();
       outVariables.clear();
+      bookmarks.clear();
     }
     bool empty() const {return items.empty() && groups.empty() && wires.empty();}
 
@@ -375,7 +377,6 @@ namespace minsky
     /// could be connected to
     std::vector<std::string> accessibleVars() const;
 
-    std::set<Bookmark> bookmarks;
     /// returns list of bookmark names for populating menu 
     std::vector<std::string> bookmarkList() {
       std::vector<std::string> r;
