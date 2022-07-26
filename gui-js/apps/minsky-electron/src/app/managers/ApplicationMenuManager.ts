@@ -487,8 +487,8 @@ export class ApplicationMenuManager {
           label: 'SVG',
           click: async () => {
             await scope.exportCanvas(
-              'svg',
-              commandsMapping.RENDER_CANVAS_TO_SVG
+                'svg',
+                `${RestServiceManager.getCurrentTab()}/renderToSVG`
             );
           },
         },
@@ -496,8 +496,8 @@ export class ApplicationMenuManager {
           label: 'PDF',
           click: async () => {
             await scope.exportCanvas(
-              'pdf',
-              commandsMapping.RENDER_CANVAS_TO_PDF
+                'pdf',
+                `${RestServiceManager.getCurrentTab()}/renderToPDF`
             );
           },
         },
@@ -506,8 +506,8 @@ export class ApplicationMenuManager {
           visible: isWindows(),
           click: async () => {
             await scope.exportCanvas(
-              'emf',
-              commandsMapping.RENDER_CANVAS_TO_EMF
+                'emf',
+                `${RestServiceManager.getCurrentTab()}/renderToEMF`
             );
           },
         },
@@ -515,8 +515,8 @@ export class ApplicationMenuManager {
           label: 'PostScript',
           click: async () => {
             await scope.exportCanvas(
-              'eps',
-              commandsMapping.RENDER_CANVAS_TO_PS
+                'eps',
+                `${RestServiceManager.getCurrentTab()}/renderToPS`
             );
           },
         },
