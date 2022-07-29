@@ -353,6 +353,121 @@ SUITE(TensorOps)
       vector<size_t> ii{3,8};
       CHECK_ARRAY_EQUAL(ii, to->vValue()->index(), ii.size());
     }
+
+  TEST_FIXTURE(TestFixture, gatherInterpolateValue)
+    {
+      vector<double> x{0,1.2,2.5,3,4};
+      Hypercube hc(vector<unsigned>{unsigned(x.size())});
+      for (size_t i=0; i<x.size(); ++i)
+        hc.xvectors[0][i]=x[i];
+      fromVal.hypercube(hc);
+      for (size_t i=0; i<x.size(); ++i)
+        fromVal[i]=x[i];
+      OperationPtr gatherOp(OperationType::gather);
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));   
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+      
+      auto& gathered=*gatheredVar.vValue();
+      auto& toVal=*to->vValue();
+      Eval eval(gatheredVar, gatherOp);
+      for (size_t i=0; i<x.size(); ++i)
+        {
+          toVal[0]=i;
+          eval();
+          CHECK_EQUAL(0,gathered.rank());
+          CHECK_CLOSE(i, gathered[0], 1E-4);
+        }
+    }
+  
+  TEST_FIXTURE(TestFixture, gatherInterpolateDate)
+    {
+      using boost::gregorian::date;
+      using boost::gregorian::Jan;
+      using boost::gregorian::Feb;
+      using boost::gregorian::Jun;
+      vector<ptime> x;
+      x.emplace_back(date(1990,Jan,1));
+      x.emplace_back(date(1991,Feb,1));
+      x.emplace_back(date(1992,Jun,1));
+      x.emplace_back(date(1993,Jan,1));
+      x.emplace_back(date(1994,Jan,1));
+      Hypercube hc(vector<unsigned>{unsigned(x.size())});
+      hc.xvectors[0].dimension=Dimension(Dimension::time,"");
+      for (size_t i=0; i<x.size(); ++i)
+        {
+          hc.xvectors[0][i]=x[i];
+        }
+      fromVal.hypercube(hc);
+      for (size_t i=0; i<x.size(); ++i)
+        fromVal[i]=x[i].date().year()+x[i].date().day_of_year()/365.0;
+      OperationPtr gatherOp(OperationType::gather);
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));   
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+      
+      auto& gathered=*gatheredVar.vValue();
+      auto& toVal=*to->vValue();
+      Eval eval(gatheredVar, gatherOp);
+      for (size_t i=1990; i<1990+x.size(); ++i)
+        {
+          toVal[0]=i;
+          eval();
+          CHECK_EQUAL(0,gathered.rank());
+          CHECK_CLOSE(i, gathered[0],0.01);
+        }
+    }
+  
+  TEST_FIXTURE(TestFixture, gatherExtractRowColumn)
+    {
+      from->init("rand(3,5)");
+      minsky::minsky().variableValues.resetValue(fromVal);
+      OperationPtr gatherOp(OperationType::gather);
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from->ports(0), gatherOp->ports(1));
+      Wire w2(to->ports(0), gatherOp->ports(2));   
+      Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+      auto& gathered=*gatheredVar.vValue();
+      auto& toVal=*to->vValue();
+
+      CHECK_EQUAL(2, fromVal.rank());
+      {
+        // extract row
+        gatherOp->axis="0";
+        Eval eval(gatheredVar, gatherOp);
+        for (size_t i=0; i<fromVal.shape()[0]; ++i)
+          {
+            toVal[0]=i;
+            eval();
+            CHECK_EQUAL(1,gathered.rank());
+            vector<double> expected;
+            for (size_t j=0; j<fromVal.shape()[1]; ++j)
+              expected.push_back(fromVal[i+fromVal.shape()[0]*j]);
+            CHECK_EQUAL(expected.size(), gathered.size());
+            CHECK_ARRAY_CLOSE(expected.data(), &gathered[0], expected.size(), 1e-4);
+          }
+      }
+
+      {
+        // extract column
+        gatherOp->axis="1";
+        Eval eval(gatheredVar, gatherOp);
+        for (size_t i=0; i<fromVal.shape()[1]; ++i)
+          {
+            toVal[0]=i;
+            eval();
+            CHECK_EQUAL(1,gathered.rank());
+            vector<double> expected;
+            for (size_t j=0; j<fromVal.shape()[0]; ++j)
+              expected.push_back(fromVal[j+fromVal.shape()[0]*i]);
+            CHECK_EQUAL(expected.size(), gathered.size());
+            CHECK_ARRAY_CLOSE(expected.data(), &gathered[0], expected.size(), 1e-4);
+          }
+      }
+    }
+
   
   TEST_FIXTURE(TestFixture, indexGather)
     {
