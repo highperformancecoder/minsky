@@ -632,7 +632,7 @@ namespace minsky
       // find reduced dimensions of arg1
       auto arg1Dims=arg1->hypercube().dims();
       size_t lowerStride=1;
-      for (size_t i=0; i+1<dimension; ++i)
+      for (size_t i=0; i<dimension; ++i)
         lowerStride*=arg1Dims[i];
       size_t upperStride=1;
       for (size_t i=dimension+1; i<arg1Dims.size(); ++i)
@@ -645,7 +645,7 @@ namespace minsky
           size_t numLower=dimension? arg1Dims[dimension-1]: 1;
           for (size_t i=0; i<upperStride; ++i)
             for (size_t j=0; j<numLower; ++j)
-              offsetSet.insert(lowerStride*(i*arg1Dims[dimension]+j));
+              offsetSet.insert(lowerStride*i*arg1Dims[dimension]+j);
         }
       else
         for (auto i: arg1->index())

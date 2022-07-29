@@ -659,6 +659,8 @@ SUITE(TensorOps)
       Hypercube fromHC(x);
 
       x.resize(2); x[1].resize(2); // trim to 2x2
+      x[0].name="t0";
+      x[1].name="t1";
       Hypercube toHC(x);
       
       vector<int> checkV={2,3,5};
@@ -700,6 +702,12 @@ SUITE(TensorOps)
       vector<size_t> expectedDims{2,2,2,5};
       CHECK_EQUAL(expectedDims.size(), gathered.rank());
       CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
+
+      auto& gxv=gathered.hypercube().xvectors;
+      CHECK_EQUAL("t0",gxv[0].name);
+      CHECK_EQUAL("t1",gxv[1].name);
+      CHECK_EQUAL("x",gxv[2].name);
+      CHECK_EQUAL("z",gxv[3].name);
 
       for (size_t i=0; i<expectedDims[3]; ++i)
         for (size_t j=0; j<expectedDims[2]; ++j)
