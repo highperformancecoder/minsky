@@ -1524,4 +1524,23 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
       CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
     }
 
+ TEST_FIXTURE(TestFixture,TensorVarValAssignment)
+   {
+     auto ev=make_shared<EvalCommon>();
+     double fv[20], sv[10];
+     ev->update(fv,sizeof(fv)/sizeof(fv[0]),sv);
+     auto startTimestamp=ev->timestamp();
+     TensorVarVal tvv(to->vValue(),ev); 
+     tvv=fromVal;
+     CHECK_EQUAL(fromVal.rank(), tvv.rank());
+     CHECK_ARRAY_EQUAL(fromVal.shape().data(), tvv.shape().data(), fromVal.rank());
+     CHECK_ARRAY_CLOSE(&fromVal[0], &tvv[0], fromVal.size(), 1e-5);
+     
+     CHECK(ev->timestamp()>startTimestamp);
+     CHECK_EQUAL(fv,ev->flowVars());
+     CHECK_EQUAL(sv,ev->stockVars());
+     CHECK_EQUAL(sv,ev->stockVars());
+     CHECK_EQUAL(sizeof(fv)/sizeof(fv[0]),ev->fvSize());
+   }
+ 
 }
