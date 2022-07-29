@@ -1527,7 +1527,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
  TEST_FIXTURE(TestFixture,TensorVarValAssignment)
    {
      auto ev=make_shared<EvalCommon>();
-     double fv[20], sv[10];
+     double fv[100], sv[10];
      ev->update(fv,sizeof(fv)/sizeof(fv[0]),sv);
      auto startTimestamp=ev->timestamp();
      TensorVarVal tvv(to->vValue(),ev); 
