@@ -50,18 +50,47 @@ gather
 
 <P>
 Gather collects the values at index locations indexed by the second
-argument. The output tensor has the same shape as the second (index)
-argument.
+argument. The output tensor has shape <!-- MATH
+ $[i_0, \ldots i_{ir}, a_0,\ldots
+a_{j-1},a_{j+1},\ldots a_{ar}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="242" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img191.png"
+ ALT="$[i_0, \ldots i_{ir}, a_0,\ldots
+a_{j-1},a_{j+1},\ldots a_{ar}]$"></SPAN> where <!-- MATH
+ $[a_0,\ldots,a_{ar}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="86" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img192.png"
+ ALT="$[a_0,\ldots,a_{ar}]$"></SPAN> is the
+shape of the first argument, and <!-- MATH
+ $[i_0,\ldots,i_{ir}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="78" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img193.png"
+ ALT="$[i_0,\ldots,i_{ir}]$"></SPAN> is the shape of
+the second second (index) argument, and <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img194.png"
+ ALT="$j$"></SPAN> is the axis along which
+the gather is performed.
 
 <P>
 If the index is not an integer, the gather will linearly interpolate between
-the values on either side. So <!-- MATH
+the values on either side. So, for example, <!-- MATH
  $x[2.5] = 0.5 (x[2]+x[3])$
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="167" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img194.png"
+ SRC="img195.png"
  ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>.
+
+<P>
+If the index value is outside the range of the x-vector (&#167;<A HREF="node111.html#x-vector">4.6</A>) along the axis
+being gathered, then NAN is assigned to that tensor element.
 
 <P>
 <BR><HR>
