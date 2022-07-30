@@ -65,19 +65,23 @@ export class AppComponent implements AfterViewInit {
 
   // submits form with class="submit" when pressed Enter key
   private handleEnterKey(event: KeyboardEvent) {
-    (document.activeElement as HTMLElement).blur();
-    //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)
+      // disable invoking OK button if marked dontCloseOnReturn
+      if (this.electronService.remote.getCurrentWindow().hasOwnProperty("dontCloseOnReturn")) return;
 
-    // TODO:: Are there scenarios where we need to pass Enter key to the backend?
-    const buttons = Array.from(
-      document.getElementsByClassName('submit')
-    ) as HTMLElement[];
-    if (buttons.length > 0) {
-      event.preventDefault();
-    }
-    buttons.forEach((b) => {
-      b.click();
-    });
+      (document.activeElement as HTMLElement).blur();
+      //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)
+
+      // TODO:: Are there scenarios where we need to pass Enter key to the backend?
+      
+      const buttons = Array.from(
+          document.getElementsByClassName('submit')
+      ) as HTMLElement[];
+      if (buttons.length > 0) {
+          event.preventDefault();
+      }
+      buttons.forEach((b) => {
+          b.click();
+      });
   }
 
   async windowResize(event: ResizedEvent) {

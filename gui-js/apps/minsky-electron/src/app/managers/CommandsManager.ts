@@ -391,10 +391,11 @@ export class CommandsManager {
         command: `/minsky/canvas/${type}/detailedText`,
       })) as string) || '';
 
-    WindowManager.createPopupWindowWithRouting({
+    var window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
-      url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${detailedText}`,
+      url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${encodeURI(detailedText)}`,
     });
+    Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
 
   static async getItemDims(
