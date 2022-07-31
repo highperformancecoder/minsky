@@ -477,6 +477,9 @@ namespace minsky
 
   void GodleyTableEditor::mouseDown(double x, double y)
   {
+    // catch exception, as the intention here is to allow the user to fix a problem
+    try {update();}
+    catch (...) {}
     button1=true;
     x/=zoomFactor;
     y/=zoomFactor;
@@ -511,9 +514,6 @@ namespace minsky
         selectedCol=selectedRow=-1;
         break;
       default:
-        // catch exception, as the intention here is to allow the user to fix a problem
-        try {update();}
-        catch (...) {}
         if (selectedRow>=0 && selectedCol>=0)
           { // if cell already selected, deselect to allow the chance to redraw
             selectedCol=selectedRow=-1;
@@ -1085,6 +1085,7 @@ namespace {
     {
       if (selectedCol>=0)
         {
+          update();
           selectedCol++;
           insertIdx=0;
           if (selectedCol>=int(m_godleyIcon.table.cols()))
@@ -1101,12 +1102,14 @@ namespace {
     {
       if (selectedCol>=0)
         {
+          update();
           selectedCol--;
           insertIdx=0;
           if (selectedCol<0)
             {
               selectedCol=m_godleyIcon.table.cols()-1;
               navigateUp();
+              return;
             }
           checkCell00();
         }
@@ -1114,6 +1117,7 @@ namespace {
 
     void GodleyTableEditor::navigateUp()
     {
+      update();
       if (selectedRow>=0)
         selectedRow=(selectedRow-1)%m_godleyIcon.table.rows();
       checkCell00();
@@ -1121,6 +1125,7 @@ namespace {
   
     void GodleyTableEditor::navigateDown()
     {
+      update();
       if (selectedRow>=0)
         selectedRow=(selectedRow+1)%m_godleyIcon.table.rows();
       checkCell00();
