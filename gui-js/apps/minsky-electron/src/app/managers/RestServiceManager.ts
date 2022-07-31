@@ -54,7 +54,7 @@ class Deferred {
 
 restService.setMessageCallback(function (msg: string, buttons: string[]) {
   if (msg)
-    return dialog.showMessageBoxSync({
+      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
       message: msg,
       type: 'info',
       buttons: buttons,
@@ -107,9 +107,13 @@ export function callRESTApi(command: string) {
     if (cmd === commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV) {
       return importCSVerrorMessage;
     } else {
-      if (error?.message) dialog.showErrorBox(error.message, '');
+        if (error?.message)
+            dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+                message: error.message,
+                type: 'error',
+            });
         log.error('Rest API: ',cmd,arg,'=>Exception caught: ' + error?.message);
-      return error?.message;
+        return error?.message;
     }
   }
 }
