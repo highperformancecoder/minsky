@@ -108,7 +108,7 @@ export function callRESTApi(command: string) {
       return importCSVerrorMessage;
     } else {
       if (error?.message) dialog.showErrorBox(error.message, '');
-      log.error('Exception caught: ' + error?.message);
+        log.error('Rest API: ',cmd,arg,'=>Exception caught: ' + error?.message);
       return error?.message;
     }
   }
