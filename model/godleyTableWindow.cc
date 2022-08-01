@@ -162,7 +162,7 @@ namespace minsky
     double lastAssetBoundary=x;
     auto assetClass=GodleyAssetClass::noAssetClass;
     // only recalculate colmn widths when no cell is selected.
-    bool resizeGrid=selectedCol<0 || selectedRow<0;
+    bool resizeGrid=selectedCol<0 || selectedRow<0 || motionRow>=0 || motionCol>=0;
     if (resizeGrid)
       colLeftMargin.clear();
   
