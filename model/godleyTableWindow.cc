@@ -1104,14 +1104,14 @@ namespace {
         {
           update();
           selectedCol--;
-          insertIdx=0;
           if (selectedCol<0)
             {
               selectedCol=m_godleyIcon.table.cols()-1;
               navigateUp();
-              return;
             }
           checkCell00();
+          insertIdx=godleyIcon().table.cellInTable(selectedRow, selectedCol)?
+            godleyIcon().table.cell(selectedRow, selectedCol).length(): 0;
         }
     }
 

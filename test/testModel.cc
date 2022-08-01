@@ -1446,7 +1446,7 @@ SUITE(GodleyTableWindow)
       keyPress('c',"c"); keyPress('c',"c"); keyPress(XK_BackSpace,"");
       CHECK_EQUAL("abc",godleyIcon().table.cell(1,1));
 
-      godleyIcon().table.cell(0,0)="stock1";
+      godleyIcon().table.cell(0,1)="stock1";
       CHECK_EQUAL(0,godleyIcon().stockVars().size());
       keyPress(XK_Return,""); // should cause update to be called
       // unfortunately, this is a freestanding GodleyIcon, so update has no effect
