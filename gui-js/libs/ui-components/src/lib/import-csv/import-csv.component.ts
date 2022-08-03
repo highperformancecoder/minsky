@@ -121,7 +121,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     (async () => {
       this.valueId = await this.getValueId();
-      this.variableValuesSubCommand = `/minsky/variableValues/@elem/"${this.valueId}"/second`;
+      this.variableValuesSubCommand = `/minsky/variableValues/@elem/${JSON5.stringify(this.valueId)}/second`;
 
       await this.getCSVDialogSpec();
       this.updateForm();
