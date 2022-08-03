@@ -991,18 +991,6 @@ export class CommandsManager {
       return;
     }
 
-    // TODO: come up with a better solution rather than mapping manually
-    switch (classType) {
-      case ClassType.VarConstant:
-        classType = 'Variable:constant';
-        break;
-      case ClassType.Sheet:
-        classType = 'Sheets';
-        break;
-
-      default:
-        break;
-    }
     this.loadHelpFile(classType);
     return;
   }
