@@ -165,7 +165,8 @@ namespace minsky
     bool reset_flag() const {return flags & reset_needed;}
     /// indicate model has been changed since last saved
     void markEdited() {
-      flags |= is_edited | reset_needed | fullEqnDisplay_needed;
+      flags |= is_edited | fullEqnDisplay_needed;
+      if (!running) flags|=reset_needed; // don't reset when running
       variablePane.update();
       canvas.requestRedraw();
       canvas.model.updateTimestamp();

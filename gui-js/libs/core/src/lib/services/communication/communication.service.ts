@@ -679,9 +679,12 @@ export class CommunicationService {
     }
 
     const isMainWindow = this.windowUtilityService.isMainWindow();
-    if (isMainWindow && (event.ctrlKey || event.metaKey))
-      return; // perform menu accelerator
+    process.stdout.write(`event.key=${event.key}`);
+    if (isMainWindow && (event.ctrlKey || event.metaKey) && (event.key.match("[Noq]")))
+      return; // perform menu accelerator only
 
+    
+    
     if (event.shiftKey && isMainWindow) {
       this.isShiftPressed = true;
       this.showDragCursor$.next(true);

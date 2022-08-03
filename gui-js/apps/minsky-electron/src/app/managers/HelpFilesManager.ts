@@ -6,10 +6,8 @@ abstract class HelpFilesManager {
 
   public static getHelpFileForType(type: string): string {
     if (type in this.topicNodeMap) {
-      console.log("help for ",type," is in ",this.topicNodeMap[type]);
       return this.topicNodeMap[type];
     }
-    console.log("no help for ",type);
     return null;
   }
 
@@ -48,9 +46,7 @@ abstract class HelpFilesManager {
     if (buffer) {
       const contents = buffer.toString();
       const matches = contents.matchAll(/<A[ \t]+NAME="([^"]*)"/g);
-      console.log("processing ",fName);
       for (const match of matches) {
-        console.log("adding topicNodeMap for ",match[1]);
         this.topicNodeMap[match[1]] = path.basename(fName);
       }
     }
