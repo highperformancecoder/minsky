@@ -679,8 +679,8 @@ export class CommunicationService {
     }
 
     const isMainWindow = this.windowUtilityService.isMainWindow();
-    if (isMainWindow && (event.ctrlKey || event.metaKey) && event.key=='q')
-      return; // let the system quit
+    if (isMainWindow && (event.ctrlKey || event.metaKey))
+      return; // perform menu accelerator
 
     if (event.shiftKey && isMainWindow) {
       this.isShiftPressed = true;
