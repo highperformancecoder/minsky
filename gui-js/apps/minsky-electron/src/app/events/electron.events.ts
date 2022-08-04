@@ -186,7 +186,6 @@ ipcMain.handle(
 
 ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command }) => {
   await ContextMenuManager.initContextMenu(x, y, type, command);
-  console.log("after ContextMenuManager.initContextMenu");
 });
 
 ipcMain.on(
