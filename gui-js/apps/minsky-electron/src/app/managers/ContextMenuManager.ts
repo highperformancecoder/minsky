@@ -132,8 +132,9 @@ export class ContextMenuManager {
       });
 
       const isWireVisible = !isEmptyObject(isWireVisibleRes);
+      const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
 
-      if (isWirePresent && isWireVisible) {
+        if (isWirePresent && isWireVisible && (itemInfo?.classType!=ClassType.Group||itemInfo?.displayContents)) {
         ContextMenuManager.buildAndDisplayContextMenu(
           ContextMenuManager.wireContextMenu(),
           mainWindow
@@ -141,7 +142,6 @@ export class ContextMenuManager {
         return;
       }
 
-      const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
 
       if (itemInfo?.classType) {
         switch (itemInfo?.classType) {

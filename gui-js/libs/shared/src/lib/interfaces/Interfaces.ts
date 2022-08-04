@@ -91,9 +91,10 @@ export enum ReplayRecordingStatus {
 }
 
 export interface CanvasItem {
-  classType: ClassType;
-  value: number;
-  id: number;
+    classType: ClassType;
+    displayContents: boolean;
+    value: number;
+    id: number;
 }
 
 export interface CreateWindowPayload extends Electron.BrowserWindowConstructorOptions {
