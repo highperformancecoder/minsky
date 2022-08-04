@@ -64,6 +64,9 @@ export class CommunicationService {
   delay = 0;
   runUntilTime: number;
 
+  resetScrollWhenIdle: any;
+
+    
   private dialogRef: MatDialogRef<DialogComponent, any> = null;
   availableOperations = null;
 
@@ -642,10 +645,11 @@ export class CommunicationService {
       },
     });
 
-    await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-    });
-    this.resetScroll();
+      // schedule resetScroll when zooming stops
+      if (!this.resetScrollWhenIdle)
+          this.resetScrollWhenIdle=setTimeout(()=>{var self=this; self.resetScroll();}, 100);
+      else
+          this.resetScrollWhenIdle.refresh();
   };
 
   async handleKeyUp(event: KeyboardEvent) {
