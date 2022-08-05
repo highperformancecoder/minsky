@@ -152,8 +152,8 @@ export class CommandsManager {
 
     const classType = (await this.getCurrentItemClassType()) as ClassType;
     const value = await this.getCurrentItemValue();
-      const id = await this.getCurrentItemId();
-      const displayContents=callRESTApi("/minsky/canvas/item/displayContents") as boolean;
+    const id = await this.getCurrentItemId();
+    const displayContents=classType==="Group"? callRESTApi("/minsky/canvas/item/displayContents") as boolean: false;
 
       const itemInfo: CanvasItem = { classType, value, id, displayContents };
     return itemInfo;
