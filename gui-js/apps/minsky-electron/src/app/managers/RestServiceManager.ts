@@ -104,6 +104,7 @@ export function callRESTApi(command: string) {
       log.info('Rest API: ',cmd,arg,"=>",response);
     return JSON5.parse(response);
   } catch (error) {
+    log.error('Rest API: ',cmd,arg,'=>Exception caught: ' + error?.message);
     if (cmd === commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV) {
       return importCSVerrorMessage;
     } else {
@@ -112,7 +113,6 @@ export function callRESTApi(command: string) {
                 message: error.message,
                 type: 'error',
             });
-        log.error('Rest API: ',cmd,arg,'=>Exception caught: ' + error?.message);
         return error?.message;
     }
   }
