@@ -657,17 +657,16 @@ export class CommandsManager {
       properties: ['showOverwriteConfirmation', 'createDirectory'],
     });
 
-    const { canceled, filePath: _filePath } = exportCanvasDialog;
+    var { canceled, filePath } = exportCanvasDialog;
     if (canceled) {
       return null;
     }
+    
+      // add extension if not already provided
+    if (!filePath.match(`/${type}$/`))
+      filePath+=`.${type}`;
 
-    const filePath = normalizeFilePathForPlatform(_filePath);
-    if(!filePath) {
-      return null;
-    }
-
-    return normalizeFilePathForPlatform(filePath);
+    return JSON5.stringify(filePath);
   }
 
   static async mouseDown(mouseX: number, mouseY: number): Promise<void> {
