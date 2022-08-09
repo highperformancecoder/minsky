@@ -36,7 +36,7 @@ namespace minsky
     static ecolab::cairo::Colour backgroundColour;
     void disable();
     
-    ~RenderNativeWindow();
+    ~RenderNativeWindow() override;
     void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor);
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
@@ -47,6 +47,10 @@ namespace minsky
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
     double scaleFactor() const;
+    /// return whether this window has scrollbars (needed for MacOSX).
+    virtual bool hasScrollBars() const {return false;}
+    /// extra vertical translation, required for MacOSX
+    virtual int extraVerticalTranslation() const {return 0;}
   };
 } // namespace minsky
 

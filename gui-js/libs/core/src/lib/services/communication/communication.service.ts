@@ -481,11 +481,13 @@ export class CommunicationService {
         return;
       }
 
+      const yoffs=isMacOS()? -20: 0; // why, o why, Mac?
+      
       if (command) {
         await this.electronService.sendMinskyCommandAndRender({
           command: command,
           mouseX: clientX,
-          mouseY: this.mouseY,
+          mouseY: this.mouseY+yoffs,
         });
       }
     }
