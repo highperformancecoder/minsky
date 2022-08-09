@@ -219,11 +219,11 @@ namespace minsky
 #endif
   
   WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight,
-                                       double sf,bool hasScrollBars, int extraVerticalTranslation, const std::function<void(void)>& draw):
+                                       double sf,bool hasScrollBars, const std::function<void(void)>& draw):
 #ifdef MAC_OSX_TK
     Winfo(NSContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this)), draw(draw),
 #endif
-    hasScrollBars(hasScrollBars), extraVerticalTranslation(extraVerticalTranslation)
+    hasScrollBars(hasScrollBars)
   {
     offsetLeft = left;
     offsetTop = top;

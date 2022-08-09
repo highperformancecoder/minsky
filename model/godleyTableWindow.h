@@ -229,7 +229,6 @@ namespace minsky
     bool keyPress(int keySym, const std::string& utf8, int state=0, float x=0, float yn=0) override
     {GodleyTableEditor::keyPress(keySym,utf8); return true;}
     bool hasScrollBars() const override {return true;}
-    int extraVerticalTranslation() const override {return 20;}
   };
 
 }

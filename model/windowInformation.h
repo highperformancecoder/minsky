@@ -85,7 +85,6 @@ namespace minsky
   public: 
       
     const bool hasScrollBars=false;
-    const int extraVerticalTranslation=0;
     ecolab::cairo::SurfacePtr bufferSurface;
     std::function<void()> draw;
     bool getRenderingFlag();
@@ -95,7 +94,7 @@ namespace minsky
   public:
     ~WindowInformation();
     // TODO refactor all these classes to avoid this dependency inversion
-    WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight,double scalingFactor,bool hasScrollBars,int extraVerticalTranslation,const std::function<void()>& draw);
+    WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight,double scalingFactor,bool hasScrollBars,const std::function<void()>& draw);
     
     const ecolab::cairo::SurfacePtr& getBufferSurface();
     void requestRedraw();

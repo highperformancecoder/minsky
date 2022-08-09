@@ -49,8 +49,6 @@ namespace minsky
     double scaleFactor() const;
     /// return whether this window has scrollbars (needed for MacOSX).
     virtual bool hasScrollBars() const {return false;}
-    /// extra vertical translation, required for MacOSX
-    virtual int extraVerticalTranslation() const {return 0;}
   };
 } // namespace minsky
 
