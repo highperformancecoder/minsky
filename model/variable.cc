@@ -154,13 +154,13 @@ shared_ptr<VariableValue> VariableBase::vValue() const
 vector<unsigned> VariableBase::dims() const
 {
   if (auto v=vValue()) return v->hypercube().dims();
-  else return {};
+  return {};
 }
     
 vector<string> VariableBase::dimLabels() const
 {
   if (auto v=vValue()) return v->hypercube().dimLabels();
-  else return {};
+  return {};
 }    
 
 
@@ -376,7 +376,7 @@ void VariableBase::exportAsCSV(const std::string& filename) const
     value->second->exportAsCSV(filename, name());
 }
 
-void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spec)
+void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spec) const
 {
   if (auto v=vValue()) {
     if (filename.find("://")!=std::string::npos)
@@ -389,7 +389,7 @@ void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spe
   }
 }
 
-void VariableBase::destroyFrame()
+void VariableBase::destroyFrame() const
 {
   if (auto vv=vValue())
     vv->csvDialog.destroyFrame();

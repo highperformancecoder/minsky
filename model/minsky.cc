@@ -1419,9 +1419,9 @@ namespace minsky
                          if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
-                               p->renderToSVG((prefix+"-"+p->title+".svg").c_str());
+                               p->renderToSVG(prefix+"-"+p->title+".svg");
                              else
-                               p->renderToSVG((prefix+"-"+str(plotNum++)+".svg").c_str());
+                               p->renderToSVG(prefix+"-"+str(plotNum++)+".svg");
                            }
                          return false;
                        });
@@ -1469,11 +1469,11 @@ namespace minsky
     canvas.requestRedraw();
   }
 
-  vector<string> Minsky::availableOperations() const
+  vector<string> Minsky::availableOperations() 
   {return enumVals<OperationType::Type>();}
-  vector<string> Minsky::variableTypes() const
+  vector<string> Minsky::variableTypes()
   {return enumVals<VariableType::Type>();}
-  vector<string> Minsky::assetClasses() const
+  vector<string> Minsky::assetClasses()
   {return enumVals<GodleyTable::AssetClass>();}
 
   void Minsky::autoLayout()
@@ -1538,18 +1538,18 @@ namespace minsky
   
   static std::unique_ptr<char[]> _defaultFont;
 
-  string Minsky::defaultFont() const
+  string Minsky::defaultFont()
   {return _defaultFont? _defaultFont.get(): "";}
   
   string Minsky::defaultFont(const std::string& x)
   {
     _defaultFont.reset(new char[x.length()+1]);
-    strcpy(_defaultFont.get(),x.c_str());
+    strncpy(_defaultFont.get(),x.c_str(),x.length()+1);
     ecolab::Pango::defaultFamily=_defaultFont.get();
     return x;
   }
 
-  double Minsky::fontScale() const
+  double Minsky::fontScale()
   {return ecolab::Pango::scaleFactor;}
   
   double Minsky::fontScale(double s)
@@ -1574,7 +1574,7 @@ namespace minsky
     f<<"\\end{document}\n";
   }
 
-  int Minsky::numOpArgs(OperationType::Type o) const
+  int Minsky::numOpArgs(OperationType::Type o)
   {
     OperationPtr op(o);
     return op->numPorts()-1;

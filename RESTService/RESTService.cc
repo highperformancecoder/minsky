@@ -40,8 +40,7 @@ namespace minsky
     static Minsky s_minsky;
     if (l_minsky)
       return *l_minsky;
-    else
-      return s_minsky;
+    return s_minsky;
   }
 
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}

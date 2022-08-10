@@ -227,7 +227,7 @@ namespace minsky
     return fc.coef*initValue(*vv->second, visited);
   }
 
-  void VariableValues::resetValue(VariableValue& v)
+  void VariableValues::resetValue(VariableValue& v) const
   {
     if (v.idx()<0) v.allocValue();
       // initialise variable only if its variable is not defined or it is a stock

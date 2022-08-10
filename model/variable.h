@@ -207,10 +207,10 @@ namespace minsky
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
-    void importFromCSV(std::string filename, const DataSpecSchema& spec);
+    void importFromCSV(std::string filename, const DataSpecSchema& spec) const;
 
     /// clean up popup window structures on window close
-    void destroyFrame();
+    void destroyFrame() const;
 
   };
 

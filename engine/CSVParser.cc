@@ -74,21 +74,20 @@ namespace escapedListSeparator
         tok+='\n';
         return;
       }
-      else if (is_quote(*next)) {
+      if (is_quote(*next)) {
         tok+=*next;
         return;
       }
-      else if (is_c(*next)) {
+      if (is_c(*next)) {
         tok+=*next;
         return;
       }
-      else if (is_escape(*next)) {
+      if (is_escape(*next)) {
         tok+=*next;
         return;
       }
-      else
-        // don't throw, but pass on verbatim
-        tok+=escape_.front()+*next;
+      // don't throw, but pass on verbatim
+      tok+=escape_.front()+*next;
     }
 
   public:
@@ -112,8 +111,7 @@ namespace escapedListSeparator
           last_ = false;
           return true;
         }
-        else
-          return false;
+        return false;
       }
       last_ = false;
       for (;next != end;++next) {
@@ -129,7 +127,7 @@ namespace escapedListSeparator
             last_ = true;
             return true;
           }
-          else tok+=*next;
+          tok+=*next;
         }
         else if (is_quote(*next)) {
           bInQuote=!bInQuote;

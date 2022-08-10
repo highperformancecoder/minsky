@@ -162,7 +162,7 @@ namespace minsky
     // TODO:: To be implemented... need to recreate child window
   }
 
-      double RenderNativeWindow::scaleFactor() const
+      double RenderNativeWindow::scaleFactor()
       {
 #ifdef WIN32
         DEVICE_SCALE_FACTOR scaleFactor;

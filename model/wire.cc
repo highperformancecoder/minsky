@@ -286,7 +286,7 @@ namespace
   
     assert(knots.size() > 2); 
     
-    int n = knots.size() - 1;
+    size_t n = knots.size() - 1;
     
     vector<pair<float,float>> result(2*n); 
  

@@ -44,8 +44,7 @@ namespace minsky
     static Minsky s_minsky;
     if (l_minsky)
       return *l_minsky;
-    else
-      return s_minsky;
+    return s_minsky;
   }
 
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
@@ -61,8 +60,7 @@ tuple<string,string> splitFirstComponent(const string& x)
   auto i=find(x.begin()+1, x.end(), '/');
   if (i==x.end())
     return std::make_tuple(x,string());
-  else
-    return std::make_tuple(string{x.begin(),i},string{i,x.end()});
+  return std::make_tuple(string{x.begin(),i},string{i,x.end()});
 }
 
 static cairo_status_t appendDataToBuffer(void *p, const unsigned char* data, unsigned length)
@@ -81,6 +79,7 @@ static cairo_status_t appendDataToBuffer(void *p, const unsigned char* data, uns
 }
 
 int main(int argc, const char* argv[])
+  try
 {
   unsigned short port=80;
   if (argc==1)
@@ -116,6 +115,7 @@ int main(int argc, const char* argv[])
   beast::flat_buffer buffer;
   
   for (;;)
+    try
     {
       tcp::socket socket{context};
       acceptor.accept(socket);
@@ -206,9 +206,15 @@ int main(int argc, const char* argv[])
           http::write(socket, res);
           cout<<ex.what()<<endl;
         }
+      catch (...) {cerr << "Unknown exception thrown"<<endl;}
       // redraw all surfaces that have requested it
       for (auto i: minsky::minsky().nativeWindowsToRedraw)
         i->draw();
       minsky::minsky().nativeWindowsToRedraw.clear();
     }
+    catch (const std::exception& ex) {cerr << "Exception thrown in draw(): "<<ex.what()<<endl;}
+    catch (...) {cerr << "Unknown exception thrown in draw()"<<endl;}
 }
+  catch (const std::exception& ex) {cerr << "Exception thrown in main(): "<<ex.what()<<endl; return 1;}
+  catch (...) {cerr << "Unknown exception thrown in main()"<<endl; return 1;}
+

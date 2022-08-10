@@ -301,7 +301,7 @@ namespace minsky
     /// load from a file
     void load(const std::string& filename);
 
-    void exportSchema(const std::string& filename, int schemaLevel=1);
+    /*static*/ void exportSchema(const std::string& filename, int schemaLevel=1);
 
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
@@ -431,16 +431,16 @@ namespace minsky
     }
 
     /// @{ the default used by Pango
-    std::string defaultFont() const;
-    std::string defaultFont(const std::string& x);
+    /*static*/ std::string defaultFont();
+    /*static*/ std::string defaultFont(const std::string& x);
     /// @}
 
     /// @{ an extra scaling factor of Pango fonts
-    double fontScale() const;
-    double fontScale(double);
+    /*static*/ double fontScale();
+    /*static*/ double fontScale(double);
     /// @}
     
-    int numOpArgs(OperationType::Type o) const;
+    /*static*/ int numOpArgs(OperationType::Type o);
     OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
 
     void latex(const std::string& filename, bool wrapLaTeXLines);
@@ -455,11 +455,11 @@ namespace minsky
     string latex2pango(const std::string& x) {return latexToPango(x.c_str());}
 
     /// list of available operations
-    std::vector<std::string> availableOperations() const;
+    /*static*/ std::vector<std::string> availableOperations();
     /// list of available variable types
-    std::vector<std::string> variableTypes() const;
+    /*static*/ std::vector<std::string> variableTypes();
     /// return list of available asset classes
-    std::vector<std::string> assetClasses() const;
+    /*static*/ std::vector<std::string> assetClasses();
 
     void autoLayout(); ///< auto layout current open group and recentre
     void randomLayout(); ///< randomly layout current open group and recentre

@@ -39,7 +39,7 @@ namespace minsky
 {
   namespace
   {
-    const unsigned numLines = 4; // number of simultaneous variables to plot, on a side
+    const size_t numLines = 4; // number of simultaneous variables to plot, on a side
 
     const unsigned nBoundsPorts=6;
     // orientation of bounding box ports

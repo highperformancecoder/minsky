@@ -276,7 +276,7 @@ namespace minsky
                       }
                     else
                       //Display values of parameters used as initial conditions in Godley tables. for ticket 1126.  
-                      if (m_godleyIcon.table.initialConditionRow(row) && cminsky().displayValues) text=defang(text+value);
+                      if (m_godleyIcon.table.initialConditionRow(row) && cminsky().displayValues) text=defang(text+=value);
                       else text=defang(text);
                   }
                 pango.setMarkup(text);

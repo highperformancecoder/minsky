@@ -61,8 +61,7 @@ namespace civita
   {
     if (auto s=any_cast<string>(&x))
       return *s;
-    else
-      return any_cast<const char*>(x);
+    return any_cast<const char*>(x);
   }
 
   bool AnyLess::operator()(const boost::any& x, const boost::any& y) const

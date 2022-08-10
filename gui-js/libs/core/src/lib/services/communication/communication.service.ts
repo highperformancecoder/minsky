@@ -13,6 +13,7 @@ import {
   TypeValueName,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
+  isMacOS,
   green
 } from '@minsky/shared';
 import { BehaviorSubject } from 'rxjs';

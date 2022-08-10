@@ -107,7 +107,7 @@ namespace minsky
 #endif
   }
 
-  const ecolab::cairo::SurfacePtr& WindowInformation::getBufferSurface()
+  const ecolab::cairo::SurfacePtr& WindowInformation::getBufferSurface() const
   {
     return bufferSurface;
   }
@@ -148,7 +148,7 @@ namespace minsky
     isRendering = value;
   }
 
-  bool WindowInformation::getRenderingFlag()
+  bool WindowInformation::getRenderingFlag() const
   {
     return isRendering;
   }
