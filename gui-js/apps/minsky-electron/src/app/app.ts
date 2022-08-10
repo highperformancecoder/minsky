@@ -193,6 +193,16 @@ export default class App {
   }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
+
+    // process CLI options prior to running up any GUI
+    for (var arg in process.argv)
+      switch(process.argv[arg]) {
+      case '--version':
+        process.stdout.write(`${callRESTApi("/minsky/minskyVersion") as string}\n`);
+        process.exit(0);
+      }
+    
+    
     // we pass the Electron.App object and the
     // Electron.BrowserWindow into this function
     // so this class has no dependencies. This
@@ -202,7 +212,6 @@ export default class App {
 
     App.application.commandLine.appendSwitch('disable-gpu');
     // Rendering was not working on some window's machines without disabling gpu
-
     App.application.commandLine.appendSwitch('high-dpi-support', '1');
     // This probably supports high-res fonts, but we don't know exactly what implications it has!
 
