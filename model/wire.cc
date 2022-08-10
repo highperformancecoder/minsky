@@ -303,12 +303,13 @@ namespace
     newTarget[0].second = target[0].second*(1.0 / triDiag[0][0]);        
     
  
-    for (int i = 1; i < n-1; i++)
- 	   for (int j = 0; j < n; j++)
-           if (i == j-1) newTriDiag[i][j] = triDiag[i][j] / (triDiag[i][i] - triDiag[i][j-2] * newTriDiag[i-1][j-1]);
+    for (size_t i = 1; i < n-1; i++)
+      for (size_t j = 0; j < n; j++)
+        if (i == j-1)
+          newTriDiag[i][j] = triDiag[i][j] / (triDiag[i][i] - triDiag[i][j-2] * newTriDiag[i-1][j-1]);
  
-    for (int i = 1; i < n; i++)
-      for (int j = 0; j < n; j++) {
+    for (size_t i = 1; i < n; i++)
+      for (size_t j = 0; j < n; j++) {
          if (i == j + 1)
          {
 			float targetScale = 1.0/(triDiag[i][i] - triDiag[i][j] * newTriDiag[i-1][j+1]); 
@@ -331,7 +332,7 @@ namespace
     }
  
     // calculate remaining control points c_i,1 directly:
-    for (int i = 0; i < n-1; i++) {
+    for (size_t i = 0; i < n-1; i++) {
       result[n+i].first = 2.0*knots[i+1].first-(result[i+1].first);
       result[n+i].second = 2.0*knots[i+1].second-(result[i+1].second);
     }
