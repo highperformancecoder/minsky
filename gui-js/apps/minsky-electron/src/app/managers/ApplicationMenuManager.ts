@@ -464,7 +464,7 @@ export class ApplicationMenuManager {
     command: string,
     extraArgs: Array<any> = []
   ) {
-    const filePath = await CommandsManager.getFilePathFromExportCanvasDialog(
+    var filePath = await CommandsManager.getFilePathFromExportCanvasDialog(
       extension
     );
     if (filePath) {

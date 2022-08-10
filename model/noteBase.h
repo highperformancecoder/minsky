@@ -28,6 +28,7 @@ namespace minsky
   {
     mutable bool mouseFocus=false; ///<true if target of a mouseover
     bool selected=false; ///<true if selected for cut, copy or group operation
+    bool bookmark=false; ///< Is this item also a bookmark?
     std::string detailedText, tooltip;
   };
 }

@@ -16,6 +16,7 @@ import {
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
   events,
+  isMacOS,
   green
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -162,7 +163,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   }
 
   async sendMouseEvent(x: number, y: number, type: string) {
-    const command = `${this.namedItemSubCommand}/${type} [${x},${y}]`;
+    const yoffs=isMacOS()? -20: 0; // why, o why, Mac?
+    const command = `${this.namedItemSubCommand}/${type} [${x},${y+yoffs}]`;
 
     await this.electronService.sendMinskyCommandAndRender({
       command,

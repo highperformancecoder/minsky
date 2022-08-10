@@ -274,6 +274,7 @@ namespace minsky
     bool redrawRequested() const {return m_redrawRequested;}
     /// request a redraw on the screen
     void requestRedraw() {m_redrawRequested=true; if (surface().get()) surface()->requestRedraw();}
+    bool hasScrollBars() const override {return true;}
   };
 }
 
