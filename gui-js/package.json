@@ -1,6 +1,8 @@
 {
   "name": "minsky",
   "version":"3.0.0-rc.9",
+  "author": "High Performance Coders",
+  "description": "Graphical dynamical systems simulator oriented towards economics",
   "build": {
     "artifactName": "${productName}-${version}.${ext}",
     "mac": {
@@ -8,6 +10,9 @@
     },
     "win": {
       "icon": "apps/minsky-electron/src/assets/MinskyLogo.ico"
+    },
+    "linux": {
+      "category": "Science"
     }
   },
   "license": "MIT",
