@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ResizedEvent } from 'angular-resize-event';
 import {
   AppLayoutPayload,
   availableOperations,
@@ -497,7 +498,7 @@ export class CommunicationService {
     // }
   }
 
-  async setWindowSizeAndCanvasOffsets(isResizeEvent: boolean) {
+  async setWindowSizeAndCanvasOffsets() {
     const isMainWindow = this.windowUtilityService.isMainWindow();
     // Code for canvas offset values
     if (this.electronService.isElectron && isMainWindow) {
@@ -505,7 +506,6 @@ export class CommunicationService {
       const offset = this.windowUtilityService.getMinskyCanvasOffset();
       const drawableArea = this.windowUtilityService.getDrawableArea();
       this.electronService.ipcRenderer.send(events.APP_LAYOUT_CHANGED, {
-        isResizeEvent: isResizeEvent,
         offset: offset,
         drawableArea: drawableArea,
       } as AppLayoutPayload);

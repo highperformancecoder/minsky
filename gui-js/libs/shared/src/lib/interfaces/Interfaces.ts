@@ -37,8 +37,7 @@ export interface ElectronCanvasOffset {
 }
 
 export interface AppLayoutPayload {
-  isResizeEvent: boolean;
-  drawableArea: {
+ drawableArea: {
     width: number;
     height: number;
   };

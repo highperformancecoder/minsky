@@ -161,13 +161,11 @@ export class RestServiceManager {
     return this.currentTab;
   }
 
-  // arrange for renderFrame to be called, throttled
+  // arrange for renderFrame to be called
   public static async reInvokeRenderFrame() {
-    if (!this.renderFrameRedraw)
-        this.renderFrameRedraw=setTimeout(async ()=>{await this.handleMinskyProcess({
+    await this.handleMinskyProcess({
       command: commandsMapping.RENDER_FRAME_SUBCOMMAND,
-        })}, 10);
-    this.renderFrameRedraw.refresh();
+    });
   }
 
   private static async processCommandsInQueue(): Promise<unknown> {

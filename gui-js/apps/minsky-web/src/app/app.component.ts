@@ -28,7 +28,7 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     // When the event DOMContentLoaded occurs, it is safe to access the DOM
     document.addEventListener('DOMContentLoaded', async () => {
-      await this.cmService.setWindowSizeAndCanvasOffsets(false);
+      await this.cmService.setWindowSizeAndCanvasOffsets();
     });
 
     this.cmService.setBackgroundColor();
@@ -84,8 +84,8 @@ export class AppComponent implements AfterViewInit {
       });
   }
 
-  async windowResize(event: ResizedEvent) {
-    await this.cmService.setWindowSizeAndCanvasOffsets(true);
+  async windowResize() {
+    await this.cmService.setWindowSizeAndCanvasOffsets();
   }
 
   changeTab(tab: MainRenderingTabs) {
