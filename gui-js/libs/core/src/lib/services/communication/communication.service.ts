@@ -483,7 +483,7 @@ export class CommunicationService {
         return;
       }
 
-      const yoffs=isMacOS()? -20: 0; // why, o why, Mac?
+      const yoffs=isMacOS()? 5: 0; // why, o why, Mac?
       
       if (command) {
         await this.electronService.sendMinskyCommandAndRender({

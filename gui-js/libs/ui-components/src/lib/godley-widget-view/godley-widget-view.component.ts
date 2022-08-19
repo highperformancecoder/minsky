@@ -129,9 +129,13 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
       );
     });
 
-    this.godleyCanvasContainer.addEventListener('mousedown', (event) => {
+    this.godleyCanvasContainer.addEventListener('mousedown', async (event) => {
       const { clientX, clientY } = event;
-      this.electronService.sendMinskyCommandAndRender({command: this.namedItemSubCommand, mouseX: clientX, mouseY: clientY}, events.GODLEY_VIEW_MOUSEDOWN);
+      await this.sendMouseEvent(
+        clientX,
+        clientY,
+        commandsMapping.MOUSEDOWN_SUBCOMMAND
+      );
     });
 
     this.godleyCanvasContainer.addEventListener('mouseup', async (event) => {
