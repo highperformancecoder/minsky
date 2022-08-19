@@ -238,25 +238,12 @@ export class ApplicationMenuManager {
         {
           label: 'Undo',
           accelerator: 'CmdOrCtrl + Z',
-          async click() {
-            const numberOfTimes = 1;
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.UNDO} ${numberOfTimes}`,
-            });
-            await CommandsManager.requestRedraw();
-          },
+          async click() {CommandsManager.undo(1);},
         },
         {
           label: 'Redo',
           accelerator: 'CmdOrCtrl + Y',
-          async click() {
-            const numberOfTimes = -1;
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.REDO} ${numberOfTimes}`,
-            });
-
-            await CommandsManager.requestRedraw();
-          },
+          async click() {CommandsManager.undo(-1);},
         },
         {
           label: 'Cut',

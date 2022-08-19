@@ -734,6 +734,18 @@ export class CommandsManager {
     return true;
   }
 
+  static async undo(changes: number) {
+    WindowManager.activeWindows.forEach((window) => {
+      if (!window.isMainWindow) {
+        window.context.close();
+      }
+    });
+    await RestServiceManager.handleMinskyProcess({
+      command: `${commandsMapping.UNDO} ${changes}`,
+    });
+    await CommandsManager.requestRedraw();
+  }
+  
   static async createNewSystem() {
     const canProceed = await this.canCurrentSystemBeClosed();
     if (!canProceed) {
