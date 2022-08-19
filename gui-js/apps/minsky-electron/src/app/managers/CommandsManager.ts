@@ -758,6 +758,7 @@ export class CommandsManager {
       commandsMapping.POP_FLAGS,
       `${commandsMapping.PUSH_HISTORY} true`,
     ];
+    RestServiceManager.currentMinskyModelFilePath="";
 
     for (const command of newSystemCommands) {
       await RestServiceManager.handleMinskyProcess({ command });
@@ -1385,7 +1386,6 @@ export class CommandsManager {
   }
 
     static async save() {
-        console.log("+++",RestServiceManager.currentMinskyModelFilePath);
         if (RestServiceManager.currentMinskyModelFilePath) {
             await RestServiceManager.handleMinskyProcess({
                 command: commandsMapping.SAVE,
@@ -1404,6 +1404,8 @@ export class CommandsManager {
         if (canceled || !filePath) {
             return;
         }
+
+      WindowManager.getMainWindow().setTitle(filePath);
 
         await RestServiceManager.handleMinskyProcess({
             command: commandsMapping.SAVE,

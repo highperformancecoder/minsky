@@ -1,7 +1,6 @@
 import {
   ActiveWindow,
   green,
-  isMacOS,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   red,
   rendererAppName,
