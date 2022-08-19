@@ -686,7 +686,6 @@ export class CommunicationService {
     }
 
     const isMainWindow = this.windowUtilityService.isMainWindow();
-    process.stdout.write(`event.key=${event.key}`);
     if (isMainWindow && (event.ctrlKey || event.metaKey) && (event.key.match("[Noq]")))
       return; // perform menu accelerator only
 
