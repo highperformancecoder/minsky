@@ -662,8 +662,8 @@ export class CommandsManager {
       return null;
     }
     
-      // add extension if not already provided
-    if (!filePath.match(`/${type}$/`))
+    // add extension if not already provided
+    if (!filePath.toLowerCase().endsWith(type))
       filePath+=`.${type}`;
 
     return JSON5.stringify(filePath);
