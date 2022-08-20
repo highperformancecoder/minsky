@@ -1,6 +1,6 @@
 {
   "name": "minsky",
-  "version":"3.0.0-rc.10",
+  "version": "3.0.0-rc.10",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "build": {
@@ -71,7 +71,6 @@
     "@nrwl/angular": "^12.10.0",
     "@nrwl/linter": "12.3.4",
     "@nrwl/tao": "12.3.4",
-    "angular-resize-event": "^2.1.0",
     "ansi-html": "^0.0.9",
     "ansi-regex": "^6.0.1",
     "bindings": "^1.5.0",

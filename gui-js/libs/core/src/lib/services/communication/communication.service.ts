@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ResizedEvent } from 'angular-resize-event';
 import {
   AppLayoutPayload,
   availableOperations,
