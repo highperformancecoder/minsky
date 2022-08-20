@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
 import { commandsMapping, events, MainRenderingTabs } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { ResizedEvent } from 'angular-resize-event';
 import { AppConfig } from '../environments/environment';
 
 @Component({
