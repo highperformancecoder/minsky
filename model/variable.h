@@ -207,10 +207,10 @@ namespace minsky
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
-    void importFromCSV(std::string filename, const DataSpecSchema& spec);
+    void importFromCSV(std::string filename, const DataSpecSchema& spec) const;
 
     /// clean up popup window structures on window close
-    void destroyFrame();
+    void destroyFrame() const;
 
   };
 
@@ -223,7 +223,7 @@ namespace minsky
     Type type() const override {return T;}
     std::size_t numPorts() const override;
 
-    Variable(const Variable& x): VariableBase(x) {this->addPorts();}
+    Variable(const Variable& x): ItemT<Variable<T>, VariableBase>(x) {this->addPorts();}
     Variable& operator=(const Variable& x) {
       VariableBase::operator=(x);
       this->addPorts();

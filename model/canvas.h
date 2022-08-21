@@ -122,6 +122,10 @@ namespace minsky
       requestRedraw();
     }
 
+    std::vector<float> position() const override {
+      return {model->x(), model->y()};
+    }
+
     void zoom(double x, double y, double z) override {
       model->zoom(x,y,z);
       requestRedraw();
@@ -270,6 +274,7 @@ namespace minsky
     bool redrawRequested() const {return m_redrawRequested;}
     /// request a redraw on the screen
     void requestRedraw() {m_redrawRequested=true; if (surface().get()) surface()->requestRedraw();}
+    bool hasScrollBars() const override {return true;}
   };
 }
 

@@ -1,6 +1,7 @@
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { StoreManager } from './StoreManager';
+import { BookmarkManager } from './BookmarkManager';
 
 export class RecentFilesManager {
   static addFileToRecentFiles(filepath: string) {
@@ -46,7 +47,8 @@ export class RecentFilesManager {
         new MenuItem({
           label: filePath,
           click: async () => {
-            await CommandsManager.openNamedFile(filePath);
+              await CommandsManager.openNamedFile(filePath);
+              BookmarkManager.updateBookmarkList();
           },
         })
       );

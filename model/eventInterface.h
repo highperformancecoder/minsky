@@ -36,6 +36,8 @@ namespace minsky
     virtual void zoom(double x, double y, double z) {}
     /// move this so that (x,y) is centred
     virtual void moveTo(float x, float y) {}
+    /// current centre coordinates
+    virtual std::vector<float> position() const {return {0,0};}
     
     /// handle key press over current itemFocus,
     /// @param keySym the X key sym code

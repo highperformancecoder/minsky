@@ -71,7 +71,7 @@ namespace minsky
         itemFocus.reset();
         break;
       case internal:
-        if (itemFocus=itemAt(x-offsx,y-offsy))
+        if ((itemFocus=itemAt(x-offsx,y-offsy)))
           {
             moveOffsX=x-itemFocus->itemTabX;
             moveOffsY=y-itemFocus->itemTabY;

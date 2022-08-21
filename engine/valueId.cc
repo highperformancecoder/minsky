@@ -41,7 +41,7 @@ namespace minsky
   {
       auto tmp=":"+utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
       if (scope==0) return tmp;
-      else return to_string(scope)+tmp;
+      return to_string(scope)+tmp;
   }
 
   string valueId(const string& name)
@@ -94,8 +94,7 @@ namespace minsky
   {
     if (name.empty() || !scope || !scope->group.lock())
       return valueId(0,utf_to_utf<char>(name)); // retain previous global var id
-    else
-      return valueId(size_t(scope.get()), utf_to_utf<char>(name));
+    return valueId(size_t(scope.get()), utf_to_utf<char>(name));
 }
   
   std::string uqName(const std::string& name)
@@ -103,7 +102,6 @@ namespace minsky
     string::size_type p=name.rfind(':');
     if (p==string::npos)
       return utf_to_utf<char>(name);
-    else
     return utf_to_utf<char>(name).substr(p+1);
   }
  

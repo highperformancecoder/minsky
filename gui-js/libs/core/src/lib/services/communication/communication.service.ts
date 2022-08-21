@@ -13,6 +13,7 @@ import {
   TypeValueName,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
+  isMacOS,
   green
 } from '@minsky/shared';
 import { BehaviorSubject } from 'rxjs';
@@ -64,9 +65,14 @@ export class CommunicationService {
   delay = 0;
   runUntilTime: number;
 
+  resetScrollWhenIdle: any;
+
+    
   private dialogRef: MatDialogRef<DialogComponent, any> = null;
   availableOperations = null;
 
+  resetScroll=()=>{}; // callback to reset canvas scrollbars
+  
   constructor(
     // private socket: Socket,
     private electronService: ElectronService,
@@ -170,86 +176,89 @@ export class CommunicationService {
         let autoHandleMinskyProcess = true;
 
         switch (target) {
-          case 'ZOOM_OUT':
-            autoHandleMinskyProcess = false;
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${command} [${canvasWidth / 2}, ${
+        case 'ZOOM_OUT':
+          autoHandleMinskyProcess = false;
+          await this.electronService.sendMinskyCommandAndRender({
+            command: `${command} [${canvasWidth / 2}, ${
                 canvasHeight / 2
               }, ${ZOOM_OUT_FACTOR}]`,
-            });
-            await this.electronService.sendMinskyCommandAndRender({
-              command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-            });
-            break;
-          case 'ZOOM_IN':
-            autoHandleMinskyProcess = false;
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${command} [${canvasWidth / 2}, ${
+          });
+          await this.electronService.sendMinskyCommandAndRender({
+            command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
+          });
+          break;
+          this.resetScroll();
+        case 'ZOOM_IN':
+          autoHandleMinskyProcess = false;
+          await this.electronService.sendMinskyCommandAndRender({
+            command: `${command} [${canvasWidth / 2}, ${
                 canvasHeight / 2
               }, ${ZOOM_IN_FACTOR}]`,
-            });
-            await this.electronService.sendMinskyCommandAndRender({
-              command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-            });
-            break;
-          case 'RESET_ZOOM':
-            autoHandleMinskyProcess = false;
-            await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
-
-            break;
-          case 'ZOOM_TO_FIT':
-            autoHandleMinskyProcess = false;
-            await this.zoomToFit(canvasWidth, canvasHeight);
-            break;
-
-          case 'SIMULATION_SPEED':
-            autoHandleMinskyProcess = false;
-            await this.updateSimulationSpeed(message);
-
-            break;
-
-          case 'PLAY':
-            autoHandleMinskyProcess = false;
-
-            this.currentReplayJSON.length
-              ? this.continueReplay()
-              : this.initSimulation();
-
-            break;
-
-          case 'PAUSE':
-            autoHandleMinskyProcess = false;
-
-            this.currentReplayJSON.length
-              ? this.pauseReplay()
-              : await this.pauseSimulation();
-
-            break;
-
-          case 'RESET':
-            autoHandleMinskyProcess = false;
-
-            this.showPlayButton$.next(true);
-            this.currentReplayJSON.length
-              ? this.stopReplay()
-              : await this.stopSimulation();
-
-            break;
-
-          case 'STEP':
-            autoHandleMinskyProcess = false;
-            this.currentReplayJSON.length
-              ? this.stepReplay()
-              : await this.stepSimulation();
-
-            break;
-
-          case 'REVERSE_CHECKBOX':
-            command = `${command} ${message.value}`;
-            break;
-
-          default:
-            break;
+          });
+          await this.electronService.sendMinskyCommandAndRender({
+            command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
+          });
+          this.resetScroll();
+          break;
+        case 'RESET_ZOOM':
+          autoHandleMinskyProcess = false;
+          await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
+          this.resetScroll();
+          break;
+        case 'ZOOM_TO_FIT':
+          autoHandleMinskyProcess = false;
+          await this.zoomToFit(canvasWidth, canvasHeight);
+          this.resetScroll();
+          break;
+          
+        case 'SIMULATION_SPEED':
+          autoHandleMinskyProcess = false;
+          await this.updateSimulationSpeed(message);
+          
+          break;
+          
+        case 'PLAY':
+          autoHandleMinskyProcess = false;
+          
+          this.currentReplayJSON.length
+            ? this.continueReplay()
+            : this.initSimulation();
+          
+          break;
+          
+        case 'PAUSE':
+          autoHandleMinskyProcess = false;
+          
+          this.currentReplayJSON.length
+            ? this.pauseReplay()
+            : await this.pauseSimulation();
+          
+          break;
+          
+        case 'RESET':
+          autoHandleMinskyProcess = false;
+          
+          this.showPlayButton$.next(true);
+          this.currentReplayJSON.length
+            ? this.stopReplay()
+            : await this.stopSimulation();
+          
+          break;
+          
+        case 'STEP':
+          autoHandleMinskyProcess = false;
+          this.currentReplayJSON.length
+            ? this.stepReplay()
+            : await this.stepSimulation();
+          
+          break;
+          
+        case 'REVERSE_CHECKBOX':
+          command = `${command} ${message.value}`;
+          break;
+          
+        default:
+          break;
         }
 
         if (command && autoHandleMinskyProcess) {
@@ -406,16 +415,11 @@ export class CommunicationService {
     this.mouseX = clientX;
     this.mouseY = clientY - Math.round(offset.top);
 
-    // const clickData = {
-    //   type,
-    //   clientX,
-    //   clientY,
-    // };
-
     if (event === 'contextmenu') {
       this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
         x: this.mouseX,
         y: this.mouseY,
+        type: "canvas",
       });
       return;
     }
@@ -478,11 +482,13 @@ export class CommunicationService {
         return;
       }
 
+      const yoffs=isMacOS()? 5: 0; // why, o why, Mac?
+      
       if (command) {
         await this.electronService.sendMinskyCommandAndRender({
           command: command,
           mouseX: clientX,
-          mouseY: this.mouseY,
+          mouseY: this.mouseY+yoffs,
         });
       }
     }
@@ -491,7 +497,7 @@ export class CommunicationService {
     // }
   }
 
-  async setWindowSizeAndCanvasOffsets(isResizeEvent: boolean) {
+  async setWindowSizeAndCanvasOffsets() {
     const isMainWindow = this.windowUtilityService.isMainWindow();
     // Code for canvas offset values
     if (this.electronService.isElectron && isMainWindow) {
@@ -499,7 +505,6 @@ export class CommunicationService {
       const offset = this.windowUtilityService.getMinskyCanvasOffset();
       const drawableArea = this.windowUtilityService.getDrawableArea();
       this.electronService.ipcRenderer.send(events.APP_LAYOUT_CHANGED, {
-        isResizeEvent: isResizeEvent,
         offset: offset,
         drawableArea: drawableArea,
       } as AppLayoutPayload);
@@ -642,9 +647,11 @@ export class CommunicationService {
       },
     });
 
-    await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-    });
+      // schedule resetScroll when zooming stops
+      if (!this.resetScrollWhenIdle)
+          this.resetScrollWhenIdle=setTimeout(()=>{var self=this; self.resetScroll();}, 100);
+      else
+          this.resetScrollWhenIdle.refresh();
   };
 
   async handleKeyUp(event: KeyboardEvent) {
@@ -671,14 +678,18 @@ export class CommunicationService {
         'ArrowDown',
         'PageUp',
         'PageDown',
-      ].includes(event.key)
+      ].includes(event.key) || (event.key==' ' && !this.dialogRef)
     ) {
       // this is to prevent scroll events on press if arrow and page up/down keys
       event.preventDefault();
     }
 
     const isMainWindow = this.windowUtilityService.isMainWindow();
+    if (isMainWindow && (event.ctrlKey || event.metaKey) && (event.key.match("[Noq]")))
+      return; // perform menu accelerator only
 
+    
+    
     if (event.shiftKey && isMainWindow) {
       this.isShiftPressed = true;
       this.showDragCursor$.next(true);
@@ -704,6 +715,7 @@ export class CommunicationService {
       location: event.location,
     };
 
+    
     if (!isMainWindow) {
       await this.electronService.sendMinskyCommandAndRender(
         payload,

@@ -35,6 +35,9 @@
 #include <vector>
 #include <cairo_base.h>
 
+#include <iostream>
+#include <assert.h>
+
 namespace classdesc
 {
   //  class json_pack_t;
@@ -131,8 +134,8 @@ namespace minsky
     /// remove all controlled items their owning group
     void removeControlledItems() const;
   };
-  
-  class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>,
+
+  class Item: public NoteBase, public ecolab::TCLAccessor<Item,double>,
               public classdesc::PolyRESTProcessBase,
               public classdesc::Exclude<ItemExclude>
   {
@@ -230,8 +233,6 @@ namespace minsky
     float top()    const;
     float bottom() const;
 
-    /// Is this item also a bookmark?
-    bool bookmark=false;
     /// Id of bookmark associated with this
     std::string bookmarkId() const {return tooltip.empty()? std::to_string(size_t(this)): tooltip;}
     /// adjust bookmark list to reflect current configuration
@@ -350,7 +351,7 @@ namespace minsky
   
   /** curiously recursive template pattern for generating overrides */
   template <class T, class Base=Item>
-  struct ItemT: virtual public Base
+  struct ItemT: public Base
   {
     std::string classType() const override {
       auto s=classdesc::typeName<T>();

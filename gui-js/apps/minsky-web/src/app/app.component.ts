@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
 import { commandsMapping, events, MainRenderingTabs } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { ResizedEvent } from 'angular-resize-event';
 import { AppConfig } from '../environments/environment';
 
 @Component({
@@ -28,7 +27,7 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     // When the event DOMContentLoaded occurs, it is safe to access the DOM
     document.addEventListener('DOMContentLoaded', async () => {
-      await this.cmService.setWindowSizeAndCanvasOffsets(false);
+      await this.cmService.setWindowSizeAndCanvasOffsets();
     });
 
     this.cmService.setBackgroundColor();
@@ -65,23 +64,27 @@ export class AppComponent implements AfterViewInit {
 
   // submits form with class="submit" when pressed Enter key
   private handleEnterKey(event: KeyboardEvent) {
-    (document.activeElement as HTMLElement).blur();
-    //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)
+      // disable invoking OK button if marked dontCloseOnReturn
+      if (this.electronService.remote.getCurrentWindow().hasOwnProperty("dontCloseOnReturn")) return;
 
-    // TODO:: Are there scenarios where we need to pass Enter key to the backend?
-    const buttons = Array.from(
-      document.getElementsByClassName('submit')
-    ) as HTMLElement[];
-    if (buttons.length > 0) {
-      event.preventDefault();
-    }
-    buttons.forEach((b) => {
-      b.click();
-    });
+      (document.activeElement as HTMLElement).blur();
+      //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)
+
+      // TODO:: Are there scenarios where we need to pass Enter key to the backend?
+      
+      const buttons = Array.from(
+          document.getElementsByClassName('submit')
+      ) as HTMLElement[];
+      if (buttons.length > 0) {
+          event.preventDefault();
+      }
+      buttons.forEach((b) => {
+          b.click();
+      });
   }
 
-  async windowResize(event: ResizedEvent) {
-    await this.cmService.setWindowSizeAndCanvasOffsets(true);
+  async windowResize() {
+    await this.cmService.setWindowSizeAndCanvasOffsets();
   }
 
   changeTab(tab: MainRenderingTabs) {
@@ -97,6 +100,7 @@ export class AppComponent implements AfterViewInit {
       container.scrollLeft=scrollableArea.width / 2;
       const payload = { newTab: tab };
       this.electronService.ipcRenderer.send(events.CHANGE_MAIN_TAB, payload);
+      this.cmService.resetScroll();
     }
   }
 

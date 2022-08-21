@@ -9,6 +9,7 @@ import {
   ChangeTabPayload,
   commandsMapping,
   events,
+  DescriptionPayload,
   MinskyProcessPayload,
 } from '@minsky/shared';
 import * as debug from 'debug';
@@ -72,11 +73,7 @@ ipcMain.on(
   async (event, payload: AppLayoutPayload) => {
     if (event.sender.id === WindowManager.getMainWindow().id) {
       WindowManager.onAppLayoutChanged(payload);
-    }
-
-    if (payload.isResizeEvent) {
-      // TODO:: We need to throttle the re-invocation of renderFrame
-      await RestServiceManager.reInvokeRenderFrame();
+      RestServiceManager.reInvokeRenderFrame();
     }
   }
 );
@@ -120,6 +117,14 @@ ipcMain.handle(
     return await KeyBindingsManager.handleOnKeyPress(payload);
   }
 );
+
+ipcMain.handle(
+  events.SAVE_DESCRIPTION,
+  async (event, payload: DescriptionPayload) => {
+    return await BookmarkManager.saveDescription(payload);
+  }
+);
+
 
 ipcMain.on(events.KEY_PRESS, async (event, payload: MinskyProcessPayload) => {
   // this is a synchronous handler for events.KEY_PRESS
@@ -179,8 +184,8 @@ ipcMain.handle(
   }
 );
 
-ipcMain.on(events.CONTEXT_MENU, async (event, { x, y }) => {
-  await ContextMenuManager.initContextMenu(x, y);
+ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command }) => {
+  await ContextMenuManager.initContextMenu(x, y, type, command);
 });
 
 ipcMain.on(

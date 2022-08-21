@@ -154,13 +154,13 @@ shared_ptr<VariableValue> VariableBase::vValue() const
 vector<unsigned> VariableBase::dims() const
 {
   if (auto v=vValue()) return v->hypercube().dims();
-  else return {};
+  return {};
 }
     
 vector<string> VariableBase::dimLabels() const
 {
   if (auto v=vValue()) return v->hypercube().dimLabels();
-  else return {};
+  return {};
 }    
 
 
@@ -197,6 +197,9 @@ string VariableBase::name(const std::string& name)
   m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
   ensureValueExists(tmpVV.get(),name);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
+  if (auto controllingItem=controller.lock())
+    // integrals in particular may have had their size changed with intVar changing name
+    controllingItem->updateBoundingBox();
   return this->name();
 }
 
@@ -212,13 +215,13 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
       minsky().variableValues.count(valueId)==0)
     {
       assert(isValueId(valueId));
-	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
+      // Ensure value of variable is preserved after rename. 	      
       if (vv==nullptr)
         minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"")).
           first->second->m_scope=minsky::scope(group.lock(),name());
-      // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
+      // Ensure variable names are updated correctly everywhere they appear. 
       else
-        minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv));
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv)).first->second->name=nm;
     }
 }
 
@@ -376,19 +379,20 @@ void VariableBase::exportAsCSV(const std::string& filename) const
     value->second->exportAsCSV(filename, name());
 }
 
-void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spec)
+void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spec) const
 {
   if (auto v=vValue()) {
     if (filename.find("://")!=std::string::npos)
       filename = v->csvDialog.loadWebFile(filename);
     std::ifstream is(filename);
     v->csvDialog.spec=spec;
+    v->csvDialog.url=filename;
     loadValueFromCSVFile(*v, is, v->csvDialog.spec);
     minsky().populateMissingDimensionsFromVariable(*v);
   }
 }
 
-void VariableBase::destroyFrame()
+void VariableBase::destroyFrame() const
 {
   if (auto vv=vValue())
     vv->csvDialog.destroyFrame();

@@ -60,20 +60,17 @@ namespace minsky
     map<double, double>::const_iterator v=data.lower_bound(x);
     if (v==data.end())
       return data.rbegin()->second;
-    else if (v==data.begin())
+    if (v==data.begin())
       return v->second;
-    else if (v->first > x)
+    if (v->first > x)
       {
         map<double, double>::const_iterator v0=v;
         --v0;
         return (x-v0->first)*(v->second-v0->second)/
           (v->first-v0->first)+v0->second;
       }
-    else
-      {
-        assert(v->first==x);
-        return v->second;
-      }
+    assert(v->first==x);
+    return v->second;
   }
 
   double DataOp::deriv(double x) const
@@ -89,8 +86,7 @@ namespace minsky
         if (v2==data.end()) v2=v;
         return (v2->second-v1->second)/(v2->first-v1->first);
       }
-    else 
-      return (v->second-v1->second)/(v->first-v1->first);
+    return (v->second-v1->second)/(v->first-v1->first);
   }
 
   void DataOp::pack(classdesc::pack_t& x, const string& d) const

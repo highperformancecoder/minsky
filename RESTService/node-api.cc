@@ -61,6 +61,10 @@ extern "C"
          (napi_env env, const char* str, size_t length, napi_value* result),
          (env,str,length,result));
 
+   NAPIFN(napi_create_string_utf16,
+         (napi_env env, const char16_t* str, size_t length, napi_value* result),
+         (env,str,length,result));
+  
   NAPIFN(napi_set_property,
          (napi_env env, napi_value object, napi_value key,napi_value value),
          (env,object,key,value));

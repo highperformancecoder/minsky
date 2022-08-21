@@ -23,6 +23,13 @@ export interface MinskyProcessPayload {
   location?: number;
 }
 
+export interface DescriptionPayload {
+  item: string;
+  tooltip: string;
+  detailedText: string;
+  bookmark: boolean;
+}
+
 export interface ElectronCanvasOffset {
   left: number;
   top: number;
@@ -30,8 +37,7 @@ export interface ElectronCanvasOffset {
 }
 
 export interface AppLayoutPayload {
-  isResizeEvent: boolean;
-  drawableArea: {
+ drawableArea: {
     width: number;
     height: number;
   };
@@ -84,9 +90,10 @@ export enum ReplayRecordingStatus {
 }
 
 export interface CanvasItem {
-  classType: ClassType;
-  value: number;
-  id: number;
+    classType: ClassType;
+    displayContents: boolean;
+    value: number;
+    id: number;
 }
 
 export interface CreateWindowPayload extends Electron.BrowserWindowConstructorOptions {

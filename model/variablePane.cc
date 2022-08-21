@@ -68,9 +68,17 @@ namespace minsky
     return vars[idx];
   }
 
-  void VariablePane::update(unsigned width,unsigned height)
+  void VariablePane::updateWithHeight(unsigned height)
   {
     const unsigned typicalHeight=38;
+    m_numRows=height/typicalHeight;
+    update();
+  }
+
+  
+  void VariablePane::update()
+  {
+    if (!m_numRows) return;
     vars.clear();
     for (auto& v: cminsky().variableValues)
       {
@@ -78,7 +86,6 @@ namespace minsky
         vars.emplace_back(*v.second);
       }
 
-    m_numRows=height/typicalHeight;
     m_numCols=vars.size()/m_numRows+1;
     unsigned gridSize=m_numRows*m_numCols;
     while (vars.size()<gridSize) vars.emplace_back();

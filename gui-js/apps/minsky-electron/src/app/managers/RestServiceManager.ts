@@ -54,7 +54,7 @@ class Deferred {
 
 restService.setMessageCallback(function (msg: string, buttons: string[]) {
   if (msg)
-    return dialog.showMessageBoxSync({
+      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
       message: msg,
       type: 'info',
       buttons: buttons,
@@ -66,6 +66,13 @@ restService.setBusyCursorCallback(function (busy: boolean) {
     busy ? 'html body {cursor: wait}' : 'html body {cursor: default}'
   );
 });
+
+function logFilter(c: string) {
+  const logFilter=["mouseMove$", "requestRedraw$"];
+  for (var i in logFilter)
+    if (c.match(logFilter[i])) return false;
+  return true;
+}
 
 // TODO refactor to use command and arguments separately
 export function callRESTApi(command: string) {
@@ -93,15 +100,20 @@ export function callRESTApi(command: string) {
   }
   try {
     const response = restService.call(cmd, arg);
-    log.info('Rest API: ',cmd,"=>",response);
+    if (logFilter(cmd))
+      log.info('Rest API: ',cmd,arg,"=>",response);
     return JSON5.parse(response);
   } catch (error) {
+    log.error('Rest API: ',cmd,arg,'=>Exception caught: ' + error?.message);
     if (cmd === commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV) {
       return importCSVerrorMessage;
     } else {
-      if (error?.message) dialog.showErrorBox(error.message, '');
-      log.error('Exception caught: ' + error?.message);
-      return error?.message;
+        if (error?.message)
+            dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+                message: error.message,
+                type: 'error',
+            });
+        return error?.message;
     }
   }
 }
@@ -127,12 +139,13 @@ export class RestServiceManager {
   static availableOperationsMappings: Record<string, string[]> = {};
 
   private static currentTab: MainRenderingTabs = MainRenderingTabs.canvas;
+  static renderFrameRedraw: any;
 
   public static async setCurrentTab(tab: MainRenderingTabs) {
     if (tab !== this.currentTab) {
       // disable the old tab
       this.handleMinskyProcess({
-        command: this.currentTab + '/enabled false',
+        command: this.currentTab + '/disable',
       });
       this.currentTab = tab;
       this.lastMouseMovePayload = null;
@@ -148,6 +161,7 @@ export class RestServiceManager {
     return this.currentTab;
   }
 
+  // arrange for renderFrame to be called
   public static async reInvokeRenderFrame() {
     await this.handleMinskyProcess({
       command: commandsMapping.RENDER_FRAME_SUBCOMMAND,
@@ -285,13 +299,14 @@ export class RestServiceManager {
     
     switch (payload.command) {
     case commandsMapping.LOAD:
-      stdinCommand = `${payload.command} ${payload.filePath}`;
+      stdinCommand = `${payload.command} ${JSON5.stringify(payload.filePath)}`;
+      this.currentMinskyModelFilePath = payload.filePath;
       break;
 
     case commandsMapping.SAVE:
-      stdinCommand = `${payload.command} ${payload.filePath}`;
-      this.currentMinskyModelFilePath = payload.filePath;
-      ipcMain.emit(events.ADD_RECENT_FILE, null, payload.filePath);
+        stdinCommand = `${payload.command} ${JSON5.stringify(payload.filePath)}`;
+        this.currentMinskyModelFilePath = payload.filePath;
+        ipcMain.emit(events.ADD_RECENT_FILE, null, payload.filePath);
       break;
 
     case commandsMapping.MOVE_TO:
@@ -302,6 +317,7 @@ export class RestServiceManager {
     case commandsMapping.MOVE_TO_SUBCOMMAND:
     case commandsMapping.MOUSEDOWN_SUBCOMMAND:
     case commandsMapping.MOUSEUP_SUBCOMMAND:
+    case 'position':
       stdinCommand = `${this.currentTab}/${payload.command} [${payload.mouseX}, ${payload.mouseY}]`;
       break;
       

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, isWindows } from '@minsky/shared';
+import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, isWindows, isMacOS } from '@minsky/shared';
 import { ElectronService } from '../electron/electron.service';
 
 @Injectable({
@@ -75,23 +75,13 @@ export class WindowUtilityService {
   }
 
   public getElectronMenuBarHeight() {
+    if (isWindows()) return electronMenuBarHeightForWindows;
+    if (isMacOS()) return 0;
+    
     const currentWindow = this.electronService.remote.getCurrentWindow();
     const currentWindowSize = currentWindow.getSize()[1];
-
     const currentWindowContentSize = currentWindow.getContentSize()[1];
-
-    const electronMenuBarHeight = currentWindowSize - currentWindowContentSize;
-
-    const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
-      .scaleFactor;
-
-    // const windowsMenuBarHeightDifference = 47;
-    //https://github.com/electron/electron/issues/17580
-    //https://github.com/electron/electron/issues/4045
-
-    return isWindows()
-      ? electronMenuBarHeightForWindows
-      : electronMenuBarHeight * scaleFactor;
+    return currentWindowSize - currentWindowContentSize;
   }
 
   public scrollToCenter() {

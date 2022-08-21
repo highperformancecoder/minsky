@@ -165,7 +165,9 @@ namespace minsky
     bool reset_flag() const {return flags & reset_needed;}
     /// indicate model has been changed since last saved
     void markEdited() {
-      flags |= is_edited | reset_needed | fullEqnDisplay_needed;
+      flags |= is_edited | fullEqnDisplay_needed;
+      if (!running) flags|=reset_needed; // don't reset when running
+      variablePane.update();
       canvas.requestRedraw();
       canvas.model.updateTimestamp();
     }
@@ -225,7 +227,8 @@ namespace minsky
       model->iWidth(std::numeric_limits<float>::max());
       model->self=model;
     }
-
+    ~Minsky();
+    
     GroupPtr model{new Group};
     Canvas canvas{model};
 
@@ -250,6 +253,8 @@ namespace minsky
     /// paste clipboard as a new group or ungrouped items on the canvas. canvas.itemFocus is set to
     /// refer to the new group or items.
     void paste();
+    /// return true if nothing available in clipboard
+    bool clipboardEmpty() const {return clipboard.getClipboard().empty();}
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
     
     void insertGroupFromFile(const string& file);
@@ -296,7 +301,7 @@ namespace minsky
     /// load from a file
     void load(const std::string& filename);
 
-    void exportSchema(const std::string& filename, int schemaLevel=1);
+    /*static*/ void exportSchema(const std::string& filename, int schemaLevel=1);
 
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
@@ -426,16 +431,16 @@ namespace minsky
     }
 
     /// @{ the default used by Pango
-    std::string defaultFont() const;
-    std::string defaultFont(const std::string& x);
+    /*static*/ std::string defaultFont();
+    /*static*/ std::string defaultFont(const std::string& x);
     /// @}
 
     /// @{ an extra scaling factor of Pango fonts
-    double fontScale() const;
-    double fontScale(double);
+    /*static*/ double fontScale();
+    /*static*/ double fontScale(double);
     /// @}
     
-    int numOpArgs(OperationType::Type o) const;
+    /*static*/ int numOpArgs(OperationType::Type o);
     OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
 
     void latex(const std::string& filename, bool wrapLaTeXLines);
@@ -450,11 +455,11 @@ namespace minsky
     string latex2pango(const std::string& x) {return latexToPango(x.c_str());}
 
     /// list of available operations
-    std::vector<std::string> availableOperations() const;
+    /*static*/ std::vector<std::string> availableOperations();
     /// list of available variable types
-    std::vector<std::string> variableTypes() const;
+    /*static*/ std::vector<std::string> variableTypes();
     /// return list of available asset classes
-    std::vector<std::string> assetClasses() const;
+    /*static*/ std::vector<std::string> assetClasses();
 
     void autoLayout(); ///< auto layout current open group and recentre
     void randomLayout(); ///< randomly layout current open group and recentre

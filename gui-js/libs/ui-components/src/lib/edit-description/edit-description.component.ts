@@ -39,30 +39,11 @@ export class EditDescriptionComponent implements OnInit {
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `/minsky/canvas/${this.type}/bookmark ${this.editDescriptionForm.get('bookmark').value}`
-      });
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `/minsky/canvas/${this.type}/adjustBookmark`
-      });
-
-      const bookmarks = (await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.BOOKMARK_LIST,
-    })) as string[];
-
-    this.electronService.ipcRenderer.send(events.POPULATE_BOOKMARKS, bookmarks);
-
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `/minsky/canvas/${this.type}/tooltip "${replaceBackSlash(
-          this.editDescriptionForm.get('tooltip').value
-        )}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `/minsky/canvas/${this.type}/detailedText "${replaceBackSlash(
-          this.editDescriptionForm.get('detailedText').value
-        )}"`,
+      await this.electronService.saveDescription({
+        item: this.type,
+        tooltip: this.editDescriptionForm.get('tooltip').value,
+        detailedText: this.editDescriptionForm.get('detailedText').value,
+        bookmark: this.editDescriptionForm.get('bookmark').value,
       });
     }
     this.closeWindow();

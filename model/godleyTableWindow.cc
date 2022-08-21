@@ -161,7 +161,10 @@ namespace minsky
     double x=leftTableOffset;
     double lastAssetBoundary=x;
     auto assetClass=GodleyAssetClass::noAssetClass;
-    colLeftMargin.clear();
+    // only recalculate colmn widths when no cell is selected.
+    bool resizeGrid=selectedCol<0 || selectedRow<0 || motionRow>=0 || motionCol>=0;
+    if (resizeGrid)
+      colLeftMargin.clear();
   
     for (unsigned col=0; col<m_godleyIcon.table.cols(); ++col)
       {
@@ -273,7 +276,7 @@ namespace minsky
                       }
                     else
                       //Display values of parameters used as initial conditions in Godley tables. for ticket 1126.  
-                      if (m_godleyIcon.table.initialConditionRow(row) && cminsky().displayValues) text=defang(text+value);
+                      if (m_godleyIcon.table.initialConditionRow(row) && cminsky().displayValues) text=defang(text+=value);
                       else text=defang(text);
                   }
                 pango.setMarkup(text);
@@ -286,8 +289,13 @@ namespace minsky
           }
         colWidth+=5;
 
-        colLeftMargin.push_back(x);
-        x+=colWidth;
+        if (resizeGrid)
+          {
+            colLeftMargin.push_back(x);
+            x+=colWidth;
+          }
+        else if (col+1<colLeftMargin.size())
+          x=colLeftMargin[col+1];
       }
 
     // display pulldown for last column
@@ -469,6 +477,9 @@ namespace minsky
 
   void GodleyTableEditor::mouseDown(double x, double y)
   {
+    // catch exception, as the intention here is to allow the user to fix a problem
+    try {update();}
+    catch (...) {}
     button1=true;
     x/=zoomFactor;
     y/=zoomFactor;
@@ -498,10 +509,16 @@ namespace minsky
             }
           return;
         }
+      case background:
+        selectIdx=insertIdx=0;
+        selectedCol=selectedRow=-1;
+        break;
       default:
-        // catch exception, as the intention here is to allow the user to fix a problem
-        try {update();}
-        catch (...) {}
+        if (selectedRow>=0 && selectedCol>=0)
+          { // if cell already selected, deselect to allow the chance to redraw
+            selectedCol=selectedRow=-1;
+            break;
+          }
         selectedCol=colX(x);
         selectedRow=rowY(y);
         if (selectedCellInTable() && (selectedRow!=1 || selectedCol!=0)) // Cannot save text in cell(1,0). For ticket 1064
@@ -812,7 +829,7 @@ namespace minsky
   std::set<string> GodleyTableEditor::matchingTableColumns(double x)
   {
     int col=colXZoomed(x);
-    if (col<0||col>=godleyIcon().table.cols()) return {};
+    if (col<0||col>=static_cast<int>(godleyIcon().table.cols())) return {};
     return minsky().matchingTableColumns(godleyIcon(), godleyIcon().table._assetClass(col));
   }
 
@@ -830,6 +847,8 @@ namespace minsky
       {
         m_godleyIcon.table.cell(0,c)=name;
         minsky().importDuplicateColumn(m_godleyIcon.table, c);
+        adjustWidgets();
+        update(); //TODO I don't know why this is insufficient to update icon on canvas
       }
   }
 
@@ -1066,6 +1085,7 @@ namespace {
     {
       if (selectedCol>=0)
         {
+          update();
           selectedCol++;
           insertIdx=0;
           if (selectedCol>=int(m_godleyIcon.table.cols()))
@@ -1082,19 +1102,22 @@ namespace {
     {
       if (selectedCol>=0)
         {
+          update();
           selectedCol--;
-          insertIdx=0;
           if (selectedCol<0)
             {
               selectedCol=m_godleyIcon.table.cols()-1;
               navigateUp();
             }
           checkCell00();
+          insertIdx=godleyIcon().table.cellInTable(selectedRow, selectedCol)?
+            godleyIcon().table.cell(selectedRow, selectedCol).length(): 0;
         }
     }
 
     void GodleyTableEditor::navigateUp()
     {
+      update();
       if (selectedRow>=0)
         selectedRow=(selectedRow-1)%m_godleyIcon.table.rows();
       checkCell00();
@@ -1102,6 +1125,7 @@ namespace {
   
     void GodleyTableEditor::navigateDown()
     {
+      update();
       if (selectedRow>=0)
         selectedRow=(selectedRow+1)%m_godleyIcon.table.rows();
       checkCell00();

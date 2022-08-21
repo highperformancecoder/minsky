@@ -11,13 +11,15 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
+  SaveDialogOptions,
   shell,
 } from 'electron';
 import * as JSON5 from 'json5';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
+import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
+import { BookmarkManager } from './BookmarkManager';
 
 const logError = debug('minsky:electron_error');
 
@@ -67,7 +69,8 @@ export class ApplicationMenuManager {
           label: 'New System',
           accelerator: 'CmdOrCtrl + Shift + N',
           async click() {
-            await CommandsManager.createNewSystem();
+              await CommandsManager.createNewSystem();
+              BookmarkManager.updateBookmarkList();
           },
         },
         {
@@ -95,6 +98,7 @@ export class ApplicationMenuManager {
             } catch (error) {
               logError(error);
             }
+              BookmarkManager.updateBookmarkList();
           },
         },
         {
@@ -127,65 +131,14 @@ export class ApplicationMenuManager {
           },
         },
         {
-          label: 'Save',
-          accelerator: 'CmdOrCtrl + S',
-          async click() {
-            if (RestServiceManager.currentMinskyModelFilePath) {
-              await CommandsManager.saveFile(
-                RestServiceManager.currentMinskyModelFilePath
-              );
-            } else {
-              const saveDialog = await dialog.showSaveDialog({});
-
-              const { canceled, filePath: _filePath } = saveDialog;
-              const filePath = normalizeFilePathForPlatform(_filePath);
-
-              if (canceled || !filePath) {
-                return;
-              }
-
-              await RestServiceManager.handleMinskyProcess({
-                command: commandsMapping.SAVE,
-                filePath,
-              });
-            }
-          },
+            label: 'Save',
+            accelerator: 'CmdOrCtrl + S',
+            async click() {await CommandsManager.save();}
         },
         {
-          label: 'Save As',
-          accelerator: 'CmdOrCtrl + Shift + S',
-          async click() {
-            const defaultExtension = (await RestServiceManager.handleMinskyProcess(
-              { command: commandsMapping.DEFAULT_EXTENSION }
-            )) as string;
-
-            const saveDialog = await dialog.showSaveDialog({
-              filters: [
-                {
-                  name: defaultExtension,
-                  extensions: [defaultExtension.slice(1)],
-                },
-                { name: 'All', extensions: ['*'] },
-              ],
-              defaultPath:
-                JSON5.parse(RestServiceManager.currentMinskyModelFilePath) ||
-                `model${defaultExtension}`,
-              properties: ['showOverwriteConfirmation'],
-            });
-
-            const { canceled, filePath: _filePath } = saveDialog;
-            const filePath = normalizeFilePathForPlatform(_filePath);
-
-            if (canceled || !filePath) {
-              return;
-            }
-
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.SAVE} ${filePath}`,
-            });
-
-            RestServiceManager.currentMinskyModelFilePath = filePath;
-          },
+            label: 'Save As',
+            accelerator: 'CmdOrCtrl + Shift + S',
+            async click() {await CommandsManager.saveAs();}
         },
         {
           label: 'Insert File as Group',
@@ -285,25 +238,12 @@ export class ApplicationMenuManager {
         {
           label: 'Undo',
           accelerator: 'CmdOrCtrl + Z',
-          async click() {
-            const numberOfTimes = 1;
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.UNDO} ${numberOfTimes}`,
-            });
-            await CommandsManager.requestRedraw();
-          },
+          async click() {CommandsManager.undo(1);},
         },
         {
           label: 'Redo',
           accelerator: 'CmdOrCtrl + Y',
-          async click() {
-            const numberOfTimes = -1;
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.REDO} ${numberOfTimes}`,
-            });
-
-            await CommandsManager.requestRedraw();
-          },
+          async click() {CommandsManager.undo(-1);},
         },
         {
           label: 'Cut',
@@ -511,7 +451,7 @@ export class ApplicationMenuManager {
     command: string,
     extraArgs: Array<any> = []
   ) {
-    const filePath = await CommandsManager.getFilePathFromExportCanvasDialog(
+    var filePath = await CommandsManager.getFilePathFromExportCanvasDialog(
       extension
     );
     if (filePath) {
@@ -534,8 +474,8 @@ export class ApplicationMenuManager {
           label: 'SVG',
           click: async () => {
             await scope.exportCanvas(
-              'svg',
-              commandsMapping.RENDER_CANVAS_TO_SVG
+                'svg',
+                `${RestServiceManager.getCurrentTab()}/renderToSVG`
             );
           },
         },
@@ -543,8 +483,8 @@ export class ApplicationMenuManager {
           label: 'PDF',
           click: async () => {
             await scope.exportCanvas(
-              'pdf',
-              commandsMapping.RENDER_CANVAS_TO_PDF
+                'pdf',
+                `${RestServiceManager.getCurrentTab()}/renderToPDF`
             );
           },
         },
@@ -553,8 +493,8 @@ export class ApplicationMenuManager {
           visible: isWindows(),
           click: async () => {
             await scope.exportCanvas(
-              'emf',
-              commandsMapping.RENDER_CANVAS_TO_EMF
+                'emf',
+                `${RestServiceManager.getCurrentTab()}/renderToEMF`
             );
           },
         },
@@ -562,8 +502,8 @@ export class ApplicationMenuManager {
           label: 'PostScript',
           click: async () => {
             await scope.exportCanvas(
-              'eps',
-              commandsMapping.RENDER_CANVAS_TO_PS
+                'eps',
+                `${RestServiceManager.getCurrentTab()}/renderToPS`
             );
           },
         },

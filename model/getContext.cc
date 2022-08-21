@@ -72,7 +72,6 @@ namespace minsky
                        WindowInformation& winfo)
     
   {
-    std::cout << nativeHandle << std::endl;
     NSView* view=reinterpret_cast<NSView*>(nativeHandle);
     // check that we are passed a valid NSView pointer (must be an in-process call).
     @try {
@@ -86,6 +85,8 @@ namespace minsky
 
     impl=make_unique<ViewImpl>();
 
+    if (winfo.hasScrollBars)
+      height+=20;
     [impl->cairoView setFrameSize: NSMakeSize(width,height)];
     [impl->cairoView setWinfo: &winfo];
     [view addSubview: impl->cairoView];
@@ -108,7 +109,8 @@ namespace minsky
   auto frame=[self frame];
   CGContextTranslateCTM(context,0,NSHeight(frame));
   CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
-  winfo->bufferSurface=make_shared<ecolab::cairo::Surface>(cairo_quartz_surface_create_for_cg_context(context, NSWidth(frame), NSHeight(frame)-20));
+  // do not overwrite scrollbar
+  winfo->bufferSurface=make_shared<ecolab::cairo::Surface>(cairo_quartz_surface_create_for_cg_context(context, NSWidth(frame), NSHeight(frame)-(winfo->hasScrollBars? 20:0)));
   winfo->draw();
   winfo->bufferSurface.reset();
 }

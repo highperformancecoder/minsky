@@ -10,6 +10,7 @@ import {
 import * as utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
+const JSON5 = require('json5');
 
 export class KeyBindingsManager {
   static async handleOnKeyPress(
@@ -53,8 +54,8 @@ export class KeyBindingsManager {
       const _payload: MinskyProcessPayload = {};
       // For godley popup, command sent by frontend is non-empty. It is the item accesor
       _payload.command = command
-        ? `${command}/keyPress [${keySymAndName.keysym},"${_utf8}",${modifierKeyCode},${mouseX},${mouseY}]`
-        : `${currentTab}/${commandsMapping.KEY_PRESS_COMMON_SUBCOMMAND} [${keySymAndName.keysym},"${_utf8}",${modifierKeyCode},${mouseX},${mouseY}]`;
+        ? `${command}/keyPress [${keySymAndName.keysym},${JSON5.stringify(_utf8)},${modifierKeyCode},${mouseX},${mouseY}]`
+        : `${currentTab}/${commandsMapping.KEY_PRESS_COMMON_SUBCOMMAND} [${keySymAndName.keysym},${JSON5.stringify(_utf8)},${modifierKeyCode},${mouseX},${mouseY}]`;
 
       const isKeyPressHandled = await RestServiceManager.handleMinskyProcess(
         _payload

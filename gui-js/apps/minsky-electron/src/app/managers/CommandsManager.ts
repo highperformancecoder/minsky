@@ -10,13 +10,13 @@ import {
   isMacOS,
   normalizeFilePathForPlatform,
 } from '@minsky/shared';
-import { dialog, ipcMain, Menu, MenuItem } from 'electron';
+import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import * as JSON5 from 'json5';
 import { join } from 'path';
 import { Utility } from '../utility';
 import { HelpFilesManager } from './HelpFilesManager';
-import { RestServiceManager } from './RestServiceManager';
+import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import {electronMenuBarHeightForWindows, isWindows } from '@minsky/shared';
 
@@ -153,8 +153,9 @@ export class CommandsManager {
     const classType = (await this.getCurrentItemClassType()) as ClassType;
     const value = await this.getCurrentItemValue();
     const id = await this.getCurrentItemId();
+    const displayContents=classType==="Group"? callRESTApi("/minsky/canvas/item/displayContents") as boolean: false;
 
-    const itemInfo: CanvasItem = { classType, value, id };
+      const itemInfo: CanvasItem = { classType, value, id, displayContents };
     return itemInfo;
   }
 
@@ -391,10 +392,11 @@ export class CommandsManager {
         command: `/minsky/canvas/${type}/detailedText`,
       })) as string) || '';
 
-    WindowManager.createPopupWindowWithRouting({
+    var window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
-      url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${detailedText}`,
+      url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${encodeURI(detailedText)}`,
     });
+    Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
 
   static async getItemDims(
@@ -655,17 +657,16 @@ export class CommandsManager {
       properties: ['showOverwriteConfirmation', 'createDirectory'],
     });
 
-    const { canceled, filePath: _filePath } = exportCanvasDialog;
+    var { canceled, filePath } = exportCanvasDialog;
     if (canceled) {
       return null;
     }
+    
+    // add extension if not already provided
+    if (!filePath.toLowerCase().endsWith(type))
+      filePath+=`.${type}`;
 
-    const filePath = normalizeFilePathForPlatform(_filePath);
-    if(!filePath) {
-      return null;
-    }
-
-    return normalizeFilePathForPlatform(filePath);
+    return JSON5.stringify(filePath);
   }
 
   static async mouseDown(mouseX: number, mouseY: number): Promise<void> {
@@ -728,24 +729,23 @@ export class CommandsManager {
       // Cancel
       return false;
     }
-    const saveModelDialog = await dialog.showSaveDialog({
-      title: 'Save Model?',
-      properties: ['showOverwriteConfirmation', 'createDirectory'],
-    });
 
-    const { canceled, filePath: _filePath } = saveModelDialog;
-    const filePath = normalizeFilePathForPlatform(_filePath);
-
-    if (canceled || !filePath) {
-      return false;
-    }
-
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.SAVE} ${filePath}`,
-    });
+    await CommandsManager.save();
     return true;
   }
 
+  static async undo(changes: number) {
+    WindowManager.activeWindows.forEach((window) => {
+      if (!window.isMainWindow) {
+        window.context.close();
+      }
+    });
+    await RestServiceManager.handleMinskyProcess({
+      command: `${commandsMapping.UNDO} ${changes}`,
+    });
+    await CommandsManager.requestRedraw();
+  }
+  
   static async createNewSystem() {
     const canProceed = await this.canCurrentSystemBeClosed();
     if (!canProceed) {
@@ -770,6 +770,7 @@ export class CommandsManager {
       commandsMapping.POP_FLAGS,
       `${commandsMapping.PUSH_HISTORY} true`,
     ];
+    RestServiceManager.currentMinskyModelFilePath="";
 
     for (const command of newSystemCommands) {
       await RestServiceManager.handleMinskyProcess({ command });
@@ -931,7 +932,6 @@ export class CommandsManager {
   }
 
   static async openNamedFile(filePath: string) {
-    filePath = normalizeFilePathForPlatform(filePath);
     const autoBackupFileName = filePath + '#';
 
     await this.createNewSystem();
@@ -989,14 +989,6 @@ export class CommandsManager {
     WindowManager.getMainWindow().setTitle(filePath);
   }
 
-  static async saveFile(filePath: string) {
-    filePath = normalizeFilePathForPlatform(filePath);
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.SAVE}`,
-      filePath: filePath,
-    });
-  }
-
   static async help(x: number, y: number) {
     let classType = (await this.getItemClassType(x, y, true)) as string;
 
@@ -1012,18 +1004,6 @@ export class CommandsManager {
       return;
     }
 
-    // TODO: come up with a better solution rather than mapping manually
-    switch (classType) {
-      case ClassType.VarConstant:
-        classType = 'Variable:constant';
-        break;
-      case ClassType.Sheet:
-        classType = 'Sheets';
-        break;
-
-      default:
-        break;
-    }
     this.loadHelpFile(classType);
     return;
   }
@@ -1208,9 +1188,6 @@ export class CommandsManager {
         command: `/minsky/canvas/item/table/title`,
       });
 
-      if (!title)
-        title=itemInfo.id;
-          
       const window = await this.initializePopupWindow({
         customTitle: `Godley Table : ${title}`,
         itemInfo,
@@ -1402,4 +1379,49 @@ export class CommandsManager {
       command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
     });
   };
+
+  private static defaultSaveOptions(): SaveDialogOptions {
+    const defaultExtension = callRESTApi(commandsMapping.DEFAULT_EXTENSION) as string;
+    return {
+              filters: [
+                {
+                  name: defaultExtension,
+                  extensions: [defaultExtension.slice(1)],
+                },
+                { name: 'All', extensions: ['*'] },
+              ],
+              defaultPath:
+                RestServiceManager.currentMinskyModelFilePath ||
+                `model${defaultExtension}`,
+              properties: ['showOverwriteConfirmation'],
+    }
+  }
+
+    static async save() {
+        if (RestServiceManager.currentMinskyModelFilePath) {
+            await RestServiceManager.handleMinskyProcess({
+                command: commandsMapping.SAVE,
+                filePath: RestServiceManager.currentMinskyModelFilePath,
+            });
+        }
+        else
+            await this.saveAs();
+    }
+    
+    static async saveAs() {
+        const saveDialog = await dialog.showSaveDialog(CommandsManager.defaultSaveOptions());
+
+        const { canceled, filePath: filePath } = saveDialog;
+
+        if (canceled || !filePath) {
+            return;
+        }
+
+      WindowManager.getMainWindow().setTitle(filePath);
+
+        await RestServiceManager.handleMinskyProcess({
+            command: commandsMapping.SAVE,
+            filePath: filePath,
+        });
+    }
 }

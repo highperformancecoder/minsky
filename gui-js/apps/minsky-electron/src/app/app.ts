@@ -1,7 +1,6 @@
 import {
   ActiveWindow,
   green,
-  isMacOS,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   red,
   rendererAppName,
@@ -32,9 +31,7 @@ export default class App {
   static directlyClose = false;
 
   private static onWindowAllClosed() {
-    if (!isMacOS()) {
       App.application.quit();
-    }
   }
   
   private static async onReady() {
@@ -143,7 +140,7 @@ export default class App {
 
     App.mainWindow.on('close', async (e) => {
       if (!App.directlyClose) {
-        e.preventDefault();
+          e.preventDefault();
         const canProceed = await CommandsManager.canCurrentSystemBeClosed();
         if (!canProceed) {
           return;
@@ -155,10 +152,10 @@ export default class App {
           }
         });
    
-        App.directlyClose = true;
-        App.mainWindow.close();
+          App.directlyClose = true;
+          App.mainWindow.close();
       }
-      //WindowManager.activeWindows.delete(App.mainWindow.id); // Is this needed?
+      WindowManager.activeWindows.delete(App.mainWindow.id); // Is this needed?
     });
 
     // TODO: test it on Russell's machine
@@ -195,6 +192,16 @@ export default class App {
   }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
+
+    // process CLI options prior to running up any GUI
+    for (var arg in process.argv)
+      switch(process.argv[arg]) {
+      case '--version':
+        process.stdout.write(`${callRESTApi("/minsky/minskyVersion") as string}\n`);
+        process.exit(0);
+      }
+    
+    
     // we pass the Electron.App object and the
     // Electron.BrowserWindow into this function
     // so this class has no dependencies. This
@@ -204,7 +211,6 @@ export default class App {
 
     App.application.commandLine.appendSwitch('disable-gpu');
     // Rendering was not working on some window's machines without disabling gpu
-
     App.application.commandLine.appendSwitch('high-dpi-support', '1');
     // This probably supports high-res fonts, but we don't know exactly what implications it has!
 

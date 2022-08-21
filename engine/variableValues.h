@@ -58,7 +58,7 @@ namespace minsky
     /// reset all variableValues to their initial conditions
     void reset();
     /// reset a give variable value to it's initial condition, in this context
-    void resetValue(VariableValue&); 
+    void resetValue(VariableValue&) const; 
     /// evaluates the initial value of a given variableValue in the
     /// context given by this. \a visited is used to check for
     /// circular definitions

@@ -189,8 +189,8 @@ namespace minsky
     /// accessor for schema access
     const Data& getData() const {return data;}
 
-    void exportToLaTeX(const std::string& filename);
-    void exportToCSV(const std::string& filename);
+    void exportToLaTeX(const std::string& filename) const;
+    void exportToCSV(const std::string& filename) const;
 
     /// reorders columns into assets/liabilities and equities. Adds empty columns if an asset class is not present.
     void orderAssetClasses();

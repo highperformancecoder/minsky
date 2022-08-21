@@ -45,8 +45,7 @@ namespace minsky
           ++secondCmd;
           if (firstCmd->second->arity()+secondCmd->second->arity() == 1)
             return is_setterGetter;
-          else
-            return generic;
+          return generic;
         }
       default:
         return generic;

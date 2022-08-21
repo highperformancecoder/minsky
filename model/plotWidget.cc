@@ -39,7 +39,7 @@ namespace minsky
 {
   namespace
   {
-    const unsigned numLines = 4; // number of simultaneous variables to plot, on a side
+    const size_t numLines = 4; // number of simultaneous variables to plot, on a side
 
     const unsigned nBoundsPorts=6;
     // orientation of bounding box ports
@@ -299,6 +299,18 @@ namespace minsky
       surface->requestRedraw();
   }
 
+  bool PlotWidget::redraw(int x0, int y0, int width, int height) 
+  {
+    if (surface.get())
+      {
+        auto sf=RenderNativeWindow::scaleFactor();
+        Plot::draw(surface->cairo(),width/sf,height/sf);
+        surface->blit();
+      }
+    return surface.get();
+  }
+
+  
   void PlotWidget::makeDisplayPlot() {
     if (auto g=group.lock())
       g->displayPlot=dynamic_pointer_cast<PlotWidget>(g->findItem(*this));
@@ -522,7 +534,7 @@ namespace minsky
                   stride*=d[i];
                 }
               if (pen>=numLines)
-                assignSide(extraPen,Side::right);
+                assignSide(startPen,Side::right);
               labelPen(startPen,defang(label));
             }
         }

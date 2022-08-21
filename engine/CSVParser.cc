@@ -74,21 +74,20 @@ namespace escapedListSeparator
         tok+='\n';
         return;
       }
-      else if (is_quote(*next)) {
+      if (is_quote(*next)) {
         tok+=*next;
         return;
       }
-      else if (is_c(*next)) {
+      if (is_c(*next)) {
         tok+=*next;
         return;
       }
-      else if (is_escape(*next)) {
+      if (is_escape(*next)) {
         tok+=*next;
         return;
       }
-      else
-        // don't throw, but pass on verbatim
-        tok+=escape_.front()+*next;
+      // don't throw, but pass on verbatim
+      tok+=escape_.front()+*next;
     }
 
   public:
@@ -112,8 +111,7 @@ namespace escapedListSeparator
           last_ = false;
           return true;
         }
-        else
-          return false;
+        return false;
       }
       last_ = false;
       for (;next != end;++next) {
@@ -129,7 +127,7 @@ namespace escapedListSeparator
             last_ = true;
             return true;
           }
-          else tok+=*next;
+          tok+=*next;
         }
         else if (is_quote(*next)) {
           bInQuote=!bInQuote;
@@ -294,6 +292,7 @@ void DataSpec::setDataArea(size_t row, size_t col)
   m_nColAxes=col;
   if (headerRow>=row)
     headerRow=row>0? row-1: 0;
+  if (row==headerRow) row++; //TODO handle no header properly
   if (dimensions.size()<nColAxes()) dimensions.resize(nColAxes());
   if (dimensionNames.size()<nColAxes()) dimensionNames.resize(nColAxes());
   // remove any dimensionCols > nColAxes
@@ -597,14 +596,15 @@ namespace minsky
                     for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
                     dimLabels.emplace_back();
                     for (size_t i=0; i<horizontalLabels.size(); ++i)
-                      dimLabels.back()[Any(horizontalLabels[i])]=i;
+                      dimLabels.back()[AnyVal(spec.horizontalDimension)(horizontalLabels[i])]=i;
                   }
               }
             else if (row>=spec.nRowAxes())// in data section
               {
                 Key key;
                 auto field=tok.begin();
-                for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
+                size_t dim=0;
+                for (size_t i=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
                   if (spec.dimensionCols.count(i))
                     {
                       if (dim>=hc.xvectors.size())
@@ -630,7 +630,7 @@ namespace minsky
                 for (size_t col=0; field != tok.end(); ++field, ++col)
                   {
                     if (tabularFormat)
-                      key.push_back(anyVal[col](horizontalLabels[col]));
+                      key.push_back(anyVal[dim](horizontalLabels[col]));
                     else if (col)
                       break; // only 1 value column, everything to right ignored
                     

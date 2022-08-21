@@ -55,9 +55,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
       this.height &&
       this.width
     ) {
-      const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
-        .scaleFactor;
-      const command = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/renderFrame [${this.systemWindowId},${this.leftOffset},${this.topOffset},${this.width},${this.height},${scaleFactor}]`;
+      const command = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/renderFrame [${this.systemWindowId},${this.leftOffset},${this.topOffset},${this.width},${this.height},-1]`;
 
       this.electronService.sendMinskyCommandAndRender({
         command,

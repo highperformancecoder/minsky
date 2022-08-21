@@ -16,6 +16,7 @@ import {
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
   events,
+  isMacOS,
   green
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -33,6 +34,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   itemId: number;
   systemWindowId: number;
+  namedItem: string;
   namedItemSubCommand: string;
 
   leftOffset = 0;
@@ -58,7 +60,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.namedItemSubCommand = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/popup`;
+    this.namedItem = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second`;
+    this.namedItemSubCommand = `${this.namedItem}/popup`;
     this.getWindowRectInfo();
     this.renderFrame();
     this.initEvents();
@@ -126,9 +129,13 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
       );
     });
 
-    this.godleyCanvasContainer.addEventListener('mousedown', (event) => {
+    this.godleyCanvasContainer.addEventListener('mousedown', async (event) => {
       const { clientX, clientY } = event;
-      this.electronService.sendMinskyCommandAndRender({command: this.namedItemSubCommand, mouseX: clientX, mouseY: clientY}, events.GODLEY_VIEW_MOUSEDOWN);
+      await this.sendMouseEvent(
+        clientX,
+        clientY,
+        commandsMapping.MOUSEDOWN_SUBCOMMAND
+      );
     });
 
     this.godleyCanvasContainer.addEventListener('mouseup', async (event) => {
@@ -138,6 +145,15 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
         clientY,
         commandsMapping.MOUSEUP_SUBCOMMAND
       );
+    });
+
+    this.godleyCanvasContainer.addEventListener('contextmenu', async (event) => {
+      this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
+        x: this.mouseX,
+        y: this.mouseY,
+        type: "godley",
+        command: this.namedItem,
+      });
     });
 
     this.godleyCanvasContainer.onwheel = this.onMouseWheelZoom;
@@ -151,7 +167,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   }
 
   async sendMouseEvent(x: number, y: number, type: string) {
-    const command = `${this.namedItemSubCommand}/${type} [${x},${y}]`;
+    const yoffs=isMacOS()? -20: 0; // why, o why, Mac?
+    const command = `${this.namedItemSubCommand}/${type} [${x},${y+yoffs}]`;
 
     await this.electronService.sendMinskyCommandAndRender({
       command,

@@ -77,8 +77,7 @@ namespace minsky
     static AddOnMinsky s_minsky;
     if (l_minsky)
       return *l_minsky;
-    else
-      return s_minsky;
+    return s_minsky;
   }
 
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
@@ -185,7 +184,10 @@ Value RESTCall(const Napi::CallbackInfo& info)
         if (redrawWasRunning)
           this_thread::sleep_for(chrono::milliseconds(5));
         SetMinskyEnv minskyEnv(env);
-        response=String::New(env, write(addOnMinsky.registry.process(cmd, arguments)));
+        // disable quoting wide characters in UTF-8 strings
+        auto result=write(addOnMinsky.registry.process(cmd, arguments),json5_parser::raw_utf8);
+        // Javascript needs the result returns as UTF-16.
+        response=String::New(env, utf_to_utf<char16_t>(result));
         int nargs=1;
         switch (arguments.type())
           {

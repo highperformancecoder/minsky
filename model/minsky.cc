@@ -38,6 +38,7 @@
 #include "minsky_epilogue.h"
 
 #include <algorithm>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 using namespace minsky;
@@ -72,12 +73,12 @@ namespace
 
   /// list the possible string values of an enum (for TCL)
   template <class E> vector<string> enumVals()
-    {
-      vector<string> r;
-      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
-        r.push_back(enum_keysData<E>::keysData[i].name);
-      return r;
-    }
+  {
+    vector<string> r;
+    for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
+      r.push_back(enum_keysData<E>::keysData[i].name);
+    return r;
+  }
 
 }
 
@@ -137,7 +138,12 @@ namespace minsky
       }
   }        
         
-      
+  Minsky::~Minsky()
+  {
+    if (edited() && autoSaver)
+      // if we're at this point, then the user has already been asked to save, and chosen no.
+      boost::filesystem::remove(autoSaver->fileName);
+  }
 
   void Minsky::clearAllMaps(bool doClearHistory)
   {
@@ -212,9 +218,9 @@ namespace minsky
   {
     return dynamic_pointer_cast<VariableBase>
       (model->findAny(&Group::items, [&](const ItemPtr& x) {
-          auto v=x->variableCast();
-          return v && v->valueId()==valueId && v->defined();
-        }));
+        auto v=x->variableCast();
+        return v && v->valueId()==valueId && v->defined();
+      }));
   }
     
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName)
@@ -225,100 +231,100 @@ namespace minsky
 
   void Minsky::paste()
     try
-  {
-    istringstream is(clipboard.getClipboard());
-    xml_unpack_t unpacker(is); 
-    schema3::Minsky m(unpacker);
-    GroupPtr g(new Group);
-    g->self=g;
-    m.populateGroup(*g);
-    // stash values of parameters in copied group, as they are reset for some unknown reason later on. for ticket 1258
-    map<string,string> existingParms; 
-    for (auto& i: g->items) {
-      auto v=i->variableCast(); 
-      if (v && v->type()==VariableType::parameter) 
-        existingParms.emplace(v->valueId(),v->init());
-    }
-    // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    canvas.selection.clear();
-    // The following is only necessary if one pastes into an existing model. For ticket 1258   
-    if (!history.empty() || !canvas.model.get()->empty()) {     
-      bool alreadyDefinedMessageDisplayed=false;
+      {
+        istringstream is(clipboard.getClipboard());
+        xml_unpack_t unpacker(is); 
+        schema3::Minsky m(unpacker);
+        GroupPtr g(new Group);
+        g->self=g;
+        m.populateGroup(*g);
+        // stash values of parameters in copied group, as they are reset for some unknown reason later on. for ticket 1258
+        map<string,string> existingParms; 
+        for (auto& i: g->items) {
+          auto v=i->variableCast(); 
+          if (v && v->type()==VariableType::parameter) 
+            existingParms.emplace(v->valueId(),v->init());
+        }
+        // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
+        canvas.selection.clear();
+        // The following is only necessary if one pastes into an existing model. For ticket 1258   
+        if (!history.empty() || !canvas.model.get()->empty()) {     
+          bool alreadyDefinedMessageDisplayed=false;
       
-      // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
-      g->recursiveDo(&GroupItems::items,
-                     [&](Items&, Items::iterator i) {
-                       if (auto v=(*i)->variableCast())
-                         if (v->defined() || v->isStock())
-                           {
-                             // if defined, check no other defining variable exists
-                             auto alreadyDefined = canvas.model->findAny
-                               (&GroupItems::items,
-                                [&v](const ItemPtr& j)
-                                {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
-                             if (v->isStock())
+          // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
+          g->recursiveDo(&GroupItems::items,
+                         [&](Items&, Items::iterator i) {
+                           if (auto v=(*i)->variableCast())
+                             if (v->defined() || v->isStock())
                                {
-                                 if (v->defined() && alreadyDefined && !alreadyDefinedMessageDisplayed)
+                                 // if defined, check no other defining variable exists
+                                 auto alreadyDefined = canvas.model->findAny
+                                   (&GroupItems::items,
+                                    [&v](const ItemPtr& j)
+                                    {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
+                                 if (v->isStock())
                                    {
-                                     message("Integral/Stock variable "+v->name()+" already defined.");
-                                     alreadyDefinedMessageDisplayed=true;
-                                   }
-                                 else if (!v->defined() && !alreadyDefined)
-                                   {
-                                     // need to do this var explicitly, as not currently part of model structure
-                                     if (auto vp=VariablePtr(*i))
+                                     if (v->defined() && alreadyDefined && !alreadyDefinedMessageDisplayed)
                                        {
-                                         vp.retype(VariableType::flow);
-                                         *i=vp;
-                                         convertVarType(vp->valueId(), VariableType::flow);
+                                         message("Integral/Stock variable "+v->name()+" already defined.");
+                                         alreadyDefinedMessageDisplayed=true;
+                                       }
+                                     else if (!v->defined() && !alreadyDefined)
+                                       {
+                                         // need to do this var explicitly, as not currently part of model structure
+                                         if (auto vp=VariablePtr(*i))
+                                           {
+                                             vp.retype(VariableType::flow);
+                                             *i=vp;
+                                             convertVarType(vp->valueId(), VariableType::flow);
+                                           }
                                        }
                                    }
+                                 else if (alreadyDefined)
+                                   {
+                                     // delete defining wire from this
+                                     assert(v->portsSize()>1 && !v->ports(1).lock()->wires().empty());
+                                     g->removeWire(*v->ports(1).lock()->wires()[0]);
+                                   }
                                }
-                             else if (alreadyDefined)
-                               {
-                                 // delete defining wire from this
-                                 assert(v->portsSize()>1 && !v->ports(1).lock()->wires().empty());
-                                 g->removeWire(*v->ports(1).lock()->wires()[0]);
-                               }
-                           }
-                       return false;
-                     });
-    }                              
+                           return false;
+                         });
+        }                              
 
-    canvas.model->addGroup(g); // needed to ensure wires are correctly handled
-    auto copyOfItems=g->items;
-    auto copyOfGroups=g->groups;
+        canvas.model->addGroup(g); // needed to ensure wires are correctly handled
+        auto copyOfItems=g->items;
+        auto copyOfGroups=g->groups;
     
-    // ungroup g, putting all its contents on the canvas
-    canvas.model->moveContents(*g); 
+        // ungroup g, putting all its contents on the canvas
+        canvas.model->moveContents(*g); 
 
-    // leave newly ungrouped items in selection
-    for (auto& i: copyOfItems) {
-      canvas.selection.ensureItemInserted(i);
-      // ensure that initial values of pasted parameters are correct. for ticket 1258
-      if (auto v=i->variableCast())
-        if (v->type()==VariableType::parameter && !existingParms.empty()) 
-          {
-            auto it=existingParms.find(v->valueId());
-            if (it!=existingParms.end()) v->init(it->second);
-          }
-    }
-	
-    if (!existingParms.empty()) existingParms.clear();
-	
-    // Attach mouse focus only to first visible item in selection. For ticket 1098.      
-    for (auto& i: canvas.selection.items)
-      if (i->visible())
-        {
-          canvas.setItemFocus(i);
-          break;
+        // leave newly ungrouped items in selection
+        for (auto& i: copyOfItems) {
+          canvas.selection.ensureItemInserted(i);
+          // ensure that initial values of pasted parameters are correct. for ticket 1258
+          if (auto v=i->variableCast())
+            if (v->type()==VariableType::parameter && !existingParms.empty()) 
+              {
+                auto it=existingParms.find(v->valueId());
+                if (it!=existingParms.end()) v->init(it->second);
+              }
         }
+	
+        if (!existingParms.empty()) existingParms.clear();
+	
+        // Attach mouse focus only to first visible item in selection. For ticket 1098.      
+        for (auto& i: canvas.selection.items)
+          if (i->visible())
+            {
+              canvas.setItemFocus(i);
+              break;
+            }
                         
-    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);   
+        if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);   
 
-    canvas.model->removeGroup(*g);  
-    canvas.requestRedraw();
-  }  
+        canvas.model->removeGroup(*g);  
+        canvas.requestRedraw();
+      }  
     catch (...)
       {
         throw runtime_error("clipboard data invalid");
@@ -520,15 +526,15 @@ namespace minsky
   void Minsky::populateMissingDimensions() {
     model->recursiveDo
       (&Group::items,[&](Items& m, Items::iterator it)
-       {
-         if (auto ri=dynamic_cast<Ravel*>(it->get()))
-           {
-             auto state=ri->getState();
-             for (auto& j: state.handleStates)
-               dimensions.emplace(j.description,Dimension());
-           }
-         return false;
-       });
+      {
+        if (auto ri=dynamic_cast<Ravel*>(it->get()))
+          {
+            auto state=ri->getState();
+            for (auto& j: state.handleStates)
+              dimensions.emplace(j.description,Dimension());
+          }
+        return false;
+      });
   }
 
 
@@ -551,13 +557,13 @@ namespace minsky
       varDimensions.insert(xv.name);
     model->recursiveDo
       (&Group::items,[&](Items& m, Items::iterator it)
-       {
-         if (auto ri=dynamic_cast<Ravel*>(it->get()))
-           for (size_t i=0; i<ri->numHandles(); ++i)
-             if (varDimensions.count(ri->handleDescription(i)))
-               ri->setHandleSortOrder(ravel::HandleSort::forward, i);
-         return false;
-       });
+      {
+        if (auto ri=dynamic_cast<Ravel*>(it->get()))
+          for (size_t i=0; i<ri->numHandles(); ++i)
+            if (varDimensions.count(ri->handleDescription(i)))
+              ri->setHandleSortOrder(ravel::HandleSort::forward, i);
+        return false;
+      });
   }
   
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
@@ -967,6 +973,8 @@ namespace minsky
     }
     flags &= ~is_edited;
     fileVersion=minskyVersion;
+    if (autoSaver)
+      boost::filesystem::remove(autoSaver->fileName);
   }
 
   void Minsky::load(const std::string& filename) 
@@ -1228,19 +1236,22 @@ namespace minsky
     if (doPushHistory &&
         command!="minsky.availableOperations" &&
         command!="minsky.canvas.select" &&
+        command!="minsky.canvas.scaleFactor" &&
         command!="minsky.canvas.recentre" &&
         command!="minsky.canvas.focusFollowsMouse" &&
         command!="minsky.canvas.displayDelayedTooltip" &&
         command!="minsky.canvas.requestRedraw" &&
         command!="minsky.model.moveTo" &&
-        command!="minsky.canvas.model.moveTo" &&
         command!="minsky.canvas.moveTo" &&
+        command!="minsky.canvas.model.moveTo" &&
+        command!="minsky.canvas.model.zoom" &&
+        command!="minsky.canvas.position" &&
         /* ensure we record mouse movements, but filter from history */
         command!="minsky.canvas.mouseDown"&&
         command!="minsky.canvas.mouseMove" && 
         command!="minsky.clearAll" &&
         command!="minsky.doPushHistory" &&
-        command!="minsky.canvas.model.zoom" &&
+        command!="minsky.fontScale" &&
         command!="minsky.model.zoom" &&
         command!="minsky.newGlobalGroupTCL" &&
         command!="minsky.popFlags" &&
@@ -1272,10 +1283,9 @@ namespace minsky
         if (t==generic || (t==is_setterGetter && nargs>0))
           {
             bool modelChanged=pushHistory();
-            if (modelChanged)
+            if (modelChanged && command.find(".keyPress")==string::npos)
               {
                 markEdited();
-                if (running) flags&=~reset_needed; // don't reset when running
               }
             return modelChanged;
           }
@@ -1409,9 +1419,9 @@ namespace minsky
                          if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
-                               p->renderToSVG((prefix+"-"+p->title+".svg").c_str());
+                               p->renderToSVG(prefix+"-"+p->title+".svg");
                              else
-                               p->renderToSVG((prefix+"-"+str(plotNum++)+".svg").c_str());
+                               p->renderToSVG(prefix+"-"+str(plotNum++)+".svg");
                            }
                          return false;
                        });
@@ -1434,10 +1444,10 @@ namespace minsky
 
   void Minsky::setAllDEmode(bool mode) {
     model->recursiveDo(&GroupItems::items, [mode](Items&,Items::iterator i) {
-        if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-          g->table.setDEmode(mode);
-        return false;
-      });
+      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+        g->table.setDEmode(mode);
+      return false;
+    });
   }
 
   void Minsky::setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle)
@@ -1459,11 +1469,11 @@ namespace minsky
     canvas.requestRedraw();
   }
 
-  vector<string> Minsky::availableOperations() const
+  vector<string> Minsky::availableOperations() 
   {return enumVals<OperationType::Type>();}
-  vector<string> Minsky::variableTypes() const
+  vector<string> Minsky::variableTypes()
   {return enumVals<VariableType::Type>();}
-  vector<string> Minsky::assetClasses() const
+  vector<string> Minsky::assetClasses()
   {return enumVals<GodleyTable::AssetClass>();}
 
   void Minsky::autoLayout()
@@ -1509,17 +1519,17 @@ namespace minsky
     MEMORYSTATUSEX s{sizeof(MEMORYSTATUSEX)};
     GlobalMemoryStatusEx(&s);
     return s.ullTotalPhys;
-//#elif defined(__APPLE__)
-//    int mib[2];
-//    int64_t physical_memory;
-//    size_t length;
-//
-//    // Get the Physical memory size
-//    mib[0] = CTL_HW;
-//    mib[1] = HW_MEMSIZE;
-//    length = sizeof(int64_t);
-//    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
-//    return physical_memory;
+    //#elif defined(__APPLE__)
+    //    int mib[2];
+    //    int64_t physical_memory;
+    //    size_t length;
+    //
+    //    // Get the Physical memory size
+    //    mib[0] = CTL_HW;
+    //    mib[1] = HW_MEMSIZE;
+    //    length = sizeof(int64_t);
+    //    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+    //    return physical_memory;
 #else
     // all else fails, return max value
     return ~0UL;
@@ -1528,18 +1538,18 @@ namespace minsky
   
   static std::unique_ptr<char[]> _defaultFont;
 
-  string Minsky::defaultFont() const
+  string Minsky::defaultFont()
   {return _defaultFont? _defaultFont.get(): "";}
   
   string Minsky::defaultFont(const std::string& x)
   {
     _defaultFont.reset(new char[x.length()+1]);
-    strcpy(_defaultFont.get(),x.c_str());
+    strncpy(_defaultFont.get(),x.c_str(),x.length()+1);
     ecolab::Pango::defaultFamily=_defaultFont.get();
     return x;
   }
 
-  double Minsky::fontScale() const
+  double Minsky::fontScale()
   {return ecolab::Pango::scaleFactor;}
   
   double Minsky::fontScale(double s)
@@ -1559,12 +1569,12 @@ namespace minsky
     else
       {
         f<<"\\begin{document}\n";
-          MathDAG::SystemOfEquations(*this).latex(f);
+        MathDAG::SystemOfEquations(*this).latex(f);
       }
     f<<"\\end{document}\n";
   }
 
-  int Minsky::numOpArgs(OperationType::Type o) const
+  int Minsky::numOpArgs(OperationType::Type o)
   {
     OperationPtr op(o);
     return op->numPorts()-1;

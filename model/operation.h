@@ -103,7 +103,7 @@ namespace minsky
   class Operation: public ItemT<Operation<T>, OperationBase>,
                    public classdesc::PolyPack<Operation<T> >
   {
-    typedef OperationBase Super;
+    typedef ItemT<Operation<T>, OperationBase> Super;
   public:
     typedef OperationType::Type Type;
     Type type() const override {return T;}

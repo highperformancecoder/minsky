@@ -31,7 +31,7 @@ namespace minsky
   class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>,
                public IntOpAccessor
   {
-    typedef Operation<OperationType::integrate> Super;
+    typedef ItemT<IntOp, Operation<minsky::OperationType::integrate>> Super;
     // integrals have named integration variables
     ///integration variable associated with this op.
     CLASSDESC_ACCESS(IntOp);
@@ -47,8 +47,7 @@ namespace minsky
       description("");
     }
     // ensure that copies create a new integral variable
-    IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
+    IntOp(const IntOp& x): Super(x) {intVar.reset(); description(x.description());}
     ~IntOp() {Item::removeControlledItems();}
     
     IntOp& operator=(const IntOp& x); 

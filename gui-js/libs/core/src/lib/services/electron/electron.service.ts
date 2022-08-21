@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { events, MinskyProcessPayload } from '@minsky/shared';
+import { events, MinskyProcessPayload, DescriptionPayload } from '@minsky/shared';
 import { ipcRenderer, remote } from 'electron';
 import isElectron from 'is-electron';
 
@@ -18,6 +18,10 @@ export class ElectronService {
     }
   }
 
+  async saveDescription(payload: DescriptionPayload) {
+    return await this.ipcRenderer.invoke(events.SAVE_DESCRIPTION, payload);
+  }
+  
   async sendMinskyCommandAndRender(
     payload: MinskyProcessPayload,
     customEvent: string = null

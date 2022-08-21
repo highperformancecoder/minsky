@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -34,8 +34,10 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRow = -1;
   selectedCol = -1;
   checkboxes: Array<boolean> = [];
-  spec: Record<string, unknown>;
+  dialogState: any;
   initialDimensionNames: string[];
+  @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
+  @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
 
   public get url(): AbstractControl {
     return this.form.get('url');
@@ -119,16 +121,39 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     (async () => {
       this.valueId = await this.getValueId();
-      this.variableValuesSubCommand = `/minsky/variableValues/@elem/"${this.valueId}"/second`;
+      this.variableValuesSubCommand = `/minsky/variableValues/@elem/${JSON5.stringify(this.valueId)}/second`;
 
       await this.getCSVDialogSpec();
       this.updateForm();
-      this.selectedHeader = this.spec.headerRow as number;
-
+      this.selectedHeader = this.dialogState.spec.headerRow as number;
+      this.load();
+      this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
       this.setupListenerForCleanup();
     })();
   }
-
+  ngAfterViewChecked() 	{
+    // set state of checkboxes to reflect checkboxes array
+    if (this.inputCsvCanvasContainer)
+    {
+      var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
+      for (var i=0; i<this.checkboxes.length; ++i)
+        {
+            var input=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
+            if (input)
+                input.checked=this.checkboxes[i];
+            if (this.checkboxes[i])
+            {
+                var type=table.rows[1].cells[i+1].children[0] as HTMLSelectElement;
+                type.value=this.dialogState.spec.dimensions[i].type;
+                var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
+                format.value=this.dialogState.spec.dimensions[i].units;
+                var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
+                name.value=this.dialogState.spec.dimensionNames[i];
+            }
+        }
+    }
+  }
+  
   private setupListenerForCleanup() {
     this.electronService.remote.getCurrentWindow().on('close', async () => {
       if (this.isInvokedUsingToolbar) {
@@ -157,15 +182,21 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateForm() {
-    this.columnar.setValue(this.spec.columnar);
-    this.decSeparator.setValue(this.spec.decSeparator);
-    this.duplicateKeyAction.setValue(this.spec.duplicateKeyAction);
-    this.escape.setValue(this.spec.escape);
-    this.horizontalDimName.setValue(this.spec.horizontalDimName);
-    this.mergeDelimiters.setValue(this.spec.mergeDelimiters);
-    this.missingValue.setValue(this.spec.missingValue);
-    this.quote.setValue(this.spec.quote);
-    this.separator.setValue(this.spec.separator);
+      this.url.setValue(this.dialogState.url);
+    
+      this.columnar.setValue(this.dialogState.spec.columnar);
+      this.decSeparator.setValue(this.dialogState.spec.decSeparator);
+      this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
+      this.escape.setValue(this.dialogState.spec.escape);
+      this.horizontalDimName.setValue(this.dialogState.spec.horizontalDimName);
+      this.mergeDelimiters.setValue(this.dialogState.spec.mergeDelimiters);
+      this.missingValue.setValue(this.dialogState.spec.missingValue);
+      this.quote.setValue(this.dialogState.spec.quote);
+      this.separator.setValue(this.dialogState.spec.separator);
+      this.horizontalDimension.setValue({
+          type: this.dialogState.spec.horizontalDimension.type,
+         units:this.dialogState.spec.horizontalDimension.units
+      });
   }
 
   async getValueId() {
@@ -193,6 +224,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     const filePath = fileDialog.filePaths[0].toString();
 
     this.url.setValue(filePath);
+    this.dialogState.url=filePath;
   }
 
   async load() {
@@ -225,10 +257,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async getCSVDialogSpec() {
-    this.spec = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog/spec`,
+    this.electronService.sendMinskyCommandAndRender({
+      command: `${this.variableValuesSubCommand}/csvDialog/spec/toSchema`,
+    });
+    this.dialogState = (await this.electronService.sendMinskyCommandAndRender({
+      command: `${this.variableValuesSubCommand}/csvDialog`,
     })) as Record<string, unknown>;
-    this.initialDimensionNames = this.spec.dimensionNames as string[];
+    this.initialDimensionNames = this.dialogState.spec.dimensionNames as string[];
   }
 
   async parseLines() {
@@ -237,26 +272,31 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     })) as string[][];
 
     this.csvCols = new Array(this.parsedLines[0]?.length);
-    this.checkboxes = new Array(this.parsedLines[0]?.length - 1).fill(false);
+    this.checkboxes = new Array(this.parsedLines[0]?.length).fill(false);
+    for (var i in this.dialogState.spec.dimensionCols as Array<number>)
+    {
+      var col=this.dialogState.spec.dimensionCols[i];
+      if (col<this.checkboxes.length)
+        this.checkboxes[col]=true;
+    }
+    
+    this.updateDimColsAndNames();
   }
-
+  
   async selectHeader(index: number) {
     this.selectedHeader = index;
-
-    this.spec.headerRow = this.selectedHeader;
-
-    // await this.parseLines();
+    this.dialogState.spec.headerRow = this.selectedHeader;
   }
 
   async selectRowAndCol(rowIndex: number, colIndex: number) {
     this.selectedRow = rowIndex;
-    this.spec.dataRowOffset = rowIndex;
+    this.dialogState.spec.dataRowOffset = rowIndex;
 
     this.selectedCol = colIndex;
-    this.spec.dataColOffset = colIndex;
+    this.dialogState.spec.dataColOffset = colIndex;
 
     for (let i = this.selectedCol + 1; i <= this.parsedLines.length - 1; i++) {
-      this.checkboxes[i] = false;
+     this.checkboxes[i] = false;
     }
   }
 
@@ -289,17 +329,18 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateDimColsAndNames() {
-    this.spec.dimensionCols = this.checkboxes
+    this.dialogState.spec.dimensionCols = this.checkboxes
       .map((c, index) => (c ? index : false))
       .filter((v) => v !== false);
 
-    this.spec.dimensionNames = this.parsedLines[
+    this.dialogState.spec.dimensionNames = this.parsedLines[
       this.selectedHeader
     ].filter((value, index) =>
-      (this.spec.dimensionCols as number[]).includes(index)
+      (this.dialogState.spec.dimensionCols as number[]).includes(index)
     );
   }
 
+  
   updatedCheckBoxValue(event: any, index: number) {
     this.checkboxes[index] = event.target.checked;
     this.updateDimColsAndNames();
@@ -320,7 +361,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     } = this.form.value;
 
     const spec = {
-      ...this.spec,
+      ...this.dialogState.spec,
       columnar,
       decSeparator,
       duplicateKeyAction,

@@ -291,14 +291,14 @@ void GodleyTable::nameUnique()
     }
 }
 
-void GodleyTable::exportToLaTeX(const string& filename)
+void GodleyTable::exportToLaTeX(const string& filename) const
 {
   ofstream f(filename);
   minsky::exportToLaTeX(f, *this);
   if (!f) throw runtime_error("cannot save to "+filename);
 }
 
-void GodleyTable::exportToCSV(const string& filename)
+void GodleyTable::exportToCSV(const string& filename) const
 {
   ofstream f(filename);
   minsky::exportToCSV(f, *this);

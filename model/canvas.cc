@@ -352,6 +352,7 @@ namespace minsky
     if (auto item=itemAt(x,y))
       if (item->onKeyPress(keySym, utf8, state))
         {
+          minsky().markEdited(); // keyPresses don't set the dirty flag by default
           requestRedraw();
           return true;
         }

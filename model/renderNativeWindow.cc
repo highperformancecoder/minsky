@@ -71,18 +71,21 @@ namespace minsky
     };
   } // namespace
 
-    RenderNativeWindow::~RenderNativeWindow()
-    {
-      minsky().nativeWindowsToRedraw.erase(this);
-    }
+  void RenderNativeWindow::disable()
+  {
+    winInfoPtr.reset();
+  }
+  
+  RenderNativeWindow::~RenderNativeWindow()
+  {
+    minsky().nativeWindowsToRedraw.erase(this);
+  }
   
   void RenderNativeWindow::renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor)
   {
     winInfoPtr.reset();
-    winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight, scalingFactor, [this](){draw();});
+    winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight, scalingFactor, hasScrollBars(), [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
-    //requestRedraw();
-    enabled=true;
     draw();
   }
 
@@ -92,9 +95,9 @@ namespace minsky
   
   void RenderNativeWindow::requestRedraw()
   {
-    if (!enabled) return;
+    if (!winInfoPtr.get()) return;
 #ifdef MAC_OSX_TK
-    if (winInfoPtr.get()) winInfoPtr->requestRedraw();
+    winInfoPtr->requestRedraw();
 #else
     minsky().nativeWindowsToRedraw.insert(this);
 #endif
@@ -103,7 +106,7 @@ namespace minsky
   
   void RenderNativeWindow::draw()
   {
-    if (!enabled || !winInfoPtr.get() || winInfoPtr->getRenderingFlag())
+    if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
     {
       return;
     }
@@ -159,7 +162,7 @@ namespace minsky
     // TODO:: To be implemented... need to recreate child window
   }
 
-      double RenderNativeWindow::scaleFactor() const
+      double RenderNativeWindow::scaleFactor()
       {
 #ifdef WIN32
         DEVICE_SCALE_FACTOR scaleFactor;

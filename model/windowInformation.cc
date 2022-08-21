@@ -107,7 +107,7 @@ namespace minsky
 #endif
   }
 
-  const ecolab::cairo::SurfacePtr& WindowInformation::getBufferSurface()
+  const ecolab::cairo::SurfacePtr& WindowInformation::getBufferSurface() const
   {
     return bufferSurface;
   }
@@ -148,7 +148,7 @@ namespace minsky
     isRendering = value;
   }
 
-  bool WindowInformation::getRenderingFlag()
+  bool WindowInformation::getRenderingFlag() const
   {
     return isRendering;
   }
@@ -219,10 +219,11 @@ namespace minsky
 #endif
   
   WindowInformation::WindowInformation(uint64_t parentWin, int left, int top, int cWidth, int cHeight,
-                                       double sf,const std::function<void(void)>& draw)
+                                       double sf,bool hasScrollBars, const std::function<void(void)>& draw):
 #ifdef MAC_OSX_TK
-    : Winfo(NSContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this)), draw(draw)
+    Winfo(NSContext(reinterpret_cast<void*>(parentWin),left,top,cWidth,cHeight,*this)), draw(draw),
 #endif
+    hasScrollBars(hasScrollBars)
   {
     offsetLeft = left;
     offsetTop = top;

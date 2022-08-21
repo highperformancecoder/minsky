@@ -1,7 +1,9 @@
-import { commandsMapping } from '@minsky/shared';
+import { commandsMapping, DescriptionPayload } from '@minsky/shared';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
+import { RestServiceManager, callRESTApi } from './RestServiceManager';
+const JSON5 = require('json5');
+
 
 export class BookmarkManager {
   static async populateBookmarks(bookmarks: string[]) {
@@ -70,4 +72,18 @@ export class BookmarkManager {
     disableAllBookmarksInListAndDelete();
     addNewBookmarks();
   }
+
+    static updateBookmarkList() {
+        const bookmarks=callRESTApi("/minsky/canvas/model/bookmarkList") as string[];
+        this.populateBookmarks(bookmarks);
+    }
+
+    static saveDescription(payload: DescriptionPayload) {
+        callRESTApi(`/minsky/canvas/${payload.item}/bookmark ${payload.bookmark}`);
+        callRESTApi(`/minsky/canvas/${payload.item}/tooltip ${JSON5.stringify(payload.tooltip)}`);
+        callRESTApi(`/minsky/canvas/${payload.item}/detailedText ${JSON5.stringify(payload.detailedText)}`);
+        callRESTApi(`/minsky/canvas/${payload.item}/adjustBookmark`);
+        this.updateBookmarkList();
+  }
+  
 }
