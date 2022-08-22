@@ -44,7 +44,7 @@ namespace minsky
     DuplicateKeyAction duplicateKeyAction=throwException;
     
     /// rows and columns that are comment lines to be ignored
-    std::set<unsigned> dimensionCols;
+    std::set<unsigned> dimensionCols, dataCols;
     std::vector<civita::Dimension> dimensions;
     std::vector<std::string> dimensionNames;
   };

@@ -14,7 +14,7 @@
   <div class="options-row-one options-row">
     <span>
       <label for="columnar">Columnar</label>
-      <input id="columnar" type="checkbox" formControlName="columnar" />
+      <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(selectedRow,selectedCol)"/>
     </span>
 
     <span>
@@ -175,24 +175,25 @@
     <table *ngIf="parsedLines.length">
       <tr>
         <th>Dimension</th>
-        <td #checkboxRow
+        <td #colTypeRow
           *ngFor="let col of csvCols; let i = index"
-          class="checkbox-container"
+          class="col-type-container"
         >
-          <input
-            *ngIf="selectedCol > i"
-            type="checkbox"
-            name="{{ i }}"
-            id="import-csv-checkbox-{{ i }}"
-            (change)="updatedCheckBoxValue($event, i)"
-          />
+
+            <select
+              (change)="setColType(i,$event.target.value)"
+            >
+              <option value="axis" style="color:blue">axis</option>
+              <option value="data">data</option>
+              <option value="ignore" style="color:red">ignore</option>
+            </select>
         </td>
       </tr>
 
       <tr>
         <th>Type</th>
         <td *ngFor="let col of csvCols; let i = index">
-          <ng-container *ngIf="selectedCol > i && checkboxes[i]">
+          <ng-container *ngIf="colType[i]==='axis'">
             <select
               value="{{ dialogState.spec?.dimensions[i]?.type }}"
               (change)="dialogState.spec.dimensions[i].type = $event.target.value"
@@ -209,7 +210,7 @@
         <th>Format</th>
         <td *ngFor="let col of csvCols; let i = index">
           <input
-            *ngIf="selectedCol > i && checkboxes[i]"
+            *ngIf="colType[i]==='axis'"
             type="text"
             [matAutocomplete]="autocompleteFormat"
             class="form-control"
@@ -237,7 +238,7 @@
         <th>Name</th>
         <td *ngFor="let col of csvCols; let i = index">
           <input
-            *ngIf="selectedCol > i && checkboxes[i]"
+            *ngIf="colType[i]==='axis'"
             type="text"
             [matAutocomplete]="autocompleteName"
             class="form-control"

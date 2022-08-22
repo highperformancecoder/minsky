@@ -13,6 +13,14 @@ import {
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import * as JSON5 from 'json5';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+
+enum ColType {
+  axis="axis",
+  data="data",
+  ignore="ignore"
+};
+
+
 @AutoUnsubscribe()
 @Component({
   selector: 'minsky-import-csv',
@@ -33,10 +41,10 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedHeader = 0;
   selectedRow = -1;
   selectedCol = -1;
-  checkboxes: Array<boolean> = [];
+  colType: Array<ColType> = [];
   dialogState: any;
   initialDimensionNames: string[];
-  @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
+  @ViewChild('colTypeRow') colTypeRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
 
   public get url(): AbstractControl {
@@ -132,16 +140,16 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     })();
   }
   ngAfterViewChecked() 	{
-    // set state of checkboxes to reflect checkboxes array
+    // set state of dimension controls to reflect dialogState
     if (this.inputCsvCanvasContainer)
     {
       var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
-      for (var i=0; i<this.checkboxes.length; ++i)
+      for (var i=0; i<this.colType.length; ++i)
         {
-            var input=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
-            if (input)
-                input.checked=this.checkboxes[i];
-            if (this.checkboxes[i])
+            var colType=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
+            if (colType)
+                colType.value=this.colType[i];
+            if (this.colType[i]===ColType.axis)
             {
                 var type=table.rows[1].cells[i+1].children[0] as HTMLSelectElement;
                 type.value=this.dialogState.spec.dimensions[i].type;
@@ -253,7 +261,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     await this.parseLines();
-    // await this.redraw();
   }
 
   async getCSVDialogSpec() {
@@ -272,13 +279,24 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     })) as string[][];
 
     this.csvCols = new Array(this.parsedLines[0]?.length);
-    this.checkboxes = new Array(this.parsedLines[0]?.length).fill(false);
+    this.colType = new Array(this.parsedLines[0]?.length).fill("ignore");
     for (var i in this.dialogState.spec.dimensionCols as Array<number>)
     {
       var col=this.dialogState.spec.dimensionCols[i];
-      if (col<this.checkboxes.length)
-        this.checkboxes[col]=true;
+      if (col<this.colType.length)
+        this.colType[col]=ColType.axis;
     }
+    if (this.dialogState.spec.dataCols)
+      for (var i in this.dialogState.spec.dataCols as Array<number>)
+    {
+      var col=this.dialogState.spec.dimensionCols[i];
+      if (col<this.colType.length)
+        this.colType[col]=ColType.data;
+    }
+    else
+      // emulate old behaviour, if no datacols specified, all columns to the right of dataColOffset are data
+      for (var ii=this.dialogState.dataColOffset as number; ii<this.colType.length; ++ii)
+        this.colType[ii]=ColType.data;
     
     this.updateDimColsAndNames();
   }
@@ -295,42 +313,43 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedCol = colIndex;
     this.dialogState.spec.dataColOffset = colIndex;
 
-    for (let i = this.selectedCol + 1; i <= this.parsedLines.length - 1; i++) {
-     this.checkboxes[i] = false;
-    }
+    for (let i = 0; i<this.parsedLines[0].length; i++)
+      //for (let i = this.selectedCol; this.dialogState.spec.columnar? i<this.selectedCol + 1: i < this.parsedLines.length; i++) {
+      if (i<this.selectedCol) {
+        if (this.colType[i]==ColType.data)
+          this.colType[i]=ColType.ignore;
+      } else if (i===this.selectedCol || !this.columnar.value)
+        this.colType[i]=ColType.data;
+    else
+      this.colType[i]=ColType.ignore;
+    this.ngAfterViewChecked();
   }
 
   getColorForCell(rowIndex: number, colIndex: number) {
-    let color = '';
+    if (colIndex>=this.colType.length) return "red";
 
-    if (this.selectedHeader === rowIndex) {
-      //header row
-      color = 'blue';
-      if (this.selectedCol >= 0 && this.selectedCol > colIndex) {
-        color = 'green';
+    if (this.selectedHeader === rowIndex)  // header row
+        switch (this.colType[colIndex]) {
+        case 'data': return "blue";
+        case 'axis': return "green";
+        case "ignore": return "red";
+        }
+    else if (this.selectedRow >= 0 && this.selectedRow > rowIndex)
+      return "red"; // ignore commentary at beginning of file
+    else
+      switch (this.colType[colIndex]) {
+      case 'data': return "black";
+      case 'axis': return "blue";
+      case "ignore": return "red";
       }
-    } else {
-      //not a header row
-      if (this.selectedCol >= 0 && this.selectedCol > colIndex) {
-        // column
-        color =
-          this.checkboxes[colIndex] && this.selectedHeader !== rowIndex
-            ? 'blue'
-            : 'red';
-      }
-
-      if (this.selectedRow >= 0 && this.selectedRow > rowIndex) {
-        // row
-        color = 'red';
-      }
-    }
-
-    return color;
   }
 
   updateDimColsAndNames() {
-    this.dialogState.spec.dimensionCols = this.checkboxes
-      .map((c, index) => (c ? index : false))
+    this.dialogState.spec.dimensionCols = this.colType
+      .map((c, index) => (c===ColType.axis ? index : false))
+      .filter((v) => v !== false);
+    this.dialogState.spec.dataCols = this.colType
+      .map((c, index) => (c===ColType.data ? index : false))
       .filter((v) => v !== false);
 
     this.dialogState.spec.dimensionNames = this.parsedLines[
@@ -340,9 +359,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  
-  updatedCheckBoxValue(event: any, index: number) {
-    this.checkboxes[index] = event.target.checked;
+  setColType(column: number, type: ColType) {
+    this.colType[column]=type;
     this.updateDimColsAndNames();
   }
 
