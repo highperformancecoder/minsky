@@ -13,6 +13,25 @@ import {
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import * as JSON5 from 'json5';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+
+function separatorToChar(sep: string): string {
+  switch(sep) {
+  case 'space': return ' ';
+  case 'tab': return '\t';
+  default: return sep;
+  }
+}
+
+function separatorFromChar(sep: string): string {
+  switch(sep) {
+  case ' ': return 'space';
+  case '\t': return 'tab';
+  default: return sep;
+  }
+}
+
+
+
 @AutoUnsubscribe()
 @Component({
   selector: 'minsky-import-csv',
@@ -182,21 +201,21 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateForm() {
-      this.url.setValue(this.dialogState.url);
+    this.url.setValue(this.dialogState.url);
     
-      this.columnar.setValue(this.dialogState.spec.columnar);
-      this.decSeparator.setValue(this.dialogState.spec.decSeparator);
-      this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
-      this.escape.setValue(this.dialogState.spec.escape);
-      this.horizontalDimName.setValue(this.dialogState.spec.horizontalDimName);
-      this.mergeDelimiters.setValue(this.dialogState.spec.mergeDelimiters);
-      this.missingValue.setValue(this.dialogState.spec.missingValue);
-      this.quote.setValue(this.dialogState.spec.quote);
-      this.separator.setValue(this.dialogState.spec.separator);
-      this.horizontalDimension.setValue({
-          type: this.dialogState.spec.horizontalDimension.type,
-         units:this.dialogState.spec.horizontalDimension.units
-      });
+    this.columnar.setValue(this.dialogState.spec.columnar);
+    this.decSeparator.setValue(this.dialogState.spec.decSeparator);
+    this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
+    this.escape.setValue(this.dialogState.spec.escape);
+    this.horizontalDimName.setValue(this.dialogState.spec.horizontalDimName);
+    this.mergeDelimiters.setValue(this.dialogState.spec.mergeDelimiters);
+    this.missingValue.setValue(this.dialogState.spec.missingValue);
+    this.quote.setValue(this.dialogState.spec.quote);
+    this.separator.setValue(separatorFromChar(this.dialogState.spec.separator));
+    this.horizontalDimension.setValue({
+      type: this.dialogState.spec.horizontalDimension.type,
+      units:this.dialogState.spec.horizontalDimension.units
+    });
   }
 
   async getValueId() {
@@ -370,7 +389,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       mergeDelimiters,
       missingValue,
       quote,
-      separator,
+      separator: separatorToChar(separator),
       horizontalDimension,
     };
     const res = await this.electronService.sendMinskyCommandAndRender({
