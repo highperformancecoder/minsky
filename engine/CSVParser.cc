@@ -559,13 +559,12 @@ namespace minsky
     vector<string> horizontalLabels;
     vector<AnyVal> anyVal;
 
-    for (size_t i=0; i<spec.nColAxes(); ++i)
-      if (spec.dimensionCols.count(i))
-        {
-          hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
-          hc.xvectors.back().dimension=spec.dimensions[i];
-          anyVal.emplace_back(spec.dimensions[i]);
-        }
+    for (auto i: spec.dimensionCols)
+      {
+        hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
+        hc.xvectors.back().dimension=spec.dimensions[i];
+        anyVal.emplace_back(spec.dimensions[i]);
+      }
     try
       {
         for (size_t row=0; getline(input, buf); ++row)
@@ -579,32 +578,38 @@ namespace minsky
             }
 #endif
             // remove trailing carriage returns
-            if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);//buf.erase(buf.end()-1);
+            if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
             assert(spec.headerRow<=spec.nRowAxes());
-            if (row==spec.headerRow && !spec.columnar) // in header section
+            if (spec.headerRow<spec.nRowAxes() && row==spec.headerRow && !spec.columnar) // in header section
               {
                 vector<string> parsedRow(tok.begin(), tok.end());
-                if (parsedRow.size()>spec.nColAxes()+1)
-                  {
-                    tabularFormat=true;
+                tabularFormat=spec.dataCols.size()>1 || parsedRow.size()>spec.nColAxes()+1;
+                // legacy situation where all data columns are to the right
+                if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
                     horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
-                    hc.xvectors.emplace_back(spec.horizontalDimName);
-                    hc.xvectors.back().dimension=spec.horizontalDimension;
-                    anyVal.emplace_back(spec.horizontalDimension);
-                    for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
-                    dimLabels.emplace_back();
-                    for (size_t i=0; i<horizontalLabels.size(); ++i)
-                      dimLabels.back()[AnyVal(spec.horizontalDimension)(horizontalLabels[i])]=i;
-                  }
+                else
+                  // explicitly specified data columns
+                  for (auto i: spec.dataCols)
+                    if (i<parsedRow.size())
+                      horizontalLabels.push_back(parsedRow[i]);
+
+                hc.xvectors.emplace_back(spec.horizontalDimName);
+                hc.xvectors.back().dimension=spec.horizontalDimension;
+                for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
+                dimLabels.emplace_back();
+                for (size_t i=0; i<horizontalLabels.size(); ++i)
+                  dimLabels.back()[AnyVal(spec.horizontalDimension)(horizontalLabels[i])]=i;
+                anyVal.emplace_back(spec.horizontalDimension);
               }
             else if (row>=spec.nRowAxes())// in data section
               {
                 Key key;
                 auto field=tok.begin();
-                size_t dim=0;
-                for (size_t i=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
+                size_t dim=0, dataCols=0;
+                unsigned i=0;
+                for (auto field=tok.begin(); field!=tok.end(); ++i, ++field)
                   if (spec.dimensionCols.count(i))
                     {
                       if (dim>=hc.xvectors.size())
@@ -623,23 +628,22 @@ namespace minsky
                         }
                       dim++;
                     }
+
+                i=0;
+                for (auto field=tok.begin(); field!=tok.end(); ++i,++field)
+                  if (spec.dataCols.empty() && i>spec.nColAxes() || spec.dataCols.count(i)) 
+                    {                    
+                      if (tabularFormat)
+                        key.push_back(anyVal[dim](horizontalLabels[dataCols]));
+                      else if (dataCols)
+                        break; // only 1 value column, everything to right ignored
                     
-                if (field==tok.end())
-                  throw NoDataColumns();
-          
-                for (size_t col=0; field != tok.end(); ++field, ++col)
-                  {
-                    if (tabularFormat)
-                      key.push_back(anyVal[dim](horizontalLabels[col]));
-                    else if (col)
-                      break; // only 1 value column, everything to right ignored
-                    
-                    // remove thousands separators, and set decimal separator to '.' ("C" locale)
-                    string s;
-                    for (auto c: *field)
-                      if (c==spec.decSeparator)
-                        s+='.';
-                      else if (!isspace(c) && c!='.' && c!=',')
+                      // remove thousands separators, and set decimal separator to '.' ("C" locale)
+                      string s;
+                      for (auto c: *field)
+                        if (c==spec.decSeparator)
+                          s+='.';
+                        else if (!isspace(c) && c!='.' && c!=',')
                         s+=c;                    
 
                     // TODO - this disallows special floating point values - is this right?
@@ -692,7 +696,13 @@ namespace minsky
                       key.pop_back();
                     else
                       break; // only one column of data needs to be read
-                  }
+                    dataCols++;
+                    }
+              
+                if (!dataCols)
+                  throw NoDataColumns();
+          
+
               }
           }
 
