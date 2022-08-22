@@ -1,11 +1,25 @@
 # assume canvas.minsky.item is the variable
 
-proc CSVImportDialog {} {
-    if {[llength [info commands minsky.canvas.item.valueId]]==0} return
-    getValue [minsky.canvas.item.valueId]
-    global workDir csvParms dataImportDialog
+proc separatorToChar {separator} {
+    switch $separator {
+        "<tab>" {return "\t"}
+        "<space>" {return " "}
+        default {return $separator}
+    }
+}
+
+proc separatorFromChar {separatorChar} {
+     switch $separatorChar {
+        "\t" {return "<tab>"}
+        " " {return "<space>"}
+         default {return $separatorChar}
+    }
+}   
+            
+proc loadDialogFromSpec {} {
+    global  csvParms
     set csvParms(url) [minsky.value.csvDialog.url]
-    set csvParms(separator) [minsky.value.csvDialog.spec.separator]
+    set csvParms(separator) [separatorFromChar [minsky.value.csvDialog.spec.separator]]
     set csvParms(decSeparator) [minsky.value.csvDialog.spec.decSeparator]
     set csvParms(escape) [minsky.value.csvDialog.spec.escape]
     set csvParms(quote) [minsky.value.csvDialog.spec.quote]
@@ -15,6 +29,13 @@ proc CSVImportDialog {} {
     set csvParms(horizontalDimension) [minsky.value.csvDialog.spec.horizontalDimName]
     set csvParms(horizontalType) [minsky.value.csvDialog.spec.horizontalDimension.type]
     set csvParms(horizontalFormat) [minsky.value.csvDialog.spec.horizontalDimension.units]
+}
+
+proc CSVImportDialog {} {
+    if {[llength [info commands minsky.canvas.item.valueId]]==0} return
+    getValue [minsky.canvas.item.valueId]
+    global workDir csvParms dataImportDialog
+    loadDialogFromSpec
     if {![winfo exists .wiring.csvImport]} {
         toplevel .wiring.csvImport
         minsky.canvas.item.deleteCallback "destroy .wiring.csvImport"
@@ -33,6 +54,7 @@ proc CSVImportDialog {} {
             if {[minsky.value.csvDialog.url]!=$csvParms(url)} {
                 minsky.value.csvDialog.url $csvParms(url)
                 minsky.value.csvDialog.guessSpecAndLoadFile
+                loadDialogFromSpec
             } else {
                 minsky.value.csvDialog.loadFile
             }
@@ -58,7 +80,7 @@ proc CSVImportDialog {} {
         ttk::combobox .wiring.csvImport.delimiters.separatorValue -values {
             "," ";" "<tab>" "<space>"} -textvariable csvParms(separator) -width 5
         bind .wiring.csvImport.delimiters.separatorValue <<ComboboxSelected>> {
-            minsky.value.csvDialog.spec.separator $csvParms(separator)}
+            minsky.value.csvDialog.spec.separator [separatorToChar $csvParms(separator)]}
         label .wiring.csvImport.delimiters.decSeparatorLabel -text "Decimal Separator"
         ttk::combobox .wiring.csvImport.delimiters.decSeparatorValue -values {
             "." ","} -textvariable csvParms(decSeparator) -width 5
