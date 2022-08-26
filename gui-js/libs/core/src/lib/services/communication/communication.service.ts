@@ -186,8 +186,8 @@ export class CommunicationService {
           await this.electronService.sendMinskyCommandAndRender({
             command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
           });
-          break;
           this.resetScroll();
+          break;
         case 'ZOOM_IN':
           autoHandleMinskyProcess = false;
           await this.electronService.sendMinskyCommandAndRender({
@@ -647,11 +647,11 @@ export class CommunicationService {
       },
     });
 
-      // schedule resetScroll when zooming stops
-      if (!this.resetScrollWhenIdle)
-          this.resetScrollWhenIdle=setTimeout(()=>{var self=this; self.resetScroll();}, 100);
-      else
-          this.resetScrollWhenIdle.refresh();
+    // schedule resetScroll when zooming stops
+    if (!this.resetScrollWhenIdle)
+      this.resetScrollWhenIdle=setTimeout(()=>{var self=this; self.resetScroll(); self.resetScrollWhenIdle=null;}, 100);
+    else
+      this.resetScrollWhenIdle.refresh();
   };
 
   async handleKeyUp(event: KeyboardEvent) {
