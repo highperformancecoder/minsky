@@ -62,6 +62,7 @@ namespace minsky
     leadingMarker=true;
     grid=true;
     legendLeft=0.1; // override ecolab's default value
+    legendSide=boundingBox;
     addPorts();
     
     yvars.resize(2*numLines);

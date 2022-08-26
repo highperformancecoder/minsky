@@ -45,6 +45,15 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   public get legend(): AbstractControl {
     return this.form.get('legend');
   }
+  public get legendLeft(): AbstractControl {
+    return this.form.get('legendLeft');
+  }
+  public get legendTop(): AbstractControl {
+    return this.form.get('legendTop');
+  }
+  public get legendFontSz(): AbstractControl {
+    return this.form.get('legendFontSz');
+  }
   public get xLogScale(): AbstractControl {
     return this.form.get('xLogScale');
   }
@@ -71,6 +80,9 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       grid: new FormControl(false),
       subGrid: new FormControl(false),
       legend: new FormControl(false),
+      legendLeft: new FormControl(false),
+      legendTop: new FormControl(false),
+      legendFontSz: new FormControl(false),
       xLogScale: new FormControl(false),
       yLogScale: new FormControl(false),
     });
@@ -138,6 +150,21 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       });
       this.legend.setValue(legend);
 
+      const legendLeft = await this.electronService.sendMinskyCommandAndRender({
+        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendLeft`,
+      }) as number;
+      this.legendLeft.setValue(legendLeft.toString());
+      
+      const legendTop = await this.electronService.sendMinskyCommandAndRender({
+        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendTop`,
+      }) as number;
+      this.legendTop.setValue(legendTop.toString());
+
+      const legendFontSz = await this.electronService.sendMinskyCommandAndRender({
+        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendFontSz`,
+      }) as number;
+      this.legendFontSz.setValue(legendFontSz.toString());
+      
       const xLogScale = await this.electronService.sendMinskyCommandAndRender({
         command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/logx`,
       });
@@ -197,6 +224,18 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
 
       await this.electronService.sendMinskyCommandAndRender({
         command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legend ${this.legend.value}`,
+      });
+
+      await this.electronService.sendMinskyCommandAndRender({
+        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendLeft ${this.legendLeft.value}`,
+      });
+
+      await this.electronService.sendMinskyCommandAndRender({
+        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendTop ${this.legendTop.value}`,
+      });
+
+      await this.electronService.sendMinskyCommandAndRender({
+        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendFontSz ${this.legendFontSz.value}`,
       });
 
       await this.electronService.sendMinskyCommandAndRender({
