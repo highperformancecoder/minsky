@@ -183,7 +183,7 @@ SUITE(CSVParser)
       dimensionCols={0,1};
       horizontalDimName="foobar";
       
-      VariableValue v;
+      VariableValue v(VariableType::parameter);
       loadValueFromCSVFile(v,is,*this);
 
       CHECK_EQUAL(3, v.rank());
