@@ -17,12 +17,12 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "variableValues.h"
-#include "constMap.rcd"
 #include "flowCoef.h"
 #include "str.h"
 #include "minsky.h"
 #include "valueId.h"
 
+#include "constMap.rcd"
 #include "dimension.rcd"
 #include "hypercube.rcd"
 #include "hypercube.xcd"
@@ -371,3 +371,4 @@ namespace minsky
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ValueVector);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValue);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValues);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValuePtr);
