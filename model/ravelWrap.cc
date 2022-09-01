@@ -23,6 +23,22 @@
 #include "minskyTensorOps.h"
 #include "minsky.h"
 #include "pango.h"
+
+#include "capiRenderer.xcd"
+#include "dimension.rcd"
+#include "dynamicRavelCAPI.rcd"
+#include "dynamicRavelCAPI.xcd"
+#include "handleLockInfo.rcd"
+#include "handleLockInfo.xcd"
+#include "hypercube.rcd"
+#include "hypercube.xcd"
+#include "item.rcd"
+#include "nobble.h"
+#include "ravelState.xcd"
+#include "ravelState.rcd"
+#include "ravelWrap.rcd"
+#include "ravelWrap.xcd"
+#include "xvector.rcd"
 #include "minsky_epilogue.h"
 
 #include <string>
@@ -754,3 +770,5 @@ namespace
 }
 
   
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Ravel);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravel::RavelState);

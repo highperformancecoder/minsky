@@ -38,11 +38,16 @@
 #include <iostream>
 #include <assert.h>
 
-namespace classdesc
-{
-  //  class json_pack_t;
-  class RESTProcess_t;
-}
+//namespace classdesc
+//{
+//  //  class json_pack_t;
+//  class RESTProcess_t;
+//}
+//
+//template <class T>
+//void RESTProcess(classdesc::RESTProcess_t, const std::string&, T&);
+
+#include <RESTProcess_base.h>
 
 namespace minsky 
 {
@@ -325,9 +330,12 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
     /// runs the RESTProcess descriptor suitable for this type
-    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&);
-    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const;
-    virtual void json_pack(classdesc::json_pack_t&) const;
+    virtual void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d)
+    {::RESTProcess(rp,d,*this);}
+    virtual void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) const
+    {::RESTProcess(rp,d,*this);}
+    virtual void json_pack(classdesc::json_pack_t& j) const
+    {::json_pack(j,"",*this);}
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
@@ -369,9 +377,12 @@ namespace minsky
     }
     void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d) override 
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
-    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) override;
-    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const override;
-    void json_pack(classdesc::json_pack_t&) const override;
+    void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) override
+    {::RESTProcess(rp,d,dynamic_cast<T&>(*this));}
+    void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) const override
+    {::RESTProcess(rp,d,dynamic_cast<const T&>(*this));}
+    void json_pack(classdesc::json_pack_t& j) const override
+    {::json_pack(j,"",dynamic_cast<const T&>(*this));}
     ItemT()=default;
     ItemT(const ItemT&)=default;
     ItemT& operator=(const ItemT&)=default;
@@ -427,6 +438,5 @@ namespace classdesc_access
 }
 #include "item.cd"
 #include "item.xcd"
-
 #endif
 

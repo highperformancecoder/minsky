@@ -25,6 +25,9 @@
 #include "autoLayout.h"
 #include "equations.h"
 #include <cairo_base.h>
+#include "group.rcd"
+#include "item.rcd"
+#include "bookmark.rcd"
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;
@@ -1241,3 +1244,6 @@ namespace minsky
   }
   
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Group);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ItemT<minsky::Group>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Bookmark);

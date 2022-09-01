@@ -21,6 +21,7 @@
 #include "group.h"
 #include "selection.h"
 #include "lasso.h"
+#include "evalGodley.rcd"
 #include "minsky_epilogue.h"
 
 using namespace std;
@@ -96,3 +97,4 @@ namespace minsky
       sv[sidx[i]] += fv[fidx[i]] * m[i];
   }
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EvalGodley);

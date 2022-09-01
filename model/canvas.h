@@ -284,5 +284,5 @@ namespace classdesc
 }
 
 #include "canvas.cd"
-#include "canvas.xcd"
+
 #endif

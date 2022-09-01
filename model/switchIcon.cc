@@ -17,7 +17,9 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "cairoItems.h"
+#include "item.rcd"
 #include "switchIcon.h"
+#include "switchIcon.rcd"
 #include "minsky.h"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
@@ -123,3 +125,4 @@ namespace minsky
   }
   
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::SwitchIcon);

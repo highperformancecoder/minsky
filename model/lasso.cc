@@ -21,6 +21,7 @@
 #include "lasso.h"
 #include "port.h"
 #include "wire.h"
+#include "lasso.rcd"
 #include "minsky_epilogue.h"
 
 #include <utility>
@@ -38,4 +39,6 @@ bool minsky::LassoBox::contains(const Wire& wire) const
   // Make sure both ends of wires are selected in all cases. For ticket 1147
   return (intersects(wire.from()->item()) && intersects(wire.to()->item())); 
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::LassoBox);
 

@@ -29,6 +29,12 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 #include "renderNativeWindow.h"
 #include "windowInformation.h"
 #include "minsky.h"
+#include "cairoSurfaceImage.rcd"
+#include "cairoSurfaceImage.xcd"
+#include "renderNativeWindow.rcd"
+#include "renderNativeWindow.xcd"
+#include "plot.rcd"
+#include "plot.xcd"
 #include "minsky_epilogue.h"
 
 #include <stdexcept>
@@ -174,3 +180,5 @@ namespace minsky
       }
 
 } // namespace minsky
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::RenderNativeWindow);

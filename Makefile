@@ -105,10 +105,10 @@ ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o ev
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
-	operationType.o a85.o
+	operationType.o a85.o units.o
 
-GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
-RESTSERVICE_OBJS=minskyRS.o dataOpRS.o intOpRS.o operatorRS1.o operatorRS2.o variablesRS.o itemRS.o ravelRS.o RESTMinsky.o userFunctionRS.o
+GUI_TK_OBJS=tclmain.o minskyTCL.o
+RESTSERVICE_OBJS=minskyRS.o RESTMinsky.o
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
@@ -178,7 +178,7 @@ BOOST_EXT=
       $(warning cannot figure out boost extension) 
     endif
   endif
-$(warning Boost extension=$(BOOST_EXT))
+ $(warning Boost extension=$(BOOST_EXT))
 endif
 
 ifeq ($(OS),CYGWIN)

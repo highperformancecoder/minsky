@@ -23,7 +23,13 @@
 #include "cairoItems.h"
 #include "minsky.h"
 #include "equations.h"
-//#include "RESTProcess_base.h"
+
+#include "dimension.rcd"
+#include "engNotation.rcd"
+#include "item.rcd"
+#include "slider.rcd"
+#include "variable.rcd"
+
 #include <error.h>
 #include "minsky_epilogue.h"
 
@@ -700,3 +706,5 @@ void VariablePtr::makeConsistentWithValue()
 }
 
 int VarConstant::nextId=0;
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePtr);

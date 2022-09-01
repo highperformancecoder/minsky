@@ -20,8 +20,11 @@
 
 #include <plotTab.h>
 #include <pango.h>
-#include "minsky_epilogue.h"
 #include "minsky.h"
+#include "itemTab.xcd"
+#include "plotTab.rcd"
+#include "plotTab.xcd"
+#include "minsky_epilogue.h"
 using namespace std;
 using ecolab::cairo::CairoSave;
 
@@ -53,3 +56,4 @@ namespace minsky
   }
   
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotTab);

@@ -16,12 +16,29 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "variableValue.h"
+#include "variableValues.h"
+#include "constMap.rcd"
 #include "flowCoef.h"
 #include "str.h"
 #include "minsky.h"
 #include "valueId.h"
+
+#include "dimension.rcd"
+#include "hypercube.rcd"
+#include "hypercube.xcd"
+#include "index.rcd"
+#include "index.xcd"
+#include "nobble.h"
+#include "tensorInterface.rcd"
+#include "tensorInterface.xcd"
+#include "tensorVal.rcd"
+#include "tensorVal.xcd"
+#include "variableValue.rcd"
+#include "variableValues.rcd"
+#include "variableValues.xcd"
+#include "xvector.rcd"
 #include "minsky_epilogue.h"
+
 #include <iomanip>
 #include <error.h>
 
@@ -350,3 +367,7 @@ namespace minsky
         }
   }
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ValueVector);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValue);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValues);

@@ -20,6 +20,8 @@
 #include "cairoItems.h"
 #include "intOp.h"
 #include "minsky.h"
+#include "intOp.rcd"
+#include "item.rcd"
 #include "minsky_epilogue.h"
 
 namespace minsky
@@ -324,3 +326,5 @@ namespace minsky
   {::unpack(x,d,*this);}
 
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::IntOp);

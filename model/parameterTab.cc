@@ -22,6 +22,13 @@
 #include "selection.h"
 #include "lasso.h"
 #include "plotWidget.h"
+
+#include "itemTab.rcd"
+#include "pannableTab.rcd"
+#include "pannableTab.xcd"
+#include "pango.xcd"
+#include "parameterTab.rcd"
+#include "parameterTab.xcd"
 #include "minsky_epilogue.h"
 using namespace std;
 namespace minsky
@@ -44,3 +51,4 @@ namespace minsky
     return ItemTab::cell(row,col);
   }
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ParameterTab);

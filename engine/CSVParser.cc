@@ -19,6 +19,10 @@
 
 #include "CSVParser.h"
 #include "minsky.h"
+
+#include "CSVParser.rcd"
+#include "dataSpecSchema.rcd"
+#include "nobble.h"
 #include "minsky_epilogue.h"
 
 #if defined(__linux__)
@@ -792,3 +796,5 @@ namespace minsky
       loadValueFromCSVFileT<Parser>(v,input,spec);
   }
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::DataSpec);

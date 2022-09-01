@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "variableType.h"
+#include "variableType.rcd"
 #include "minsky_epilogue.h"
 using namespace classdesc;
 
@@ -108,3 +109,4 @@ namespace minsky
 
 
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableType);

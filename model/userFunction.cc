@@ -21,6 +21,8 @@
 #include "evalOp.h"
 #include "selection.h"
 #include "minsky.h"
+#include "item.rcd"
+#include "userFunction.rcd"
 #include "minsky_epilogue.h"
 
 // preload these system headers here, to prevent them from being loaded into anonymous namespace
@@ -243,3 +245,4 @@ namespace minsky
   
 }
 
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::UserFunction);

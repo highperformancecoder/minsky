@@ -20,6 +20,9 @@
 #include "godleyTab.h"
 #include "godleyTableWindow.h"
 #include <pango.h>
+#include "godleyTab.rcd"
+#include "godleyTab.xcd"
+#include "itemTab.xcd"
 #include "minsky_epilogue.h"
 #include "minsky.h"
 using namespace std;
@@ -94,3 +97,4 @@ namespace minsky
   }
 
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTab);

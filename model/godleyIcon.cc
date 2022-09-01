@@ -27,6 +27,8 @@
 #include <arrays.h>
 #include <cairo_base.h>
 #include <ctype.h>
+#include "godleyIcon.rcd"
+#include "item.rcd"
 #include "minsky_epilogue.h"
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;
@@ -574,3 +576,4 @@ namespace minsky
   
   SVGRenderer GodleyIcon::svgRenderer;
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyIcon);

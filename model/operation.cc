@@ -28,6 +28,9 @@
 
 #include <cairo_base.h>
 #include <pango.h>
+#include "item.rcd"
+#include "operation.rcd"
+#include "operationType.rcd"
 #include "minsky_epilogue.h"
 
 #include <math.h>
@@ -1224,3 +1227,69 @@ namespace minsky
   {/* needs to be here, and is actually called */}
 
 }
+
+#define DEFOP(type) CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Operation<minsky::OperationType::type>);
+
+DEFOP(constant)
+DEFOP(time)
+DEFOP(integrate)
+DEFOP(differentiate)
+DEFOP(data)
+DEFOP(ravel)
+DEFOP(euler)
+DEFOP(pi)
+DEFOP(zero)
+DEFOP(one)
+DEFOP(inf)
+DEFOP(percent)
+DEFOP(add)
+DEFOP(subtract)
+DEFOP(multiply)
+DEFOP(divide)
+DEFOP(min)
+DEFOP(max)
+DEFOP(and_)
+DEFOP(or_)
+DEFOP(log)
+DEFOP(pow)
+DEFOP(polygamma)
+DEFOP(lt)
+DEFOP(le)
+DEFOP(eq)
+DEFOP(userFunction)
+DEFOP(copy)
+DEFOP(sqrt)
+DEFOP(exp)
+DEFOP(ln)
+DEFOP(sin)
+DEFOP(cos)
+DEFOP(tan)
+DEFOP(asin)
+DEFOP(acos)
+DEFOP(atan)
+DEFOP(sinh)
+DEFOP(cosh)
+DEFOP(tanh)
+DEFOP(abs)
+DEFOP(floor)
+DEFOP(frac)
+DEFOP(not_)
+DEFOP(Gamma)
+DEFOP(fact)
+DEFOP(sum)
+DEFOP(product)
+DEFOP(infimum)
+DEFOP(supremum)
+DEFOP(any)
+DEFOP(all)
+DEFOP(infIndex)
+DEFOP(supIndex)
+DEFOP(runningSum)
+DEFOP(runningProduct)
+DEFOP(difference)
+DEFOP(innerProduct)
+DEFOP(outerProduct)
+DEFOP(index)
+DEFOP(gather)
+DEFOP(numOps)
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::NamedOp);

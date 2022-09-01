@@ -119,5 +119,4 @@ namespace minsky
 #endif
 
 #include "port.cd"
-#include "port.xcd"
 #endif

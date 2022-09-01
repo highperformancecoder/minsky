@@ -21,6 +21,8 @@
 #include "group.h"
 #include "selection.h"
 #include "variableInstanceList.h"
+#include "variableInstanceList.rcd"
+#include "variableInstanceList.xcd"
 #include "minsky.h"
 #include "minsky_epilogue.h"
 
@@ -59,3 +61,4 @@ namespace minsky
 
 }
 
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableInstanceList);

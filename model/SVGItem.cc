@@ -37,6 +37,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "SVGItem.h"
+#include "SVGItem.rcd"
+#include "cairo_base.h"
 #include "minsky_epilogue.h"
 #include <librsvg-2.0/librsvg/rsvg.h>
 
@@ -84,3 +86,4 @@ namespace minsky
   }
 
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::SVGRenderer);
