@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define CLASSDESC_ARITIES 0x3f
 #include "grid.h"
 #include "variablePane.h"
 #include "lasso.h"
