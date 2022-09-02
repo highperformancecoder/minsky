@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef NO_EXPRTK
 #include "expressionWalker.h"
 #include "userFunction.h"
 #include "minsky.h"
@@ -100,3 +101,4 @@ namespace minsky
       }
   }
 }
+#endif
