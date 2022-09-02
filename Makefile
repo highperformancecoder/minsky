@@ -105,7 +105,7 @@ ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o ev
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
-	operationType.o a85.o units.o
+	operationType.o a85.o
 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=minskyRS.o RESTMinsky.o

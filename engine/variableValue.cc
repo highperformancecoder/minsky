@@ -33,6 +33,7 @@
 #include "tensorInterface.xcd"
 #include "tensorVal.rcd"
 #include "tensorVal.xcd"
+#include "units.rcd"
 #include "variableValue.rcd"
 #include "variableValues.rcd"
 #include "variableValues.xcd"
@@ -368,6 +369,7 @@ namespace minsky
   }
 }
 
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Units);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ValueVector);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValue);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValues);
