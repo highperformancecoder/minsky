@@ -635,7 +635,7 @@ namespace minsky
 
                 i=0;
                 for (auto field=tok.begin(); field!=tok.end(); ++i,++field)
-                  if (spec.dataCols.empty() && i>=spec.nColAxes() || spec.dataCols.count(i)) 
+                  if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.count(i)) 
                     {                    
                       if (tabularFormat)
                         key.push_back(anyVal[dim](horizontalLabels[dataCols]));

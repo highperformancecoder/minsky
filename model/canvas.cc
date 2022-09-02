@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef CLASSDESC_ARITIES
 #define CLASSDESC_ARITIES 0x3F 
 #include "geometry.h"
 #include "canvas.h"
