@@ -64,8 +64,10 @@ export class WiringComponent implements OnInit, OnDestroy {
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {
     const minskyCanvasElement = this.windowUtilityService.getMinskyCanvasElement();
     const scrollableArea = this.windowUtilityService.getScrollableArea();
-
+    var moveOnScroll=0; // avoid moving when programmatically setting scroll bars
+    
     this.cmService.resetScroll=async ()=>{
+      ++moveOnScroll;
       var pos= await this.electronService.sendMinskyCommandAndRender({
         command: 'position'}) as number[];
       minskyCanvasContainer.scrollLeft=scrollableArea.width / 2-pos[0];
@@ -78,11 +80,14 @@ export class WiringComponent implements OnInit, OnDestroy {
         const handleScroll = async (scrollTop: number, scrollLeft: number) => {
           const posX = scrollableArea.width / 2 - scrollLeft;
           const posY = scrollableArea.height / 2 - scrollTop;
-          await this.electronService.sendMinskyCommandAndRender({
-            command: 'moveTo',
-            mouseX: posX,
-            mouseY: posY,
-          });
+          if (!moveOnScroll)
+            await this.electronService.sendMinskyCommandAndRender({
+              command: 'moveTo',
+              mouseX: posX,
+              mouseY: posY,
+            });
+          else
+            --moveOnScroll;
         };
 
         minskyCanvasContainer.addEventListener('scroll', async () => {
