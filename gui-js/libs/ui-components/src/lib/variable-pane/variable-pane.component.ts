@@ -158,7 +158,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   }
 
   async sendMouseEvent(x: number, y: number, type: string) {
-    const offset=isMacOS()? 20: -15; // why, o why, Mac?
+    const offset=isMacOS()? 5: -15; // why, o why, Mac?
     const command = `/minsky/variablePane/${type} [${x},${y+offset}]`;
 
     await this.electronService.sendMinskyCommandAndRender({
