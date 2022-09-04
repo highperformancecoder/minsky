@@ -194,8 +194,8 @@
         <td *ngFor="let col of csvCols; let i = index">
           <ng-container *ngIf="selectedCol > i && checkboxes[i]">
             <select
-              value="{{ dialogState.spec?.dimensions[i]?.type }}"
-              (change)="dialogState.spec.dimensions[i].type = $event.target.value"
+              value="{{dimensions[i]?.type }}"
+              (change)="dimensions[i].type = $event.target.value"
             >
               <option value="string">string</option>
               <option value="value">value</option>
@@ -211,17 +211,18 @@
           <input
             *ngIf="selectedCol > i && checkboxes[i]"
             type="text"
+            value="dimensions[i]?.units"
             [matAutocomplete]="autocompleteFormat"
             class="form-control"
-            (change)="dialogState.spec.dimensions[i].units = $event.target.value"
+            (change)="dimensions[i].units = $event.target.value"
           />
           <mat-autocomplete
             id="format_{{ i }}"
             [panelWidth]="'10rem'"
             #autocompleteFormat="matAutocomplete"
-            (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
+            (optionSelected)="dimensions[i].units = $event.option.value"
           >
-            <ng-container *ngIf="dialogState.spec?.dimensions[i]?.type === 'time'">
+            <ng-container *ngIf="dimensions[i]?.type === 'time'">
               <mat-option
                 *ngFor="let tfs of timeFormatStrings"
                 [value]="tfs.value"

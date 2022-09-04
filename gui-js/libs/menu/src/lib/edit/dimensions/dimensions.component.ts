@@ -81,6 +81,10 @@ export class DimensionsComponent implements OnInit {
       command: `${commandsMapping.DIMENSIONS} ${JSON.stringify(dimensions)}`,
     });
 
+    await this.electronService.sendMinskyCommandAndRender({
+      command: "/minsky/imposeDimensions",
+    });
+
     this.closeWindow();
   }
 }

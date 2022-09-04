@@ -30,7 +30,11 @@ function separatorFromChar(sep: string): string {
   }
 }
 
-
+class Dimension
+{
+  type: string;
+  units: string;
+};
 
 @AutoUnsubscribe()
 @Component({
@@ -53,8 +57,10 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRow = -1;
   selectedCol = -1;
   checkboxes: Array<boolean> = [];
+  // per column dimension names and dimensions
+  dimensionNames: string[]=[];
+  dimensions: Dimension[]=[];
   dialogState: any;
-  initialDimensionNames: string[];
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
 
@@ -157,17 +163,19 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
       for (var i=0; i<this.checkboxes.length; ++i)
         {
-            var input=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
+            var input=table.rows[0].cells[i+1]?.children[0] as HTMLInputElement;
             if (input)
                 input.checked=this.checkboxes[i];
             if (this.checkboxes[i])
             {
-                var type=table.rows[1].cells[i+1].children[0] as HTMLSelectElement;
-                type.value=this.dialogState.spec.dimensions[i].type;
-                var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
-                format.value=this.dialogState.spec.dimensions[i].units;
-                var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
-                name.value=this.dialogState.spec.dimensionNames[i];
+              var type=table.rows[1].cells[i+1]?.children[0] as HTMLSelectElement;
+              var dimension=this.dimensions[i];
+              if (!dimension) dimension={type: "string", units: ""};
+              type.value=dimension.type;
+              var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
+              format.value=dimension.units;
+              var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
+              name.value=this.dimensionNames[i];
             }
         }
     }
@@ -282,7 +290,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dialogState = (await this.electronService.sendMinskyCommandAndRender({
       command: `${this.variableValuesSubCommand}/csvDialog`,
     })) as Record<string, unknown>;
-    this.initialDimensionNames = this.dialogState.spec.dimensionNames as string[];
   }
 
   async parseLines() {
@@ -297,9 +304,10 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       var col=this.dialogState.spec.dimensionCols[i];
       if (col<this.checkboxes.length)
         this.checkboxes[col]=true;
+      this.dimensionNames[col]=this.dialogState.spec.dimensionNames[i] as string;
+      this.dimensions[col]=this.dialogState.spec.dimensions[i] as Dimension;
     }
     
-    this.updateDimColsAndNames();
   }
   
   async selectHeader(index: number) {
@@ -347,22 +355,12 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     return color;
   }
 
-  updateDimColsAndNames() {
-    this.dialogState.spec.dimensionCols = this.checkboxes
-      .map((c, index) => (c ? index : false))
-      .filter((v) => v !== false);
-
-    this.dialogState.spec.dimensionNames = this.parsedLines[
-      this.selectedHeader
-    ].filter((value, index) =>
-      (this.dialogState.spec.dimensionCols as number[]).includes(index)
-    );
-  }
-
-  
   updatedCheckBoxValue(event: any, index: number) {
     this.checkboxes[index] = event.target.checked;
-    this.updateDimColsAndNames();
+    if (!this.dimensionNames[index])
+      this.dimensionNames[index]=this.parsedLines[this.selectedHeader][index];
+    if (!this.dimensions[index])
+      this.dimensions[index]={type:"string",units:""} as Dimension;
   }
 
   async handleSubmit() {
@@ -379,6 +377,16 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       horizontalDimension,
     } = this.form.value;
 
+    this.dialogState.spec.dimensionCols=[];
+    this.dialogState.spec.dimensionNames=[];
+    this.dialogState.spec.dimensions=[];
+    for (let i=0; i<this.checkboxes.length; ++i) 
+      if (this.checkboxes[i]) {
+        this.dialogState.spec.dimensionCols.push(i);
+        this.dialogState.spec.dimensionNames.push(this.dimensionNames[i]);
+        this.dialogState.spec.dimensions.push(this.dimensions[i]);
+    }
+    
     const spec = {
       ...this.dialogState.spec,
       columnar,
