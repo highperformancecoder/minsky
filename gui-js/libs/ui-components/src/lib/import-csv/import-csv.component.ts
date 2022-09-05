@@ -36,6 +36,12 @@ function separatorFromChar(sep: string): string {
   }
 }
 
+class Dimension
+{
+  type: string;
+  units: string;
+};
+
 @AutoUnsubscribe()
 @Component({
   selector: 'minsky-import-csv',
@@ -57,9 +63,11 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRow = -1;
   selectedCol = -1;
   colType: Array<ColType> = [];
+  // per column dimension names and dimensions
+  dimensionNames: string[]=[];
+  dimensions: Dimension[]=[];
   dialogState: any;
-  initialDimensionNames: string[];
-  @ViewChild('colTypeRow') colTypeRow: ElementRef<HTMLCollection>;
+  @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
 
   public get url(): AbstractControl {
@@ -161,17 +169,19 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
       for (var i=0; i<this.colType.length; ++i)
         {
-            var colType=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
+            var colType=table.rows[0].cells[i+1]?.children[0] as HTMLInputElement;
             if (colType)
                 colType.value=this.colType[i];
             if (this.colType[i]===ColType.axis)
             {
-                var type=table.rows[1].cells[i+1].children[0] as HTMLSelectElement;
-                type.value=this.dialogState.spec.dimensions[i].type;
-                var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
-                format.value=this.dialogState.spec.dimensions[i].units;
-                var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
-                name.value=this.dialogState.spec.dimensionNames[i];
+              var type=table.rows[1].cells[i+1]?.children[0] as HTMLSelectElement;
+              var dimension=this.dimensions[i];
+              if (!dimension) dimension={type: "string", units: ""};
+              type.value=dimension.type;
+              var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
+              format.value=dimension.units;
+              var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
+              name.value=this.dimensionNames[i];
             }
         }
     }
@@ -285,7 +295,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dialogState = (await this.electronService.sendMinskyCommandAndRender({
       command: `${this.variableValuesSubCommand}/csvDialog`,
     })) as Record<string, unknown>;
-    this.initialDimensionNames = this.dialogState.spec.dimensionNames as string[];
   }
 
   async parseLines() {
@@ -300,6 +309,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       var col=this.dialogState.spec.dimensionCols[i];
       if (col<this.colType.length)
         this.colType[col]=ColType.axis;
+      this.dimensionNames[col]=this.dialogState.spec.dimensionNames[i] as string;
+      this.dimensions[col]=this.dialogState.spec.dimensions[i] as Dimension;
     }
     if (this.dialogState.spec.dataCols)
       for (var i in this.dialogState.spec.dataCols as Array<number>)
@@ -313,7 +324,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       for (var ii=this.dialogState.dataColOffset as number; ii<this.colType.length; ++ii)
         this.colType[ii]=ColType.data;
     
-    this.updateDimColsAndNames();
   }
   
   async selectHeader(index: number) {
@@ -359,24 +369,12 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       }
   }
 
-  updateDimColsAndNames() {
-    this.dialogState.spec.dimensionCols = this.colType
-      .map((c, index) => (c===ColType.axis ? index : false))
-      .filter((v) => v !== false);
-    this.dialogState.spec.dataCols = this.colType
-      .map((c, index) => (c===ColType.data ? index : false))
-      .filter((v) => v !== false);
-
-    this.dialogState.spec.dimensionNames = this.parsedLines[
-      this.selectedHeader
-    ].filter((value, index) =>
-      (this.dialogState.spec.dimensionCols as number[]).includes(index)
-    );
-  }
-
   setColType(column: number, type: ColType) {
     this.colType[column]=type;
-    this.updateDimColsAndNames();
+    if (!this.dimensionNames[column])
+      this.dimensionNames[column]=this.parsedLines[this.selectedHeader][column];
+    if (!this.dimensions[column])
+      this.dimensions[column]={type:"string",units:""} as Dimension;
   }
 
   async handleSubmit() {
@@ -393,6 +391,24 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       horizontalDimension,
     } = this.form.value;
 
+    this.dialogState.spec.dimensionCols=[];
+    this.dialogState.spec.dataCols=[];
+    this.dialogState.spec.dimensionNames=[];
+    this.dialogState.spec.dimensions=[];
+    for (let i=0; i<this.colType.length; ++i) 
+      switch (this.colType[i]) {
+      case ColType.axis: 
+        this.dialogState.spec.dimensionCols.push(i);
+        this.dialogState.spec.dimensionNames.push(this.dimensionNames[i]);
+        this.dialogState.spec.dimensions.push(this.dimensions[i]);
+        break;
+      case ColType.data:
+        this.dialogState.spec.dataCols.push(i);
+        break;
+    }
+
+    process.stdout.write(JSON5.stringify(this.dialogState.spec));
+    
     const spec = {
       ...this.dialogState.spec,
       columnar,
@@ -406,12 +422,10 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       separator: separatorToChar(separator),
       horizontalDimension,
     };
+    process.stdout.write(`${commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV}
+       ${JSON5.stringify([this.url.value,spec])}`);
     const res = await this.electronService.sendMinskyCommandAndRender({
-      command: `${
-        commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV
-      } [${normalizeFilePathForPlatform(this.url.value)},${JSON5.stringify(
-        spec
-      )}]`,
+      command: `${commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV} ${JSON5.stringify([this.url.value,spec])}`,
     });
 
     if (res === importCSVerrorMessage) {

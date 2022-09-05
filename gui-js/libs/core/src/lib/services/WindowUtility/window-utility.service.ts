@@ -16,7 +16,7 @@ export class WindowUtilityService {
   private scrollableAreaWidth = null;
   private scrollableAreaHeight = null;
   private mainWindowId = 1;
-  SCROLLABLE_AREA_FACTOR = 10;
+  SCROLLABLE_AREA_FACTOR = 100;
 
   constructor(private electronService: ElectronService) { }
 

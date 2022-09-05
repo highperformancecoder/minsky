@@ -73,6 +73,7 @@ namespace minsky
     void mouseUp(float,float) override;
     void mouseMove(float,float) override;
     void zoom(double,double,double) override;
+    bool hasScrollBars() const override {return true;}
   };
 }
 #include "variablePane.cd"

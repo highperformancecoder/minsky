@@ -168,11 +168,16 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   async sendMouseEvent(x: number, y: number, type: string) {
     const yoffs=isMacOS()? -20: 0; // why, o why, Mac?
-    const command = `${this.namedItemSubCommand}/${type} [${x},${y+yoffs}]`;
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command,
-    });
+    // special handling of mouse down command to deal with drop down menus for column imports
+    if (type===commandsMapping.MOUSEDOWN_SUBCOMMAND)
+      this.electronService.sendMinskyCommandAndRender({command: this.namedItemSubCommand, mouseX: x, mouseY: y+yoffs}, events.GODLEY_VIEW_MOUSEDOWN);
+    else
+    {
+      const command = `${this.namedItemSubCommand}/${type} [${x},${y+yoffs}]`;
+      await this.electronService.sendMinskyCommandAndRender({
+        command,
+      });
+    }
 
     await this.redraw();
   }
