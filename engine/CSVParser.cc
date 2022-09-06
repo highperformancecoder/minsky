@@ -707,13 +707,22 @@ namespace minsky
           }
 
         // remove zero length dimensions
-        for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
-          {
-            if (i->empty())
-              hc.xvectors.erase(i);
-            else
-              ++i;
-          }
+        {
+          auto d=dimLabels.begin();
+          assert(hc.xvectors.size()==dimLabels.size());
+          for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
+              if (i->empty())
+                {
+                  hc.xvectors.erase(i);
+                  dimLabels.erase(d);
+                }
+              else
+                {
+                  ++i;
+                  ++d;
+                }
+          assert(hc.xvectors.size()==dimLabels.size());
+        }
         
         for (auto& xv: hc.xvectors)
           xv.imposeDimension();
