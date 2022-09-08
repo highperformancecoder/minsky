@@ -68,7 +68,7 @@ namespace minsky
     unsigned numRows() const override {return m_numRows;}
     unsigned numCols() const override {return m_numCols;}
     bool evenHeight() const override {return false;}
-    void moveTo(double,double) override;
+    void moveCursorTo(double,double) override;
     void mouseDown(float,float) override;
     void mouseUp(float,float) override;
     void mouseMove(float,float) override;

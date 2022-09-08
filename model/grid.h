@@ -43,7 +43,7 @@ namespace minsky
   class Grid: public JustificationStruct
   {
     /// move current cursor to \a x,y
-    virtual void moveTo(double x, double y)=0;
+    virtual void moveCursorTo(double x, double y)=0;
     CLASSDESC_ACCESS(Grid);
   public:
     virtual ~Grid()=default;
