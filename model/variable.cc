@@ -174,14 +174,17 @@ std::string VariableBase::valueIdInCurrentScope(const std::string& nm) const
   return minsky::valueId(group.lock(), nm);
 }
 
+bool VariableBase::local() const
+{
+  return m_name[0]!=':' && group.lock()!=cminsky().canvas.model;
+}
+
 string VariableBase::name()  const
 {
   if (m_name==":_") return "";
   // hide any leading ':' in upper level
   if (m_name[0]==':')
     {
-      auto g=group.lock();
-      if (!g || g==cminsky().model)
         return m_name.substr(1);
     }
   return utf_to_utf<char>(m_name);
@@ -576,7 +579,12 @@ void VariableBase::draw(cairo_t *cairo) const
   
 
     cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
-    rv.show();
+    {
+      CairoSave cs(cairo);
+      if (local())
+        cairo_set_source_rgb(cairo,0,0,1);
+      rv.show();
+    }
 
     auto vv=vValue();
   

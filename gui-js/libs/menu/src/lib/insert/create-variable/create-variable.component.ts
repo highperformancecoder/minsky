@@ -24,13 +24,13 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   variableType: string;
   _name: string;
   _value: string;
-
+  _local: boolean;
   isEditMode = false;
 
   form: FormGroup;
 
-  public get global(): AbstractControl {
-    return this.form.get('global');
+  public get local(): AbstractControl {
+    return this.form.get('local');
   }
   public get variableName(): AbstractControl {
     return this.form.get('variableName');
@@ -85,12 +85,13 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       this.variableType = params.type;
       this._name = params?.name || '';
+      this._local = params?.local==='true' || false;
       this.isEditMode = params?.isEditMode || false;
       this._value = params?.value || '';
     });
 
     this.form = new FormGroup({
-      global: new FormControl(this._name[0]===':'),
+      local: new FormControl(this._local),
       variableName: new FormControl(this._name, Validators.required),
       type: new FormControl(this.variableType, Validators.required),
       value: new FormControl(this._value),
@@ -169,10 +170,10 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
 
   async handleSubmit() {
     this._name=this.variableName.value;
-    if (this.global.value && this._name[0]!==':')
-      this._name=':'+this._name;
-    else if (!this.global.value && this._name[0]===':')
+    if (this.local.value && this._name[0]===':')
       this._name=this._name.slice(1);
+    else if (!this.local.value && this._name[0]!==':')
+      this._name=':'+this._name;
     
     if (this.isEditMode) {
       await this.editVariable();

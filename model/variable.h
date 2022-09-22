@@ -109,10 +109,10 @@ namespace minsky
 
     float zoomFactor() const override;
 
-    /// @return true if variable refers to outer scope variable
-    bool global() const {return m_name[0]==':';}
-    /// toggle global status
-    void toggleGlobal() {name(m_name[0]==':'? m_name.substr(1): ':'+m_name);}
+    /// @return true if variable is local to its group
+    bool local() const;
+    /// toggle local status
+    void toggleLocal() {name(m_name[0]==':'? m_name.substr(1): ':'+m_name);}
     
     /// @{ variable displayed name
     virtual std::string name() const;

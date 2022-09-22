@@ -1049,17 +1049,18 @@ export class CommandsManager {
   static async editVar() {
     const itemName = await this.getCurrentItemName();
     const itemType = await this.getItemType();
-    const rawName = (await RestServiceManager.handleMinskyProcess({
-      command: "/minsky/canvas/item/rawName",
-    })) as string[];
+    const local = (await RestServiceManager.handleMinskyProcess({
+      command: "/minsky/canvas/item/local",
+    })) as boolean;
     
+
     WindowManager.createPopupWindowWithRouting({
       width: 500,
       height: 650,
       title: `Edit ${itemName || ''}`,
       url: `#/headless/menu/insert/create-variable?type=${itemType}&name=${
-        rawName || ''
-      }&isEditMode=true`,
+        itemName || ''
+      }&isEditMode=true&local=${local}`,
     });
   }
 

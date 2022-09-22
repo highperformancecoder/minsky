@@ -989,9 +989,9 @@ export class ContextMenuManager {
       dims = await CommandsManager.getItemDims();
     }
 
-    const global = (await RestServiceManager.handleMinskyProcess(
+    const local = (await RestServiceManager.handleMinskyProcess(
       {
-        command:"/minsky/canvas/item/global" ,
+        command:"/minsky/canvas/item/local" ,
       }
     )) as boolean;
     
@@ -1000,12 +1000,12 @@ export class ContextMenuManager {
         ? new MenuItem({ label: `Dims ${dims.toString()}` })
         : new MenuItem({ label: `Value ${itemInfo?.value || ''}` }),
       new MenuItem({
-        label: "Global",
+        label: "Local",
         type: 'checkbox',
-        checked: global,
+        checked: local,
         click: async () => {
           await RestServiceManager.handleMinskyProcess({
-            command: "/minsky/canvas/item/toggleGlobal",
+            command: "/minsky/canvas/item/toggleLocal",
           });
         },
       }),
