@@ -177,6 +177,27 @@ namespace minsky
     return r;
   }
 
+  void Group::makeSubroutine()
+  {
+    recursiveDo(&GroupItems::items, [this](Items&,Items::iterator i)
+    {
+      if (auto v=(*i)->variableCast())
+        if (v->rawName()[0]==':')
+          {
+            // walk up parent groups to see if this variable is mentioned
+            for (auto g=group.lock(); g; g=g->group.lock())
+              for (auto& i: g->items)
+                if (auto vi=i->variableCast())
+                  if (vi->valueId()==v->valueId())
+                    goto outer_scope_variable_found;
+            v->name(v->rawName().substr(1)); // make variable local
+          }
+    outer_scope_variable_found:
+      return false;
+    });
+  }
+
+  
   ItemPtr GroupItems::removeItem(const Item& it)
   {
     for (auto i=items.begin(); i!=items.end(); ++i)
@@ -301,13 +322,9 @@ namespace minsky
             {
               if (origGroup->higher(*destGroup))
                 {
-                  // moving local var into an inner group, check if other variables of
-                  // same name exist in old group, and retain linkage
-                  if (v->name()[0]!=':')
-                    for (auto& i: origGroup->items)
-                      if (auto vv=i->variableCast())
-                        if (vv->name()==v->name())
-                          v->name(':'+v->name());
+                  // moving local var into an inner group, make global
+                  if (v->rawName()[0]!=':')
+                    v->name(':'+v->rawName());
                 }
               else if (destGroup->higher(*origGroup))
                 {

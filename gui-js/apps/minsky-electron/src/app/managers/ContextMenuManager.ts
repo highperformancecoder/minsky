@@ -845,6 +845,14 @@ export class ContextMenuManager {
         },
       }),
       new MenuItem({
+        label: 'Make subroutine',
+        click: async () => {
+          await RestServiceManager.handleMinskyProcess({
+            command: "/minsky/canvas/item/makeSubroutine",
+          });
+        },
+      }),
+      new MenuItem({
         label: 'Save group as',
         click: async () => {
           await CommandsManager.saveGroupAsFile();

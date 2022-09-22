@@ -210,7 +210,6 @@ namespace minsky
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
   public:
-    
     std::string title;
     std:: string name() const override {return title;}
     /// evaluate function on arbitrary number of arguments (exprtk support)
@@ -232,6 +231,9 @@ namespace minsky
     Group* clone() const override {throw error("Groups cannot be cloned");}
     static SVGRenderer svgRenderer;
 
+    /// Make all variables not present in outerscope local to this group
+    void makeSubroutine();
+    
     // TODO fix up the need for this override - see ticket #786
     ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false)
     {

@@ -109,6 +109,7 @@ SUITE(Group)
     {
       vector<string> globalAccessibleVars{"c"};
       vector<string> group0AccessibleVars{"1",":c","a","b"};
+      group0->makeSubroutine();
       CHECK_EQUAL(globalAccessibleVars.size(), model->accessibleVars().size());
       CHECK_ARRAY_EQUAL(globalAccessibleVars, model->accessibleVars(), globalAccessibleVars.size());
       CHECK_EQUAL(group0AccessibleVars.size(), group0->accessibleVars().size());
@@ -117,6 +118,14 @@ SUITE(Group)
       CHECK_ARRAY_EQUAL(group0AccessibleVars, a->variableCast()->accessibleVars(), group0AccessibleVars.size());
     }
 
+  TEST_FIXTURE(TestFixture, makeSubroutine)
+    {
+      group0->makeSubroutine();
+      for (auto& i: group0->items)
+        if (auto v=i->variableCast())
+          CHECK(v->rawName()[0]!=':');
+    }
+  
     TEST_FIXTURE(TestFixture, SelectGroup)
     {
       auto& g=*model->addGroup(new Group);
