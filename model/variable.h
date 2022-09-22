@@ -108,6 +108,11 @@ namespace minsky
     VariableBase* variableCast() override {return this;}
 
     float zoomFactor() const override;
+
+    /// @return true if variable refers to outer scope variable
+    bool global() const {return m_name[0]==':';}
+    /// toggle global status
+    void toggleGlobal() {name(m_name[0]==':'? m_name.substr(1): ':'+m_name);}
     
     /// @{ variable displayed name
     virtual std::string name() const;
