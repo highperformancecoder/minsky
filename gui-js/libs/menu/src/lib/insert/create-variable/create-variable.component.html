@@ -11,6 +11,15 @@
   <div class="form-wrapper">
     <form [formGroup]="form">
       <div class="form-control">
+        <label for="global">Global</label>
+        <input
+          type="checkbox"
+          class="global"
+          id="global"
+          formControlName="global"
+        />
+      </div>
+      <div class="form-control">
         <label for="name">Name</label>
         <input
           type="text"

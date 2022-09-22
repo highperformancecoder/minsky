@@ -29,6 +29,9 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
+  public get global(): AbstractControl {
+    return this.form.get('global');
+  }
   public get variableName(): AbstractControl {
     return this.form.get('variableName');
   }
@@ -87,6 +90,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     });
 
     this.form = new FormGroup({
+      global: new FormControl(this._name[0]===':'),
       variableName: new FormControl(this._name, Validators.required),
       type: new FormControl(this.variableType, Validators.required),
       value: new FormControl(this._value),
@@ -164,6 +168,12 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   }
 
   async handleSubmit() {
+    this._name=this.variableName.value;
+    if (this.global.value && this._name[0]!==':')
+      this._name=':'+this._name;
+    else if (!this.global.value && this._name[0]===':')
+      this._name=this._name.slice(1);
+    
     if (this.isEditMode) {
       await this.editVariable();
       return;
@@ -172,9 +182,10 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   }
 
   async editVariable() {
+    
     await this.electronService.sendMinskyCommandAndRender({
       command: `${commandsMapping.RENAME_ITEM} "${replaceBackSlash(
-        this.variableName.value
+        this._name
       )}"`,
     });
 
@@ -241,8 +252,9 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   }
 
   async createVariable() {
+
     await this.commService.createVariable({
-      variableName: replaceBackSlash(this.variableName.value),
+      variableName: replaceBackSlash(this._name),
       type: this.type.value,
       units: replaceBackSlash(this.units.value || ''),
       value: replaceBackSlash(this.value.value),
