@@ -97,7 +97,7 @@ namespace minsky
     /// set the reduction type for \a handle
     void handleSetReduction(int handle, ravel::Op::ReductionOp op) {wrappedRavel.handleSetReduction(handle, op);}
     /// current handle mouse is over, or -1 if none
-    int selectedHandle() const {wrappedRavel.selectedHandle();}
+    int selectedHandle() const {return wrappedRavel.selectedHandle();}
 
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;
