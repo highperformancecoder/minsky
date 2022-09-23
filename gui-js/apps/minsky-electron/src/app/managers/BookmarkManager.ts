@@ -2,6 +2,7 @@ import { commandsMapping, DescriptionPayload } from '@minsky/shared';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager, callRESTApi } from './RestServiceManager';
+import { WindowManager } from './WindowManager';
 const JSON5 = require('json5');
 
 
@@ -40,6 +41,7 @@ export class BookmarkManager {
                 await RestServiceManager.handleMinskyProcess({
                   command: `${commandsMapping.GOTO_BOOKMARK} ${index}`,
                 });
+                WindowManager.getMainWindow().webContents.send('reset-scroll');
                 await CommandsManager.requestRedraw();
               },
             })

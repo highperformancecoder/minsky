@@ -40,7 +40,7 @@ namespace
     unsigned numRows() const override {return 10;}
     unsigned numCols() const override {return 10;}
     vector<double> xpos, ypos; // capture moveTos
-    void moveTo(double x, double y) {
+    void moveCursorTo(double x, double y) {
       xpos.push_back(x);
       ypos.push_back(y);
     }

@@ -5,6 +5,7 @@ import {
   red,
   rendererAppName,
   rendererAppURL,
+  version,
 } from '@minsky/shared';
 import * as debug from 'debug';
 import { BrowserWindow, Display, dialog, screen } from 'electron';
@@ -197,8 +198,9 @@ export default class App {
     for (var arg in process.argv)
       switch(process.argv[arg]) {
       case '--version':
-        process.stdout.write(`${callRESTApi("/minsky/minskyVersion") as string}\n`);
-        process.exit(0);
+        var minskyVersion=callRESTApi("/minsky/minskyVersion") as string;
+        process.stdout.write(`${minskyVersion}\n`);
+        process.exit(minskyVersion===version? 0: 1);
       }
     
     

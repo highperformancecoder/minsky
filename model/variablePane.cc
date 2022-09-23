@@ -103,7 +103,7 @@ namespace minsky
     return surface.get();
   }    
 
-  void VariablePane::moveTo(double x, double y)
+  void VariablePane::moveCursorTo(double x, double y)
   {
     if (surface.get())
       {

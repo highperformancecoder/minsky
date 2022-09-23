@@ -379,9 +379,13 @@ doxydoc: $(wildcard *.h) $(wildcard *.cc) \
 install-doxydoc: doxydoc
 	rsync -r -z --progress --delete doxydoc $(SF_WEB)
 
+
 # upload manual to SF
 install-manual: doc/minsky/labels.pl
 	rsync -r -z --progress --delete doc/minsky.html doc/minsky $(SF_WEB)/manual
+
+# run this after every full release
+install-release: install-doxydoc install-manual upload-schema
 
 # run the regression suite checking for the TCL code coverage
 tcl-cov:

@@ -83,6 +83,7 @@ export class CommunicationService {
     this.scrollPositionAtMouseDown = null;
     this.mousePositionAtMouseDown = null;
     this.initReplay();
+    this.electronService.ipcRenderer.on('reset-scroll', async()=>{this.resetScroll();});
   }
 
   private async syncRunUntilTime() {

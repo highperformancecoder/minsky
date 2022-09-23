@@ -61,7 +61,7 @@ namespace minsky
 
     ecolab::Pango& cell(unsigned row, unsigned col) override;
 
-    void moveTo(double x, double y) override {
+    void moveCursorTo(double x, double y) override {
       if (surface.get())
         cairo_move_to(surface->cairo(),x,y);
     }
@@ -85,6 +85,12 @@ namespace minsky
     void mouseDown(float x, float y) override;
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;    
+    void moveTo(float x, float y) override
+    {
+      offsx=x;
+      offsy=y;
+      requestRedraw();
+    }
     virtual ItemPtr itemAt(float x, float y);
     void displayDelayedTooltip(float x, float y);        
        
