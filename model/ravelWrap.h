@@ -25,6 +25,7 @@
 #include "dynamicRavelCAPI.h"
 #include "hypercube.h"
 #include "handleLockInfo.h"
+#include "SVGItem.h"
 
 namespace minsky 
 {
@@ -54,6 +55,7 @@ namespace minsky
 
     ravel::Ravel wrappedRavel;
   public:
+    static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     Ravel();
     // copy operations needed for clone, but not really used for now
     // define them as empty operations to prevent double frees if accidentally used
@@ -162,6 +164,10 @@ namespace minsky
     void exportAsCSV(const std::string& filename) const;
 
     Units units(bool) const override;
+    
+    /// indicate whether icon is in editor mode or icon mode
+    bool editorMode=false;
+    void toggleEditorMode() {editorMode=!editorMode;updateBoundingBox();}
 
   };
 

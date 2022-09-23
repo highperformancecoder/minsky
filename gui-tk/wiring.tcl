@@ -540,6 +540,7 @@ proc deleteKey {x y} {
 # global godley icon resource
 setGodleyIconResource $minskyHome/icons/bank.svg
 setLockIconResource $minskyHome/icons/Antu_emblem-locked.svg $minskyHome/icons/Antu_emblem-unlocked.svg
+setRavelIconResource $minskyHome/icons/ravel-logo.svg
 
 proc rightMouseGodley {x y X Y} {
     if [selectVar $x $y] {

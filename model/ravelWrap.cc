@@ -34,6 +34,7 @@ using namespace std;
 namespace minsky
 {
   unsigned RavelLockGroup::nextColour=1;
+  SVGRenderer Ravel::svgRenderer;
 
   namespace
   {
@@ -82,7 +83,7 @@ namespace
   
   void Ravel::draw(cairo_t* cairo) const
   {
-    double  z=zoomFactor(), r=1.1*z*wrappedRavel.radius();
+    double  z=zoomFactor(), r=editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
     m_ports[0]->moveTo(x()+1.1*r, y());
     m_ports[1]->moveTo(x()-1.1*r, y());
     if (mouseFocus)
@@ -90,7 +91,7 @@ namespace
         drawPorts(cairo);
         displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
         // Resize handles always visible on mousefocus. For ticket 92.
-        drawResizeHandles(cairo);
+        if (editorMode) drawResizeHandles(cairo);
       }
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
@@ -114,9 +115,18 @@ namespace
       cairo::CairoSave cs(cairo);
       cairo_rectangle(cairo,-r,-r,2*r,2*r);
       cairo_clip(cairo);
-      cairo_scale(cairo,z,z);
-      CairoRenderer cr(cairo);
-      wrappedRavel.render(cr);
+      if (editorMode)
+        {
+          cairo_scale(cairo,z,z);
+          CairoRenderer cr(cairo);
+          wrappedRavel.render(cr);
+        }
+      else
+        {
+          cairo_translate(cairo,-r,-r);
+          cairo_scale(cairo,2*r/svgRenderer.width(), 2*r/svgRenderer.height());
+          svgRenderer.render(cairo);
+        }
     }        
     if (selected) drawSelected(cairo);
   }
@@ -130,8 +140,13 @@ namespace
 
   bool Ravel::inItem(float xx, float yy) const
   {
-    float r=1.1*zoomFactor()*wrappedRavel.radius();
-    return std::abs(xx-x())<=r && std::abs(yy-y())<=r;
+    if (editorMode)
+      {
+        float r=1.1*zoomFactor()*wrappedRavel.radius();
+        return std::abs(xx-x())<=r && std::abs(yy-y())<=r;
+      }
+    else
+      return false;
   }
   
   void Ravel::onMouseDown(float xx, float yy)

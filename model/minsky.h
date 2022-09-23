@@ -41,6 +41,7 @@
 #include "parameterTab.h"
 #include "plotTab.h"
 #include "plotWidget.h"
+#include "ravelWrap.h"
 #include "rungeKutta.h"
 #include "saver.h"
 #include "stringKeyMap.h"
@@ -204,6 +205,8 @@ namespace minsky
       Lock::lockedIcon.setResource(locked);
       Lock::unlockedIcon.setResource(unlocked);
     }
+    void setRavelIconResource(const string& s)
+    {Ravel::svgRenderer.setResource(s);}
     
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process

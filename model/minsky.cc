@@ -1261,6 +1261,7 @@ namespace minsky
         command!="minsky.setGodleyIconResource" &&
         command!="minsky.setGroupIconResource" &&
         command!="minsky.setLockIconResource" &&
+        command!="minsky.setRavelIconResource" &&
         command!="minsky.setAutoSaveFile" &&
         command!="minsky.step" &&
         command!="minsky.running" &&

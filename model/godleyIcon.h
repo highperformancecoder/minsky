@@ -58,7 +58,7 @@ namespace minsky
     double titleOffs() const {return !table.title.empty()? 15*zoomFactor(): 0;}
     
   public:
-    static SVGRenderer svgRenderer;
+    static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     
     GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets();}
     GodleyIcon(const GodleyIcon&)=default;
