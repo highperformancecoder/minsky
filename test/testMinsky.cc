@@ -1060,6 +1060,16 @@ SUITE(Minsky)
       VariablePtr c(VariableType::flow,":c");
       g3->addItem(c);
 
+      g0->makeSubroutine();
+      g1->makeSubroutine();
+      g2->makeSubroutine();
+      g3->makeSubroutine();
+      if (a1->local()) a1->toggleLocal();
+      if (a3->local()) a3->toggleLocal();
+      if (b1->local()) b1->toggleLocal();
+      if (b3->local()) b3->toggleLocal();
+      if (b4->local()) b4->toggleLocal();
+      
       // check valueIds correspond to the scoping rules
       CHECK(a0->valueId()!=a1->valueId());
       CHECK(a0->valueId()!=a3->valueId());
@@ -1072,27 +1082,27 @@ SUITE(Minsky)
 
       // check display values:
       CHECK_EQUAL("a",a0->name());
-      CHECK_EQUAL(":a",a1->name());
+      CHECK_EQUAL("a",a1->name());
       CHECK_EQUAL("a",a2->name());
-      CHECK_EQUAL(":a",a3->name());
+      CHECK_EQUAL("a",a3->name());
       CHECK_EQUAL("b",b0->name());
       CHECK_EQUAL("b",b1->name());
       CHECK_EQUAL("b",b2->name());
-      CHECK_EQUAL(":b",b3->name());
-      CHECK_EQUAL(":c",c->name());
+      CHECK_EQUAL("b",b3->name());
+      CHECK_EQUAL("c",c->name());
 
       // now check move rules
       g0->addItem(a1);
       CHECK_EQUAL("a",a1->name());
 
       g2->addItem(a1);
-      CHECK_EQUAL(":a",a1->name());
+      CHECK_EQUAL("a",a1->name());
 
       g1->addItem(a1);
       CHECK_EQUAL("a",a1->name());
 
       g1->addItem(c);
-      CHECK_EQUAL(":c",c->name());
+      CHECK_EQUAL("c",c->name());
 
     }
 

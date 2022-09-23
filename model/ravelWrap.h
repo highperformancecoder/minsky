@@ -31,7 +31,7 @@ namespace minsky
   using namespace civita;
   class RavelLockGroup;
   
-  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>, public ravel::Ravel
+  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
   {
   public:
 
@@ -52,8 +52,7 @@ namespace minsky
 
     std::vector<std::string> allSliceLabelsImpl(int axis, ravel::HandleSort::Order) const;
 
-    /// return hypercube corresponding to the current Ravel state. \a data returns a pointer to the current data slice
-
+    ravel::Ravel wrappedRavel;
   public:
     Ravel();
     // copy operations needed for clone, but not really used for now
@@ -76,16 +75,27 @@ namespace minsky
     void onMouseUp(float x, float y) override;
     bool onMouseMotion(float x, float y) override;
     bool onMouseOver(float x, float y) override;
-    void onMouseLeave() override {ravel::Ravel::onMouseLeave();}
+    void onMouseLeave() override {wrappedRavel.onMouseLeave();}
     /// return hypercube corresponding to the current Ravel state
     Hypercube hypercube() const;
     void populateHypercube(const Hypercube&);
-    /// @return input rank
-    unsigned maxRank() const;
+    /// @return input rank (aka numHandles)
+    unsigned maxRank() const {return wrappedRavel.numHandles();}
+    unsigned numHandles() const {return wrappedRavel.numHandles();}
+    /// number of slice labels along axis \a axis
+    size_t numSliceLabels(size_t axis) const {return wrappedRavel.numSliceLabels(axis);}
     /// adjust output dimensions to first \a r handles
     void setRank(unsigned r);
     void adjustSlicer(int); ///< adjust currently selected handle's slicer
     bool onKeyPress(int, const std::string&, int) override; 
+    /// redistribute handles according to current state
+    void redistributeHandles() {wrappedRavel.redistributeHandles();}
+    /// sets the type of the next reduction operation
+    void nextReduction(ravel::Op::ReductionOp op) {wrappedRavel.nextReduction(op);}
+    /// set the reduction type for \a handle
+    void handleSetReduction(int handle, ravel::Op::ReductionOp op) {wrappedRavel.handleSetReduction(handle, op);}
+    /// current handle mouse is over, or -1 if none
+    int selectedHandle() const {wrappedRavel.selectedHandle();}
 
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;
@@ -106,8 +116,8 @@ namespace minsky
     /// return all handle names
     std::vector<std::string> handleNames() const {
       std::vector<std::string> r;
-      for (size_t i=0; i<numHandles(); ++i)
-        r.push_back(handleDescription(i));
+      for (size_t i=0; i<wrappedRavel.numHandles(); ++i)
+        r.push_back(wrappedRavel.handleDescription(i));
       return r;
     }
     
@@ -133,6 +143,8 @@ namespace minsky
     std::string description() const;
     void setDescription(const std::string&);
     /// @}
+    /// return the description field for handle \a handle.
+    std::string handleDescription(int handle) const {return wrappedRavel.handleDescription(handle);}
 
     /// @{ get/set selected handle dimension attributes
     Dimension::Type dimensionType() const;
@@ -142,7 +154,7 @@ namespace minsky
     /// @}
     
     /// get the current state of the Ravel
-    ravel::RavelState getState() const {return getRavelState();}
+    ravel::RavelState getState() const {return wrappedRavel.getRavelState();}
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
     /// @param preservePositions if true, do not rotate handles
     void applyState(const ravel::RavelState& state);
