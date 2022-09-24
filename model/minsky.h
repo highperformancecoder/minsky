@@ -311,9 +311,11 @@ namespace minsky
 
     /// return the AEGIS assigned version number
     static const std::string minskyVersion;
-    std::string ecolabVersion() const {return VERSION;}
-    std::string ravelVersion() const {return ravel::Ravel::version();}
-
+    /*static*/ std::string ecolabVersion() const {return VERSION;}
+    /*static*/ std::string ravelVersion() const {
+      int d=ravel::Ravel::daysUntilExpired();
+      return ravel::Ravel::version() + ": "+((d>=0)?("Expires in "+std::to_string(d)+" day"+(d!=1?"s":"")): "Expired");
+    }    
     std::string fileVersion; ///< Minsky version file was saved under
     
     unsigned maxHistory{100}; ///< maximum no. of history states to save
