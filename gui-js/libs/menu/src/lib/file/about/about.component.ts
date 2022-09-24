@@ -18,41 +18,27 @@ export class AboutComponent implements OnInit {
 
   ngOnInit(): void {
     (async () => {
-      const _ecolabVersion = (await this.electronService.sendMinskyCommandAndRender(
+      this.ecolabVersion = (await this.electronService.sendMinskyCommandAndRender(
         {
           command: commandsMapping.ECOLAB_VERSION,
         }
       )) as string;
 
-      this.ecolabVersion = this.normalizeVersion(_ecolabVersion);
-
-      const _ravelVersion = (await this.electronService.sendMinskyCommandAndRender(
+      this.ravelVersion = (await this.electronService.sendMinskyCommandAndRender(
         {
           command: commandsMapping.RAVEL_VERSION,
         }
       )) as string;
 
-      this.ravelVersion = this.normalizeVersion(_ravelVersion);
 
-      const _minskyVersion = (await this.electronService.sendMinskyCommandAndRender(
+      this.minskyVersion = (await this.electronService.sendMinskyCommandAndRender(
         {
           command: commandsMapping.MINSKY_VERSION,
         }
       )) as string;
 
-      this.minskyVersion = this.normalizeVersion(_minskyVersion);
       this.frontEndVersion=version;
     })();
-  }
-
-  private normalizeVersion(version: string) {
-    const normalizedVersion =
-      version === 'unavailable' ||
-      JSON.stringify(version) === JSON.stringify({})
-        ? ''
-        : version;
-
-    return normalizedVersion;
   }
 
   closeWindow() {

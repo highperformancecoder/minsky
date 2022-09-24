@@ -313,9 +313,15 @@ namespace minsky
     static const std::string minskyVersion;
     /*static*/ std::string ecolabVersion() const {return VERSION;}
     /*static*/ std::string ravelVersion() const {
-      int d=ravel::Ravel::daysUntilExpired();
-      return ravel::Ravel::version() + ": "+((d>=0)?("Expires in "+std::to_string(d)+" day"+(d!=1?"s":"")): "Expired");
-    }    
+      if (ravel::Ravel::available())
+        {
+          int d=ravel::Ravel::daysUntilExpired();
+          return ravel::Ravel::version() + ": "+((d>=0)?("Expires in "+std::to_string(d)+" day"+(d!=1?"s":"")): "Expired");
+        }
+      else return "unavailable";
+    }
+    static bool ravelExpired() {return  ravel::Ravel::available() && ravel::Ravel::daysUntilExpired()<0;}
+    
     std::string fileVersion; ///< Minsky version file was saved under
     
     unsigned maxHistory{100}; ///< maximum no. of history states to save

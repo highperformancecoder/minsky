@@ -126,6 +126,16 @@ if (callRESTApi("/minsky/minskyVersion")!=version)
     });
   },1000);
 
+if (callRESTApi("/minsky/ravelExpired"))
+  setTimeout(()=>{
+    dialog.showMessageBoxSync({
+      message: "Your Ravel license has expired",
+      type: 'warning',
+    });
+  },1000);
+
+
+
 export class RestServiceManager {
   static currentMinskyModelFilePath: string;
 
