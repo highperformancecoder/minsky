@@ -7,7 +7,7 @@ import {
   normalizeFilePathForPlatform,
   version
 } from '@minsky/shared';
-import { dialog, ipcMain } from 'electron';
+import { dialog, ipcMain, shell } from 'electron';
 import { join } from 'path';
 import * as elog from 'electron-log';
 import { Utility } from '../utility';
@@ -128,10 +128,13 @@ if (callRESTApi("/minsky/minskyVersion")!=version)
 
 if (callRESTApi("/minsky/ravelExpired"))
   setTimeout(()=>{
-    dialog.showMessageBoxSync({
+    const button=dialog.showMessageBoxSync({
       message: "Your Ravel license has expired",
       type: 'warning',
+      buttons: ["OK","Upgrade"],
     });
+    if (button==1)
+      shell.openExternal("https://ravelation.hpcoders.com.au");
   },1000);
 
 
