@@ -1,6 +1,6 @@
 {
   "name": "minsky",
-  "version":"3.1.0-beta.2",
+  "version": "3.1.0-beta.2",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "build": {
@@ -120,7 +120,7 @@
     "eslint-plugin-cypress": "^2.10.3",
     "exitzero": "^1.0.1",
     "husky": "^4.3.8",
-    "jest": "26.2.2",
+    "jest": "^26.2.2",
     "jest-preset-angular": "8.4.0",
     "nx-electron": "11.3.0",
     "prettier": "2.2.1",

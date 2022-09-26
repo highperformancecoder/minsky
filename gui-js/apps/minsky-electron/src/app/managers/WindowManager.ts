@@ -8,7 +8,7 @@ import {
   rendererAppName,
   rendererAppURL,
 } from '@minsky/shared';
-import * as debug from 'debug';
+//import * as debug from 'debug';
 import { BrowserWindow, dialog, Menu, screen } from 'electron';
 import * as log from 'electron-log';
 import * as os from 'os';
@@ -16,7 +16,7 @@ import { join } from 'path';
 import { format } from 'url';
 import { Utility } from '../utility';
 
-const logWindows = debug('minsky:electron_windows');
+//const logWindows = debug('minsky:electron_windows');
 
 export class WindowManager {
   static topOffset: number;
@@ -193,7 +193,7 @@ export class WindowManager {
     }
 
     this.activeWindows.set(childWindow.id, childWindowDetails);
-    logWindows(WindowManager.activeWindows);
+//    logWindows(WindowManager.activeWindows);
 
     childWindow.on('close', (ev : Electron.Event) => {
       try {

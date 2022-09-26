@@ -52,21 +52,6 @@ class Deferred {
   }
 }
 
-restService.setMessageCallback(function (msg: string, buttons: string[]) {
-  if (msg)
-      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-      message: msg,
-      type: 'info',
-      buttons: buttons,
-    });
-});
-
-restService.setBusyCursorCallback(function (busy: boolean) {
-  WindowManager.getMainWindow().webContents.insertCSS(
-    busy ? 'html body {cursor: wait}' : 'html body {cursor: default}'
-  );
-});
-
 function logFilter(c: string) {
   const logFilter=["mouseMove$", "requestRedraw$"];
   for (var i in logFilter)

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { events, MinskyProcessPayload, DescriptionPayload } from '@minsky/shared';
 import { ipcRenderer, remote } from 'electron';
-import isElectron from 'is-electron';
+import is_electron from 'is-electron';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +9,7 @@ import isElectron from 'is-electron';
 export class ElectronService {
   ipcRenderer: typeof ipcRenderer;
   remote: typeof remote;
-  isElectron = isElectron();
+  isElectron = is_electron();
 
   constructor() {
     if (this.isElectron) {
