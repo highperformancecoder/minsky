@@ -5,6 +5,9 @@ import {
   events,
   getBackgroundStyle,
   green,
+  HandleDimensionPayload,
+  PickSlicesPayload,
+  LockHandlesPayload,
   InitializePopupWindowPayload,
   isEmptyObject,
   isMacOS,
@@ -18,7 +21,7 @@ import { Utility } from '../utility';
 import { HelpFilesManager } from './HelpFilesManager';
 import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
-import {electronMenuBarHeightForWindows, isWindows } from '@minsky/shared';
+import {electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload } from '@minsky/shared';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<number, CanvasItem>();
@@ -392,7 +395,7 @@ export class CommandsManager {
         command: `/minsky/canvas/${type}/detailedText`,
       })) as string) || '';
 
-    var window=WindowManager.createPopupWindowWithRouting({
+    const window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
       url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${encodeURI(detailedText)}`,
     });
@@ -473,16 +476,6 @@ export class CommandsManager {
     CommandsManager.requestRedraw();
 
     return;
-  }
-
-  static async getLockGroup(): Promise<unknown[]> {
-    const lockGroup = JSON5.parse(
-      (await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_LOCK_GROUP,
-      })) as string
-    );
-
-    return lockGroup;
   }
 
   static bookmarkThisPosition(): void {
@@ -657,7 +650,7 @@ export class CommandsManager {
       properties: ['showOverwriteConfirmation', 'createDirectory'],
     });
 
-    var { canceled, filePath } = exportCanvasDialog;
+    let { canceled, filePath } = exportCanvasDialog;
     if (canceled) {
       return null;
     }
@@ -1187,7 +1180,7 @@ export class CommandsManager {
   static async openGodleyTable(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id as number)) {
       let systemWindowId = null;
-      var title=await RestServiceManager.handleMinskyProcess({
+      const title=await RestServiceManager.handleMinskyProcess({
         //command: `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second/table/title`,
         command: `/minsky/canvas/item/table/title`,
       });
@@ -1427,5 +1420,95 @@ export class CommandsManager {
             command: commandsMapping.SAVE,
             filePath: filePath,
         });
+    }
+
+    static async editHandleDescription(handleIndex: number) {
+      const description = await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_DESCRIPTION} ${handleIndex}` });
+
+      const window=WindowManager.createPopupWindowWithRouting({
+        title: `Handle Description`,
+        url: `#/headless/edit-handle-description?handleIndex=${handleIndex}&description=${description}`,
+        height: 90,
+        width: 300,
+      });
+      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+    }
+
+    static async saveHandleDescription(payload: HandleDescriptionPayload) {
+      const args = JSON5.stringify([payload.handleIndex, payload.description]);
+      await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_SET_DESCRIPTION} ${args}`});
+    }
+
+    static async editHandleDimension(handleIndex: number) {
+      const type = await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_DIMENSION_TYPE });
+      const units = await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_DIMENSION_UNITS });
+
+      const window=WindowManager.createPopupWindowWithRouting({
+        title: `Handle Dimension`,
+        url: `#/headless/edit-handle-dimension?handleIndex=${handleIndex}&type=${type}&units=${units}`,
+        height: 180,
+        width: 300,
+      });
+      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+    }
+
+    static async saveHandleDimension(payload: HandleDimensionPayload) {
+      const args = JSON5.stringify([payload.handleIndex, payload.type, payload.units]);
+      await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_SET_DIMENSION} ${args}` });   
+    }
+
+    static async pickSlices(handleIndex: number) {
+      const allSliceLabels = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_ALL_SLICE_LABELS });
+      const pickedSliceLabels = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_PICKED_SLICE_LABELS });
+
+      const window=WindowManager.createPopupWindowWithRouting({
+        title: `Pick slices`,
+        url: `#/headless/pick-slices?handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
+        height: 400,
+        width: 400,
+      });
+      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+    }
+
+    static async savePickSlices(payload: PickSlicesPayload) {
+      const args = JSON5.stringify([payload.handleIndex, payload.pickedSliceLabels]);
+      await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_PICK_SLICE_LABELS} ${args}` });   
+    }
+
+    static async lockSpecificHandles() {
+      let allLockHandles = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP_ALL_LOCK_HANDLES});
+      if(Object.keys(allLockHandles).length === 0) {
+        await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCK_RAVELS_IN_SELECTION });
+
+        const x = await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_ITEM_X}` });
+        const y = await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_ITEM_Y}` });
+        await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_GET_ITEM_AT} ${JSON5.stringify([x,y])}` });
+
+        allLockHandles = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP_ALL_LOCK_HANDLES });
+
+        if(Object.keys(allLockHandles).length === 0) return;
+      }
+
+      const lockgroup = <any>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP});
+      if(lockgroup.handleLockInfo.length === 0) {
+        await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_LOCKGROUP_SET_LOCK_HANDLES} ${JSON.stringify([allLockHandles])}` });
+      }
+
+      const ravelNames = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP_RAVELNAMES});
+
+      const window=WindowManager.createPopupWindowWithRouting({
+        title: `Lock specific handles`,
+        url: `#/headless/lock-handles?handleLockInfo=${JSON5.stringify(lockgroup.handleLockInfo)}&ravelNames=${ravelNames.join()}&lockHandles=${allLockHandles.join()}`,
+        height: 200,
+        width: 600,
+      });
+      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+    }
+
+    static async saveLockHandles(payload: LockHandlesPayload) {
+      const args = JSON5.stringify(payload.handleLockInfo);
+      await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_LOCKGROUP_HANDLELOCKINFO} ${args}` });   
+
+      await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP_VALIDATE_LOCK_HANDLE_INFO });  
     }
 }

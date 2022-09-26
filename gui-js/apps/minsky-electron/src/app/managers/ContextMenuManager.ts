@@ -12,6 +12,7 @@ import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import { GodleyPopup } from './GodleyMenuManager';
 import * as log from 'electron-log';
+import * as JSON5 from 'json5';
 
 export class ContextMenuManager {
   private static x: number = null;
@@ -888,6 +889,11 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForRavel(): Promise<MenuItem[]> {
+    const aggregations = [{label: 'Σ', value: 'sum'},{label: 'Π', value: 'prod'},{label: 'σ', value: 'stddev'},{label: 'min', value: 'min'},{label: 'max', value: 'max'}];
+
+    const handleIndex = <number>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_SELECTED });
+    const sortOrder = await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_GET_SORT_ORDER });
+
     let menuItems = [
       new MenuItem({
         label: 'Export as CSV',
@@ -895,25 +901,90 @@ export class ContextMenuManager {
           await CommandsManager.exportItemAsCSV();
         },
       }),
-    ];
-
-    if ((await CommandsManager.getLockGroup()).length) {
-      menuItems = [
-        ...menuItems,
-        new MenuItem({ label: 'Lock specific handles' }),
-        new MenuItem({ label: 'Axis properties' }),
-        new MenuItem({
-          label: 'Unlock',
+      new MenuItem({
+        label: 'Set next aggregation',
+        submenu: aggregations.map(agg => ({
+          label: agg.label,
           click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_ITEM_LEAVE_LOCK_GROUP,
-            });
-
-            CommandsManager.requestRedraw();
+            await RestServiceManager.handleMinskyProcess({command: `${commandsMapping.CANVAS_RAVEL_NEXT_REDUCTION} ${agg.value}` });
+          }
+        }))
+      }),
+      new MenuItem({
+        label: 'Axis properties',
+        submenu: [
+          {
+            label: 'Description',
+            click: async () => {
+              await CommandsManager.editHandleDescription(handleIndex);
+            }
           },
-        }),
-      ];
-    }
+          {
+            label: 'Dimension',
+            click: async () => {
+              await CommandsManager.editHandleDimension(handleIndex);
+            }
+          },
+          {
+            label: 'Toggle calipers',
+            click: async () => {
+              await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_TOGGLE_CALIPERS });
+              await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_BROADCAST_TO_LOCKGROUP });
+              
+            }
+          },
+          {
+            label: 'Set aggregation',
+            submenu: aggregations.map(agg => ({
+              label: agg.label,
+              click: async () => {
+                const args = JSON5.stringify([handleIndex, agg.value]);
+                await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_SET_REDUCTION} ${args}` });
+              }
+            }))
+          },
+          {
+            label: 'Sort',
+            submenu: ['none','forward','reverse'].map(so =>({
+              label: so,
+                type: 'radio',
+                checked: sortOrder == so,
+                click: async () => {
+                  await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_SET_SORT_ORDER} ${JSON5.stringify(so)}` });
+                  await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_BROADCAST_TO_LOCKGROUP });
+                  await RestServiceManager.handleMinskyProcess({ command: commandsMapping.RESET });
+                }
+            })).concat(
+              ['forward','reverse'].map(vso =>(<any>{
+              label: `${vso} by value`,
+              click: async () => {
+                await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_SET_SORT_BY_VALUE} ${JSON5.stringify(vso)}` });
+                await RestServiceManager.handleMinskyProcess({ command: commandsMapping.RESET });
+              }
+            })))
+          },
+          {
+            label: 'Pick slices',
+            click: async () => {
+              await CommandsManager.pickSlices(handleIndex);
+            }
+          }
+        ]
+      }),
+      new MenuItem({ 
+        label: 'Lock specific handles',
+        click: async () => {
+          CommandsManager.lockSpecificHandles();
+        } 
+      }),
+      new MenuItem({
+        label: 'Unlock',
+        click: async () => {
+          await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_ITEM_LEAVE_LOCK_GROUP });
+          CommandsManager.requestRedraw();
+        },
+      })
+    ];
 
     return menuItems;
   }

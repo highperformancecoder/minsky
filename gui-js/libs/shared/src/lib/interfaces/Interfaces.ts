@@ -30,6 +30,26 @@ export interface DescriptionPayload {
   bookmark: boolean;
 }
 
+export interface HandleDescriptionPayload {
+  handleIndex: number;
+  description: string;
+}
+
+export interface HandleDimensionPayload {
+  handleIndex: number;
+  type: string;
+  units: string;
+}
+
+export interface PickSlicesPayload {
+  handleIndex: number;
+  pickedSliceLabels: string[];
+}
+
+export interface LockHandlesPayload {
+  handleLockInfo: any[];
+}
+
 export interface ElectronCanvasOffset {
   left: number;
   top: number;

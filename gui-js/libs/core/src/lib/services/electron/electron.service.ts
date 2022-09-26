@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { events, MinskyProcessPayload, DescriptionPayload } from '@minsky/shared';
+import { events, MinskyProcessPayload, DescriptionPayload, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload, LockHandlesPayload } from '@minsky/shared';
 import { ipcRenderer, remote } from 'electron';
-import isElectron from 'is-electron';
+import is_electron from 'is-electron';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +9,7 @@ import isElectron from 'is-electron';
 export class ElectronService {
   ipcRenderer: typeof ipcRenderer;
   remote: typeof remote;
-  isElectron = isElectron();
+  isElectron = is_electron();
 
   constructor() {
     if (this.isElectron) {
@@ -20,6 +20,22 @@ export class ElectronService {
 
   async saveDescription(payload: DescriptionPayload) {
     return await this.ipcRenderer.invoke(events.SAVE_DESCRIPTION, payload);
+  }
+
+  async saveHandleDescription(payload: HandleDescriptionPayload) {
+    return await this.ipcRenderer.invoke(events.SAVE_HANDLE_DESCRIPTION, payload);
+  }
+
+  async saveHandleDimension(payload: HandleDimensionPayload) {
+    return await this.ipcRenderer.invoke(events.SAVE_HANDLE_DIMENSION, payload);
+  }
+
+  async savePickSlices(payload: PickSlicesPayload) {
+    return await this.ipcRenderer.invoke(events.SAVE_PICK_SLICES, payload);
+  }
+
+  async saveLockHandles(payload: LockHandlesPayload) {
+    return await this.ipcRenderer.invoke(events.SAVE_LOCK_HANDLES, payload);
   }
   
   async sendMinskyCommandAndRender(
