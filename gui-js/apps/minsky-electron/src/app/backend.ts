@@ -127,6 +127,7 @@ export class Canvas extends CppClass
   constructor(prefix: string) {super(prefix);}
   addOperation(type: string) {return this.callMethod("addOperation",type);}
   getItemAt(x: number, y: number) {return this.callMethod("getItemAt",x,y);}
+  deleteItem() {return this.callMethod("deleteItem");}
 };
 
 export class Pair<Key, Value extends CppClass> {

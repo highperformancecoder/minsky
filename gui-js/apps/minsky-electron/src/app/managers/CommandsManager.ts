@@ -19,6 +19,7 @@ import { HelpFilesManager } from './HelpFilesManager';
 import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import {electronMenuBarHeightForWindows, isWindows } from '@minsky/shared';
+import {minsky} from '../backend';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<number, CanvasItem>();
@@ -39,12 +40,8 @@ export class CommandsManager {
     // to ensure that we cannot mismatch itemId and currentItemId
     if (itemId) {
       WindowManager.closeWindowByUid(itemId);
-      await RestServiceManager.handleMinskyProcess({
-        command: `${commandsMapping.REMOVE_ENTRY_FROM_NAMED_ITEMS_MAP} "${itemId}"`,
-      });
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_DELETE_ITEM,
-      });
+      minsky.namedItems.erase(itemId);
+      minsky.canvas.deleteItem();
     }
   }
 
