@@ -74,7 +74,7 @@ export class WindowManager {
   }
 
   static getMainWindow(): BrowserWindow {
-    return this.activeWindows.get(1).context; // TODO:: Is this accurate?
+    return this.activeWindows.get(1)?.context; // TODO:: Is this accurate?
   }
 
   static focusIfWindowIsPresent(uid: number) {

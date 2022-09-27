@@ -7,7 +7,7 @@ import {
   rendererAppURL,
   version,
 } from '@minsky/shared';
-import * as debug from 'debug';
+//import * as debug from 'debug';
 import { BrowserWindow, Display, dialog, screen } from 'electron';
 import * as log from 'electron-log';
 import { join } from 'path';
@@ -22,7 +22,7 @@ import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
 import { Utility } from './utility';
 
-const logWindows = debug('minsky:electron_windows');
+//const logWindows = debug('minsky:electron_windows');
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -138,7 +138,7 @@ export default class App {
 
     WindowManager.activeWindows.set(App.mainWindow.id, mainWindowDetails);
 
-    logWindows(WindowManager.activeWindows);
+    //logWindows(WindowManager.activeWindows);
 
     App.mainWindow.on('close', async (e) => {
       if (!App.directlyClose) {

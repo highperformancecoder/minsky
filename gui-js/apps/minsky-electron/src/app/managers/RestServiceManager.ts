@@ -14,6 +14,7 @@ import { Utility } from '../utility';
 import { RecordingManager } from './RecordingManager';
 import { MinskyPreferences, StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
+import { restService } from '../backend';
 const JSON5 = require('json5');
 
 const addonDir = Utility.isPackaged()
@@ -26,13 +27,6 @@ if (!Utility.isDevelopmentMode()) { //clobber logging in production
 };
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-
-let restService = null;
-try {
-  restService = require('bindings')(join(addonDir, 'minskyRESTService.node'));
-} catch (error) {
-  log.error(error);
-}
 
 interface QueueItem {
   promise: Deferred;
@@ -51,6 +45,24 @@ class Deferred {
     });
   }
 }
+
+//restService.setMessageCallback(function (msg: string, buttons: string[]) {
+//  console.log('in message callback');
+//  if (msg && dialog)
+//      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+//      message: msg,
+//      type: 'info',
+//      buttons: buttons,
+//    });
+//  console.log('returning from message callback');
+//  return 0;
+//});
+//
+//restService.setBusyCursorCallback(function (busy: boolean) {
+//  WindowManager.getMainWindow()?.webContents?.insertCSS(
+//    busy ? 'html body {cursor: wait}' : 'html body {cursor: default}'
+//  );
+//});
 
 function logFilter(c: string) {
   const logFilter=["mouseMove$", "requestRedraw$"];

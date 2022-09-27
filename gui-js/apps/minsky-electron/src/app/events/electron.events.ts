@@ -12,7 +12,7 @@ import {
   DescriptionPayload,
   MinskyProcessPayload,
 } from '@minsky/shared';
-import * as debug from 'debug';
+//import * as debug from 'debug';
 import { BrowserWindow, ipcMain } from 'electron';
 import { environment } from '../../environments/environment';
 import { BookmarkManager } from '../managers/BookmarkManager';
@@ -25,7 +25,7 @@ import { RestServiceManager } from '../managers/RestServiceManager';
 import { StoreManager, MinskyPreferences } from '../managers/StoreManager';
 import { WindowManager } from '../managers/WindowManager';
 
-const logUpdateEvent = debug('minsky:electron_update_event');
+//const logUpdateEvent = debug('minsky:electron_update_event');
 
 export default class ElectronEvents {
   static bootstrapElectronEvents(): Electron.IpcMain {
@@ -35,7 +35,7 @@ export default class ElectronEvents {
 
 // Retrieve app version
 ipcMain.handle(events.GET_APP_VERSION, () => {
-  logUpdateEvent(`Fetching application version... [v${environment.version}]`);
+  //logUpdateEvent(`Fetching application version... [v${environment.version}]`);
 
   return environment.version;
 });

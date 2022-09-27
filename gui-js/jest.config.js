@@ -1,7 +1,7 @@
 module.exports = {
   projects: [
     '<rootDir>/apps/minsky-electron',
-    '<rootDir>/apps/minsky-server',
+    '<rootDir>/apps/minsky-web',
     '<rootDir>/libs/menu',
     '<rootDir>/libs/core',
     '<rootDir>/libs/shared',
@@ -12,7 +12,7 @@ module.exports = {
   testMatch: [ "**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)" ],
 };
 
-//     '<rootDir>/apps/minsky-web',
+//    '<rootDir>/apps/minsky-server',
 
 import type {Config} from 'jest';
 

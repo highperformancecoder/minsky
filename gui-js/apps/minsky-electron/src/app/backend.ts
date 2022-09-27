@@ -14,7 +14,7 @@ const addonDir = Utility.isPackaged()
   ? '../node-addons'
   : '../../node-addons';
 
-var log=elog;
+var log=elog? elog: console;
 if (!Utility.isDevelopmentMode()) { //clobber logging in production
   log.info=function(...args: any[]){};
 };
@@ -26,7 +26,7 @@ function logFilter(c: string) {
   return true;
 }
 
-let restService = null;
+export var restService = null;
 try {
   restService = require('bindings')(join(addonDir, 'minskyRESTService.node'));
 } catch (error) {
@@ -34,16 +34,17 @@ try {
 }
 
 restService.setMessageCallback(function (msg: string, buttons: string[]) {
-  if (msg)
+  if (msg && dialog)
       return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
       message: msg,
       type: 'info',
       buttons: buttons,
-    });
+      });
+  return 0;
 });
 
 restService.setBusyCursorCallback(function (busy: boolean) {
-  WindowManager.getMainWindow().webContents.insertCSS(
+  WindowManager.getMainWindow()?.webContents?.insertCSS(
     busy ? 'html body {cursor: wait}' : 'html body {cursor: default}'
   );
 });

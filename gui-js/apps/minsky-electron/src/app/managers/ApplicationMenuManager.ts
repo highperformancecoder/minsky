@@ -5,7 +5,7 @@ import {
   isWindows,
   normalizeFilePathForPlatform,
 } from '@minsky/shared';
-import * as debug from 'debug';
+//import * as debug from 'debug';
 import {
   dialog,
   Menu,
@@ -21,7 +21,7 @@ import { StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
 import { BookmarkManager } from './BookmarkManager';
 
-const logError = debug('minsky:electron_error');
+//const logError = debug('minsky:electron_error');
 
 //TODO:: Remove hardcoding of popup dimensions
 
@@ -96,7 +96,7 @@ export class ApplicationMenuManager {
 
               await CommandsManager.openNamedFile(filePath);
             } catch (error) {
-              logError(error);
+              console.error(error);
             }
               BookmarkManager.updateBookmarkList();
           },
@@ -157,7 +157,7 @@ export class ApplicationMenuManager {
               });
               await CommandsManager.requestRedraw();
             } catch (err) {
-              logError('file is not selected', err);
+              console.error('file is not selected', err);
             }
           },
         },
