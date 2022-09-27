@@ -888,6 +888,12 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForRavel(): Promise<MenuItem[]> {
+    const editorMode = (await RestServiceManager.handleMinskyProcess(
+      {
+        command: "/minsky/canvas/item/editorMode",
+      }
+    )) as boolean;
+
     let menuItems = [
       new MenuItem({
         label: 'Export as CSV',
@@ -895,25 +901,19 @@ export class ContextMenuManager {
           await CommandsManager.exportItemAsCSV();
         },
       }),
+      new MenuItem({
+        label: 'Editor mode',
+        type: 'checkbox',
+        checked: editorMode,
+        click: async () => {
+          await RestServiceManager.handleMinskyProcess(
+            {
+              command: "/minsky/canvas/item/toggleEditorMode",
+            }
+          );
+        },
+      }),
     ];
-
-    if ((await CommandsManager.getLockGroup()).length) {
-      menuItems = [
-        ...menuItems,
-        new MenuItem({ label: 'Lock specific handles' }),
-        new MenuItem({ label: 'Axis properties' }),
-        new MenuItem({
-          label: 'Unlock',
-          click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_ITEM_LEAVE_LOCK_GROUP,
-            });
-
-            CommandsManager.requestRedraw();
-          },
-        }),
-      ];
-    }
 
     return menuItems;
   }
