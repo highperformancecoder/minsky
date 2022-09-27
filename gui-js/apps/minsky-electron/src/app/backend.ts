@@ -19,6 +19,7 @@ if (!Utility.isDevelopmentMode()) { //clobber logging in production
   log.info=function(...args: any[]){};
 };
 
+/** returns true if RESTService call is logged in development mode */
 function logFilter(c: string) {
   const logFilter=["mouseMove$", "requestRedraw$"];
   for (var i in logFilter)
@@ -26,6 +27,7 @@ function logFilter(c: string) {
   return true;
 }
 
+/** REST Service addon */
 export var restService = null;
 try {
   restService = require('bindings')(join(addonDir, 'minskyRESTService.node'));
@@ -49,6 +51,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
   );
 });
 
+/** core function to call into C++ object heirarachy */
 export function backend(command: string, ...args: any[]) {
   if (!command) {
     log.error('backend called without any command');
@@ -62,9 +65,7 @@ export function backend(command: string, ...args: any[]) {
     var arg='';
     if (args.length>0)
       arg=JSON5.stringify(args);
-    console.log(command, arg);
     const response = restService.call(command, arg);
-    console.log(response);
     if (logFilter(command))
       log.info('Rest API: ',command,arg,"=>",response);
     return JSON5.parse(response);
@@ -103,32 +104,67 @@ if (backend("/minsky/ravelExpired"))
       shell.openExternal("https://ravelation.hpcoders.com.au");
   },1000);
 
-
 class CppClass
 {
-  private prefix: string;
+  protected prefix: string;
   constructor(prefix: string) {this.prefix=prefix+"/";}
   protected callMethod(method: string,...args)
   {
     return backend(this.prefix+method, ...args);
   }
+  public properties(...args) {return backend(this.prefix, ...args);}
 };
+
+export class Item extends CppClass
+{
+  constructor(prefix: string) {super(prefix);}
+  classType(): string {return this.callMethod("classType");}
+  static make(prefix: string) {return new Item(prefix);}
+}
 
 export class Canvas extends CppClass
 {
   constructor(prefix: string) {super(prefix);}
-  
+  addOperation(type: string) {return this.callMethod("addOperation",type);}
+  getItemAt(x: number, y: number) {return this.callMethod("getItemAt",x,y);}
+};
+
+export class Pair<Key, Value extends CppClass> {
+  first: Key;
+  second: Value;
+  constructor(key: Key, value: Value) {
+    this.first=key;
+    this.second=value;
+  }
+};
+
+export class Map<Key, Value extends CppClass> extends CppClass
+{
+  valueType: any;  // stash a reference to the actual type here, for use in a new expression
+  constructor(prefix: string, valueType: any) {super(prefix); this.valueType=valueType;}
+  elem(key: Key) {
+    return new Pair<Key,Value>
+      (key,new this.valueType(this.prefix+"@elem/"+JSON5.stringify(key)+"/second"));
+  }
+  insert(keyValue: Pair<Key, Value>) {this.callMethod("@insert",keyValue);}
+  erase(key: Key) {this.callMethod("@erase",key);}
 };
 
 export class Minsky extends CppClass
 {
-  public canvas: Canvas;
+  canvas: Canvas;
+  namedItems: Map<string, Item>;
+  
   constructor(prefix: string) {
     super(prefix);
     this.canvas=new Canvas(prefix+"/canvas");
+    this.namedItems=new Map<string, Item>(prefix+"/namedItems",Item);
   }
+
+  nameCurrentItem(name: string) {this.callMethod("nameCurrentItem",name);}
   load(file: string) {this.callMethod("load",file);}
   save(file: string) {this.callMethod("save",file);}
 };
 
+/** global backend Minsky object */
 export const minsky=new Minsky("/minsky");
