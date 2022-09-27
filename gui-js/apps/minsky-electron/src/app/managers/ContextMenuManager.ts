@@ -893,8 +893,25 @@ export class ContextMenuManager {
 
     const handleIndex = <number>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_SELECTED });
     const sortOrder = await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_GET_SORT_ORDER });
+    const editorMode = (await RestServiceManager.handleMinskyProcess(
+      {
+        command: "/minsky/canvas/item/editorMode",
+      }
+    )) as boolean;
 
     let menuItems = [
+      new MenuItem({
+        label: 'Editor mode',
+        type: 'checkbox',
+        checked: editorMode,
+        click: async () => {
+          await RestServiceManager.handleMinskyProcess(
+            {
+              command: "/minsky/canvas/item/toggleEditorMode",
+            }
+          );
+        },
+      }),
       new MenuItem({
         label: 'Export as CSV',
         click: async () => {
@@ -906,7 +923,7 @@ export class ContextMenuManager {
         submenu: aggregations.map(agg => ({
           label: agg.label,
           click: async () => {
-            await RestServiceManager.handleMinskyProcess({command: `${commandsMapping.CANVAS_RAVEL_NEXT_REDUCTION} ${agg.value}` });
+            await RestServiceManager.handleMinskyProcess({command: `${commandsMapping.CANVAS_RAVEL_NEXT_REDUCTION} "${agg.value}"` });
           }
         }))
       }),
