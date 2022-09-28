@@ -10,6 +10,7 @@ import {
 import * as utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
+import {minsky} from '../backend';
 const JSON5 = require('json5');
 
 export class KeyBindingsManager {
@@ -179,92 +180,83 @@ export class KeyBindingsManager {
     const { key } = payload;
 
     switch (key) {
-      case 'Backspace':
-      case 'Delete':
-        await this.deleteKey(payload);
-        break;
+    case 'Backspace':
+    case 'Delete':
+      await this.deleteKey(payload);
+      break;
 
-      case '+':
-        await this.handlePlusKey(payload);
-        break;
+    case '+':
+      await this.handlePlusKey(payload);
+      break;
 
-      case '-':
-        if (payload.location !== 3) {
-          executed = false;
-        } else {
-          await this.handleMinusKey(payload);
-        }
-        break;
-
-      case '*':
-        await CommandsManager.addOperation(availableOperations.MULTIPLY);
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '/':
-        await CommandsManager.addOperation(availableOperations.DIVIDE);
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '^':
-        await CommandsManager.addOperation(availableOperations.POW);
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '&':
-        await CommandsManager.addOperation(availableOperations.INTEGRATE);
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '=':
-        await CommandsManager.addGodley();
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '@':
-        await CommandsManager.addPlot();
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case 'x':
-      case 'X':
-        if (this.isCtrlPayload(payload)) {
-          await CommandsManager.cut();
-        } else {
-          executed = false;
-        }
-
-        break;
-
-      case 'c':
-      case 'C':
-        if (this.isCtrlPayload(payload)) {
-          await CommandsManager.copy();
-        } else {
-          executed = false;
-        }
-
-        break;
-
-      case 'v':
-      case 'V':
-        if (this.isCtrlPayload(payload)) {
-          await CommandsManager.paste();
-        } else {
-          executed = false;
-        }
-
-        break;
-
-      default:
+    case '-':
+      if (payload.location !== 3) {
         executed = false;
-        break;
+      } else {
+        await this.handleMinusKey(payload);
+      }
+      break;
+
+    case '*':
+      minsky.canvas.addOperation("multiply");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '/':
+      minsky.canvas.addOperation("divide");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '^':
+      minsky.canvas.addOperation("pow");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '&':
+      minsky.canvas.addOperation("integrate");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '=':
+      minsky.canvas.addGodley();
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '@':
+      minsky.canvas.addPlot();
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case 'x':
+    case 'X':
+      if (this.isCtrlPayload(payload)) {
+        await CommandsManager.cut();
+      } else {
+        executed = false;
+      }
+      break;
+      
+    case 'c':
+    case 'C':
+      if (this.isCtrlPayload(payload)) {
+        await CommandsManager.copy();
+      } else {
+        executed = false;
+      }
+      break;
+
+    case 'v':
+    case 'V':
+      if (this.isCtrlPayload(payload)) {
+        await CommandsManager.paste();
+      } else {
+        executed = false;
+      }
+      break;
+
+    default:
+      executed = false;
+      break;
     }
 
     if (payload.ctrl) {
@@ -278,7 +270,7 @@ export class KeyBindingsManager {
   private static async handlePlusKey(payload: MinskyProcessPayload) {
     if (payload.shift) {
       // <Key-plus>
-      await CommandsManager.addOperation(availableOperations.ADD);
+      minsky.canvas.addOperation("add");
       await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
       return;
     }

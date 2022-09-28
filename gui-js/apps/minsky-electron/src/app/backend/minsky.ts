@@ -1,0 +1,47 @@
+import {CppClass, Map, Set} from './backend';
+import {Canvas} from './canvas';
+import {Group} from './group';
+import {Item} from './item';
+import {VariableInstanceList} from './variableInstanceList';
+
+export class Minsky extends CppClass
+{
+  canvas: Canvas;
+  logVarList: Set<string>;
+  model: Group;
+  namedItems: Map<string, Item>;
+  variableInstanceList: VariableInstanceList;
+  
+  constructor(prefix: string) {
+    super(prefix);
+    this.canvas=new Canvas(prefix+"/canvas");
+    this.logVarList=new Set<string>(prefix+"/logVarList");
+    this.model=new Group(prefix+"/model");
+    this.namedItems=new Map<string, Item>(prefix+"/namedItems",Item);
+    this.variableInstanceList=new VariableInstanceList(prefix+"/variableInstanceList");
+  }
+
+  availableOperations(): string[] {return this.callMethod("availableOperations");}
+  classifyOp(op: string): string {return this.callMethod("classifyOp",op);}
+  clearAllMaps(): void {this.callMethod("clearAllMaps");}
+  clearHistory(): void {this.callMethod("clearHistory");}
+  copy(): void {this.callMethod("copy");}
+  cut(): void {this.callMethod("cut");}
+  doPushHistory(...d: boolean[]): boolean {return this.callMethod("doPushHistory",...d);}
+  edited(): boolean {return this.callMethod("edited");}
+  nameCurrentItem(name: string) {this.callMethod("nameCurrentItem",name);}
+  listAllInstances(): void {this.callMethod("listAllInstances");}
+  load(file: string): void {this.callMethod("load",file);}
+  openLogFile(file: string): void {this.callMethod("openLogFile",file);}
+  paste(): void {this.callMethod("paste");}
+  popFlags(): void {this.callMethod("popFlags");}
+  pushFlags(): void {this.callMethod("pushFlags");}
+  save(file: string): void {this.callMethod("save",file);}
+  saveCanvasItemAsFile(file: string): void {this.callMethod("saveCanvasItemAsFile",file);}
+  saveSelectionAsFile(name: string): void {this.callMethod("saveSelectionAsFile",name);}
+  setAutoSaveFile(file: string): void {this.callMethod("setAutoSaveFile",file);}
+  undo(changes: number): void {this.callMethod("undo",changes);}
+};
+
+/** global backend Minsky object */
+export const minsky=new Minsky("/minsky");

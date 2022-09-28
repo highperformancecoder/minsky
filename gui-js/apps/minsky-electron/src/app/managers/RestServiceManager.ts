@@ -46,24 +46,6 @@ class Deferred {
   }
 }
 
-//restService.setMessageCallback(function (msg: string, buttons: string[]) {
-//  console.log('in message callback');
-//  if (msg && dialog)
-//      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-//      message: msg,
-//      type: 'info',
-//      buttons: buttons,
-//    });
-//  console.log('returning from message callback');
-//  return 0;
-//});
-//
-//restService.setBusyCursorCallback(function (busy: boolean) {
-//  WindowManager.getMainWindow()?.webContents?.insertCSS(
-//    busy ? 'html body {cursor: wait}' : 'html body {cursor: default}'
-//  );
-//});
-
 function logFilter(c: string) {
   const logFilter=["mouseMove$", "requestRedraw$"];
   for (var i in logFilter)
@@ -297,6 +279,11 @@ export class RestServiceManager {
     return res;
   }
 
+  public static onCurrentTab(command: string, ...args)
+  {
+    callRESTApi(`${this.currentTab}/${command} ${JSON5.stringify(...args)}`);
+  }
+  
   private static async executeCommandOnMinskyServer(
     payload: MinskyProcessPayload
   ): Promise<unknown> {

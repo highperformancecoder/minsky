@@ -93,11 +93,11 @@ export interface CanvasItem {
     classType: ClassType;
     displayContents: boolean;
     value: number;
-    id: number;
+    id: string;
 }
 
 export interface CreateWindowPayload extends Electron.BrowserWindowConstructorOptions {
-  uid? : number,
+  uid? : string,
   url? : string
 }
 

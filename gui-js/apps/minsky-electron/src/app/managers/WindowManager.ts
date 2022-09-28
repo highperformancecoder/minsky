@@ -27,9 +27,9 @@ export class WindowManager {
   static scaleFactor: number;
 
   static activeWindows = new Map<number, ActiveWindow>();
-  private static uidToWindowMap = new Map<number, ActiveWindow>();
+  private static uidToWindowMap = new Map<string, ActiveWindow>();
 
-  static getWindowByUid(uid: number): ActiveWindow {
+  static getWindowByUid(uid: string): ActiveWindow {
     return this.uidToWindowMap.get(uid);
   }
 
@@ -77,7 +77,7 @@ export class WindowManager {
     return this.activeWindows.get(1)?.context; // TODO:: Is this accurate?
   }
 
-  static focusIfWindowIsPresent(uid: number) {
+  static focusIfWindowIsPresent(uid: string) {
     const windowDetails = this.uidToWindowMap.get(uid);
     if (windowDetails) {
       windowDetails.context.focus();
@@ -117,7 +117,7 @@ export class WindowManager {
     return window;
   }
 
-  static closeWindowByUid(uid: number) {
+  static closeWindowByUid(uid: string) {
     const windowDetails = this.uidToWindowMap.get(uid);
     if (windowDetails) {
       this.uidToWindowMap.delete(uid);

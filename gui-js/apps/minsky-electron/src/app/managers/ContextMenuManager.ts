@@ -1114,7 +1114,7 @@ export class ContextMenuManager {
 
     var id=await RestServiceManager.handleMinskyProcess({
       command: `${namedItemSubCommand}/id`,
-    }) as number;
+    }) as string;
     menu.append(new MenuItem({
       label: "Title",
       click: async ()=> {await CommandsManager.editGodleyTitle(id);},
