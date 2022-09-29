@@ -647,7 +647,7 @@ export class CommandsManager {
 
   static async exportGodleyAs(
     ext: string,
-    command: string = null
+    command: (x: string)=>void = null
   ): Promise<void> {
     const saveDialog = await dialog.showSaveDialog({
       filters: [
@@ -669,9 +669,7 @@ export class CommandsManager {
     }
 
     if (command) {
-      await RestServiceManager.handleMinskyProcess({
-        command: `${command} ${filePath}`,
-      });
+      command(filePath);
       return;
     }
 

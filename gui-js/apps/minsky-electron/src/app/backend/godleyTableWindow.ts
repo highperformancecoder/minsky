@@ -21,5 +21,7 @@ export class GodleyTableWindow extends RenderNativeWindow
   selectedCol(...args: number[]): number {return this.callMethod("selectedCol",...args);}
   selectedIdx(...args: number[]): number {return this.callMethod("selectedIdx",...args);}
   selectedRow(...args: number[]): number {return this.callMethod("selectedRow",...args);}
+  undo(changes: number): void {this.callMethod("undo", changes);}
+  zoomFactor(...args: number[]): number {return this.callMethod("zoomFactor",...args);}
 }
   

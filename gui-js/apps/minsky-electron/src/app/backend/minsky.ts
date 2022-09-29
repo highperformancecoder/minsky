@@ -41,6 +41,7 @@ export class Minsky extends CppClass
   nameCurrentItem(name: string) {this.callMethod("nameCurrentItem",name);}
   listAllInstances(): void {this.callMethod("listAllInstances");}
   load(file: string): void {this.callMethod("load",file);}
+  multipleEquities(...args: boolean[]): boolean {return this.callMethod("multipleEquities",...args);}
   openGroupInCanvas(): void {this.callMethod("openGroupInCanvas");}
   openLogFile(file: string): void {this.callMethod("openLogFile",file);}
   openModelInCanvas(): void {this.callMethod("openModelInCanvas");}
@@ -51,6 +52,8 @@ export class Minsky extends CppClass
   saveCanvasItemAsFile(file: string): void {this.callMethod("saveCanvasItemAsFile",file);}
   saveSelectionAsFile(name: string): void {this.callMethod("saveSelectionAsFile",name);}
   setAutoSaveFile(file: string): void {this.callMethod("setAutoSaveFile",file);}
+  setGodleyDisplayValue(displayValues: boolean, displayStyle: string): void
+  {this.callMethod("setGodleyDisplayValue",displayValues,displayStyle);}
   undo(changes: number): void {this.callMethod("undo",changes);}
 };
 
