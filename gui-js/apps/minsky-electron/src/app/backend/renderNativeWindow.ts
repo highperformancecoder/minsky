@@ -17,5 +17,5 @@ export class RenderNativeWindow extends CppClass
   renderToSVG(name: string): void {this.callMethod("renderToSVG",name);}
   renderToPNG(name: string): void {this.callMethod("renderToPNG",name);}
   renderToEMF(name: string): void {this.callMethod("renderToEMF",name);}
-
+  requestRedraw(): void {this.callMethod("requestRedraw");}
 }

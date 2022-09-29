@@ -74,7 +74,7 @@ export class CppClass
     return backend(this.prefix+method, ...args);
   }
   public properties(...args) {return backend(this.prefix, ...args);}
-  // these methods are available on all classes derived from RenderNativeWindow
+  public getPrefix(): string {return this.prefix;}
 };
 
 

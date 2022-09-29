@@ -1,11 +1,13 @@
 import {backend, setErrorDialog, restService} from './backend/backend';
+import {GodleyTableWindow} from './backend/godleyTableWindow';
+import {Item} from './backend/item';
 import {minsky} from './backend/minsky';
 import { Utility } from './utility';
 import { WindowManager } from './managers/WindowManager';
 import { dialog, ipcMain, shell } from 'electron';
 import { version } from '@minsky/shared';
 
-export {restService, minsky};
+export {restService, minsky, GodleyTableWindow, Item};
 
 restService.setMessageCallback(function (msg: string, buttons: string[]) {
   if (msg && dialog)
