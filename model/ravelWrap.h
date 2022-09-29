@@ -147,12 +147,19 @@ namespace minsky
     /// @}
     /// return the description field for handle \a handle.
     std::string handleDescription(int handle) const {return wrappedRavel.handleDescription(handle);}
+    /// set the description field for \a handle
+    void setHandleDescription(int handle, const std::string& description)
+    {wrappedRavel.setHandleDescription(handle,description);}
 
-    /// @{ get/set selected handle dimension attributes
+    /// @{ get/set dimension attributes of selected handle, or handle at given index
     Dimension::Type dimensionType() const;
+    Dimension::Type dimensionType(int) const;
     std::string dimensionUnitsFormat() const;
+    std::string dimensionUnitsFormat(int) const;
     /// @throw if type does not match global dimension type
     void setDimension(Dimension::Type type,const std::string& units);
+    /// @throw if type does not match global dimension type
+    void setDimension(int handleIndex, Dimension::Type type,const std::string& units);
     /// @}
     
     /// get the current state of the Ravel
@@ -169,7 +176,7 @@ namespace minsky
     bool editorMode=false;
     void toggleEditorMode() {editorMode=!editorMode;updateBoundingBox();}
 
-  };
+    };
 
   class RavelLockGroup
   {

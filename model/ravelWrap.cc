@@ -403,7 +403,7 @@ namespace
   {
     return handleDescription(wrappedRavel.selectedHandle());
   }
-  
+
   void Ravel::setDescription(const string& description)
   {
     wrappedRavel.setHandleDescription(wrappedRavel.selectedHandle(),description);
@@ -411,7 +411,12 @@ namespace
 
   Dimension::Type Ravel::dimensionType() const
   {
-    auto descr=description();
+    return dimensionType(selectedHandle());
+  }
+
+  Dimension::Type Ravel::dimensionType(int handleIndex) const
+  {
+    auto descr=handleDescription(handleIndex);
     auto i=axisDimensions.find(descr);
     if (i!=axisDimensions.end())
       return i->second.type;
@@ -425,7 +430,12 @@ namespace
   
   std::string Ravel::dimensionUnitsFormat() const
   {
-    auto descr=description();
+    return dimensionUnitsFormat(selectedHandle());
+  }
+
+  std::string Ravel::dimensionUnitsFormat(int handleIndex) const
+  {
+    auto descr=handleDescription(handleIndex);
     if (descr.empty()) return "";
     auto i=axisDimensions.find(descr);
     if (i!=axisDimensions.end())
@@ -439,7 +449,13 @@ namespace
   /// @throw if type does not match global dimension type
   void Ravel::setDimension(Dimension::Type type,const std::string& units)
   {
-    auto descr=description();
+    return setDimension(selectedHandle(), type, units);
+  }
+
+  /// @throw if type does not match global dimension type
+  void Ravel::setDimension(int handleIndex, Dimension::Type type,const std::string& units)
+  {
+    auto descr=handleDescription(handleIndex);
     if (descr.empty()) return;
     auto i=cminsky().dimensions.find(descr);
     Dimension d{type,units};

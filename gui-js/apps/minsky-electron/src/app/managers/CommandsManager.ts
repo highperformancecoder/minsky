@@ -5,6 +5,9 @@ import {
   events,
   getBackgroundStyle,
   green,
+  HandleDimensionPayload,
+  PickSlicesPayload,
+  LockHandlesPayload,
   InitializePopupWindowPayload,
   isEmptyObject,
   isMacOS,
@@ -18,7 +21,7 @@ import { Utility } from '../utility';
 import { HelpFilesManager } from './HelpFilesManager';
 import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
-import {electronMenuBarHeightForWindows, isWindows } from '@minsky/shared';
+import {electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload } from '@minsky/shared';
 import {minsky} from '../backend';
 
 export class CommandsManager {
@@ -288,7 +291,7 @@ export class CommandsManager {
         command: `/minsky/canvas/${type}/detailedText`,
       })) as string) || '';
 
-    var window=WindowManager.createPopupWindowWithRouting({
+    const window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
       url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${encodeURI(detailedText)}`,
     });
@@ -347,10 +350,6 @@ export class CommandsManager {
     CommandsManager.requestRedraw();
 
     return;
-  }
-
-  static async getLockGroup(): Promise<unknown[]> {
-    return minsky.canvas.item.lockGroup();
   }
 
   static bookmarkThisPosition(): void {
@@ -468,7 +467,7 @@ export class CommandsManager {
       properties: ['showOverwriteConfirmation', 'createDirectory'],
     });
 
-    var { canceled, filePath } = exportCanvasDialog;
+    let { canceled, filePath } = exportCanvasDialog;
     if (canceled) {
       return null;
     }
@@ -1116,5 +1115,81 @@ export class CommandsManager {
     WindowManager.getMainWindow().setTitle(filePath);
 
     minsky.save(filePath);
+  }
+  
+  static async editHandleDescription(handleIndex: number) {
+    const description = minsky.canvas.item.handleDescription(handleIndex);
+    const window=WindowManager.createPopupWindowWithRouting({
+        title: `Handle Description`,
+        url: `#/headless/edit-handle-description?handleIndex=${handleIndex}&description=${description}`,
+        height: 90,
+        width: 300,
+      });
+      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+    }
+
+  static async saveHandleDescription(payload: HandleDescriptionPayload) {
+    minsky.canvas.item.setHandleDescription(payload.handleIndex, payload.description);
+  }
+  
+  static async editHandleDimension(handleIndex: number) {
+    const type = minsky.canvas.item.dimensionType();
+    const units = minsky.canvas.item.dimensionUnitsFormat();
+
+    const window=WindowManager.createPopupWindowWithRouting({
+        title: `Handle Dimension`,
+        url: `#/headless/edit-handle-dimension?handleIndex=${handleIndex}&type=${type}&units=${units}`,
+        height: 180,
+        width: 300,
+      });
+      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+  }
+
+  static async saveHandleDimension(payload: HandleDimensionPayload) {
+    minsky.canvas.item.setDimension(payload.handleIndex, payload.type, payload.units);
+  }
+
+  static async pickSlices(handleIndex: number) {
+    const allSliceLabels = minsky.canvas.item.allSliceLabels();
+    const pickedSliceLabels = minsky.canvas.item.pickedSliceLabels();
+
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `Pick slices`,
+      url: `#/headless/pick-slices?handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
+      height: 400,
+      width: 400,
+    });
+    Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+  }
+
+  static async savePickSlices(payload: PickSlicesPayload) {
+    minsky.canvas.item.pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
+  }
+
+  static async lockSpecificHandles() {
+    let allLockHandles = minsky.canvas.item.lockGroup.allLockHandles();
+    if(Object.keys(allLockHandles).length === 0) {
+      minsky.canvas.lockRavelsInSelection();
+      allLockHandles = minsky.canvas.item.lockGroup.allLockHandles();
+      if(Object.keys(allLockHandles).length === 0) return;
+    }
+
+    const lockgroup = minsky.canvas.item.lockGroup.properties();
+    if(lockgroup.handleLockInfo.length === 0) {
+      minsky.canvas.item.lockGroup.setLockHandles(allLockHandles);
+      const ravelNames = minsky.canvas.item.lockGroup.ravelNames();
+      const window=WindowManager.createPopupWindowWithRouting({
+        title: `Lock specific handles`,
+        url: `#/headless/lock-handles?handleLockInfo=${JSON5.stringify(lockgroup.handleLockInfo)}&ravelNames=${ravelNames.join()}&lockHandles=${allLockHandles.join()}`,
+        height: 200,
+        width: 600,
+      });
+      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+    }
+  }
+
+  static async saveLockHandles(payload: LockHandlesPayload) {
+    minsky.canvas.item.lockGroup.handleLockInfo(payload.handleLockInfo);
+    minsky.canvas.item.lockGroup.validateLockHandleInfo();
   }
 }

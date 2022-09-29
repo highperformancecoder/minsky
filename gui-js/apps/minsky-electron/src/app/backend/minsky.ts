@@ -48,6 +48,7 @@ export class Minsky extends CppClass
   paste(): void {this.callMethod("paste");}
   popFlags(): void {this.callMethod("popFlags");}
   pushFlags(): void {this.callMethod("pushFlags");}
+  reset(): void {this.callMethod("reset");}
   save(file: string): void {this.callMethod("save",file);}
   saveCanvasItemAsFile(file: string): void {this.callMethod("saveCanvasItemAsFile",file);}
   saveSelectionAsFile(name: string): void {this.callMethod("saveSelectionAsFile",name);}

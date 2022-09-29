@@ -1,0 +1,12 @@
+<div class="container" [formGroup]="editDescriptionForm">
+  <div class="form-body">
+    <div class="form-row">
+      <div class="label">Description</div>
+      <input formControlName="description" type="text"/>
+    </div>
+  </div>
+  <div class="buttons">
+    <button mat-raised-button (click)="closeWindow()">Cancel</button>
+    <button mat-raised-button class="submit" (click)="handleSave()">Save</button>
+  </div>
+</div>

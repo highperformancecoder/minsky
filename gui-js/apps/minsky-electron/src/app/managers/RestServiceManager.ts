@@ -116,6 +116,12 @@ if (callRESTApi("/minsky/ravelExpired"))
       shell.openExternal("https://ravelation.hpcoders.com.au");
   },1000);
 
+const ravelIconFilePath = normalizeFilePathForPlatform(
+  Utility.isDevelopmentMode()
+    ? `${join(__dirname, 'assets/ravel-logo.svg')}`
+    : `${join(process.resourcesPath, 'assets/ravel-logo.svg')}`
+);
+callRESTApi(`/minsky/setRavelIconResource ${ravelIconFilePath}`);
 
 
 export class RestServiceManager {

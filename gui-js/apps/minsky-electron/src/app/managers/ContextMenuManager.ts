@@ -11,6 +11,7 @@ import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';
+import * as JSON5 from 'json5';
 
 export class ContextMenuManager {
   private static x: number = null;
@@ -723,29 +724,105 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForRavel(): Promise<MenuItem[]> {
+    const aggregations = [{label: 'Σ', value: 'sum'},{label: 'Π', value: 'prod'},{label: 'σ', value: 'stddev'},{label: 'min', value: 'min'},{label: 'max', value: 'max'}];
+
+    const handleIndex = minsky.canvas.item.selectedHandle();
+    const sortOrder = minsky.canvas.item.sortOrder();
+    const editorMode = minsky.canvas.item.editorMode();
+
     let menuItems = [
+      new MenuItem({
+        label: 'Editor mode',
+        type: 'checkbox',
+        checked: editorMode,
+        click: () => {minsky.canvas.item.toggleEditorMode();}
+      }),
       new MenuItem({
         label: 'Export as CSV',
         click: async () => {
           await CommandsManager.exportItemAsCSV();
         },
       }),
-    ];
-
-    if ((await CommandsManager.getLockGroup()).length) {
-      menuItems = [
-        ...menuItems,
-        new MenuItem({ label: 'Lock specific handles' }),
-        new MenuItem({ label: 'Axis properties' }),
-        new MenuItem({
-          label: 'Unlock',
-          click: async () => {
-            minsky.canvas.item.leaveLockGroup();
-            CommandsManager.requestRedraw();
+      new MenuItem({
+        label: 'Set next aggregation',
+        submenu: aggregations.map(agg => ({
+          label: agg.label,
+          click: async () => {minsky.canvas.item.nextReduction(agg.value);}
+        }))
+      }),
+      new MenuItem({
+        label: 'Axis properties',
+        submenu: [
+          {
+            label: 'Description',
+            click: async () => {
+              await CommandsManager.editHandleDescription(handleIndex);
+            }
           },
-        }),
-      ];
-    }
+          {
+            label: 'Dimension',
+            click: async () => {
+              await CommandsManager.editHandleDimension(handleIndex);
+            }
+          },
+          {
+            label: 'Toggle calipers',
+            click: async () => {
+              minsky.canvas.item.toggleDisplayFilterCaliper();
+              minsky.canvas.item.broadcastStateToLockGroup();
+            }
+          },
+          {
+            label: 'Set aggregation',
+            submenu: aggregations.map(agg => ({
+              label: agg.label,
+              click: () => {
+                minsky.canvas.item.handleSetReduction(handleIndex, agg.value);
+              }
+            }))
+          },
+          {
+            label: 'Sort',
+            submenu: ['none','forward','reverse'].map(so =>({
+              label: so,
+              type: 'radio',
+              checked: sortOrder == so,
+              click: () => {
+                minsky.canvas.item.setSortOrder(so);
+                minsky.canvas.item.broadcastStateToLockGroup();
+                minsky.reset();
+              }
+            })).concat(
+              ['forward','reverse'].map(vso =>(<any>{
+                label: `${vso} by value`,
+                click: async () => {
+                  minsky.canvas.item.sortByValue(vso);
+                  minsky.reset();
+              }
+            })))
+          },
+          {
+            label: 'Pick slices',
+            click: async () => {
+              await CommandsManager.pickSlices(handleIndex);
+            }
+          }
+        ]
+      }),
+      new MenuItem({ 
+        label: 'Lock specific handles',
+        click: async () => {
+          CommandsManager.lockSpecificHandles();
+        } 
+      }),
+      new MenuItem({
+        label: 'Unlock',
+        click: async () => {
+          minsky.canvas.item.leaveLockGroup();
+          CommandsManager.requestRedraw();
+        },
+      })
+    ];
 
     return menuItems;
   }

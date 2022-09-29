@@ -10,6 +10,10 @@ import {
   commandsMapping,
   events,
   DescriptionPayload,
+  HandleDescriptionPayload,
+  HandleDimensionPayload,
+  PickSlicesPayload,
+  LockHandlesPayload,
   MinskyProcessPayload,
 } from '@minsky/shared';
 //import * as debug from 'debug';
@@ -122,6 +126,34 @@ ipcMain.handle(
   events.SAVE_DESCRIPTION,
   async (event, payload: DescriptionPayload) => {
     return await BookmarkManager.saveDescription(payload);
+  }
+);
+
+ipcMain.handle(
+  events.SAVE_HANDLE_DESCRIPTION,
+  async (event, payload: HandleDescriptionPayload) => {
+    return await CommandsManager.saveHandleDescription(payload);
+  }
+);
+
+ipcMain.handle(
+  events.SAVE_HANDLE_DIMENSION,
+  async (event, payload: HandleDimensionPayload) => {
+    return await CommandsManager.saveHandleDimension(payload);
+  }
+);
+
+ipcMain.handle(
+  events.SAVE_PICK_SLICES,
+  async (event, payload: PickSlicesPayload) => {
+    return await CommandsManager.savePickSlices(payload);
+  }
+);
+
+ipcMain.handle(
+  events.SAVE_LOCK_HANDLES,
+  async (event, payload: LockHandlesPayload) => {
+    return await CommandsManager.saveLockHandles(payload);
   }
 );
 

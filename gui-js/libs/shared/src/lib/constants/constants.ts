@@ -129,6 +129,7 @@ export const commandsMapping = {
   CANVAS_ITEM_VALUE: '/minsky/canvas/item/value',
   CANVAS_ITEM_NAME: '/minsky/canvas/item/name',
   CANVAS_ITEM_DESCRIPTION: '/minsky/canvas/item/description',
+  CANVAS_ITEM_SET_DESCRIPTION: '/minsky/canvas/item/setDescription',
   CANVAS_REMOVE_ITEM_FROM_ITS_GROUP: '/minsky/canvas/removeItemFromItsGroup',
   CANVAS_DEFAULT_ROTATION: '/minsky/canvas/defaultRotation',
   CANVAS_ITEM_FLIP: '/minsky/canvas/item/flip',
@@ -179,6 +180,30 @@ export const commandsMapping = {
   CANVAS_ITEM_GET_PLOT_TAB_DISPLAY: '/minsky/canvas/item/plotTabDisplay',
   CANVAS_ITEM_TOGGLE_PLOT_TAB_DISPLAY:
     '/minsky/canvas/item/togglePlotTabDisplay',
+
+  CANVAS_RAVEL_NEXT_REDUCTION: '/minsky/canvas/item/nextReduction',
+  CANVAS_RAVEL_TOGGLE_CALIPERS: '/minsky/canvas/item/toggleDisplayFilterCaliper',
+  CANVAS_RAVEL_BROADCAST_TO_LOCKGROUP: '/minsky/canvas/item/broadcastStateToLockGroup',
+  CANVAS_RAVEL_HANDLE_SET_REDUCTION: '/minsky/canvas/item/handleSetReduction',
+  CANVAS_RAVEL_HANDLE_SELECTED: '/minsky/canvas/item/selectedHandle',
+  CANVAS_RAVEL_HANDLE_GET_SORT_ORDER: '/minsky/canvas/item/sortOrder',
+  CANVAS_RAVEL_HANDLE_SET_SORT_ORDER: '/minsky/canvas/item/setSortOrder',
+  CANVAS_RAVEL_HANDLE_SET_SORT_BY_VALUE: '/minsky/canvas/item/sortByValue',
+  CANVAS_RAVEL_HANDLE_SET_DIMENSION: '/minsky/canvas/item/setDimension',
+  CANVAS_RAVEL_HANDLE_DIMENSION_TYPE: '/minsky/canvas/item/dimensionType',
+  CANVAS_RAVEL_HANDLE_DIMENSION_UNITS: '/minsky/canvas/item/dimensionUnitsFormat',
+  CANVAS_RAVEL_HANDLE_DESCRIPTION: '/minsky/canvas/item/handleDescription',
+  CANVAS_RAVEL_HANDLE_SET_DESCRIPTION: '/minsky/canvas/item/setHandleDescription',
+  CANVAS_RAVEL_HANDLE_ALL_SLICE_LABELS: '/minsky/canvas/item/allSliceLabels',
+  CANVAS_RAVEL_HANDLE_PICKED_SLICE_LABELS: '/minsky/canvas/item/pickedSliceLabels',
+  CANVAS_RAVEL_HANDLE_PICK_SLICE_LABELS: '/minsky/canvas/item/pickSliceLabels',
+  CANVAS_RAVEL_LOCKGROUP: '/minsky/canvas/item/lockGroup',
+  CANVAS_RAVEL_LOCKGROUP_HANDLELOCKINFO: '/minsky/canvas/item/lockGroup/handleLockInfo',
+  CANVAS_RAVEL_LOCKGROUP_ALL_LOCK_HANDLES: '/minsky/canvas/item/lockGroup/allLockHandles',
+  CANVAS_RAVEL_LOCK_RAVELS_IN_SELECTION: '/minsky/canvas/lockRavelsInSelection',
+  CANVAS_RAVEL_LOCKGROUP_SET_LOCK_HANDLES: '/minsky/canvas/item/lockGroup/setLockHandles',
+  CANVAS_RAVEL_LOCKGROUP_RAVELNAMES: '/minsky/canvas/item/lockGroup/ravelNames',
+  CANVAS_RAVEL_LOCKGROUP_VALIDATE_LOCK_HANDLE_INFO: '/minsky/canvas/item/lockGroup/validateLockHandleInfo/',
 
   CANVAS_ITEM_TABLE_TITLE: '/minsky/canvas/item/table/title',
   CANVAS_ITEM_SET_CURRENCY: '/minsky/canvas/item/setCurrency',
@@ -232,6 +257,8 @@ export const commandsMapping = {
   CANVAS_ITEM_AXIS: '/minsky/canvas/item/axis',
   CANVAS_ITEM_ARG: '/minsky/canvas/item/arg',
   CANVAS_ITEM_EXPRESSION: '/minsky/canvas/item/expression',
+  CANVAS_ITEM_X: '/minsky/canvas/item/x',
+  CANVAS_ITEM_Y: '/minsky/canvas/item/y',
   VARIABLE_VALUES_KEYS: '/minsky/variableValues/@keys',
   OPEN_LOG_FILE: '/minsky/openLogFile',
   LOG_VAR_LIST: '/minsky/logVarList',
@@ -348,6 +375,10 @@ export const events = {
   INIT_MENU_FOR_GODLEY_VIEW: 'init-menu-for-godley-view',
   GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
   SAVE_DESCRIPTION: 'save-description',
+  SAVE_HANDLE_DESCRIPTION: 'save-handle-description',
+  SAVE_HANDLE_DIMENSION: 'save-handle-dimension',
+  SAVE_PICK_SLICES: 'save-pick-slices',
+  SAVE_LOCK_HANDLES: 'save-lock-handles'
 };
 
 // add non exposed commands here to get intellisense on the terminal popup
