@@ -223,8 +223,8 @@ namespace
     if (static_cast<ravel::Ravel&>(*this) && state.empty())
       {
         auto d=hc.dims();
-        assert(d.size()==rank());
-        auto outputHandles=outputHandleIds();
+        assert(d.size()==wrappedRavel.rank());
+        auto outputHandles=wrappedRavel.outputHandleIds();
         for (size_t i=0; i<d.size(); ++i)
           assert(d[i]==numSliceLabels(outputHandles[i]));
       }
