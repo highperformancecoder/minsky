@@ -9,9 +9,8 @@ import {Operation} from './backend/operation'
 import {Ravel} from './backend/ravel'
 import {RenderNativeWindow} from './backend/renderNativeWindow';
 import {Variable} from './backend/variable'
-import { Utility } from './utility';
 import { WindowManager } from './managers/WindowManager';
-import { dialog, ipcMain, shell } from 'electron';
+import { dialog, shell } from 'electron';
 import { version } from '@minsky/shared';
 
 export {

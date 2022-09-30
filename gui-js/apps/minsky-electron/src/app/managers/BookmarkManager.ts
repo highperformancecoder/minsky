@@ -1,7 +1,7 @@
 import { DescriptionPayload } from '@minsky/shared';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager, callRESTApi } from './RestServiceManager';
+import { callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import {minsky} from '../backend';
 const JSON5 = require('json5');

@@ -17,10 +17,6 @@ import { WindowManager } from './WindowManager';
 import { restService } from '../backend';
 const JSON5 = require('json5');
 
-const addonDir = Utility.isPackaged()
-  ? '../../node-addons'
-  : '../../../node-addons';
-
 var log=elog;
 if (!Utility.isDevelopmentMode()) { //clobber logging in production
   log.info=function(...args: any[]){};

@@ -7,10 +7,10 @@ import {
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR
 } from '@minsky/shared';
-import {minsky, GodleyIcon, GodleyTableWindow, Item} from '../backend';
+import {minsky, GodleyIcon, GodleyTableWindow} from '../backend';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager, callRESTApi } from './RestServiceManager';
+import { RestServiceManager } from './RestServiceManager';
 import { StoreManager } from './StoreManager';
 
 export class GodleyMenuManager {

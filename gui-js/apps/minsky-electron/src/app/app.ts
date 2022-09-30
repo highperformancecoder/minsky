@@ -12,7 +12,6 @@ import { BrowserWindow, Display, dialog, screen } from 'electron';
 import * as log from 'electron-log';
 import { join } from 'path';
 import { format } from 'url';
-import { minsky } from './backend/minsky';
 import { ApplicationMenuManager } from './managers/ApplicationMenuManager';
 import { CommandsManager } from './managers/CommandsManager';
 import { HelpFilesManager } from './managers/HelpFilesManager';

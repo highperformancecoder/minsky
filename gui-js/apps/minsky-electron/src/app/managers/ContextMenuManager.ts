@@ -6,14 +6,13 @@ import {
   MainRenderingTabs,
 } from '@minsky/shared';
 import {
-  minsky, GodleyIcon, GodleyTableWindow, Group, Item, Operation, PlotWidget, Ravel, Variable
+  minsky, GodleyIcon, Group, Operation, PlotWidget, Ravel, Variable
 } from '../backend';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';
-import * as JSON5 from 'json5';
 
 export class ContextMenuManager {
   private static x: number = null;
