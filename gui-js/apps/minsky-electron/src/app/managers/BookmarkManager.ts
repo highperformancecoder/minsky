@@ -1,8 +1,9 @@
-import { commandsMapping, DescriptionPayload } from '@minsky/shared';
+import { DescriptionPayload } from '@minsky/shared';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
+import {minsky} from '../backend';
 const JSON5 = require('json5');
 
 
@@ -38,9 +39,7 @@ export class BookmarkManager {
               id: 'minsky-bookmark',
               label: bookmark,
               click: async () => {
-                await RestServiceManager.handleMinskyProcess({
-                  command: `${commandsMapping.GOTO_BOOKMARK} ${index}`,
-                });
+                minsky.model.gotoBookmark(index);
                 WindowManager.getMainWindow().webContents.send('reset-scroll');
                 await CommandsManager.requestRedraw();
               },
@@ -52,15 +51,9 @@ export class BookmarkManager {
               id: 'minsky-bookmark',
               label: bookmark,
               click: async () => {
-                await RestServiceManager.handleMinskyProcess({
-                  command: `${commandsMapping.DELETE_BOOKMARK} ${index}`,
-                });
-
-                const _bookmarks = await RestServiceManager.handleMinskyProcess(
-                  {
-                    command: commandsMapping.BOOKMARK_LIST,
-                  }
-                );
+                minsky.model.deleteBookmark(index);
+                
+                const _bookmarks = minsky.model.bookmarkList();
                 await CommandsManager.requestRedraw();
 
                 await this.populateBookmarks(_bookmarks as string[]);
