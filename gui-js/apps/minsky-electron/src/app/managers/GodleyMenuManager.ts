@@ -10,7 +10,6 @@ import {
 import {minsky, GodleyIcon, GodleyTableWindow} from '../backend';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
 import { StoreManager } from './StoreManager';
 
 export class GodleyMenuManager {

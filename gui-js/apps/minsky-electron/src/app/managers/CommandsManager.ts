@@ -4,7 +4,6 @@ import {
   commandsMapping,
   events,
   getBackgroundStyle,
-  green,
   HandleDimensionPayload,
   PickSlicesPayload,
   LockHandlesPayload,
@@ -19,7 +18,7 @@ import * as JSON5 from 'json5';
 import { join } from 'path';
 import { Utility } from '../utility';
 import { HelpFilesManager } from './HelpFilesManager';
-import { RestServiceManager, callRESTApi } from './RestServiceManager';
+import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import {electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload } from '@minsky/shared';
 import {minsky, GodleyIcon, Group, Operation, Ravel, Variable, } from '../backend';
@@ -57,29 +56,6 @@ export class CommandsManager {
     return this.getCurrentItemClassType(raw);
   }
 
-//  private static async getItemValue(x: number, y: number): Promise<number> {
-//    minsky.canvas.getItemAt(x,y);
-//    return this.getCurrentItemValue();
-//  }
-//
-//  private static async getItemName(x: number, y: number): Promise<string> {
-//    minsky.canvas.getItemAt(x,y);
-//    return this.getCurrentItemName();
-//  }
-//
-//  private static async getItemDescription(
-//    x: number,
-//    y: number
-//  ): Promise<string> {
-//    minsky.canvas.getItemAt(x,y);
-//    return this.getCurrentItemDescription();
-//  }
-//
-//  private static getItemId(x: number, y: number): string {
-//    minsky.canvas.getItemAt(x,y);
-//    return this.getCurrentItemId();
-//  }
-
   private static async getCurrentItemClassType(
     raw = false
   ): Promise<ClassType | string> {
@@ -98,22 +74,6 @@ export class CommandsManager {
     }
     return ClassType[classType];
   }
-
-//  private static async getCurrentItemValue(): Promise<number> {
-//    return minsky.canvas.item.value();
-//  }
-//
-//  private static async getCurrentItemName(): Promise<string> {
-//    return minsky.canvas.item.name();
-//  }
-//
-//  private static async getCurrentItemDescription(): Promise<string> {
-//    return minsky.canvas.item.description();
-//  }
-//
-//  public static getCurrentItemId(): string {
-//    return minsky.canvas.item.id();
-//  }
 
   static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
     const item = await this.getItemAt(x, y);
