@@ -1,6 +1,5 @@
 import {
   availableOperations,
-  commandsMapping,
   isEmptyObject,
   MainRenderingTabs,
   MinskyProcessPayload,
@@ -10,7 +9,7 @@ import {
 import * as utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
-import {minsky} from '../backend';
+import {minsky, RenderNativeWindow} from '../backend';
 const JSON5 = require('json5');
 
 export class KeyBindingsManager {
@@ -52,22 +51,16 @@ export class KeyBindingsManager {
     const currentTab = RestServiceManager.getCurrentTab();
 
     if (keySymAndName.keysym) {
-      const _payload: MinskyProcessPayload = {};
       // For godley popup, command sent by frontend is non-empty. It is the item accesor
-      _payload.command = command
-        ? `${command}/keyPress [${keySymAndName.keysym},${JSON5.stringify(_utf8)},${modifierKeyCode},${mouseX},${mouseY}]`
-        : `${currentTab}/${commandsMapping.KEY_PRESS_COMMON_SUBCOMMAND} [${keySymAndName.keysym},${JSON5.stringify(_utf8)},${modifierKeyCode},${mouseX},${mouseY}]`;
-
-      const isKeyPressHandled = await RestServiceManager.handleMinskyProcess(
-        _payload
-      );
-
+      let renderer=new RenderNativeWindow(command? command: currentTab);
+      const isKeyPressHandled = renderer.keyPress(keySymAndName.keysym,JSON5.stringify(_utf8),modifierKeyCode,mouseX,mouseY);
+      
       if (
         !isKeyPressHandled &&
         !command &&
         currentTab === MainRenderingTabs.canvas
       ) {
-        return await this.handleOnKeyPressFallback(payload);
+        return await this.handleOnKeyPressFallback({key:keySymAndName.keysym, mouseX, mouseY});
       }
       return isKeyPressHandled;
     }
@@ -287,10 +280,7 @@ export class KeyBindingsManager {
   }
 
   private static async zoom(factor: number) {
-    const cBounds = await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.C_BOUNDS,
-    });
-
+    const cBounds = minsky.model.cBounds();
     const x = 0.5 * (cBounds[2] + cBounds[0]);
     const y = 0.5 * (cBounds[3] + cBounds[1]);
 
@@ -299,10 +289,7 @@ export class KeyBindingsManager {
   }
 
   private static async zoomAt(x: number, y: number, zoomFactor: number) {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.ZOOM_IN} [${x},${y},${zoomFactor}]`,
-    });
-
+    minsky.canvas.zoom(x,y,zoomFactor);
     await CommandsManager.requestRedraw();
     return;
   }
@@ -310,16 +297,8 @@ export class KeyBindingsManager {
   private static async deleteKey(payload: MinskyProcessPayload) {
     const { mouseX, mouseY } = payload;
 
-    const isCanvasSelectionEmpty = (await RestServiceManager.handleMinskyProcess(
-      {
-        command: commandsMapping.CANVAS_SELECTION_EMPTY,
-      }
-    )) as boolean;
-
-    if (!isCanvasSelectionEmpty) {
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CUT,
-      });
+    if (!minsky.canvas.selection.empty()) {
+      minsky.cut();
       return;
     }
 
@@ -330,9 +309,7 @@ export class KeyBindingsManager {
     }
     const wire = await CommandsManager.getWireAt(mouseX, mouseY);
     if (!isEmptyObject(wire)) {
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_DELETE_WIRE,
-      });
+      minsky.canvas.deleteWire();
       return;
     }
   }

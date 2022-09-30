@@ -5,7 +5,9 @@ import {
   isWindows,
   MainRenderingTabs,
 } from '@minsky/shared';
-import {minsky, GodleyIcon, GodleyTableWindow, Item, Operation, PlotWidget, Ravel, Variable} from '../backend';
+import {
+  minsky, GodleyIcon, GodleyTableWindow, Group, Item, Operation, PlotWidget, Ravel, Variable
+} from '../backend';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
@@ -663,6 +665,7 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForGroup(): Promise<MenuItem[]> {
+    let group=new Group(minsky.canvas.item);
     const menuItems = [
       new MenuItem({
         label: 'Edit',
@@ -683,7 +686,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Remove plot icon',
         click: async () => {
-          minsky.canvas.item.removeDisplayPlot();
+          group.removeDisplayPlot();
           await CommandsManager.requestRedraw();
         },
       }),
@@ -693,7 +696,7 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Make subroutine',
-        click: () => {minsky.canvas.item.makeSubroutine();}
+        click: () => {group.makeSubroutine();}
       }),
       new MenuItem({
         label: 'Save group as',
@@ -710,7 +713,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Flip Contents',
         click: async () => {
-          minsky.canvas.item.flipContents();
+          group.flipContents();
           CommandsManager.requestRedraw();
         },
       }),

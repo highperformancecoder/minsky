@@ -8,6 +8,7 @@ export class Operation extends Item
     super(typeof x==="string"? x: (<Operation>x).prefix);
   }
 
+  description(...d: string[]): string {return this.callMethod("description",...d);}
   portValues(): string {return this.callMethod("portValues");}
   toggleCoupled(): boolean {return this.callMethod("toggleCoupled");}
   type(): string {return this.callMethod("type");}

@@ -1,18 +1,23 @@
 import {backend, setErrorDialog, restService} from './backend/backend';
 import {GodleyIcon} from './backend/godleyIcon';
 import {GodleyTableWindow} from './backend/godleyTableWindow';
+import {Group} from './backend/group';
 import {Item} from './backend/item';
 import {minsky} from './backend/minsky';
 import {PlotWidget} from './backend/plot'
 import {Operation} from './backend/operation'
 import {Ravel} from './backend/ravel'
+import {RenderNativeWindow} from './backend/renderNativeWindow';
 import {Variable} from './backend/variable'
 import { Utility } from './utility';
 import { WindowManager } from './managers/WindowManager';
 import { dialog, ipcMain, shell } from 'electron';
 import { version } from '@minsky/shared';
 
-export {restService, minsky, GodleyIcon, GodleyTableWindow, Item, PlotWidget, Operation, Ravel, Variable};
+export {
+  restService, minsky, GodleyIcon, GodleyTableWindow, Group, Item, PlotWidget, Operation,
+  Ravel, RenderNativeWindow, Variable
+};
 
 restService.setMessageCallback(function (msg: string, buttons: string[]) {
   if (msg && dialog)

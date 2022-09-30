@@ -1,3 +1,4 @@
+import {Group} from './group';
 import {Item} from './item';
 import {RenderNativeWindow} from './renderNativeWindow';
 import {Wire} from './wire';
@@ -6,10 +7,12 @@ import {Wire} from './wire';
 export class Canvas extends RenderNativeWindow
 {
   item: Item;
+  selection: Group
   wire: Wire;
 
   constructor(prefix: string) {
     super(prefix);
+    this.selection=new Group(prefix+"/selection");
     this.item=new Item(prefix+"/item");
     this.wire=new Wire(prefix+"/wire");
   }

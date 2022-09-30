@@ -22,7 +22,7 @@ import { HelpFilesManager } from './HelpFilesManager';
 import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import {electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload } from '@minsky/shared';
-import {minsky, GodleyIcon, Operation, Ravel, Variable, } from '../backend';
+import {minsky, GodleyIcon, Group, Operation, Ravel, Variable, } from '../backend';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -125,7 +125,7 @@ export class CommandsManager {
     const classType = (await this.getCurrentItemClassType()) as ClassType;
     const value = minsky.canvas.item.value();
     const id = minsky.canvas.item.id();
-    const displayContents=classType==="Group"? minsky.canvas.item.displayContents(): false;
+    const displayContents=classType==="Group"? new Group(minsky.canvas.item).displayContents(): false;
 
     const itemInfo: CanvasItem = { classType, value, id, displayContents };
     return itemInfo;

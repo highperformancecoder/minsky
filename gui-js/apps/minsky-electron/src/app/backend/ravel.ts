@@ -13,6 +13,7 @@ export class Ravel extends Item
 
   allSliceLabels(): string[] {return this.callMethod("allSliceLabels");}
   broadcastStateToLockGroup(): void {this.callMethod("broadcastStateToLockGroup");}
+  description(...d: string[]): string {return this.callMethod("description",...d);}
   dimensionType(...args: number[]): string {return this.callMethod("dimensionType",...args);}
   dimensionUnitsFormat (...args: number[]): string {return this.callMethod("dimensionUnitsFormat",...args);}
   editorMode(): boolean {return this.callMethod("editorMode");}
