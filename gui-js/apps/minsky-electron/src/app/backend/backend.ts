@@ -90,19 +90,28 @@ export class Pair<Key, Value extends CppClass> {
 export class Map<Key, Value extends CppClass> extends CppClass
 {
   valueType: any;  // stash a reference to the actual type here, for use in a new expression
-  constructor(prefix: string, valueType: any) {super(prefix); this.valueType=valueType;}
+  constructor(prefix: string, valueType: any=null) {super(prefix); this.valueType=valueType;}
   elem(key: Key) {
+    const cmd=this.prefix+"@elem/"+JSON5.stringify(key)+"/second";
+    // if proxy type provided, instantiate that, otherwise return the current value
     return new Pair<Key,Value>
-      (key,new this.valueType(this.prefix+"@elem/"+JSON5.stringify(key)+"/second"));
+      (key,this.valueType? new this.valueType(cmd): this.callMethod(cmd));
   }
   insert(keyValue: Pair<Key, Value>) {this.callMethod("@insert",keyValue);}
   erase(key: Key) {this.callMethod("@erase",key);}
 };
 
-export class Set<Key> extends CppClass
+export class Container<Key> extends CppClass
 {
-  constructor(prefix: string) {super(prefix);}
+  type: any;
+  constructor(prefix: string, type: any=null) {super(prefix); this.type=type}
+  elem(key: Key) {
+    // if proxy type provided, instantiate that, otherwise return the current value
+    const cmd=this.prefix+"@elem/"+JSON5.stringify(key);
+    return this.type? new this.type(cmd): this.callMethod(cmd);
+  }
   insert(key: Key) {this.callMethod("@insert",key);}
   erase(key: Key) {this.callMethod("@erase",key);}
+  size(): number {return this.callMethod("@size");}
 };
 

@@ -1,4 +1,4 @@
-import {CppClass, Map, Set} from './backend';
+import {CppClass, Map, Container} from './backend';
 import {Canvas} from './canvas';
 import {Group} from './group';
 import {Item} from './item';
@@ -10,7 +10,7 @@ import {VariableInstanceList} from './variableInstanceList';
 export class Minsky extends CppClass
 {
   canvas: Canvas;
-  logVarList: Set<string>;
+  logVarList: Container<string>;
   model: Group;
   namedItems: Map<string, Item>;
   plotTab: PlotTab;
@@ -20,7 +20,7 @@ export class Minsky extends CppClass
   constructor(prefix: string) {
     super(prefix);
     this.canvas=new Canvas(prefix+"/canvas");
-    this.logVarList=new Set<string>(prefix+"/logVarList");
+    this.logVarList=new Container<string>(prefix+"/logVarList");
     this.model=new Group(prefix+"/model");
     this.namedItems=new Map<string, Item>(prefix+"/namedItems",Item);
     this.plotTab=new PlotTab(prefix+"/plotTab");
