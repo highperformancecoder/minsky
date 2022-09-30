@@ -325,8 +325,7 @@ export class KeyBindingsManager {
 
     const item = await CommandsManager.getItemAt(mouseX, mouseY);
     if (!isEmptyObject(item)) {
-      const itemId = await CommandsManager.getCurrentItemId();
-      await CommandsManager.deleteCurrentItemHavingId(itemId);
+      await CommandsManager.deleteCurrentItemHavingId(minsky.canvas.item.id());
       return;
     }
     const wire = await CommandsManager.getWireAt(mouseX, mouseY);

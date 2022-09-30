@@ -7,7 +7,7 @@ import {
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR
 } from '@minsky/shared';
-import {minsky, GodleyTableWindow, Item} from '../backend';
+import {minsky, GodleyIcon, GodleyTableWindow, Item} from '../backend';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager, callRESTApi } from './RestServiceManager';
@@ -19,12 +19,12 @@ export class GodleyMenuManager {
     itemInfo: CanvasItem
   ) {
     const scope = this;
-    const itemAccessor = minsky.namedItems.elem(itemInfo.id).second;
+    const godley = new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
     const menu = Menu.buildFromTemplate([
-      scope.getGodleyFileMenuItem(itemAccessor),
+      scope.getGodleyFileMenuItem(godley),
       // TODO remove itemInfo from this call
-      scope.getGodleyEditMenuItem(itemInfo, itemAccessor),
-      scope.getGodleyViewMenuItem(window, itemAccessor),
+      scope.getGodleyEditMenuItem(itemInfo, godley),
+      scope.getGodleyViewMenuItem(window, godley),
       scope.getGodleyOptionsMenuItem(),
       new MenuItem({
         label: 'Help',
@@ -163,27 +163,26 @@ export class GodleyMenuManager {
 
   private static getGodleyViewMenuItem(
     window: Electron.BrowserWindow,
-    itemAccessor: Item
+    godley: GodleyIcon
   ) {
-    const popup=new GodleyTableWindow(itemAccessor.popup.getPrefix());
     return new MenuItem({
       label: 'View',
       submenu: [
         {
           label: 'Zoom In',
           accelerator: 'CmdOrCtrl + Plus',
-          click: async () => {popup.zoom(0,0,ZOOM_IN_FACTOR);}
+          click: async () => {godley.popup.zoom(0,0,ZOOM_IN_FACTOR);}
         },
         {
           label: 'Zoom Out',
           accelerator: 'CmdOrCtrl + Minus',
-          click: async () => {popup.zoom(0,0,ZOOM_OUT_FACTOR);}
+          click: async () => {godley.popup.zoom(0,0,ZOOM_OUT_FACTOR);}
         },
         {
           label: 'Reset Zoom',
           click: async () => {
-            popup.zoomFactor(1);
-            popup.requestRedraw();
+            godley.popup.zoomFactor(1);
+            godley.popup.requestRedraw();
           },
         },
       ],
@@ -192,21 +191,20 @@ export class GodleyMenuManager {
 
   private static getGodleyEditMenuItem(
     itemInfo: CanvasItem,
-    itemAccessor: Item
+    godley: GodleyIcon
   ) {
-    const popup=new GodleyTableWindow(itemAccessor.popup.getPrefix());
     return new MenuItem({
       label: 'Edit',
       submenu: [
         {
           label: 'Undo',
           accelerator: 'CmdOrCtrl + z',
-          click: () => {popup.undo(1);},
+          click: () => {godley.popup.undo(1);},
         },
         {
           label: 'Redo',
           accelerator: 'CmdOrCtrl + y',
-          click: () => {popup.undo(-1);},
+          click: () => {godley.popup.undo(-1);},
         },
         {
           label: 'Title',
@@ -215,23 +213,23 @@ export class GodleyMenuManager {
         {
           label: 'Cut',
           accelerator: 'CmdOrCtrl + x',
-          click: () => {popup.cut();},
+          click: () => {godley.popup.cut();},
         },
         {
           label: 'Copy',
           accelerator: 'CmdOrCtrl + c',
-          click: () => {popup.copy();}
+          click: () => {godley.popup.copy();}
         },
         {
           label: 'Paste',
           accelerator: 'CmdOrCtrl + v',
-          click: () => {popup.paste();}
+          click: () => {godley.popup.paste();}
         },
       ],
     });
   }
 
-  private static getGodleyFileMenuItem(itemAccessor: Item) {
+  private static getGodleyFileMenuItem(godley: GodleyIcon) {
     return new MenuItem({
       label: 'File',
       submenu: [
@@ -241,14 +239,14 @@ export class GodleyMenuManager {
             {
               label: 'CSV',
               click: async () => {
-                const command = itemAccessor.table.exportToCSV;
+                const command = godley.table.exportToCSV;
                 await CommandsManager.exportGodleyAs('csv', command);
               },
             },
             {
               label: 'LaTeX',
               click: async () => {
-                const command = itemAccessor.table.exportToLaTeX;
+                const command = godley.table.exportToLaTeX;
                 await CommandsManager.exportGodleyAs('tex', command);
               },
             },

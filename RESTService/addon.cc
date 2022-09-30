@@ -225,7 +225,6 @@ Value RESTCall(const Napi::CallbackInfo& info)
     }
   catch (const std::exception& ex)
     {
-      cout<<"exception "<<ex.what()<<endl;
       // throw C++ exception as Javascript exception
       Napi::Error::New(env, ex.what()).ThrowAsJavaScriptException();
       return env.Null();

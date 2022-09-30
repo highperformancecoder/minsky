@@ -12,6 +12,7 @@ export class RenderNativeWindow extends CppClass
 {
   constructor(prefix: string) {super(prefix);}
   backgroundColour(...args: Colour[]): Colour {return this.callMethod("backgroundColour",...args);}
+  destroyFrame(): void {this.callMethod("destroyFrame");}
   mouseDown(x: number, y: number): void {return this.callMethod("mouseDown",x,y);}
   renderToPS(name: string): void {this.callMethod("renderToPs",name);}
   renderToPDF(name: string): void {this.callMethod("renderToPDF",name);}

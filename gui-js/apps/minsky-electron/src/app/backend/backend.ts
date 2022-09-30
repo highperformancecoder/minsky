@@ -74,7 +74,7 @@ export class CppClass
     return backend(this.prefix+method, ...args);
   }
   public properties(...args) {return backend(this.prefix, ...args);}
-  public getPrefix(): string {return this.prefix;}
+//  public getPrefix(): string {return this.prefix;}
 };
 
 

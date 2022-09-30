@@ -1,9 +1,12 @@
 import {RenderNativeWindow} from './renderNativeWindow';
 
-/** Exposes C++ GodleyTableWindow class into typescript. Please see C++ code documentation for more information. */
+/** Exposes C++ GodleyTableWindow class into typescript. Please see
+ * C++ code documentation for more information. */
 export class GodleyTableWindow extends RenderNativeWindow
 {
-  constructor(prefix: string) {super(prefix);}
+  constructor(x: string|RenderNativeWindow) {
+    super(typeof x==="string"? x: (<GodleyTableWindow>x).prefix);
+  }
 
   addFlow(y: number): void {this.callMethod("addFlow",y);}
   addStockVar(x: number): void {this.callMethod("addStockVar",x);}
