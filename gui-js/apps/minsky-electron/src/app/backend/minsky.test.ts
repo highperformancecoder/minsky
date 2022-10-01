@@ -1,6 +1,7 @@
 import {describe, expect, test} from '@jest/globals';
 import {minsky} from './minsky';
 import { restService } from './backend';
+import {Variable} from './variable';
 
 // rewrite message callbacks to avoid dereferencing a dialog
 restService.setMessageCallback((msg: string, buttons: string[])=> {
@@ -28,14 +29,20 @@ describe('Named Items',()=>{
   });
 });
 
-//describe('addIntegral',()=>{
-//  test('addIntegral', ()=>{
-//    minsky.clearAllMaps();
-//    minsky.addIntegral();
-//    minsky.canvas.getItemAt(0,0);
-//    expect(minsky.canvas.item.classType()).toBe("IntOp");
-//  });
-//});
+describe('addIntegral',()=>{
+  test('addIntegral', ()=>{
+    minsky.clearAllMaps();
+    expect(minsky.model.items.size()).toBe(0);
+    minsky.canvas.addVariable("foo","flow");
+    expect(minsky.model.items.size()).toBe(1);
+    minsky.canvas.getItemAt(0,0);
+    expect(minsky.canvas.item.classType()).toBe("Variable:flow");
+    expect((new Variable(minsky.canvas.item)).name()).toBe("foo");
+    minsky.addIntegral();
+    expect(minsky.model.items.size()).toBe(2);
+    expect(minsky.model.items.elem(1).classType()).toBe("IntOp");
+  });
+});
 
 describe('operations',()=>{
   test('operations', ()=>{
@@ -48,7 +55,7 @@ describe('dirty flag',()=>{
   test('edited', ()=>{
     minsky.clearAllMaps();
     expect(minsky.edited()).toBe(false);
-    minsky.addIntegral();
+    minsky.canvas.addOperation("time");
     expect(minsky.edited()).toBe(true);
     minsky.clearAllMaps();
     expect(minsky.edited()).toBe(false);
