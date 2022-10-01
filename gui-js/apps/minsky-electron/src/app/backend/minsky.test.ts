@@ -115,4 +115,11 @@ describe('history',()=>{
     expect(minsky.undo(1)).toBe(2);
     expect(minsky.model.items.size()).toBe(3);
   });
+  test('clearHistory',()=>{
+    minsky.canvas.addOperation("time");
+    minsky.canvas.addOperation("time");
+    expect(minsky.undo(0)).toBeGreaterThan(1);
+    minsky.clearHistory();
+    expect(minsky.undo(0)).toBe(1);
+  });
 });
