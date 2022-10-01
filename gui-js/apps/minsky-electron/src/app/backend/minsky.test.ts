@@ -80,3 +80,39 @@ describe('clipboard',()=>{
   });
 });
   
+describe('history',()=>{
+  test('undo',()=>{
+    minsky.clearAllMaps();
+    expect(minsky.undo(0)).toBe(1);
+    minsky.canvas.addOperation("time");
+    expect(minsky.undo(0)).toBe(2);
+    expect(minsky.model.items.size()).toBe(1);
+    minsky.canvas.addOperation("time");
+    expect(minsky.undo(0)).toBe(3);
+    expect(minsky.model.items.size()).toBe(2);
+    expect(minsky.undo(1)).toBe(2);
+    expect(minsky.model.items.size()).toBe(1);
+    expect(minsky.undo(-1)).toBe(3);
+    expect(minsky.model.items.size()).toBe(2);
+  });
+  test('doPushHistory',()=>{
+    minsky.clearAllMaps(true);
+    expect(minsky.undo(0)).toBe(1);
+    expect(minsky.doPushHistory(false)).toBe(false);
+    expect(minsky.doPushHistory()).toBe(false);
+    minsky.canvas.addOperation("time");
+    minsky.canvas.addOperation("time");
+    expect(minsky.model.items.size()).toBe(2);
+    expect(minsky.undo(1)).toBe(1);
+    expect(minsky.model.items.size()).toBe(2);
+    expect(minsky.doPushHistory(true)).toBe(true);
+    expect(minsky.doPushHistory()).toBe(true);
+    minsky.canvas.addOperation("time");
+    expect(minsky.undo(0)).toBe(2);
+    minsky.canvas.addOperation("time");
+    expect(minsky.model.items.size()).toBe(4);
+    expect(minsky.undo(0)).toBe(3);
+    expect(minsky.undo(1)).toBe(2);
+    expect(minsky.model.items.size()).toBe(3);
+  });
+});

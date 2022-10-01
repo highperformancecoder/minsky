@@ -31,7 +31,7 @@ export class Minsky extends CppClass
   addIntegral(): void {this.callMethod("addIntegral");}
   availableOperations(): string[] {return this.callMethod("availableOperations");}
   classifyOp(op: string): string {return this.callMethod("classifyOp",op);}
-  clearAllMaps(): void {this.callMethod("clearAllMaps");}
+  clearAllMaps(...clearHistory: boolean[]): void {this.callMethod("clearAllMaps", ...clearHistory);}
   clearHistory(): void {this.callMethod("clearHistory");}
   clipboardEmpty(): boolean {return this.callMethod("clipboardEmpty");}
   copy(): void {this.callMethod("copy");}
@@ -55,7 +55,7 @@ export class Minsky extends CppClass
   setAutoSaveFile(file: string): void {this.callMethod("setAutoSaveFile",file);}
   setGodleyDisplayValue(displayValues: boolean, displayStyle: string): void
   {this.callMethod("setGodleyDisplayValue",displayValues,displayStyle);}
-  undo(changes: number): void {this.callMethod("undo",changes);}
+  undo(changes: number): number {return this.callMethod("undo",changes);}
 };
 
 /** global backend Minsky object */
