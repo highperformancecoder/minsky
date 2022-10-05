@@ -4,6 +4,7 @@
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "build": {
+    "beforePack": "beforePackHook.js",
     "artifactName": "${productName}-${version}.${ext}",
     "mac": {
       "icon": "../minsky.app/Contents/Resources/MinskyLogo.icns"
@@ -13,9 +14,22 @@
     },
     "linux": {
       "category": "Science"
-    }
+    },
+    "extraFiles": [{"from": "dynamic_libraries", "to": ""}],
+    "fileAssociations": [
+      {
+        "ext": "mky",
+        "name": "Minsky",
+        "icon": "apps/minsky-electron/src/assets/MinskyLogo"
+      },
+      {
+        "ext": "rvl",
+        "name": "Ravel",
+        "icon": "apps/minsky-electron/src/assets/RavelLogo"
+      }
+    ]
   },
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && exitzero electron-builder install-app-deps",
