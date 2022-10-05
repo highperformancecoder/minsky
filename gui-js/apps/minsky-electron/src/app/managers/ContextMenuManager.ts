@@ -4,10 +4,8 @@ import {
   isEmptyObject,
   isWindows,
   MainRenderingTabs,
+  minsky, GodleyIcon, Group, Operation, PlotWidget, Ravel, Variable,
 } from '@minsky/shared';
-import {
-  minsky, GodleyIcon, Group, Operation, PlotWidget, Ravel, Variable
-} from '../backend';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';

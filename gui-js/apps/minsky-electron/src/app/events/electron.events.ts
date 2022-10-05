@@ -8,6 +8,7 @@ import {
   CanvasItem,
   ChangeTabPayload,
   commandsMapping,
+  environment,
   events,
   DescriptionPayload,
   HandleDescriptionPayload,
@@ -18,7 +19,6 @@ import {
 } from '@minsky/shared';
 //import * as debug from 'debug';
 import { BrowserWindow, ipcMain } from 'electron';
-import { environment } from '../../environments/environment';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
 import { ContextMenuManager } from '../managers/ContextMenuManager';

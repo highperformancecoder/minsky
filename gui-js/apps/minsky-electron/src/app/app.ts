@@ -6,6 +6,7 @@ import {
   rendererAppName,
   rendererAppURL,
   version,
+  Utility,
 } from '@minsky/shared';
 //import * as debug from 'debug';
 import { BrowserWindow, Display, dialog, screen } from 'electron';
@@ -19,7 +20,6 @@ import { RecentFilesManager } from './managers/RecentFilesManager';
 import { RestServiceManager, callRESTApi} from './managers/RestServiceManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
-import { Utility } from './utility';
 
 //const logWindows = debug('minsky:electron_windows');
 

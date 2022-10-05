@@ -5,9 +5,9 @@ import {
   green,
   isMacOS,
   ZOOM_IN_FACTOR,
-  ZOOM_OUT_FACTOR
+  ZOOM_OUT_FACTOR,
+  minsky, GodleyIcon, GodleyTableWindow,
 } from '@minsky/shared';
-import {minsky, GodleyIcon, GodleyTableWindow} from '../backend';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { StoreManager } from './StoreManager';

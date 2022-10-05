@@ -1,15 +1,6 @@
 import {describe, expect, test} from '@jest/globals';
 import {minsky} from './minsky';
-import { restService } from './backend';
 import {Variable} from './variable';
-
-// rewrite message callbacks to avoid dereferencing a dialog
-restService.setMessageCallback((msg: string, buttons: string[])=> {
-  if (msg) console.log(msg);
-  return 0;
-});
-
-restService.setBusyCursorCallback((busy: boolean)=>{});
 
 describe('Minsky load/save', ()=>{
   test('save empty',()=>{

@@ -5,16 +5,16 @@ import {
   MainRenderingTabs,
   MinskyProcessPayload,
   normalizeFilePathForPlatform,
-  version
+  version,
+  Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, shell } from 'electron';
 import { join } from 'path';
 import * as elog from 'electron-log';
-import { Utility } from '../utility';
 import { RecordingManager } from './RecordingManager';
 import { MinskyPreferences, StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
-import { restService } from '../backend';
+import {restService} from '../backend-init';
 const JSON5 = require('json5');
 
 var log=elog;

@@ -11,17 +11,16 @@ import {
   isEmptyObject,
   isMacOS,
   normalizeFilePathForPlatform,
+  electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
+  minsky, GodleyIcon, Group, Operation, Ravel, Variable, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import * as JSON5 from 'json5';
 import { join } from 'path';
-import { Utility } from '../utility';
 import { HelpFilesManager } from './HelpFilesManager';
 import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
-import {electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload } from '@minsky/shared';
-import {minsky, GodleyIcon, Group, Operation, Ravel, Variable, } from '../backend';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
