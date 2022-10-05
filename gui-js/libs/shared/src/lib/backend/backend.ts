@@ -1,7 +1,6 @@
 import {  importCSVerrorMessage, } from '../constants/constants';
 import { Utility } from '../utility';
 import * as JSON5 from 'json5';
-import {startRestService} from './startRestService';
 
 export class CppClass
 {

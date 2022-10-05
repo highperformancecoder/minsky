@@ -86,7 +86,7 @@ if ("JEST_WORKER_ID" in process.env) {
 }
 
 // Sanity checks before we get started
-if (CppClass.backend("/minsky/minskyVersion")!=version)
+if (CppClass.backend("/minsky/minskyVersion")!==version)
   setTimeout(()=>{
     dialog.showMessageBoxSync({
       message: "Mismatch of front end and back end versions",
