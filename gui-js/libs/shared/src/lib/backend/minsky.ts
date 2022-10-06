@@ -5,6 +5,7 @@ import {Item} from './item';
 import {ItemTab} from './itemTab';
 import {PlotTab} from './plotTab';
 import {VariableInstanceList} from './variableInstanceList';
+import {VariablePane} from './variablePane';
 
 /** Exposes C++ Minsky class into typescript. Please see C++ code documentation for more information. */
 export class Minsky extends CppClass
@@ -15,6 +16,7 @@ export class Minsky extends CppClass
   namedItems: Map<string, Item>;
   plotTab: PlotTab;
   variableInstanceList: VariableInstanceList;
+  variablePane: VariablePane;
   variableTab: ItemTab;
   
   constructor(prefix: string) {
@@ -25,6 +27,7 @@ export class Minsky extends CppClass
     this.namedItems=new Map<string, Item>(prefix+"/namedItems",Item);
     this.plotTab=new PlotTab(prefix+"/plotTab");
     this.variableInstanceList=new VariableInstanceList(prefix+"/variableInstanceList");
+    this.variablePane=new VariablePane(prefix+"/variablePane");
     this.variableTab=new ItemTab(prefix+"/variableTab");
   }
 

@@ -15,4 +15,5 @@ export * from './ravel';
 export * from './renderNativeWindow';
 export * from './variable';
 export * from './variableInstanceList';
+export * from './variablePane';
 export * from './wire';

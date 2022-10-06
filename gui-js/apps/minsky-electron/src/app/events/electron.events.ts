@@ -8,6 +8,7 @@ import {
   CanvasItem,
   ChangeTabPayload,
   commandsMapping,
+  CppClass,
   environment,
   events,
   DescriptionPayload,
@@ -42,6 +43,10 @@ ipcMain.handle(events.GET_APP_VERSION, () => {
   //logUpdateEvent(`Fetching application version... [v${environment.version}]`);
 
   return environment.version;
+});
+
+ipcMain.handle(events.BACKEND, (event, ...args: any[])=>{
+  return CppClass.backend(...args);
 });
 
 ipcMain.on(events.SET_BACKGROUND_COLOR, async (event, { color }) => {

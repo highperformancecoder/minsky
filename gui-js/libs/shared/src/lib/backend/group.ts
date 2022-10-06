@@ -23,5 +23,5 @@ export class Group extends Item
   gotoBookmark(i: number): void {this.callMethod("gotoBookmark",i);}
   makeSubroutine(): void {this.callMethod("makeSubroutine");}
   removeDisplayPlot(): void {this.callMethod("removeDisplayPlot");}
-  setZoom(z: number): void {return this.callMethod("setZoom");}
+  setZoom(z: number): void {return this.callMethod("setZoom",z);}
 };
