@@ -1,37 +1,40 @@
-import {CppClass, Map, Set} from './backend';
+import {CppClass, Map, Container} from './backend';
 import {Canvas} from './canvas';
 import {Group} from './group';
 import {Item} from './item';
 import {ItemTab} from './itemTab';
 import {PlotTab} from './plotTab';
 import {VariableInstanceList} from './variableInstanceList';
+import {VariablePane} from './variablePane';
 
 /** Exposes C++ Minsky class into typescript. Please see C++ code documentation for more information. */
 export class Minsky extends CppClass
 {
   canvas: Canvas;
-  logVarList: Set<string>;
+  logVarList: Container<string>;
   model: Group;
   namedItems: Map<string, Item>;
   plotTab: PlotTab;
   variableInstanceList: VariableInstanceList;
+  variablePane: VariablePane;
   variableTab: ItemTab;
   
   constructor(prefix: string) {
     super(prefix);
     this.canvas=new Canvas(prefix+"/canvas");
-    this.logVarList=new Set<string>(prefix+"/logVarList");
+    this.logVarList=new Container<string>(prefix+"/logVarList");
     this.model=new Group(prefix+"/model");
     this.namedItems=new Map<string, Item>(prefix+"/namedItems",Item);
     this.plotTab=new PlotTab(prefix+"/plotTab");
     this.variableInstanceList=new VariableInstanceList(prefix+"/variableInstanceList");
+    this.variablePane=new VariablePane(prefix+"/variablePane");
     this.variableTab=new ItemTab(prefix+"/variableTab");
   }
 
   addIntegral(): void {this.callMethod("addIntegral");}
   availableOperations(): string[] {return this.callMethod("availableOperations");}
   classifyOp(op: string): string {return this.callMethod("classifyOp",op);}
-  clearAllMaps(): void {this.callMethod("clearAllMaps");}
+  clearAllMaps(...clearHistory: boolean[]): void {this.callMethod("clearAllMaps", ...clearHistory);}
   clearHistory(): void {this.callMethod("clearHistory");}
   clipboardEmpty(): boolean {return this.callMethod("clipboardEmpty");}
   copy(): void {this.callMethod("copy");}
@@ -55,7 +58,7 @@ export class Minsky extends CppClass
   setAutoSaveFile(file: string): void {this.callMethod("setAutoSaveFile",file);}
   setGodleyDisplayValue(displayValues: boolean, displayStyle: string): void
   {this.callMethod("setGodleyDisplayValue",displayValues,displayStyle);}
-  undo(changes: number): void {this.callMethod("undo",changes);}
+  undo(changes: number): number {return this.callMethod("undo",changes);}
 };
 
 /** global backend Minsky object */

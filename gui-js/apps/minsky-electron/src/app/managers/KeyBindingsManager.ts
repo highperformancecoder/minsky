@@ -4,11 +4,11 @@ import {
   MinskyProcessPayload,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
+  minsky, RenderNativeWindow,
 } from '@minsky/shared';
 import * as utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
 import { RestServiceManager } from './RestServiceManager';
-import {minsky, RenderNativeWindow} from '../backend';
 const JSON5 = require('json5');
 
 export class KeyBindingsManager {

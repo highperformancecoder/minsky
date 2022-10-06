@@ -1405,6 +1405,9 @@ namespace minsky
           auto integ=new IntOp;
           g->addItem(integ);
           integ->moveTo(canvas.item->x(), canvas.item->y());
+          // remove intVar from its group
+          if (auto g=integ->intVar->group.lock())
+            g->removeItem(*integ->intVar);
           integ->intVar=dynamic_pointer_cast<VariableBase>(canvas.item);
           integ->toggleCoupled();
           

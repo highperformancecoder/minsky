@@ -8,6 +8,8 @@ import {
   CanvasItem,
   ChangeTabPayload,
   commandsMapping,
+  CppClass,
+  environment,
   events,
   DescriptionPayload,
   HandleDescriptionPayload,
@@ -18,7 +20,6 @@ import {
 } from '@minsky/shared';
 //import * as debug from 'debug';
 import { BrowserWindow, ipcMain } from 'electron';
-import { environment } from '../../environments/environment';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
 import { ContextMenuManager } from '../managers/ContextMenuManager';
@@ -42,6 +43,10 @@ ipcMain.handle(events.GET_APP_VERSION, () => {
   //logUpdateEvent(`Fetching application version... [v${environment.version}]`);
 
   return environment.version;
+});
+
+ipcMain.handle(events.BACKEND, (event, ...args: any[])=>{
+  return CppClass.backend(...args);
 });
 
 ipcMain.on(events.SET_BACKGROUND_COLOR, async (event, { color }) => {

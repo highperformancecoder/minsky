@@ -349,6 +349,7 @@ export const availableOperations = {
 };
 
 export const events = {
+  BACKEND: 'backend',
   SET_BACKGROUND_COLOR: 'set-background-color',
   CREATE_MENU_POPUP: 'create-menu-popup',
   MINSKY_PROCESS: 'minsky-process',

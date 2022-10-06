@@ -41,6 +41,11 @@ namespace minsky
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor);
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
     {renderFrame(parentWindowId,offsetLeft,offsetTop,childWidth,childHeight,0);}
+    // BigInts JSON5 to a string 
+    void renderFrame(const std::string& parentWindowId,
+                     int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor)
+    {renderFrame(std::stoull(parentWindowId),offsetLeft,offsetTop,childWidth,childHeight,scalingFactor);}
+    
     void destroyFrame();
     void draw();
     void requestRedraw();

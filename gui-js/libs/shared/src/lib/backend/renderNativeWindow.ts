@@ -16,6 +16,11 @@ export class RenderNativeWindow extends CppClass
   keyPress(keySym: string, utf8: string, state: number, x: number, y: number): boolean
   {return this.callMethod("keyPress",keySym,utf8,state,x,y);}
   mouseDown(x: number, y: number): void {return this.callMethod("mouseDown",x,y);}
+  mouseMove(x: number, y: number): void {return this.callMethod("mouseMove",x,y);}
+  mouseUp(x: number, y: number): void {return this.callMethod("mouseUp",x,y);}
+  renderFrame(nativeHandle: BigInt, left: number, top: number, width:number, height: number, scalingFactor: number): void {
+    this.callMethod("renderFrame",nativeHandle,left,top,width,height,scalingFactor);
+  }
   renderToPS(name: string): void {this.callMethod("renderToPs",name);}
   renderToPDF(name: string): void {this.callMethod("renderToPDF",name);}
   renderToSVG(name: string): void {this.callMethod("renderToSVG",name);}

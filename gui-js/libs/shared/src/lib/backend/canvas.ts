@@ -20,6 +20,7 @@ export class Canvas extends RenderNativeWindow
   addOperation(type: string): void {return this.callMethod("addOperation",type);}
   addGodley(): void {this.callMethod("addGodley");}
   addPlot(): void {this.callMethod("addPlot");}
+  addVariable(name: string, type: string): void {this.callMethod("addVariable",name,type);}
   copyItem(): void {this.callMethod("copyItem");}
   copyAllFlowVars(): void {this.callMethod("copyAllFlowVars");}
   copyAllStockVars(): void {this.callMethod("copyAllStockVars");}
