@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'cpp' ]
+        language: [ 'cpp', 'javascript' ]
         ubuntu_ver: [20.04]
 
     permissions:
