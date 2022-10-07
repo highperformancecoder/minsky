@@ -1,13 +1,27 @@
 import {describe, expect, test} from '@jest/globals';
-import {minsky} from './minsky';
-import {Variable} from './variable';
+import {
+  Item,
+  minsky,
+  Pair,
+  Variable,
+} from './index';
+import * as fs from 'fs';
+
+var tmpDir;
+beforeAll(()=>{
+  tmpDir=fs.mkdtempSync("minsky-jest");
+});
+afterAll(()=>{
+  fs.rmdirSync(tmpDir,{recursive: true});
+});
+           
 
 describe('Minsky load/save', ()=>{
   test('save empty',()=>{
-    minsky.save("/tmp/foo.mky");
+    minsky.save(tmpDir+"/foo.mky");
   });
   test('load empty', ()=>{
-    minsky.load("/tmp/foo.mky");
+    minsky.load(tmpDir+"/foo.mky");
   });
 });
 
@@ -17,6 +31,12 @@ describe('Named Items',()=>{
     minsky.canvas.getItemAt(0,0);
     minsky.nameCurrentItem("foo");
     expect(minsky.namedItems.elem("foo").second.classType()).toBe("Operation:time");
+    expect(minsky.namedItems.size()).toBe(1);
+    minsky.namedItems.insert("fooBar",minsky.canvas.item.properties());
+    expect(minsky.namedItems.size()).toBe(2);
+    // TODO erase doesn't quite work
+    minsky.namedItems.erase("foo");
+    expect(minsky.namedItems.size()).toBe(1);
   });
 });
 
@@ -56,10 +76,14 @@ describe('dirty flag',()=>{
 describe('clipboard',()=>{
   test('copy/cut/paste',()=>{
     minsky.load("../examples/GoodwinLinear02.mky");
+    minsky.canvas.selection.clear();
+    minsky.copy();
+    expect(minsky.clipboardEmpty()).toBe(true);
     minsky.canvas.mouseDown(0,0);
     minsky.canvas.mouseUp(200,200);
     minsky.copy();
     expect(minsky.canvas.selection.empty()).toBe(false);
+    expect(minsky.clipboardEmpty()).toBe(false);
     let numItems=minsky.model.items.size();
     let numSelected=minsky.canvas.selection.items.size();
     expect(numItems).toBeGreaterThan(0);
@@ -112,5 +136,37 @@ describe('history',()=>{
     expect(minsky.undo(0)).toBeGreaterThan(1);
     minsky.clearHistory();
     expect(minsky.undo(0)).toBe(1);
+  });
+});
+
+describe('smoke test',()=>{
+  test('commands',()=>{
+    minsky.autoLayout();
+    expect(minsky.defaultFont("Arial")).toBe("Arial");
+    expect(minsky.defaultFont()).toBe("Arial");
+    minsky.deleteAllUnits();
+    expect(minsky.dimensionalAnalysis()).toStrictEqual({});
+    minsky.exportAllPlotsAsCSV(tmpDir+"/plots");
+    minsky.clearAllMaps();
+    minsky.insertGroupFromFile("../examples/GoodwinLinear02.mky");
+    expect(minsky.model.groups.size()).toBe(1);
+    minsky.latex(tmpDir+"/foo.tex",true);
+    minsky.listAllInstances();
+    minsky.matlab(tmpDir+"/foo.m");
+    expect(minsky.multipleEquities(true)).toBe(true);
+    expect(minsky.multipleEquities()).toBe(true);
+    minsky.canvas.getItemAt(0,0);
+    minsky.openGroupInCanvas();
+    minsky.openModelInCanvas();
+    minsky.openLogFile(tmpDir+"/foo.log");
+    minsky.pushFlags();
+    minsky.popFlags();
+    minsky.randomLayout();
+    minsky.renderAllPlotsAsSVG(tmpDir+"/plots");
+    minsky.reset();
+    minsky.saveCanvasItemAsFile(tmpDir+"/foo.mky");
+    minsky.saveSelectionAsFile(tmpDir+"/selection.mky");
+    minsky.setAutoSaveFile(tmpDir+"/foo.mky#");
+    minsky.setGodleyDisplayValue(true,"CRDR");
   });
 });

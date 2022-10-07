@@ -15,6 +15,7 @@ import { CommandsManager } from './CommandsManager';
 import { StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
 import { BookmarkManager } from './BookmarkManager';
+import { RecordingManager } from './RecordingManager';
 
 //TODO:: Remove hardcoding of popup dimensions
 
@@ -178,11 +179,11 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Recording',
-          click() {minsky.startRecording();},
+          click() {RecordingManager.handleRecord();},
         },
         {
           label: 'Replay recording',
-          click() {minsky.startRecordingReplay();},
+          click() {RecordingManager.handleRecordingReplay();},
         },
         {
           label: 'Quit',

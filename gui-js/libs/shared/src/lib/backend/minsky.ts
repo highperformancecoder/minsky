@@ -69,8 +69,6 @@ export class Minsky extends CppClass
   setAutoSaveFile(file: string): void {this.callMethod("setAutoSaveFile",file);}
   setGodleyDisplayValue(displayValues: boolean, displayStyle: string): void
   {this.callMethod("setGodleyDisplayValue",displayValues,displayStyle);}
-  startRecording(): void {this.callMethod("startRecording");}
-  startRecordingReplay(): void {this.callMethod("startRecordingReplay");}
   undo(changes: number): number {return this.callMethod("undo",changes);}
 };
 

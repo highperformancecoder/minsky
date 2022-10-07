@@ -15,6 +15,7 @@ export class Group extends Item
   }
   bookmarkList(): string[] {return this.callMethod("bookmarkList");}
   cBounds(): number[] {return this.callMethod("cBounds");}
+  clear(): void {this.callMethod("clear");}
   defaultExtension(): string {return this.callMethod("defaultExtension");}
   deleteBookmark(i: number): void {this.callMethod("deleteBookmark",i);}
   displayContents(): boolean {return this.callMethod("displayContents");}

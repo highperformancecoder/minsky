@@ -2,7 +2,8 @@ import * as JSON5 from 'json5';
 
 export class CppClass
 {
-  public static backend : (...args)=>any;
+  public static backend : (...args)=>any; // pass command to destination: see backend-init and electron.service
+  public static record=(cmd: string)=>{}; // recording support: see RecordingsManager
   protected prefix: string;
   constructor(prefix: string) {this.prefix=prefix;}
   protected callMethod(method: string,...args)
@@ -32,8 +33,9 @@ export class Map<Key, Value extends CppClass> extends CppClass
     return new Pair<Key,Value>
       (key,this.valueType? new this.valueType(cmd): this.callMethod(cmd));
   }
-  insert(keyValue: Pair<Key, Value>) {this.callMethod("@insert",keyValue);}
+  insert(key: Key, value: Value) {this.callMethod("@insert",{first: key, second:value});}
   erase(key: Key) {this.callMethod("@erase",key);}
+  size(): number {return this.callMethod("@size");}
 };
 
 export class Container<Key,Value=Key> extends CppClass

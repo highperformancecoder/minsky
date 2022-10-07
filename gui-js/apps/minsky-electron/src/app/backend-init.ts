@@ -1,5 +1,6 @@
 import {CppClass, importCSVerrorMessage, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
+import { RecordingManager } from './managers/RecordingManager';
 import { dialog, shell } from 'electron';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';
@@ -40,8 +41,12 @@ CppClass.backend=function backend(command: string, ...args: any[]) {
   }
   try {
     var arg='';
-    if (args.length>0)
+    if (args.length>1)
       arg=JSON5.stringify(args);
+    else if (args.length===1)
+      arg=JSON5.stringify(args[0]);
+    CppClass.record(`${command} ${arg}`);
+
     const response = restService.call(command, arg);
     if (logFilter(command))
       log.info('Rest API: ',command,arg,"=>",response);
