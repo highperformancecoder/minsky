@@ -408,8 +408,7 @@ export class CommandsManager {
   static async getFilePathUsingSaveDialog(): Promise<string> {
     const saveDialog = await dialog.showSaveDialog({});
 
-    const { canceled, filePath: _filePath } = saveDialog;
-    const filePath = normalizeFilePathForPlatform(_filePath);
+    const { canceled, filePath} = saveDialog;
 
     if (canceled || !filePath) {
       return null;
@@ -436,7 +435,7 @@ export class CommandsManager {
     if (!filePath.toLowerCase().endsWith(type))
       filePath+=`.${type}`;
 
-    return JSON5.stringify(filePath);
+    return filePath;
   }
 
   static async mouseDown(mouseX: number, mouseY: number): Promise<void> {

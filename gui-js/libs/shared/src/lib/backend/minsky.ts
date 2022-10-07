@@ -32,6 +32,7 @@ export class Minsky extends CppClass
   }
 
   addIntegral(): void {this.callMethod("addIntegral");}
+  autoLayout(): void  {this.callMethod("autoLayout");}
   availableOperations(): string[] {return this.callMethod("availableOperations");}
   classifyOp(op: string): string {return this.callMethod("classifyOp",op);}
   clearAllMaps(...clearHistory: boolean[]): void {this.callMethod("clearAllMaps", ...clearHistory);}
@@ -39,18 +40,28 @@ export class Minsky extends CppClass
   clipboardEmpty(): boolean {return this.callMethod("clipboardEmpty");}
   copy(): void {this.callMethod("copy");}
   cut(): void {this.callMethod("cut");}
+  defaultFont(...args: string[]): string {return this.callMethod("defaultFont",...args);}
+  deleteAllUnits(): void { this.callMethod("deleteAllUnits");}
+  // returns a string on error, empty object on success
+  dimensionalAnalysis(): any {return this.callMethod("dimensionalAnalysis");}
   doPushHistory(...d: boolean[]): boolean {return this.callMethod("doPushHistory",...d);}
   edited(): boolean {return this.callMethod("edited");}
-  nameCurrentItem(name: string) {this.callMethod("nameCurrentItem",name);}
+  exportAllPlotsAsCSV(file:string): void {this.callMethod("exportAllPlotsAsCSV",file);}
+  insertGroupFromFile(file: string): void {this.callMethod("insertGroupFromFile",file);}
+  latex(file: string, wrapLaTeXLines: boolean): void {this.callMethod("latex",file,wrapLaTeXLines);}
   listAllInstances(): void {this.callMethod("listAllInstances");}
   load(file: string): void {this.callMethod("load",file);}
+  matlab(file: string): void {this.callMethod("matlab",file);}
   multipleEquities(...args: boolean[]): boolean {return this.callMethod("multipleEquities",...args);}
+  nameCurrentItem(name: string) {this.callMethod("nameCurrentItem",name);}
   openGroupInCanvas(): void {this.callMethod("openGroupInCanvas");}
   openLogFile(file: string): void {this.callMethod("openLogFile",file);}
   openModelInCanvas(): void {this.callMethod("openModelInCanvas");}
   paste(): void {this.callMethod("paste");}
   popFlags(): void {this.callMethod("popFlags");}
   pushFlags(): void {this.callMethod("pushFlags");}
+  randomLayout(): void {this.callMethod("randomLayout");}
+  renderAllPlotsAsSVG(file: string): void {this.callMethod("renderAllPlotsAsSVG",file);}
   reset(): void {this.callMethod("reset");}
   save(file: string): void {this.callMethod("save",file);}
   saveCanvasItemAsFile(file: string): void {this.callMethod("saveCanvasItemAsFile",file);}
@@ -58,6 +69,8 @@ export class Minsky extends CppClass
   setAutoSaveFile(file: string): void {this.callMethod("setAutoSaveFile",file);}
   setGodleyDisplayValue(displayValues: boolean, displayStyle: string): void
   {this.callMethod("setGodleyDisplayValue",displayValues,displayStyle);}
+  startRecording(): void {this.callMethod("startRecording");}
+  startRecordingReplay(): void {this.callMethod("startRecordingReplay");}
   undo(changes: number): number {return this.callMethod("undo",changes);}
 };
 

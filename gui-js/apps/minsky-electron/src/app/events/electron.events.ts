@@ -7,7 +7,7 @@ import {
   AppLayoutPayload,
   CanvasItem,
   ChangeTabPayload,
-  commandsMapping,
+//  commandsMapping,
   CppClass,
   environment,
   events,
@@ -17,6 +17,7 @@ import {
   PickSlicesPayload,
   LockHandlesPayload,
   MinskyProcessPayload,
+  minsky,
 } from '@minsky/shared';
 //import * as debug from 'debug';
 import { BrowserWindow, ipcMain } from 'electron';
@@ -184,18 +185,9 @@ ipcMain.handle(
 
     StoreManager.store.set('preferences', preferences);
 
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.SET_GODLEY_DISPLAY_VALUE} [${godleyTableShowValues},"${godleyTableOutputStyle}"}]`,
-    });
-
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.MULTIPLE_EQUITIES} ${enableMultipleEquityColumns}`,
-    });
-
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.DEFAULT_FONT} "${font}"`,
-    });
-
+    minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
+    minsky.multipleEquities(enableMultipleEquityColumns);
+    minsky.defaultFont(font);
     RecentFilesManager.updateNumberOfRecentFilesToDisplay();
     return;
   }
