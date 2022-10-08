@@ -19,9 +19,11 @@ export class GodleyIcon extends Item
   buttonDisplay(): boolean {return this.callMethod("buttonDisplay");}
   editorMode(): boolean {return this.callMethod("editorMode");}
   exportAsCSV(name: string): void {this.callMethod("exportAsCSV",name);}
+  setCell(row: number, col: number, value: string): void {this.callMethod("setCell",row,col,value);}
   toggleButtons(): void {this.callMethod("toggleButtons");}
   toggleEditorMode(): void {this.callMethod("toggleEditorMode");}
   toggleVariableDisplay(): void {this.callMethod("toggleVariableDisplay");}
+  update(): void {this.callMethod("update");}
   variableDisplay(...args: boolean[]): boolean {return this.callMethod("variableDisplay",...args);}
 
 }
