@@ -12,6 +12,8 @@ export class Item extends CppClass
   flipContents(): void {this.callMethod("flipContents");}
   id(): string {return this.callMethod("id");}
   numCases(): number {return this.callMethod("numCases");}
+  portX(i: number): number {return this.callMethod("portX",i);}
+  portY(i: number): number {return this.callMethod("portY",i);}
   readData(fileName: string): void {this.callMethod("readData", fileName);}
   setNumCases(numCases: number): void {this.callMethod("setNumCases",numCases);}
   value(): number {return this.callMethod("value");}

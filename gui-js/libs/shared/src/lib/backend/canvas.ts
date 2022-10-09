@@ -24,8 +24,7 @@ export class Canvas extends RenderNativeWindow
   copyItem(): void {this.callMethod("copyItem");}
   copyAllFlowVars(): void {this.callMethod("copyAllFlowVars");}
   copyAllStockVars(): void {this.callMethod("copyAllStockVars");}
-  defaultRotation(...args): number {return this.callMethod("defaultRotation");}
-  defined(): boolean {return this.callMethod("defined");}
+  defaultRotation(...args: number[]): number {return this.callMethod("defaultRotation",...args);}
   deleteItem(): void {this.callMethod("deleteItem");}
   deleteWire(): void { this.callMethod("deleteWire");}
   findVariableDefinition(): boolean {return this.callMethod("findVariableDefinition");}
