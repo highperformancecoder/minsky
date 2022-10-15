@@ -1,4 +1,4 @@
-.SUFFIXES: .xcd .rcd $(SUFFIXES)
+.SUFFIXES: .xcd .rcd .tcd $(SUFFIXES)
 
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
@@ -111,9 +111,9 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o addon.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o addon.o typescriptAPI.o
 
-EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
+EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE) RESTService/typescriptAPI
 
 DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
 MINSKYLIBS=-lminsky -lminskyEngine -lcivita
@@ -138,6 +138,11 @@ VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/in
 	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	RESTProcess >$@
+
+.h.tcd:
+	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
+	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
+	typescriptAPI >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
@@ -274,6 +279,9 @@ RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL
 RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
+RESTService/typescriptAPI: typescriptAPI.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^  $(LIBS) -o $@
+
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
 	rm -f $@
 	perl makeRefDb.pl doc/minsky/*.html >$@
@@ -326,7 +334,7 @@ $(EXES): RavelCAPI/libravelCAPI.a
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.rcd *.gcda *.gcno *.so *.dll *.dylib
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd
@@ -404,7 +412,7 @@ lcov:
 	-$(MAKE) GCOV=1 sure
 	lcov -c -d .  --no-external -o lcovt.info
 	lcov -a lcovi.info -a lcovt.info -o lcov.info
-	lcov -r lcov.info */ecolab/* "*.cd" "*.xcd" -o lcovr.info 
+	lcov -r lcov.info */ecolab/* "*.cd" "*.xcd" "*.rcd" "*.tcd" -o lcovr.info 
 	genhtml -o coverage lcovr.info
 
 compile_commands.json: Makefile
