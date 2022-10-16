@@ -213,7 +213,7 @@ GUI_LIBS=
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 ifndef AEGIS
-default: $(EXES)
+default: $(EXES) gui-js/libs/shared/src/lib/backend/minsky.ts
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
 
@@ -281,6 +281,10 @@ RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHE
 
 RESTService/typescriptAPI: typescriptAPI.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^  $(LIBS) -o $@
+
+
+gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
+	RESTService/typescriptAPI > $@
 
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
 	rm -f $@
