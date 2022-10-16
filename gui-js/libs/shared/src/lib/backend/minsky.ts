@@ -3,7 +3,7 @@ This is a built file, please do not edit.
 See RESTService/typescriptAPI for more information.
 */
 
-import {CppClass, Sequence, Container, Map} from './backend';
+import {CppClass, Sequence, Container, Map, Pair} from './backend';
 
 class boost__geometry__model__d2__point_xy {}
 class classdesc__json_pack_t {}
@@ -338,6 +338,14 @@ export class DataSpecSchema extends CppClass {
   missingValue(...args: number[]): number {return this.callMethod('missingValue',...args);}
   quote(...args: number[]): number {return this.callMethod('quote',...args);}
   separator(...args: number[]): number {return this.callMethod('separator',...args);}
+}
+
+export class EngNotation extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  engExp(...args: number[]): number {return this.callMethod('engExp',...args);}
+  sciExp(...args: number[]): number {return this.callMethod('sciExp',...args);}
 }
 
 export class EquationDisplay extends CppClass {
@@ -1786,7 +1794,7 @@ export class VariableBase extends Item {
   ensureValueExists(a1: VariableValue,a2: string): void {return this.callMethod('ensureValueExists',a1,a2);}
   exportAsCSV(a1: string): void {return this.callMethod('exportAsCSV',a1);}
   flip(): void {return this.callMethod('flip');}
-  getDimLabelsPicked(): std__pair<std__string,std__string> {return this.callMethod('getDimLabelsPicked');}
+  getDimLabelsPicked(): Pair<string,string> {return this.callMethod('getDimLabelsPicked');}
   height(): number {return this.callMethod('height');}
   iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
   iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
@@ -1838,7 +1846,7 @@ export class VariableBase extends Item {
   scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
   select(a1: number,a2: number): Item {return this.callMethod('select',a1,a2);}
   selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
-  setDimLabelsPicked(a1: string,a2: string): std__pair<std__string,std__string> {return this.callMethod('setDimLabelsPicked',a1,a2);}
+  setDimLabelsPicked(a1: string,a2: string): Pair<string,string> {return this.callMethod('setDimLabelsPicked',a1,a2);}
   setUnits(a1: string): void {return this.callMethod('setUnits',a1);}
   sliderBoundsSet(...args: number[]): boolean {return this.callMethod('sliderBoundsSet',...args);}
   sliderMax(...args: number[]): number {return this.callMethod('sliderMax',...args);}
@@ -2044,7 +2052,7 @@ export class VariableValue extends CppClass {
   hypercube(...args: any[]): civita__Hypercube {return this.callMethod('hypercube',...args);}
   idx(): number {return this.callMethod('idx');}
   idxInRange(): boolean {return this.callMethod('idxInRange');}
-  imposeDimensions(a1: Container<std__pair<const std__string,__civita__Dimension>>): void {return this.callMethod('imposeDimensions',a1);}
+  imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): void {return this.callMethod('imposeDimensions',a1);}
   index(...args: any[]): civita__Index {return this.callMethod('index',...args);}
   init(...args: string[]): string {return this.callMethod('init',...args);}
   isFlowVar(): boolean {return this.callMethod('isFlowVar');}
@@ -2140,7 +2148,7 @@ export class civita__TensorVal extends CppClass {
   begin(...args: any[]): number {return this.callMethod('begin',...args);}
   end(...args: any[]): number {return this.callMethod('end',...args);}
   hypercube(...args: any[]): civita__Hypercube {return this.callMethod('hypercube',...args);}
-  imposeDimensions(a1: Container<std__pair<const std__string,__civita__Dimension>>): void {return this.callMethod('imposeDimensions',a1);}
+  imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): void {return this.callMethod('imposeDimensions',a1);}
   index(...args: any[]): civita__Index {return this.callMethod('index',...args);}
   rank(): number {return this.callMethod('rank');}
   setArgument(a1: civita__ITensor,a2: string,a3: number): void {return this.callMethod('setArgument',a1,a2,a3);}
