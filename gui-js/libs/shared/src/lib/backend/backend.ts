@@ -14,7 +14,7 @@ export class CppClass
 };
 
 
-export class Pair<Key, Value extends CppClass> {
+export class Pair<Key, Value> {
   first: Key;
   second: Value;
   constructor(key: Key, value: Value) {
@@ -23,7 +23,7 @@ export class Pair<Key, Value extends CppClass> {
   }
 };
 
-export class Map<Key, Value extends CppClass> extends CppClass
+export class Map<Key, Value> extends CppClass
 {
   valueType: any;  // stash a reference to the actual type here, for use in a new expression
   constructor(prefix: string, valueType: any=null) {super(prefix); this.valueType=valueType;}

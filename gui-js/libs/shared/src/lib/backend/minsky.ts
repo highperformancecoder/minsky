@@ -6,13 +6,100 @@ See RESTService/typescriptAPI for more information.
 import {CppClass, Sequence, Container, Map} from './backend';
 
 class boost__geometry__model__d2__point_xy {}
-class classdesc_json_pack_t {}
-class classdesc_TCL_obj_t {}
+class classdesc__json_pack_t {}
+class classdesc__TCL_obj_t {}
 class ecolab__cairo__Surface {}
 class ecolab__Pango {}
 class ecolab__TCL_args {}
 class cairo_t {}
 class __function__ {}
+class std__istream {}
+
+export class Item extends CppClass {
+  bb: BoundingBox;
+  constructor(prefix: string){
+    super(prefix);
+    this.bb=new BoundingBox(this.prefix+'bb');
+  }
+  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
+  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
+  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
+  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmarkId(...args: any[]): string {return this.callMethod('bookmarkId',...args);}
+  bottom(...args: any[]): number {return this.callMethod('bottom',...args);}
+  checkUnits(...args: any[]): Units {return this.callMethod('checkUnits',...args);}
+  classType(...args: any[]): string {return this.callMethod('classType',...args);}
+  clickType(...args: any[]): string {return this.callMethod('clickType',...args);}
+  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
+  closestInPort(...args: any[]): Port {return this.callMethod('closestInPort',...args);}
+  closestOutPort(...args: any[]): Port {return this.callMethod('closestOutPort',...args);}
+  contains(...args: any[]): boolean {return this.callMethod('contains',...args);}
+  corners(...args: any[]): Sequence<boost__geometry__model__d2__point_xy> {return this.callMethod('corners',...args);}
+  deleteAttachedWires(...args: any[]): void {return this.callMethod('deleteAttachedWires',...args);}
+  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
+  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
+  disableDelayedTooltip(...args: any[]): void {return this.callMethod('disableDelayedTooltip',...args);}
+  displayDelayedTooltip(...args: any[]): void {return this.callMethod('displayDelayedTooltip',...args);}
+  displayTooltip(...args: any[]): void {return this.callMethod('displayTooltip',...args);}
+  draw(...args: any[]): void {return this.callMethod('draw',...args);}
+  drawPorts(...args: any[]): void {return this.callMethod('drawPorts',...args);}
+  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
+  drawSelected(...args: any[]): void {return this.callMethod('drawSelected',...args);}
+  dummyDraw(...args: any[]): void {return this.callMethod('dummyDraw',...args);}
+  ensureBBValid(...args: any[]): void {return this.callMethod('ensureBBValid',...args);}
+  flip(...args: any[]): void {return this.callMethod('flip',...args);}
+  height(...args: any[]): number {return this.callMethod('height',...args);}
+  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
+  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
+  id(...args: any[]): string {return this.callMethod('id',...args);}
+  inItem(...args: any[]): boolean {return this.callMethod('inItem',...args);}
+  ioVar(...args: any[]): boolean {return this.callMethod('ioVar',...args);}
+  itemPtrFromThis(...args: any[]): Item {return this.callMethod('itemPtrFromThis',...args);}
+  itemTabInitialised(...args: number[]): boolean {return this.callMethod('itemTabInitialised',...args);}
+  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
+  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
+  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
+  left(...args: any[]): number {return this.callMethod('left',...args);}
+  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
+  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
+  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
+  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
+  moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
+  onBorder(...args: number[]): boolean {return this.callMethod('onBorder',...args);}
+  onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
+  onMouseDown(...args: any[]): void {return this.callMethod('onMouseDown',...args);}
+  onMouseLeave(...args: any[]): void {return this.callMethod('onMouseLeave',...args);}
+  onMouseMotion(...args: any[]): boolean {return this.callMethod('onMouseMotion',...args);}
+  onMouseOver(...args: any[]): boolean {return this.callMethod('onMouseOver',...args);}
+  onMouseUp(...args: any[]): void {return this.callMethod('onMouseUp',...args);}
+  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
+  onResizeHandles(...args: number[]): boolean {return this.callMethod('onResizeHandles',...args);}
+  portX(...args: any[]): number {return this.callMethod('portX',...args);}
+  portY(...args: any[]): number {return this.callMethod('portY',...args);}
+  ports(...args: any[]): Port {return this.callMethod('ports',...args);}
+  portsSize(...args: any[]): number {return this.callMethod('portsSize',...args);}
+  resize(...args: any[]): void {return this.callMethod('resize',...args);}
+  resizeHandleSize(...args: any[]): number {return this.callMethod('resizeHandleSize',...args);}
+  right(...args: any[]): number {return this.callMethod('right',...args);}
+  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
+  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
+  select(...args: any[]): Item {return this.callMethod('select',...args);}
+  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
+  throw_error(...args: any[]): void {return this.callMethod('throw_error',...args);}
+  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
+  top(...args: any[]): number {return this.callMethod('top',...args);}
+  units(...args: any[]): Units {return this.callMethod('units',...args);}
+  updateBoundingBox(...args: any[]): void {return this.callMethod('updateBoundingBox',...args);}
+  updateIcon(...args: any[]): void {return this.callMethod('updateIcon',...args);}
+  value(...args: any[]): number {return this.callMethod('value',...args);}
+  visible(...args: any[]): boolean {return this.callMethod('visible',...args);}
+  visibleWithinGroup(...args: any[]): boolean {return this.callMethod('visibleWithinGroup',...args);}
+  width(...args: any[]): number {return this.callMethod('width',...args);}
+  x(...args: any[]): number {return this.callMethod('x',...args);}
+  y(...args: any[]): number {return this.callMethod('y',...args);}
+  zoomFactor(...args: any[]): number {return this.callMethod('zoomFactor',...args);}
+}
 
 export class Bookmark extends CppClass {
   constructor(prefix: string){
@@ -223,6 +310,34 @@ export class DataSpec extends CppClass {
   setDataArea(a1: number,a2: number): void {return this.callMethod('setDataArea',a1,a2);}
   toSchema(): DataSpecSchema {return this.callMethod('toSchema');}
   toggleDimension(a1: number): void {return this.callMethod('toggleDimension',a1);}
+}
+
+export class DataSpecSchema extends CppClass {
+  dataCols: Container<number>;
+  dimensionCols: Container<number>;
+  dimensionNames: Sequence<string>;
+  dimensions: Sequence<civita__Dimension>;
+  horizontalDimension: civita__Dimension;
+  constructor(prefix: string){
+    super(prefix);
+    this.dataCols=new Container<number>(prefix);
+    this.dimensionCols=new Container<number>(prefix);
+    this.dimensionNames=new Sequence<string>(prefix);
+    this.dimensions=new Sequence<civita__Dimension>(prefix,civita__Dimension);
+    this.horizontalDimension=new civita__Dimension(this.prefix+'horizontalDimension');
+  }
+  columnar(...args: number[]): boolean {return this.callMethod('columnar',...args);}
+  dataColOffset(...args: number[]): number {return this.callMethod('dataColOffset',...args);}
+  dataRowOffset(...args: number[]): number {return this.callMethod('dataRowOffset',...args);}
+  decSeparator(...args: number[]): number {return this.callMethod('decSeparator',...args);}
+  duplicateKeyAction(...args: string[]): string {return this.callMethod('duplicateKeyAction',...args);}
+  escape(...args: number[]): number {return this.callMethod('escape',...args);}
+  headerRow(...args: number[]): number {return this.callMethod('headerRow',...args);}
+  horizontalDimName(...args: string[]): string {return this.callMethod('horizontalDimName',...args);}
+  mergeDelimiters(...args: number[]): boolean {return this.callMethod('mergeDelimiters',...args);}
+  missingValue(...args: number[]): number {return this.callMethod('missingValue',...args);}
+  quote(...args: number[]): number {return this.callMethod('quote',...args);}
+  separator(...args: number[]): number {return this.callMethod('separator',...args);}
 }
 
 export class EquationDisplay extends CppClass {
@@ -923,92 +1038,6 @@ export class GroupItems extends CppClass {
   removeGroup(a1: Group): Group {return this.callMethod('removeGroup',a1);}
   removeItem(a1: Item): Item {return this.callMethod('removeItem',a1);}
   removeWire(a1: Wire): Wire {return this.callMethod('removeWire',a1);}
-}
-
-export class Item extends CppClass {
-  bb: BoundingBox;
-  constructor(prefix: string){
-    super(prefix);
-    this.bb=new BoundingBox(this.prefix+'bb');
-  }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(...args: any[]): string {return this.callMethod('bookmarkId',...args);}
-  bottom(...args: any[]): number {return this.callMethod('bottom',...args);}
-  checkUnits(...args: any[]): Units {return this.callMethod('checkUnits',...args);}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  clickType(...args: any[]): string {return this.callMethod('clickType',...args);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(...args: any[]): Port {return this.callMethod('closestInPort',...args);}
-  closestOutPort(...args: any[]): Port {return this.callMethod('closestOutPort',...args);}
-  contains(...args: any[]): boolean {return this.callMethod('contains',...args);}
-  corners(...args: any[]): Sequence<boost__geometry__model__d2__point_xy> {return this.callMethod('corners',...args);}
-  deleteAttachedWires(...args: any[]): void {return this.callMethod('deleteAttachedWires',...args);}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  disableDelayedTooltip(...args: any[]): void {return this.callMethod('disableDelayedTooltip',...args);}
-  displayDelayedTooltip(...args: any[]): void {return this.callMethod('displayDelayedTooltip',...args);}
-  displayTooltip(...args: any[]): void {return this.callMethod('displayTooltip',...args);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(...args: any[]): void {return this.callMethod('drawPorts',...args);}
-  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
-  drawSelected(...args: any[]): void {return this.callMethod('drawSelected',...args);}
-  dummyDraw(...args: any[]): void {return this.callMethod('dummyDraw',...args);}
-  ensureBBValid(...args: any[]): void {return this.callMethod('ensureBBValid',...args);}
-  flip(...args: any[]): void {return this.callMethod('flip',...args);}
-  height(...args: any[]): number {return this.callMethod('height',...args);}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  id(...args: any[]): string {return this.callMethod('id',...args);}
-  inItem(...args: any[]): boolean {return this.callMethod('inItem',...args);}
-  ioVar(...args: any[]): boolean {return this.callMethod('ioVar',...args);}
-  itemPtrFromThis(...args: any[]): Item {return this.callMethod('itemPtrFromThis',...args);}
-  itemTabInitialised(...args: number[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  left(...args: any[]): number {return this.callMethod('left',...args);}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
-  onBorder(...args: number[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
-  onMouseDown(...args: any[]): void {return this.callMethod('onMouseDown',...args);}
-  onMouseLeave(...args: any[]): void {return this.callMethod('onMouseLeave',...args);}
-  onMouseMotion(...args: any[]): boolean {return this.callMethod('onMouseMotion',...args);}
-  onMouseOver(...args: any[]): boolean {return this.callMethod('onMouseOver',...args);}
-  onMouseUp(...args: any[]): void {return this.callMethod('onMouseUp',...args);}
-  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: number[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  portX(...args: any[]): number {return this.callMethod('portX',...args);}
-  portY(...args: any[]): number {return this.callMethod('portY',...args);}
-  ports(...args: any[]): Port {return this.callMethod('ports',...args);}
-  portsSize(...args: any[]): number {return this.callMethod('portsSize',...args);}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleSize(...args: any[]): number {return this.callMethod('resizeHandleSize',...args);}
-  right(...args: any[]): number {return this.callMethod('right',...args);}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(...args: any[]): Item {return this.callMethod('select',...args);}
-  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
-  throw_error(...args: any[]): void {return this.callMethod('throw_error',...args);}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(...args: any[]): number {return this.callMethod('top',...args);}
-  units(...args: any[]): Units {return this.callMethod('units',...args);}
-  updateBoundingBox(...args: any[]): void {return this.callMethod('updateBoundingBox',...args);}
-  updateIcon(...args: any[]): void {return this.callMethod('updateIcon',...args);}
-  value(...args: any[]): number {return this.callMethod('value',...args);}
-  visible(...args: any[]): boolean {return this.callMethod('visible',...args);}
-  visibleWithinGroup(...args: any[]): boolean {return this.callMethod('visibleWithinGroup',...args);}
-  width(...args: any[]): number {return this.callMethod('width',...args);}
-  x(...args: any[]): number {return this.callMethod('x',...args);}
-  y(...args: any[]): number {return this.callMethod('y',...args);}
-  zoomFactor(...args: any[]): number {return this.callMethod('zoomFactor',...args);}
 }
 
 export class LassoBox extends CppClass {
