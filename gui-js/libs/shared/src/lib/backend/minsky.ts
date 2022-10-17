@@ -21,7 +21,7 @@ export class Item extends CppClass {
   bb: BoundingBox;
   constructor(prefix: string){
     super(prefix);
-    this.bb=new BoundingBox(this.prefix+'bb');
+    this.bb=new BoundingBox(this.prefix+'/bb');
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
@@ -133,8 +133,8 @@ export class CSVDialog extends CppClass {
   spec: DataSpec;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.spec=new DataSpec(this.prefix+'spec');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.spec=new DataSpec(this.prefix+'/spec');
   }
   colWidth(...args: number[]): number {return this.callMethod('colWidth',...args);}
   columnOver(a1: number): number {return this.callMethod('columnOver',a1);}
@@ -185,16 +185,16 @@ export class Canvas extends CppClass {
   wireFocus: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.item=new Item(this.prefix+'item');
-    this.itemFocus=new Item(this.prefix+'itemFocus');
-    this.itemVector=new Sequence<Item>(prefix,Item);
-    this.lasso=new LassoBox(this.prefix+'lasso');
-    this.model=new Group(this.prefix+'model');
-    this.selection=new Selection(this.prefix+'selection');
-    this.updateRegion=new LassoBox(this.prefix+'updateRegion');
-    this.wire=new Wire(this.prefix+'wire');
-    this.wireFocus=new Wire(this.prefix+'wireFocus');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.item=new Item(this.prefix+'/item');
+    this.itemFocus=new Item(this.prefix+'/itemFocus');
+    this.itemVector=new Sequence<Item>(this.prefix+'/itemVector',Item);
+    this.lasso=new LassoBox(this.prefix+'/lasso');
+    this.model=new Group(this.prefix+'/model');
+    this.selection=new Selection(this.prefix+'/selection');
+    this.updateRegion=new LassoBox(this.prefix+'/updateRegion');
+    this.wire=new Wire(this.prefix+'/wire');
+    this.wireFocus=new Wire(this.prefix+'/wireFocus');
   }
   addGodley(): void {return this.callMethod('addGodley');}
   addGroup(): void {return this.callMethod('addGroup');}
@@ -286,11 +286,11 @@ export class DataSpec extends CppClass {
   horizontalDimension: civita__Dimension;
   constructor(prefix: string){
     super(prefix);
-    this.dataCols=new Container<number>(prefix);
-    this.dimensionCols=new Container<number>(prefix);
-    this.dimensionNames=new Sequence<string>(prefix);
-    this.dimensions=new Sequence<civita__Dimension>(prefix,civita__Dimension);
-    this.horizontalDimension=new civita__Dimension(this.prefix+'horizontalDimension');
+    this.dataCols=new Container<number>(this.prefix+'/dataCols');
+    this.dimensionCols=new Container<number>(this.prefix+'/dimensionCols');
+    this.dimensionNames=new Sequence<string>(this.prefix+'/dimensionNames');
+    this.dimensions=new Sequence<civita__Dimension>(this.prefix+'/dimensions',civita__Dimension);
+    this.horizontalDimension=new civita__Dimension(this.prefix+'/horizontalDimension');
   }
   columnar(...args: boolean[]): boolean {return this.callMethod('columnar',...args);}
   dataColOffset(...args: number[]): number {return this.callMethod('dataColOffset',...args);}
@@ -322,11 +322,11 @@ export class DataSpecSchema extends CppClass {
   horizontalDimension: civita__Dimension;
   constructor(prefix: string){
     super(prefix);
-    this.dataCols=new Container<number>(prefix);
-    this.dimensionCols=new Container<number>(prefix);
-    this.dimensionNames=new Sequence<string>(prefix);
-    this.dimensions=new Sequence<civita__Dimension>(prefix,civita__Dimension);
-    this.horizontalDimension=new civita__Dimension(this.prefix+'horizontalDimension');
+    this.dataCols=new Container<number>(this.prefix+'/dataCols');
+    this.dimensionCols=new Container<number>(this.prefix+'/dimensionCols');
+    this.dimensionNames=new Sequence<string>(this.prefix+'/dimensionNames');
+    this.dimensions=new Sequence<civita__Dimension>(this.prefix+'/dimensions',civita__Dimension);
+    this.horizontalDimension=new civita__Dimension(this.prefix+'/horizontalDimension');
   }
   columnar(...args: boolean[]): boolean {return this.callMethod('columnar',...args);}
   dataColOffset(...args: number[]): number {return this.callMethod('dataColOffset',...args);}
@@ -356,9 +356,9 @@ export class EquationDisplay extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.item=new Item(this.prefix+'item');
-    this.wire=new Wire(this.prefix+'wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.item=new Item(this.prefix+'/item');
+    this.wire=new Wire(this.prefix+'/wire');
   }
   controlMouseDown(...args: any[]): void {return this.callMethod('controlMouseDown',...args);}
   destroyFrame(...args: any[]): void {return this.callMethod('destroyFrame',...args);}
@@ -407,7 +407,7 @@ export class FontDisplay extends CppClass {
   backgroundColour: ecolab__cairo__Colour;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
   }
   destroyFrame(): void {return this.callMethod('destroyFrame');}
   disable(): void {return this.callMethod('disable');}
@@ -441,11 +441,11 @@ export class GodleyIcon extends Item {
       super(prefix)
     else
       super((<GodleyIcon>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'bb');
-    this.editor=new GodleyTableEditor(this.prefix+'editor');
-    this.popup=new GodleyTableWindow(this.prefix+'popup');
-    this.svgRenderer=new SVGRenderer(this.prefix+'svgRenderer');
-    this.table=new GodleyTable(this.prefix+'table');
+    this.bb=new BoundingBox(this.prefix+'/bb');
+    this.editor=new GodleyTableEditor(this.prefix+'/editor');
+    this.popup=new GodleyTableWindow(this.prefix+'/popup');
+    this.svgRenderer=new SVGRenderer(this.prefix+'/svgRenderer');
+    this.table=new GodleyTable(this.prefix+'/table');
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
@@ -562,14 +562,14 @@ export class GodleyTab extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(prefix);
-    this.item=new Item(this.prefix+'item');
-    this.itemFocus=new Item(this.prefix+'itemFocus');
-    this.itemVector=new Sequence<Item>(prefix,Item);
-    this.rightColMargin=new Sequence<number>(prefix);
-    this.varAttrib=new Sequence<string>(prefix);
-    this.wire=new Wire(this.prefix+'wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.bottomRowMargin=new Sequence<number>(this.prefix+'/bottomRowMargin');
+    this.item=new Item(this.prefix+'/item');
+    this.itemFocus=new Item(this.prefix+'/itemFocus');
+    this.itemVector=new Sequence<Item>(this.prefix+'/itemVector',Item);
+    this.rightColMargin=new Sequence<number>(this.prefix+'/rightColMargin');
+    this.varAttrib=new Sequence<string>(this.prefix+'/varAttrib');
+    this.wire=new Wire(this.prefix+'/wire');
   }
   cell(...args: any[]): ecolab__Pango {return this.callMethod('cell',...args);}
   clickType(...args: any[]): string {return this.callMethod('clickType',...args);}
@@ -675,7 +675,7 @@ export class GodleyTableEditor extends CppClass {
   colLeftMargin: Sequence<number>;
   constructor(prefix: string){
     super(prefix);
-    this.colLeftMargin=new Sequence<number>(prefix);
+    this.colLeftMargin=new Sequence<number>(this.prefix+'/colLeftMargin');
   }
   addFlow(a1: number): void {return this.callMethod('addFlow',a1);}
   addStockVar(a1: number): void {return this.callMethod('addStockVar',a1);}
@@ -746,10 +746,10 @@ export class GodleyTableWindow extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.colLeftMargin=new Sequence<number>(prefix);
-    this.item=new Item(this.prefix+'item');
-    this.wire=new Wire(this.prefix+'wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.colLeftMargin=new Sequence<number>(this.prefix+'/colLeftMargin');
+    this.item=new Item(this.prefix+'/item');
+    this.wire=new Wire(this.prefix+'/wire');
   }
   addFlow(a1: number): void {return this.callMethod('addFlow',a1);}
   addStockVar(a1: number): void {return this.callMethod('addStockVar',a1);}
@@ -846,21 +846,19 @@ export class Group extends CppClass {
   inVariables: Sequence<VariableBase>;
   items: Sequence<Item>;
   outVariables: Sequence<VariableBase>;
-  parent: Group;
   svgRenderer: SVGRenderer;
   wires: Sequence<Wire>;
   constructor(prefix: string){
     super(prefix);
-    this.bb=new BoundingBox(this.prefix+'bb');
-    this.bookmarks=new Container<Bookmark>(prefix,Bookmark);
-    this.createdIOvariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.groups=new Sequence<Group>(prefix,Group);
-    this.inVariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.items=new Sequence<Item>(prefix,Item);
-    this.outVariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.parent=new Group(this.prefix+'parent');
-    this.svgRenderer=new SVGRenderer(this.prefix+'svgRenderer');
-    this.wires=new Sequence<Wire>(prefix,Wire);
+    this.bb=new BoundingBox(this.prefix+'/bb');
+    this.bookmarks=new Container<Bookmark>(this.prefix+'/bookmarks',Bookmark);
+    this.createdIOvariables=new Sequence<VariableBase>(this.prefix+'/createdIOvariables',VariableBase);
+    this.groups=new Sequence<Group>(this.prefix+'/groups',Group);
+    this.inVariables=new Sequence<VariableBase>(this.prefix+'/inVariables',VariableBase);
+    this.items=new Sequence<Item>(this.prefix+'/items',Item);
+    this.outVariables=new Sequence<VariableBase>(this.prefix+'/outVariables',VariableBase);
+    this.svgRenderer=new SVGRenderer(this.prefix+'/svgRenderer');
+    this.wires=new Sequence<Wire>(this.prefix+'/wires',Wire);
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
@@ -1023,13 +1021,13 @@ export class GroupItems extends CppClass {
   wires: Sequence<Wire>;
   constructor(prefix: string){
     super(prefix);
-    this.bookmarks=new Container<Bookmark>(prefix,Bookmark);
-    this.createdIOvariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.groups=new Sequence<Group>(prefix,Group);
-    this.inVariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.items=new Sequence<Item>(prefix,Item);
-    this.outVariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.wires=new Sequence<Wire>(prefix,Wire);
+    this.bookmarks=new Container<Bookmark>(this.prefix+'/bookmarks',Bookmark);
+    this.createdIOvariables=new Sequence<VariableBase>(this.prefix+'/createdIOvariables',VariableBase);
+    this.groups=new Sequence<Group>(this.prefix+'/groups',Group);
+    this.inVariables=new Sequence<VariableBase>(this.prefix+'/inVariables',VariableBase);
+    this.items=new Sequence<Item>(this.prefix+'/items',Item);
+    this.outVariables=new Sequence<VariableBase>(this.prefix+'/outVariables',VariableBase);
+    this.wires=new Sequence<Wire>(this.prefix+'/wires',Wire);
   }
   addGroup(...args: any[]): Group {return this.callMethod('addGroup',...args);}
   addItem(...args: any[]): Item {return this.callMethod('addItem',...args);}
@@ -1084,25 +1082,25 @@ export class Minsky extends CppClass {
   variableValues: VariableValues;
   constructor(prefix: string){
     super(prefix);
-    this.canvas=new Canvas(this.prefix+'canvas');
-    this.conversions=new civita__Conversions(this.prefix+'conversions');
+    this.canvas=new Canvas(this.prefix+'/canvas');
+    this.conversions=new civita__Conversions(this.prefix+'/conversions');
     this.dimensions=new Map<string,civita__Dimension>(prefix,civita__Dimension);
-    this.equationDisplay=new EquationDisplay(this.prefix+'equationDisplay');
-    this.evalGodley=new EvalGodley(this.prefix+'evalGodley');
-    this.flowVars=new Sequence<number>(prefix);
-    this.fontSampler=new FontDisplay(this.prefix+'fontSampler');
-    this.godleyTab=new GodleyTab(this.prefix+'godleyTab');
-    this.logVarList=new Container<string>(prefix);
-    this.model=new Group(this.prefix+'model');
-    this.namedItems=new Map<string,Item>(prefix,Item);
-    this.panopticon=new Panopticon(this.prefix+'panopticon');
-    this.parameterTab=new ParameterTab(this.prefix+'parameterTab');
-    this.plotTab=new PlotTab(this.prefix+'plotTab');
-    this.stockVars=new Sequence<number>(prefix);
-    this.variableInstanceList=new VariableInstanceList(this.prefix+'variableInstanceList');
-    this.variablePane=new VariablePane(this.prefix+'variablePane');
-    this.variableTab=new VariableTab(this.prefix+'variableTab');
-    this.variableValues=new VariableValues(this.prefix+'variableValues');
+    this.equationDisplay=new EquationDisplay(this.prefix+'/equationDisplay');
+    this.evalGodley=new EvalGodley(this.prefix+'/evalGodley');
+    this.flowVars=new Sequence<number>(this.prefix+'/flowVars');
+    this.fontSampler=new FontDisplay(this.prefix+'/fontSampler');
+    this.godleyTab=new GodleyTab(this.prefix+'/godleyTab');
+    this.logVarList=new Container<string>(this.prefix+'/logVarList');
+    this.model=new Group(this.prefix+'/model');
+    this.namedItems=new Map<string,Item>(this.prefix+'/namedItems',Item);
+    this.panopticon=new Panopticon(this.prefix+'/panopticon');
+    this.parameterTab=new ParameterTab(this.prefix+'/parameterTab');
+    this.plotTab=new PlotTab(this.prefix+'/plotTab');
+    this.stockVars=new Sequence<number>(this.prefix+'/stockVars');
+    this.variableInstanceList=new VariableInstanceList(this.prefix+'/variableInstanceList');
+    this.variablePane=new VariablePane(this.prefix+'/variablePane');
+    this.variableTab=new VariableTab(this.prefix+'/variableTab');
+    this.variableValues=new VariableValues(this.prefix+'/variableValues');
   }
   RKfunction(a1: number,a2: number,a3: number,a4: void): number {return this.callMethod('RKfunction',a1,a2,a3,a4);}
   addIntegral(): void {return this.callMethod('addIntegral');}
@@ -1242,7 +1240,7 @@ export class OperationBase extends CppClass {
   bb: BoundingBox;
   constructor(prefix: string){
     super(prefix);
-    this.bb=new BoundingBox(this.prefix+'bb');
+    this.bb=new BoundingBox(this.prefix+'/bb');
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
@@ -1345,7 +1343,7 @@ export class Panopticon extends CppClass {
   backgroundColour: ecolab__cairo__Colour;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
   }
   cheight(...args: number[]): number {return this.callMethod('cheight',...args);}
   cleft(...args: number[]): number {return this.callMethod('cleft',...args);}
@@ -1385,14 +1383,14 @@ export class ParameterTab extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(prefix);
-    this.item=new Item(this.prefix+'item');
-    this.itemFocus=new Item(this.prefix+'itemFocus');
-    this.itemVector=new Sequence<Item>(prefix,Item);
-    this.rightColMargin=new Sequence<number>(prefix);
-    this.varAttrib=new Sequence<string>(prefix);
-    this.wire=new Wire(this.prefix+'wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.bottomRowMargin=new Sequence<number>(this.prefix+'/bottomRowMargin');
+    this.item=new Item(this.prefix+'/item');
+    this.itemFocus=new Item(this.prefix+'/itemFocus');
+    this.itemVector=new Sequence<Item>(this.prefix+'/itemVector',Item);
+    this.rightColMargin=new Sequence<number>(this.prefix+'/rightColMargin');
+    this.varAttrib=new Sequence<string>(this.prefix+'/varAttrib');
+    this.wire=new Wire(this.prefix+'/wire');
   }
   cell(...args: any[]): ecolab__Pango {return this.callMethod('cell',...args);}
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
@@ -1463,14 +1461,14 @@ export class PlotTab extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(prefix);
-    this.item=new Item(this.prefix+'item');
-    this.itemFocus=new Item(this.prefix+'itemFocus');
-    this.itemVector=new Sequence<Item>(prefix,Item);
-    this.rightColMargin=new Sequence<number>(prefix);
-    this.varAttrib=new Sequence<string>(prefix);
-    this.wire=new Wire(this.prefix+'wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.bottomRowMargin=new Sequence<number>(this.prefix+'/bottomRowMargin');
+    this.item=new Item(this.prefix+'/item');
+    this.itemFocus=new Item(this.prefix+'/itemFocus');
+    this.itemVector=new Sequence<Item>(this.prefix+'/itemVector',Item);
+    this.rightColMargin=new Sequence<number>(this.prefix+'/rightColMargin');
+    this.varAttrib=new Sequence<string>(this.prefix+'/varAttrib');
+    this.wire=new Wire(this.prefix+'/wire');
   }
   cell(...args: any[]): ecolab__Pango {return this.callMethod('cell',...args);}
   clickType(...args: any[]): string {return this.callMethod('clickType',...args);}
@@ -1574,15 +1572,15 @@ export class Selection extends CppClass {
   wires: Sequence<Wire>;
   constructor(prefix: string){
     super(prefix);
-    this.bb=new BoundingBox(this.prefix+'bb');
-    this.bookmarks=new Container<Bookmark>(prefix,Bookmark);
-    this.createdIOvariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.groups=new Sequence<Group>(prefix,Group);
-    this.inVariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.items=new Sequence<Item>(prefix,Item);
-    this.outVariables=new Sequence<VariableBase>(prefix,VariableBase);
-    this.svgRenderer=new SVGRenderer(this.prefix+'svgRenderer');
-    this.wires=new Sequence<Wire>(prefix,Wire);
+    this.bb=new BoundingBox(this.prefix+'/bb');
+    this.bookmarks=new Container<Bookmark>(this.prefix+'/bookmarks',Bookmark);
+    this.createdIOvariables=new Sequence<VariableBase>(this.prefix+'/createdIOvariables',VariableBase);
+    this.groups=new Sequence<Group>(this.prefix+'/groups',Group);
+    this.inVariables=new Sequence<VariableBase>(this.prefix+'/inVariables',VariableBase);
+    this.items=new Sequence<Item>(this.prefix+'/items',Item);
+    this.outVariables=new Sequence<VariableBase>(this.prefix+'/outVariables',VariableBase);
+    this.svgRenderer=new SVGRenderer(this.prefix+'/svgRenderer');
+    this.wires=new Sequence<Wire>(this.prefix+'/wires',Wire);
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
@@ -1755,7 +1753,7 @@ export class VariableBase extends Item {
       super(prefix)
     else
       super((<VariableBase>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'bb');
+    this.bb=new BoundingBox(this.prefix+'/bb');
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
@@ -1900,12 +1898,12 @@ export class VariablePane extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(prefix);
-    this.item=new Item(this.prefix+'item');
-    this.rightColMargin=new Sequence<number>(prefix);
-    this.selection=new Container<string>(prefix);
-    this.wire=new Wire(this.prefix+'wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.bottomRowMargin=new Sequence<number>(this.prefix+'/bottomRowMargin');
+    this.item=new Item(this.prefix+'/item');
+    this.rightColMargin=new Sequence<number>(this.prefix+'/rightColMargin');
+    this.selection=new Container<string>(this.prefix+'/selection');
+    this.wire=new Wire(this.prefix+'/wire');
   }
   cell(...args: any[]): VariablePaneCell {return this.callMethod('cell',...args);}
   colX(a1: number): number {return this.callMethod('colX',a1);}
@@ -1979,14 +1977,14 @@ export class VariableTab extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(prefix);
-    this.item=new Item(this.prefix+'item');
-    this.itemFocus=new Item(this.prefix+'itemFocus');
-    this.itemVector=new Sequence<Item>(prefix,Item);
-    this.rightColMargin=new Sequence<number>(prefix);
-    this.varAttrib=new Sequence<string>(prefix);
-    this.wire=new Wire(this.prefix+'wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
+    this.bottomRowMargin=new Sequence<number>(this.prefix+'/bottomRowMargin');
+    this.item=new Item(this.prefix+'/item');
+    this.itemFocus=new Item(this.prefix+'/itemFocus');
+    this.itemVector=new Sequence<Item>(this.prefix+'/itemVector',Item);
+    this.rightColMargin=new Sequence<number>(this.prefix+'/rightColMargin');
+    this.varAttrib=new Sequence<string>(this.prefix+'/varAttrib');
+    this.wire=new Wire(this.prefix+'/wire');
   }
   cell(...args: any[]): ecolab__Pango {return this.callMethod('cell',...args);}
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
@@ -2052,9 +2050,9 @@ export class VariableValue extends CppClass {
   units: Units;
   constructor(prefix: string){
     super(prefix);
-    this.csvDialog=new CSVDialog(this.prefix+'csvDialog');
-    this.tensorInit=new civita__TensorVal(this.prefix+'tensorInit');
-    this.units=new Units(this.prefix+'units');
+    this.csvDialog=new CSVDialog(this.prefix+'/csvDialog');
+    this.tensorInit=new civita__TensorVal(this.prefix+'/tensorInit');
+    this.units=new Units(this.prefix+'/units');
   }
   allocValue(): VariableValue {return this.callMethod('allocValue');}
   atHCIndex(a1: number): number {return this.callMethod('atHCIndex',a1);}
@@ -2156,7 +2154,7 @@ export class civita__Hypercube extends CppClass {
   xvectors: Sequence<civita__XVector>;
   constructor(prefix: string){
     super(prefix);
-    this.xvectors=new Sequence<civita__XVector>(prefix,civita__XVector);
+    this.xvectors=new Sequence<civita__XVector>(this.prefix+'/xvectors',civita__XVector);
   }
   dimLabels(): Sequence<string> {return this.callMethod('dimLabels');}
   dims(...args: any[]): Sequence<number> {return this.callMethod('dims',...args);}
@@ -2217,7 +2215,7 @@ export class civita__XVector extends CppClass {
   dimension: civita__Dimension;
   constructor(prefix: string){
     super(prefix);
-    this.dimension=new civita__Dimension(this.prefix+'dimension');
+    this.dimension=new civita__Dimension(this.prefix+'/dimension');
   }
   checkThisType(): boolean {return this.callMethod('checkThisType');}
   imposeDimension(): void {return this.callMethod('imposeDimension');}
@@ -2236,4 +2234,4 @@ export class ecolab__cairo__Colour extends CppClass {
   r(...args: number[]): number {return this.callMethod('r',...args);}
 }
 
-export var minsky=new Minsky('minsky');
+export var minsky=new Minsky('/minsky');
