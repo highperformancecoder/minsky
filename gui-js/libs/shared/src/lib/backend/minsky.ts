@@ -13,7 +13,9 @@ class ecolab__Pango {}
 class ecolab__TCL_args {}
 class cairo_t {}
 class __function__ {}
+class __iterator__ {}
 class std__istream {}
+class std__time_point {}
 
 export class Item extends CppClass {
   bb: BoundingBox;
@@ -25,7 +27,7 @@ export class Item extends CppClass {
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
   adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(...args: any[]): string {return this.callMethod('bookmarkId',...args);}
   bottom(...args: any[]): number {return this.callMethod('bottom',...args);}
   checkUnits(...args: any[]): Units {return this.callMethod('checkUnits',...args);}
@@ -56,7 +58,7 @@ export class Item extends CppClass {
   inItem(...args: any[]): boolean {return this.callMethod('inItem',...args);}
   ioVar(...args: any[]): boolean {return this.callMethod('ioVar',...args);}
   itemPtrFromThis(...args: any[]): Item {return this.callMethod('itemPtrFromThis',...args);}
-  itemTabInitialised(...args: number[]): boolean {return this.callMethod('itemTabInitialised',...args);}
+  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
   itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
   itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
   json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
@@ -64,9 +66,9 @@ export class Item extends CppClass {
   m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
   m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
   m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
+  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
-  onBorder(...args: number[]): boolean {return this.callMethod('onBorder',...args);}
+  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
   onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
   onMouseDown(...args: any[]): void {return this.callMethod('onMouseDown',...args);}
   onMouseLeave(...args: any[]): void {return this.callMethod('onMouseLeave',...args);}
@@ -74,7 +76,7 @@ export class Item extends CppClass {
   onMouseOver(...args: any[]): boolean {return this.callMethod('onMouseOver',...args);}
   onMouseUp(...args: any[]): void {return this.callMethod('onMouseUp',...args);}
   onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: number[]): boolean {return this.callMethod('onResizeHandles',...args);}
+  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
   portX(...args: any[]): number {return this.callMethod('portX',...args);}
   portY(...args: any[]): number {return this.callMethod('portY',...args);}
   ports(...args: any[]): Port {return this.callMethod('ports',...args);}
@@ -85,7 +87,7 @@ export class Item extends CppClass {
   rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
   scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
   select(...args: any[]): Item {return this.callMethod('select',...args);}
-  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
+  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   throw_error(...args: any[]): void {return this.callMethod('throw_error',...args);}
   tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
   top(...args: any[]): number {return this.callMethod('top',...args);}
@@ -140,7 +142,7 @@ export class CSVDialog extends CppClass {
   destroyFrame(): void {return this.callMethod('destroyFrame');}
   disable(): void {return this.callMethod('disable');}
   draw(): void {return this.callMethod('draw');}
-  flashNameRow(...args: number[]): boolean {return this.callMethod('flashNameRow',...args);}
+  flashNameRow(...args: boolean[]): boolean {return this.callMethod('flashNameRow',...args);}
   guessSpecAndLoadFile(): void {return this.callMethod('guessSpecAndLoadFile');}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   headerForCol(a1: number): string {return this.callMethod('headerForCol',a1);}
@@ -219,14 +221,14 @@ export class Canvas extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(): void {return this.callMethod('draw');}
   findVariableDefinition(): boolean {return this.callMethod('findVariableDefinition');}
-  focusFollowsMouse(...args: number[]): boolean {return this.callMethod('focusFollowsMouse',...args);}
+  focusFollowsMouse(...args: boolean[]): boolean {return this.callMethod('focusFollowsMouse',...args);}
   getItemAt(...args: any[]): void {return this.callMethod('getItemAt',...args);}
   getWireAt(...args: any[]): void {return this.callMethod('getWireAt',...args);}
   groupSelection(): void {return this.callMethod('groupSelection');}
   handleSelected(...args: number[]): number {return this.callMethod('handleSelected',...args);}
   hasScrollBars(...args: any[]): boolean {return this.callMethod('hasScrollBars',...args);}
   itemAt(a1: number,a2: number): Item {return this.callMethod('itemAt',a1,a2);}
-  itemIndicator(...args: number[]): boolean {return this.callMethod('itemIndicator',...args);}
+  itemIndicator(...args: boolean[]): boolean {return this.callMethod('itemIndicator',...args);}
   keyPress(...args: any[]): boolean {return this.callMethod('keyPress',...args);}
   lassoMode(...args: string[]): string {return this.callMethod('lassoMode',...args);}
   lockRavelsInSelection(): void {return this.callMethod('lockRavelsInSelection');}
@@ -241,7 +243,7 @@ export class Canvas extends CppClass {
   pushDefiningVarsToTab(): void {return this.callMethod('pushDefiningVarsToTab');}
   recentre(): void {return this.callMethod('recentre');}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
-  redrawAll(...args: number[]): boolean {return this.callMethod('redrawAll',...args);}
+  redrawAll(...args: boolean[]): boolean {return this.callMethod('redrawAll',...args);}
   redrawRequested(): boolean {return this.callMethod('redrawRequested');}
   redrawUpdateRegion(): boolean {return this.callMethod('redrawUpdateRegion');}
   redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
@@ -290,7 +292,7 @@ export class DataSpec extends CppClass {
     this.dimensions=new Sequence<civita__Dimension>(prefix,civita__Dimension);
     this.horizontalDimension=new civita__Dimension(this.prefix+'horizontalDimension');
   }
-  columnar(...args: number[]): boolean {return this.callMethod('columnar',...args);}
+  columnar(...args: boolean[]): boolean {return this.callMethod('columnar',...args);}
   dataColOffset(...args: number[]): number {return this.callMethod('dataColOffset',...args);}
   dataRowOffset(...args: number[]): number {return this.callMethod('dataRowOffset',...args);}
   decSeparator(...args: number[]): number {return this.callMethod('decSeparator',...args);}
@@ -300,7 +302,7 @@ export class DataSpec extends CppClass {
   guessFromStream(a1: std__istream): void {return this.callMethod('guessFromStream',a1);}
   headerRow(...args: number[]): number {return this.callMethod('headerRow',...args);}
   horizontalDimName(...args: string[]): string {return this.callMethod('horizontalDimName',...args);}
-  mergeDelimiters(...args: number[]): boolean {return this.callMethod('mergeDelimiters',...args);}
+  mergeDelimiters(...args: boolean[]): boolean {return this.callMethod('mergeDelimiters',...args);}
   missingValue(...args: number[]): number {return this.callMethod('missingValue',...args);}
   nColAxes(): number {return this.callMethod('nColAxes');}
   nRowAxes(): number {return this.callMethod('nRowAxes');}
@@ -326,7 +328,7 @@ export class DataSpecSchema extends CppClass {
     this.dimensions=new Sequence<civita__Dimension>(prefix,civita__Dimension);
     this.horizontalDimension=new civita__Dimension(this.prefix+'horizontalDimension');
   }
-  columnar(...args: number[]): boolean {return this.callMethod('columnar',...args);}
+  columnar(...args: boolean[]): boolean {return this.callMethod('columnar',...args);}
   dataColOffset(...args: number[]): number {return this.callMethod('dataColOffset',...args);}
   dataRowOffset(...args: number[]): number {return this.callMethod('dataRowOffset',...args);}
   decSeparator(...args: number[]): number {return this.callMethod('decSeparator',...args);}
@@ -334,7 +336,7 @@ export class DataSpecSchema extends CppClass {
   escape(...args: number[]): number {return this.callMethod('escape',...args);}
   headerRow(...args: number[]): number {return this.callMethod('headerRow',...args);}
   horizontalDimName(...args: string[]): string {return this.callMethod('horizontalDimName',...args);}
-  mergeDelimiters(...args: number[]): boolean {return this.callMethod('mergeDelimiters',...args);}
+  mergeDelimiters(...args: boolean[]): boolean {return this.callMethod('mergeDelimiters',...args);}
   missingValue(...args: number[]): number {return this.callMethod('missingValue',...args);}
   quote(...args: number[]): number {return this.callMethod('quote',...args);}
   separator(...args: number[]): number {return this.callMethod('separator',...args);}
@@ -397,7 +399,7 @@ export class EvalGodley extends CppClass {
   constructor(prefix: string){
     super(prefix);
   }
-  compatibility(...args: number[]): boolean {return this.callMethod('compatibility',...args);}
+  compatibility(...args: boolean[]): boolean {return this.callMethod('compatibility',...args);}
   eval(a1: number,a2: number): void {return this.callMethod('eval',a1,a2);}
 }
 
@@ -450,7 +452,7 @@ export class GodleyIcon extends Item {
   adjustBookmark(): void {return this.callMethod('adjustBookmark');}
   adjustPopupWidgets(): void {return this.callMethod('adjustPopupWidgets');}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(): string {return this.callMethod('bookmarkId');}
   bottom(): number {return this.callMethod('bottom');}
   bottomMargin(): number {return this.callMethod('bottomMargin');}
@@ -489,7 +491,7 @@ export class GodleyIcon extends Item {
   insertControlled(a1: Selection): void {return this.callMethod('insertControlled',a1);}
   ioVar(): boolean {return this.callMethod('ioVar');}
   itemPtrFromThis(): Item {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: number[]): boolean {return this.callMethod('itemTabInitialised',...args);}
+  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
   itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
   itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
   json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
@@ -498,10 +500,10 @@ export class GodleyIcon extends Item {
   m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
   m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
   m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
+  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveCell(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('moveCell',a1,a2,a3,a4);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
-  onBorder(...args: number[]): boolean {return this.callMethod('onBorder',...args);}
+  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
   onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
   onMouseDown(...args: any[]): void {return this.callMethod('onMouseDown',...args);}
   onMouseLeave(...args: any[]): void {return this.callMethod('onMouseLeave',...args);}
@@ -509,7 +511,7 @@ export class GodleyIcon extends Item {
   onMouseOver(...args: any[]): boolean {return this.callMethod('onMouseOver',...args);}
   onMouseUp(...args: any[]): void {return this.callMethod('onMouseUp',...args);}
   onResizeHandle(a1: number,a2: number): boolean {return this.callMethod('onResizeHandle',a1,a2);}
-  onResizeHandles(...args: number[]): boolean {return this.callMethod('onResizeHandles',...args);}
+  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
   portX(a1: number): number {return this.callMethod('portX',a1);}
   portY(a1: number): number {return this.callMethod('portY',a1);}
   ports(a1: number): Port {return this.callMethod('ports',a1);}
@@ -523,7 +525,7 @@ export class GodleyIcon extends Item {
   scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
   scaleIcon(a1: number,a2: number): void {return this.callMethod('scaleIcon',a1,a2);}
   select(...args: any[]): Item {return this.callMethod('select',...args);}
-  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
+  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   setCell(a1: number,a2: number,a3: string): void {return this.callMethod('setCell',a1,a2,a3);}
   setCurrency(a1: string): void {return this.callMethod('setCurrency',a1);}
   stockVarUnits(a1: string,a2: boolean): Units {return this.callMethod('stockVarUnits',a1,a2);}
@@ -540,7 +542,7 @@ export class GodleyIcon extends Item {
   updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
   value(): number {return this.callMethod('value');}
   valueId(a1: string): string {return this.callMethod('valueId',a1);}
-  variableDisplay(...args: number[]): boolean {return this.callMethod('variableDisplay',...args);}
+  variableDisplay(...args: boolean[]): boolean {return this.callMethod('variableDisplay',...args);}
   visible(): boolean {return this.callMethod('visible');}
   visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
   width(): number {return this.callMethod('width');}
@@ -640,7 +642,7 @@ export class GodleyTable extends CppClass {
   deleteCol(a1: number): void {return this.callMethod('deleteCol',a1);}
   deleteRow(a1: number): void {return this.callMethod('deleteRow',a1);}
   dimension(a1: number,a2: number): void {return this.callMethod('dimension',a1,a2);}
-  doubleEntryCompliant(...args: number[]): boolean {return this.callMethod('doubleEntryCompliant',...args);}
+  doubleEntryCompliant(...args: boolean[]): boolean {return this.callMethod('doubleEntryCompliant',...args);}
   exportToCSV(a1: string): void {return this.callMethod('exportToCSV',a1);}
   exportToLaTeX(a1: string): void {return this.callMethod('exportToLaTeX',a1);}
   getCell(a1: number,a2: number): string {return this.callMethod('getCell',a1,a2);}
@@ -689,7 +691,7 @@ export class GodleyTableEditor extends CppClass {
   deleteStockVar(a1: number): void {return this.callMethod('deleteStockVar',a1);}
   disableButtons(): void {return this.callMethod('disableButtons');}
   draw(a1: cairo_t): void {return this.callMethod('draw',a1);}
-  drawButtons(...args: number[]): boolean {return this.callMethod('drawButtons',...args);}
+  drawButtons(...args: boolean[]): boolean {return this.callMethod('drawButtons',...args);}
   enableButtons(): void {return this.callMethod('enableButtons');}
   godleyIcon(...args: any[]): GodleyIcon {return this.callMethod('godleyIcon',...args);}
   height(): number {return this.callMethod('height');}
@@ -766,7 +768,7 @@ export class GodleyTableWindow extends CppClass {
   disable(): void {return this.callMethod('disable');}
   disableButtons(): void {return this.callMethod('disableButtons');}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawButtons(...args: number[]): boolean {return this.callMethod('drawButtons',...args);}
+  drawButtons(...args: boolean[]): boolean {return this.callMethod('drawButtons',...args);}
   enableButtons(): void {return this.callMethod('enableButtons');}
   getItemAt(a1: number,a2: number): void {return this.callMethod('getItemAt',a1,a2);}
   getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
@@ -875,7 +877,7 @@ export class Group extends CppClass {
   arguments(...args: any[]): string {return this.callMethod('arguments',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   autoLayout(...args: any[]): void {return this.callMethod('autoLayout',...args);}
-  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(...args: any[]): string {return this.callMethod('bookmarkId',...args);}
   bookmarkList(...args: any[]): Sequence<string> {return this.callMethod('bookmarkList',...args);}
   bottom(...args: any[]): number {return this.callMethod('bottom',...args);}
@@ -936,7 +938,7 @@ export class Group extends CppClass {
   inItem(...args: any[]): boolean {return this.callMethod('inItem',...args);}
   ioVar(...args: any[]): boolean {return this.callMethod('ioVar',...args);}
   itemPtrFromThis(...args: any[]): Item {return this.callMethod('itemPtrFromThis',...args);}
-  itemTabInitialised(...args: number[]): boolean {return this.callMethod('itemTabInitialised',...args);}
+  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
   itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
   itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
   json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
@@ -950,7 +952,7 @@ export class Group extends CppClass {
   margins(...args: any[]): void {return this.callMethod('margins',...args);}
   marginsV(...args: any[]): Sequence<number> {return this.callMethod('marginsV',...args);}
   minimalEnclosingGroup(...args: any[]): Group {return this.callMethod('minimalEnclosingGroup',...args);}
-  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
+  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveContents(...args: any[]): void {return this.callMethod('moveContents',...args);}
   moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
   name(...args: any[]): string {return this.callMethod('name',...args);}
@@ -959,7 +961,7 @@ export class Group extends CppClass {
   numGroups(...args: any[]): number {return this.callMethod('numGroups',...args);}
   numItems(...args: any[]): number {return this.callMethod('numItems',...args);}
   numWires(...args: any[]): number {return this.callMethod('numWires',...args);}
-  onBorder(...args: number[]): boolean {return this.callMethod('onBorder',...args);}
+  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
   onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
   onMouseDown(...args: any[]): void {return this.callMethod('onMouseDown',...args);}
   onMouseLeave(...args: any[]): void {return this.callMethod('onMouseLeave',...args);}
@@ -967,7 +969,7 @@ export class Group extends CppClass {
   onMouseOver(...args: any[]): boolean {return this.callMethod('onMouseOver',...args);}
   onMouseUp(...args: any[]): void {return this.callMethod('onMouseUp',...args);}
   onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: number[]): boolean {return this.callMethod('onResizeHandles',...args);}
+  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
   portX(...args: any[]): number {return this.callMethod('portX',...args);}
   portY(...args: any[]): number {return this.callMethod('portY',...args);}
   ports(...args: any[]): Port {return this.callMethod('ports',...args);}
@@ -989,7 +991,7 @@ export class Group extends CppClass {
   rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
   scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
   select(...args: any[]): Item {return this.callMethod('select',...args);}
-  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
+  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   setZoom(...args: any[]): void {return this.callMethod('setZoom',...args);}
   splitBoundaryCrossingWires(...args: any[]): void {return this.callMethod('splitBoundaryCrossingWires',...args);}
   throw_error(...args: any[]): void {return this.callMethod('throw_error',...args);}
@@ -1133,8 +1135,8 @@ export class Minsky extends CppClass {
   dimensionalAnalysis(): void {return this.callMethod('dimensionalAnalysis');}
   displayErrorItem(a1: Item): void {return this.callMethod('displayErrorItem',a1);}
   displayStyle(...args: string[]): string {return this.callMethod('displayStyle',...args);}
-  displayValues(...args: number[]): boolean {return this.callMethod('displayValues',...args);}
-  doPushHistory(...args: number[]): boolean {return this.callMethod('doPushHistory',...args);}
+  displayValues(...args: boolean[]): boolean {return this.callMethod('displayValues',...args);}
+  doPushHistory(...args: boolean[]): boolean {return this.callMethod('doPushHistory',...args);}
   ecolabVersion(): string {return this.callMethod('ecolabVersion');}
   edited(): boolean {return this.callMethod('edited');}
   epsAbs(...args: number[]): number {return this.callMethod('epsAbs',...args);}
@@ -1146,7 +1148,7 @@ export class Minsky extends CppClass {
   fontScale(...args: any[]): number {return this.callMethod('fontScale',...args);}
   garbageCollect(): void {return this.callMethod('garbageCollect');}
   getCommandData(a1: string): string {return this.callMethod('getCommandData',a1);}
-  implicit(...args: number[]): boolean {return this.callMethod('implicit',...args);}
+  implicit(...args: boolean[]): boolean {return this.callMethod('implicit',...args);}
   importDuplicateColumn(a1: GodleyTable,a2: number): void {return this.callMethod('importDuplicateColumn',a1,a2);}
   importVensim(a1: string): void {return this.callMethod('importVensim',a1);}
   imposeDimensions(): void {return this.callMethod('imposeDimensions');}
@@ -1196,11 +1198,11 @@ export class Minsky extends CppClass {
   reset(): void {return this.callMethod('reset');}
   resetIfFlagged(...args: any[]): boolean {return this.callMethod('resetIfFlagged',...args);}
   reset_flag(): boolean {return this.callMethod('reset_flag');}
-  reverse(...args: number[]): boolean {return this.callMethod('reverse',...args);}
+  reverse(...args: boolean[]): boolean {return this.callMethod('reverse',...args);}
   rkreset(): void {return this.callMethod('rkreset');}
   rkstep(): void {return this.callMethod('rkstep');}
   runItemDeletedCallback(a1: Item): void {return this.callMethod('runItemDeletedCallback',a1);}
-  running(...args: number[]): boolean {return this.callMethod('running',...args);}
+  running(...args: boolean[]): boolean {return this.callMethod('running',...args);}
   save(a1: string): void {return this.callMethod('save',a1);}
   saveCanvasItemAsFile(a1: string): void {return this.callMethod('saveCanvasItemAsFile',a1);}
   saveGroupAsFile(a1: Group,a2: string): void {return this.callMethod('saveGroupAsFile',a1,a2);}
@@ -1249,7 +1251,7 @@ export class OperationBase extends CppClass {
   arg(...args: number[]): number {return this.callMethod('arg',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   axis(...args: string[]): string {return this.callMethod('axis',...args);}
-  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(): string {return this.callMethod('bookmarkId');}
   bottom(): number {return this.callMethod('bottom');}
   checkUnits(): Units {return this.callMethod('checkUnits');}
@@ -1285,7 +1287,7 @@ export class OperationBase extends CppClass {
   inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
   ioVar(): boolean {return this.callMethod('ioVar');}
   itemPtrFromThis(): Item {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: number[]): boolean {return this.callMethod('itemTabInitialised',...args);}
+  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
   itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
   itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
   json_pack(a1: classdesc__json_pack_t): void {return this.callMethod('json_pack',a1);}
@@ -1294,11 +1296,11 @@ export class OperationBase extends CppClass {
   m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
   m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
   m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
+  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   multiWire(): boolean {return this.callMethod('multiWire');}
   numPorts(): number {return this.callMethod('numPorts');}
-  onBorder(...args: number[]): boolean {return this.callMethod('onBorder',...args);}
+  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
   onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
   onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
   onMouseLeave(): void {return this.callMethod('onMouseLeave');}
@@ -1306,7 +1308,7 @@ export class OperationBase extends CppClass {
   onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
   onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
   onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: number[]): boolean {return this.callMethod('onResizeHandles',...args);}
+  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
   operationCast(...args: any[]): OperationBase {return this.callMethod('operationCast',...args);}
   portValues(): string {return this.callMethod('portValues');}
   portX(a1: number): number {return this.callMethod('portX',a1);}
@@ -1321,7 +1323,7 @@ export class OperationBase extends CppClass {
   rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
   scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
   select(a1: number,a2: number): Item {return this.callMethod('select',a1,a2);}
-  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
+  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
   tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
   top(): number {return this.callMethod('top');}
@@ -1597,7 +1599,7 @@ export class Selection extends CppClass {
   arguments(): string {return this.callMethod('arguments');}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   autoLayout(): void {return this.callMethod('autoLayout');}
-  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(): string {return this.callMethod('bookmarkId');}
   bookmarkList(): Sequence<string> {return this.callMethod('bookmarkList');}
   bottom(): number {return this.callMethod('bottom');}
@@ -1662,7 +1664,7 @@ export class Selection extends CppClass {
   insertItem(a1: Item): void {return this.callMethod('insertItem',a1);}
   ioVar(): boolean {return this.callMethod('ioVar');}
   itemPtrFromThis(): Item {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: number[]): boolean {return this.callMethod('itemTabInitialised',...args);}
+  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
   itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
   itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
   json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
@@ -1676,7 +1678,7 @@ export class Selection extends CppClass {
   margins(a1: number,a2: number): void {return this.callMethod('margins',a1,a2);}
   marginsV(): Sequence<number> {return this.callMethod('marginsV');}
   minimalEnclosingGroup(...args: any[]): Group {return this.callMethod('minimalEnclosingGroup',...args);}
-  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
+  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveContents(a1: Group): void {return this.callMethod('moveContents',a1);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   name(...args: any[]): string {return this.callMethod('name',...args);}
@@ -1685,7 +1687,7 @@ export class Selection extends CppClass {
   numGroups(): number {return this.callMethod('numGroups');}
   numItems(): number {return this.callMethod('numItems');}
   numWires(): number {return this.callMethod('numWires');}
-  onBorder(...args: number[]): boolean {return this.callMethod('onBorder',...args);}
+  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
   onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
   onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
   onMouseLeave(): void {return this.callMethod('onMouseLeave');}
@@ -1693,7 +1695,7 @@ export class Selection extends CppClass {
   onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
   onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
   onResizeHandle(a1: number,a2: number): boolean {return this.callMethod('onResizeHandle',a1,a2);}
-  onResizeHandles(...args: number[]): boolean {return this.callMethod('onResizeHandles',...args);}
+  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
   portX(a1: number): number {return this.callMethod('portX',a1);}
   portY(a1: number): number {return this.callMethod('portY',a1);}
   ports(a1: number): Port {return this.callMethod('ports',a1);}
@@ -1712,7 +1714,7 @@ export class Selection extends CppClass {
   rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
   scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
   select(...args: any[]): Item {return this.callMethod('select',...args);}
-  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
+  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   setZoom(a1: number): void {return this.callMethod('setZoom',a1);}
   splitBoundaryCrossingWires(): void {return this.callMethod('splitBoundaryCrossingWires');}
   throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
@@ -1761,7 +1763,7 @@ export class VariableBase extends Item {
   adjustBookmark(): void {return this.callMethod('adjustBookmark');}
   adjustSliderBounds(): void {return this.callMethod('adjustSliderBounds');}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(): string {return this.callMethod('bookmarkId');}
   bottom(): number {return this.callMethod('bottom');}
   checkUnits(): Units {return this.callMethod('checkUnits');}
@@ -1807,7 +1809,7 @@ export class VariableBase extends Item {
   ioVar(...args: any[]): boolean {return this.callMethod('ioVar',...args);}
   isStock(): boolean {return this.callMethod('isStock');}
   itemPtrFromThis(): Item {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: number[]): boolean {return this.callMethod('itemTabInitialised',...args);}
+  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
   itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
   itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
   json_pack(a1: classdesc__json_pack_t): void {return this.callMethod('json_pack',a1);}
@@ -1819,11 +1821,11 @@ export class VariableBase extends Item {
   m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
   mantissa(a1: EngNotation,a2: number): string {return this.callMethod('mantissa',a1,a2);}
   maxSliderSteps(): number {return this.callMethod('maxSliderSteps');}
-  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
+  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   name(...args: any[]): string {return this.callMethod('name',...args);}
   numPorts(): number {return this.callMethod('numPorts');}
-  onBorder(...args: number[]): boolean {return this.callMethod('onBorder',...args);}
+  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
   onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
   onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
   onMouseLeave(): void {return this.callMethod('onMouseLeave');}
@@ -1831,7 +1833,7 @@ export class VariableBase extends Item {
   onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
   onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
   onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: number[]): boolean {return this.callMethod('onResizeHandles',...args);}
+  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
   portX(a1: number): number {return this.callMethod('portX',a1);}
   portY(a1: number): number {return this.callMethod('portY',a1);}
   ports(a1: number): Port {return this.callMethod('ports',a1);}
@@ -1845,15 +1847,15 @@ export class VariableBase extends Item {
   rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
   scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
   select(a1: number,a2: number): Item {return this.callMethod('select',a1,a2);}
-  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
+  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   setDimLabelsPicked(a1: string,a2: string): Pair<string,string> {return this.callMethod('setDimLabelsPicked',a1,a2);}
   setUnits(a1: string): void {return this.callMethod('setUnits',a1);}
-  sliderBoundsSet(...args: number[]): boolean {return this.callMethod('sliderBoundsSet',...args);}
+  sliderBoundsSet(...args: boolean[]): boolean {return this.callMethod('sliderBoundsSet',...args);}
   sliderMax(...args: number[]): number {return this.callMethod('sliderMax',...args);}
   sliderMin(...args: number[]): number {return this.callMethod('sliderMin',...args);}
   sliderSet(a1: number): void {return this.callMethod('sliderSet',a1);}
   sliderStep(...args: number[]): number {return this.callMethod('sliderStep',...args);}
-  sliderStepRel(...args: number[]): boolean {return this.callMethod('sliderStepRel',...args);}
+  sliderStepRel(...args: boolean[]): boolean {return this.callMethod('sliderStepRel',...args);}
   temp(): boolean {return this.callMethod('temp');}
   throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
   toggleLocal(): void {return this.callMethod('toggleLocal');}
@@ -1870,7 +1872,7 @@ export class VariableBase extends Item {
   value(...args: any[]): number {return this.callMethod('value',...args);}
   valueId(): string {return this.callMethod('valueId');}
   valueIdInCurrentScope(a1: string): string {return this.callMethod('valueIdInCurrentScope',a1);}
-  varTabDisplay(...args: number[]): boolean {return this.callMethod('varTabDisplay',...args);}
+  varTabDisplay(...args: boolean[]): boolean {return this.callMethod('varTabDisplay',...args);}
   variableCast(...args: any[]): VariableBase {return this.callMethod('variableCast',...args);}
   varsPassed(...args: number[]): number {return this.callMethod('varsPassed',...args);}
   visible(...args: any[]): boolean {return this.callMethod('visible',...args);}
@@ -1902,7 +1904,7 @@ export class VariablePane extends CppClass {
     this.bottomRowMargin=new Sequence<number>(prefix);
     this.item=new Item(this.prefix+'item');
     this.rightColMargin=new Sequence<number>(prefix);
-    this.selection=new Container<string>(prefix,string);
+    this.selection=new Container<string>(prefix);
     this.wire=new Wire(this.prefix+'wire');
   }
   cell(...args: any[]): VariablePaneCell {return this.callMethod('cell',...args);}
@@ -1920,7 +1922,7 @@ export class VariablePane extends CppClass {
   keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
   mouseDown(...args: any[]): void {return this.callMethod('mouseDown',...args);}
   mouseMove(...args: any[]): void {return this.callMethod('mouseMove',...args);}
-  mousePressed(...args: number[]): boolean {return this.callMethod('mousePressed',...args);}
+  mousePressed(...args: boolean[]): boolean {return this.callMethod('mousePressed',...args);}
   mouseUp(...args: any[]): void {return this.callMethod('mouseUp',...args);}
   moveCursorTo(a1: number,a2: number): void {return this.callMethod('moveCursorTo',a1,a2);}
   moveOffsX(...args: number[]): number {return this.callMethod('moveOffsX',...args);}
@@ -1947,12 +1949,23 @@ export class VariablePane extends CppClass {
   rowY(a1: number): number {return this.callMethod('rowY',a1);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
   select(a1: string): void {return this.callMethod('select',a1);}
-  shift(...args: number[]): boolean {return this.callMethod('shift',...args);}
+  shift(...args: boolean[]): boolean {return this.callMethod('shift',...args);}
   typeName(a1: number): string {return this.callMethod('typeName',a1);}
   update(): void {return this.callMethod('update');}
   updateWithHeight(a1: number): void {return this.callMethod('updateWithHeight',a1);}
   vectorRender(a1: number,a2: __function__): ecolab__cairo__Surface {return this.callMethod('vectorRender',a1,a2);}
   zoom(...args: any[]): void {return this.callMethod('zoom',...args);}
+}
+
+export class VariablePaneCell extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  emplace(): void {return this.callMethod('emplace');}
+  height(): number {return this.callMethod('height');}
+  reset(a1: cairo_t): void {return this.callMethod('reset',a1);}
+  show(): void {return this.callMethod('show');}
+  width(): number {return this.callMethod('width');}
 }
 
 export class VariableTab extends CppClass {
@@ -2048,7 +2061,7 @@ export class VariableValue extends CppClass {
   begin(...args: any[]): number {return this.callMethod('begin',...args);}
   end(...args: any[]): number {return this.callMethod('end',...args);}
   exportAsCSV(a1: string,a2: string): void {return this.callMethod('exportAsCSV',a1,a2);}
-  godleyOverridden(...args: number[]): boolean {return this.callMethod('godleyOverridden',...args);}
+  godleyOverridden(...args: boolean[]): boolean {return this.callMethod('godleyOverridden',...args);}
   hypercube(...args: any[]): civita__Hypercube {return this.callMethod('hypercube',...args);}
   idx(): number {return this.callMethod('idx');}
   idxInRange(): boolean {return this.callMethod('idxInRange');}
@@ -2067,11 +2080,11 @@ export class VariableValue extends CppClass {
   setValue(...args: any[]): number {return this.callMethod('setValue',...args);}
   shape(): Sequence<number> {return this.callMethod('shape');}
   size(): number {return this.callMethod('size');}
-  sliderVisible(...args: number[]): boolean {return this.callMethod('sliderVisible',...args);}
+  sliderVisible(...args: boolean[]): boolean {return this.callMethod('sliderVisible',...args);}
   temp(): boolean {return this.callMethod('temp');}
   type(): string {return this.callMethod('type');}
   typeName(a1: number): string {return this.callMethod('typeName',a1);}
-  unitsCached(...args: number[]): boolean {return this.callMethod('unitsCached',...args);}
+  unitsCached(...args: boolean[]): boolean {return this.callMethod('unitsCached',...args);}
   value(): number {return this.callMethod('value');}
   valueAt(a1: number): number {return this.callMethod('valueAt',a1);}
   valueId(): string {return this.callMethod('valueId');}
@@ -2098,7 +2111,7 @@ export class Wire extends CppClass {
     super(prefix);
   }
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: number[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   coords(...args: any[]): Sequence<number> {return this.callMethod('coords',...args);}
   deleteHandle(...args: any[]): void {return this.callMethod('deleteHandle',...args);}
   detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
@@ -2106,12 +2119,12 @@ export class Wire extends CppClass {
   editHandle(...args: any[]): void {return this.callMethod('editHandle',...args);}
   from(...args: any[]): Port {return this.callMethod('from',...args);}
   insertHandle(...args: any[]): void {return this.callMethod('insertHandle',...args);}
-  mouseFocus(...args: number[]): boolean {return this.callMethod('mouseFocus',...args);}
+  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveIntoGroup(...args: any[]): void {return this.callMethod('moveIntoGroup',...args);}
   moveToPorts(...args: any[]): void {return this.callMethod('moveToPorts',...args);}
   near(...args: any[]): boolean {return this.callMethod('near',...args);}
   nearestHandle(...args: any[]): number {return this.callMethod('nearestHandle',...args);}
-  selected(...args: number[]): boolean {return this.callMethod('selected',...args);}
+  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   split(...args: any[]): void {return this.callMethod('split',...args);}
   storeCairoCoords(...args: any[]): void {return this.callMethod('storeCairoCoords',...args);}
   straighten(...args: any[]): void {return this.callMethod('straighten',...args);}
@@ -2139,6 +2152,47 @@ export class civita__Dimension extends CppClass {
   units(...args: string[]): string {return this.callMethod('units',...args);}
 }
 
+export class civita__Hypercube extends CppClass {
+  xvectors: Sequence<civita__XVector>;
+  constructor(prefix: string){
+    super(prefix);
+    this.xvectors=new Sequence<civita__XVector>(prefix,civita__XVector);
+  }
+  dimLabels(): Sequence<string> {return this.callMethod('dimLabels');}
+  dims(...args: any[]): Sequence<number> {return this.callMethod('dims',...args);}
+  logNumElements(): number {return this.callMethod('logNumElements');}
+  numElements(): number {return this.callMethod('numElements');}
+  rank(): number {return this.callMethod('rank');}
+  splitIndex(a1: number): Sequence<number> {return this.callMethod('splitIndex',a1);}
+}
+
+export class civita__ITensor extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  atHCIndex(a1: number): number {return this.callMethod('atHCIndex',a1);}
+  hypercube(...args: any[]): civita__Hypercube {return this.callMethod('hypercube',...args);}
+  imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): void {return this.callMethod('imposeDimensions',a1);}
+  index(): civita__Index {return this.callMethod('index');}
+  rank(): number {return this.callMethod('rank');}
+  setArgument(a1: civita__ITensor,a2: string,a3: number): void {return this.callMethod('setArgument',a1,a2,a3);}
+  setArguments(...args: any[]): void {return this.callMethod('setArguments',...args);}
+  shape(): Sequence<number> {return this.callMethod('shape');}
+  size(): number {return this.callMethod('size');}
+}
+
+export class civita__Index extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  begin(): __iterator__ {return this.callMethod('begin');}
+  clear(): void {return this.callMethod('clear');}
+  empty(): boolean {return this.callMethod('empty');}
+  end(): __iterator__ {return this.callMethod('end');}
+  linealOffset(a1: number): number {return this.callMethod('linealOffset',a1);}
+  size(): number {return this.callMethod('size');}
+}
+
 export class civita__TensorVal extends CppClass {
   constructor(prefix: string){
     super(prefix);
@@ -2159,6 +2213,19 @@ export class civita__TensorVal extends CppClass {
   updateTimestamp(): void {return this.callMethod('updateTimestamp');}
 }
 
+export class civita__XVector extends CppClass {
+  dimension: civita__Dimension;
+  constructor(prefix: string){
+    super(prefix);
+    this.dimension=new civita__Dimension(this.prefix+'dimension');
+  }
+  checkThisType(): boolean {return this.callMethod('checkThisType');}
+  imposeDimension(): void {return this.callMethod('imposeDimension');}
+  name(...args: string[]): string {return this.callMethod('name',...args);}
+  push_back(...args: any[]): void {return this.callMethod('push_back',...args);}
+  timeFormat(): string {return this.callMethod('timeFormat');}
+}
+
 export class ecolab__cairo__Colour extends CppClass {
   constructor(prefix: string){
     super(prefix);
@@ -2169,4 +2236,4 @@ export class ecolab__cairo__Colour extends CppClass {
   r(...args: number[]): number {return this.callMethod('r',...args);}
 }
 
-export minsky: Minsky=new Minsky('minsky');
+export var minsky=new Minsky('minsky');

@@ -3,7 +3,7 @@ import {
   Item,
   minsky,
   Pair,
-  Variable,
+  VariableBase,
 } from './index';
 import * as fs from 'fs';
 
@@ -48,7 +48,7 @@ describe('addIntegral',()=>{
     expect(minsky.model.items.size()).toBe(1);
     minsky.canvas.getItemAt(0,0);
     expect(minsky.canvas.item.classType()).toBe("Variable:flow");
-    expect((new Variable(minsky.canvas.item)).name()).toBe("foo");
+    expect((new VariableBase(minsky.canvas.item)).name()).toBe("foo");
     minsky.addIntegral();
     expect(minsky.model.items.size()).toBe(2);
     expect(minsky.model.items.elem(1).classType()).toBe("IntOp");
