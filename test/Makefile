@@ -11,7 +11,7 @@ VPATH= .. ../schema ../model ../engine ../tensor ../RESTService ../RavelCAPI $(E
 
 UNITTESTOBJS=main.o testCSVParser.o testDerivative.o testExpressionWalker.o testGrid.o testItemTab.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testXVector.o ticket-1461.o
 
-MINSKYOBJS=$(filter-out ../tclmain.o ../RESTService.o ../httpd.o ../addon.o ../dummy-addon.o ../itemTemplateInstantiations.o,$(wildcard ../*.o))
+MINSKYOBJS=$(filter-out ../tclmain.o ../RESTService.o ../httpd.o ../addon.o ../dummy-addon.o ../itemTemplateInstantiations.o ../typescriptAPI.o,$(wildcard ../*.o))
 FLAGS:=-I.. -I../RESTService -I../tensor -I../RavelCAPI $(FLAGS)
 FLAGS+=-std=c++14  -Wno-unused-local-typedefs -I../model -I../engine -I../schema
 LIBS+=-L../RavelCAPI -lravelCAPI -lboost_system -lboost_thread \
