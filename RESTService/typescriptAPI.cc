@@ -183,7 +183,7 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
       for (auto& method: klass.methods)
         {
           cout << "  "<<method.first<<"(";
-          for (int i=0; i<method.second.args.size(); ++i)
+          for (size_t i=0; i<method.second.args.size(); ++i)
             {
               if (i>0) cout<<",";
               cout<<method.second.args[i].name<<": "<<method.second.args[i].type;
