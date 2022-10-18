@@ -47,7 +47,7 @@ namespace classdesc
     
   template <class T>
   inline typename enable_if<is_function<T>, string>::T
-  typescriptTypep() {return "__function__";}
+  typescriptTypep() {return "minsky__dummy";}
     
   /// typescript name corresponding to C++ type T
   template <class T>
@@ -116,7 +116,7 @@ namespace classdesc
 
   template <class T>
   typename enable_if<And<is_iterator<T>,Not<is_pointer<T>>>,std::string>::T
-  typescriptTypep() {return "__iterator__";}
+  typescriptTypep() {return "minsky__dummy";}
 
   template <class T>
   typename enable_if<
@@ -322,7 +322,7 @@ namespace classdesc
   {
     string v=typescriptType<V>();
     t[typescriptType<C>()].properties.emplace
-      (tail(d), minsky::typescriptAPI_ns::Property{"Map<string,"+v+">","new Map<string,"+v+">(prefix,"+v+");"});
+      (tail(d), minsky::typescriptAPI_ns::Property{"Map<string,"+v+">",construct<V>("Map<string,"+v+">",tail(d))});
   }
   
   template <class C, class B, class M>

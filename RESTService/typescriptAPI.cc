@@ -24,6 +24,7 @@
 #include "godleyTableWindow.tcd"
 #include "grid.tcd"
 #include "group.tcd"
+#include "handleLockInfo.tcd"
 #include "hypercube.tcd"
 #include "index.tcd"
 #include "item.tcd"
@@ -38,10 +39,13 @@
 #include "parameterTab.tcd"
 #include "plot.tcd"
 #include "plotTab.tcd"
+#include "plotWidget.tcd"
 #include "polyRESTProcessBase.tcd"
 #include "port.h"
 #include "port.tcd"
+#include "ravelState.tcd"
 #include "renderNativeWindow.tcd"
+#include "ravelWrap.tcd"
 #include "rungeKutta.tcd"
 #include "selection.tcd"
 #include "simulation.tcd"
@@ -76,6 +80,10 @@ namespace classdesc_access
   struct access_typescriptAPI<classdesc::PolyPackBase>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
   
+  template <class T>
+  struct access_typescriptAPI<classdesc::PolyPack<T>>:
+    public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
+  
   template <>
   struct access_typescriptAPI<std::vector<boost::any>>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
@@ -83,35 +91,37 @@ namespace classdesc_access
 
 namespace classdesc
 {
-  template <> string typeName<cairo_t>() {return "cairo_t";}
+  // dummies
+  template <> string typeName<cairo_t>() {return "minsky__dummy";}
+  template <> string typeName<cairo_surface_t>() {return "minsky__dummy";}
   
-  template <>
-  struct tn<boost::geometry::model::d2::point_xy<float>>
+  template <class T>
+  struct tn<boost::geometry::model::d2::point_xy<T>>
   {
-    static string name() {return "boost::geometry::model::d2::point_xy";}
+    static string name() {return "minsky__dummy";}
   };
   template <>
   struct tn<RESTProcess_t>
   {
-    static string name() {return "classdesc::RESTProcess_t";}
+    static string name() {return "minsky__dummy";}
   };
+  template <class C, class D>
+  struct tn<std::chrono::time_point<C,D>>
+  {
+    static string name() {return "minsky__dummy";}
+  };
+  template <>
+  struct tn<std::istream>
+  {
+    static string name() {return "minsky__dummy";}
+  };
+ 
   // typescript has difficulties with specialised templates
   template <>
   struct tn<minsky::PannableTab<minsky::EquationDisplay>>
   {
     static string name() {return "EquationDisplay";}
   };
-  template <class C, class D>
-  struct tn<std::chrono::time_point<C,D>>
-  {
-    static string name() {return "std::time_point";}
-  };
-  template <>
-  struct tn<std::istream>
-  {
-    static string name() {return "std::istream";}
-  };
- 
 }
 
 #include "minsky_epilogue.h"
@@ -203,25 +213,33 @@ int main()
 
   // supporting types
   typescriptAPI<Bookmark>(api,"");
-  typescriptAPI<DataSpecSchema>(api,"");
   typescriptAPI<civita::Dimension>(api,"");
-  typescriptAPI<EngNotation>(api,"");
-  typescriptAPI<GroupItems>(api,"");
   typescriptAPI<civita::Hypercube>(api,"");
   typescriptAPI<civita::Index>(api,"");
   typescriptAPI<civita::ITensor>(api,"");
+  typescriptAPI<civita::XVector>(api,"");
+  typescriptAPI<DataSpecSchema>(api,"");
+  typescriptAPI<ecolab::Plot::LineStyle>(api,"");
+  typescriptAPI<EngNotation>(api,"");
+  typescriptAPI<GroupItems>(api,"");
+  typescriptAPI<HandleLockInfo>(api,"");
   typescriptAPI<PannableTab<EquationDisplay>>(api,"");
   typescriptAPI<Port>(api,"");
+  typescriptAPI<ravel::HandleState>(api,"");
+  typescriptAPI<ravel::RavelState>(api,"");
   typescriptAPI<Units>(api,"");
   typescriptAPI<VariablePaneCell>(api,"");
   typescriptAPI<VariableValue>(api,"");
-  typescriptAPI<civita::XVector>(api,"");
 
   // Item subclasses
   typescriptAPI<GodleyIcon>(api,"");
   api["GodleyIcon"].super="Item";
   typescriptAPI<OperationBase>(api,"");
   api["Operation"].super="Item";
+  typescriptAPI<PlotWidget>(api,"");
+  api["PlotWidget"].super="Item";
+  typescriptAPI<Ravel>(api,"");
+  api["Ravel"].super="Item";
   typescriptAPI<VariableBase>(api,"");
   api["VariableBase"].super="Item";
 
@@ -233,18 +251,15 @@ int main()
   cout << "import {CppClass, Sequence, Container, Map, Pair} from './backend';\n\n";
 
   // dummy types
-  cout << "class boost__geometry__model__d2__point_xy {}\n";
+  cout << "class minsky__dummy {}\n";
   cout << "class classdesc__json_pack_t {}\n";
+  cout << "class classdesc__pack_t {}\n";
   cout << "class classdesc__TCL_obj_t {}\n";
   cout << "class ecolab__cairo__Surface {}\n";
   cout << "class ecolab__Pango {}\n";
   cout << "class ecolab__TCL_args {}\n";
-  cout << "class cairo_t {}\n";
-  cout << "class __function__ {}\n";
-  cout << "class __iterator__ {}\n";
-  cout << "class std__istream {}\n";
-  cout << "class std__time_point {}\n\n";
-
+  cout<<endl;
+  
   // export Item first, as it is the base of many
   exportClass("Item",api["Item"]);
   for (auto& i: api)
