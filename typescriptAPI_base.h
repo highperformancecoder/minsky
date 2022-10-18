@@ -121,10 +121,28 @@ namespace classdesc
   template <class T>
   typename enable_if<
     And<
-      is_sequence<T>,
-      Not<is_const<T>>
+      And<
+        is_sequence<T>,
+        Not<is_const<T>>
+        >,        
+      And<
+        Not<is_arithmetic<typename T::value_type>>,
+        Not<is_string<typename T::value_type>>
+        >
       >,std::string>::T
+  
   typescriptTypep() {return "Sequence<"+typescriptType<typename T::value_type>()+">";}
+  
+  template <class T>
+  typename enable_if<
+    And<
+      is_sequence<T>,
+      And<
+        Not<is_const<T>>,
+        Or<is_arithmetic<typename T::value_type>, is_string<typename T::value_type>>
+        >
+      >,std::string>::T
+  typescriptTypep() {return typescriptType<typename T::value_type>()+"[]";}
   
   template <class T>
   typename enable_if<
@@ -172,12 +190,33 @@ namespace classdesc
 
 }
 
-namespace minsky
+namespace classdesc
 {
   namespace typescriptAPI_ns
   {
     using classdesc::typescriptType;
     using namespace classdesc::functional;
+
+    // arrange for sequences to be passed as javascript arrays or objects
+    template <class T>
+    typename enable_if<Not<is_container<T>>,string>::T
+    parameterType() {return typescriptType<T>();}
+
+    template <class T>
+    typename enable_if<
+      And<
+        is_container<T>,
+        Not<is_map<T>>
+        >, string>::T
+    parameterType() {return parameterType<typename T::value_type>()+"[]";}
+    
+    template <class T>
+    typename enable_if<
+      And<
+        is_container<T>,
+        is_map<T>
+        >, string>::T
+    parameterType() {return "object";}
     
     struct Property
     {
@@ -204,7 +243,7 @@ namespace minsky
         static void addArgs(std::vector<ArgDetail>& args)
         {
           constexpr int i=Arity<M>::value-N+1;
-          args.emplace_back("a"+std::to_string(i), typescriptType<typename Arg<M,i>::T>());
+          args.emplace_back("a"+std::to_string(i), parameterType<typename Arg<M,i>::T>());
           AddArgs<M,N-1>::addArgs(args);
         }
       };
@@ -228,9 +267,10 @@ namespace minsky
 
 namespace classdesc
 {
-  using typescriptAPI_t=std::map<std::string, minsky::typescriptAPI_ns::ClassType>;
+  using typescriptAPI_t=std::map<std::string, typescriptAPI_ns::ClassType>;
 
-  using minsky::typescriptAPI_ns::typescriptType;
+  using typescriptAPI_ns::typescriptType;
+  using typescriptAPI_ns::parameterType;
   
   template <class C, class B>
   typename enable_if<Not<is_map<B>>, void>::T
@@ -248,7 +288,7 @@ namespace classdesc
   typename enable_if<is_arithmetic<T>, void>::T
   typescriptAPI_type(typescriptAPI_t& t, const std::string& d, T(B::*))
   {
-    t[typescriptType<C>()].methods.emplace(tail(d), minsky::typescriptAPI_ns::Method{typescriptType<T>(), {{"...args",typescriptType<T>()+"[]"}}});
+    t[typescriptType<C>()].methods.emplace(tail(d), typescriptAPI_ns::Method{parameterType<T>(), {{"...args",typescriptType<T>()+"[]"}}});
   }
 
   
@@ -257,7 +297,7 @@ namespace classdesc
   typename enable_if<is_arithmetic<T>, void>::T
   typescriptAPI_type(typescriptAPI_t& t, const std::string& d, T*)
   {
-    t[typescriptType<C>()].methods.emplace(tail(d), minsky::typescriptAPI_ns::Method{"number", {{"...args",typescriptType<T>()+"[]"}}});
+    t[typescriptType<C>()].methods.emplace(tail(d), typescriptAPI_ns::Method{"number", {{"...args",typescriptType<T>()+"[]"}}});
   }
 
   template <class VT>
@@ -274,7 +314,7 @@ namespace classdesc
   {
     auto tn=typescriptType<typename T::value_type>();
     t[typescriptType<C>()].properties.emplace
-      (tail(d), minsky::typescriptAPI_ns::Property
+      (tail(d), typescriptAPI_ns::Property
        {"Sequence<"+tn+">", construct<typename T::value_type>("Sequence<"+tn+">", tail(d))});
   }
 
@@ -289,7 +329,7 @@ namespace classdesc
   typescriptAPI_type(typescriptAPI_t& t, const std::string& d, T(B::*))
   {
     t[typescriptType<C>()].methods.emplace
-      (tail(d), minsky::typescriptAPI_ns::Method{"string",{{"...args","string[]"}}});
+      (tail(d), typescriptAPI_ns::Method{"string",{{"...args","string[]"}}});
   }
   
   template <class C, class B, class T>
@@ -304,7 +344,7 @@ namespace classdesc
   {
     string tn=typescriptType<T>();
     t[typescriptType<C>()].properties.emplace
-      (tail(d), minsky::typescriptAPI_ns::Property{"Container<"+tn+">", construct<T>("Container<"+tn+">", tail(d))});
+      (tail(d), typescriptAPI_ns::Property{"Container<"+tn+">", construct<T>("Container<"+tn+">", tail(d))});
   }
   
   template <class C, class B, class K, class V>
@@ -313,7 +353,7 @@ namespace classdesc
     string k=typescriptType<K>();
     string v=typescriptType<V>();
     t[typescriptType<C>()].properties.emplace
-      (tail(d), minsky::typescriptAPI_ns::Property
+      (tail(d), typescriptAPI_ns::Property
        {"Map<"+k+","+v+">", construct<V>("Map<"+k+","+v+">",tail(d))});
   }
   
@@ -322,7 +362,7 @@ namespace classdesc
   {
     string v=typescriptType<V>();
     t[typescriptType<C>()].properties.emplace
-      (tail(d), minsky::typescriptAPI_ns::Property{"Map<string,"+v+">",construct<V>("Map<string,"+v+">",tail(d))});
+      (tail(d), typescriptAPI_ns::Property{"Map<string,"+v+">",construct<V>("Map<string,"+v+">",tail(d))});
   }
   
   template <class C, class B, class M>
@@ -335,10 +375,10 @@ namespace classdesc
       {
         auto res=methods.emplace
           (tail(d),
-           minsky::typescriptAPI_ns::Method{typescriptType<typename functional::Return<M>::T>()});
+           typescriptAPI_ns::Method{parameterType<typename functional::Return<M>::T>()});
         if (res.second) // first occurance of this method
           {
-            minsky::typescriptAPI_ns::Method& m=res.first->second;
+            typescriptAPI_ns::Method& m=res.first->second;
             m.addArgs<M>();
           }
         else // overloaded method

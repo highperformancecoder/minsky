@@ -24,7 +24,6 @@
 #ifndef GODLEYTABLEWINDOW_H
 #define GODLEYTABLEWINDOW_H
 #include "assetClass.h"
-#include "eventInterface.h"
 #include "godleyTable.h"
 #include "renderNativeWindow.h"
 #include <accessor.h>
@@ -207,7 +206,7 @@ namespace minsky
     virtual void requestRedrawCanvas() {} // request redraw of canvas if a canvas
   };
 
-  class GodleyTableWindow: public RenderNativeWindow, public EventInterface, public GodleyTableEditor
+  class GodleyTableWindow: public RenderNativeWindow, public GodleyTableEditor
   {
   public:
     using GodleyTableEditor::draw;

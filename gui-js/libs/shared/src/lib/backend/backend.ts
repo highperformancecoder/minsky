@@ -50,6 +50,7 @@ export class Container<Key,Value=Key> extends CppClass
   insert(key: Key) {this.callMethod("@insert",key);}
   erase(key: Key) {this.callMethod("@erase",key);}
   size(): number {return this.callMethod("@size");}
+  properties(): Value[] {return super.properties() as Value[];}
 };
 
 export class Sequence<Value> extends Container<number,Value>

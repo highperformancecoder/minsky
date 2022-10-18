@@ -20,13 +20,15 @@
 #ifndef RENDER_NATIVE_WINDOW_H
 #define RENDER_NATIVE_WINDOW_H
 
+#include "eventInterface.h"
+
 #include <cairoSurfaceImage.h>
 #include <plot.h>
 
 namespace minsky
 {  
   class WindowInformation;
-  class RenderNativeWindow : public ecolab::CairoSurface
+  class RenderNativeWindow : public ecolab::CairoSurface, public EventInterface
   {
   private:
     CLASSDESC_ACCESS(RenderNativeWindow); 

@@ -20,7 +20,6 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
-#include "eventInterface.h"
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
@@ -49,7 +48,7 @@ namespace minsky
     NoAssign& operator=(const U& x) {T::operator=(x); return *this;}
   };
   
-  class Canvas: public RenderNativeWindow, public EventInterface
+  class Canvas: public RenderNativeWindow
   {
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);

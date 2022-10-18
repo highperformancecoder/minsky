@@ -41,7 +41,7 @@ namespace minsky
     }
   };
 		 
-  class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>, public EventInterface
+  class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>
   {
     CLASSDESC_ACCESS(ItemTab);         
   protected:

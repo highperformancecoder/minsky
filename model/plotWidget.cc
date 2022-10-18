@@ -322,7 +322,7 @@ namespace minsky
     float invZ=1/zoomFactor();
     iWidth(abs(x.x1-x.x0)*invZ);
     iHeight(abs(x.y1-x.y0)*invZ);
-    moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
+    Item::moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
     bb.update(*this);
   }
 

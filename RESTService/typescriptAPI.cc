@@ -232,6 +232,7 @@ int main()
   typescriptAPI<VariableValue>(api,"");
 
   // Item subclasses
+  api["Group"].super="Item";
   typescriptAPI<GodleyIcon>(api,"");
   api["GodleyIcon"].super="Item";
   typescriptAPI<OperationBase>(api,"");

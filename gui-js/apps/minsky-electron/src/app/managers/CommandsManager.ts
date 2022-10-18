@@ -12,7 +12,7 @@ import {
   isMacOS,
   normalizeFilePathForPlatform,
   electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
-  minsky, GodleyIcon, Group, Operation, Ravel, Variable, Utility
+  minsky, GodleyIcon, Group, OperationBase, Ravel, VariableBase, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';

@@ -33,7 +33,7 @@ export class Item extends CppClass {
   closestInPort(...args: any[]): Port {return this.callMethod('closestInPort',...args);}
   closestOutPort(...args: any[]): Port {return this.callMethod('closestOutPort',...args);}
   contains(...args: any[]): boolean {return this.callMethod('contains',...args);}
-  corners(...args: any[]): Sequence<minsky__dummy> {return this.callMethod('corners',...args);}
+  corners(...args: any[]): minsky__dummy[] {return this.callMethod('corners',...args);}
   deleteAttachedWires(...args: any[]): void {return this.callMethod('deleteAttachedWires',...args);}
   deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
@@ -145,7 +145,7 @@ export class CSVDialog extends CppClass {
   loadFile(...args: any[]): void {return this.callMethod('loadFile',...args);}
   loadFileFromName(...args: any[]): void {return this.callMethod('loadFileFromName',...args);}
   loadWebFile(...args: any[]): string {return this.callMethod('loadWebFile',...args);}
-  parseLines(...args: any[]): Sequence<Sequence<string>> {return this.callMethod('parseLines',...args);}
+  parseLines(...args: any[]): string[][] {return this.callMethod('parseLines',...args);}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
   redrawWithBounds(...args: any[]): void {return this.callMethod('redrawWithBounds',...args);}
   registerImage(...args: any[]): void {return this.callMethod('registerImage',...args);}
@@ -235,7 +235,7 @@ export class Canvas extends CppClass {
   moveOffsY(...args: number[]): number {return this.callMethod('moveOffsY',...args);}
   moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
   openGroupInCanvas(a1: Item): void {return this.callMethod('openGroupInCanvas',a1);}
-  position(...args: any[]): Sequence<number> {return this.callMethod('position',...args);}
+  position(...args: any[]): number[] {return this.callMethod('position',...args);}
   pushDefiningVarsToTab(): void {return this.callMethod('pushDefiningVarsToTab');}
   recentre(): void {return this.callMethod('recentre');}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
@@ -371,7 +371,7 @@ export class EquationDisplay extends CppClass {
   moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
   offsx(...args: number[]): number {return this.callMethod('offsx',...args);}
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
-  position(...args: any[]): Sequence<number> {return this.callMethod('position',...args);}
+  position(...args: any[]): number[] {return this.callMethod('position',...args);}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
   redrawWithBounds(...args: any[]): void {return this.callMethod('redrawWithBounds',...args);}
   registerImage(...args: any[]): void {return this.callMethod('registerImage',...args);}
@@ -460,7 +460,7 @@ export class GodleyIcon extends Item {
   closestInPort(a1: number,a2: number): Port {return this.callMethod('closestInPort',a1,a2);}
   closestOutPort(a1: number,a2: number): Port {return this.callMethod('closestOutPort',a1,a2);}
   contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): Sequence<minsky__dummy> {return this.callMethod('corners');}
+  corners(): minsky__dummy[] {return this.callMethod('corners');}
   deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
   deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   deleteRow(a1: number): void {return this.callMethod('deleteRow',a1);}
@@ -477,7 +477,7 @@ export class GodleyIcon extends Item {
   editorMode(): boolean {return this.callMethod('editorMode');}
   ensureBBValid(): void {return this.callMethod('ensureBBValid');}
   flip(): void {return this.callMethod('flip');}
-  flowSignature(a1: number): Map<string,number> {return this.callMethod('flowSignature',a1);}
+  flowSignature(a1: number): object {return this.callMethod('flowSignature',a1);}
   flowVars(): Sequence<VariableBase> {return this.callMethod('flowVars');}
   height(): number {return this.callMethod('height');}
   iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
@@ -600,7 +600,7 @@ export class GodleyTab extends CppClass {
   offsx(...args: number[]): number {return this.callMethod('offsx',...args);}
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   populateItemVector(): void {return this.callMethod('populateItemVector');}
-  position(): Sequence<number> {return this.callMethod('position');}
+  position(): number[] {return this.callMethod('position');}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
   redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
@@ -642,10 +642,10 @@ export class GodleyTable extends CppClass {
   exportToCSV(a1: string): void {return this.callMethod('exportToCSV',a1);}
   exportToLaTeX(a1: string): void {return this.callMethod('exportToLaTeX',a1);}
   getCell(a1: number,a2: number): string {return this.callMethod('getCell',a1,a2);}
-  getColumn(a1: number): Sequence<string> {return this.callMethod('getColumn',a1);}
-  getColumnVariables(): Sequence<string> {return this.callMethod('getColumnVariables');}
-  getData(): Sequence<Sequence<string>> {return this.callMethod('getData');}
-  getVariables(): Sequence<string> {return this.callMethod('getVariables');}
+  getColumn(a1: number): string[] {return this.callMethod('getColumn',a1);}
+  getColumnVariables(): string[] {return this.callMethod('getColumnVariables');}
+  getData(): Sequence<string[]> {return this.callMethod('getData');}
+  getVariables(): string[] {return this.callMethod('getVariables');}
   initialConditionRow(a1: number): boolean {return this.callMethod('initialConditionRow',a1);}
   insertCol(a1: number): void {return this.callMethod('insertCol',a1);}
   insertRow(a1: number): void {return this.callMethod('insertRow',a1);}
@@ -701,7 +701,7 @@ export class GodleyTableEditor extends CppClass {
   insertIdx(...args: number[]): number {return this.callMethod('insertIdx',...args);}
   keyPress(a1: number,a2: string): void {return this.callMethod('keyPress',a1,a2);}
   leftTableOffset(...args: number[]): number {return this.callMethod('leftTableOffset',...args);}
-  matchingTableColumns(a1: number): Container<string> {return this.callMethod('matchingTableColumns',a1);}
+  matchingTableColumns(a1: number): string[] {return this.callMethod('matchingTableColumns',a1);}
   maxHistory(...args: number[]): number {return this.callMethod('maxHistory',...args);}
   minColumnWidth(...args: number[]): number {return this.callMethod('minColumnWidth',...args);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -781,7 +781,7 @@ export class GodleyTableWindow extends CppClass {
   insertIdx(...args: number[]): number {return this.callMethod('insertIdx',...args);}
   keyPress(...args: any[]): boolean {return this.callMethod('keyPress',...args);}
   leftTableOffset(...args: number[]): number {return this.callMethod('leftTableOffset',...args);}
-  matchingTableColumns(a1: number): Container<string> {return this.callMethod('matchingTableColumns',a1);}
+  matchingTableColumns(a1: number): string[] {return this.callMethod('matchingTableColumns',a1);}
   maxHistory(...args: number[]): number {return this.callMethod('maxHistory',...args);}
   minColumnWidth(...args: number[]): number {return this.callMethod('minColumnWidth',...args);}
   mouseDown(...args: any[]): void {return this.callMethod('mouseDown',...args);}
@@ -795,7 +795,7 @@ export class GodleyTableWindow extends CppClass {
   navigateRight(): void {return this.callMethod('navigateRight');}
   navigateUp(): void {return this.callMethod('navigateUp');}
   paste(): void {return this.callMethod('paste');}
-  position(): Sequence<number> {return this.callMethod('position');}
+  position(): number[] {return this.callMethod('position');}
   pulldownHot(...args: number[]): number {return this.callMethod('pulldownHot',...args);}
   pushHistory(): void {return this.callMethod('pushHistory');}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
@@ -834,7 +834,7 @@ export class GodleyTableWindow extends CppClass {
   zoomFactor(...args: number[]): number {return this.callMethod('zoomFactor',...args);}
 }
 
-export class Group extends CppClass {
+export class Group extends Item {
   bb: BoundingBox;
   bookmarks: Container<Bookmark>;
   createdIOvariables: Sequence<VariableBase>;
@@ -844,8 +844,11 @@ export class Group extends CppClass {
   outVariables: Sequence<VariableBase>;
   svgRenderer: SVGRenderer;
   wires: Sequence<Wire>;
-  constructor(prefix: string){
-    super(prefix);
+  constructor(prefix: string|Item){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super((<Group>prefix).prefix)
     this.bb=new BoundingBox(this.prefix+'/bb');
     this.bookmarks=new Container<Bookmark>(this.prefix+'/bookmarks',Bookmark);
     this.createdIOvariables=new Sequence<VariableBase>(this.prefix+'/createdIOvariables',VariableBase);
@@ -858,7 +861,7 @@ export class Group extends CppClass {
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  accessibleVars(...args: any[]): Sequence<string> {return this.callMethod('accessibleVars',...args);}
+  accessibleVars(...args: any[]): string[] {return this.callMethod('accessibleVars',...args);}
   addBookmark(...args: any[]): void {return this.callMethod('addBookmark',...args);}
   addBookmarkXY(...args: any[]): void {return this.callMethod('addBookmarkXY',...args);}
   addGroup(...args: any[]): Group {return this.callMethod('addGroup',...args);}
@@ -873,9 +876,9 @@ export class Group extends CppClass {
   autoLayout(...args: any[]): void {return this.callMethod('autoLayout',...args);}
   bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(...args: any[]): string {return this.callMethod('bookmarkId',...args);}
-  bookmarkList(...args: any[]): Sequence<string> {return this.callMethod('bookmarkList',...args);}
+  bookmarkList(...args: any[]): string[] {return this.callMethod('bookmarkList',...args);}
   bottom(...args: any[]): number {return this.callMethod('bottom',...args);}
-  cBounds(...args: any[]): Sequence<number> {return this.callMethod('cBounds',...args);}
+  cBounds(...args: any[]): number[] {return this.callMethod('cBounds',...args);}
   checkAddIORegion(...args: any[]): void {return this.callMethod('checkAddIORegion',...args);}
   checkUnits(...args: any[]): Units {return this.callMethod('checkUnits',...args);}
   classType(...args: any[]): string {return this.callMethod('classType',...args);}
@@ -890,7 +893,7 @@ export class Group extends CppClass {
   contentBounds(...args: any[]): number {return this.callMethod('contentBounds',...args);}
   copy(...args: any[]): Group {return this.callMethod('copy',...args);}
   copyUnowned(...args: any[]): Group {return this.callMethod('copyUnowned',...args);}
-  corners(...args: any[]): Sequence<minsky__dummy> {return this.callMethod('corners',...args);}
+  corners(...args: any[]): minsky__dummy[] {return this.callMethod('corners',...args);}
   defaultExtension(...args: any[]): string {return this.callMethod('defaultExtension',...args);}
   deleteAttachedWires(...args: any[]): void {return this.callMethod('deleteAttachedWires',...args);}
   deleteBookmark(...args: any[]): void {return this.callMethod('deleteBookmark',...args);}
@@ -944,7 +947,7 @@ export class Group extends CppClass {
   m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
   makeSubroutine(...args: any[]): void {return this.callMethod('makeSubroutine',...args);}
   margins(...args: any[]): void {return this.callMethod('margins',...args);}
-  marginsV(...args: any[]): Sequence<number> {return this.callMethod('marginsV',...args);}
+  marginsV(...args: any[]): number[] {return this.callMethod('marginsV',...args);}
   minimalEnclosingGroup(...args: any[]): Group {return this.callMethod('minimalEnclosingGroup',...args);}
   mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveContents(...args: any[]): void {return this.callMethod('moveContents',...args);}
@@ -1112,10 +1115,10 @@ export class Minsky extends CppClass {
   }
   RKfunction(a1: number,a2: number,a3: number,a4: void): number {return this.callMethod('RKfunction',a1,a2,a3,a4);}
   addIntegral(): void {return this.callMethod('addIntegral');}
-  assetClasses(): Sequence<string> {return this.callMethod('assetClasses');}
+  assetClasses(): string[] {return this.callMethod('assetClasses');}
   autoLayout(): void {return this.callMethod('autoLayout');}
   autoSaveFile(): string {return this.callMethod('autoSaveFile');}
-  availableOperations(): Sequence<string> {return this.callMethod('availableOperations');}
+  availableOperations(): string[] {return this.callMethod('availableOperations');}
   balanceColumns(a1: GodleyIcon,a2: number,a3: GodleyIcon,a4: number): void {return this.callMethod('balanceColumns',a1,a2,a3,a4);}
   balanceDuplicateColumns(a1: GodleyIcon,a2: number): void {return this.callMethod('balanceDuplicateColumns',a1,a2);}
   checkEquationOrder(): boolean {return this.callMethod('checkEquationOrder');}
@@ -1166,11 +1169,11 @@ export class Minsky extends CppClass {
   latex(a1: string,a2: boolean): void {return this.callMethod('latex',a1,a2);}
   latex2pango(a1: string): string {return this.callMethod('latex2pango',a1);}
   listAllInstances(): void {return this.callMethod('listAllInstances');}
-  listFonts(): Sequence<string> {return this.callMethod('listFonts');}
+  listFonts(): string[] {return this.callMethod('listFonts');}
   load(a1: string): void {return this.callMethod('load',a1);}
   makeVariablesConsistent(): void {return this.callMethod('makeVariablesConsistent');}
   markEdited(): void {return this.callMethod('markEdited');}
-  matchingTableColumns(a1: GodleyIcon,a2: string): Container<string> {return this.callMethod('matchingTableColumns',a1,a2);}
+  matchingTableColumns(a1: GodleyIcon,a2: string): string[] {return this.callMethod('matchingTableColumns',a1,a2);}
   matlab(a1: string): void {return this.callMethod('matlab',a1);}
   maxHistory(...args: number[]): number {return this.callMethod('maxHistory',...args);}
   maxWaitMS(...args: number[]): number {return this.callMethod('maxWaitMS',...args);}
@@ -1223,7 +1226,7 @@ export class Minsky extends CppClass {
   setRavelIconResource(a1: string): void {return this.callMethod('setRavelIconResource',a1);}
   simulationDelay(...args: number[]): number {return this.callMethod('simulationDelay',...args);}
   srand(a1: number): void {return this.callMethod('srand',a1);}
-  step(): Sequence<number> {return this.callMethod('step');}
+  step(): number[] {return this.callMethod('step');}
   stepMax(...args: number[]): number {return this.callMethod('stepMax',...args);}
   stepMin(...args: number[]): number {return this.callMethod('stepMin',...args);}
   t(...args: number[]): number {return this.callMethod('t',...args);}
@@ -1232,7 +1235,7 @@ export class Minsky extends CppClass {
   tmax(...args: number[]): number {return this.callMethod('tmax',...args);}
   triggerCheckMemAllocationCallback(): boolean {return this.callMethod('triggerCheckMemAllocationCallback');}
   undo(a1: number): number {return this.callMethod('undo',a1);}
-  variableTypes(): Sequence<string> {return this.callMethod('variableTypes');}
+  variableTypes(): string[] {return this.callMethod('variableTypes');}
 }
 
 export class Operation extends Item {
@@ -1268,12 +1271,12 @@ export class OperationBase extends CppClass {
   closestInPort(a1: number,a2: number): Port {return this.callMethod('closestInPort',a1,a2);}
   closestOutPort(a1: number,a2: number): Port {return this.callMethod('closestOutPort',a1,a2);}
   contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): Sequence<minsky__dummy> {return this.callMethod('corners');}
+  corners(): minsky__dummy[] {return this.callMethod('corners');}
   create(a1: string): OperationBase {return this.callMethod('create',a1);}
   deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
   deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  dimensions(): Sequence<string> {return this.callMethod('dimensions');}
+  dimensions(): string[] {return this.callMethod('dimensions');}
   disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
@@ -1433,7 +1436,7 @@ export class ParameterTab extends CppClass {
   offsx(...args: number[]): number {return this.callMethod('offsx',...args);}
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   populateItemVector(): void {return this.callMethod('populateItemVector');}
-  position(...args: any[]): Sequence<number> {return this.callMethod('position',...args);}
+  position(...args: any[]): number[] {return this.callMethod('position',...args);}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
   redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
@@ -1511,7 +1514,7 @@ export class PlotTab extends CppClass {
   offsx(...args: number[]): number {return this.callMethod('offsx',...args);}
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   populateItemVector(): void {return this.callMethod('populateItemVector');}
-  position(): Sequence<number> {return this.callMethod('position');}
+  position(): number[] {return this.callMethod('position');}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
   redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
@@ -1595,7 +1598,7 @@ export class PlotWidget extends Item {
   closestOutPort(a1: number,a2: number): Port {return this.callMethod('closestOutPort',a1,a2);}
   connectVar(a1: VariableValue,a2: number): void {return this.callMethod('connectVar',a1,a2);}
   contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): Sequence<minsky__dummy> {return this.callMethod('corners');}
+  corners(): minsky__dummy[] {return this.callMethod('corners');}
   deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
   deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   destroyFrame(): void {return this.callMethod('destroyFrame');}
@@ -1772,8 +1775,8 @@ export class Ravel extends Item {
   addPorts(): void {return this.callMethod('addPorts');}
   adjustBookmark(): void {return this.callMethod('adjustBookmark');}
   adjustSlicer(a1: number): void {return this.callMethod('adjustSlicer',a1);}
-  allSliceLabels(): Sequence<string> {return this.callMethod('allSliceLabels');}
-  allSliceLabelsAxis(a1: number): Sequence<string> {return this.callMethod('allSliceLabelsAxis',a1);}
+  allSliceLabels(): string[] {return this.callMethod('allSliceLabels');}
+  allSliceLabelsAxis(a1: number): string[] {return this.callMethod('allSliceLabelsAxis',a1);}
   applyState(a1: ravel__RavelState): void {return this.callMethod('applyState',a1);}
   arg(...args: number[]): number {return this.callMethod('arg',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
@@ -1790,7 +1793,7 @@ export class Ravel extends Item {
   closestInPort(a1: number,a2: number): Port {return this.callMethod('closestInPort',a1,a2);}
   closestOutPort(a1: number,a2: number): Port {return this.callMethod('closestOutPort',a1,a2);}
   contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): Sequence<minsky__dummy> {return this.callMethod('corners');}
+  corners(): minsky__dummy[] {return this.callMethod('corners');}
   create(a1: string): OperationBase {return this.callMethod('create',a1);}
   deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
   deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
@@ -1799,7 +1802,7 @@ export class Ravel extends Item {
   dimension(a1: number): civita__Dimension {return this.callMethod('dimension',a1);}
   dimensionType(...args: any[]): string {return this.callMethod('dimensionType',...args);}
   dimensionUnitsFormat(...args: any[]): string {return this.callMethod('dimensionUnitsFormat',...args);}
-  dimensions(): Sequence<string> {return this.callMethod('dimensions');}
+  dimensions(): string[] {return this.callMethod('dimensions');}
   disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
   displayDelayedTooltip(...args: any[]): void {return this.callMethod('displayDelayedTooltip',...args);}
   displayFilterCaliper(): boolean {return this.callMethod('displayFilterCaliper');}
@@ -1816,7 +1819,7 @@ export class Ravel extends Item {
   getState(): ravel__RavelState {return this.callMethod('getState');}
   h(...args: number[]): number {return this.callMethod('h',...args);}
   handleDescription(a1: number): string {return this.callMethod('handleDescription',a1);}
-  handleNames(): Sequence<string> {return this.callMethod('handleNames');}
+  handleNames(): string[] {return this.callMethod('handleNames');}
   handleSetReduction(a1: number,a2: string): void {return this.callMethod('handleSetReduction',a1,a2);}
   handleSortableByValue(): boolean {return this.callMethod('handleSortableByValue');}
   height(): number {return this.callMethod('height');}
@@ -1856,8 +1859,8 @@ export class Ravel extends Item {
   onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
   onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
   operationCast(...args: any[]): OperationBase {return this.callMethod('operationCast',...args);}
-  pickSliceLabels(a1: number,a2: Sequence<string>): void {return this.callMethod('pickSliceLabels',a1,a2);}
-  pickedSliceLabels(): Sequence<string> {return this.callMethod('pickedSliceLabels');}
+  pickSliceLabels(a1: number,a2: string[]): void {return this.callMethod('pickSliceLabels',a1,a2);}
+  pickedSliceLabels(): string[] {return this.callMethod('pickedSliceLabels');}
   populateHypercube(a1: civita__Hypercube): void {return this.callMethod('populateHypercube',a1);}
   portValues(): string {return this.callMethod('portValues');}
   portX(a1: number): number {return this.callMethod('portX',a1);}
@@ -1911,15 +1914,15 @@ export class RavelLockGroup extends CppClass {
   }
   addHandleInfo(a1: Ravel): void {return this.callMethod('addHandleInfo',a1);}
   addRavel(a1: Ravel): void {return this.callMethod('addRavel',a1);}
-  allLockHandles(): Sequence<string> {return this.callMethod('allLockHandles');}
+  allLockHandles(): string[] {return this.callMethod('allLockHandles');}
   broadcast(a1: Ravel): void {return this.callMethod('broadcast',a1);}
   colour(): number {return this.callMethod('colour');}
-  handleNames(a1: number): Sequence<string> {return this.callMethod('handleNames',a1);}
+  handleNames(a1: number): string[] {return this.callMethod('handleNames',a1);}
   initialBroadcast(): void {return this.callMethod('initialBroadcast');}
-  ravelNames(): Sequence<string> {return this.callMethod('ravelNames');}
+  ravelNames(): string[] {return this.callMethod('ravelNames');}
   ravels(): Sequence<Ravel> {return this.callMethod('ravels');}
   removeFromGroup(a1: Ravel): void {return this.callMethod('removeFromGroup',a1);}
-  setLockHandles(a1: Sequence<string>): void {return this.callMethod('setLockHandles',a1);}
+  setLockHandles(a1: string[]): void {return this.callMethod('setLockHandles',a1);}
   validateLockHandleInfo(): void {return this.callMethod('validateLockHandleInfo');}
 }
 
@@ -1957,7 +1960,7 @@ export class Selection extends CppClass {
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  accessibleVars(): Sequence<string> {return this.callMethod('accessibleVars');}
+  accessibleVars(): string[] {return this.callMethod('accessibleVars');}
   addBookmark(a1: string): void {return this.callMethod('addBookmark',a1);}
   addBookmarkXY(a1: number,a2: number,a3: string): void {return this.callMethod('addBookmarkXY',a1,a2,a3);}
   addGroup(...args: any[]): Group {return this.callMethod('addGroup',...args);}
@@ -1972,9 +1975,9 @@ export class Selection extends CppClass {
   autoLayout(): void {return this.callMethod('autoLayout');}
   bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bookmarkList(): Sequence<string> {return this.callMethod('bookmarkList');}
+  bookmarkList(): string[] {return this.callMethod('bookmarkList');}
   bottom(): number {return this.callMethod('bottom');}
-  cBounds(): Sequence<number> {return this.callMethod('cBounds');}
+  cBounds(): number[] {return this.callMethod('cBounds');}
   checkAddIORegion(a1: Item): void {return this.callMethod('checkAddIORegion',a1);}
   checkUnits(): Units {return this.callMethod('checkUnits');}
   classType(...args: any[]): string {return this.callMethod('classType',...args);}
@@ -1989,7 +1992,7 @@ export class Selection extends CppClass {
   contentBounds(a1: number,a2: number,a3: number,a4: number): number {return this.callMethod('contentBounds',a1,a2,a3,a4);}
   copy(): Group {return this.callMethod('copy');}
   copyUnowned(): Group {return this.callMethod('copyUnowned');}
-  corners(): Sequence<minsky__dummy> {return this.callMethod('corners');}
+  corners(): minsky__dummy[] {return this.callMethod('corners');}
   defaultExtension(): string {return this.callMethod('defaultExtension');}
   deleteAttachedWires(...args: any[]): void {return this.callMethod('deleteAttachedWires',...args);}
   deleteBookmark(a1: number): void {return this.callMethod('deleteBookmark',a1);}
@@ -2047,7 +2050,7 @@ export class Selection extends CppClass {
   m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
   makeSubroutine(): void {return this.callMethod('makeSubroutine');}
   margins(a1: number,a2: number): void {return this.callMethod('margins',a1,a2);}
-  marginsV(): Sequence<number> {return this.callMethod('marginsV');}
+  marginsV(): number[] {return this.callMethod('marginsV');}
   minimalEnclosingGroup(...args: any[]): Group {return this.callMethod('minimalEnclosingGroup',...args);}
   mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveContents(a1: Group): void {return this.callMethod('moveContents',a1);}
@@ -2130,7 +2133,7 @@ export class VariableBase extends Item {
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
-  accessibleVars(): Sequence<string> {return this.callMethod('accessibleVars');}
+  accessibleVars(): string[] {return this.callMethod('accessibleVars');}
   adjustBookmark(): void {return this.callMethod('adjustBookmark');}
   adjustSliderBounds(): void {return this.callMethod('adjustSliderBounds');}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
@@ -2144,7 +2147,7 @@ export class VariableBase extends Item {
   closestInPort(a1: number,a2: number): Port {return this.callMethod('closestInPort',a1,a2);}
   closestOutPort(a1: number,a2: number): Port {return this.callMethod('closestOutPort',a1,a2);}
   contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): Sequence<minsky__dummy> {return this.callMethod('corners');}
+  corners(): minsky__dummy[] {return this.callMethod('corners');}
   create(a1: string): VariableBase {return this.callMethod('create',a1);}
   defined(): boolean {return this.callMethod('defined');}
   definition(): string {return this.callMethod('definition');}
@@ -2152,8 +2155,8 @@ export class VariableBase extends Item {
   deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   destroyFrame(): void {return this.callMethod('destroyFrame');}
   detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  dimLabels(): Sequence<string> {return this.callMethod('dimLabels');}
-  dims(): Sequence<number> {return this.callMethod('dims');}
+  dimLabels(): string[] {return this.callMethod('dimLabels');}
+  dims(): number[] {return this.callMethod('dims');}
   disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
@@ -2259,7 +2262,7 @@ export class VariableInstanceList extends CppClass {
     super(prefix);
   }
   gotoInstance(a1: number): void {return this.callMethod('gotoInstance',a1);}
-  names(): Sequence<string> {return this.callMethod('names');}
+  names(): string[] {return this.callMethod('names');}
 }
 
 export class VariablePane extends CppClass {
@@ -2303,7 +2306,7 @@ export class VariablePane extends CppClass {
   numRows(...args: any[]): number {return this.callMethod('numRows',...args);}
   offsx(...args: number[]): number {return this.callMethod('offsx',...args);}
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
-  position(): Sequence<number> {return this.callMethod('position');}
+  position(): number[] {return this.callMethod('position');}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
   redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
@@ -2392,7 +2395,7 @@ export class VariableTab extends CppClass {
   offsx(...args: number[]): number {return this.callMethod('offsx',...args);}
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   populateItemVector(): void {return this.callMethod('populateItemVector');}
-  position(...args: any[]): Sequence<number> {return this.callMethod('position',...args);}
+  position(...args: any[]): number[] {return this.callMethod('position',...args);}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
   redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
@@ -2449,7 +2452,7 @@ export class VariableValue extends CppClass {
   setArguments(...args: any[]): void {return this.callMethod('setArguments',...args);}
   setUnits(...args: any[]): void {return this.callMethod('setUnits',...args);}
   setValue(...args: any[]): number {return this.callMethod('setValue',...args);}
-  shape(...args: any[]): Sequence<number> {return this.callMethod('shape',...args);}
+  shape(...args: any[]): number[] {return this.callMethod('shape',...args);}
   size(...args: any[]): number {return this.callMethod('size',...args);}
   sliderVisible(...args: boolean[]): boolean {return this.callMethod('sliderVisible',...args);}
   temp(...args: any[]): boolean {return this.callMethod('temp',...args);}
@@ -2483,7 +2486,7 @@ export class Wire extends CppClass {
   }
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  coords(...args: any[]): Sequence<number> {return this.callMethod('coords',...args);}
+  coords(...args: any[]): number[] {return this.callMethod('coords',...args);}
   deleteHandle(...args: any[]): void {return this.callMethod('deleteHandle',...args);}
   detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
@@ -2529,12 +2532,12 @@ export class civita__Hypercube extends CppClass {
     super(prefix);
     this.xvectors=new Sequence<civita__XVector>(this.prefix+'/xvectors',civita__XVector);
   }
-  dimLabels(): Sequence<string> {return this.callMethod('dimLabels');}
-  dims(...args: any[]): Sequence<number> {return this.callMethod('dims',...args);}
+  dimLabels(): string[] {return this.callMethod('dimLabels');}
+  dims(...args: any[]): number[] {return this.callMethod('dims',...args);}
   logNumElements(): number {return this.callMethod('logNumElements');}
   numElements(): number {return this.callMethod('numElements');}
   rank(): number {return this.callMethod('rank');}
-  splitIndex(a1: number): Sequence<number> {return this.callMethod('splitIndex',a1);}
+  splitIndex(a1: number): number[] {return this.callMethod('splitIndex',a1);}
 }
 
 export class civita__ITensor extends CppClass {
@@ -2548,7 +2551,7 @@ export class civita__ITensor extends CppClass {
   rank(): number {return this.callMethod('rank');}
   setArgument(a1: civita__ITensor,a2: string,a3: number): void {return this.callMethod('setArgument',a1,a2,a3);}
   setArguments(...args: any[]): void {return this.callMethod('setArguments',...args);}
-  shape(): Sequence<number> {return this.callMethod('shape');}
+  shape(): number[] {return this.callMethod('shape');}
   size(): number {return this.callMethod('size');}
 }
 
@@ -2578,7 +2581,7 @@ export class civita__TensorVal extends CppClass {
   rank(...args: any[]): number {return this.callMethod('rank',...args);}
   setArgument(...args: any[]): void {return this.callMethod('setArgument',...args);}
   setArguments(...args: any[]): void {return this.callMethod('setArguments',...args);}
-  shape(...args: any[]): Sequence<number> {return this.callMethod('shape',...args);}
+  shape(...args: any[]): number[] {return this.callMethod('shape',...args);}
   size(...args: any[]): number {return this.callMethod('size',...args);}
   timestamp(...args: any[]): minsky__dummy {return this.callMethod('timestamp',...args);}
   updateTimestamp(...args: any[]): void {return this.callMethod('updateTimestamp',...args);}
@@ -2603,7 +2606,7 @@ export class ecolab__Plot__LineStyle extends CppClass {
     super(prefix);
     this.colour=new ecolab__cairo__Colour(this.prefix+'/colour');
   }
-  dashPattern(): Sequence<number> {return this.callMethod('dashPattern');}
+  dashPattern(): number[] {return this.callMethod('dashPattern');}
   dashStyle(...args: string[]): string {return this.callMethod('dashStyle',...args);}
   width(...args: number[]): number {return this.callMethod('width',...args);}
 }
