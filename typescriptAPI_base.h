@@ -199,8 +199,20 @@ namespace classdesc
 
     // arrange for sequences to be passed as javascript arrays or objects
     template <class T>
-    typename enable_if<Not<is_container<T>>,string>::T
+    typename enable_if<
+      And<
+        Not<is_container<T>>,
+        Or<Not<is_class<T>>,is_string<T>>
+      >,string>::T
     parameterType() {return typescriptType<T>();}
+    
+    template <class T>
+    typename enable_if<
+      And<
+        is_class<T>,
+        And<Not<is_container<T>>, Not<is_string<T>>>
+      >,string>::T
+    parameterType() {return "object";}
 
     template <class T>
     typename enable_if<
@@ -267,7 +279,11 @@ namespace classdesc
 
 namespace classdesc
 {
-  using typescriptAPI_t=std::map<std::string, typescriptAPI_ns::ClassType>;
+  struct typescriptAPI_t: public std::map<std::string, typescriptAPI_ns::ClassType>
+  {
+    template <class T> void addClass();
+    template <class T, class Base> void addSubclass();
+  };
 
   using typescriptAPI_ns::typescriptType;
   using typescriptAPI_ns::parameterType;

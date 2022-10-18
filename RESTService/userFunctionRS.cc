@@ -41,6 +41,8 @@
 #include "dataSpecSchema.rcd"
 #include "dimension.h"
 #include "dimension.rcd"
+#include "eventInterface.rcd"
+#include "eventInterface.xcd"
 #include "engNotation.h"
 #include "engNotation.rcd"
 #include "engNotation.xcd"

@@ -13,6 +13,8 @@
 #include "CSVParser.tcd"
 #include "constMap.tcd"
 #include "dataSpecSchema.tcd"
+#include "dataOp.h"
+#include "dataOp.tcd"
 #include "dimension.tcd"
 #include "engNotation.tcd"
 #include "evalGodley.tcd"
@@ -27,9 +29,11 @@
 #include "handleLockInfo.tcd"
 #include "hypercube.tcd"
 #include "index.tcd"
+#include "intOp.tcd"
 #include "item.tcd"
 #include "itemTab.tcd"
 #include "lasso.tcd"
+#include "lock.tcd"
 #include "noteBase.tcd"
 #include "operation.tcd"
 #include "operationType.tcd"
@@ -51,6 +55,7 @@
 #include "simulation.tcd"
 #include "slider.tcd"
 #include "SVGItem.tcd"
+#include "switchIcon.tcd"
 #include "tensorInterface.tcd"
 #include "tensorVal.tcd"
 #include "units.tcd"
@@ -135,8 +140,12 @@ namespace classdesc
     classdesc_access::access_typescriptAPI<Base>().template type<T>(t,d);
   }
 
-  template <class T> void typescriptAPI(typescriptAPI_t& t, const string& d)
-  {typescriptAPI<T,T>(t,d);}
+  template <class T> void typescriptAPI_t::addClass() {typescriptAPI<T,T>(*this,"");}
+  template <class T, class Base> void typescriptAPI_t::addSubclass()
+  {
+    typescriptAPI<T,T>(*this,"");
+    operator[](typescriptType<T>()).super=typescriptType<Base>();
+  }
 }
 
 namespace minsky
@@ -209,40 +218,40 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
 int main()
 {
   typescriptAPI_t api;
-  typescriptAPI<Minsky>(api,"");
+  api.addClass<Minsky>();
 
   // supporting types
-  typescriptAPI<Bookmark>(api,"");
-  typescriptAPI<civita::Dimension>(api,"");
-  typescriptAPI<civita::Hypercube>(api,"");
-  typescriptAPI<civita::Index>(api,"");
-  typescriptAPI<civita::ITensor>(api,"");
-  typescriptAPI<civita::XVector>(api,"");
-  typescriptAPI<DataSpecSchema>(api,"");
-  typescriptAPI<ecolab::Plot::LineStyle>(api,"");
-  typescriptAPI<EngNotation>(api,"");
-  typescriptAPI<GroupItems>(api,"");
-  typescriptAPI<HandleLockInfo>(api,"");
-  typescriptAPI<PannableTab<EquationDisplay>>(api,"");
-  typescriptAPI<Port>(api,"");
-  typescriptAPI<ravel::HandleState>(api,"");
-  typescriptAPI<ravel::RavelState>(api,"");
-  typescriptAPI<Units>(api,"");
-  typescriptAPI<VariablePaneCell>(api,"");
-  typescriptAPI<VariableValue>(api,"");
+  api.addClass<Bookmark>();
+  api.addClass<civita::Dimension>();
+  api.addClass<civita::Hypercube>();
+  api.addClass<civita::Index>();
+  api.addClass<civita::ITensor>();
+  api.addClass<civita::XVector>();
+  api.addClass<DataSpecSchema>();
+  api.addClass<ecolab::Plot::LineStyle>();
+  api.addClass<EngNotation>();
+  api.addClass<GroupItems>();
+  api.addClass<HandleLockInfo>();
+  api.addClass<PannableTab<EquationDisplay>>();
+  api.addClass<Port>();
+  api.addClass<ravel::HandleState>();
+  api.addClass<ravel::RavelState>();
+  api.addClass<RenderNativeWindow>();
+  api.addClass<Units>();
+  api.addClass<VariablePaneCell>();
+  api.addClass<VariableValue>();
 
   // Item subclasses
-  api["Group"].super="Item";
-  typescriptAPI<GodleyIcon>(api,"");
-  api["GodleyIcon"].super="Item";
-  typescriptAPI<OperationBase>(api,"");
-  api["Operation"].super="Item";
-  typescriptAPI<PlotWidget>(api,"");
-  api["PlotWidget"].super="Item";
-  typescriptAPI<Ravel>(api,"");
-  api["Ravel"].super="Item";
-  typescriptAPI<VariableBase>(api,"");
-  api["VariableBase"].super="Item";
+  api.addSubclass<DataOp,Item>();
+  api.addSubclass<Group,Item>();
+  api.addSubclass<GodleyIcon,Item>();
+  api.addSubclass<IntOp,Item>();
+  api.addSubclass<Lock,Item>();
+  api.addSubclass<OperationBase,Item>();
+  api.addSubclass<PlotWidget,Item>();
+  api.addSubclass<Ravel,Item>();
+  api.addSubclass<SwitchIcon,Item>();
+  api.addSubclass<VariableBase,Item>();
 
   // to prevent Group recursively calling itself on construction
   api["Group"].properties.erase("parent");

@@ -15,7 +15,6 @@ import {
   HandleDescriptionPayload,
   HandleDimensionPayload,
   PickSlicesPayload,
-  LockHandlesPayload,
   MinskyProcessPayload,
   minsky,
 } from '@minsky/shared';
@@ -156,12 +155,12 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle(
-  events.SAVE_LOCK_HANDLES,
-  async (event, payload: LockHandlesPayload) => {
-    return await CommandsManager.saveLockHandles(payload);
-  }
-);
+//ipcMain.handle(
+//  events.SAVE_LOCK_HANDLES,
+//  async (event, payload: LockHandlesPayload) => {
+//    return await CommandsManager.saveLockHandles(payload);
+//  }
+//);
 
 
 ipcMain.on(events.KEY_PRESS, async (event, payload: MinskyProcessPayload) => {

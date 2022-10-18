@@ -4,7 +4,8 @@ import {
   isEmptyObject,
   isWindows,
   MainRenderingTabs,
-  minsky, GodleyIcon, Group, Operation, PlotWidget, Ravel, Variable,
+  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, SwitchIcon,
+  VariableBase,
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
@@ -267,12 +268,7 @@ export class ContextMenuManager {
 
       new MenuItem({
         label: 'Show all plots on tab',
-        type: 'checkbox',
-        checked: this.showAllPlotsOnTabChecked,
-        click: async () => {
-          minsky.canvas.showAllPlotsOnTab();
-          this.showAllPlotsOnTabChecked = !this.showAllPlotsOnTabChecked;
-        },
+        click: () => {minsky.canvas.showPlotsOnTab();},
       }),
       new MenuItem({
         label: 'Bookmark here',
@@ -588,7 +584,7 @@ export class ContextMenuManager {
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
     let portValues = 'unknown';
-    let op=new Operation(minsky.canvas.item);
+    let op=new OperationBase(minsky.canvas.item);
 
     try {
       portValues = op.portValues();
@@ -613,7 +609,7 @@ export class ContextMenuManager {
           label: 'Import Data',
           click: async () => {
             const filePath = await CommandsManager.getFilePathUsingSaveDialog();
-            if (filePath) {op.readData(filePath);}
+            if (filePath) {(new DataOp(op)).readData(filePath);}
           }
         })
       );
@@ -638,7 +634,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Toggle var binding',
           click: async () => {
-            op.toggleCoupled();
+            (new IntOp(op)).toggleCoupled();
             CommandsManager.requestRedraw();
           },
         })
@@ -832,18 +828,15 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForSwitchIcon(): Promise<MenuItem[]> {
+    let switchIcon=new SwitchIcon(minsky.canvas.item);
     const menuItems = [
       new MenuItem({
         label: 'Add case',
-        click: async () => {
-          await CommandsManager.incrCase(1);
-        },
+        click: () => {switchIcon.setNumCases(switchIcon.numCases()+1);},
       }),
       new MenuItem({
         label: 'Delete case',
-        click: async () => {
-          await CommandsManager.incrCase(-1);
-        },
+        click: () => {switchIcon.setNumCases(switchIcon.numCases()-1);},
       }),
       new MenuItem({
         label: 'Flip',
@@ -857,7 +850,7 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForLock(): Promise<MenuItem[]> {
-    let ravel=new Ravel(minsky.canvas.item);
+    let ravel=new Lock(minsky.canvas.item);
     return [
       new MenuItem({
         label: ravel.locked()? 'Unlock': 'Lock',
@@ -878,7 +871,7 @@ export class ContextMenuManager {
       dims = await CommandsManager.getItemDims();
     }
 
-    let v=new Variable(minsky.canvas.item);
+    let v=new VariableBase(minsky.canvas.item);
     
     const menuItems = [
       dims && dims.length
@@ -1031,7 +1024,7 @@ export class ContextMenuManager {
       godley.popup.selectedRow(r);
       godley.popup.selectedCol(c);
       godley.popup.insertIdx(0);
-      godley.popup.selectedIdx(0);
+      godley.popup.selectIdx(0);
     }
     var cell=godley.table.getCell(r,c);
     if (cell.length>0 && (r!=1 || c!=0))

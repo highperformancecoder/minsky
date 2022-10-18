@@ -6,13 +6,12 @@ import {
   getBackgroundStyle,
   HandleDimensionPayload,
   PickSlicesPayload,
-  LockHandlesPayload,
   InitializePopupWindowPayload,
   isEmptyObject,
   isMacOS,
   normalizeFilePathForPlatform,
   electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
-  minsky, GodleyIcon, Group, OperationBase, Ravel, VariableBase, Utility
+  minsky, GodleyIcon, Group, IntOp, OperationBase, Ravel, VariableBase, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
@@ -177,15 +176,14 @@ export class CommandsManager {
       case ClassType.Variable:
       case ClassType.VarConstant:
         CommandsManager.openRenameInstancesDialog(
-          new Variable(minsky.canvas.item).name()
+          new VariableBase(minsky.canvas.item).name()
         );
         break;
 
-      case ClassType.Operation:
       case ClassType.IntOp:
       case ClassType.DataOp:
         CommandsManager.openRenameInstancesDialog(
-          new Operation(minsky.canvas.item).description()
+          new IntOp(minsky.canvas.item).description()
         );
         break;
 
@@ -271,7 +269,7 @@ export class CommandsManager {
         minsky.canvas.getItemAt(x,y);
       }
 
-      return new Variable(minsky.canvas.item).dims();
+      return new VariableBase(minsky.canvas.item).dims();
     } catch (error) {
       console.error(
         '🚀 ~ file: commandsManager.ts ~ line 361 ~ CommandsManager ~ error',
@@ -304,13 +302,13 @@ export class CommandsManager {
 //    }
 //  }
 
-  static async incrCase(delta: number): Promise<void> {
-    const numCases = minsky.canvas.item.numCases();
-    minsky.canvas.item.setNumCases(numCases + delta);
-    CommandsManager.requestRedraw();
-
-    return;
-  }
+//  static async incrCase(delta: number): Promise<void> {
+//    const numCases = minsky.canvas.item.numCases();
+//    minsky.canvas.item.setNumCases(numCases + delta);
+//    CommandsManager.requestRedraw();
+//
+//    return;
+//  }
 
   static bookmarkThisPosition(): void {
     WindowManager.createPopupWindowWithRouting({
@@ -739,7 +737,7 @@ export class CommandsManager {
   }
 
   static async editVar() {
-    const v=new Variable(minsky.canvas.item);
+    const v=new VariableBase(minsky.canvas.item);
     WindowManager.createPopupWindowWithRouting({
       width: 500,
       height: 650,
@@ -1030,7 +1028,7 @@ export class CommandsManager {
       window.context.webContents.insertCSS(style);
     });
 
-    minsky.canvas.backgroundColour({r: r/255, g: g/255, b: b/255, a: 1});
+    minsky.canvas.backgroundColour.properties({r: r/255, g: g/255, b: b/255, a: 1});
     await CommandsManager.requestRedraw();
   };
 
@@ -1148,9 +1146,9 @@ export class CommandsManager {
     }
   }
 
-  static async saveLockHandles(payload: LockHandlesPayload) {
-    let ravel=new Ravel(minsky.canvas.item);
-    ravel.lockGroup.handleLockInfo(payload.handleLockInfo);
-    ravel.lockGroup.validateLockHandleInfo();
-  }
+//  static async saveLockHandles(payload: LockHandlesPayload) {
+//    let ravel=new Ravel(minsky.canvas.item);
+//    ravel.lockGroup.handleLockInfo(payload.handleLockInfo);
+//    ravel.lockGroup.validateLockHandleInfo();
+//  }
 }

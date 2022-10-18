@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { events, MinskyProcessPayload, DescriptionPayload, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload, LockHandlesPayload } from '@minsky/shared';
+import { events, MinskyProcessPayload, DescriptionPayload, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
 import { ipcRenderer, remote } from 'electron';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';
@@ -40,9 +40,9 @@ export class ElectronService {
     return await this.ipcRenderer.invoke(events.SAVE_PICK_SLICES, payload);
   }
 
-  async saveLockHandles(payload: LockHandlesPayload) {
-    return await this.ipcRenderer.invoke(events.SAVE_LOCK_HANDLES, payload);
-  }
+//  async saveLockHandles(payload: LockHandlesPayload) {
+//    return await this.ipcRenderer.invoke(events.SAVE_LOCK_HANDLES, payload);
+//  }
 
   async sendMinskyCommandAndRender(
     payload: MinskyProcessPayload,
