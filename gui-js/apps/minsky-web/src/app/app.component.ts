@@ -1,7 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
-import { commandsMapping, events, MainRenderingTabs } from '@minsky/shared';
+import { events, MainRenderingTabs, RenderNativeWindow } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from '../environments/environment';
 
@@ -88,9 +88,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   changeTab(tab: MainRenderingTabs) {
-    this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-    });
+    new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
 
     this.cmService.currentTab = tab;
     if (this.electronService.isElectron) {

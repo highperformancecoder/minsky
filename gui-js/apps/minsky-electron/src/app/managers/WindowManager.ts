@@ -58,7 +58,8 @@ export class WindowManager {
   }
 
   static renderFrame() {
-    this.currentTab?.renderFrame(this.activeWindows.get(1).systemWindowId,
+    console.log(this.activeWindows.get(1).systemWindowId);
+    this.currentTab?.renderFrame(this.activeWindows.get(1).systemWindowId.toString(),
                             this.leftOffset,this.electronTopOffset,this.canvasWidth,this.canvasHeight,this.scaleFactor);
   }
     
