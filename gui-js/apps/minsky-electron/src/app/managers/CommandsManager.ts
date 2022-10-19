@@ -1,7 +1,6 @@
 import {
   CanvasItem,
   ClassType,
-  commandsMapping,
   events,
   getBackgroundStyle,
   HandleDimensionPayload,
@@ -23,17 +22,6 @@ import { WindowManager } from './WindowManager';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
-
-  static async getItemAt(
-    x: number,
-    y: number
-  ): Promise<Record<string, unknown>> {
-    minsky.canvas.getItemAt(x,y);
-    const item = await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM,
-    });
-    return item as Record<string, unknown>;
-  }
 
   static async deleteCurrentItemHavingId(itemId: string) {
     // TODO:: Ideally -- change flow to get the current item here..
@@ -74,9 +62,8 @@ export class CommandsManager {
   }
 
   static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
-    const item = await this.getItemAt(x, y);
 
-    if (isEmptyObject(item)) {
+    if (!minsky.canvas.getItemAt(x, y)) {
       return null;
     }
 
@@ -87,14 +74,6 @@ export class CommandsManager {
 
     const itemInfo: CanvasItem = { classType, value, id, displayContents };
     return itemInfo;
-  }
-
-  static getWireAt(
-    x: number,
-    y: number
-  ): Record<string, unknown> {
-    minsky.canvas.getWireAt(x,y);
-    return minsky.canvas.wire.properties() as Record<string, unknown>;
   }
 
   static async selectVar(x: number, y: number): Promise<boolean> {
@@ -688,11 +667,7 @@ export class CommandsManager {
     let classType = (await this.getItemClassType(x, y, true)) as string;
 
     if (isEmptyObject(classType)) {
-      const wire = await CommandsManager.getWireAt(x, y);
-
-      const isWirePresent = !isEmptyObject(wire);
-
-      classType = isWirePresent ? 'Wires' : 'DesignCanvas';
+      classType = minsky.canvas.getWireAt(x,y) ? 'Wires' : 'DesignCanvas';
     }
 
     if (!classType) {

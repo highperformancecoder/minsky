@@ -104,9 +104,7 @@ export class ContextMenuManager {
 
   private static async initContextMenuForWiring(mainWindow: BrowserWindow) {
     try {
-      const wire = await CommandsManager.getWireAt(this.x, this.y);
-
-      const isWirePresent = !isEmptyObject(wire);
+      const isWirePresent = minsky.canvas.getWireAt(this.x, this.y);
 
       const isWireVisible = minsky.canvas.wire.visible();
       const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);

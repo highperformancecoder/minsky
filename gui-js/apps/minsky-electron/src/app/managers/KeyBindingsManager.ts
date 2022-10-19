@@ -301,13 +301,11 @@ export class KeyBindingsManager {
       return;
     }
 
-    const item = await CommandsManager.getItemAt(mouseX, mouseY);
-    if (!isEmptyObject(item)) {
+    if (minsky.canvas.getItemAt(mouseX, mouseY)) {
       await CommandsManager.deleteCurrentItemHavingId(minsky.canvas.item.id());
       return;
     }
-    const wire = await CommandsManager.getWireAt(mouseX, mouseY);
-    if (!isEmptyObject(wire)) {
+    if (minsky.canvas.getWireAt(mouseX, mouseY)) {
       minsky.canvas.deleteWire();
       return;
     }

@@ -144,8 +144,8 @@ export class CSVDialog extends CppClass {
   disable(...args: any[]): void {return this.callMethod('disable',...args);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   flashNameRow(...args: boolean[]): boolean {return this.callMethod('flashNameRow',...args);}
-  getItemAt(...args: any[]): void {return this.callMethod('getItemAt',...args);}
-  getWireAt(...args: any[]): void {return this.callMethod('getWireAt',...args);}
+  getItemAt(...args: any[]): boolean {return this.callMethod('getItemAt',...args);}
+  getWireAt(...args: any[]): boolean {return this.callMethod('getWireAt',...args);}
   guessSpecAndLoadFile(...args: any[]): void {return this.callMethod('guessSpecAndLoadFile',...args);}
   hasScrollBars(...args: any[]): boolean {return this.callMethod('hasScrollBars',...args);}
   headerForCol(...args: any[]): string {return this.callMethod('headerForCol',...args);}
@@ -232,8 +232,8 @@ export class Canvas extends CppClass {
   draw(): void {return this.callMethod('draw');}
   findVariableDefinition(): boolean {return this.callMethod('findVariableDefinition');}
   focusFollowsMouse(...args: boolean[]): boolean {return this.callMethod('focusFollowsMouse',...args);}
-  getItemAt(...args: any[]): void {return this.callMethod('getItemAt',...args);}
-  getWireAt(...args: any[]): void {return this.callMethod('getWireAt',...args);}
+  getItemAt(...args: any[]): boolean {return this.callMethod('getItemAt',...args);}
+  getWireAt(...args: any[]): boolean {return this.callMethod('getWireAt',...args);}
   groupSelection(): void {return this.callMethod('groupSelection');}
   handleSelected(...args: number[]): number {return this.callMethod('handleSelected',...args);}
   hasScrollBars(...args: any[]): boolean {return this.callMethod('hasScrollBars',...args);}
@@ -489,8 +489,8 @@ export class EquationDisplay extends CppClass {
   destroyFrame(...args: any[]): void {return this.callMethod('destroyFrame',...args);}
   disable(...args: any[]): void {return this.callMethod('disable',...args);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  getItemAt(...args: any[]): void {return this.callMethod('getItemAt',...args);}
-  getWireAt(...args: any[]): void {return this.callMethod('getWireAt',...args);}
+  getItemAt(...args: any[]): boolean {return this.callMethod('getItemAt',...args);}
+  getWireAt(...args: any[]): boolean {return this.callMethod('getWireAt',...args);}
   hasScrollBars(...args: any[]): boolean {return this.callMethod('hasScrollBars',...args);}
   height(...args: any[]): number {return this.callMethod('height',...args);}
   keyPress(...args: any[]): boolean {return this.callMethod('keyPress',...args);}
@@ -542,8 +542,8 @@ export class FontDisplay extends CppClass {
   destroyFrame(): void {return this.callMethod('destroyFrame');}
   disable(): void {return this.callMethod('disable');}
   draw(): void {return this.callMethod('draw');}
-  getItemAt(a1: number,a2: number): void {return this.callMethod('getItemAt',a1,a2);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -719,9 +719,9 @@ export class GodleyTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
-  getItemAt(...args: any[]): void {return this.callMethod('getItemAt',...args);}
+  getItemAt(...args: any[]): boolean {return this.callMethod('getItemAt',...args);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(): number {return this.callMethod('height');}
   itemAt(...args: any[]): object {return this.callMethod('itemAt',...args);}
@@ -909,8 +909,8 @@ export class GodleyTableWindow extends CppClass {
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   drawButtons(...args: boolean[]): boolean {return this.callMethod('drawButtons',...args);}
   enableButtons(): void {return this.callMethod('enableButtons');}
-  getItemAt(a1: number,a2: number): void {return this.callMethod('getItemAt',a1,a2);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   godleyIcon(...args: any[]): GodleyIcon {return this.callMethod('godleyIcon',...args);}
   hasScrollBars(...args: any[]): boolean {return this.callMethod('hasScrollBars',...args);}
   height(): number {return this.callMethod('height');}
@@ -1718,8 +1718,8 @@ export class Panopticon extends CppClass {
   destroyFrame(): void {return this.callMethod('destroyFrame');}
   disable(): void {return this.callMethod('disable');}
   draw(): void {return this.callMethod('draw');}
-  getItemAt(a1: number,a2: number): void {return this.callMethod('getItemAt',a1,a2);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(...args: number[]): number {return this.callMethod('height',...args);}
   keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
@@ -1776,9 +1776,9 @@ export class ParameterTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
-  getItemAt(...args: any[]): void {return this.callMethod('getItemAt',...args);}
+  getItemAt(...args: any[]): boolean {return this.callMethod('getItemAt',...args);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(): number {return this.callMethod('height');}
   itemAt(a1: number,a2: number): object {return this.callMethod('itemAt',a1,a2);}
@@ -1854,9 +1854,9 @@ export class PlotTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
-  getItemAt(...args: any[]): void {return this.callMethod('getItemAt',...args);}
+  getItemAt(...args: any[]): boolean {return this.callMethod('getItemAt',...args);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(): number {return this.callMethod('height');}
   itemAt(a1: number,a2: number): object {return this.callMethod('itemAt',a1,a2);}
@@ -1990,8 +1990,8 @@ export class PlotWidget extends Item {
   extendPalette(): void {return this.callMethod('extendPalette');}
   flip(): void {return this.callMethod('flip');}
   fontScale(...args: number[]): number {return this.callMethod('fontScale',...args);}
-  getItemAt(a1: number,a2: number): void {return this.callMethod('getItemAt',a1,a2);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   grid(...args: boolean[]): boolean {return this.callMethod('grid',...args);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(...args: any[]): number {return this.callMethod('height',...args);}
@@ -2315,8 +2315,8 @@ export class RenderNativeWindow extends CppClass {
   destroyFrame(): void {return this.callMethod('destroyFrame');}
   disable(): void {return this.callMethod('disable');}
   draw(): void {return this.callMethod('draw');}
-  getItemAt(a1: number,a2: number): void {return this.callMethod('getItemAt',a1,a2);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -2800,8 +2800,8 @@ export class VariablePane extends CppClass {
   disable(): void {return this.callMethod('disable');}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(...args: any[]): boolean {return this.callMethod('evenHeight',...args);}
-  getItemAt(a1: number,a2: number): void {return this.callMethod('getItemAt',a1,a2);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(...args: any[]): boolean {return this.callMethod('hasScrollBars',...args);}
   justification(a1: number): string {return this.callMethod('justification',a1);}
   keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
@@ -2882,9 +2882,9 @@ export class VariableTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
-  getItemAt(...args: any[]): void {return this.callMethod('getItemAt',...args);}
+  getItemAt(...args: any[]): boolean {return this.callMethod('getItemAt',...args);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
-  getWireAt(a1: number,a2: number): void {return this.callMethod('getWireAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(): number {return this.callMethod('height');}
   itemAt(a1: number,a2: number): object {return this.callMethod('itemAt',a1,a2);}

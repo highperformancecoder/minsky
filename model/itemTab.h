@@ -75,7 +75,7 @@ namespace minsky
          
     float moveOffsX, moveOffsY,xItem,yItem;
     ItemPtr itemFocus;      
-    void getItemAt(float x, float y) override {item=itemAt(x,y);}  
+    bool getItemAt(float x, float y) override {return (item=itemAt(x,y)).get();}  
     enum ClickType {background, internal};    
     virtual ClickType clickType(double x, double y) const;         
     virtual void draw(cairo_t* cairo); 
