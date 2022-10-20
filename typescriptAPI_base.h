@@ -230,6 +230,14 @@ namespace classdesc
         >, string>::T
     parameterType() {return "object";}
     
+    template <class T>
+    typename enable_if<
+      And<
+        is_container<T>,
+        is_same<T, StringKeyMap<T>>
+        >, string>::T
+    parameterType() {return "object";}
+  
     struct Property
     {
       std::string type;

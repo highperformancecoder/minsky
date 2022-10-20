@@ -577,15 +577,24 @@ export class ApplicationMenuManager {
     };
   }
   static async buildMenuForInsertOperations() {
-    const availableOperationsMapping = await CommandsManager.getAvailableOperationsMapping();
+    const availableOperationsMapping = minsky.availableOperationsMapping();
     let insertOperationsMenu: MenuItem[] = [];
+    let menuNames={
+      "constop": "Fundamental Constants",
+      "binop": "Binary Operations",
+      "function": "Unary Functions",
+      "reduction": "Reductions",
+      "scan": "Scans",
+      "tensor": "General Tensor Operations"
+    };
+
     for (const key in availableOperationsMapping) {
       insertOperationsMenu = [
         ...insertOperationsMenu,
         new MenuItem({
-          label: key,
+          label: key in menuNames? menuNames[key]: key,
           submenu: this.buildSubmenuForOperations(
-            availableOperationsMapping[key]
+            availableOperationsMapping[key] as string[]
           ),
         }),
       ];

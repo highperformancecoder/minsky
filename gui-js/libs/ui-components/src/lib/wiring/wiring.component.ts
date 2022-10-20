@@ -11,10 +11,11 @@ import {
   ElectronService,
   WindowUtilityService,
 } from '@minsky/core';
-import { commandsMapping, MainRenderingTabs } from '@minsky/shared';
+import { MainRenderingTabs, minsky } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
+import * as JSON5 from 'json5';
 
 @AutoUnsubscribe()
 @Component({
@@ -25,7 +26,7 @@ import { sampleTime } from 'rxjs/operators';
 export class WiringComponent implements OnInit, OnDestroy {
   mouseMove$: Observable<MouseEvent>;
   canvasContainerHeight: string;
-  availableOperationsMapping: Record<string, string[]> = {};
+  availableOperationsMapping: any; //Record<string, string[]>;
   showDragCursor = false;
   wiringTab = MainRenderingTabs.canvas;
   constructor(
@@ -48,17 +49,9 @@ export class WiringComponent implements OnInit, OnDestroy {
       this.setupEventListenersForCanvas(minskyCanvasContainer);
     }
 
-    this.availableOperationsMapping = (await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.AVAILABLE_OPERATIONS_MAPPING,
-      }
-    )) as Record<string, string[]>;
+    this.availableOperationsMapping = await this.electronService.minsky.availableOperationsMapping();
 
-    setTimeout(async () => {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-      });
-    }, 1);
+    setTimeout(async () => {minsky.canvas.requestRedraw();}, 1);
   }
 
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {

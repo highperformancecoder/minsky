@@ -467,6 +467,9 @@ namespace minsky
 
     /// list of available operations
     /*static*/ std::vector<std::string> availableOperations();
+    using AvailableOperationsMapping=classdesc::StringKeyMap<std::vector<OperationType::Type>>;
+    /*static*/ Minsky::AvailableOperationsMapping availableOperationsMapping() const;
+    
     /// list of available variable types
     /*static*/ std::vector<std::string> variableTypes();
     /// return list of available asset classes

@@ -1475,6 +1475,7 @@ export class Minsky extends CppClass {
   autoLayout(): void {return this.callMethod('autoLayout');}
   autoSaveFile(): string {return this.callMethod('autoSaveFile');}
   availableOperations(): string[] {return this.callMethod('availableOperations');}
+  availableOperationsMapping(): object[] {return this.callMethod('availableOperationsMapping');}
   balanceColumns(a1: GodleyIcon,a2: number,a3: GodleyIcon,a4: number): void {return this.callMethod('balanceColumns',a1,a2,a3,a4);}
   balanceDuplicateColumns(a1: GodleyIcon,a2: number): void {return this.callMethod('balanceDuplicateColumns',a1,a2);}
   checkEquationOrder(): boolean {return this.callMethod('checkEquationOrder');}
