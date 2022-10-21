@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
-import { commandsMapping } from '@minsky/shared';
+import { PlotWidget } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @AutoUnsubscribe()
@@ -55,11 +55,8 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
       this.height &&
       this.width
     ) {
-      const command = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/renderFrame [${this.systemWindowId},${this.leftOffset},${this.topOffset},${this.width},${this.height},-1]`;
-
-      this.electronService.sendMinskyCommandAndRender({
-        command,
-      });
+      new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId.toString()).second)
+        .renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
     }
   }
 
