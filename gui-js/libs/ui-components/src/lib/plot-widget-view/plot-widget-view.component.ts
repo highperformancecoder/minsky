@@ -11,8 +11,8 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
   styleUrls: ['./plot-widget-view.component.scss'],
 })
 export class PlotWidgetViewComponent implements OnInit, OnDestroy {
-  itemId: number;
-  systemWindowId: number;
+  itemId: string;
+  systemWindowId: string;
 
   leftOffset = 0;
   topOffset = 0;
@@ -55,7 +55,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
       this.height &&
       this.width
     ) {
-      new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId.toString()).second)
+      new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second)
         .renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
     }
   }
