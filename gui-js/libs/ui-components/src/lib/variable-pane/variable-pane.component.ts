@@ -12,7 +12,6 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import {
-  commandsMapping,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
   isMacOS,
