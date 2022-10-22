@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping, replaceBackSlash } from '@minsky/shared';
+import { PlotWidget } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @AutoUnsubscribe()
@@ -13,7 +13,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 })
 export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  itemId: number;
+  itemId: string;
 
   public get title(): AbstractControl {
     return this.form.get('title');
@@ -96,163 +96,44 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
 
   async updateFormValues() {
     if (this.electronService.isElectron) {
-      const title = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/title`,
-      });
-      this.title.setValue(title);
-
-      const xLabel = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/xlabel`,
-      });
-      this.xLabel.setValue(xLabel);
-
-      const yLabel = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/ylabel`,
-      });
-      this.yLabel.setValue(yLabel);
-
-      const rhsYLabel = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/y1label`,
-      });
-      this.rhsYLabel.setValue(rhsYLabel);
-
-      const plotType = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/plotType`,
-      });
-      this.plotType.setValue(plotType);
-
-      const numberOfXTicks = await this.electronService.sendMinskyCommandAndRender(
-        {
-          command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/nxTicks`,
-        }
-      );
-      this.numberOfXTicks.setValue(numberOfXTicks);
-
-      const numberOfYTicks = await this.electronService.sendMinskyCommandAndRender(
-        {
-          command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/nyTicks`,
-        }
-      );
-      this.numberOfYTicks.setValue(numberOfYTicks);
-
-      const grid = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/grid`,
-      });
-      this.grid.setValue(grid);
-
-      const subGrid = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/subgrid`,
-      });
-      this.subGrid.setValue(subGrid);
-
-      const legend = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legend`,
-      });
-      this.legend.setValue(legend);
-
-      const legendLeft = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendLeft`,
-      }) as number;
-      this.legendLeft.setValue(legendLeft.toString());
-      
-      const legendTop = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendTop`,
-      }) as number;
-      this.legendTop.setValue(legendTop.toString());
-
-      const legendFontSz = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendFontSz`,
-      }) as number;
-      this.legendFontSz.setValue(legendFontSz.toString());
-      
-      const xLogScale = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/logx`,
-      });
-      this.xLogScale.setValue(xLogScale);
-
-      const yLogScale = await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/logy`,
-      });
-      this.yLogScale.setValue(yLogScale);
+      let plot=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second);
+      this.title.setValue(await plot.title());
+      this.xLabel.setValue(await plot.xlabel());
+      this.yLabel.setValue(await plot.ylabel());
+      this.rhsYLabel.setValue(await plot.y1label());
+      this.plotType.setValue(await plot.plotType);
+      this.numberOfXTicks.setValue(await plot.nxTicks);
+      this.numberOfYTicks.setValue(await plot.nyTicks());
+      this.grid.setValue(await plot.grid());
+      this.subGrid.setValue(await plot.subgrid());
+      this.legend.setValue(await plot.legend());
+      this.legendLeft.setValue(await plot.legendLeft().toString());
+      this.legendTop.setValue(await plot.legendTop().toString());
+      this.legendFontSz.setValue(await plot.legendFontSz().toString());
+      this.xLogScale.setValue(await plot.logx());
+      this.yLogScale.setValue(await plot.logy());
     }
   }
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${
-          this.itemId
-        }"/second/title "${replaceBackSlash(this.title.value)}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${
-          this.itemId
-        }"/second/xlabel "${replaceBackSlash(this.xLabel.value)}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${
-          this.itemId
-        }"/second/ylabel "${replaceBackSlash(this.yLabel.value)}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${
-          this.itemId
-        }"/second/y1label "${replaceBackSlash(this.rhsYLabel.value)}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/plotType "${this.plotType.value}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/nxTicks ${this.numberOfXTicks.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/nyTicks ${this.numberOfYTicks.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/grid ${this.grid.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/subgrid ${this.subGrid.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legend ${this.legend.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendLeft ${this.legendLeft.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendTop ${this.legendTop.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/legendFontSz ${this.legendFontSz.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/logx ${this.xLogScale.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/logy ${this.yLogScale.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/${commandsMapping.REQUEST_REDRAW_SUBCOMMAND}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-      });
+      let plot=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second);
+      plot.title(this.title.value);
+      plot.xlabel(this.xLabel.value);
+      plot.ylabel(this.yLabel.value);
+      plot.y1label(this.rhsYLabel.value);
+      plot.plotType(this.plotType.value);
+      plot.nxTicks(this.numberOfXTicks.value);
+      plot.nyTicks(this.numberOfYTicks.value);
+      plot.grid(this.grid.value);
+      plot.subgrid(this.subGrid.value);
+      plot.legend(this.legend.value);
+      plot.legendLeft(this.legendLeft.value);
+      plot.legendTop(this.legendTop.value);
+      plot.legendFontSz(this.legendFontSz.value);
+      plot.logx(this.xLogScale.value);
+      plot.logy(this.yLogScale.value);
+      plot.requestRedraw();
+      this.electronService.minsky.canvas.requestRedraw();
     }
 
     this.closeWindow();
