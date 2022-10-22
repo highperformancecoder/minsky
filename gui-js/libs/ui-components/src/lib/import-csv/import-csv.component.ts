@@ -3,12 +3,13 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {
-  commandsMapping,
   dateTimeFormats,
   importCSVerrorMessage,
   importCSVvariableName,
   isWindows,
   normalizeFilePathForPlatform,
+  VariableBase,
+  VariableValue,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import * as JSON5 from 'json5';
@@ -51,11 +52,11 @@ class Dimension
 export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   form: FormGroup;
 
-  itemId: number;
+  itemId: string;
   systemWindowId: number;
   isInvokedUsingToolbar: boolean;
-  valueId: number;
-  variableValuesSubCommand: string;
+  valueId: string;
+  variableValuesSubCommand: VariableValue;
   timeFormatStrings = dateTimeFormats;
   parsedLines: string[][] = [];
   csvCols: any[];
@@ -152,7 +153,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     (async () => {
       this.valueId = await this.getValueId();
-      this.variableValuesSubCommand = `/minsky/variableValues/@elem/${JSON5.stringify(this.valueId)}/second`;
+      this.variableValuesSubCommand = this.electronService.minsky.variableValues.elem(this.valueId).second;
 
       await this.getCSVDialogSpec();
       this.updateForm();
@@ -190,25 +191,16 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   private setupListenerForCleanup() {
     this.electronService.remote.getCurrentWindow().on('close', async () => {
       if (this.isInvokedUsingToolbar) {
-        const currentItemId = await this.electronService.sendMinskyCommandAndRender(
-          {
-            command: commandsMapping.CANVAS_ITEM_ID,
-          }
-        );
-        const currentItemName = await this.electronService.sendMinskyCommandAndRender(
-          {
-            command: commandsMapping.CANVAS_ITEM_NAME,
-          }
-        );
+        let v=new VariableBase(this.electronService.minsky.canvas.item)
+        const currentItemId = await v.id();
+        const currentItemName = await v.name();
         // We do this check because item focus might have changed when importing csv if user decided to work on something else
 
         if (
           currentItemId === this.itemId &&
           currentItemName === importCSVvariableName
         ) {
-          await this.electronService.sendMinskyCommandAndRender({
-            command: commandsMapping.CANVAS_DELETE_ITEM,
-          });
+          await this.electronService.minsky.canvas.deleteItem();
         }
       }
     });
@@ -233,13 +225,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async getValueId() {
-    const command = `/minsky/namedItems/@elem/"${this.itemId}"/second/valueId`;
-
-    const valueId = (await this.electronService.sendMinskyCommandAndRender({
-      command,
-    })) as number;
-
-    return valueId;
+    return new VariableBase(this.electronService.minsky.namedItems.elem(this.itemId).second).valueId();
   }
 
   async selectFile() {
@@ -261,46 +247,27 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async load() {
-    const fileUrlOnServer = (await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: `${this.variableValuesSubCommand}/csvDialog/url`,
-      }
-    )) as string;
+    const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
 
     const fileUrl = this.url.value;
 
     if (fileUrl !== fileUrlOnServer) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${
-          this.variableValuesSubCommand
-        }/csvDialog/url ${normalizeFilePathForPlatform(fileUrl)}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${this.variableValuesSubCommand}/csvDialog/guessSpecAndLoadFile`,
-      });
+      await this.variableValuesSubCommand.csvDialog.url(fileUrl);
+      await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
     } else {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${this.variableValuesSubCommand}/csvDialog/loadFile`,
-      });
+      await this.variableValuesSubCommand.csvDialog.loadFile();
     }
 
     await this.parseLines();
   }
 
   async getCSVDialogSpec() {
-    this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog/spec/toSchema`,
-    });
-    this.dialogState = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog`,
-    })) as Record<string, unknown>;
+    this.variableValuesSubCommand.csvDialog.spec.toSchema();
+    this.dialogState = await this.variableValuesSubCommand.csvDialog.properties() as Record<string, unknown>;
   }
 
   async parseLines() {
-    this.parsedLines = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog/parseLines`,
-    })) as string[][];
+    this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines() as string[][];
 
     this.csvCols = new Array(this.parsedLines[0]?.length);
     this.colType = new Array(this.parsedLines[0]?.length).fill("ignore");
@@ -422,11 +389,10 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       separator: separatorToChar(separator),
       horizontalDimension,
     };
-    process.stdout.write(`${commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV}
-       ${JSON5.stringify([this.url.value,spec])}`);
-    const res = await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV} ${JSON5.stringify([this.url.value,spec])}`,
-    });
+
+    let v=new VariableBase(this.electronService.minsky.canvas.item);
+    // returns an error message on error
+    const res = await v.importFromCSV(this.url.value,spec) as unknown as string;
 
     if (res === importCSVerrorMessage) {
       const positiveResponseText = 'Yes';
@@ -450,16 +416,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    const currentItemId = await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.CANVAS_ITEM_ID,
-      }
-    );
-    const currentItemName = await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.CANVAS_ITEM_NAME,
-      }
-    );
+    const currentItemId = await v.id();
+    const currentItemName = await v.name();
 
     if (
       this.isInvokedUsingToolbar &&
@@ -472,9 +430,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
       const fileName = pathArray[pathArray.length - 1].split(`.`)[0];
 
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.RENAME_ITEM} "${fileName}"`,
-      });
+      await this.electronService.minsky.canvas.renameItem(fileName);
     }
 
     this.closeWindow();
@@ -501,10 +457,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog/reportFromFile [${url},${filePath}]`,
-    });
-
+    await this.variableValuesSubCommand.csvDialog.reportFromFile(url,filePath);
     return;
   }
 
