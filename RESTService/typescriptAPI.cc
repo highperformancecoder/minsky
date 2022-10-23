@@ -59,6 +59,8 @@
 #include "tensorInterface.tcd"
 #include "tensorVal.tcd"
 #include "units.tcd"
+#include "userFunction.h"
+#include "userFunction.tcd"
 #include "variableInstanceList.h"
 #include "variableInstanceList.tcd"
 #include "variable.tcd"
@@ -100,6 +102,11 @@ namespace classdesc
   template <> string typeName<cairo_t>() {return "minsky__dummy";}
   template <> string typeName<cairo_surface_t>() {return "minsky__dummy";}
   
+  template <>
+  struct tn<boost::any>
+  {
+    static string name() {return "minsky__dummy";}
+  };
   template <class T>
   struct tn<boost::geometry::model::d2::point_xy<T>>
   {
@@ -120,7 +127,7 @@ namespace classdesc
   {
     static string name() {return "minsky__dummy";}
   };
- 
+  
   // typescript has difficulties with specialised templates
   template <>
   struct tn<minsky::PannableTab<minsky::EquationDisplay>>
@@ -137,14 +144,16 @@ namespace classdesc
   typename enable_if<Not<is_map<Base>>, void>::T
   typescriptAPI(typescriptAPI_t& t, const string& d)
   {
+    // bail out of object heirarchy drill down once reaching named base class
+    //if (typescriptType<Base>()==t[typescriptType<T>()].super) return;
     classdesc_access::access_typescriptAPI<Base>().template type<T>(t,d);
   }
 
   template <class T> void typescriptAPI_t::addClass() {typescriptAPI<T,T>(*this,"");}
   template <class T, class Base> void typescriptAPI_t::addSubclass()
   {
-    typescriptAPI<T,T>(*this,"");
     operator[](typescriptType<T>()).super=typescriptType<Base>();
+    typescriptAPI<T,T>(*this,"");
   }
 }
 
@@ -252,6 +261,7 @@ int main()
   api.addSubclass<Ravel,Item>();
   api.addSubclass<SwitchIcon,Item>();
   api.addSubclass<VariableBase,Item>();
+  api.addSubclass<UserFunction,Item>();
 
   // to prevent Group recursively calling itself on construction
   api["Group"].properties.erase("parent");
@@ -272,6 +282,8 @@ int main()
   
   // export Item first, as it is the base of many
   exportClass("Item",api["Item"]);
+  cout <<"\n\nexport class minsky__ItemT<T, Base> extends Item {};\n\n";
+  
   for (auto& i: api)
     if (i.first!="Item")
       exportClass(i.first, i.second);

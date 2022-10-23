@@ -57,3 +57,4 @@ export class Sequence<Value> extends Container<number,Value>
   {
     constructor(prefix: string, type: any=null) {super(prefix,type);}
   }
+
