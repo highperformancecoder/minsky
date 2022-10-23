@@ -306,7 +306,7 @@ export class DataOp extends Item {
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
   addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   arg(...args: number[]): number {return this.callMethod('arg',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   axis(...args: string[]): string {return this.callMethod('axis',...args);}
@@ -592,7 +592,7 @@ export class GodleyIcon extends Item {
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   adjustPopupWidgets(): void {return this.callMethod('adjustPopupWidgets');}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
@@ -1220,7 +1220,7 @@ export class IntOp extends Item {
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
   addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   arg(...args: number[]): number {return this.callMethod('arg',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   axis(...args: string[]): string {return this.callMethod('axis',...args);}
@@ -1350,7 +1350,7 @@ export class Lock extends Item {
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(): string {return this.callMethod('bookmarkId');}
@@ -1611,7 +1611,7 @@ export class OperationBase extends Item {
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
   addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   arg(...args: number[]): number {return this.callMethod('arg',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   axis(...args: string[]): string {return this.callMethod('axis',...args);}
@@ -1952,7 +1952,7 @@ export class PlotWidget extends Item {
   addPlotPt(a1: number): void {return this.callMethod('addPlotPt',a1);}
   addPorts(): void {return this.callMethod('addPorts');}
   addPt(a1: number,a2: number,a3: number): void {return this.callMethod('addPt',a1,a2,a3);}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   assignSide(a1: number,a2: string): void {return this.callMethod('assignSide',a1,a2);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   autoScale(): void {return this.callMethod('autoScale');}
@@ -2153,7 +2153,7 @@ export class Ravel extends Item {
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
   addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   adjustSlicer(a1: number): void {return this.callMethod('adjustSlicer',a1);}
   allSliceLabels(): string[] {return this.callMethod('allSliceLabels');}
   allSliceLabelsAxis(a1: number): string[] {return this.callMethod('allSliceLabelsAxis',a1);}
@@ -2389,7 +2389,7 @@ export class Selection extends CppClass {
   addItem(...args: any[]): object {return this.callMethod('addItem',...args);}
   addOutputVar(): void {return this.callMethod('addOutputVar');}
   addWire(...args: any[]): object {return this.callMethod('addWire',...args);}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   adjustWiresGroup(a1: Wire): void {return this.callMethod('adjustWiresGroup',a1);}
   arguments(): string {return this.callMethod('arguments');}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
@@ -2542,7 +2542,7 @@ export class SwitchIcon extends Item {
   }
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(): string {return this.callMethod('bookmarkId');}
@@ -2653,7 +2653,7 @@ export class UserFunction extends Item {
   RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
   TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
   addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(): void {return this.callMethod('adjustBookmark');}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   arg(...args: number[]): number {return this.callMethod('arg',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   axis(...args: string[]): string {return this.callMethod('axis',...args);}
@@ -3117,6 +3117,7 @@ export class Wire extends CppClass {
   constructor(prefix: string){
     super(prefix);
   }
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   coords(...args: any[]): number[] {return this.callMethod('coords',...args);}

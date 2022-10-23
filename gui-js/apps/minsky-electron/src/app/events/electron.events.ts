@@ -7,11 +7,9 @@ import {
   AppLayoutPayload,
   CanvasItem,
   ChangeTabPayload,
-//  commandsMapping,
   CppClass,
   environment,
   events,
-  DescriptionPayload,
   HandleDescriptionPayload,
   HandleDimensionPayload,
   PickSlicesPayload,
@@ -124,13 +122,6 @@ ipcMain.handle(
   async (event, payload: MinskyProcessPayload) => {
     // this is a asynchronous handler for events.KEY_PRESS
     return await KeyBindingsManager.handleOnKeyPress(payload);
-  }
-);
-
-ipcMain.handle(
-  events.SAVE_DESCRIPTION,
-  async (event, payload: DescriptionPayload) => {
-    return await BookmarkManager.saveDescription(payload);
   }
 );
 

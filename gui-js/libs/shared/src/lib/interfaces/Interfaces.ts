@@ -23,13 +23,6 @@ export interface MinskyProcessPayload {
   location?: number;
 }
 
-export interface DescriptionPayload {
-  item: string;
-  tooltip: string;
-  detailedText: string;
-  bookmark: boolean;
-}
-
 export interface HandleDescriptionPayload {
   handleIndex: number;
   description: string;
@@ -45,19 +38,6 @@ export interface PickSlicesPayload {
   handleIndex: number;
   pickedSliceLabels: string[];
 }
-
-//export class HandleLockInfo
-//{
-//  slicer: boolean;
-//  orientation: boolean;
-//  calipers: boolean;
-//  order: boolean;
-//  handleNames: string[];
-//}
-
-//export interface LockHandlesPayload {
-//  handleLockInfo: HandleLockInfo[];
-//}
 
 export interface ElectronCanvasOffset {
   left: number;

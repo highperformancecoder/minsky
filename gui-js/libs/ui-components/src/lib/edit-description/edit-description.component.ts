@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { replaceBackSlash } from '@minsky/shared';
-import { commandsMapping, events } from '@minsky/shared';
+import { events, Item, Wire } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-edit-description',
@@ -39,12 +38,20 @@ export class EditDescriptionComponent implements OnInit {
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.saveDescription({
-        item: this.type,
-        tooltip: this.editDescriptionForm.get('tooltip').value,
-        detailedText: this.editDescriptionForm.get('detailedText').value,
-        bookmark: this.editDescriptionForm.get('bookmark').value,
-      });
+      var item: Item|Wire;
+      switch (this.type) {
+      case 'item':
+        item=this.electronService.minsky.canvas.item;
+        break;
+      case 'wire':
+        item=this.electronService.minsky.canvas.wire;
+        break;
+      }
+      
+      item.bookmark(this.editDescriptionForm.get('bookmark').value);
+      item.tooltip(this.editDescriptionForm.get('tooltip').value);
+      item.detailedText(this.editDescriptionForm.get('detailedText').value);
+      item.adjustBookmark();
     }
     this.closeWindow();
   }

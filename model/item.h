@@ -235,8 +235,7 @@ namespace minsky
 
     /// Id of bookmark associated with this
     std::string bookmarkId() const {return tooltip.empty()? std::to_string(size_t(this)): tooltip;}
-    /// adjust bookmark list to reflect current configuration
-    void adjustBookmark() const;
+    void adjustBookmark() const override;
     
     /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
