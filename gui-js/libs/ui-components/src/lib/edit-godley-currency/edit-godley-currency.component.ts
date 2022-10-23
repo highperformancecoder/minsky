@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
-import { commandsMapping } from '@minsky/shared';
+import { GodleyIcon } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-edit-godley-currency',
@@ -17,9 +17,7 @@ export class EditGodleyCurrencyComponent {
 
   async handleSaveCurrency(newCurrency: string) {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_SET_CURRENCY} "${newCurrency}"`,
-      });
+      new GodleyIcon(this.electronService.minsky.canvas.item).setCurrency(newCurrency);
       this.windowUtilityService.closeCurrentWindowIfNotMain();
     }
   }
