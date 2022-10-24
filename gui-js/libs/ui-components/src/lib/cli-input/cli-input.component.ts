@@ -22,6 +22,7 @@ export class CliInputComponent implements OnInit, OnDestroy {
   commands: Array<string>;
   filteredOptions$: Observable<string[]>;
   command: string;
+  args: string;
   form: FormGroup;
   output = [];
 
@@ -47,7 +48,7 @@ export class CliInputComponent implements OnInit, OnDestroy {
     );
 
     this.form.valueChanges.subscribe(() => {
-      this.command = this.makeCommand();
+      this.makeCommand();
     });
 
     if (this.electronService.isElectron) {
@@ -61,15 +62,17 @@ export class CliInputComponent implements OnInit, OnDestroy {
 
   async handleSubmit() {
     if (this.electronService.isElectron && this.command) {
-      const output = await CppClass.backend(this.command)
+      if (this.args)
+        var output = await CppClass.backend(this.command,JSON5.parse(this.args));
+      else
+        var output = await CppClass.backend(this.command);
       this.output.push(`${this.command} ==> ${JSON5.stringify(output)}`);
     }
   }
 
   private makeCommand() {
-    return `${this.commandControl.value} ${
-      this.argsControl.value || ''
-    }`.trim();
+    this.command =  this.commandControl.value;
+    this.args = this.argsControl.value;
   }
 
   private _filter(value: string): string[] {
