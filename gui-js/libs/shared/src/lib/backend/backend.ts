@@ -11,6 +11,7 @@ export class CppClass
     return CppClass.backend(`${this.prefix}/${method}`, ...args);
   }
   public properties(...args) {return CppClass.backend(this.prefix, ...args);}
+  public $list(): string[] {return this.callMethod("@list");}
 };
 
 
