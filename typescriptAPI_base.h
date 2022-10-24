@@ -6,6 +6,11 @@
 #include <algorithm>
 #include <numeric>
 
+namespace minsky
+{
+  template <class T, class B> struct ItemT;
+}
+
 namespace classdesc
 {
   template< class... > using void_t = void;
@@ -26,6 +31,9 @@ namespace classdesc
 //  template <class T>
 //  struct is_iterator<T, void_t<typename std::iterator_traits<T>::iterator_category>>:
 //    public std::true_type {};
+
+  template <class T> struct is_itemT: public false_type {};
+  template <class T, class B> struct is_itemT<minsky::ItemT<T,B>>: public true_type {};
 
   template <class T> string typescriptType();
 
@@ -63,7 +71,10 @@ namespace classdesc
       And<
         And<
           Not<is_string<T>>,
-          Not<is_pointer<T>>
+          And<
+            Not<is_pointer<T>>,
+            Not<is_itemT<T>>
+            >
           >,
         And<
           And<
@@ -183,6 +194,11 @@ namespace classdesc
   typescriptTypep() {return "Pair<"+typescriptType<typename T::first_type>()+","
       +typescriptType<typename T::second_type>()+">";}
 
+  // don't process ItemT because of clone return type.
+  template <class T>
+  typename enable_if<is_itemT<T>, std::string>::T
+  typescriptTypep() {return "Item";}
+  
   template <class T> string typescriptType() {return typescriptTypep<T>();}
 
   template <> inline string typescriptType<string>() {return "string";}

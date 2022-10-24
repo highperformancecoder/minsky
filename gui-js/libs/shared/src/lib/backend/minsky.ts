@@ -99,9 +99,174 @@ export class Item extends CppClass {
   zoomFactor(...args: any[]): number {return this.callMethod('zoomFactor',...args);}
 }
 
+export class OperationBase extends Item {
+  constructor(prefix: string|Item){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super((<OperationBase>prefix).prefix)
+  }
+  addPorts(): void {return this.callMethod('addPorts');}
+  arg(...args: number[]): number {return this.callMethod('arg',...args);}
+  axis(...args: string[]): string {return this.callMethod('axis',...args);}
+  classify(a1: string): string {return this.callMethod('classify',a1);}
+  create(a1: string): OperationBase {return this.callMethod('create',a1);}
+  dimensions(): string[] {return this.callMethod('dimensions');}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
+  drawResizeHandles(a1: minsky__dummy): void {return this.callMethod('drawResizeHandles',a1);}
+  h(...args: number[]): number {return this.callMethod('h',...args);}
+  iconDraw(a1: minsky__dummy): void {return this.callMethod('iconDraw',a1);}
+  l(...args: number[]): number {return this.callMethod('l',...args);}
+  multiWire(): boolean {return this.callMethod('multiWire');}
+  numPorts(): number {return this.callMethod('numPorts');}
+  onResizeHandle(a1: number,a2: number): boolean {return this.callMethod('onResizeHandle',a1,a2);}
+  operationCast(...args: any[]): OperationBase {return this.callMethod('operationCast',...args);}
+  portValues(): string {return this.callMethod('portValues');}
+  r(...args: number[]): number {return this.callMethod('r',...args);}
+  resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
+  resizeHandleCoords(): object {return this.callMethod('resizeHandleCoords');}
+  scaleFactor(): number {return this.callMethod('scaleFactor');}
+  type(): string {return this.callMethod('type');}
+  typeName(a1: number): string {return this.callMethod('typeName',a1);}
+  units(a1: boolean): object {return this.callMethod('units',a1);}
+  value(): number {return this.callMethod('value');}
+}
 
-
-export class minsky__ItemT<T, Base> extends Item {};
+export class VariableBase extends Item {
+  bb: BoundingBox;
+  constructor(prefix: string|Item){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super((<VariableBase>prefix).prefix)
+    this.bb=new BoundingBox(this.prefix+'/bb');
+  }
+  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
+  TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
+  accessibleVars(...args: any[]): string[] {return this.callMethod('accessibleVars',...args);}
+  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
+  adjustSliderBounds(...args: any[]): void {return this.callMethod('adjustSliderBounds',...args);}
+  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
+  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
+  bookmarkId(): string {return this.callMethod('bookmarkId');}
+  bottom(): number {return this.callMethod('bottom');}
+  checkUnits(): object {return this.callMethod('checkUnits');}
+  classType(): string {return this.callMethod('classType');}
+  clickType(...args: any[]): string {return this.callMethod('clickType',...args);}
+  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
+  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
+  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
+  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
+  corners(): object[] {return this.callMethod('corners');}
+  create(...args: any[]): VariableBase {return this.callMethod('create',...args);}
+  defined(...args: any[]): boolean {return this.callMethod('defined',...args);}
+  definition(...args: any[]): string {return this.callMethod('definition',...args);}
+  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
+  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
+  destroyFrame(...args: any[]): void {return this.callMethod('destroyFrame',...args);}
+  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
+  dimLabels(...args: any[]): string[] {return this.callMethod('dimLabels',...args);}
+  dims(...args: any[]): number[] {return this.callMethod('dims',...args);}
+  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
+  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
+  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
+  draw(...args: any[]): void {return this.callMethod('draw',...args);}
+  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
+  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
+  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
+  dummyDraw(): void {return this.callMethod('dummyDraw');}
+  engExp(...args: any[]): object {return this.callMethod('engExp',...args);}
+  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
+  ensureValueExists(...args: any[]): void {return this.callMethod('ensureValueExists',...args);}
+  exportAsCSV(...args: any[]): void {return this.callMethod('exportAsCSV',...args);}
+  flip(): void {return this.callMethod('flip');}
+  getDimLabelsPicked(...args: any[]): object {return this.callMethod('getDimLabelsPicked',...args);}
+  height(): number {return this.callMethod('height');}
+  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
+  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
+  id(...args: any[]): string {return this.callMethod('id',...args);}
+  importFromCSV(...args: any[]): void {return this.callMethod('importFromCSV',...args);}
+  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
+  init(...args: any[]): string {return this.callMethod('init',...args);}
+  initSliderBounds(...args: any[]): void {return this.callMethod('initSliderBounds',...args);}
+  inputWired(...args: any[]): boolean {return this.callMethod('inputWired',...args);}
+  ioVar(...args: any[]): boolean {return this.callMethod('ioVar',...args);}
+  isStock(...args: any[]): boolean {return this.callMethod('isStock',...args);}
+  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
+  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
+  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
+  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
+  json_pack(a1: classdesc__json_pack_t): void {return this.callMethod('json_pack',a1);}
+  left(): number {return this.callMethod('left');}
+  lhs(...args: any[]): boolean {return this.callMethod('lhs',...args);}
+  local(...args: any[]): boolean {return this.callMethod('local',...args);}
+  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
+  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
+  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
+  makeConsistentWithValue(): void {return this.callMethod('makeConsistentWithValue');}
+  mantissa(...args: any[]): string {return this.callMethod('mantissa',...args);}
+  maxSliderSteps(...args: any[]): number {return this.callMethod('maxSliderSteps',...args);}
+  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
+  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
+  name(...args: any[]): string {return this.callMethod('name',...args);}
+  numPorts(...args: any[]): number {return this.callMethod('numPorts',...args);}
+  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
+  onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
+  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
+  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
+  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
+  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
+  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
+  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
+  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
+  portX(a1: number): number {return this.callMethod('portX',a1);}
+  portY(a1: number): number {return this.callMethod('portY',a1);}
+  ports(a1: number): object {return this.callMethod('ports',a1);}
+  portsSize(): number {return this.callMethod('portsSize');}
+  rawName(...args: any[]): string {return this.callMethod('rawName',...args);}
+  resize(...args: any[]): void {return this.callMethod('resize',...args);}
+  resizeHandleCoords(...args: any[]): object {return this.callMethod('resizeHandleCoords',...args);}
+  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
+  retype(...args: any[]): void {return this.callMethod('retype',...args);}
+  right(): number {return this.callMethod('right');}
+  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
+  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
+  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
+  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
+  setDimLabelsPicked(...args: any[]): object {return this.callMethod('setDimLabelsPicked',...args);}
+  setUnits(...args: any[]): void {return this.callMethod('setUnits',...args);}
+  sliderBoundsSet(...args: boolean[]): boolean {return this.callMethod('sliderBoundsSet',...args);}
+  sliderMax(...args: number[]): number {return this.callMethod('sliderMax',...args);}
+  sliderMin(...args: number[]): number {return this.callMethod('sliderMin',...args);}
+  sliderSet(...args: any[]): void {return this.callMethod('sliderSet',...args);}
+  sliderStep(...args: number[]): number {return this.callMethod('sliderStep',...args);}
+  sliderStepRel(...args: boolean[]): boolean {return this.callMethod('sliderStepRel',...args);}
+  temp(...args: any[]): boolean {return this.callMethod('temp',...args);}
+  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
+  toggleLocal(...args: any[]): void {return this.callMethod('toggleLocal',...args);}
+  toggleVarTabDisplay(...args: any[]): void {return this.callMethod('toggleVarTabDisplay',...args);}
+  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
+  top(): number {return this.callMethod('top');}
+  type(...args: any[]): string {return this.callMethod('type',...args);}
+  typeName(...args: any[]): string {return this.callMethod('typeName',...args);}
+  units(...args: any[]): object {return this.callMethod('units',...args);}
+  unitsStr(...args: any[]): string {return this.callMethod('unitsStr',...args);}
+  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
+  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
+  vValue(...args: any[]): object {return this.callMethod('vValue',...args);}
+  value(...args: any[]): number {return this.callMethod('value',...args);}
+  valueId(...args: any[]): string {return this.callMethod('valueId',...args);}
+  valueIdInCurrentScope(...args: any[]): string {return this.callMethod('valueIdInCurrentScope',...args);}
+  varTabDisplay(...args: boolean[]): boolean {return this.callMethod('varTabDisplay',...args);}
+  variableCast(...args: any[]): VariableBase {return this.callMethod('variableCast',...args);}
+  varsPassed(...args: number[]): number {return this.callMethod('varsPassed',...args);}
+  visible(...args: any[]): boolean {return this.callMethod('visible',...args);}
+  visibleWithinGroup(...args: any[]): boolean {return this.callMethod('visibleWithinGroup',...args);}
+  width(): number {return this.callMethod('width');}
+  x(): number {return this.callMethod('x');}
+  y(): number {return this.callMethod('y');}
+  zoomFactor(...args: any[]): number {return this.callMethod('zoomFactor',...args);}
+}
 
 export class Bookmark extends CppClass {
   constructor(prefix: string){
@@ -293,118 +458,22 @@ export class Canvas extends CppClass {
 }
 
 export class DataOp extends Item {
-  bb: BoundingBox;
   data: Map<number,number>;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
     else
       super((<DataOp>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'/bb');
     this.data=new Map<number,number>(this.prefix+'/data');
   }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
-  arg(...args: number[]): number {return this.callMethod('arg',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  axis(...args: string[]): string {return this.callMethod('axis',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  classify(a1: string): string {return this.callMethod('classify',a1);}
-  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
-  create(a1: string): OperationBase {return this.callMethod('create',a1);}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   deriv(a1: number): number {return this.callMethod('deriv',a1);}
   description(...args: any[]): string {return this.callMethod('description',...args);}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  dimensions(): string[] {return this.callMethod('dimensions');}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
-  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
-  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
-  flip(): void {return this.callMethod('flip');}
-  h(...args: number[]): number {return this.callMethod('h',...args);}
-  height(): number {return this.callMethod('height');}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  iconDraw(...args: any[]): void {return this.callMethod('iconDraw',...args);}
-  id(): string {return this.callMethod('id');}
-  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
   initRandom(a1: number,a2: number,a3: number): void {return this.callMethod('initRandom',a1,a2,a3);}
   interpolate(a1: number): number {return this.callMethod('interpolate',a1);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  l(...args: number[]): number {return this.callMethod('l',...args);}
-  left(): number {return this.callMethod('left');}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
-  multiWire(): boolean {return this.callMethod('multiWire');}
-  numPorts(...args: any[]): number {return this.callMethod('numPorts',...args);}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
-  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
-  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
-  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
-  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
-  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
-  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  operationCast(...args: any[]): OperationBase {return this.callMethod('operationCast',...args);}
   pack(a1: classdesc__pack_t,a2: string): void {return this.callMethod('pack',a1,a2);}
-  portValues(): string {return this.callMethod('portValues');}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(a1: number): object {return this.callMethod('ports',a1);}
-  portsSize(): number {return this.callMethod('portsSize');}
-  r(...args: number[]): number {return this.callMethod('r',...args);}
   readData(a1: string): void {return this.callMethod('readData',a1);}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleCoords(): object {return this.callMethod('resizeHandleCoords');}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  type(...args: any[]): string {return this.callMethod('type',...args);}
-  typeName(a1: number): string {return this.callMethod('typeName',a1);}
-  units(...args: any[]): object {return this.callMethod('units',...args);}
+  units(a1: boolean): object {return this.callMethod('units',a1);}
   unpack(a1: classdesc__pack_t,a2: string): void {return this.callMethod('unpack',a1,a2);}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
-  value(...args: any[]): number {return this.callMethod('value',...args);}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
-  width(): number {return this.callMethod('width');}
-  x(): number {return this.callMethod('x');}
-  y(): number {return this.callMethod('y');}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
 }
 
 export class DataSpec extends CppClass {
@@ -574,7 +643,6 @@ export class FontDisplay extends CppClass {
 }
 
 export class GodleyIcon extends Item {
-  bb: BoundingBox;
   editor: GodleyTableEditor;
   popup: GodleyTableWindow;
   svgRenderer: SVGRenderer;
@@ -584,114 +652,47 @@ export class GodleyIcon extends Item {
       super(prefix)
     else
       super((<GodleyIcon>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'/bb');
     this.editor=new GodleyTableEditor(this.prefix+'/editor');
     this.popup=new GodleyTableWindow(this.prefix+'/popup');
     this.svgRenderer=new SVGRenderer(this.prefix+'/svgRenderer');
     this.table=new GodleyTable(this.prefix+'/table');
   }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   adjustPopupWidgets(): void {return this.callMethod('adjustPopupWidgets');}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
   bottomMargin(): number {return this.callMethod('bottomMargin');}
   buttonDisplay(): boolean {return this.callMethod('buttonDisplay');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  clickType(...args: any[]): string {return this.callMethod('clickType',...args);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
+  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
+  clone(): GodleyIcon {return this.callMethod('clone');}
   deleteRow(a1: number): void {return this.callMethod('deleteRow',a1);}
   destroyFrame(): void {return this.callMethod('destroyFrame');}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
-  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
-  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(a1: minsky__dummy): void {return this.callMethod('drawResizeHandles',a1);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   editorMode(): boolean {return this.callMethod('editorMode');}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
-  flip(): void {return this.callMethod('flip');}
   flowSignature(a1: number): object {return this.callMethod('flowSignature',a1);}
   flowVars(): Sequence<VariableBase> {return this.callMethod('flowVars');}
-  height(): number {return this.callMethod('height');}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  id(): string {return this.callMethod('id');}
-  inItem(...args: any[]): boolean {return this.callMethod('inItem',...args);}
+  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
   insertControlled(a1: Selection): void {return this.callMethod('insertControlled',a1);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  left(): number {return this.callMethod('left');}
   leftMargin(): number {return this.callMethod('leftMargin');}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveCell(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('moveCell',a1,a2,a3,a4);}
-  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
-  onMouseDown(...args: any[]): void {return this.callMethod('onMouseDown',...args);}
-  onMouseLeave(...args: any[]): void {return this.callMethod('onMouseLeave',...args);}
-  onMouseMotion(...args: any[]): boolean {return this.callMethod('onMouseMotion',...args);}
-  onMouseOver(...args: any[]): boolean {return this.callMethod('onMouseOver',...args);}
-  onMouseUp(...args: any[]): void {return this.callMethod('onMouseUp',...args);}
-  onResizeHandle(a1: number,a2: number): boolean {return this.callMethod('onResizeHandle',a1,a2);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(a1: number): object {return this.callMethod('ports',a1);}
-  portsSize(): number {return this.callMethod('portsSize');}
+  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
+  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
+  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
+  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
+  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
+  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
   removeControlledItems(a1: GroupItems): void {return this.callMethod('removeControlledItems',a1);}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
+  resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
   rowSum(a1: number): string {return this.callMethod('rowSum',a1);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
   scaleIcon(a1: number,a2: number): void {return this.callMethod('scaleIcon',a1,a2);}
-  select(...args: any[]): object {return this.callMethod('select',...args);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
+  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
   setCell(a1: number,a2: number,a3: string): void {return this.callMethod('setCell',a1,a2,a3);}
   setCurrency(a1: string): void {return this.callMethod('setCurrency',a1);}
   stockVarUnits(a1: string,a2: boolean): object {return this.callMethod('stockVarUnits',a1,a2);}
   stockVars(): Sequence<VariableBase> {return this.callMethod('stockVars');}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
   toggleButtons(): void {return this.callMethod('toggleButtons');}
   toggleEditorMode(): void {return this.callMethod('toggleEditorMode');}
   toggleVariableDisplay(): void {return this.callMethod('toggleVariableDisplay');}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  units(a1: boolean): object {return this.callMethod('units',a1);}
   update(): void {return this.callMethod('update');}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
-  value(): number {return this.callMethod('value');}
   valueId(a1: string): string {return this.callMethod('valueId',a1);}
   variableDisplay(...args: boolean[]): boolean {return this.callMethod('variableDisplay',...args);}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
-  width(): number {return this.callMethod('width');}
-  x(): number {return this.callMethod('x');}
-  y(): number {return this.callMethod('y');}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
 }
 
 export class GodleyTab extends CppClass {
@@ -1207,118 +1208,27 @@ export class HandleLockInfo extends CppClass {
 }
 
 export class IntOp extends Item {
-  bb: BoundingBox;
   intVar: VariableBase;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
     else
       super((<IntOp>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'/bb');
     this.intVar=new VariableBase(this.prefix+'/intVar');
   }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
-  arg(...args: number[]): number {return this.callMethod('arg',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  axis(...args: string[]): string {return this.callMethod('axis',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  classify(a1: string): string {return this.callMethod('classify',a1);}
-  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
+  attachedToDefiningVar(a1: Container<Item>): boolean {return this.callMethod('attachedToDefiningVar',a1);}
   coupled(): boolean {return this.callMethod('coupled');}
-  create(a1: string): OperationBase {return this.callMethod('create',a1);}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   description(...args: any[]): string {return this.callMethod('description',...args);}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  dimensions(): string[] {return this.callMethod('dimensions');}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
-  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
-  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
-  flip(): void {return this.callMethod('flip');}
-  h(...args: number[]): number {return this.callMethod('h',...args);}
-  height(): number {return this.callMethod('height');}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  iconDraw(...args: any[]): void {return this.callMethod('iconDraw',...args);}
-  id(): string {return this.callMethod('id');}
-  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   intVarOffset(...args: number[]): number {return this.callMethod('intVarOffset',...args);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  l(...args: number[]): number {return this.callMethod('l',...args);}
-  left(): number {return this.callMethod('left');}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
-  multiWire(): boolean {return this.callMethod('multiWire');}
-  numPorts(...args: any[]): number {return this.callMethod('numPorts',...args);}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
-  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
-  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
-  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
-  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
-  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
-  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  operationCast(...args: any[]): OperationBase {return this.callMethod('operationCast',...args);}
+  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
   pack(a1: classdesc__pack_t,a2: string): void {return this.callMethod('pack',a1,a2);}
-  portValues(): string {return this.callMethod('portValues');}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(...args: any[]): object {return this.callMethod('ports',...args);}
-  portsSize(): number {return this.callMethod('portsSize');}
-  r(...args: number[]): number {return this.callMethod('r',...args);}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleCoords(): object {return this.callMethod('resizeHandleCoords');}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
+  ports(a1: number): object {return this.callMethod('ports',a1);}
+  resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
   toggleCoupled(): boolean {return this.callMethod('toggleCoupled');}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  type(...args: any[]): string {return this.callMethod('type',...args);}
-  typeName(a1: number): string {return this.callMethod('typeName',a1);}
-  units(...args: any[]): object {return this.callMethod('units',...args);}
+  units(a1: boolean): object {return this.callMethod('units',a1);}
   unpack(a1: classdesc__pack_t,a2: string): void {return this.callMethod('unpack',a1,a2);}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
-  value(...args: any[]): number {return this.callMethod('value',...args);}
   valueId(): string {return this.callMethod('valueId');}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
-  width(): number {return this.callMethod('width');}
-  x(): number {return this.callMethod('x');}
-  y(): number {return this.callMethod('y');}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
 }
 
 export class LassoBox extends CppClass {
@@ -1334,7 +1244,6 @@ export class LassoBox extends CppClass {
 }
 
 export class Lock extends Item {
-  bb: BoundingBox;
   lockedIcon: SVGRenderer;
   lockedState: ravel__RavelState;
   unlockedIcon: SVGRenderer;
@@ -1343,92 +1252,15 @@ export class Lock extends Item {
       super(prefix)
     else
       super((<Lock>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'/bb');
     this.lockedIcon=new SVGRenderer(this.prefix+'/lockedIcon');
     this.lockedState=new ravel__RavelState(this.prefix+'/lockedState');
     this.unlockedIcon=new SVGRenderer(this.prefix+'/unlockedIcon');
   }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
-  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
-  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(a1: minsky__dummy): void {return this.callMethod('drawResizeHandles',a1);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
-  flip(): void {return this.callMethod('flip');}
-  height(): number {return this.callMethod('height');}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  id(): string {return this.callMethod('id');}
-  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  left(): number {return this.callMethod('left');}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   locked(): boolean {return this.callMethod('locked');}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
-  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
-  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
-  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
-  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
-  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
-  onResizeHandle(a1: number,a2: number): boolean {return this.callMethod('onResizeHandle',a1,a2);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(a1: number): object {return this.callMethod('ports',a1);}
-  portsSize(): number {return this.callMethod('portsSize');}
   ravelInput(): Ravel {return this.callMethod('ravelInput');}
-  resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
   toggleLocked(): void {return this.callMethod('toggleLocked');}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  units(...args: any[]): object {return this.callMethod('units',...args);}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
-  value(): number {return this.callMethod('value');}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
-  width(): number {return this.callMethod('width');}
-  x(): number {return this.callMethod('x');}
-  y(): number {return this.callMethod('y');}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
+  units(a1: boolean): object {return this.callMethod('units',a1);}
 }
 
 export class Minsky extends CppClass {
@@ -1597,112 +1429,6 @@ export class Minsky extends CppClass {
   triggerCheckMemAllocationCallback(): boolean {return this.callMethod('triggerCheckMemAllocationCallback');}
   undo(a1: number): number {return this.callMethod('undo',a1);}
   variableTypes(): string[] {return this.callMethod('variableTypes');}
-}
-
-export class OperationBase extends Item {
-  bb: BoundingBox;
-  constructor(prefix: string|Item){
-    if (typeof prefix==='string')
-      super(prefix)
-    else
-      super((<OperationBase>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'/bb');
-  }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
-  addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
-  arg(...args: number[]): number {return this.callMethod('arg',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  axis(...args: string[]): string {return this.callMethod('axis',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(): string {return this.callMethod('classType');}
-  classify(a1: string): string {return this.callMethod('classify',a1);}
-  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
-  clone(): Item {return this.callMethod('clone');}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
-  create(a1: string): OperationBase {return this.callMethod('create',a1);}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  dimensions(): string[] {return this.callMethod('dimensions');}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
-  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
-  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
-  flip(): void {return this.callMethod('flip');}
-  h(...args: number[]): number {return this.callMethod('h',...args);}
-  height(): number {return this.callMethod('height');}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  iconDraw(a1: minsky__dummy): void {return this.callMethod('iconDraw',a1);}
-  id(): string {return this.callMethod('id');}
-  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(a1: classdesc__json_pack_t): void {return this.callMethod('json_pack',a1);}
-  l(...args: number[]): number {return this.callMethod('l',...args);}
-  left(): number {return this.callMethod('left');}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
-  multiWire(): boolean {return this.callMethod('multiWire');}
-  numPorts(): number {return this.callMethod('numPorts');}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
-  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
-  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
-  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
-  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
-  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
-  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  operationCast(...args: any[]): OperationBase {return this.callMethod('operationCast',...args);}
-  portValues(): string {return this.callMethod('portValues');}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(a1: number): object {return this.callMethod('ports',a1);}
-  portsSize(): number {return this.callMethod('portsSize');}
-  r(...args: number[]): number {return this.callMethod('r',...args);}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleCoords(): object {return this.callMethod('resizeHandleCoords');}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  type(): string {return this.callMethod('type');}
-  typeName(a1: number): string {return this.callMethod('typeName',a1);}
-  units(...args: any[]): object {return this.callMethod('units',...args);}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
-  value(...args: any[]): number {return this.callMethod('value',...args);}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
-  width(): number {return this.callMethod('width');}
-  x(): number {return this.callMethod('x');}
-  y(): number {return this.callMethod('y');}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
 }
 
 export class Panopticon extends CppClass {
@@ -1911,7 +1637,6 @@ export class PlotTab extends CppClass {
 
 export class PlotWidget extends Item {
   backgroundColour: ecolab__cairo__Colour;
-  bb: BoundingBox;
   item: Item;
   palette: Sequence<ecolab__Plot__LineStyle>;
   wire: Wire;
@@ -1929,7 +1654,6 @@ export class PlotWidget extends Item {
     else
       super((<PlotWidget>prefix).prefix)
     this.backgroundColour=new ecolab__cairo__Colour(this.prefix+'/backgroundColour');
-    this.bb=new BoundingBox(this.prefix+'/bb');
     this.item=new Item(this.prefix+'/item');
     this.palette=new Sequence<ecolab__Plot__LineStyle>(this.prefix+'/palette',ecolab__Plot__LineStyle);
     this.wire=new Wire(this.prefix+'/wire');
@@ -1945,77 +1669,40 @@ export class PlotWidget extends Item {
   AssignSide(a1: number,a2: string): void {return this.callMethod('AssignSide',a1,a2);}
   Image(...args: any[]): string {return this.callMethod('Image',...args);}
   LabelPen(a1: number,a2: ecolab__cairo__Surface): void {return this.callMethod('LabelPen',a1,a2);}
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
   add(...args: any[]): void {return this.callMethod('add',...args);}
   addConstantCurves(): void {return this.callMethod('addConstantCurves');}
   addPlotPt(a1: number): void {return this.callMethod('addPlotPt',a1);}
   addPorts(): void {return this.callMethod('addPorts');}
   addPt(a1: number,a2: number,a3: number): void {return this.callMethod('addPt',a1,a2,a3);}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   assignSide(a1: number,a2: string): void {return this.callMethod('assignSide',a1,a2);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
   autoScale(): void {return this.callMethod('autoScale');}
   autoscale(...args: boolean[]): boolean {return this.callMethod('autoscale',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
   cairoSurface(): minsky__dummy {return this.callMethod('cairoSurface');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
   clear(): void {return this.callMethod('clear');}
   clearPenAttributes(): void {return this.callMethod('clearPenAttributes');}
-  clickType(...args: any[]): string {return this.callMethod('clickType',...args);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
+  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
   connectVar(a1: VariableValue,a2: number): void {return this.callMethod('connectVar',a1,a2);}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
   controlMouseDown(a1: number,a2: number): void {return this.callMethod('controlMouseDown',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   destroyFrame(): void {return this.callMethod('destroyFrame');}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
   disable(): void {return this.callMethod('disable');}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
   disconnectAllVars(): void {return this.callMethod('disconnectAllVars');}
-  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   displayFontSize(...args: number[]): number {return this.callMethod('displayFontSize',...args);}
   displayNTicks(...args: number[]): number {return this.callMethod('displayNTicks',...args);}
-  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(a1: minsky__dummy): void {return this.callMethod('drawResizeHandles',a1);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
   exp_threshold(...args: number[]): number {return this.callMethod('exp_threshold',...args);}
   exportAsCSV(...args: any[]): void {return this.callMethod('exportAsCSV',...args);}
   extendPalette(): void {return this.callMethod('extendPalette');}
-  flip(): void {return this.callMethod('flip');}
   fontScale(...args: number[]): number {return this.callMethod('fontScale',...args);}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   grid(...args: boolean[]): boolean {return this.callMethod('grid',...args);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(...args: any[]): number {return this.callMethod('height',...args);}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  id(): string {return this.callMethod('id');}
   image(a1: object): string {return this.callMethod('image',a1);}
-  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
   keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
   labelPen(a1: number,a2: string): void {return this.callMethod('labelPen',a1,a2);}
   labelheight(): number {return this.callMethod('labelheight');}
   leadingMarker(...args: boolean[]): boolean {return this.callMethod('leadingMarker',...args);}
-  left(): number {return this.callMethod('left');}
   legend(...args: boolean[]): boolean {return this.callMethod('legend',...args);}
   legendFontSz(...args: number[]): number {return this.callMethod('legendFontSz',...args);}
   legendLeft(...args: number[]): number {return this.callMethod('legendLeft',...args);}
@@ -2026,9 +1713,6 @@ export class PlotWidget extends Item {
   lh(a1: number,a2: number): number {return this.callMethod('lh',a1,a2);}
   logx(...args: boolean[]): boolean {return this.callMethod('logx',...args);}
   logy(...args: boolean[]): boolean {return this.callMethod('logy',...args);}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
   makeDisplayPlot(): void {return this.callMethod('makeDisplayPlot');}
   maxx(...args: number[]): number {return this.callMethod('maxx',...args);}
   maxy(...args: number[]): number {return this.callMethod('maxy',...args);}
@@ -2037,23 +1721,13 @@ export class PlotWidget extends Item {
   miny(...args: number[]): number {return this.callMethod('miny',...args);}
   miny1(...args: number[]): number {return this.callMethod('miny1',...args);}
   mouseDown(...args: any[]): void {return this.callMethod('mouseDown',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   mouseMove(...args: any[]): void {return this.callMethod('mouseMove',...args);}
   mouseUp(a1: number,a2: number): void {return this.callMethod('mouseUp',a1,a2);}
-  moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
+  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   nxTicks(...args: number[]): number {return this.callMethod('nxTicks',...args);}
   nyTicks(...args: number[]): number {return this.callMethod('nyTicks',...args);}
   offx(...args: number[]): number {return this.callMethod('offx',...args);}
   offy(...args: number[]): number {return this.callMethod('offy',...args);}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
-  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
-  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
-  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
-  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
-  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
-  onResizeHandle(a1: number,a2: number): boolean {return this.callMethod('onResizeHandle',a1,a2);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
   pack(a1: classdesc__pack_t): void {return this.callMethod('pack',a1);}
   percent(...args: boolean[]): boolean {return this.callMethod('percent',...args);}
   plot(a1: object): void {return this.callMethod('plot',a1);}
@@ -2061,10 +1735,6 @@ export class PlotWidget extends Item {
   plotTabDisplay(...args: boolean[]): boolean {return this.callMethod('plotTabDisplay',...args);}
   plotType(...args: string[]): string {return this.callMethod('plotType',...args);}
   plotWidgetCast(...args: any[]): PlotWidget {return this.callMethod('plotWidgetCast',...args);}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(a1: number): object {return this.callMethod('ports',a1);}
-  portsSize(): number {return this.callMethod('portsSize');}
   position(): number[] {return this.callMethod('position');}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
   redrawWithBounds(...args: any[]): void {return this.callMethod('redrawWithBounds',...args);}
@@ -2077,41 +1747,25 @@ export class PlotWidget extends Item {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(...args: any[]): void {return this.callMethod('requestRedraw',...args);}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
+  resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
   resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
+  scaleFactor(): number {return this.callMethod('scaleFactor');}
   scalePlot(): void {return this.callMethod('scalePlot');}
-  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   setMinMax(): void {return this.callMethod('setMinMax');}
   setPen(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('setPen',a1,a2,a3,a4);}
   subgrid(...args: boolean[]): boolean {return this.callMethod('subgrid',...args);}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
   title(...args: string[]): string {return this.callMethod('title',...args);}
   togglePlotTabDisplay(): void {return this.callMethod('togglePlotTabDisplay');}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  units(a1: boolean): object {return this.callMethod('units',a1);}
   unpack(a1: classdesc__pack_t): void {return this.callMethod('unpack',a1);}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(...args: any[]): void {return this.callMethod('updateIcon',...args);}
-  value(): number {return this.callMethod('value');}
+  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
   vectorRender(a1: number,a2: minsky__dummy): object {return this.callMethod('vectorRender',a1,a2);}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
   width(...args: any[]): number {return this.callMethod('width',...args);}
-  x(): number {return this.callMethod('x');}
   xlabel(...args: string[]): string {return this.callMethod('xlabel',...args);}
   xtickAngle(...args: number[]): number {return this.callMethod('xtickAngle',...args);}
-  y(): number {return this.callMethod('y');}
   y1label(...args: string[]): string {return this.callMethod('y1label',...args);}
   ylabel(...args: string[]): string {return this.callMethod('ylabel',...args);}
   zoom(a1: number,a2: number,a3: number): void {return this.callMethod('zoom',a1,a2,a3);}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
 }
 
 export class Port extends CppClass {
@@ -2137,7 +1791,6 @@ export class Port extends CppClass {
 
 export class Ravel extends Item {
   axisDimensions: Map<string,civita__Dimension>;
-  bb: BoundingBox;
   lockGroup: RavelLockGroup;
   svgRenderer: SVGRenderer;
   constructor(prefix: string|Item){
@@ -2146,117 +1799,46 @@ export class Ravel extends Item {
     else
       super((<Ravel>prefix).prefix)
     this.axisDimensions=new Map<string,civita__Dimension>(this.prefix+'/axisDimensions',civita__Dimension);
-    this.bb=new BoundingBox(this.prefix+'/bb');
     this.lockGroup=new RavelLockGroup(this.prefix+'/lockGroup');
     this.svgRenderer=new SVGRenderer(this.prefix+'/svgRenderer');
   }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
   adjustSlicer(a1: number): void {return this.callMethod('adjustSlicer',a1);}
   allSliceLabels(): string[] {return this.callMethod('allSliceLabels');}
   allSliceLabelsAxis(a1: number): string[] {return this.callMethod('allSliceLabelsAxis',a1);}
   applyState(a1: ravel__RavelState): void {return this.callMethod('applyState',a1);}
-  arg(...args: number[]): number {return this.callMethod('arg',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  axis(...args: string[]): string {return this.callMethod('axis',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
   broadcastStateToLockGroup(): void {return this.callMethod('broadcastStateToLockGroup');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  classify(a1: string): string {return this.callMethod('classify',a1);}
-  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
-  create(a1: string): OperationBase {return this.callMethod('create',a1);}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
   description(): string {return this.callMethod('description');}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
   dimension(a1: number): object {return this.callMethod('dimension',a1);}
   dimensionType(...args: any[]): string {return this.callMethod('dimensionType',...args);}
   dimensionUnitsFormat(...args: any[]): string {return this.callMethod('dimensionUnitsFormat',...args);}
-  dimensions(): string[] {return this.callMethod('dimensions');}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
-  displayDelayedTooltip(...args: any[]): void {return this.callMethod('displayDelayedTooltip',...args);}
+  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   displayFilterCaliper(): boolean {return this.callMethod('displayFilterCaliper');}
-  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   editorMode(...args: boolean[]): boolean {return this.callMethod('editorMode',...args);}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
   exportAsCSV(a1: string): void {return this.callMethod('exportAsCSV',a1);}
-  flip(): void {return this.callMethod('flip');}
   getState(): object {return this.callMethod('getState');}
-  h(...args: number[]): number {return this.callMethod('h',...args);}
   handleDescription(a1: number): string {return this.callMethod('handleDescription',a1);}
   handleNames(): string[] {return this.callMethod('handleNames');}
   handleSetReduction(a1: number,a2: string): void {return this.callMethod('handleSetReduction',a1,a2);}
   handleSortableByValue(): boolean {return this.callMethod('handleSortableByValue');}
-  height(): number {return this.callMethod('height');}
   hypercube(): object {return this.callMethod('hypercube');}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  iconDraw(...args: any[]): void {return this.callMethod('iconDraw',...args);}
-  id(): string {return this.callMethod('id');}
-  inItem(...args: any[]): boolean {return this.callMethod('inItem',...args);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  l(...args: number[]): number {return this.callMethod('l',...args);}
+  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
   leaveLockGroup(): void {return this.callMethod('leaveLockGroup');}
-  left(): number {return this.callMethod('left');}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
   maxRank(): number {return this.callMethod('maxRank');}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
-  multiWire(): boolean {return this.callMethod('multiWire');}
   nextReduction(a1: string): void {return this.callMethod('nextReduction',a1);}
   numHandles(): number {return this.callMethod('numHandles');}
-  numPorts(...args: any[]): number {return this.callMethod('numPorts',...args);}
   numSliceLabels(a1: number): number {return this.callMethod('numSliceLabels',a1);}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
-  onMouseDown(...args: any[]): void {return this.callMethod('onMouseDown',...args);}
-  onMouseLeave(...args: any[]): void {return this.callMethod('onMouseLeave',...args);}
-  onMouseMotion(...args: any[]): boolean {return this.callMethod('onMouseMotion',...args);}
-  onMouseOver(...args: any[]): boolean {return this.callMethod('onMouseOver',...args);}
-  onMouseUp(...args: any[]): void {return this.callMethod('onMouseUp',...args);}
-  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  operationCast(...args: any[]): OperationBase {return this.callMethod('operationCast',...args);}
+  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
+  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
+  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
+  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
+  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
+  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
   pickSliceLabels(a1: number,a2: string[]): void {return this.callMethod('pickSliceLabels',a1,a2);}
   pickedSliceLabels(): string[] {return this.callMethod('pickedSliceLabels');}
   populateHypercube(a1: civita__Hypercube): void {return this.callMethod('populateHypercube',a1);}
-  portValues(): string {return this.callMethod('portValues');}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(a1: number): object {return this.callMethod('ports',a1);}
-  portsSize(): number {return this.callMethod('portsSize');}
-  r(...args: number[]): number {return this.callMethod('r',...args);}
   redistributeHandles(): void {return this.callMethod('redistributeHandles');}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleCoords(): object {return this.callMethod('resizeHandleCoords');}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
+  resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
   selectedHandle(): number {return this.callMethod('selectedHandle');}
   setDescription(a1: string): void {return this.callMethod('setDescription',a1);}
   setDimension(...args: any[]): void {return this.callMethod('setDimension',...args);}
@@ -2267,23 +1849,9 @@ export class Ravel extends Item {
   setSortOrder(a1: string): string {return this.callMethod('setSortOrder',a1);}
   sortByValue(a1: string): void {return this.callMethod('sortByValue',a1);}
   sortOrder(): string {return this.callMethod('sortOrder');}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
   toggleDisplayFilterCaliper(): boolean {return this.callMethod('toggleDisplayFilterCaliper');}
   toggleEditorMode(): void {return this.callMethod('toggleEditorMode');}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  type(...args: any[]): string {return this.callMethod('type',...args);}
-  typeName(a1: number): string {return this.callMethod('typeName',a1);}
-  units(...args: any[]): object {return this.callMethod('units',...args);}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
-  value(...args: any[]): number {return this.callMethod('value',...args);}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
-  width(): number {return this.callMethod('width');}
-  x(): number {return this.callMethod('x');}
-  y(): number {return this.callMethod('y');}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
+  units(a1: boolean): object {return this.callMethod('units',a1);}
 }
 
 export class RavelLockGroup extends CppClass {
@@ -2532,97 +2100,19 @@ export class Selection extends CppClass {
 }
 
 export class SwitchIcon extends Item {
-  bb: BoundingBox;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
     else
       super((<SwitchIcon>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'/bb');
   }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
-  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
-  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
-  flip(): void {return this.callMethod('flip');}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   flipped(...args: boolean[]): boolean {return this.callMethod('flipped',...args);}
-  height(): number {return this.callMethod('height');}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  id(): string {return this.callMethod('id');}
-  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  left(): number {return this.callMethod('left');}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   numCases(): number {return this.callMethod('numCases');}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
-  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
-  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
-  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
-  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
-  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
-  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(a1: number): object {return this.callMethod('ports',a1);}
-  portsSize(): number {return this.callMethod('portsSize');}
-  resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
-  resizeHandleCoords(): object {return this.callMethod('resizeHandleCoords');}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   setNumCases(a1: number): void {return this.callMethod('setNumCases',a1);}
   switchValue(): number {return this.callMethod('switchValue');}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  units(...args: any[]): object {return this.callMethod('units',...args);}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
-  value(...args: any[]): number {return this.callMethod('value',...args);}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
-  width(): number {return this.callMethod('width');}
-  x(): number {return this.callMethod('x');}
-  y(): number {return this.callMethod('y');}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
+  units(a1: boolean): object {return this.callMethod('units',a1);}
+  value(): number {return this.callMethod('value');}
 }
 
 export class Units extends Map<string,number> {
@@ -2640,7 +2130,6 @@ export class Units extends Map<string,number> {
 export class UserFunction extends Item {
   argNames: Sequence<string>;
   argVals: Sequence<number>;
-  bb: BoundingBox;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
@@ -2648,246 +2137,17 @@ export class UserFunction extends Item {
       super((<UserFunction>prefix).prefix)
     this.argNames=new Sequence<string>(this.prefix+'/argNames');
     this.argVals=new Sequence<number>(this.prefix+'/argVals');
-    this.bb=new BoundingBox(this.prefix+'/bb');
   }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  addPorts(): void {return this.callMethod('addPorts');}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
-  arg(...args: number[]): number {return this.callMethod('arg',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  axis(...args: string[]): string {return this.callMethod('axis',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(): string {return this.callMethod('bookmarkId');}
-  bottom(): number {return this.callMethod('bottom');}
-  checkUnits(): object {return this.callMethod('checkUnits');}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  classify(a1: string): string {return this.callMethod('classify',a1);}
-  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(a1: number,a2: number): object {return this.callMethod('closestInPort',a1,a2);}
-  closestOutPort(a1: number,a2: number): object {return this.callMethod('closestOutPort',a1,a2);}
   compile(): void {return this.callMethod('compile');}
-  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  corners(): object[] {return this.callMethod('corners');}
-  create(...args: any[]): OperationBase {return this.callMethod('create',...args);}
-  deleteAttachedWires(): void {return this.callMethod('deleteAttachedWires');}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
+  create(a1: string): UserFunction {return this.callMethod('create',a1);}
   description(...args: any[]): string {return this.callMethod('description',...args);}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  dimensions(): string[] {return this.callMethod('dimensions');}
-  disableDelayedTooltip(): void {return this.callMethod('disableDelayedTooltip');}
-  displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
-  displayTooltip(...args: any[]): void {return this.callMethod('displayTooltip',...args);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(a1: minsky__dummy): void {return this.callMethod('drawPorts',a1);}
-  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
-  drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
-  dummyDraw(): void {return this.callMethod('dummyDraw');}
-  ensureBBValid(): void {return this.callMethod('ensureBBValid');}
+  displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
   evaluate(a1: number,a2: number): number {return this.callMethod('evaluate',a1,a2);}
   expression(...args: string[]): string {return this.callMethod('expression',...args);}
-  flip(): void {return this.callMethod('flip');}
-  h(...args: number[]): number {return this.callMethod('h',...args);}
-  height(): number {return this.callMethod('height');}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  iconDraw(...args: any[]): void {return this.callMethod('iconDraw',...args);}
-  id(): string {return this.callMethod('id');}
-  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
-  ioVar(): boolean {return this.callMethod('ioVar');}
-  itemPtrFromThis(): object {return this.callMethod('itemPtrFromThis');}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  l(...args: number[]): number {return this.callMethod('l',...args);}
-  left(): number {return this.callMethod('left');}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
-  multiWire(): boolean {return this.callMethod('multiWire');}
   name(...args: any[]): string {return this.callMethod('name',...args);}
   nextId(...args: number[]): number {return this.callMethod('nextId',...args);}
-  numPorts(...args: any[]): number {return this.callMethod('numPorts',...args);}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
-  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
-  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
-  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
-  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
-  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
-  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  operationCast(...args: any[]): OperationBase {return this.callMethod('operationCast',...args);}
-  portValues(): string {return this.callMethod('portValues');}
-  portX(a1: number): number {return this.callMethod('portX',a1);}
-  portY(a1: number): number {return this.callMethod('portY',a1);}
-  ports(a1: number): object {return this.callMethod('ports',a1);}
-  portsSize(): number {return this.callMethod('portsSize');}
-  r(...args: number[]): number {return this.callMethod('r',...args);}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleCoords(): object {return this.callMethod('resizeHandleCoords');}
-  resizeHandleSize(): number {return this.callMethod('resizeHandleSize');}
-  right(): number {return this.callMethod('right');}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(a1: number,a2: number): object {return this.callMethod('select',a1,a2);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
   symbolNames(): string[] {return this.callMethod('symbolNames');}
-  throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(): number {return this.callMethod('top');}
-  type(...args: any[]): string {return this.callMethod('type',...args);}
-  typeName(a1: number): string {return this.callMethod('typeName',a1);}
-  units(...args: any[]): object {return this.callMethod('units',...args);}
-  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
-  updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
-  value(...args: any[]): number {return this.callMethod('value',...args);}
-  visible(): boolean {return this.callMethod('visible');}
-  visibleWithinGroup(): boolean {return this.callMethod('visibleWithinGroup');}
-  width(): number {return this.callMethod('width');}
-  x(): number {return this.callMethod('x');}
-  y(): number {return this.callMethod('y');}
-  zoomFactor(): number {return this.callMethod('zoomFactor');}
-}
-
-export class VariableBase extends Item {
-  bb: BoundingBox;
-  constructor(prefix: string|Item){
-    if (typeof prefix==='string')
-      super(prefix)
-    else
-      super((<VariableBase>prefix).prefix)
-    this.bb=new BoundingBox(this.prefix+'/bb');
-  }
-  RESTProcess(...args: any[]): void {return this.callMethod('RESTProcess',...args);}
-  TCL_obj(...args: any[]): void {return this.callMethod('TCL_obj',...args);}
-  accessibleVars(...args: any[]): string[] {return this.callMethod('accessibleVars',...args);}
-  adjustBookmark(...args: any[]): void {return this.callMethod('adjustBookmark',...args);}
-  adjustSliderBounds(...args: any[]): void {return this.callMethod('adjustSliderBounds',...args);}
-  attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
-  bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
-  bookmarkId(...args: any[]): string {return this.callMethod('bookmarkId',...args);}
-  bottom(...args: any[]): number {return this.callMethod('bottom',...args);}
-  checkUnits(...args: any[]): object {return this.callMethod('checkUnits',...args);}
-  classType(...args: any[]): string {return this.callMethod('classType',...args);}
-  clickType(...args: any[]): string {return this.callMethod('clickType',...args);}
-  clone(...args: any[]): Item {return this.callMethod('clone',...args);}
-  closestInPort(...args: any[]): object {return this.callMethod('closestInPort',...args);}
-  closestOutPort(...args: any[]): object {return this.callMethod('closestOutPort',...args);}
-  contains(...args: any[]): boolean {return this.callMethod('contains',...args);}
-  corners(...args: any[]): object[] {return this.callMethod('corners',...args);}
-  create(...args: any[]): VariableBase {return this.callMethod('create',...args);}
-  defined(...args: any[]): boolean {return this.callMethod('defined',...args);}
-  definition(...args: any[]): string {return this.callMethod('definition',...args);}
-  deleteAttachedWires(...args: any[]): void {return this.callMethod('deleteAttachedWires',...args);}
-  deleteCallback(...args: string[]): string {return this.callMethod('deleteCallback',...args);}
-  destroyFrame(...args: any[]): void {return this.callMethod('destroyFrame',...args);}
-  detailedText(...args: string[]): string {return this.callMethod('detailedText',...args);}
-  dimLabels(...args: any[]): string[] {return this.callMethod('dimLabels',...args);}
-  dims(...args: any[]): number[] {return this.callMethod('dims',...args);}
-  disableDelayedTooltip(...args: any[]): void {return this.callMethod('disableDelayedTooltip',...args);}
-  displayDelayedTooltip(...args: any[]): void {return this.callMethod('displayDelayedTooltip',...args);}
-  displayTooltip(...args: any[]): void {return this.callMethod('displayTooltip',...args);}
-  draw(...args: any[]): void {return this.callMethod('draw',...args);}
-  drawPorts(...args: any[]): void {return this.callMethod('drawPorts',...args);}
-  drawResizeHandles(...args: any[]): void {return this.callMethod('drawResizeHandles',...args);}
-  drawSelected(...args: any[]): void {return this.callMethod('drawSelected',...args);}
-  dummyDraw(...args: any[]): void {return this.callMethod('dummyDraw',...args);}
-  engExp(...args: any[]): object {return this.callMethod('engExp',...args);}
-  ensureBBValid(...args: any[]): void {return this.callMethod('ensureBBValid',...args);}
-  ensureValueExists(...args: any[]): void {return this.callMethod('ensureValueExists',...args);}
-  exportAsCSV(...args: any[]): void {return this.callMethod('exportAsCSV',...args);}
-  flip(...args: any[]): void {return this.callMethod('flip',...args);}
-  getDimLabelsPicked(...args: any[]): object {return this.callMethod('getDimLabelsPicked',...args);}
-  height(...args: any[]): number {return this.callMethod('height',...args);}
-  iHeight(...args: any[]): number {return this.callMethod('iHeight',...args);}
-  iWidth(...args: any[]): number {return this.callMethod('iWidth',...args);}
-  id(...args: any[]): string {return this.callMethod('id',...args);}
-  importFromCSV(...args: any[]): void {return this.callMethod('importFromCSV',...args);}
-  inItem(...args: any[]): boolean {return this.callMethod('inItem',...args);}
-  init(...args: any[]): string {return this.callMethod('init',...args);}
-  initSliderBounds(...args: any[]): void {return this.callMethod('initSliderBounds',...args);}
-  inputWired(...args: any[]): boolean {return this.callMethod('inputWired',...args);}
-  ioVar(...args: any[]): boolean {return this.callMethod('ioVar',...args);}
-  isStock(...args: any[]): boolean {return this.callMethod('isStock',...args);}
-  itemPtrFromThis(...args: any[]): object {return this.callMethod('itemPtrFromThis',...args);}
-  itemTabInitialised(...args: boolean[]): boolean {return this.callMethod('itemTabInitialised',...args);}
-  itemTabX(...args: number[]): number {return this.callMethod('itemTabX',...args);}
-  itemTabY(...args: number[]): number {return this.callMethod('itemTabY',...args);}
-  json_pack(...args: any[]): void {return this.callMethod('json_pack',...args);}
-  left(...args: any[]): number {return this.callMethod('left',...args);}
-  lhs(...args: any[]): boolean {return this.callMethod('lhs',...args);}
-  local(...args: any[]): boolean {return this.callMethod('local',...args);}
-  m_sf(...args: number[]): number {return this.callMethod('m_sf',...args);}
-  m_x(...args: number[]): number {return this.callMethod('m_x',...args);}
-  m_y(...args: number[]): number {return this.callMethod('m_y',...args);}
-  makeConsistentWithValue(): void {return this.callMethod('makeConsistentWithValue');}
-  mantissa(...args: any[]): string {return this.callMethod('mantissa',...args);}
-  maxSliderSteps(...args: any[]): number {return this.callMethod('maxSliderSteps',...args);}
-  mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
-  moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
-  name(...args: any[]): string {return this.callMethod('name',...args);}
-  numPorts(...args: any[]): number {return this.callMethod('numPorts',...args);}
-  onBorder(...args: boolean[]): boolean {return this.callMethod('onBorder',...args);}
-  onKeyPress(...args: any[]): boolean {return this.callMethod('onKeyPress',...args);}
-  onMouseDown(...args: any[]): void {return this.callMethod('onMouseDown',...args);}
-  onMouseLeave(...args: any[]): void {return this.callMethod('onMouseLeave',...args);}
-  onMouseMotion(...args: any[]): boolean {return this.callMethod('onMouseMotion',...args);}
-  onMouseOver(...args: any[]): boolean {return this.callMethod('onMouseOver',...args);}
-  onMouseUp(...args: any[]): void {return this.callMethod('onMouseUp',...args);}
-  onResizeHandle(...args: any[]): boolean {return this.callMethod('onResizeHandle',...args);}
-  onResizeHandles(...args: boolean[]): boolean {return this.callMethod('onResizeHandles',...args);}
-  portX(...args: any[]): number {return this.callMethod('portX',...args);}
-  portY(...args: any[]): number {return this.callMethod('portY',...args);}
-  ports(...args: any[]): object {return this.callMethod('ports',...args);}
-  portsSize(...args: any[]): number {return this.callMethod('portsSize',...args);}
-  rawName(...args: any[]): string {return this.callMethod('rawName',...args);}
-  resize(...args: any[]): void {return this.callMethod('resize',...args);}
-  resizeHandleCoords(...args: any[]): object {return this.callMethod('resizeHandleCoords',...args);}
-  resizeHandleSize(...args: any[]): number {return this.callMethod('resizeHandleSize',...args);}
-  retype(...args: any[]): void {return this.callMethod('retype',...args);}
-  right(...args: any[]): number {return this.callMethod('right',...args);}
-  rotation(...args: any[]): number {return this.callMethod('rotation',...args);}
-  scaleFactor(...args: any[]): number {return this.callMethod('scaleFactor',...args);}
-  select(...args: any[]): object {return this.callMethod('select',...args);}
-  selected(...args: boolean[]): boolean {return this.callMethod('selected',...args);}
-  setDimLabelsPicked(...args: any[]): object {return this.callMethod('setDimLabelsPicked',...args);}
-  setUnits(...args: any[]): void {return this.callMethod('setUnits',...args);}
-  sliderBoundsSet(...args: boolean[]): boolean {return this.callMethod('sliderBoundsSet',...args);}
-  sliderMax(...args: number[]): number {return this.callMethod('sliderMax',...args);}
-  sliderMin(...args: number[]): number {return this.callMethod('sliderMin',...args);}
-  sliderSet(...args: any[]): void {return this.callMethod('sliderSet',...args);}
-  sliderStep(...args: number[]): number {return this.callMethod('sliderStep',...args);}
-  sliderStepRel(...args: boolean[]): boolean {return this.callMethod('sliderStepRel',...args);}
-  temp(...args: any[]): boolean {return this.callMethod('temp',...args);}
-  throw_error(...args: any[]): void {return this.callMethod('throw_error',...args);}
-  toggleLocal(...args: any[]): void {return this.callMethod('toggleLocal',...args);}
-  toggleVarTabDisplay(...args: any[]): void {return this.callMethod('toggleVarTabDisplay',...args);}
-  tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
-  top(...args: any[]): number {return this.callMethod('top',...args);}
-  type(...args: any[]): string {return this.callMethod('type',...args);}
-  typeName(...args: any[]): string {return this.callMethod('typeName',...args);}
-  units(...args: any[]): object {return this.callMethod('units',...args);}
-  unitsStr(...args: any[]): string {return this.callMethod('unitsStr',...args);}
-  updateBoundingBox(...args: any[]): void {return this.callMethod('updateBoundingBox',...args);}
-  updateIcon(...args: any[]): void {return this.callMethod('updateIcon',...args);}
-  vValue(...args: any[]): object {return this.callMethod('vValue',...args);}
-  value(...args: any[]): number {return this.callMethod('value',...args);}
-  valueId(...args: any[]): string {return this.callMethod('valueId',...args);}
-  valueIdInCurrentScope(...args: any[]): string {return this.callMethod('valueIdInCurrentScope',...args);}
-  varTabDisplay(...args: boolean[]): boolean {return this.callMethod('varTabDisplay',...args);}
-  variableCast(...args: any[]): VariableBase {return this.callMethod('variableCast',...args);}
-  varsPassed(...args: number[]): number {return this.callMethod('varsPassed',...args);}
-  visible(...args: any[]): boolean {return this.callMethod('visible',...args);}
-  visibleWithinGroup(...args: any[]): boolean {return this.callMethod('visibleWithinGroup',...args);}
-  width(...args: any[]): number {return this.callMethod('width',...args);}
-  x(...args: any[]): number {return this.callMethod('x',...args);}
-  y(...args: any[]): number {return this.callMethod('y',...args);}
-  zoomFactor(...args: any[]): number {return this.callMethod('zoomFactor',...args);}
+  units(a1: boolean): object {return this.callMethod('units',a1);}
 }
 
 export class VariableInstanceList extends CppClass {

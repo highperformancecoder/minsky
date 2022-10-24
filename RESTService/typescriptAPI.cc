@@ -134,6 +134,7 @@ namespace classdesc
   {
     static string name() {return "EquationDisplay";}
   };
+
 }
 
 #include "minsky_epilogue.h"
@@ -145,7 +146,7 @@ namespace classdesc
   typescriptAPI(typescriptAPI_t& t, const string& d)
   {
     // bail out of object heirarchy drill down once reaching named base class
-    //if (typescriptType<Base>()==t[typescriptType<T>()].super) return;
+    if (typescriptType<Base>()==t[typescriptType<T>()].super) return;
     classdesc_access::access_typescriptAPI<Base>().template type<T>(t,d);
   }
 
@@ -280,12 +281,13 @@ int main()
   cout << "class ecolab__TCL_args {}\n";
   cout<<endl;
   
-  // export Item first, as it is the base of many
-  exportClass("Item",api["Item"]);
-  cout <<"\n\nexport class minsky__ItemT<T, Base> extends Item {};\n\n";
-  
+  // these need to be declared in a specific order
+  vector<string> exportFirst{"Item","OperationBase","VariableBase"};
+  for (auto& i: exportFirst) exportClass(i,api[i]);
+
+  // then export the rest
   for (auto& i: api)
-    if (i.first!="Item")
+    if (find(exportFirst.begin(), exportFirst.end(), i.first)==exportFirst.end())
       exportClass(i.first, i.second);
 
   cout << "export var minsky=new Minsky('/minsky');\n";
