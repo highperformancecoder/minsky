@@ -37,6 +37,7 @@ export class Map<Key, Value> extends CppClass
   insert(key: Key, value: Value) {this.callMethod("@insert",{first: key, second:value});}
   erase(key: Key) {this.callMethod("@erase",key);}
   size(): number {return this.callMethod("@size");}
+  keys(): Key[] {return this.callMethod("@keys");}
 };
 
 export class Container<Key,Value=Key> extends CppClass
