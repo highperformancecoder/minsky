@@ -146,14 +146,6 @@ ipcMain.handle(
   }
 );
 
-//ipcMain.handle(
-//  events.SAVE_LOCK_HANDLES,
-//  async (event, payload: LockHandlesPayload) => {
-//    return await CommandsManager.saveLockHandles(payload);
-//  }
-//);
-
-
 ipcMain.on(events.KEY_PRESS, async (event, payload: MinskyProcessPayload) => {
   // this is a synchronous handler for events.KEY_PRESS
   event.returnValue = await KeyBindingsManager.handleOnKeyPress(payload);

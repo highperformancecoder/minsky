@@ -258,37 +258,6 @@ export class CommandsManager {
     }
   }
 
-//  static async isItemLocked(
-//    x: number = null,
-//    y: number = null,
-//    reInvokeGetItemAt = false
-//  ): Promise<boolean> {
-//    try {
-//      if (reInvokeGetItemAt) {
-//        if (!x && !y) {
-//          throw new Error('Please provide x and y when reInvokeGetItemAt=true');
-//        }
-//        minsky.canvas.getItemAt(x,y);
-//      }
-//
-//      return new Ravel(minsky.canvas.item).locked();
-//    } catch (error) {
-//      console.error(
-//        '🚀 ~ file: commandsManager.ts ~ line 361 ~ CommandsManager ~ error',
-//        error
-//      );
-//      return null;
-//    }
-//  }
-
-//  static async incrCase(delta: number): Promise<void> {
-//    const numCases = minsky.canvas.item.numCases();
-//    minsky.canvas.item.setNumCases(numCases + delta);
-//    CommandsManager.requestRedraw();
-//
-//    return;
-//  }
-
   static bookmarkThisPosition(): void {
     WindowManager.createPopupWindowWithRouting({
       width: 420,
@@ -1055,10 +1024,4 @@ export class CommandsManager {
       Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
     }
   }
-
-//  static async saveLockHandles(payload: LockHandlesPayload) {
-//    let ravel=new Ravel(minsky.canvas.item);
-//    ravel.lockGroup.handleLockInfo(payload.handleLockInfo);
-//    ravel.lockGroup.validateLockHandleInfo();
-//  }
 }

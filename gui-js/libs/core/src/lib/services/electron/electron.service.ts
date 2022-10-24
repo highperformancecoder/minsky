@@ -36,10 +36,6 @@ export class ElectronService {
     return await this.ipcRenderer.invoke(events.SAVE_PICK_SLICES, payload);
   }
 
-//  async saveLockHandles(payload: LockHandlesPayload) {
-//    return await this.ipcRenderer.invoke(events.SAVE_LOCK_HANDLES, payload);
-//  }
-
   async sendMinskyCommandAndRender(
     payload: MinskyProcessPayload,
     customEvent: string = null

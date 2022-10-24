@@ -138,17 +138,10 @@ export class RestServiceManager {
 
   public static async setCurrentTab(tab: MainRenderingTabs) {
     if (tab !== this.currentTab) {
-      // disable the old tab
-//      this.handleMinskyProcess({
-//        command: this.currentTab + '/disable',
-//      });
       this.currentTab = tab;
       this.lastMouseMovePayload = null;
       this.lastModelMoveToPayload = null;
       this.lastZoomPayload = null;
-//      await this.handleMinskyProcess({
-//        command: commandsMapping.RENDER_FRAME_SUBCOMMAND,
-//      });
       // delegate to new setCurrentTab method, for legacy support
       WindowManager.setCurrentTab(new RenderNativeWindow(tab));
     }
