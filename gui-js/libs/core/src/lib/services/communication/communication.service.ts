@@ -166,83 +166,56 @@ export class CommunicationService {
       const { target } = message;
       if (this.electronService.isElectron) {
         const dimensions = this.windowUtilityService.getDrawableArea();
-
         const canvasWidth = dimensions.width;
         const canvasHeight = dimensions.height;
-
-        let autoHandleMinskyProcess = true;
         let minsky=this.electronService.minsky;
         
         switch (target) {
         case 'ZOOM_OUT':
-          autoHandleMinskyProcess = false;
           await minsky.canvas.zoom(canvasWidth/2, canvasHeight/2, ZOOM_OUT_FACTOR);
           this.resetScroll();
           break;
         case 'ZOOM_IN':
-          autoHandleMinskyProcess = false;
           await minsky.canvas.zoom(canvasWidth/2, canvasHeight/2, ZOOM_IN_FACTOR);
           this.resetScroll();
           break;
         case 'RESET_ZOOM':
-          autoHandleMinskyProcess = false;
           await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
           this.resetScroll();
           break;
         case 'ZOOM_TO_FIT':
-          autoHandleMinskyProcess = false;
           await this.zoomToFit(canvasWidth, canvasHeight);
           this.resetScroll();
           break;
-          
         case 'SIMULATION_SPEED':
-          autoHandleMinskyProcess = false;
           await this.updateSimulationSpeed(message);
-          
           break;
-          
         case 'PLAY':
-          autoHandleMinskyProcess = false;
-          
           this.currentReplayJSON.length
             ? this.continueReplay()
             : this.initSimulation();
           
           break;
-          
         case 'PAUSE':
-          autoHandleMinskyProcess = false;
-          
           this.currentReplayJSON.length
             ? this.pauseReplay()
             : await this.pauseSimulation();
-          
           break;
-          
         case 'RESET':
-          autoHandleMinskyProcess = false;
-          
           this.showPlayButton$.next(true);
           this.currentReplayJSON.length
             ? this.stopReplay()
             : await this.stopSimulation();
-          
           break;
-          
         case 'STEP':
-          autoHandleMinskyProcess = false;
           this.currentReplayJSON.length
             ? this.stepReplay()
             : await this.stepSimulation();
-          
           break;
-          
         case 'REVERSE_CHECKBOX':
-          if (autoHandleMinskyProcess)
-            minsky.reverse(message.value as boolean);
+          minsky.reverse(message.value as boolean);
           break;
-
-          // TODO - set up events to be passed to minsky-electron to call the RecordingManager methods.
+        // TODO - set up events to be passed to minsky-electron to call the RecordingManager methods.
         case 'RECORD':
         case 'RECORDING_REPLAY':
         default:
@@ -326,7 +299,6 @@ export class CommunicationService {
   }
 
   private async resetZoom(centerX: number, centerY: number) {
-    let command = '';
     let minsky=this.electronService.minsky;
     const zoomFactor = await minsky.model.zoomFactor();
     if (zoomFactor > 0) {

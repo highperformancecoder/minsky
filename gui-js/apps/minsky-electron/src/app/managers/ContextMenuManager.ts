@@ -1,7 +1,6 @@
 import {
   CanvasItem,
   ClassType,
-  isEmptyObject,
   isWindows,
   MainRenderingTabs,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, SwitchIcon,

@@ -1,5 +1,4 @@
 import {
-  isEmptyObject,
   MainRenderingTabs,
   MinskyProcessPayload,
   ZOOM_IN_FACTOR,

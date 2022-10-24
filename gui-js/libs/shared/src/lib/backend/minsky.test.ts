@@ -1,11 +1,8 @@
 import {describe, expect, test} from '@jest/globals';
 import {
-  Item,
   minsky,
   GodleyIcon,
-  Pair,
   PlotWidget,
-  Ravel,
   VariableBase,
 } from './index';
 import * as fs from 'fs';

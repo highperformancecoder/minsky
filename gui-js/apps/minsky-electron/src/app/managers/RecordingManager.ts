@@ -2,10 +2,8 @@ import {
   CppClass,
   events,
   minsky,
-  normalizeFilePathForPlatform,
   RecordingStatus,
 } from '@minsky/shared';
-import { ipcMain } from 'electron';
 import { dialog, MessageBoxSyncOptions } from 'electron/main';
 import { createWriteStream, readFileSync, WriteStream } from 'fs';
 import * as JSONStream from 'JSONStream';

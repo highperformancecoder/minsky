@@ -1,6 +1,5 @@
 import {CppClass, importCSVerrorMessage, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
-import { RecordingManager } from './managers/RecordingManager';
 import { dialog, shell } from 'electron';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';

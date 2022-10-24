@@ -3,8 +3,6 @@ import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
-const JSON5 = require('json5');
-
 
 export class BookmarkManager {
   static async populateBookmarks(bookmarks: string[]) {

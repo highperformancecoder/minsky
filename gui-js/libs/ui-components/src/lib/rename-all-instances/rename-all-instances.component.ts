@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
-import { replaceBackSlash } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-rename-all-instances',
