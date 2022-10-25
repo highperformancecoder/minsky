@@ -29,7 +29,7 @@ function logFilter(c: string) {
 }
 
 /** core function to call into C++ object heirarachy */
-CppClass.backend=function backend(command: string, ...args: any[]) {
+export function backend(command: string, ...args: any[]) {
   if (!command) {
     log.error('backend called without any command');
     return {};
@@ -65,6 +65,8 @@ CppClass.backend=function backend(command: string, ...args: any[]) {
     }
   }
 }
+
+CppClass.backend=backend;
 
 if ("JEST_WORKER_ID" in process.env) {
   restService.setMessageCallback(function (msg: string, buttons: string[]) {

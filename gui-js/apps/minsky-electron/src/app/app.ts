@@ -1,5 +1,6 @@
 import {
   ActiveWindow,
+  CppClass,
   green,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
@@ -20,6 +21,7 @@ import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
+import { backend } from './backend-init';
 
 //const logWindows = debug('minsky:electron_windows');
 
@@ -218,10 +220,10 @@ export default class App {
     //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
     // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
     // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-    const displayScale=minsky.canvas.scaleFactor();
+    const displayScale=backend('minsky/canvas/scaleFactor') as number;
     App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
     // invert the effect of display scaling on canvas fonts.
-    minsky.fontScale(1/displayScale);
+    backend('minsky/fontScale', (1/displayScale));
 
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
