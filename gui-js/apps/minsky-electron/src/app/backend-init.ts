@@ -1,6 +1,7 @@
 import {CppClass, importCSVerrorMessage, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
 import { dialog, shell } from 'electron';
+import isElectron from 'is-electron';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';
 
@@ -112,12 +113,16 @@ if (backend("/minsky/ravelExpired"))
   },1000);
 
 
-const assetsDir=
-      Utility.isDevelopmentMode()
-      ? __dirname+'/../assets'
-      : process.resourcesPath+'/assets';
+// load icon resources needed for GUI
+export function loadResources()
+{
+  const assetsDir=
+        Utility.isDevelopmentMode()
+        ? __dirname+'/assets'
+        : process.resourcesPath+'/assets';
 
-backend('/minsky/setGodleyIconResource',assetsDir+'/godley.svg');
-backend('/minsky/setGroupIconResource',assetsDir+'/group.svg');
-backend('/minsky/setRavelIconResource',assetsDir+'/ravel-logo.svg');
-backend('/minsky/setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
+  backend('/minsky/setGodleyIconResource',assetsDir+'/godley.svg');
+  backend('/minsky/setGroupIconResource',assetsDir+'/group.svg');
+  backend('/minsky/setRavelIconResource',assetsDir+'/ravel-logo.svg');
+  backend('/minsky/setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
+}

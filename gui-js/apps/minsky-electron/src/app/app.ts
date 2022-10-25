@@ -21,7 +21,7 @@ import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
-import { backend } from './backend-init';
+import { backend, loadResources } from './backend-init';
 
 //const logWindows = debug('minsky:electron_windows');
 
@@ -224,7 +224,8 @@ export default class App {
     App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
     // invert the effect of display scaling on canvas fonts.
     backend('minsky/fontScale', (1/displayScale));
-
+    loadResources();
+    
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
     App.application.on('activate', App.onActivate); // App is activated

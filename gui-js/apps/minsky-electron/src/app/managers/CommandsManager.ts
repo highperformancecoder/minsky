@@ -313,11 +313,12 @@ export class CommandsManager {
         Math.abs(itemX - 0.5 * canvasWidth) > 0.5 * canvasWidth ||
         Math.abs(itemY - 0.5 * canvasHeight) > 0.5 * canvasHeight
       ) {
-        const posX = itemX - itemX + 0.5 * canvasWidth;
-        const posY = itemY - itemY + 0.5 * canvasHeight;
+        const posX = itemX - minsky.canvas.item.x() + 0.5 * canvasWidth;
+        const posY = itemY - minsky.canvas.item.y() + 0.5 * canvasHeight;
         minsky.canvas.moveTo(posX,posY);
       }
       minsky.canvas.itemIndicator(true);
+      minsky.canvas.requestRedraw();
     } else {
       dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
         type: 'info',
@@ -715,21 +716,20 @@ export class CommandsManager {
 
   static async openGodleyTable(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
-      let systemWindowId = null;
       let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second)
       var title=godley.table.title();
 
       const window = await this.initializePopupWindow({
         customTitle: `Godley Table : ${title}`,
         itemInfo,
-        url: `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`,
+        url: `#/headless/godley-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
         modal: false,
       });
 
       Object.defineProperty(window,'dontCloseOnEscape',{value: true,writable:false});
       godley.adjustPopupWidgets();
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
       
       window.loadURL(
         WindowManager.getWindowUrl(
