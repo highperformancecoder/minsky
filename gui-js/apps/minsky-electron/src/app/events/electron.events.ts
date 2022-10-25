@@ -38,8 +38,6 @@ export default class ElectronEvents {
 
 // Retrieve app version
 ipcMain.handle(events.GET_APP_VERSION, () => {
-  //logUpdateEvent(`Fetching application version... [v${environment.version}]`);
-
   return environment.version;
 });
 
@@ -59,21 +57,6 @@ ipcMain.on(events.SET_BACKGROUND_COLOR, async (event, { color }) => {
 ipcMain.on(events.CREATE_MENU_POPUP, (event, data) => {
   WindowManager.createPopupWindowWithRouting(data);
 });
-
-// MINSKY_PROCESS_FOR_IPC_MAIN won't reply with the response
-//ipcMain.on(
-//  events.MINSKY_PROCESS_FOR_IPC_MAIN,
-//  async (event, payload: MinskyProcessPayload) => {
-//    await RestServiceManager.handleMinskyProcess(payload);
-//  }
-//);
-
-//ipcMain.handle(
-//  events.MINSKY_PROCESS,
-//  async (event, payload: MinskyProcessPayload) => {
-//    return await RestServiceManager.handleMinskyProcess(payload);
-//  }
-//);
 
 ipcMain.on(
   events.APP_LAYOUT_CHANGED,
@@ -188,10 +171,6 @@ ipcMain.handle(
     return;
   }
 );
-
-//ipcMain.on(events.AUTO_START_MINSKY_SERVICE, async () => {
-//  await RestServiceManager.startMinskyService();
-//});
 
 ipcMain.handle(events.NEW_SYSTEM, async () => {
   await CommandsManager.createNewSystem();

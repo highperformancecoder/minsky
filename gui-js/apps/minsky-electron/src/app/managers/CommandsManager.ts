@@ -166,12 +166,6 @@ export class CommandsManager {
         );
         break;
 
-//      case ClassType.GodleyIcon:
-//        CommandsManager.openRenameInstancesDialog(
-//          new GodleyIcon(minsky.canvas.item).name()
-//        );
-//        break;
-
       default:
         break;
     }
@@ -333,18 +327,6 @@ export class CommandsManager {
 
     return;
   }
-
-//  static async isItemDefined(): Promise<boolean> {
-//    return minsky.canvas.item.defined();
-//  }
-
-//  static async getItemType(): Promise<string> {
-//    return minsky.canvas.item.type().trim();
-//  }
-
-//  static async getVarTabDisplay(): Promise<boolean> {
-//    return minsky.canvas.item.varTabDisplay();
-//  }
 
   static async getFilePathUsingSaveDialog(): Promise<string> {
     const saveDialog = await dialog.showSaveDialog({});
@@ -644,10 +626,6 @@ export class CommandsManager {
       url: `#/headless/edit-${classType.toLowerCase()}`,
     });
   }
-
-//  static async destroyFrame(uid: string) {
-//    minsky.namedItems.elem(uid).second.destroyFrame();
-//  }
 
   private static onPopupWindowClose(uid: string) {
     new GodleyIcon(minsky.namedItems.elem(uid).second).popup.destroyFrame();

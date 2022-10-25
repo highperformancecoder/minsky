@@ -44,31 +44,4 @@ export class ElectronService {
     return await this.ipcRenderer.invoke(events.CURRENT_TAB_MOVE_TO,[x,y]);
   }
    
-  
-//  async sendMinskyCommandAndRender(
-//    payload: MinskyProcessPayload,
-//    customEvent: string = null
-//  ): Promise<unknown> {
-//    try {
-//      if (this.isElectron) {
-//        if (customEvent) {
-//          return await this.ipcRenderer.invoke(customEvent, {
-//            ...payload,
-//            command: payload.command.trim(),
-//          });
-//        }
-//
-//        return await this.ipcRenderer.invoke(events.MINSKY_PROCESS, {
-//          ...payload,
-//          command: payload.command.trim(),
-//        });
-//      }
-//    } catch (error) {
-//      console.error(
-//        '🚀 ~ file: electron.service.ts ~ line 43 ~ ElectronService ~ error',
-//        error,
-//        payload
-//      );
-//    }
-//  }
 }
