@@ -1,6 +1,7 @@
 import {
   ActiveWindow,
   green,
+  minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   red,
   rendererAppName,
@@ -17,7 +18,6 @@ import { ApplicationMenuManager } from './managers/ApplicationMenuManager';
 import { CommandsManager } from './managers/CommandsManager';
 import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
-import { RestServiceManager, callRESTApi} from './managers/RestServiceManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
 
@@ -53,7 +53,6 @@ export default class App {
 
   private static async initMinskyService() {
     const windowId = WindowManager.activeWindows.get(1).systemWindowId;
-    await RestServiceManager.startMinskyService();
   }
 
   private static async initMenu() {
@@ -198,7 +197,7 @@ export default class App {
     for (var arg in process.argv)
       switch(process.argv[arg]) {
       case '--version':
-        var minskyVersion=callRESTApi("/minsky/minskyVersion") as string;
+        let minskyVersion=minsky.minskyVersion();
         process.stdout.write(`${minskyVersion}\n`);
         process.exit(minskyVersion===version? 0: 1);
       }
@@ -219,10 +218,10 @@ export default class App {
     //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
     // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
     // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-    const displayScale=callRESTApi("/minsky/canvas/scaleFactor");
+    const displayScale=minsky.canvas.scaleFactor();
     App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
     // invert the effect of display scaling on canvas fonts.
-    callRESTApi("/minsky/fontScale "+(1/displayScale).toString());
+    minsky.fontScale(1/displayScale);
 
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data

@@ -7,8 +7,8 @@ import {
 } from '@minsky/shared';
 import * as utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
-const JSON5 = require('json5');
+import { WindowManager } from './WindowManager';
+import * as JSON5 from 'json5';
 
 export class KeyBindingsManager {
   static async handleOnKeyPress(
@@ -46,17 +46,17 @@ export class KeyBindingsManager {
       modifierKeyCode += 8;
     }
 
-    const currentTab = RestServiceManager.getCurrentTab();
+    const currentTab = WindowManager.currentTab;
 
     if (keySymAndName.keysym) {
       // For godley popup, command sent by frontend is non-empty. It is the item accesor
-      let renderer=new RenderNativeWindow(command? command: currentTab);
+      let renderer=command? new RenderNativeWindow(command): currentTab;
       const isKeyPressHandled = renderer.keyPress(keySymAndName.keysym,JSON5.stringify(_utf8),modifierKeyCode,mouseX,mouseY);
       
       if (
         !isKeyPressHandled &&
-        !command &&
-        currentTab === MainRenderingTabs.canvas
+          !command &&
+          currentTab.equal(minsky.canvas)
       ) {
         return await this.handleOnKeyPressFallback({key:keySymAndName.keysym, mouseX, mouseY});
       }
@@ -64,7 +64,7 @@ export class KeyBindingsManager {
     }
 
     let res: boolean | string = false;
-    if (!command && currentTab === MainRenderingTabs.canvas) {
+    if (!command && currentTab.equal(minsky.canvas)) {
       res = await this.handleOnKeyPressFallback(payload);
     }
     return res;

@@ -1,7 +1,6 @@
 import { minsky } from '@minsky/shared';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 
 export class BookmarkManager {
@@ -65,8 +64,7 @@ export class BookmarkManager {
     addNewBookmarks();
   }
 
-    static updateBookmarkList() {
-        const bookmarks=callRESTApi("/minsky/canvas/model/bookmarkList") as string[];
-        this.populateBookmarks(bookmarks);
-    }
+  static updateBookmarkList() {
+    this.populateBookmarks(minsky.canvas.model.bookmarkList());
+  }
 }

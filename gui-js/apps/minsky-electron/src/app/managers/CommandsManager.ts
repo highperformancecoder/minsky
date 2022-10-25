@@ -10,18 +10,18 @@ import {
   isMacOS,
   normalizeFilePathForPlatform,
   electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
-  minsky, GodleyIcon, Group, IntOp, Ravel, VariableBase, Utility
+  minsky, GodleyIcon, Group, IntOp, Item, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import * as JSON5 from 'json5';
 import { join } from 'path';
 import { HelpFilesManager } from './HelpFilesManager';
-import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
+  static currentMinskyModelFilePath: string;
 
   static async deleteCurrentItemHavingId(itemId: string) {
     // TODO:: Ideally -- change flow to get the current item here..
@@ -213,24 +213,19 @@ export class CommandsManager {
   }
 
   static async postNote(type: string) {
-    const bookmark =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/bookmark`,
-      })) as boolean) || '';
-
-    const tooltip =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/tooltip`,
-      })) as string) || '';
-
-    const detailedText =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/detailedText`,
-      })) as string) || '';
+    var item: Item|Wire;
+    switch (type) {
+    case 'item':
+      item=minsky.canvas.item;
+      break;
+    case 'wire':
+      item=minsky.canvas.wire;
+      break;
+    }
 
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
-      url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${encodeURI(detailedText)}`,
+      url: `#/headless/edit-description?type=${type}&bookmark=${item.bookmark()}&tooltip=${item.tooltip()}&detailedText=${encodeURI(item.detailedText())}`,
     });
     Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
@@ -293,7 +288,7 @@ export class CommandsManager {
 
   static async pasteAt(x: number, y: number): Promise<void> {
     minsky.paste();
-    RestServiceManager.onCurrentTab("mouseMove",x,y);
+    WindowManager.currentTab.mouseMove(x,y);
   }
 
   static async saveSelectionAsFile(): Promise<void> {
@@ -385,19 +380,19 @@ export class CommandsManager {
   }
 
   static async mouseDown(mouseX: number, mouseY: number): Promise<void> {
-    RestServiceManager.onCurrentTab("mouseDown", mouseX, mouseY);
+    WindowManager.currentTab.mouseDown(mouseX, mouseY);
   }
 
   static async mouseUp(mouseX: number, mouseY: number): Promise<void> {
-    RestServiceManager.onCurrentTab("mouseUp", mouseX, mouseY);
+    WindowManager.currentTab.mouseUp(mouseX, mouseY);
   }
 
   static async mouseMove(mouseX: number, mouseY: number): Promise<void> {
-    RestServiceManager.onCurrentTab("mouseMove", mouseX, mouseY);
+    WindowManager.currentTab.mouseMove(mouseX, mouseY);
   }
 
   static async requestRedraw(): Promise<void> {
-    RestServiceManager.onCurrentTab("requestRedraw");
+    WindowManager.currentTab.requestRedraw();
   }
 
   static async canCurrentSystemBeClosed(): Promise<boolean> {
@@ -560,7 +555,7 @@ export class CommandsManager {
 
     minsky.setAutoSaveFile(autoBackupFileName);
 
-    RestServiceManager.currentMinskyModelFilePath = filePath;
+    this.currentMinskyModelFilePath = filePath;
 
     setTimeout(()=>{minsky.canvas.recentre();},100);
 
@@ -922,15 +917,15 @@ export class CommandsManager {
                 { name: 'All', extensions: ['*'] },
               ],
               defaultPath:
-                RestServiceManager.currentMinskyModelFilePath ||
+                this.currentMinskyModelFilePath ||
                 `model${defaultExtension}`,
               properties: ['showOverwriteConfirmation'],
     }
   }
 
   static async save() {
-    if (RestServiceManager.currentMinskyModelFilePath) {
-      minsky.save(RestServiceManager.currentMinskyModelFilePath);
+    if (this.currentMinskyModelFilePath) {
+      minsky.save(this.currentMinskyModelFilePath);
     }
     else
       await this.saveAs();

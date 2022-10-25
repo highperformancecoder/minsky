@@ -100,11 +100,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
       const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
         .scaleFactor;
 
-      const command = `${this.namedItemSubCommand}/renderFrame [${this.systemWindowId},${this.leftOffset},${this.topOffset},${this.width},${this.height},${scaleFactor}]`;
-
-      this.electronService.sendMinskyCommandAndRender({
-        command,
-      });
+      this.namedItemSubCommand.renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,scaleFactor);
     }
   }
 
@@ -126,9 +122,10 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     });
 
     this.godleyCanvasContainer.addEventListener('mousedown', async (event) => {
-      this.electronService.sendMinskyCommandAndRender(
-        {command: `/minsky/namedItems/@elem/"${this.itemId}"/second/popup`,
-         mouseX: event.x, mouseY: event.y+this.yoffs}, events.GODLEY_VIEW_MOUSEDOWN);
+      this.electronService.ipcRenderer.invoke(events.GODLEY_VIEW_MOUSEDOWN, {
+        command: `/minsky/namedItems/@elem/"${this.itemId}"/second/popup`,
+        mouseX: event.x, mouseY: event.y+this.yoffs
+      });
     });
 
     this.godleyCanvasContainer.addEventListener('mouseup', async (event) => {

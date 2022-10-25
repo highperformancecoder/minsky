@@ -12,6 +12,8 @@ export class CppClass
   }
   public properties(...args) {return CppClass.backend(this.prefix, ...args);}
   public $list(): string[] {return this.callMethod("@list");}
+  /// returns if this proxy object and x refer to the same backend object
+  public equal(x: CppClass): boolean {return this.prefix===x.prefix;}
 };
 
 
