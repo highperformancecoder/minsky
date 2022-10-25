@@ -43,5 +43,12 @@ export class ElectronService {
   async currentTabMoveTo(x: number, y: number): Promise<void> {
     return await this.ipcRenderer.invoke(events.CURRENT_TAB_MOVE_TO,[x,y]);
   }
-   
+
+  async record(): Promise<void> {
+    return await this.ipcRenderer.invoke(events.RECORD);
+  }
+  async recordingReplay(): Promise<void> {
+    return await this.ipcRenderer.invoke(events.RECORDING_REPLAY);
+  }
+  
 }

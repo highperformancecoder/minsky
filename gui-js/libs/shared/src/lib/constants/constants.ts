@@ -37,6 +37,8 @@ export const events = {
   GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
   CURRENT_TAB_POSITION: 'current-tab-position',
   CURRENT_TAB_MOVE_TO: 'current-tab-move-to',
+  RECORD: 'record',
+  RECORDING_REPLAY: 'recording-replay',
   SAVE_HANDLE_DESCRIPTION: 'save-handle-description',
   SAVE_HANDLE_DIMENSION: 'save-handle-dimension',
   SAVE_PICK_SLICES: 'save-pick-slices',

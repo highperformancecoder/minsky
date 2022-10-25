@@ -25,6 +25,7 @@ import { ContextMenuManager } from '../managers/ContextMenuManager';
 import { GodleyMenuManager } from '../managers/GodleyMenuManager';
 import { KeyBindingsManager } from '../managers/KeyBindingsManager';
 import { RecentFilesManager } from '../managers/RecentFilesManager';
+import { RecordingManager } from '../managers/RecordingManager';
 import { StoreManager, MinskyPreferences } from '../managers/StoreManager';
 import { WindowManager } from '../managers/WindowManager';
 
@@ -205,4 +206,11 @@ ipcMain.on(events.DOUBLE_CLICK, async (event, payload) => {
 
 ipcMain.on(events.LOG_SIMULATION, async (event, selectedItems: string[]) => {
   await CommandsManager.logSimulation(selectedItems);
+});
+
+ipcMain.handle(events.RECORD, async (event) => {
+  await RecordingManager.handleRecord();
+});
+ipcMain.handle(events.RECORDING_REPLAY, async (event) => {
+  await RecordingManager.handleRecordingReplay();
 });

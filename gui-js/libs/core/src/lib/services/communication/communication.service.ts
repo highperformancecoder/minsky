@@ -216,9 +216,12 @@ export class CommunicationService {
         case 'REVERSE_CHECKBOX':
           minsky.reverse(message.value as boolean);
           break;
-        // TODO - set up events to be passed to minsky-electron to call the RecordingManager methods.
         case 'RECORD':
+          this.electronService.record();
+          break;
         case 'RECORDING_REPLAY':
+          this.electronService.recordingReplay();
+          break;
         default:
           break;
         }
