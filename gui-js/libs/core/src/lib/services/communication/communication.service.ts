@@ -109,10 +109,15 @@ export class CommunicationService {
 
   replayNextCommand() {
     const { command: commandArgs } = this.currentReplayJSON.shift();
-    const sep=commandArgs.indexOf(' ');
+    const sep=commandArgs.trim().indexOf(' ');
     const command = commandArgs.substring(0,sep);
-    const args = JSON5.parse(commandArgs.substring(sep));
-    CppClass.backend(command,args);
+    if (sep===-1)
+      CppClass.backend(command);
+    else
+    {
+      const args = JSON5.parse(commandArgs.substring(sep));
+      CppClass.backend(command,args);
+    }
   }  
   
   startReplay() {
