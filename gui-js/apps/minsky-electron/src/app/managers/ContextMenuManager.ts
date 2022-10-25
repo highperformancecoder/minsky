@@ -2,7 +2,6 @@ import {
   CanvasItem,
   ClassType,
   isWindows,
-  MainRenderingTabs,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, SwitchIcon,
   VariableBase,
 } from '@minsky/shared';

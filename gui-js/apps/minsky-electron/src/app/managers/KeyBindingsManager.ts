@@ -1,5 +1,4 @@
 import {
-  MainRenderingTabs,
   MinskyProcessPayload,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,

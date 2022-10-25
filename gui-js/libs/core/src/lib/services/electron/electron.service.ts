@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { events, MinskyProcessPayload, /*DescriptionPayload,*/ HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
+import { events, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
 import { ipcRenderer, remote } from 'electron';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';

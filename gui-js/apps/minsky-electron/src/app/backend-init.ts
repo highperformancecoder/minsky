@@ -114,7 +114,7 @@ if (backend("/minsky/ravelExpired"))
 
 const assetsDir=
       Utility.isDevelopmentMode()
-      ? __dirname+'/assets'
+      ? __dirname+'/../assets'
       : process.resourcesPath+'/assets';
 
 backend('/minsky/setGodleyIconResource',assetsDir+'/godley.svg');
