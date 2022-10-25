@@ -337,7 +337,7 @@ namespace classdesc
   typename enable_if<is_arithmetic<T>, void>::T
   typescriptAPI_type(typescriptAPI_t& t, const std::string& d, T*)
   {
-    t[typescriptType<C>()].methods.emplace(tail(d), typescriptAPI_ns::Method{"number", {{"...args",typescriptType<T>()+"[]"}}});
+    t[typescriptType<C>()].methods.emplace(tail(d), typescriptAPI_ns::Method{typescriptType<T>(), {{"...args",typescriptType<T>()+"[]"}}});
   }
 
   template <class VT>
@@ -373,12 +373,17 @@ namespace classdesc
   }
   
   template <class C, class B, class T>
-  typename enable_if<is_same<remove_const<T>,std::string>, void>::T
+  typename enable_if<Or<is_same<typename remove_const<T>::type,std::string>,
+                        is_enum<typename remove_const<T>::type>>, void>::T
   typescriptAPI_type(typescriptAPI_t& t, const std::string& d, T*)
   {
-    t[typescriptType<C>()].methods.push_back({tail(d), {{"...args","string[]"}}});
+    t[typescriptType<C>()].methods.emplace(tail(d), typescriptAPI_ns::Method{"string", {{"...args","string[]"}}});
   }
 
+  template <class C, class B>
+  void typescriptAPI_type(typescriptAPI_t& t, const std::string& d, const char**)
+  {typescriptAPI_type<C,B>(t,d,static_cast<const std::string*>(nullptr));}
+  
   template <class C, class B, class T>
   void typescriptAPI_type(typescriptAPI_t& t, const std::string& d, std::set<T>(B::*))
   {
@@ -475,7 +480,7 @@ namespace classdesc
   
   template <class C, class B, class T>
   void typescriptAPI_type(typescriptAPI_t& t,const std::string& d,is_const_static,T a)
-  {/*typescriptAPI_type(t,d,a);*/} // TODO?
+  {typescriptAPI_type<C,B>(t,d,a);} 
 
 }
 

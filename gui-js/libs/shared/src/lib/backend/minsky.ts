@@ -326,6 +326,7 @@ export class CSVDialog extends CppClass {
   mouseMove(...args: any[]): void {return this.callMethod('mouseMove',...args);}
   mouseUp(...args: any[]): void {return this.callMethod('mouseUp',...args);}
   moveTo(...args: any[]): void {return this.callMethod('moveTo',...args);}
+  numInitialLines(...args: number[]): number {return this.callMethod('numInitialLines',...args);}
   parseLines(...args: any[]): string[][] {return this.callMethod('parseLines',...args);}
   position(...args: any[]): number[] {return this.callMethod('position',...args);}
   redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
@@ -795,6 +796,7 @@ export class GodleyTable extends CppClass {
   getData(): Sequence<string[]> {return this.callMethod('getData');}
   getVariables(): string[] {return this.callMethod('getVariables');}
   initialConditionRow(a1: number): boolean {return this.callMethod('initialConditionRow',a1);}
+  initialConditions(...args: string[]): string {return this.callMethod('initialConditions',...args);}
   insertCol(a1: number): void {return this.callMethod('insertCol',a1);}
   insertRow(a1: number): void {return this.callMethod('insertRow',a1);}
   moveCol(a1: number,a2: number): void {return this.callMethod('moveCol',a1,a2);}
@@ -1371,6 +1373,7 @@ export class Minsky extends CppClass {
   maxHistory(...args: number[]): number {return this.callMethod('maxHistory',...args);}
   maxWaitMS(...args: number[]): number {return this.callMethod('maxWaitMS',...args);}
   message(a1: string): void {return this.callMethod('message',a1);}
+  minskyVersion(...args: string[]): string {return this.callMethod('minskyVersion',...args);}
   multipleEquities(...args: any[]): boolean {return this.callMethod('multipleEquities',...args);}
   nSteps(...args: number[]): number {return this.callMethod('nSteps',...args);}
   nameCurrentItem(a1: string): void {return this.callMethod('nameCurrentItem',a1);}
