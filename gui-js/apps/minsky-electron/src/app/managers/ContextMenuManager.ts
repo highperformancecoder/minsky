@@ -567,13 +567,12 @@ export class ContextMenuManager {
   private static async buildContextMenuForOperations(
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
-    let portValues = 'unknown';
     let op=new OperationBase(minsky.canvas.item);
 
     try {
-      portValues = op.portValues();
+      var portValues = op.portValues();
     } catch (error) {
-      portValues = 'unknown';
+      var portValues = 'unknown';
     }
 
     let menuItems = [

@@ -716,6 +716,7 @@ export class CommandsManager {
 
   static async openGodleyTable(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
+      CommandsManager.addItemToNamedItems(itemInfo);
       let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second)
       var title=godley.table.title();
 
@@ -748,15 +749,15 @@ export class CommandsManager {
 
   static async expandPlot(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
-      let systemWindowId = null;
+      CommandsManager.addItemToNamedItems(itemInfo);
       const window = await this.initializePopupWindow({
         customTitle: `Plot : ${itemInfo.id}`,
         itemInfo,
-        url: `#/headless/plot-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`,
+        url: `#/headless/plot-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
         modal: false,
       });
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
 
       window.loadURL(
         WindowManager.getWindowUrl(
@@ -839,17 +840,15 @@ export class CommandsManager {
 
   static async importCSV(itemInfo: CanvasItem, isInvokedUsingToolbar = false) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
-      let systemWindowId = null;
-
       const window = await this.initializePopupWindow({
         itemInfo,
-        url: `#/headless/import-csv?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
+        url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1200,
         modal: false,
       });
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
 
       window.loadURL(
         WindowManager.getWindowUrl(

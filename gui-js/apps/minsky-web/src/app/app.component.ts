@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
 import { events, MainRenderingTabs, RenderNativeWindow } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { AppConfig } from '../environments/environment';
+//import { AppConfig } from '../environments/environment'; 
 
 @Component({
   selector: 'minsky-root',

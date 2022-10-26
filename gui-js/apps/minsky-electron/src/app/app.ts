@@ -10,8 +10,7 @@ import {
   version,
   Utility,
 } from '@minsky/shared';
-//import * as debug from 'debug';
-import { BrowserWindow, Display, dialog, screen } from 'electron';
+import { BrowserWindow, dialog, screen } from 'electron';
 import * as log from 'electron-log';
 import { join } from 'path';
 import { format } from 'url';
@@ -22,8 +21,6 @@ import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
 import { backend, loadResources } from './backend-init';
-
-//const logWindows = debug('minsky:electron_windows');
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -48,13 +45,8 @@ export default class App {
 
     await HelpFilesManager.initialize(helpFilesFolder);
     App.initMainWindow();
-    await App.initMinskyService();
     await App.initMenu();
     App.loadMainWindow();
-  }
-
-  private static async initMinskyService() {
-    const windowId = WindowManager.activeWindows.get(1).systemWindowId;
   }
 
   private static async initMenu() {
