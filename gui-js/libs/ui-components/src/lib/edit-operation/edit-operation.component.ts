@@ -51,9 +51,9 @@ export class EditOperationComponent implements OnInit {
 
   private async updateFormValues() {
     this.itemType = await this.op.type();
-    this.rotation.setValue(this.op.rotation);
-    this.axis.setValue(this.op.axis());
-    this.argument.setValue(this.op.arg());
+    this.rotation.setValue(await this.op.rotation());
+    this.axis.setValue(await this.op.axis());
+    this.argument.setValue(await this.op.arg());
   }
 
   async handleSave() {
