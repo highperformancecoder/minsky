@@ -551,11 +551,7 @@ export class ApplicationMenuManager {
       submenu: [
         {
           label: 'Minsky Documentation',
-          click() {
-            shell.openExternal(
-              'https://minsky.sourceforge.io/manual/minsky.html'
-            );
-          },
+          click() {CommandsManager.loadHelpFile("minsky");}
         },
       ],
     };
