@@ -12,7 +12,6 @@ import {
   VariableValue,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
-import * as JSON5 from 'json5';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 enum ColType {
