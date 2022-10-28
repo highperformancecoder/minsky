@@ -215,7 +215,7 @@ namespace minsky
     void importFromCSV(std::string filename, const DataSpecSchema& spec) const;
 
     /// clean up popup window structures on window close
-    void destroyFrame() const;
+    void destroyFrame() const override;
 
   };
 

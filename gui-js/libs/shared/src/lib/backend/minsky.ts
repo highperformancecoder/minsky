@@ -2363,17 +2363,17 @@ export class VariableValue extends CppClass {
 export class VariableValues extends Map<string,VariableValue> {
   constructor(prefix: string|Map<string,VariableValue>){
     if (typeof prefix==='string')
-      super(prefix)
+      super(prefix,VariableValue)
     else
-      super((<VariableValues>prefix).prefix)
+      super((<VariableValues>prefix).prefix,VariableValue)
   }
-  clear(): void {return this.callMethod('clear');}
+  clear(...args: any[]): void {return this.callMethod('clear',...args);}
   initValue(...args: any[]): object {return this.callMethod('initValue',...args);}
-  newName(a1: string): string {return this.callMethod('newName',a1);}
-  reset(): void {return this.callMethod('reset');}
-  resetUnitsCache(): void {return this.callMethod('resetUnitsCache');}
-  resetValue(a1: VariableValue): void {return this.callMethod('resetValue',a1);}
-  validEntries(): boolean {return this.callMethod('validEntries');}
+  newName(...args: any[]): string {return this.callMethod('newName',...args);}
+  reset(...args: any[]): void {return this.callMethod('reset',...args);}
+  resetUnitsCache(...args: any[]): void {return this.callMethod('resetUnitsCache',...args);}
+  resetValue(...args: any[]): void {return this.callMethod('resetValue',...args);}
+  validEntries(...args: any[]): boolean {return this.callMethod('validEntries',...args);}
 }
 
 export class Wire extends CppClass {

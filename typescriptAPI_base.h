@@ -293,6 +293,7 @@ namespace classdesc
     struct ClassType
     {
       std::string super;
+      std::string valueType; // used for container to instantiate proxies around elements
       std::map<std::string,Property> properties;
       std::map<std::string, Method> methods;
     };

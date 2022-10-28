@@ -190,9 +190,15 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
         {
           cout << "  constructor(prefix: string|"<<klass.super<<"){\n";
           cout << "    if (typeof prefix==='string')\n";
-          cout << "      super(prefix)\n";
+          cout << "      super(prefix";
+          if (!klass.valueType.empty())
+            cout <<","<<klass.valueType;
+          cout << ")\n";
           cout << "    else\n";
-          cout << "      super((<"<<name<<">prefix).prefix)\n";
+          cout << "      super((<"<<name<<">prefix).prefix";
+          if (!klass.valueType.empty())
+            cout <<","<<klass.valueType;
+          cout <<")\n";
         }
       else
         {
@@ -250,7 +256,9 @@ int main()
   api.addClass<Units>();
   api.addClass<VariablePaneCell>();
   api.addClass<VariableValue>();
-
+  api.addClass<VariableValues>();
+  api["VariableValues"].valueType="VariableValue";
+  
   // Item subclasses
   api.addSubclass<DataOp,Item>();
   api.addSubclass<Group,Item>();

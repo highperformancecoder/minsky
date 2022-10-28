@@ -629,7 +629,7 @@ export class CommandsManager {
   }
 
   private static onPopupWindowClose(uid: string) {
-    new GodleyIcon(minsky.namedItems.elem(uid).second).popup.destroyFrame();
+    minsky.namedItems.elem(uid).second.destroyFrame();
     if (uid in this.activeGodleyWindowItems) {
       this.activeGodleyWindowItems.delete(uid);
     }
