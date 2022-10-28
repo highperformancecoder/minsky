@@ -346,7 +346,7 @@ namespace minsky
     ItemPtr itemPtrFromThis() const;
 
     /// destroy any popup windows associated with this
-    virtual void destroyFrame() const {}
+    virtual void destroyFrame() {}
   };
 
   typedef std::vector<ItemPtr> Items;

@@ -195,7 +195,7 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
             cout <<","<<klass.valueType;
           cout << ")\n";
           cout << "    else\n";
-          cout << "      super((<"<<name<<">prefix).prefix";
+          cout << "      super(prefix.prefix()";
           if (!klass.valueType.empty())
             cout <<","<<klass.valueType;
           cout <<")\n";
@@ -210,7 +210,7 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
           if (!prop.second.construction.empty())
             cout << "    this."<<prop.first<<"="<<prop.second.construction<<"\n";
           else
-            cout << "    this."<<prop.first<<"=new "<<prop.second.type<<"(this.prefix+'/"<<prop.first<<"');\n"; 
+            cout << "    this."<<prop.first<<"=new "<<prop.second.type<<"(this.prefix()+'/"<<prop.first<<"');\n"; 
         }
       cout << "  }\n";
 

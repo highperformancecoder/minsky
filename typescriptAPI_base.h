@@ -267,6 +267,8 @@ namespace classdesc
       std::string name, type;
       ArgDetail(const std::string& name={}, const std::string& type={}):
         name(name), type(type) {}
+      bool operator==(const ArgDetail& x) const {return type==x.type;}
+      bool operator!=(const ArgDetail& x) const {return !operator==(x);}
     };
     
     struct Method
@@ -345,7 +347,7 @@ namespace classdesc
   std::string construct(const std::string& container, const std::string name)
   {
     string tn=typescriptType<VT>();
-    return "new "+container+"(this.prefix+'/"+name+"'"+
+    return "new "+container+"(this.prefix()+'/"+name+"'"+
       ((is_string<VT>::value || is_enum<VT>::value || is_arithmetic<VT>::value)?"":","+tn)+");";
   }
   
@@ -427,8 +429,27 @@ namespace classdesc
             typescriptAPI_ns::Method& m=res.first->second;
             m.addArgs<M>();
           }
-        else // overloaded method
-          res.first->second.args={{"...args","any[]"}};
+        else // method seen before
+          {
+            auto oldArgs=std::move(res.first->second.args);
+            typescriptAPI_ns::Method& m=res.first->second;
+            m.addArgs<M>();
+            auto newArgs=res.first->second.args;
+            // check if arguments are same, in which case leave the method call
+            if (oldArgs!=res.first->second.args) // overloaded method
+              {
+                res.first->second.args={{"...args","any[]"}}; // set up general case or arbitrary args
+                //check if all arguments are the same (ie just numbers of arguments differ)
+                auto firstArg=!oldArgs.empty()? oldArgs[0]: res.first->second.args[0];
+                if (firstArg.type=="any[]") return;
+                if (firstArg.name=="...args") firstArg.type.erase(firstArg.type.length()-2); //strip off []
+                for (auto& i: oldArgs)
+                  if (i!=firstArg) return;
+                for (auto& i: newArgs)
+                  if (i!=firstArg) return;
+                res.first->second.args={{"...args",firstArg.type+"[]"}}; //restrict to common type
+              }
+          }
       }
   }
 
