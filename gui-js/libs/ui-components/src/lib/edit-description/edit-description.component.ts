@@ -13,7 +13,7 @@ export class EditDescriptionComponent implements OnInit {
   tooltip = '';
   detailedText = '';
   type = '';
-  bookmark='false';
+  bookmark=false;
 
   editDescriptionForm: FormGroup;
   constructor(
@@ -23,14 +23,14 @@ export class EditDescriptionComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.bookmark = params['bookmark'];
+      this.bookmark = params['bookmark']==='true';
       this.tooltip = params['tooltip'];
       this.detailedText = params['detailedText'];
       this.type = params['type'];
     });
 
     this.editDescriptionForm = new FormGroup({
-      bookmark: new FormControl(this.bookmark),
+      bookmark: new FormControl(this.bookmark as boolean),
       tooltip: new FormControl(this.tooltip),
       detailedText: new FormControl(this.detailedText),
     });
@@ -52,6 +52,7 @@ export class EditDescriptionComponent implements OnInit {
       item.tooltip(this.editDescriptionForm.get('tooltip').value);
       item.detailedText(this.editDescriptionForm.get('detailedText').value);
       item.adjustBookmark();
+      this.electronService.ipcRenderer.send(events.POPULATE_BOOKMARKS, await this.electronService.minsky.model.bookmarkList());
     }
     this.closeWindow();
   }

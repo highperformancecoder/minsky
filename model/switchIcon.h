@@ -68,6 +68,7 @@ namespace minsky
 
     /// whether icon is oriented so input ports are on the rhs, and output on the lhs
     bool flipped=false;
+    void flip() override {flipped=!flipped;}
   };
 }
 

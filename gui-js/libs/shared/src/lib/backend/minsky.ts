@@ -2113,6 +2113,7 @@ export class SwitchIcon extends Item {
       super(prefix.prefix())
   }
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
+  flip(): void {return this.callMethod('flip');}
   flipped(...args: boolean[]): boolean {return this.callMethod('flipped',...args);}
   numCases(): number {return this.callMethod('numCases');}
   setNumCases(a1: number): void {return this.callMethod('setNumCases',a1);}

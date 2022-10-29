@@ -215,7 +215,7 @@ namespace minsky
     }         
     
     /// rotate icon though 180∘
-    void flip() {rotation(rotation()+180);}
+    virtual void flip() {rotation(rotation()+180);}
 
     virtual std::string classType() const {return "Item";}
     /// return an id uniquely identifying this item
