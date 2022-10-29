@@ -50,14 +50,14 @@ export class KeyBindingsManager {
     if (keySymAndName.keysym) {
       // For godley popup, command sent by frontend is non-empty. It is the item accesor
       let renderer=command? new RenderNativeWindow(command): currentTab;
-      const isKeyPressHandled = renderer.keyPress(keySymAndName.keysym,JSON5.stringify(_utf8),modifierKeyCode,mouseX,mouseY);
+      const isKeyPressHandled = renderer.keyPress(keySymAndName.keysym,_utf8,modifierKeyCode,mouseX,mouseY);
       
       if (
         !isKeyPressHandled &&
           !command &&
           currentTab.equal(minsky.canvas)
       ) {
-        return await this.handleOnKeyPressFallback({key:keySymAndName.keysym, mouseX, mouseY});
+        return await this.handleOnKeyPressFallback({key:keySymAndName.name, mouseX, mouseY});
       }
       return isKeyPressHandled;
     }
@@ -148,14 +148,15 @@ export class KeyBindingsManager {
         };
         
         let _keysym = customKeysymMap[keyName];
-        
+
         if (!_keysym && keyName.length==1) {
             // we make the assumption that UTF16 characters map
             // verbatim to XKeySyms - only a problem for UTF16
             // characters in the range 0xff00 to 0xffff.
-            _keysym = keyName.charCodeAt(0);
+          _keysym = keyName.charCodeAt(0);
         }
-        return {
+      console.log(`keyName=${keyName}, keySym=${_keysym}\n`);
+      return {
             keysym: _keysym,
             name: keyName,
         };
@@ -169,6 +170,7 @@ export class KeyBindingsManager {
     let executed = true;
     const { key } = payload;
 
+    console.log(`handleOnKeyPressFallback ${JSON5.stringify(payload)}`);
     switch (key) {
     case 'Backspace':
     case 'Delete':
@@ -176,6 +178,7 @@ export class KeyBindingsManager {
       break;
 
     case '+':
+      console.log('calling handlePlusKey');
       await this.handlePlusKey(payload);
       break;
 
@@ -258,16 +261,16 @@ export class KeyBindingsManager {
   }
 
   private static async handlePlusKey(payload: MinskyProcessPayload) {
-    if (payload.shift) {
+//    if (payload.shift) {
       // <Key-plus>
       minsky.canvas.addOperation("add");
       await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
       return;
-    }
+//    }
 
-    // <Key-KP_Add>
-    await this.zoom(ZOOM_IN_FACTOR);
-    return;
+//    // <Key-KP_Add>
+//    await this.zoom(ZOOM_IN_FACTOR);
+//    return;
   }
 
   private static async handleMinusKey(payload: MinskyProcessPayload) {
