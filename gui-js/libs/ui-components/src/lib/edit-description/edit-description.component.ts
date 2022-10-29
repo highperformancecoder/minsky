@@ -52,7 +52,7 @@ export class EditDescriptionComponent implements OnInit {
       item.tooltip(this.editDescriptionForm.get('tooltip').value);
       item.detailedText(this.editDescriptionForm.get('detailedText').value);
       item.adjustBookmark();
-      this.electronService.ipcRenderer.send(events.POPULATE_BOOKMARKS, await this.electronService.minsky.model.bookmarkList());
+      this.electronService.ipcRenderer.send(events.UPDATE_BOOKMARK_LIST);
     }
     this.closeWindow();
   }

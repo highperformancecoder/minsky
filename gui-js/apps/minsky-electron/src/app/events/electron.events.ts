@@ -73,8 +73,8 @@ ipcMain.on(events.CHANGE_MAIN_TAB, async (event, payload: ChangeTabPayload) => {
   await WindowManager.setCurrentTab(new RenderNativeWindow(payload.newTab));
 });
 
-ipcMain.on(events.POPULATE_BOOKMARKS, async (event, bookmarks: string[]) => {
-  await BookmarkManager.populateBookmarks(bookmarks);
+ipcMain.on(events.UPDATE_BOOKMARK_LIST, async (event) => {
+  await BookmarkManager.updateBookmarkList();
 });
 
 ipcMain.on(

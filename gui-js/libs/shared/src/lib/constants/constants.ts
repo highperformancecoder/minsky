@@ -18,7 +18,7 @@ export const events = {
   SET_BACKGROUND_COLOR: 'set-background-color',
   CREATE_MENU_POPUP: 'create-menu-popup',
   APP_LAYOUT_CHANGED: 'app-layout-changed',
-  POPULATE_BOOKMARKS: 'populate-bookmarks',
+  UPDATE_BOOKMARK_LIST: 'update-bookmark-list',
   ADD_RECENT_FILE: 'add-recent-file',
   GET_APP_VERSION: 'get-app-version',
   KEY_PRESS: 'key-press',
