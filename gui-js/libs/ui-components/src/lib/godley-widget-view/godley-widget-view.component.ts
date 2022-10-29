@@ -45,8 +45,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   godleyCanvasContainer: HTMLElement;
   mouseMove$: Observable<MouseEvent>;
 
-  mouseX = 0;
-  mouseY = 0;
   yoffs = 0; // extra offset required on some systems
 
   constructor(
@@ -135,10 +133,10 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     
     this.godleyCanvasContainer.addEventListener('contextmenu', async (event) => {
       this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
-        x: this.mouseX,
-        y: this.mouseY,
+        x: event.x,
+        y: event.y,
         type: "godley",
-        command: this.namedItem,
+        command: this.namedItem.prefix(),
       });
     });
 

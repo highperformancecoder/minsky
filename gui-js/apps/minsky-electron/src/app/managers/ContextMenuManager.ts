@@ -947,6 +947,7 @@ export class ContextMenuManager {
 
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
   {
+  //  console.log(`initContextMenuForGodleyPopup ${namedItemSubCommand}, ${x},${y}\n`);
     let godley=new GodleyIcon(namedItemSubCommand);
     
     var menu=new Menu();
