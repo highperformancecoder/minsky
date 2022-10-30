@@ -4,9 +4,11 @@ import {
   CreateWindowPayload,
   green,
   isMacOS,
+  minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   rendererAppName,
   rendererAppURL,
+  RenderNativeWindow,
   Utility,
 } from '@minsky/shared';
 //import * as debug from 'debug';
@@ -25,7 +27,8 @@ export class WindowManager {
   static canvasHeight: number;
   static canvasWidth: number;
   static scaleFactor: number;
-
+  static currentTab: RenderNativeWindow=minsky.canvas;
+  
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();
 
@@ -54,6 +57,20 @@ export class WindowManager {
     }
   }
 
+  static renderFrame() {
+    console.log(this.activeWindows.get(1).systemWindowId);
+    this.currentTab?.renderFrame(this.activeWindows.get(1).systemWindowId.toString(),
+                            this.leftOffset,this.electronTopOffset,this.canvasWidth,this.canvasHeight,this.scaleFactor);
+  }
+    
+  static setCurrentTab(tab: RenderNativeWindow) {
+    if (this.currentTab!==tab) {
+      this.currentTab?.disable();
+      this.currentTab=tab;
+      this.renderFrame();
+    }
+  }
+  
   static getSystemWindowId(menuWindow: BrowserWindow) {
     const nativeBuffer = menuWindow.getNativeWindowHandle();
     switch (nativeBuffer.length) {

@@ -52,9 +52,7 @@
     "bump:minor": "nx run workspace:version --version=minor",
     "bump:patch": "nx run workspace:version --version=patch",
     "bump:alpha": "nx run workspace:version --version=prerelease --preid=alpha",
-    "bump:beta": "nx run workspace:version --version=prerelease --preid=beta",
-    "generate:signature": "ts-node -P ./tools/tsconfig.tools.json ./tools/scripts/generateSignature.ts",
-    "check:signature": "ts-node -P ./tools/tsconfig.tools.json ./tools/scripts/checkSignature.ts"
+    "bump:beta": "nx run workspace:version --version=prerelease --preid=beta"
   },
   "private": true,
   "dependencies": {

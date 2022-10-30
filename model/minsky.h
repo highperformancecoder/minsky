@@ -70,7 +70,7 @@ namespace minsky
   class SaveThread;
   
   // handle the display of rendered equations on the screen
-  class EquationDisplay: public RenderNativeWindow, public EventInterface
+  class EquationDisplay: public RenderNativeWindow
   {
     Minsky& m;
     double m_width=0, m_height=0;
@@ -467,6 +467,9 @@ namespace minsky
 
     /// list of available operations
     /*static*/ std::vector<std::string> availableOperations();
+    using AvailableOperationsMapping=classdesc::StringKeyMap<std::vector<OperationType::Type>>;
+    /*static*/ Minsky::AvailableOperationsMapping availableOperationsMapping() const;
+    
     /// list of available variable types
     /*static*/ std::vector<std::string> variableTypes();
     /// return list of available asset classes

@@ -52,6 +52,10 @@ namespace minsky
     
     friend class VariableManager;
     friend struct SchemaHelper;
+
+    // values are always live
+    ITensor::Timestamp timestamp() const override {return Timestamp::clock::now();}
+    
   public:
     /// variable has an input port
     bool lhs() const {
@@ -103,9 +107,6 @@ namespace minsky
     int idx() const {return m_idx;}
     void reset_idx() {m_idx=-1;}    
 
-    // values are always live
-    ITensor::Timestamp timestamp() const override {return Timestamp::clock::now();}
-    
     double operator[](std::size_t i) const override {return *(&valRef()+i);}
     double& operator[](std::size_t i) override;
 

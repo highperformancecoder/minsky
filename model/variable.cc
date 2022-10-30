@@ -395,7 +395,7 @@ void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spe
   }
 }
 
-void VariableBase::destroyFrame() const
+void VariableBase::destroyFrame()
 {
   if (auto vv=vValue())
     vv->csvDialog.destroyFrame();

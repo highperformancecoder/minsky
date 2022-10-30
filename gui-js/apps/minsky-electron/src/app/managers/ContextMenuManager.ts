@@ -1,14 +1,12 @@
 import {
   CanvasItem,
   ClassType,
-  isEmptyObject,
   isWindows,
-  MainRenderingTabs,
-  minsky, GodleyIcon, Group, Operation, PlotWidget, Ravel, Variable,
+  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, SwitchIcon,
+  VariableBase,
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';
 
@@ -27,24 +25,13 @@ export class ContextMenuManager {
         this.x = x;
         this.y = y;
         
-        const currentTab = RestServiceManager.getCurrentTab();
-        
-        switch (currentTab) {
-        case MainRenderingTabs.canvas:
-          await this.initContextMenuForWiring(mainWindow);
-          break;
-          
-        case MainRenderingTabs.variables:
-          await this.initContextMenuForVariableTab(mainWindow);
-          break;
-          
-        case MainRenderingTabs.plot:
-          await this.initContextMenuForPlotTab(mainWindow);
-          break;
-          
-        default:
-          break;
-        }
+        const currentTab = WindowManager.currentTab;
+        if (currentTab.equal(minsky.canvas))
+          this.initContextMenuForWiring(mainWindow);
+        else if (currentTab.equal(minsky.variableTab))
+          this.initContextMenuForVariableTab(mainWindow);
+        else if (currentTab.equal(minsky.plotTab))
+          this.initContextMenuForPlotTab(mainWindow);
       }
       break;
       case "godley":
@@ -103,9 +90,7 @@ export class ContextMenuManager {
 
   private static async initContextMenuForWiring(mainWindow: BrowserWindow) {
     try {
-      const wire = await CommandsManager.getWireAt(this.x, this.y);
-
-      const isWirePresent = !isEmptyObject(wire);
+      const isWirePresent = minsky.canvas.getWireAt(this.x, this.y);
 
       const isWireVisible = minsky.canvas.wire.visible();
       const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
@@ -267,12 +252,7 @@ export class ContextMenuManager {
 
       new MenuItem({
         label: 'Show all plots on tab',
-        type: 'checkbox',
-        checked: this.showAllPlotsOnTabChecked,
-        click: async () => {
-          minsky.canvas.showAllPlotsOnTab();
-          this.showAllPlotsOnTabChecked = !this.showAllPlotsOnTabChecked;
-        },
+        click: () => {minsky.canvas.showPlotsOnTab();},
       }),
       new MenuItem({
         label: 'Bookmark here',
@@ -310,7 +290,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Help',
           visible:
-            RestServiceManager.getCurrentTab() === MainRenderingTabs.canvas,
+          WindowManager.currentTab.equal(minsky.canvas),
           click: async () => {
             await CommandsManager.help(this.x, this.y);
           },
@@ -587,13 +567,12 @@ export class ContextMenuManager {
   private static async buildContextMenuForOperations(
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
-    let portValues = 'unknown';
-    let op=new Operation(minsky.canvas.item);
+    let op=new OperationBase(minsky.canvas.item);
 
     try {
-      portValues = op.portValues();
+      var portValues = op.portValues();
     } catch (error) {
-      portValues = 'unknown';
+      var portValues = 'unknown';
     }
 
     let menuItems = [
@@ -613,7 +592,7 @@ export class ContextMenuManager {
           label: 'Import Data',
           click: async () => {
             const filePath = await CommandsManager.getFilePathUsingSaveDialog();
-            if (filePath) {op.readData(filePath);}
+            if (filePath) {(new DataOp(op)).readData(filePath);}
           }
         })
       );
@@ -638,7 +617,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Toggle var binding',
           click: async () => {
-            op.toggleCoupled();
+            (new IntOp(op)).toggleCoupled();
             CommandsManager.requestRedraw();
           },
         })
@@ -832,18 +811,15 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForSwitchIcon(): Promise<MenuItem[]> {
+    let switchIcon=new SwitchIcon(minsky.canvas.item);
     const menuItems = [
       new MenuItem({
         label: 'Add case',
-        click: async () => {
-          await CommandsManager.incrCase(1);
-        },
+        click: () => {switchIcon.setNumCases(switchIcon.numCases()+1);},
       }),
       new MenuItem({
         label: 'Delete case',
-        click: async () => {
-          await CommandsManager.incrCase(-1);
-        },
+        click: () => {switchIcon.setNumCases(switchIcon.numCases()-1);},
       }),
       new MenuItem({
         label: 'Flip',
@@ -857,7 +833,7 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForLock(): Promise<MenuItem[]> {
-    let ravel=new Ravel(minsky.canvas.item);
+    let ravel=new Lock(minsky.canvas.item);
     return [
       new MenuItem({
         label: ravel.locked()? 'Unlock': 'Lock',
@@ -878,7 +854,7 @@ export class ContextMenuManager {
       dims = await CommandsManager.getItemDims();
     }
 
-    let v=new Variable(minsky.canvas.item);
+    let v=new VariableBase(minsky.canvas.item);
     
     const menuItems = [
       dims && dims.length
@@ -971,6 +947,7 @@ export class ContextMenuManager {
 
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
   {
+  //  console.log(`initContextMenuForGodleyPopup ${namedItemSubCommand}, ${x},${y}\n`);
     let godley=new GodleyIcon(namedItemSubCommand);
     
     var menu=new Menu();
@@ -1031,7 +1008,7 @@ export class ContextMenuManager {
       godley.popup.selectedRow(r);
       godley.popup.selectedCol(c);
       godley.popup.insertIdx(0);
-      godley.popup.selectedIdx(0);
+      godley.popup.selectIdx(0);
     }
     var cell=godley.table.getCell(r,c);
     if (cell.length>0 && (r!=1 || c!=0))

@@ -413,10 +413,11 @@ namespace minsky
     return item;
   }
   
-  void Canvas::getWireAt(float x, float y)
+  bool Canvas::getWireAt(float x, float y)
   {
     wire=model->findAny(&Group::wires,
                         [&](const WirePtr& i){return i->near(x,y);});
+    return wire.get();
   }
 
   void Canvas::groupSelection()

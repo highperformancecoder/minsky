@@ -23,13 +23,6 @@ export interface MinskyProcessPayload {
   location?: number;
 }
 
-export interface DescriptionPayload {
-  item: string;
-  tooltip: string;
-  detailedText: string;
-  bookmark: boolean;
-}
-
 export interface HandleDescriptionPayload {
   handleIndex: number;
   description: string;
@@ -44,19 +37,6 @@ export interface HandleDimensionPayload {
 export interface PickSlicesPayload {
   handleIndex: number;
   pickedSliceLabels: string[];
-}
-
-export class HandleLockInfo
-{
-  slicer: boolean;
-  orientation: boolean;
-  calipers: boolean;
-  order: boolean;
-  handleNames: string[];
-}
-
-export interface LockHandlesPayload {
-  handleLockInfo: HandleLockInfo[];
 }
 
 export interface ElectronCanvasOffset {
@@ -125,20 +105,16 @@ export interface CanvasItem {
     id: string;
 }
 
-export interface CreateWindowPayload extends Electron.BrowserWindowConstructorOptions {
-  uid? : string,
-  url? : string
+export interface CreateWindowPayload {
+  uid?: string;
+  width?: number;
+  useContentSize?: boolean;
+  height?: number;
+  title: string;
+  modal?: boolean;
+  backgroundColor?: string;
+  url?: string;
 }
-
-// export interface CreateWindowPayload {
-//   uid?: number;
-//   width?: number;
-//   height?: number;
-//   title: string;
-//   modal?: boolean;
-//   backgroundColor?: string;
-//   url?: string;
-// }
 
 
 export interface TypeValueName {

@@ -256,8 +256,8 @@ export class GodleyMenuManager {
   }
 
   /// handle mouse down events in a Godley view
-  static async mouseDown(itemName: string, x: number, y: number) {
-    var namedItem=new GodleyTableWindow(itemName);
+  static async mouseDown(itemId: string, x: number, y: number) {
+    let namedItem=new GodleyIcon(minsky.namedItems.elem(itemId).second).popup;
     var clickType=namedItem.clickTypeZoomed(x,y);
     if (clickType==="importStock")
     {

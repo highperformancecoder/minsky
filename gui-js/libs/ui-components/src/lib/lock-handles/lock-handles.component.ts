@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
+import {Ravel} from '@minsky/shared';
 import * as JSON5 from 'json5';
 
 @Component({
@@ -47,11 +48,11 @@ export class LockHandlesComponent implements OnInit {
     });
   }
 
-  async handleSave() {
+  handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.saveLockHandles({
-        handleLockInfo: this.handleLockInfo
-      });
+      let ravel=new Ravel(this.electronService.minsky.canvas.item);
+      ravel.lockGroup.handleLockInfo.properties(this.handleLockInfo);
+      ravel.lockGroup.validateLockHandleInfo();
     }
     this.closeWindow();
   }

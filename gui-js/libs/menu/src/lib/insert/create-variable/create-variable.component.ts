@@ -11,7 +11,7 @@ import {
   ElectronService,
   WindowUtilityService,
 } from '@minsky/core';
-import { commandsMapping, replaceBackSlash } from '@minsky/shared';
+import { VariableBase } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @AutoUnsubscribe()
@@ -125,38 +125,19 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   }
 
   async updateFormValues() {
-    const init = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_INIT,
-    });
+    let item=new VariableBase(this.electronService.minsky.canvas.item);
+    const local = await item.local();
+    const init = await item.init();
+    const units = await item.unitsStr();
+    const rotation = await item.rotation();
+    const tooltip = await item.tooltip();
+    const detailedText = await item.detailedText();
+    const sliderMax = await item.sliderMax();
+    const sliderMin = await item.sliderMin();
+    const sliderStep = await item.sliderStep();
+    const sliderStepRel = await item.sliderStepRel();
 
-    const units = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_UNITS_STR,
-    });
-
-    const rotation = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_ROTATION,
-    });
-    const tooltip = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_TOOLTIP,
-    });
-    const detailedText = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_DETAILED_TEXT,
-    });
-    const sliderMax = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_SLIDER_MAX,
-    });
-    const sliderMin = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_SLIDER_MIN,
-    });
-    const sliderStep = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_SLIDER_STEP,
-    });
-    const sliderStepRel = await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.CANVAS_ITEM_SLIDER_STEP_REL,
-      }
-    );
-
+    this.local.setValue(local);
     this.value.setValue(init);
     this.units.setValue(units);
     this.rotation.setValue(rotation);
@@ -183,85 +164,32 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   }
 
   async editVariable() {
-    
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.RENAME_ITEM} "${replaceBackSlash(
-        this._name
-      )}"`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_RETYPE} "${this.type.value}"`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_SET_UNITS} "${replaceBackSlash(
-        this.units.value || ''
-      )}"`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_INIT} "${replaceBackSlash(
-        this.value.value
-      )}"`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_ROTATION} ${
-        this.rotation.value || 0
-      }`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_TOOLTIP} "${replaceBackSlash(
-        this.shortDescription.value
-      )}"`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${
-        commandsMapping.CANVAS_ITEM_DETAILED_TEXT
-      } "${replaceBackSlash(this.detailedDescription.value)}"`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_SLIDER_MAX} ${
-        this.sliderBoundsMax.value || 0
-      }`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_SLIDER_MIN} ${
-        this.sliderBoundsMin.value || 0
-      }`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_SLIDER_STEP} ${
-        this.sliderStepSize.value || 0
-      }`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_ITEM_SLIDER_STEP_REL} ${this.sliderStepRel.value}`,
-    });
-    await this.electronService.sendMinskyCommandAndRender({
-      command: "/minsky/canvas/item/sliderBoundsSet true",
-    });
-
+    let item=new VariableBase(this.electronService.minsky.canvas.item);
+    item.name(this._name);
+    item.retype(this.type.value);
+    item.setUnits(this.units.value || '');
+    item.init(this.value.value);
+    item.rotation(this.rotation.value || 0);
+    item.tooltip(this.shortDescription.value);
+    item.detailedText(this.detailedDescription.value);
+    item.sliderMax(this.sliderBoundsMax.value || 0);
+    item.sliderMin(this.sliderBoundsMin.value || 0);
+    item.sliderStep(this.sliderStepSize.value || 0);
+    item.sliderStepRel(this.sliderStepRel.value);
+    item.sliderBoundsSet(true);
     this.closeWindow();
   }
 
   async createVariable() {
 
     await this.commService.createVariable({
-      variableName: replaceBackSlash(this._name),
+      variableName: this._name,
       type: this.type.value,
-      units: replaceBackSlash(this.units.value || ''),
-      value: replaceBackSlash(this.value.value),
+      units: this.units.value || '',
+      value: this.value.value,
       rotation: this.rotation.value || 0,
-      shortDescription: replaceBackSlash(this.shortDescription.value),
-      detailedDescription: replaceBackSlash(this.detailedDescription.value),
+      shortDescription: this.shortDescription.value,
+      detailedDescription: this.detailedDescription.value,
       sliderStepSize: this.sliderStepSize.value || 0,
       sliderBoundsMax: this.sliderBoundsMax.value || 0,
       sliderBoundsMin: this.sliderBoundsMin.value || 0,

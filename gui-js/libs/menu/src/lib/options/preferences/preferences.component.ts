@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping, events } from '@minsky/shared';
+import { events } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-preferences',
@@ -29,11 +29,7 @@ export class PreferencesComponent implements OnInit {
         events.GET_PREFERENCES
       );
       this.form.patchValue(preferences);
-      this.availableFonts = (await this.electronService.sendMinskyCommandAndRender(
-        {
-          command: commandsMapping.LIST_FONTS,
-        }
-      )) as string[];
+      this.availableFonts = await this.electronService.minsky.listFonts();
     }
   }
 

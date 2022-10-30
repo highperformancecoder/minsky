@@ -1,27 +1,20 @@
 import {
-  availableOperations,
-  commandsMapping,
   electronMenuBarHeightForWindows,
   isWindows,
-  normalizeFilePathForPlatform,
+  minsky,
 } from '@minsky/shared';
-//import * as debug from 'debug';
 import {
   dialog,
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
-  SaveDialogOptions,
   shell,
 } from 'electron';
-import * as JSON5 from 'json5';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
 import { BookmarkManager } from './BookmarkManager';
-
-//const logError = debug('minsky:electron_error');
+import { RecordingManager } from './RecordingManager';
 
 //TODO:: Remove hardcoding of popup dimensions
 
@@ -98,7 +91,7 @@ export class ApplicationMenuManager {
             } catch (error) {
               console.error(error);
             }
-              BookmarkManager.updateBookmarkList();
+            BookmarkManager.updateBookmarkList();
           },
         },
         {
@@ -148,13 +141,7 @@ export class ApplicationMenuManager {
                 properties: ['openFile'],
               });
 
-              const filePath = normalizeFilePathForPlatform(
-                insertGroupDialog.filePaths[0].toString()
-              );
-
-              await RestServiceManager.handleMinskyProcess({
-                command: `${commandsMapping.INSERT_GROUP_FROM_FILE} ${filePath}`,
-              });
+              minsky.insertGroupFromFile(insertGroupDialog.filePaths[0].toString());
               await CommandsManager.requestRedraw();
             } catch (err) {
               console.error('file is not selected', err);
@@ -164,11 +151,10 @@ export class ApplicationMenuManager {
         {
           label: 'Dimensional Analysis',
           click: async () => {
-            const res = await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.DIMENSIONAL_ANALYSIS,
-            });
+            const res = minsky.dimensionalAnalysis();
 
-            if (JSON5.stringify(res) === JSON5.stringify({})) {
+            // empty object is returned if no error
+            if (typeof res=="object") {
               dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
                 type: 'info',
                 title: 'Dimensional Analysis',
@@ -192,19 +178,11 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Recording',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.RECORD,
-            });
-          },
+          click() {RecordingManager.handleRecord();},
         },
         {
           label: 'Replay recording',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.RECORDING_REPLAY,
-            });
-          },
+          click() {RecordingManager.handleRecordingReplay();},
         },
         {
           label: 'Quit',
@@ -221,10 +199,18 @@ export class ApplicationMenuManager {
         {
           label: 'Redraw',
           async click() {
-            await RestServiceManager.handleMinskyProcess({
-              //command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-              command: commandsMapping.RENDER_FRAME_SUBCOMMAND,
-            });
+                const {
+                  leftOffset,
+                  canvasWidth,
+                  canvasHeight,
+                  activeWindows,
+                  electronTopOffset,
+                  scaleFactor,
+                } = WindowManager;
+
+            minsky.canvas.renderFrame
+            (activeWindows.get(1).systemWindowId,
+             leftOffset,electronTopOffset,canvasWidth,canvasHeight,scaleFactor);
           },
         },
       ],
@@ -268,11 +254,7 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Group selection',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.GROUP_SELECTION}`,
-            });
-          },
+          async click() {minsky.canvas.groupSelection();},
         },
         {
           label: 'Dimensions',
@@ -287,11 +269,7 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Remove Units',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.REMOVE_UNITS}`,
-            });
-          },
+          async click() {minsky.deleteAllUnits();},
         },
         {
           label: 'Auto Layout',
@@ -299,9 +277,8 @@ export class ApplicationMenuManager {
             WindowManager.getMainWindow().webContents.insertCSS(
               `body { cursor: wait; }`
             );
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.AUTO_LAYOUT}`,
-            });
+            // TODO handle this asynchronously on the backend.
+            minsky.autoLayout();
             WindowManager.getMainWindow().webContents.insertCSS(
               `body { cursor: default; }`
             );
@@ -309,11 +286,7 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Random Layout',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.RANDOM_LAYOUT}`,
-            });
-          },
+          async click() {minsky.randomLayout();}
         },
       ],
     };
@@ -326,19 +299,11 @@ export class ApplicationMenuManager {
       submenu: [
         {
           label: 'plot',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.ADD_PLOT,
-            });
-          },
+          async click() {minsky.canvas.addPlot();}
         },
         {
           label: 'Godley Table',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.ADD_GODLEY,
-            });
-          },
+          async click() {minsky.canvas.addGodley();}
         },
         {
           label: 'Variable',
@@ -383,43 +348,19 @@ export class ApplicationMenuManager {
         },
         {
           label: 'time',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.ADD_OPERATION} "${availableOperations.TIME}"`,
-            });
-          },
+          async click() {minsky.canvas.addOperation("time");}
         },
         {
           label: 'integrate',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.ADD_OPERATION} "${availableOperations.INTEGRATE}"`,
-            });
-          },
+          async click() {minsky.canvas.addOperation("integrate");}
         },
         {
           label: 'differentiate',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.ADD_OPERATION} "${availableOperations.DIFFERENTIATE}"`,
-            });
-          },
-        },
-        {
-          label: 'data',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.ADD_OPERATION} "${availableOperations.DATA}"`,
-            });
-          },
+          async click() {minsky.canvas.addOperation("differentiate");},
         },
         {
           label: 'ravel',
-          async click() {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.ADD_RAVEL,
-            });
-          },
+          async click() {minsky.canvas.addOperation("ravel");}
         },
       ],
     };
@@ -448,20 +389,30 @@ export class ApplicationMenuManager {
 
   private static async exportCanvas(
     extension: string,
-    command: string,
-    extraArgs: Array<any> = []
+    ...args: any[]
   ) {
-    var filePath = await CommandsManager.getFilePathFromExportCanvasDialog(
-      extension
-    );
+    var filePath = await CommandsManager.getFilePathFromExportCanvasDialog(extension);
     if (filePath) {
-      const args =
-        extraArgs.length > 0
-          ? `[${filePath}, ${extraArgs.join(',')}]`
-          : filePath;
-      await RestServiceManager.handleMinskyProcess({
-        command: `${command} ${args}`,
-      });
+      switch (extension) {
+      case 'svg':
+        WindowManager.currentTab.renderToSVG(filePath);
+        break;
+      case 'pdf':
+        WindowManager.currentTab.renderToPDF(filePath);
+        break;
+      case 'emf':
+        WindowManager.currentTab.renderToEMF(filePath);
+        break;
+      case 'eps':
+        WindowManager.currentTab.renderToPS(filePath);
+        break;
+      case 'tex':
+        minsky.latex(filePath,args[0]);
+        break;
+      case 'm':
+        minsky.matlab(filePath);
+        break;
+      }
     }
   }
 
@@ -472,61 +423,37 @@ export class ApplicationMenuManager {
       submenu: [
         {
           label: 'SVG',
-          click: async () => {
-            await scope.exportCanvas(
-                'svg',
-                `${RestServiceManager.getCurrentTab()}/renderToSVG`
-            );
-          },
+          click: () => {scope.exportCanvas('svg');}
         },
         {
           label: 'PDF',
-          click: async () => {
-            await scope.exportCanvas(
-                'pdf',
-                `${RestServiceManager.getCurrentTab()}/renderToPDF`
-            );
-          },
+          click: () => {scope.exportCanvas('pdf');}
         },
         {
           label: 'EMF',
           visible: isWindows(),
-          click: async () => {
-            await scope.exportCanvas(
-                'emf',
-                `${RestServiceManager.getCurrentTab()}/renderToEMF`
-            );
-          },
+          click: () => {scope.exportCanvas('emf');}
         },
         {
           label: 'PostScript',
-          click: async () => {
-            await scope.exportCanvas(
-                'eps',
-                `${RestServiceManager.getCurrentTab()}/renderToPS`
-            );
-          },
+          click: () => {scope.exportCanvas('eps');}
         },
         {
           label: 'LaTeX',
-          click: async () => {
-            await scope.exportCanvas('tex', commandsMapping.LATEX, [
-              StoreManager.store.get('preferences')
-                .wrapLongEquationsInLatexExport,
-            ]);
-          },
+          click: () => {scope.exportCanvas(
+            'tex',
+            StoreManager.store.get('preferences').wrapLongEquationsInLatexExport,
+          );},
         },
         {
           label: 'Matlab',
-          click: async () => {
-            await scope.exportCanvas('m', commandsMapping.MATLAB);
-          },
+          click: () => {scope.exportCanvas('m');}
         },
       ],
     };
   }
 
-  private static async exportPlot(extension: string, command: string) {
+  private static async exportPlot(extension: string, command: (file:string)=>void) {
     const exportPlotDialog = await dialog.showSaveDialog({
       title: `Export plot as ${extension}`,
       defaultPath: 'plot',
@@ -534,17 +461,11 @@ export class ApplicationMenuManager {
       filters: [{ extensions: [extension], name: extension.toUpperCase() }],
     });
 
-    const { canceled, filePath: _filePath } = exportPlotDialog;
-    if (canceled) {
+    const { canceled, filePath } = exportPlotDialog;
+    if (canceled || !filePath) {
       return;
     }
-    const filePath = normalizeFilePathForPlatform(_filePath);
-    if (!filePath) {
-      return;
-    }
-    await RestServiceManager.handleMinskyProcess({
-      command: `${command} ${filePath}`,
-    });
+    command(filePath);
   }
 
   private static getExportPlotMenu(): MenuItemConstructorOptions {
@@ -557,7 +478,7 @@ export class ApplicationMenuManager {
           async click() {
             await scope.exportPlot(
               'svg',
-              commandsMapping.RENDER_ALL_PLOTS_AS_SVG
+              (file:string)=>{minsky.renderAllPlotsAsSVG(file);}
             );
           },
         },
@@ -566,7 +487,7 @@ export class ApplicationMenuManager {
           async click() {
             await scope.exportPlot(
               'csv',
-              commandsMapping.EXPORT_ALL_PLOTS_AS_CSV
+              (file:string)=>{minsky.exportAllPlotsAsCSV(file);}
             );
           },
         },
@@ -630,11 +551,7 @@ export class ApplicationMenuManager {
       submenu: [
         {
           label: 'Minsky Documentation',
-          click() {
-            shell.openExternal(
-              'https://minsky.sourceforge.io/manual/minsky.html'
-            );
-          },
+          click() {CommandsManager.loadHelpFile("minsky");}
         },
       ],
     };
@@ -651,23 +568,28 @@ export class ApplicationMenuManager {
   private static addOpMenu(operation: string) {
     return {
       label: operation,
-      async click() {
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.ADD_OPERATION} "${operation}"`,
-        });
-      },
+      async click() {minsky.canvas.addOperation(operation);}
     };
   }
   static async buildMenuForInsertOperations() {
-    const availableOperationsMapping = await CommandsManager.getAvailableOperationsMapping();
+    const availableOperationsMapping = minsky.availableOperationsMapping();
     let insertOperationsMenu: MenuItem[] = [];
+    let menuNames={
+      "constop": "Fundamental Constants",
+      "binop": "Binary Operations",
+      "function": "Unary Functions",
+      "reduction": "Reductions",
+      "scan": "Scans",
+      "tensor": "General Tensor Operations"
+    };
+
     for (const key in availableOperationsMapping) {
       insertOperationsMenu = [
         ...insertOperationsMenu,
         new MenuItem({
-          label: key,
+          label: key in menuNames? menuNames[key]: key,
           submenu: this.buildSubmenuForOperations(
-            availableOperationsMapping[key]
+            availableOperationsMapping[key] as string[]
           ),
         }),
       ];
