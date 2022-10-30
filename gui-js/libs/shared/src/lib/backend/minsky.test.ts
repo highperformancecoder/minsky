@@ -6,6 +6,7 @@ import {
   VariableBase,
 } from './index';
 import * as fs from 'fs';
+import * as JSON5 from 'json5';
 
 var tmpDir;
 beforeAll(()=>{
@@ -33,6 +34,7 @@ describe('Named Items',()=>{
     minsky.canvas.addOperation("time");
     minsky.canvas.getItemAt(0,0);
     minsky.nameCurrentItem("foo");
+    console.log(JSON5.stringify(minsky.namedItems.elem("foo")));
     expect(minsky.namedItems.elem("foo").second.classType()).toBe("Operation:time");
     expect(minsky.namedItems.size()).toBe(1);
     minsky.namedItems.insert("fooBar",minsky.canvas.item.properties());

@@ -133,7 +133,6 @@ export class WindowUtilityService {
   }
 
   public closeCurrentWindowIfNotMain() {
-    const currentWindow = this.electronService.remote.getCurrentWindow();
     if (this.electronService.isElectron) {
       setTimeout(() => {
         const currentWindow = this.electronService.remote.getCurrentWindow();

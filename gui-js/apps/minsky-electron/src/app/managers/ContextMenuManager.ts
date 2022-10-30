@@ -2,13 +2,11 @@ import {
   CanvasItem,
   ClassType,
   isWindows,
-  MainRenderingTabs,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, SwitchIcon,
   VariableBase,
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';
 
@@ -27,24 +25,13 @@ export class ContextMenuManager {
         this.x = x;
         this.y = y;
         
-        const currentTab = RestServiceManager.getCurrentTab();
-        
-        switch (currentTab) {
-        case MainRenderingTabs.canvas:
-          await this.initContextMenuForWiring(mainWindow);
-          break;
-          
-        case MainRenderingTabs.variables:
-          await this.initContextMenuForVariableTab(mainWindow);
-          break;
-          
-        case MainRenderingTabs.plot:
-          await this.initContextMenuForPlotTab(mainWindow);
-          break;
-          
-        default:
-          break;
-        }
+        const currentTab = WindowManager.currentTab;
+        if (currentTab.equal(minsky.canvas))
+          this.initContextMenuForWiring(mainWindow);
+        else if (currentTab.equal(minsky.variableTab))
+          this.initContextMenuForVariableTab(mainWindow);
+        else if (currentTab.equal(minsky.plotTab))
+          this.initContextMenuForPlotTab(mainWindow);
       }
       break;
       case "godley":
@@ -303,7 +290,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Help',
           visible:
-            RestServiceManager.getCurrentTab() === MainRenderingTabs.canvas,
+          WindowManager.currentTab.equal(minsky.canvas),
           click: async () => {
             await CommandsManager.help(this.x, this.y);
           },
@@ -580,13 +567,12 @@ export class ContextMenuManager {
   private static async buildContextMenuForOperations(
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
-    let portValues = 'unknown';
     let op=new OperationBase(minsky.canvas.item);
 
     try {
-      portValues = op.portValues();
+      var portValues = op.portValues();
     } catch (error) {
-      portValues = 'unknown';
+      var portValues = 'unknown';
     }
 
     let menuItems = [
@@ -961,6 +947,7 @@ export class ContextMenuManager {
 
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
   {
+  //  console.log(`initContextMenuForGodleyPopup ${namedItemSubCommand}, ${x},${y}\n`);
     let godley=new GodleyIcon(namedItemSubCommand);
     
     var menu=new Menu();

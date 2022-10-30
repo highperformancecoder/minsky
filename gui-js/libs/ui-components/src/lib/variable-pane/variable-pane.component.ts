@@ -12,8 +12,6 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import {
-  ZOOM_IN_FACTOR,
-  ZOOM_OUT_FACTOR,
   isMacOS,
   VariablePane,
   green

@@ -1,7 +1,6 @@
 import {
   ChangeDetectorRef,
   Component,
-  Input,
   NgZone,
   OnDestroy,
   OnInit,
@@ -60,10 +59,9 @@ export class WiringComponent implements OnInit, OnDestroy {
     
     this.cmService.resetScroll=async ()=>{
       ++moveOnScroll;
-      var pos= await this.electronService.sendMinskyCommandAndRender({
-        command: 'position'}) as number[];
-      minskyCanvasContainer.scrollLeft=scrollableArea.width / 2-pos[0];
-      minskyCanvasContainer.scrollTop=scrollableArea.height / 2-pos[1];
+      var pos= await this.electronService.currentTabPosition();
+      minskyCanvasContainer.scrollLeft=scrollableArea.width/2 - pos[0];
+      minskyCanvasContainer.scrollTop=scrollableArea.height/2 - pos[1];
     };
     this.cmService.resetScroll();
     
@@ -73,11 +71,7 @@ export class WiringComponent implements OnInit, OnDestroy {
           const posX = scrollableArea.width / 2 - scrollLeft;
           const posY = scrollableArea.height / 2 - scrollTop;
           if (!moveOnScroll)
-            await this.electronService.sendMinskyCommandAndRender({
-              command: 'moveTo',
-              mouseX: posX,
-              mouseY: posY,
-            });
+            await this.electronService.currentTabMoveTo(posX,posY);
           else
             --moveOnScroll;
         };

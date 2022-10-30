@@ -168,7 +168,8 @@ namespace minsky
     double maxSliderSteps() const;    
 
     /// sets/gets the units associated with this type
-    Units units(bool check=false) const override;
+    Units units(bool check) const override;
+    Units units() const {return units(false);}
     void setUnits(const std::string&) const;
     std::string unitsStr() const {return units().str();}
     
@@ -215,7 +216,7 @@ namespace minsky
     void importFromCSV(std::string filename, const DataSpecSchema& spec) const;
 
     /// clean up popup window structures on window close
-    void destroyFrame() const;
+    void destroyFrame() override;
 
   };
 

@@ -15,6 +15,7 @@ import {
   PickSlicesPayload,
   MinskyProcessPayload,
   minsky,
+  RenderNativeWindow,
 } from '@minsky/shared';
 //import * as debug from 'debug';
 import { BrowserWindow, ipcMain } from 'electron';
@@ -24,7 +25,7 @@ import { ContextMenuManager } from '../managers/ContextMenuManager';
 import { GodleyMenuManager } from '../managers/GodleyMenuManager';
 import { KeyBindingsManager } from '../managers/KeyBindingsManager';
 import { RecentFilesManager } from '../managers/RecentFilesManager';
-import { RestServiceManager } from '../managers/RestServiceManager';
+import { RecordingManager } from '../managers/RecordingManager';
 import { StoreManager, MinskyPreferences } from '../managers/StoreManager';
 import { WindowManager } from '../managers/WindowManager';
 
@@ -38,8 +39,6 @@ export default class ElectronEvents {
 
 // Retrieve app version
 ipcMain.handle(events.GET_APP_VERSION, () => {
-  //logUpdateEvent(`Fetching application version... [v${environment.version}]`);
-
   return environment.version;
 });
 
@@ -60,37 +59,22 @@ ipcMain.on(events.CREATE_MENU_POPUP, (event, data) => {
   WindowManager.createPopupWindowWithRouting(data);
 });
 
-// MINSKY_PROCESS_FOR_IPC_MAIN won't reply with the response
-ipcMain.on(
-  events.MINSKY_PROCESS_FOR_IPC_MAIN,
-  async (event, payload: MinskyProcessPayload) => {
-    await RestServiceManager.handleMinskyProcess(payload);
-  }
-);
-
-ipcMain.handle(
-  events.MINSKY_PROCESS,
-  async (event, payload: MinskyProcessPayload) => {
-    return await RestServiceManager.handleMinskyProcess(payload);
-  }
-);
-
 ipcMain.on(
   events.APP_LAYOUT_CHANGED,
   async (event, payload: AppLayoutPayload) => {
     if (event.sender.id === WindowManager.getMainWindow().id) {
       WindowManager.onAppLayoutChanged(payload);
-      RestServiceManager.reInvokeRenderFrame();
+      WindowManager.renderFrame();
     }
   }
 );
 
 ipcMain.on(events.CHANGE_MAIN_TAB, async (event, payload: ChangeTabPayload) => {
-  await RestServiceManager.setCurrentTab(payload.newTab);
+  await WindowManager.setCurrentTab(new RenderNativeWindow(payload.newTab));
 });
 
-ipcMain.on(events.POPULATE_BOOKMARKS, async (event, bookmarks: string[]) => {
-  await BookmarkManager.populateBookmarks(bookmarks);
+ipcMain.on(events.UPDATE_BOOKMARK_LIST, async (event) => {
+  await BookmarkManager.updateBookmarkList();
 });
 
 ipcMain.on(
@@ -146,6 +130,20 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle(
+  events.CURRENT_TAB_POSITION,
+  async (event)=>{
+    return WindowManager.currentTab.position();
+  }
+);
+
+ipcMain.handle(
+  events.CURRENT_TAB_MOVE_TO,
+  async (event, pos)=>{
+    return WindowManager.currentTab.moveTo(pos[0],pos[1]);
+  }
+);
+
 ipcMain.on(events.KEY_PRESS, async (event, payload: MinskyProcessPayload) => {
   // this is a synchronous handler for events.KEY_PRESS
   event.returnValue = await KeyBindingsManager.handleOnKeyPress(payload);
@@ -174,10 +172,6 @@ ipcMain.handle(
     return;
   }
 );
-
-ipcMain.on(events.AUTO_START_MINSKY_SERVICE, async () => {
-  await RestServiceManager.startMinskyService();
-});
 
 ipcMain.handle(events.NEW_SYSTEM, async () => {
   await CommandsManager.createNewSystem();
@@ -212,4 +206,11 @@ ipcMain.on(events.DOUBLE_CLICK, async (event, payload) => {
 
 ipcMain.on(events.LOG_SIMULATION, async (event, selectedItems: string[]) => {
   await CommandsManager.logSimulation(selectedItems);
+});
+
+ipcMain.handle(events.RECORD, async (event) => {
+  await RecordingManager.handleRecord();
+});
+ipcMain.handle(events.RECORDING_REPLAY, async (event) => {
+  await RecordingManager.handleRecordingReplay();
 });

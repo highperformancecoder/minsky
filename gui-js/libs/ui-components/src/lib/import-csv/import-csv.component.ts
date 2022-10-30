@@ -12,7 +12,6 @@ import {
   VariableValue,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
-import * as JSON5 from 'json5';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 enum ColType {
@@ -154,7 +153,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     (async () => {
       this.valueId = await this.getValueId();
       this.variableValuesSubCommand = this.electronService.minsky.variableValues.elem(this.valueId).second;
-
+      
+      
       await this.getCSVDialogSpec();
       this.updateForm();
       this.selectedHeader = this.dialogState.spec.headerRow as number;
@@ -248,7 +248,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async load() {
     const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
-
     const fileUrl = this.url.value;
 
     if (fileUrl !== fileUrlOnServer) {
@@ -374,8 +373,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
     }
 
-    process.stdout.write(JSON5.stringify(this.dialogState.spec));
-    
     const spec = {
       ...this.dialogState.spec,
       columnar,

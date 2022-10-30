@@ -29,7 +29,7 @@ function logFilter(c: string) {
 }
 
 /** core function to call into C++ object heirarachy */
-CppClass.backend=function backend(command: string, ...args: any[]) {
+export function backend(command: string, ...args: any[]) {
   if (!command) {
     log.error('backend called without any command');
     return {};
@@ -66,6 +66,8 @@ CppClass.backend=function backend(command: string, ...args: any[]) {
   }
 }
 
+CppClass.backend=backend;
+
 if ("JEST_WORKER_ID" in process.env) {
   restService.setMessageCallback(function (msg: string, buttons: string[]) {
     log.info(msg);
@@ -90,7 +92,7 @@ if ("JEST_WORKER_ID" in process.env) {
 }
 
 // Sanity checks before we get started
-if (CppClass.backend("/minsky/minskyVersion")!==version)
+if (backend("/minsky/minskyVersion")!==version)
   setTimeout(()=>{
     dialog.showMessageBoxSync({
       message: "Mismatch of front end and back end versions",
@@ -98,7 +100,7 @@ if (CppClass.backend("/minsky/minskyVersion")!==version)
     });
   },1000);
 
-if (CppClass.backend("/minsky/ravelExpired"))
+if (backend("/minsky/ravelExpired"))
   setTimeout(()=>{
     const button=dialog.showMessageBoxSync({
       message: "Your Ravel license has expired",
@@ -109,3 +111,17 @@ if (CppClass.backend("/minsky/ravelExpired"))
       shell.openExternal("https://ravelation.hpcoders.com.au");
   },1000);
 
+
+// load icon resources needed for GUI
+export function loadResources()
+{
+  const assetsDir=
+        Utility.isDevelopmentMode()
+        ? __dirname+'/assets'
+        : process.resourcesPath+'/assets';
+
+  backend('/minsky/setGodleyIconResource',assetsDir+'/godley.svg');
+  backend('/minsky/setGroupIconResource',assetsDir+'/group.svg');
+  backend('/minsky/setRavelIconResource',assetsDir+'/ravel-logo.svg');
+  backend('/minsky/setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
+}

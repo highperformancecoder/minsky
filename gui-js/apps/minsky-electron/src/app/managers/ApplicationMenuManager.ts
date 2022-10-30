@@ -8,7 +8,6 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
-  SaveDialogOptions,
   shell,
 } from 'electron';
 import { CommandsManager } from './CommandsManager';
@@ -92,7 +91,7 @@ export class ApplicationMenuManager {
             } catch (error) {
               console.error(error);
             }
-              BookmarkManager.updateBookmarkList();
+            BookmarkManager.updateBookmarkList();
           },
         },
         {
@@ -552,11 +551,7 @@ export class ApplicationMenuManager {
       submenu: [
         {
           label: 'Minsky Documentation',
-          click() {
-            shell.openExternal(
-              'https://minsky.sourceforge.io/manual/minsky.html'
-            );
-          },
+          click() {CommandsManager.loadHelpFile("minsky");}
         },
       ],
     };

@@ -45,8 +45,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   godleyCanvasContainer: HTMLElement;
   mouseMove$: Observable<MouseEvent>;
 
-  mouseX = 0;
-  mouseY = 0;
   yoffs = 0; // extra offset required on some systems
 
   constructor(
@@ -100,11 +98,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
       const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
         .scaleFactor;
 
-      const command = `${this.namedItemSubCommand}/renderFrame [${this.systemWindowId},${this.leftOffset},${this.topOffset},${this.width},${this.height},${scaleFactor}]`;
-
-      this.electronService.sendMinskyCommandAndRender({
-        command,
-      });
+      this.namedItemSubCommand.renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,scaleFactor);
     }
   }
 
@@ -126,21 +120,23 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     });
 
     this.godleyCanvasContainer.addEventListener('mousedown', async (event) => {
-      this.electronService.sendMinskyCommandAndRender(
-        {command: `/minsky/namedItems/@elem/"${this.itemId}"/second/popup`,
-         mouseX: event.x, mouseY: event.y+this.yoffs}, events.GODLEY_VIEW_MOUSEDOWN);
+      if (event.button===0)
+        this.electronService.ipcRenderer.invoke(events.GODLEY_VIEW_MOUSEDOWN, {
+          command: this.itemId,
+          mouseX: event.x, mouseY: event.y+this.yoffs
+        });
     });
 
     this.godleyCanvasContainer.addEventListener('mouseup', async (event) => {
-      this.namedItemSubCommand.mouseDown(event.x,event.y+this.yoffs);
+      this.namedItemSubCommand.mouseUp(event.x,event.y+this.yoffs);
     });
     
     this.godleyCanvasContainer.addEventListener('contextmenu', async (event) => {
       this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
-        x: this.mouseX,
-        y: this.mouseY,
+        x: event.x,
+        y: event.y,
         type: "godley",
-        command: this.namedItem,
+        command: this.namedItem.prefix(),
       });
     });
 

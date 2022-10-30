@@ -267,6 +267,8 @@ namespace classdesc
       std::string name, type;
       ArgDetail(const std::string& name={}, const std::string& type={}):
         name(name), type(type) {}
+      bool operator==(const ArgDetail& x) const {return type==x.type;}
+      bool operator!=(const ArgDetail& x) const {return !operator==(x);}
     };
     
     struct Method
@@ -293,6 +295,7 @@ namespace classdesc
     struct ClassType
     {
       std::string super;
+      std::string valueType; // used for container to instantiate proxies around elements
       std::map<std::string,Property> properties;
       std::map<std::string, Method> methods;
     };
@@ -337,14 +340,14 @@ namespace classdesc
   typename enable_if<is_arithmetic<T>, void>::T
   typescriptAPI_type(typescriptAPI_t& t, const std::string& d, T*)
   {
-    t[typescriptType<C>()].methods.emplace(tail(d), typescriptAPI_ns::Method{"number", {{"...args",typescriptType<T>()+"[]"}}});
+    t[typescriptType<C>()].methods.emplace(tail(d), typescriptAPI_ns::Method{typescriptType<T>(), {{"...args",typescriptType<T>()+"[]"}}});
   }
 
   template <class VT>
   std::string construct(const std::string& container, const std::string name)
   {
     string tn=typescriptType<VT>();
-    return "new "+container+"(this.prefix+'/"+name+"'"+
+    return "new "+container+"(this.prefix()+'/"+name+"'"+
       ((is_string<VT>::value || is_enum<VT>::value || is_arithmetic<VT>::value)?"":","+tn)+");";
   }
   
@@ -373,12 +376,17 @@ namespace classdesc
   }
   
   template <class C, class B, class T>
-  typename enable_if<is_same<remove_const<T>,std::string>, void>::T
+  typename enable_if<Or<is_same<typename remove_const<T>::type,std::string>,
+                        is_enum<typename remove_const<T>::type>>, void>::T
   typescriptAPI_type(typescriptAPI_t& t, const std::string& d, T*)
   {
-    t[typescriptType<C>()].methods.push_back({tail(d), {{"...args","string[]"}}});
+    t[typescriptType<C>()].methods.emplace(tail(d), typescriptAPI_ns::Method{"string", {{"...args","string[]"}}});
   }
 
+  template <class C, class B>
+  void typescriptAPI_type(typescriptAPI_t& t, const std::string& d, const char**)
+  {typescriptAPI_type<C,B>(t,d,static_cast<const std::string*>(nullptr));}
+  
   template <class C, class B, class T>
   void typescriptAPI_type(typescriptAPI_t& t, const std::string& d, std::set<T>(B::*))
   {
@@ -421,8 +429,27 @@ namespace classdesc
             typescriptAPI_ns::Method& m=res.first->second;
             m.addArgs<M>();
           }
-        else // overloaded method
-          res.first->second.args={{"...args","any[]"}};
+        else // method seen before
+          {
+            auto oldArgs=std::move(res.first->second.args);
+            typescriptAPI_ns::Method& m=res.first->second;
+            m.addArgs<M>();
+            auto newArgs=res.first->second.args;
+            // check if arguments are same, in which case leave the method call
+            if (oldArgs!=res.first->second.args) // overloaded method
+              {
+                res.first->second.args={{"...args","any[]"}}; // set up general case or arbitrary args
+                //check if all arguments are the same (ie just numbers of arguments differ)
+                auto firstArg=!oldArgs.empty()? oldArgs[0]: res.first->second.args[0];
+                if (firstArg.type=="any[]") return;
+                if (firstArg.name=="...args") firstArg.type.erase(firstArg.type.length()-2); //strip off []
+                for (auto& i: oldArgs)
+                  if (i!=firstArg) return;
+                for (auto& i: newArgs)
+                  if (i!=firstArg) return;
+                res.first->second.args={{"...args",firstArg.type+"[]"}}; //restrict to common type
+              }
+          }
       }
   }
 
@@ -475,7 +502,7 @@ namespace classdesc
   
   template <class C, class B, class T>
   void typescriptAPI_type(typescriptAPI_t& t,const std::string& d,is_const_static,T a)
-  {/*typescriptAPI_type(t,d,a);*/} // TODO?
+  {typescriptAPI_type<C,B>(t,d,a);} 
 
 }
 

@@ -10,18 +10,18 @@ import {
   isMacOS,
   normalizeFilePathForPlatform,
   electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
-  minsky, GodleyIcon, Group, IntOp, Ravel, VariableBase, Utility
+  minsky, GodleyIcon, Group, IntOp, Item, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import * as JSON5 from 'json5';
 import { join } from 'path';
 import { HelpFilesManager } from './HelpFilesManager';
-import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
+  static currentMinskyModelFilePath: string;
 
   static async deleteCurrentItemHavingId(itemId: string) {
     // TODO:: Ideally -- change flow to get the current item here..
@@ -166,12 +166,6 @@ export class CommandsManager {
         );
         break;
 
-//      case ClassType.GodleyIcon:
-//        CommandsManager.openRenameInstancesDialog(
-//          new GodleyIcon(minsky.canvas.item).name()
-//        );
-//        break;
-
       default:
         break;
     }
@@ -213,24 +207,19 @@ export class CommandsManager {
   }
 
   static async postNote(type: string) {
-    const bookmark =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/bookmark`,
-      })) as boolean) || '';
-
-    const tooltip =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/tooltip`,
-      })) as string) || '';
-
-    const detailedText =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/detailedText`,
-      })) as string) || '';
+    var item: Item|Wire;
+    switch (type) {
+    case 'item':
+      item=minsky.canvas.item;
+      break;
+    case 'wire':
+      item=minsky.canvas.wire;
+      break;
+    }
 
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
-      url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${encodeURI(detailedText)}`,
+      url: `#/headless/edit-description?type=${type}&bookmark=${item.bookmark()}&tooltip=${item.tooltip()}&detailedText=${encodeURI(item.detailedText())}`,
     });
     Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
@@ -293,7 +282,7 @@ export class CommandsManager {
 
   static async pasteAt(x: number, y: number): Promise<void> {
     minsky.paste();
-    RestServiceManager.onCurrentTab("mouseMove",x,y);
+    WindowManager.currentTab.mouseMove(x,y);
   }
 
   static async saveSelectionAsFile(): Promise<void> {
@@ -324,11 +313,12 @@ export class CommandsManager {
         Math.abs(itemX - 0.5 * canvasWidth) > 0.5 * canvasWidth ||
         Math.abs(itemY - 0.5 * canvasHeight) > 0.5 * canvasHeight
       ) {
-        const posX = itemX - itemX + 0.5 * canvasWidth;
-        const posY = itemY - itemY + 0.5 * canvasHeight;
+        const posX = itemX - minsky.canvas.item.x() + 0.5 * canvasWidth;
+        const posY = itemY - minsky.canvas.item.y() + 0.5 * canvasHeight;
         minsky.canvas.moveTo(posX,posY);
       }
       minsky.canvas.itemIndicator(true);
+      minsky.canvas.requestRedraw();
     } else {
       dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
         type: 'info',
@@ -338,18 +328,6 @@ export class CommandsManager {
 
     return;
   }
-
-//  static async isItemDefined(): Promise<boolean> {
-//    return minsky.canvas.item.defined();
-//  }
-
-//  static async getItemType(): Promise<string> {
-//    return minsky.canvas.item.type().trim();
-//  }
-
-//  static async getVarTabDisplay(): Promise<boolean> {
-//    return minsky.canvas.item.varTabDisplay();
-//  }
 
   static async getFilePathUsingSaveDialog(): Promise<string> {
     const saveDialog = await dialog.showSaveDialog({});
@@ -385,19 +363,19 @@ export class CommandsManager {
   }
 
   static async mouseDown(mouseX: number, mouseY: number): Promise<void> {
-    RestServiceManager.onCurrentTab("mouseDown", mouseX, mouseY);
+    WindowManager.currentTab.mouseDown(mouseX, mouseY);
   }
 
   static async mouseUp(mouseX: number, mouseY: number): Promise<void> {
-    RestServiceManager.onCurrentTab("mouseUp", mouseX, mouseY);
+    WindowManager.currentTab.mouseUp(mouseX, mouseY);
   }
 
   static async mouseMove(mouseX: number, mouseY: number): Promise<void> {
-    RestServiceManager.onCurrentTab("mouseMove", mouseX, mouseY);
+    WindowManager.currentTab.mouseMove(mouseX, mouseY);
   }
 
   static async requestRedraw(): Promise<void> {
-    RestServiceManager.onCurrentTab("requestRedraw");
+    WindowManager.currentTab.requestRedraw();
   }
 
   static async canCurrentSystemBeClosed(): Promise<boolean> {
@@ -560,7 +538,7 @@ export class CommandsManager {
 
     minsky.setAutoSaveFile(autoBackupFileName);
 
-    RestServiceManager.currentMinskyModelFilePath = filePath;
+    this.currentMinskyModelFilePath = filePath;
 
     setTimeout(()=>{minsky.canvas.recentre();},100);
 
@@ -650,12 +628,8 @@ export class CommandsManager {
     });
   }
 
-//  static async destroyFrame(uid: string) {
-//    minsky.namedItems.elem(uid).second.destroyFrame();
-//  }
-
   private static onPopupWindowClose(uid: string) {
-    new GodleyIcon(minsky.namedItems.elem(uid).second).popup.destroyFrame();
+    minsky.namedItems.elem(uid).second.destroyFrame();
     if (uid in this.activeGodleyWindowItems) {
       this.activeGodleyWindowItems.delete(uid);
     }
@@ -742,21 +716,21 @@ export class CommandsManager {
 
   static async openGodleyTable(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
-      let systemWindowId = null;
+      CommandsManager.addItemToNamedItems(itemInfo);
       let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second)
       var title=godley.table.title();
 
       const window = await this.initializePopupWindow({
         customTitle: `Godley Table : ${title}`,
         itemInfo,
-        url: `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`,
+        url: `#/headless/godley-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
         modal: false,
       });
 
       Object.defineProperty(window,'dontCloseOnEscape',{value: true,writable:false});
       godley.adjustPopupWidgets();
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
       
       window.loadURL(
         WindowManager.getWindowUrl(
@@ -775,15 +749,15 @@ export class CommandsManager {
 
   static async expandPlot(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
-      let systemWindowId = null;
+      CommandsManager.addItemToNamedItems(itemInfo);
       const window = await this.initializePopupWindow({
         customTitle: `Plot : ${itemInfo.id}`,
         itemInfo,
-        url: `#/headless/plot-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`,
+        url: `#/headless/plot-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
         modal: false,
       });
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
 
       window.loadURL(
         WindowManager.getWindowUrl(
@@ -866,17 +840,15 @@ export class CommandsManager {
 
   static async importCSV(itemInfo: CanvasItem, isInvokedUsingToolbar = false) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
-      let systemWindowId = null;
-
       const window = await this.initializePopupWindow({
         itemInfo,
-        url: `#/headless/import-csv?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
+        url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1200,
         modal: false,
       });
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
 
       window.loadURL(
         WindowManager.getWindowUrl(
@@ -922,15 +894,15 @@ export class CommandsManager {
                 { name: 'All', extensions: ['*'] },
               ],
               defaultPath:
-                RestServiceManager.currentMinskyModelFilePath ||
+                this.currentMinskyModelFilePath ||
                 `model${defaultExtension}`,
               properties: ['showOverwriteConfirmation'],
     }
   }
 
   static async save() {
-    if (RestServiceManager.currentMinskyModelFilePath) {
-      minsky.save(RestServiceManager.currentMinskyModelFilePath);
+    if (this.currentMinskyModelFilePath) {
+      minsky.save(this.currentMinskyModelFilePath);
     }
     else
       await this.saveAs();

@@ -101,15 +101,15 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       this.xLabel.setValue(await plot.xlabel());
       this.yLabel.setValue(await plot.ylabel());
       this.rhsYLabel.setValue(await plot.y1label());
-      this.plotType.setValue(await plot.plotType);
-      this.numberOfXTicks.setValue(await plot.nxTicks);
+      this.plotType.setValue(await plot.plotType());
+      this.numberOfXTicks.setValue(await plot.nxTicks());
       this.numberOfYTicks.setValue(await plot.nyTicks());
       this.grid.setValue(await plot.grid());
       this.subGrid.setValue(await plot.subgrid());
       this.legend.setValue(await plot.legend());
-      this.legendLeft.setValue(await plot.legendLeft().toString());
-      this.legendTop.setValue(await plot.legendTop().toString());
-      this.legendFontSz.setValue(await plot.legendFontSz().toString());
+      this.legendLeft.setValue(await plot.legendLeft());
+      this.legendTop.setValue(await plot.legendTop());
+      this.legendFontSz.setValue(await plot.legendFontSz());
       this.xLogScale.setValue(await plot.logx());
       this.yLogScale.setValue(await plot.logy());
     }

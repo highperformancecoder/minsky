@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   AppLayoutPayload,
+  CppClass,
   events,
   HeaderEvent,
   importCSVvariableName,
@@ -19,6 +20,7 @@ import { BehaviorSubject } from 'rxjs';
 import { WindowUtilityService } from '../WindowUtility/window-utility.service';
 import { DialogComponent } from './../../component/dialog/dialog.component';
 import { ElectronService } from './../electron/electron.service';
+import * as JSON5 from 'json5';
 
 export class Message {
   id: string;
@@ -105,6 +107,19 @@ export class CommunicationService {
     }
   }
 
+  replayNextCommand() {
+    const { command: commandArgs } = this.currentReplayJSON.shift();
+    const sep=commandArgs.trim().indexOf(' ');
+    const command = commandArgs.substring(0,sep);
+    if (sep===-1)
+      CppClass.backend(command);
+    else
+    {
+      const args = JSON5.parse(commandArgs.substring(sep));
+      CppClass.backend(command,args);
+    }
+  }  
+  
   startReplay() {
     setTimeout(async () => {
       if (!this.currentReplayJSON.length) {
@@ -113,12 +128,7 @@ export class CommunicationService {
         return;
       }
 
-      const { command } = this.currentReplayJSON.shift();
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: command,
-      });
-
+      this.replayNextCommand();
       if (
         this.ReplayRecordingStatus$.value ===
         ReplayRecordingStatus.ReplayStarted
@@ -147,11 +157,7 @@ export class CommunicationService {
       return;
     }
 
-    const { command } = this.currentReplayJSON.shift();
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: command,
-    });
+    this.replayNextCommand();
   }
 
   setBackgroundColor(color = null) {
@@ -215,9 +221,12 @@ export class CommunicationService {
         case 'REVERSE_CHECKBOX':
           minsky.reverse(message.value as boolean);
           break;
-        // TODO - set up events to be passed to minsky-electron to call the RecordingManager methods.
         case 'RECORD':
+          this.electronService.record();
+          break;
         case 'RECORDING_REPLAY':
+          this.electronService.recordingReplay();
+          break;
         default:
           break;
         }
@@ -569,9 +578,12 @@ export class CommunicationService {
 
     
     if (!isMainWindow) {
-      await this.electronService.sendMinskyCommandAndRender(
-        payload,
-        events.KEY_PRESS
+      await this.electronService.ipcRenderer.invoke(
+        events.KEY_PRESS,
+        {
+          ...payload,
+          command: payload.command.trim(),
+        }
       );
       return;
     }

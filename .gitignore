@@ -26,6 +26,5 @@ RESTService/minsky-httpd
 node_modules/*
 gui-js/node_modules/*
 gui-js/documentation/*
-gui-js/minsky-docs/*
 gui-js/dist/*
 doc/minsky/*

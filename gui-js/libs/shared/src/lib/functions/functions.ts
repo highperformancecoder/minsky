@@ -22,9 +22,9 @@ export const getBackgroundStyle = (color) => {
       /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/
     );
 
-    r = color[1];
-    g = color[2];
-    b = color[3];
+    r = colorArray[1];
+    g = colorArray[2];
+    b = colorArray[3];
   } else {
     // If hex --> Convert it to RGB: http://gist.github.com/983661
     colorArray = +(

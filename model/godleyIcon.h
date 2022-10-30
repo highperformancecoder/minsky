@@ -151,7 +151,7 @@ namespace minsky
     bool inItem(float, float) const override;
 
     /// clean up popup window structures on window close
-    void destroyFrame() {popup.destroyFrame();}
+    void destroyFrame() override {popup.destroyFrame();}
 
   private:
     void updateVars(Variables& vars, 

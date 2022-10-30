@@ -215,7 +215,7 @@ namespace minsky
     }         
     
     /// rotate icon though 180∘
-    void flip() {rotation(rotation()+180);}
+    virtual void flip() {rotation(rotation()+180);}
 
     virtual std::string classType() const {return "Item";}
     /// return an id uniquely identifying this item
@@ -344,6 +344,9 @@ namespace minsky
 
     /// return a shared_ptr to this
     ItemPtr itemPtrFromThis() const;
+
+    /// destroy any popup windows associated with this
+    virtual void destroyFrame() {}
   };
 
   typedef std::vector<ItemPtr> Items;
