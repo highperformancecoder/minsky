@@ -1,60 +1,36 @@
 import {
   CanvasItem,
   ClassType,
-  commandsMapping,
   events,
   getBackgroundStyle,
-  green,
   HandleDimensionPayload,
   PickSlicesPayload,
-  LockHandlesPayload,
   InitializePopupWindowPayload,
   isEmptyObject,
   isMacOS,
   normalizeFilePathForPlatform,
+  electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
+  minsky, GodleyIcon, Group, IntOp, Item, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import * as JSON5 from 'json5';
 import { join } from 'path';
-import { Utility } from '../utility';
 import { HelpFilesManager } from './HelpFilesManager';
-import { RestServiceManager, callRESTApi } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
-import {electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload } from '@minsky/shared';
 
 export class CommandsManager {
-  static activeGodleyWindowItems = new Map<number, CanvasItem>();
+  static activeGodleyWindowItems = new Map<string, CanvasItem>();
+  static currentMinskyModelFilePath: string;
 
-  static async getItemAt(
-    x: number,
-    y: number
-  ): Promise<Record<string, unknown>> {
-    await this.populateItemPointer(x, y);
-    const item = await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM,
-    });
-    return item as Record<string, unknown>;
-  }
-
-  static async deleteCurrentItemHavingId(itemId: number) {
+  static async deleteCurrentItemHavingId(itemId: string) {
     // TODO:: Ideally -- change flow to get the current item here..
     // to ensure that we cannot mismatch itemId and currentItemId
     if (itemId) {
       WindowManager.closeWindowByUid(itemId);
-      await RestServiceManager.handleMinskyProcess({
-        command: `${commandsMapping.REMOVE_ENTRY_FROM_NAMED_ITEMS_MAP} "${itemId}"`,
-      });
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_DELETE_ITEM,
-      });
+      minsky.namedItems.erase(itemId.toString());
+      minsky.canvas.deleteItem();
     }
-  }
-
-  private static async populateItemPointer(x: number, y: number) {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_GET_ITEM_AT} [${x},${y}]`,
-    });
   }
 
   private static async getItemClassType(
@@ -62,39 +38,14 @@ export class CommandsManager {
     y: number,
     raw = false
   ): Promise<ClassType | string> {
-    await this.populateItemPointer(x, y);
+    minsky.canvas.getItemAt(x,y);
     return this.getCurrentItemClassType(raw);
-  }
-
-  private static async getItemValue(x: number, y: number): Promise<number> {
-    await this.populateItemPointer(x, y);
-    return this.getCurrentItemValue();
-  }
-
-  private static async getItemName(x: number, y: number): Promise<string> {
-    await this.populateItemPointer(x, y);
-    return this.getCurrentItemName();
-  }
-
-  private static async getItemDescription(
-    x: number,
-    y: number
-  ): Promise<string> {
-    await this.populateItemPointer(x, y);
-    return this.getCurrentItemDescription();
-  }
-
-  private static async getItemId(x: number, y: number): Promise<number> {
-    await this.populateItemPointer(x, y);
-    return this.getCurrentItemId();
   }
 
   private static async getCurrentItemClassType(
     raw = false
   ): Promise<ClassType | string> {
-    const classTypeRes = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM_CLASS_TYPE,
-    })) as string;
+    const classTypeRes = minsky.canvas.item.classType();
 
     if (raw && classTypeRes) {
       return classTypeRes;
@@ -110,138 +61,36 @@ export class CommandsManager {
     return ClassType[classType];
   }
 
-  private static async getCurrentItemValue(): Promise<number> {
-    const value = Number(
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_VALUE,
-      })
-    );
-    return value;
-  }
-
-  private static async getCurrentItemName(): Promise<string> {
-    const name = String(
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_NAME,
-      })
-    );
-    return name;
-  }
-
-  private static async getCurrentItemDescription(): Promise<string> {
-    const description = String(
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_DESCRIPTION,
-      })
-    );
-    return description;
-  }
-
-  public static async getCurrentItemId(): Promise<number> {
-    const idResponse = Number(
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_ID,
-      })
-    );
-    return idResponse;
-  }
-
   static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
-    const item = await this.getItemAt(x, y);
 
-    if (isEmptyObject(item)) {
+    if (!minsky.canvas.getItemAt(x, y)) {
       return null;
     }
 
     const classType = (await this.getCurrentItemClassType()) as ClassType;
-    const value = await this.getCurrentItemValue();
-    const id = await this.getCurrentItemId();
-    const displayContents=classType==="Group"? callRESTApi("/minsky/canvas/item/displayContents") as boolean: false;
+    const value = minsky.canvas.item.value();
+    const id = minsky.canvas.item.id();
+    const displayContents=classType==="Group"? new Group(minsky.canvas.item).displayContents(): false;
 
-      const itemInfo: CanvasItem = { classType, value, id, displayContents };
+    const itemInfo: CanvasItem = { classType, value, id, displayContents };
     return itemInfo;
   }
 
-  static async getWireAt(
-    x: number,
-    y: number
-  ): Promise<Record<string, unknown>> {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_GET_WIRE_AT} [${x},${y}]`,
-    });
-
-    const wire = await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_WIRE,
-    });
-
-    return wire as Record<string, unknown>;
-  }
-
-  static async addOperation(operation: string): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.ADD_OPERATION} "${operation}"`,
-    });
-
-    return;
-  }
-
-  static async addPlot(): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.ADD_PLOT}`,
-    });
-
-    return;
-  }
-
-  static async addGodley(): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.ADD_GODLEY}`,
-    });
-
-    return;
-  }
-
   static async selectVar(x: number, y: number): Promise<boolean> {
-    const selectVar = await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_SELECT_VAR} [${x},${y}]`,
-    });
-
-    return selectVar as boolean;
+    return minsky.canvas.selectVar(x,y);
   }
 
   static async flipSwitch(): Promise<void> {
-    const flipped = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM_FLIPPED,
-    })) as boolean;
-
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_ITEM_FLIPPED} ${!flipped}`,
-    });
-
-    return;
+    minsky.canvas.item.flip();
   }
 
   static async flip(): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_ITEM_FLIP}`,
-    });
-
-    const defaultRotation = Number(
-      await RestServiceManager.handleMinskyProcess({
-        command: `${commandsMapping.CANVAS_DEFAULT_ROTATION}`,
-      })
-    );
-
-    const newRotation = (defaultRotation + 180) % 360;
-
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_DEFAULT_ROTATION} ${newRotation}`,
-    });
-
-    return;
+    minsky.canvas.item.flip();
+    minsky.canvas.defaultRotation((minsky.canvas.defaultRotation()+180)%360);
   }
 
   static async exportItemAsImage(
+    item: any,
     extension: string,
     name: string
   ): Promise<void> {
@@ -252,44 +101,35 @@ export class CommandsManager {
       filters: [{ extensions: [extension], name }],
     });
 
-    const { canceled, filePath: _filePath } = exportImage;
-    const filePath = normalizeFilePathForPlatform(_filePath);
+    const { canceled, filePath} = exportImage;
 
     if (canceled || !filePath) {
       return;
     }
 
     switch (extension?.toLowerCase()) {
-      case 'svg':
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.CANVAS_ITEM_RENDER_TO_SVG} ${filePath}`,
-        });
-        break;
+    case 'svg':
+      item.renderToSVG(filePath);
+      break;
 
-      case 'pdf':
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.CANVAS_ITEM_RENDER_TO_PDF} ${filePath}`,
-        });
-        break;
+    case 'pdf':
+      item.renderToPDF(filePath);
+      break;
 
-      case 'ps':
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.CANVAS_ITEM_RENDER_TO_PS} ${filePath}`,
-        });
-        break;
+    case 'ps':
+      item.renderToPS(filePath);
+      break;
 
-      case 'emf':
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.CANVAS_ITEM_RENDER_TO_EMF} ${filePath}`,
-        });
-        break;
-
-      default:
-        break;
+    case 'emf':
+      item.renderToEMF(filePath);
+      break;
+      
+    default:
+      break;
     }
   }
 
-  static async exportItemAsCSV(): Promise<void> {
+  static async exportItemAsCSV(item: any): Promise<void> {
     const exportItemDialog = await dialog.showSaveDialog({
       title: 'Export item as csv',
       defaultPath: 'item.csv',
@@ -300,17 +140,13 @@ export class CommandsManager {
       ],
     });
 
-    const { canceled, filePath: _filePath } = exportItemDialog;
-    const filePath = normalizeFilePathForPlatform(_filePath);
+    const { canceled, filePath} = exportItemDialog;
 
     if (canceled || !filePath) {
       return;
     }
 
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_EXPORT_AS_CSV} ${filePath}`,
-    });
-
+    item.exportAsCSV(filePath);
     return;
   }
 
@@ -319,21 +155,14 @@ export class CommandsManager {
       case ClassType.Variable:
       case ClassType.VarConstant:
         CommandsManager.openRenameInstancesDialog(
-          await this.getCurrentItemName()
+          new VariableBase(minsky.canvas.item).name()
         );
         break;
 
-      case ClassType.Operation:
       case ClassType.IntOp:
       case ClassType.DataOp:
         CommandsManager.openRenameInstancesDialog(
-          await this.getCurrentItemDescription()
-        );
-        break;
-
-      case ClassType.GodleyIcon:
-        CommandsManager.openRenameInstancesDialog(
-          await this.getCurrentItemName()
+          new IntOp(minsky.canvas.item).description()
         );
         break;
 
@@ -351,10 +180,8 @@ export class CommandsManager {
     });
   }
 
-  static async editGodleyTitle(itemId: number = null): Promise<void> {
-    let title = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM_TABLE_TITLE,
-    })) as string;
+  static async editGodleyTitle(itemId: string = null): Promise<void> {
+    let title = new GodleyIcon(minsky.canvas.item).table.title();
 
     if (isEmptyObject(title)) {
       title = '';
@@ -380,24 +207,19 @@ export class CommandsManager {
   }
 
   static async postNote(type: string) {
-    const bookmark =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/bookmark`,
-      })) as boolean) || '';
-
-    const tooltip =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/tooltip`,
-      })) as string) || '';
-
-    const detailedText =
-      ((await RestServiceManager.handleMinskyProcess({
-        command: `/minsky/canvas/${type}/detailedText`,
-      })) as string) || '';
+    var item: Item|Wire;
+    switch (type) {
+    case 'item':
+      item=minsky.canvas.item;
+      break;
+    case 'wire':
+      item=minsky.canvas.wire;
+      break;
+    }
 
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
-      url: `#/headless/edit-description?type=${type}&bookmark=${bookmark}&tooltip=${tooltip}&detailedText=${encodeURI(detailedText)}`,
+      url: `#/headless/edit-description?type=${type}&bookmark=${item.bookmark()}&tooltip=${item.tooltip()}&detailedText=${encodeURI(item.detailedText())}`,
     });
     Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
@@ -412,16 +234,10 @@ export class CommandsManager {
         if (!x && !y) {
           throw new Error('Please provide x and y when reInvokeGetItemAt=true');
         }
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.CANVAS_GET_ITEM_AT} [${x},${y}]`,
-        });
+        minsky.canvas.getItemAt(x,y);
       }
 
-      const dimsRes = (await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_DIMS,
-      })) as Array<number>;
-
-      return dimsRes;
+      return new VariableBase(minsky.canvas.item).dims();
     } catch (error) {
       console.error(
         '🚀 ~ file: commandsManager.ts ~ line 361 ~ CommandsManager ~ error',
@@ -429,53 +245,6 @@ export class CommandsManager {
       );
       return null;
     }
-  }
-
-  static async isItemLocked(
-    x: number = null,
-    y: number = null,
-    reInvokeGetItemAt = false
-  ): Promise<boolean> {
-    try {
-      if (reInvokeGetItemAt) {
-        if (!x && !y) {
-          throw new Error('Please provide x and y when reInvokeGetItemAt=true');
-        }
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.CANVAS_GET_ITEM_AT} [${x},${y}]`,
-        });
-      }
-
-      const isLocked = (await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_LOCKED,
-      })) as boolean;
-
-      return isLocked;
-    } catch (error) {
-      console.error(
-        '🚀 ~ file: commandsManager.ts ~ line 361 ~ CommandsManager ~ error',
-        error
-      );
-      return null;
-    }
-  }
-
-  static async incrCase(delta: number): Promise<void> {
-    const numCases = Number(
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_NUM_CASES,
-      })
-    );
-
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_ITEM_SET_NUM_CASES} ${
-        numCases + delta
-      }`,
-    });
-
-    CommandsManager.requestRedraw();
-
-    return;
   }
 
   static bookmarkThisPosition(): void {
@@ -490,23 +259,11 @@ export class CommandsManager {
   }
 
   static async getModelX(): Promise<number> {
-    const x = Number(
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.X,
-      })
-    );
-
-    return x;
+    return minsky.model.x();
   }
 
   static async getModelY(): Promise<number> {
-    const y = Number(
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.Y,
-      })
-    );
-
-    return y;
+    return minsky.model.y();
   }
 
   static async bookmarkAt(x: number, y: number): Promise<void> {
@@ -518,26 +275,14 @@ export class CommandsManager {
     const delX = 0.5 * WindowManager.canvasWidth - x + modelX;
     const delY = 0.5 * WindowManager.canvasHeight - y + modelY;
 
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.MOVE_TO} [${delX},${delY}]`,
-    });
-
+    minsky.canvas.moveTo(delX,delY);
     this.bookmarkThisPosition();
     return;
   }
 
   static async pasteAt(x: number, y: number): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.PASTE}`,
-    });
-
-    await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.MOUSEMOVE_SUBCOMMAND,
-      mouseX: x,
-      mouseY: y,
-    });
-
-    return;
+    minsky.paste();
+    WindowManager.currentTab.mouseMove(x,y);
   }
 
   static async saveSelectionAsFile(): Promise<void> {
@@ -552,48 +297,28 @@ export class CommandsManager {
       return;
     }
 
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.SAVE_SELECTION_AS_FILE} ${filePath}`,
-    });
-
-    return;
+    minsky.saveSelectionAsFile(filePath);
   }
 
   static async findDefinition(): Promise<void> {
-    const findVariableDefinition = (await RestServiceManager.handleMinskyProcess(
-      {
-        command: commandsMapping.CANVAS_FIND_VARIABLE_DEFINITION,
-      }
-    )) as boolean;
+    
+    const findVariableDefinition = minsky.canvas.findVariableDefinition();
 
     if (findVariableDefinition) {
-      const itemX = (await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.X,
-      })) as number;
-
-      const itemY = (await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.Y,
-      })) as number;
-
+      const itemX = minsky.model.x();
+      const itemY = minsky.model.y();
       const { canvasHeight, canvasWidth } = WindowManager;
 
       if (
         Math.abs(itemX - 0.5 * canvasWidth) > 0.5 * canvasWidth ||
         Math.abs(itemY - 0.5 * canvasHeight) > 0.5 * canvasHeight
       ) {
-        const posX = itemX - itemX + 0.5 * canvasWidth;
-        const posY = itemY - itemY + 0.5 * canvasHeight;
-
-        await RestServiceManager.handleMinskyProcess({
-          command: commandsMapping.MOVE_TO,
-          mouseX: posX,
-          mouseY: posY,
-        });
+        const posX = itemX - minsky.canvas.item.x() + 0.5 * canvasWidth;
+        const posY = itemY - minsky.canvas.item.y() + 0.5 * canvasHeight;
+        minsky.canvas.moveTo(posX,posY);
       }
-
-      await RestServiceManager.handleMinskyProcess({
-        command: `${commandsMapping.CANVAS_ITEM_INDICATOR} 1`,
-      });
+      minsky.canvas.itemIndicator(true);
+      minsky.canvas.requestRedraw();
     } else {
       dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
         type: 'info',
@@ -604,35 +329,10 @@ export class CommandsManager {
     return;
   }
 
-  static async isItemDefined(): Promise<boolean> {
-    const isItemDefined = await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM_DEFINED,
-    });
-
-    return isItemDefined as boolean;
-  }
-
-  static async getItemType(): Promise<string> {
-    const type = ((await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM_TYPE,
-    })) as string).trim();
-
-    return type;
-  }
-
-  static async getVarTabDisplay(): Promise<boolean> {
-    const varTabDisplay = await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM_VAR_TAB_DISPLAY,
-    });
-
-    return varTabDisplay as boolean;
-  }
-
   static async getFilePathUsingSaveDialog(): Promise<string> {
     const saveDialog = await dialog.showSaveDialog({});
 
-    const { canceled, filePath: _filePath } = saveDialog;
-    const filePath = normalizeFilePathForPlatform(_filePath);
+    const { canceled, filePath} = saveDialog;
 
     if (canceled || !filePath) {
       return null;
@@ -659,51 +359,27 @@ export class CommandsManager {
     if (!filePath.toLowerCase().endsWith(type))
       filePath+=`.${type}`;
 
-    return JSON5.stringify(filePath);
+    return filePath;
   }
 
   static async mouseDown(mouseX: number, mouseY: number): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.MOUSEDOWN_SUBCOMMAND,
-      mouseX,
-      mouseY,
-    });
-
-    return;
+    WindowManager.currentTab.mouseDown(mouseX, mouseY);
   }
 
   static async mouseUp(mouseX: number, mouseY: number): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.MOUSEUP_SUBCOMMAND,
-      mouseX,
-      mouseY,
-    });
-
-    return;
+    WindowManager.currentTab.mouseUp(mouseX, mouseY);
   }
 
   static async mouseMove(mouseX: number, mouseY: number): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.MOUSEMOVE_SUBCOMMAND,
-      mouseX,
-      mouseY,
-    });
-
-    return;
+    WindowManager.currentTab.mouseMove(mouseX, mouseY);
   }
 
   static async requestRedraw(): Promise<void> {
-    await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-    });
-    return;
+    WindowManager.currentTab.requestRedraw();
   }
 
   static async canCurrentSystemBeClosed(): Promise<boolean> {
-    const isCanvasEdited = await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.EDITED,
-    });
-    if (!isCanvasEdited) {
+    if (!minsky.edited()) {
       return true;
     }
 
@@ -733,9 +409,7 @@ export class CommandsManager {
         window.context.close();
       }
     });
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.UNDO} ${changes}`,
-    });
+    minsky.undo(changes);
     await CommandsManager.requestRedraw();
   }
   
@@ -753,99 +427,19 @@ export class CommandsManager {
 
     WindowManager.getMainWindow().setTitle('New System');
 
-    const newSystemCommands = [
-      `${commandsMapping.PUSH_HISTORY} false`,
-      commandsMapping.CLEAR_ALL_MAPS,
-      commandsMapping.PUSH_FLAGS,
-      commandsMapping.CLEAR_HISTORY,
-      `${commandsMapping.SET_ZOOM} 1`,
-      commandsMapping.RECENTER,
-      commandsMapping.POP_FLAGS,
-      `${commandsMapping.PUSH_HISTORY} true`,
-    ];
-    RestServiceManager.currentMinskyModelFilePath="";
-
-    for (const command of newSystemCommands) {
-      await RestServiceManager.handleMinskyProcess({ command });
-    }
+    minsky.doPushHistory(false);
+    minsky.clearAllMaps();
+    minsky.pushFlags();
+    minsky.clearHistory();
+    minsky.model.setZoom(1);
+    minsky.canvas.recentre();
+    minsky.popFlags();
+    minsky.doPushHistory(true);
     return;
   }
 
-  static async getAvailableOperationsMapping(): Promise<
-    Record<string, string[]>
-  > {
-    const availableOperations = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.AVAILABLE_OPERATIONS,
-    })) as string[];
-
-    const mapping = {
-      'Fundamental Constants': [],
-      'Binary Ops': [],
-      Functions: [],
-      Reductions: [],
-      Scans: [],
-      'Tensor operations': [],
-    };
-    for (const operation of availableOperations) {
-      if (operation === 'numOps') {
-        break;
-      }
-      switch (operation) {
-        case 'constant':
-        case 'copy':
-        case 'ravel':
-        case 'integrate':
-        case 'differentiate':
-        case 'time':
-        case 'data':
-          continue;
-        default:
-          break;
-      }
-      const command = `${commandsMapping.CLASSIFY_OPERATION} "${operation}"`;
-
-      const type = (await RestServiceManager.handleMinskyProcess({
-        command,
-      })) as string;
-
-      switch (type) {
-        case 'function':
-          mapping.Functions = [...mapping.Functions, operation];
-          break;
-        case 'constop':
-          mapping['Fundamental Constants'] = [
-            ...mapping['Fundamental Constants'],
-            operation,
-          ];
-          break;
-        case 'binop':
-          mapping['Binary Ops'] = [...mapping['Binary Ops'], operation];
-          break;
-        case 'reduction':
-          mapping.Reductions = [...mapping.Reductions, operation];
-          break;
-        case 'scan':
-          mapping.Scans = [...mapping.Scans, operation];
-          break;
-        case 'tensor':
-          mapping['Tensor operations'] = [
-            ...mapping['Tensor operations'],
-            operation,
-          ];
-          break;
-        default:
-          break;
-      }
-    }
-
-    RestServiceManager.availableOperationsMappings = mapping;
-    return mapping;
-  }
-
   static async saveGroupAsFile(): Promise<void> {
-    const defaultExtension = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.DEFAULT_EXTENSION,
-    })) as string;
+    const defaultExtension = minsky.model.defaultExtension();
 
     const saveDialog = await dialog.showSaveDialog({
       filters: [
@@ -859,23 +453,18 @@ export class CommandsManager {
       properties: ['showOverwriteConfirmation'],
     });
 
-    const { canceled, filePath: _filePath } = saveDialog;
-    const filePath = normalizeFilePathForPlatform(_filePath);
+    const { canceled, filePath} = saveDialog;
 
     if (canceled || !filePath) {
       return;
     }
 
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.SAVE_CANVAS_ITEM_AS_FILE} ${filePath}`,
-    });
-
-    return;
+    minsky.saveCanvasItemAsFile(filePath);
   }
 
   static async exportGodleyAs(
     ext: string,
-    command: string = null
+    command: (x: string)=>void = null
   ): Promise<void> {
     const saveDialog = await dialog.showSaveDialog({
       filters: [
@@ -897,25 +486,19 @@ export class CommandsManager {
     }
 
     if (command) {
-      await RestServiceManager.handleMinskyProcess({
-        command: `${command} ${filePath}`,
-      });
+      command(filePath);
       return;
     }
 
+    const godley=new GodleyIcon(minsky.canvas.item);
     switch (ext) {
-      case 'csv':
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.EXPORT_GODLEY_TO_CSV} ${filePath}`,
-        });
+    case 'csv':
+      godley.table.exportToCSV(filePath);
+      break;
 
-        break;
-
-      case 'tex':
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.EXPORT_GODLEY_TO_LATEX} ${filePath}`,
-        });
-        break;
+    case 'tex':
+      godley.table.exportToLaTeX(filePath);
+      break;
 
       default:
         break;
@@ -934,15 +517,9 @@ export class CommandsManager {
     const autoBackupFileExists = existsSync(autoBackupFileName);
 
     if (!autoBackupFileExists) {
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.LOAD,
-        filePath,
-      });
-
+      minsky.load(filePath);
       ipcMain.emit(events.ADD_RECENT_FILE, null, filePath);
-    }
-
-    if (autoBackupFileExists) {
+    } else {
       const choice = dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
         type: 'question',
         buttons: ['Yes', 'No'],
@@ -951,33 +528,19 @@ export class CommandsManager {
       });
 
       if (choice === 0) {
-        await RestServiceManager.handleMinskyProcess({
-          command: commandsMapping.LOAD,
-          filePath: autoBackupFileName,
-        });
+        minsky.load(autoBackupFileName);
       } else {
-        await RestServiceManager.handleMinskyProcess({
-          command: commandsMapping.LOAD,
-          filePath,
-        });
-        
-       
-        
+        minsky.load(filePath);
         ipcMain.emit(events.ADD_RECENT_FILE, null, filePath);
-
         unlinkSync(autoBackupFileName);
       }
     }
 
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.SET_AUTO_SAVE_FILE} "${autoBackupFileName}"`,
-    });
+    minsky.setAutoSaveFile(autoBackupFileName);
 
-    RestServiceManager.currentMinskyModelFilePath = filePath;
+    this.currentMinskyModelFilePath = filePath;
 
-     setTimeout(()=>{RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.RECENTER,
-     });},100);
+    setTimeout(()=>{minsky.canvas.recentre();},100);
 
     WindowManager.getMainWindow().setTitle(filePath);
   }
@@ -986,11 +549,7 @@ export class CommandsManager {
     let classType = (await this.getItemClassType(x, y, true)) as string;
 
     if (isEmptyObject(classType)) {
-      const wire = await CommandsManager.getWireAt(x, y);
-
-      const isWirePresent = !isEmptyObject(wire);
-
-      classType = isWirePresent ? 'Wires' : 'DesignCanvas';
+      classType = minsky.canvas.getWireAt(x,y) ? 'Wires' : 'DesignCanvas';
     }
 
     if (!classType) {
@@ -1018,13 +577,8 @@ export class CommandsManager {
   }
 
   static async findAllInstances() {
-    await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.LIST_ALL_INSTANCES,
-    });
-
-    const instances = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.VARIABLE_INSTANCE_LIST_NAMES,
-    })) as string[];
+    minsky.listAllInstances();
+    const instances = minsky.variableInstanceList.names();
 
     if (!instances.length) {
       return;
@@ -1040,20 +594,12 @@ export class CommandsManager {
   }
 
   static async editVar() {
-    const itemName = await this.getCurrentItemName();
-    const itemType = await this.getItemType();
-    const local = (await RestServiceManager.handleMinskyProcess({
-      command: "/minsky/canvas/item/local",
-    })) as boolean;
-    
-
+    const v=new VariableBase(minsky.canvas.item);
     WindowManager.createPopupWindowWithRouting({
       width: 500,
       height: 650,
-      title: `Edit ${itemName || ''}`,
-      url: `#/headless/menu/insert/create-variable?type=${itemType}&name=${
-        itemName || ''
-      }&isEditMode=true&local=${local}`,
+      title: `Edit ${v.name() || ''}`,
+      url: `#/headless/menu/insert/create-variable?type=${v.type()}&name=${v.name()||''}&isEditMode=true&local=${v.local()}`,
     });
   }
 
@@ -1082,14 +628,8 @@ export class CommandsManager {
     });
   }
 
-  static async destroyFrame(uid: number) {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.GET_NAMED_ITEM}/"${uid}"/second/destroyFrame`,
-    });
-  }
-
-  private static onPopupWindowClose(uid: number) {
-    this.destroyFrame(uid);
+  private static onPopupWindowClose(uid: string) {
+    minsky.namedItems.elem(uid).second.destroyFrame();
     if (uid in this.activeGodleyWindowItems) {
       this.activeGodleyWindowItems.delete(uid);
     }
@@ -1121,10 +661,7 @@ export class CommandsManager {
 
   static async addItemToNamedItems(itemInfo: CanvasItem) {
     // Pushing the current item to namedItems map
-
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.ADD_ENTRY_TO_NAMED_ITEMS_MAP} "${itemInfo.id}"`,
-    });
+    minsky.nameCurrentItem(itemInfo.id.toString());
   }
 
   static async handleDoubleClick({ mouseX, mouseY }) {
@@ -1178,26 +715,22 @@ export class CommandsManager {
   }
 
   static async openGodleyTable(itemInfo: CanvasItem) {
-    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id as number)) {
-      let systemWindowId = null;
-      const title=await RestServiceManager.handleMinskyProcess({
-        //command: `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second/table/title`,
-        command: `/minsky/canvas/item/table/title`,
-      });
+    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
+      CommandsManager.addItemToNamedItems(itemInfo);
+      let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second)
+      var title=godley.table.title();
 
       const window = await this.initializePopupWindow({
         customTitle: `Godley Table : ${title}`,
         itemInfo,
-        url: `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`,
+        url: `#/headless/godley-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
         modal: false,
       });
 
       Object.defineProperty(window,'dontCloseOnEscape',{value: true,writable:false});
-      await RestServiceManager.handleMinskyProcess({
-        command: `${commandsMapping.GET_NAMED_ITEM}/"${itemInfo.id}"/second/popup/adjustWidgets`,
-      });
+      godley.adjustPopupWidgets();
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
       
       window.loadURL(
         WindowManager.getWindowUrl(
@@ -1215,16 +748,16 @@ export class CommandsManager {
   }
 
   static async expandPlot(itemInfo: CanvasItem) {
-    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id as number)) {
-      let systemWindowId = null;
+    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
+      CommandsManager.addItemToNamedItems(itemInfo);
       const window = await this.initializePopupWindow({
         customTitle: `Plot : ${itemInfo.id}`,
         itemInfo,
-        url: `#/headless/plot-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`,
+        url: `#/headless/plot-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
         modal: false,
       });
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
 
       window.loadURL(
         WindowManager.getWindowUrl(
@@ -1276,16 +809,13 @@ export class CommandsManager {
       filters: [{ extensions: ['csv'], name: 'CSV' }],
     });
 
-    const { canceled, filePath: _filePath } = logSimulation;
-    const filePath = normalizeFilePathForPlatform(_filePath);
+    const { canceled, filePath} = logSimulation;
 
     if (canceled || !filePath) {
       return;
     }
 
-    const logVarList = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.LOG_VAR_LIST,
-    })) as string[];
+    const logVarList = minsky.logVarList.properties();
 
     if (logVarList && logVarList.length) {
       const itemsNotInSelectedItems = logVarList.filter(
@@ -1293,9 +823,7 @@ export class CommandsManager {
       );
 
       for (const i of itemsNotInSelectedItems) {
-        await RestServiceManager.handleMinskyProcess({
-          command: `${commandsMapping.LOG_VAR_LIST_ERASE} "${i}"`,
-        });
+        minsky.logVarList.erase(i);
       }
     }
 
@@ -1304,31 +832,23 @@ export class CommandsManager {
     );
 
     for (const i of itemsNotInLogVarList) {
-      await RestServiceManager.handleMinskyProcess({
-        command: `${commandsMapping.LOG_VAR_LIST_INSERT} "${i}"`,
-      });
+      minsky.logVarList.insert(i);
     }
 
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.OPEN_LOG_FILE} ${filePath}`,
-    });
-
-    return;
+    minsky.openLogFile(filePath);
   }
 
   static async importCSV(itemInfo: CanvasItem, isInvokedUsingToolbar = false) {
-    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id as number)) {
-      let systemWindowId = null;
-
+    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
       const window = await this.initializePopupWindow({
         itemInfo,
-        url: `#/headless/import-csv?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
+        url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1200,
         modal: false,
       });
 
-      systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
 
       window.loadURL(
         WindowManager.getWindowUrl(
@@ -1339,23 +859,17 @@ export class CommandsManager {
   }
 
   static async cut() {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CUT}`,
-    });
+    minsky.cut();
     await CommandsManager.requestRedraw();
   }
 
   static async copy() {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.COPY}`,
-    });
+    minsky.copy();
     await CommandsManager.requestRedraw();
   }
 
   static async paste() {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.PASTE}`,
-    });
+    minsky.paste();
     await CommandsManager.requestRedraw();
   }
 
@@ -1365,20 +879,12 @@ export class CommandsManager {
       window.context.webContents.insertCSS(style);
     });
 
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.CANVAS_BACKGROUND_COLOR} ${JSON.stringify({
-        r: r / 255,
-        g: g / 255,
-        b: b / 255,
-      })}`,
-    });
-    await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-    });
+    minsky.canvas.backgroundColour.properties({r: r/255, g: g/255, b: b/255, a: 1});
+    await CommandsManager.requestRedraw();
   };
 
   private static defaultSaveOptions(): SaveDialogOptions {
-    const defaultExtension = callRESTApi(commandsMapping.DEFAULT_EXTENSION) as string;
+    const defaultExtension = minsky.model.defaultExtension();
     return {
               filters: [
                 {
@@ -1388,44 +894,38 @@ export class CommandsManager {
                 { name: 'All', extensions: ['*'] },
               ],
               defaultPath:
-                RestServiceManager.currentMinskyModelFilePath ||
+                this.currentMinskyModelFilePath ||
                 `model${defaultExtension}`,
               properties: ['showOverwriteConfirmation'],
     }
   }
 
-    static async save() {
-        if (RestServiceManager.currentMinskyModelFilePath) {
-            await RestServiceManager.handleMinskyProcess({
-                command: commandsMapping.SAVE,
-                filePath: RestServiceManager.currentMinskyModelFilePath,
-            });
-        }
-        else
-            await this.saveAs();
+  static async save() {
+    if (this.currentMinskyModelFilePath) {
+      minsky.save(this.currentMinskyModelFilePath);
     }
+    else
+      await this.saveAs();
+  }
     
-    static async saveAs() {
-        const saveDialog = await dialog.showSaveDialog(CommandsManager.defaultSaveOptions());
-
-        const { canceled, filePath: filePath } = saveDialog;
-
-        if (canceled || !filePath) {
-            return;
-        }
-
-      WindowManager.getMainWindow().setTitle(filePath);
-
-        await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.SAVE,
-            filePath: filePath,
-        });
+  static async saveAs() {
+    const saveDialog = await dialog.showSaveDialog(CommandsManager.defaultSaveOptions());
+    
+    const { canceled, filePath: filePath } = saveDialog;
+    
+    if (canceled || !filePath) {
+      return;
     }
 
-    static async editHandleDescription(handleIndex: number) {
-      const description = await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_DESCRIPTION} ${handleIndex}` });
+    WindowManager.getMainWindow().setTitle(filePath);
 
-      const window=WindowManager.createPopupWindowWithRouting({
+    minsky.save(filePath);
+  }
+  
+  static async editHandleDescription(handleIndex: number) {
+    let ravel=new Ravel(minsky.canvas.item);
+    const description = ravel.handleDescription(handleIndex);
+    const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Description`,
         url: `#/headless/edit-handle-description?handleIndex=${handleIndex}&description=${description}`,
         height: 90,
@@ -1434,68 +934,59 @@ export class CommandsManager {
       Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
     }
 
-    static async saveHandleDescription(payload: HandleDescriptionPayload) {
-      const args = JSON5.stringify([payload.handleIndex, payload.description]);
-      await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_SET_DESCRIPTION} ${args}`});
-    }
+  static async saveHandleDescription(payload: HandleDescriptionPayload) {
+    (new Ravel(minsky.canvas.item)).setHandleDescription(payload.handleIndex, payload.description);
+  }
+  
+  static async editHandleDimension(handleIndex: number) {
+    let ravel=new Ravel(minsky.canvas.item);
+    const type = ravel.dimensionType();
+    const units = ravel.dimensionUnitsFormat();
 
-    static async editHandleDimension(handleIndex: number) {
-      const type = await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_DIMENSION_TYPE });
-      const units = await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_DIMENSION_UNITS });
-
-      const window=WindowManager.createPopupWindowWithRouting({
+    const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Dimension`,
         url: `#/headless/edit-handle-dimension?handleIndex=${handleIndex}&type=${type}&units=${units}`,
         height: 180,
         width: 300,
       });
       Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+  }
+
+  static async saveHandleDimension(payload: HandleDimensionPayload) {
+    (new Ravel(minsky.canvas.item)).setDimension(payload.handleIndex, payload.type, payload.units);
+  }
+
+  static async pickSlices(handleIndex: number) {
+    let ravel=new Ravel(minsky.canvas.item);
+    const allSliceLabels = ravel.allSliceLabels();
+    const pickedSliceLabels = ravel.pickedSliceLabels();
+
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `Pick slices`,
+      url: `#/headless/pick-slices?handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
+      height: 400,
+      width: 400,
+    });
+    Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
+  }
+
+  static async savePickSlices(payload: PickSlicesPayload) {
+    (new Ravel(minsky.canvas.item)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
+  }
+
+  static async lockSpecificHandles() {
+    let ravel=new Ravel(minsky.canvas.item);
+    let allLockHandles = ravel.lockGroup.allLockHandles();
+    if(Object.keys(allLockHandles).length === 0) {
+      minsky.canvas.lockRavelsInSelection();
+      allLockHandles = ravel.lockGroup.allLockHandles();
+      if(Object.keys(allLockHandles).length === 0) return;
     }
 
-    static async saveHandleDimension(payload: HandleDimensionPayload) {
-      const args = JSON5.stringify([payload.handleIndex, payload.type, payload.units]);
-      await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_SET_DIMENSION} ${args}` });   
-    }
-
-    static async pickSlices(handleIndex: number) {
-      const allSliceLabels = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_ALL_SLICE_LABELS });
-      const pickedSliceLabels = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_HANDLE_PICKED_SLICE_LABELS });
-
-      const window=WindowManager.createPopupWindowWithRouting({
-        title: `Pick slices`,
-        url: `#/headless/pick-slices?handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
-        height: 400,
-        width: 400,
-      });
-      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
-    }
-
-    static async savePickSlices(payload: PickSlicesPayload) {
-      const args = JSON5.stringify([payload.handleIndex, payload.pickedSliceLabels]);
-      await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_HANDLE_PICK_SLICE_LABELS} ${args}` });   
-    }
-
-    static async lockSpecificHandles() {
-      let allLockHandles = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP_ALL_LOCK_HANDLES});
-      if(Object.keys(allLockHandles).length === 0) {
-        await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCK_RAVELS_IN_SELECTION });
-
-        const x = await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_ITEM_X}` });
-        const y = await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_ITEM_Y}` });
-        await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_GET_ITEM_AT} ${JSON5.stringify([x,y])}` });
-
-        allLockHandles = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP_ALL_LOCK_HANDLES });
-
-        if(Object.keys(allLockHandles).length === 0) return;
-      }
-
-      const lockgroup = <any>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP});
-      if(lockgroup.handleLockInfo.length === 0) {
-        await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_LOCKGROUP_SET_LOCK_HANDLES} ${JSON.stringify([allLockHandles])}` });
-      }
-
-      const ravelNames = <string[]>await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP_RAVELNAMES});
-
+    const lockgroup = ravel.lockGroup.properties();
+    if(lockgroup.handleLockInfo.length === 0) {
+      ravel.lockGroup.setLockHandles(allLockHandles);
+      const ravelNames = ravel.lockGroup.ravelNames();
       const window=WindowManager.createPopupWindowWithRouting({
         title: `Lock specific handles`,
         url: `#/headless/lock-handles?handleLockInfo=${JSON5.stringify(lockgroup.handleLockInfo)}&ravelNames=${ravelNames.join()}&lockHandles=${allLockHandles.join()}`,
@@ -1504,11 +995,5 @@ export class CommandsManager {
       });
       Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
     }
-
-    static async saveLockHandles(payload: LockHandlesPayload) {
-      const args = JSON5.stringify(payload.handleLockInfo);
-      await RestServiceManager.handleMinskyProcess({ command: `${commandsMapping.CANVAS_RAVEL_LOCKGROUP_HANDLELOCKINFO} ${args}` });   
-
-      await RestServiceManager.handleMinskyProcess({ command: commandsMapping.CANVAS_RAVEL_LOCKGROUP_VALIDATE_LOCK_HANDLE_INFO });  
-    }
+  }
 }

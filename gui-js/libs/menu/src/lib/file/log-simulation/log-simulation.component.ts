@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping, events } from '@minsky/shared';
+import { events } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @AutoUnsubscribe()
@@ -27,11 +27,7 @@ export class LogSimulationComponent implements OnDestroy {
   constructor(private electronService: ElectronService) {
     (async () => {
       if (this.electronService.isElectron) {
-        const variableValues = (await this.electronService.sendMinskyCommandAndRender(
-          {
-            command: commandsMapping.VARIABLE_VALUES_KEYS,
-          }
-        )) as string[];
+        const variableValues = await this.electronService.minsky.variableValues.keys();
 
         variableValues
           .filter((key) => !key.includes('constant'))

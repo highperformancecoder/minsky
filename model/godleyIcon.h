@@ -82,6 +82,7 @@ namespace minsky
     GodleyTableEditor editor{*this};
     /// for rendering the popup window
     GodleyTableWindow popup{*this};
+    void adjustPopupWidgets() {popup.adjustWidgets();}
     
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
@@ -150,7 +151,7 @@ namespace minsky
     bool inItem(float, float) const override;
 
     /// clean up popup window structures on window close
-    void destroyFrame() {popup.destroyFrame();}
+    void destroyFrame() override {popup.destroyFrame();}
 
   private:
     void updateVars(Variables& vars, 

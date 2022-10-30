@@ -24,7 +24,6 @@
 #ifndef GODLEYTABLEWINDOW_H
 #define GODLEYTABLEWINDOW_H
 #include "assetClass.h"
-#include "eventInterface.h"
 #include "godleyTable.h"
 #include "renderNativeWindow.h"
 #include <accessor.h>
@@ -207,7 +206,7 @@ namespace minsky
     virtual void requestRedrawCanvas() {} // request redraw of canvas if a canvas
   };
 
-  class GodleyTableWindow: public RenderNativeWindow, public EventInterface, public GodleyTableEditor
+  class GodleyTableWindow: public RenderNativeWindow, public GodleyTableEditor
   {
   public:
     using GodleyTableEditor::draw;
@@ -225,7 +224,7 @@ namespace minsky
     void mouseDown(float x, float y) override {GodleyTableEditor::mouseDown(x,y);}
     void mouseUp(float x, float y) override {GodleyTableEditor::mouseUp(x,y);}
     void mouseMove(float x, float y) override {GodleyTableEditor::mouseMove(x,y);}
-    void zoom(double, double, double z) override {zoomFactor*=z;}
+    void zoom(double, double, double z) override {zoomFactor*=z; requestRedraw();}
     bool keyPress(int keySym, const std::string& utf8, int state=0, float x=0, float yn=0) override
     {GodleyTableEditor::keyPress(keySym,utf8); return true;}
     bool hasScrollBars() const override {return true;}

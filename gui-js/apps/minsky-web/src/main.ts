@@ -9,6 +9,7 @@ if (AppConfig.production) {
   enableProdMode();
 }
 
+
 platformBrowserDynamic()
   .bootstrapModule(AppModule, {
     preserveWhitespaces: false,

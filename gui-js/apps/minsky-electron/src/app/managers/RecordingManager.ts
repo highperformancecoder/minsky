@@ -1,14 +1,18 @@
 import {
-  commandsMapping,
+  CppClass,
   events,
-  normalizeFilePathForPlatform,
+  minsky,
   RecordingStatus,
 } from '@minsky/shared';
-import { ipcMain } from 'electron';
 import { dialog, MessageBoxSyncOptions } from 'electron/main';
 import { createWriteStream, readFileSync, WriteStream } from 'fs';
 import * as JSONStream from 'JSONStream';
 import { WindowManager } from './WindowManager';
+
+CppClass.record=(cmd: string)=>{
+  if (RecordingManager.isRecording)
+    RecordingManager.record(cmd);
+};
 
 export class RecordingManager {
   static isRecording = false;
@@ -45,16 +49,13 @@ export class RecordingManager {
     if (options.buttons[index] === positiveResponseText) {
       const saveDialog = await dialog.showSaveDialog({});
 
-      const { canceled, filePath: _filePath } = saveDialog;
-      const filePath = normalizeFilePathForPlatform(_filePath);
+      const { canceled, filePath } = saveDialog;
 
       if (canceled || !filePath) {
         return;
       }
 
-      ipcMain.emit(events.MINSKY_PROCESS_FOR_IPC_MAIN, null, {
-        command: `${commandsMapping.SAVE} ${saveDialog.filePath}`,
-      });
+      minsky.save(filePath);
 
       await this.replay(replayRecordingDialog);
     }
@@ -92,12 +93,9 @@ export class RecordingManager {
     }
 
     const recordIgnoreCommands = [
-      commandsMapping.CANVAS_GET_ITEM_AT,
-      commandsMapping.CANVAS_GET_ITEM_AT_FOCUS,
-      commandsMapping.CANVAS_GET_WIRE_AT,
-      commandsMapping.START_MINSKY_PROCESS,
-      commandsMapping.RECORD,
-      commandsMapping.RECORDING_REPLAY,
+      '/minsky/canvas/getItemAt',
+      '/minsky/canvas/getItemAtFocus',
+      '/minsky/canvas/getWireAt'
     ];
 
     if (!recordIgnoreCommands.find((cmd) => command.includes(cmd)))

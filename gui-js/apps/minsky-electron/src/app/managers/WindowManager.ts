@@ -4,19 +4,21 @@ import {
   CreateWindowPayload,
   green,
   isMacOS,
+  minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   rendererAppName,
   rendererAppURL,
+  RenderNativeWindow,
+  Utility,
 } from '@minsky/shared';
-import * as debug from 'debug';
+//import * as debug from 'debug';
 import { BrowserWindow, dialog, Menu, screen } from 'electron';
 import * as log from 'electron-log';
 import * as os from 'os';
 import { join } from 'path';
 import { format } from 'url';
-import { Utility } from '../utility';
 
-const logWindows = debug('minsky:electron_windows');
+//const logWindows = debug('minsky:electron_windows');
 
 export class WindowManager {
   static topOffset: number;
@@ -25,11 +27,12 @@ export class WindowManager {
   static canvasHeight: number;
   static canvasWidth: number;
   static scaleFactor: number;
-
+  static currentTab: RenderNativeWindow=minsky.canvas;
+  
   static activeWindows = new Map<number, ActiveWindow>();
-  private static uidToWindowMap = new Map<number, ActiveWindow>();
+  private static uidToWindowMap = new Map<string, ActiveWindow>();
 
-  static getWindowByUid(uid: number): ActiveWindow {
+  static getWindowByUid(uid: string): ActiveWindow {
     return this.uidToWindowMap.get(uid);
   }
 
@@ -54,6 +57,20 @@ export class WindowManager {
     }
   }
 
+  static renderFrame() {
+    console.log(this.activeWindows.get(1).systemWindowId);
+    this.currentTab?.renderFrame(this.activeWindows.get(1).systemWindowId.toString(),
+                            this.leftOffset,this.electronTopOffset,this.canvasWidth,this.canvasHeight,this.scaleFactor);
+  }
+    
+  static setCurrentTab(tab: RenderNativeWindow) {
+    if (this.currentTab!==tab) {
+      this.currentTab?.disable();
+      this.currentTab=tab;
+      this.renderFrame();
+    }
+  }
+  
   static getSystemWindowId(menuWindow: BrowserWindow) {
     const nativeBuffer = menuWindow.getNativeWindowHandle();
     switch (nativeBuffer.length) {
@@ -74,10 +91,10 @@ export class WindowManager {
   }
 
   static getMainWindow(): BrowserWindow {
-    return this.activeWindows.get(1).context; // TODO:: Is this accurate?
+    return this.activeWindows.get(1)?.context; // TODO:: Is this accurate?
   }
 
-  static focusIfWindowIsPresent(uid: number) {
+  static focusIfWindowIsPresent(uid: string) {
     const windowDetails = this.uidToWindowMap.get(uid);
     if (windowDetails) {
       windowDetails.context.focus();
@@ -117,7 +134,7 @@ export class WindowManager {
     return window;
   }
 
-  static closeWindowByUid(uid: number) {
+  static closeWindowByUid(uid: string) {
     const windowDetails = this.uidToWindowMap.get(uid);
     if (windowDetails) {
       this.uidToWindowMap.delete(uid);
@@ -193,7 +210,7 @@ export class WindowManager {
     }
 
     this.activeWindows.set(childWindow.id, childWindowDetails);
-    logWindows(WindowManager.activeWindows);
+//    logWindows(WindowManager.activeWindows);
 
     childWindow.on('close', (ev : Electron.Event) => {
       try {

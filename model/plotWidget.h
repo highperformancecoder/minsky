@@ -132,6 +132,8 @@ namespace minsky
     // implemented as a single argument function here for exposure to TCL
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
 
+    void destroyFrame() override {RenderNativeWindow::destroyFrame();}
+    
   };
 
 }

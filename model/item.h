@@ -215,7 +215,7 @@ namespace minsky
     }         
     
     /// rotate icon though 180∘
-    void flip() {rotation(rotation()+180);}
+    virtual void flip() {rotation(rotation()+180);}
 
     virtual std::string classType() const {return "Item";}
     /// return an id uniquely identifying this item
@@ -235,8 +235,7 @@ namespace minsky
 
     /// Id of bookmark associated with this
     std::string bookmarkId() const {return tooltip.empty()? std::to_string(size_t(this)): tooltip;}
-    /// adjust bookmark list to reflect current configuration
-    void adjustBookmark() const;
+    void adjustBookmark() const override;
     
     /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
@@ -345,6 +344,9 @@ namespace minsky
 
     /// return a shared_ptr to this
     ItemPtr itemPtrFromThis() const;
+
+    /// destroy any popup windows associated with this
+    virtual void destroyFrame() {}
   };
 
   typedef std::vector<ItemPtr> Items;

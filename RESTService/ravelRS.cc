@@ -42,6 +42,8 @@
 #include "engNotation.h"
 #include "engNotation.rcd"
 #include "engNotation.xcd"
+#include "eventInterface.rcd"
+#include "eventInterface.xcd"
 #include "handleLockInfo.h"
 #include "handleLockInfo.rcd"
 #include "handleLockInfo.xcd"

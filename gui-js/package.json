@@ -66,9 +66,7 @@
     "bump:minor": "nx run workspace:version --version=minor",
     "bump:patch": "nx run workspace:version --version=patch",
     "bump:alpha": "nx run workspace:version --version=prerelease --preid=alpha",
-    "bump:beta": "nx run workspace:version --version=prerelease --preid=beta",
-    "generate:signature": "ts-node -P ./tools/tsconfig.tools.json ./tools/scripts/generateSignature.ts",
-    "check:signature": "ts-node -P ./tools/tsconfig.tools.json ./tools/scripts/checkSignature.ts"
+    "bump:beta": "nx run workspace:version --version=prerelease --preid=beta"
   },
   "private": true,
   "dependencies": {
@@ -134,7 +132,7 @@
     "eslint-plugin-cypress": "^2.10.3",
     "exitzero": "^1.0.1",
     "husky": "^4.3.8",
-    "jest": "26.2.2",
+    "jest": "^26.2.2",
     "jest-preset-angular": "8.4.0",
     "nx-electron": "11.3.0",
     "prettier": "2.2.1",
