@@ -113,7 +113,10 @@ endif
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o addon.o typescriptAPI.o
 
-EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE) RESTService/typescriptAPI
+EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
+ifndef MXE
+EXES+=RESTService/typescriptAPI
+endif
 
 DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
 MINSKYLIBS=-lminsky -lminskyEngine -lcivita
@@ -283,8 +286,10 @@ RESTService/typescriptAPI: typescriptAPI.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(S
 	$(LINK) $(FLAGS) $^  $(LIBS) -o $@
 
 
+ifndef MXE
 gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
 	RESTService/typescriptAPI > $@
+endif
 
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
 	rm -f $@
