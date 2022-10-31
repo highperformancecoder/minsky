@@ -10,7 +10,7 @@ if (!Utility.isDevelopmentMode()) { //clobber logging in production
 }
 
 const addonDir = Utility.isPackaged()
-      ? '../node-addons'
+      ? '../../node-addons'
       : '../../node-addons';
 /** REST Service addon */
 export var restService = null;
@@ -116,7 +116,7 @@ if (backend("/minsky/ravelExpired"))
 export function loadResources()
 {
   const assetsDir=
-        Utility.isDevelopmentMode()
+        Utility.isDevelopmentMode() && !Utility.isPackaged()
         ? __dirname+'/assets'
         : process.resourcesPath+'/assets';
 

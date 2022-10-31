@@ -216,7 +216,7 @@ export default class App {
     App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
     // invert the effect of display scaling on canvas fonts.
     backend('minsky/fontScale', (1/displayScale));
-    loadResources();
+    setTimeout(async () => {loadResources();}, 100);
     
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
