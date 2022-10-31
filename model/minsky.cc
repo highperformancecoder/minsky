@@ -993,7 +993,7 @@ namespace minsky
       message("You are converting the model from an older version of Minsky. "
               "Once you save this file, you may not be able to open this file"
               " in older versions of Minsky.");
-    
+  
     // try balancing all Godley tables
     try
       {
@@ -1405,6 +1405,9 @@ namespace minsky
           auto integ=new IntOp;
           g->addItem(integ);
           integ->moveTo(canvas.item->x(), canvas.item->y());
+          // remove intVar from its group
+          if (auto g=integ->intVar->group.lock())
+            g->removeItem(*integ->intVar);
           integ->intVar=dynamic_pointer_cast<VariableBase>(canvas.item);
           integ->toggleCoupled();
           
@@ -1477,6 +1480,18 @@ namespace minsky
   vector<string> Minsky::assetClasses()
   {return enumVals<GodleyTable::AssetClass>();}
 
+  Minsky::AvailableOperationsMapping Minsky::availableOperationsMapping() const
+  {
+    AvailableOperationsMapping r;
+    for (OperationType::Type op{}; op != OperationType::numOps; op=OperationType::Type(int(op)+1))
+      {
+        if (classifyOp(op)==OperationType::general) continue;
+        if (op==OperationType::copy) continue;
+        r[classdesc::to_string(classifyOp(op))].push_back(op);
+      }
+    return r;
+  }
+  
   void Minsky::autoLayout()
   {
     canvas.model->autoLayout();

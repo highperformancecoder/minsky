@@ -1,6 +1,7 @@
 {
   "version": 1,
   "cli": {
+    "analytics": "ed3dc1e2-bca0-4ed6-802b-839148fad315",
     "defaultCollection": "@nrwl/angular"
   },
   "defaultProject": "minsky-web",

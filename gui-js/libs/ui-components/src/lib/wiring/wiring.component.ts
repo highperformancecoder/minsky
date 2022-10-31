@@ -1,7 +1,6 @@
 import {
   ChangeDetectorRef,
   Component,
-  Input,
   NgZone,
   OnDestroy,
   OnInit,
@@ -11,7 +10,7 @@ import {
   ElectronService,
   WindowUtilityService,
 } from '@minsky/core';
-import { commandsMapping, MainRenderingTabs } from '@minsky/shared';
+import { MainRenderingTabs, minsky } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
@@ -25,7 +24,7 @@ import { sampleTime } from 'rxjs/operators';
 export class WiringComponent implements OnInit, OnDestroy {
   mouseMove$: Observable<MouseEvent>;
   canvasContainerHeight: string;
-  availableOperationsMapping: Record<string, string[]> = {};
+  availableOperationsMapping: any; //Record<string, string[]>;
   showDragCursor = false;
   wiringTab = MainRenderingTabs.canvas;
   constructor(
@@ -48,17 +47,9 @@ export class WiringComponent implements OnInit, OnDestroy {
       this.setupEventListenersForCanvas(minskyCanvasContainer);
     }
 
-    this.availableOperationsMapping = (await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.AVAILABLE_OPERATIONS_MAPPING,
-      }
-    )) as Record<string, string[]>;
+    this.availableOperationsMapping = await this.electronService.minsky.availableOperationsMapping();
 
-    setTimeout(async () => {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-      });
-    }, 1);
+    setTimeout(async () => {minsky.canvas.requestRedraw();}, 1);
   }
 
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {
@@ -68,10 +59,9 @@ export class WiringComponent implements OnInit, OnDestroy {
     
     this.cmService.resetScroll=async ()=>{
       ++moveOnScroll;
-      var pos= await this.electronService.sendMinskyCommandAndRender({
-        command: 'position'}) as number[];
-      minskyCanvasContainer.scrollLeft=scrollableArea.width / 2-pos[0];
-      minskyCanvasContainer.scrollTop=scrollableArea.height / 2-pos[1];
+      var pos= await this.electronService.currentTabPosition();
+      minskyCanvasContainer.scrollLeft=scrollableArea.width/2 - pos[0];
+      minskyCanvasContainer.scrollTop=scrollableArea.height/2 - pos[1];
     };
     this.cmService.resetScroll();
     
@@ -81,11 +71,7 @@ export class WiringComponent implements OnInit, OnDestroy {
           const posX = scrollableArea.width / 2 - scrollLeft;
           const posY = scrollableArea.height / 2 - scrollTop;
           if (!moveOnScroll)
-            await this.electronService.sendMinskyCommandAndRender({
-              command: 'moveTo',
-              mouseX: posX,
-              mouseY: posY,
-            });
+            await this.electronService.currentTabMoveTo(posX,posY);
           else
             --moveOnScroll;
         };

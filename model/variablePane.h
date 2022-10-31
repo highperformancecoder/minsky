@@ -23,7 +23,6 @@
 #include "classdesc_access.h"
 #include "grid.h"
 #include "variable.h"
-#include "eventInterface.h"
 #include "renderNativeWindow.h"
 #include <vector>
 
@@ -45,7 +44,7 @@ namespace minsky
     void emplace() const;
   };
   
-  class VariablePane: public Grid<VariablePaneCell>, public RenderNativeWindow, public EventInterface, public VariableType
+  class VariablePane: public Grid<VariablePaneCell>, public RenderNativeWindow, public VariableType
   {
     unsigned m_numRows=0, m_numCols=0;
     classdesc::Exclude<std::vector<VariablePaneCell>> vars;

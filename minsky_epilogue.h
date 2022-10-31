@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef RESTPROCESS_H
+#if defined(RESTPROCESS_H)
 
 namespace classdesc
 {

@@ -20,7 +20,6 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
-#include "eventInterface.h"
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
@@ -49,7 +48,7 @@ namespace minsky
     NoAssign& operator=(const U& x) {T::operator=(x); return *this;}
   };
   
-  class Canvas: public RenderNativeWindow, public EventInterface
+  class Canvas: public RenderNativeWindow
   {
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
@@ -165,8 +164,8 @@ namespace minsky
     ItemPtr item;
     WirePtr wire;
     ItemPtr itemAt(float x, float y);
-    void getItemAt(float x, float y) override {item=itemAt(x,y);}
-    void getWireAt(float x, float y) override;
+    bool getItemAt(float x, float y) override {return (item=itemAt(x,y)).get();}
+    bool getWireAt(float x, float y) override;
 
     double defaultRotation=0;
     void addOperation(OperationType::Type op) {

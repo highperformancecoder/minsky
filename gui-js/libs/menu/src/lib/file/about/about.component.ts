@@ -1,6 +1,6 @@
 import { Component, OnInit, VERSION } from '@angular/core';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping, version } from '@minsky/shared';
+import { version } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-about',
@@ -18,25 +18,10 @@ export class AboutComponent implements OnInit {
 
   ngOnInit(): void {
     (async () => {
-      this.ecolabVersion = (await this.electronService.sendMinskyCommandAndRender(
-        {
-          command: commandsMapping.ECOLAB_VERSION,
-        }
-      )) as string;
-
-      this.ravelVersion = (await this.electronService.sendMinskyCommandAndRender(
-        {
-          command: commandsMapping.RAVEL_VERSION,
-        }
-      )) as string;
-
-
-      this.minskyVersion = (await this.electronService.sendMinskyCommandAndRender(
-        {
-          command: commandsMapping.MINSKY_VERSION,
-        }
-      )) as string;
-
+      let minsky=this.electronService.minsky;
+      this.ecolabVersion = await minsky.ecolabVersion();
+      this.ravelVersion = await minsky.ravelVersion();
+      this.minskyVersion = await minsky.minskyVersion();
       this.frontEndVersion=version;
     })();
   }

@@ -775,6 +775,7 @@ namespace minsky
       m_godleyIcon.table.cell(selectedRow,selectedCol).clear();
     else
       delSelection();
+    requestRedrawCanvas();
   }
   
   void GodleyTableEditor::copy()
@@ -800,6 +801,7 @@ namespace minsky
       stringToInsert=stringToInsert.substr(0,p-1);
     str.insert(insertIdx,stringToInsert);
     selectIdx=insertIdx+=stringToInsert.length();
+    requestRedrawCanvas();
   }
 
   GodleyTableEditor::ClickType GodleyTableEditor::clickType(double x, double y) const

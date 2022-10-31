@@ -20,13 +20,15 @@
 #ifndef RENDER_NATIVE_WINDOW_H
 #define RENDER_NATIVE_WINDOW_H
 
+#include "eventInterface.h"
+
 #include <cairoSurfaceImage.h>
 #include <plot.h>
 
 namespace minsky
 {  
   class WindowInformation;
-  class RenderNativeWindow : public ecolab::CairoSurface
+  class RenderNativeWindow : public ecolab::CairoSurface, public EventInterface
   {
   private:
     CLASSDESC_ACCESS(RenderNativeWindow); 
@@ -41,6 +43,11 @@ namespace minsky
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor);
     void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
     {renderFrame(parentWindowId,offsetLeft,offsetTop,childWidth,childHeight,0);}
+    // BigInts JSON5 to a string 
+    void renderFrame(const std::string& parentWindowId,
+                     int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor)
+    {renderFrame(std::stoull(parentWindowId),offsetLeft,offsetTop,childWidth,childHeight,scalingFactor);}
+    
     void destroyFrame();
     void draw();
     void requestRedraw();

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping, dateTimeFormats } from '@minsky/shared';
+import { dateTimeFormats } from '@minsky/shared';
 
 interface Second {
   type: string;
@@ -35,11 +35,7 @@ export class DimensionsComponent implements OnInit {
   ngOnInit() {
     (async () => {
       if (this.electronService.isElectron) {
-        const dimensions = (await this.electronService.sendMinskyCommandAndRender(
-          {
-            command: commandsMapping.DIMENSIONS,
-          }
-        )) as Record<string, Second>;
+        const dimensions = (await this.electronService.minsky.dimensions.properties()) as Record<string, Second>;
 
         for (const [key, args] of Object.entries(dimensions)) {
           this.dimensions.push(this.createDimension(key, args));
@@ -63,7 +59,7 @@ export class DimensionsComponent implements OnInit {
   }
 
   getDimensions() {
-    const dimensions = this.form.value.dimensions as Dimension[];
+    const dimensions = this.form.value.dimensions() as Dimension[];
 
     return dimensions.reduce((acc, curr) => {
       acc[curr.dimension] = {
@@ -75,16 +71,8 @@ export class DimensionsComponent implements OnInit {
   }
 
   async handleSubmit() {
-    const dimensions = this.getDimensions();
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.DIMENSIONS} ${JSON.stringify(dimensions)}`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: "/minsky/imposeDimensions",
-    });
-
+    this.electronService.minsky.dimensions.properties(this.getDimensions());
+    this.electronService.minsky.imposeDimensions();
     this.closeWindow();
   }
 }

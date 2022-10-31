@@ -51,8 +51,8 @@ namespace minsky
     /// @{ item or wire obtained by get*At() calls
     ItemPtr item;
     WirePtr wire;
-    virtual void getItemAt(float x, float y) {}
-    virtual void getWireAt(float x, float y) {}
+    virtual bool getItemAt(float x, float y) {return false;}
+    virtual bool getWireAt(float x, float y) {return false;}
 
 
   };
