@@ -204,16 +204,19 @@ namespace minsky
                       if (auto toGroup=model->minimalEnclosingGroup
                           (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
                         {
+                          if (g.get()==toGroup) return;
                           // prevent moving a group inside itself
                           if (auto g=dynamic_cast<Group*>(itemFocus.get()))
                             if (g->higher(*toGroup))
                               return;
+                          selection.clear(); // prevent old wires from being held onto
                           toGroup->addItem(itemFocus);
                           toGroup->splitBoundaryCrossingWires();
                           g->splitBoundaryCrossingWires();
                         }
                       else
                         {
+                          selection.clear(); // prevent old wires from being held onto
                           model->addItem(itemFocus);
                           model->splitBoundaryCrossingWires();
                           g->splitBoundaryCrossingWires();
