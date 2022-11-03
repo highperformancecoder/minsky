@@ -200,6 +200,7 @@ namespace minsky
   
   ItemPtr GroupItems::removeItem(const Item& it)
   {
+    if (it.plotWidgetCast()==displayPlot.get()) removeDisplayPlot();
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
         {
@@ -224,7 +225,6 @@ namespace minsky
           return r;
         }
     
-    removeDisplayPlot();
     
     for (auto& g: groups)
       if (ItemPtr r=g->removeItem(it))
@@ -362,17 +362,17 @@ namespace minsky
     if (auto intOp=dynamic_cast<IntOp*>(it.get()))
       if (intOp->intVar)
         {
-          if (auto oldG=intOp->intVar->group.lock())
-            {
-              if (oldG.get()!=this)
-                addItem(oldG->removeItem(*intOp->intVar),inSchema);
-            }
-          else
-            addItem(intOp->intVar,inSchema);
-          if (intOp->coupled())
-            intOp->intVar->controller=it;
-          else
-            intOp->intVar->controller.reset();
+         if (auto oldG=intOp->intVar->group.lock())
+           {
+             if (oldG.get()!=this)
+               addItem(oldG->removeItem(*intOp->intVar),inSchema);
+           }
+         else
+           addItem(intOp->intVar,inSchema);
+         if (intOp->coupled())
+           intOp->intVar->controller=it;
+         else
+           intOp->intVar->controller.reset();
         }
          
     items.push_back(it);
