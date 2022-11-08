@@ -677,6 +677,10 @@ export class CommandsManager {
 
         case ClassType.PlotWidget:
           await CommandsManager.expandPlot(itemInfo);
+        break;
+        
+        case ClassType.Ravel:
+          await CommandsManager.openRavelPopup(itemInfo);
           break;
 
         case ClassType.Variable:
@@ -783,6 +787,26 @@ export class CommandsManager {
       } else {
         window.setMenu(menu);
       }
+    }
+  }
+
+  static async openRavelPopup(itemInfo: CanvasItem) {
+    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
+      CommandsManager.addItemToNamedItems(itemInfo);
+      const window = await this.initializePopupWindow({
+        customTitle: `Ravel : ${itemInfo.id}`,
+        itemInfo,
+        url: `#/headless/ravel-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
+        modal: false,
+      });
+
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+
+      window.loadURL(
+        WindowManager.getWindowUrl(
+          `#/headless/ravel-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`
+        )
+      );
     }
   }
 
