@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ElementRef, AfterViewInit, ViewChild,} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ElectronService, WindowUtilityService } from '@minsky/core';
-import { Ravel, isMacOS } from '@minsky/shared';
+import {   CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
+import { events, Ravel, isMacOS } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
@@ -24,8 +24,10 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
   namedItem: Ravel;
   mouseMove$: Observable<MouseEvent>;
   yoffs = 0; // extra offset required on some systems
-
+  context=false;
+  
   constructor(
+    private communicationService: CommunicationService,
     private electronService: ElectronService,
     private route: ActivatedRoute,
     private windowUtilityService: WindowUtilityService
@@ -91,9 +93,30 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
     ravelCanvasContainer.addEventListener('mouseup', async (event) => {
       this.namedItem.popup.mouseUp(event.x,event.y+this.yoffs);
     });
-    ravelCanvasContainer.addEventListener('mouseout', async (event) => {
-      this.namedItem.popup.mouseLeave();
+    ravelCanvasContainer.addEventListener('mouseleave', async (event) => {
+      if (!this.context) // absorb mouseleaves caused by context menu posting
+        this.namedItem.popup.mouseLeave();
+      this.context=false;
     });
+
+    ravelCanvasContainer.addEventListener('contextmenu', async (event) => {
+      this.context=true;
+      this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
+        x: event.x,
+        y: event.y,
+        type: "ravel",
+        command: this.namedItem.prefix(),
+      });
+    });
+
+    document.onkeydown = async (event) => {
+      process.stdout.write(`keydown: ${event.key}\n`)
+      this.communicationService.mouseX=this.communicationService.mouseY=0;
+      await this.communicationService.handleKeyDown({
+        event,
+        command: `/minsky/namedItems/@elem/"${this.itemId}"/second/popup`,
+      });
+    };
   }
   
    // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method

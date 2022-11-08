@@ -811,6 +811,8 @@ namespace
   }
   void RavelPopup::mouseOver(float x, float y) {
     ravel.wrappedRavel.onMouseOver(localX(x),localY(y));
+    broadcastStateToLockGroup();
+    minsky().reset();
     requestRedraw();
   }
   void RavelPopup::mouseLeave() {

@@ -946,12 +946,11 @@ export class CommandsManager {
     minsky.save(filePath);
   }
   
-  static async editHandleDescription(handleIndex: number) {
-    let ravel=new Ravel(minsky.canvas.item);
+  static async editHandleDescription(ravel: Ravel, handleIndex: number) {
     const description = ravel.handleDescription(handleIndex);
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Description`,
-        url: `#/headless/edit-handle-description?handleIndex=${handleIndex}&description=${description}`,
+        url: `#/headless/edit-handle-description?command=${ravel.prefix()}&handleIndex=${handleIndex}&description=${description}`,
         height: 90,
         width: 300,
       });
@@ -959,17 +958,16 @@ export class CommandsManager {
     }
 
   static async saveHandleDescription(payload: HandleDescriptionPayload) {
-    (new Ravel(minsky.canvas.item)).setHandleDescription(payload.handleIndex, payload.description);
+    (new Ravel(payload.command)).setHandleDescription(payload.handleIndex, payload.description);
   }
   
-  static async editHandleDimension(handleIndex: number) {
-    let ravel=new Ravel(minsky.canvas.item);
+  static async editHandleDimension(ravel: Ravel, handleIndex: number) {
     const type = ravel.dimensionType();
     const units = ravel.dimensionUnitsFormat();
 
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Dimension`,
-        url: `#/headless/edit-handle-dimension?handleIndex=${handleIndex}&type=${type}&units=${units}`,
+        url: `#/headless/edit-handle-dimension?command=${ravel.prefix()}&handleIndex=${handleIndex}&type=${type}&units=${units}`,
         height: 180,
         width: 300,
       });
@@ -977,17 +975,16 @@ export class CommandsManager {
   }
 
   static async saveHandleDimension(payload: HandleDimensionPayload) {
-    (new Ravel(minsky.canvas.item)).setDimension(payload.handleIndex, payload.type, payload.units);
+    (new Ravel(payload.command)).setDimension(payload.handleIndex, payload.type, payload.units);
   }
 
-  static async pickSlices(handleIndex: number) {
-    let ravel=new Ravel(minsky.canvas.item);
+  static async pickSlices(ravel: Ravel, handleIndex: number) {
     const allSliceLabels = ravel.allSliceLabels();
     const pickedSliceLabels = ravel.pickedSliceLabels();
 
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Pick slices`,
-      url: `#/headless/pick-slices?handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
+      url: `#/headless/pick-slices?command=${ravel.prefix()}&handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
       height: 400,
       width: 400,
     });
@@ -995,11 +992,10 @@ export class CommandsManager {
   }
 
   static async savePickSlices(payload: PickSlicesPayload) {
-    (new Ravel(minsky.canvas.item)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
+    (new Ravel(payload.command)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
   }
 
-  static async lockSpecificHandles() {
-    let ravel=new Ravel(minsky.canvas.item);
+  static async lockSpecificHandles(ravel: Ravel) {
     let allLockHandles = ravel.lockGroup.allLockHandles();
     if(Object.keys(allLockHandles).length === 0) {
       minsky.canvas.lockRavelsInSelection();

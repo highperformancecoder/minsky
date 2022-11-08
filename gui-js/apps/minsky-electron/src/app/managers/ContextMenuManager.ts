@@ -37,6 +37,9 @@ export class ContextMenuManager {
       case "godley":
       this.initContextMenuForGodleyPopup(command,x,y);
       break;
+      case "ravel":
+      this.initContextMenuForRavelPopup(command,x,y);
+      break;
       default:
       log.warn("Unknown context menu for ",type);
       break;
@@ -379,7 +382,7 @@ export class ContextMenuManager {
       case ClassType.Ravel:
         menuItems = [
           ...menuItems,
-          ...(await ContextMenuManager.buildContextMenuForRavel()),
+          ...(await ContextMenuManager.buildContextMenuForRavel(new Ravel(minsky.canvas.item))),
         ];
 
         break;
@@ -705,10 +708,9 @@ export class ContextMenuManager {
     return menuItems;
   }
 
-  private static async buildContextMenuForRavel(): Promise<MenuItem[]> {
+  private static async buildContextMenuForRavel(ravel: Ravel): Promise<MenuItem[]> {
     const aggregations = [{label: 'Σ', value: 'sum'},{label: 'Π', value: 'prod'},{label: 'σ', value: 'stddev'},{label: 'min', value: 'min'},{label: 'max', value: 'max'}];
 
-    let ravel=new Ravel(minsky.canvas.item)
     const handleIndex = ravel.selectedHandle();
     const sortOrder = ravel.sortOrder();
     const editorMode = ravel.editorMode();
@@ -739,13 +741,13 @@ export class ContextMenuManager {
           {
             label: 'Description',
             click: async () => {
-              await CommandsManager.editHandleDescription(handleIndex);
+              await CommandsManager.editHandleDescription(ravel,handleIndex);
             }
           },
           {
             label: 'Dimension',
             click: async () => {
-              await CommandsManager.editHandleDimension(handleIndex);
+              await CommandsManager.editHandleDimension(ravel,handleIndex);
             }
           },
           {
@@ -787,7 +789,7 @@ export class ContextMenuManager {
           {
             label: 'Pick slices',
             click: async () => {
-              await CommandsManager.pickSlices(handleIndex);
+              await CommandsManager.pickSlices(ravel,handleIndex);
             }
           }
         ]
@@ -795,7 +797,7 @@ export class ContextMenuManager {
       new MenuItem({ 
         label: 'Lock specific handles',
         click: async () => {
-          CommandsManager.lockSpecificHandles();
+          CommandsManager.lockSpecificHandles(ravel);
         } 
       }),
       new MenuItem({
@@ -1034,6 +1036,13 @@ export class ContextMenuManager {
     }
     menu.popup();
   }
-
+  
+  private static async initContextMenuForRavelPopup(namedItemSubCommand: string, x: number, y: number)
+  {
+    let ravel=new Ravel(namedItemSubCommand);
+    let menu=Menu.buildFromTemplate(await this.buildContextMenuForRavel(ravel));
+    //menu.popup({window: WindowManager.getWindowByUid(ravel.id()), x, y});
+    menu.popup();
+  }
 }
 
