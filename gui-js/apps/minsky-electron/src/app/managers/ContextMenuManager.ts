@@ -1041,7 +1041,6 @@ export class ContextMenuManager {
   {
     let ravel=new Ravel(namedItemSubCommand);
     let menu=Menu.buildFromTemplate(await this.buildContextMenuForRavel(ravel));
-    //menu.popup({window: WindowManager.getWindowByUid(ravel.id()), x, y});
     menu.popup();
   }
 }
