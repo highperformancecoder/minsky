@@ -7,7 +7,6 @@ import {
   importCSVerrorMessage,
   importCSVvariableName,
   isWindows,
-  normalizeFilePathForPlatform,
   VariableBase,
   VariableValue,
 } from '@minsky/shared';
@@ -448,7 +447,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       filters: [{ extensions: ['csv'], name: 'CSV' }],
     });
 
-//    const url = normalizeFilePathForPlatform(this.url.value);
     if (canceled || !filePath) {
       return;
     }
