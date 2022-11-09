@@ -811,7 +811,7 @@ namespace
   }
   void RavelPopup::mouseOver(float x, float y) {
     ravel.wrappedRavel.onMouseOver(localX(x),localY(y));
-    broadcastStateToLockGroup();
+    ravel.broadcastStateToLockGroup();
     minsky().reset();
     requestRedraw();
   }
@@ -822,8 +822,9 @@ namespace
 
   bool RavelPopup::keyPress(int keySym, const std::string& utf8, int state, float x, float y)
   {
-    ravel.onKeyPress(keySym,utf8,state);
-    requestRedraw();
+    auto r=ravel.onKeyPress(keySym,utf8,state);
+    if (r) requestRedraw();
+    return r;
   }
   
 }
