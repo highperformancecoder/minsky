@@ -440,7 +440,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const {
       canceled,
-      filePath: _filePath,
+      filePath,
     } = await this.electronService.remote.dialog.showSaveDialog({
       defaultPath: `${filePathWithoutExt}-error-report.csv`,
       title: 'Save report',
@@ -448,13 +448,12 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       filters: [{ extensions: ['csv'], name: 'CSV' }],
     });
 
-    const filePath = normalizeFilePathForPlatform(_filePath);
-    const url = normalizeFilePathForPlatform(this.url.value);
+//    const url = normalizeFilePathForPlatform(this.url.value);
     if (canceled || !filePath) {
       return;
     }
 
-    await this.variableValuesSubCommand.csvDialog.reportFromFile(url,filePath);
+    await this.variableValuesSubCommand.csvDialog.reportFromFile(this.url.value,filePath);
     return;
   }
 
