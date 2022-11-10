@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {
   dateTimeFormats,
-  importCSVerrorMessage,
   importCSVvariableName,
   isWindows,
   VariableBase,
@@ -58,9 +57,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   timeFormatStrings = dateTimeFormats;
   parsedLines: string[][] = [];
   csvCols: any[];
-  selectedHeader = 0;
-  selectedRow = -1;
-  selectedCol = -1;
   colType: Array<ColType> = [];
   // per column dimension names and dimensions
   dimensionNames: string[]=[];
@@ -156,7 +152,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       
       await this.getCSVDialogSpec();
       this.updateForm();
-      this.selectedHeader = this.dialogState.spec.headerRow as number;
       this.load();
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
       this.setupListenerForCleanup();
@@ -252,6 +247,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     if (fileUrl !== fileUrlOnServer) {
       await this.variableValuesSubCommand.csvDialog.url(fileUrl);
       await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
+      await this.getCSVDialogSpec();
     } else {
       await this.variableValuesSubCommand.csvDialog.loadFile();
     }
@@ -274,13 +270,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       var col=this.dialogState.spec.dimensionCols[i];
       if (col<this.colType.length)
         this.colType[col]=ColType.axis;
-      this.dimensionNames[col]=this.dialogState.spec.dimensionNames[i] as string;
-      this.dimensions[col]=this.dialogState.spec.dimensions[i] as Dimension;
+      this.dimensionNames[col]=this.dialogState.spec.dimensionNames[col] as string;
+      this.dimensions[col]=this.dialogState.spec.dimensions[col] as Dimension;
     }
     if (this.dialogState.spec.dataCols)
       for (var i in this.dialogState.spec.dataCols as Array<number>)
     {
-      var col=this.dialogState.spec.dimensionCols[i];
+      var col=this.dialogState.spec.dataCols[i];
       if (col<this.colType.length)
         this.colType[col]=ColType.data;
     }
@@ -292,23 +288,26 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   
   async selectHeader(index: number) {
-    this.selectedHeader = index;
-    this.dialogState.spec.headerRow = this.selectedHeader;
+    this.dialogState.spec.headerRow = index;
+    // explicitly selecting a header, make sure dataRowOffset is greater
+    if (this.dialogState.spec.dataRowOffset<=index)
+      this.dialogState.spec.dataRowOffset=index+1;
   }
 
   async selectRowAndCol(rowIndex: number, colIndex: number) {
-    this.selectedRow = rowIndex;
     this.dialogState.spec.dataRowOffset = rowIndex;
+    if (this.dialogState.spec.headerRow>=rowIndex)
+      this.dialogState.spec.headerRow=rowIndex-1;
 
-    this.selectedCol = colIndex;
+    
     this.dialogState.spec.dataColOffset = colIndex;
 
     for (let i = 0; i<this.parsedLines[0].length; i++)
       //for (let i = this.selectedCol; this.dialogState.spec.columnar? i<this.selectedCol + 1: i < this.parsedLines.length; i++) {
-      if (i<this.selectedCol) {
+      if (i<colIndex) {
         if (this.colType[i]==ColType.data)
           this.colType[i]=ColType.ignore;
-      } else if (i===this.selectedCol || !this.columnar.value)
+      } else if (i===colIndex || !this.columnar.value)
         this.colType[i]=ColType.data;
     else
       this.colType[i]=ColType.ignore;
@@ -318,13 +317,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   getColorForCell(rowIndex: number, colIndex: number) {
     if (colIndex>=this.colType.length) return "red";
 
-    if (this.selectedHeader === rowIndex)  // header row
+    if (this.dialogState.spec.headerRow === rowIndex)  // header row
         switch (this.colType[colIndex]) {
         case 'data': return "blue";
         case 'axis': return "green";
         case "ignore": return "red";
         }
-    else if (this.selectedRow >= 0 && this.selectedRow > rowIndex)
+    else if (this.dialogState.spec.dataRowOffset >= 0 && this.dialogState.spec.dataRowOffset > rowIndex)
       return "red"; // ignore commentary at beginning of file
     else
       switch (this.colType[colIndex]) {
@@ -337,7 +336,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   setColType(column: number, type: ColType) {
     this.colType[column]=type;
     if (!this.dimensionNames[column])
-      this.dimensionNames[column]=this.parsedLines[this.selectedHeader][column];
+      this.dimensionNames[column]=this.parsedLines[this.dialogState.spec.headerRow][column];
     if (!this.dimensions[column])
       this.dimensions[column]={type:"string",units:""} as Dimension;
   }
@@ -358,14 +357,12 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.dialogState.spec.dimensionCols=[];
     this.dialogState.spec.dataCols=[];
-    this.dialogState.spec.dimensionNames=[];
-    this.dialogState.spec.dimensions=[];
+    this.dialogState.spec.dimensionNames=this.dimensionNames;
+    this.dialogState.spec.dimensions=this.dimensions;
     for (let i=0; i<this.colType.length; ++i) 
       switch (this.colType[i]) {
       case ColType.axis: 
         this.dialogState.spec.dimensionCols.push(i);
-        this.dialogState.spec.dimensionNames.push(this.dimensionNames[i]);
-        this.dialogState.spec.dimensions.push(this.dimensions[i]);
         break;
       case ColType.data:
         this.dialogState.spec.dataCols.push(i);
@@ -390,13 +387,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     // returns an error message on error
     const res = await v.importFromCSV(this.url.value,spec) as unknown as string;
 
-    if (res === importCSVerrorMessage) {
+    if (res) {
       const positiveResponseText = 'Yes';
       const negativeResponseText = 'No';
 
       const options: MessageBoxSyncOptions = {
         buttons: [positiveResponseText, negativeResponseText],
-        message: 'Something went wrong... Do you want to generate a report?',
+        message: `Something went wrong: ${res}\nDo you want to generate a report?`,
         title: 'Generate Report ?',
       };
 

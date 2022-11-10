@@ -60,6 +60,7 @@ const unsigned CSVDialog::numInitialLines;
 void CSVDialog::reportFromFile(const std::string& input, const std::string& output) const
 {
   ifstream is(input);
+  stripByteOrderingMarker(is);
   ofstream of(output);
   reportFromCSVFile(is,of,spec);
 }
@@ -232,6 +233,7 @@ void CSVDialog::guessSpecAndLoadFile()
 void CSVDialog::loadFileFromName(const std::string& fname)
 {  
   ifstream is(fname);
+  stripByteOrderingMarker(is);
   initialLines.clear();
   for (size_t i=0; i<numInitialLines && is; ++i)
     {

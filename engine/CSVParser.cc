@@ -140,7 +140,6 @@ namespace escapedListSeparator
     }
   };
 }
-//typedef boost::escaped_list_separator<char> Parser;
 using Parser=escapedListSeparator::EscapedListSeparator<char>;
 
 typedef boost::tokenizer<Parser> Tokenizer;
@@ -199,8 +198,6 @@ namespace
     const char* what() const noexcept override {return msg.c_str();}
   };
 
-  const size_t maxRowsToAnalyse=100;
-  
   double quotedStoD(const string& s,size_t& charsProcd)
   {
     //strip possible quote characters
@@ -311,7 +308,7 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     dimensionCols.clear();
 
     m_nRowAxes=0;
-    for (; getline(input, buf) && row<maxRowsToAnalyse; ++row)
+    for (; getline(input, buf) && row<CSVDialog::numInitialLines; ++row)
       {
         // remove trailing carriage returns
         if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
@@ -350,7 +347,9 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     
     if (firstEmpty==m_nRowAxes) ++m_nRowAxes; // allow for possible colAxes header line
     headerRow=nRowAxes()>0? nRowAxes()-1: 0;
-    for (size_t i=0; i<nColAxes(); ++i) dimensionCols.insert(i);
+    size_t i=0;
+    for (; i<nColAxes(); ++i) dimensionCols.insert(i);
+    for (; i<nCols; ++i) dataCols.insert(i);
 }
 
 void DataSpec::guessRemainder(std::istream& input, char sep)
@@ -369,7 +368,7 @@ void DataSpec::guessFromStream(std::istream& input)
   size_t row=0;
   string buf;
   ostringstream streamBuf;
-  for (; getline(input, buf) && row<maxRowsToAnalyse; ++row, streamBuf<<buf<<endl)
+  for (; getline(input, buf) && row<CSVDialog::numInitialLines; ++row, streamBuf<<buf<<endl)
     for (auto c:buf)
       switch (c)
         {
@@ -498,26 +497,23 @@ namespace minsky
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
             Key key;
             auto field=tok.begin();
-            for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
+            size_t i=0;
+            for (; field!=tok.end(); ++i, ++field)
               if (spec.dimensionCols.count(i))
                 key.push_back(*field);
-            if (field==tok.end())
-              {
-                output<<"missing numerical data"<<spec.separator<<buf<<endl;
-                continue;
-              }
 
-            for (; field!=tok.end(); ++field)
-              {
-                string x=*field;
-                if (x.back()=='\r') x=x.substr(0,x.size()-1); //deal with MS nonsense
-                if (!x.empty() && !isNumerical(x))
-                  {
-                    output<<"invalid numerical data"<<spec.separator<<buf<<endl;
-                    continue;
-                  }
-                if (spec.columnar) break; // only one column to check
-              }
+            for (i=0, field=tok.begin(); field!=tok.end(); ++i, ++field)
+              if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.count(i))
+                {
+                  string x=*field;
+                  if (x.back()=='\r') x=x.substr(0,x.size()-1); //deal with MS nonsense
+                  if (!x.empty() && !isNumerical(x))
+                    {
+                      output<<"invalid numerical data"<<spec.separator<<buf<<endl;
+                      continue;
+                    }
+                  if (spec.columnar) break; // only one column to check
+                }
 
             auto rec=lines.find(key);
             if (rec!=lines.end())
@@ -565,9 +561,10 @@ namespace minsky
         hc.xvectors.back().dimension=spec.dimensions[i];
         anyVal.emplace_back(spec.dimensions[i]);
       }
+    size_t row=0, col=0;
     try
       {
-        for (size_t row=0; getline(input, buf); ++row)
+        for (; getline(input, buf); ++row)
           {
 #if defined(__linux__) // TODO remove or generalise
             {
@@ -608,9 +605,8 @@ namespace minsky
                 Key key;
                 auto field=tok.begin();
                 size_t dim=0, dataCols=0;
-                unsigned i=0;
-                for (auto field=tok.begin(); field!=tok.end(); ++i, ++field)
-                  if (spec.dimensionCols.count(i))
+                for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
+                  if (spec.dimensionCols.count(col))
                     {
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
@@ -629,9 +625,9 @@ namespace minsky
                       dim++;
                     }
 
-                i=0;
-                for (auto field=tok.begin(); field!=tok.end(); ++i,++field)
-                  if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.count(i)) 
+                col=0;
+                for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
+                  if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
                     {                    
                       if (tabularFormat)
                         key.push_back(anyVal[dim](horizontalLabels[dataCols]));
@@ -790,7 +786,10 @@ namespace minsky
       { // replace with a more user friendly error message
         throw std::runtime_error("exhausted memory - try reducing the rank");
       }
-
+    catch (const std::exception& ex)
+      {
+        throw std::runtime_error(string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col));
+      }
   }
   
   void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)

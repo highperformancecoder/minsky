@@ -94,4 +94,3 @@ export const dateTimeFormats = [
 ];
 
 export const importCSVvariableName = 'dataImport';
-export const importCSVerrorMessage = 'SOMETHING_WENT_WRONG_WHILE_IMPORTING_CSV';
