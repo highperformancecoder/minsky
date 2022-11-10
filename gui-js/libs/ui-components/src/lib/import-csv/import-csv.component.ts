@@ -265,6 +265,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.csvCols = new Array(this.parsedLines[0]?.length);
     this.colType = new Array(this.parsedLines[0]?.length).fill("ignore");
+    this.dimensionNames = new Array(this.parsedLines[0]?.length).fill("");
     for (var i in this.dialogState.spec.dimensionCols as Array<number>)
     {
       var col=this.dialogState.spec.dimensionCols[i];
@@ -387,7 +388,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     // returns an error message on error
     const res = await v.importFromCSV(this.url.value,spec) as unknown as string;
 
-    if (res) {
+    if (typeof res==='string') {
       const positiveResponseText = 'Yes';
       const negativeResponseText = 'No';
 

@@ -605,6 +605,7 @@ namespace minsky
                 Key key;
                 auto field=tok.begin();
                 size_t dim=0, dataCols=0;
+                col=0;
                 for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
                   if (spec.dimensionCols.count(col))
                     {
