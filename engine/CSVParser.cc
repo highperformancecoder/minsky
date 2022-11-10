@@ -582,16 +582,18 @@ namespace minsky
             if (spec.headerRow<spec.nRowAxes() && row==spec.headerRow && !spec.columnar) // in header section
               {
                 vector<string> parsedRow(tok.begin(), tok.end());
-                tabularFormat=spec.dataCols.size()>1 || parsedRow.size()>spec.nColAxes()+1;
-                // legacy situation where all data columns are to the right
-                if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
-                    horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
-                else
-                  // explicitly specified data columns
-                  for (auto i: spec.dataCols)
-                    if (i<parsedRow.size())
-                      horizontalLabels.push_back(parsedRow[i]);
-
+                tabularFormat=spec.dataCols.size()>1 || spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1;
+                if (tabularFormat)
+                  {
+                    // legacy situation where all data columns are to the right
+                    if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
+                      horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
+                    else
+                      // explicitly specified data columns
+                      for (auto i: spec.dataCols)
+                        if (i<parsedRow.size())
+                          horizontalLabels.push_back(parsedRow[i]);
+                  }
                 hc.xvectors.emplace_back(spec.horizontalDimName);
                 hc.xvectors.back().dimension=spec.horizontalDimension;
                 for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
