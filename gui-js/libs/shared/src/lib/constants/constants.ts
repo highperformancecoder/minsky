@@ -18,6 +18,7 @@ export const events = {
   APP_LAYOUT_CHANGED: 'app-layout-changed',
   BACKEND: 'backend',
   CHANGE_MAIN_TAB: 'change-main-tab',
+  CLOSE_WINDOW: 'close-window',
   CONTEXT_MENU: 'context-menu',
   CREATE_MENU_POPUP: 'create-menu-popup',
   CURRENT_TAB_MOVE_TO: 'current-tab-move-to',

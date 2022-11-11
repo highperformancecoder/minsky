@@ -159,7 +159,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     const [
       x,
       y,
-    ] = (await this.electronService.getCurrentWindow()).getContentSize();
+    ] = (await this.electronService.getCurrentWindow()).contentSize;
 
     //TODO: throttle here if required
     this.namedItemSubCommand.zoom(x/2, y/2, zoomFactor);

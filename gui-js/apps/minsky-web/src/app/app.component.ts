@@ -54,8 +54,8 @@ export class AppComponent implements AfterViewInit {
 
     const currentWindow = await this.electronService.getCurrentWindow();
     // disable closing by means of dontCloseOnEscape property
-    if (currentWindow.id !== 1 && !currentWindow.hasOwnProperty("dontCloseOnEscape")) {
-      currentWindow.close();
+    if (currentWindow.id !== 1 && !currentWindow.dontCloseOnEscape) {
+      this.electronService.closeWindow();
       event.preventDefault();
     }
   }
@@ -64,7 +64,7 @@ export class AppComponent implements AfterViewInit {
   private async handleEnterKey(event: KeyboardEvent) {
       // disable invoking OK button if marked dontCloseOnReturn
     const currentWindow = await this.electronService.getCurrentWindow();
-    if (currentWindow.hasOwnProperty("dontCloseOnReturn")) return;
+    if (currentWindow.dontCloseOnReturn) return;
 
       (document.activeElement as HTMLElement).blur();
       //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { events, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
+import { events, CurrentWindowDetails, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
 import { ipcRenderer } from 'electron';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';
@@ -23,15 +23,11 @@ export class ElectronService {
     }
   }
 
-  async getCurrentWindow(): Promise<BrowserWindow> {
+  async getCurrentWindow(): Promise<CurrentWindowDetails> {
     return this.ipcRenderer.invoke(events.GET_CURRENT_WINDOW);
   }
   
-  async closeWindow() {
-    if (this.isElectron) {
-      (await this.getCurrentWindow()).close();
-    }
-  }
+  async closeWindow(): Promise<void> {return this.ipcRenderer.invoke(events.CLOSE_WINDOW);}
 
   async openFileDialog(options): Promise<string> {
     return await this.ipcRenderer.invoke(events.OPEN_FILE_DIALOG, options);

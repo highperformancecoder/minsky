@@ -7,6 +7,15 @@ export interface InitializePopupWindowPayload {
   width?: number;
   modal?: boolean;
 }
+
+export interface CurrentWindowDetails {
+  id: number;
+  dontCloseOnEscape: boolean;
+  dontCloseOnReturn: boolean;
+  size: number[];
+  contentSize: number[];
+}
+
 export interface MinskyProcessPayload {
   mouseX?: number;
   mouseY?: number;

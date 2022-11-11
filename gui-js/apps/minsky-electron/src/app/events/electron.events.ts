@@ -47,7 +47,18 @@ ipcMain.handle(events.BACKEND, (event, ...args: any[])=>{
 });
 
 ipcMain.handle(events.GET_CURRENT_WINDOW, (event) => {
-  return BrowserWindow.fromWebContents(event.sender);
+  let window=BrowserWindow.fromWebContents(event.sender);
+  return {
+    id: window.id,
+    dontCloseOnEscape: window.hasOwnProperty("dontCloseOnEscape"),
+    dontCloseOnReturn: window.hasOwnProperty("dontCloseOnReturn"),
+    size: window.getSize(),
+    contentSize: window.getContentSize(),
+  };
+});
+
+ipcMain.handle(events.CLOSE_WINDOW, (event) => {
+  BrowserWindow.fromWebContents(event.sender).close();
 });
 
 ipcMain.handle(events.OPEN_FILE_DIALOG, async (event, options) => {

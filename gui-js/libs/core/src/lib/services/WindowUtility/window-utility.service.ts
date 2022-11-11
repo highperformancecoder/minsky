@@ -78,8 +78,8 @@ export class WindowUtilityService {
     if (isMacOS()) return 0;
     
     const currentWindow = await this.electronService.getCurrentWindow();
-    const currentWindowSize = currentWindow.getSize()[1];
-    const currentWindowContentSize = currentWindow.getContentSize()[1];
+    const currentWindowSize = currentWindow.size[1];
+    const currentWindowContentSize = currentWindow.contentSize[1];
     return currentWindowSize - currentWindowContentSize;
   }
 
@@ -134,7 +134,7 @@ export class WindowUtilityService {
       setTimeout(async () => {
         const currentWindow = await this.electronService.getCurrentWindow();
         if (currentWindow?.id !== 1) {
-          currentWindow.close();
+          this.electronService.closeWindow();
         }
       }, delayBeforeClosingPopupWindow);
     }

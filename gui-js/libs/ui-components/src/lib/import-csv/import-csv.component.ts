@@ -189,21 +189,22 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   
   private async setupListenerForCleanup() {
-    (await this.electronService.getCurrentWindow()).on('close', async () => {
-      if (this.isInvokedUsingToolbar) {
-        let v=new VariableBase(this.electronService.minsky.canvas.item)
-        const currentItemId = await v.id();
-        const currentItemName = await v.name();
-        // We do this check because item focus might have changed when importing csv if user decided to work on something else
-
-        if (
-          currentItemId === this.itemId &&
-          currentItemName === importCSVvariableName
-        ) {
-          await this.electronService.minsky.canvas.deleteItem();
-        }
-      }
-    });
+    // TODO - move this to main process
+//    (await this.electronService.getCurrentWindow()).on('close', async () => {
+//      if (this.isInvokedUsingToolbar) {
+//        let v=new VariableBase(this.electronService.minsky.canvas.item)
+//        const currentItemId = await v.id();
+//        const currentItemName = await v.name();
+//        // We do this check because item focus might have changed when importing csv if user decided to work on something else
+//
+//        if (
+//          currentItemId === this.itemId &&
+//          currentItemName === importCSVvariableName
+//        ) {
+//          await this.electronService.minsky.canvas.deleteItem();
+//        }
+//      }
+//    });
   }
 
   updateForm() {
