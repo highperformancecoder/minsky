@@ -174,7 +174,6 @@ export class WindowManager {
       backgroundColor,
       webPreferences: {
         nodeIntegration: true,
-        enableRemoteModule: true,
       },
       icon: __dirname + '/assets/favicon.png',
     });

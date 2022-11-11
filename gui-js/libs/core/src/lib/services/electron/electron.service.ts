@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
 import { events, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
-import { ipcRenderer, remote } from 'electron';
+import { ipcRenderer } from 'electron';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';
+import {BrowserWindow} from 'electron';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ElectronService {
   ipcRenderer: typeof ipcRenderer;
-  remote: typeof remote;
   isElectron = isElectron? isElectron(): false;
   minsky: Minsky;
   
   constructor() {
     if (this.isElectron) {
       this.ipcRenderer = (<any>window).require('electron').ipcRenderer;
-      this.remote = (<any>window).require('electron').remote;
       this.minsky=new Minsky("/minsky");
       CppClass.backend=async (...args)=>{
         return await this.ipcRenderer.invoke(events.BACKEND, ...args);
@@ -24,7 +23,29 @@ export class ElectronService {
     }
   }
 
-  async saveHandleDescription(payload: HandleDescriptionPayload) {
+  async getCurrentWindow(): Promise<BrowserWindow> {
+    return this.ipcRenderer.invoke(events.GET_CURRENT_WINDOW);
+  }
+  
+  async closeWindow() {
+    if (this.isElectron) {
+      (await this.getCurrentWindow()).close();
+    }
+  }
+
+  async openFileDialog(options): Promise<string> {
+    return await this.ipcRenderer.invoke(events.OPEN_FILE_DIALOG, options);
+  }
+  
+  async saveFileDialog(options): Promise<string> {
+    return await this.ipcRenderer.invoke(events.SAVE_FILE_DIALOG, options);
+  }
+  
+  async showMessageBoxSync(options): Promise<number> {
+    return await this.ipcRenderer.invoke(events.SHOW_MESSAGE_BOX, options);
+  }
+  
+  async saveHandleDescription(payload: HandleDescriptionPayload): Promise<number> {
     return await this.ipcRenderer.invoke(events.SAVE_HANDLE_DESCRIPTION, payload);
   }
 

@@ -10,7 +10,7 @@ import { events, } from '@minsky/shared';
 })
 export class AddBookmarkComponent {
   bookmarkName: FormControl;
-
+  
   constructor(private electronService: ElectronService) {
     this.bookmarkName = new FormControl('', Validators.required);
   }
@@ -22,9 +22,5 @@ export class AddBookmarkComponent {
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  async closeWindow() {this.electronService.closeWindow();}
 }

@@ -188,8 +188,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   
-  private setupListenerForCleanup() {
-    this.electronService.remote.getCurrentWindow().on('close', async () => {
+  private async setupListenerForCleanup() {
+    (await this.electronService.getCurrentWindow()).on('close', async () => {
       if (this.isInvokedUsingToolbar) {
         let v=new VariableBase(this.electronService.minsky.canvas.item)
         const currentItemId = await v.id();
@@ -229,19 +229,14 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async selectFile() {
-    const fileDialog = await this.electronService.remote.dialog.showOpenDialog({
+    const filePath = await this.electronService.openFileDialog({
       filters: [
         { extensions: ['csv'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },
       ],
     });
 
-    if (fileDialog.canceled || !fileDialog.filePaths) {
-      return;
-    }
-
-    const filePath = fileDialog.filePaths[0].toString();
-
+    if (!filePath) {return;}
     this.url.setValue(filePath);
     this.dialogState.url=filePath;
   }
@@ -401,9 +396,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
         title: 'Generate Report ?',
       };
 
-      const index = this.electronService.remote.dialog.showMessageBoxSync(
-        options
-      );
+      const index = await this.electronService.showMessageBoxSync(options);
 
       if (options.buttons[index] === positiveResponseText) {
         await this.doReport();
@@ -438,31 +431,19 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       .toLowerCase()
       .split('.csv')[0];
 
-    const {
-      canceled,
-      filePath: _filePath,
-    } = await this.electronService.remote.dialog.showSaveDialog({
+     const filePath = await this.electronService.saveFileDialog({
       defaultPath: `${filePathWithoutExt}-error-report.csv`,
       title: 'Save report',
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [{ extensions: ['csv'], name: 'CSV' }],
     });
+    if (!filePath) return;
 
-    const filePath = normalizeFilePathForPlatform(_filePath);
-    const url = normalizeFilePathForPlatform(this.url.value);
-    if (canceled || !filePath) {
-      return;
-    }
-
-    await this.variableValuesSubCommand.csvDialog.reportFromFile(url,filePath);
+    await this.variableValuesSubCommand.csvDialog.reportFromFile(this.url.value,filePath);
     return;
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
   ngOnDestroy() {}

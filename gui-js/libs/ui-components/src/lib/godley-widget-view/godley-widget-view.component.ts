@@ -68,20 +68,18 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     if (isMacOS()) this.yoffs=-20; // why, o why, Mac?
   }
 
-  windowResize() {
-    this.getWindowRectInfo();
+  async windowResize() {
+    await this.getWindowRectInfo();
     this.renderFrame();
   }
-  private getWindowRectInfo() {
-    this.godleyCanvasContainer = this.godleyCanvasElemWrapper
-      .nativeElement as HTMLElement;
+  private async getWindowRectInfo() {
+    this.godleyCanvasContainer = this.godleyCanvasElemWrapper.nativeElement as HTMLElement;
 
     const clientRect = this.godleyCanvasContainer.getBoundingClientRect();
 
+    let menuBarHeight=await this.windowUtilityService.getElectronMenuBarHeight();
     this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = Math.round(
-      this.windowUtilityService.getElectronMenuBarHeight()
-    );
+    this.topOffset = Math.round(menuBarHeight);
 
     this.height = Math.round(this.godleyCanvasContainer.clientHeight);
     this.width = Math.round(this.godleyCanvasContainer.clientWidth);
@@ -95,10 +93,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
       this.height &&
       this.width
     ) {
-      const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
-        .scaleFactor;
-
-      this.namedItemSubCommand.renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,scaleFactor);
+      this.namedItemSubCommand.renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
     }
   }
 
@@ -164,7 +159,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     const [
       x,
       y,
-    ] = this.electronService.remote.getCurrentWindow().getContentSize();
+    ] = (await this.electronService.getCurrentWindow()).getContentSize();
 
     //TODO: throttle here if required
     this.namedItemSubCommand.zoom(x/2, y/2, zoomFactor);

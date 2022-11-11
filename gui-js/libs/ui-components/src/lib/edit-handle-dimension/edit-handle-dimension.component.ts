@@ -64,9 +64,5 @@ export class EditHandleDimensionComponent implements OnInit, DoCheck {
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

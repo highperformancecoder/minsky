@@ -14,7 +14,7 @@ export class AboutComponent implements OnInit {
   frontEndVersion: string;
   ravelVersion: string;
 
-  constructor(private electronService: ElectronService) {}
+  constructor(private electronService: ElectronService){}
 
   ngOnInit(): void {
     (async () => {
@@ -26,9 +26,5 @@ export class AboutComponent implements OnInit {
     })();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  async closeWindow() {this.electronService.closeWindow();}
 }

@@ -19,7 +19,7 @@ export class AppComponent implements AfterViewInit {
     private translate: TranslateService,
     public router: Router
   ) {
-      this.windowUtilityService=new WindowUtilityService(electronService);
+    this.windowUtilityService=new WindowUtilityService(electronService);
     this.translate.setDefaultLang('en');
   }
 
@@ -48,13 +48,12 @@ export class AppComponent implements AfterViewInit {
   }
 
   // close modals with ESC
-  private handleEscKey(event: KeyboardEvent) {
+  private async handleEscKey(event: KeyboardEvent) {
     (document.activeElement as HTMLElement).blur();
     //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)
 
-    const currentWindow =
-    this.electronService.remote.getCurrentWindow();
-    // disable closing be means of dontCloseOnEscape property
+    const currentWindow = await this.electronService.getCurrentWindow();
+    // disable closing by means of dontCloseOnEscape property
     if (currentWindow.id !== 1 && !currentWindow.hasOwnProperty("dontCloseOnEscape")) {
       currentWindow.close();
       event.preventDefault();
@@ -62,9 +61,10 @@ export class AppComponent implements AfterViewInit {
   }
 
   // submits form with class="submit" when pressed Enter key
-  private handleEnterKey(event: KeyboardEvent) {
+  private async handleEnterKey(event: KeyboardEvent) {
       // disable invoking OK button if marked dontCloseOnReturn
-      if (this.electronService.remote.getCurrentWindow().hasOwnProperty("dontCloseOnReturn")) return;
+    const currentWindow = await this.electronService.getCurrentWindow();
+    if (currentWindow.hasOwnProperty("dontCloseOnReturn")) return;
 
       (document.activeElement as HTMLElement).blur();
       //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)

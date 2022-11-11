@@ -43,9 +43,5 @@ export class PickSlicesComponent implements OnInit {
     for(const sl of this.sliceLabels) sl.selected = selected;
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

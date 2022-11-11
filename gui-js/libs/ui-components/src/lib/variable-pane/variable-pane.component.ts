@@ -86,12 +86,9 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       this.height &&
       this.width
     ) {
-      const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
-        .scaleFactor;
-
       this.variablePane.updateWithHeight(this.height);
       this.variablePane.renderFrame
-      (this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,scaleFactor);
+      (this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
     }
   }
 

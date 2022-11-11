@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, isWindows, isMacOS } from '@minsky/shared';
+import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, events, isWindows, isMacOS } from '@minsky/shared';
 import { ElectronService } from '../electron/electron.service';
+import { BrowserWindow } from 'electron';
 
 @Injectable({
   providedIn: 'root',
@@ -26,15 +27,13 @@ export class WindowUtilityService {
     }
   }
 
-  public reInitialize() {
+  public async reInitialize() {
     this.minskyCanvasContainer = document.getElementById(
       'minsky-canvas-container'
     );
 
-    if (
-      this.minskyCanvasContainer &&
-      this.electronService.remote.getCurrentWindow().id === this.mainWindowId
-    ) {
+    let currentWindow=await this.electronService.getCurrentWindow();
+    if (this.minskyCanvasContainer && currentWindow.id === this.mainWindowId) {
       const bodyElement = document.getElementsByTagName('body')[0];
       this.minskyCanvasElement = document.getElementById(
         'main-minsky-canvas'
@@ -70,15 +69,15 @@ export class WindowUtilityService {
       this.leftOffset = clientRect.left;
       this.topOffset = clientRect.top;
 
-      this.electronMenuBarHeight = this.getElectronMenuBarHeight();
+      this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
     }
   }
 
-  public getElectronMenuBarHeight() {
+  public async getElectronMenuBarHeight() {
     if (isWindows()) return electronMenuBarHeightForWindows;
     if (isMacOS()) return 0;
     
-    const currentWindow = this.electronService.remote.getCurrentWindow();
+    const currentWindow = await this.electronService.getCurrentWindow();
     const currentWindowSize = currentWindow.getSize()[1];
     const currentWindowContentSize = currentWindow.getContentSize()[1];
     return currentWindowSize - currentWindowContentSize;
@@ -125,17 +124,15 @@ export class WindowUtilityService {
     return this.minskyCanvasContainer;
   }
 
-  public isMainWindow(): boolean {
-    const isMainWindow =
-      this.electronService.remote.getCurrentWindow().id === 1;
-
-    return isMainWindow;
+  public async isMainWindow(): Promise<boolean> {
+    let currentWindow=await this.electronService.getCurrentWindow();
+    return currentWindow.id === 1;
   }
 
   public closeCurrentWindowIfNotMain() {
     if (this.electronService.isElectron) {
-      setTimeout(() => {
-        const currentWindow = this.electronService.remote.getCurrentWindow();
+      setTimeout(async () => {
+        const currentWindow = await this.electronService.getCurrentWindow();
         if (currentWindow?.id !== 1) {
           currentWindow.close();
         }

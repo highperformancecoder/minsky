@@ -424,10 +424,10 @@ export class CommunicationService {
   }
 
   async setWindowSizeAndCanvasOffsets() {
-    const isMainWindow = this.windowUtilityService.isMainWindow();
+    const isMainWindow = await this.windowUtilityService.isMainWindow();
     // Code for canvas offset values
     if (this.electronService.isElectron && isMainWindow) {
-      this.windowUtilityService.reInitialize();
+      await this.windowUtilityService.reInitialize();
       const offset = this.windowUtilityService.getMinskyCanvasOffset();
       const drawableArea = this.windowUtilityService.getDrawableArea();
       this.electronService.ipcRenderer.send(events.APP_LAYOUT_CHANGED, {

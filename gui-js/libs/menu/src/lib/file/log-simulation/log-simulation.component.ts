@@ -56,11 +56,7 @@ export class LogSimulationComponent implements OnDestroy {
     });
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 
   handleSubmit() {
     const selectedItems = [];
