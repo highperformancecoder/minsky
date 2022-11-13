@@ -14,6 +14,7 @@ import { MainRenderingTabs, minsky } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
+import * as JSON5 from 'json5'; 
 
 @AutoUnsubscribe()
 @Component({
@@ -36,16 +37,19 @@ export class WiringComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    const isMainWindow = this.windowUtilityService.isMainWindow();
-    if (isMainWindow) {
-      const minskyCanvasContainer = this.windowUtilityService.getMinskyContainerElement();
-      this.cmService.showDragCursor$.subscribe((showDragCursor) => {
-        this.showDragCursor = showDragCursor;
-        this.changeDetectorRef.detectChanges();
-      });
+    const isMainWindow = await this.windowUtilityService.isMainWindow();
+    if (isMainWindow)
+      setTimeout(async ()=> 
+        {
+          await this.windowUtilityService.reInitialize();
+          const minskyCanvasContainer = this.windowUtilityService.getMinskyContainerElement();
+          this.cmService.showDragCursor$.subscribe((showDragCursor) => {
+            this.showDragCursor = showDragCursor;
+            this.changeDetectorRef.detectChanges();
+          });
 
-      this.setupEventListenersForCanvas(minskyCanvasContainer);
-    }
+          this.setupEventListenersForCanvas(minskyCanvasContainer);
+        }, 10);
 
     this.availableOperationsMapping = await this.electronService.minsky.availableOperationsMapping();
 
@@ -53,10 +57,10 @@ export class WiringComponent implements OnInit, OnDestroy {
   }
 
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {
-    const minskyCanvasElement = this.windowUtilityService.getMinskyCanvasElement();
+    const minskyCanvasElement = document.getElementById('main-minsky-canvas') as HTMLElement;
     const scrollableArea = this.windowUtilityService.getScrollableArea();
     var moveOnScroll=0; // avoid moving when programmatically setting scroll bars
-    
+
     this.cmService.resetScroll=async ()=>{
       ++moveOnScroll;
       var pos= await this.electronService.currentTabPosition();
@@ -111,7 +115,7 @@ export class WiringComponent implements OnInit, OnDestroy {
         minskyCanvasElement.addEventListener(
           'mousedown',
           async (event: MouseEvent) => {
-              await this.cmService.mouseEvents('CANVAS_EVENT', event);
+            await this.cmService.mouseEvents('CANVAS_EVENT', event);
           }
         );
 
