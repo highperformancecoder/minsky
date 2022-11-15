@@ -220,9 +220,6 @@ default: $(EXES) gui-js/libs/shared/src/lib/backend/minsky.ts
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
 
-# this dependency is not worked out automatically because they're hidden by a #ifdef in minsky_epilogue.h
-$(MODEL_OBJS): plot.xcd signature.xcd
-
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
 # only perform link checking if online
@@ -231,6 +228,9 @@ all: $(EXES) $(TESTS) minsky.xsd
 #	if ping -c 1 www.google.com; then linkchecker -f linkcheckerrc gui-tk/library/help/minsky.html; fi
 #endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
+
+# this dependency is not worked out automatically because they're hidden by a #ifdef in minsky_epilogue.h
+$(MODEL_OBJS): plot.xcd signature.xcd
 
 ifneq ($(MAKECMDGOALS),clean)
 include $(ALL_OBJS:.o=.d)

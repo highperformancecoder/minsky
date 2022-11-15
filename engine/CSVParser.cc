@@ -582,7 +582,7 @@ namespace minsky
             if (spec.headerRow<spec.nRowAxes() && row==spec.headerRow && !spec.columnar) // in header section
               {
                 vector<string> parsedRow(tok.begin(), tok.end());
-                tabularFormat=spec.dataCols.size()>1 || spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1;
+                tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1);
                 if (tabularFormat)
                   {
                     // legacy situation where all data columns are to the right
