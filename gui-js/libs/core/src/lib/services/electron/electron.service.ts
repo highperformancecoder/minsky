@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
 import { events, CurrentWindowDetails, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
-import { ipcRenderer } from 'electron';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';
-import {BrowserWindow} from 'electron';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ElectronService {
-  ipcRenderer: typeof ipcRenderer;
+  private ipcRenderer: any;
+  public platform: string;
   isElectron = isElectron? isElectron(): false;
   minsky: Minsky;
+  on: (channel: string, listener) => void;
   
   constructor() {
     if (this.isElectron) {
-      this.ipcRenderer = (<any>window).require('electron').ipcRenderer;
+      this.ipcRenderer = window['electron'].ipcRenderer;
+      this.platform = window['electron'].platform;
+      this.on = window['electron'].ipcRendererOn
       this.minsky=new Minsky("/minsky");
       CppClass.backend=async (...args)=>{
         return await this.ipcRenderer.invoke(events.BACKEND, ...args);
@@ -23,6 +25,15 @@ export class ElectronService {
     }
   }
 
+  send(channel: string,...args) {return this.ipcRenderer.send(channel,...args);}
+  sendSync(channel: string,...args) {return this.ipcRenderer.sendSync(channel,...args);}
+  invoke(channel: string,...args) {return this.ipcRenderer.invoke(channel,...args);}
+  log(msg: string) {this.ipcRenderer.invoke(events.LOG,msg);}
+
+  isWindows() {return this.platform === 'win32';}
+  isMacOS() {return this.platform === 'darwin';}
+
+  
   async getCurrentWindow(): Promise<CurrentWindowDetails> {
     return this.ipcRenderer.invoke(events.GET_CURRENT_WINDOW);
   }

@@ -17,7 +17,7 @@ export class AddBookmarkComponent {
 
   async handleSubmit() {
     this.electronService.minsky.model.addBookmark(this.bookmarkName.value);
-    this.electronService.ipcRenderer.send(events.UPDATE_BOOKMARK_LIST);
+    this.electronService.send(events.UPDATE_BOOKMARK_LIST);
 
     this.closeWindow();
   }

@@ -6,7 +6,6 @@ import {
   dateTimeFormats,
   importCSVerrorMessage,
   importCSVvariableName,
-  isWindows,
   normalizeFilePathForPlatform,
   VariableBase,
   VariableValue,
@@ -168,6 +167,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.inputCsvCanvasContainer)
     {
       var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
+      if (!table) return;
       for (var i=0; i<this.colType.length; ++i)
         {
             var colType=table.rows[0].cells[i+1]?.children[0] as HTMLInputElement;
@@ -300,6 +300,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedCol = colIndex;
     this.dialogState.spec.dataColOffset = colIndex;
 
+    if (!this.parsedLines.length) return;
     for (let i = 0; i<this.parsedLines[0].length; i++)
       //for (let i = this.selectedCol; this.dialogState.spec.columnar? i<this.selectedCol + 1: i < this.parsedLines.length; i++) {
       if (i<this.selectedCol) {
@@ -417,7 +418,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       this.url.value
     ) {
       const path = this.url.value as string;
-      const pathArray = isWindows() ? path.split(`\\`) : path.split(`/`);
+      const pathArray = this.electronService.isWindows() ? path.split(`\\`) : path.split(`/`);
 
       const fileName = pathArray[pathArray.length - 1].split(`.`)[0];
 

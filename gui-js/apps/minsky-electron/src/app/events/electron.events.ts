@@ -46,6 +46,8 @@ ipcMain.handle(events.BACKEND, (event, ...args: any[])=>{
   return CppClass.backend(...args);
 });
 
+ipcMain.handle(events.LOG, (event, msg:string)=>{console.log(msg);});
+
 ipcMain.handle(events.GET_CURRENT_WINDOW, (event) => {
   let window=BrowserWindow.fromWebContents(event.sender);
   return {

@@ -68,7 +68,7 @@ export class LogSimulationComponent implements OnDestroy {
       }
     });
 
-    this.electronService.ipcRenderer.send(events.LOG_SIMULATION, selectedItems);
+    this.electronService.send(events.LOG_SIMULATION, selectedItems);
 
     this.closeWindow();
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, events, isWindows, isMacOS } from '@minsky/shared';
+import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, events, } from '@minsky/shared';
 import { ElectronService } from '../electron/electron.service';
 import { BrowserWindow } from 'electron';
 
@@ -68,8 +68,8 @@ export class WindowUtilityService {
   }
 
   public async getElectronMenuBarHeight(): Promise<number> {
-    if (isWindows()) return electronMenuBarHeightForWindows;
-    if (isMacOS()) return 0;
+    if (this.electronService.isWindows()) return electronMenuBarHeightForWindows;
+    if (this.electronService.isMacOS()) return 0;
     
     const currentWindow = await this.electronService.getCurrentWindow();
     const currentWindowSize = currentWindow.size[1];

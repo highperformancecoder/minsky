@@ -31,7 +31,7 @@ export class VariableComponent {
         default:
           break;
       }
-      this.electronService.ipcRenderer.send(events.CREATE_MENU_POPUP, {
+      this.electronService.send(events.CREATE_MENU_POPUP, {
         title: 'Specify variable name',
         url,
         width: 500,
@@ -40,7 +40,7 @@ export class VariableComponent {
     }
   }
     openVariablePane() {
-       this.electronService.ipcRenderer.send(events.CREATE_MENU_POPUP, {
+       this.electronService.send(events.CREATE_MENU_POPUP, {
         title: 'Variables',
            url: "#/headless/variable-pane",
         width: 500,

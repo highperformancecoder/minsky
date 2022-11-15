@@ -17,7 +17,6 @@ import {
   events,
   GodleyIcon,
   GodleyTableWindow,
-  isMacOS,
   green
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -65,7 +64,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     this.getWindowRectInfo();
     this.renderFrame();
     this.initEvents();
-    if (isMacOS()) this.yoffs=-20; // why, o why, Mac?
+    if (this.electronService.isMacOS()) this.yoffs=-20; // why, o why, Mac?
   }
 
   async windowResize() {
@@ -116,7 +115,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
     this.godleyCanvasContainer.addEventListener('mousedown', async (event) => {
       if (event.button===0)
-        this.electronService.ipcRenderer.invoke(events.GODLEY_VIEW_MOUSEDOWN, {
+        this.electronService.invoke(events.GODLEY_VIEW_MOUSEDOWN, {
           command: this.itemId,
           mouseX: event.x, mouseY: event.y+this.yoffs
         });
@@ -127,7 +126,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     });
     
     this.godleyCanvasContainer.addEventListener('contextmenu', async (event) => {
-      this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
+      this.electronService.send(events.CONTEXT_MENU, {
         x: event.x,
         y: event.y,
         type: "godley",

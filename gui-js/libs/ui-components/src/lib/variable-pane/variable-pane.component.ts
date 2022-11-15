@@ -12,7 +12,6 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import {
-  isMacOS,
   VariablePane,
   green
 } from '@minsky/shared';

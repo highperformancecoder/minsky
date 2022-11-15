@@ -11,7 +11,7 @@ export const ZOOM_IN_FACTOR = 1.1;
 export const ZOOM_OUT_FACTOR = 0.91;
 export const RESET_ZOOM_FACTOR = 1;
 
-export const OPEN_DEV_TOOLS_IN_DEV_BUILD = false;
+export const OPEN_DEV_TOOLS_IN_DEV_BUILD = true;
 
 export const events = {
   ADD_RECENT_FILE: 'add-recent-file',
@@ -32,6 +32,7 @@ export const events = {
   IMPORT_CSV: 'import-csv',
   INIT_MENU_FOR_GODLEY_VIEW: 'init-menu-for-godley-view',
   KEY_PRESS: 'key-press',
+  LOG: 'log',
   LOG_SIMULATION: 'log-simulation',
   NEW_SYSTEM: 'new-system',
   OPEN_FILE_DIALOG: 'open-file-dialog',

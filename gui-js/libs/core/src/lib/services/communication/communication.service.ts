@@ -12,7 +12,6 @@ import {
   TypeValueName,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
-  isMacOS,
   VariableBase,
   green
 } from '@minsky/shared';
@@ -84,7 +83,7 @@ export class CommunicationService {
     this.scrollPositionAtMouseDown = null;
     this.mousePositionAtMouseDown = null;
     this.initReplay();
-    this.electronService.ipcRenderer?.on('reset-scroll', async()=>{this.resetScroll();});
+    this.electronService.on('reset-scroll', async()=>{this.resetScroll();});
   }
 
   private async syncRunUntilTime() {
@@ -93,14 +92,14 @@ export class CommunicationService {
 
   private initReplay() {
     if (this.electronService.isElectron) {
-      this.electronService.ipcRenderer.on(
+      this.electronService.on(
         events.REPLAY_RECORDING,
         async (event, { json }) => {
           this.ReplayRecordingStatus$.next(ReplayRecordingStatus.ReplayStarted);
           this.currentReplayJSON = json;
           this.showPlayButton$.next(false);
 
-          await this.electronService.ipcRenderer.invoke(events.NEW_SYSTEM);
+          await this.electronService.invoke(events.NEW_SYSTEM);
           this.startReplay();
         }
       );
@@ -162,7 +161,7 @@ export class CommunicationService {
 
   setBackgroundColor(color = null) {
     if (this.electronService.isElectron)
-      this.electronService.ipcRenderer.send(events.SET_BACKGROUND_COLOR, {
+      this.electronService.send(events.SET_BACKGROUND_COLOR, {
         color: color,
       });
   }
@@ -347,7 +346,7 @@ export class CommunicationService {
     this.mouseY = clientY - Math.round(offset.top);
 
     if (event === 'contextmenu') {
-      this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
+      this.electronService.send(events.CONTEXT_MENU, {
         x: this.mouseX,
         y: this.mouseY,
         type: "canvas",
@@ -363,7 +362,7 @@ export class CommunicationService {
     if (this.electronService.isElectron) {
 
       if (type === 'mousedown' && message.altKey) {
-        this.electronService.ipcRenderer.send(
+        this.electronService.send(
           events.DISPLAY_MOUSE_COORDINATES,
           { mouseX: this.mouseX, mouseY: this.mouseY }
         );
@@ -405,7 +404,7 @@ export class CommunicationService {
         return;
       }
 
-      const yoffs=isMacOS()? 5: 0; // why, o why, Mac?
+      const yoffs=this.electronService.isMacOS()? 5: 0; // why, o why, Mac?
 
       let minsky=this.electronService.minsky;
       switch (type) {
@@ -430,7 +429,7 @@ export class CommunicationService {
       await this.windowUtilityService.reInitialize();
       const offset = this.windowUtilityService.getMinskyCanvasOffset();
       const drawableArea = this.windowUtilityService.getDrawableArea();
-      this.electronService.ipcRenderer.send(events.APP_LAYOUT_CHANGED, {
+      this.electronService.send(events.APP_LAYOUT_CHANGED, {
         offset: offset,
         drawableArea: drawableArea,
       } as AppLayoutPayload);
@@ -488,7 +487,7 @@ export class CommunicationService {
       mouseX: this.mouseX,
       mouseY: this.mouseY,
     };
-    await this.electronService.ipcRenderer.invoke(events.IMPORT_CSV, payload);
+    await this.electronService.invoke(events.IMPORT_CSV, payload);
   }
 
   onMouseWheelZoom = async (event: WheelEvent) => {
@@ -578,7 +577,7 @@ export class CommunicationService {
 
     
     if (!isMainWindow) {
-      await this.electronService.ipcRenderer.invoke(
+      await this.electronService.invoke(
         events.KEY_PRESS,
         {
           ...payload,
@@ -589,7 +588,7 @@ export class CommunicationService {
     }
 
     if (!this.dialogRef) {
-      const isKeyHandled = this.electronService.ipcRenderer.sendSync(
+      const isKeyHandled = this.electronService.sendSync(
         events.KEY_PRESS,
         {
           ...payload,
@@ -634,7 +633,7 @@ export class CommunicationService {
       })
       .join('&');
 
-    this.electronService.ipcRenderer.send(events.CREATE_MENU_POPUP, {
+    this.electronService.send(events.CREATE_MENU_POPUP, {
       width: 500,
       height: 650,
       title: title,
@@ -690,7 +689,7 @@ export class CommunicationService {
   }
 
   handleDblClick() {
-    this.electronService.ipcRenderer.send(events.DOUBLE_CLICK, {
+    this.electronService.send(events.DOUBLE_CLICK, {
       mouseX: this.mouseX,
       mouseY: this.mouseY,
     });

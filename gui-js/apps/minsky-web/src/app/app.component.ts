@@ -96,14 +96,14 @@ export class AppComponent implements AfterViewInit {
       container.scrollTop=scrollableArea.height / 2;
       container.scrollLeft=scrollableArea.width / 2;
       const payload = { newTab: tab };
-      this.electronService.ipcRenderer.send(events.CHANGE_MAIN_TAB, payload);
+      this.electronService.send(events.CHANGE_MAIN_TAB, payload);
       this.cmService.resetScroll();
     }
   }
 
   startTerminal() {
     if (this.electronService.isElectron) {
-      this.electronService.ipcRenderer.send(events.CREATE_MENU_POPUP, {
+      this.electronService.send(events.CREATE_MENU_POPUP, {
         title: 'Terminal',
         url: `#/headless/terminal`,
         width: 800,
