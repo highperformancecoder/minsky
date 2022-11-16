@@ -31,7 +31,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.render();
+    setTimeout(()=>{this.render();},10);
   }
 
   async render() {

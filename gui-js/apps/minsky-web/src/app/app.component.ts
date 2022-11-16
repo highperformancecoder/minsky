@@ -86,17 +86,18 @@ export class AppComponent implements AfterViewInit {
     await this.cmService.setWindowSizeAndCanvasOffsets();
   }
 
-  changeTab(tab: MainRenderingTabs) {
+  async changeTab(tab: MainRenderingTabs) {
     new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
 
     this.cmService.currentTab = tab;
     if (this.electronService.isElectron) {
+      await this.windowUtilityService.reInitialize();
       var container=this.windowUtilityService.getMinskyContainerElement();
       const scrollableArea=this.windowUtilityService.getScrollableArea();
       container.scrollTop=scrollableArea.height / 2;
       container.scrollLeft=scrollableArea.width / 2;
       const payload = { newTab: tab };
-      this.electronService.send(events.CHANGE_MAIN_TAB, payload);
+      await this.electronService.send(events.CHANGE_MAIN_TAB, payload);
       this.cmService.resetScroll();
     }
   }

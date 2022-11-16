@@ -61,8 +61,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.namedItem = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
     this.namedItemSubCommand = this.namedItem.popup;
-    this.getWindowRectInfo();
-    this.renderFrame();
+    this.windowResize();
     this.initEvents();
     if (this.electronService.isMacOS()) this.yoffs=-20; // why, o why, Mac?
   }
@@ -86,7 +85,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   renderFrame() {
     if (
-      this.electronService.isElectron &&
       this.systemWindowId &&
       this.itemId &&
       this.height &&
