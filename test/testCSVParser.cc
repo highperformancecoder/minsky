@@ -128,7 +128,9 @@ SUITE(CSVParser)
       string out="";  
       istringstream isn(in);
       ostringstream osn(out);
-            
+      setDataArea(1,1);
+      dimensionCols.insert(0);
+      
       reportFromCSVFile(isn,osn,*this);
       
       CHECK(osn.str().find("missing numerical data") != std::string::npos);

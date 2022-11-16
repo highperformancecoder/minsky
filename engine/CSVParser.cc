@@ -515,6 +515,9 @@ namespace minsky
                   if (spec.columnar) break; // only one column to check
                 }
 
+            if ((spec.dataCols.empty() && i<=spec.nColAxes()) || i<=*spec.dataCols.end())
+              output<<"missing numerical data"<<spec.separator<<buf<<endl;
+            
             auto rec=lines.find(key);
             if (rec!=lines.end())
               {
