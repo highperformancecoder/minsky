@@ -81,10 +81,6 @@ export default class App {
       height: height,
       show: false,
       webPreferences: {
-        /*
-          The below settings are recommended by nx-electron as shown here https://github.com/bennymeg/nx-electron/blob/master/docs/migration/migrating.v10.md
-          But, after using the below settings the app does not start
-        */
         contextIsolation: true,
         preload: join(__dirname, 'preload.js'),
         nodeIntegration: true,
