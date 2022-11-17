@@ -1,6 +1,5 @@
 import {
   MinskyProcessPayload,
-  ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
   minsky, RenderNativeWindow,
 } from '@minsky/shared';

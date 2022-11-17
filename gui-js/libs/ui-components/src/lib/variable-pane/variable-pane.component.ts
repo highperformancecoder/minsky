@@ -13,7 +13,6 @@ import {
 } from '@minsky/core';
 import {
   VariablePane,
-  green
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';

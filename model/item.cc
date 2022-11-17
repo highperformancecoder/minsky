@@ -354,7 +354,7 @@ namespace minsky
     Pango pango(cairo);
     float w, h, z=zoomFactor();
     pango.angle=rotation() * M_PI / 180.0; 
-    pango.setFontSize(12*scaleFactor()*z);
+    pango.setFontSize(12.0*scaleFactor()*z);
     pango.setMarkup(latexToPango(detailedText));         
     // parameters of icon in userspace (unscaled) coordinates
     w=0.5*pango.width()+2*z; 

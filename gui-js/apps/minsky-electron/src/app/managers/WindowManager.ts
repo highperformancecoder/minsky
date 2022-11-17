@@ -2,7 +2,6 @@ import {
   ActiveWindow,
   AppLayoutPayload,
   CreateWindowPayload,
-  green,
   isMacOS,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,

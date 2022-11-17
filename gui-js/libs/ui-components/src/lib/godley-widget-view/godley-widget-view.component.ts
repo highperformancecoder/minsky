@@ -17,7 +17,6 @@ import {
   events,
   GodleyIcon,
   GodleyTableWindow,
-  green
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';

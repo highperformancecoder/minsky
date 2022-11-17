@@ -719,7 +719,7 @@ export class CommandsManager {
   static async openGodleyTable(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
       CommandsManager.addItemToNamedItems(itemInfo);
-      let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second)
+      let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
       var title=godley.table.title();
 
       const window = await this.initializePopupWindow({
