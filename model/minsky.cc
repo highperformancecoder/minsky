@@ -330,19 +330,6 @@ namespace minsky
         throw runtime_error("clipboard data invalid");
       }
   
-  namespace
-  {
-    /// checks if the input stream has the UTF-8 byte ordering marker,
-    /// and removes it if present
-    void stripByteOrderingMarker(istream& s)
-    {
-      char bom[4];
-      s.get(bom,4);
-      if (strcmp(bom,"\357\273\277")==0) return; //skipped BOM
-      s.seekg(0); //rewind input stream
-    }
-  }
-
   void Minsky::insertGroupFromFile(const string& file)
   {
     ifstream inf(file);

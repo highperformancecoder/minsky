@@ -1,4 +1,4 @@
-import {CppClass, importCSVerrorMessage, Utility, version } from '@minsky/shared';
+import {CppClass, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
 import { dialog, shell } from 'electron';
 import * as JSON5 from 'json5';
@@ -53,16 +53,12 @@ export function backend(command: string, ...args: any[]) {
   } catch (error) {
     log.error('Rest API: ',command,arg,'=>Exception caught: ' + error?.message);
     if (!dialog) throw error; // rethrow to force error in jest environment
-    if (command === '/minsky/canvas/item/importFromCSV') {
-      return importCSVerrorMessage;
-    } else {
-      if (error?.message)
+      if (error?.message && command !== '/minsky/canvas/item/importFromCSV')
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
           message: error.message,
           type: 'error',
         });
       return error?.message;
-    }
   }
 }
 
