@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, events, } from '@minsky/shared';
+import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, } from '@minsky/shared';
 import { ElectronService } from '../electron/electron.service';
-import { BrowserWindow } from 'electron';
 
 @Injectable({
   providedIn: 'root',

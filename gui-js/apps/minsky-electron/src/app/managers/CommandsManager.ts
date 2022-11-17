@@ -10,6 +10,7 @@ import {
   isMacOS,
   normalizeFilePathForPlatform,
   electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
+  importCSVvariableName,
   minsky, GodleyIcon, Group, IntOp, Item, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
@@ -874,6 +875,21 @@ export class CommandsManager {
 
       let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
 
+      if (isInvokedUsingToolbar)
+      {
+        window.on('close', async () => {
+          let v=new VariableBase(minsky.canvas.item)
+          const currentItemId = v.id();
+          const currentItemName = v.name();
+          // We do this check because item focus might have changed when importing csv if user decided to work on something else
+
+          if (currentItemId === itemInfo.id && currentItemName === importCSVvariableName
+             ) {
+            minsky.canvas.deleteItem();
+          }
+        });
+      }       
+      
       window.loadURL(
         WindowManager.getWindowUrl(
           `#/headless/import-csv?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`

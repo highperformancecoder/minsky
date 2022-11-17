@@ -544,7 +544,7 @@ export class CommunicationService {
       event.preventDefault();
     }
 
-    const isMainWindow = this.windowUtilityService.isMainWindow();
+    const isMainWindow = await this.windowUtilityService.isMainWindow();
     if (isMainWindow && (event.ctrlKey || event.metaKey) && (event.key.match("[Noq]")))
       return; // perform menu accelerator only
 

@@ -6,7 +6,6 @@ import {
   dateTimeFormats,
   importCSVerrorMessage,
   importCSVvariableName,
-  normalizeFilePathForPlatform,
   VariableBase,
   VariableValue,
 } from '@minsky/shared';
@@ -159,7 +158,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selectedHeader = this.dialogState.spec.headerRow as number;
       this.load();
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
-      this.setupListenerForCleanup();
     })();
   }
   ngAfterViewChecked() 	{
@@ -188,25 +186,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   
-  private async setupListenerForCleanup() {
-    // TODO - move this to main process
-//    (await this.electronService.getCurrentWindow()).on('close', async () => {
-//      if (this.isInvokedUsingToolbar) {
-//        let v=new VariableBase(this.electronService.minsky.canvas.item)
-//        const currentItemId = await v.id();
-//        const currentItemName = await v.name();
-//        // We do this check because item focus might have changed when importing csv if user decided to work on something else
-//
-//        if (
-//          currentItemId === this.itemId &&
-//          currentItemName === importCSVvariableName
-//        ) {
-//          await this.electronService.minsky.canvas.deleteItem();
-//        }
-//      }
-//    });
-  }
-
   updateForm() {
     this.url.setValue(this.dialogState.url);
     

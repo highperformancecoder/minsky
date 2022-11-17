@@ -45,7 +45,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
     if (isMacOS()) this.yoffs=-20; // why, o why, Mac?
   }
 
-  render() {
+  async render() {
     const ravelCanvasContainer = this.ravelCanvasWrapper.nativeElement as HTMLElement;
 
     const clientRect = ravelCanvasContainer.getBoundingClientRect();
@@ -53,7 +53,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
     this.leftOffset = Math.round(clientRect.left);
 
     this.topOffset = Math.round(
-      this.windowUtilityService.getElectronMenuBarHeight()
+      await this.windowUtilityService.getElectronMenuBarHeight()
     );
 
     this.height = Math.round(ravelCanvasContainer.clientHeight);
@@ -101,7 +101,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
 
     ravelCanvasContainer.addEventListener('contextmenu', async (event) => {
       this.context=true;
-      this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
+      this.electronService.send(events.CONTEXT_MENU, {
         x: event.x,
         y: event.y,
         type: "ravel",
