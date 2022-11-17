@@ -14,7 +14,6 @@ import {
 import {
   isMacOS,
   VariablePane,
-  green
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';

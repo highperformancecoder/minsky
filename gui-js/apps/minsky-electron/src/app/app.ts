@@ -1,7 +1,5 @@
 import {
   ActiveWindow,
-  CppClass,
-  green,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   red,

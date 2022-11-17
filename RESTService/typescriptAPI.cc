@@ -286,7 +286,6 @@ int main()
   cout << "class classdesc__TCL_obj_t {}\n";
   cout << "class ecolab__cairo__Surface {}\n";
   cout << "class ecolab__Pango {}\n";
-  cout << "class ecolab__TCL_args {}\n";
   cout<<endl;
   
   // these need to be declared in a specific order
