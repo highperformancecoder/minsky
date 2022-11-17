@@ -23,6 +23,8 @@ export class ElectronService {
         return await this.ipcRenderer.invoke(events.BACKEND, ...args);
       }
     }
+    else
+      this.on = (...args)=>{};
   }
 
   send(channel: string,...args) {return this.ipcRenderer.send(channel,...args);}
