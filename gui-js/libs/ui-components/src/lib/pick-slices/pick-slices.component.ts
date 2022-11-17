@@ -10,8 +10,9 @@ import { ElectronService } from '@minsky/core';
 export class PickSlicesComponent implements OnInit {
   sliceLabels: {label: string, selected: boolean}[] = [];
 
+  command: string;
   handleIndex: number;
-
+  
   constructor(
     private route: ActivatedRoute,
     private electronService: ElectronService
@@ -19,6 +20,7 @@ export class PickSlicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
+      this.command=params['command'];
       this.handleIndex = +params['handleIndex'];
 
       const pickedSliceLabels = params['pickedSliceLabels'].split(',');
@@ -32,6 +34,7 @@ export class PickSlicesComponent implements OnInit {
   async handleSave() {
     if (this.electronService.isElectron) {
       await this.electronService.savePickSlices({
+        command: this.command,
         handleIndex: this.handleIndex,
         pickedSliceLabels: this.sliceLabels.filter(sl => sl.selected).map(sl => sl.label)
       });

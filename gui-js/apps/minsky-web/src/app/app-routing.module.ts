@@ -17,6 +17,7 @@ import {
   ParametersComponent,
   PlotWidgetOptionsComponent,
   PlotWidgetViewComponent,
+  RavelViewComponent,
   RenameAllInstancesComponent,
   VariablesComponent,
   VariablePaneComponent,
@@ -120,6 +121,10 @@ const routes: Routes = [
   {
     path: 'headless/plot-widget-options',
     component: PlotWidgetOptionsComponent,
+  },
+  {
+    path: 'headless/ravel-widget-view',
+    component: RavelViewComponent,
   },
   {
     path: 'headless/terminal',

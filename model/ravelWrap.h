@@ -25,12 +25,31 @@
 #include "dynamicRavelCAPI.h"
 #include "hypercube.h"
 #include "handleLockInfo.h"
+#include "renderNativeWindow.h"
 #include "SVGItem.h"
 
 namespace minsky 
 {
   using namespace civita;
   class RavelLockGroup;
+
+  class Ravel;
+  class RavelPopup: public RenderNativeWindow
+  {
+    Ravel& ravel;
+    float width, height, scale=1;
+    float localX(float x) const;
+    float localY(float y) const;
+  public:
+    RavelPopup(Ravel& ravel): ravel(ravel) {}
+    bool redraw(int x0, int y0, int width, int height) override;
+    void mouseDown(float x, float y) override;
+    void mouseUp(float x, float y) override;
+    void mouseMove(float x, float y) override;
+    void mouseOver(float x, float y);
+    void mouseLeave();
+    bool keyPress(int keySym, const std::string& utf8, int state, float x, float y) override;
+  };
   
   class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
   {
@@ -50,17 +69,19 @@ namespace minsky
     ravel::RavelState initState;
     
     friend struct SchemaHelper;
+    friend RavelPopup;
 
     std::vector<std::string> allSliceLabelsImpl(int axis, ravel::HandleSort::Order) const;
 
     ravel::Ravel wrappedRavel;
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
+    RavelPopup popup; ///< popup Ravel control window
     Ravel();
     // copy operations needed for clone, but not really used for now
     // define them as empty operations to prevent double frees if accidentally used
     void operator=(const Ravel&) {}
-    Ravel(const Ravel&) {}
+    Ravel(const Ravel&): popup(*this) {}
 
     /// local override of axis dimensionality
     Dimensions axisDimensions;
