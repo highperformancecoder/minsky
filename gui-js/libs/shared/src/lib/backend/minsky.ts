@@ -11,7 +11,6 @@ class classdesc__pack_t {}
 class classdesc__TCL_obj_t {}
 class ecolab__cairo__Surface {}
 class ecolab__Pango {}
-class ecolab__TCL_args {}
 
 export class Item extends CppClass {
   bb: BoundingBox;
