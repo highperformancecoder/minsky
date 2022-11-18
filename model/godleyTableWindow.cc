@@ -761,7 +761,7 @@ namespace minsky
       auto& str=table.cell(selectedRow,selectedCol); 
       if (insertIdx!=selectIdx)
         delSelection();
-      else if (insertIdx>=0 && insertIdx<str.length())
+      else if (insertIdx<str.length())
         str.erase(insertIdx,numBytes(str[insertIdx]));
       selectIdx=insertIdx;
     }

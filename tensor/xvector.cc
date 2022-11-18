@@ -176,7 +176,7 @@ namespace civita
               static greg_month quarterMonth[]={Jan,Apr,Jul,Oct};
               int year, quarter;
               auto pY=dim.units.find("%Y");
-              if (pY>=0)
+              if (pY!=string::npos)
                 if (pq<pY)
                   extract(dim.units,s,pq,"(\\d)",quarter,pY,"(\\d{4})",year);
                 else

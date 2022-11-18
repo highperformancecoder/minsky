@@ -233,7 +233,7 @@ namespace schema0
     Minsky(classdesc::xml_unpack_t& data)
     {
       ::xml_unpack(data,"root",*this);
-      void removeIntVarOrphans();
+      removeIntVarOrphans();
     }
     
     /** See ticket #329 and references within. At some stage, IntOp had

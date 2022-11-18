@@ -53,6 +53,8 @@ namespace minsky
     void requestRedraw();
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
+    RenderNativeWindow()=default;
+    RenderNativeWindow(const RenderNativeWindow&)=default;
     static double scaleFactor();
     /// return whether this window has scrollbars (needed for MacOSX).
     virtual bool hasScrollBars() const {return false;}

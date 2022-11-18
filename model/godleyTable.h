@@ -67,13 +67,6 @@ namespace minsky
       
     }
     
-    GodleyTable(const GodleyTable& other)
-      : m_assetClass(other.m_assetClass),
-        data(other.data),
-        doubleEntryCompliant(other.doubleEntryCompliant),
-        title(other.title)
-    { }
-  
     // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
     bool operator==(const GodleyTable& other) const 
     {
