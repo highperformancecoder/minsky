@@ -33,12 +33,13 @@ Notes on using the [REST Service](RESTService.md).
 ## JS frontend debugging notes
 
 - `console.log` works on minsky-electron code
-- for minsky-web code, use `process.stdout.write`, which takes a single string argument. Best trick is to use typescript template literal types, which allows embedding variable values simply within a string, eg
+- for minsky-web code, use `electronService.log`, which takes a single string argument. Best trick is to use typescript template literal types, which allows embedding variable values simply within a string, eg
 ~~~
-    process.stdout.write(`Var=${some javascript expression}`);
+    this.electronService.log(`Var=${some javascript expression}`);
 ~~~
-- use `green(`*some string*`)` or `red(`*some string*`)` to colorise log output to make it easier to spot your messages. With console.log, you ony need to colourise the first argument.
-- enable front end debugging tools by setting `OPEN_DEV_TOOLS_IN_DEV_BUILD = true` in `libs/shared/src/lib/constants/constants.ts`
+NB since the upgrade of electron, process is no longer available in the renderer (minsky-web) environment.
+- use `green(`*some string*`)` or `red(`*some string*`)` to colorise log output to make it easier to spot your messages. With console.log, you only need to colourise the first argument.
+- enable front end debugging tools by setting `OPEN_DEV_TOOLS_IN_DEV_BUILD = true` in `libs/shared/src/lib/constants/constants.ts`. This can be very useful in tracking down runtime errors, even syntax errors, as the renderer process fails silently.
 
 ## Roadmap
 
