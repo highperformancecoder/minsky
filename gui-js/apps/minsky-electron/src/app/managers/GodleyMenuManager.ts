@@ -2,11 +2,10 @@ import {
   CanvasItem,
   ClassType,
   GodleyTableOutputStyles,
-  green,
   isMacOS,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
-  minsky, GodleyIcon, GodleyTableWindow,
+  minsky, GodleyIcon,
 } from '@minsky/shared';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';

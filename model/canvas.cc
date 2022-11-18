@@ -204,7 +204,7 @@ namespace minsky
                       if (auto toGroup=model->minimalEnclosingGroup
                           (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
                         {
-                          if (g.get()==toGroup) return;
+                          if (g!=model && g.get()==toGroup) return;
                           // prevent moving a group inside itself
                           if (auto g=dynamic_cast<Group*>(itemFocus.get()))
                             if (g->higher(*toGroup))

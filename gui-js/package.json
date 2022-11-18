@@ -1,6 +1,6 @@
 {
   "name": "minsky",
-  "version":"3.1.0-beta.7",
+  "version":"3.1.0-beta.8",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "build": {
@@ -15,7 +15,12 @@
     "linux": {
       "category": "Science"
     },
-    "extraFiles": [{"from": "dynamic_libraries", "to": ""}],
+    "extraFiles": [
+      {
+        "from": "dynamic_libraries",
+        "to": ""
+      }
+    ],
     "fileAssociations": [
       {
         "ext": "mky",
@@ -92,8 +97,10 @@
     "is-electron": "^2.2.0",
     "json5": "^2.2.0",
     "JSONStream": "^1.3.5",
+    "moment": "^2.29.4",
     "ngx-auto-unsubscribe": "^3.0.1",
     "ngx-color-picker": "^11.0.0",
+    "nx": "^15.0.13",
     "rxjs": "^6.6.7",
     "tslib": "^2.1.0",
     "utf8": "^3.0.0",
@@ -126,7 +133,7 @@
     "@typescript-eslint/parser": "4.3.0",
     "cypress": "^6.0.1",
     "dotenv": "8.2.0",
-    "electron": "^11.5.0",
+    "electron": "^21.2.3",
     "eslint": "7.18.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",

@@ -56,11 +56,7 @@ export class LogSimulationComponent implements OnDestroy {
     });
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 
   handleSubmit() {
     const selectedItems = [];
@@ -72,7 +68,7 @@ export class LogSimulationComponent implements OnDestroy {
       }
     });
 
-    this.electronService.ipcRenderer.send(events.LOG_SIMULATION, selectedItems);
+    this.electronService.send(events.LOG_SIMULATION, selectedItems);
 
     this.closeWindow();
   }

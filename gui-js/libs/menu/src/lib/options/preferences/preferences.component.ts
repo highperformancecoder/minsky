@@ -25,7 +25,7 @@ export class PreferencesComponent implements OnInit {
   }
   async ngOnInit() {
     if (this.electronService.isElectron) {
-      const preferences = await this.electronService.ipcRenderer.invoke(
+      const preferences = await this.electronService.invoke(
         events.GET_PREFERENCES
       );
       this.form.patchValue(preferences);
@@ -37,7 +37,7 @@ export class PreferencesComponent implements OnInit {
     const preferences = this.form.value;
 
     if (this.electronService.isElectron) {
-      await this.electronService.ipcRenderer.invoke(
+      await this.electronService.invoke(
         events.UPDATE_PREFERENCES,
         preferences
       );
@@ -46,9 +46,5 @@ export class PreferencesComponent implements OnInit {
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

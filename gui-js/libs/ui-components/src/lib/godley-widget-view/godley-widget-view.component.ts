@@ -17,8 +17,6 @@ import {
   events,
   GodleyIcon,
   GodleyTableWindow,
-  isMacOS,
-  green
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
@@ -62,26 +60,23 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.namedItem = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
     this.namedItemSubCommand = this.namedItem.popup;
-    this.getWindowRectInfo();
-    this.renderFrame();
+    this.windowResize();
     this.initEvents();
-    if (isMacOS()) this.yoffs=-20; // why, o why, Mac?
+    if (this.electronService.isMacOS()) this.yoffs=-20; // why, o why, Mac?
   }
 
-  windowResize() {
-    this.getWindowRectInfo();
+  async windowResize() {
+    await this.getWindowRectInfo();
     this.renderFrame();
   }
-  private getWindowRectInfo() {
-    this.godleyCanvasContainer = this.godleyCanvasElemWrapper
-      .nativeElement as HTMLElement;
+  private async getWindowRectInfo() {
+    this.godleyCanvasContainer = this.godleyCanvasElemWrapper.nativeElement as HTMLElement;
 
     const clientRect = this.godleyCanvasContainer.getBoundingClientRect();
 
+    let menuBarHeight=await this.windowUtilityService.getElectronMenuBarHeight();
     this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = Math.round(
-      this.windowUtilityService.getElectronMenuBarHeight()
-    );
+    this.topOffset = Math.round(menuBarHeight);
 
     this.height = Math.round(this.godleyCanvasContainer.clientHeight);
     this.width = Math.round(this.godleyCanvasContainer.clientWidth);
@@ -89,16 +84,12 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   renderFrame() {
     if (
-      this.electronService.isElectron &&
       this.systemWindowId &&
       this.itemId &&
       this.height &&
       this.width
     ) {
-      const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
-        .scaleFactor;
-
-      this.namedItemSubCommand.renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,scaleFactor);
+      this.namedItemSubCommand.renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
     }
   }
 
@@ -121,7 +112,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
     this.godleyCanvasContainer.addEventListener('mousedown', async (event) => {
       if (event.button===0)
-        this.electronService.ipcRenderer.invoke(events.GODLEY_VIEW_MOUSEDOWN, {
+        this.electronService.invoke(events.GODLEY_VIEW_MOUSEDOWN, {
           command: this.itemId,
           mouseX: event.x, mouseY: event.y+this.yoffs
         });
@@ -132,7 +123,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     });
     
     this.godleyCanvasContainer.addEventListener('contextmenu', async (event) => {
-      this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
+      this.electronService.send(events.CONTEXT_MENU, {
         x: event.x,
         y: event.y,
         type: "godley",
@@ -164,7 +155,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     const [
       x,
       y,
-    ] = this.electronService.remote.getCurrentWindow().getContentSize();
+    ] = (await this.electronService.getCurrentWindow()).contentSize;
 
     //TODO: throttle here if required
     this.namedItemSubCommand.zoom(x/2, y/2, zoomFactor);

@@ -23,7 +23,5 @@ export class FindAllInstancesComponent {
     }
   }
 
-  closeWindow() {
-    this.electronService.remote.getCurrentWindow().close();
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

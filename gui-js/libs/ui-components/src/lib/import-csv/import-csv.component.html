@@ -14,7 +14,7 @@
   <div class="options-row-one options-row">
     <span>
       <label for="columnar">Columnar</label>
-      <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(selectedRow,selectedCol)"/>
+      <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(dialogState.spec.nRowAxes,dialogState.spec.nColAxes)"/>
     </span>
 
     <span>
@@ -82,9 +82,9 @@
     </span>
 
     <span>
-      <label for="merge-delimeters">Merge Delimiters</label>
+      <label for="merge-delimiters">Merge Delimiters</label>
       <input
-        id="merge-delimeters"
+        id="merge-delimiters"
         type="checkbox"
         formControlName="mergeDelimiters"
       />
@@ -252,8 +252,8 @@
             #autocompleteName="matAutocomplete"
             (optionSelected)="dialogState.spec.dimensionNames[i] = $event.option.value"
           >
-            <mat-option [value]="parsedLines[selectedHeader][i]"
-              >{{ parsedLines[selectedHeader][i] }}
+            <mat-option [value]="parsedLines[dialogState.spec.headerRow][i]"
+              >{{ parsedLines[dialogState.spec.headerRow][i] }}
             </mat-option>
           </mat-autocomplete>
         </td>
@@ -261,7 +261,7 @@
 
       <tr *ngFor="let row of parsedLines; let rowIndex = index">
         <th class="header" (click)="selectHeader(rowIndex)">
-          <ng-container *ngIf="rowIndex === selectedHeader"
+          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow"
             >Header</ng-container
           >
         </th>

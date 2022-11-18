@@ -574,7 +574,7 @@ void VariableBase::draw(cairo_t *cairo) const
     scaleFactor=max(1.0f,min(0.5f*iWidth()*z/w,0.5f*iHeight()*z/h));
     if (rv.width()<0.5*iWidth()) w=0.5*iWidth()*z;
     if (rv.height()<0.5*iHeight()) h=0.5*iHeight()*z;
-    rv.setFontSize(12*scaleFactor*z);
+    rv.setFontSize(12.0*scaleFactor*z);
     hoffs=rv.top()*z;
   
 
@@ -596,7 +596,7 @@ void VariableBase::draw(cairo_t *cairo) const
           
           Pango pangoVal(cairo);
           if (!isnan(value())) {
-            pangoVal.setFontSize(6*scaleFactor*z);
+            pangoVal.setFontSize(6.0*scaleFactor*z);
             if (sliderBoundsSet && vv->sliderVisible)
               pangoVal.setMarkup
                 (mantissa(val,
@@ -609,12 +609,12 @@ void VariableBase::draw(cairo_t *cairo) const
               pangoVal.setMarkup(mantissa(val));
           }
           else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-            pangoVal.setFontSize(8*scaleFactor*z);
+            pangoVal.setFontSize(8.0*scaleFactor*z);
             if (signbit(value())) pangoVal.setMarkup("-∞");
             else pangoVal.setMarkup("∞");
           }
           else {  // Display all other NaN cases as ???. For ticket 1155
-            pangoVal.setFontSize(6*scaleFactor*z);
+            pangoVal.setFontSize(6.0*scaleFactor*z);
             pangoVal.setMarkup("???");
           }
           pangoVal.angle=angle+(notflipped? 0: M_PI);
@@ -662,7 +662,7 @@ void VariableBase::draw(cairo_t *cairo) const
           cairo_set_source_rgb(cairo,0,0,0);
           try
             {
-              cairo_arc(cairo,(notflipped?1:-1)*z*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+              cairo_arc(cairo,(notflipped?1.0:-1.0)*z*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
             }
           catch (const error&) {} // handlePos() may throw.
           cairo_fill(cairo);

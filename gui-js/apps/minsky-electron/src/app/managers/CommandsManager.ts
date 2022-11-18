@@ -8,8 +8,8 @@ import {
   InitializePopupWindowPayload,
   isEmptyObject,
   isMacOS,
-  normalizeFilePathForPlatform,
   electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
+  importCSVvariableName,
   minsky, GodleyIcon, Group, IntOp, Item, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
@@ -290,8 +290,7 @@ export class CommandsManager {
       defaultPath: 'selection.mky',
     });
 
-    const { canceled, filePath: _filePath } = saveDialog;
-    const filePath = normalizeFilePathForPlatform(_filePath);
+    const { canceled, filePath } = saveDialog;
 
     if (canceled || !filePath) {
       return;
@@ -478,8 +477,7 @@ export class CommandsManager {
       properties: ['showOverwriteConfirmation'],
     });
 
-    const { canceled, filePath: _filePath } = saveDialog;
-    const filePath = normalizeFilePathForPlatform(_filePath);
+    const { canceled, filePath } = saveDialog;
 
     if (canceled || !filePath) {
       return;
@@ -677,6 +675,10 @@ export class CommandsManager {
 
         case ClassType.PlotWidget:
           await CommandsManager.expandPlot(itemInfo);
+        break;
+        
+        case ClassType.Ravel:
+          await CommandsManager.openRavelPopup(itemInfo);
           break;
 
         case ClassType.Variable:
@@ -717,7 +719,7 @@ export class CommandsManager {
   static async openGodleyTable(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
       CommandsManager.addItemToNamedItems(itemInfo);
-      let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second)
+      let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
       var title=godley.table.title();
 
       const window = await this.initializePopupWindow({
@@ -786,6 +788,26 @@ export class CommandsManager {
     }
   }
 
+  static async openRavelPopup(itemInfo: CanvasItem) {
+    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
+      CommandsManager.addItemToNamedItems(itemInfo);
+      const window = await this.initializePopupWindow({
+        customTitle: `Ravel : ${itemInfo.id}`,
+        itemInfo,
+        url: `#/headless/ravel-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
+        modal: false,
+      });
+
+      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+
+      window.loadURL(
+        WindowManager.getWindowUrl(
+          `#/headless/ravel-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`
+        )
+      );
+    }
+  }
+
   static async openPlotWindowOptions(itemInfo: CanvasItem) {
     await CommandsManager.addItemToNamedItems(itemInfo);
     WindowManager.createPopupWindowWithRouting({
@@ -850,6 +872,21 @@ export class CommandsManager {
 
       let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
 
+      if (isInvokedUsingToolbar)
+      {
+        window.on('close', async () => {
+          let v=new VariableBase(minsky.canvas.item)
+          const currentItemId = v.id();
+          const currentItemName = v.name();
+          // We do this check because item focus might have changed when importing csv if user decided to work on something else
+
+          if (currentItemId === itemInfo.id && currentItemName === importCSVvariableName
+             ) {
+            minsky.canvas.deleteItem();
+          }
+        });
+      }       
+      
       window.loadURL(
         WindowManager.getWindowUrl(
           `#/headless/import-csv?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`
@@ -922,12 +959,11 @@ export class CommandsManager {
     minsky.save(filePath);
   }
   
-  static async editHandleDescription(handleIndex: number) {
-    let ravel=new Ravel(minsky.canvas.item);
+  static async editHandleDescription(ravel: Ravel, handleIndex: number) {
     const description = ravel.handleDescription(handleIndex);
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Description`,
-        url: `#/headless/edit-handle-description?handleIndex=${handleIndex}&description=${description}`,
+        url: `#/headless/edit-handle-description?command=${ravel.prefix()}&handleIndex=${handleIndex}&description=${description}`,
         height: 90,
         width: 300,
       });
@@ -935,17 +971,16 @@ export class CommandsManager {
     }
 
   static async saveHandleDescription(payload: HandleDescriptionPayload) {
-    (new Ravel(minsky.canvas.item)).setHandleDescription(payload.handleIndex, payload.description);
+    (new Ravel(payload.command)).setHandleDescription(payload.handleIndex, payload.description);
   }
   
-  static async editHandleDimension(handleIndex: number) {
-    let ravel=new Ravel(minsky.canvas.item);
+  static async editHandleDimension(ravel: Ravel, handleIndex: number) {
     const type = ravel.dimensionType();
     const units = ravel.dimensionUnitsFormat();
 
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Dimension`,
-        url: `#/headless/edit-handle-dimension?handleIndex=${handleIndex}&type=${type}&units=${units}`,
+        url: `#/headless/edit-handle-dimension?command=${ravel.prefix()}&handleIndex=${handleIndex}&type=${type}&units=${units}`,
         height: 180,
         width: 300,
       });
@@ -953,17 +988,16 @@ export class CommandsManager {
   }
 
   static async saveHandleDimension(payload: HandleDimensionPayload) {
-    (new Ravel(minsky.canvas.item)).setDimension(payload.handleIndex, payload.type, payload.units);
+    (new Ravel(payload.command)).setDimension(payload.handleIndex, payload.type, payload.units);
   }
 
-  static async pickSlices(handleIndex: number) {
-    let ravel=new Ravel(minsky.canvas.item);
+  static async pickSlices(ravel: Ravel, handleIndex: number) {
     const allSliceLabels = ravel.allSliceLabels();
     const pickedSliceLabels = ravel.pickedSliceLabels();
 
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Pick slices`,
-      url: `#/headless/pick-slices?handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
+      url: `#/headless/pick-slices?command=${ravel.prefix()}&handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
       height: 400,
       width: 400,
     });
@@ -971,11 +1005,10 @@ export class CommandsManager {
   }
 
   static async savePickSlices(payload: PickSlicesPayload) {
-    (new Ravel(minsky.canvas.item)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
+    (new Ravel(payload.command)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
   }
 
-  static async lockSpecificHandles() {
-    let ravel=new Ravel(minsky.canvas.item);
+  static async lockSpecificHandles(ravel: Ravel) {
     let allLockHandles = ravel.lockGroup.allLockHandles();
     if(Object.keys(allLockHandles).length === 0) {
       minsky.canvas.lockRavelsInSelection();

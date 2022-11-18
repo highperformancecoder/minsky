@@ -7,6 +7,15 @@ export interface InitializePopupWindowPayload {
   width?: number;
   modal?: boolean;
 }
+
+export interface CurrentWindowDetails {
+  id: number;
+  dontCloseOnEscape: boolean;
+  dontCloseOnReturn: boolean;
+  size: number[];
+  contentSize: number[];
+}
+
 export interface MinskyProcessPayload {
   mouseX?: number;
   mouseY?: number;
@@ -24,17 +33,20 @@ export interface MinskyProcessPayload {
 }
 
 export interface HandleDescriptionPayload {
+  command: string;
   handleIndex: number;
   description: string;
 }
 
 export interface HandleDimensionPayload {
+  command: string;
   handleIndex: number;
   type: string;
   units: string;
 }
 
 export interface PickSlicesPayload {
+  command: string;
   handleIndex: number;
   pickedSliceLabels: string[];
 }

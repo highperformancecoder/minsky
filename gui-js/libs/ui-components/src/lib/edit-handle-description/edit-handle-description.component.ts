@@ -9,6 +9,7 @@ import { ElectronService } from '@minsky/core';
   styleUrls: ['./edit-handle-description.component.scss', '../generic-form.scss'],
 })
 export class EditHandleDescriptionComponent implements OnInit {
+  command: string;
   handleIndex: number;
 
   editDescriptionForm: FormGroup;
@@ -19,6 +20,7 @@ export class EditHandleDescriptionComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
+      this.command=params['command'];
       this.handleIndex = +params['handleIndex'];
       this.editDescriptionForm = new FormGroup({
         description: new FormControl(params['description']),
@@ -29,6 +31,7 @@ export class EditHandleDescriptionComponent implements OnInit {
   async handleSave() {
     if (this.electronService.isElectron) {
       await this.electronService.saveHandleDescription({
+        command: this.command,
         handleIndex: this.handleIndex,
         description: this.editDescriptionForm.get('description').value,
       });
@@ -36,9 +39,5 @@ export class EditHandleDescriptionComponent implements OnInit {
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

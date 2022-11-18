@@ -21,6 +21,7 @@ export * from './lib/page-not-found/page-not-found.component';
 export * from './lib/parameters/parameters.component';
 export * from './lib/plot-widget-options/plot-widget-options.component';
 export * from './lib/plot-widget-view/plot-widget-view.component';
+export * from './lib/ravel-widget-view/ravel-widget-view.component';
 export * from './lib/rename-all-instances/rename-all-instances.component';
 export * from './lib/toolbar/toolbar.component';
 export * from './lib/ui-components.module';

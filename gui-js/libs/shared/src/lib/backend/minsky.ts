@@ -11,7 +11,6 @@ class classdesc__pack_t {}
 class classdesc__TCL_obj_t {}
 class ecolab__cairo__Surface {}
 class ecolab__Pango {}
-class ecolab__TCL_args {}
 
 export class Item extends CppClass {
   bb: BoundingBox;
@@ -1797,6 +1796,7 @@ export class Port extends CppClass {
 export class Ravel extends Item {
   axisDimensions: Map<string,civita__Dimension>;
   lockGroup: RavelLockGroup;
+  popup: RavelPopup;
   svgRenderer: SVGRenderer;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
@@ -1805,6 +1805,7 @@ export class Ravel extends Item {
       super(prefix.prefix())
     this.axisDimensions=new Map<string,civita__Dimension>(this.prefix()+'/axisDimensions',civita__Dimension);
     this.lockGroup=new RavelLockGroup(this.prefix()+'/lockGroup');
+    this.popup=new RavelPopup(this.prefix()+'/popup');
     this.svgRenderer=new SVGRenderer(this.prefix()+'/svgRenderer');
   }
   adjustSlicer(a1: number): void {return this.callMethod('adjustSlicer',a1);}
@@ -1877,6 +1878,49 @@ export class RavelLockGroup extends CppClass {
   removeFromGroup(a1: Ravel): void {return this.callMethod('removeFromGroup',a1);}
   setLockHandles(a1: string[]): void {return this.callMethod('setLockHandles',a1);}
   validateLockHandleInfo(): void {return this.callMethod('validateLockHandleInfo');}
+}
+
+export class RavelPopup extends CppClass {
+  backgroundColour: ecolab__cairo__Colour;
+  item: Item;
+  wire: Wire;
+  constructor(prefix: string){
+    super(prefix);
+    this.backgroundColour=new ecolab__cairo__Colour(this.prefix()+'/backgroundColour');
+    this.item=new Item(this.prefix()+'/item');
+    this.wire=new Wire(this.prefix()+'/wire');
+  }
+  controlMouseDown(a1: number,a2: number): void {return this.callMethod('controlMouseDown',a1,a2);}
+  destroyFrame(): void {return this.callMethod('destroyFrame');}
+  disable(): void {return this.callMethod('disable');}
+  draw(): void {return this.callMethod('draw');}
+  getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
+  getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
+  hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
+  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
+  mouseLeave(): void {return this.callMethod('mouseLeave');}
+  mouseMove(a1: number,a2: number): void {return this.callMethod('mouseMove',a1,a2);}
+  mouseOver(a1: number,a2: number): void {return this.callMethod('mouseOver',a1,a2);}
+  mouseUp(a1: number,a2: number): void {return this.callMethod('mouseUp',a1,a2);}
+  moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
+  position(): number[] {return this.callMethod('position');}
+  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
+  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
+  registerImage(): void {return this.callMethod('registerImage');}
+  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
+  renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
+  renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
+  renderToPS(a1: string): void {return this.callMethod('renderToPS',a1);}
+  renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
+  reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
+  requestRedraw(): void {return this.callMethod('requestRedraw');}
+  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
+  resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
+  scaleFactor(): number {return this.callMethod('scaleFactor');}
+  vectorRender(a1: number,a2: minsky__dummy): object {return this.callMethod('vectorRender',a1,a2);}
+  zoom(a1: number,a2: number,a3: number): void {return this.callMethod('zoom',a1,a2,a3);}
 }
 
 export class RenderNativeWindow extends CppClass {

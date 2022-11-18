@@ -13,6 +13,7 @@ export class EditHandleDimensionComponent implements OnInit, DoCheck {
   editDimensionForm: FormGroup;
   timeFormatStrings = dateTimeFormats;
 
+  command: string;
   handleIndex: number;
 
   tooltips = {
@@ -28,6 +29,7 @@ export class EditHandleDimensionComponent implements OnInit, DoCheck {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
+      this.command=params['command'];
       this.handleIndex = +params['handleIndex'];
 
       this.editDimensionForm = new FormGroup({
@@ -56,6 +58,7 @@ export class EditHandleDimensionComponent implements OnInit, DoCheck {
   async handleSave() {
     if (this.electronService.isElectron) {
       await this.electronService.saveHandleDimension({
+        command: this.command,
         handleIndex: this.handleIndex,
         type: this.editDimensionForm.get('type').value,
         units: this.editDimensionForm.get('units').value
@@ -64,9 +67,5 @@ export class EditHandleDimensionComponent implements OnInit, DoCheck {
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

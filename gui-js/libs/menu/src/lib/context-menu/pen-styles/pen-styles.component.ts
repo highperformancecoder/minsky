@@ -108,9 +108,5 @@ export class PenStylesComponent implements OnInit {
     this.pens.push(this.createPen(p));
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

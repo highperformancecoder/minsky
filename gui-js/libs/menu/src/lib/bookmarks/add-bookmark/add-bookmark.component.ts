@@ -10,21 +10,17 @@ import { events, } from '@minsky/shared';
 })
 export class AddBookmarkComponent {
   bookmarkName: FormControl;
-
+  
   constructor(private electronService: ElectronService) {
     this.bookmarkName = new FormControl('', Validators.required);
   }
 
   async handleSubmit() {
     this.electronService.minsky.model.addBookmark(this.bookmarkName.value);
-    this.electronService.ipcRenderer.send(events.UPDATE_BOOKMARK_LIST);
+    this.electronService.send(events.UPDATE_BOOKMARK_LIST);
 
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  async closeWindow() {this.electronService.closeWindow();}
 }

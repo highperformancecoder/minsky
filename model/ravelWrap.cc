@@ -25,6 +25,7 @@
 #include "pango.h"
 #include "minsky_epilogue.h"
 
+
 #include <string>
 #include <cmath>
 using namespace std;
@@ -44,7 +45,7 @@ namespace minsky
     inline double sqr(double x) {return x*x;} 
   }
 
-  Ravel::Ravel()
+  Ravel::Ravel(): popup(*this)
   {
     if (!wrappedRavel)
       {
@@ -776,7 +777,56 @@ namespace
       if (auto r=m_ravels[0].lock())
         r->lockGroup.reset(); // this may delete this, so should be last
   }
- 
+
+  bool RavelPopup::redraw(int x0, int y0, int width, int height)
+  {
+    if (!surface) return false;
+    this->width=width; this->height=height;
+    ecolab::cairo::CairoSave cs(surface->cairo());
+    cairo_translate(surface->cairo(),0.5*width,0.5*height);
+    auto z=0.4*min(width,height)/ravel.wrappedRavel.radius();
+    scale=1/z;
+    cairo_scale(surface->cairo(), z,z);
+    CairoRenderer cr(surface->cairo());
+    ravel.wrappedRavel.render(cr);
+    return true;
+  }
+
+  float RavelPopup::localX(float x) const
+  {return scale*(x-0.5*width);}
+  float RavelPopup::localY(float y) const
+  {return scale*(y-0.5*height);}
+  
+  void RavelPopup::mouseDown(float x, float y) {
+    ravel.wrappedRavel.onMouseDown(localX(x),localY(y));
+    requestRedraw();
+  }
+  void RavelPopup::mouseUp(float x, float y) {
+    ravel.wrappedRavel.onMouseUp(localX(x),localY(y));
+    requestRedraw();
+  }
+  void RavelPopup::mouseMove(float x, float y) {
+    ravel.wrappedRavel.onMouseMotion(localX(x),localY(y));
+    requestRedraw();
+  }
+  void RavelPopup::mouseOver(float x, float y) {
+    ravel.wrappedRavel.onMouseOver(localX(x),localY(y));
+    ravel.broadcastStateToLockGroup();
+    minsky().reset();
+    requestRedraw();
+  }
+  void RavelPopup::mouseLeave() {
+    ravel.wrappedRavel.onMouseLeave();
+    requestRedraw();
+  }
+
+  bool RavelPopup::keyPress(int keySym, const std::string& utf8, int state, float x, float y)
+  {
+    auto r=ravel.onKeyPress(keySym,utf8,state);
+    if (r) requestRedraw();
+    return r;
+  }
+  
 }
 
   

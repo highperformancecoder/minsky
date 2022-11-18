@@ -14,34 +14,40 @@ export const RESET_ZOOM_FACTOR = 1;
 export const OPEN_DEV_TOOLS_IN_DEV_BUILD = false;
 
 export const events = {
-  BACKEND: 'backend',
-  SET_BACKGROUND_COLOR: 'set-background-color',
-  CREATE_MENU_POPUP: 'create-menu-popup',
-  APP_LAYOUT_CHANGED: 'app-layout-changed',
-  UPDATE_BOOKMARK_LIST: 'update-bookmark-list',
   ADD_RECENT_FILE: 'add-recent-file',
-  GET_APP_VERSION: 'get-app-version',
-  KEY_PRESS: 'key-press',
-  NEW_SYSTEM: 'new-system',
-  RECORDING_STATUS_CHANGED: 'recording-status-changed',
-  GET_PREFERENCES: 'get-preferences',
-  UPDATE_PREFERENCES: 'update-preferences',
+  APP_LAYOUT_CHANGED: 'app-layout-changed',
+  BACKEND: 'backend',
+  CHANGE_MAIN_TAB: 'change-main-tab',
+  CLOSE_WINDOW: 'close-window',
   CONTEXT_MENU: 'context-menu',
-  REPLAY_RECORDING: 'replay-recording',
+  CREATE_MENU_POPUP: 'create-menu-popup',
+  CURRENT_TAB_MOVE_TO: 'current-tab-move-to',
+  CURRENT_TAB_POSITION: 'current-tab-position',
   DISPLAY_MOUSE_COORDINATES: 'display-mouse-coordinates',
   DOUBLE_CLICK: 'double-click',
-  LOG_SIMULATION: 'log-simulation',
-  CHANGE_MAIN_TAB: 'change-main-tab',
+  GET_APP_VERSION: 'get-app-version',
+  GET_CURRENT_WINDOW: 'get-current-window',
+  GET_PREFERENCES: 'get-preferences',
+  GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
   IMPORT_CSV: 'import-csv',
   INIT_MENU_FOR_GODLEY_VIEW: 'init-menu-for-godley-view',
-  GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
-  CURRENT_TAB_POSITION: 'current-tab-position',
-  CURRENT_TAB_MOVE_TO: 'current-tab-move-to',
+  KEY_PRESS: 'key-press',
+  LOG: 'log',
+  LOG_SIMULATION: 'log-simulation',
+  NEW_SYSTEM: 'new-system',
+  OPEN_FILE_DIALOG: 'open-file-dialog',
   RECORD: 'record',
   RECORDING_REPLAY: 'recording-replay',
+  RECORDING_STATUS_CHANGED: 'recording-status-changed',
+  REPLAY_RECORDING: 'replay-recording',
+  SAVE_FILE_DIALOG: 'save-file-dialog',
   SAVE_HANDLE_DESCRIPTION: 'save-handle-description',
   SAVE_HANDLE_DIMENSION: 'save-handle-dimension',
   SAVE_PICK_SLICES: 'save-pick-slices',
+  SHOW_MESSAGE_BOX: 'show-message_box',
+  SET_BACKGROUND_COLOR: 'set-background-color',
+  UPDATE_BOOKMARK_LIST: 'update-bookmark-list',
+  UPDATE_PREFERENCES: 'update-preferences',
 };
 
 // add non exposed commands here to get intellisense on the terminal popup
@@ -94,4 +100,3 @@ export const dateTimeFormats = [
 ];
 
 export const importCSVvariableName = 'dataImport';
-export const importCSVerrorMessage = 'SOMETHING_WENT_WRONG_WHILE_IMPORTING_CSV';

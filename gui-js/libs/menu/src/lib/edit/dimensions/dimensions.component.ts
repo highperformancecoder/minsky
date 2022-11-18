@@ -24,6 +24,7 @@ export class DimensionsComponent implements OnInit {
 
   timeFormatStrings = dateTimeFormats;
 
+  
   public get dimensions(): FormArray {
     return this.form.get('dimensions') as FormArray;
   }
@@ -52,11 +53,7 @@ export class DimensionsComponent implements OnInit {
     });
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 
   getDimensions() {
     const dimensions = this.form.value.dimensions() as Dimension[];

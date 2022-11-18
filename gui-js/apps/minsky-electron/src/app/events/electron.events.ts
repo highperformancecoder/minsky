@@ -18,7 +18,7 @@ import {
   RenderNativeWindow,
 } from '@minsky/shared';
 //import * as debug from 'debug';
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
 import { ContextMenuManager } from '../managers/ContextMenuManager';
@@ -44,6 +44,40 @@ ipcMain.handle(events.GET_APP_VERSION, () => {
 
 ipcMain.handle(events.BACKEND, (event, ...args: any[])=>{
   return CppClass.backend(...args);
+});
+
+ipcMain.handle(events.LOG, (event, msg:string)=>{console.log(msg);});
+
+ipcMain.handle(events.GET_CURRENT_WINDOW, (event) => {
+  let window=BrowserWindow.fromWebContents(event.sender);
+  return {
+    id: window.id,
+    dontCloseOnEscape: window.hasOwnProperty("dontCloseOnEscape"),
+    dontCloseOnReturn: window.hasOwnProperty("dontCloseOnReturn"),
+    size: window.getSize(),
+    contentSize: window.getContentSize(),
+  };
+});
+
+ipcMain.handle(events.CLOSE_WINDOW, (event) => {
+  BrowserWindow.fromWebContents(event.sender).close();
+});
+
+ipcMain.handle(events.OPEN_FILE_DIALOG, async (event, options) => {
+  const fileDialog = await dialog.showOpenDialog(options);
+
+  if (fileDialog.canceled || !fileDialog.filePaths) return "";
+  return fileDialog.filePaths[0].toString();
+});
+
+ipcMain.handle(events.SAVE_FILE_DIALOG, async (event, options) => {
+  const fileDialog = await dialog.showSaveDialog(options);
+  if (fileDialog.canceled) return "";
+  return fileDialog.filePath;
+});
+
+ipcMain.handle(events.SHOW_MESSAGE_BOX, async (event, options) => {
+  return await dialog.showMessageBoxSync(options);
 });
 
 ipcMain.on(events.SET_BACKGROUND_COLOR, async (event, { color }) => {

@@ -31,10 +31,10 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.render();
+    setTimeout(()=>{this.render();},10);
   }
 
-  render() {
+  async render() {
     const plotCanvasContainer = document.getElementById('plot-cairo-canvas');
 
     const clientRect = plotCanvasContainer.getBoundingClientRect();
@@ -42,7 +42,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
     this.leftOffset = Math.round(clientRect.left);
 
     this.topOffset = Math.round(
-      this.windowUtilityService.getElectronMenuBarHeight()
+      await this.windowUtilityService.getElectronMenuBarHeight()
     );
 
     this.height = Math.round(plotCanvasContainer.clientHeight);

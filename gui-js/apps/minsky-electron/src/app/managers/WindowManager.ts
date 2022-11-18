@@ -2,7 +2,6 @@ import {
   ActiveWindow,
   AppLayoutPayload,
   CreateWindowPayload,
-  green,
   isMacOS,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
@@ -173,8 +172,9 @@ export class WindowManager {
       modal,
       backgroundColor,
       webPreferences: {
+        contextIsolation: true,
+        preload: join(__dirname, 'preload.js'),
         nodeIntegration: true,
-        enableRemoteModule: true,
       },
       icon: __dirname + '/assets/favicon.png',
     });
