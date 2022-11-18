@@ -40,6 +40,7 @@ namespace minsky
     float width, height, scale=1;
     float localX(float x) const;
     float localY(float y) const;
+    CLASSDESC_ACCESS(RavelPopup);
   public:
     RavelPopup(Ravel& ravel): ravel(ravel) {}
     bool redraw(int x0, int y0, int width, int height) override;
