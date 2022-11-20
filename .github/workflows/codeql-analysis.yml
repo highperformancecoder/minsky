@@ -53,12 +53,12 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
         paths-ignore:
-                - ecolab
-                - exprtk
-                - gui-tk
-                - test
-                - '**/node_modules'
-                - '**/*.test.ts'
+          - ecolab
+          - exprtk
+          - gui-tk
+          - test
+          - '**/node_modules'
+          - '**/*.test.ts'
 
     - name: Install prerequisties
       run: |
