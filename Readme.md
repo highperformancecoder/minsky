@@ -41,11 +41,15 @@ NB since the upgrade of electron, process is no longer available in the renderer
 - use `green(`*some string*`)` or `red(`*some string*`)` to colorise log output to make it easier to spot your messages. With console.log, you only need to colourise the first argument.
 - enable front end debugging tools by setting `OPEN_DEV_TOOLS_IN_DEV_BUILD = true` in `libs/shared/src/lib/constants/constants.ts`. This can be very useful in tracking down runtime errors, even syntax errors, as the renderer process fails silently.
 
+## Setting up emacs
+
+For those using emacs (comme moi-meme), I have configured the project so that typing tsc on the gui-js directory runs the typescript compiler. A convenience Makefile is in that directory, allowing the default "make -k" command to work.
+
+- You will need to install tsc somewhere in your path, eg "zypper install typescript"
+- You should install the [tide package](https://github.com/ananthakumaran/tide/). Note that `M-x package-install` did not work for me, I had to download the tarfiles directly from [Melpa](https://melpa.org/), and run `M-x package-install-file` to install the packages manually.
+
 ## Roadmap
 
-
-- Javascript implementation of Minsky in electron. Almost complete, small number of tickets left before Graeber equivalent
 - Refactor Civita library into standalone library
-- Refactor Classdesc RESTProcess to generate Typescript API, and refactor Minsky JS frontend to use it
 - Emscripten classdesc descriptor to support Minsky in a browser.
 
