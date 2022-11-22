@@ -197,6 +197,7 @@ namespace minsky
                     for (auto& i: selection.groups)
                       i->moveTo(i->x()+deltaX, i->y()+deltaY);
                   }
+                requestRedraw();
                 // check if the move has moved outside or into a group
                 if (auto g=itemFocus->group.lock())
                   if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
@@ -204,7 +205,7 @@ namespace minsky
                       if (auto toGroup=model->minimalEnclosingGroup
                           (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
                         {
-                          if (g!=model && g.get()==toGroup) return;
+                          if (g.get()==toGroup) return;
                           // prevent moving a group inside itself
                           if (auto g=dynamic_cast<Group*>(itemFocus.get()))
                             if (g->higher(*toGroup))
@@ -225,7 +226,6 @@ namespace minsky
                 if (auto g=itemFocus->group.lock())
                   if (g!=model)
                     g->checkAddIORegion(itemFocus);
-                requestRedraw();
                 return;
               case ClickType::onSlider:
                 if (auto v=itemFocus->variableCast())
