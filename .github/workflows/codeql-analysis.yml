@@ -93,7 +93,7 @@ jobs:
         retention-days: 1
 
     - name: filter-sarif
-      uses: advanced-security/filter-sarif@v1
+      uses: advanced-security/filter-sarif@main
       with:
         patterns: |
           -ecolab
