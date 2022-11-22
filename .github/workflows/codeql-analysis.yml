@@ -85,6 +85,13 @@ jobs:
           upload: false
           output: sarif-results/results.sarif
 
+    - name: Upload loc as a Build Artifact
+      uses: actions/upload-artifact@v2.2.0
+      with:
+        name: sarif-results
+        path: sarif-results
+        retention-days: 1
+
     - name: filter-sarif
       uses: advanced-security/filter-sarif@v1
       with:
@@ -103,9 +110,3 @@ jobs:
       with:
         sarif_file: sarif-results/filtered-results.sarif
 
-    - name: Upload loc as a Build Artifact
-      uses: actions/upload-artifact@v2.2.0
-      with:
-        name: sarif-results
-        path: sarif-results
-        retention-days: 1
