@@ -56,7 +56,7 @@ export class KeyBindingsManager {
           !command &&
           currentTab.equal(minsky.canvas)
       ) {
-        return await this.handleOnKeyPressFallback({key:keySymAndName.name, mouseX, mouseY});
+        return await this.handleOnKeyPressFallback({key:keySymAndName.name, ctrl, mouseX, mouseY});
       }
       return isKeyPressHandled;
     }
