@@ -23,6 +23,7 @@ export const events = {
   CREATE_MENU_POPUP: 'create-menu-popup',
   CURRENT_TAB_MOVE_TO: 'current-tab-move-to',
   CURRENT_TAB_POSITION: 'current-tab-position',
+  CURSOR_BUSY: 'cursor-busy',
   DISPLAY_MOUSE_COORDINATES: 'display-mouse-coordinates',
   DOUBLE_CLICK: 'double-click',
   GET_APP_VERSION: 'get-app-version',

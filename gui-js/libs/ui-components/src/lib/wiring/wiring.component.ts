@@ -10,7 +10,7 @@ import {
   ElectronService,
   WindowUtilityService,
 } from '@minsky/core';
-import { MainRenderingTabs, minsky } from '@minsky/shared';
+import { events, MainRenderingTabs, minsky } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
@@ -25,7 +25,6 @@ export class WiringComponent implements OnInit, OnDestroy {
   mouseMove$: Observable<MouseEvent>;
   canvasContainerHeight: string;
   availableOperationsMapping: any; //Record<string, string[]>;
-  showDragCursor = false;
   wiringTab = MainRenderingTabs.canvas;
   constructor(
     public cmService: CommunicationService,
@@ -42,11 +41,6 @@ export class WiringComponent implements OnInit, OnDestroy {
         {
           await this.windowUtilityService.reInitialize();
           const minskyCanvasContainer = this.windowUtilityService.getMinskyContainerElement();
-          this.cmService.showDragCursor$.subscribe((showDragCursor) => {
-            this.showDragCursor = showDragCursor;
-            this.changeDetectorRef.detectChanges();
-          });
-
           this.setupEventListenersForCanvas(minskyCanvasContainer);
         }, 10);
 
@@ -95,13 +89,21 @@ export class WiringComponent implements OnInit, OnDestroy {
 
         document.body.addEventListener('keydown', async (event) => {
           // TextInputUtilities.show();
+          if (event.key==='Shift' && document?.body?.style)
+            document.body.style.cursor='grab';
           await this.cmService.handleKeyDown({ event });
         });
 
         document.body.addEventListener('keyup', async (event) => {
+          if (event.key==='Shift' && document?.body?.style)
+            document.body.style.cursor='default';          
           await this.cmService.handleKeyUp(event);
         });
 
+        this.electronService.on(events.CURSOR_BUSY, async (event, busy: boolean)=>{
+          document.body.style.cursor=busy? 'wait': 'default';
+        });
+        
         this.mouseMove$ = fromEvent<MouseEvent>(
           minskyCanvasElement,
           'mousemove'

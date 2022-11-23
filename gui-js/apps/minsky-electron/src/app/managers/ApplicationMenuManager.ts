@@ -87,7 +87,7 @@ export class ApplicationMenuManager {
               }
               const filePath = _dialog.filePaths[0].toString();
 
-              await CommandsManager.openNamedFile(filePath);
+              CommandsManager.openNamedFile(filePath);
             } catch (error) {
               console.error(error);
             }
@@ -274,14 +274,8 @@ export class ApplicationMenuManager {
         {
           label: 'Auto Layout',
           async click() {
-            WindowManager.getMainWindow().webContents.insertCSS(
-              `body { cursor: wait; }`
-            );
             // TODO handle this asynchronously on the backend.
             minsky.autoLayout();
-            WindowManager.getMainWindow().webContents.insertCSS(
-              `body { cursor: default; }`
-            );
           },
         },
         {

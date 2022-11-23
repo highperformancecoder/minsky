@@ -53,9 +53,7 @@ export class CommunicationService {
   mouseX: number;
   mouseY: number;
 
-  isShiftPressed = false;
   drag = false;
-  showDragCursor$ = new BehaviorSubject(false);
   currentReplayJSON: ReplayJSON[] = [];
 
   ReplayRecordingStatus$: BehaviorSubject<ReplayRecordingStatus> = new BehaviorSubject(
@@ -513,9 +511,7 @@ export class CommunicationService {
 
   async handleKeyUp(event: KeyboardEvent) {
     if (!event.shiftKey) {
-      this.isShiftPressed = false;
       this.drag = false;
-      this.showDragCursor$.next(false);
     }
     return;
   }
@@ -547,11 +543,6 @@ export class CommunicationService {
 
     
     
-    if (event.shiftKey && isMainWindow) {
-      this.isShiftPressed = true;
-      this.showDragCursor$.next(true);
-    }
-
     if (
       isMainWindow &&
       ((this.dialogRef && event.ctrlKey) || (this.dialogRef && event.altKey) || (this.dialogRef && event.metaKey))

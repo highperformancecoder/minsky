@@ -1,6 +1,6 @@
-import {CppClass, Utility, version } from '@minsky/shared';
+import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
-import { dialog, shell } from 'electron';
+import { dialog, ipcMain, shell } from 'electron';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';
 
@@ -81,9 +81,7 @@ if ("JEST_WORKER_ID" in process.env) {
   });
 
   restService.setBusyCursorCallback(function (busy: boolean) {
-    WindowManager.getMainWindow()?.webContents?.insertCSS(
-      busy ? 'html body {cursor: wait}' : 'html body {cursor: default}'
-    );
+    WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
   });
 }
 
