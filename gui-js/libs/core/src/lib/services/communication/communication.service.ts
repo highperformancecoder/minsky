@@ -371,10 +371,7 @@ export class CommunicationService {
 
       // TODO:: Should the drag logic be in this branch or else? isElectron / FE?
 
-      if (
-        type === 'mousedown' &&
-        this.isShiftPressed
-      ) {
+      if (type === 'mousedown' && message.shiftKey) {
         this.drag = true;
         this.scrollPositionAtMouseDown = {
           x: this.windowUtilityService.getMinskyContainerElement().scrollLeft,
