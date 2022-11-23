@@ -72,6 +72,10 @@ namespace civita
       return index;
     }
   };
+
+  // returns a hypercube which merges the elements along each dimension. Extra dimensions in x are appended to the end.
+  // @throw if dimension types do not match
+  void unionHypercube(Hypercube& result, const Hypercube& x);
 }
 
 #endif
