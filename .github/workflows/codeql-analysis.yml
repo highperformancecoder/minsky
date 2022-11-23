@@ -86,7 +86,7 @@ jobs:
           output: sarif-results/results.sarif
 
     - name: Upload loc as a Build Artifact
-      uses: actions/upload-artifact@v2.2.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: sarif-results
         path: sarif-results
