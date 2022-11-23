@@ -47,18 +47,11 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-        queries: +security-and-quality
+        queries: +security-and-quality,-cpp/include-non-header
         # If you wish to specify custom queries, you can do so here or in a config file.
         # By default, queries listed here will override any specified in a config file.
         # Prefix the list here with "+" to use these queries and those in the config file.
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
-      paths-ignore:
-        - ecolab
-        - exprtk
-        - gui-tk
-        - test
-        - '**/node_modules'
-        - '**/*.test.ts'
 
     - name: Install prerequisties
       run: |
@@ -89,3 +82,35 @@ jobs:
       uses: github/codeql-action/analyze@v2
       with:
           category: "/language:${{ matrix.language }}"
+          upload: false
+          output: sarif-results/results.sarif
+
+    - name: Upload loc as a Build Artifact
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        name: sarif-results
+        path: sarif-results
+        retention-days: 1
+
+    - name: filter-sarif
+      uses: advanced-security/filter-sarif@main
+      with:
+        patterns: |
+          -ecolab
+          -exprtk
+          -gui-tk
+          -test
+          -*.cd
+          -*.rcd
+          -*.tcd
+          -*.xcd
+          -/**/node_modules
+          -/**/*.test.ts
+        input: sarif-results/results.sarif/${{ matrix.language }}.sarif
+        output: sarif-results/results.sarif/${{ matrix.language }}-filtered.sarif
+
+    - name: upload-sarif
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: sarif-results/results.sarif/${{ matrix.language }}-filtered.sarif
+
