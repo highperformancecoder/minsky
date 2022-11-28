@@ -278,19 +278,19 @@ SUITE(TensorOps)
       CHECK_EQUAL(4, to->vValue()->hypercube().dims()[0]);
       for (auto& i: *to->vValue())
         CHECK_EQUAL(1,i);
-      CHECK_EQUAL(1, any_cast<double>(to->vValue()->hypercube().xvectors[0][0]));
+      CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[0][0].value);
 
       evalOp<OperationType::difference>("",delta=-1);
       CHECK_EQUAL(4, to->vValue()->hypercube().dims()[0]);
       for (auto& i: *to->vValue())
         CHECK_EQUAL(-1,i);
-      CHECK_EQUAL(0, any_cast<double>(to->vValue()->hypercube().xvectors[0][0]));
+      CHECK_EQUAL(0, to->vValue()->hypercube().xvectors[0][0].value);
                   
       evalOp<OperationType::difference>("",delta=2);
       CHECK_EQUAL(3, to->vValue()->hypercube().dims()[0]);
       for (auto& i: *to->vValue())
         CHECK_EQUAL(2,i);
-      CHECK_EQUAL(2, any_cast<double>(to->vValue()->hypercube().xvectors[0][0]));
+      CHECK_EQUAL(2, to->vValue()->hypercube().xvectors[0][0].value);
 
       // check that the sparse code works as expected
       fromVal.index({0,1,2,3,4});
@@ -298,7 +298,7 @@ SUITE(TensorOps)
       CHECK_EQUAL(4, to->vValue()->hypercube().dims()[0]);
       for (auto& i: *to->vValue())
         CHECK_EQUAL(1,i);
-      CHECK_EQUAL(1, any_cast<double>(to->vValue()->hypercube().xvectors[0][0]));
+      CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[0][0].value);
       vector<size_t> ii{0,1,2,3};
       CHECK_ARRAY_EQUAL(ii, to->vValue()->index(), 4);
     }
@@ -319,21 +319,21 @@ SUITE(TensorOps)
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
           CHECK_EQUAL(1,i);
-      CHECK_EQUAL(1, any_cast<double>(to->vValue()->hypercube().xvectors[1][0]));
+      CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[1][0].value);
 
       evalOp<OperationType::difference>("1",delta=-1);
       CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
           CHECK_EQUAL(-1,i);
-      CHECK_EQUAL(0, any_cast<double>(to->vValue()->hypercube().xvectors[1][0]));
+      CHECK_EQUAL(0, to->vValue()->hypercube().xvectors[1][0].value);
                   
       evalOp<OperationType::difference>("1",delta=2);
       CHECK_EQUAL(3, to->vValue()->hypercube().dims()[1]);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
           CHECK_EQUAL(2,i);
-      CHECK_EQUAL(2, any_cast<double>(to->vValue()->hypercube().xvectors[1][0]));
+      CHECK_EQUAL(2, to->vValue()->hypercube().xvectors[1][0].value);
 
       // check that the sparse code works as expected
       fromVal.index({3,8,13,16,32,64});
@@ -349,7 +349,7 @@ SUITE(TensorOps)
             cnt++;
           }
       CHECK_EQUAL(2,cnt);
-      CHECK_EQUAL(1, any_cast<double>(to->vValue()->hypercube().xvectors[1][0]));
+      CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[1][0].value);
       vector<size_t> ii{3,8};
       CHECK_ARRAY_EQUAL(ii, to->vValue()->index(), ii.size());
     }
@@ -1272,7 +1272,7 @@ SUITE(TensorOps)
       CHECK_EQUAL(Dimension::time,xv.dimension.type);
       CHECK_EQUAL("%Y",xv.dimension.units);
       for (auto& i: xv)
-        CHECK(boost::any_cast<boost::posix_time::ptime>(&i));
+        CHECK(i.type==Dimension::time);
     }
 
   TEST(sortByValue)
@@ -1289,14 +1289,14 @@ SUITE(TensorOps)
       CHECK(forward[i]>forward[i-1]);
     vector<int> expected={4,1,0,2,3};
     for (size_t i=0; i<forward.size(); ++i)
-      CHECK_EQUAL(expected[i], boost::any_cast<double>(forward.hypercube().xvectors[0][i]));
+      CHECK_EQUAL(expected[i], forward.hypercube().xvectors[0][i].value);
     SortByValue reverse(ravel::HandleSort::reverse);
     reverse.setArgument(val);
     for (size_t i=1; i<reverse.size(); ++i)
       CHECK(reverse[i]<reverse[i-1]);
     expected={3,2,0,1,4};
     for (size_t i=0; i<reverse.size(); ++i)
-      CHECK_EQUAL(expected[i], boost::any_cast<double>(reverse.hypercube().xvectors[0][i]));
+      CHECK_EQUAL(expected[i], reverse.hypercube().xvectors[0][i].value);
   }
 
   TEST(tensorValVectorIndex)

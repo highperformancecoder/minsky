@@ -577,7 +577,7 @@ namespace civita
                                   [&](const XVector& j){return j.name==i.description;});
               if (axisIt==xv.end()) throw runtime_error("axis "+i.description+" not found");
               auto sliceIt=find_if(axisIt->begin(), axisIt->end(),
-                                   [&](const boost::any& j){return str(j,axisIt->dimension.units)==i.sliceLabel;});
+                                   [&](const civita::any& j){return str(j,axisIt->dimension.units)==i.sliceLabel;});
               // determine slice index
               size_t sliceIdx=0;
               if (sliceIt!=axisIt->end())

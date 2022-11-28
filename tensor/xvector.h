@@ -20,7 +20,6 @@
 #ifndef CIVITA_XVECTOR_H
 #define CIVITA_XVECTOR_H
 #include "dimension.h"
-#include <boost/any.hpp>
 #include <boost/date_time.hpp>
 #include <vector>
 #include <initializer_list>
@@ -41,32 +40,32 @@ namespace civita
     AnyVal()=default;
     AnyVal(const Dimension& dim) {setDimension(dim);}
     void setDimension(const Dimension&);
-    boost::any operator()(const std::string&) const;
+    any operator()(const std::string&) const;
   };
 
   /// convert string rep to an any rep
-  inline boost::any anyVal(const Dimension& dim, const std::string& s)
+  inline any anyVal(const Dimension& dim, const std::string& s)
   {return AnyVal(dim)(s);}
 
   /// \a format - can be any format string suitable for a
   /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
-  std::string str(const boost::any&, const std::string& format="");
+  std::string str(const any&, const std::string& format="");
 
-  bool anyEqual(const boost::any& x, const boost::any& y);
-  size_t anyHash(const boost::any&);
+//  bool anyEqual(const boost::any& x, const boost::any& y);
+//  size_t anyHash(const boost::any&);
   
   /// return absolute difference between any elements
   /// for strings, returns hamming distance
   /// for time, returns seconds
   /// @throw if any is an incompatible type with dimension
-  double diff(const boost::any& x, const boost::any& y);
+  double diff(const any& x, const any& y);
   struct AnyLess
   {
-    bool operator()(const boost::any& x, const boost::any& y) const;
+    bool operator()(const any& x, const any& y) const {return x<y;}
   };
   struct AnyVectorLess
   {
-    bool operator()(const std::vector<boost::any>& x, const std::vector<boost::any>& y)
+    bool operator()(const std::vector<any>& x, const std::vector<any>& y)
     {return std::lexicographical_compare(x.begin(),x.end(),y.begin(),y.end(),AnyLess());}
   };
     
@@ -81,14 +80,14 @@ namespace civita
   };
   
   /// labels describing the points along dimensions. These can be strings (text type), time values (boost::posix_time type) or numerical values (double)
-  struct XVector: public NamedDimension, public std::vector<boost::any>
+  struct XVector: public NamedDimension, public std::vector<any>
   {
-    typedef std::vector<boost::any> V;
+    typedef std::vector<any> V;
     XVector() {}
     XVector(const std::string& name, const Dimension& dimension={}, const V& v={}): NamedDimension(name,dimension), V(v) {}
     XVector(const std::string& name, const Dimension& dimension, const std::initializer_list<const char*>& v): NamedDimension(name, dimension)
     {for (auto i: v) push_back(i);}
-    bool operator==(const XVector& x) const;
+    bool operator==(const XVector& x) const {return static_cast<const V&>(*this)==x;}
     void push_back(const std::string&);
     void push_back(const char* x) {push_back(std::string(x));}
     using V::push_back;
@@ -100,7 +99,7 @@ namespace civita
     template <class T>
     bool checkType() const {
       for (auto& i:*this)
-        if (!boost::any_cast<T>(&i))
+        if (i.type!=dimensionTypeOf<T>())
           return false;
       return true;
     }

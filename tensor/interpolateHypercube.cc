@@ -164,7 +164,7 @@ namespace civita
             auto v=interimHC.xvectors[dim][iIdx[dim]];
             auto lesserIt=std::upper_bound(x.begin(), x.end(), v, AnyLess());
             if (lesserIt!=x.begin()) --lesserIt; // find greatest value <= v, 
-            boost::any lesser=*lesserIt, greater;
+            any lesser=*lesserIt, greater;
             if (diff(lesser, v)>=0)
               greater=lesser;  // one sided interpolation for beginning or exact match 
             else if (lesserIt+1==x.end())

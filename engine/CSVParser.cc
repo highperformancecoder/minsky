@@ -173,16 +173,17 @@ struct SpaceSeparatorParser
 
 namespace
 {
-  struct Any: public boost::any
+  /// An any with cached hash
+  struct Any: public any
   {
     Any()=default;
-    Any(const boost::any& x): boost::any(x), hash(anyHash(x)) {}
-    bool operator<(const Any& x) const {return AnyLess()(*this,x);}
-    bool operator==(const Any& x) const {return anyEqual(*this,x);}
+    Any(const any& x): any(x), hash(x.hash()) {}
+    bool operator<(const Any& x) const {return static_cast<const any&>(*this)<x;}
+    bool operator==(const Any& x) const {return static_cast<const any&>(*this)==x;}
     size_t hash;
   };
 
-  std::string str(const Any& x) {return minsky::str(static_cast<const boost::any&>(x));}
+  std::string str(const Any& x) {return minsky::str(static_cast<const any&>(x));}
   
   struct NoDataColumns: public std::exception
   {
@@ -555,7 +556,7 @@ namespace minsky
     vector<unordered_map<Any, size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     Hypercube hc;
-    vector<string> horizontalLabels;
+    vector<any> horizontalLabels;
     vector<AnyVal> anyVal;
 
     for (auto i: spec.dimensionCols)
@@ -588,22 +589,23 @@ namespace minsky
                 tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1);
                 if (tabularFormat)
                   {
+                    anyVal.emplace_back(spec.horizontalDimension);
                     // legacy situation where all data columns are to the right
                     if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
-                      horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
+                      for (auto i=parsedRow.begin()+spec.nColAxes(); i!=parsedRow.end(); ++i)
+                        horizontalLabels.emplace_back(anyVal.back()(*i));
                     else
                       // explicitly specified data columns
                       for (auto i: spec.dataCols)
                         if (i<parsedRow.size())
-                          horizontalLabels.push_back(parsedRow[i]);
+                          horizontalLabels.emplace_back(anyVal.back()(parsedRow[i]));
                   }
                 hc.xvectors.emplace_back(spec.horizontalDimName);
                 hc.xvectors.back().dimension=spec.horizontalDimension;
-                for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
+                for (auto& i: horizontalLabels) hc.xvectors.back().emplace_back(i);
                 dimLabels.emplace_back();
                 for (size_t i=0; i<horizontalLabels.size(); ++i)
-                  dimLabels.back()[AnyVal(spec.horizontalDimension)(horizontalLabels[i])]=i;
-                anyVal.emplace_back(spec.horizontalDimension);
+                  dimLabels.back()[horizontalLabels[i]]=i;
               }
             else if (row>=spec.nRowAxes())// in data section
               {
@@ -616,11 +618,12 @@ namespace minsky
                     {
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
-                      key.push_back(anyVal[dim](*field));
                       try
                         {
-                          if (dimLabels[dim].emplace(anyVal[dim](*field), dimLabels[dim].size()).second)
-                            hc.xvectors[dim].push_back(*field);
+                          auto keyElem=anyVal[dim](*field);
+                          if (dimLabels[dim].emplace(keyElem, dimLabels[dim].size()).second)
+                            hc.xvectors[dim].emplace_back(keyElem);
+                          key.emplace_back(keyElem);
                         }
                       catch (...)
                         {
@@ -636,7 +639,7 @@ namespace minsky
                   if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
                     {                    
                       if (tabularFormat)
-                        key.push_back(anyVal[dim](horizontalLabels[dataCols]));
+                        key.emplace_back(horizontalLabels[dataCols]);
                       else if (dataCols)
                         break; // only 1 value column, everything to right ignored
                     

@@ -41,13 +41,13 @@ SUITE(XVector)
     {
       // firstly check the simple string case
       push_back("foo");
-      CHECK(front().type()==typeid(std::string));
+      CHECK(front().type==Dimension::string);
       CHECK_EQUAL("foo",str(front()));
       clear();
       // now check values
       dimension.type=Dimension::value;
       push_back("0.5");
-      CHECK(front().type()==typeid(double));
+      CHECK(front().type==Dimension::value);
       CHECK_EQUAL(0.5,stod(str(front())));
       CHECK_THROW(push_back("foo"),std::exception);
       clear();
@@ -57,12 +57,12 @@ SUITE(XVector)
       dimension.units="%Y-Q%Q";
       push_back("2018-Q2");
       
-      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), back().time);
       CHECK_THROW(push_back("2-2018"),std::exception);
       
       dimension.units="Q%Q-%Y";
       push_back("Q2-2018");
-      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), back().time);
       CHECK_THROW(push_back("2-2018"),std::exception);
       
       dimension.units="Q%Q";
@@ -70,23 +70,23 @@ SUITE(XVector)
 
       dimension.units="%Y-%m-%d";
       push_back("2018-04-01");
-      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), back().time);
       CHECK_THROW(push_back("2-2018"),std::exception);
 
       // test some wonky dates and times
       dimension.units="%d/%m/%Y";
       push_back("1/4/2018");
-      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), back().time);
       CHECK_THROW(push_back("2-2018"),std::exception);
 
       dimension.units="%d/%m/%Y %H:%M:%S";
       push_back("1/4/2018 12:52:13");
-      CHECK_EQUAL(ptime(date(2018,Apr,1),time_duration(12,52,13)), any_cast<ptime>(back()));
+      CHECK_EQUAL(ptime(date(2018,Apr,1),time_duration(12,52,13)), back().time);
       CHECK_THROW(push_back("2-2018"),std::exception);
       
       dimension.units.clear();
       push_back("2018-04-01");
-      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), back().time);
       CHECK_THROW(push_back("foo"),std::exception);
 
     }
@@ -101,9 +101,9 @@ SUITE(XVector)
   
   TEST(str)
     {
-      CHECK_EQUAL("0.3",str(boost::any("0.3"),""));
-      CHECK_EQUAL("0.300000",str(boost::any(0.3),""));
-      boost::any t(boost::posix_time::time_from_string("2002-04-20 23:59:59.000"));
+      CHECK_EQUAL("0.3",str(civita::any("0.3"),""));
+      CHECK_EQUAL("0.300000",str(civita::any(0.3),""));
+      civita::any t(boost::posix_time::time_from_string("2002-04-20 23:59:59.000"));
       CHECK_EQUAL("2002-04-20T23:59:59", str(t,""));
       CHECK_EQUAL("2002/04/20", str(t,"%Y/%m/%d"));
       CHECK_EQUAL("2002-Q2", str(t,"%Y-Q%Q"));
@@ -138,18 +138,9 @@ SUITE(XVector)
 
   TEST(incompatibleDiff)
   {
-    boost::any x, y;
+    civita::any x, y;
     x=0.5; y="hello";
     CHECK_THROW(diff(x,y), std::exception); // incompatible type
-    x=nullptr; y=nullptr;
-    CHECK_THROW(diff(x,y), std::exception); // type not supported
-  }
-
-  TEST(strFunnyType)
-  {
-    struct Foo {int a;};
-    boost::any x=Foo();
-    CHECK_EQUAL("",str(x,""));
   }
 
   TEST(timeFormat)
