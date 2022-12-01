@@ -86,7 +86,7 @@ namespace civita
 
   void unionHypercube(Hypercube& result, const Hypercube& x)
   {
-    map<string, set<boost::any, AnyLess>> indexedData;
+    map<string, set<any, AnyLess>> indexedData;
     vector<XVector> extraDims;
     for (auto& xvector: result.xvectors)
       {
