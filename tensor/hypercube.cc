@@ -84,5 +84,33 @@ namespace civita
   template 
   size_t Hypercube::linealIndex<vector<size_t>>(const vector<size_t>& splitIndex) const;
 
+  void unionHypercube(Hypercube& result, const Hypercube& x)
+  {
+    map<string, set<boost::any, AnyLess>> indexedData;
+    vector<XVector> extraDims;
+    for (auto& xvector: result.xvectors)
+      {
+        auto& xvectorData=indexedData[xvector.name];
+        for (auto& i: xvector)
+          xvectorData.insert(i);
+      }
+    for (auto& xvector: x.xvectors)
+      {
+        auto xvectorData=indexedData.find(xvector.name);
+        if (xvectorData==indexedData.end())
+          extraDims.emplace_back(xvector);
+        else
+          for (auto& i: xvector)
+            xvectorData->second.insert(i);
+      }
+    for (auto& xvector: result.xvectors)
+      {
+        auto& xvectorData=indexedData[xvector.name];
+        xvector.clear();
+        xvector.insert(xvector.end(), xvectorData.begin(), xvectorData.end());
+      }
+    for (auto& i: extraDims)
+      result.xvectors.push_back(i);
+  }
 }
 
