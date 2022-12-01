@@ -597,19 +597,19 @@ namespace minsky
                     // legacy situation where all data columns are to the right
                     if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
                       for (auto i=parsedRow.begin()+spec.nColAxes(); i!=parsedRow.end(); ++i)
-                        horizontalLabels.emplace_back(str(anyVal.back()(*i)));
+                        horizontalLabels.emplace_back(str(anyVal.back()(*i),spec.horizontalDimension.units));
                     else
                       // explicitly specified data columns
                       for (auto i: spec.dataCols)
                         if (i<parsedRow.size())
-                          horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i])));
+                          horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i]),spec.horizontalDimension.units));
+                    hc.xvectors.emplace_back(spec.horizontalDimName);
+                    hc.xvectors.back().dimension=spec.horizontalDimension;
+                    for (auto& i: horizontalLabels) hc.xvectors.back().emplace_back(i);
+                    dimLabels.emplace_back();
+                    for (size_t i=0; i<horizontalLabels.size(); ++i)
+                      dimLabels.back()[horizontalLabels[i]]=i;
                   }
-                hc.xvectors.emplace_back(spec.horizontalDimName);
-                hc.xvectors.back().dimension=spec.horizontalDimension;
-                for (auto& i: horizontalLabels) hc.xvectors.back().emplace_back(i);
-                dimLabels.emplace_back();
-                for (size_t i=0; i<horizontalLabels.size(); ++i)
-                  dimLabels.back()[horizontalLabels[i]]=i;
               }
             else if (row>=spec.nRowAxes())// in data section
               {
@@ -625,7 +625,7 @@ namespace minsky
                       try
                         {
                           auto keyElem=anyVal[dim](*field);
-                          auto skeyElem=str(keyElem);
+                          auto skeyElem=str(keyElem, spec.dimensions[dim].units);
                           if (dimLabels[dim].emplace(skeyElem, dimLabels[dim].size()).second)
                             hc.xvectors[dim].emplace_back(keyElem);
                           key.emplace_back(skeyElem);

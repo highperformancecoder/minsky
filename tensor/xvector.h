@@ -26,6 +26,10 @@
 
 namespace civita
 {
+  /// \a format - can be any format string suitable for a
+  /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
+  std::string str(const any&, const std::string& format="");
+
 
   /// convert string rep to an any rep
   ///two phase caching data independent computation for ptime conversion 
@@ -46,10 +50,6 @@ namespace civita
   /// convert string rep to an any rep
   inline any anyVal(const Dimension& dim, const std::string& s)
   {return AnyVal(dim)(s);}
-
-  /// \a format - can be any format string suitable for a
-  /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
-  std::string str(const any&, const std::string& format="");
 
   /// return absolute difference between any elements
   /// for strings, returns hamming distance
