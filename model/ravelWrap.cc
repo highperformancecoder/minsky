@@ -780,7 +780,7 @@ namespace
 
   bool RavelPopup::redraw(int x0, int y0, int width, int height)
   {
-    if (!surface) return false;
+    if (!surface.get()) return false;
     this->width=width; this->height=height;
     ecolab::cairo::CairoSave cs(surface->cairo());
     cairo_translate(surface->cairo(),0.5*width,0.5*height);
