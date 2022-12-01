@@ -19,6 +19,7 @@
 
 #ifndef CIVITA_DIMENSION_H
 #define CIVITA_DIMENSION_H
+#include <boost/date_time.hpp>
 #include <string>
 #include <map>
 #include <stdexcept>
@@ -33,6 +34,55 @@ namespace civita
     Dimension() {}
     Dimension(Type t,const std::string& s): type(t), units(s) {}
   };
+
+  template <class T> Dimension::Type dimensionTypeOf();
+  template <> inline Dimension::Type dimensionTypeOf<std::string>() {return Dimension::string;}
+  template <> inline Dimension::Type dimensionTypeOf<boost::posix_time::ptime>() {return Dimension::time;} 
+  template <> inline Dimension::Type dimensionTypeOf<double>() {return Dimension::value;}
+
+  /// a variant type representing a value of a dimension
+  // TODO - when we move to c++17, consider using std::variant
+  struct any
+  {
+    Dimension::Type type=Dimension::string;
+    boost::posix_time::ptime time;
+    double value;
+    std::string string;
+    size_t hash() const;
+    any()=default;
+    any(const boost::posix_time::ptime& x): type(Dimension::time), time(x) {}
+    any(const std::string& x): type(Dimension::string), string(x) {}
+    any(const double& x): type(Dimension::value), value(x) {}
+    template <class T> any& operator=(const T&x) {return *this=any(x);}
+  };
+
+  inline size_t any::hash() const {
+    switch (type) {
+    case Dimension::string: return std::hash<std::string>()(string);
+    case Dimension::time: return std::hash<size_t>()((time-boost::posix_time::ptime()).ticks());
+    case Dimension::value: return std::hash<double>()(value);
+    }
+  }
+
+  inline bool operator<(const any& x, const any& y) {
+    if (x.type==y.type)
+      switch (x.type)   {
+      case Dimension::string: return x.string<y.string;
+      case Dimension::time: return x.time<y.time;
+      case Dimension::value: return x.value<y.value;
+      }
+    return x.type<y.type;
+  }
+  
+  inline bool operator==(const any& x, const any& y) {
+    if (x.type!=y.type) return false;
+      switch (x.type)   {
+      case Dimension::string: return x.string==y.string;
+      case Dimension::time: return x.time==y.time;
+        //case Dimension::time: return x.time-y.time==0;
+      case Dimension::value: return x.value==y.value;
+      }
+  }
 
 #ifdef STRINGKEYMAP_H
   using classdesc::StringKeyMap;
@@ -60,5 +110,11 @@ namespace civita
     {ConversionsMap::operator=(x); return *this;}
   };
 }
+
+#ifdef CLASSDESC
+#pragma omit json_pack civita::any
+#pragma omit json_unpack civita::any
+#pragma omit RESTProcess civita::any
+#endif
 
 #endif

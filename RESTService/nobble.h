@@ -63,7 +63,7 @@ NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const unsigned long*, std::vecto
 //NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long long unsigned int*, std::vector<T>>),class T)
 #endif
 NOBBLE(NOBBLE_TARG(boost::geometry::model::d2::point_xy<T,S>),NOBBLE_TARG(class T,class S))
-NOBBLE(boost::any,)
+NOBBLE(civita::any,)
 
 namespace classdesc
 {

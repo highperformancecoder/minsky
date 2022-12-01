@@ -57,64 +57,6 @@ namespace civita
     };
   }
 
-  string anyStringCast(const boost::any& x)
-  {
-    if (auto s=any_cast<string>(&x))
-      return *s;
-    return any_cast<const char*>(x);
-  }
-
-  bool AnyLess::operator()(const boost::any& x, const boost::any& y) const
-  {
-    if (x.type().before(y.type()))
-      return true;
-    if (y.type().before(x.type()))
-      return false;
-    if (auto v=any_cast<double>(&x))
-      return *v<any_cast<double>(y);
-    if (auto t=any_cast<ptime>(&x))
-      return *t<any_cast<ptime>(y);
-    return anyStringCast(x)<anyStringCast(y);
-  }
-
-  bool anyEqual(const boost::any& x, const boost::any& y)
-  {
-    if (x.type()!=y.type()) return false;
-    if (auto v=any_cast<double>(&x))
-      return *v==any_cast<double>(y);
-    if (auto t=any_cast<ptime>(&x))
-      return *t==any_cast<ptime>(y);
-    return anyStringCast(x)==anyStringCast(y);
-  }
-  
-  bool XVector::operator==(const XVector& x) const
-  {
-    if (dimension.type!=x.dimension.type || name!=x.name ||
-        size()!=x.size())
-      return false;
-    for (auto i=begin(), j=x.begin(); i!=end(); ++i, ++j)
-      {
-        if (i->type()!=j->type())
-          return false;
-        switch (dimension.type)
-          {
-          case Dimension::string:
-            if (anyStringCast(*i)!=anyStringCast(*j))
-              return false;
-            break;
-          case Dimension::value:
-            if (any_cast<double>(*i)!=any_cast<double>(*j))
-              return false;
-            break;
-          case Dimension::time:
-            if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
-              return false;
-            break;
-          }
-      }
-    return true;
-  }
-
   
   void XVector::push_back(const std::string& s)
   {
@@ -155,7 +97,7 @@ namespace civita
       }
   }
 
-  boost::any AnyVal::operator()(const std::string& s) const
+  any AnyVal::operator()(const std::string& s) const
   {
     switch (dim.type)
       {
@@ -253,24 +195,29 @@ namespace civita
     return ptime(date(d[0],d[1],d[2]), time_duration(d[3],d[4],d[5]));
   }
   
-  double diff(const boost::any& x, const boost::any& y)
+  double diff(const any& x, const any& y)
   {
-    if (x.type()!=y.type())
-      throw runtime_error(string("incompatible types ")+x.type().name()+" and "+y.type().name()+" in diff");
-    if (auto vx=any_cast<string>(&x))
+    if (x.type!=y.type)
+#ifdef CLASSDESC_H
+      throw runtime_error("incompatible types "+classdesc::to_string(x.type)+" and "+classdesc::to_string(y.type)+" in diff");
+#else
+      throw runtime_error("incompatible types in diff");
+#endif
+    switch (x.type)
       {
-        // Hamming distance
-        auto vy=any_cast<string>(y);
-        double r=abs(double(vx->length())-double(vy.length()));
-        for (size_t i=0; i<vx->length() && i<vy.length(); ++i)
-          r += (*vx)[i]!=vy[i];
-        return (*vx<vy)? -r: r;
+      case Dimension::string:
+        {
+          // Hamming distance
+          double r=abs(double(x.string.length())-double(y.string.length()));
+          for (size_t i=0; i<x.string.length() && i<y.string.length(); ++i)
+            r += x.string[i]!=y.string[i];
+          return x.string<y.string? -r: r;
+        }
+      case Dimension::value:
+        return x.value-y.value;
+      case Dimension::time:
+        return 1e-9*(x.time-y.time).total_nanoseconds();
       }
-    if (auto vx=any_cast<double>(&x))
-      return *vx-any_cast<double>(y);
-    if (auto vx=any_cast<ptime>(&x))
-      return 1e-9*(*vx-any_cast<ptime>(y)).total_nanoseconds();
-    throw error("unsupported type");
   }
 
   // format a string with two integer arguments
@@ -281,56 +228,45 @@ namespace civita
     return r;
   }
   
-  string str(const boost::any& v, const string& format)
+  string str(const any& v, const string& format)
   {
-    string::size_type pq;
-    if (auto s=any_cast<std::string>(&v))
-      return *s;
-    if (auto s=any_cast<const char*>(&v))
-      return *s;
-    if (auto s=any_cast<double>(&v))
-      return to_string(*s);
-    if (auto s=any_cast<ptime>(&v))
-      if (format.empty())
-        return to_iso_extended_string(*s);
-      else if ((pq=format.find("%Q"))!=string::npos)
+    switch (v.type)
+      {
+      case Dimension::string: return v.string;
+      case Dimension::value: return to_string(v.value);
+      case Dimension::time:
         {
-          auto pY=format.find("%Y");
-          if (pY==string::npos)
-            throw error("year not specified in format string");
+          string::size_type pq;
+          if (format.empty())
+            return to_iso_extended_string(v.time);
+          if ((pq=format.find("%Q"))!=string::npos)
+            {
+              auto pY=format.find("%Y");
+              if (pY==string::npos)
+                throw error("year not specified in format string");
             
-          // replace %Q and %Y with %d
-          string sformat=format;
-          for (size_t i=1; i<sformat.size(); ++i)
-            if (sformat[i-1]=='%' && (sformat[i]=='Q' || sformat[i]=='Y'))
-              sformat[i]='d';
-          char result[100];
-          auto tm=to_tm(s->date());
-          if (pq<pY)
-            return formatString(sformat,tm.tm_mon/3+1, tm.tm_year+1900);
-          return formatString(sformat, tm.tm_year+1900, tm.tm_mon/3+1);
+              // replace %Q and %Y with %d
+              string sformat=format;
+              for (size_t i=1; i<sformat.size(); ++i)
+                if (sformat[i-1]=='%' && (sformat[i]=='Q' || sformat[i]=='Y'))
+                  sformat[i]='d';
+              char result[100];
+              auto tm=to_tm(v.time.date());
+              if (pq<pY)
+                return formatString(sformat,tm.tm_mon/3+1, tm.tm_year+1900);
+              return formatString(sformat, tm.tm_year+1900, tm.tm_mon/3+1);
+            }
+          else
+            {
+              unique_ptr<time_facet> facet(new time_facet(format.c_str()));
+              ostringstream os;
+              os.imbue(locale(os.getloc(), facet.release()));
+              os<<v.time;
+              return os.str();
+            }
         }
-      else
-        {
-          unique_ptr<time_facet> facet(new time_facet(format.c_str()));
-          ostringstream os;
-          os.imbue(locale(os.getloc(), facet.release()));
-          os<<*s;
-          return os.str();
-        }
-    else
-      return "";
+      }
   }
-
-  size_t anyHash(const boost::any& x)
-  {
-    if (auto v=any_cast<double>(&x))
-      return std::hash<double>()(*v);
-    if (auto t=any_cast<ptime>(&x))
-      return std::hash<size_t>()((*t-ptime()).ticks());
-    return std::hash<string>()(anyStringCast(x));
-  }
-
   
   string XVector::timeFormat() const
   {
@@ -338,7 +274,7 @@ namespace civita
     static const auto day=hours(24);
     static const auto month=day*30;
     static const auto year=day*365;
-    auto f=any_cast<ptime>(front()), b=any_cast<ptime>(back());
+    auto f=front().time, b=back().time;
     if (f>b) std::swap(f,b);
     auto dt=b-f;
     if (dt > year*5)

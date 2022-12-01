@@ -538,7 +538,7 @@ namespace minsky
       return (1-s)*lv + s*gv;
     }
 
-    double interpolateAny(const XVector& xv, const boost::any& x, size_t stride, size_t offset) const
+    double interpolateAny(const XVector& xv, const civita::any& x, size_t stride, size_t offset) const
     {
       if (xv.size()<2 || diff(x,xv.front())<0 || diff(x,xv.back())>0)
         return nan("");

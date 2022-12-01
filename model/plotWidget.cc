@@ -477,10 +477,10 @@ namespace minsky
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
                         // interpret "year" as years since epoch (1/1/1970)
                         for (const auto& i: xv)
-                          xdefault.push_back(yearToPTime(any_cast<double>(i)));
+                          xdefault.push_back(yearToPTime(i.value));
                       else
                         for (const auto& i: xv)
-                          xdefault.push_back(any_cast<double>(i));
+                          xdefault.push_back(i.value);
                       if (plotType==automatic)
                         Plot::plotType=Plot::line;
                       break;
@@ -489,7 +489,7 @@ namespace minsky
                         string format=xv.timeFormat();
                         for (const auto& i: xv)
                           {
-                            double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
+                            double tv=(i.time-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
                             newXticks.back().emplace_back(tv,str(i,format));
                             xdefault.push_back(tv);
                           }

@@ -153,6 +153,7 @@ ifdef MEMPROFILE
 LIBS+=-ltcmalloc
 endif
 ifdef CPUPROFILE
+OPT+=-g
 LIBS+=-lprofiler
 endif
 
@@ -200,11 +201,6 @@ ifdef MXE
 LIBS+=-lcrypt32 -lshcore
 else
 LIBS+=-lclipboard -lxcb -lX11
-endif
-
-ifdef CPUPROFILE
-OPT+=-g
-LIBS+=-lprofiler
 endif
 
 # RSVG dependencies calculated here

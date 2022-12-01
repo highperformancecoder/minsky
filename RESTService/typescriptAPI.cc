@@ -92,7 +92,7 @@ namespace classdesc_access
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
   
   template <>
-  struct access_typescriptAPI<std::vector<boost::any>>:
+  struct access_typescriptAPI<std::vector<civita::any>>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
 }
 
@@ -103,7 +103,7 @@ namespace classdesc
   template <> string typeName<cairo_surface_t>() {return "minsky__dummy";}
   
   template <>
-  struct tn<boost::any>
+  struct tn<civita::any>
   {
     static string name() {return "minsky__dummy";}
   };
