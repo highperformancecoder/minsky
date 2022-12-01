@@ -508,38 +508,40 @@ namespace civita
           permuteAxis->setArgument(chain.back(), i.description);
           auto& xv=chain.back()->hypercube().xvectors[permuteAxis->axis()];
           vector<size_t> perm;
-          for (size_t i=0; i<xv.size(); ++i)
-            perm.push_back(i);
-          switch (i.order)
+          if (i.customOrder.empty())
             {
-            case ravel::HandleSort::none: break;
-            case ravel::HandleSort::forward:
-            case ravel::HandleSort::numForward:
-            case ravel::HandleSort::timeForward:
-              sort(perm.begin(), perm.end(),
-                   [&](size_t i, size_t j) {return diff(xv[i],xv[j])<0;});
-              break;
-            case ravel::HandleSort::reverse:
-            case ravel::HandleSort::numReverse:
-            case ravel::HandleSort::timeReverse:
-              sort(perm.begin(), perm.end(),
-                   [&](size_t i, size_t j) {return diff(xv[i],xv[j])>0;});
-              break;
-            case ravel::HandleSort::custom:
-              {
-                map<string, size_t> offsets;
-                for (size_t i=0; i<xv.size(); ++i)
-                  offsets[str(xv[i], xv.dimension.units)]=i;
-                perm.clear();
-                for (auto& j: i.customOrder)
-                  if (offsets.count(j))
-                    perm.push_back(offsets[j]);
-                break;
-              }
-//            case ravel::HandleSort::numForward: case ravel::HandleSort::numReverse:
-//            case ravel::HandleSort::timeForward: case ravel::HandleSort::timeReverse:
-//              throw runtime_error("deprecated sort order used");
+              for (size_t i=0; i<xv.size(); ++i)
+                perm.push_back(i);
+              switch (i.order)
+                {
+                case ravel::HandleSort::none: break;
+                case ravel::HandleSort::forward:
+                case ravel::HandleSort::numForward:
+                case ravel::HandleSort::timeForward:
+                  sort(perm.begin(), perm.end(),
+                       [&](size_t i, size_t j) {return diff(xv[i],xv[j])<0;});
+                  break;
+                case ravel::HandleSort::reverse:
+                case ravel::HandleSort::numReverse:
+                case ravel::HandleSort::timeReverse:
+                  sort(perm.begin(), perm.end(),
+                       [&](size_t i, size_t j) {return diff(xv[i],xv[j])>0;});
+                  break;
+                case ravel::HandleSort::custom:
+                  break; // shouldn't be here with an empty custom order
+                }
             }
+          else
+            {
+              map<string, size_t> offsets;
+              for (size_t i=0; i<xv.size(); ++i)
+                offsets[str(xv[i], xv.dimension.units)]=i;
+              perm.clear();
+              for (auto& j: i.customOrder)
+                if (offsets.count(j))
+                  perm.push_back(offsets[j]);
+            }
+          
           if (i.displayFilterCaliper)
             {
               // remove any permutation items outside calipers
