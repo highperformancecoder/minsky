@@ -196,6 +196,10 @@ namespace
       for (auto& i: x)
         msg+=":"+str(i);
     }
+    DuplicateKey(const vector<string>& x) {
+      for (auto& i: x)
+        msg+=":"+i;
+    }
     const char* what() const noexcept override {return msg.c_str();}
   };
 
@@ -272,16 +276,16 @@ namespace std
   {
     size_t operator()(const Any& x) const {return x.hash;}
   };
-  template <>
-  struct hash<vector<Any>>
+  template <class T>
+  struct hash<vector<T>>
   {
-    size_t operator()(const vector<Any>& x) const {
+    size_t operator()(const vector<T>& x) const {
       size_t r=0;
-      for (auto& i: x) r^=i.hash;
+      for (auto& i: x) r^=std::hash<T>()(i);
       return r;
     }
   };
- 
+
 }
 
 void DataSpec::setDataArea(size_t row, size_t col)
@@ -550,13 +554,13 @@ namespace minsky
   {
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
-    typedef vector<Any> Key;
+    typedef vector<string> Key;
     unordered_map<Key,double> tmpData;
     unordered_map<Key,int> tmpCnt;
-    vector<unordered_map<Any, size_t>> dimLabels(spec.dimensionCols.size());
+    vector<unordered_map<typename Key::value_type, size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     Hypercube hc;
-    vector<any> horizontalLabels;
+    vector<typename Key::value_type> horizontalLabels;
     vector<AnyVal> anyVal;
 
     for (auto i: spec.dimensionCols)
@@ -593,12 +597,12 @@ namespace minsky
                     // legacy situation where all data columns are to the right
                     if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
                       for (auto i=parsedRow.begin()+spec.nColAxes(); i!=parsedRow.end(); ++i)
-                        horizontalLabels.emplace_back(anyVal.back()(*i));
+                        horizontalLabels.emplace_back(str(anyVal.back()(*i)));
                     else
                       // explicitly specified data columns
                       for (auto i: spec.dataCols)
                         if (i<parsedRow.size())
-                          horizontalLabels.emplace_back(anyVal.back()(parsedRow[i]));
+                          horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i])));
                   }
                 hc.xvectors.emplace_back(spec.horizontalDimName);
                 hc.xvectors.back().dimension=spec.horizontalDimension;
@@ -621,9 +625,10 @@ namespace minsky
                       try
                         {
                           auto keyElem=anyVal[dim](*field);
-                          if (dimLabels[dim].emplace(keyElem, dimLabels[dim].size()).second)
+                          auto skeyElem=str(keyElem);
+                          if (dimLabels[dim].emplace(skeyElem, dimLabels[dim].size()).second)
                             hc.xvectors[dim].emplace_back(keyElem);
-                          key.emplace_back(keyElem);
+                          key.emplace_back(skeyElem);
                         }
                       catch (...)
                         {
