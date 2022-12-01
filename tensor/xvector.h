@@ -51,9 +51,6 @@ namespace civita
   /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
   std::string str(const any&, const std::string& format="");
 
-//  bool anyEqual(const boost::any& x, const boost::any& y);
-//  size_t anyHash(const boost::any&);
-  
   /// return absolute difference between any elements
   /// for strings, returns hamming distance
   /// for time, returns seconds
@@ -69,9 +66,6 @@ namespace civita
     {return std::lexicographical_compare(x.begin(),x.end(),y.begin(),y.end(),AnyLess());}
   };
     
-  /// default parsing of a time string
-  //  boost::posix_time::ptime sToPtime(const std::string& s);
-
   struct NamedDimension
   {
     std::string name;

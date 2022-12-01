@@ -57,64 +57,6 @@ namespace civita
     };
   }
 
-//  string anyStringCast(const boost::any& x)
-//  {
-//    if (auto s=any_cast<string>(&x))
-//      return *s;
-//    return any_cast<const char*>(x);
-//  }
-
-//  bool AnyLess::operator()(const any& x, const boost::any& y) const
-//  {
-//    if (x.type().before(y.type()))
-//      return true;
-//    if (y.type().before(x.type()))
-//      return false;
-//    if (auto v=any_cast<double>(&x))
-//      return *v<any_cast<double>(y);
-//    if (auto t=any_cast<ptime>(&x))
-//      return *t<any_cast<ptime>(y);
-//    return anyStringCast(x)<anyStringCast(y);
-//  }
-
-//  bool anyEqual(const boost::any& x, const boost::any& y)
-//  {
-//    if (x.type()!=y.type()) return false;
-//    if (auto v=any_cast<double>(&x))
-//      return *v==any_cast<double>(y);
-//    if (auto t=any_cast<ptime>(&x))
-//      return *t==any_cast<ptime>(y);
-//    return anyStringCast(x)==anyStringCast(y);
-//  }
-  
-//  bool XVector::operator==(const XVector& x) const
-//  {
-//    if (dimension.type!=x.dimension.type || name!=x.name ||
-//        size()!=x.size())
-//      return false;
-//    for (auto i=begin(), j=x.begin(); i!=end(); ++i, ++j)
-//      {
-//        if (i->type()!=j->type())
-//          return false;
-//        switch (dimension.type)
-//          {
-//          case Dimension::string:
-//            if (anyStringCast(*i)!=anyStringCast(*j))
-//              return false;
-//            break;
-//          case Dimension::value:
-//            if (any_cast<double>(*i)!=any_cast<double>(*j))
-//              return false;
-//            break;
-//          case Dimension::time:
-//            if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
-//              return false;
-//            break;
-//          }
-//      }
-//    return true;
-//  }
-
   
   void XVector::push_back(const std::string& s)
   {
@@ -325,16 +267,6 @@ namespace civita
         }
       }
   }
-  
-//  size_t anyHash(const boost::any& x)
-//  {
-//    if (auto v=any_cast<double>(&x))
-//      return std::hash<double>()(*v);
-//    if (auto t=any_cast<ptime>(&x))
-//      return std::hash<size_t>()((*t-ptime()).ticks());
-//    return std::hash<string>()(anyStringCast(x));
-//  }
-
   
   string XVector::timeFormat() const
   {
