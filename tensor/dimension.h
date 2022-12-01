@@ -82,6 +82,8 @@ namespace civita
         //case Dimension::time: return x.time-y.time==0;
       case Dimension::value: return x.value==y.value;
       }
+      assert(false);
+      return false; // shouldn't be here.
   }
 
 #ifdef STRINGKEYMAP_H
