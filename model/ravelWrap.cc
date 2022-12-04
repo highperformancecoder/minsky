@@ -302,16 +302,6 @@ namespace
       {
         // stash previous handle sort order
         auto state=wrappedRavel.getHandleState(axis);
-        if (state.order!=ravel::HandleSort::custom)
-          previousOrder=state.order;
-
-        if (pick.size()>=wrappedRavel.numAllSliceLabels(axis))
-          {
-            // if all labels are selected, revert ordering to previous
-            setHandleSortOrder(previousOrder, axis);
-            return;
-          }
-        
         auto allLabels=wrappedRavel.allSliceLabels(axis, ravel::HandleSort::none);
         map<string,size_t> idxMap; // map index positions
         for (size_t i=0; i<allLabels.size(); ++i)
@@ -325,6 +315,8 @@ namespace
           }
         assert(!customOrder.empty());
         wrappedRavel.applyCustomPermutation(axis,customOrder);
+        if (state.order!=ravel::HandleSort::custom)
+          setHandleSortOrder(state.order, axis);
       }
   }
 
@@ -374,15 +366,18 @@ namespace
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
     if (wrappedRavel.rank()!=1) return;
+    auto currentPermutation=wrappedRavel.currentPermutation(wrappedRavel.selectedHandle());
     setHandleSortOrder(ravel::HandleSort::none, wrappedRavel.outputHandleIds()[0]);
     try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
     auto vv=m_ports[0]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
+
     vector<size_t> permutation;
-    for (size_t i=0; i<vv->hypercube().xvectors[0].size(); ++i)
+    for (size_t i=0; i<std::min(currentPermutation.size(), vv->hypercube().xvectors[0].size()); ++i)
       if (std::isfinite(vv->atHCIndex(i)))
-        permutation.push_back(i);
+        permutation.push_back(currentPermutation[i]);
+
     switch (dir)
       {
       case ravel::HandleSort::forward:

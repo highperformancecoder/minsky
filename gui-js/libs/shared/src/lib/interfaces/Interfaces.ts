@@ -113,7 +113,6 @@ export enum ReplayRecordingStatus {
 export interface CanvasItem {
     classType: ClassType;
     displayContents: boolean;
-    value: number;
     id: string;
 }
 

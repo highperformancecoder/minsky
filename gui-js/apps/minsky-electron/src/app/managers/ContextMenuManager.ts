@@ -861,7 +861,7 @@ export class ContextMenuManager {
     const menuItems = [
       dims && dims.length
         ? new MenuItem({ label: `Dims ${dims.toString()}` })
-        : new MenuItem({ label: `Value ${itemInfo?.value || ''}` }),
+        : new MenuItem({ label: `Value ${v.value()}` }),
       new MenuItem({
         label: "Local",
         type: 'checkbox',

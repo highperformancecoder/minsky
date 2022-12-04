@@ -68,11 +68,10 @@ export class CommandsManager {
     }
 
     const classType = (await this.getCurrentItemClassType()) as ClassType;
-    const value = minsky.canvas.item.value();
     const id = minsky.canvas.item.id();
     const displayContents=classType==="Group"? new Group(minsky.canvas.item).displayContents(): false;
 
-    const itemInfo: CanvasItem = { classType, value, id, displayContents };
+    const itemInfo: CanvasItem = { classType, id, displayContents };
     return itemInfo;
   }
 
@@ -1006,6 +1005,7 @@ export class CommandsManager {
 
   static async savePickSlices(payload: PickSlicesPayload) {
     (new Ravel(payload.command)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
+    minsky.reset();
   }
 
   static async lockSpecificHandles(ravel: Ravel) {
