@@ -1013,20 +1013,21 @@ export class CommandsManager {
     if(Object.keys(allLockHandles).length === 0) {
       minsky.canvas.lockRavelsInSelection();
       allLockHandles = ravel.lockGroup.allLockHandles();
+      console.log(typeof allLockHandles,allLockHandles.length);
       if(Object.keys(allLockHandles).length === 0) return;
     }
 
     const lockgroup = ravel.lockGroup.properties();
     if(lockgroup.handleLockInfo.length === 0) {
       ravel.lockGroup.setLockHandles(allLockHandles);
-      const ravelNames = ravel.lockGroup.ravelNames();
-      const window=WindowManager.createPopupWindowWithRouting({
-        title: `Lock specific handles`,
-        url: `#/headless/lock-handles?handleLockInfo=${JSON5.stringify(lockgroup.handleLockInfo)}&ravelNames=${ravelNames.join()}&lockHandles=${allLockHandles.join()}`,
-        height: 200,
-        width: 600,
-      });
-      Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
     }
+    const ravelNames = ravel.lockGroup.ravelNames();
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `Lock specific handles`,
+      url: `#/headless/lock-handles?handleLockInfo=${JSON5.stringify(lockgroup.handleLockInfo)}&ravelNames=${ravelNames.join()}&lockHandles=${allLockHandles.join()}`,
+      height: 200,
+      width: 600,
+    });
+    Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
 }
