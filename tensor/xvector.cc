@@ -218,6 +218,8 @@ namespace civita
       case Dimension::time:
         return 1e-9*(x.time-y.time).total_nanoseconds();
       }
+    assert(false); 
+    return 0; // should not be here
   }
 
   // format a string with two integer arguments
@@ -266,6 +268,8 @@ namespace civita
             }
         }
       }
+    assert(false);
+    return ""; // shouldn't be here
   }
   
   string XVector::timeFormat() const

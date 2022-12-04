@@ -76,12 +76,13 @@ namespace civita
   
   inline bool operator==(const any& x, const any& y) {
     if (x.type!=y.type) return false;
-      switch (x.type)   {
-      case Dimension::string: return x.string==y.string;
-      case Dimension::time: return x.time==y.time;
-        //case Dimension::time: return x.time-y.time==0;
-      case Dimension::value: return x.value==y.value;
-      }
+    switch (x.type)   {
+    case Dimension::string: return x.string==y.string;
+    case Dimension::time: return x.time==y.time;
+    case Dimension::value: return x.value==y.value;
+    }
+    assert(false);
+    return false; // should never be here
   }
 
 #ifdef STRINGKEYMAP_H
