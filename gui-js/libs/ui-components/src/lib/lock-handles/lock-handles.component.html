@@ -7,6 +7,7 @@
     <div class="form-row" *ngFor="let handle of handleLockInfo">
       <div class="form-cell" *ngFor="let ravelName of ravelNames; let i = index">
         <select [(ngModel)]="handle.handleNames[i]">
+          <option value="">
           <option *ngFor="let lockHandle of lockHandles" [value]="lockHandle">{{lockHandle}}</option>
         </select>
       </div>
