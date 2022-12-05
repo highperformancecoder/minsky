@@ -268,8 +268,8 @@ namespace civita
             }
         }
       }
-    assert(false);
-    return ""; // shouldn't be here
+    assert(false); // shouldn't be here
+    return {};
   }
   
   string XVector::timeFormat() const
