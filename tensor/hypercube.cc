@@ -107,18 +107,20 @@ namespace civita
         else
           {
             // trim to intersection of the two
-            auto minX=xvector[0];
-            if (diff(*xvectorData->second.begin(),minX)>0) minX=*xvectorData->second.begin();
-            auto maxX=xvector.back();
-            if (diff(*xvectorData->second.rbegin(),maxX)<0) maxX=*xvectorData->second.rbegin();
+            // TODO use structured binding when we go C++17.
+            auto xRange=std::minmax_element(xvector.begin(),xvector.end());
+            auto minX=*xRange.first, maxX=*xRange.second;
+            auto rRange=std::minmax_element(xvectorData->second.begin(),xvectorData->second.end());
+            if (minX<*rRange.first) minX=*rRange.first;
+            if (*rRange.second<maxX) maxX=*rRange.second;
             for (auto i=xvectorData->second.begin(); i!=xvectorData->second.end(); )
               {
                 auto j=i++;
-                if (diff(*j,minX)<0 || diff(*j,maxX)>0)
+                if (*j<minX || maxX<*j)
                   xvectorData->second.erase(j);
               }
             for (auto& i: xvector)
-              if (diff(i,minX)>=0 && diff(i,maxX)<=0)
+              if (diff(minX,i)<=0 && diff(i,maxX)<=0)
                 xvectorData->second.insert(i);
           }
       }

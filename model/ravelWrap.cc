@@ -221,7 +221,7 @@ namespace
         if (redistribute) wrappedRavel.redistributeHandles();
       }
 #ifndef NDEBUG
-    if (static_cast<ravel::Ravel&>(*this) && state.empty())
+    if (static_cast<ravel::Ravel&>(wrappedRavel) && state.empty())
       {
         auto d=hc.dims();
         assert(d.size()==wrappedRavel.rank());

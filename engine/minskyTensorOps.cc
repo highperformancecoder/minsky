@@ -535,6 +535,8 @@ namespace minsky
     
     double interpolateString(double idx, size_t stride, size_t offset) const
     {
+      if (arg1->size()==0)
+        throw std::runtime_error("No data to interpolate");
       auto maxIdx=arg1->rank()==1? arg1->size()-1: arg1->hypercube().xvectors[dimension].size()-1;
       if (idx<=-1 || idx>maxIdx)
         return nan("");
@@ -629,7 +631,7 @@ namespace minsky
       auto& xv=arg1->hypercube().xvectors;
       dimension=find_if(xv.begin(), xv.end(), [&](const XVector& i)
                         {return i.name==dim;})-xv.begin();
-                        
+
       switch (arg1->rank())
         {
         case 0:

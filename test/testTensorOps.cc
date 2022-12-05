@@ -1039,10 +1039,10 @@ SUITE(TensorOps)
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
-      CHECK_EQUAL(x1Val.size(),result->vValue()->size());
+      CHECK_EQUAL(5,result->vValue()->size());
 
-      vector<double> expected{4,5,5.5,5,7.5,7,6};
-      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 7, 0.001);
+      vector<double> expected{5,5.5,5,7.5,7};
+      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 5, 0.001);
     }
   
   TEST_FIXTURE(MinskyFixture, binOpInterpolation1Dunsorted)
@@ -1070,10 +1070,10 @@ SUITE(TensorOps)
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
-      CHECK_EQUAL(x1Val.size(),result->vValue()->size());
+      CHECK_EQUAL(5,result->vValue()->size());
 
-      vector<double> expected{4,5,5.5,5,7.5,7,6};
-      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 7, 0.001);
+      vector<double> expected{5,5.5,5,7.5,7};
+      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 5, 0.001);
     }
   
   TEST_FIXTURE(MinskyFixture, binOpInterpolation2D)
@@ -1102,10 +1102,9 @@ SUITE(TensorOps)
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
-      CHECK_EQUAL(x1Val.size(),result->vValue()->size());
 
-      vector<double> expected{2,3,4.5,6,6,7,8.5,10,11.33333,12.33333,13.83333,15.3333,16,17,18.5,20};
-      CHECK_EQUAL(expected.size(), result->vValue()->size());
+      CHECK_EQUAL(9, result->vValue()->size());
+      vector<double> expected{7,8.5,10,12.3333,13.8333,15.3333,15,16.5,18};
       CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), expected.size(), 0.001);
     }
 
