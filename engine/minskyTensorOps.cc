@@ -143,10 +143,24 @@ namespace minsky
               setArguments(spread1, spread2);
             else 
               { // hypercubes not equal, interpolate the second argument
-                auto interpolate=make_shared<InterpolateHC>();
-                interpolate->hypercube(spread1->hypercube());
-                interpolate->setArgument(spread2);
-                civita::BinOp::setArguments(spread1, interpolate, ax, ag);
+                Hypercube unionHC=spread1->hypercube();
+                civita::unionHypercube(unionHC,spread2->hypercube());
+                TensorPtr arg1=spread1, arg2=spread2;
+                if (unionHC!=spread1->hypercube())
+                  {
+                    auto interpolate=make_shared<InterpolateHC>();
+                    interpolate->hypercube(unionHC);
+                    interpolate->setArgument(spread1);
+                    arg1=interpolate;
+                  }
+                if (unionHC!=spread2->hypercube())
+                  {
+                    auto interpolate=make_shared<InterpolateHC>();
+                    interpolate->hypercube(unionHC);
+                    interpolate->setArgument(spread2);
+                    arg2=interpolate;
+                  }
+                civita::BinOp::setArguments(arg1, arg2, ax, ag);
               }
           }
     }

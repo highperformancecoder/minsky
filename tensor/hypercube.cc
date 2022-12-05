@@ -86,6 +86,11 @@ namespace civita
 
   void unionHypercube(Hypercube& result, const Hypercube& x)
   {
+    if (x.logNumElements()==1)
+      {
+        result.xvectors.clear(); // intersection empty anyway
+        return;
+      }
     map<string, set<any, AnyLess>> indexedData;
     vector<XVector> extraDims;
     for (auto& xvector: result.xvectors)
@@ -100,8 +105,22 @@ namespace civita
         if (xvectorData==indexedData.end())
           extraDims.emplace_back(xvector);
         else
-          for (auto& i: xvector)
-            xvectorData->second.insert(i);
+          {
+            // trim to intersection of the two
+            auto minX=xvector[0];
+            if (diff(*xvectorData->second.begin(),minX)>0) minX=*xvectorData->second.begin();
+            auto maxX=xvector.back();
+            if (diff(*xvectorData->second.rbegin(),maxX)<0) maxX=*xvectorData->second.rbegin();
+            for (auto i=xvectorData->second.begin(); i!=xvectorData->second.end(); )
+              {
+                auto j=i++;
+                if (diff(*j,minX)<0 || diff(*j,maxX)>0)
+                  xvectorData->second.erase(j);
+              }
+            for (auto& i: xvector)
+              if (diff(i,minX)>=0 && diff(i,maxX)<=0)
+                xvectorData->second.insert(i);
+          }
       }
     for (auto& xvector: result.xvectors)
       {
