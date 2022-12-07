@@ -991,9 +991,10 @@ export class CommandsManager {
   }
 
   static async pickSlices(ravel: Ravel, handleIndex: number) {
-    const allSliceLabels = ravel.allSliceLabels();
-    const pickedSliceLabels = ravel.pickedSliceLabels();
-
+    // encode slice labels for transport through CGI URI 
+    const allSliceLabels = ravel.allSliceLabels().map(x=>encodeURIComponent(x));
+    const pickedSliceLabels = ravel.pickedSliceLabels().map(x=>encodeURIComponent(x));
+    
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Pick slices`,
       url: `#/headless/pick-slices?command=${ravel.prefix()}&handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
