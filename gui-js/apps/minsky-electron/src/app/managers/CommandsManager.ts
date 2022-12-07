@@ -179,7 +179,7 @@ export class CommandsManager {
     });
   }
 
-  static async editGodleyTitle(itemId: string = null): Promise<void> {
+  static async editGodleyTitle(itemId: string = ""): Promise<void> {
     let title = new GodleyIcon(minsky.canvas.item).table.title();
 
     if (isEmptyObject(title)) {
