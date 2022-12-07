@@ -501,7 +501,7 @@ namespace civita
     // TODO sorts and calipers
     for (auto& i: state.handleStates)
       {
-        if (i.order!=ravel::HandleSort::none || i.displayFilterCaliper)
+        if (i.order!=ravel::HandleSort::none || i.displayFilterCaliper || !i.customOrder.empty())
         {
           //apply sorting/calipers
           auto permuteAxis=make_shared<PermuteAxis>();

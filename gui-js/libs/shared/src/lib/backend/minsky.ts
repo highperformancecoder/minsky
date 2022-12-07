@@ -2575,6 +2575,7 @@ export class ravel__HandleState extends CppClass {
   collapsed(...args: boolean[]): boolean {return this.callMethod('collapsed',...args);}
   description(...args: string[]): string {return this.callMethod('description',...args);}
   displayFilterCaliper(...args: boolean[]): boolean {return this.callMethod('displayFilterCaliper',...args);}
+  format(...args: string[]): string {return this.callMethod('format',...args);}
   maxLabel(...args: string[]): string {return this.callMethod('maxLabel',...args);}
   minLabel(...args: string[]): string {return this.callMethod('minLabel',...args);}
   order(...args: string[]): string {return this.callMethod('order',...args);}
