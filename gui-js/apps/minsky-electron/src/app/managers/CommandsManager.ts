@@ -424,7 +424,8 @@ export class CommandsManager {
     });
 
     WindowManager.getMainWindow().setTitle('New System');
-
+    this.currentMinskyModelFilePath="";
+    
     minsky.doPushHistory(false);
     minsky.clearAllMaps();
     minsky.pushFlags();
