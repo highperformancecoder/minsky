@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ChangeDetectorRef, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -60,6 +60,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   // per column dimension names and dimensions
   dimensionNames: string[]=[];
   dimensions: Dimension[]=[];
+  selected: boolean[]; ///< per column whether column is selected
+  mouseDown=-1;       ///< record of column of previous mouseDown
   dialogState: any;
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
@@ -106,7 +108,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private electronService: ElectronService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.route.queryParams.subscribe((params) => {
       this.itemId = params.itemId;
@@ -242,6 +245,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.csvCols = new Array(this.parsedLines[0]?.length);
     this.colType = new Array(this.parsedLines[0]?.length).fill("ignore");
     this.dimensionNames = new Array(this.parsedLines[0]?.length).fill("");
+    this.selected = new Array(this.parsedLines[0]?.length).fill(false);
     for (var i in this.dialogState.spec.dimensionCols as Array<number>)
     {
       var col=this.dialogState.spec.dimensionCols[i];
@@ -281,14 +285,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (!this.parsedLines.length) return;
     for (let i = 0; i<this.parsedLines[0].length; i++)
-      //for (let i = this.selectedCol; this.dialogState.spec.columnar? i<this.selectedCol + 1: i < this.parsedLines.length; i++) {
       if (i<colIndex) {
         if (this.colType[i]==ColType.data)
           this.colType[i]=ColType.ignore;
-      } else if (i===colIndex || !this.columnar.value)
+      } else if (i===colIndex || !this.columnar.value) 
         this.colType[i]=ColType.data;
-    else
-      this.colType[i]=ColType.ignore;
+      else
+        this.colType[i]=ColType.ignore;
     this.ngAfterViewChecked();
   }
 
@@ -311,14 +314,50 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       }
   }
 
-  setColType(column: number, type: ColType) {
+  
+  setColTypeImpl(column: number, type: ColType) {
     this.colType[column]=type;
     if (!this.dimensionNames[column])
       this.dimensionNames[column]=this.parsedLines[this.dialogState.spec.headerRow][column];
     if (!this.dimensions[column])
       this.dimensions[column]={type:"string",units:""} as Dimension;
   }
+  
+  setColType(column: number, type: ColType) {
+    if (this.selected.every((x)=>!x)) { // nothing selected
+      this.setColTypeImpl(column, type);
+      return;
+    }
+      
+    for (let i=0; i<this.selected.length; ++i)
+      if (this.selected[i]) {
+        this.setColTypeImpl(i, type);
+      }
+    this.cdr.detectChanges();
+  }
 
+  typeMouseDown(col: number) {
+    this.mouseDown=col;
+  }
+
+  typeMouseMove(col: number) {
+    if (this.mouseDown>=0 && col!==this.mouseDown) {
+      if (col<this.mouseDown) [col,this.mouseDown]=[this.mouseDown,col];
+      for (let i=0; i<this.selected.length; ++i)
+        this.selected[i]=i>=this.mouseDown && i<=col;
+    }
+  }
+  
+  typeMouseUp(row: number, col: number) {
+    this.typeMouseMove(col);
+    if (col===this.mouseDown)  // deselect all if ending on same column
+      if (this.selected.every((x)=>!x)) 
+        this.selectRowAndCol(row, col);
+      else
+        this.selected.fill(false);
+    this.mouseDown=-1;
+  }
+  
   async handleSubmit() {
     const {
       columnar,

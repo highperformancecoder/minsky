@@ -177,7 +177,7 @@
         <th>Dimension</th>
         <td #colTypeRow
           *ngFor="let col of csvCols; let i = index"
-          class="col-type-container"
+          class="col-type-container" [class.selected]="selected[i]"
         >
 
             <select
@@ -192,7 +192,10 @@
 
       <tr>
         <th>Type</th>
-        <td *ngFor="let col of csvCols; let i = index">
+        <td *ngFor="let col of csvCols; let i = index"
+            class="col-type-container col-container"
+            [class.selected]="selected[i]"
+            >
           <ng-container *ngIf="colType[i]==='axis'">
             <select
               value="{{dimensions[i]?.type }}"
@@ -208,7 +211,9 @@
 
       <tr>
         <th>Format</th>
-        <td *ngFor="let col of csvCols; let i = index">
+        <td *ngFor="let col of csvCols; let i = index"
+            class="col-container" [class.selected]="selected[i]"
+            >
           <input
             *ngIf="colType[i]==='axis'"
             type="text"
@@ -237,7 +242,9 @@
 
       <tr>
         <th>Name</th>
-        <td *ngFor="let col of csvCols; let i = index">
+        <td *ngFor="let col of csvCols; let i = index"
+            class="col-container" [class.selected]="selected[i]"
+            >
           <input
             *ngIf="colType[i]==='axis'"
             type="text"
@@ -267,7 +274,9 @@
         </th>
         <td
           *ngFor="let rowElement of row; let colIndex = index"
-          (click)="selectRowAndCol(rowIndex, colIndex)"
+          (mousedown)="typeMouseDown(colIndex)"
+          (mousemove)="typeMouseMove(colIndex)"
+          (mouseup)="typeMouseUp(rowIndex,colIndex)"
           [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
         >
           {{ rowElement }}

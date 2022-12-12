@@ -114,4 +114,13 @@ td {
 .header {
   cursor: pointer;
 }
+.col-type-container {
+   filter: brightness(100%)
+}
+.col-type-container.selected {
+   filter: brightness(80%)
+}
+
+
+
 
