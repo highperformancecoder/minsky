@@ -74,7 +74,7 @@ namespace MathDAG
         values.resetValue(*result);
       }
     if (r && r->isFlowVar() && r!=result)
-      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
+      ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     assert(result->idx()>=0);
     doOneEvent(true);
     return result;
@@ -136,7 +136,6 @@ namespace MathDAG
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
       ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
-    //ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return result;
@@ -161,7 +160,7 @@ namespace MathDAG
       }
     assert(result->idx()>=0);
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
+      ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     doOneEvent(true);
     return result;
   }
@@ -436,7 +435,7 @@ namespace MathDAG
           }
       }
     if (type()!=integrate && r && r->isFlowVar() && result!=r)
-      ev.push_back(EvalOpPtr(copy, state, *r, *result));
+      ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     if (state && state->portsSize()>0)
       if (auto statePort=state->ports(0).lock()) 
         statePort->setVariableValue(result);
