@@ -563,7 +563,7 @@ namespace
     
     const auto sourceState=ravel.getState();
 
-    if (handleLockInfo.empty()) // default is all handles are lock
+    if (handleLockInfo.empty()) // default is all handles are locked
       {
         for (auto& i: m_ravels)
           if (auto r=i.lock())
@@ -635,6 +635,7 @@ namespace
                     }
                 }
             }
+          state.outputHandles=vector<string>(outputHandles.begin(),outputHandles.end());
           r->applyState(state);
         }
   }
