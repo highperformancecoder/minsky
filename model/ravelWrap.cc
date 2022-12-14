@@ -212,9 +212,23 @@ namespace
         wrappedRavel.addHandle(i.name, ss);
         size_t h=numHandles()-1;
         wrappedRavel.displayFilterCaliper(h,false);
+        if (!redistribute)
+        // set forward sort order on value and time dimensions
+          switch (i.dimension.type)
+            {
+            case Dimension::time:
+            case Dimension::value:
+              wrappedRavel.orderLabels(h,HandleSort::forward,
+                                       ravel::toEnum<ravel::HandleSort::OrderType>(i.dimension.type),i.dimension.units);
+              break;
+            default:
+              break;
+            }
       }
     if (state.empty())
-      setRank(hc.rank());
+      {
+        setRank(hc.rank());
+      }
     else
       {
         applyState(state);
