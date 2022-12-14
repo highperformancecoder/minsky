@@ -248,9 +248,21 @@
           <input
             *ngIf="colType[i]==='axis'"
             type="text"
+            [matAutocomplete]="autocompleteName"
+            class="form-control"
             value="{{ dialogState.spec.dimensionNames[i] }}"
             (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
           />
+          <mat-autocomplete
+            id="name_{{ i }}"
+            [panelWidth]="'10rem'"
+            #autocompleteName="matAutocomplete"
+            (optionSelected)="dialogState.spec.dimensionNames[i] = $event.option.value"
+          >
+            <mat-option [value]="parsedLines[dialogState.spec.headerRow][i]"
+              >{{ parsedLines[dialogState.spec.headerRow][i] }}
+            </mat-option>
+          </mat-autocomplete>
         </td>
       </tr>
 
