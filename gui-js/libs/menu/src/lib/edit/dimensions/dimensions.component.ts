@@ -23,6 +23,7 @@ export class DimensionsComponent implements OnInit {
   types = ['string', 'value', 'time'];
 
   timeFormatStrings = dateTimeFormats;
+  originalDimensionNames: string[]=[];
 
   
   public get dimensions(): FormArray {
@@ -39,6 +40,7 @@ export class DimensionsComponent implements OnInit {
         const dimensions = (await this.electronService.minsky.dimensions.properties()) as Record<string, Second>;
 
         for (const [key, args] of Object.entries(dimensions)) {
+          this.originalDimensionNames.push(key);
           this.dimensions.push(this.createDimension(key, args));
         }
       }
@@ -56,7 +58,7 @@ export class DimensionsComponent implements OnInit {
   closeWindow() {this.electronService.closeWindow();}
 
   getDimensions() {
-    const dimensions = this.form.value.dimensions() as Dimension[];
+    const dimensions = this.form.value.dimensions as Dimension[];
 
     return dimensions.reduce((acc, curr) => {
       acc[curr.dimension] = {
@@ -68,8 +70,14 @@ export class DimensionsComponent implements OnInit {
   }
 
   async handleSubmit() {
+    // handle renames
+    let newDimensions=this.form.value.dimensions as Dimension[];
+    for (let i=0; i<newDimensions.length; ++i)
+      if (i<this.originalDimensionNames.length && newDimensions[i].dimension !== this.originalDimensionNames[i])
+        this.electronService.minsky.renameDimension(this.originalDimensionNames[i],newDimensions[i].dimension); 
     this.electronService.minsky.dimensions.properties(this.getDimensions());
     this.electronService.minsky.imposeDimensions();
+    this.electronService.minsky.reset();
     this.closeWindow();
   }
 }

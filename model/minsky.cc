@@ -524,7 +524,6 @@ namespace minsky
       });
   }
 
-
   void Minsky::populateMissingDimensionsFromVariable(const VariableValue& v)
   {
     for (auto& xv: v.hypercube().xvectors)
@@ -552,6 +551,28 @@ namespace minsky
         return false;
       });
   }
+
+  void Minsky::renameDimension(const std::string& oldName, const std::string& newName)
+  {
+    auto i=dimensions.find(oldName);
+    if (i!=dimensions.end())
+      {
+        dimensions[newName]=i->second;
+        dimensions.erase(i);
+      }
+
+    for (auto& v: variableValues)
+      {
+        auto hc=v.second->tensorInit.hypercube();
+        for (auto& x: hc.xvectors)
+          if (x.name==oldName)
+            {
+              x.name=newName;
+            }
+        v.second->tensorInit.hypercube(hc);
+      }
+  }
+
   
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
