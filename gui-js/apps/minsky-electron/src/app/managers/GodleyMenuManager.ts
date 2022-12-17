@@ -2,7 +2,7 @@ import {
   CanvasItem,
   ClassType,
   GodleyTableOutputStyles,
-  isMacOS,
+  Functions,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
   minsky, GodleyIcon,
@@ -36,7 +36,7 @@ export class GodleyMenuManager {
         ],
       }),
     ]);
-    if(isMacOS()) {
+    if(Functions.isMacOS()) {
       Menu.setApplicationMenu(menu);
     } else {
       window.setMenu(menu);

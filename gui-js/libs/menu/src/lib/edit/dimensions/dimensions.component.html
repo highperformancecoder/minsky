@@ -1,21 +1,7 @@
 <div class="popup-wrapper">
   <div class="form-wrapper">
-    <div class="form-buttons">
-      <button type="button" mat-raised-button (click)="closeWindow()">
-        Cancel
-      </button>
-
-      <button
-        type="submit"
-        class="submit"
-        mat-raised-button
-        (click)="handleSubmit()"
-      >
-        OK
-      </button>
-    </div>
     <form [formGroup]="form">
-      <div class="align">
+      <div class="align form-headers">
         <span class="form-control dimension">Dimension</span>
         <span class="form-control type">Type</span>
         <span class="form-control autocomplete">Units/Format</span>
@@ -62,5 +48,14 @@
         </div>
       </ng-container>
     </form>
+    <div class="form-buttons">
+      <button type="button" mat-raised-button (click)="closeWindow()">
+        Cancel
+      </button>
+
+      <button type="button" mat-raised-button (click)="handleSubmit()">
+        OK
+      </button>
+    </div>
   </div>
 </div>

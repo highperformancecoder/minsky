@@ -2,7 +2,7 @@ import {
   ActiveWindow,
   AppLayoutPayload,
   CreateWindowPayload,
-  isMacOS,
+  Functions,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   rendererAppName,
@@ -40,7 +40,7 @@ export class WindowManager {
     if (details) {
       details.menu = menu;
     }
-    if (isMacOS()) {
+    if (Functions.isMacOS()) {
       win.on('focus', function () {
         Menu.setApplicationMenu(menu);
       });
@@ -48,7 +48,7 @@ export class WindowManager {
   }
 
   static setApplicationMenu(win: BrowserWindow) {
-    if (isMacOS()) {
+    if (Functions.isMacOS()) {
       const details = this.activeWindows.get(win.id);
       if (details) {
         Menu.setApplicationMenu(details.menu);

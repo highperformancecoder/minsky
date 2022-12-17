@@ -1,7 +1,7 @@
 import {
   electronMenuBarHeightForWindows,
-  isWindows,
   minsky,
+  Functions
 } from '@minsky/shared';
 import {
   dialog,
@@ -425,7 +425,7 @@ export class ApplicationMenuManager {
         },
         {
           label: 'EMF',
-          visible: isWindows(),
+          visible: Functions.isWindows(),
           click: () => {scope.exportCanvas('emf');}
         },
         {
@@ -499,7 +499,7 @@ export class ApplicationMenuManager {
             WindowManager.createPopupWindowWithRouting({
               width: 500,
               useContentSize: true,
-              height: 550+(isWindows()? electronMenuBarHeightForWindows:0),
+              height: 550+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
               title: 'Preferences',
               url: `#/headless/menu/options/preferences`,
             });
