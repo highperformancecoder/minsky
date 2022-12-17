@@ -1,4 +1,4 @@
-<div class="grid" [formGroup]="form">
+<div class="main" [formGroup]="form">
   <!-- HEADER START -->
   <div class="import-container">
     <span class="import">
@@ -11,7 +11,7 @@
     </span>
   </div>
 
-  <div class="options-row-one options-row">
+  <div class="options-row">
     <span>
       <label for="columnar">Columnar</label>
       <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(dialogState.spec.nRowAxes,dialogState.spec.nColAxes)"/>
@@ -89,9 +89,6 @@
         formControlName="mergeDelimiters"
       />
     </span>
-  </div>
-
-  <div class="options-row-two options-row">
     <span>
       <label for="missing-value">Missing Value</label>
       <input
@@ -109,23 +106,14 @@
 
     <span>
       <label for="duplicate-key-action">Duplicate Key Action</label>
-      <input
-        id="duplicate-key-action"
-        type="text"
-        formControlName="duplicateKeyAction"
-        [matAutocomplete]="duplicateKeyAction"
-        class="form-control autocomplete"
-      />
-      <mat-autocomplete
-        [panelWidth]="'10rem'"
-        #duplicateKeyAction="matAutocomplete"
-      >
-        <mat-option value="throwException">throwException</mat-option>
-        <mat-option value="sumProducts">sumProducts</mat-option>
-        <mat-option value="min">min</mat-option>
-        <mat-option value="max">max</mat-option>
-        <mat-option value="av">av</mat-option>
-      </mat-autocomplete>
+
+      <select id="duplicate-key-action" formControlName="duplicateKeyAction">
+            <option value="throwException">throwException</option>
+            <option value="sumProducts">sumProducts</option>
+            <option value="min">min</option>
+            <option value="max">max</option>
+            <option value="av">av</option>
+      </select>
     </span>
 
     <span>
@@ -272,7 +260,7 @@
             >Header</ng-container
           >
         </th>
-        <td
+        <td class="table-cell"
           *ngFor="let rowElement of row; let colIndex = index"
           (mousedown)="typeMouseDown(colIndex)"
           (mousemove)="typeMouseMove(colIndex)"

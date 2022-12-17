@@ -1,10 +1,11 @@
 import { Component, OnDestroy, ElementRef, AfterViewInit, ViewChild,} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {   CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
-import { events, Ravel, isMacOS } from '@minsky/shared';
+import { events, Ravel, Functions } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
+import { MessageBoxSyncOptions } from 'electron/renderer';
 
 @AutoUnsubscribe()
 @Component({
@@ -42,7 +43,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
     this.namedItem=new Ravel(this.electronService.minsky.namedItems.elem(this.itemId).second);
     this.render();
     this.initEvents();
-    if (isMacOS()) this.yoffs=-20; // why, o why, Mac?
+    if (Functions.isMacOS()) this.yoffs=-20; // why, o why, Mac?
   }
 
   async render() {
@@ -66,8 +67,18 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
       this.height &&
       this.width
     ) {
-      this.namedItem.popup
-        .renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
+      try {
+        this.namedItem.popup
+          .renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
+      } catch(ex) {
+        const options: MessageBoxSyncOptions = {
+          buttons: ['Yes'],
+          message: ex,
+          title: '' + this.topOffset,
+        };
+  
+        const index = await this.electronService.showMessageBoxSync(options);
+      }
     }
   }
 
@@ -104,7 +115,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
       this.electronService.send(events.CONTEXT_MENU, {
         x: event.x,
         y: event.y,
-        type: "ravel",
+        type: 'ravel',
         command: this.namedItem.prefix(),
       });
     });

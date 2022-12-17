@@ -40,10 +40,11 @@ export function backend(command: string, ...args: any[]) {
   }
   try {
     var arg='';
-    if (args.length>1)
-      arg=JSON5.stringify(args);
-    else if (args.length===1)
-      arg=JSON5.stringify(args[0]);
+    if (args.length>1) {
+      arg=JSON5.stringify(args, {quote: '"'});
+    } else if (args.length===1) {
+      arg=JSON5.stringify(args[0], {quote: '"'});
+    }
     CppClass.record(`${command} ${arg}`);
 
     const response = restService.call(command, arg);

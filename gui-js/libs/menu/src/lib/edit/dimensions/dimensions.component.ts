@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { dateTimeFormats } from '@minsky/shared';
+import { MessageBoxSyncOptions } from 'electron/renderer';
 
 interface Second {
   type: string;
@@ -21,6 +22,8 @@ interface Dimension {
 export class DimensionsComponent implements OnInit {
   form: FormGroup;
   types = ['string', 'value', 'time'];
+
+  submittedDimensions: string;
 
   timeFormatStrings = dateTimeFormats;
   originalDimensionNames: string[]=[];
@@ -58,9 +61,7 @@ export class DimensionsComponent implements OnInit {
   closeWindow() {this.electronService.closeWindow();}
 
   getDimensions() {
-    const dimensions = this.form.value.dimensions as Dimension[];
-
-    return dimensions.reduce((acc, curr) => {
+    return this.dimensions.value.reduce((acc, curr) => {
       acc[curr.dimension] = {
         type: curr.type,
         units: curr.units,
@@ -75,8 +76,8 @@ export class DimensionsComponent implements OnInit {
     for (let i=0; i<newDimensions.length; ++i)
       if (i<this.originalDimensionNames.length && newDimensions[i].dimension !== this.originalDimensionNames[i])
         this.electronService.minsky.renameDimension(this.originalDimensionNames[i],newDimensions[i].dimension); 
-    this.electronService.minsky.dimensions.properties(this.getDimensions());
-    this.electronService.minsky.imposeDimensions();
+    await this.electronService.minsky.dimensions.properties(this.getDimensions());
+    await this.electronService.minsky.imposeDimensions();
     this.electronService.minsky.reset();
     this.closeWindow();
   }

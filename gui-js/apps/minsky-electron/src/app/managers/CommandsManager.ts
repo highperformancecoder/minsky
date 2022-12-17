@@ -2,13 +2,11 @@ import {
   CanvasItem,
   ClassType,
   events,
-  getBackgroundStyle,
+  Functions,
   HandleDimensionPayload,
   PickSlicesPayload,
   InitializePopupWindowPayload,
-  isEmptyObject,
-  isMacOS,
-  electronMenuBarHeightForWindows, isWindows, HandleDescriptionPayload,
+  electronMenuBarHeightForWindows, HandleDescriptionPayload,
   importCSVvariableName,
   minsky, GodleyIcon, Group, IntOp, Item, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
@@ -182,7 +180,7 @@ export class CommandsManager {
   static async editGodleyTitle(itemId: string = ""): Promise<void> {
     let title = new GodleyIcon(minsky.canvas.item).table.title();
 
-    if (isEmptyObject(title)) {
+    if (Functions.isEmptyObject(title)) {
       title = '';
     }
 
@@ -190,7 +188,7 @@ export class CommandsManager {
       title: `Edit godley title`,
       url: `#/headless/edit-godley-title?title=${title || ''}&itemId=${itemId}`,
       useContentSize: true,
-      height: 100+(isWindows()? electronMenuBarHeightForWindows:0),
+      height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
     });
   }
@@ -200,7 +198,7 @@ export class CommandsManager {
       title: `Edit godley currency`,
       url: `#/headless/edit-godley-currency`,
       useContentSize: true,
-      height: 100+(isWindows()? electronMenuBarHeightForWindows:0),
+      height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
     });
   }
@@ -546,7 +544,7 @@ export class CommandsManager {
   static async help(x: number, y: number) {
     let classType = (await this.getItemClassType(x, y, true)) as string;
 
-    if (isEmptyObject(classType)) {
+    if (Functions.isEmptyObject(classType)) {
       classType = minsky.canvas.getWireAt(x,y) ? 'Wires' : 'DesignCanvas';
     }
 
@@ -780,7 +778,7 @@ export class CommandsManager {
         }),
       ]);
       WindowManager.storeWindowMenu(window, menu);
-      if (isMacOS()) {
+      if (Functions.isMacOS()) {
         Menu.setApplicationMenu(menu);
       } else {
         window.setMenu(menu);
@@ -911,7 +909,7 @@ export class CommandsManager {
   }
 
   static changeWindowBackgroundColor = async (color: string) => {
-    const { style, r, g, b } = getBackgroundStyle(color);
+    const { style, r, g, b } = Functions.getBackgroundStyle(color);
     WindowManager.activeWindows.forEach((window) => {
       window.context.webContents.insertCSS(style);
     });
