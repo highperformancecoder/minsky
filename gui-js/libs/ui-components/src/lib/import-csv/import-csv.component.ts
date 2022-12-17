@@ -314,7 +314,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       }
   }
 
-  
   setColTypeImpl(column: number, type: ColType) {
     this.colType[column]=type;
     if (!this.dimensionNames[column])

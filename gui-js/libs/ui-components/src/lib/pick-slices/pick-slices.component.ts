@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
+import { MessageBoxSyncOptions } from 'electron/renderer';
 
 @Component({
   selector: 'minsky-pick-slices',
@@ -8,7 +9,7 @@ import { ElectronService } from '@minsky/core';
   styleUrls: ['../generic-form.scss', './pick-slices.component.scss'],
 })
 export class PickSlicesComponent implements OnInit {
-  sliceLabels: {label: string, selected: boolean}[] = [];
+  sliceLabels: {label: string, selected: boolean, lastClicked: boolean}[] = [];
 
   command: string;
   handleIndex: number;
@@ -26,20 +27,56 @@ export class PickSlicesComponent implements OnInit {
       const pickedSliceLabels = params['pickedSliceLabels'].split(',');
       this.sliceLabels = params['allSliceLabels'].split(',').map(l => ({
         label: l,
-        selected: pickedSliceLabels.includes(l)
+        selected: pickedSliceLabels.includes(l),
+        lastClicked: false
       }));
     });
   }
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.savePickSlices({
-        command: this.command,
-        handleIndex: this.handleIndex,
-        pickedSliceLabels: this.sliceLabels.filter(sl => sl.selected).map(sl => sl.label)
-      });
+      if(this.sliceLabels.filter(sl => sl.selected).length === 0) {
+        const options: MessageBoxSyncOptions = {
+          buttons: ['OK'],
+          message: `At least one slice label has to be selected.`,
+          title: 'No slice labels selected',
+        };
+
+        await this.electronService.showMessageBoxSync(options);
+      } else {
+        await this.electronService.savePickSlices({
+          command: this.command,
+          handleIndex: this.handleIndex,
+          pickedSliceLabels: this.sliceLabels.filter(sl => sl.selected).map(sl => sl.label)
+        });
+      }
     }
     this.closeWindow();
+  }
+
+  toggleSelected($event, sliceLabel) {
+    if($event.ctrlKey) {
+      sliceLabel.selected = !sliceLabel.selected;
+    } else if($event.shiftKey) {
+      const newValue = !sliceLabel.selected;
+      const lastLabelIndex = this.sliceLabels.findIndex(sl => sl.lastClicked);
+      if(lastLabelIndex === -1) {
+        sliceLabel.selected = newValue;
+      } else {
+        const clickedIndex = this.sliceLabels.findIndex(sl => sl === sliceLabel);
+        for(let i = Math.min(lastLabelIndex, clickedIndex); i < Math.max(lastLabelIndex, clickedIndex); i++) {
+          this.sliceLabels[i].selected = newValue;
+        }
+      }
+    } else {
+      for(const sl of this.sliceLabels) {
+        sl.selected = sl === sliceLabel;
+      }
+    }
+
+    for(const sl of this.sliceLabels) {
+      sl.lastClicked = sl === sliceLabel;
+    }
   }
 
   selectAll(selected: boolean) {

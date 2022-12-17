@@ -1,9 +1,8 @@
 import {
   CanvasItem,
   ClassType,
-  isWindows,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, SwitchIcon,
-  VariableBase,
+  VariableBase, Functions
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
@@ -481,7 +480,7 @@ export class ContextMenuManager {
           },
           {
             label: 'EMF',
-            visible: isWindows(),
+            visible: Functions.isWindows(),
             click: async () => {
               CommandsManager.exportItemAsImage(plot, 'emf', 'EMF');
             },
@@ -735,6 +734,41 @@ export class ContextMenuManager {
           click: async () => {ravel.nextReduction(agg.value);}
         }))
       }),
+      new MenuItem(
+        {
+          label: 'Toggle axis calipers',
+          click: async () => {
+            ravel.toggleDisplayFilterCaliper();
+            ravel.broadcastStateToLockGroup();
+          }
+        }),
+        new MenuItem(
+        {
+          label: 'Sort axis',
+          submenu: ['none','forward','reverse'].map(so =>(<any>{
+            label: so,
+            type: 'radio',
+            checked: sortOrder == so,
+            click: () => {
+              ravel.setSortOrder(so);
+              ravel.broadcastStateToLockGroup();
+              minsky.reset();
+            }
+          })).concat(
+            ['forward','reverse'].map(vso =>(<any>{
+              label: `${vso} by value`,
+              click: async () => {
+                ravel.sortByValue(vso);
+                minsky.reset();
+            }
+          })))
+        }),
+        new MenuItem({
+          label: 'Pick axis slices',
+          click: async () => {
+            await CommandsManager.pickSlices(ravel,handleIndex);
+          }
+        }),
       new MenuItem({
         label: 'Axis properties',
         submenu: [
@@ -751,13 +785,6 @@ export class ContextMenuManager {
             }
           },
           {
-            label: 'Toggle calipers',
-            click: async () => {
-              ravel.toggleDisplayFilterCaliper();
-              ravel.broadcastStateToLockGroup();
-            }
-          },
-          {
             label: 'Set aggregation',
             submenu: aggregations.map(agg => ({
               label: agg.label,
@@ -765,32 +792,6 @@ export class ContextMenuManager {
                 ravel.handleSetReduction(handleIndex, agg.value);
               }
             }))
-          },
-          {
-            label: 'Sort',
-            submenu: ['none','forward','reverse'].map(so =>({
-              label: so,
-              type: 'radio',
-              checked: sortOrder == so,
-              click: () => {
-                ravel.setSortOrder(so);
-                ravel.broadcastStateToLockGroup();
-                minsky.reset();
-              }
-            })).concat(
-              ['forward','reverse'].map(vso =>(<any>{
-                label: `${vso} by value`,
-                click: async () => {
-                  ravel.sortByValue(vso);
-                  minsky.reset();
-              }
-            })))
-          },
-          {
-            label: 'Pick slices',
-            click: async () => {
-              await CommandsManager.pickSlices(ravel,handleIndex);
-            }
           }
         ]
       }),
