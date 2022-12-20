@@ -324,10 +324,15 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
             smatch match;
             static const regex re("RavelHypercube=(.*)");
             if (regex_match(line[0], match, re))
-              {
-                populateFromRavelMetadata(match[1], row);
-                return;
-              }
+              try
+                {
+                    populateFromRavelMetadata(match[1], row);
+                    return;
+                }
+              catch (...)
+                {
+                  continue; // in case of error, ignore the RavelHypercube line.
+                }
           }
         starts.push_back(firstNumerical(line));
         nCols=std::max(nCols, line.size());
