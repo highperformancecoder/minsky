@@ -1,7 +1,7 @@
 import {
   CanvasItem,
   ClassType,
-  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, SwitchIcon,
+  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, Sheet, SwitchIcon,
   VariableBase, Functions
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
@@ -394,6 +394,29 @@ export class ContextMenuManager {
 
         break;
 
+    case ClassType.Sheet:
+      let sheet=new Sheet(minsky.canvas.item);
+      menuItems = [
+          ...menuItems,
+        new MenuItem({
+          label: 'Row Slices',
+          submenu: [
+            {
+              label: 'Head',
+              click: () => {sheet.showSlice("head");}
+            },
+            {
+              label: 'Tail',
+              click: () => {sheet.showSlice("tail");}
+            },
+              {
+              label: 'Head & Tail',
+              click: () => {sheet.showSlice("headAndTail");}
+            },
+         ]
+        }),
+      ];
+      break;
       default:
         break;
     }

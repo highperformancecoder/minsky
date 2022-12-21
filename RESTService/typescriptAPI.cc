@@ -52,6 +52,7 @@
 #include "ravelWrap.tcd"
 #include "rungeKutta.tcd"
 #include "selection.tcd"
+#include "sheet.tcd"
 #include "simulation.tcd"
 #include "slider.tcd"
 #include "SVGItem.tcd"
@@ -268,6 +269,7 @@ int main()
   api.addSubclass<OperationBase,Item>();
   api.addSubclass<PlotWidget,Item>();
   api.addSubclass<Ravel,Item>();
+  api.addSubclass<Sheet,Item>();
   api.addSubclass<SwitchIcon,Item>();
   api.addSubclass<VariableBase,Item>();
   api.addSubclass<UserFunction,Item>();

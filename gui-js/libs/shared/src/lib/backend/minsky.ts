@@ -2150,6 +2150,19 @@ export class Selection extends CppClass {
   zoomFactor(): number {return this.callMethod('zoomFactor');}
 }
 
+export class Sheet extends Item {
+  constructor(prefix: string|Item){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super(prefix.prefix())
+  }
+  clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
+  inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
+  showSlice(...args: string[]): string {return this.callMethod('showSlice',...args);}
+}
+
 export class SwitchIcon extends Item {
   constructor(prefix: string|Item){
     if (typeof prefix==='string')

@@ -27,9 +27,4 @@ export class Utility {
 
     return isPackaged;
   }
-
-//  // @return true if this is the renderer process
-//  public static isRenderer(): boolean {
-//    return typeof window!=='undefined' && typeof window.process==='object' && window.process?.type==='renderer';
-//  }
 }
