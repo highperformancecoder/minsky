@@ -32,11 +32,13 @@ namespace minsky
     
     CLASSDESC_ACCESS(Sheet);
   public:
-    //    float m_width=100, m_height=100;
     Sheet();
     bool inItem(float, float) const override;
     ClickType::Type clickType(float x, float y) override;   
     void draw(cairo_t* cairo) const override;
+
+    enum ShowSlice {head, headAndTail, tail};
+    ShowSlice showSlice=head; ///< whether to elide rows from beginning, end or middle
   };
 }
 

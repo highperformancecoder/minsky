@@ -59,6 +59,41 @@ ClickType::Type Sheet::clickType(float x, float y)
   return Item::clickType(x,y);  
 }
 
+namespace
+{
+  struct ElisionRowChecker
+  {
+    size_t startRow, numRows, tailStartRow;
+    double rowHeight;
+    ElisionRowChecker(Sheet::ShowSlice slice, double height, double rowHeight, size_t size): rowHeight(rowHeight) {
+      switch (slice)
+        {
+        case Sheet::head:
+          tailStartRow=startRow=0;
+          numRows=height/rowHeight+1;
+          break;
+        case Sheet::headAndTail:
+          startRow=0;
+          numRows=0.5*height/rowHeight;
+          tailStartRow=size-numRows - ((tailStartRow+numRows)*rowHeight>height? -1: 0);
+          break;
+        case Sheet::tail:
+          numRows=height/rowHeight-1;
+          tailStartRow=startRow=size-numRows;
+          break;
+        }
+    }
+    bool operator()(size_t& row, double& y) {
+      if (row==startRow+numRows && row<tailStartRow)
+        {
+          row=tailStartRow; // for middle elision
+          y+=rowHeight;
+        }
+      return row>tailStartRow+numRows;
+    }
+  };
+}
+
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();
@@ -104,7 +139,7 @@ void Sheet::draw(cairo_t* cairo) const
         }
       else
         {
-          float x0=-0.5*m_width+border, y0=-0.5*m_height+border;
+          double x0=-0.5*m_width+border, y0=-0.5*m_height+border;
           if (value->hypercube().rank()==0)
             {
               cairo_move_to(cairo,x0,y0);
@@ -132,10 +167,10 @@ void Sheet::draw(cairo_t* cairo) const
                 }
 
               pango.setMarkup("9999");
-              float rowHeight=pango.height();
+              double rowHeight=pango.height();
 
               double colWidth=0;
-              float x=x0, y=y0;   // make sure row labels are aligned with corresponding values. for ticket 1281
+              double x=x0, y=y0;   // make sure row labels are aligned with corresponding values. for ticket 1281
               string format=value->hypercube().xvectors[0].dimension.units;
               // calculate label column width
               for (auto& i: value->hypercube().xvectors[0])
@@ -168,11 +203,18 @@ void Sheet::draw(cairo_t* cairo) const
                     
                   }
                 }
+
+              auto dims=value->hypercube().dims();
+              double dataHeight=m_height-(dims.size()==2?2*rowHeight:0);
+              ElisionRowChecker adjustRowAndFinish(showSlice,dataHeight,rowHeight,dims[0]);
+              
               // draw in label column
-              for (auto& i: value->hypercube().xvectors[0])
+              auto& xv=value->hypercube().xvectors[0];
+              for (size_t i=adjustRowAndFinish.startRow; i<xv.size(); ++i)
                 {
+                  if (adjustRowAndFinish(i,y)) break;
                   cairo_move_to(cairo,x,y);
-                  pango.setText(trimWS(str(i,format)));
+                  pango.setText(trimWS(str(xv[i],format)));
                   pango.show();
                   y+=rowHeight;
                 }                
@@ -186,9 +228,10 @@ void Sheet::draw(cairo_t* cairo) const
                     cairo_move_to(cairo,x,-0.5*m_height);
                     cairo_line_to(cairo,x,0.5*m_height);
                     cairo_stroke(cairo);
-                  }                  				
-                  for (size_t i=0; i<value->size(); ++i)
+                  }
+                  for (size_t i=adjustRowAndFinish.startRow; i<value->size(); ++i)
                     {
+                      if (adjustRowAndFinish(i,y)) break;
                       if (!value->index().empty())
                         y=y0+value->index()[i]*rowHeight;
                       cairo_move_to(cairo,x,y);
@@ -204,7 +247,6 @@ void Sheet::draw(cairo_t* cairo) const
               else
                 {
                   format=value->hypercube().xvectors[1].dimension.units;
-                  auto dims=value->hypercube().dims();
                   for (size_t i=0; i<dims[1]; ++i)
                     {
                       colWidth=0;
@@ -220,10 +262,10 @@ void Sheet::draw(cairo_t* cairo) const
                         cairo_stroke(cairo);
                       }
                       colWidth=std::max(colWidth, 5+pango.width());
-                      for (size_t j=0; j<dims[0]; ++j)
+                      for (size_t j=adjustRowAndFinish.startRow; j<dims[0]; ++j)
                         {
+                          if (adjustRowAndFinish(j,y)) break;
                           y+=rowHeight;
-                          if (y>0.5*m_height) break;
                           cairo_move_to(cairo,x,y);
                           auto v=value->atHCIndex(j+i*dims[0]);
                           if (!std::isnan(v))
