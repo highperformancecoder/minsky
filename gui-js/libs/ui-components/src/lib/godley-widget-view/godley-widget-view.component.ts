@@ -43,6 +43,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   godleyCanvasContainer: HTMLElement;
   mouseMove$: Observable<MouseEvent>;
 
+  renderTimeout;
+
   yoffs = 0; // extra offset required on some systems
 
   constructor(
@@ -67,7 +69,9 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   async windowResize() {
     await this.getWindowRectInfo();
-    this.renderFrame();
+
+    clearTimeout(this.renderTimeout);
+    this.renderTimeout = setTimeout(() => this.renderFrame(), 500);
   }
   private async getWindowRectInfo() {
     this.godleyCanvasContainer = this.godleyCanvasElemWrapper.nativeElement as HTMLElement;
