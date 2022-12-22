@@ -20,7 +20,19 @@
 
     <div class="form-control">
       <label for="axis">Axis</label>
-      <input type="text" class="axis" id="axis" formControlName="axis" />
+      <input type="text" class="axis" id="axis" formControlName="axis"
+             [matAutocomplete]="autoAxis"/>
+      <mat-autocomplete
+        [panelWidth]="'10rem'"
+        #autoAxis="matAutocomplete"
+      >
+        <mat-option
+          *ngFor="let axis of axes"
+          [value]="axis"
+          >
+          {{ axis }}
+        </mat-option>
+      </mat-autocomplete>
     </div>
 
     <div class="form-control">
