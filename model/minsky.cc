@@ -58,12 +58,6 @@ using namespace boost::posix_time;
 
 namespace
 {
-  inline bool isFinite(const double y[], size_t n)
-  {
-    for (size_t i=0; i<n; ++i)
-      if (!isfinite(y[i])) return false;
-    return true;
-  }
   struct BusyCursor
   {
     Minsky& minsky;

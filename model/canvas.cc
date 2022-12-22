@@ -776,7 +776,7 @@ namespace minsky
 
   void Canvas::copyVars(const std::vector<VariablePtr>& v)
   {
-    float maxWidth=0, totalHeight=0, yCentre=0;
+    float maxWidth=0, totalHeight=0;
     vector<float> widths, heights;
     // Throw error if no stock/flow vars on Godley icon. For ticket 1039 
     if (!v.empty()) {    

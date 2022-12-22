@@ -54,7 +54,6 @@ namespace civita
       {
         auto hc=a[0]->hypercube();
         hypercube(hc);
-        size_t cnt=0;
         set<size_t> idx;
         for (const auto& i: a)
           {

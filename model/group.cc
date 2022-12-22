@@ -1022,12 +1022,6 @@ namespace minsky
     
   }
 
-  namespace
-  {
-    // ratio of variable size to text height
-    const float varToTextRatio=1.8;
-  }
-  
   void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
                         float x) const
   {
@@ -1077,7 +1071,6 @@ namespace minsky
       if (vars.empty()) return 0;
       float z=vars[0]->zoomFactor();
       float top=vars[0]->bb.top()*z, bottom=vars[0]->bb.top()*z;
-      float y=0;
       for (size_t i=0; i<vars.size(); ++i)
           {
             if (i%2)

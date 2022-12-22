@@ -221,7 +221,6 @@ namespace minsky
     double angle=rotation() * M_PI / 180.0;
     double fm=std::fmod(rotation(),360);
     bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
-    double coupledIntTranslation=0;
     float z=zoomFactor();
 
     auto t=type();
@@ -467,26 +466,18 @@ namespace minsky
           return {};
         }
       case constop:
-        switch (type())
-          {
-          case percent:
-            { 
-              // Add % sign to units from input to % operator. Need the first conditional otherwise Minsky crashes		
-              if (!m_ports[1]->wires().empty()) {
-                auto r=m_ports[1]->units(check);	 	 
-                if (auto vV=dynamic_cast<VariableValue*>(&m_ports[1]->wires()[0]->from()->item())) 
-                  {    
-                    vV->setUnits("%"+r.str());
-                    vV->units.normalise();
-                    return vV->units; 
-                  }
-                return r; 
-              }
-              return {};
-            }     
-          default:           
-            return {};  
-          }      
+        // Add % sign to units from input to % operator. Need the first conditional otherwise Minsky crashes		
+        if (type()==percent && !m_ports[1]->wires().empty()) {
+          auto r=m_ports[1]->units(check);	 	 
+          if (auto vV=dynamic_cast<VariableValue*>(&m_ports[1]->wires()[0]->from()->item())) 
+            {    
+              vV->setUnits("%"+r.str());
+              vV->units.normalise();
+              return vV->units; 
+            }
+          return r; 
+        }
+        return {};
       case binop:
         switch (type())
           {
