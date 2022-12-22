@@ -22,6 +22,18 @@
 
 namespace civita
 {
+  namespace
+  {
+    bool sorted(civita::XVector::const_iterator begin, civita::XVector::const_iterator end)
+    {
+      civita::AnyLess less;
+      if (begin==end-1) return true;
+      for (; begin!=end-1; ++begin)
+        if (!less(*begin,*(begin+1)))
+          return false;
+      return true;
+    }
+  }
 
   vector<size_t> InterpolateHC::splitAndRotate(size_t hcIndex) const
   {
