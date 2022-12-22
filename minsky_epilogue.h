@@ -17,6 +17,9 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef MINSKY_EPILOGUE_H
+#define MINSKY_EPILOGUE_H
+
 #if defined(RESTPROCESS_H)
 
 namespace classdesc
@@ -177,3 +180,5 @@ namespace classdesc_access
 //#include "plotWidget.h"
 #endif
 #include <ecolab_epilogue.h>
+
+#endif

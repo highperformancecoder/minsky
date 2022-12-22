@@ -16,6 +16,8 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef CAIRO_ITEMS_H
+#define CAIRO_ITEMS_H
 #include <geometry.h>
 #include <plot.h>
 #include <pango.h>
@@ -53,3 +55,4 @@ namespace minsky
 
   void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
 }
+#endif

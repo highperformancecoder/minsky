@@ -41,8 +41,6 @@ namespace minsky
   {
     typedef ravel::Op::ReductionOp ReductionOp;
     typedef ravel::HandleSort::Order HandleSort;
-    
-    inline double sqr(double x) {return x*x;} 
   }
 
   Ravel::Ravel(): popup(*this)

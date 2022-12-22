@@ -36,6 +36,8 @@ namespace minsky
       return true;
     }
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    FontDisplay()=default;
+    FontDisplay(const FontDisplay&)=default;
     FontDisplay& operator=(const FontDisplay&) {return *this;}
   };
 }

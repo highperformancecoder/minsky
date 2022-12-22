@@ -18,6 +18,7 @@
 */
 
 #ifndef GODLEYEXPORT_H
+#define GODLEYEXPORT_H
 #include "godleyTable.h"
 #include <iostream>
 
