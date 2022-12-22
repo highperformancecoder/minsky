@@ -161,6 +161,10 @@ namespace schema3
               items.back().dataOpData=d->data;
               items.back().name=d->description();
             }
+          if (auto* s=dynamic_cast<minsky::Sheet*>(i))
+            {
+              items.back().showSlice=s->showSlice;
+            }
           if (auto* d=dynamic_cast<minsky::UserFunction*>(i))
             {
               items.back().expression=d->expression;
@@ -502,6 +506,11 @@ namespace schema3
         if (y.legendGeometry)
           y.legendGeometry->setLegendGeometry(*x1);
         if (y.palette) x1->palette=*y.palette;
+      }
+    if (auto* x1=dynamic_cast<minsky::Sheet*>(&x))
+      {
+        if (y.showSlice)
+          x1->showSlice=*y.showSlice;
       }
     if (auto* x1=dynamic_cast<minsky::SwitchIcon*>(&x))
       {

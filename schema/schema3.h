@@ -36,6 +36,8 @@ but any renamed attributes require bumping the schema number.
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
 #include "simulation.h"
+#include "showSlice.h"
+#include "showSlice.xcd"
 
 #include <xsd_generate_base.h>
 #include <vector>
@@ -146,6 +148,8 @@ namespace schema3
     Optional<double> xtickAngle, exp_threshold;
     Optional<ecolab::Plot::Side> legend;
     Optional<LegendGeometry> legendGeometry;
+    // sheet specific fields
+    Optional<minsky::ShowSlice> showSlice;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters

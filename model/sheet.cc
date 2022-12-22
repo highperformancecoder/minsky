@@ -65,19 +65,19 @@ namespace
   {
     size_t startRow, numRows, tailStartRow;
     double rowHeight;
-    ElisionRowChecker(Sheet::ShowSlice slice, double height, double rowHeight, size_t size): rowHeight(rowHeight) {
+    ElisionRowChecker(ShowSlice slice, double height, double rowHeight, size_t size): rowHeight(rowHeight) {
       switch (slice)
         {
-        case Sheet::head:
+        case ShowSlice::head:
           tailStartRow=startRow=0;
           numRows=height/rowHeight+1;
           break;
-        case Sheet::headAndTail:
+        case ShowSlice::headAndTail:
           startRow=0;
           numRows=0.5*height/rowHeight;
           tailStartRow=size-numRows - ((tailStartRow+numRows)*rowHeight>height? -1: 0);
           break;
-        case Sheet::tail:
+        case ShowSlice::tail:
           numRows=height/rowHeight-1;
           tailStartRow=startRow=size-numRows;
           break;

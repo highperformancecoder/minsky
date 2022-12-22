@@ -23,7 +23,8 @@
 
 #ifndef SHEET_H
 #define SHEET_H
-#include <item.h>
+#include "item.h"
+#include "showSlice.h"
 
 namespace minsky
 {
@@ -37,8 +38,7 @@ namespace minsky
     ClickType::Type clickType(float x, float y) override;   
     void draw(cairo_t* cairo) const override;
 
-    enum ShowSlice {head, headAndTail, tail};
-    ShowSlice showSlice=head; ///< whether to elide rows from beginning, end or middle
+    ShowSlice showSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
   };
 }
 
