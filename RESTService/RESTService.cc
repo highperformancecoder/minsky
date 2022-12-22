@@ -24,9 +24,10 @@
 using namespace classdesc;
 using namespace std;
 
+#ifdef READLINE
 #include <readline/readline.h>
 #include <readline/history.h>
-
+#endif
 
 namespace minsky
 {
@@ -107,6 +108,7 @@ int main(int argc, const char* argv[])
   char* c;
   string buffer;
 
+#ifdef READLINE
   if (batch)
     while (getline(cin,buffer))
       processBuffer(buffer);
@@ -118,4 +120,8 @@ int main(int argc, const char* argv[])
         if (strlen(c)) add_history(c); 
         free(c);
     }
+#else
+  while (getline(cin,buffer))
+    processBuffer(buffer);
+#endif
 }
