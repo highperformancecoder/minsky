@@ -38,6 +38,8 @@ namespace minsky
     double rowHeight=0;
     double m_tableWidth;
     CLASSDESC_ACCESS(DataSpec);
+    bool redraw(int, int, int width, int height) override;
+    
   public:
     static const unsigned numInitialLines=30;
     double xoffs=80;
@@ -49,8 +51,6 @@ namespace minsky
     /// width of table (in pixels)
     double tableWidth() const {return m_tableWidth;}
 
-    bool redraw(int, int, int width, int height) override;
-    
     /// loads an initial sequence of lines from \a url. If fname
     /// contains "://", is is treated as a URL, and downloaded from
     /// the web.

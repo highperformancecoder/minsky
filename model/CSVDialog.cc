@@ -17,7 +17,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define CLASSDESC_ARITIES 0x3f
 #include "CSVDialog.h"                                                           
 #include "group.h"                                                               
 #include "selection.h"

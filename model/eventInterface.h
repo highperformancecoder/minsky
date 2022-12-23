@@ -38,14 +38,22 @@ namespace minsky
     virtual void moveTo(float x, float y) {}
     /// current centre coordinates
     virtual std::vector<float> position() const {return {0,0};}
-    
+
+    struct KeyPressArgs
+    {
+      int keySym;
+      std::string utf8;
+      int state;
+      float x;
+      float y;
+    };
     /// handle key press over current itemFocus,
     /// @param keySym the X key sym code
     /// @param utf8 utf8 encoded character
     /// @param state modifer state 1=shift, 2=caps lock, 4=ctrl, 8=alt
     /// @param x & y contain mouse coordinates
     /// @return true if event handled
-    virtual bool keyPress(int keySym, const std::string& utf8, int state, float x, float y)
+    virtual bool keyPress(const KeyPressArgs&)
     {return false;}
 
     /// @{ item or wire obtained by get*At() calls

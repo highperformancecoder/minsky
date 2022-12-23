@@ -209,6 +209,15 @@ namespace minsky
   {
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
+  protected:
+    /// returns the smallest group whose icon completely encloses the
+    /// rectangle given by the argument. If no candidate group found,
+    /// returns nullptr. Weak reference returned, no ownership.
+    /// @param ignore - do not return group \a ignore, even if it encloses the rectangle
+    const Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item*ignore=nullptr) const;
+    Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item*ignore=nullptr)
+    {return const_cast<Group*>(const_cast<const Group*>(this)->minimalEnclosingGroup(x0,y0,x1,y1,ignore));}
+    friend class Canvas;
   public:
     
     std::string title;
@@ -347,14 +356,6 @@ namespace minsky
       return r;
     }
 
-    /// returns the smallest group whose icon completely encloses the
-    /// rectangle given by the argument. If no candidate group found,
-    /// returns nullptr. Weak reference returned, no ownership.
-    /// @param ignore - do not return group \a ignore, even if it encloses the rectangle
-    const Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item*ignore=nullptr) const;
-    Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item*ignore=nullptr) 
-    {return const_cast<Group*>(const_cast<const Group*>(this)->minimalEnclosingGroup(x0,y0,x1,y1,ignore));}
-      
     /// scaling factor to allow a rotated icon to fit on the bitmap
     float rotFactor() const;
 

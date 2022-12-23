@@ -17,7 +17,6 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#define CLASSDESC_ARITIES 0x3f
 #include "itemTab.h"
 #include "latexMarkup.h"
 #include "group.h"

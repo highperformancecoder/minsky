@@ -17,7 +17,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define CLASSDESC_ARITIES 0x3f
 #include "lock.h"
 #include "wire.h"
 #include "selection.h"

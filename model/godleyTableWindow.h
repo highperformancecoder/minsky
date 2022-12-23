@@ -209,9 +209,7 @@ namespace minsky
 
   class GodleyTableWindow: public RenderNativeWindow, public EventInterface, public GodleyTableEditor
   {
-  public:
-    using GodleyTableEditor::draw;
-    GodleyTableWindow(GodleyIcon& g): GodleyTableEditor(g) {}
+  protected:
     bool redraw(int, int, int width, int height) override {
       if (surface.get()) {
         draw(surface->cairo());
@@ -219,6 +217,9 @@ namespace minsky
       }
       return false;
     }
+  public:
+    using GodleyTableEditor::draw;
+    GodleyTableWindow(GodleyIcon& g): GodleyTableEditor(g) {}
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     void requestRedrawCanvas() override {requestRedraw();}
 
@@ -226,8 +227,8 @@ namespace minsky
     void mouseUp(float x, float y) override {GodleyTableEditor::mouseUp(x,y);}
     void mouseMove(float x, float y) override {GodleyTableEditor::mouseMove(x,y);}
     void zoom(double, double, double z) override {zoomFactor*=z;}
-    bool keyPress(int keySym, const std::string& utf8, int state=0, float x=0, float yn=0) override
-    {GodleyTableEditor::keyPress(keySym,utf8); return true;}
+    bool keyPress(const EventInterface::KeyPressArgs& args) override
+    {GodleyTableEditor::keyPress(args.keySym,args.utf8); return true;}
     bool hasScrollBars() const override {return true;}
   };
 

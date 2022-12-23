@@ -355,10 +355,10 @@ namespace minsky
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
-  bool Canvas::keyPress(int keySym, const std::string& utf8, int state, float x, float y)
+  bool Canvas::keyPress(const KeyPressArgs& args)
   {
-    if (auto item=itemAt(x,y))
-      if (item->onKeyPress(keySym, utf8, state))
+    if (auto item=itemAt(args.x,args.y))
+      if (item->onKeyPress(args.keySym, args.utf8, args.state))
         {
           minsky().markEdited(); // keyPresses don't set the dirty flag by default
           requestRedraw();

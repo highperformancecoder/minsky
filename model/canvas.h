@@ -141,7 +141,7 @@ namespace minsky
     void controlMouseDown(float x, float y) override;
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;
-    bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn) override;
+    bool keyPress(const EventInterface::KeyPressArgs&) override;
     void displayDelayedTooltip(float x, float y);
     
     /// return closest visible port to (x,y). nullptr is nothing suitable

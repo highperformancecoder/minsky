@@ -11,7 +11,6 @@
 #include <string>                           // for string, operator<
 #include <boost/filesystem.hpp> 
 
-#define CLASSDESC_ARITIES 0x3f
 #include <cairoSurfaceImage.h>              // for CairoSurface
 #include <ctype.h>                          // for isdigit
 #include <pango.h>                          // for Pango, Pango::defaultFamily

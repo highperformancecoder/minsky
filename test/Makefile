@@ -14,7 +14,7 @@ UNITTESTOBJS=main.o testCSVParser.o testDerivative.o testExpressionWalker.o test
 MINSKYOBJS=$(filter-out ../tclmain.o ../RESTService.o ../httpd.o ../addon.o ../dummy-addon.o ../itemTemplateInstantiations.o,$(wildcard ../*.o))
 FLAGS:=-I.. -I../RESTService -I../tensor -I../RavelCAPI $(FLAGS)
 FLAGS+=-std=c++14 -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -I../model -I../engine -I../schema
-LIBS+=-L../RavelCAPI -lravelCAPI -ljson_spirit -lboost_system -lboost_thread \
+LIBS+=-L../RavelCAPI -lravelCAPI -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lclipboard -lxcb -lX11 \
 	-lUnitTest++ -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
 

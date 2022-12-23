@@ -35,12 +35,20 @@ namespace minsky
   public:
     static ecolab::cairo::Colour backgroundColour;
     void disable();
+
+    struct RenderFrameArgs
+    {
+      uint64_t parentWindowId;
+      int offsetLeft;
+      int offsetTop;
+      int childWidth;
+      int childHeight;
+      double scalingFactor=0;
+    };
     
     ~RenderNativeWindow() override;
     void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
-    void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor);
-    void renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight)
-    {renderFrame(parentWindowId,offsetLeft,offsetTop,childWidth,childHeight,0);}
+    void renderFrame(const RenderFrameArgs& args);
     void destroyFrame();
     void draw();
     void requestRedraw();

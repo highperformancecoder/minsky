@@ -17,7 +17,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define CLASSDESC_ARITIES 0x3f
 #include "godleyTableWindow.h"
 #include "selection.h"
 #include "latexMarkup.h"
@@ -25,6 +24,7 @@
 #include <pango.h>
 
 #include "assetClass.rcd"
+#include "eventInterface.xcd"
 #include "godleyTableWindow.rcd"
 #include "godleyTableWindow.xcd"
 #include "minsky_epilogue.h"
