@@ -57,9 +57,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   parsedLines: string[][] = [];
   csvCols: any[];
   colType: Array<ColType> = [];
-  // per column dimension names and dimensions
-  dimensionNames: string[]=[];
-  dimensions: Dimension[]=[];
   selected: boolean[]; ///< per column whether column is selected
   mouseDown=-1;       ///< record of column of previous mouseDown
   dialogState: any;
@@ -172,13 +169,9 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
             if (this.colType[i]===ColType.axis)
             {
               var type=table.rows[1].cells[i+1]?.children[0] as HTMLSelectElement;
-              var dimension=this.dimensions[i];
+              var dimension=this.dialogState.spec.dimensions[i];
               if (!dimension) dimension={type: "string", units: ""};
               type.value=dimension.type;
-              var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
-              format.value=dimension.units;
-              var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
-              name.value=this.dimensionNames[i];
             }
         }
     }
@@ -244,15 +237,12 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.csvCols = new Array(this.parsedLines[0]?.length);
     this.colType = new Array(this.parsedLines[0]?.length).fill("ignore");
-    this.dimensionNames = new Array(this.parsedLines[0]?.length).fill("");
     this.selected = new Array(this.parsedLines[0]?.length).fill(false);
     for (var i in this.dialogState.spec.dimensionCols as Array<number>)
     {
       var col=this.dialogState.spec.dimensionCols[i];
       if (col<this.colType.length)
         this.colType[col]=ColType.axis;
-      this.dimensionNames[col]=this.dialogState.spec.dimensionNames[col] as string;
-      this.dimensions[col]=this.dialogState.spec.dimensions[col] as Dimension;
     }
     if (this.dialogState.spec.dataCols)
       for (var i in this.dialogState.spec.dataCols as Array<number>)
@@ -316,10 +306,10 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setColTypeImpl(column: number, type: ColType) {
     this.colType[column]=type;
-    if (!this.dimensionNames[column])
-      this.dimensionNames[column]=this.parsedLines[this.dialogState.spec.headerRow][column];
-    if (!this.dimensions[column])
-      this.dimensions[column]={type:"string",units:""} as Dimension;
+    if (!this.dialogState.spec.dimensionNames[column])
+      this.dialogState.dimensionNames[column]=this.parsedLines[this.dialogState.spec.headerRow][column];
+    if (!this.dialogState.spec.dimensions[column])
+      this.dialogState.spec.dimensions[column]={type:"string",units:""} as Dimension;
   }
   
   setColType(column: number, type: ColType) {
@@ -373,8 +363,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.dialogState.spec.dimensionCols=[];
     this.dialogState.spec.dataCols=[];
-    this.dialogState.spec.dimensionNames=this.dimensionNames;
-    this.dialogState.spec.dimensions=this.dimensions;
     for (let i=0; i<this.colType.length; ++i) 
       switch (this.colType[i]) {
       case ColType.axis: 

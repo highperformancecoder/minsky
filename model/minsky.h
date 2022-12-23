@@ -82,7 +82,7 @@ namespace minsky
     double height() const {return m_height;}
     EquationDisplay(Minsky& m): m(m) {}
     EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
-    EquationDisplay(EquationDisplay&)=default;
+    EquationDisplay(const EquationDisplay&)=default;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
 
@@ -195,8 +195,8 @@ namespace minsky
     Conversions conversions;
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
-
     void populateMissingDimensionsFromVariable(const VariableValue&);
+    void renameDimension(const std::string& oldName, const std::string& newName);
     
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}

@@ -251,9 +251,16 @@ vector<vector<string>> parseLines(const Parser& parser, const vector<string>& li
   for (const auto& line: lines)
     {
       r.emplace_back();
-      boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
-      for (auto& t: tok)
-        r.back().push_back(t);
+      try
+        {
+          boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
+          for (auto& t: tok)
+            r.back().push_back(t);
+        }
+      catch (...) // if not parseable, place entire line in first cell
+        {
+          r.back().push_back(line);
+        }
     }
   return r;
 }

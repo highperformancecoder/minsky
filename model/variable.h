@@ -241,7 +241,7 @@ namespace minsky
       this->addPorts();
       return *this;
     }
-    Variable(const std::string& name="") {this->name(name); this->addPorts();}
+    Variable(const std::string& name="") {VariableBase::name(name); this->addPorts();}
     std::string classType() const override 
     {return "Variable:"+VariableType::typeName(type());}
     Variable* clone() const override {

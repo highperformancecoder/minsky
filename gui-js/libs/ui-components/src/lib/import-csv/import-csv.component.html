@@ -186,8 +186,8 @@
             >
           <ng-container *ngIf="colType[i]==='axis'">
             <select
-              value="{{dimensions[i]?.type }}"
-              (change)="dimensions[i].type = $event.target.value"
+              [value]="dialogState.spec.dimensions[i]?.type "
+              (change)="dialogState.spec.dimensions[i].type = $event.target.value"
             >
               <option value="string">string</option>
               <option value="value">value</option>
@@ -205,18 +205,18 @@
           <input
             *ngIf="colType[i]==='axis'"
             type="text"
-            value="dimensions[i]?.units"
+            [value]="dialogState.spec.dimensions[i]?.units"
             [matAutocomplete]="autocompleteFormat"
             class="form-control"
-            (change)="dimensions[i].units = $event.target.value"
+            (change)="dialogState.spec.dimensions[i].units = $event.target.value"
           />
           <mat-autocomplete
             id="format_{{ i }}"
             [panelWidth]="'10rem'"
             #autocompleteFormat="matAutocomplete"
-            (optionSelected)="dimensions[i].units = $event.option.value"
+            (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
           >
-            <ng-container *ngIf="dimensions[i]?.type === 'time'">
+            <ng-container *ngIf="dialogState.spec.dimensions[i]?.type === 'time'">
               <mat-option
                 *ngFor="let tfs of timeFormatStrings"
                 [value]="tfs.value"
@@ -238,7 +238,7 @@
             type="text"
             [matAutocomplete]="autocompleteName"
             class="form-control"
-            value="{{ dialogState.spec.dimensionNames[i] }}"
+            [value]="dialogState.spec.dimensionNames[i]"
             (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
           />
           <mat-autocomplete

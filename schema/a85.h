@@ -1,4 +1,5 @@
-// a85.h
+#ifndef A85_H
+#define A85_H
 
 #include <stdint.h>
 
@@ -23,3 +24,4 @@ int size_for_bin(int textlen);
 void from_a85(const char* text, int textlen, u8* data);
 
 } // namespace a85
+#endif

@@ -1394,6 +1394,7 @@ export class Minsky extends CppClass {
   ravelExpired(): boolean {return this.callMethod('ravelExpired');}
   ravelVersion(): string {return this.callMethod('ravelVersion');}
   redrawAllGodleyTables(): void {return this.callMethod('redrawAllGodleyTables');}
+  renameDimension(a1: string,a2: string): void {return this.callMethod('renameDimension',a1,a2);}
   renderAllPlotsAsSVG(a1: string): void {return this.callMethod('renderAllPlotsAsSVG',a1);}
   renderCanvasToEMF(a1: string): void {return this.callMethod('renderCanvasToEMF',a1);}
   renderCanvasToPDF(a1: string): void {return this.callMethod('renderCanvasToPDF',a1);}

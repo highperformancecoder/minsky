@@ -58,12 +58,6 @@ using namespace boost::posix_time;
 
 namespace
 {
-  inline bool isFinite(const double y[], size_t n)
-  {
-    for (size_t i=0; i<n; ++i)
-      if (!isfinite(y[i])) return false;
-    return true;
-  }
   struct BusyCursor
   {
     Minsky& minsky;
@@ -524,7 +518,6 @@ namespace minsky
       });
   }
 
-
   void Minsky::populateMissingDimensionsFromVariable(const VariableValue& v)
   {
     for (auto& xv: v.hypercube().xvectors)
@@ -552,6 +545,28 @@ namespace minsky
         return false;
       });
   }
+
+  void Minsky::renameDimension(const std::string& oldName, const std::string& newName)
+  {
+    auto i=dimensions.find(oldName);
+    if (i!=dimensions.end())
+      {
+        dimensions[newName]=i->second;
+        dimensions.erase(i);
+      }
+
+    for (auto& v: variableValues)
+      {
+        auto hc=v.second->tensorInit.hypercube();
+        for (auto& x: hc.xvectors)
+          if (x.name==oldName)
+            {
+              x.name=newName;
+            }
+        v.second->tensorInit.hypercube(hc);
+      }
+  }
+
   
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {

@@ -77,7 +77,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
           title: '' + this.topOffset,
         };
   
-        const index = await this.electronService.showMessageBoxSync(options);
+        await this.electronService.showMessageBoxSync(options);
       }
     }
   }
