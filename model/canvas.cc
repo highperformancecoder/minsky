@@ -148,15 +148,15 @@ namespace minsky
           if (auto to=closestInPort(x,y)) {
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
             fromPort.reset();
-            auto toItem = to.get()->item();
-            if (auto ravel=static_cast<Ravel&>(toItem))
+            auto& toItem=to->item();
+            if (auto ravel=dynamic_cast<Ravel*>(&toItem))
             {
-              auto state = ravel.getState();
+              auto state = ravel->getState();
               if(state.empty()) {
                 minsky().reset();
               }
-            } else if(auto sheet=static_cast<Sheet&>(toItem)) {
-              if(sheet.empty()) {
+            } else if(auto sheet=dynamic_cast<Sheet*>(&toItem)) {
+              if(sheet->empty()) {
                 minsky().reset();
               }
             }
