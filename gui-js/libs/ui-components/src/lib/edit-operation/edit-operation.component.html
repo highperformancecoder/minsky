@@ -1,13 +1,9 @@
-<div class="form-wrapper">
-  <br />
+<form [formGroup]="form">
+  <div class="form-title">
+    <span>{{ itemType }}</span>
+  </div>
 
-  <form [formGroup]="form">
-    <div class="form-control">
-      <span>{{ itemType }}</span>
-    </div>
-
-    <br />
-
+  <div class="form-body">
     <div class="form-control">
       <label for="rotation">Rotation</label>
       <input
@@ -32,20 +28,20 @@
         formControlName="argument"
       />
     </div>
+  </div>
 
-    <div class="form-buttons">
-      <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
-        Cancel
-      </button>
+  <div class="form-buttons">
+    <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
+      Cancel
+    </button>
 
-      <button
-        mat-raised-button
-        class="btn ok-btn submit"
-        type="submit"
-        (click)="handleSave()"
-      >
-        OK
-      </button>
-    </div>
-  </form>
-</div>
+    <button
+      mat-raised-button
+      class="btn ok-btn submit"
+      type="submit"
+      (click)="handleSave()"
+    >
+      OK
+    </button>
+  </div>
+</form>

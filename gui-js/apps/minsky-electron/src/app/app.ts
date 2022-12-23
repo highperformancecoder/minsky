@@ -2,11 +2,11 @@ import {
   ActiveWindow,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
-  red,
   rendererAppName,
   rendererAppURL,
   version,
   Utility,
+  Functions
 } from '@minsky/shared';
 import { BrowserWindow, dialog, screen } from 'electron';
 import * as log from 'electron-log';
@@ -215,7 +215,7 @@ export default class App {
 
     process.on('uncaughtException', (err) => {
       log.error(
-        red(
+        Functions.red(
           `🚀 ~ file: app.ts ~ line 265 ~ App ~ process.on('uncaughtException') ~ err: ${err}`
         )
       );

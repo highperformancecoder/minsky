@@ -1,18 +1,39 @@
 @import '../../../../shared/src/lib/theme/common-style.scss';
 
-select {
-  width: 125px;
-}
+form {
+  width: 100vw;
+  height: 100vh;
 
-button {
-  margin: $margin;
-}
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
 
-.form-control {
-  span {
-    min-width: 250px;
+  overflow: hidden;
+
+  .form-body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
+
+    overflow-y: auto;
+  }
+
+  .form-title {
+    font-weight: bold;
+
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-buttons {
+    margin: 0px;
+    button {
+      margin: 5px;
+    }
   }
 }
