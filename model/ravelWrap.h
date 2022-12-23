@@ -31,7 +31,7 @@ namespace minsky
   using namespace civita;
   class RavelLockGroup;
   
-  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>, public ravel::Ravel
+  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>, public classdesc::Exclude<ravel::Ravel>
   {
   public:
 

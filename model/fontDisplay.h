@@ -25,7 +25,7 @@
 namespace minsky
 {
   // display a sample of the current selected font
-  struct FontDisplay: public RenderNativeWindow
+  class FontDisplay: public RenderNativeWindow
   {
     bool redraw(int, int, int width, int height) override {
       cairo_move_to(surface->cairo(),0,0);
@@ -35,6 +35,7 @@ namespace minsky
       pango.show();
       return true;
     }
+  public:
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     FontDisplay& operator=(const FontDisplay&) {return *this;}
   };

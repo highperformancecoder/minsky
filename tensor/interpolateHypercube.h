@@ -61,7 +61,7 @@ namespace civita
     WeightedIndexVector bodyCentredNeighbourhood(std::size_t idx) const;
 
   public:
-    void setArgument(const TensorPtr& a, const string& ax="",double ag=0) override;
+    void setArgument(const TensorPtr& a, const ITensor::Args& args={"",0}) override;
     double operator[](std::size_t) const override;
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };

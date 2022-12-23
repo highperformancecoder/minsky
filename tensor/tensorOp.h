@@ -36,7 +36,7 @@ namespace civita
     std::shared_ptr<ITensor> arg;
     template <class F>
     ElementWiseOp(F f, const std::shared_ptr<ITensor>& arg={}): f(f), arg(arg) {}
-    void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;}
+    void setArgument(const TensorPtr& a,const ITensor::Args&) override {arg=a;}
     const Hypercube& hypercube() const override {return arg? arg->hypercube(): m_hypercube;}
     const Index& index() const override {return arg? arg->index(): m_index;}
     double operator[](std::size_t i) const override {return arg? f((*arg)[i]): 0;}
@@ -54,9 +54,9 @@ namespace civita
   public:
     template <class F>
     BinOp(F f, const TensorPtr& arg1={},const TensorPtr& arg2={}):
-      f(f) {BinOp::setArguments(arg1,arg2,{},0);}
+      f(f) {BinOp::setArguments(arg1,arg2,{"",0});}
     
-    void setArguments(const TensorPtr& a1, const TensorPtr& a2, const std::string&, double) override;
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2, const ITensor::Args&) override;
 
     double operator[](std::size_t i) const override {
       // missing arguments treated as group identity
@@ -86,7 +86,7 @@ namespace civita
     double init;
   public:
     template <class F> ReduceArguments(F f, double init): f(f), init(init) {}
-    void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override;
+    void setArguments(const std::vector<TensorPtr>& a,const ITensor::Args&) override;
     double operator[](std::size_t i) const override;
     Timestamp timestamp() const override;
   };
@@ -98,7 +98,7 @@ namespace civita
     std::function<void(double&,double,std::size_t)> f;
     double init;
     std::shared_ptr<ITensor> arg;
-    void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;}
+    void setArgument(const TensorPtr& a,const ITensor::Args&) override {arg=a;}
 
     template <class F>
     ReduceAllOp(F f, double init, const std::shared_ptr<ITensor>& arg={}):
@@ -119,9 +119,9 @@ namespace civita
    
     template <class F>
     ReductionOp(F f, double init, const TensorPtr& arg={}, const std::string& dimName=""):
-      ReduceAllOp(f,init) {ReduceAllOp::setArgument(arg,dimName,0);}
+      ReduceAllOp(f,init) {ReduceAllOp::setArgument(arg,{dimName,0});}
 
-    void setArgument(const TensorPtr& a, const std::string&,double) override;
+    void setArgument(const TensorPtr& a, const ITensor::Args&) override;
     double operator[](std::size_t i) const override;
   };
 
@@ -201,7 +201,7 @@ namespace civita
     /// op arg value, eg binsize or delta in difference op
     double argVal=0;
     TensorPtr arg;
-    void setArgument(const TensorPtr& a, const std::string&,double) override;
+    void setArgument(const TensorPtr& a, const ITensor::Args&) override;
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
   
@@ -211,9 +211,9 @@ namespace civita
     std::function<void(double&,double,std::size_t)> f;
     template <class F>
     Scan(F f, const TensorPtr& arg={}, const std::string& dimName="", double av=0): f(f) 
-    {Scan::setArgument(arg,dimName,av);}
-    void setArgument(const TensorPtr& arg, const std::string& dimName,double argVal) override {
-      DimensionedArgCachedOp::setArgument(arg,dimName,argVal);
+    {Scan::setArgument(arg,{dimName,av});}
+    void setArgument(const TensorPtr& arg, const ITensor::Args& args) override {
+      DimensionedArgCachedOp::setArgument(arg,args);
       if (arg)
         cachedResult.hypercube(arg->hypercube());
       // TODO - can we handle sparse data?
@@ -228,7 +228,7 @@ namespace civita
     TensorPtr arg;
     std::vector<std::size_t> arg_index;
   public:
-    void setArgument(const TensorPtr& a,const std::string&,double) override;
+    void setArgument(const TensorPtr& a,const ITensor::Args&) override;
     double operator[](std::size_t i) const override;
     Timestamp timestamp() const override {return arg->timestamp();}
   };
@@ -242,7 +242,7 @@ namespace civita
     // returns hypercube index of arg given hypercube index of this
     std::size_t pivotIndex(std::size_t i) const;
   public:
-    void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
+    void setArgument(const TensorPtr& a,const ITensor::Args& args={"",0}) override;
     /// set's the pivots orientation
     /// @param axes - list of axes that are the output
     void setOrientation(const std::vector<std::string>& axes);
@@ -257,7 +257,7 @@ namespace civita
     std::vector<std::size_t> m_permutation;
     std::vector<std::size_t> permutedIndex; /// argument indices corresponding to this indices, when sparse
   public:
-    void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
+    void setArgument(const TensorPtr& a,const ITensor::Args& args={"",0}) override;
     void setPermutation(const std::vector<std::size_t>& p)
     {auto pp(p); setPermutation(std::move(pp));}
     void setPermutation(std::vector<std::size_t>&&);
@@ -274,7 +274,7 @@ namespace civita
     ravel::HandleSort::Order order;
   public:
     SortByValue(ravel::HandleSort::Order order): order(order) {}
-    void setArgument(const TensorPtr& a,const std::string& ={},double=0) override {
+    void setArgument(const TensorPtr& a,const ITensor::Args& args={"",0}) override {
       if (a->rank()!=1)
         throw std::runtime_error("Sort by Value only applicable for rank 1 tensors");
       else
@@ -299,7 +299,7 @@ namespace civita
     TensorPtr arg;
     std::size_t numSpreadElements=1;
   public:
-    void setArgument(const TensorPtr& a,const std::string& ax="",double ag=0) override {
+    void setArgument(const TensorPtr& a,const ITensor::Args& args={"",0}) override {
       arg=a;
       if (arg){
         hypercube(arg->hypercube());

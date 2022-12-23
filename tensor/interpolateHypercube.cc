@@ -46,7 +46,7 @@ namespace civita
   }
 
   
-  void InterpolateHC::setArgument(const TensorPtr& a, const string&,double)
+  void InterpolateHC::setArgument(const TensorPtr& a, const Args&)
   {
     arg=a;
     if (rank()!=arg->rank())

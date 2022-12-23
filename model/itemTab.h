@@ -44,6 +44,7 @@ namespace minsky
   class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>, public EventInterface
   {
     CLASSDESC_ACCESS(ItemTab);         
+    bool redraw(int, int, int width, int height) override;
   protected:
     classdesc::Exclude<ItemTabCellPtr> cellPtr;
   public:
@@ -79,7 +80,6 @@ namespace minsky
     enum ClickType {background, internal};    
     virtual ClickType clickType(double x, double y) const;         
     virtual void draw(cairo_t* cairo); 
-    bool redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
 
     void mouseDown(float x, float y) override;

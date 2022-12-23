@@ -232,23 +232,24 @@ namespace minsky
       }
   }
 
-  void GodleyIcon::moveCell(int srcRow, int srcCol, int destRow, int destCol)
+  //void GodleyIcon::moveCell(int srcRow, int srcCol, int destRow, int destCol)
+  void GodleyIcon::moveCell(const MoveCellArgs& args)
   {
-    if (!table.cellInTable(srcRow, srcCol) || !table.cellInTable(destRow, destCol)) return;
-    if (srcCol!=destCol) // if moving between columns, we can delete and
+    if (!table.cellInTable(args.srcRow, args.srcCol) || !table.cellInTable(args.destRow, args.destCol)) return;
+    if (args.srcCol!=args.destCol) // if moving between columns, we can delete and
       // add, which ensures any linked columns are
       // correctly updated
       {
         // create a copy here, as setCell may resize the array, changing 
         // what the reference referred to.
-        string oldVal=table.cell(srcRow, srcCol);
-        setCell(destRow, destCol, oldVal);
-        setCell(srcRow, srcCol, "");
+        string oldVal=table.cell(args.srcRow, args.srcCol);
+        setCell(args.destRow, args.destCol, oldVal);
+        setCell(args.srcRow, args.srcCol, "");
       }
     else // within a column, just move the data without affecting any linked column
       {
-        table.cell(destRow, destCol)=table.cell(srcRow, srcCol);
-        table.cell(srcRow, srcCol)="";
+        table.cell(args.destRow, args.destCol)=table.cell(args.srcRow, args.srcCol);
+        table.cell(args.srcRow, args.srcCol)="";
       }
   }
 

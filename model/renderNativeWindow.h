@@ -47,7 +47,6 @@ namespace minsky
     };
     
     ~RenderNativeWindow() override;
-    void resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight);
     void renderFrame(const RenderFrameArgs& args);
     void destroyFrame();
     void draw();

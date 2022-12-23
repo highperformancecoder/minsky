@@ -107,17 +107,21 @@ namespace civita
     virtual Timestamp timestamp() const=0;
 
     /// arguments relevant for tensor expressions, not always meaningful. Exception thrown if not.
-    virtual void setArgument(const TensorPtr&, const std::string& dimension={},
-                             double argVal=0)  {notImpl();}
+    struct Args
+    {
+      std::string dimension;
+      double val;
+    };
+    virtual void setArgument(const TensorPtr&, const ITensor::Args& args={"",0})  {notImpl();}
     virtual void setArguments(const TensorPtr&, const TensorPtr&,
-                              const std::string& dimension={}, double argVal=0) {notImpl();}
+                              const ITensor::Args& args={}) {notImpl();}
     virtual void setArguments(const std::vector<TensorPtr>& a,
-                              const std::string& dimension={}, double argVal=0) 
-    {if (a.size()) setArgument(a[0], dimension, argVal);}
+                              const ITensor::Args& args={"",0}) 
+    {if (a.size()) setArgument(a[0], args);}
     virtual void setArguments(const std::vector<TensorPtr>& a1,
                               const std::vector<TensorPtr>& a2,
-                              const std::string& dimension={}, double argVal=0)
-    {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0], dimension, argVal);}
+                              const ITensor::Args& args={"",0})
+    {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0], args);}
    
   protected:
     Hypercube m_hypercube;

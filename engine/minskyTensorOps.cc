@@ -68,8 +68,8 @@ namespace minsky
     EvalOp<op> eo;
     MinskyTensorOp(): ElementWiseOp([this](double x){return eo.evaluate(x);}) {}
     void setState(const OperationPtr& state) override {eo.state=state;}
-    void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override
-    {if (!a.empty()) setArgument(a[0],{},0);}
+    void setArguments(const std::vector<TensorPtr>& a,const Args&) override
+    {if (!a.empty()) setArgument(a[0],{"",0});}
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
       if (!deriv) throw DerivativeNotDefined();
@@ -92,10 +92,10 @@ namespace minsky
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
     void setState(const OperationPtr& state) override {eo.state=state;}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
-                      const std::string& ax="", double ag=0) override
+                      const ITensor::Args& args={"",0}) override
     {
       if (!a1 || a1->rank()==0 || !a2 || a2->rank()==0 || a1->hypercube()==a2->hypercube())
-        civita::BinOp::setArguments(a1,a2,ax,ag);
+        civita::BinOp::setArguments(a1,a2,args);
       else
           {
             // pivot a1, a2 such that common axes are at end (resp beginning)
@@ -146,7 +146,7 @@ namespace minsky
                 auto interpolate=make_shared<InterpolateHC>();
                 interpolate->hypercube(spread1->hypercube());
                 interpolate->setArgument(spread2);
-                civita::BinOp::setArguments(spread1, interpolate, ax, ag);
+                civita::BinOp::setArguments(spread1, interpolate, args);
               }
           }
     }
@@ -212,7 +212,7 @@ namespace minsky
   {
     void setArguments(const std::vector<TensorPtr>& a1,
                       const std::vector<TensorPtr>& a2,
-                      const std::string&, double) override
+                      const ITensor::Args&) override
     {
       TensorPtr pa1, pa2;
       if (a1.size()==1)
@@ -220,7 +220,7 @@ namespace minsky
       else
         {
           pa1 = make_shared<AccumArgs<op>>();
-          pa1->setArguments(a1,{},0);
+          pa1->setArguments(a1,{"",0});
         }
 
       if (a2.size()==1)
@@ -228,10 +228,10 @@ namespace minsky
       else
         {
           pa2 = make_shared<AccumArgs<op>>();
-          pa2->setArguments(a2,{},0);
+          pa2->setArguments(a2,{"",0});
         }
       
-      TensorBinOp<op>::setArguments(pa1, pa2,{},0);
+      TensorBinOp<op>::setArguments(pa1, pa2,{"",0});
     }
   };
    
@@ -300,12 +300,12 @@ namespace minsky
     ssize_t delta=0;
     size_t innerStride=1, outerStride;
     vector<size_t> argIndices;
-    void setArgument(const TensorPtr& a,const std::string& s,double d) override {
-      civita::DimensionedArgCachedOp::setArgument(a,s,d);
+    void setArgument(const TensorPtr& a,const ITensor::Args& args) override {
+      civita::DimensionedArgCachedOp::setArgument(a,args);
       if (dimension>=rank() && rank()>1)
         throw error("axis name needs to be specified in difference operator");
       
-      delta=d;
+      delta=args.val;
       // remove initial slice of hypercube
       auto hc=arg->hypercube();
       if (rank()==0) return;
@@ -421,7 +421,7 @@ namespace minsky
     }
     Timestamp timestamp() const override {return max(arg1? arg1->timestamp(): Timestamp(), arg2? arg2->timestamp(): Timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
-                      const std::string&, double) override {
+                      const Args&) override {
       arg1=a1; arg2=a2;
       if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
         if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
@@ -459,7 +459,7 @@ namespace minsky
     Timestamp timestamp() const override
     {return max(arg1? arg1->timestamp(): Timestamp(), arg2? arg2->timestamp(): Timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
-                      const std::string&, double) override {
+                      const Args&) override {
       arg1=a1; arg2=a2;
       if (!arg1 || !arg2) return;
       
@@ -505,7 +505,7 @@ namespace minsky
       for (; j<cachedResult.size(); ++j)
         cachedResult[j]=nan("");
     }
-    void setArgument(const TensorPtr& a, const string&,double) override {
+    void setArgument(const TensorPtr& a, const Args&) override {
       arg=a; cachedResult.index(a->index()); cachedResult.hypercube(a->hypercube());
     }
     
@@ -608,13 +608,13 @@ namespace minsky
     }
     Timestamp timestamp() const override {return max(arg1? arg1->timestamp(): Timestamp(), arg2? arg2->timestamp(): Timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
-                      const std::string& dim, double) override {
+                      const Args& args) override {
       
       arg1=a1; arg2=a2;
       if (!arg1 || !arg2) return;
       auto& xv=arg1->hypercube().xvectors;
       dimension=find_if(xv.begin(), xv.end(), [&](const XVector& i)
-                        {return i.name==dim;})-xv.begin();
+                        {return i.name==args.dimension;})-xv.begin();
                         
       switch (arg1->rank())
         {
@@ -730,7 +730,8 @@ namespace minsky
     size_t m_size=1;
     vector<TensorPtr> args;
   public:
-    void setArguments(const std::vector<TensorPtr>& a,const std::string& axis={},double argv=0) override {
+    //void setArguments(const std::vector<TensorPtr>& a,const std::string& axis={},double argv=0) override {
+    void setArguments(const std::vector<TensorPtr>& a,const Args& av={"",0}) override {
       args=a;
       if (args.size()<2)
         hypercube(Hypercube());
@@ -797,7 +798,7 @@ namespace minsky
   public:
     RavelTensor(const Ravel& ravel): ravel(ravel) {}
 
-    void setArgument(const TensorPtr& a,const std::string&,double) override {
+    void setArgument(const TensorPtr& a,const Args&) override {
       // not sure how to avoid this const cast here
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
       chain=civita::createRavelChain(ravel.getState(), a);
@@ -839,10 +840,10 @@ namespace minsky
           switch (op->portsSize())
             {
             case 2:
-              r->setArguments(tfp.tensorsFromPort(*op->ports(1).lock()),op->axis,op->arg);
+              r->setArguments(tfp.tensorsFromPort(*op->ports(1).lock()),{op->axis,op->arg});
             break;
             case 3:
-              r->setArguments(tfp.tensorsFromPort(*op->ports(1).lock()), tfp.tensorsFromPort(*op->ports(2).lock()),op->axis,op->arg);
+              r->setArguments(tfp.tensorsFromPort(*op->ports(1).lock()), tfp.tensorsFromPort(*op->ports(2).lock()),{op->axis,op->arg});
               break;
             }
           return r;

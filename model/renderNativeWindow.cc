@@ -165,10 +165,6 @@ namespace minsky
 #endif
   }
 
-  void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight)
-  {
-    // TODO:: To be implemented... need to recreate child window
-  }
 
       double RenderNativeWindow::scaleFactor()
       {

@@ -53,8 +53,23 @@ namespace minsky
   typedef std::vector<GroupPtr> Groups;
 
   // items broken out in a separate structure, as copying is non-default
-  struct GroupItems
+  class GroupItems
   {
+  protected:
+    /// add a wire from item \a from, to item \a to, connecting to the
+    /// toIdx port of \a to, with \a coordinates
+    WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
+                const std::vector<float>& coords)
+    {
+      if (toPortIdx>=to.portsSize()) return WirePtr();
+      return addWire(from.ports(0), to.ports(toPortIdx), coords);
+    }
+
+    WirePtr addWire(const std::weak_ptr<Port>& from,
+                    const std::weak_ptr<Port>& to, 
+                    const std::vector<float>& coords);
+    friend class Canvas;
+  public:
     Items items;
     Groups groups;
     Wires wires;
@@ -153,24 +168,18 @@ namespace minsky
     GroupPtr addGroup(const std::shared_ptr<Group>&);
     GroupPtr addGroup(Group* g) {return addGroup(std::shared_ptr<Group>(g));}
 
+    /// add a wire from item \a from, to item \a to, connecting to the
+    /// toIdx port of \a to
+    WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx)
+    {return addWire(from, to, toPortIdx, {});}
     WirePtr addWire(const std::shared_ptr<Wire>&);
     WirePtr addWire(Wire* w) {return addWire(std::shared_ptr<Wire>(w));}
+    WirePtr addWire(const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to)
+    {return addWire(from,to,{});}
 
     /// adjust wire's group to be the least common ancestor of its ports
     static void adjustWiresGroup(Wire& w);
 
-    /// add a wire from item \a from, to item \a to, connecting to the
-    /// toIdx port of \a to, with \a coordinates
-    WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
-                const std::vector<float>& coords = {})
-    {
-      if (toPortIdx>=to.portsSize()) return WirePtr();
-      return addWire(from.ports(0), to.ports(toPortIdx), coords);
-    }
-
-    WirePtr addWire(const std::weak_ptr<Port>& from,
-                    const std::weak_ptr<Port>& to, 
-                    const std::vector<float>& coords = {}); 
     
     /// total number of items in this and child groups
     std::size_t numItems() const; 
@@ -218,6 +227,12 @@ namespace minsky
     Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item*ignore=nullptr)
     {return const_cast<Group*>(const_cast<const Group*>(this)->minimalEnclosingGroup(x0,y0,x1,y1,ignore));}
     friend class Canvas;
+
+    /// return bounding box coordinates for all variables, operators
+    /// etc in this group. Returns the zoom scale (aka local zoom) of
+    /// the contained items, or 1 if the group is empty.
+    float contentBounds(double& x0, double& y0, double& x1, double& y1) const;
+    
   public:
     
     std::string title;
@@ -344,11 +359,6 @@ namespace minsky
       //return zoomFactor()>1? localZoom(): zoomFactor();
     }
 
-    /// return bounding box coordinates for all variables, operators
-    /// etc in this group. Returns the zoom scale (aka local zoom) of
-    /// the contained items, or 1 if the group is empty.
-    float contentBounds(double& x0, double& y0, double& x1, double& y1) const;
-    
     /// for TCL debugging
     ecolab::array<double> cBounds() const {
       ecolab::array<double> r(4);
