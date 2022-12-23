@@ -39,6 +39,11 @@ Sheet::Sheet()
   iHeight(100);	  
 }
 
+bool Sheet::empty() {
+  auto vv=m_ports[0]->getVariableValue();
+  return !vv || vv->rank()==0;
+}
+
 bool Sheet::inItem(float xx, float yy) const
 {
   auto z=zoomFactor();	 					

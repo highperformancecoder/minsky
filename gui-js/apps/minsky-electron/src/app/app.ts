@@ -7,6 +7,7 @@ import {
   rendererAppURL,
   version,
   Utility,
+  Functions
 } from '@minsky/shared';
 import { BrowserWindow, dialog, screen } from 'electron';
 import * as log from 'electron-log';

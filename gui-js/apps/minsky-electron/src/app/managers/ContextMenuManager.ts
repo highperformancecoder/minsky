@@ -714,6 +714,13 @@ export class ContextMenuManager {
     const sortOrder = ravel.sortOrder();
     const editorMode = ravel.editorMode();
 
+    const selected = ravel.selected();
+    const allLockHandles = ravel.lockGroup.allLockHandles();
+
+    const lockHandlesAvailable = selected || Object.keys(allLockHandles).length !== 0;
+    const unlockAvailable = Object.keys(allLockHandles).length !== 0;
+    const handleAvailable = handleIndex !== -1;
+
     let menuItems = [
       new MenuItem({
         label: 'Editor mode',
@@ -734,81 +741,88 @@ export class ContextMenuManager {
           click: async () => {ravel.nextReduction(agg.value);}
         }))
       }),
-      new MenuItem(
-        {
-          label: 'Toggle axis calipers',
-          click: async () => {
-            ravel.toggleDisplayFilterCaliper();
-            ravel.broadcastStateToLockGroup();
-          }
-        }),
-        new MenuItem(
-        {
-          label: 'Sort axis',
-          submenu: ['none','forward','reverse'].map(so =>(<any>{
-            label: so,
-            type: 'radio',
-            checked: sortOrder == so,
-            click: () => {
-              ravel.setSortOrder(so);
-              ravel.broadcastStateToLockGroup();
-              minsky.reset();
-            }
-          })).concat(
-            ['forward','reverse'].map(vso =>(<any>{
-              label: `${vso} by value`,
-              click: async () => {
-                ravel.sortByValue(vso);
-                minsky.reset();
-            }
-          })))
-        }),
-        new MenuItem({
-          label: 'Pick axis slices',
-          click: async () => {
-            await CommandsManager.pickSlices(ravel,handleIndex);
-          }
-        }),
-      new MenuItem({
-        label: 'Axis properties',
-        submenu: [
-          {
-            label: 'Description',
-            click: async () => {
-              await CommandsManager.editHandleDescription(ravel,handleIndex);
-            }
-          },
-          {
-            label: 'Dimension',
-            click: async () => {
-              await CommandsManager.editHandleDimension(ravel,handleIndex);
-            }
-          },
-          {
-            label: 'Set aggregation',
-            submenu: aggregations.map(agg => ({
-              label: agg.label,
-              click: () => {
-                ravel.handleSetReduction(handleIndex, agg.value);
-              }
-            }))
-          }
-        ]
-      }),
       new MenuItem({ 
-        label: 'Lock specific handles',
+        label: 'Link specific handles',
         click: async () => {
           CommandsManager.lockSpecificHandles(ravel);
-        } 
+        },
+        enabled: lockHandlesAvailable 
       }),
       new MenuItem({
-        label: 'Unlock',
+        label: 'Unlink',
+        enabled: unlockAvailable,
         click: async () => {
           ravel.leaveLockGroup();
           CommandsManager.requestRedraw();
         },
       })
     ];
+
+    menuItems.push(...[new MenuItem(
+      {
+        label: 'Toggle axis calipers',
+        enabled: handleAvailable,
+        click: async () => {
+          ravel.toggleDisplayFilterCaliper();
+          ravel.broadcastStateToLockGroup();
+        }
+      }),
+      new MenuItem(
+      {
+        label: 'Sort axis',
+        enabled: handleAvailable,
+        submenu: ['none','forward','reverse'].map(so =>(<any>{
+          label: so,
+          type: 'radio',
+          checked: sortOrder == so,
+          click: () => {
+            ravel.setSortOrder(so);
+            ravel.broadcastStateToLockGroup();
+            minsky.reset();
+          }
+        })).concat(
+          ['forward','reverse'].map(vso =>(<any>{
+            label: `${vso} by value`,
+            click: async () => {
+              ravel.sortByValue(vso);
+              minsky.reset();
+          }
+        })))
+      }),
+      new MenuItem({
+        label: 'Pick axis slices',
+        enabled: handleAvailable,
+        click: async () => {
+          await CommandsManager.pickSlices(ravel,handleIndex);
+        }
+      }),
+    new MenuItem({
+      label: 'Axis properties',
+      enabled: handleAvailable,
+      submenu: [
+        {
+          label: 'Description',
+          click: async () => {
+            await CommandsManager.editHandleDescription(ravel,handleIndex);
+          }
+        },
+        {
+          label: 'Dimension',
+          click: async () => {
+            await CommandsManager.editHandleDimension(ravel,handleIndex);
+          }
+        },
+        {
+          label: 'Set aggregation',
+          submenu: aggregations.map(agg => ({
+            label: agg.label,
+            click: () => {
+              ravel.handleSetReduction(handleIndex, agg.value);
+            }
+          }))
+        }
+      ]
+    })]);
 
     return menuItems;
   }
