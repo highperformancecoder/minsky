@@ -56,8 +56,9 @@ export class WiringComponent implements OnInit, OnDestroy {
 
     const tabElements = document.getElementsByClassName('tab');
     for(let i = 0; i < tabElements.length; i++) {
-      const te = tabElements.item(i);
+      const te = <HTMLElement>tabElements.item(i);
       te.addEventListener('dragstart', event => {
+        te.click();
         event.stopPropagation();
         event.preventDefault();
       });

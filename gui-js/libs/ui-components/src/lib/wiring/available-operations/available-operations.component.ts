@@ -13,7 +13,9 @@ export class AvailableOperationsComponent {
   constructor(public communicationService: CommunicationService) {
   }
 
-  onButtonDrag(event) {
+  onButtonDrag(event, operation) {
+    const be = document.querySelector<HTMLElement>(`#button${operation}`);
+    be.click();
     event.event.stopPropagation();
     event.event.preventDefault();
   }
