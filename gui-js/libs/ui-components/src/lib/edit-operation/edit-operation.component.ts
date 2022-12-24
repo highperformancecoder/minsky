@@ -15,7 +15,8 @@ export class EditOperationComponent implements OnInit {
   classType: ClassType;
   itemType: string;
   op: OperationBase;
-
+  axes: string[];
+  
   public get axis(): AbstractControl {
     return this.form.get('axis');
   }
@@ -54,6 +55,7 @@ export class EditOperationComponent implements OnInit {
     this.rotation.setValue(await this.op.rotation());
     this.axis.setValue(await this.op.axis());
     this.argument.setValue(await this.op.arg());
+    this.axes=await this.op.dimensions();
   }
 
   async handleSave() {
