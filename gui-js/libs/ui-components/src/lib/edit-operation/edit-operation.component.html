@@ -10,26 +10,16 @@
 
     <div class="form-control">
       <label for="rotation">Rotation</label>
-      <input
-        type="number"
-        class="rotation"
-        id="rotation"
-        formControlName="rotation"
-      />
+      <input type="number" class="rotation" id="rotation"
+             formControlName="rotation"/>
     </div>
 
     <div class="form-control">
       <label for="axis">Axis</label>
       <input type="text" class="axis" id="axis" formControlName="axis"
              [matAutocomplete]="autoAxis"/>
-      <mat-autocomplete
-        [panelWidth]="'10rem'"
-        #autoAxis="matAutocomplete"
-      >
-        <mat-option
-          *ngFor="let axis of axes"
-          [value]="axis"
-          >
+      <mat-autocomplete [panelWidth]="'10rem'" #autoAxis="matAutocomplete">
+        <mat-option *ngFor="let axis of axes" [value]="axis">
           {{ axis }}
         </mat-option>
       </mat-autocomplete>
@@ -37,12 +27,7 @@
 
     <div class="form-control">
       <label for="argument">Argument</label>
-      <input
-        type="number"
-        class="argument"
-        id="argument"
-        formControlName="argument"
-      />
+      <input type="number" class="argument" id="argument" formControlName="argument"/>
     </div>
 
     <div class="form-buttons">
@@ -50,12 +35,8 @@
         Cancel
       </button>
 
-      <button
-        mat-raised-button
-        class="btn ok-btn submit"
-        type="submit"
-        (click)="handleSave()"
-      >
+      <button mat-raised-button class="btn ok-btn submit"
+              type="submit" (click)="handleSave()">
         OK
       </button>
     </div>

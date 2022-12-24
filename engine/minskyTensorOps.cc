@@ -716,6 +716,32 @@ namespace minsky
   };
 
   template <>
+  struct GeneralTensorOp<OperationType::meld>: public civita::CachedTensorOp
+  {
+    TensorPtr arg1;
+    vector<TensorPtr> args; 
+    void computeTensor() const override
+    {
+    }
+
+    Timestamp timestamp() const override {return max(arg1? arg1->timestamp(): Timestamp(), arg2? arg2->timestamp(): Timestamp());}
+ 
+    void setArguments(const std::vector<TensorPtr>& a1,
+                      const std::vector<TensorPtr>& a2,
+                      const std::string&, double) override {
+      // first argument defines the values for any overlapping region
+      if (a1.size()>1)
+        throw runtime_error("first argument cannot be mult-wired");
+      if (a1.size()==1)
+        arg1=a1[0];
+      args=a2;
+      
+    }
+
+    
+  };
+
+  template <>
   struct GeneralTensorOp<OperationType::supIndex>: public civita::ReductionOp
   {
     double maxValue; // scratch register for holding current max
