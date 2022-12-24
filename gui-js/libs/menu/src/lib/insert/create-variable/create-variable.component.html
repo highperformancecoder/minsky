@@ -1,5 +1,5 @@
-<div class="popup-wrapper">
-  <div class="popup-title">
+<form [formGroup]="form">
+  <div class="form-title">
     {{ isEditMode ? 'Edit' : 'Create' }}
     {{
       variableType === 'flow' || variableType === 'integral'
@@ -8,155 +8,153 @@
     }}
   </div>
 
-  <div class="form-wrapper">
-    <form [formGroup]="form">
-      <div class="form-control">
-        <label for="local">Local</label>
-        <input
-          type="checkbox"
-          class="local"
-          id="local"
-          formControlName="local"
-        />
-      </div>
-      <div class="form-control">
-        <label for="name">Name</label>
-        <input
-          type="text"
-          class="name"
-          id="name"
-          formControlName="variableName"
-        />
-      </div>
+  <div class="form-body">
+    <div class="form-control">
+      <label for="local">Local</label>
+      <input
+        type="checkbox"
+        class="local"
+        id="local"
+        formControlName="local"
+      />
+    </div>
+    <div class="form-control">
+      <label for="name">Name</label>
+      <input
+        type="text"
+        class="name"
+        id="name"
+        formControlName="variableName"
+      />
+    </div>
 
-      <div class="form-control">
-        <label for="type">Type</label>
-        <select name="type" id="type" formControlName="type">
-          <option
-            [selected]="variableType === 'constant' ? true : null"
-            value="constant"
-          >
-            Constant
-          </option>
-          <option
-            [selected]="variableType === 'parameter' ? true : null"
-            value="parameter"
-          >
-            Parameter
-          </option>
-          <option
-            [selected]="variableType === 'flow' ? true : null"
-            value="flow"
-          >
-            Flow
-          </option>
-          <option
-            [selected]="variableType === 'integral' ? true : null"
-            value="integral"
-          >
-            Integral
-          </option>
-        </select>
-      </div>
-
-      <div class="form-control">
-        <label for="value">Initial Value</label>
-        <input type="text" class="value" id="value" formControlName="value" />
-      </div>
-
-      <div class="form-control">
-        <label for="units">Units</label>
-        <input type="text" class="units" id="units" formControlName="units" />
-      </div>
-
-      <div class="form-control">
-        <label for="rotation">Rotation</label>
-        <input
-          type="number"
-          class="rotation"
-          id="rotation"
-          formControlName="rotation"
-        />
-      </div>
-
-      <div class="form-control">
-        <label for="shortDescription">Short Description</label>
-        <input
-          type="text"
-          class="shortDescription"
-          id="shortDescription"
-          formControlName="shortDescription"
-        />
-      </div>
-
-      <div class="form-control">
-        <label for="detailedDescription">Detailed Description</label>
-        <input
-          type="text"
-          class="detailedDescription"
-          id="detailedDescription"
-          formControlName="detailedDescription"
-        />
-      </div>
-
-      <div class="form-control">
-        <label for="sliderBoundsMax">Slider Bounds: Max</label>
-        <input
-          type="number"
-          class="sliderBoundsMax"
-          id="sliderBoundsMax"
-          formControlName="sliderBoundsMax"
-        />
-      </div>
-
-      <div class="form-control">
-        <label for="sliderBoundsMin">Slider Bounds: Min</label>
-        <input
-          type="number"
-          class="sliderBoundsMin"
-          id="sliderBoundsMin"
-          formControlName="sliderBoundsMin"
-        />
-      </div>
-
-      <div class="form-control">
-        <label for="sliderStepSize">Slider Step Size</label>
-        <input
-          type="number"
-          class="sliderStepSize"
-          id="sliderStepSize"
-          formControlName="sliderStepSize"
-        />
-      </div>
-
-      <div *ngIf="isEditMode" class="form-control">
-        <label for="sliderStepSizeRel">Relative</label>
-        <input
-          type="checkbox"
-          class="sliderStepRel"
-          id="sliderStepRel"
-          formControlName="sliderStepRel"
-        />
-      </div>
-
-      <div class="form-buttons">
-        <button
-          mat-raised-button
-          class="btn cancel-btn"
-          (click)="closeWindow()"
+    <div class="form-control">
+      <label for="type">Type</label>
+      <select name="type" id="type" formControlName="type">
+        <option
+          [selected]="variableType === 'constant' ? true : null"
+          value="constant"
         >
-          Cancel
-        </button>
-
-        <button
-          mat-raised-button
-          class="btn ok-btn submit"
-          type="submit"
-          (click)="handleSubmit()"
+          Constant
+        </option>
+        <option
+          [selected]="variableType === 'parameter' ? true : null"
+          value="parameter"
         >
-          OK
-        </button>
-      </div>
-    </form>
+          Parameter
+        </option>
+        <option
+          [selected]="variableType === 'flow' ? true : null"
+          value="flow"
+        >
+          Flow
+        </option>
+        <option
+          [selected]="variableType === 'integral' ? true : null"
+          value="integral"
+        >
+          Integral
+        </option>
+      </select>
+    </div>
+
+    <div class="form-control">
+      <label for="value">Initial Value</label>
+      <input type="text" class="value" id="value" formControlName="value" />
+    </div>
+
+    <div class="form-control">
+      <label for="units">Units</label>
+      <input type="text" class="units" id="units" formControlName="units" />
+    </div>
+
+    <div class="form-control">
+      <label for="rotation">Rotation</label>
+      <input
+        type="number"
+        class="rotation"
+        id="rotation"
+        formControlName="rotation"
+      />
+    </div>
+
+    <div class="form-control">
+      <label for="shortDescription">Short Description</label>
+      <input
+        type="text"
+        class="shortDescription"
+        id="shortDescription"
+        formControlName="shortDescription"
+      />
+    </div>
+
+    <div class="form-control">
+      <label for="detailedDescription">Detailed Description</label>
+      <input
+        type="text"
+        class="detailedDescription"
+        id="detailedDescription"
+        formControlName="detailedDescription"
+      />
+    </div>
+
+    <div class="form-control">
+      <label for="sliderBoundsMax">Slider Bounds: Max</label>
+      <input
+        type="number"
+        class="sliderBoundsMax"
+        id="sliderBoundsMax"
+        formControlName="sliderBoundsMax"
+      />
+    </div>
+
+    <div class="form-control">
+      <label for="sliderBoundsMin">Slider Bounds: Min</label>
+      <input
+        type="number"
+        class="sliderBoundsMin"
+        id="sliderBoundsMin"
+        formControlName="sliderBoundsMin"
+      />
+    </div>
+
+    <div class="form-control">
+      <label for="sliderStepSize">Slider Step Size</label>
+      <input
+        type="number"
+        class="sliderStepSize"
+        id="sliderStepSize"
+        formControlName="sliderStepSize"
+      />
+    </div>
+
+    <div *ngIf="isEditMode" class="form-control">
+      <label for="sliderStepSizeRel">Relative</label>
+      <input
+        type="checkbox"
+        class="sliderStepRel"
+        id="sliderStepRel"
+        formControlName="sliderStepRel"
+      />
+    </div>
   </div>
-</div>
+
+  <div class="form-buttons">
+    <button
+      mat-raised-button
+      class="btn cancel-btn"
+      (click)="closeWindow()"
+    >
+      Cancel
+    </button>
+
+    <button
+      mat-raised-button
+      class="btn ok-btn submit"
+      type="submit"
+      (click)="handleSubmit()"
+    >
+      OK
+    </button>
+  </div>
+</form>

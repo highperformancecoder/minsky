@@ -37,6 +37,7 @@ namespace minsky
     bool inItem(float, float) const override;
     ClickType::Type clickType(float x, float y) override;   
     void draw(cairo_t* cairo) const override;
+    bool empty();
   };
 }
 
