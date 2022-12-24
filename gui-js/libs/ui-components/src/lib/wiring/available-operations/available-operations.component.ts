@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, AfterViewInit } from '@angular/core';
 import { CommunicationService } from '@minsky/core';
 
 @Component({
@@ -10,5 +10,11 @@ export class AvailableOperationsComponent {
   @Input() title = '';
   @Input() operations: string[] = [];
 
-  constructor(public communicationService: CommunicationService) {}
+  constructor(public communicationService: CommunicationService) {
+  }
+
+  onButtonDrag(event) {
+    event.event.stopPropagation();
+    event.event.preventDefault();
+  }
 }

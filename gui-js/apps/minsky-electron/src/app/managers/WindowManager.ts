@@ -161,9 +161,20 @@ export class WindowManager {
     onCloseCallback?: (ev : Electron.Event) => void
   ) {
     const { width, height, title, modal = true, backgroundColor } = payload;
+
+    let minWidth = payload.minWidth;
+    if(!minWidth && width) minWidth = width;
+    if(!minWidth) minWidth = 300;
+
+    let minHeight = payload.minHeight;
+    if(!minHeight && width) minHeight = height;
+    if(!minHeight) minHeight = 200;
+
     const childWindow = new BrowserWindow({
       width,
       height,
+      minWidth,
+      minHeight,
       title,
       resizable: true,
       minimizable: false,

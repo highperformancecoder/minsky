@@ -601,23 +601,24 @@ export class CommandsManager {
 
   static async editItem(classType: string) {
     let height;
+    let width = 500;
     switch (classType) {
       case ClassType.Group:
         height = 240;
         break;
       case ClassType.Operation:
-        height = 330;
+        height = 180;
+        width = 300;
         break;
       case ClassType.UserFunction:
         height = 370;
         break;
-
       default:
         height = 410;
         break;
     }
     WindowManager.createPopupWindowWithRouting({
-      width: 500,
+      width: width,
       height,
       title: `Edit ${classType || ''}`,
       url: `#/headless/edit-${classType.toLowerCase()}`,
@@ -634,7 +635,7 @@ export class CommandsManager {
   private static async initializePopupWindow(
     payload: InitializePopupWindowPayload
   ): Promise<Electron.BrowserWindow> {
-    const { itemInfo, url, height = 600, width = 800, modal = true } = payload;
+    const { itemInfo, url, height = 600, width = 800, minHeight = 200, minWidth = 200, modal = true } = payload;
     await CommandsManager.addItemToNamedItems(itemInfo);
 
     const window = WindowManager.createPopupWindowWithRouting(
@@ -646,6 +647,8 @@ export class CommandsManager {
         uid: itemInfo.id,
         height,
         width,
+        minHeight,
+        minWidth,
         modal,
       },
       () => {
@@ -865,6 +868,7 @@ export class CommandsManager {
         url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1200,
+        minWidth: 600,
         modal: false,
       });
 

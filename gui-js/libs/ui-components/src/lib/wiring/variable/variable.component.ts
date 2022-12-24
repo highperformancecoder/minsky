@@ -34,8 +34,8 @@ export class VariableComponent {
       this.electronService.send(events.CREATE_MENU_POPUP, {
         title: 'Specify variable name',
         url,
-        width: 500,
-        height: 650,
+        width: 400,
+        height: 450,
       });
     }
   }
@@ -43,8 +43,8 @@ export class VariableComponent {
        this.electronService.send(events.CREATE_MENU_POPUP, {
         title: 'Variables',
            url: "#/headless/variable-pane",
-        width: 500,
-        height: 650,
+        width: 400,
+        height: 450,
       });
        
   }

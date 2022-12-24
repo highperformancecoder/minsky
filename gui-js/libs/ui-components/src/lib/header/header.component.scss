@@ -3,15 +3,21 @@
 .toolbar-controls {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   padding: 2px 10px;
+  
   .simulation-controls {
     display: flex;
     align-items: center;
     margin: $margin * 2;
     .checkbox-control {
       font-size: $primary-font;
-      display: initial;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-right: $margin * 5;
+
       .checkbox-wrapper {
         display: inline-block;
         height: $dimensions * 2.5;
@@ -24,6 +30,8 @@
         white-space: nowrap;
         flex-shrink: 0;
         text-align: center;
+
+        margin-right: 5px;
 
         input {
           cursor: pointer;

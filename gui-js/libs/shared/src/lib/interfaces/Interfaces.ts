@@ -5,6 +5,8 @@ export interface InitializePopupWindowPayload {
   url: string;
   height?: number;
   width?: number;
+  minHeight?: number;
+  minWidth?: number;
   modal?: boolean;
 }
 
@@ -125,6 +127,8 @@ export interface CreateWindowPayload {
   modal?: boolean;
   backgroundColor?: string;
   url?: string;
+  minWidth?: number;
+  minHeight?: number;
 }
 
 

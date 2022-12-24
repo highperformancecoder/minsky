@@ -13,6 +13,7 @@
         mat-menu-item
         class="tab"
         (click)="communicationService.addOperation(operation)"
+        (dragstart)="onButtonDrag($event)"
       >
         <img
           src="assets/images/icons/{{ operation }}.gif"
