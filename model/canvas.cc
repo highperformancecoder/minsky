@@ -145,9 +145,25 @@ namespace minsky
       }
     if (fromPort.get())
       {
-          if (auto to=closestInPort(x,y))
+          if (auto to=closestInPort(x,y)) {
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
-        fromPort.reset();
+            fromPort.reset();
+            auto& toItem=to->item();
+            if (auto ravel=dynamic_cast<Ravel*>(&toItem))
+            {
+              auto state = ravel->getState();
+              if(state.empty()) {
+                minsky().reset();
+              }
+            } else if(auto sheet=dynamic_cast<Sheet*>(&toItem)) {
+              if(sheet->empty()) {
+                minsky().reset();
+              }
+            }
+            
+          } else {
+            fromPort.reset();
+          }
       }
     
     if (wireFocus)
@@ -776,7 +792,7 @@ namespace minsky
 
   void Canvas::copyVars(const std::vector<VariablePtr>& v)
   {
-    float maxWidth=0, totalHeight=0, yCentre=0;
+    float maxWidth=0, totalHeight=0;
     vector<float> widths, heights;
     // Throw error if no stock/flow vars on Godley icon. For ticket 1039 
     if (!v.empty()) {    

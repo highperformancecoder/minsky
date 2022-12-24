@@ -39,6 +39,7 @@ namespace minsky
     void draw(cairo_t* cairo) const override;
 
     ShowSlice showSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
+    bool empty();
   };
 }
 

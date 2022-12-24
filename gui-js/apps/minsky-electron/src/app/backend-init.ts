@@ -1,6 +1,6 @@
 import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
-import { dialog, ipcMain, shell } from 'electron';
+import { dialog, shell } from 'electron';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';
 

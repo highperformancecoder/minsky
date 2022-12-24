@@ -83,8 +83,8 @@ namespace minsky
         }
     }
 
-    inline bool isDotOrDigit(char x)
-    {return x=='.' || isdigit(x);}
+//    inline bool isDotOrDigit(char x)
+//    {return x=='.' || isdigit(x);}
 
 
   }

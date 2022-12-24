@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { dateTimeFormats } from '@minsky/shared';
-import { MessageBoxSyncOptions } from 'electron/renderer';
 
 interface Second {
   type: string;

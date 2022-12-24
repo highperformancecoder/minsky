@@ -4,6 +4,55 @@ select {
   width: 125px;
 }
 
-button {
-  margin: $margin;
+form {
+  width: 100vw;
+  height: 100vh;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+
+  .form-title {
+    width: 100%;
+
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: bold;
+  }
+
+  .form-body {
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+
+    overflow-y: auto;
+
+    .form-control {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      * {
+        flex: 1;
+        max-width: 200px;
+      }
+    }
+  }
+
+  .form-buttons {
+    margin: 0px;
+    button {
+      margin: 5px;
+    }
+  }
 }

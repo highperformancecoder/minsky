@@ -35,6 +35,7 @@ namespace minsky
     bool redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
 
+    Panopticon(Panopticon&)=default;
     Panopticon& operator=(const Panopticon&) {return *this;}
   };
 }

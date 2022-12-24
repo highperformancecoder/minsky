@@ -29,7 +29,7 @@ namespace MathDAG
   {
     if (abs(x)>0 && (abs(x)>=1e5 || abs(x)<=1e-4))
       {
-        int exponent=log10(abs(x));
+        int exponent=static_cast<int>(log10(abs(x)));
         if (exponent<0) exponent++;
         return str(x/pow(10.0,exponent))+"\\times10^{"+str(exponent)+"}";
       }

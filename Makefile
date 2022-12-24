@@ -207,7 +207,7 @@ LIBS+=	-LRavelCAPI -lravelCAPI \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
-LIBS+=-lcrypt32 -lshcore
+LIBS+=-lcrypt32 -lbcrypt -lshcore
 else
 LIBS+=-lclipboard -lxcb -lX11
 endif

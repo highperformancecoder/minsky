@@ -53,11 +53,6 @@ namespace minsky
 {
   ecolab::cairo::Colour RenderNativeWindow::backgroundColour{0.8,0.8,0.8,1};
   
-  static cairo_status_t appendDataToBufferNOP(void *p, const unsigned char *data, unsigned length)
-  {
-    return CAIRO_STATUS_SUCCESS;
-  }
-
   namespace
   {
     // default dummy surface to arrange a callback on requestRedraw

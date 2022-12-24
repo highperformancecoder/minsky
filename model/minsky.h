@@ -82,7 +82,7 @@ namespace minsky
     double height() const {return m_height;}
     EquationDisplay(Minsky& m): m(m) {}
     EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
-    EquationDisplay(EquationDisplay&)=default;
+    EquationDisplay(const EquationDisplay&)=default;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
 

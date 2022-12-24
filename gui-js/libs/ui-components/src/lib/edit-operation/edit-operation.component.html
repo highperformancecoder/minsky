@@ -1,51 +1,40 @@
-<div class="form-wrapper">
-  <br />
+<form [formGroup]="form">
+  <div class="form-title">
+    <span>{{ itemType }}</span>
+  </div>
 
-  <form [formGroup]="form">
-    <div class="form-control">
-      <span>{{ itemType }}</span>
-    </div>
-
-    <br />
-
+  <div class="form-body">
     <div class="form-control">
       <label for="rotation">Rotation</label>
-      <input
-        type="number"
-        class="rotation"
-        id="rotation"
-        formControlName="rotation"
-      />
+      <input type="number" class="rotation" id="rotation"
+             formControlName="rotation"/>
     </div>
 
     <div class="form-control">
       <label for="axis">Axis</label>
-      <input type="text" class="axis" id="axis" formControlName="axis" />
+      <input type="text" class="axis" id="axis" formControlName="axis"
+             [matAutocomplete]="autoAxis"/>
+      <mat-autocomplete [panelWidth]="'10rem'" #autoAxis="matAutocomplete">
+        <mat-option *ngFor="let axis of axes" [value]="axis">
+          {{ axis }}
+        </mat-option>
+      </mat-autocomplete>
     </div>
 
     <div class="form-control">
       <label for="argument">Argument</label>
-      <input
-        type="number"
-        class="argument"
-        id="argument"
-        formControlName="argument"
-      />
+      <input type="number" class="argument" id="argument" formControlName="argument"/>
     </div>
+  </div>
 
-    <div class="form-buttons">
-      <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
-        Cancel
-      </button>
-
-      <button
-        mat-raised-button
-        class="btn ok-btn submit"
-        type="submit"
-        (click)="handleSave()"
-      >
-        OK
-      </button>
-    </div>
-  </form>
-</div>
+  <div class="form-buttons">
+    <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
+      Cancel
+    </button>
+    
+    <button mat-raised-button class="btn ok-btn submit"
+            type="submit" (click)="handleSave()">
+      OK
+    </button>
+  </div>
+</form>
