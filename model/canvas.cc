@@ -408,6 +408,17 @@ namespace minsky
       minsky().copy();
   }
 
+  int Canvas::ravelsSelected()
+  {
+    int ravelsSelected = 0;
+    for (auto& i: selection.items) {
+      if (auto r=dynamic_pointer_cast<Ravel>(i))
+      {
+        ravelsSelected++;
+      }
+    }
+    return ravelsSelected;
+  }
   
   ItemPtr Canvas::itemAt(float x, float y)
   {

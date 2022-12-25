@@ -151,6 +151,8 @@ namespace minsky
       select(LassoBox(x0,y0,x1,y1));
     }
     void select(const LassoBox&);
+
+    int ravelsSelected();
     
     /// sets itemFocus, and resets mouse offset for placement
     void setItemFocus(const ItemPtr& x) {
