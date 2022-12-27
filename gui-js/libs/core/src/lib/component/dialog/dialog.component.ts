@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   NgZone,
@@ -20,7 +21,8 @@ export class DialogComponent implements AfterViewInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private cd: ChangeDetectorRef,
   ) {
     this.multipleKeyString = new FormControl('');
   }
@@ -30,6 +32,11 @@ export class DialogComponent implements AfterViewInit {
     this.inputHtmlElement.focus();
   }
 
+  setValue(value: string) {
+    this.multipleKeyString.setValue(value);
+    this.cd.detectChanges();
+  }
+  
   submit(): void {
     this.ngZone.run(() => {
       this.dialogRef.close(this.multipleKeyString.value);

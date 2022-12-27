@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import {
   AppLayoutPayload,
   CppClass,
@@ -596,7 +596,9 @@ export class CommunicationService {
         this.dialogRef = this.dialog.open(DialogComponent, {
           width: '600px',
           position: { top: '0', left: '33.33%' },
+          data: {value: event.key},
         });
+        this.dialogRef.componentInstance.setValue(event.key);
 
         this.dialogRef.afterClosed().subscribe(async (multipleKeyString) => {
           this.dialogRef = null;
@@ -605,11 +607,6 @@ export class CommunicationService {
       }
 
       return;
-      // if (multipleKeyString) {
-      //   TextInputUtilities.setValue(multipleKeyString);
-      // } else {
-      //   TextInputUtilities.hide();
-      // }
     }
   }
 
