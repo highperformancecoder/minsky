@@ -28,9 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-#        language: [ 'cpp', 'javascript' ]
-# disable C++ for now, as codeQL generates too many false positives
-        language: [ 'javascript' ]
+        language: [ 'cpp', 'javascript' ]
         ubuntu_ver: [20.04]
 
     permissions:
