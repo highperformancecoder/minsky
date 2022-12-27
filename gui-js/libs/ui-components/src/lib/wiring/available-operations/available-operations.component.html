@@ -9,10 +9,11 @@
 
   <mat-menu yPosition="above" #opMenu="matMenu" class="horizontal">
     <ng-container *ngFor="let operation of operations">
-      <button
+      <button id="button{{operation}}"
         mat-menu-item
         class="tab"
         (click)="communicationService.addOperation(operation)"
+        (dragstart)="onButtonDrag($event, operation)"
       >
         <img
           src="assets/images/icons/{{ operation }}.gif"

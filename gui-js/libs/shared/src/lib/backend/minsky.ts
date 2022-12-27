@@ -421,6 +421,7 @@ export class Canvas extends CppClass {
   openGroupInCanvas(a1: Item): void {return this.callMethod('openGroupInCanvas',a1);}
   position(): number[] {return this.callMethod('position');}
   pushDefiningVarsToTab(): void {return this.callMethod('pushDefiningVarsToTab');}
+  ravelsSelected(): number {return this.callMethod('ravelsSelected');}
   recentre(): void {return this.callMethod('recentre');}
   redraw(...args: number[]): boolean {return this.callMethod('redraw',...args);}
   redrawAll(...args: boolean[]): boolean {return this.callMethod('redrawAll',...args);}

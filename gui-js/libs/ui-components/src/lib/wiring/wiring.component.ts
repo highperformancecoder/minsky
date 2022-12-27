@@ -54,6 +54,16 @@ export class WiringComponent implements OnInit, OnDestroy {
     const scrollableArea = this.windowUtilityService.getScrollableArea();
     var moveOnScroll=0; // avoid moving when programmatically setting scroll bars
 
+    const tabElements = document.getElementsByClassName('tab');
+    for(let i = 0; i < tabElements.length; i++) {
+      const te = <HTMLElement>tabElements.item(i);
+      te.addEventListener('dragstart', event => {
+        te.click();
+        event.stopPropagation();
+        event.preventDefault();
+      });
+    }
+
     this.cmService.resetScroll=async ()=>{
       ++moveOnScroll;
       var pos= await this.electronService.currentTabPosition();

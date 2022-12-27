@@ -34,8 +34,9 @@ form {
     justify-content: space-between;
     align-items: stretch;
 
+    overflow-x: hidden;
     overflow-y: auto;
-
+    
     .form-control {
       display: flex;
       flex-direction: row;

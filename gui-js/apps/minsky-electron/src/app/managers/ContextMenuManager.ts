@@ -217,20 +217,28 @@ export class ContextMenuManager {
   }
 
   private static canvasContext(): MenuItem[] {
+    const selectedItems = minsky.canvas.selection.items;
+    const selectionSize = selectedItems.size();
+    const ravelsSelected = minsky.canvas.ravelsSelected();
+
     const menuItems = [
       new MenuItem({
         label: 'Cut',
-        click: () => {minsky.cut();}
+        click: () => {minsky.cut();},
+        enabled: selectionSize > 0
       }),
       new MenuItem({
         label: 'Copy selection',
-        click: () => {minsky.copy();}
+        click: () => {minsky.copy();},
+        enabled: selectionSize > 0
+
       }),
       new MenuItem({
         label: 'Save selection as',
         click: async () => {
           await CommandsManager.saveSelectionAsFile();
         },
+        enabled: selectionSize > 0
       }),
       new MenuItem({
         label: 'Paste selection',
@@ -268,11 +276,13 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Lock selected Ravels',
-        click: async () => {minsky.canvas.lockRavelsInSelection();}
+        click: async () => {minsky.canvas.lockRavelsInSelection();},
+        enabled: ravelsSelected > 1
       }),
       new MenuItem({
         label: 'Unlock selected Ravels',
-        click: async () => {minsky.canvas.unlockRavelsInSelection();}
+        click: async () => {minsky.canvas.unlockRavelsInSelection();},
+        enabled: ravelsSelected > 0
       }),
       new MenuItem({
         label: 'Open master group',
@@ -737,10 +747,10 @@ export class ContextMenuManager {
     const sortOrder = ravel.sortOrder();
     const editorMode = ravel.editorMode();
 
-    const selected = ravel.selected();
+    const ravelsSelected = minsky.canvas.ravelsSelected();
     const allLockHandles = ravel.lockGroup.allLockHandles();
 
-    const lockHandlesAvailable = selected || Object.keys(allLockHandles).length !== 0;
+    const lockHandlesAvailable = ravelsSelected > 1 || Object.keys(allLockHandles).length !== 0;
     const unlockAvailable = Object.keys(allLockHandles).length !== 0;
     const handleAvailable = handleIndex !== -1;
 

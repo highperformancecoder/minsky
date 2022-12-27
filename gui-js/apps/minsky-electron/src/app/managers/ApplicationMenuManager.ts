@@ -309,8 +309,8 @@ export class ApplicationMenuManager {
               label: 'variable',
               click() {
                 WindowManager.createPopupWindowWithRouting({
-                  width: 500,
-                  height: 650,
+                  width: 400,
+                  height: 450,
                   title: 'Specify variable name',
                   url: `#/headless/menu/insert/create-variable?type=flow`,
                 });
@@ -320,8 +320,8 @@ export class ApplicationMenuManager {
               label: 'constant',
               click() {
                 WindowManager.createPopupWindowWithRouting({
-                  width: 500,
-                  height: 650,
+                  width: 400,
+                  height: 450,
                   title: 'Specify variable name',
                   url: `#/headless/menu/insert/create-variable?type=constant`,
                 });
@@ -331,8 +331,8 @@ export class ApplicationMenuManager {
               label: 'parameter',
               click() {
                 WindowManager.createPopupWindowWithRouting({
-                  width: 500,
-                  height: 650,
+                  width: 400,
+                  height: 450,
                   title: 'Specify variable name',
                   url: `#/headless/menu/insert/create-variable?type=parameter`,
                 });
