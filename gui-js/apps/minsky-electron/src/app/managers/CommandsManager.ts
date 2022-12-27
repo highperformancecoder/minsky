@@ -957,7 +957,7 @@ export class CommandsManager {
     }
 
     WindowManager.getMainWindow().setTitle(filePath);
-
+    this.currentMinskyModelFilePath=filePath;
     minsky.save(filePath);
   }
   
