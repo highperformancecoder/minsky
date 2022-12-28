@@ -18,6 +18,10 @@ ifeq ($(OS),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1
 endif
 
+ifdef MXE
+MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
+endif
+
 ifdef DISTCC
 CPLUSPLUS=distcc
 # number of jobs to do sub-makes
