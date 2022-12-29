@@ -611,7 +611,8 @@ export class CommandsManager {
         width = 300;
         break;
       case ClassType.UserFunction:
-        height = 370;
+        height = 180;
+        width = 300;
         break;
       default:
         height = 410;
@@ -635,7 +636,7 @@ export class CommandsManager {
   private static async initializePopupWindow(
     payload: InitializePopupWindowPayload
   ): Promise<Electron.BrowserWindow> {
-    const { itemInfo, url, height = 600, width = 800, minHeight = 200, minWidth = 200, modal = true } = payload;
+    const { itemInfo, url, height = 600, width = 800, minHeight, minWidth, modal = true } = payload;
     await CommandsManager.addItemToNamedItems(itemInfo);
 
     const window = WindowManager.createPopupWindowWithRouting(
@@ -868,7 +869,7 @@ export class CommandsManager {
         url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1200,
-        minWidth: 600,
+        minWidth: 700,
         modal: false,
       });
 

@@ -71,16 +71,17 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     await this.getWindowRectInfo();
 
     clearTimeout(this.renderTimeout);
-    this.renderTimeout = setTimeout(() => this.renderFrame(), 500);
+    this.renderTimeout = setTimeout(() => this.renderFrame(), 100);
   }
+
   private async getWindowRectInfo() {
     this.godleyCanvasContainer = this.godleyCanvasElemWrapper.nativeElement as HTMLElement;
 
     const clientRect = this.godleyCanvasContainer.getBoundingClientRect();
 
     let menuBarHeight=await this.windowUtilityService.getElectronMenuBarHeight();
-    this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = Math.round(menuBarHeight);
+    this.leftOffset = Math.round(clientRect.left) + 10;
+    this.topOffset = Math.round(menuBarHeight) + 10;
 
     this.height = Math.round(this.godleyCanvasContainer.clientHeight);
     this.width = Math.round(this.godleyCanvasContainer.clientWidth);
