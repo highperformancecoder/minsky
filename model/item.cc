@@ -223,8 +223,11 @@ namespace minsky
   bool Item::visibleWithinGroup() const 
   {return !attachedToDefiningVar();}
 
+  bool Item::inputDefined() {
+    auto vv=m_ports[0]->getVariableValue();
+    return vv && vv->rank()>0;
+  }
   
-
   void Item::moveTo(float x, float y)
   {
     if (auto g=group.lock())

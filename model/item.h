@@ -164,6 +164,8 @@ namespace minsky
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     bool onBorder=false; ///< true to indicate mouse hovering over border
     std::string deleteCallback; /// callback to be run when item deleted from group
+    
+    virtual bool inputDefined();
 
     /// return a weak reference to the ith port
     virtual std::weak_ptr<Port> ports(std::size_t i) const {
