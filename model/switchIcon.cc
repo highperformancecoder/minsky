@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "cairoItems.h"
-#include "item.rcd"
+#include "itemT.rcd"
 #include "switchIcon.h"
 #include "switchIcon.rcd"
 #include "minsky.h"

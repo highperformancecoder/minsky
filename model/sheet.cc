@@ -24,7 +24,7 @@
 #include <cairo_base.h>
 #include <pango.h>
 
-#include "item.rcd"
+#include "itemT.rcd"
 #include "sheet.rcd"
 #include "minsky_epilogue.h"
 

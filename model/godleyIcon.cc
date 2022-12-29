@@ -28,7 +28,7 @@
 #include <cairo_base.h>
 #include <ctype.h>
 #include "godleyIcon.rcd"
-#include "item.rcd"
+#include "itemT.rcd"
 #include "minsky_epilogue.h"
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;

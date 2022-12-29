@@ -21,7 +21,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include "dataOp.rcd"
-#include "item.rcd"
+#include "itemT.rcd"
 #include "minsky_epilogue.h"
 
 using namespace std;

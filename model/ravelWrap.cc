@@ -32,7 +32,7 @@
 #include "handleLockInfo.xcd"
 #include "hypercube.rcd"
 #include "hypercube.xcd"
-#include "item.rcd"
+#include "itemT.rcd"
 #include "nobble.h"
 #include "ravelState.xcd"
 #include "ravelState.rcd"

@@ -20,12 +20,17 @@
 #define OPNAMEDEF
 #include "operation.h"
 #include "lasso.h"
-#include "item.rcd"
+#include "itemT.rcd"
 #include "operation.rcd"
 #include "operationType.rcd"
 #include "minsky_epilogue.h"
 
-#define DEFOP(type) CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Operation<minsky::OperationType::type>);
+template <minsky::OperationType::Type T>
+using OpItemT=minsky::ItemT<minsky::Operation<T>,minsky::OperationBase>;
+
+#define DEFOP(type) \
+  CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Operation<minsky::OperationType::type>); \
+  CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(OpItemT<minsky::OperationType::type>);
 
 DEFOP(copy)
 DEFOP(sqrt)

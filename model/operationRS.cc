@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2018
+  @copyright Steve Keen 2022
   @author Russell Standish
   This file is part of Minsky.
 
@@ -17,29 +17,12 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
-   A simple spreadsheet view
- */
+#define OPNAMEDEF
+#include "operation.h"
+#include "lasso.h"
+#include "item.rcd"
+#include "operationBase.rcd"
+#include "operationType.rcd"
+#include "minsky_epilogue.h"
 
-#ifndef SHEET_H
-#define SHEET_H
-#include <itemT.h>
-
-namespace minsky
-{
-  class Sheet: public ItemT<Sheet>
-  {
-    
-    CLASSDESC_ACCESS(Sheet);
-  public:
-    //    float m_width=100, m_height=100;
-    Sheet();
-    bool inItem(float, float) const override;
-    ClickType::Type clickType(float x, float y) override;   
-    void draw(cairo_t* cairo) const override;
-  };
-}
-
-#include "sheet.cd"
-#include "sheet.xcd"
-#endif
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::OperationBase);

@@ -36,7 +36,7 @@
 #include "polyBase.h"
 #include <polyPackBase.h>
 #include "variableType.h"
-#include "item.h"
+#include "itemT.h"
 #include <accessor.h>
 #include <cairo/cairo.h>
 

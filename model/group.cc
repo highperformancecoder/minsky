@@ -26,7 +26,7 @@
 #include "equations.h"
 #include <cairo_base.h>
 #include "group.rcd"
-#include "item.rcd"
+#include "itemT.rcd"
 #include "bookmark.rcd"
 #include "minsky_epilogue.h"
 using namespace std;

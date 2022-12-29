@@ -21,7 +21,7 @@
 #include "intOp.h"
 #include "minsky.h"
 #include "intOp.rcd"
-#include "item.rcd"
+#include "itemT.rcd"
 #include "minsky_epilogue.h"
 
 namespace minsky

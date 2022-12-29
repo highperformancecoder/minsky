@@ -357,40 +357,6 @@ namespace minsky
 
   typedef std::vector<ItemPtr> Items;
   
-  /** curiously recursive template pattern for generating overrides */
-  template <class T, class Base=Item>
-  struct ItemT: public Base
-  {
-    std::string classType() const override {
-      auto s=classdesc::typeName<T>();
-      // remove minsky namespace
-      static const char* ns="::minsky::";
-      static const int eop=strlen(ns);
-      if (s.substr(0,eop)==ns)
-        s=s.substr(eop);
-      return s;
-    }
-    ItemT* clone() const override {
-      auto r=new T(*dynamic_cast<const T*>(this));
-      r->group.reset();
-      return r;
-    }
-    void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d) override 
-    {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
-    void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) override
-    {::RESTProcess(rp,d,dynamic_cast<T&>(*this));}
-    void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) const override
-    {::RESTProcess(rp,d,dynamic_cast<const T&>(*this));}
-    void json_pack(classdesc::json_pack_t& j) const override
-    {::json_pack(j,"",dynamic_cast<const T&>(*this));}
-    ItemT()=default;
-    ItemT(const ItemT&)=default;
-    ItemT& operator=(const ItemT&)=default;
-    // delete move operations to avoid the dreaded virtual-move-assign warning
-    ItemT(ItemT&&)=delete;
-    ItemT& operator=(ItemT&&)=delete;
-  };
-
   struct BottomRightResizerItem: public Item
   {
     bool onResizeHandle(float x, float y) const override; 

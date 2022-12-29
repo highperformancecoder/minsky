@@ -27,7 +27,7 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
-#include "item.rcd"
+#include "itemT.rcd"
 #include "plot.rcd"
 #include "plot.xcd"
 #include "tensorInterface.rcd"

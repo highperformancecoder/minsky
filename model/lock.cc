@@ -22,7 +22,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include <cairo_base.h>
-#include "item.rcd"
+#include "itemT.rcd"
 #include "lock.rcd"
 #include "lock.xcd"
 #include "minsky_epilogue.h"
