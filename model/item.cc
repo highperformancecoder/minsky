@@ -224,6 +224,7 @@ namespace minsky
   {return !attachedToDefiningVar();}
 
   bool Item::inputDefined() {
+    if(m_ports.size()==0) return false;
     auto vv=m_ports[0]->getVariableValue();
     return vv && vv->rank()>0;
   }
