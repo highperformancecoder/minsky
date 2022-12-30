@@ -426,13 +426,19 @@ namespace minsky
     
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
-    for (auto& i: yvars)
-      if (i && xvars[&i-yvars.data()] && !i->hypercube().xvectors.empty())
-        {
-          const auto& xv=i->hypercube().xvectors[0];
-          if (xv.dimension.type==Dimension::time)
-            xIsSecsSinceEpoch=true;
-        }
+    for (size_t n = 0; n < std::min(yvars.size(), xvars.size()); n++)
+      {
+        auto& i = yvars[n];
+        if (i && xvars[n] && !i->hypercube().xvectors.empty())
+          {
+            const auto& xv=i->hypercube().xvectors[0];
+            if (xv.dimension.type==Dimension::time)
+              {
+                xIsSecsSinceEpoch=true;
+                break;
+              }
+          }
+      }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
       if (pen<yvars.size() && yvars[pen])
