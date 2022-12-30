@@ -17,10 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include <classdesc.h>
 #include "minskyTensorOps.h"
 #include "interpolateHypercube.h"
-#include "minsky.h"
 #include "ravelWrap.h"
 #include "minsky_epilogue.h"
 

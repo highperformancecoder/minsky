@@ -17,6 +17,7 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "minsky.h"
 #include "godleyTab.h"
 #include "godleyTableWindow.h"
 #include <pango.h>
@@ -24,7 +25,6 @@
 #include "godleyTab.xcd"
 #include "itemTab.xcd"
 #include "minsky_epilogue.h"
-#include "minsky.h"
 using namespace std;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;

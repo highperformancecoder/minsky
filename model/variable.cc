@@ -17,11 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "geometry.h"
 #include "valueId.h"
 #include "variable.h"
 #include "cairoItems.h"
-#include "minsky.h"
 #include "equations.h"
 
 #include "dimension.rcd"

@@ -19,8 +19,8 @@
 
 // contains implementation of symbolic differentiation
 
-#include "equations.h"
 #include "minsky.h"
+#include "equations.h"
 #include "expr.h"
 #include "minsky_epilogue.h"
 #include <regex> 

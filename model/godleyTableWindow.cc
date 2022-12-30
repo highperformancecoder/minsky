@@ -17,10 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "godleyTableWindow.h"
 #include "selection.h"
 #include "latexMarkup.h"
-#include "minsky.h"
 #include <pango.h>
 
 #include "assetClass.rcd"

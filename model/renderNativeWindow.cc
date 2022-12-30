@@ -26,11 +26,9 @@ As of now, we create the cairo surface with each call to `renderFrame`, though I
 Please especially review the lifecycle (constructors, desctructors and copy constructors) that I have defined in `renderNativeWindow.cc `. I think the WindowInformation object that is destroyed in the destructor for RenderNativeWindow can be reused (perhaps it can be made a static object?). Also - am not sure how to distinguish between destructor for RenderNativeWindow that will be called with each call to load model (or undo/redo as you mentioned), and the final call when minsky is closed.
  */
 
-#undef CLASSDESC_ARITIES
-#define CLASSDESC_ARITIES 0x7F
+#include "minsky.h"
 #include "renderNativeWindow.h"
 #include "windowInformation.h"
-#include "minsky.h"
 #include "cairoSurfaceImage.rcd"
 #include "cairoSurfaceImage.xcd"
 #include "renderNativeWindow.rcd"

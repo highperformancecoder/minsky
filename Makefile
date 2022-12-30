@@ -107,8 +107,7 @@ TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
-PRECOMPILED_HEADERS=
-#model/minsky.gch model/operation.gch
+PRECOMPILED_HEADERS=model/minsky.gch
 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=minskyRS.o RESTMinsky.o

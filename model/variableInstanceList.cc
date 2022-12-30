@@ -17,13 +17,13 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "variableInstanceList.h"
 #include "group.h"
 #include "selection.h"
 #include "variableInstanceList.h"
 #include "variableInstanceList.rcd"
 #include "variableInstanceList.xcd"
-#include "minsky.h"
 #include "minsky_epilogue.h"
 
 using namespace std;

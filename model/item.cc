@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "item.h"
 #include "group.h"
 #include "zoom.h"
@@ -25,7 +26,6 @@
 #include "geometry.h"
 #include "selection.h"
 #include "lasso.h"
-#include "minsky.h"
 #include <pango.h>
 #include <cairo_base.h>
 #include "item.rcd"

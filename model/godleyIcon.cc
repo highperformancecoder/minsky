@@ -16,11 +16,11 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "minsky.h"
 #include "variable.h"
 #include "godleyIcon.h"
 #include "godleyTableWindow.h"
 #include "cairoItems.h"
-#include "minsky.h"
 #include "selection.h"
 #include <flowCoef.h>
 #include <evalGodley.h>

@@ -17,11 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "cairoItems.h"
 #include "group.h"
 #include "wire.h"
 #include "operation.h"
-#include "minsky.h"
 #include "autoLayout.h"
 #include "equations.h"
 #include <cairo_base.h>

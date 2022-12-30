@@ -17,11 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "rungeKutta.h"
 #include "variableValue.h"
 #include "error.h"
 #include "matrix.h"
-#include "minsky.h"
 #include "rungeKutta.rcd"
 #include "rungeKutta.xcd"
 #include "simulation.rcd"

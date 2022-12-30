@@ -17,8 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CSVParser.h"
 #include "minsky.h"
+#include "CSVParser.h"
 
 #include "CSVParser.rcd"
 #include "dataSpecSchema.rcd"

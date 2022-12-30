@@ -17,8 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "equations.h"
 #include "minsky.h"
+#include "equations.h"
 #include "userFunction.h"
 #include "minsky_epilogue.h"
 using namespace minsky;

@@ -19,10 +19,10 @@
 
 #undef CLASSDESC_ARITIES
 #define CLASSDESC_ARITIES 0x3F 
+#include "minsky.h"
 #include "geometry.h"
 #include "canvas.h"
 #include "cairoItems.h"
-#include "minsky.h"
 #include "ravelWrap.h"
 #include <cairo_base.h>
 

@@ -18,9 +18,9 @@
 */
 
 #ifndef NO_EXPRTK
+#include "minsky.h"
 #include "expressionWalker.h"
 #include "userFunction.h"
-#include "minsky.h"
 #include "minsky_epilogue.h"
 using namespace std;
 namespace minsky

@@ -17,11 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "ravelWrap.h"
 #include "selection.h"
 #include "dimension.h"
 #include "minskyTensorOps.h"
-#include "minsky.h"
 #include "pango.h"
 
 #include "capiRenderer.xcd"

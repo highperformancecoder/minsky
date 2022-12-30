@@ -17,10 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "userFunction.h"
 #include "evalOp.h"
 #include "selection.h"
-#include "minsky.h"
 #include "itemT.rcd"
 #include "userFunction.rcd"
 #include "minsky_epilogue.h"

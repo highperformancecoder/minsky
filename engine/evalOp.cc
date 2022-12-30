@@ -17,12 +17,12 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #define OPNAMEDEF
+#include "minsky.h"
 #include "cairoItems.h"
 #include "dataOp.h"
 #include "evalOp.h"
 #include "variable.h"
 #include "userFunction.h"
-#include "minsky.h"
 #include "str.h"
 
 #include "minsky_epilogue.h"
