@@ -148,14 +148,14 @@ namespace minsky
               // we need to update Minsky's t synchronously to support the t operator
               // potentially means t and stockVars out of sync on GUI, but should still be thread safe
               err=gsl_odeiv2_driver_apply(ode->driver, &tp, numeric_limits<double>::max(), 
-                                          &stockVarsCopy[0]);
+                                          stockVarsCopy.data());
             }
           else // do explicit Euler method
             {
               vector<double> d(stockVarsCopy.size());
               for (int i=0; i<nSteps; ++i, tp+=stepMax)
                 {
-                  evalEquations(&d[0], tp, &stockVarsCopy[0]);
+                  evalEquations(d.data(), tp, stockVarsCopy.data());
                   for (size_t j=0; j<d.size(); ++j)
                     stockVarsCopy[j]+=d[j];
                 }
@@ -220,7 +220,7 @@ namespace minsky
     // that no input vars are correctly initialised
     vector<double> flow=flowVars;
     for (size_t i=0; i<equations.size(); ++i)
-      equations[i]->eval(&flow[0], flow.size(), sv);
+      equations[i]->eval(flow.data(), flow.size(), sv);
 
     // then determine the derivatives with respect to variable j
     for (size_t j=0; j<stockVars.size(); ++j)
@@ -228,9 +228,9 @@ namespace minsky
         vector<double> ds(stockVars.size()), df(flowVars.size());
         ds[j]=1;
         for (size_t i=0; i<equations.size(); ++i)
-          equations[i]->deriv(&df[0], df.size(), &ds[0], sv, &flow[0]);
+          equations[i]->deriv(df.data(), df.size(), ds.data(), sv, flow.data());
         vector<double> d(stockVars.size());
-        evalGodley.eval(&d[0], &df[0]);
+        evalGodley.eval(d.data(), df.data());
         for (vector<Integral>::iterator i=integrals.begin(); 
              i!=integrals.end(); ++i)
           {
@@ -252,11 +252,11 @@ namespace minsky
     // that no input vars are correctly initialised
     vector<double> flow(flowVars);
     for (size_t i=0; i<equations.size(); ++i)
-      equations[i]->eval(&flow[0], flow.size(), vars);
+      equations[i]->eval(flow.data(), flow.size(), vars);
 
     // then create the result using the Godley table
     for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
-    evalGodley.eval(result, &flow[0]);
+    evalGodley.eval(result, flow.data());
 
     // integrations are kind of a copy
     for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)

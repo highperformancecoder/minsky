@@ -95,8 +95,8 @@ namespace minsky
     /// evaluate expression on sv and current value of fv, storing result
     /// in output variable (of \a fv)
     /// @param n - size of fv array
-    virtual void eval(double fv[]=&ValueVector::flowVars[0], std::size_t n=ValueVector::flowVars.size(), 
-                      const double sv[]=&ValueVector::stockVars[0])=0;
+    virtual void eval(double fv[]=ValueVector::flowVars.data(), std::size_t n=ValueVector::flowVars.size(), 
+                      const double sv[]=ValueVector::stockVars.data())=0;
  
 
     /// set additional tensor operation related parameters

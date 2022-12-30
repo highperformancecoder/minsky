@@ -69,7 +69,7 @@ namespace minsky
     /// @throw ecolab::error if equations are illdefined
     void evalEquations() {
       for (auto& eq: equations)
-        eq->eval(&ValueVector::flowVars[0], ValueVector::flowVars.size(), &ValueVector::stockVars[0]);
+        eq->eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
     }
 
   };

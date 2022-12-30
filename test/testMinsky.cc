@@ -217,7 +217,7 @@ SUITE(Minsky)
       for (size_t i=0; i<stockVars.size(); ++i)
         stockVars[i]=0;
      
-      evalGodley.eval(&stockVars[0], &flowVars[0]);
+      evalGodley.eval(stockVars.data(), flowVars.data());
       CHECK_EQUAL(5,variableValues[":c"]->value());
       CHECK_EQUAL(-5,variableValues[":d"]->value());
       CHECK_EQUAL(0,variableValues[":e"]->value());
@@ -276,7 +276,7 @@ SUITE(Minsky)
       CHECK(!cycleCheck());
       reset();
       vector<double> j(stockVars.size()*stockVars.size());
-      Matrix jac(stockVars.size(),&j[0]);
+      Matrix jac(stockVars.size(),j.data());
  
       auto& c=*variableValues[":c"];   c=100;
       auto& d=*variableValues[":d"];   d=200;
@@ -286,7 +286,7 @@ SUITE(Minsky)
       CHECK_EQUAL(4, stockVars.size());
  
       save("derivative.mky");
-      evalJacobian(jac,t,&stockVars[0]);
+      evalJacobian(jac,t,stockVars.data());
    
       CHECK_EQUAL(0, jac(0,0));
       CHECK_EQUAL(0, jac(0,1));  
