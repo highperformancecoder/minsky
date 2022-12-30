@@ -148,9 +148,8 @@ namespace minsky
           if (auto to=closestInPort(x,y)) {
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
             fromPort.reset();
-            if(to->item().inputIsScalar()) {
-              minsky().reset();
-            } 
+            
+            minsky().reset(); 
           } else {
             fromPort.reset();
           }
@@ -536,18 +535,20 @@ namespace minsky
   void Canvas::deleteItem()
   {
     if (item)
-      {
-        model->deleteItem(*item);
-        requestRedraw();
-      }
+    {
+      model->deleteItem(*item);
+      minsky().reset();
+    }
   }
   
   void Canvas::deleteWire()
   {
     if (wire)
+    {
       model->removeWire(*wire);
-    wire.reset();
-    requestRedraw();
+      wire.reset();
+      minsky().reset();
+    }
   }
   
   // For ticket 1092. Reinstate delete handle user interaction
