@@ -148,7 +148,7 @@ namespace minsky
           if (auto to=closestInPort(x,y)) {
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
             fromPort.reset();
-            if(!to->item().inputDefined()) {
+            if(to->item().inputIsScalar()) {
               minsky().reset();
             } 
           } else {
@@ -402,7 +402,7 @@ namespace minsky
   {
     int ravelsSelected = 0;
     for (auto& i: selection.items) {
-      if (auto r=dynamic_pointer_cast<Ravel>(i))
+      if (dynamic_pointer_cast<Ravel>(i))
       {
         ravelsSelected++;
       }
