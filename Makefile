@@ -1,4 +1,4 @@
-.SUFFIXES: .xcd .rcd $(SUFFIXES)
+.SUFFIXES: .xcd .rcd .gch $(SUFFIXES)
 
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
@@ -107,6 +107,9 @@ TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
+PRECOMPILED_HEADERS=
+#model/minsky.gch model/operation.gch
+
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=minskyRS.o RESTMinsky.o
 
@@ -143,6 +146,9 @@ VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/in
 	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	RESTProcess >$@
+
+.h.gch:
+	$(CPLUSPLUS) -c $(FLAGS) $(CXXFLAGS) $(OPT) -o $@ $<
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
@@ -219,6 +225,8 @@ endif
 
 # this dependency is not worked out automatically because they're hidden by a #ifdef in minsky_epilogue.h
 $(MODEL_OBJS): plot.xcd signature.xcd
+
+$(ALL_OBJS): $(PRECOMPILED_HEADERS)
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
