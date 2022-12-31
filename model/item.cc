@@ -222,17 +222,6 @@ namespace minsky
 
   bool Item::visibleWithinGroup() const 
   {return !attachedToDefiningVar();}
-
-  bool Item::inputIsScalar() {
-    for (auto& p: m_ports) {
-      if (!p->input())
-      {
-        auto vv=p->getVariableValue();
-        if(vv && vv->rank()>0) return false;
-      }
-    }
-    return true;
-  }
   
   void Item::moveTo(float x, float y)
   {
