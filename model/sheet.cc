@@ -68,6 +68,7 @@ namespace
     ElisionRowChecker(ShowSlice slice, double height, double rowHeight, size_t size): rowHeight(rowHeight) {
       switch (slice)
         {
+        default: // just to shut up the "maybe uninitialised" checker.
         case ShowSlice::head:
           tailStartRow=startRow=0;
           numRows=height/rowHeight+1;
@@ -75,7 +76,9 @@ namespace
         case ShowSlice::headAndTail:
           startRow=0;
           numRows=0.5*height/rowHeight;
-          tailStartRow=size-numRows - ((tailStartRow+numRows)*rowHeight>height? -1: 0);
+          tailStartRow=size-numRows;
+          if ((startRow+2*numRows)*rowHeight>height)
+            tailStartRow++;
           break;
         case ShowSlice::tail:
           numRows=height/rowHeight-1;
