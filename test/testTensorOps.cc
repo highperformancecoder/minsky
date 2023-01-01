@@ -1541,5 +1541,44 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      CHECK_EQUAL(sv,ev->stockVars());
      CHECK_EQUAL(sizeof(fv)/sizeof(fv[0]),ev->fvSize());
    }
+
+  TEST(Meld)
+    {
+      civita::Meld op;
+      Hypercube hc{3,5};
+      TensorPtr xp(make_shared<TensorVal>(hc)), yp(make_shared<TensorVal>(hc));
+      TensorVal& x=dynamic_cast<TensorVal&>(*xp);
+      TensorVal& y=dynamic_cast<TensorVal&>(*yp);
+      
+      for (int i=0; i<x.size(); ++i)
+        {
+          x[i]=nan("");
+          y[i]=2;
+        }
+      x({1,2})=1; x({2,2})=1;
+      y({2,3})=nan("");
+      op.setArguments({xp,yp},"",0);
+      CHECK_EQUAL(1,op.atHCIndex(5));
+      CHECK_EQUAL(1,op.atHCIndex(8));
+      CHECK(isnan(op.atHCIndex(9)));
+      CHECK_EQUAL(2,op.atHCIndex(6));
+      CHECK_EQUAL(2,op.atHCIndex(1));
+
+      // add sparsity
+      x.index(set<size_t>{5,8});
+      y.index(set<size_t>{1,6});
+      
+      op.setArguments({xp,yp},"",0);
+      CHECK_EQUAL(1,op.atHCIndex(5));
+      CHECK_EQUAL(1,op.atHCIndex(8));
+      CHECK(isnan(op.atHCIndex(9)));
+      CHECK_EQUAL(2,op.atHCIndex(6));
+      CHECK_EQUAL(2,op.atHCIndex(1));
+
+      auto maxTimestamp=std::max(x.timestamp(),y.timestamp());
+      CHECK_EQUAL(maxTimestamp, op.timestamp());
+      
+    }
+
  
 }

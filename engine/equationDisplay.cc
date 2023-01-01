@@ -1022,6 +1022,36 @@ namespace MathDAG
                          arguments[1][0]->render(surf);},"[","]");
   }
 
+  template <>
+  void OperationDAG<OperationType::meld>::render(Surface& surf) const
+  {
+    if (arguments.size()<2 ||  arguments[0].empty() || arguments[1].empty())
+      throw error("incorrectly wired");
+    print(surf.cairo(),"meld",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){
+      for (size_t i=0; i<arguments.size(); ++i)
+        {
+          naryRender(surf, arguments[i], BODMASlevel(),"","");
+          if (i!=arguments.size()-1) print(surf.cairo(),",",Anchor::nw);
+        }
+    });
+  }
+
+  template <>
+  void OperationDAG<OperationType::merge>::render(Surface& surf) const
+  {
+    if (arguments.size()<2 ||  arguments[0].empty() || arguments[1].empty())
+      throw error("incorrectly wired");
+    print(surf.cairo(),"merge",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){
+      for (size_t i=0; i<arguments.size(); ++i)
+        {
+          naryRender(surf, arguments[i], BODMASlevel(),"","");
+          if (i!=arguments.size()-1) print(surf.cairo(),",",Anchor::nw);
+        }
+    });
+  }
+
 
 
 }

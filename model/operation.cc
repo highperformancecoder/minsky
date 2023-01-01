@@ -1209,6 +1209,27 @@ namespace minsky
     cairo_show_text(cairo,"i");
   }
 
+  template <> void Operation<OperationType::meld>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_move_to(cairo,-4,-10);
+    Pango pango(cairo);
+    pango.setFontSize(10*sf);
+    pango.setMarkup("⭄");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::merge>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_move_to(cairo,-4,-10);
+    Pango pango(cairo);
+    pango.setFontSize(10*sf);
+    pango.setMarkup("⫤");
+    pango.show();
+  }
+
+  
 
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}

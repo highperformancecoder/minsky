@@ -352,6 +352,28 @@ namespace civita
     }
   };
 
+  /// Combines tensors in such a way that if the first argument doesn't return a value, the second argument is checked and so on
+  class Meld: public ITensor
+  {
+    std::vector<TensorPtr> args;
+  public:
+    
+    /// all arguments must have the same hypercube
+    void setArguments(const std::vector<TensorPtr>& a, const std::string& dimension, double) override;
+    Timestamp timestamp() const override;
+    double operator[](std::size_t) const override;
+  };
+
+  class Merge: public ITensor
+  {
+    std::vector<TensorPtr> args;
+  public:
+    
+    /// all arguments must have the same hypercube
+    void setArguments(const std::vector<TensorPtr>& a, const std::string& dimension, double) override;
+    Timestamp timestamp() const override;
+    double operator[](size_t i) const override;
+  };
     
   /// creates a chain of tensor operations that represents a Ravel in
   /// state \a state, operating on \a arg

@@ -597,5 +597,100 @@ namespace civita
       }
     return chain;
   }
+
+  namespace
+  {
+    ITensor::Timestamp maxTimestamp(const vector<TensorPtr>& x) {
+      return x.size()?
+        (*max_element(x.begin(), x.end(),
+                      [](const TensorPtr& x,const TensorPtr& y){
+                        return x->timestamp()<y->timestamp();
+                      }))->timestamp():
+        ITensor::Timestamp();
+    }
+  }
   
+  Meld::Timestamp Meld::timestamp() const {return maxTimestamp(args);}
+
+  void Meld::setArguments(const vector<TensorPtr>& a, const string& dimension, double)
+  {
+    if (a.empty()) return;
+    args=a;
+    hypercube(args[0]->hypercube());
+    // all arguments must have the same hypercube
+#ifndef NDEBUG
+    for (auto& i: args)
+      assert(i->hypercube()==hypercube());
+#endif
+    
+    // create an index vector that is the union of the arguments' index vectors
+    if (all_of(args.begin(), args.end(), [](const TensorPtr& i) {return !i->index().empty();}))
+      {
+        std::set<std::size_t> tmp_index;
+        for (auto& i: args)
+          {
+            for (auto j: i->index())
+              tmp_index.insert(j);
+          }
+        m_index=tmp_index;
+      }
+  }
+
+  double Meld::operator[](size_t i) const {
+    size_t hcIndex=m_index[i];
+    for (auto& i: args)
+      {
+        auto val=i->atHCIndex(hcIndex);
+        if (isfinite(val))
+          return val;
+      }
+    return nan("");
+  }
+  
+  Merge::Timestamp Merge::timestamp() const {return maxTimestamp(args);}
+
+  void Merge::setArguments(const vector<TensorPtr>& a, const string& dimension, double)
+  {
+    if (a.empty()) return;
+    args=a;
+    // all arguments must have the same hypercube
+#ifndef NDEBUG
+    for (auto& i: args)
+      assert(i->hypercube()==args.front()->hypercube());
+#endif
+    // extend into the next dimension
+    auto hc=args.front()->hypercube();
+    hc.xvectors.emplace_back(dimension);
+    for (size_t i=0; i<args.size(); ++i)
+      hc.xvectors.back().push_back(to_string(i));
+    hypercube(move(hc));
+
+    if (hypercube().logNumElements()<log(numeric_limits<size_t>::max())) // make sure we can fit in a size_t
+      {
+        size_t total=0;
+        for (auto& i: args) total+=i->size();
+        size_t sliceSize=args.front()->hypercube().numElements();
+        if (total<hypercube().numElements()/2)
+          {
+            // create an index vector that combines the arguments' index vectors
+            std::set<std::size_t> tmp_index;
+            for (size_t i=0; i<args.size(); ++i)
+              {
+                if (args[i]->index().empty())
+                  for (size_t j=0; j<args[i]->size(); ++j)
+                    tmp_index.insert(i*sliceSize+j);
+                else
+                  for (auto j: args[i]->index())
+                    tmp_index.insert(i*sliceSize+j);
+              }
+            m_index=std::move(tmp_index);
+          }
+      }
+  }
+
+  double Merge::operator[](size_t i) const {
+    if (args.empty()) return nan("");
+    auto res=lldiv(m_index[i], args[0]->hypercube().numElements());
+    return args[res.quot]->atHCIndex(res.rem);
+  }
 }

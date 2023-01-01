@@ -740,7 +740,17 @@ namespace minsky
                           }
                         },0) {}
   };
+
+  template <>
+  struct GeneralTensorOp<OperationType::meld>: public civita::Meld
+  {
+  };
   
+  template <>
+  struct GeneralTensorOp<OperationType::merge>: public civita::Merge
+  {
+  };
+
   class SwitchTensor: public ITensor
   {
     size_t m_size=1;
