@@ -84,7 +84,7 @@ namespace civita
   template 
   size_t Hypercube::linealIndex<vector<size_t>>(const vector<size_t>& splitIndex) const;
 
-  void unionHypercube(Hypercube& result, const Hypercube& x)
+  void unionHypercube(Hypercube& result, const Hypercube& x, bool intersection)
   {
     if (x.logNumElements()==1)
       {
@@ -106,22 +106,27 @@ namespace civita
           extraDims.emplace_back(xvector);
         else
           {
-            // trim to intersection of the two
-            // TODO use structured binding when we go C++17.
-            auto xRange=std::minmax_element(xvector.begin(),xvector.end());
-            auto minX=*xRange.first, maxX=*xRange.second;
-            auto rRange=std::minmax_element(xvectorData->second.begin(),xvectorData->second.end());
-            if (minX<*rRange.first) minX=*rRange.first;
-            if (*rRange.second<maxX) maxX=*rRange.second;
-            for (auto i=xvectorData->second.begin(); i!=xvectorData->second.end(); )
+            if (intersection)
               {
-                auto j=i++;
-                if (*j<minX || maxX<*j)
-                  xvectorData->second.erase(j);
+                // trim to intersection of the two
+                // TODO use structured binding when we go C++17.
+                auto xRange=std::minmax_element(xvector.begin(),xvector.end());
+                auto minX=*xRange.first, maxX=*xRange.second;
+                auto rRange=std::minmax_element(xvectorData->second.begin(),xvectorData->second.end());
+                if (minX<*rRange.first) minX=*rRange.first;
+                if (*rRange.second<maxX) maxX=*rRange.second;
+                for (auto i=xvectorData->second.begin(); i!=xvectorData->second.end(); )
+                  {
+                    auto j=i++;
+                    if (*j<minX || maxX<*j)
+                      xvectorData->second.erase(j);
+                  }
+                for (auto& i: xvector)
+                  if (diff(minX,i)<=0 && diff(i,maxX)<=0)
+                    xvectorData->second.insert(i);
               }
-            for (auto& i: xvector)
-              if (diff(minX,i)<=0 && diff(i,maxX)<=0)
-                xvectorData->second.insert(i);
+            else
+              xvectorData->second.insert(xvector.begin(), xvector.end());
           }
       }
     for (auto& xvector: result.xvectors)

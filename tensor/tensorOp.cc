@@ -492,6 +492,44 @@ namespace civita
       cachedResult[i]=tmp[idx[i]];
   }
 
+  void SpreadOverHC::setArgument(const TensorPtr& a,const std::string&,double) {
+    if (a->rank()!=rank())
+      throw std::runtime_error("mismatch of dimensions");
+    for (size_t i=0; i<a->rank(); ++i)
+      if (a->hypercube().xvectors[i].name!=hypercube().xvectors[i].name ||
+          a->hypercube().xvectors[i].dimension.type!=hypercube().xvectors[i].dimension.type)
+        throw std::runtime_error("mismatch of dimensions");
+    
+    arg=a;
+    permutations.clear();
+    permutations.resize(a->rank());
+    for (size_t i=0; i<a->rank(); ++i)
+      {
+        map<any,size_t> srcIndices;
+        for (size_t j=0; j<a->hypercube().xvectors[i].size(); ++j)
+          srcIndices[a->hypercube().xvectors[i][j]]=j;
+        for (size_t j=0; j<hypercube().xvectors[i].size(); ++j)
+          {
+            auto it=srcIndices.find(hypercube().xvectors[i][j]);
+            if (it!=srcIndices.end())
+              permutations[i].push_back(it->second);
+            else
+              permutations[i].push_back(numeric_limits<size_t>::max());
+          }
+      }
+  }
+
+    double SpreadOverHC::operator[](size_t i) const {
+      auto splitIdx=hypercube().splitIndex(index()[i]);
+      for (size_t i=0; i<splitIdx.size(); ++i)
+        {
+          splitIdx[i]=permutations[i][splitIdx[i]];
+          if (splitIdx[i]>=arg->hypercube().xvectors[i].size())
+            return nan("");
+        }
+      return arg->atHCIndex(arg->hypercube().linealIndex(splitIdx));
+    }
+
   
   vector<TensorPtr> createRavelChain(const ravel::RavelState& state, const TensorPtr& arg)
   {
@@ -612,7 +650,7 @@ namespace civita
   
   Meld::Timestamp Meld::timestamp() const {return maxTimestamp(args);}
 
-  void Meld::setArguments(const vector<TensorPtr>& a, const string& dimension, double)
+  void Meld::setArguments(const vector<TensorPtr>& a, const string&, double)
   {
     if (a.empty()) return;
     args=a;

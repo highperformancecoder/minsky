@@ -1622,5 +1622,37 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
       
     }
 
+   
+   TEST(SpreadOverHC)
+    {
+      civita::SpreadOverHC op;
+      Hypercube hc{3};
+      hc.xvectors.emplace_back("back",Dimension(Dimension::value,""));
+      auto hc1=hc;
+      for (double i=0; i<5; i+=1)
+        {
+          hc.xvectors.back().emplace_back(i);
+          if (i>0 && i<4)
+            hc1.xvectors.back().emplace_back(i);
+        }
+      TensorPtr xp(make_shared<TensorVal>(hc1));
+      TensorVal& x=dynamic_cast<TensorVal&>(*xp);
+      
+      for (int i=0; i<x.size(); ++i)
+        {
+          x[i]=i;
+        }
+      op.hypercube(hc);
+      op.setArgument(xp);
+      for (int i=0; i<hc.dims()[0]; ++i)
+        {
+          CHECK(isnan(op[i]));
+          CHECK(isnan(op[i+12]));
+          for (int j=1; j<4; ++j)
+            CHECK_EQUAL(i+3*(j-1),op[i+3*j]);
+        }
+    }
+
+
 
 }
