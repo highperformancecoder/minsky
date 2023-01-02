@@ -1581,5 +1581,46 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
       
     }
 
- 
+   TEST(Merge)
+    {
+      civita::Merge op;
+      Hypercube hc{3,5};
+      TensorPtr xp(make_shared<TensorVal>(hc)), yp(make_shared<TensorVal>(hc));
+      TensorVal& x=dynamic_cast<TensorVal&>(*xp);
+      TensorVal& y=dynamic_cast<TensorVal&>(*yp);
+      
+      for (int i=0; i<x.size(); ++i)
+        {
+          x[i]=1;
+          y[i]=2;
+        }
+      op.setArguments({xp,yp},"new axis",0);
+      vector<int> expected{3,5,2};
+      CHECK_ARRAY_EQUAL(expected,op.hypercube().dims(),3);
+      CHECK_EQUAL("new axis",op.hypercube().xvectors[2].name);
+      for (int i=0; i<15; ++i)
+        {
+          CHECK_EQUAL(1,op[i]);
+          CHECK_EQUAL(2,op[i+15]);
+        }
+
+      // add sparsity
+      x.index(set<size_t>{7,8});
+      y.index(set<size_t>{1,6});
+      op.setArguments({xp,yp},"",0);
+      
+      CHECK_EQUAL(4,op.index().size());
+      expected={7,8,16,21};
+      CHECK_ARRAY_EQUAL(expected,op.index(),4);
+      CHECK_EQUAL(1,op[0]);
+      CHECK_EQUAL(1,op[1]);
+      CHECK_EQUAL(2,op[2]);
+      CHECK_EQUAL(2,op[3]);
+
+      auto maxTimestamp=std::max(x.timestamp(),y.timestamp());
+      CHECK_EQUAL(maxTimestamp, op.timestamp());
+      
+    }
+
+
 }
