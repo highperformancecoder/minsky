@@ -1558,20 +1558,21 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
       x({1,2})=1; x({2,2})=1;
       y({2,3})=nan("");
       op.setArguments({xp,yp},"",0);
-      CHECK_EQUAL(1,op.atHCIndex(5));
+      CHECK_EQUAL(1,op.atHCIndex(7));
       CHECK_EQUAL(1,op.atHCIndex(8));
-      CHECK(isnan(op.atHCIndex(9)));
+      CHECK(isnan(op.atHCIndex(11)));
       CHECK_EQUAL(2,op.atHCIndex(6));
       CHECK_EQUAL(2,op.atHCIndex(1));
 
       // add sparsity
-      x.index(set<size_t>{5,8});
+      x.index(set<size_t>{7,8});
       y.index(set<size_t>{1,6});
       
       op.setArguments({xp,yp},"",0);
-      CHECK_EQUAL(1,op.atHCIndex(5));
+      x[0]=1; x[1]=1;
+      CHECK_EQUAL(1,op.atHCIndex(7));
       CHECK_EQUAL(1,op.atHCIndex(8));
-      CHECK(isnan(op.atHCIndex(9)));
+      CHECK(isnan(op.atHCIndex(11)));
       CHECK_EQUAL(2,op.atHCIndex(6));
       CHECK_EQUAL(2,op.atHCIndex(1));
 
