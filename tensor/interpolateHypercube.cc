@@ -152,7 +152,6 @@ namespace civita
     // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
     for (size_t nbr=0; nbr<numNeighbours; ++nbr)
       {
-        size_t argIdx=0;
         double weight=1;
         size_t idx=0;
         for (size_t dim=0, stride=1; dim<rank(); stride*=argHC.xvectors[dim].size(), ++dim)

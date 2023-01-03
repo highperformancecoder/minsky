@@ -62,6 +62,8 @@ namespace civita
     case Dimension::time: return std::hash<size_t>()((time-boost::posix_time::ptime()).ticks());
     case Dimension::value: return std::hash<double>()(value);
     }
+    assert(false);
+    return 0;
   }
 
   inline bool operator<(const any& x, const any& y) {
