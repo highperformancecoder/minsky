@@ -1550,7 +1550,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
       TensorVal& x=dynamic_cast<TensorVal&>(*xp);
       TensorVal& y=dynamic_cast<TensorVal&>(*yp);
       
-      for (int i=0; i<x.size(); ++i)
+      for (unsigned i=0; i<x.size(); ++i)
         {
           x[i]=nan("");
           y[i]=2;
@@ -1589,7 +1589,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
       TensorVal& x=dynamic_cast<TensorVal&>(*xp);
       TensorVal& y=dynamic_cast<TensorVal&>(*yp);
       
-      for (int i=0; i<x.size(); ++i)
+      for (unsigned i=0; i<x.size(); ++i)
         {
           x[i]=1;
           y[i]=2;
@@ -1638,13 +1638,13 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
       TensorPtr xp(make_shared<TensorVal>(hc1));
       TensorVal& x=dynamic_cast<TensorVal&>(*xp);
       
-      for (int i=0; i<x.size(); ++i)
+      for (unsigned i=0; i<x.size(); ++i)
         {
           x[i]=i;
         }
       op.hypercube(hc);
       op.setArgument(xp);
-      for (int i=0; i<hc.dims()[0]; ++i)
+      for (unsigned i=0; i<hc.dims()[0]; ++i)
         {
           CHECK(isnan(op[i]));
           CHECK(isnan(op[i+12]));
