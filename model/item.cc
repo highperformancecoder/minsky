@@ -222,9 +222,7 @@ namespace minsky
 
   bool Item::visibleWithinGroup() const 
   {return !attachedToDefiningVar();}
-
   
-
   void Item::moveTo(float x, float y)
   {
     if (auto g=group.lock())
