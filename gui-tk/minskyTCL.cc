@@ -182,7 +182,7 @@ namespace minsky
     };
   }
 
-  void MinskyTCL::operationIcon(const char* imageName, const char* opName)
+  void MinskyTCL::operationIcon(const char* imageName, const char* opName) const
   {
     if (string(opName)=="switch")
       IconBase<SwitchIcon>(imageName).draw();

@@ -796,9 +796,76 @@ namespace minsky
   };
   
   template <>
-  struct GeneralTensorOp<OperationType::merge>: public civita::Merge
+  struct GeneralTensorOp<OperationType::merge>: public civita::Merge, public SetState
   {
-  };
+    OperationPtr state;
+    void setArguments(const std::vector<TensorPtr>& a1,
+                      const std::vector<TensorPtr>& a2,
+                      const std::string& dimension={}, double argVal=0)
+    {
+      if (a1.empty() && a2.empty()) return;
+      vector<TensorPtr> args=a1;
+      // arrange for arguments to be expanded over a common hypercube, then delegate to civita
+      Hypercube hc;
+      for (auto& i: a1)
+        unionHypercube(hc, i->hypercube(), false);
+      for (auto& i: a2)
+        {
+          unionHypercube(hc, i->hypercube(), false);
+          args.push_back(i);
+        }
+
+      // list of final dimension names in order
+      vector<string> unionDims;
+      for (auto& i: hc.xvectors) unionDims.push_back(i.name);
+
+      // create tensor chains for each argument to permute it into the common hypercube
+      for (auto& i: args)
+        {
+          set <string> argDims;
+          for (auto& j: i->hypercube().xvectors) argDims.insert(j.name);
+          auto spread=make_shared<SpreadLast>();
+          Hypercube spreadHC;
+          for (auto& j: hc.xvectors)
+            if (!argDims.count(j.name))
+              spreadHC.xvectors.push_back(j);
+          spread->setArgument(i);
+          spread->setSpreadDimensions(spreadHC);
+
+          auto pivot=make_shared<Pivot>();
+          pivot->setArgument(spread);
+          pivot->setOrientation(unionDims);
+
+          if (pivot->hypercube()==hc)
+            i=pivot;
+          else
+            {
+              auto spreadOverHC=make_shared<SpreadOverHC>();
+              spreadOverHC->hypercube(hc);
+              spreadOverHC->setArgument(pivot);
+              i=spreadOverHC;
+            }
+        }
+      civita::Merge::setArguments(args,dimension,argVal);
+      // relabel slices along new dimension with variable names if available
+      int stream=0;
+      for (size_t i=0; state && i<state->portsSize(); ++i)
+        if (auto p=state->ports(i).lock())
+          if (p->input())
+            for (auto w:p->wires())
+              if (auto from=w->from())
+                {
+                  auto v=from->item().variableCast();
+                  if (v && !v->name().empty())
+                    m_hypercube.xvectors.back()[stream]=v->name();
+                  else
+                    m_hypercube.xvectors.back()[stream]=to_string(stream);
+                  stream++;
+                }
+    }
+
+    void setState(const OperationPtr& op) override {state=op;}
+   };
 
   class SwitchTensor: public ITensor
   {
