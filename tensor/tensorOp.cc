@@ -519,8 +519,8 @@ namespace civita
       }
   }
 
-    double SpreadOverHC::operator[](size_t i) const {
-      auto splitIdx=hypercube().splitIndex(index()[i]);
+    double SpreadOverHC::operator[](size_t idx) const {
+      auto splitIdx=hypercube().splitIndex(index()[idx]);
       for (size_t i=0; i<splitIdx.size(); ++i)
         {
           splitIdx[i]=permutations[i][splitIdx[i]];
@@ -674,8 +674,8 @@ namespace civita
       }
   }
 
-  double Meld::operator[](size_t i) const {
-    size_t hcIndex=m_index[i];
+  double Meld::operator[](size_t idx) const {
+    size_t hcIndex=m_index[idx];
     for (auto& i: args)
       {
         auto val=i->atHCIndex(hcIndex);
