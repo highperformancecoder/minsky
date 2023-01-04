@@ -147,8 +147,13 @@ namespace minsky
       {
           if (auto to=closestInPort(x,y)) {
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
-            fromPort.reset();
+
+            // populate the destination tooltip if a Ravel
+            if (auto v=fromPort->item().variableCast())
+              if (to->item().tooltip.empty() && dynamic_cast<Ravel*>(&to->item()))
+                to->item().tooltip=v->name();
             
+            fromPort.reset();
             minsky().reset(); 
           } else {
             fromPort.reset();
