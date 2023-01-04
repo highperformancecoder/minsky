@@ -1107,7 +1107,6 @@ namespace minsky
           if (eo->out < 0|| (eo->numArgs()>0 && eo->in1.empty()) ||
               (eo->numArgs() > 1 && eo->in2.empty()))
             {
-              //cerr << "Incorrectly wired operation "<<opIdOfEvalOp(eo)<<endl;
               return false;
             }
           switch  (eo->numArgs())

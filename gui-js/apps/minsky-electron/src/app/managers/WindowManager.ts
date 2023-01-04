@@ -165,8 +165,8 @@ export class WindowManager {
     const childWindow = new BrowserWindow({
       width,
       height,
-      minWidth: minWidth || width || 300,
-      minHeight: minHeight || height || 200,
+      minWidth: minWidth || Math.min(width, 300),
+      minHeight: minHeight || Math.min(height, 200),
       title,
       resizable: true,
       minimizable: false,

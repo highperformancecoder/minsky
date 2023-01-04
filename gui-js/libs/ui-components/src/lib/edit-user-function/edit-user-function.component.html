@@ -1,13 +1,9 @@
-<div class="form-wrapper">
-  <br />
+<form [formGroup]="form">
+  <div class="form-control form-title">
+    <span>{{ itemName }}</span>
+  </div>
 
-  <form [formGroup]="form">
-    <div class="form-control">
-      <span>{{ itemName }}</span>
-    </div>
-
-    <br />
-
+  <div class="form-body">
     <div class="form-control">
       <label for="name">Name</label>
       <input type="text" class="name" id="name" formControlName="name" />
@@ -32,20 +28,20 @@
         formControlName="expression"
       />
     </div>
+  </div>
 
-    <div class="form-buttons">
-      <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
-        Cancel
-      </button>
+  <div class="form-buttons">
+    <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
+      Cancel
+    </button>
 
-      <button
-        mat-raised-button
-        class="btn ok-btn submit"
-        type="submit"
-        (click)="handleSave()"
-      >
-        OK
-      </button>
-    </div>
-  </form>
-</div>
+    <button
+      mat-raised-button
+      class="btn ok-btn submit"
+      type="submit"
+      (click)="handleSave()"
+    >
+      OK
+    </button>
+  </div>
+</form>

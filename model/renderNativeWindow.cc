@@ -41,9 +41,6 @@ using namespace ecolab;
 //#define FPS_PROFILING_ON
 #ifdef WIN32
 #include <windows.h>
-//#include <windowsx.h>
-//#include <wingdi.h>
-//#include <winuser.h>
 #undef NTDDI_VERSION
 #define NTDDI_VERSION NTDDI_WINBLUE
 #include <shellscalingapi.h>
@@ -122,10 +119,6 @@ namespace minsky
     cairo_rectangle(surface->cairo(), 0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
     cairo_fill(surface->cairo());
     cairo_set_source_rgb(surface->cairo(), 0, 0, 0);
-
-//  cairo_arc(surface->cairo(), 100,100,100,0,2*M_PI);
-//  cairo_set_source_rgb(surface->cairo(),1,0,0);
-//  cairo_fill(surface->cairo());
     redraw(0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
 
 #ifdef FPS_PROFILING_ON

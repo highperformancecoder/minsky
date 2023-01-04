@@ -437,7 +437,7 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
         // only select value type if the datafield is a pure double
         size_t c;
         string s=stripWSAndDecimalSep(data[col]);
-        double v=quotedStoD(s, c);
+        quotedStoD(s, c);
         if (c!=s.size()) throw 0; // try parsing as time
         dimensions.emplace_back(Dimension::value,"");
       }
