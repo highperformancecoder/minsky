@@ -57,7 +57,7 @@ namespace civita
         set<size_t> idx;
         for (const auto& i: a)
           {
-            if (i->rank()>0 && i->hypercube()!=hc)
+            if (i->rank()>0 && hc.rank()>0 && i->hypercube()!=hc)
               throw runtime_error("arguments not conformal");
             idx.insert(i->index().begin(), i->index().end());
           }

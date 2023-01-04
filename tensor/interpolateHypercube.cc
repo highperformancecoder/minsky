@@ -29,7 +29,7 @@ namespace civita
       civita::AnyLess less;
       if (begin==end-1) return true;
       for (; begin!=end-1; ++begin)
-        if (!less(*begin,*(begin+1)))
+        if (less(*(begin+1),*begin))
           return false;
       return true;
     }
