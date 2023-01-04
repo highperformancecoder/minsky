@@ -149,8 +149,8 @@ namespace minsky
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
 
             // populate the destination tooltip if a Ravel
-            if (auto v=fromPort->item().variableCast())
-              if (to->item().tooltip.empty() && dynamic_cast<Ravel*>(&to->item()))
+            if (to->item().tooltip.empty() && dynamic_cast<Ravel*>(&to->item()))
+              if (auto v=fromPort->item().variableCast())
                 to->item().tooltip=v->name();
             
             fromPort.reset();
