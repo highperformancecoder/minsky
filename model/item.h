@@ -161,10 +161,10 @@ namespace minsky
     float itemTabX=0, itemTabY=0; ///< position on itemTab
     bool itemTabInitialised=false;
     float m_sf=1; ///< scale factor of item on canvas, or within group
-    mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
+    mutable bool onResizeHandles=false; ///< set to true to indicate mouse is ovcaler resize handles
     bool onBorder=false; ///< true to indicate mouse hovering over border
     std::string deleteCallback; /// callback to be run when item deleted from group
-
+    
     /// return a weak reference to the ith port
     virtual std::weak_ptr<Port> ports(std::size_t i) const {
       assert(i<m_ports.size());
@@ -324,8 +324,8 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
     /// runs the RESTProcess descriptor suitable for this type
-    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&);
-    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const;
+    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) override;
+    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const override;
     virtual void json_pack(classdesc::json_pack_t&) const;
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)

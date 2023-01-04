@@ -2160,6 +2160,7 @@ export class Sheet extends Item {
   }
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
+  empty(): boolean {return this.callMethod('empty');}
   inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
   showSlice(...args: string[]): string {return this.callMethod('showSlice',...args);}
 }

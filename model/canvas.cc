@@ -148,19 +148,8 @@ namespace minsky
           if (auto to=closestInPort(x,y)) {
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
             fromPort.reset();
-            auto& toItem=to->item();
-            if (auto ravel=dynamic_cast<Ravel*>(&toItem))
-            {
-              auto state = ravel->getState();
-              if(state.empty()) {
-                minsky().reset();
-              }
-            } else if(auto sheet=dynamic_cast<Sheet*>(&toItem)) {
-              if(sheet->empty()) {
-                minsky().reset();
-              }
-            }
             
+            minsky().reset(); 
           } else {
             fromPort.reset();
           }
@@ -412,7 +401,7 @@ namespace minsky
   {
     int ravelsSelected = 0;
     for (auto& i: selection.items) {
-      if (auto r=dynamic_pointer_cast<Ravel>(i))
+      if (dynamic_pointer_cast<Ravel>(i))
       {
         ravelsSelected++;
       }
@@ -546,18 +535,20 @@ namespace minsky
   void Canvas::deleteItem()
   {
     if (item)
-      {
-        model->deleteItem(*item);
-        requestRedraw();
-      }
+    {
+      model->deleteItem(*item);
+      minsky().reset();
+    }
   }
   
   void Canvas::deleteWire()
   {
     if (wire)
+    {
       model->removeWire(*wire);
-    wire.reset();
-    requestRedraw();
+      wire.reset();
+      minsky().reset();
+    }
   }
   
   // For ticket 1092. Reinstate delete handle user interaction

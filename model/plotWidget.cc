@@ -427,7 +427,7 @@ namespace minsky
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
     for (auto& i: yvars)
-      if (i && xvars[&i-&yvars[0]] && !i->hypercube().xvectors.empty())
+      if (i && xvars[&i-yvars.data()] && !i->hypercube().xvectors.empty())
         {
           const auto& xv=i->hypercube().xvectors[0];
           if (xv.dimension.type==Dimension::time)
@@ -502,7 +502,7 @@ namespace minsky
               else // by default, set x to 0..d[0]-1
                 for (size_t i=0; i<d[0]; ++i)
                   xdefault.push_back(i);
-              x=&xdefault[0];
+              x=xdefault.data();
             }
           
           // higher rank y objects treated as multiple y vectors to plot
