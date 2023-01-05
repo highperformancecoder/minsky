@@ -167,18 +167,10 @@ namespace classdesc_access
 }
 #endif
 
-//#ifdef CIVITA_HYPERCUBE_H
-//#include "hypercube.cd"
-//#include "hypercube.xcd"
-//#endif
-//
 #ifdef CIVITA_XVECTOR_H
 #include "xvector.xcd"
 #endif
 
-#ifdef ITEM_H
-//#include "plotWidget.h"
-#endif
 #include <ecolab_epilogue.h>
 
 #endif

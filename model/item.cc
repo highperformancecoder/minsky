@@ -121,10 +121,6 @@ namespace minsky
     {
       return abs(x0-x1)<d && abs(y0-y1)<d;
     }
-//    inline bool near(float x0, float y0, float x1, float y1, float d, const Rotate& r)
-//    {
-//      return near(x0,y0,r.x(x1,y1),r.y(x1,y1),d);
-//    }
   }
 
   std::vector<Point> Item::corners() const

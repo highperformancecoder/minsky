@@ -324,8 +324,8 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
     /// runs the RESTProcess descriptor suitable for this type
-    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&);
-    virtual void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const;
+    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) override;
+    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const override;
     virtual void json_pack(classdesc::json_pack_t&) const;
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)

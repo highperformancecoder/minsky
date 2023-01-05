@@ -32,12 +32,6 @@
 
 using boost::filesystem::path;
 
-//extern "C"
-//{
-//  typedef void (*__sighandler_t) (int);
-//  extern __sighandler_t signal (int __sig, __sighandler_t __handler);
-//}
-
 #ifndef SIG_DFL
 #define SIG_DFL	((__sighandler_t) 0)		/* Default action.  */
 #endif
@@ -59,7 +53,6 @@ using boost::filesystem::path;
 using namespace std;
 using namespace ecolab;
 using namespace classdesc;
-//using namespace minsky;
 
 #include "version.h"
 NEWCMD(minsky_version,0)
@@ -157,7 +150,7 @@ int main(int argc, char* argv[])
     }
 
   while (mainWin) /* we are running GUI mode */
-    Tcl_DoOneEvent(0); /*Tk_MainLoop();*/
+    Tcl_DoOneEvent(0); 
   Tcl_DeleteInterp(interp());
   Tcl_Finalize();
 }
@@ -192,7 +185,6 @@ NEWCMD(GUI,0)
          example, on unpatched macs, we get an error from the attempt
          to create a console, yet Minsky works just fine without
          one. */
-      //      return 1;
     }
   CairoSurface::registerImage();
   

@@ -57,7 +57,7 @@ namespace civita
         set<size_t> idx;
         for (const auto& i: a)
           {
-            if (i->rank()>0 && i->hypercube()!=hc)
+            if (i->rank()>0 && hc.rank()>0 && i->hypercube()!=hc)
               throw runtime_error("arguments not conformal");
             idx.insert(i->index().begin(), i->index().end());
           }
@@ -373,9 +373,9 @@ namespace civita
     if (!permutedIndex.empty()) permutation.clear(); // not used in sparse case
   }
 
-  size_t Pivot::pivotIndex(size_t i) const
+  size_t Pivot::pivotIndex(size_t index) const
   {
-    auto idx=hypercube().splitIndex(i);
+    auto idx=hypercube().splitIndex(index);
     auto pidx=idx;
     for (size_t i=0; i<idx.size(); ++i)
       pidx[permutation[i]]=idx[i];
@@ -531,10 +531,10 @@ namespace civita
     }
 
   
-  vector<TensorPtr> createRavelChain(const ravel::RavelState& state, const TensorPtr& arg)
+  vector<TensorPtr> createRavelChain(const ravel::RavelState& state, const TensorPtr& input)
   {
     set<string> outputHandles(state.outputHandles.begin(), state.outputHandles.end());
-    vector<TensorPtr> chain{arg};
+    vector<TensorPtr> chain{input};
     // TODO sorts and calipers
     for (auto& i: state.handleStates)
       {

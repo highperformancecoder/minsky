@@ -24,9 +24,12 @@ namespace classdesc
   template <class T> struct is_pair: public false_type {};
   template <class F, class S> struct is_pair<std::pair<F,S>>: public true_type {};
 
+  
   template <class T, class = void> struct is_iterator: public std::false_type {};
+#ifndef MAC_OSX_TK
   template <class T, class U> struct is_iterator<__gnu_cxx::__normal_iterator<T,U>>: public true_type {};
-
+#endif
+  
   // general is_iterator class https://stackoverflow.com/questions/4335962/how-to-check-if-a-template-parameter-is-an-iterator-type-or-not doesn't seem to work
 //  template <class T>
 //  struct is_iterator<T, void_t<typename std::iterator_traits<T>::iterator_category>>:
