@@ -741,7 +741,7 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForRavel(ravel: Ravel): Promise<MenuItem[]> {
-    const aggregations = [{label: 'Σ', value: 'sum'},{label: 'Π', value: 'prod'},{label: 'σ', value: 'stddev'},{label: 'min', value: 'min'},{label: 'max', value: 'max'}];
+    const aggregations = [{label: 'Σ', value: 'sum'},{label: 'Π', value: 'prod'},{label:'av',value:'av'},{label: 'σ', value: 'stddev'},{label: 'min', value: 'min'},{label: 'max', value: 'max'}];
 
     const handleIndex = ravel.selectedHandle();
     const sortOrder = ravel.sortOrder();
