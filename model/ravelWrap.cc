@@ -158,6 +158,7 @@ namespace
   {
     double invZ=1/zoomFactor();
     wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
+    resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
   bool Ravel::onMouseMotion(float xx, float yy)
@@ -255,6 +256,7 @@ namespace
   void Ravel::adjustSlicer(int n)
   {
     wrappedRavel.adjustSlicer(n);
+    resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
 
@@ -358,6 +360,24 @@ namespace
     return x;
   }
 
+  void Ravel::resortHandleIfDynamic()
+  {
+    if (wrappedRavel.rank()==1)
+      {
+        // TODO add a Ravel CAPI call to get order directly?
+        auto order=wrappedRavel.getHandleState(wrappedRavel.outputHandleIds()[0]).order;
+        switch (order)
+          {
+          case ravel::HandleSort::dynamicForward:
+          case ravel::HandleSort::dynamicReverse:
+            sortByValue(order);
+            break;
+          default:
+            break;
+          }
+      }
+  }
+
   ravel::HandleSort::Order Ravel::setHandleSortOrder(ravel::HandleSort::Order order, int handle)
   {
     if (handle>=0)
@@ -378,32 +398,14 @@ namespace
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
     if (wrappedRavel.rank()!=1) return;
-    auto currentPermutation=wrappedRavel.currentPermutation(wrappedRavel.selectedHandle());
-    setHandleSortOrder(ravel::HandleSort::none, wrappedRavel.outputHandleIds()[0]);
+    auto currentPermutation=wrappedRavel.currentPermutation(wrappedRavel.outputHandleIds()[0]);
     try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
     auto vv=m_ports[0]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
 
-    vector<size_t> permutation;
-    for (size_t i=0; i<std::min(currentPermutation.size(), vv->hypercube().xvectors[0].size()); ++i)
-      if (std::isfinite(vv->atHCIndex(i)))
-        permutation.push_back(currentPermutation[i]);
-
-    switch (dir)
-      {
-      case ravel::HandleSort::forward:
-        sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
-        {return vv->atHCIndex(i)<vv->atHCIndex(j);});
-        break;
-      case ravel::HandleSort::reverse:
-        sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
-        {return vv->atHCIndex(i)>vv->atHCIndex(j);});
-        break;
-      default:
-        break;
-      }
-    wrappedRavel.applyCustomPermutation(wrappedRavel.outputHandleIds()[0], permutation);
+    wrappedRavel.applyCustomPermutation
+      (wrappedRavel.outputHandleIds()[0], civita::sortByValue(currentPermutation, *vv, dir));
   }
   
   

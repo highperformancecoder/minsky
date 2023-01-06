@@ -551,7 +551,6 @@ namespace civita
                 perm.push_back(i);
               switch (i.order)
                 {
-                case ravel::HandleSort::none: break;
                 case ravel::HandleSort::forward:
                 case ravel::HandleSort::numForward:
                 case ravel::HandleSort::timeForward:
@@ -564,8 +563,9 @@ namespace civita
                   sort(perm.begin(), perm.end(),
                        [&](size_t i, size_t j) {return diff(xv[i],xv[j])>0;});
                   break;
-                case ravel::HandleSort::custom:
-                  break; // shouldn't be here with an empty custom order
+                default:
+                  assert(i.order==ravel::HandleSort::none);
+                  break;
                 }
             }
           else
@@ -636,6 +636,37 @@ namespace civita
     return chain;
   }
 
+    vector<size_t> sortByValue(const vector<size_t>& currentPermutation, const ITensor& value, ravel::HandleSort::Order dir)
+    {
+      if (value.rank()!=1) return {};
+      vector<double> unsortedValues(value.hypercube().xvectors[0].size(), nan(""));
+      for (size_t i=0; i<currentPermutation.size(); ++i)
+        unsortedValues[currentPermutation[i]]=value.atHCIndex(i);
+      vector<size_t> permutation;
+      for (size_t i=0; i<value.hypercube().xvectors[0].size(); ++i)
+        if (std::isfinite(unsortedValues[i]))
+          permutation.push_back(i);
+      
+      switch (dir)
+        {
+        case ravel::HandleSort::forward:
+        case ravel::HandleSort::staticForward:
+        case ravel::HandleSort::dynamicForward:
+          sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
+          {return unsortedValues[i]<unsortedValues[j];});
+        break;
+        case ravel::HandleSort::reverse:
+        case ravel::HandleSort::staticReverse:
+        case ravel::HandleSort::dynamicReverse:
+          sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
+          {return unsortedValues[i]>unsortedValues[j];});
+          break;
+        default:
+          break;
+        }
+      return permutation;
+    }
+    
   namespace
   {
     ITensor::Timestamp maxTimestamp(const vector<TensorPtr>& x) {
