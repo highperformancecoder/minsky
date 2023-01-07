@@ -393,13 +393,6 @@ namespace civita
   /// creates a chain of tensor operations that represents a Ravel in
   /// state \a state, operating on \a arg
   std::vector<TensorPtr> createRavelChain(const ravel::RavelState&, const TensorPtr& arg);
-
-  /// sort a rank 1 tensor by value
-  /// @param currentPermutation a permutation describing the current ordering
-  /// @param tensor to evaluate
-  /// @param dir sorting direction
-  /// @return permuted permutation vector describing the series in sorted value
-  std::vector<size_t> sortByValue(const std::vector<size_t>& currentPermutation, const ITensor& value, ravel::HandleSort::Order dir);
 }
 
 #endif

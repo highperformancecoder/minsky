@@ -833,6 +833,7 @@ export class ContextMenuManager {
             type: 'radio',
             checked: sortOrder == valueSort('dynamic',vso),
             click: async () => {
+              ravel.sortByValue(vso);
               ravel.setSortOrder(valueSort('dynamic',vso));
               ravel.broadcastStateToLockGroup();
               minsky.reset();
