@@ -100,15 +100,10 @@ namespace MathDAG
       cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
       cairo_rel_move_to(s.cairo(),pango.width(),0);
       x(s);
-      //      cairo_set_source_surface(s.cairo(),r.surface(),-xx,-yy);
-      //cairo_set_source_surface(s.cairo(),r.surface(),xx,yy);
-      //cairo_rectangle(s.cairo(),xx,yy,r.width(),r.height());
-      //cairo_fill(s.cairo());
 
       xx+=pango.width()+r.width();
       pango.setMarkup(right);
       cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
-      //      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
       pango.show();
       cairo_move_to(s.cairo(),xx+pango.width(),yy);
       return r.height();
@@ -433,7 +428,6 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::sqrt>::render(Surface& surf) const 
   {
-    //print(surf.cairo(),"√",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         RecordingSurface arg;
@@ -461,7 +455,6 @@ namespace MathDAG
         }
         
         cairo_move_to(surf.cairo(),x,y-arg.top()+2);
-        //displaySurface(surf.cairo(),arg,Anchor::nw);
         arguments[0][0]->render(surf);
       }
   } 

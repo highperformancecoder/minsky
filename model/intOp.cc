@@ -64,7 +64,6 @@ namespace minsky
       if (coupled())
         {
           auto& iv=*intVar;
-          //            iv.zoomFactor=zoomFactor;
           RenderVariable rv(iv,cairo);
           // we need to add some translation if the variable is bound
           cairo_rotate(cairo,rotation()*M_PI/180.0);

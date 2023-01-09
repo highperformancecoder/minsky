@@ -561,8 +561,8 @@ namespace minsky
         swap(m_godleyIcon.table.cell(selectedRow,selectedCol), m_godleyIcon.table.cell(r,c));
         minsky().balanceDuplicateColumns(m_godleyIcon,selectedCol);
         minsky().balanceDuplicateColumns(m_godleyIcon,c);
-        selectedCol=-1;//c;
-        selectedRow=-1;//r;
+        selectedCol=-1;
+        selectedRow=-1;
       }
     else if (selectIdx!=insertIdx)
       copy();
