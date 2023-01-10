@@ -235,9 +235,10 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   async parseLines() {
     this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines() as string[][];
 
-    this.csvCols = new Array(this.parsedLines[0]?.length);
-    this.colType = new Array(this.parsedLines[0]?.length).fill("ignore");
-    this.selected = new Array(this.parsedLines[0]?.length).fill(false);
+    let header=this.dialogState.spec.headerRow;
+    this.csvCols = new Array(this.parsedLines[header]?.length);
+    this.colType = new Array(this.parsedLines[header]?.length).fill("ignore");
+    this.selected = new Array(this.parsedLines[header]?.length).fill(false);
     for (var i in this.dialogState.spec.dimensionCols as Array<number>)
     {
       var col=this.dialogState.spec.dimensionCols[i];

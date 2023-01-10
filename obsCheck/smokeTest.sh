@@ -11,7 +11,7 @@ for i in Dockerfile-*[^~]; do
     case $i in
         Dockerfile-debian) versions="10 11";;
         Dockerfile-ubuntu) versions="18.04 20.04 22.04";;
-        Dockerfile-fedora) versions="31 32 33 34 35 36";;
+        Dockerfile-fedora) versions="36 37";;
         *) versions=default;;
     esac
     for version in $versions; do
