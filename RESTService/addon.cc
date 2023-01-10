@@ -29,6 +29,7 @@
 using namespace Napi;
 using namespace std;
 using namespace classdesc;
+using namespace boost::posix_time;
 
 namespace minsky
 {
@@ -105,7 +106,19 @@ struct RedrawThread: public thread
     running=true;
     // sleep slightly to throttle requests on this service
     this_thread::sleep_for(chrono::milliseconds(10));
+
     lock_guard<mutex> lock(redrawMutex);
+
+    try {
+      if((ptime&)minsky::minsky().pendingResetAt <= microsec_clock::local_time()) {
+        minsky::minsky().reset();
+        minsky::minsky().pendingResetAt = ptime(not_a_date_time);
+      }
+    } catch (const std::exception& ex)
+    {
+      cerr << ex.what() << endl;
+    }
+
     for (auto i: minsky::minsky().nativeWindowsToRedraw)
       try
         {

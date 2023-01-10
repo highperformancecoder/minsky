@@ -1604,5 +1604,12 @@ namespace minsky
       autoSaver.reset(new BackgroundSaver(file));
   }
 
+  void Minsky::requestReset(int delay) {
+    auto newTime = microsec_clock::local_time() + milliseconds(delay);
+    auto pra = (ptime&)pendingResetAt;
+    if(pra.is_not_a_date_time() || newTime > pra) {
+      pendingResetAt = newTime;
+    }
+  }
 }
 

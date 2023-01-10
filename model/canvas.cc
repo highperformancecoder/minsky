@@ -149,7 +149,7 @@ namespace minsky
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
             fromPort.reset();
             
-            minsky().reset(); 
+            minsky().requestReset(2000);
           } else {
             fromPort.reset();
           }
