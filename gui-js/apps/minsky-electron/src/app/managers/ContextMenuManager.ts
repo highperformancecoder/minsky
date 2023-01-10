@@ -275,12 +275,12 @@ export class ContextMenuManager {
         click: () => {minsky.canvas.groupSelection();}
       }),
       new MenuItem({
-        label: 'Lock selected Ravels',
+        label: 'Link selected Ravels',
         click: async () => {minsky.canvas.lockRavelsInSelection();},
         enabled: ravelsSelected > 1
       }),
       new MenuItem({
-        label: 'Unlock selected Ravels',
+        label: 'Unlink selected Ravels',
         click: async () => {minsky.canvas.unlockRavelsInSelection();},
         enabled: ravelsSelected > 0
       }),
