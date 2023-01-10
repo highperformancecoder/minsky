@@ -733,8 +733,6 @@ namespace
       if (*input=='{')
         if (x=="rm") // fake an rm tag by deitalicising
           {
-//            *this+="<span style=\"normal\">";
-//            push_back("span");
             input++;
           }
         else
@@ -750,11 +748,10 @@ namespace
           if (!x.empty()) 
             *this+="<"+x+">";
           processLaTeX(input);
-          //          pop();
           return;
         }
       else if (x=="rm") 
-        *this+=/*string("<span style=\"normal\">")+*/utf8char(input)/*+"</span>"*/;
+        *this+=utf8char(input);
       else if (!x.empty())
         *this+=string("<")+x+">"+utf8char(input)+"</"+x+">";
     }

@@ -132,10 +132,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
          
   auto const protocol =what[1];
   auto const host = what[2];
-  //auto const port = what[3];
   auto const target = what[4];
-  //auto const query = what[5];
-  //auto const fragment = what[6];  
   
   // The io_context is required for all I/O
   boost::asio::io_context ioc;

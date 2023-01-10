@@ -579,7 +579,6 @@ namespace minsky
           {
             i->m_x*=sx;
             i->m_y*=sy;
-            //i->zoomFactor*=std::max(sx,sy);
           }
     }
 
@@ -815,9 +814,7 @@ namespace minsky
   float Group::computeDisplayZoom()
   {
     double x0, x1, y0, y1;
-    //float l, r, t, bm;
     float z=zoomFactor();    
-    float l, r;    
     float lz=contentBounds(x0,y0,x1,y1);
     x0=min(x0,double(x()));
     x1=max(x1,double(x()));
@@ -828,6 +825,7 @@ namespace minsky
 
     // account for shrinking margins
     float readjust=zoomFactor()/edgeScale() / (displayZoom>1? displayZoom:1);
+    float l, r;    
     margins(l,r);
     l*=readjust; r*=readjust;    
     displayZoom = max(displayZoom, 
@@ -869,14 +867,11 @@ namespace minsky
   void Group::setZoom(float factor)
   {
     bool dpc=displayContents();
-    //    zoomFactor=factor;
     if (!group.lock())
       relZoom=factor;
     else
       computeRelZoom();
     float lzoom=localZoom();
-//    for (auto& i: items)
-//      i->zoomFactor=lzoom;
     m_displayContentsChanged = dpc!=displayContents();
     for (auto& i: groups)
       {
@@ -899,7 +894,6 @@ namespace minsky
           i->zoom(i->x(), i->y(), factor);
         m_displayContentsChanged|=i->displayContentsChanged();
       }
-    //    minsky().canvas.requestRedraw();
   }
 
   ClickType::Type Group::clickType(float x, float y)

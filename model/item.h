@@ -40,7 +40,6 @@
 
 namespace classdesc
 {
-  //  class json_pack_t;
   class RESTProcess_t;
 }
 
@@ -301,9 +300,7 @@ namespace minsky
     virtual void updateIcon(double t) {}
 
     Item(const Item&)=default;
-    //Item(Item&&)=default;
     Item& operator=(const Item&)=default;
-    //Item& operator=(Item&&)=default;
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;

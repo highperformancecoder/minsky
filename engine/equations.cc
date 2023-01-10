@@ -716,7 +716,6 @@ namespace MathDAG
         expressionCache.insert(op, NodePtr(r));
         r->state=minsky.model->findItem(op);
         assert(r->state);
-        //assert( r->state->type()!=OperationType::numOps);
 
         r->arguments.resize(op.numPorts()-1);
         for (size_t i=1; i<op.portsSize(); ++i)
@@ -1064,7 +1063,6 @@ namespace MathDAG
             if (godley.initialConditionRow(r)) continue;
             FlowCoef fc(godley.cell(r,c));
             if (fc.name.empty()) continue;
-            //            if (godley.signConventionReversed(c)) fc.coef*=-1;
 
             VariablePtr v(VariableType::flow, fc.name);
             v->group=gi.group;

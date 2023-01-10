@@ -84,13 +84,6 @@ namespace classdesc_access
   template <> struct access_RESTProcess<ecolab::cairo::Surface>:
     public cd::NullDescriptor<cd::RESTProcess_t> {};
 
-//  template <> struct access_json_pack<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::json_pack_t> {};
-//  template <> struct access_json_unpack<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::json_unpack_t> {};
-//  template <> struct access_RESTProcess<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::RESTProcess_t> {};
-
 #ifdef XVECTOR_H
   template <>
   struct access_RESTProcess<minsky::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
@@ -123,7 +116,6 @@ namespace classdesc_access
 #endif
 #ifdef CIVITA_HYPERCUBE_H
 #include "hypercube.cd"
-//#include "hypercube.xcd"
 #endif
 
 #ifdef JSON_PACK_BASE_H
