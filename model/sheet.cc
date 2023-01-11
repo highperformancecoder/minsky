@@ -23,6 +23,8 @@
 #include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>
+#include "minskyCairoRenderer.h"
+#include "ravelWrap.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;
@@ -39,10 +41,20 @@ Sheet::Sheet()
   iHeight(100);	  
 }
 
+bool Sheet::onRavelButton(float xx, float yy) const
+{
+  float dx=xx-x(), dy=yy-y();
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor(), b=border*zoomFactor();
+  return inputRavel && dx>=-w && dx<=b-w && dy>=-h && dy<=b-h;
+}
+
+
 bool Sheet::inItem(float xx, float yy) const
 {
-  auto z=zoomFactor();	 					
-  return abs(xx-x())<0.5*width()-border*z && abs(yy-y())<0.5*height()-border*z;
+  float dx=xx-x(), dy=yy-y();
+  double z=zoomFactor();
+  double w=0.5*m_width*z, h=0.5*m_height*z, b=border*z;
+  return abs(dx)<w-b && abs(dy)<h-b || onRavelButton(xx,yy);
 }
 
 ClickType::Type Sheet::clickType(float x, float y)
@@ -110,7 +122,34 @@ void Sheet::draw(cairo_t* cairo) const
     }
 
   cairo_scale(cairo,z,z);
-    
+
+  if (inputRavel)
+    {
+      cairo::CairoSave cs(cairo);
+      cairo_translate(cairo,-0.5*m_width,-0.5*m_height);
+      if (showRavel)
+        {
+          double r=inputRavel.radius();
+          cairo_scale(cairo,0.25*m_width/r,0.25*m_height/r);
+          // clip out the bottom right quadrant
+          cairo_move_to(cairo,0,0);
+          cairo_line_to(cairo,r,0);
+          cairo_line_to(cairo,r,-r);
+          cairo_line_to(cairo,-r,-r);
+          cairo_line_to(cairo,-r,r);
+          cairo_line_to(cairo,0,r);
+          cairo_stroke_preserve(cairo);
+          cairo_clip(cairo);
+          CairoRenderer render(cairo);
+          inputRavel.render(render);
+        }
+      else
+        {
+          cairo_scale(cairo,0.1*m_width/Ravel::svgRenderer.width(),0.1*m_height/Ravel::svgRenderer.height());
+          Ravel::svgRenderer.render(cairo);
+        }
+    }
+  
   cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
   cairo_stroke_preserve(cairo);
   cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
