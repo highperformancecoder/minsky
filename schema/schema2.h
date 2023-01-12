@@ -171,8 +171,6 @@ namespace schema2
         slider.reset(new Slider(layout.sliderVisible,layout.sliderStepRel,
                                 layout.sliderMin,layout.sliderMax,layout.sliderStep));
     }
-
-    //    void packTensorInit(const minsky::VariableBase&);
   };
 
 

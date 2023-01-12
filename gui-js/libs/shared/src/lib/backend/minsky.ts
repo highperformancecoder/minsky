@@ -330,7 +330,6 @@ export class CSVDialog extends CppClass {
   parseLines(): string[][] {return this.callMethod('parseLines');}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -427,7 +426,6 @@ export class Canvas extends CppClass {
   redrawAll(...args: boolean[]): boolean {return this.callMethod('redrawAll',...args);}
   redrawRequested(): boolean {return this.callMethod('redrawRequested');}
   redrawUpdateRegion(): boolean {return this.callMethod('redrawUpdateRegion');}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   removeItemFromItsGroup(): void {return this.callMethod('removeItemFromItsGroup');}
   renameAllInstances(a1: string): void {return this.callMethod('renameAllInstances',a1);}
@@ -576,8 +574,6 @@ export class EquationDisplay extends CppClass {
   offsx(...args: number[]): number {return this.callMethod('offsx',...args);}
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -627,7 +623,6 @@ export class FontDisplay extends CppClass {
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -752,7 +747,6 @@ export class GodleyTab extends CppClass {
   populateItemVector(): void {return this.callMethod('populateItemVector');}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -950,7 +944,6 @@ export class GodleyTableWindow extends CppClass {
   pulldownHot(...args: number[]): number {return this.callMethod('pulldownHot',...args);}
   pushHistory(): void {return this.callMethod('pushHistory');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -1466,7 +1459,6 @@ export class Panopticon extends CppClass {
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -1539,7 +1531,6 @@ export class ParameterTab extends CppClass {
   populateItemVector(): void {return this.callMethod('populateItemVector');}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -1617,7 +1608,6 @@ export class PlotTab extends CppClass {
   populateItemVector(): void {return this.callMethod('populateItemVector');}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -1675,7 +1665,7 @@ export class PlotWidget extends Item {
   AssignSide(a1: number,a2: string): void {return this.callMethod('AssignSide',a1,a2);}
   Image(...args: any[]): string {return this.callMethod('Image',...args);}
   LabelPen(a1: number,a2: ecolab__cairo__Surface): void {return this.callMethod('LabelPen',a1,a2);}
-  add(...args: any[]): void {return this.callMethod('add',...args);}
+  add(a1: number,a2: number,a3: number): void {return this.callMethod('add',a1,a2,a3);}
   addConstantCurves(): void {return this.callMethod('addConstantCurves');}
   addPlotPt(a1: number): void {return this.callMethod('addPlotPt',a1);}
   addPorts(): void {return this.callMethod('addPorts');}
@@ -1759,7 +1749,6 @@ export class PlotWidget extends Item {
   scaleFactor(): number {return this.callMethod('scaleFactor');}
   scalePlot(): void {return this.callMethod('scalePlot');}
   setMinMax(): void {return this.callMethod('setMinMax');}
-  setPen(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('setPen',a1,a2,a3,a4);}
   subgrid(...args: boolean[]): boolean {return this.callMethod('subgrid',...args);}
   title(...args: string[]): string {return this.callMethod('title',...args);}
   togglePlotTabDisplay(): void {return this.callMethod('togglePlotTabDisplay');}
@@ -1908,7 +1897,6 @@ export class RavelPopup extends CppClass {
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -1948,8 +1936,6 @@ export class RenderNativeWindow extends CppClass {
   mouseUp(a1: number,a2: number): void {return this.callMethod('mouseUp',a1,a2);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -2160,7 +2146,6 @@ export class Sheet extends Item {
   }
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
-  empty(): boolean {return this.callMethod('empty');}
   inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
   showSlice(...args: string[]): string {return this.callMethod('showSlice',...args);}
 }
@@ -2177,6 +2162,7 @@ export class SwitchIcon extends Item {
   flipped(...args: boolean[]): boolean {return this.callMethod('flipped',...args);}
   numCases(): number {return this.callMethod('numCases');}
   setNumCases(a1: number): void {return this.callMethod('setNumCases',a1);}
+  switchIconCast(): SwitchIcon {return this.callMethod('switchIconCast');}
   switchValue(): number {return this.callMethod('switchValue');}
   units(a1: boolean): object {return this.callMethod('units',a1);}
   value(): number {return this.callMethod('value');}
@@ -2268,7 +2254,6 @@ export class VariablePane extends CppClass {
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
@@ -2357,7 +2342,6 @@ export class VariableTab extends CppClass {
   populateItemVector(): void {return this.callMethod('populateItemVector');}
   position(): number[] {return this.callMethod('position');}
   redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
-  redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
   renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
