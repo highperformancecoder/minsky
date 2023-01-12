@@ -154,6 +154,8 @@ namespace minsky
     ravel::HandleSort::Order setSortOrder(ravel::HandleSort::Order);
     /// @}
 
+    void resortHandleIfDynamic();
+    
     /// set a given handle sort order
     ravel::HandleSort::Order setHandleSortOrder(ravel::HandleSort::Order, int handle);
 

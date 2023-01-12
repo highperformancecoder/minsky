@@ -158,6 +158,7 @@ namespace
   {
     double invZ=1/zoomFactor();
     wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
+    resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
   bool Ravel::onMouseMotion(float xx, float yy)
@@ -255,6 +256,7 @@ namespace
   void Ravel::adjustSlicer(int n)
   {
     wrappedRavel.adjustSlicer(n);
+    resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
 
@@ -358,6 +360,24 @@ namespace
     return x;
   }
 
+  void Ravel::resortHandleIfDynamic()
+  {
+    if (wrappedRavel.rank()==1)
+      {
+        // TODO add a Ravel CAPI call to get order directly?
+        auto order=wrappedRavel.getHandleState(wrappedRavel.outputHandleIds()[0]).order;
+        switch (order)
+          {
+          case ravel::HandleSort::dynamicForward:
+          case ravel::HandleSort::dynamicReverse:
+            sortByValue(order);
+            break;
+          default:
+            break;
+          }
+      }
+  }
+
   ravel::HandleSort::Order Ravel::setHandleSortOrder(ravel::HandleSort::Order order, int handle)
   {
     if (handle>=0)
@@ -378,32 +398,51 @@ namespace
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
     if (wrappedRavel.rank()!=1) return;
-    auto currentPermutation=wrappedRavel.currentPermutation(wrappedRavel.selectedHandle());
-    setHandleSortOrder(ravel::HandleSort::none, wrappedRavel.outputHandleIds()[0]);
+    int outputHandle=wrappedRavel.outputHandleIds()[0];
+    auto currentPermutation=wrappedRavel.currentPermutation(outputHandle);
+    if (currentPermutation.empty())
+      for (size_t i=0; i<wrappedRavel.numSliceLabels(outputHandle); ++i)
+        currentPermutation.push_back(i);
+    
     try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
+
     auto vv=m_ports[0]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
 
-    vector<size_t> permutation;
+    vector<size_t> permutation, nonFinite;
     for (size_t i=0; i<std::min(currentPermutation.size(), vv->hypercube().xvectors[0].size()); ++i)
       if (std::isfinite(vv->atHCIndex(i)))
-        permutation.push_back(currentPermutation[i]);
+        permutation.push_back(i);
+      else
+        nonFinite.push_back(i);
 
     switch (dir)
       {
       case ravel::HandleSort::forward:
+      case ravel::HandleSort::staticForward:
+      case ravel::HandleSort::dynamicForward:
         sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
         {return vv->atHCIndex(i)<vv->atHCIndex(j);});
         break;
       case ravel::HandleSort::reverse:
+      case ravel::HandleSort::staticReverse:
+      case ravel::HandleSort::dynamicReverse:
         sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
         {return vv->atHCIndex(i)>vv->atHCIndex(j);});
         break;
       default:
         break;
       }
-    wrappedRavel.applyCustomPermutation(wrappedRavel.outputHandleIds()[0], permutation);
+
+    vector<size_t> slicedPermutation;
+    slicedPermutation.reserve(permutation.size());
+    for (auto i: permutation)
+      slicedPermutation.push_back(currentPermutation[i]);
+    for (auto i: nonFinite) // push back missing data to end of sequence
+      slicedPermutation.push_back(currentPermutation[i]);
+
+    wrappedRavel.applyCustomPermutation(outputHandle, slicedPermutation);
   }
   
   

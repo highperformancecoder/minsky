@@ -393,7 +393,6 @@ namespace civita
   /// creates a chain of tensor operations that represents a Ravel in
   /// state \a state, operating on \a arg
   std::vector<TensorPtr> createRavelChain(const ravel::RavelState&, const TensorPtr& arg);
-
 }
 
 #endif
