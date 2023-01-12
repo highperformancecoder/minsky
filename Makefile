@@ -39,8 +39,10 @@ ifneq ($(build_ecolab),ecolab built)
 $(error "Making ecolab failed: check ecolab/build.log")
 endif
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
+build_RavelCAPI:=$(shell cd civita/RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
 $(warning $(build_RavelCAPI))
+build_civita:=$(shell cd civita && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1))
+$(warning $(build_civita))
 endif
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -102,7 +104,6 @@ MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o 
 ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
-TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
@@ -129,11 +130,11 @@ ifeq ($(HAVE_NODE),1)
 EXES+=gui-js/node-addons/minskyRESTService.node
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
+FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -Icivita -Icivita/RavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
 #-fvisibility-inlines-hidden
 
-VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
+VPATH= schema model engine gui-tk RESTService civita civita/RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -205,7 +206,7 @@ endif
 #EXES=gui-tk/minsky$(EXE)
 #RESTService/RESTService 
 
-LIBS+=	-LRavelCAPI -lravelCAPI \
+LIBS+=	-Lcivita -lcivita -Lcivita/RavelCAPI -lravelCAPI \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
@@ -349,7 +350,7 @@ dummy-addon.o: dummy-addon.cc
 node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
-$(EXES): RavelCAPI/libravelCAPI.a
+$(EXES): civita/libcivita.a civita/RavelCAPI/libravelCAPI.a
 
 tests: $(EXES)
 	cd test; $(MAKE)
@@ -365,7 +366,7 @@ clean:
 	-cd engine; $(BASIC_CLEAN)
 	-cd schema; $(BASIC_CLEAN)
 	-cd ecolab; $(MAKE) clean
-	-cd RavelCAPI; $(MAKE) clean
+	-cd civita; $(MAKE) clean
 
 mac-dist: gui-tk/minsky gui-js/node-addons/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only
