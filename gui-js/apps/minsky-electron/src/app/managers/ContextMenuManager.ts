@@ -791,6 +791,9 @@ export class ContextMenuManager {
       })
     ];
 
+    let valueSort=(type: string,dir: string)=>{
+      return type+dir[0].toUpperCase()+dir.slice(1);
+    };
     menuItems.push(...[new MenuItem(
       {
         label: 'Toggle axis calipers',
@@ -816,8 +819,23 @@ export class ContextMenuManager {
         })).concat(
           ['forward','reverse'].map(vso =>(<any>{
             label: `${vso} by value`,
+            type: 'radio',
+            checked: sortOrder == valueSort('static',vso),
             click: async () => {
               ravel.sortByValue(vso);
+              ravel.setSortOrder(valueSort('static',vso));
+              ravel.broadcastStateToLockGroup();
+              minsky.reset();
+          }
+        }))).concat(
+          ['forward','reverse'].map(vso =>(<any>{
+            label: `${vso} dynamically by value`,
+            type: 'radio',
+            checked: sortOrder == valueSort('dynamic',vso),
+            click: async () => {
+              ravel.sortByValue(vso);
+              ravel.setSortOrder(valueSort('dynamic',vso));
+              ravel.broadcastStateToLockGroup();
               minsky.reset();
           }
         })))

@@ -1836,6 +1836,7 @@ export class Ravel extends Item {
   populateHypercube(a1: civita__Hypercube): void {return this.callMethod('populateHypercube',a1);}
   redistributeHandles(): void {return this.callMethod('redistributeHandles');}
   resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
+  resortHandleIfDynamic(): void {return this.callMethod('resortHandleIfDynamic');}
   selectedHandle(): number {return this.callMethod('selectedHandle');}
   setDescription(a1: string): void {return this.callMethod('setDescription',a1);}
   setDimension(...args: any[]): void {return this.callMethod('setDimension',...args);}
