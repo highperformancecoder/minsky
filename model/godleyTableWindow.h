@@ -209,6 +209,7 @@ namespace minsky
 
   class GodleyTableWindow: public RenderNativeWindow, public EventInterface, public GodleyTableEditor
   {
+    CLASSDESC_ACCESS(GodleyTableWindow);
   protected:
     bool redraw(int, int, int width, int height) override {
       if (surface.get()) {

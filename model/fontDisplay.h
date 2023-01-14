@@ -20,6 +20,7 @@
 #ifndef FONTDISPLAY_H
 #define FONTDISPLAY_H
 #include "renderNativeWindow.h"
+#include "classdesc_access.h"
 #include <pango.h>
 
 namespace minsky
@@ -35,6 +36,7 @@ namespace minsky
       pango.show();
       return true;
     }
+    CLASSDESC_ACCESS(FontDisplay);
   public:
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     FontDisplay& operator=(const FontDisplay&) {return *this;}

@@ -27,6 +27,7 @@ namespace minsky
   class Panopticon: public RenderNativeWindow
   {
     bool redraw(int, int, int width, int height) override;
+    CLASSDESC_ACCESS(Panopticon);
   public:
     double cleft=0, ctop=0, cwidth=0, cheight=0;
     Exclude<Canvas::Timestamp> lastBoundsCheck;
