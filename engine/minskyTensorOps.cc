@@ -740,7 +740,97 @@ namespace minsky
                           }
                         },0) {}
   };
+
+  namespace {
+      // arrange for arguments to be expanded over a common hypercube
+    void meldArgsIntoCommonHypercube(vector<TensorPtr>& args) {
+      Hypercube hc;
+      for (auto& i: args)
+        unionHypercube(hc, i->hypercube(), false);
+
+      // list of final dimension names in order
+      vector<string> unionDims;
+      for (auto& i: hc.xvectors) unionDims.push_back(i.name);
+
+      // create tensor chains for each argument to permute it into the common hypercube
+      for (auto& i: args)
+        {
+          set <string> argDims;
+          for (auto& j: i->hypercube().xvectors) argDims.insert(j.name);
+          auto spread=make_shared<SpreadLast>();
+          Hypercube spreadHC;
+          for (auto& j: hc.xvectors)
+            if (!argDims.count(j.name))
+              spreadHC.xvectors.push_back(j);
+          spread->setArgument(i);
+          spread->setSpreadDimensions(spreadHC);
+
+          auto pivot=make_shared<Pivot>();
+          pivot->setArgument(spread);
+          pivot->setOrientation(unionDims);
+
+          if (pivot->hypercube()==hc)
+            i=pivot;
+          else
+            {
+              auto spreadOverHC=make_shared<SpreadOverHC>();
+              spreadOverHC->hypercube(hc);
+              spreadOverHC->setArgument(pivot);
+              i=spreadOverHC;
+            }
+        }
+    }
+  }
   
+  template <>
+  struct GeneralTensorOp<OperationType::meld>: public civita::Meld
+  {
+    void setArguments(const std::vector<TensorPtr>& a1,
+                      const std::vector<TensorPtr>& a2,
+                      const std::string& dimension={}, double argVal=0)
+    {
+      if (a1.empty() && a2.empty()) return;
+      vector<TensorPtr> args=a1;
+      args.insert(args.end(), a2.begin(), a2.end());
+      meldArgsIntoCommonHypercube(args);
+      civita::Meld::setArguments(args,dimension,argVal);
+    }
+  };
+
+  template <>
+  struct GeneralTensorOp<OperationType::merge>: public civita::Merge, public SetState
+  {
+    OperationPtr state;
+    void setArguments(const std::vector<TensorPtr>& a1,
+                      const std::vector<TensorPtr>& a2,
+                      const std::string& dimension={}, double argVal=0)
+    {
+      if (a1.empty() && a2.empty()) return;
+      vector<TensorPtr> args=a1;
+      args.insert(args.end(), a2.begin(), a2.end());
+      meldArgsIntoCommonHypercube(args);
+      civita::Merge::setArguments(args,dimension,argVal);
+      
+      // relabel slices along new dimension with variable names if available
+      int stream=0;
+      for (size_t i=0; state && i<state->portsSize(); ++i)
+        if (auto p=state->ports(i).lock())
+          if (p->input())
+            for (auto w:p->wires())
+              if (auto from=w->from())
+                {
+                  auto v=from->item().variableCast();
+                  if (v && !v->name().empty())
+                    m_hypercube.xvectors.back()[stream]=v->name();
+                  else
+                    m_hypercube.xvectors.back()[stream]=to_string(stream);
+                  stream++;
+                }
+    }
+
+    void setState(const OperationPtr& op) override {state=op;}
+   };
+
   class SwitchTensor: public ITensor
   {
     size_t m_size=1;
@@ -816,7 +906,7 @@ namespace minsky
     void setArgument(const TensorPtr& a,const std::string&,double) override {
       // not sure how to avoid this const cast here
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
-      chain=civita::createRavelChain(ravel.getState(), a);
+      chain=ravel::createRavelChain(ravel.getState(), a);
     }
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}

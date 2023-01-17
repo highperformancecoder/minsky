@@ -962,8 +962,7 @@ namespace minsky
       (&GroupItems::wires, [&](const Wires&, Wires::const_iterator i)
        {
          const Wire& w=**i;
-         if (w.visible()/* && updateRegion.intersects(w)*/) {
-           //didDrawSomething = true;
+         if (w.visible()) {
            w.draw(cairo);
          }
          return false;

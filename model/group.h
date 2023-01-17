@@ -334,7 +334,6 @@ namespace minsky
     float edgeScale() const {
       float z=zoomFactor();
       return z*relZoom>1? z*relZoom: z>1? 1: z;
-      //return zoomFactor()>1? localZoom(): zoomFactor();
     }
 
     /// return bounding box coordinates for all variables, operators

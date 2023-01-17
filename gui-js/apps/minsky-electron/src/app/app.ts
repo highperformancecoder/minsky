@@ -86,7 +86,7 @@ export default class App {
       },
       x: 0,
       y: 0,
-      title: 'Minsky',
+      title: minsky.ravelVersion()==="unavailable"? 'Minsky':'Ravel',
       icon: __dirname + '/assets/favicon.png',
       resizable: true,
       // autoHideMenuBar: true,

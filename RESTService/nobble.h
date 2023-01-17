@@ -60,60 +60,8 @@ NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long long unsigned int*, s
 NOBBLE(std::__1::__wrap_iter<const unsigned long *>,)
 #elif defined(__clang__)
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const unsigned long*, std::vector<T>>),class T)
-//NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long long unsigned int*, std::vector<T>>),class T)
 #endif
 NOBBLE(NOBBLE_TARG(boost::geometry::model::d2::point_xy<T,S>),NOBBLE_TARG(class T,class S))
 NOBBLE(civita::any,)
-
-namespace classdesc
-{
-//  template <class T> struct tn<T,void>
-//  {
-//    static string name() {return "unknown";}
-//  };
-  
-//  template <class C, class D> struct tn<std::chrono::time_point<C,D>>
-//  {
-//    static string name() {return "std::chrono::time_point";}
-//  };
-//
-//  template <class R, class P> struct tn<std::chrono::duration<R,P>>
-//  {
-//    static string name() {return "std::chrono::duration";}
-//  };
-//
-//  template <> struct tn<std::istream>
-//  {
-//    static string name() {return "std::istream";}
-//  };
-//
-//  template <class T> struct tn<std::initializer_list<T>>
-//  {
-//    static string name() {return "std::initializer_list<"+typeName<T>+">";}
-//  };
-}
-
-namespace classdesc_access
-{
-//
-//<RESTProcess_t> {};
-//
-//son_pack_t> {};
-//
-//<json_unpack_t> {};
-//  template <class C, class D> struct access_RESTProcess<std::chrono::time_point<C,D>>:
-//    public classdesc::NullDescriptor<RESTProcess_t> {};
-//  template <class C, class D> struct access_json_pack<std::chrono::time_point<C,D>>:
-//    public classdesc::NullDescriptor<json_pack_t> {};
-//  template <class C, class D> struct access_json_unpack<std::chrono::time_point<C,D>>:
-//    public classdesc::NullDescriptor<json_unpack_t> {};
-//  
-//  template <class R, class P> struct access_RESTProcess<std::chrono::duration<R,P>>:
-//    public classdesc::NullDescriptor<RESTProcess_t> {};
-//  template <class R, class P> struct access_json_pack<std::chrono::duration<R,P>>:
-//    public classdesc::NullDescriptor<json_pack_t> {};
-//  template <class R, class P> struct access_json_unpack<std::chrono::duration<R,P>>:
-//    public classdesc::NullDescriptor<json_unpack_t> {};
-}
 
 #endif

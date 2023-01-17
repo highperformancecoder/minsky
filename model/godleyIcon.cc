@@ -393,10 +393,7 @@ namespace minsky
         Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
         const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
         const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
-        //        cairo_set_source_surface(cairo, surf.surface(),0,0);
         const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
-//        cairo_scale(cairo,scaleFactor,scaleFactor);
-//        cairo_paint(cairo);
         const_cast<GodleyTableEditor&>(editor).draw(cairo);
         titley=-0.5*h;
         w+=2*border*z;
@@ -474,7 +471,6 @@ namespace minsky
   Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
   {
     unsigned stockCol=1;
-    //string sName=utf_to_utf<char>(stockName);    
     auto vid=valueId(stockName);
     for (; stockCol<table.cols(); ++stockCol)
       if (valueId(table.cell(0,stockCol))==vid)

@@ -4,9 +4,9 @@
 [submodule "certify"]
 	path = certify
 	url = https://github.com/djarek/certify
-[submodule "RavelCAPI"]
-	path = RavelCAPI
-	url = https://github.com/highperformancecoder/RavelCAPI.git
 [submodule "exprtk"]
 	path = exprtk
 	url = https://github.com/ArashPartow/exprtk.git
+[submodule "RavelCAPI"]
+	path = RavelCAPI
+	url = https://github.com/highperformancecoder/RavelCAPI.git

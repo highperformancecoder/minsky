@@ -58,8 +58,8 @@ namespace minsky
     unsigned switchValue() const;
     double value() const override {return m_ports[switchValue()+2]->value();}
     
-//    const SwitchIcon* switchIconCast() const override {return this;}
-//    SwitchIcon* switchIconCast() override {return this;}    
+    const SwitchIcon* switchIconCast() const override {return this;}
+    SwitchIcon* switchIconCast() override {return this;}    
     
     Units units(bool) const override;
 

@@ -115,48 +115,42 @@ namespace minsky
 
   namespace
   {
-    struct SumInputPort: public InputPort
+    struct SumInputPort: public MultiWireInputPort
     {
-      bool multiWireAllowed() const override {return true;}
       void combineInput(double& x, double y) const override {x+=y;}
-      SumInputPort(Item& item): InputPort(item) {}    
+      SumInputPort(Item& item): MultiWireInputPort(item) {}    
     };
 
-    struct MulInputPort: public InputPort
+    struct MulInputPort: public MultiWireInputPort
     {
-      bool multiWireAllowed() const override {return true;}
       void combineInput(double& x, double y) const override {x*=y;}
-      MulInputPort(Item& item): InputPort(item) {}    
+      MulInputPort(Item& item): MultiWireInputPort(item) {}    
       double identity() const override {return 1;}
     };
 
-    struct MaxInputPort: public InputPort
+    struct MaxInputPort: public MultiWireInputPort
     {
-      bool multiWireAllowed() const override {return true;}
       void combineInput(double& x, double y) const override {if (y>x) x=y;}
-      MaxInputPort(Item& item): InputPort(item) {}
+      MaxInputPort(Item& item): MultiWireInputPort(item) {}
       double identity() const override {return -std::numeric_limits<double>::max();}
     };
 
-    struct MinInputPort: public InputPort
+    struct MinInputPort: public MultiWireInputPort
     {
-      bool multiWireAllowed() const override {return true;}
       void combineInput(double& x, double y) const override {if (y<x) x=y;}
-      MinInputPort(Item& item): InputPort(item) {}    
+      MinInputPort(Item& item): MultiWireInputPort(item) {}    
       double identity() const override {return std::numeric_limits<double>::min();}
     };
-    struct AndInputPort: public InputPort
+    struct AndInputPort: public MultiWireInputPort
     {
-      bool multiWireAllowed() const override {return true;}
       void combineInput(double& x, double y) const override {x=(x>0.5)&&(y>0.5);}
-      AndInputPort(Item& item): InputPort(item) {}    
+      AndInputPort(Item& item): MultiWireInputPort(item) {}    
       double identity() const override {return 1;}
     };
-    struct OrInputPort: public InputPort
+    struct OrInputPort: public MultiWireInputPort
     {
-      bool multiWireAllowed() const override {return true;}
       void combineInput(double& x, double y) const override {x=(x>0.5)||(y>0.5);}
-      OrInputPort(Item& item): InputPort(item) {}    
+      OrInputPort(Item& item): MultiWireInputPort(item) {}    
     };
   }
   
@@ -199,6 +193,10 @@ namespace minsky
           break;
         case or_:
           m_ports.emplace_back(make_shared<OrInputPort>(*this));
+          break;
+        case meld:
+        case merge:
+          m_ports.emplace_back(make_shared<MultiWireInputPort>(*this));
           break;
         default:
           m_ports.emplace_back(make_shared<InputPort>(*this));
@@ -1209,6 +1207,27 @@ namespace minsky
     cairo_show_text(cairo,"i");
   }
 
+  template <> void Operation<OperationType::meld>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_move_to(cairo,-4,-10);
+    Pango pango(cairo);
+    pango.setFontSize(10*sf);
+    pango.setMarkup("⭄");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::merge>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_move_to(cairo,-4,-10);
+    Pango pango(cairo);
+    pango.setFontSize(10*sf);
+    pango.setMarkup("⫤");
+    pango.show();
+  }
+
+  
 
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}

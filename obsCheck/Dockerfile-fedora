@@ -3,7 +3,7 @@ FROM fedora:$version
 ARG project=minsky
 ARG version
 ADD . /root
-RUN dnf install -y 'dnf-command(config-manager)'
+RUN dnf install -y 'dnf-command(config-manager)' util-linux
 RUN dnf config-manager --add-repo https://download.opensuse.org/repositories/home:hpcoder1/Fedora_$version/home:hpcoder1.repo
 RUN dnf install -y $project
 RUN useradd -m minsky

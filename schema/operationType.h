@@ -50,7 +50,7 @@ namespace minsky
                // scans
                runningSum, runningProduct, difference,
                // other tensor ops
-               innerProduct, outerProduct, index, gather,
+               innerProduct, outerProduct, index, gather, meld, merge,
                numOps // last operation, for iteration purposes
     };
     /// return the symbolic name of \a type

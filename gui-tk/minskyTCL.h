@@ -59,7 +59,7 @@ namespace minsky
     /// fill in a Tk image with the icon for a specific operation
     /// @param Tk imageName
     /// @param operationName
-    static void operationIcon(const char* imageName, const char* opName);
+    /*static*/ void operationIcon(const char* imageName, const char* opName) const;
 
     std::set<string> matchingTableColumns(const std::string& currTable, GodleyAssetClass::AssetClass ac) {
       auto it=TCL_obj_properties().find(currTable);

@@ -256,13 +256,13 @@ namespace minsky
 
   template <> double 
   EvalOp<OperationType::ravel>::evaluate(double in1, double in2) const
-  {throw error("ravel evaluation not supported");}
+  {return in1;}
   template <> 
   double EvalOp<OperationType::ravel>::d1(double x1, double x2) const
-  {throw error("ravel evaluation not supported");}
+  {return 1;}
   template <> 
   double EvalOp<OperationType::ravel>::d2(double x1, double x2) const
-  {throw error("ravel evaluation not supported");}
+  {return 0;}
 
   template <> 
   double EvalOp<OperationType::sqrt>::evaluate(double in1, double in2) const

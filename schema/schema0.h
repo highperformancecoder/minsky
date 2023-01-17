@@ -159,7 +159,6 @@ namespace schema0
     double rotation; // orientation of icon
 
     GroupIcon(): width(100), height(100), rotation(0) {}
-    //    void updateEdgeVariables(const VariableManager& vm);
   };
 
 

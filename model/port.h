@@ -112,6 +112,12 @@ namespace minsky
     bool input() const override {return true;}
     InputPort(Item& item): Port(item) {}
   };
+  
+  struct MultiWireInputPort: public InputPort
+  {
+    bool multiWireAllowed() const override {return true;}
+    MultiWireInputPort(Item& item): InputPort(item) {}
+  };
 }
 
 #ifdef CLASSDESC
