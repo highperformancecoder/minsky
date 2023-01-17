@@ -7,6 +7,3 @@
 [submodule "exprtk"]
 	path = exprtk
 	url = https://github.com/ArashPartow/exprtk.git
-[submodule "civita"]
-	path = civita
-	url = https://github.com/highperformancecoder/civita.git
