@@ -906,7 +906,7 @@ namespace minsky
     void setArgument(const TensorPtr& a,const std::string&,double) override {
       // not sure how to avoid this const cast here
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
-      chain=civita::createRavelChain(ravel.getState(), a);
+      chain=ravel::createRavelChain(ravel.getState(), a);
     }
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}

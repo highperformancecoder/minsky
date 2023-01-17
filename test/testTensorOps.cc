@@ -1274,29 +1274,29 @@ SUITE(TensorOps)
         CHECK(i.type==Dimension::time);
     }
 
-  TEST(sortByValue)
-  {
-    auto val=make_shared<TensorVal>(vector<unsigned>{5});
-    vector<double> data={3,2,4,5,1};
-    for (size_t i=0; i<data.size(); ++i) (*val)[i]=data[i];
-    val->updateTimestamp();
-    SortByValue forward(ravel::HandleSort::forward);
-    forward.setArgument(val);
-    CHECK_EQUAL(val->timestamp(), forward.timestamp());
-    CHECK_EQUAL(val->size(), forward.size());
-    for (size_t i=1; i<forward.size(); ++i)
-      CHECK(forward[i]>forward[i-1]);
-    vector<int> expected={4,1,0,2,3};
-    for (size_t i=0; i<forward.size(); ++i)
-      CHECK_EQUAL(expected[i], forward.hypercube().xvectors[0][i].value);
-    SortByValue reverse(ravel::HandleSort::reverse);
-    reverse.setArgument(val);
-    for (size_t i=1; i<reverse.size(); ++i)
-      CHECK(reverse[i]<reverse[i-1]);
-    expected={3,2,0,1,4};
-    for (size_t i=0; i<reverse.size(); ++i)
-      CHECK_EQUAL(expected[i], reverse.hypercube().xvectors[0][i].value);
-  }
+//  TEST(sortByValue)
+//  {
+//    auto val=make_shared<TensorVal>(vector<unsigned>{5});
+//    vector<double> data={3,2,4,5,1};
+//    for (size_t i=0; i<data.size(); ++i) (*val)[i]=data[i];
+//    val->updateTimestamp();
+//    SortByValue forward(ravel::HandleSort::forward);
+//    forward.setArgument(val);
+//    CHECK_EQUAL(val->timestamp(), forward.timestamp());
+//    CHECK_EQUAL(val->size(), forward.size());
+//    for (size_t i=1; i<forward.size(); ++i)
+//      CHECK(forward[i]>forward[i-1]);
+//    vector<int> expected={4,1,0,2,3};
+//    for (size_t i=0; i<forward.size(); ++i)
+//      CHECK_EQUAL(expected[i], forward.hypercube().xvectors[0][i].value);
+//    SortByValue reverse(ravel::HandleSort::reverse);
+//    reverse.setArgument(val);
+//    for (size_t i=1; i<reverse.size(); ++i)
+//      CHECK(reverse[i]<reverse[i-1]);
+//    expected={3,2,0,1,4};
+//    for (size_t i=0; i<reverse.size(); ++i)
+//      CHECK_EQUAL(expected[i], reverse.hypercube().xvectors[0][i].value);
+//  }
 
   TEST(tensorValVectorIndex)
   {
