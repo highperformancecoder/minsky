@@ -2483,6 +2483,8 @@ export class civita__Hypercube extends CppClass {
   }
   dimLabels(): string[] {return this.callMethod('dimLabels');}
   dims(...args: any[]): number[] {return this.callMethod('dims',...args);}
+  fromJson(a1: string): object {return this.callMethod('fromJson',a1);}
+  json(): string {return this.callMethod('json');}
   logNumElements(): number {return this.callMethod('logNumElements');}
   numElements(): number {return this.callMethod('numElements');}
   rank(): number {return this.callMethod('rank');}

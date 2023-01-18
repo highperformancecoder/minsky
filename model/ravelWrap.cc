@@ -175,27 +175,7 @@ namespace minsky
     auto state=initState.empty()? getState(): initState;
     bool redistribute=!initState.empty();
     initState.clear();
-    wrappedRavel.clear();
-    for (auto& i: hc.xvectors)
-      {
-        vector<string> ss;
-        for (auto& j: i) ss.push_back(str(j,i.dimension.units));
-        wrappedRavel.addHandle(i.name, ss);
-        size_t h=numHandles()-1;
-        wrappedRavel.displayFilterCaliper(h,false);
-        if (!redistribute)
-        // set forward sort order on value and time dimensions
-          switch (i.dimension.type)
-            {
-            case Dimension::time:
-            case Dimension::value:
-              wrappedRavel.orderLabels(h,HandleSort::forward,
-                                       ravel::toEnum<ravel::HandleSort::OrderType>(i.dimension.type),i.dimension.units);
-              break;
-            default:
-              break;
-            }
-      }
+    wrappedRavel.populateFromHypercube(hc);
     if (state.empty())
       {
         setRank(hc.rank());
