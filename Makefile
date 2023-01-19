@@ -39,7 +39,7 @@ ifneq ($(build_ecolab),ecolab built)
 $(error "Making ecolab failed: check ecolab/build.log")
 endif
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1))
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1)) CLASSDESC=$(shell pwd)/ecolab/bin/classdesc
 $(warning $(build_RavelCAPI))
 endif
 
@@ -128,7 +128,7 @@ ifeq ($(HAVE_NODE),1)
 EXES+=gui-js/node-addons/minskyRESTService.node
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
+FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
 #-fvisibility-inlines-hidden
 

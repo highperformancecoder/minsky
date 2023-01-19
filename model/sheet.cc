@@ -170,8 +170,10 @@ void Sheet::draw(cairo_t* cairo) const
 
   try
     {
-      auto value=m_ports[0]->getVariableValue();
+      TensorPtr value=m_ports[0]->getVariableValue();
       if (!value) return;
+      if (inputRavel)
+        value=inputRavel.hyperSlice(value);
       Pango pango(cairo);
       if (value->hypercube().rank()>2)
         {
