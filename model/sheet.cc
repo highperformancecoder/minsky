@@ -151,6 +151,8 @@ void Sheet::computeValue()
     {
       bool wasEmpty=inputRavel.numHandles()==0;
       inputRavel.populateFromHypercube(value->hypercube());
+      for (size_t i=0; i<inputRavel.numHandles(); ++i)
+        inputRavel.displayFilterCaliper(i,true);
       if (wasEmpty)
         inputRavel.setOutputHandleIds({0,1});
       if (value->rank()>0)
