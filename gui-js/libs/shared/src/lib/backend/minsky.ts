@@ -2149,7 +2149,12 @@ export class Sheet extends Item {
   computeValue(): void {return this.callMethod('computeValue');}
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
+  inRavel(a1: number,a2: number): boolean {return this.callMethod('inRavel',a1,a2);}
   onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
+  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
+  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
+  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
+  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
   onRavelButton(a1: number,a2: number): boolean {return this.callMethod('onRavelButton',a1,a2);}
   showRavel(...args: boolean[]): boolean {return this.callMethod('showRavel',...args);}
   showSlice(...args: string[]): string {return this.callMethod('showSlice',...args);}

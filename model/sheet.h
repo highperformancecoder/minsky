@@ -35,7 +35,14 @@ namespace minsky
     CLASSDESC_ACCESS(Sheet);
     ravel::Ravel inputRavel; ///< ravel for controlling input
     /// value used for populating sheet. Potentially a tensor expression representing ravel manipulation
-    civita::TensorPtr value; 
+    civita::TensorPtr value;
+    /// @{ ravel coordinate
+    double ravelX(double xx) const {
+      return (xx+0.6*m_width-x())*inputRavel.radius()/(0.25*m_width);
+    }
+    double ravelY(double yy) const {
+      return (yy+0.6*m_height-y())*inputRavel.radius()/(0.25*m_height);
+    }      
   public:
     Sheet();
 
@@ -45,12 +52,17 @@ namespace minsky
     Sheet(const Sheet&) {}
     
     bool onRavelButton(float, float) const;
+    bool inRavel(float, float) const;
     bool inItem(float, float) const override;
-    void onMouseDown(float x, float y) override
-    {if (onRavelButton(x,y)) showRavel=!showRavel;}
-    ClickType::Type clickType(float x, float y) override;   
+    void onMouseDown(float x, float y) override;
+    void onMouseUp(float x, float y) override;
+    bool onMouseMotion(float x, float y) override;
+    bool onMouseOver(float x, float y) override;
+    void onMouseLeave() override;
+    ClickType::Type clickType(float x, float y) const override;
+   
     void draw(cairo_t* cairo) const override;
-
+    
     /// calculates the input value
     void computeValue();
     

@@ -76,7 +76,7 @@ std::vector<std::string> VariableBase::accessibleVars() const
 }
 
 
-ClickType::Type VariableBase::clickType(float xx, float yy)
+ClickType::Type VariableBase::clickType(float xx, float yy) const
 {
   double fm=std::fmod(rotation(),360);
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;

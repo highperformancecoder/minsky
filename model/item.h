@@ -308,7 +308,7 @@ namespace minsky
     virtual void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
-    virtual ClickType::Type clickType(float x, float y);
+    virtual ClickType::Type clickType(float x, float y) const;
 
     /// returns closest output port to \a x,y
     virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 

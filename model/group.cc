@@ -896,7 +896,7 @@ namespace minsky
       }
   }
 
-  ClickType::Type Group::clickType(float x, float y)
+  ClickType::Type Group::clickType(float x, float y) const
   {
     auto z=zoomFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;

@@ -236,7 +236,7 @@ namespace minsky
     assert(abs(x-this->x())<1 && abs(y-this->y())<1);
   }
 
-  ClickType::Type Item::clickType(float x, float y)
+  ClickType::Type Item::clickType(float x, float y) const
   {     	    
     // if selecting a contained variable, the delegate to that
     if (auto item=select(x,y))
