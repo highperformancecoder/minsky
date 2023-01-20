@@ -25,6 +25,7 @@
 #include <pango.h>
 #include "minskyCairoRenderer.h"
 #include "ravelWrap.h"
+#include "tensorOp.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;
@@ -156,7 +157,17 @@ void Sheet::computeValue()
       if (wasEmpty)
         inputRavel.setOutputHandleIds({0,1});
       if (value->rank()>0)
-        value=inputRavel.hyperSlice(value);
+        {
+          value=inputRavel.hyperSlice(value);
+          if (value->rank()>=2)
+            { // swap first and second axes
+              auto& xv=value->hypercube().xvectors;
+              auto pivot=make_shared<civita::Pivot>();
+              pivot->setArgument(value);
+              pivot->setOrientation(vector<string>{xv[1].name,xv[0].name});
+              value=move(pivot);
+            }
+        }
     }
 }
 
