@@ -2146,6 +2146,7 @@ export class Sheet extends Item {
       super(prefix.prefix())
   }
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
+  computeValue(): void {return this.callMethod('computeValue');}
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
   onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}

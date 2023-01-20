@@ -109,6 +109,20 @@ namespace
   };
 }
 
+void Sheet::computeValue()
+{
+  if (m_ports[0] && (value=m_ports[0]->getVariableValue()) && inputRavel)
+    {
+      bool wasEmpty=inputRavel.numHandles()==0;
+      inputRavel.populateFromHypercube(value->hypercube());
+      if (wasEmpty)
+        inputRavel.setOutputHandleIds({0,1});
+      if (value->rank()>0)
+        value=inputRavel.hyperSlice(value);
+    }
+}
+
+
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();
@@ -170,10 +184,7 @@ void Sheet::draw(cairo_t* cairo) const
 
   try
     {
-      TensorPtr value=m_ports[0]->getVariableValue();
       if (!value) return;
-      if (inputRavel)
-        value=inputRavel.hyperSlice(value);
       Pango pango(cairo);
       if (value->hypercube().rank()>2)
         {

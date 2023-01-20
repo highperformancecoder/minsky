@@ -34,6 +34,8 @@ namespace minsky
     
     CLASSDESC_ACCESS(Sheet);
     ravel::Ravel inputRavel; ///< ravel for controlling input
+    /// value used for populating sheet. Potentially a tensor expression representing ravel manipulation
+    civita::TensorPtr value; 
   public:
     Sheet();
 
@@ -49,6 +51,9 @@ namespace minsky
     ClickType::Type clickType(float x, float y) override;   
     void draw(cairo_t* cairo) const override;
 
+    /// calculates the input value
+    void computeValue();
+    
     bool showRavel=false;
     ShowSlice showSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
   };
