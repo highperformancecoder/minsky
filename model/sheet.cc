@@ -34,6 +34,8 @@ using namespace std;
 
 // width of draggable border 
 const float border=10;
+// proportion of width/height to centre Ravel popout
+const double ravelOffset=0.1;
 
 Sheet::Sheet()
 {
@@ -41,6 +43,45 @@ Sheet::Sheet()
   iWidth(100);
   iHeight(100);	  
 }
+
+double Sheet::ravelSize() const
+{
+  return 0.25*std::min(m_width,m_height)*zoomFactor();
+}
+
+double Sheet::ravelX(double xx) const
+{
+  return (xx+(0.5+ravelOffset)*zoomFactor()*m_width-x())*inputRavel.radius()/(zoomFactor()*ravelSize());
+}
+
+double Sheet::ravelY(double yy) const
+{
+  return (yy+(0.5+ravelOffset)*zoomFactor()*m_height-y())*inputRavel.radius()/(zoomFactor()*ravelSize());
+}      
+
+bool Sheet::onResizeHandle(float xx, float yy) const
+{
+  float dx=xx-x(), dy=yy-y();
+  double z=zoomFactor();
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor(), b=border*zoomFactor();
+  return fabs(dx)>=w-resizeHandleSize() && fabs(dx)<=w+resizeHandleSize() &&
+    fabs(dy)>=h-resizeHandleSize() && fabs(dy)<=h+resizeHandleSize() &&
+    (!inputRavel || dx>0 || dy>0);
+}
+
+
+void Sheet::drawResizeHandles(cairo_t* cairo) const
+{
+  auto sf=resizeHandleSize();
+  float w=0.5f*m_width*zoomFactor(), h=0.5f*m_height*zoomFactor();
+  if (!showRavel)
+    drawResizeHandle(cairo,-w,-h,sf,0);
+  drawResizeHandle(cairo,w,-h,sf,0.5*M_PI);
+  drawResizeHandle(cairo,w,h,sf,0);
+  drawResizeHandle(cairo,-w,h,sf,0.5*M_PI);
+  cairo_stroke(cairo);
+}
+
 
 bool Sheet::onRavelButton(float xx, float yy) const
 {
@@ -52,9 +93,9 @@ bool Sheet::onRavelButton(float xx, float yy) const
 bool Sheet::inRavel(float xx, float yy) const
 {
   auto dx=xx-x(), dy=yy-y();
-  return showRavel && inputRavel && dx<-0.35*m_width && yy-y()<-0.35*m_height &&
-    !(dx>=0.5*m_width && dy>=0.5*m_height) &&
-    fabs(ravelX(xx))<inputRavel.radius() && fabs(ravelY(yy))<inputRavel.radius();
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();
+  return showRavel && inputRavel && !(dx>=w && dy>=h) &&
+    fabs(ravelX(xx))<1.1*inputRavel.radius() && fabs(ravelY(yy))<1.1*inputRavel.radius();
 }
 
 bool Sheet::inItem(float xx, float yy) const
@@ -67,7 +108,10 @@ bool Sheet::inItem(float xx, float yy) const
 void Sheet::onMouseDown(float x, float y)
 {
   if (onRavelButton(x,y))
-    showRavel=!showRavel;
+    {
+      showRavel=!showRavel;
+      bb.update(*this);
+    }
   else if (inRavel(x,y))
     inputRavel.onMouseDown(ravelX(x), ravelY(y));
 }
@@ -96,16 +140,24 @@ void Sheet::onMouseLeave()
 
 ClickType::Type Sheet::clickType(float x, float y) const
 {
-  double dx=fabs(x-this->x()), dy=fabs(y-this->y());
-  double w=0.5*width(), h=0.5*height();  
   if (onResizeHandle(x,y)) return ClickType::onResize;
   if (inItem(x,y)) return ClickType::inItem;                     
+  double dx=fabs(x-this->x()), dy=fabs(y-this->y());
+  double w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();  
   if (dx < w && dy < h)
     return ClickType::onItem;
   return ClickType::outside;  
-  if (auto item=select(x,y))
-    return item->clickType(x,y);      
-  return Item::clickType(x,y);  
+}
+
+std::vector<Point> Sheet::corners() const
+{
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();  
+  return {{x()-w,y()-h},{x()+w,y()-h},{x()-w,y()+h},{x()+w,y()+h}};
+}
+
+bool Sheet::contains(float x, float y) const
+{
+  return Item::contains(x,y) || inRavel(x,y);
 }
 
 namespace
@@ -188,31 +240,33 @@ void Sheet::draw(cairo_t* cairo) const
 
   if (inputRavel)
     {
-      cairo::CairoSave cs(cairo);
       if (showRavel)
         {
-          cairo_translate(cairo,-0.6*m_width,-0.6*m_height);
+          cairo::CairoSave cs(cairo);
+          cairo_translate(cairo,-(0.5+ravelOffset)*m_width,-(0.5+ravelOffset)*m_height);
           double r=inputRavel.radius();
-          cairo_scale(cairo,0.25*m_width/r,0.25*m_height/r);
-          double cornerOffs=0.4*r;
+          double scale=ravelSize()/r;
+          cairo_scale(cairo,scale,scale);
+          double cornerX=ravelOffset*m_width/scale;
+          double cornerY=ravelOffset*m_height/scale;
           // clip out the bottom right quadrant
-          cairo_move_to(cairo,cornerOffs,cornerOffs);
-          cairo_line_to(cairo,r,cornerOffs);
+          r*=1.1; // alow space for arrow heads
+          cairo_move_to(cairo,cornerX,cornerY);
+          cairo_line_to(cairo,r,cornerY);
           cairo_line_to(cairo,r,-r);
           cairo_line_to(cairo,-r,-r);
           cairo_line_to(cairo,-r,r);
-          cairo_line_to(cairo,cornerOffs,r);
+          cairo_line_to(cairo,cornerX,r);
           cairo_stroke_preserve(cairo);
           cairo_clip(cairo);
           CairoRenderer render(cairo);
           inputRavel.render(render);
         }
-      else
-        {
-          cairo_translate(cairo,-0.5*m_width,-0.5*m_height);
-          cairo_scale(cairo,border/Ravel::svgRenderer.width(),border/Ravel::svgRenderer.height());
-          Ravel::svgRenderer.render(cairo);
-        }
+      // display ravel button
+      cairo::CairoSave cs(cairo);
+      cairo_translate(cairo,-0.5*m_width,-0.5*m_height);
+      cairo_scale(cairo,border/Ravel::svgRenderer.width(),border/Ravel::svgRenderer.height());
+      Ravel::svgRenderer.render(cairo);
     }
   
   cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);

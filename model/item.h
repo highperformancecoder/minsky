@@ -153,6 +153,9 @@ namespace minsky
           Rotate::operator=(Rotate(a,x,y));
       }
     } memoisedRotator;
+
+    static void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle);
+
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
@@ -182,7 +185,7 @@ namespace minsky
     }
     /// canvas bounding box.
     mutable BoundingBox bb;
-    bool contains(float xx, float yy) {
+    virtual bool contains(float xx, float yy) const {
       auto hz=resizeHandleSize(); // extend by resize handle size (which is also portRadius)
       return left()-hz<=xx && right()+hz>=xx && top()-hz<=yy && bottom()+hz>=yy; 
     }
@@ -226,7 +229,7 @@ namespace minsky
     void ensureBBValid() const {if (!bb.valid()) bb.update(*this);}
     float width()  const {return right()-left();}
     float height() const {return bottom()-top();}
-    std::vector<Point> corners() const; // 4 corners of item
+    virtual std::vector<Point> corners() const; // 4 corners of item
     float left()   const;
     float right()  const;
     float top()    const;

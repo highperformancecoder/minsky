@@ -282,9 +282,7 @@ namespace minsky
     cairo_paint(cairo);
   }
 
-  namespace
-  {
-    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
+    void Item::drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
     {
       cairo::CairoSave cs(cairo);
       cairo_translate(cairo,x,y);
@@ -299,7 +297,6 @@ namespace minsky
       cairo_move_to(cairo,.2,1);
       cairo_line_to(cairo,1,1);
     }
-  }
   
   // Refactor resize() code for all canvas items here. For feature 25 and 94
   void Item::resize(const LassoBox& b)

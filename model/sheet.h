@@ -36,13 +36,11 @@ namespace minsky
     ravel::Ravel inputRavel; ///< ravel for controlling input
     /// value used for populating sheet. Potentially a tensor expression representing ravel manipulation
     civita::TensorPtr value;
-    /// @{ ravel coordinate
-    double ravelX(double xx) const {
-      return (xx+0.6*m_width-x())*inputRavel.radius()/(0.25*m_width);
-    }
-    double ravelY(double yy) const {
-      return (yy+0.6*m_height-y())*inputRavel.radius()/(0.25*m_height);
-    }      
+    // size of ravel in screen coordinates
+    double ravelSize() const;
+    /// @{ ravel coordinate from screen coordinate
+    double ravelX(double xx) const;
+    double ravelY(double yy) const;
   public:
     Sheet();
 
@@ -51,6 +49,9 @@ namespace minsky
     void operator=(const Sheet&){}
     Sheet(const Sheet&) {}
     
+    bool onResizeHandle(float x, float y) const override;
+    void drawResizeHandles(cairo_t* cairo) const override;
+
     bool onRavelButton(float, float) const;
     bool inRavel(float, float) const;
     bool inItem(float, float) const override;
@@ -60,7 +61,9 @@ namespace minsky
     bool onMouseOver(float x, float y) override;
     void onMouseLeave() override;
     ClickType::Type clickType(float x, float y) const override;
-   
+    std::vector<Point> corners() const override;
+    bool contains(float x, float y) const override;
+  
     void draw(cairo_t* cairo) const override;
     
     /// calculates the input value
