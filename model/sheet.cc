@@ -207,7 +207,17 @@ void Sheet::computeValue()
       for (size_t i=0; i<inputRavel.numHandles(); ++i)
         inputRavel.displayFilterCaliper(i,true);
       if (wasEmpty)
-        inputRavel.setOutputHandleIds({0,1});
+        switch (value->rank())
+          {
+          case 0: break;
+          case 1:
+            inputRavel.setOutputHandleIds({0});
+            break;
+          default:
+            inputRavel.setOutputHandleIds({0,1});
+            break;
+          }
+      
       if (value->rank()>0)
         {
           value=inputRavel.hyperSlice(value);
