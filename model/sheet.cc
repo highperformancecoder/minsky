@@ -123,7 +123,7 @@ bool Sheet::onMouseMotion(float x, float y)
 {
   if (inRavel(x,y))
     inputRavel.onMouseMotion(ravelX(x), ravelY(y));
-  else
+  else if (inputRavel)
     inputRavel.onMouseLeave();
 }
 
@@ -131,12 +131,12 @@ bool Sheet::onMouseOver(float x, float y)
 {
   if (inRavel(x,y))
     inputRavel.onMouseOver(ravelX(x), ravelY(y));
-  else
+  else if (inputRavel)
     inputRavel.onMouseLeave();
 }
 
 void Sheet::onMouseLeave()
-{inputRavel.onMouseLeave();}
+{if (inputRavel) inputRavel.onMouseLeave();}
 
 ClickType::Type Sheet::clickType(float x, float y) const
 {
@@ -260,7 +260,7 @@ void Sheet::draw(cairo_t* cairo) const
           double cornerX=ravelOffset*m_width/scale;
           double cornerY=ravelOffset*m_height/scale;
           // clip out the bottom right quadrant
-          r*=1.1; // alow space for arrow heads
+          r*=1.1; // allow space for arrow heads
           cairo_move_to(cairo,cornerX,cornerY);
           cairo_line_to(cairo,r,cornerY);
           cairo_line_to(cairo,r,-r);
