@@ -102,7 +102,7 @@ bool Sheet::inItem(float xx, float yy) const
 {
   double z=zoomFactor();
   double w=0.5*m_width*z, h=0.5*m_height*z, b=border*z;
-  return abs(xx-x())<w-b && abs(yy-y())<h-b || onRavelButton(xx,yy) || inRavel(xx,yy);
+  return (abs(xx-x())<w-b && abs(yy-y())<h-b) || onRavelButton(xx,yy) || inRavel(xx,yy);
 }
 
 void Sheet::onMouseDown(float x, float y)
