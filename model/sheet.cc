@@ -122,17 +122,25 @@ void Sheet::onMouseUp(float x, float y)
 bool Sheet::onMouseMotion(float x, float y)
 {
   if (inRavel(x,y))
-    inputRavel.onMouseMotion(ravelX(x), ravelY(y));
+    return inputRavel.onMouseMotion(ravelX(x), ravelY(y));
   else if (inputRavel)
-    inputRavel.onMouseLeave();
+    {
+      inputRavel.onMouseLeave();
+      return true;
+    }
+  return false;
 }
 
 bool Sheet::onMouseOver(float x, float y)
 {
   if (inRavel(x,y))
-    inputRavel.onMouseOver(ravelX(x), ravelY(y));
+    return inputRavel.onMouseOver(ravelX(x), ravelY(y));
   else if (inputRavel)
-    inputRavel.onMouseLeave();
+    {
+      inputRavel.onMouseLeave();
+      return true;
+    }
+  return false;
 }
 
 void Sheet::onMouseLeave()

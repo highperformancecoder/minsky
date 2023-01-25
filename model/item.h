@@ -250,8 +250,10 @@ namespace minsky
     /// respond to mouse up events
     virtual void onMouseUp(float x, float y) {}
     /// respond to mouse motion events with button pressed
+    /// @return true if it needs to be rerendered
     virtual bool onMouseMotion(float x, float y) {return false;}
     /// respond to mouse motion events (hover) without button pressed
+    /// @return true if it needs to be rerendered
     virtual bool onMouseOver(float x, float y) {return false;}
     /// respond to mouse leave events (when mouse leaves item)
     virtual void onMouseLeave() {}
