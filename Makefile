@@ -348,7 +348,7 @@ dummy-addon.o: dummy-addon.cc
 node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
-$(EXES): RavelCAPI/civita/libcivita.a RavelCAPI/libravelCAPI.a
+$(EXES):
 
 tests: $(EXES)
 	cd test; $(MAKE)
