@@ -646,8 +646,9 @@ namespace MathDAG
            [&](const Items&, Items::const_iterator it){
              if (auto v=(*it)->variableCast())
                if (auto vv=v->vValue())
-                 variableSet.insert(dynamic_cast<VariableDAG*>
-                                    (makeDAG(v->valueId(), vv->name, vv->type()).get()));
+                 if (auto dag=dynamic_cast<VariableDAG*>
+                     (makeDAG(v->valueId(), vv->name, vv->type()).get()))
+                   variableSet.insert(dag);
              return false;
            });
         // TODO - if we can pass VariableDefOrder to the definition of variableSet, we don't need to resort...
