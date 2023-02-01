@@ -39,7 +39,7 @@ ifneq ($(build_ecolab),ecolab built)
 $(error "Making ecolab failed: check ecolab/build.log")
 endif
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1)) CLASSDESC=$(shell pwd)/ecolab/bin/classdesc
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc)
 $(warning $(build_RavelCAPI))
 endif
 
