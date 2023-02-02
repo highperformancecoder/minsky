@@ -212,7 +212,7 @@ LIBS+=	-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita \
 ifdef MXE
 LIBS+=-lcrypt32 -lbcrypt -lshcore
 else
-LIBS+=-lclipboard -lxcb -lX11
+LIBS+=-lclipboard -lxcb -lX11 -ldl
 endif
 
 # RSVG dependencies calculated here
