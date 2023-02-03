@@ -54,12 +54,12 @@ namespace minsky
   void doOneEvent(bool idleTasksOnly) {}
 }
 
-tuple<string,string> splitFirstComponent(const string& x)
+tuple<string,string> splitFirstComponent(const boost::string_view& x)
 {
   if (x.empty() || x[0]!='/') return {};
   auto i=find(x.begin()+1, x.end(), '/');
   if (i==x.end())
-    return std::make_tuple(x,string());
+    return std::make_tuple(string(x),string());
   return std::make_tuple(string{x.begin(),i},string{i,x.end()});
 }
 
@@ -125,7 +125,7 @@ int main(int argc, const char* argv[])
       try
         {
           // handle rendering of named components
-          auto components=splitFirstComponent(req.target().to_string());
+          auto components=splitFirstComponent(req.target());
           if (get<0>(components)=="/render")
             {
               auto c=registry.find(get<1>(components));
