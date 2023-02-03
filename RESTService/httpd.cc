@@ -167,7 +167,7 @@ int main(int argc, const char* argv[])
                 http::response<http::empty_body> response{http::status::ok, req.version()};
                 response.set(http::field::server, BOOST_BEAST_VERSION_STRING);
                 response.set(http::field::content_type, "text/html");
-                auto body=write(registry.process(req.target().to_string(),arguments));
+                auto body=write(registry.process(string(req.target()),arguments));
                 response.content_length(body.size());
                 response.keep_alive(req.keep_alive());
                 http::write(socket, response, ec);
@@ -182,7 +182,7 @@ int main(int argc, const char* argv[])
                 res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
                 res.set(http::field::content_type, "application/json");
                 res.set(http::field::access_control_allow_origin, "*");
-                auto cmd=req.target().to_string();
+                auto cmd=string(req.target());
                 res.body()=write(registry.process(cmd,arguments));
                 res.keep_alive(req.keep_alive());
                 http::write(socket, res, ec);
