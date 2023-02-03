@@ -291,7 +291,8 @@ namespace std
 void DataSpec::setDataArea(size_t row, size_t col)
 {
   m_nRowAxes=row;
-  m_nColAxes=col;
+  const size_t maxCols=16384; // Excel's limit
+  m_nColAxes=std::min(col, maxCols);
   if (headerRow>=row)
     headerRow=row>0? row-1: 0;
   if (row==headerRow) row++; //TODO handle no header properly
