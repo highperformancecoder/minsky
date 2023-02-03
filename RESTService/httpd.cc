@@ -193,7 +193,7 @@ int main(int argc, const char* argv[])
               }
               break;
             default:
-              throw runtime_error("http method "+to_string(req.method()).to_string()+" not supported");
+              throw runtime_error("http method "+string(to_string(req.method()))+" not supported");
             }
         }
       catch (const std::exception& ex)
