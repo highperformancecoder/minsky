@@ -1030,9 +1030,12 @@ namespace MathDAG
                // ensure plot inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
          else if (auto s=dynamic_cast<Sheet*>(i->get()))
-           for (auto w: s->ports(0).lock()->wires())
+           {
+             for (auto w: s->ports(0).lock()->wires())
                // ensure sheet inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+             s->computeValue();
+           }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            for (auto w: r->ports(1).lock()->wires())
                // ensure sheet inputs are evaluated

@@ -2146,8 +2146,21 @@ export class Sheet extends Item {
       super(prefix.prefix())
   }
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
+  computeValue(): void {return this.callMethod('computeValue');}
+  contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
+  corners(): object[] {return this.callMethod('corners');}
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
+  drawResizeHandles(a1: minsky__dummy): void {return this.callMethod('drawResizeHandles',a1);}
   inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
+  inRavel(a1: number,a2: number): boolean {return this.callMethod('inRavel',a1,a2);}
+  onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
+  onMouseLeave(): void {return this.callMethod('onMouseLeave');}
+  onMouseMotion(a1: number,a2: number): boolean {return this.callMethod('onMouseMotion',a1,a2);}
+  onMouseOver(a1: number,a2: number): boolean {return this.callMethod('onMouseOver',a1,a2);}
+  onMouseUp(a1: number,a2: number): void {return this.callMethod('onMouseUp',a1,a2);}
+  onRavelButton(a1: number,a2: number): boolean {return this.callMethod('onRavelButton',a1,a2);}
+  onResizeHandle(a1: number,a2: number): boolean {return this.callMethod('onResizeHandle',a1,a2);}
+  showRavel(...args: boolean[]): boolean {return this.callMethod('showRavel',...args);}
   showSlice(...args: string[]): string {return this.callMethod('showSlice',...args);}
 }
 
@@ -2480,6 +2493,8 @@ export class civita__Hypercube extends CppClass {
   }
   dimLabels(): string[] {return this.callMethod('dimLabels');}
   dims(...args: any[]): number[] {return this.callMethod('dims',...args);}
+  fromJson(a1: string): object {return this.callMethod('fromJson',a1);}
+  json(): string {return this.callMethod('json');}
   logNumElements(): number {return this.callMethod('logNumElements');}
   numElements(): number {return this.callMethod('numElements');}
   rank(): number {return this.callMethod('rank');}

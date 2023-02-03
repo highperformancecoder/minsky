@@ -278,7 +278,7 @@ namespace minsky
     void resizeOnContents();
 
     void resize(const LassoBox& x) override;
-    ClickType::Type clickType(float x, float y) override;
+    ClickType::Type clickType(float x, float y) const override;
 
     /// returns true if this is higher in the heirarchy than the argument
     /// this->higher(*this) is false

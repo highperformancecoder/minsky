@@ -194,7 +194,7 @@ namespace minsky
     */
     void draw(cairo_t*) const override;  
     void resize(const LassoBox& b) override;
-    ClickType::Type clickType(float x, float y) override;
+    ClickType::Type clickType(float x, float y) const override;
 
     /// @return true if variable is defined (inputWired() || isStock() && controlled)
     bool defined() const {return inputWired() || (isStock() && controller.lock());}

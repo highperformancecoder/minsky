@@ -710,6 +710,16 @@ namespace minsky
             }
           cachedResult.index(resultantIndex);
         }
+
+      // relabel any axis that has a duplicate name
+      int axisName=0;
+      set<string> axisNames;
+      for (auto& xv: hc.xvectors)
+        if (!axisNames.insert(xv.name).second)
+          {
+            while (!axisNames.insert(to_string(++axisName)).second); // find a name that hasn't been used
+            xv.name=to_string(axisName);
+          }
       cachedResult.hypercube(move(hc));
     }
       

@@ -23,6 +23,9 @@
 #include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>
+#include "minskyCairoRenderer.h"
+#include "ravelWrap.h"
+#include "tensorOp.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;
@@ -31,6 +34,8 @@ using namespace std;
 
 // width of draggable border 
 const float border=10;
+// proportion of width/height to centre Ravel popout
+const double ravelOffset=0.1;
 
 Sheet::Sheet()
 {
@@ -39,24 +44,128 @@ Sheet::Sheet()
   iHeight(100);	  
 }
 
-bool Sheet::inItem(float xx, float yy) const
+double Sheet::ravelSize() const
 {
-  auto z=zoomFactor();	 					
-  return abs(xx-x())<0.5*width()-border*z && abs(yy-y())<0.5*height()-border*z;
+  return 0.25*std::min(m_width,m_height)*zoomFactor();
 }
 
-ClickType::Type Sheet::clickType(float x, float y)
+double Sheet::ravelX(double xx) const
 {
-  double dx=fabs(x-this->x()), dy=fabs(y-this->y());
-  double w=0.5*width(), h=0.5*height();  
+  return (xx+(0.5+ravelOffset)*zoomFactor()*m_width-x())*inputRavel.radius()/(zoomFactor()*ravelSize());
+}
+
+double Sheet::ravelY(double yy) const
+{
+  return (yy+(0.5+ravelOffset)*zoomFactor()*m_height-y())*inputRavel.radius()/(zoomFactor()*ravelSize());
+}      
+
+bool Sheet::onResizeHandle(float xx, float yy) const
+{
+  float dx=xx-x(), dy=yy-y();
+  double z=zoomFactor();
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor(), b=border*zoomFactor();
+  return fabs(dx)>=w-resizeHandleSize() && fabs(dx)<=w+resizeHandleSize() &&
+    fabs(dy)>=h-resizeHandleSize() && fabs(dy)<=h+resizeHandleSize() &&
+    (!inputRavel || dx>0 || dy>0);
+}
+
+
+void Sheet::drawResizeHandles(cairo_t* cairo) const
+{
+  auto sf=resizeHandleSize();
+  float w=0.5f*m_width*zoomFactor(), h=0.5f*m_height*zoomFactor();
+  if (!showRavel)
+    drawResizeHandle(cairo,-w,-h,sf,0);
+  drawResizeHandle(cairo,w,-h,sf,0.5*M_PI);
+  drawResizeHandle(cairo,w,h,sf,0);
+  drawResizeHandle(cairo,-w,h,sf,0.5*M_PI);
+  cairo_stroke(cairo);
+}
+
+
+bool Sheet::onRavelButton(float xx, float yy) const
+{
+  float dx=xx-x(), dy=yy-y();
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor(), b=border*zoomFactor();
+  return inputRavel && dx>=-w && dx<=b-w && dy>=-h && dy<=b-h;
+}
+
+bool Sheet::inRavel(float xx, float yy) const
+{
+  auto dx=xx-x(), dy=yy-y();
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();
+  return showRavel && inputRavel && !(dx>=w && dy>=h) &&
+    fabs(ravelX(xx))<1.1*inputRavel.radius() && fabs(ravelY(yy))<1.1*inputRavel.radius();
+}
+
+bool Sheet::inItem(float xx, float yy) const
+{
+  double z=zoomFactor();
+  double w=0.5*m_width*z, h=0.5*m_height*z, b=border*z;
+  return (abs(xx-x())<w-b && abs(yy-y())<h-b) || onRavelButton(xx,yy) || inRavel(xx,yy);
+}
+
+void Sheet::onMouseDown(float x, float y)
+{
+  if (onRavelButton(x,y))
+    {
+      showRavel=!showRavel;
+      bb.update(*this);
+    }
+  else if (inRavel(x,y))
+    inputRavel.onMouseDown(ravelX(x), ravelY(y));
+}
+
+void Sheet::onMouseUp(float x, float y)
+{if (inRavel(x,y)) inputRavel.onMouseUp(ravelX(x), ravelY(y));}
+
+bool Sheet::onMouseMotion(float x, float y)
+{
+  if (inRavel(x,y))
+    return inputRavel.onMouseMotion(ravelX(x), ravelY(y));
+  else if (inputRavel)
+    {
+      inputRavel.onMouseLeave();
+      return true;
+    }
+  return false;
+}
+
+bool Sheet::onMouseOver(float x, float y)
+{
+  if (inRavel(x,y))
+    return inputRavel.onMouseOver(ravelX(x), ravelY(y));
+  else if (inputRavel)
+    {
+      inputRavel.onMouseLeave();
+      return true;
+    }
+  return false;
+}
+
+void Sheet::onMouseLeave()
+{if (inputRavel) inputRavel.onMouseLeave();}
+
+ClickType::Type Sheet::clickType(float x, float y) const
+{
   if (onResizeHandle(x,y)) return ClickType::onResize;
   if (inItem(x,y)) return ClickType::inItem;                     
+  double dx=fabs(x-this->x()), dy=fabs(y-this->y());
+  double w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();  
   if (dx < w && dy < h)
     return ClickType::onItem;
   return ClickType::outside;  
-  if (auto item=select(x,y))
-    return item->clickType(x,y);      
-  return Item::clickType(x,y);  
+}
+
+std::vector<Point> Sheet::corners() const
+{
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();  
+  return {{x()-w,y()-h},{x()+w,y()-h},{x()-w,y()+h},{x()+w,y()+h}};
+}
+
+bool Sheet::contains(float x, float y) const
+{
+  return Item::contains(x,y) || inRavel(x,y);
 }
 
 namespace
@@ -97,6 +206,42 @@ namespace
   };
 }
 
+void Sheet::computeValue()
+{
+  if (m_ports[0] && (value=m_ports[0]->getVariableValue()) && inputRavel)
+    {
+      bool wasEmpty=inputRavel.numHandles()==0;
+      inputRavel.populateFromHypercube(value->hypercube());
+      for (size_t i=0; i<inputRavel.numHandles(); ++i)
+        inputRavel.displayFilterCaliper(i,true);
+      if (wasEmpty)
+        switch (value->rank())
+          {
+          case 0: break;
+          case 1:
+            inputRavel.setOutputHandleIds({0});
+            break;
+          default:
+            inputRavel.setOutputHandleIds({0,1});
+            break;
+          }
+      
+      if (value->rank()>0)
+        {
+          value=inputRavel.hyperSlice(value);
+          if (value->rank()>=2)
+            { // swap first and second axes
+              auto& xv=value->hypercube().xvectors;
+              auto pivot=make_shared<civita::Pivot>();
+              pivot->setArgument(value);
+              pivot->setOrientation(vector<string>{xv[1].name,xv[0].name});
+              value=move(pivot);
+            }
+        }
+    }
+}
+
+
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();
@@ -110,7 +255,38 @@ void Sheet::draw(cairo_t* cairo) const
     }
 
   cairo_scale(cairo,z,z);
-    
+
+  if (inputRavel)
+    {
+      if (showRavel)
+        {
+          cairo::CairoSave cs(cairo);
+          cairo_translate(cairo,-(0.5+ravelOffset)*m_width,-(0.5+ravelOffset)*m_height);
+          double r=inputRavel.radius();
+          double scale=ravelSize()/r;
+          cairo_scale(cairo,scale,scale);
+          double cornerX=ravelOffset*m_width/scale;
+          double cornerY=ravelOffset*m_height/scale;
+          // clip out the bottom right quadrant
+          r*=1.1; // allow space for arrow heads
+          cairo_move_to(cairo,cornerX,cornerY);
+          cairo_line_to(cairo,r,cornerY);
+          cairo_line_to(cairo,r,-r);
+          cairo_line_to(cairo,-r,-r);
+          cairo_line_to(cairo,-r,r);
+          cairo_line_to(cairo,cornerX,r);
+          cairo_stroke_preserve(cairo);
+          cairo_clip(cairo);
+          CairoRenderer render(cairo);
+          inputRavel.render(render);
+        }
+      // display ravel button
+      cairo::CairoSave cs(cairo);
+      cairo_translate(cairo,-0.5*m_width,-0.5*m_height);
+      cairo_scale(cairo,border/Ravel::svgRenderer.width(),border/Ravel::svgRenderer.height());
+      Ravel::svgRenderer.render(cairo);
+    }
+  
   cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
   cairo_stroke_preserve(cairo);
   cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
@@ -131,7 +307,6 @@ void Sheet::draw(cairo_t* cairo) const
 
   try
     {
-      auto value=m_ports[0]->getVariableValue();
       if (!value) return;
       Pango pango(cairo);
       if (value->hypercube().rank()>2)
