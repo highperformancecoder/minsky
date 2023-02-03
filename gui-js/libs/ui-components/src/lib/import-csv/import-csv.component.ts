@@ -407,8 +407,6 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       if (options.buttons[index] === positiveResponseText) {
         await this.doReport();
       }
-      this.closeWindow();
-
       return;
     }
 
