@@ -1,9 +1,8 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
-import { commandsMapping, events, MainRenderingTabs } from '@minsky/shared';
+import { events, MainRenderingTabs, RenderNativeWindow } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { AppConfig } from '../environments/environment';
 
 @Component({
   selector: 'minsky-root',
@@ -20,7 +19,7 @@ export class AppComponent implements AfterViewInit {
     private translate: TranslateService,
     public router: Router
   ) {
-      this.windowUtilityService=new WindowUtilityService(electronService);
+    this.windowUtilityService=new WindowUtilityService(electronService);
     this.translate.setDefaultLang('en');
   }
 
@@ -49,23 +48,23 @@ export class AppComponent implements AfterViewInit {
   }
 
   // close modals with ESC
-  private handleEscKey(event: KeyboardEvent) {
+  private async handleEscKey(event: KeyboardEvent) {
     (document.activeElement as HTMLElement).blur();
     //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)
 
-    const currentWindow =
-    this.electronService.remote.getCurrentWindow();
-    // disable closing be means of dontCloseOnEscape property
-    if (currentWindow.id !== 1 && !currentWindow.hasOwnProperty("dontCloseOnEscape")) {
-      currentWindow.close();
+    const currentWindow = await this.electronService.getCurrentWindow();
+    // disable closing by means of dontCloseOnEscape property
+    if (currentWindow.id !== 1 && !currentWindow.dontCloseOnEscape) {
+      this.electronService.closeWindow();
       event.preventDefault();
     }
   }
 
   // submits form with class="submit" when pressed Enter key
-  private handleEnterKey(event: KeyboardEvent) {
+  private async handleEnterKey(event: KeyboardEvent) {
       // disable invoking OK button if marked dontCloseOnReturn
-      if (this.electronService.remote.getCurrentWindow().hasOwnProperty("dontCloseOnReturn")) return;
+    const currentWindow = await this.electronService.getCurrentWindow();
+    if (currentWindow.dontCloseOnReturn) return;
 
       (document.activeElement as HTMLElement).blur();
       //CAVEAT: The blur is needed to prevent main window close (If we try to close a child window when one of its inputs has focus - the main window closes and there is a crash)
@@ -87,26 +86,25 @@ export class AppComponent implements AfterViewInit {
     await this.cmService.setWindowSizeAndCanvasOffsets();
   }
 
-  changeTab(tab: MainRenderingTabs) {
-    this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-    });
+  async changeTab(tab: MainRenderingTabs) {
+    new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
 
     this.cmService.currentTab = tab;
     if (this.electronService.isElectron) {
+      await this.windowUtilityService.reInitialize();
       var container=this.windowUtilityService.getMinskyContainerElement();
       const scrollableArea=this.windowUtilityService.getScrollableArea();
       container.scrollTop=scrollableArea.height / 2;
       container.scrollLeft=scrollableArea.width / 2;
       const payload = { newTab: tab };
-      this.electronService.ipcRenderer.send(events.CHANGE_MAIN_TAB, payload);
+      await this.electronService.send(events.CHANGE_MAIN_TAB, payload);
       this.cmService.resetScroll();
     }
   }
 
   startTerminal() {
     if (this.electronService.isElectron) {
-      this.electronService.ipcRenderer.send(events.CREATE_MENU_POPUP, {
+      this.electronService.send(events.CREATE_MENU_POPUP, {
         title: 'Terminal',
         url: `#/headless/terminal`,
         width: 800,

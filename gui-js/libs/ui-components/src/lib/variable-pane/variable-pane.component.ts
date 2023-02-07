@@ -12,10 +12,7 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import {
-  commandsMapping,
-  ZOOM_IN_FACTOR,
-  ZOOM_OUT_FACTOR,
-  green
+  VariablePane,
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
@@ -31,8 +28,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   @ViewChild('variablePaneWrapper') variablePaneWrapper: ElementRef;
 
   itemId: number;
-  systemWindowId: number;
-  namedItemSubCommand: string;
+  systemWindowId: BigInt;
 
   leftOffset = 0;
   topOffset: number;
@@ -40,7 +36,8 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   width: number;
   variablePaneContainer: HTMLElement;
   mouseMove$: Observable<MouseEvent>;
-
+  variablePane: VariablePane;
+  
   mouseX = 0;
   mouseY = 0;
 
@@ -54,10 +51,10 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
     });
+    this.variablePane=electronService.minsky.variablePane;
   }
 
   ngAfterViewInit() {
-    this.namedItemSubCommand = "/minsky/variablePane";
     this.getWindowRectInfo();
     this.renderFrame();
     this.initEvents();
@@ -74,15 +71,12 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     const clientRect = this.variablePaneContainer.getBoundingClientRect();
 
     this.leftOffset = Math.round(clientRect.left);
-//    this.topOffset = Math.round(
-//      this.windowUtilityService.getElectronMenuBarHeight()
-//    );
-      this.topOffset = 20;
-      
+    this.topOffset = 20;
+    
     this.height = Math.round(this.variablePaneContainer.clientHeight);
-      this.width = Math.round(this.variablePaneContainer.clientWidth-this.topOffset);
+    this.width = Math.round(this.variablePaneContainer.clientWidth-this.topOffset);
   }
-
+  
   renderFrame() {
     if (
       this.electronService.isElectron &&
@@ -90,59 +84,43 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       this.height &&
       this.width
     ) {
-      const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
-        .scaleFactor;
-
-      this.electronService.sendMinskyCommandAndRender({
-          command: `/minsky/variablePane/updateWithHeight ${this.height}`,
-      });
-
-      this.electronService.sendMinskyCommandAndRender({
-          command: `/minsky/variablePane/renderFrame [${this.systemWindowId},${this.leftOffset},${this.topOffset},${this.width},${this.height},${scaleFactor}]`,
+      this.variablePane.updateWithHeight(this.height);
+      this.variablePane.renderFrame({
+        parentWindowId: this.systemWindowId.toString(),
+        offsetLeft: this.leftOffset,
+        offsetTop: this.topOffset,
+        childWidth: this.width,
+        childHeight: this.height,
+        scalingFactor: -1
       });
     }
   }
 
   initEvents() {
-//    this.variablePaneContainer.addEventListener('scroll', async () => {
-//      await this.handleScroll(
-//        this.variablePaneContainer.scrollTop,
-//        this.variablePaneContainer.scrollLeft
-//      );
-//    });
 
     this.mouseMove$ = fromEvent<MouseEvent>(
       this.variablePaneContainer,
       'mousemove'
     ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
-    this.mouseMove$.subscribe(async (event: MouseEvent) => {
+    this.mouseMove$.subscribe((event: MouseEvent) => {
       const { clientX, clientY } = event;
       this.mouseX = clientX;
       this.mouseY = clientY;
-      this.sendMouseEvent(
-        clientX,
-        clientY,
-        commandsMapping.MOUSEMOVE_SUBCOMMAND
-      );
+      this.variablePane.mouseMove(clientX,clientY);
+      this.variablePane.requestRedraw();
     });
 
     this.variablePaneContainer.addEventListener('mousedown', (event) => {
       const { clientX, clientY } = event;
-      this.sendMouseEvent(
-        clientX,
-        clientY,
-        commandsMapping.MOUSEDOWN_SUBCOMMAND
-      );
+      this.variablePane.mouseDown(clientX,clientY);
+      this.variablePane.requestRedraw();
     });
 
-    this.variablePaneContainer.addEventListener('mouseup', async (event) => {
+    this.variablePaneContainer.addEventListener('mouseup', (event) => {
       const { clientX, clientY } = event;
-      await this.sendMouseEvent(
-        clientX,
-        clientY,
-        commandsMapping.MOUSEUP_SUBCOMMAND
-      );
+      this.variablePane.mouseUp(clientX,clientY);
+      this.variablePane.requestRedraw();
     });
 
 //    this.variablePaneContainer.onwheel = this.onMouseWheelZoom;
@@ -150,54 +128,26 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     document.onkeyup = this.onKeyUp;
   }
 
-  async redraw() {
-    await this.electronService.sendMinskyCommandAndRender({
-      command: "/minsky/variablePane/requestRedraw",
-    });
-  }
-
-  async sendMouseEvent(x: number, y: number, type: string) {
-    const command = `/minsky/variablePane/${type} [${x},${y}]`;
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command,
-    });
-
-    await this.redraw();
-  }
-
-  onKeyDown = async (event: KeyboardEvent) => {
-      if (event.shiftKey) {
-          await this.electronService.sendMinskyCommandAndRender({
-              command:"/minsky/variablePane/shift true"
-          });
-
-          await this.redraw();
-      }
-  };
-  onKeyUp = async (event: KeyboardEvent) => {
-      if (event.shiftKey) {
-          await this.electronService.sendMinskyCommandAndRender({
-              command:"/minsky/variablePane/shift false"
-          });
-
-          await this.redraw();
-      }
-  };
-
-    async select(id) {
-        if (document.forms["variablePane"]["variablePane::"+id].checked)
-            await this.electronService.sendMinskyCommandAndRender({
-                command:`/minsky/variablePane/select "${id}"`
-            });
-        else
-            await this.electronService.sendMinskyCommandAndRender({
-                command:`/minsky/variablePane/deselect "${id}"`
-            });
-        this.electronService.sendMinskyCommandAndRender({
-            command: `/minsky/variablePane/updateWithHeight ${this.height}`,
-        });
+  onKeyDown =  (event: KeyboardEvent) => {
+    if (event.shiftKey) {
+      this.variablePane.shift(true);
+      this.variablePane.requestRedraw();
     }
+  };
+  onKeyUp = (event: KeyboardEvent) => {
+      if (event.shiftKey) {
+        this.variablePane.shift(false);
+        this.variablePane.requestRedraw();
+      }
+  };
+
+  select(id) {
+    if (document.forms["variablePane"]["variablePane::"+id].checked)
+      this.variablePane.select(id);
+    else
+      this.variablePane.deselect(id);
+    this.variablePane.updateWithHeight(this.height);
+  }
     
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
   ngOnDestroy() {}

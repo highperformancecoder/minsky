@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import App from './app/app';
 import ElectronEvents from './app/events/electron.events';
 import SquirrelEvents from './app/events/squirrel.events';
-import { Utility } from './app/utility';
+import { Utility } from '@minsky/shared';
 
 export default class Main {
   static initialize() {

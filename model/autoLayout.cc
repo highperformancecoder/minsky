@@ -39,7 +39,6 @@ namespace minsky
 {
   namespace
   {
-    inline double sqr(double x) {return x*x;}
     using Graph=boost::directed_graph<Item*>;
 
     // computes minimum distance two items can approach each other
@@ -77,9 +76,9 @@ namespace minsky
     {
       double area=0;
       for (auto& i: g.items)
-        area+=i->width()*i->height();
+        area+=double(i->width())*i->height();
       for (auto& i: g.groups)
-        area+=i->width()*i->height();
+        area+=double(i->width())*i->height();
       return area;
     }
   }

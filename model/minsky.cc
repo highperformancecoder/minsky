@@ -73,12 +73,6 @@ using namespace boost::posix_time;
 
 namespace
 {
-  inline bool isFinite(const double y[], size_t n)
-  {
-    for (size_t i=0; i<n; ++i)
-      if (!isfinite(y[i])) return false;
-    return true;
-  }
   struct BusyCursor
   {
     Minsky& minsky;
@@ -345,19 +339,6 @@ namespace minsky
         throw runtime_error("clipboard data invalid");
       }
   
-  namespace
-  {
-    /// checks if the input stream has the UTF-8 byte ordering marker,
-    /// and removes it if present
-    void stripByteOrderingMarker(istream& s)
-    {
-      char bom[4];
-      s.get(bom,4);
-      if (strcmp(bom,"\357\273\277")==0) return; //skipped BOM
-      s.seekg(0); //rewind input stream
-    }
-  }
-
   void Minsky::insertGroupFromFile(const string& file)
   {
     ifstream inf(file);
@@ -552,7 +533,6 @@ namespace minsky
       });
   }
 
-
   void Minsky::populateMissingDimensionsFromVariable(const VariableValue& v)
   {
     for (auto& xv: v.hypercube().xvectors)
@@ -580,6 +560,28 @@ namespace minsky
         return false;
       });
   }
+
+  void Minsky::renameDimension(const std::string& oldName, const std::string& newName)
+  {
+    auto i=dimensions.find(oldName);
+    if (i!=dimensions.end())
+      {
+        dimensions[newName]=i->second;
+        dimensions.erase(i);
+      }
+
+    for (auto& v: variableValues)
+      {
+        auto hc=v.second->tensorInit.hypercube();
+        for (auto& x: hc.xvectors)
+          if (x.name==oldName)
+            {
+              x.name=newName;
+            }
+        v.second->tensorInit.hypercube(hc);
+      }
+  }
+
   
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
@@ -1008,7 +1010,7 @@ namespace minsky
       message("You are converting the model from an older version of Minsky. "
               "Once you save this file, you may not be able to open this file"
               " in older versions of Minsky.");
-    
+  
     // try balancing all Godley tables
     try
       {
@@ -1120,7 +1122,6 @@ namespace minsky
           if (eo->out < 0|| (eo->numArgs()>0 && eo->in1.empty()) ||
               (eo->numArgs() > 1 && eo->in2.empty()))
             {
-              //cerr << "Incorrectly wired operation "<<opIdOfEvalOp(eo)<<endl;
               return false;
             }
           switch  (eo->numArgs())
@@ -1276,6 +1277,7 @@ namespace minsky
         command!="minsky.setGodleyIconResource" &&
         command!="minsky.setGroupIconResource" &&
         command!="minsky.setLockIconResource" &&
+        command!="minsky.setRavelIconResource" &&
         command!="minsky.setAutoSaveFile" &&
         command!="minsky.step" &&
         command!="minsky.running" &&
@@ -1419,6 +1421,9 @@ namespace minsky
           auto integ=new IntOp;
           g->addItem(integ);
           integ->moveTo(canvas.item->x(), canvas.item->y());
+          // remove intVar from its group
+          if (auto g=integ->intVar->group.lock())
+            g->removeItem(*integ->intVar);
           integ->intVar=dynamic_pointer_cast<VariableBase>(canvas.item);
           integ->toggleCoupled();
           
@@ -1491,6 +1496,18 @@ namespace minsky
   vector<string> Minsky::assetClasses()
   {return enumVals<GodleyTable::AssetClass>();}
 
+  Minsky::AvailableOperationsMapping Minsky::availableOperationsMapping() const
+  {
+    AvailableOperationsMapping r;
+    for (OperationType::Type op{}; op != OperationType::numOps; op=OperationType::Type(int(op)+1))
+      {
+        if (classifyOp(op)==OperationType::general) continue;
+        if (op==OperationType::copy) continue;
+        r[classdesc::to_string(classifyOp(op))].push_back(op);
+      }
+    return r;
+  }
+  
   void Minsky::autoLayout()
   {
     canvas.model->autoLayout();

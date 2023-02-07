@@ -39,6 +39,8 @@
 #include "engNotation.h"
 #include "engNotation.rcd"
 #include "engNotation.xcd"
+#include "eventInterface.rcd"
+#include "eventInterface.xcd"
 #include "hypercube.h"
 #include "hypercube.rcd"
 #include "hypercube.xcd"

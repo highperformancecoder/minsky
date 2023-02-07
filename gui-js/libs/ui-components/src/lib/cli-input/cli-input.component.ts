@@ -6,10 +6,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping, unExposedTerminalCommands } from '@minsky/shared';
+import { CppClass, unExposedTerminalCommands } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import * as JSON5 from 'json5';
 
 @AutoUnsubscribe()
 @Component({
@@ -21,6 +22,7 @@ export class CliInputComponent implements OnInit, OnDestroy {
   commands: Array<string>;
   filteredOptions$: Observable<string[]>;
   command: string;
+  args: string;
   form: FormGroup;
   output = [];
 
@@ -46,13 +48,11 @@ export class CliInputComponent implements OnInit, OnDestroy {
     );
 
     this.form.valueChanges.subscribe(() => {
-      this.command = this.makeCommand();
+      this.makeCommand();
     });
 
     if (this.electronService.isElectron) {
-      let _commands = (await this.electronService.sendMinskyCommandAndRender({
-        command: commandsMapping.LIST_V2,
-      })) as string[];
+      let _commands = await this.electronService.minsky.$list();
 
       _commands = _commands.map((c) => `/minsky${c}`);
 
@@ -62,18 +62,17 @@ export class CliInputComponent implements OnInit, OnDestroy {
 
   async handleSubmit() {
     if (this.electronService.isElectron && this.command) {
-      const output = await this.electronService.sendMinskyCommandAndRender({
-        command: this.command,
-      });
-
-      this.output.push(`${this.command} ==> ${JSON.stringify(output)}`);
+      if (this.args)
+        var output = await CppClass.backend(this.command,JSON5.parse(this.args));
+      else
+        var output = await CppClass.backend(this.command);
+      this.output.push(`${this.command} ==> ${JSON5.stringify(output)}`);
     }
   }
 
   private makeCommand() {
-    return `${this.commandControl.value} ${
-      this.argsControl.value || ''
-    }`.trim();
+    this.command =  this.commandControl.value;
+    this.args = this.argsControl.value;
   }
 
   private _filter(value: string): string[] {

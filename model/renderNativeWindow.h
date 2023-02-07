@@ -20,13 +20,15 @@
 #ifndef RENDER_NATIVE_WINDOW_H
 #define RENDER_NATIVE_WINDOW_H
 
+#include "eventInterface.h"
+
 #include <cairoSurfaceImage.h>
 #include <plot.h>
 
 namespace minsky
 {  
   class WindowInformation;
-  class RenderNativeWindow : public ecolab::CairoSurface
+  class RenderNativeWindow : public ecolab::CairoSurface, public EventInterface
   {
   private:
     CLASSDESC_ACCESS(RenderNativeWindow); 
@@ -38,7 +40,7 @@ namespace minsky
 
     struct RenderFrameArgs
     {
-      uint64_t parentWindowId;
+      std::string parentWindowId;
       int offsetLeft;
       int offsetTop;
       int childWidth;
@@ -53,6 +55,8 @@ namespace minsky
     void requestRedraw();
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
+    RenderNativeWindow()=default;
+    RenderNativeWindow(const RenderNativeWindow&)=default;
     static double scaleFactor();
     /// return whether this window has scrollbars (needed for MacOSX).
     virtual bool hasScrollBars() const {return false;}

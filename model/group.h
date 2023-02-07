@@ -234,7 +234,6 @@ namespace minsky
     float contentBounds(double& x0, double& y0, double& x1, double& y1) const;
     
   public:
-    
     std::string title;
     std:: string name() const override {return title;}
     /// evaluate function on arbitrary number of arguments (exprtk support)
@@ -256,6 +255,9 @@ namespace minsky
     Group* clone() const override {throw error("Groups cannot be cloned");}
     static SVGRenderer svgRenderer;
 
+    /// Make all variables not present in outerscope local to this group
+    void makeSubroutine();
+    
     // TODO fix up the need for this override - see ticket #786
     ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false)
     {
@@ -300,7 +302,7 @@ namespace minsky
     void resizeOnContents();
 
     void resize(const LassoBox& x) override;
-    ClickType::Type clickType(float x, float y) override;
+    ClickType::Type clickType(float x, float y) const override;
 
     /// returns true if this is higher in the heirarchy than the argument
     /// this->higher(*this) is false
@@ -356,7 +358,6 @@ namespace minsky
     float edgeScale() const {
       float z=zoomFactor();
       return z*relZoom>1? z*relZoom: z>1? 1: z;
-      //return zoomFactor()>1? localZoom(): zoomFactor();
     }
 
     /// for TCL debugging

@@ -39,6 +39,8 @@ namespace minsky
     CLASSDESC_ACCESS(FontDisplay);
   public:
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    FontDisplay()=default;
+    FontDisplay(const FontDisplay&)=default;
     FontDisplay& operator=(const FontDisplay&) {return *this;}
   };
 }

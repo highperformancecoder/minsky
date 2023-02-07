@@ -135,9 +135,9 @@ namespace MathDAG
     const Node& operator*() const {return *payload;}
     Node* operator->() {return payload;}
     const Node* operator->() const {return payload;}
-    WeakNodePtr operator=(const NodePtr& x)
+    WeakNodePtr& operator=(const NodePtr& x)
     {payload=x.get(); return *this;}
-    WeakNodePtr operator=(Node* x)
+    WeakNodePtr& operator=(Node* x)
     {payload=x; return *this;}
     WeakNodePtr(): payload(nullptr) {}
     template <class T>

@@ -27,7 +27,6 @@
 #include "classdesc_access.h"
 
 #include "item.h"
-//#include "variable.h"
 #include "slider.h"
 
 #include <vector>

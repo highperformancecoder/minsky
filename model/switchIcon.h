@@ -58,8 +58,8 @@ namespace minsky
     unsigned switchValue() const;
     double value() const override {return m_ports[switchValue()+2]->value();}
     
-//    const SwitchIcon* switchIconCast() const override {return this;}
-//    SwitchIcon* switchIconCast() override {return this;}    
+    const SwitchIcon* switchIconCast() const override {return this;}
+    SwitchIcon* switchIconCast() override {return this;}    
     
     Units units(bool) const override;
 
@@ -68,6 +68,7 @@ namespace minsky
 
     /// whether icon is oriented so input ports are on the rhs, and output on the lhs
     bool flipped=false;
+    void flip() override {flipped=!flipped;}
   };
 }
 

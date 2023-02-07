@@ -108,6 +108,11 @@ namespace minsky
     VariableBase* variableCast() override {return this;}
 
     float zoomFactor() const override;
+
+    /// @return true if variable is local to its group
+    bool local() const;
+    /// toggle local status
+    void toggleLocal() {name(m_name[0]==':'? m_name.substr(1): ':'+m_name);}
     
     /// @{ variable displayed name
     virtual std::string name() const;
@@ -163,7 +168,8 @@ namespace minsky
     double maxSliderSteps() const;    
 
     /// sets/gets the units associated with this type
-    Units units(bool check=false) const override;
+    Units units(bool check) const override;
+    Units units() const {return units(false);}
     void setUnits(const std::string&) const;
     std::string unitsStr() const {return units().str();}
     
@@ -188,7 +194,7 @@ namespace minsky
     */
     void draw(cairo_t*) const override;  
     void resize(const LassoBox& b) override;
-    ClickType::Type clickType(float x, float y) override;
+    ClickType::Type clickType(float x, float y) const override;
 
     /// @return true if variable is defined (inputWired() || isStock() && controlled)
     bool defined() const {return inputWired() || (isStock() && controller.lock());}
@@ -210,7 +216,7 @@ namespace minsky
     void importFromCSV(std::string filename, const DataSpecSchema& spec) const;
 
     /// clean up popup window structures on window close
-    void destroyFrame() const;
+    void destroyFrame() override;
 
   };
 
@@ -235,7 +241,7 @@ namespace minsky
       this->addPorts();
       return *this;
     }
-    Variable(const std::string& name="") {this->name(name); this->addPorts();}
+    Variable(const std::string& name="") {VariableBase::name(name); this->addPorts();}
     std::string classType() const override 
     {return "Variable:"+VariableType::typeName(type());}
     Variable* clone() const override {

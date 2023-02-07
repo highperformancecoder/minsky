@@ -1,0 +1,21 @@
+.container {
+  .form-body {
+    overflow-y: auto;
+
+    .form-row {
+      .header-cell {
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .form-cell {
+        text-align: center;
+        margin: 0px 5px;
+
+        select {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

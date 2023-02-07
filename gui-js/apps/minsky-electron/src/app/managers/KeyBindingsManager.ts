@@ -1,16 +1,12 @@
 import {
-  availableOperations,
-  commandsMapping,
-  isEmptyObject,
-  MainRenderingTabs,
   MinskyProcessPayload,
-  ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
+  minsky, RenderNativeWindow,
 } from '@minsky/shared';
 import * as utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
-const JSON5 = require('json5');
+import { WindowManager } from './WindowManager';
+import * as JSON5 from 'json5';
 
 export class KeyBindingsManager {
   static async handleOnKeyPress(
@@ -48,31 +44,32 @@ export class KeyBindingsManager {
       modifierKeyCode += 8;
     }
 
-    const currentTab = RestServiceManager.getCurrentTab();
+    const currentTab = WindowManager.currentTab;
 
     if (keySymAndName.keysym) {
-      const _payload: MinskyProcessPayload = {};
       // For godley popup, command sent by frontend is non-empty. It is the item accesor
-      _payload.command = command
-        ? `${command}/keyPress [${keySymAndName.keysym},${JSON5.stringify(_utf8)},${modifierKeyCode},${mouseX},${mouseY}]`
-        : `${currentTab}/${commandsMapping.KEY_PRESS_COMMON_SUBCOMMAND} [${keySymAndName.keysym},${JSON5.stringify(_utf8)},${modifierKeyCode},${mouseX},${mouseY}]`;
-
-      const isKeyPressHandled = await RestServiceManager.handleMinskyProcess(
-        _payload
-      );
-
+      let renderer=command? new RenderNativeWindow(command): currentTab;
+      const isKeyPressHandled = renderer.keyPress(
+        {
+          keySym:keySymAndName.keysym,
+          utf8: _utf8,
+          state: modifierKeyCode,
+          x: mouseX,
+          y: mouseY
+        });
+      
       if (
         !isKeyPressHandled &&
-        !command &&
-        currentTab === MainRenderingTabs.canvas
+          !command &&
+          currentTab.equal(minsky.canvas)
       ) {
-        return await this.handleOnKeyPressFallback(payload);
+        return await this.handleOnKeyPressFallback({key:keySymAndName.name, ctrl, mouseX, mouseY});
       }
       return isKeyPressHandled;
     }
 
     let res: boolean | string = false;
-    if (!command && currentTab === MainRenderingTabs.canvas) {
+    if (!command && currentTab.equal(minsky.canvas)) {
       res = await this.handleOnKeyPressFallback(payload);
     }
     return res;
@@ -157,14 +154,15 @@ export class KeyBindingsManager {
         };
         
         let _keysym = customKeysymMap[keyName];
-        
+
         if (!_keysym && keyName.length==1) {
             // we make the assumption that UTF16 characters map
             // verbatim to XKeySyms - only a problem for UTF16
             // characters in the range 0xff00 to 0xffff.
-            _keysym = keyName.charCodeAt(0);
+          _keysym = keyName.charCodeAt(0);
         }
-        return {
+      console.log(`keyName=${keyName}, keySym=${_keysym}\n`);
+      return {
             keysym: _keysym,
             name: keyName,
         };
@@ -178,93 +176,86 @@ export class KeyBindingsManager {
     let executed = true;
     const { key } = payload;
 
+    console.log(`handleOnKeyPressFallback ${JSON5.stringify(payload)}`);
     switch (key) {
-      case 'Backspace':
-      case 'Delete':
-        await this.deleteKey(payload);
-        break;
+    case 'Backspace':
+    case 'Delete':
+      await this.deleteKey(payload);
+      break;
 
-      case '+':
-        await this.handlePlusKey(payload);
-        break;
+    case '+':
+      console.log('calling handlePlusKey');
+      await this.handlePlusKey(payload);
+      break;
 
-      case '-':
-        if (payload.location !== 3) {
-          executed = false;
-        } else {
-          await this.handleMinusKey(payload);
-        }
-        break;
-
-      case '*':
-        await CommandsManager.addOperation(availableOperations.MULTIPLY);
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '/':
-        await CommandsManager.addOperation(availableOperations.DIVIDE);
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '^':
-        await CommandsManager.addOperation(availableOperations.POW);
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '&':
-        await CommandsManager.addOperation(availableOperations.INTEGRATE);
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '=':
-        await CommandsManager.addGodley();
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case '@':
-        await CommandsManager.addPlot();
-        await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-
-        break;
-
-      case 'x':
-      case 'X':
-        if (this.isCtrlPayload(payload)) {
-          await CommandsManager.cut();
-        } else {
-          executed = false;
-        }
-
-        break;
-
-      case 'c':
-      case 'C':
-        if (this.isCtrlPayload(payload)) {
-          await CommandsManager.copy();
-        } else {
-          executed = false;
-        }
-
-        break;
-
-      case 'v':
-      case 'V':
-        if (this.isCtrlPayload(payload)) {
-          await CommandsManager.paste();
-        } else {
-          executed = false;
-        }
-
-        break;
-
-      default:
+    case '-':
+      if (payload.location !== 3) {
         executed = false;
-        break;
+      } else {
+        await this.handleMinusKey(payload);
+      }
+      break;
+
+    case '*':
+      minsky.canvas.addOperation("multiply");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '/':
+      minsky.canvas.addOperation("divide");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '^':
+      minsky.canvas.addOperation("pow");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '&':
+      minsky.canvas.addOperation("integrate");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '=':
+      minsky.canvas.addGodley();
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case '@':
+      minsky.canvas.addPlot();
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
+
+    case 'x':
+    case 'X':
+      if (this.isCtrlPayload(payload)) {
+        await CommandsManager.cut();
+      } else {
+        executed = false;
+      }
+      break;
+      
+    case 'c':
+    case 'C':
+      if (this.isCtrlPayload(payload)) {
+        await CommandsManager.copy();
+      } else {
+        executed = false;
+      }
+      break;
+
+    case 'v':
+    case 'V':
+      if (this.isCtrlPayload(payload)) {
+        await CommandsManager.paste();
+      } else {
+        executed = false;
+      }
+      break;
+
+    default:
+      executed = false;
+      break;
     }
 
     if (payload.ctrl) {
@@ -276,16 +267,16 @@ export class KeyBindingsManager {
   }
 
   private static async handlePlusKey(payload: MinskyProcessPayload) {
-    if (payload.shift) {
+//    if (payload.shift) {
       // <Key-plus>
-      await CommandsManager.addOperation(availableOperations.ADD);
+      minsky.canvas.addOperation("add");
       await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
       return;
-    }
+//    }
 
-    // <Key-KP_Add>
-    await this.zoom(ZOOM_IN_FACTOR);
-    return;
+//    // <Key-KP_Add>
+//    await this.zoom(ZOOM_IN_FACTOR);
+//    return;
   }
 
   private static async handleMinusKey(payload: MinskyProcessPayload) {
@@ -295,10 +286,7 @@ export class KeyBindingsManager {
   }
 
   private static async zoom(factor: number) {
-    const cBounds = await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.C_BOUNDS,
-    });
-
+    const cBounds = minsky.model.cBounds();
     const x = 0.5 * (cBounds[2] + cBounds[0]);
     const y = 0.5 * (cBounds[3] + cBounds[1]);
 
@@ -307,10 +295,7 @@ export class KeyBindingsManager {
   }
 
   private static async zoomAt(x: number, y: number, zoomFactor: number) {
-    await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.ZOOM_IN} [${x},${y},${zoomFactor}]`,
-    });
-
+    minsky.canvas.zoom(x,y,zoomFactor);
     await CommandsManager.requestRedraw();
     return;
   }
@@ -318,30 +303,17 @@ export class KeyBindingsManager {
   private static async deleteKey(payload: MinskyProcessPayload) {
     const { mouseX, mouseY } = payload;
 
-    const isCanvasSelectionEmpty = (await RestServiceManager.handleMinskyProcess(
-      {
-        command: commandsMapping.CANVAS_SELECTION_EMPTY,
-      }
-    )) as boolean;
-
-    if (!isCanvasSelectionEmpty) {
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CUT,
-      });
+    if (!minsky.canvas.selection.empty()) {
+      minsky.cut();
       return;
     }
 
-    const item = await CommandsManager.getItemAt(mouseX, mouseY);
-    if (!isEmptyObject(item)) {
-      const itemId = await CommandsManager.getCurrentItemId();
-      await CommandsManager.deleteCurrentItemHavingId(itemId);
+    if (minsky.canvas.getItemAt(mouseX, mouseY)) {
+      await CommandsManager.deleteCurrentItemHavingId(minsky.canvas.item.id());
       return;
     }
-    const wire = await CommandsManager.getWireAt(mouseX, mouseY);
-    if (!isEmptyObject(wire)) {
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_DELETE_WIRE,
-      });
+    if (minsky.canvas.getWireAt(mouseX, mouseY)) {
+      minsky.canvas.deleteWire();
       return;
     }
   }

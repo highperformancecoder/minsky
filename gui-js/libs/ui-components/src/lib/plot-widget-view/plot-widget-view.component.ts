@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
-import { commandsMapping } from '@minsky/shared';
+import { PlotWidget } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @AutoUnsubscribe()
@@ -11,8 +11,8 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
   styleUrls: ['./plot-widget-view.component.scss'],
 })
 export class PlotWidgetViewComponent implements OnInit, OnDestroy {
-  itemId: number;
-  systemWindowId: number;
+  itemId: string;
+  systemWindowId: string;
 
   leftOffset = 0;
   topOffset = 0;
@@ -31,10 +31,10 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.render();
+    setTimeout(()=>{this.render();},10);
   }
 
-  render() {
+  async render() {
     const plotCanvasContainer = document.getElementById('plot-cairo-canvas');
 
     const clientRect = plotCanvasContainer.getBoundingClientRect();
@@ -42,7 +42,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
     this.leftOffset = Math.round(clientRect.left);
 
     this.topOffset = Math.round(
-      this.windowUtilityService.getElectronMenuBarHeight()
+      await this.windowUtilityService.getElectronMenuBarHeight()
     );
 
     this.height = Math.round(plotCanvasContainer.clientHeight);
@@ -55,11 +55,15 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
       this.height &&
       this.width
     ) {
-      const command = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/renderFrame [${this.systemWindowId},${this.leftOffset},${this.topOffset},${this.width},${this.height},-1]`;
-
-      this.electronService.sendMinskyCommandAndRender({
-        command,
-      });
+      new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second)
+        .renderFrame({
+          parentWindowId: this.systemWindowId.toString(),
+          offsetLeft: this.leftOffset,
+          offsetTop: this.topOffset,
+          childWidth: this.width,
+          childHeight: this.height,
+          scalingFactor: -1
+        });
     }
   }
 

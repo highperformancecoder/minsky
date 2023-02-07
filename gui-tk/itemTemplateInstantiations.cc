@@ -125,6 +125,8 @@ namespace minsky
   DEFOP(outerProduct)
   DEFOP(index)
   DEFOP(gather)
+  DEFOP(meld)
+  DEFOP(merge)
   DEFOP(numOps)
 
   DEFVAR(undefined)

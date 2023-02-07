@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping } from '@minsky/shared';
+import { PlotWidget } from '@minsky/shared';
 
 enum DashStyles {
   SOLID = 'solid',
@@ -31,6 +31,7 @@ interface Palette {
 export class PenStylesComponent implements OnInit {
   form: FormGroup;
   palette: Palette[];
+  plot: PlotWidget;
 
   dashStyles = ['solid', 'dash', 'dot', 'dashDot'];
   rgbMaxValue = 255;
@@ -43,14 +44,13 @@ export class PenStylesComponent implements OnInit {
     this.form = new FormGroup({
       pens: new FormArray([]),
     });
+    this.plot=new PlotWidget(electronService.minsky.canvas.item);
   }
 
   ngOnInit() {
     (async () => {
       if (this.electronService.isElectron) {
-        this.palette = (await this.electronService.sendMinskyCommandAndRender({
-          command: commandsMapping.CANVAS_PLOT_PALETTE,
-        })) as Palette[];
+        this.palette = await this.plot.palette.properties() as any as Palette[];
       }
 
       this.palette.forEach((p) => {
@@ -95,12 +95,7 @@ export class PenStylesComponent implements OnInit {
       };
     });
 
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.CANVAS_PLOT_PALETTE} ${JSON.stringify(
-        palette
-      )}`,
-    });
-
+    this.plot.palette.properties(palette);
     this.closeWindow();
   }
 
@@ -113,9 +108,5 @@ export class PenStylesComponent implements OnInit {
     this.pens.push(this.createPen(p));
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

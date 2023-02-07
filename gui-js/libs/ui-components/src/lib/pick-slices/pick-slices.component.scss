@@ -1,0 +1,20 @@
+.container {
+  .form-body {
+    overflow-y: auto;
+    padding: 0px;
+
+    .slice-label {
+      margin: 0px;
+      padding: 2px 4px;
+      cursor: pointer;
+      background-color: #CCCCCC;
+    }
+    .slice-label.selected {
+      background-color: #888888;
+    }
+  }
+}
+
+.noselect {
+            user-select: none;
+}

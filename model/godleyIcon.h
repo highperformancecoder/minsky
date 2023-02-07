@@ -58,7 +58,7 @@ namespace minsky
     double titleOffs() const {return !table.title.empty()? 15*zoomFactor(): 0;}
     
   public:
-    static SVGRenderer svgRenderer;
+    static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     
     GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets();}
     GodleyIcon(const GodleyIcon&)=default;
@@ -82,6 +82,7 @@ namespace minsky
     GodleyTableEditor editor{*this};
     /// for rendering the popup window
     GodleyTableWindow popup{*this};
+    void adjustPopupWidgets() {popup.adjustWidgets();}
     
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
@@ -125,7 +126,7 @@ namespace minsky
     /// variable icon, null otherwise, indicating that the Godley table
     /// has been selected.
     ItemPtr select(float x, float y) const override;
-    ClickType::Type clickType(float x, float y) override;
+    ClickType::Type clickType(float x, float y) const override;
 
     /// draw icon to \a context
     void draw(cairo_t* cairo) const override;
@@ -154,7 +155,7 @@ namespace minsky
     bool inItem(float, float) const override;
 
     /// clean up popup window structures on window close
-    void destroyFrame() {popup.destroyFrame();}
+    void destroyFrame() override {popup.destroyFrame();}
 
   private:
     void updateVars(Variables& vars, 

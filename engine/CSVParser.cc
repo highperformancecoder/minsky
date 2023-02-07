@@ -144,7 +144,6 @@ namespace escapedListSeparator
     }
   };
 }
-//typedef boost::escaped_list_separator<char> Parser;
 using Parser=escapedListSeparator::EscapedListSeparator<char>;
 
 typedef boost::tokenizer<Parser> Tokenizer;
@@ -178,16 +177,17 @@ struct SpaceSeparatorParser
 
 namespace
 {
-  struct Any: public boost::any
+  /// An any with cached hash
+  struct Any: public any
   {
     Any()=default;
-    Any(const boost::any& x): boost::any(x), hash(anyHash(x)) {}
-    bool operator<(const Any& x) const {return AnyLess()(*this,x);}
-    bool operator==(const Any& x) const {return anyEqual(*this,x);}
+    Any(const any& x): any(x), hash(x.hash()) {}
+    bool operator<(const Any& x) const {return static_cast<const any&>(*this)<x;}
+    bool operator==(const Any& x) const {return static_cast<const any&>(*this)==x;}
     size_t hash;
   };
 
-  std::string str(const Any& x) {return minsky::str(static_cast<const boost::any&>(x));}
+  std::string str(const Any& x) {return minsky::str(static_cast<const any&>(x));}
   
   struct NoDataColumns: public std::exception
   {
@@ -200,11 +200,13 @@ namespace
       for (auto& i: x)
         msg+=":"+str(i);
     }
+    DuplicateKey(const vector<string>& x) {
+      for (auto& i: x)
+        msg+=":"+i;
+    }
     const char* what() const noexcept override {return msg.c_str();}
   };
 
-  const size_t maxRowsToAnalyse=100;
-  
   double quotedStoD(const string& s,size_t& charsProcd)
   {
     //strip possible quote characters
@@ -278,22 +280,23 @@ namespace std
   {
     size_t operator()(const Any& x) const {return x.hash;}
   };
-  template <>
-  struct hash<vector<Any>>
+  template <class T>
+  struct hash<vector<T>>
   {
-    size_t operator()(const vector<Any>& x) const {
+    size_t operator()(const vector<T>& x) const {
       size_t r=0;
-      for (auto& i: x) r^=i.hash;
+      for (auto& i: x) r^=std::hash<T>()(i);
       return r;
     }
   };
- 
+
 }
 
 void DataSpec::setDataArea(size_t row, size_t col)
 {
   m_nRowAxes=row;
-  m_nColAxes=col;
+  const size_t maxCols=16384; // Excel's limit
+  m_nColAxes=std::min(col, maxCols);
   if (headerRow>=row)
     headerRow=row>0? row-1: 0;
   if (row==headerRow) row++; //TODO handle no header properly
@@ -315,7 +318,7 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     dimensionCols.clear();
 
     m_nRowAxes=0;
-    for (; getline(input, buf) && row<maxRowsToAnalyse; ++row)
+    for (; getline(input, buf) && row<CSVDialog::numInitialLines; ++row)
       {
         // remove trailing carriage returns
         if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
@@ -326,10 +329,15 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
             smatch match;
             static const regex re("RavelHypercube=(.*)");
             if (regex_match(line[0], match, re))
-              {
-                populateFromRavelMetadata(match[1], row);
-                return;
-              }
+              try
+                {
+                    populateFromRavelMetadata(match[1], row);
+                    return;
+                }
+              catch (...)
+                {
+                  continue; // in case of error, ignore the RavelHypercube line.
+                }
           }
         starts.push_back(firstNumerical(line));
         nCols=std::max(nCols, line.size());
@@ -354,7 +362,9 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     
     if (firstEmpty==m_nRowAxes) ++m_nRowAxes; // allow for possible colAxes header line
     headerRow=nRowAxes()>0? nRowAxes()-1: 0;
-    for (size_t i=0; i<nColAxes(); ++i) dimensionCols.insert(i);
+    size_t i=0;
+    for (; i<nColAxes(); ++i) dimensionCols.insert(i);
+    for (; i<nCols; ++i) dataCols.insert(i);
 }
 
 void DataSpec::guessRemainder(std::istream& input, char sep)
@@ -373,7 +383,7 @@ void DataSpec::guessFromStream(std::istream& input)
   size_t row=0;
   string buf;
   ostringstream streamBuf;
-  for (; getline(input, buf) && row<maxRowsToAnalyse; ++row, streamBuf<<buf<<endl)
+  for (; getline(input, buf) && row<CSVDialog::numInitialLines; ++row, streamBuf<<buf<<endl)
     for (auto c:buf)
       switch (c)
         {
@@ -432,7 +442,7 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
         // only select value type if the datafield is a pure double
         size_t c;
         string s=stripWSAndDecimalSep(data[col]);
-        double v=quotedStoD(s, c);
+        quotedStoD(s, c);
         if (c!=s.size()) throw 0; // try parsing as time
         dimensions.emplace_back(Dimension::value,"");
       }
@@ -502,27 +512,27 @@ namespace minsky
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
             Key key;
             auto field=tok.begin();
-            for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
+            size_t i=0;
+            for (; field!=tok.end(); ++i, ++field)
               if (spec.dimensionCols.count(i))
                 key.push_back(*field);
-            if (field==tok.end())
-              {
-                output<<"missing numerical data"<<spec.separator<<buf<<endl;
-                continue;
-              }
 
-            for (; field!=tok.end(); ++field)
-              {
-                string x=*field;
-                if (x.back()=='\r') x=x.substr(0,x.size()-1); //deal with MS nonsense
-                if (!x.empty() && !isNumerical(x))
-                  {
-                    output<<"invalid numerical data"<<spec.separator<<buf<<endl;
-                    continue;
-                  }
-                if (spec.columnar) break; // only one column to check
-              }
+            for (i=0, field=tok.begin(); field!=tok.end(); ++i, ++field)
+              if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.count(i))
+                {
+                  string x=*field;
+                  if (x.back()=='\r') x=x.substr(0,x.size()-1); //deal with MS nonsense
+                  if (!x.empty() && !isNumerical(x))
+                    {
+                      output<<"invalid numerical data"<<spec.separator<<buf<<endl;
+                      continue;
+                    }
+                  if (spec.columnar) break; // only one column to check
+                }
 
+            if ((spec.dataCols.empty() && i<=spec.nColAxes()) || i<=*spec.dataCols.end())
+              output<<"missing numerical data"<<spec.separator<<buf<<endl;
+            
             auto rec=lines.find(key);
             if (rec!=lines.end())
               {
@@ -554,13 +564,13 @@ namespace minsky
   {
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
-    typedef vector<Any> Key;
+    typedef vector<string> Key;
     unordered_map<Key,double> tmpData;
     unordered_map<Key,int> tmpCnt;
-    vector<unordered_map<Any, size_t>> dimLabels(spec.dimensionCols.size());
+    vector<unordered_map<typename Key::value_type, size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     Hypercube hc;
-    vector<string> horizontalLabels;
+    vector<typename Key::value_type> horizontalLabels;
     vector<AnyVal> anyVal;
 
     for (auto i: spec.dimensionCols)
@@ -569,9 +579,10 @@ namespace minsky
         hc.xvectors.back().dimension=spec.dimensions[i];
         anyVal.emplace_back(spec.dimensions[i]);
       }
+    size_t row=0, col=0;
     try
       {
-        for (size_t row=0; getline(input, buf); ++row)
+        for (; getline(input, buf); ++row)
           {
 #if defined(__linux__) // TODO remove or generalise
             {
@@ -589,40 +600,45 @@ namespace minsky
             if (spec.headerRow<spec.nRowAxes() && row==spec.headerRow && !spec.columnar) // in header section
               {
                 vector<string> parsedRow(tok.begin(), tok.end());
-                tabularFormat=spec.dataCols.size()>1 || parsedRow.size()>spec.nColAxes()+1;
-                // legacy situation where all data columns are to the right
-                if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
-                    horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
-                else
-                  // explicitly specified data columns
-                  for (auto i: spec.dataCols)
-                    if (i<parsedRow.size())
-                      horizontalLabels.push_back(parsedRow[i]);
-
-                hc.xvectors.emplace_back(spec.horizontalDimName);
-                hc.xvectors.back().dimension=spec.horizontalDimension;
-                for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
-                dimLabels.emplace_back();
-                for (size_t i=0; i<horizontalLabels.size(); ++i)
-                  dimLabels.back()[AnyVal(spec.horizontalDimension)(horizontalLabels[i])]=i;
-                anyVal.emplace_back(spec.horizontalDimension);
+                tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1);
+                if (tabularFormat)
+                  {
+                    anyVal.emplace_back(spec.horizontalDimension);
+                    // legacy situation where all data columns are to the right
+                    if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
+                      for (auto i=parsedRow.begin()+spec.nColAxes(); i!=parsedRow.end(); ++i)
+                        horizontalLabels.emplace_back(str(anyVal.back()(*i),spec.horizontalDimension.units));
+                    else
+                      // explicitly specified data columns
+                      for (auto i: spec.dataCols)
+                        if (i<parsedRow.size())
+                          horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i]),spec.horizontalDimension.units));
+                    hc.xvectors.emplace_back(spec.horizontalDimName);
+                    hc.xvectors.back().dimension=spec.horizontalDimension;
+                    for (auto& i: horizontalLabels) hc.xvectors.back().emplace_back(i);
+                    dimLabels.emplace_back();
+                    for (size_t i=0; i<horizontalLabels.size(); ++i)
+                      dimLabels.back()[horizontalLabels[i]]=i;
+                  }
               }
             else if (row>=spec.nRowAxes())// in data section
               {
                 Key key;
                 auto field=tok.begin();
                 size_t dim=0, dataCols=0;
-                unsigned i=0;
-                for (auto field=tok.begin(); field!=tok.end(); ++i, ++field)
-                  if (spec.dimensionCols.count(i))
+                col=0;
+                for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
+                  if (spec.dimensionCols.count(col))
                     {
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
-                      key.push_back(anyVal[dim](*field));
                       try
                         {
-                          if (dimLabels[dim].emplace(anyVal[dim](*field), dimLabels[dim].size()).second)
-                            hc.xvectors[dim].push_back(*field);
+                          auto keyElem=anyVal[dim](*field);
+                          auto skeyElem=str(keyElem, spec.dimensions[dim].units);
+                          if (dimLabels[dim].emplace(skeyElem, dimLabels[dim].size()).second)
+                            hc.xvectors[dim].emplace_back(keyElem);
+                          key.emplace_back(skeyElem);
                         }
                       catch (...)
                         {
@@ -633,12 +649,12 @@ namespace minsky
                       dim++;
                     }
 
-                i=0;
-                for (auto field=tok.begin(); field!=tok.end(); ++i,++field)
-                  if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.count(i)) 
+                col=0;
+                for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
+                  if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
                     {                    
                       if (tabularFormat)
-                        key.push_back(anyVal[dim](horizontalLabels[dataCols]));
+                        key.emplace_back(horizontalLabels[dataCols]);
                       else if (dataCols)
                         break; // only 1 value column, everything to right ignored
                     
@@ -711,13 +727,22 @@ namespace minsky
           }
 
         // remove zero length dimensions
-        for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
-          {
-            if (i->empty())
-              hc.xvectors.erase(i);
-            else
-              ++i;
-          }
+        {
+          auto d=dimLabels.begin();
+          assert(hc.xvectors.size()==dimLabels.size());
+          for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
+              if (i->empty())
+                {
+                  hc.xvectors.erase(i);
+                  dimLabels.erase(d);
+                }
+              else
+                {
+                  ++i;
+                  ++d;
+                }
+          assert(hc.xvectors.size()==dimLabels.size());
+        }
         
         for (auto& xv: hc.xvectors)
           xv.imposeDimension();
@@ -785,7 +810,10 @@ namespace minsky
       { // replace with a more user friendly error message
         throw std::runtime_error("exhausted memory - try reducing the rank");
       }
-
+    catch (const std::exception& ex)
+      {
+        throw std::runtime_error(string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col));
+      }
   }
   
   void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)

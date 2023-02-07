@@ -37,6 +37,8 @@
 #include "engNotation.h"
 #include "engNotation.rcd"
 #include "engNotation.xcd"
+#include "eventInterface.rcd"
+#include "eventInterface.xcd"
 #include "hypercube.h"
 #include "hypercube.rcd"
 #include "hypercube.xcd"
@@ -96,5 +98,7 @@ namespace minsky
   DEFOP(outerProduct)
   DEFOP(index)
   DEFOP(gather)
+  DEFOP(meld)
+  DEFOP(merge)
   DEFOP(numOps)
 }

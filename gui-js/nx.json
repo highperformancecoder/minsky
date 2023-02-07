@@ -23,15 +23,15 @@
     }
   },
   "projects": {
+    "minsky-electron": {
+      "tags": []
+    },
     "minsky-web": {
       "tags": []
     },
     "minsky-web-e2e": {
       "tags": [],
       "implicitDependencies": ["minsky-web"]
-    },
-    "minsky-electron": {
-      "tags": []
     },
     "menu": {
       "tags": []

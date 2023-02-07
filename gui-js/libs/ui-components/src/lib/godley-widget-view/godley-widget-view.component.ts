@@ -12,12 +12,11 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import {
-  commandsMapping,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
   events,
-  isMacOS,
-  green
+  GodleyIcon,
+  GodleyTableWindow,
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
@@ -32,10 +31,10 @@ import { sampleTime } from 'rxjs/operators';
 export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   @ViewChild('godleyCanvasElemWrapper') godleyCanvasElemWrapper: ElementRef;
 
-  itemId: number;
-  systemWindowId: number;
-  namedItem: string;
-  namedItemSubCommand: string;
+  itemId: string;
+  systemWindowId: string;
+  namedItem: GodleyIcon;
+  namedItemSubCommand: GodleyTableWindow;
 
   leftOffset = 0;
   topOffset: number;
@@ -44,8 +43,9 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   godleyCanvasContainer: HTMLElement;
   mouseMove$: Observable<MouseEvent>;
 
-  mouseX = 0;
-  mouseY = 0;
+  renderTimeout;
+
+  yoffs = 0; // extra offset required on some systems
 
   constructor(
     private communicationService: CommunicationService,
@@ -60,27 +60,28 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.namedItem = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second`;
-    this.namedItemSubCommand = `${this.namedItem}/popup`;
-    this.getWindowRectInfo();
-    this.renderFrame();
+    this.namedItem = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
+    this.namedItemSubCommand = this.namedItem.popup;
+    this.windowResize();
     this.initEvents();
+    if (this.electronService.isMacOS()) this.yoffs=-20; // why, o why, Mac?
   }
 
-  windowResize() {
-    this.getWindowRectInfo();
-    this.renderFrame();
+  async windowResize() {
+    await this.getWindowRectInfo();
+
+    clearTimeout(this.renderTimeout);
+    this.renderTimeout = setTimeout(() => this.renderFrame(), 100);
   }
-  private getWindowRectInfo() {
-    this.godleyCanvasContainer = this.godleyCanvasElemWrapper
-      .nativeElement as HTMLElement;
+
+  private async getWindowRectInfo() {
+    this.godleyCanvasContainer = this.godleyCanvasElemWrapper.nativeElement as HTMLElement;
 
     const clientRect = this.godleyCanvasContainer.getBoundingClientRect();
 
-    this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = Math.round(
-      this.windowUtilityService.getElectronMenuBarHeight()
-    );
+    let menuBarHeight=await this.windowUtilityService.getElectronMenuBarHeight();
+    this.leftOffset = Math.round(clientRect.left) + 10;
+    this.topOffset = Math.round(menuBarHeight) + 10;
 
     this.height = Math.round(this.godleyCanvasContainer.clientHeight);
     this.width = Math.round(this.godleyCanvasContainer.clientWidth);
@@ -88,19 +89,18 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   renderFrame() {
     if (
-      this.electronService.isElectron &&
       this.systemWindowId &&
       this.itemId &&
       this.height &&
       this.width
     ) {
-      const scaleFactor = this.electronService.remote.screen.getPrimaryDisplay()
-        .scaleFactor;
-
-      const command = `${this.namedItemSubCommand}/renderFrame [${this.systemWindowId},${this.leftOffset},${this.topOffset},${this.width},${this.height},${scaleFactor}]`;
-
-      this.electronService.sendMinskyCommandAndRender({
-        command,
+      this.namedItemSubCommand.renderFrame({
+        parentWindowId: this.systemWindowId.toString(),
+        offsetLeft: this.leftOffset,
+        offsetTop: this.topOffset,
+        childWidth: this.width,
+        childHeight: this.height,
+        scalingFactor: -1
       });
     }
   }
@@ -119,40 +119,27 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
     this.mouseMove$.subscribe(async (event: MouseEvent) => {
-      const { clientX, clientY } = event;
-      this.mouseX = clientX;
-      this.mouseY = clientY;
-      this.sendMouseEvent(
-        clientX,
-        clientY,
-        commandsMapping.MOUSEMOVE_SUBCOMMAND
-      );
+      this.namedItemSubCommand.mouseMove(event.x,event.y+this.yoffs);
     });
 
     this.godleyCanvasContainer.addEventListener('mousedown', async (event) => {
-      const { clientX, clientY } = event;
-      await this.sendMouseEvent(
-        clientX,
-        clientY,
-        commandsMapping.MOUSEDOWN_SUBCOMMAND
-      );
+      if (event.button===0)
+        this.electronService.invoke(events.GODLEY_VIEW_MOUSEDOWN, {
+          command: this.itemId,
+          mouseX: event.x, mouseY: event.y+this.yoffs
+        });
     });
 
     this.godleyCanvasContainer.addEventListener('mouseup', async (event) => {
-      const { clientX, clientY } = event;
-      await this.sendMouseEvent(
-        clientX,
-        clientY,
-        commandsMapping.MOUSEUP_SUBCOMMAND
-      );
+      this.namedItemSubCommand.mouseUp(event.x,event.y+this.yoffs);
     });
-
+    
     this.godleyCanvasContainer.addEventListener('contextmenu', async (event) => {
-      this.electronService.ipcRenderer.send(events.CONTEXT_MENU, {
-        x: this.mouseX,
-        y: this.mouseY,
+      this.electronService.send(events.CONTEXT_MENU, {
+        x: event.x,
+        y: event.y,
         type: "godley",
-        command: this.namedItem,
+        command: this.namedItem.prefix(),
       });
     });
 
@@ -161,26 +148,13 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   }
 
   async redraw() {
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.namedItemSubCommand}/requestRedraw`,
-    });
-  }
-
-  async sendMouseEvent(x: number, y: number, type: string) {
-    const yoffs=isMacOS()? -20: 0; // why, o why, Mac?
-    const command = `${this.namedItemSubCommand}/${type} [${x},${y+yoffs}]`;
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command,
-    });
-
-    await this.redraw();
+    this.namedItemSubCommand.requestRedraw();
   }
 
   onKeyDown = async (event: KeyboardEvent) => {
     await this.communicationService.handleKeyDown({
       event,
-      command: this.namedItemSubCommand,
+      command: `/minsky/namedItems/@elem/"${this.itemId}"/second/popup`,
     });
 
     await this.redraw();
@@ -188,34 +162,22 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   onMouseWheelZoom = async (event: WheelEvent) => {
     event.preventDefault();
-    const { deltaY } = event;
-    const zoomIn = deltaY < 0;
-
-    const command = `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/popup/zoom`;
-
-    const zoomFactor = zoomIn ? ZOOM_IN_FACTOR : ZOOM_OUT_FACTOR;
+    const zoomFactor = event.deltaY<0 ? ZOOM_IN_FACTOR : ZOOM_OUT_FACTOR;
 
     const [
       x,
       y,
-    ] = this.electronService.remote.getCurrentWindow().getContentSize();
+    ] = (await this.electronService.getCurrentWindow()).contentSize;
 
     //TODO: throttle here if required
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${command} [${x / 2},${y / 2},${zoomFactor}]`,
-    });
+    this.namedItemSubCommand.zoom(x/2, y/2, zoomFactor);
   };
 
   async handleScroll(scrollTop: number, scrollLeft: number) {
     //TODO: throttle here if required
 
-    const cols = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/table/cols`,
-    })) as number;
-
-    const rows = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.GET_NAMED_ITEM}/"${this.itemId}"/second/table/rows`,
-    })) as number;
+    const cols = await this.namedItem.table.cols();
+    const rows = await this.namedItem.table.rows();
 
     const stepX = this.godleyCanvasContainer.scrollHeight / (cols-1);
     const stepY = this.godleyCanvasContainer.scrollHeight / (rows-1);
@@ -223,14 +185,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     const currentStepX = Math.round(scrollLeft / stepX)+1;
     const currentStepY = Math.round(scrollTop / stepY)+1;
 
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.namedItemSubCommand}/scrollColStart ${currentStepX}`,
-    });
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.namedItemSubCommand}/scrollRowStart ${currentStepY}`,
-    });
-
+    this.namedItemSubCommand.scrollColStart(currentStepX);
+    this.namedItemSubCommand.scrollRowStart(currentStepY);
     this.redraw();
   }
 

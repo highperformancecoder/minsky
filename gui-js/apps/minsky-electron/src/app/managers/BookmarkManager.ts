@@ -1,9 +1,7 @@
-import { commandsMapping, DescriptionPayload } from '@minsky/shared';
+import { minsky } from '@minsky/shared';
 import { Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager, callRESTApi } from './RestServiceManager';
-const JSON5 = require('json5');
-
+import { WindowManager } from './WindowManager';
 
 export class BookmarkManager {
   static async populateBookmarks(bookmarks: string[]) {
@@ -37,9 +35,8 @@ export class BookmarkManager {
               id: 'minsky-bookmark',
               label: bookmark,
               click: async () => {
-                await RestServiceManager.handleMinskyProcess({
-                  command: `${commandsMapping.GOTO_BOOKMARK} ${index}`,
-                });
+                minsky.model.gotoBookmark(index);
+                WindowManager.getMainWindow().webContents.send('reset-scroll');
                 await CommandsManager.requestRedraw();
               },
             })
@@ -50,15 +47,9 @@ export class BookmarkManager {
               id: 'minsky-bookmark',
               label: bookmark,
               click: async () => {
-                await RestServiceManager.handleMinskyProcess({
-                  command: `${commandsMapping.DELETE_BOOKMARK} ${index}`,
-                });
-
-                const _bookmarks = await RestServiceManager.handleMinskyProcess(
-                  {
-                    command: commandsMapping.BOOKMARK_LIST,
-                  }
-                );
+                minsky.model.deleteBookmark(index);
+                
+                const _bookmarks = minsky.model.bookmarkList();
                 await CommandsManager.requestRedraw();
 
                 await this.populateBookmarks(_bookmarks as string[]);
@@ -73,17 +64,7 @@ export class BookmarkManager {
     addNewBookmarks();
   }
 
-    static updateBookmarkList() {
-        const bookmarks=callRESTApi("/minsky/canvas/model/bookmarkList") as string[];
-        this.populateBookmarks(bookmarks);
-    }
-
-    static saveDescription(payload: DescriptionPayload) {
-        callRESTApi(`/minsky/canvas/${payload.item}/bookmark ${payload.bookmark}`);
-        callRESTApi(`/minsky/canvas/${payload.item}/tooltip ${JSON5.stringify(payload.tooltip)}`);
-        callRESTApi(`/minsky/canvas/${payload.item}/detailedText ${JSON5.stringify(payload.detailedText)}`);
-        callRESTApi(`/minsky/canvas/${payload.item}/adjustBookmark`);
-        this.updateBookmarkList();
+  static updateBookmarkList() {
+    this.populateBookmarks(minsky.canvas.model.bookmarkList());
   }
-  
 }

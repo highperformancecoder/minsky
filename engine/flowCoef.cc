@@ -19,6 +19,7 @@
 
 #include "flowCoef.h"
 #include "str.h"
+#include "minsky_epilogue.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include <boost/spirit/include/qi.hpp>

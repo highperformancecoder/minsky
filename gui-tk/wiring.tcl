@@ -540,6 +540,7 @@ proc deleteKey {x y} {
 # global godley icon resource
 setGodleyIconResource $minskyHome/icons/bank.svg
 setLockIconResource $minskyHome/icons/Antu_emblem-locked.svg $minskyHome/icons/Antu_emblem-unlocked.svg
+setRavelIconResource $minskyHome/icons/ravel-logo.svg
 
 proc rightMouseGodley {x y X Y} {
     if [selectVar $x $y] {
@@ -836,6 +837,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Zoom to display" -command "canvas.zoomToDisplay"
             .wiring.context add command -label "Remove plot icon" -command "$item.removeDisplayPlot"
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
+            .wiring.context add command -label "Make subroutine" -command "$item.makeSubroutine"
             .wiring.context add command -label "Save group as" -command "group::save"
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             .wiring.context add command -label "Flip Contents" -command "$item.flipContents; canvas.requestRedraw"

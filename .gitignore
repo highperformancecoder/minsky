@@ -23,4 +23,8 @@ gui-tk/library/tcl
 gui-tk/library/tk
 RESTService/minsky-RESTService
 RESTService/minsky-httpd
-
+node_modules/*
+gui-js/node_modules/*
+gui-js/documentation/*
+gui-js/dist/*
+doc/minsky/*

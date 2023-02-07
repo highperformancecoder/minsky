@@ -1,6 +1,9 @@
 # Ravel specific functionality
 
 proc ravelContextItems {} {
+    global editorMode
+    set editorMode [minsky.canvas.item.editorMode]
+            .wiring.context add checkbutton -label "EditorMode" -command minsky.canvas.item.toggleEditorMode -variable editorMode
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             global sortOrder
             set sortOrder [minsky.canvas.item.sortOrder]

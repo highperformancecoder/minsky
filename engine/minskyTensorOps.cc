@@ -100,8 +100,8 @@ namespace minsky
           {
             // pivot a1, a2 such that common axes are at end (resp beginning)
             auto pivotArg1=make_shared<Pivot>(), pivotArg2=make_shared<Pivot>();
-            pivotArg1->setArgument(a1);
-            pivotArg2->setArgument(a2);
+            pivotArg1->setArgument(a1,{});
+            pivotArg2->setArgument(a2,{});
 
             set <string> a2Axes;
             for (auto& xv: a2->hypercube().xvectors) a2Axes.insert(xv.name);
@@ -133,20 +133,34 @@ namespace minsky
 
             // now spread pivoted arguments across remaining dimensions
             auto spread1=make_shared<SpreadLast>();
-            spread1->setArgument(pivotArg1);
+            spread1->setArgument(pivotArg1,{});
             spread1->setSpreadDimensions(hcSpread1);
             auto spread2=make_shared<SpreadFirst>();
-            spread2->setArgument(pivotArg2);
+            spread2->setArgument(pivotArg2,{});
             spread2->setSpreadDimensions(hcSpread2);
 
             if (spread1->hypercube()==spread2->hypercube())
               setArguments(spread1, spread2);
             else 
               { // hypercubes not equal, interpolate the second argument
-                auto interpolate=make_shared<InterpolateHC>();
-                interpolate->hypercube(spread1->hypercube());
-                interpolate->setArgument(spread2);
-                civita::BinOp::setArguments(spread1, interpolate, args);
+                Hypercube unionHC=spread1->hypercube();
+                civita::unionHypercube(unionHC,spread2->hypercube());
+                TensorPtr arg1=spread1, arg2=spread2;
+                if (unionHC!=spread1->hypercube())
+                  {
+                    auto interpolate=make_shared<InterpolateHC>();
+                    interpolate->hypercube(unionHC);
+                    interpolate->setArgument(spread1,{});
+                    arg1=interpolate;
+                  }
+                if (unionHC!=spread2->hypercube())
+                  {
+                    auto interpolate=make_shared<InterpolateHC>();
+                    interpolate->hypercube(unionHC);
+                    interpolate->setArgument(spread2,{});
+                    arg2=interpolate;
+                  }
+                civita::BinOp::setArguments(arg1, arg2, args);
               }
           }
     }
@@ -521,6 +535,8 @@ namespace minsky
     
     double interpolateString(double idx, size_t stride, size_t offset) const
     {
+      if (arg1->size()==0)
+        throw std::runtime_error("No data to interpolate");
       auto maxIdx=arg1->rank()==1? arg1->size()-1: arg1->hypercube().xvectors[dimension].size()-1;
       if (idx<=-1 || idx>maxIdx)
         return nan("");
@@ -538,7 +554,7 @@ namespace minsky
       return (1-s)*lv + s*gv;
     }
 
-    double interpolateAny(const XVector& xv, const boost::any& x, size_t stride, size_t offset) const
+    double interpolateAny(const XVector& xv, const civita::any& x, size_t stride, size_t offset) const
     {
       if (xv.size()<2 || diff(x,xv.front())<0 || diff(x,xv.back())>0)
         return nan("");
@@ -694,6 +710,16 @@ namespace minsky
             }
           cachedResult.index(resultantIndex);
         }
+
+      // relabel any axis that has a duplicate name
+      int axisName=0;
+      set<string> axisNames;
+      for (auto& xv: hc.xvectors)
+        if (!axisNames.insert(xv.name).second)
+          {
+            while (!axisNames.insert(to_string(++axisName)).second); // find a name that hasn't been used
+            xv.name=to_string(axisName);
+          }
       cachedResult.hypercube(move(hc));
     }
       
@@ -724,7 +750,97 @@ namespace minsky
                           }
                         },0) {}
   };
+
+  namespace {
+      // arrange for arguments to be expanded over a common hypercube
+    void meldArgsIntoCommonHypercube(vector<TensorPtr>& args) {
+      Hypercube hc;
+      for (auto& i: args)
+        unionHypercube(hc, i->hypercube(), false);
+
+      // list of final dimension names in order
+      vector<string> unionDims;
+      for (auto& i: hc.xvectors) unionDims.push_back(i.name);
+
+      // create tensor chains for each argument to permute it into the common hypercube
+      for (auto& i: args)
+        {
+          set <string> argDims;
+          for (auto& j: i->hypercube().xvectors) argDims.insert(j.name);
+          auto spread=make_shared<SpreadLast>();
+          Hypercube spreadHC;
+          for (auto& j: hc.xvectors)
+            if (!argDims.count(j.name))
+              spreadHC.xvectors.push_back(j);
+          spread->setArgument(i,{});
+          spread->setSpreadDimensions(spreadHC);
+
+          auto pivot=make_shared<Pivot>();
+          pivot->setArgument(spread,{});
+          pivot->setOrientation(unionDims);
+
+          if (pivot->hypercube()==hc)
+            i=pivot;
+          else
+            {
+              auto spreadOverHC=make_shared<SpreadOverHC>();
+              spreadOverHC->hypercube(hc);
+              spreadOverHC->setArgument(pivot,{});
+              i=spreadOverHC;
+            }
+        }
+    }
+  }
   
+  template <>
+  struct GeneralTensorOp<OperationType::meld>: public civita::Meld
+  {
+    void setArguments(const std::vector<TensorPtr>& a1,
+                      const std::vector<TensorPtr>& a2,
+                      const std::string& dimension={}, double argVal=0)
+    {
+      if (a1.empty() && a2.empty()) return;
+      vector<TensorPtr> args=a1;
+      args.insert(args.end(), a2.begin(), a2.end());
+      meldArgsIntoCommonHypercube(args);
+      civita::Meld::setArguments(args,{dimension,argVal});
+    }
+  };
+
+  template <>
+  struct GeneralTensorOp<OperationType::merge>: public civita::Merge, public SetState
+  {
+    OperationPtr state;
+    void setArguments(const std::vector<TensorPtr>& a1,
+                      const std::vector<TensorPtr>& a2,
+                      const std::string& dimension={}, double argVal=0)
+    {
+      if (a1.empty() && a2.empty()) return;
+      vector<TensorPtr> args=a1;
+      args.insert(args.end(), a2.begin(), a2.end());
+      meldArgsIntoCommonHypercube(args);
+      civita::Merge::setArguments(args,{dimension,argVal});
+      
+      // relabel slices along new dimension with variable names if available
+      int stream=0;
+      for (size_t i=0; state && i<state->portsSize(); ++i)
+        if (auto p=state->ports(i).lock())
+          if (p->input())
+            for (auto w:p->wires())
+              if (auto from=w->from())
+                {
+                  auto v=from->item().variableCast();
+                  if (v && !v->name().empty())
+                    m_hypercube.xvectors.back()[stream]=v->name();
+                  else
+                    m_hypercube.xvectors.back()[stream]=to_string(stream);
+                  stream++;
+                }
+    }
+
+    void setState(const OperationPtr& op) override {state=op;}
+   };
+
   class SwitchTensor: public ITensor
   {
     size_t m_size=1;
@@ -801,7 +917,7 @@ namespace minsky
     void setArgument(const TensorPtr& a,const Args&) override {
       // not sure how to avoid this const cast here
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
-      chain=civita::createRavelChain(ravel.getState(), a);
+      chain=ravel::createRavelChain(ravel.getState(), a);
     }
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}

@@ -20,7 +20,6 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
-#include "eventInterface.h"
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
@@ -49,12 +48,13 @@ namespace minsky
     NoAssign& operator=(const U& x) {T::operator=(x); return *this;}
   };
   
-  class Canvas: public RenderNativeWindow, public EventInterface
+  class Canvas: public RenderNativeWindow
   {
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
     void reportDrawTime(double) override;
     void mouseDownCommon(float x, float y);
+    bool redraw(int x0, int y0, int width, int height) override;
 
     /// flag indicating that a redraw is requested, but not yet redrawn
     bool m_redrawRequested=false;
@@ -148,10 +148,12 @@ namespace minsky
     std::shared_ptr<Port> closestInPort(float x, float y) const;
 
     /// select all items in a given region
-    void select(float x0, float y0, float x1, float y1) {
-      select(LassoBox(x0,y0,x1,y1));
-    }
+//    void select(float x0, float y0, float x1, float y1) {
+//      select(LassoBox(x0,y0,x1,y1));
+//    }
     void select(const LassoBox&);
+
+    int ravelsSelected();
     
     /// sets itemFocus, and resets mouse offset for placement
     void setItemFocus(const ItemPtr& x) {
@@ -165,8 +167,8 @@ namespace minsky
     ItemPtr item;
     WirePtr wire;
     ItemPtr itemAt(float x, float y);
-    void getItemAt(float x, float y) override {item=itemAt(x,y);}
-    void getWireAt(float x, float y) override;
+    bool getItemAt(float x, float y) override {return (item=itemAt(x,y)).get();}
+    bool getWireAt(float x, float y) override;
 
     double defaultRotation=0;
     void addOperation(OperationType::Type op) {
@@ -260,7 +262,6 @@ namespace minsky
     //    void indicateItem() {itemIndicator=true;}
 
     /// redraw whole model
-    bool redraw(int x0, int y0, int width, int height) override;
     bool redraw();
     /// region to be updated
     LassoBox updateRegion{0,0,0,0};

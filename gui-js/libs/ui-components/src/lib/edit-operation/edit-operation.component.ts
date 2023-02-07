@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { ClassType, commandsMapping } from '@minsky/shared';
+import { ClassType, OperationBase } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-edit-operation',
@@ -14,7 +14,9 @@ export class EditOperationComponent implements OnInit {
 
   classType: ClassType;
   itemType: string;
-
+  op: OperationBase;
+  axes: string[];
+  
   public get axis(): AbstractControl {
     return this.form.get('axis');
   }
@@ -37,6 +39,7 @@ export class EditOperationComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.classType = params.classType;
     });
+    this.op=new OperationBase(this.electronService.minsky.canvas.item);
   }
 
   ngOnInit() {
@@ -48,49 +51,22 @@ export class EditOperationComponent implements OnInit {
   }
 
   private async updateFormValues() {
-    const type = (await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_TYPE,
-    })) as string;
-
-    this.itemType = type;
-
-    const rotation = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_ROTATION,
-    });
-    this.rotation.setValue(rotation);
-
-    const axis = (await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_AXIS,
-    })) as string;
-    this.axis.setValue(axis);
-
-    const arg = (await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_ARG,
-    })) as number;
-    this.argument.setValue(arg);
+    this.itemType = await this.op.type();
+    this.rotation.setValue(await this.op.rotation());
+    this.axis.setValue(await this.op.axis());
+    this.argument.setValue(await this.op.arg());
+    this.axes=await this.op.dimensions();
   }
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_ROTATION} ${this.rotation.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_AXIS} "${this.axis.value}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_ARG} ${this.argument.value}`,
-      });
+      this.op.rotation(this.rotation.value);
+      this.op.axis(this.axis.value);
+      this.op.arg(this.argument.value);
     }
 
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

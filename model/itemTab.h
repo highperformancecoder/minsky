@@ -41,7 +41,7 @@ namespace minsky
     }
   };
 		 
-  class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>, public EventInterface
+  class ItemTab: public RenderNativeWindow, public Grid<ecolab::Pango>
   {
     CLASSDESC_ACCESS(ItemTab);         
     bool redraw(int, int, int width, int height) override;
@@ -62,7 +62,7 @@ namespace minsky
 
     ecolab::Pango& cell(unsigned row, unsigned col) override;
 
-    void moveTo(double x, double y) override {
+    void moveCursorTo(double x, double y) override {
       if (surface.get())
         cairo_move_to(surface->cairo(),x,y);
     }
@@ -76,7 +76,7 @@ namespace minsky
          
     float moveOffsX, moveOffsY,xItem,yItem;
     ItemPtr itemFocus;      
-    void getItemAt(float x, float y) override {item=itemAt(x,y);}  
+    bool getItemAt(float x, float y) override {return (item=itemAt(x,y)).get();}  
     enum ClickType {background, internal};    
     virtual ClickType clickType(double x, double y) const;         
     virtual void draw(cairo_t* cairo); 
@@ -85,6 +85,12 @@ namespace minsky
     void mouseDown(float x, float y) override;
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;    
+    void moveTo(float x, float y) override
+    {
+      offsx=x;
+      offsy=y;
+      requestRedraw();
+    }
     virtual ItemPtr itemAt(float x, float y);
     void displayDelayedTooltip(float x, float y);        
        

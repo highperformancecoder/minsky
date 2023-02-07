@@ -14,6 +14,7 @@ module.exports = {
       tsconfig: '<rootDir>/tsconfig.spec.json',
     },
   },
+  collectCoverage: true,
   coverageDirectory: '../../coverage/libs/shared',
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',

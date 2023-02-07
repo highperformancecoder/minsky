@@ -7,7 +7,7 @@
 import { spawn } from 'child_process';
 import { app } from 'electron';
 import { basename, join, resolve } from 'path';
-import { environment } from '../../environments/environment';
+import { environment } from '@minsky/shared';
 
 export default class SquirrelEvents {
   private static isAppFirstRun = false;

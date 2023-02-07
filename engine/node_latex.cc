@@ -29,7 +29,7 @@ namespace MathDAG
   {
     if (abs(x)>0 && (abs(x)>=1e5 || abs(x)<=1e-4))
       {
-        int exponent=log10(abs(x));
+        int exponent=static_cast<int>(log10(abs(x)));
         if (exponent<0) exponent++;
         return str(x/pow(10.0,exponent))+"\\times10^{"+str(exponent)+"}";
       }
@@ -675,6 +675,18 @@ namespace MathDAG
   {
     checkArg(0,0); checkArg(1,0);
     return o<<"\\left[\\left("<<arguments[0][0]->latex()<<"\\right)_j : j=\\left("<<arguments[1][0]->latex()<<"\\right)_i\\right]";
+  }
+  template <>
+  ostream& OperationDAG<OperationType::meld>::latex(ostream& o) const
+  {
+    checkArg(0,0); checkArg(1,0);
+    return o<<"\\mathrm{meld}\\left("<<arguments[0][0]->latex()<<","<<arguments[1][0]->latex()<<"\\right)";
+  }
+  template <>
+  ostream& OperationDAG<OperationType::merge>::latex(ostream& o) const
+  {
+    checkArg(0,0); checkArg(1,0);
+    return o<<"\\mathrm{merge}\\left("<<arguments[0][0]->latex()<<","<<arguments[1][0]->latex()<<"\\right)";
   }
 
   

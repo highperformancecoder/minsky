@@ -1,13 +1,14 @@
 import {
   ActiveWindow,
-  green,
+  minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
-  red,
+  Functions,
   rendererAppName,
   rendererAppURL,
+  version,
+  Utility,
 } from '@minsky/shared';
-import * as debug from 'debug';
-import { BrowserWindow, Display, dialog, screen } from 'electron';
+import { BrowserWindow, dialog, screen } from 'electron';
 import * as log from 'electron-log';
 import { join } from 'path';
 import { format } from 'url';
@@ -15,12 +16,9 @@ import { ApplicationMenuManager } from './managers/ApplicationMenuManager';
 import { CommandsManager } from './managers/CommandsManager';
 import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
-import { RestServiceManager, callRESTApi} from './managers/RestServiceManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
-import { Utility } from './utility';
-
-const logWindows = debug('minsky:electron_windows');
+import { backend, loadResources } from './backend-init';
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -45,14 +43,8 @@ export default class App {
 
     await HelpFilesManager.initialize(helpFilesFolder);
     App.initMainWindow();
-    await App.initMinskyService();
     await App.initMenu();
     App.loadMainWindow();
-  }
-
-  private static async initMinskyService() {
-    const windowId = WindowManager.activeWindows.get(1).systemWindowId;
-    await RestServiceManager.startMinskyService();
   }
 
   private static async initMenu() {
@@ -87,21 +79,14 @@ export default class App {
       height: height,
       show: false,
       webPreferences: {
-        /*
-          The below settings are recommended by nx-electron as shown here https://github.com/bennymeg/nx-electron/blob/master/docs/migration/migrating.v10.md
-          But, after using the below settings the app does not start
-
-          contextIsolation: true,
-          preload: join(__dirname, 'preload.js'),
-        */
-        enableRemoteModule: true,
+        contextIsolation: true,
+        preload: join(__dirname, 'preload.js'),
         nodeIntegration: true,
         backgroundThrottling: false,
-        affinity: 'window',
       },
       x: 0,
       y: 0,
-      title: 'Minsky',
+      title: minsky.ravelVersion()==="unavailable"? 'Minsky':'Ravel',
       icon: __dirname + '/assets/favicon.png',
       resizable: true,
       // autoHideMenuBar: true,
@@ -136,7 +121,7 @@ export default class App {
 
     WindowManager.activeWindows.set(App.mainWindow.id, mainWindowDetails);
 
-    logWindows(WindowManager.activeWindows);
+    //logWindows(WindowManager.activeWindows);
 
     App.mainWindow.on('close', async (e) => {
       if (!App.directlyClose) {
@@ -197,8 +182,9 @@ export default class App {
     for (var arg in process.argv)
       switch(process.argv[arg]) {
       case '--version':
-        process.stdout.write(`${callRESTApi("/minsky/minskyVersion") as string}\n`);
-        process.exit(0);
+        let minskyVersion=minsky.minskyVersion();
+        process.stdout.write(`${minskyVersion}\n`);
+        process.exit(minskyVersion===version? 0: 1);
       }
     
     
@@ -217,18 +203,19 @@ export default class App {
     //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
     // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
     // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-    const displayScale=callRESTApi("/minsky/canvas/scaleFactor");
+    const displayScale=backend('/minsky/canvas/scaleFactor') as number;
     App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
     // invert the effect of display scaling on canvas fonts.
-    callRESTApi("/minsky/fontScale "+(1/displayScale).toString());
-
+    backend('/minsky/fontScale', (1/displayScale));
+    setTimeout(async () => {loadResources();}, 100);
+    
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
     App.application.on('activate', App.onActivate); // App is activated
 
     process.on('uncaughtException', (err) => {
       log.error(
-        red(
+        Functions.red(
           `🚀 ~ file: app.ts ~ line 265 ~ App ~ process.on('uncaughtException') ~ err: ${err}`
         )
       );

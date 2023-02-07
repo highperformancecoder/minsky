@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CommunicationService, ElectronService } from '@minsky/core';
-import { commandsMapping } from '@minsky/shared';
+//import { commandsMapping } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-simulation-parameters',
@@ -16,16 +16,16 @@ export class SimulationParametersComponent implements OnInit {
     private communicationService: CommunicationService
   ) {
     this.form = new FormGroup({
-      timeUnit: new FormControl(null),
-      minStepSize: new FormControl(null),
-      maxStepSize: new FormControl(null),
-      noOfStepsPerIteration: new FormControl(null),
-      startTime: new FormControl(null),
-      runUntilTime: new FormControl(null),
-      absoluteError: new FormControl(null),
-      relativeError: new FormControl(null),
-      solverOrder: new FormControl(null),
-      implicitSolver: new FormControl(null),
+      timeUnit: new FormControl(''),
+      minStepSize: new FormControl(0),
+      maxStepSize: new FormControl(0),
+      noOfStepsPerIteration: new FormControl(1),
+      startTime: new FormControl(0),
+      runUntilTime: new FormControl(Infinity),
+      absoluteError: new FormControl(0),
+      relativeError: new FormControl(0),
+      solverOrder: new FormControl(4),
+      implicitSolver: new FormControl(false),
     });
   }
 
@@ -34,51 +34,17 @@ export class SimulationParametersComponent implements OnInit {
   }
 
   async makeForm() {
-    const timeUnit = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.TIME_UNIT,
-    });
-
-    const minStepSize = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.STEP_MIN,
-    });
-
-    const maxStepSize = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.STEP_MAX,
-    });
-
-    const noOfStepsPerIteration = await this.electronService.sendMinskyCommandAndRender(
-      { command: commandsMapping.SIMULATION_SPEED }
-    );
-
-    const startTime = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.T_ZERO,
-    });
-
-    const runUntilTime = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.T_MAX,
-    });
-
-    const absoluteError = await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.EPS_ABS,
-      }
-    );
-
-    const relativeError = await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.EPS_REL,
-      }
-    );
-
-    const solverOrder = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.ORDER,
-    });
-
-    const implicitSolver = await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.IMPLICIT,
-      }
-    );
+    let minsky=this.electronService.minsky;
+    const timeUnit = await minsky.timeUnit();
+    const minStepSize = await minsky.stepMin();
+    const maxStepSize = await minsky.stepMax();
+    const noOfStepsPerIteration = await minsky.nSteps();
+    const startTime = await minsky.t0();
+    const runUntilTime = await minsky.tmax();
+    const absoluteError = await minsky.epsAbs();
+    const relativeError = await minsky.epsRel();
+    const solverOrder = await minsky.order();
+    const implicitSolver = await minsky.implicit();
 
     this.form.setValue({
       timeUnit,
@@ -97,84 +63,23 @@ export class SimulationParametersComponent implements OnInit {
   async handleSubmit() {
     if (this.electronService.isElectron) {
       const formValues = this.form.value;
+      let minsky=this.electronService.minsky;
 
-      for (const key of Object.keys(formValues)) {
-        const arg = formValues[key];
-
-        switch (key) {
-          case 'timeUnit':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.TIME_UNIT} "${arg}"`,
-            });
-            break;
-
-          case 'minStepSize':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.STEP_MIN} ${arg}`,
-            });
-            break;
-
-          case 'maxStepSize':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.STEP_MAX} ${arg}`,
-            });
-            break;
-
-          case 'noOfStepsPerIteration':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.SIMULATION_SPEED} ${arg}`,
-            });
-            break;
-
-          case 'startTime':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.T_ZERO} ${arg}`,
-            });
-            break;
-
-          case 'runUntilTime':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.T_MAX} ${arg}`,
-            });
-
-            break;
-
-          case 'absoluteError':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.EPS_ABS} ${arg}`,
-            });
-            break;
-
-          case 'relativeError':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.EPS_REL} ${arg}`,
-            });
-            break;
-
-          case 'solverOrder':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.ORDER} ${arg}`,
-            });
-            break;
-
-          case 'implicitSolver':
-            await this.electronService.sendMinskyCommandAndRender({
-              command: `${commandsMapping.IMPLICIT} ${arg}`,
-            });
-            break;
-
-          default:
-            break;
-        }
-      }
+      minsky.timeUnit(formValues['timeUnit']);
+      minsky.stepMin(formValues['minStepSize']);
+      minsky.stepMax(formValues['maxStepSize']);
+      minsky.nSteps(formValues['noOfStepsPerIteration']);
+      minsky.t0(formValues['startTime']);
+      // runUntilTime done as a text input, to allow Infinity
+      minsky.tmax(Number(formValues['runUntilTime']));
+      minsky.epsAbs(formValues['absoluteError']);
+      minsky.epsRel(formValues['relativeError']);
+      minsky.order(formValues['solverOrder']);
+      minsky.implicit(formValues['implicitSolver']);
     }
 
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

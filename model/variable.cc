@@ -83,7 +83,7 @@ std::vector<std::string> VariableBase::accessibleVars() const
 }
 
 
-ClickType::Type VariableBase::clickType(float xx, float yy)
+ClickType::Type VariableBase::clickType(float xx, float yy) const
 {
   double fm=std::fmod(rotation(),360);
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
@@ -180,14 +180,17 @@ std::string VariableBase::valueIdInCurrentScope(const std::string& nm) const
   return minsky::valueId(group.lock(), nm);
 }
 
+bool VariableBase::local() const
+{
+  return m_name[0]!=':' && group.lock()!=cminsky().canvas.model;
+}
+
 string VariableBase::name()  const
 {
   if (m_name==":_") return "";
   // hide any leading ':' in upper level
   if (m_name[0]==':')
     {
-      auto g=group.lock();
-      if (!g || g==cminsky().model)
         return m_name.substr(1);
     }
   return utf_to_utf<char>(m_name);
@@ -398,7 +401,7 @@ void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spe
   }
 }
 
-void VariableBase::destroyFrame() const
+void VariableBase::destroyFrame()
 {
   if (auto vv=vValue())
     vv->csvDialog.destroyFrame();
@@ -577,12 +580,17 @@ void VariableBase::draw(cairo_t *cairo) const
     scaleFactor=max(1.0f,min(0.5f*iWidth()*z/w,0.5f*iHeight()*z/h));
     if (rv.width()<0.5*iWidth()) w=0.5*iWidth()*z;
     if (rv.height()<0.5*iHeight()) h=0.5*iHeight()*z;
-    rv.setFontSize(12*scaleFactor*z);
+    rv.setFontSize(12.0*scaleFactor*z);
     hoffs=rv.top()*z;
   
 
     cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
-    rv.show();
+    {
+      CairoSave cs(cairo);
+      if (local())
+        cairo_set_source_rgb(cairo,0,0,1);
+      rv.show();
+    }
 
     auto vv=vValue();
   
@@ -594,7 +602,7 @@ void VariableBase::draw(cairo_t *cairo) const
           
           Pango pangoVal(cairo);
           if (!isnan(value())) {
-            pangoVal.setFontSize(6*scaleFactor*z);
+            pangoVal.setFontSize(6.0*scaleFactor*z);
             if (sliderBoundsSet && vv->sliderVisible)
               pangoVal.setMarkup
                 (mantissa(val,
@@ -607,12 +615,12 @@ void VariableBase::draw(cairo_t *cairo) const
               pangoVal.setMarkup(mantissa(val));
           }
           else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-            pangoVal.setFontSize(8*scaleFactor*z);
+            pangoVal.setFontSize(8.0*scaleFactor*z);
             if (signbit(value())) pangoVal.setMarkup("-∞");
             else pangoVal.setMarkup("∞");
           }
           else {  // Display all other NaN cases as ???. For ticket 1155
-            pangoVal.setFontSize(6*scaleFactor*z);
+            pangoVal.setFontSize(6.0*scaleFactor*z);
             pangoVal.setMarkup("???");
           }
           pangoVal.angle=angle+(notflipped? 0: M_PI);
@@ -660,7 +668,7 @@ void VariableBase::draw(cairo_t *cairo) const
           cairo_set_source_rgb(cairo,0,0,0);
           try
             {
-              cairo_arc(cairo,(notflipped?1:-1)*z*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+              cairo_arc(cairo,(notflipped?1.0:-1.0)*z*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
             }
           catch (const error&) {} // handlePos() may throw.
           cairo_fill(cairo);

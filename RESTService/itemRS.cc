@@ -74,6 +74,7 @@
 #include "selection.rcd"
 #include "sheet.h"
 #include "sheet.rcd"
+#include "showSlice.xcd"
 #include "slider.rcd"
 #include "SVGItem.rcd"
 #include "switchIcon.h"

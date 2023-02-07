@@ -1,13 +1,16 @@
 @import '../../../../shared/src/lib/theme/variables.scss';
 @import '../../../../shared/src/lib/theme/common-style.scss';
 
-.grid {
-  display: grid;
+.main {
+  display: flex;
+  width: 100vw;
   height: 100vh;
-  grid-template-rows: 50px 25px 25px auto 50px;
-  align-items: center;
-
+  flex-direction: column;
+  overflow: hidden;
+  
   .import-container {
+    flex: 0 0 50px;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,57 +20,62 @@
         width: 35rem;
       }
     }
+
+    * {
+      margin: 5px 10px;
+    }
   }
 
   .options-row {
-    padding: $padding;
-    input[type='text'] {
-      width: 5.5rem;
-    }
-    margin: 1rem;
-  }
-
-  .options-row-one {
+    flex: 0 0 1;
+    width: 100%;
+    
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap;
+
     span {
-      input[type='checkbox'] {
-        width: 2rem;
-        padding-left: 0.5rem;
-      }
-    }
-    margin-bottom: 2 * $padding;
-  }
+      margin: 0px 3px;
+      flex: 0 0 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
-  .options-row-two {
-    display: flex;
-    justify-content: space-between;
-    input[type='number'] {
-      width: 3rem;
-    }
-    #duplicate-key-action {
-      width: 8rem;
+      label {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        text-align: center;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+        min-height: 35px;
+      }
+
+      * {
+        width: 100%;
+      }
+
+      select {
+        cursor: pointer;
+        height: 21px;
+      }
     }
   }
 
   .canvas-container {
-    height: 100%;
+    flex: 1;
     overflow: scroll;
   }
 }
 
-button {
-  margin: $margin;
-}
-
-label,
-input,
-select {
-  margin-right: $padding;
-}
-
 .form-buttons {
   margin: 0;
+
+  button {
+    margin: 5px;
+  }
 }
 
 .autocomplete {
@@ -91,9 +99,13 @@ table {
   user-select: none;
 }
 
+th {
+  padding: 0px 10px;
+}
+
 td {
   border: 1px solid black;
-  user-select: none;
+  user-select: text;
   min-width: 171px;
 
   input[type='text'] {
@@ -114,4 +126,23 @@ td {
 .header {
   cursor: pointer;
 }
+.col-type-container {
+   filter: brightness(100%)
+}
+.col-type-container.selected {
+   filter: brightness(80%)
+}
 
+
+
+
+.table-cell {
+  padding: 2px 6px;
+}
+
+.col-type-container {
+  filter: brightness(100%)
+}
+.col-type-container.selected {
+  filter: brightness(80%)
+}

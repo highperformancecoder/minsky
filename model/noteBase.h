@@ -30,6 +30,8 @@ namespace minsky
     bool selected=false; ///<true if selected for cut, copy or group operation
     bool bookmark=false; ///< Is this item also a bookmark?
     std::string detailedText, tooltip;
+    /// adjust bookmark list to reflect current configuration
+    virtual void adjustBookmark() const {}
   };
 }
 

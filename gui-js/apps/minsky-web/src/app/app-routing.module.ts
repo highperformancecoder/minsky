@@ -17,10 +17,15 @@ import {
   ParametersComponent,
   PlotWidgetOptionsComponent,
   PlotWidgetViewComponent,
+  RavelViewComponent,
   RenameAllInstancesComponent,
   VariablesComponent,
   VariablePaneComponent,
-  WiringComponent,        
+  WiringComponent,     
+  EditHandleDescriptionComponent,
+  EditHandleDimensionComponent, 
+  PickSlicesComponent,
+  LockHandlesComponent
 } from '@minsky/ui-components';
 
 const routes: Routes = [
@@ -82,6 +87,22 @@ const routes: Routes = [
     component: EditDescriptionComponent,
   },
   {
+    path: 'headless/edit-handle-description',
+    component: EditHandleDescriptionComponent,
+  },
+  {
+    path: 'headless/edit-handle-dimension',
+    component: EditHandleDimensionComponent,
+  },
+  {
+    path: 'headless/pick-slices',
+    component: PickSlicesComponent,
+  },
+  {
+    path: 'headless/lock-handles',
+    component: LockHandlesComponent,
+  },
+  {
     path: 'headless/find-all-instances',
     component: FindAllInstancesComponent,
   },
@@ -100,6 +121,10 @@ const routes: Routes = [
   {
     path: 'headless/plot-widget-options',
     component: PlotWidgetOptionsComponent,
+  },
+  {
+    path: 'headless/ravel-widget-view',
+    component: RavelViewComponent,
   },
   {
     path: 'headless/terminal',

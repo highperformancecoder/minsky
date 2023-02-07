@@ -24,7 +24,6 @@
 #include <pango.h>
 
 #include "assetClass.rcd"
-#include "eventInterface.xcd"
 #include "godleyTableWindow.rcd"
 #include "godleyTableWindow.xcd"
 #include "minsky_epilogue.h"
@@ -567,8 +566,8 @@ namespace minsky
         swap(m_godleyIcon.table.cell(selectedRow,selectedCol), m_godleyIcon.table.cell(r,c));
         minsky().balanceDuplicateColumns(m_godleyIcon,selectedCol);
         minsky().balanceDuplicateColumns(m_godleyIcon,c);
-        selectedCol=-1;//c;
-        selectedRow=-1;//r;
+        selectedCol=-1;
+        selectedRow=-1;
       }
     else if (selectIdx!=insertIdx)
       copy();
@@ -767,7 +766,7 @@ namespace minsky
       auto& str=table.cell(selectedRow,selectedCol); 
       if (insertIdx!=selectIdx)
         delSelection();
-      else if (insertIdx>=0 && insertIdx<str.length())
+      else if (insertIdx<str.length())
         str.erase(insertIdx,numBytes(str[insertIdx]));
       selectIdx=insertIdx;
     }
@@ -781,6 +780,7 @@ namespace minsky
       m_godleyIcon.table.cell(selectedRow,selectedCol).clear();
     else
       delSelection();
+    requestRedrawCanvas();
   }
   
   void GodleyTableEditor::copy()
@@ -806,6 +806,7 @@ namespace minsky
       stringToInsert=stringToInsert.substr(0,p-1);
     str.insert(insertIdx,stringToInsert);
     selectIdx=insertIdx+=stringToInsert.length();
+    requestRedrawCanvas();
   }
 
   GodleyTableEditor::ClickType GodleyTableEditor::clickType(double x, double y) const

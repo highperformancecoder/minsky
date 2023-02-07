@@ -159,7 +159,6 @@ namespace schema0
     double rotation; // orientation of icon
 
     GroupIcon(): width(100), height(100), rotation(0) {}
-    //    void updateEdgeVariables(const VariableManager& vm);
   };
 
 
@@ -233,7 +232,7 @@ namespace schema0
     Minsky(classdesc::xml_unpack_t& data)
     {
       ::xml_unpack(data,"root",*this);
-      void removeIntVarOrphans();
+      removeIntVarOrphans();
     }
     
     /** See ticket #329 and references within. At some stage, IntOp had

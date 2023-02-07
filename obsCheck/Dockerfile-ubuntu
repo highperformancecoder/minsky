@@ -1,12 +1,15 @@
-FROM ubuntu:20.04
+ARG version=22.04
+FROM ubuntu:$version
 ARG project=minsky
+ARG version
 ADD . /root
 RUN cat /etc/os-release
 RUN apt-get update -qq -y
 RUN apt-get install -y wget gnupg2
-RUN wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_20.04/Release.key
+RUN wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_${version}/Release.key
 RUN apt-key add - < Release.key
-RUN echo 'deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_20.04/ /' >/etc/apt/sources.list.d/hpcoders.list
+RUN echo "deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_${version}/ /" >/etc/apt/sources.list.d/hpcoders.list
 RUN apt-get update -qq -y
 RUN apt-get install -y --allow-unauthenticated $project
-RUN minsky /root/smoke.tcl
+RUN useradd -m minsky
+RUN su - minsky -c "minsky --version  --no-sandbox"

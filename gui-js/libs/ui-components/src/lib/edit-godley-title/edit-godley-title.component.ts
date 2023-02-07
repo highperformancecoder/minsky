@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
-import { commandsMapping, replaceBackSlash } from '@minsky/shared';
+import { GodleyIcon } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 @AutoUnsubscribe()
@@ -12,8 +12,8 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 })
 export class EditGodleyTitleComponent implements OnDestroy {
   title: string;
-  itemId: number;
-
+  itemId: string;
+  
   constructor(
     private route: ActivatedRoute,
     private electronService: ElectronService,
@@ -21,29 +21,19 @@ export class EditGodleyTitleComponent implements OnDestroy {
   ) {
     this.route.queryParams.subscribe((params) => {
       this.title = params.title;
-      this.itemId = Number(params.itemId);
+      this.itemId = params.itemId;
     });
   }
 
   async handleEditTitle(newTitle: string) {
     if (this.electronService.isElectron) {
-      if (this.itemId) {
-        await this.electronService.sendMinskyCommandAndRender({
-          command: `${commandsMapping.GET_NAMED_ITEM}/"${
-            this.itemId
-          }"/second/table/title "${replaceBackSlash(newTitle)}"`,
-        });
-      } else {
-        await this.electronService.sendMinskyCommandAndRender({
-          command: `${
-            commandsMapping.CANVAS_ITEM_TABLE_TITLE
-          } "${replaceBackSlash(newTitle)}"`,
-        });
-
-        await this.electronService.sendMinskyCommandAndRender({
-          command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-        });
-      }
+        var godley=new GodleyIcon(
+          this.itemId?
+            this.electronService.minsky.namedItems.elem(this.itemId).second:
+            this.electronService.minsky.canvas.item
+        )
+      godley.table.title(newTitle);
+      this.electronService.minsky.canvas.requestRedraw();
       this.windowUtilityService.closeCurrentWindowIfNotMain();
     }
   }

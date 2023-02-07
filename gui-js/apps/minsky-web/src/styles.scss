@@ -71,6 +71,8 @@ body {
     justify-content: center;
     align-items: center;
 
+    user-select: none;
+
     &:focus {
       outline: none;
     }
@@ -102,4 +104,8 @@ body {
   ::ng-deep .mat-menu-content {
     display: flex !important;
   }
+}
+
+.small-autocomplete {
+  max-height: 100px !important;
 }

@@ -41,6 +41,7 @@
 #include "parameterTab.h"
 #include "plotTab.h"
 #include "plotWidget.h"
+#include "ravelWrap.h"
 #include "rungeKutta.h"
 #include "saver.h"
 #include "stringKeyMap.h"
@@ -69,7 +70,7 @@ namespace minsky
   class SaveThread;
   
   // handle the display of rendered equations on the screen
-  class EquationDisplay: public RenderNativeWindow, public EventInterface
+  class EquationDisplay: public RenderNativeWindow
   {
     Minsky& m;
     double m_width=0, m_height=0;
@@ -81,6 +82,7 @@ namespace minsky
     double height() const {return m_height;}
     EquationDisplay(Minsky& m): m(m) {}
     EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
+    EquationDisplay(const EquationDisplay&)=default;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
 
@@ -195,8 +197,8 @@ namespace minsky
     Conversions conversions;
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
-
     void populateMissingDimensionsFromVariable(const VariableValue&);
+    void renameDimension(const std::string& oldName, const std::string& newName);
     
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
@@ -206,6 +208,8 @@ namespace minsky
       Lock::lockedIcon.setResource(locked);
       Lock::unlockedIcon.setResource(unlocked);
     }
+    void setRavelIconResource(const string& s)
+    {Ravel::svgRenderer.setResource(s);}
     
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
@@ -308,9 +312,17 @@ namespace minsky
 
     /// return the AEGIS assigned version number
     static const std::string minskyVersion;
-    std::string ecolabVersion() const {return VERSION;}
-    std::string ravelVersion() const {return ravel::Ravel::version();}
-
+    /*static*/ std::string ecolabVersion() const {return VERSION;}
+    /*static*/ std::string ravelVersion() const {
+      if (ravel::Ravel::available())
+        {
+          int d=ravel::Ravel::daysUntilExpired();
+          return ravel::Ravel::version() + ": "+((d>=0)?("Expires in "+std::to_string(d)+" day"+(d!=1?"s":"")): "Expired");
+        }
+      else return "unavailable";
+    }
+    static bool ravelExpired() {return  ravel::Ravel::available() && ravel::Ravel::daysUntilExpired()<0;}
+    
     std::string fileVersion; ///< Minsky version file was saved under
     
     unsigned maxHistory{100}; ///< maximum no. of history states to save
@@ -456,6 +468,9 @@ namespace minsky
 
     /// list of available operations
     /*static*/ std::vector<std::string> availableOperations();
+    using AvailableOperationsMapping=classdesc::StringKeyMap<std::vector<OperationType::Type>>;
+    /*static*/ Minsky::AvailableOperationsMapping availableOperationsMapping() const;
+    
     /// list of available variable types
     /*static*/ std::vector<std::string> variableTypes();
     /// return list of available asset classes

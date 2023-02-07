@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { ClassType, commandsMapping, replaceBackSlash } from '@minsky/shared';
+import { ClassType, IntOp} from '@minsky/shared';
 
 @Component({
   selector: 'minsky-edit-integral',
@@ -14,6 +14,7 @@ export class EditIntegralComponent implements OnInit {
 
   classType: ClassType;
   itemName: string;
+  intOp: IntOp;
 
   public get name(): AbstractControl {
     return this.form.get('name');
@@ -46,6 +47,7 @@ export class EditIntegralComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.classType = params.classType;
     });
+    this.intOp=new IntOp(electronService.minsky.canvas.item);
   }
 
   ngOnInit() {
@@ -57,67 +59,25 @@ export class EditIntegralComponent implements OnInit {
   }
 
   private async updateFormValues() {
-    const name = (await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_DESCRIPTION,
-    })) as string;
-
-    this.itemName = name;
-    this.name.setValue(name);
-
-    const rotation = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_ROTATION,
-    });
-    this.rotation.setValue(rotation);
-
-    const initialValue = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_INT_VAR_INIT,
-    });
-    this.initialValue.setValue(initialValue);
-
-    const units = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_INT_VAR_UNITS_STR,
-    });
-    this.units.setValue(units);
-
-    const relative = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_INT_VAR_SLIDER_STEP_REL,
-    });
-    this.relative.setValue(relative);
+    this.itemName = await this.intOp.description();
+    this.name.setValue(this.itemName);
+    this.rotation.setValue(await this.intOp.rotation());
+    this.initialValue.setValue(await this.intOp.intVar.init());
+    this.units.setValue(await this.intOp.intVar.units());
+    this.relative.setValue(await this.intOp.intVar.sliderStepRel());
   }
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${
-          commandsMapping.CANVAS_ITEM_DESCRIPTION
-        } "${replaceBackSlash(this.name.value)}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_ROTATION} ${this.rotation.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_INT_VAR_INIT} "${this.initialValue.value}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${
-          commandsMapping.CANVAS_ITEM_INT_VAR_SET_UNITS
-        } "${replaceBackSlash(this.units.value)}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_INT_VAR_SLIDER_STEP_REL} ${this.relative.value}`,
-      });
+      this.intOp.description(this.name.value);
+      this.intOp.rotation(this.rotation.value);
+      this.intOp.intVar.init(this.initialValue.value);
+      this.intOp.intVar.setUnits(this.units.value);
+      this.intOp.intVar.sliderStepRel(this.relative.value);
     }
 
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

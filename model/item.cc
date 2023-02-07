@@ -127,10 +127,6 @@ namespace minsky
     {
       return abs(x0-x1)<d && abs(y0-y1)<d;
     }
-    inline bool near(float x0, float y0, float x1, float y1, float d, const Rotate& r)
-    {
-      return near(x0,y0,r.x(x1,y1),r.y(x1,y1),d);
-    }
   }
 
   std::vector<Point> Item::corners() const
@@ -228,9 +224,7 @@ namespace minsky
 
   bool Item::visibleWithinGroup() const 
   {return !attachedToDefiningVar();}
-
   
-
   void Item::moveTo(float x, float y)
   {
     if (auto g=group.lock())
@@ -248,7 +242,7 @@ namespace minsky
     assert(abs(x-this->x())<1 && abs(y-this->y())<1);
   }
 
-  ClickType::Type Item::clickType(float x, float y)
+  ClickType::Type Item::clickType(float x, float y) const
   {     	    
     // if selecting a contained variable, the delegate to that
     if (auto item=select(x,y))
@@ -294,9 +288,7 @@ namespace minsky
     cairo_paint(cairo);
   }
 
-  namespace
-  {
-    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
+    void Item::drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
     {
       cairo::CairoSave cs(cairo);
       cairo_translate(cairo,x,y);
@@ -311,7 +303,6 @@ namespace minsky
       cairo_move_to(cairo,.2,1);
       cairo_line_to(cairo,1,1);
     }
-  }
   
   // Refactor resize() code for all canvas items here. For feature 25 and 94
   void Item::resize(const LassoBox& b)
@@ -360,7 +351,7 @@ namespace minsky
     Pango pango(cairo);
     float w, h, z=zoomFactor();
     pango.angle=rotation() * M_PI / 180.0; 
-    pango.setFontSize(12*scaleFactor()*z);
+    pango.setFontSize(12.0*scaleFactor()*z);
     pango.setMarkup(latexToPango(detailedText));         
     // parameters of icon in userspace (unscaled) coordinates
     w=0.5*pango.width()+2*z; 

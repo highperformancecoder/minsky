@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping, dateTimeFormats } from '@minsky/shared';
+import { dateTimeFormats } from '@minsky/shared';
 
 interface Second {
   type: string;
@@ -22,8 +22,12 @@ export class DimensionsComponent implements OnInit {
   form: FormGroup;
   types = ['string', 'value', 'time'];
 
-  timeFormatStrings = dateTimeFormats;
+  submittedDimensions: string;
 
+  timeFormatStrings = dateTimeFormats;
+  originalDimensionNames: string[]=[];
+
+  
   public get dimensions(): FormArray {
     return this.form.get('dimensions') as FormArray;
   }
@@ -35,13 +39,10 @@ export class DimensionsComponent implements OnInit {
   ngOnInit() {
     (async () => {
       if (this.electronService.isElectron) {
-        const dimensions = (await this.electronService.sendMinskyCommandAndRender(
-          {
-            command: commandsMapping.DIMENSIONS,
-          }
-        )) as Record<string, Second>;
+        const dimensions = (await this.electronService.minsky.dimensions.properties()) as Record<string, Second>;
 
         for (const [key, args] of Object.entries(dimensions)) {
+          this.originalDimensionNames.push(key);
           this.dimensions.push(this.createDimension(key, args));
         }
       }
@@ -56,16 +57,10 @@ export class DimensionsComponent implements OnInit {
     });
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 
   getDimensions() {
-    const dimensions = this.form.value.dimensions as Dimension[];
-
-    return dimensions.reduce((acc, curr) => {
+    return this.dimensions.value.reduce((acc, curr) => {
       acc[curr.dimension] = {
         type: curr.type,
         units: curr.units,
@@ -75,12 +70,14 @@ export class DimensionsComponent implements OnInit {
   }
 
   async handleSubmit() {
-    const dimensions = this.getDimensions();
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${commandsMapping.DIMENSIONS} ${JSON.stringify(dimensions)}`,
-    });
-
+    // handle renames
+    let newDimensions=this.form.value.dimensions as Dimension[];
+    for (let i=0; i<newDimensions.length; ++i)
+      if (i<this.originalDimensionNames.length && newDimensions[i].dimension !== this.originalDimensionNames[i])
+        this.electronService.minsky.renameDimension(this.originalDimensionNames[i],newDimensions[i].dimension); 
+    await this.electronService.minsky.dimensions.properties(this.getDimensions());
+    await this.electronService.minsky.imposeDimensions();
+    this.electronService.minsky.reset();
     this.closeWindow();
   }
 }

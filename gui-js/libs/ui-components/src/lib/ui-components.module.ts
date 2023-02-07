@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '@minsky/shared';
 import { CliInputComponent } from './cli-input/cli-input.component';
 import { EditDescriptionComponent } from './edit-description/edit-description.component';
+import { EditHandleDescriptionComponent } from './edit-handle-description/edit-handle-description.component';
+import { EditHandleDimensionComponent } from './edit-handle-dimension/edit-handle-dimension.component';
 import { EditGodleyCurrencyComponent } from './edit-godley-currency/edit-godley-currency.component';
 import { EditGodleyTitleComponent } from './edit-godley-title/edit-godley-title.component';
 import { EditGroupComponent } from './edit-group/edit-group.component';
@@ -12,7 +14,6 @@ import { EditUserFunctionComponent } from './edit-user-function/edit-user-functi
 import { EquationsComponent } from './equations/equations.component';
 import { FindAllInstancesComponent } from './find-all-instances/find-all-instances.component';
 import { GodleyWidgetViewComponent } from './godley-widget-view/godley-widget-view.component';
-import { VariablePaneComponent } from './variable-pane/variable-pane.component';
 import { HeaderComponent } from './header/header.component';
 import { ImportCsvComponent } from './import-csv/import-csv.component';
 import { InputModalComponent } from './input-modal/input-modal.component';
@@ -26,6 +27,8 @@ import { VariablesComponent } from './variables/variables.component';
 import { AvailableOperationsComponent } from './wiring/available-operations/available-operations.component';
 import { VariableComponent } from './wiring/variable/variable.component';
 import { WiringComponent } from './wiring/wiring.component';
+import { PickSlicesComponent } from './pick-slices/pick-slices.component';
+import { LockHandlesComponent } from './lock-handles/lock-handles.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,10 @@ import { WiringComponent } from './wiring/wiring.component';
     RenameAllInstancesComponent,
     InputModalComponent,
     EditDescriptionComponent,
+    EditHandleDescriptionComponent,
+    EditHandleDimensionComponent,
+    PickSlicesComponent,
+    LockHandlesComponent,
     EditGodleyTitleComponent,
     EditGodleyCurrencyComponent,
     FindAllInstancesComponent,
@@ -67,6 +74,10 @@ import { WiringComponent } from './wiring/wiring.component';
     RenameAllInstancesComponent,
     InputModalComponent,
     EditDescriptionComponent,
+    EditHandleDescriptionComponent,
+    EditHandleDimensionComponent,
+    PickSlicesComponent,
+    LockHandlesComponent,
     EditGodleyTitleComponent,
     EditGodleyCurrencyComponent,
     FindAllInstancesComponent,

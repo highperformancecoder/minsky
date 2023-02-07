@@ -37,6 +37,7 @@ namespace minsky
     Panopticon(Canvas& canvas): canvas(canvas)  {}
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
 
+    Panopticon(Panopticon&)=default;
     Panopticon& operator=(const Panopticon&) {return *this;}
   };
 }

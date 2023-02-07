@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, isWindows, isMacOS } from '@minsky/shared';
+import { delayBeforeClosingPopupWindow, ElectronCanvasOffset, electronMenuBarHeightForWindows, } from '@minsky/shared';
 import { ElectronService } from '../electron/electron.service';
 
 @Injectable({
@@ -16,25 +16,17 @@ export class WindowUtilityService {
   private scrollableAreaWidth = null;
   private scrollableAreaHeight = null;
   private mainWindowId = 1;
-  SCROLLABLE_AREA_FACTOR = 10;
+  SCROLLABLE_AREA_FACTOR = 100;
 
   constructor(private electronService: ElectronService) { }
 
-  private initializeIfNeeded() {
-    if (!this.minskyCanvasElement) {
-      this.reInitialize();
-    }
-  }
-
-  public reInitialize() {
+  public async reInitialize() {
     this.minskyCanvasContainer = document.getElementById(
       'minsky-canvas-container'
     );
 
-    if (
-      this.minskyCanvasContainer &&
-      this.electronService.remote.getCurrentWindow().id === this.mainWindowId
-    ) {
+    let currentWindow=await this.electronService.getCurrentWindow();
+    if (this.minskyCanvasContainer && currentWindow.id === this.mainWindowId) {
       const bodyElement = document.getElementsByTagName('body')[0];
       this.minskyCanvasElement = document.getElementById(
         'main-minsky-canvas'
@@ -70,28 +62,26 @@ export class WindowUtilityService {
       this.leftOffset = clientRect.left;
       this.topOffset = clientRect.top;
 
-      this.electronMenuBarHeight = this.getElectronMenuBarHeight();
+      this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
     }
   }
 
-  public getElectronMenuBarHeight() {
-    if (isWindows()) return electronMenuBarHeightForWindows;
-    if (isMacOS()) return 0;
+  public async getElectronMenuBarHeight(): Promise<number> {
+    if (this.electronService.isWindows()) return electronMenuBarHeightForWindows;
+    if (this.electronService.isMacOS()) return 0;
     
-    const currentWindow = this.electronService.remote.getCurrentWindow();
-    const currentWindowSize = currentWindow.getSize()[1];
-    const currentWindowContentSize = currentWindow.getContentSize()[1];
+    const currentWindow = await this.electronService.getCurrentWindow();
+    const currentWindowSize = currentWindow.size[1];
+    const currentWindowContentSize = currentWindow.contentSize[1];
     return currentWindowSize - currentWindowContentSize;
   }
 
   public scrollToCenter() {
-    this.initializeIfNeeded();
     this.minskyCanvasElement.scrollTop = this.scrollableAreaHeight / 2;
     this.minskyCanvasElement.scrollLeft = this.scrollableAreaWidth / 2;
   }
 
   public getMinskyCanvasOffset(): ElectronCanvasOffset {
-    this.initializeIfNeeded();
     return {
       left: this.leftOffset,
       top: this.topOffset,
@@ -100,7 +90,6 @@ export class WindowUtilityService {
   }
 
   public getDrawableArea() {
-    this.initializeIfNeeded();
     return {
       width: this.drawableWidth,
       height: this.drawableHeight,
@@ -108,7 +97,6 @@ export class WindowUtilityService {
   }
 
   public getScrollableArea() {
-    this.initializeIfNeeded();
     return {
       width: this.scrollableAreaWidth,
       height: this.scrollableAreaHeight,
@@ -116,29 +104,24 @@ export class WindowUtilityService {
   }
 
   public getMinskyCanvasElement(): HTMLElement {
-    this.initializeIfNeeded();
     return this.minskyCanvasElement;
   }
 
   public getMinskyContainerElement(): HTMLElement {
-    this.initializeIfNeeded();
     return this.minskyCanvasContainer;
   }
 
-  public isMainWindow(): boolean {
-    const isMainWindow =
-      this.electronService.remote.getCurrentWindow().id === 1;
-
-    return isMainWindow;
+  public async isMainWindow(): Promise<boolean> {
+    let currentWindow=await this.electronService.getCurrentWindow();
+    return currentWindow.id === 1;
   }
 
   public closeCurrentWindowIfNotMain() {
-    const currentWindow = this.electronService.remote.getCurrentWindow();
     if (this.electronService.isElectron) {
-      setTimeout(() => {
-        const currentWindow = this.electronService.remote.getCurrentWindow();
+      setTimeout(async () => {
+        const currentWindow = await this.electronService.getCurrentWindow();
         if (currentWindow?.id !== 1) {
-          currentWindow.close();
+          this.electronService.closeWindow();
         }
       }, delayBeforeClosingPopupWindow);
     }

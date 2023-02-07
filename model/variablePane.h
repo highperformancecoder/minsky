@@ -23,7 +23,6 @@
 #include "classdesc_access.h"
 #include "grid.h"
 #include "variable.h"
-#include "eventInterface.h"
 #include "renderNativeWindow.h"
 #include <vector>
 
@@ -45,7 +44,7 @@ namespace minsky
     void emplace() const;
   };
   
-  class VariablePane: public Grid<VariablePaneCell>, public RenderNativeWindow, public EventInterface, public VariableType
+  class VariablePane: public Grid<VariablePaneCell>, public RenderNativeWindow, public VariableType
   {
     unsigned m_numRows=0, m_numCols=0;
     classdesc::Exclude<std::vector<VariablePaneCell>> vars;
@@ -68,11 +67,12 @@ namespace minsky
     unsigned numRows() const override {return m_numRows;}
     unsigned numCols() const override {return m_numCols;}
     bool evenHeight() const override {return false;}
-    void moveTo(double,double) override;
+    void moveCursorTo(double,double) override;
     void mouseDown(float,float) override;
     void mouseUp(float,float) override;
     void mouseMove(float,float) override;
     void zoom(double,double,double) override;
+    bool hasScrollBars() const override {return true;}
   };
 }
 #include "variablePane.cd"

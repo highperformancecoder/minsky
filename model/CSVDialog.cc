@@ -62,6 +62,7 @@ const unsigned CSVDialog::numInitialLines;
 void CSVDialog::reportFromFile(const std::string& input, const std::string& output) const
 {
   ifstream is(input);
+  stripByteOrderingMarker(is);
   ofstream of(output);
   reportFromCSVFile(is,of,spec);
 }
@@ -133,10 +134,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
          
   auto const protocol =what[1];
   auto const host = what[2];
-  //auto const port = what[3];
   auto const target = what[4];
-  //auto const query = what[5];
-  //auto const fragment = what[6];  
   
   // The io_context is required for all I/O
   boost::asio::io_context ioc;
@@ -234,6 +232,7 @@ void CSVDialog::guessSpecAndLoadFile()
 void CSVDialog::loadFileFromName(const std::string& fname)
 {  
   ifstream is(fname);
+  stripByteOrderingMarker(is);
   initialLines.clear();
   for (size_t i=0; i<numInitialLines && is; ++i)
     {
@@ -251,9 +250,16 @@ vector<vector<string>> parseLines(const Parser& parser, const vector<string>& li
   for (const auto& line: lines)
     {
       r.emplace_back();
-      boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
-      for (auto& t: tok)
-        r.back().push_back(t);
+      try
+        {
+          boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
+          for (auto& t: tok)
+            r.back().push_back(t);
+        }
+      catch (...) // if not parseable, place entire line in first cell
+        {
+          r.back().push_back(line);
+        }
     }
   return r;
 }

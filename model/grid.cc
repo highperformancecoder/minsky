@@ -88,7 +88,7 @@ namespace minsky
               case right: offset+=colWidth-currentCell.width(); break;
               case centre: offset+=0.5*(colWidth-currentCell.width()); break;
               }
-            moveTo(x+offset+0.5*padx,y);
+            moveCursorTo(x+offset+0.5*padx,y);
             currentCell.show();
             colWidth=std::max(colWidth, currentCell.width()+padx);
             y=bottomRowMargin[row];

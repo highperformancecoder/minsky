@@ -32,6 +32,8 @@
 #include "dataSpecSchema.h"
 #include "dataSpecSchema.rcd"
 #include "dimension.rcd"
+#include "eventInterface.rcd"
+#include "eventInterface.xcd"
 #include "group.h"
 #include "engNotation.h"
 #include "engNotation.rcd"

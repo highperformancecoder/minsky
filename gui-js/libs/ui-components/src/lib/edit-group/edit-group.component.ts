@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { ClassType, commandsMapping, replaceBackSlash } from '@minsky/shared';
+import { ClassType, Group } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-edit-group',
@@ -13,6 +13,7 @@ export class EditGroupComponent implements OnInit {
   form: FormGroup;
 
   classType: ClassType;
+  group: Group;
 
   public get name(): AbstractControl {
     return this.form.get('name');
@@ -33,6 +34,7 @@ export class EditGroupComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.classType = params.classType;
     });
+    this.group=new Group(this.electronService.minsky.canvas.item);
   }
 
   ngOnInit() {
@@ -44,41 +46,19 @@ export class EditGroupComponent implements OnInit {
   }
 
   private async updateFormValues() {
-    const title = (await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_TITLE,
-    })) as string;
-
-    this.name.setValue(title);
-
-    const rotation = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_ROTATION,
-    });
-    this.rotation.setValue(rotation);
+    this.name.setValue(await this.group.title());
+    this.rotation.setValue(await this.group.rotation());
   }
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_TITLE} "${replaceBackSlash(
-          this.name.value
-        )}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_ROTATION} ${this.rotation.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-      });
+      this.group.title(this.name.value);
+      this.group.rotation(this.rotation.value);
+      this.electronService.minsky.canvas.requestRedraw();
     }
 
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

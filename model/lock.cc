@@ -109,7 +109,7 @@ namespace minsky
                     // find which handle number this is
                     // TODO - is there a way of avoiding this second loop?
                     size_t i=0;
-                    for (; i<r->numHandles(); ++i)
+                    for (; i<r->maxRank(); ++i)
                       if (r->handleDescription(i)==h.description)
                         {
                           multiplier*=r->numSliceLabels(i);

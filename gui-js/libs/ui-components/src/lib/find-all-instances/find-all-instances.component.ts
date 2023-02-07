@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ElectronService } from '@minsky/core';
-import { commandsMapping } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-find-all-instances',
@@ -12,28 +11,17 @@ export class FindAllInstancesComponent {
 
   constructor(private electronService: ElectronService) {
     (async () => {
-      await electronService.sendMinskyCommandAndRender({
-        command: commandsMapping.LIST_ALL_INSTANCES,
-      });
-
-      this.instances = (await this.electronService.sendMinskyCommandAndRender({
-        command: commandsMapping.VARIABLE_INSTANCE_LIST_NAMES,
-      })) as string[];
+      await this.electronService.minsky.listAllInstances();
+      this.instances = await this.electronService.minsky.variableInstanceList.names();
     })();
   }
 
   async goToInstance(i) {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.VARIABLE_INSTANCE_LIST_GOTO_INSTANCE} ${i}`,
-      });
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.REQUEST_REDRAW_SUBCOMMAND} `,
-      });
+      await this.electronService.minsky.variableInstanceList.gotoInstance(i);
+      await this.electronService.minsky.canvas.requestRedraw();
     }
   }
 
-  closeWindow() {
-    this.electronService.remote.getCurrentWindow().close();
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

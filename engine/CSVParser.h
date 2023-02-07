@@ -22,6 +22,7 @@
 #include "dimension.h"
 #include "dataSpecSchema.h"
 #include "classdesc_access.h"
+#include "str.h"
 
 #include <cstddef>
 #include <string>
@@ -52,6 +53,7 @@ namespace minsky
     DataSpec& operator=(const DataSpecSchema& x) {
       DataSpecSchema::operator=(x);
       setDataArea(dataRowOffset, dataColOffset);
+      dimensionCols=x.dimensionCols; // revert clobber by setDataArea
       return *this;
     }
     
@@ -71,6 +73,7 @@ namespace minsky
     /// initial stab at dataspec from examining file
     void guessFromFile(const std::string& fileName) {
       std::ifstream is(fileName);
+      stripByteOrderingMarker(is);
       guessFromStream(is);
     }
 

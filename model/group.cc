@@ -180,8 +180,30 @@ namespace minsky
     return r;
   }
 
+  void Group::makeSubroutine()
+  {
+    recursiveDo(&GroupItems::items, [this](Items&,Items::iterator i)
+    {
+      if (auto v=(*i)->variableCast())
+        if (v->rawName()[0]==':')
+          {
+            // walk up parent groups to see if this variable is mentioned
+            for (auto g=group.lock(); g; g=g->group.lock())
+              for (auto& i: g->items)
+                if (auto vi=i->variableCast())
+                  if (vi->valueId()==v->valueId())
+                    goto outer_scope_variable_found;
+            v->name(v->rawName().substr(1)); // make variable local
+          }
+    outer_scope_variable_found:
+      return false;
+    });
+  }
+
+  
   ItemPtr GroupItems::removeItem(const Item& it)
   {
+    if (it.plotWidgetCast()==displayPlot.get()) removeDisplayPlot();
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
         {
@@ -206,7 +228,6 @@ namespace minsky
           return r;
         }
     
-    removeDisplayPlot();
     
     for (auto& g: groups)
       if (ItemPtr r=g->removeItem(it))
@@ -304,13 +325,9 @@ namespace minsky
             {
               if (origGroup->higher(*destGroup))
                 {
-                  // moving local var into an inner group, check if other variables of
-                  // same name exist in old group, and retain linkage
-                  if (v->name()[0]!=':')
-                    for (auto& i: origGroup->items)
-                      if (auto vv=i->variableCast())
-                        if (vv->name()==v->name())
-                          v->name(':'+v->name());
+                  // moving local var into an inner group, make global
+                  if (v->rawName()[0]!=':')
+                    v->name(':'+v->rawName());
                 }
               else if (destGroup->higher(*origGroup))
                 {
@@ -348,17 +365,17 @@ namespace minsky
     if (auto intOp=dynamic_cast<IntOp*>(it.get()))
       if (intOp->intVar)
         {
-          if (auto oldG=intOp->intVar->group.lock())
-            {
-              if (oldG.get()!=this)
-                addItem(oldG->removeItem(*intOp->intVar),inSchema);
-            }
-          else
-            addItem(intOp->intVar,inSchema);
-          if (intOp->coupled())
-            intOp->intVar->controller=it;
-          else
-            intOp->intVar->controller.reset();
+         if (auto oldG=intOp->intVar->group.lock())
+           {
+             if (oldG.get()!=this)
+               addItem(oldG->removeItem(*intOp->intVar),inSchema);
+           }
+         else
+           addItem(intOp->intVar,inSchema);
+         if (intOp->coupled())
+           intOp->intVar->controller=it;
+         else
+           intOp->intVar->controller.reset();
         }
          
     items.push_back(it);
@@ -565,7 +582,6 @@ namespace minsky
           {
             i->m_x*=sx;
             i->m_y*=sy;
-            //i->zoomFactor*=std::max(sx,sy);
           }
     }
 
@@ -801,9 +817,7 @@ namespace minsky
   float Group::computeDisplayZoom()
   {
     double x0, x1, y0, y1;
-    //float l, r, t, bm;
     float z=zoomFactor();    
-    float l, r;    
     float lz=contentBounds(x0,y0,x1,y1);
     x0=min(x0,double(x()));
     x1=max(x1,double(x()));
@@ -814,6 +828,7 @@ namespace minsky
 
     // account for shrinking margins
     float readjust=zoomFactor()/edgeScale() / (displayZoom>1? displayZoom:1);
+    float l, r;    
     margins(l,r);
     l*=readjust; r*=readjust;    
     displayZoom = max(displayZoom, 
@@ -855,14 +870,11 @@ namespace minsky
   void Group::setZoom(float factor)
   {
     bool dpc=displayContents();
-    //    zoomFactor=factor;
     if (!group.lock())
       relZoom=factor;
     else
       computeRelZoom();
     float lzoom=localZoom();
-//    for (auto& i: items)
-//      i->zoomFactor=lzoom;
     m_displayContentsChanged = dpc!=displayContents();
     for (auto& i: groups)
       {
@@ -885,10 +897,9 @@ namespace minsky
           i->zoom(i->x(), i->y(), factor);
         m_displayContentsChanged|=i->displayContentsChanged();
       }
-    //    minsky().canvas.requestRedraw();
   }
 
-  ClickType::Type Group::clickType(float x, float y)
+  ClickType::Type Group::clickType(float x, float y) const
   {
     auto z=zoomFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
@@ -1008,12 +1019,6 @@ namespace minsky
     
   }
 
-  namespace
-  {
-    // ratio of variable size to text height
-    const float varToTextRatio=1.8;
-  }
-  
   void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
                         float x) const
   {
@@ -1063,7 +1068,6 @@ namespace minsky
       if (vars.empty()) return 0;
       float z=vars[0]->zoomFactor();
       float top=vars[0]->bb.top()*z, bottom=vars[0]->bb.top()*z;
-      float y=0;
       for (size_t i=0; i<vars.size(); ++i)
           {
             if (i%2)

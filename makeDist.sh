@@ -12,7 +12,7 @@ if [ $# -ge 1 ]; then
 fi
 
 # add in submodules
-for sub in ecolab ecolab/classdesc ecolab/classdesc/json5_parser ecolab/graphcode certify RavelCAPI exprtk; do
+for sub in ecolab ecolab/classdesc ecolab/classdesc/json5_parser ecolab/graphcode certify RavelCAPI RavelCAPI/civita exprtk; do
     pushd $sub
     git archive --format=tar --prefix=$MINSKY_VERSION/$sub/ HEAD -o /tmp/$$.tar
     tar tvf /tmp/$$.tar

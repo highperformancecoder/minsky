@@ -70,6 +70,7 @@ namespace minsky
     leadingMarker=true;
     grid=true;
     legendLeft=0.1; // override ecolab's default value
+    legendSide=boundingBox;
     addPorts();
     
     yvars.resize(2*numLines);
@@ -329,12 +330,12 @@ namespace minsky
     float invZ=1/zoomFactor();
     iWidth(abs(x.x1-x.x0)*invZ);
     iHeight(abs(x.y1-x.y0)*invZ);
-    moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
+    Item::moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
     bb.update(*this);
   }
 
   // specialisation to avoid rerendering plots (potentially expensive)
-  ClickType::Type PlotWidget::clickType(float x, float y)
+  ClickType::Type PlotWidget::clickType(float x, float y) const
   {
     // firstly, check whether a port has been selected
     double z=zoomFactor();  
@@ -433,13 +434,19 @@ namespace minsky
     
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
-    for (auto& i: yvars)
-      if (i && xvars[&i-&yvars[0]] && !i->hypercube().xvectors.empty())
-        {
-          const auto& xv=i->hypercube().xvectors[0];
-          if (xv.dimension.type==Dimension::time)
-            xIsSecsSinceEpoch=true;
-        }
+    for (size_t n = 0; n < std::min(yvars.size(), xvars.size()); n++)
+      {
+        auto& i = yvars[n];
+        if (i && xvars[n] && !i->hypercube().xvectors.empty())
+          {
+            const auto& xv=i->hypercube().xvectors[0];
+            if (xv.dimension.type==Dimension::time)
+              {
+                xIsSecsSinceEpoch=true;
+                break;
+              }
+          }
+      }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
       if (pen<yvars.size() && yvars[pen])
@@ -484,10 +491,10 @@ namespace minsky
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
                         // interpret "year" as years since epoch (1/1/1970)
                         for (const auto& i: xv)
-                          xdefault.push_back(yearToPTime(any_cast<double>(i)));
+                          xdefault.push_back(yearToPTime(i.value));
                       else
                         for (const auto& i: xv)
-                          xdefault.push_back(any_cast<double>(i));
+                          xdefault.push_back(i.value);
                       if (plotType==automatic)
                         Plot::plotType=Plot::line;
                       break;
@@ -496,7 +503,7 @@ namespace minsky
                         string format=xv.timeFormat();
                         for (const auto& i: xv)
                           {
-                            double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
+                            double tv=(i.time-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
                             newXticks.back().emplace_back(tv,str(i,format));
                             xdefault.push_back(tv);
                           }
@@ -509,7 +516,7 @@ namespace minsky
               else // by default, set x to 0..d[0]-1
                 for (size_t i=0; i<d[0]; ++i)
                   xdefault.push_back(i);
-              x=&xdefault[0];
+              x=xdefault.data();
             }
           
           // higher rank y objects treated as multiple y vectors to plot

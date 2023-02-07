@@ -78,7 +78,7 @@ namespace minsky
 
     /// Godley table data this points to
     const std::vector<std::vector<std::string> >& data() const;
-    const GodleyAssetClass::AssetClass assetClass(std::size_t col) const;
+    GodleyAssetClass::AssetClass assetClass(std::size_t col) const;
     bool signConventionReversed(int col) const;
     bool initialConditionRow(int row) const;
     /// returns valueid for variable reference in table

@@ -44,10 +44,7 @@ bool Panopticon::redraw(int, int, int w, int h)
   
   double xscale=w/cachedImage->width(), yscale=h/cachedImage->height();
   double scale=min(xscale,yscale);
-//  cairo_rectangle(surface->cairo(),0,0,w,h);
-//  cairo_clip(surface->cairo());
   cairo_scale(surface->cairo(),scale,scale);
-  //cout << "scale:"<<scale<<endl;
   // Heuristic to not render when scale is too small for things to be visible
   if (scale>0.03)
     {

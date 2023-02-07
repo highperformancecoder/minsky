@@ -39,66 +39,38 @@
 #include "ravelWrap.rcd"
 #include "ravelWrap.xcd"
 #include "xvector.rcd"
+#include "minskyCairoRenderer.h"
 #include "minsky_epilogue.h"
+
 
 #include <string>
 #include <cmath>
 using namespace std;
 
-#include "cairoRenderer.h"
 
 namespace minsky
 {
   unsigned RavelLockGroup::nextColour=1;
+  SVGRenderer Ravel::svgRenderer;
 
   namespace
   {
     typedef ravel::Op::ReductionOp ReductionOp;
     typedef ravel::HandleSort::Order HandleSort;
-    
-    inline double sqr(double x) {return x*x;} 
   }
 
-  Ravel::Ravel()
+  Ravel::Ravel(): popup(*this)
   {
-    if (!ravel::Ravel::operator bool())
+    if (!wrappedRavel)
       {
         tooltip="https://ravelation.hpcoders.com.au";
-        detailedText=lastError();
+        detailedText=wrappedRavel.lastError();
       }
   }
 
-namespace
-{
-  struct CairoRenderer: public ravel::CairoRenderer
-  {
-    ecolab::Pango m_pango;
-    
-    static ecolab::Pango& pango(CAPIRenderer* r) {return static_cast<CairoRenderer*>(r)->m_pango;}
-
-    static void s_showText(CAPIRenderer* c, const char* s)
-    {
-      pango(c).setText(s);
-      pango(c).show();
-    }
-    static void s_setTextExtents(CAPIRenderer* c, const char* s)
-    {pango(c).setText(s);}
-    static double s_textWidth(CAPIRenderer* c) {return pango(c).width();}
-    static double s_textHeight(CAPIRenderer* c) {return pango(c).height();}
-
-    CairoRenderer(cairo_t* cairo): ravel::CairoRenderer(cairo), m_pango(cairo) {
-      showText=s_showText;
-      setTextExtents=s_setTextExtents;
-      textWidth=s_textWidth;
-      textHeight=s_textHeight;
-    }
-    
-  };
-}
-  
   void Ravel::draw(cairo_t* cairo) const
   {
-    double  z=zoomFactor(), r=1.1*z*radius();
+    double  z=zoomFactor(), r=editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
     m_ports[0]->moveTo(x()+1.1*r, y());
     m_ports[1]->moveTo(x()-1.1*r, y());
     if (mouseFocus)
@@ -106,7 +78,7 @@ namespace
         drawPorts(cairo);
         displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
         // Resize handles always visible on mousefocus. For ticket 92.
-        drawResizeHandles(cairo);
+        if (editorMode) drawResizeHandles(cairo);
       }
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
@@ -130,58 +102,73 @@ namespace
       cairo::CairoSave cs(cairo);
       cairo_rectangle(cairo,-r,-r,2*r,2*r);
       cairo_clip(cairo);
-      cairo_scale(cairo,z,z);
-      CairoRenderer cr(cairo);
-      render(cr);
+      if (editorMode)
+        {
+          cairo_scale(cairo,z,z);
+          CairoRenderer cr(cairo);
+          wrappedRavel.render(cr);
+        }
+      else
+        {
+          cairo_translate(cairo,-r,-r);
+          cairo_scale(cairo,2*r/svgRenderer.width(), 2*r/svgRenderer.height());
+          svgRenderer.render(cairo);
+        }
     }        
     if (selected) drawSelected(cairo);
   }
 
   void Ravel::resize(const LassoBox& b)
   {
-    rescale(0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor()));
+    wrappedRavel.rescale(0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor()));
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
   }
 
   bool Ravel::inItem(float xx, float yy) const
   {
-    float r=1.1*zoomFactor()*radius();
-    return std::abs(xx-x())<=r && std::abs(yy-y())<=r;
+    if (editorMode)
+      {
+        float r=1.1*zoomFactor()*wrappedRavel.radius();
+        return std::abs(xx-x())<=r && std::abs(yy-y())<=r;
+      }
+    else
+      return false;
   }
   
   void Ravel::onMouseDown(float xx, float yy)
   {
     double invZ=1/zoomFactor();
-    ravel::Ravel::onMouseDown((xx-x())*invZ,(yy-y())*invZ);
+    wrappedRavel.onMouseDown((xx-x())*invZ,(yy-y())*invZ);
   }
   
   void Ravel::onMouseUp(float xx, float yy)
   {
     double invZ=1/zoomFactor();
-    ravel::Ravel::onMouseUp((xx-x())*invZ,(yy-y())*invZ);
+    wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
+    resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
   bool Ravel::onMouseMotion(float xx, float yy)
   {
     double invZ=1/zoomFactor();
-    return ravel::Ravel::onMouseMotion((xx-x())*invZ,(yy-y())*invZ);
+    return wrappedRavel.onMouseMotion((xx-x())*invZ,(yy-y())*invZ);
   }
   
   bool Ravel::onMouseOver(float xx, float yy)
   {
     double invZ=1/zoomFactor();
-    return ravel::Ravel::onMouseOver((xx-x())*invZ,(yy-y())*invZ);
+    return wrappedRavel.onMouseOver((xx-x())*invZ,(yy-y())*invZ);
   }
 
   Hypercube Ravel::hypercube() const
   {
-    auto outHandles=outputHandleIds();
+    auto outHandles=wrappedRavel.outputHandleIds();
     Hypercube hc;
     auto& xv=hc.xvectors;
     for (auto h: outHandles)
       {
-        auto labels=sliceLabels(h);
+        auto labels=wrappedRavel.sliceLabels(h);
         xv.emplace_back(handleDescription(h));
         auto dim=axisDimensions.find(xv.back().name);
         if (dim!=axisDimensions.end())
@@ -204,28 +191,22 @@ namespace
     auto state=initState.empty()? getState(): initState;
     bool redistribute=!initState.empty();
     initState.clear();
-    clear();
-    for (auto& i: hc.xvectors)
-      {
-        vector<string> ss;
-        for (auto& j: i) ss.push_back(str(j,i.dimension.units));
-        addHandle(i.name, ss);
-        size_t h=numHandles()-1;
-        ravel::Ravel::displayFilterCaliper(h,false);
-      }
+    wrappedRavel.populateFromHypercube(hc);
     if (state.empty())
-      setRank(hc.rank());
+      {
+        setRank(hc.rank());
+      }
     else
       {
         applyState(state);
-        if (redistribute) redistributeHandles();
+        if (redistribute) wrappedRavel.redistributeHandles();
       }
 #ifndef NDEBUG
-    if (static_cast<ravel::Ravel&>(*this) && state.empty())
+    if (static_cast<ravel::Ravel&>(wrappedRavel) && state.empty())
       {
         auto d=hc.dims();
-        assert(d.size()==rank());
-        auto outputHandles=outputHandleIds();
+        assert(d.size()==wrappedRavel.rank());
+        auto outputHandles=wrappedRavel.outputHandleIds();
         for (size_t i=0; i<d.size(); ++i)
           assert(d[i]==numSliceLabels(outputHandles[i]));
       }
@@ -233,21 +214,17 @@ namespace
   }
 
   
-  unsigned Ravel::maxRank() const
-  {
-    return numHandles();
-  }
-
   void Ravel::setRank(unsigned rank)
   {
     vector<size_t> ids;
     for (size_t i=0; i<rank; ++i) ids.push_back(i);
-    setOutputHandleIds(ids);
+    wrappedRavel.setOutputHandleIds(ids);
   }
   
   void Ravel::adjustSlicer(int n)
   {
-    ravel::Ravel::adjustSlicer(n);
+    wrappedRavel.adjustSlicer(n);
+    resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
 
@@ -271,10 +248,10 @@ namespace
   
   bool Ravel::displayFilterCaliper() const
   {
-    int h=selectedHandle();
+    int h=wrappedRavel.selectedHandle();
     if (h>=0)
       {
-        auto state=getHandleState(h);
+        auto state=wrappedRavel.getHandleState(h);
         return state.displayFilterCaliper;
       }
     return false;
@@ -282,42 +259,32 @@ namespace
     
   bool Ravel::setDisplayFilterCaliper(bool x)
   {
-    int h=selectedHandle();
+    int h=wrappedRavel.selectedHandle();
     if (h>=0)
-      ravel::Ravel::displayFilterCaliper(h,x);
+      wrappedRavel.displayFilterCaliper(h,x);
     return x;
   }
 
   vector<string> Ravel::allSliceLabels() const
   {
-    return ravel::Ravel::allSliceLabels(selectedHandle(),ravel::HandleSort::forward);
+    return wrappedRavel.allSliceLabels(wrappedRavel.selectedHandle(),ravel::HandleSort::forward);
   }
   
   vector<string> Ravel::allSliceLabelsAxis(int axis) const
   {
-    return ravel::Ravel::allSliceLabels(axis,ravel::HandleSort::forward);
+    return wrappedRavel.allSliceLabels(axis,ravel::HandleSort::forward);
   }  
 
   vector<string> Ravel::pickedSliceLabels() const
-  {return sliceLabels(selectedHandle());}
+  {return wrappedRavel.sliceLabels(wrappedRavel.selectedHandle());}
 
   void Ravel::pickSliceLabels(int axis, const vector<string>& pick) 
   {
     if (axis>=0 && axis<int(numHandles()))
       {
         // stash previous handle sort order
-        auto state=getHandleState(axis);
-        if (state.order!=ravel::HandleSort::custom)
-          previousOrder=state.order;
-
-        if (pick.size()>=numAllSliceLabels(axis))
-          {
-            // if all labels are selected, revert ordering to previous
-            setHandleSortOrder(previousOrder, axis);
-            return;
-          }
-        
-        auto allLabels=ravel::Ravel::allSliceLabels(axis, ravel::HandleSort::none);
+        auto state=wrappedRavel.getHandleState(axis);
+        auto allLabels=wrappedRavel.allSliceLabels(axis, ravel::HandleSort::none);
         map<string,size_t> idxMap; // map index positions
         for (size_t i=0; i<allLabels.size(); ++i)
           idxMap[allLabels[i]]=i;
@@ -329,7 +296,9 @@ namespace
               customOrder.push_back(j->second);
           }
         assert(!customOrder.empty());
-        applyCustomPermutation(axis,customOrder);
+        wrappedRavel.applyCustomPermutation(axis,customOrder);
+        if (state.order!=ravel::HandleSort::custom)
+          setHandleSortOrder(state.order, axis);
       }
   }
 
@@ -344,10 +313,10 @@ namespace
   
   ravel::HandleSort::Order Ravel::sortOrder() const
   {
-    int h=selectedHandle();
+    int h=wrappedRavel.selectedHandle();
     if (h>=0)
       {
-        auto state=getHandleState(h);
+        auto state=wrappedRavel.getHandleState(h);
         return state.order;
       }
     return ravel::HandleSort::none;
@@ -355,8 +324,26 @@ namespace
  
   ravel::HandleSort::Order Ravel::setSortOrder(ravel::HandleSort::Order x)
   {
-    setHandleSortOrder(x, selectedHandle());
+    setHandleSortOrder(x, wrappedRavel.selectedHandle());
     return x;
+  }
+
+  void Ravel::resortHandleIfDynamic()
+  {
+    if (wrappedRavel.rank()==1)
+      {
+        // TODO add a Ravel CAPI call to get order directly?
+        auto order=wrappedRavel.getHandleState(wrappedRavel.outputHandleIds()[0]).order;
+        switch (order)
+          {
+          case ravel::HandleSort::dynamicForward:
+          case ravel::HandleSort::dynamicReverse:
+            sortByValue(order);
+            break;
+          default:
+            break;
+          }
+      }
   }
 
   ravel::HandleSort::Order Ravel::setHandleSortOrder(ravel::HandleSort::Order order, int handle)
@@ -364,60 +351,87 @@ namespace
     if (handle>=0)
       {
         Dimension dim=dimension(handle);
-        orderLabels(handle,order,ravel::toEnum<ravel::HandleSort::OrderType>(dim.type),dim.units);
+        wrappedRavel.orderLabels(handle,order,ravel::toEnum<ravel::HandleSort::OrderType>(dim.type),dim.units);
       }
     return order;
   }
 
   bool Ravel::handleSortableByValue() const
   {
-    if (rank()!=1) return false;
-    auto ids=outputHandleIds();
-    return size_t(selectedHandle())==ids[0];
+    if (wrappedRavel.rank()!=1) return false;
+    auto ids=wrappedRavel.outputHandleIds();
+    return size_t(wrappedRavel.selectedHandle())==ids[0];
   }
 
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
-    if (rank()!=1) return;
-    setHandleSortOrder(ravel::HandleSort::none, outputHandleIds()[0]);
+    if (wrappedRavel.rank()!=1) return;
+    int outputHandle=wrappedRavel.outputHandleIds()[0];
+    auto currentPermutation=wrappedRavel.currentPermutation(outputHandle);
+    if (currentPermutation.empty())
+      for (size_t i=0; i<wrappedRavel.numSliceLabels(outputHandle); ++i)
+        currentPermutation.push_back(i);
+    
     try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
+
     auto vv=m_ports[0]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
-    vector<size_t> permutation;
-    for (size_t i=0; i<vv->hypercube().xvectors[0].size(); ++i)
+
+    vector<size_t> permutation, nonFinite;
+    for (size_t i=0; i<std::min(currentPermutation.size(), vv->hypercube().xvectors[0].size()); ++i)
       if (std::isfinite(vv->atHCIndex(i)))
         permutation.push_back(i);
+      else
+        nonFinite.push_back(i);
+
     switch (dir)
       {
       case ravel::HandleSort::forward:
+      case ravel::HandleSort::staticForward:
+      case ravel::HandleSort::dynamicForward:
         sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
         {return vv->atHCIndex(i)<vv->atHCIndex(j);});
         break;
       case ravel::HandleSort::reverse:
+      case ravel::HandleSort::staticReverse:
+      case ravel::HandleSort::dynamicReverse:
         sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
         {return vv->atHCIndex(i)>vv->atHCIndex(j);});
         break;
       default:
         break;
       }
-    applyCustomPermutation(outputHandleIds()[0], permutation);
+
+    vector<size_t> slicedPermutation;
+    slicedPermutation.reserve(permutation.size());
+    for (auto i: permutation)
+      slicedPermutation.push_back(currentPermutation[i]);
+    for (auto i: nonFinite) // push back missing data to end of sequence
+      slicedPermutation.push_back(currentPermutation[i]);
+
+    wrappedRavel.applyCustomPermutation(outputHandle, slicedPermutation);
   }
   
   
   string Ravel::description() const
   {
-    return handleDescription(selectedHandle());
+    return handleDescription(wrappedRavel.selectedHandle());
   }
-  
+
   void Ravel::setDescription(const string& description)
   {
-    setHandleDescription(selectedHandle(),description);
+    wrappedRavel.setHandleDescription(wrappedRavel.selectedHandle(),description);
   }
 
   Dimension::Type Ravel::dimensionType() const
   {
-    auto descr=description();
+    return dimensionType(selectedHandle());
+  }
+
+  Dimension::Type Ravel::dimensionType(int handleIndex) const
+  {
+    auto descr=handleDescription(handleIndex);
     auto i=axisDimensions.find(descr);
     if (i!=axisDimensions.end())
       return i->second.type;
@@ -431,7 +445,12 @@ namespace
   
   std::string Ravel::dimensionUnitsFormat() const
   {
-    auto descr=description();
+    return dimensionUnitsFormat(selectedHandle());
+  }
+
+  std::string Ravel::dimensionUnitsFormat(int handleIndex) const
+  {
+    auto descr=handleDescription(handleIndex);
     if (descr.empty()) return "";
     auto i=axisDimensions.find(descr);
     if (i!=axisDimensions.end())
@@ -445,7 +464,13 @@ namespace
   /// @throw if type does not match global dimension type
   void Ravel::setDimension(Dimension::Type type,const std::string& units)
   {
-    auto descr=description();
+    return setDimension(selectedHandle(), type, units);
+  }
+
+  /// @throw if type does not match global dimension type
+  void Ravel::setDimension(int handleIndex, Dimension::Type type,const std::string& units)
+  {
+    auto descr=handleDescription(handleIndex);
     if (descr.empty()) return;
     auto i=cminsky().dimensions.find(descr);
     Dimension d{type,units};
@@ -468,7 +493,7 @@ namespace
     if (!m_ports.empty())
       if (auto vv=m_ports[0]->getVariableValue())
         {
-          vv->exportAsCSV(filename, ravel::Ravel::description());
+          vv->exportAsCSV(filename, wrappedRavel.description());
           return;
         }
 
@@ -478,7 +503,7 @@ namespace
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
     v=*tensorOpFactory.create(itemPtrFromThis(), tp);
     // TODO: add some comment lines, such as source of data
-    v.exportAsCSV(filename, ravel::Ravel::description());
+    v.exportAsCSV(filename, wrappedRavel.description());
   }
 
   Units Ravel::units(bool check) const
@@ -490,7 +515,7 @@ namespace
     // reduced by product handles
     for (size_t h=0; h<numHandles(); ++h)
       {
-        auto state=getHandleState(h);
+        auto state=wrappedRavel.getHandleState(h);
         if (state.collapsed && state.reductionOp==ravel::Op::prod)
           multiplier*=numSliceLabels(h);
       }
@@ -502,8 +527,8 @@ namespace
 
   void Ravel::applyState(const ravel::RavelState& state)
  {
-   auto r=radius();
-   setRavelState(state);
+   auto r=wrappedRavel.radius();
+   wrappedRavel.setRavelState(state);
    if (state.radius!=r) // only need to update bounding box if radius changes
      updateBoundingBox();
  }
@@ -511,11 +536,11 @@ namespace
   
   void Ravel::displayDelayedTooltip(float xx, float yy)
   {
-    if (rank()==0)
+    if (wrappedRavel.rank()==0)
       explanation="load CSV data from\ncontext menu";
     else
       {
-        explanation=explain(xx-x(),yy-y());
+        explanation=wrappedRavel.explain(xx-x(),yy-y());
         // line break every 5 words
         int spCnt=0;
         for (auto& c: explanation)
@@ -557,7 +582,7 @@ namespace
     
     const auto sourceState=ravel.getState();
 
-    if (handleLockInfo.empty()) // default is all handles are lock
+    if (handleLockInfo.empty()) // default is all handles are locked
       {
         for (auto& i: m_ravels)
           if (auto r=i.lock())
@@ -629,6 +654,7 @@ namespace
                     }
                 }
             }
+          state.outputHandles=vector<string>(outputHandles.begin(),outputHandles.end());
           r->applyState(state);
         }
   }
@@ -766,7 +792,56 @@ namespace
       if (auto r=m_ravels[0].lock())
         r->lockGroup.reset(); // this may delete this, so should be last
   }
- 
+
+  bool RavelPopup::redraw(int x0, int y0, int width, int height)
+  {
+    if (!surface.get()) return false;
+    this->width=width; this->height=height;
+    ecolab::cairo::CairoSave cs(surface->cairo());
+    cairo_translate(surface->cairo(),0.5*width,0.5*height);
+    auto z=0.4*min(width,height)/ravel.wrappedRavel.radius();
+    scale=1/z;
+    cairo_scale(surface->cairo(), z,z);
+    CairoRenderer cr(surface->cairo());
+    ravel.wrappedRavel.render(cr);
+    return true;
+  }
+
+  float RavelPopup::localX(float x) const
+  {return scale*(x-0.5*width);}
+  float RavelPopup::localY(float y) const
+  {return scale*(y-0.5*height);}
+  
+  void RavelPopup::mouseDown(float x, float y) {
+    ravel.wrappedRavel.onMouseDown(localX(x),localY(y));
+    requestRedraw();
+  }
+  void RavelPopup::mouseUp(float x, float y) {
+    ravel.wrappedRavel.onMouseUp(localX(x),localY(y));
+    requestRedraw();
+  }
+  void RavelPopup::mouseMove(float x, float y) {
+    ravel.wrappedRavel.onMouseMotion(localX(x),localY(y));
+    requestRedraw();
+  }
+  void RavelPopup::mouseOver(float x, float y) {
+    ravel.wrappedRavel.onMouseOver(localX(x),localY(y));
+    ravel.broadcastStateToLockGroup();
+    minsky().reset();
+    requestRedraw();
+  }
+  void RavelPopup::mouseLeave() {
+    ravel.wrappedRavel.onMouseLeave();
+    requestRedraw();
+  }
+
+  bool RavelPopup::keyPress(const KeyPressArgs& args)
+  {
+    auto r=ravel.onKeyPress(args.keySym,args.utf8,args.state);
+    if (r) requestRedraw();
+    return r;
+  }
+  
 }
 
   

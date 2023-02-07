@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { replaceBackSlash } from '@minsky/shared';
-import { commandsMapping, events } from '@minsky/shared';
+import { events, Item, Wire } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-edit-description',
@@ -14,7 +13,7 @@ export class EditDescriptionComponent implements OnInit {
   tooltip = '';
   detailedText = '';
   type = '';
-  bookmark='false';
+  bookmark=false;
 
   editDescriptionForm: FormGroup;
   constructor(
@@ -24,14 +23,14 @@ export class EditDescriptionComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.bookmark = params['bookmark'];
+      this.bookmark = params['bookmark']==='true';
       this.tooltip = params['tooltip'];
       this.detailedText = params['detailedText'];
       this.type = params['type'];
     });
 
     this.editDescriptionForm = new FormGroup({
-      bookmark: new FormControl(this.bookmark),
+      bookmark: new FormControl(this.bookmark as boolean),
       tooltip: new FormControl(this.tooltip),
       detailedText: new FormControl(this.detailedText),
     });
@@ -39,19 +38,24 @@ export class EditDescriptionComponent implements OnInit {
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.saveDescription({
-        item: this.type,
-        tooltip: this.editDescriptionForm.get('tooltip').value,
-        detailedText: this.editDescriptionForm.get('detailedText').value,
-        bookmark: this.editDescriptionForm.get('bookmark').value,
-      });
+      var item: Item|Wire;
+      switch (this.type) {
+      case 'item':
+        item=this.electronService.minsky.canvas.item;
+        break;
+      case 'wire':
+        item=this.electronService.minsky.canvas.wire;
+        break;
+      }
+      
+      item.bookmark(this.editDescriptionForm.get('bookmark').value);
+      item.tooltip(this.editDescriptionForm.get('tooltip').value);
+      item.detailedText(this.editDescriptionForm.get('detailedText').value);
+      item.adjustBookmark();
+      this.electronService.send(events.UPDATE_BOOKMARK_LIST);
     }
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

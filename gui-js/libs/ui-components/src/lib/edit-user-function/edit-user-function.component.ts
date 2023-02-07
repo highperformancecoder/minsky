@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { ClassType, commandsMapping, replaceBackSlash } from '@minsky/shared';
+import { ClassType, UserFunction } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-edit-user-function',
@@ -14,7 +14,8 @@ export class EditUserFunctionComponent implements OnInit {
 
   classType: ClassType;
   itemName: string;
-
+  udf: UserFunction;
+  
   public get name(): AbstractControl {
     return this.form.get('name');
   }
@@ -41,6 +42,7 @@ export class EditUserFunctionComponent implements OnInit {
 
   ngOnInit() {
     if (this.electronService.isElectron) {
+      this.udf=new UserFunction(this.electronService.minsky.canvas.item);
       (async () => {
         await this.updateFormValues();
       })();
@@ -48,50 +50,21 @@ export class EditUserFunctionComponent implements OnInit {
   }
 
   private async updateFormValues() {
-    const name = (await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_DESCRIPTION,
-    })) as string;
-
-    this.itemName = name;
-
-    this.name.setValue(name);
-
-    const rotation = await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_ROTATION,
-    });
-    this.rotation.setValue(rotation);
-
-    const expression = (await this.electronService.sendMinskyCommandAndRender({
-      command: commandsMapping.CANVAS_ITEM_EXPRESSION,
-    })) as string;
-    this.expression.setValue(expression);
+    this.itemName = await this.udf.description();
+    this.name.setValue(this.itemName);
+    this.rotation.setValue(await this.udf.rotation());
+    this.expression.setValue(await this.udf.expression());
   }
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${
-          commandsMapping.CANVAS_ITEM_DESCRIPTION
-        } "${replaceBackSlash(this.name.value)}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_ROTATION} ${this.rotation.value}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.CANVAS_ITEM_EXPRESSION} "${replaceBackSlash(
-          this.expression.value
-        )}"`,
-      });
+      this.udf.description(this.name.value);
+      this.udf.rotation(this.rotation.value);
+      this.udf.expression(this.expression.value);
     }
 
     this.closeWindow();
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
-import { commandsMapping, replaceBackSlash } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-rename-all-instances',
@@ -25,15 +24,8 @@ export class RenameAllInstancesComponent implements OnInit {
 
   async handleSaveInput(newName: string) {
     if (this.electronService.isElectron) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${
-          commandsMapping.CANVAS_RENAME_ALL_INSTANCES
-        } "${replaceBackSlash(newName)}"`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-      });
+      this.electronService.minsky.canvas.renameAllInstances(newName);
+      this.electronService.minsky.canvas.requestRedraw();
       this.windowUtilityService.closeCurrentWindowIfNotMain();
     }
   }

@@ -63,18 +63,12 @@ namespace minsky
   inline std::string stripActive(const std::string& s) {
     std::string r; r.reserve(s.length());
     for (size_t i=0; i<s.length(); ++i)
-      switch (s[i])        
-        {
-        case '\\':
-          r+="∖";
-          break;
-        default:
-          if (isspace(s[i]))
-            r+="␣";
-          else
-            r+=s[i];
-          break;
-        }
+      if (s[i]=='\\')        
+        r+="∖";
+      else if (isspace(s[i]))
+        r+="␣";
+      else
+        r+=s[i];
     if (r.empty()) return "_";
     return r;
   }
@@ -148,5 +142,16 @@ namespace minsky
     return i;
   }
 
+  /// checks if the input stream has the UTF-8 byte ordering marker,
+  /// and removes it if present
+  inline void stripByteOrderingMarker(std::istream& s)
+  {
+    char bom[4];
+    s.get(bom,4);
+    if (strcmp(bom,"\357\273\277")==0) return; //skipped BOM
+    s.seekg(0); //rewind input stream
+  }
+
+  
 }
 #endif

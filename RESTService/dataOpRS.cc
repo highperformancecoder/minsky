@@ -45,6 +45,8 @@
 #include "dataSpecSchema.rcd"
 #include "dimension.h"
 #include "dimension.rcd"
+#include "eventInterface.xcd"
+#include "eventInterface.rcd"
 #include "hypercube.h"
 #include "hypercube.rcd"
 #include "hypercube.xcd"

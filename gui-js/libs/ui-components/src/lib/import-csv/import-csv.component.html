@@ -1,4 +1,4 @@
-<div class="grid" [formGroup]="form">
+<div class="main" [formGroup]="form">
   <!-- HEADER START -->
   <div class="import-container">
     <span class="import">
@@ -11,10 +11,10 @@
     </span>
   </div>
 
-  <div class="options-row-one options-row">
+  <div class="options-row">
     <span>
       <label for="columnar">Columnar</label>
-      <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(selectedRow,selectedCol)"/>
+      <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(dialogState.spec.nRowAxes,dialogState.spec.nColAxes)"/>
     </span>
 
     <span>
@@ -82,16 +82,13 @@
     </span>
 
     <span>
-      <label for="merge-delimeters">Merge Delimiters</label>
+      <label for="merge-delimiters">Merge Delimiters</label>
       <input
-        id="merge-delimeters"
+        id="merge-delimiters"
         type="checkbox"
         formControlName="mergeDelimiters"
       />
     </span>
-  </div>
-
-  <div class="options-row-two options-row">
     <span>
       <label for="missing-value">Missing Value</label>
       <input
@@ -109,23 +106,15 @@
 
     <span>
       <label for="duplicate-key-action">Duplicate Key Action</label>
-      <input
-        id="duplicate-key-action"
-        type="text"
-        formControlName="duplicateKeyAction"
-        [matAutocomplete]="duplicateKeyAction"
-        class="form-control autocomplete"
-      />
-      <mat-autocomplete
-        [panelWidth]="'10rem'"
-        #duplicateKeyAction="matAutocomplete"
-      >
-        <mat-option value="throwException">throwException</mat-option>
-        <mat-option value="sumProducts">sumProducts</mat-option>
-        <mat-option value="min">min</mat-option>
-        <mat-option value="max">max</mat-option>
-        <mat-option value="av">av</mat-option>
-      </mat-autocomplete>
+
+      <select id="duplicate-key-action" formControlName="duplicateKeyAction">
+            <option value="throwException">throwException</option>
+            <option value="sum">sum</option>
+            <option value="product">product</option>
+            <option value="min">min</option>
+            <option value="max">max</option>
+            <option value="av">av</option>
+      </select>
     </span>
 
     <span>
@@ -177,7 +166,7 @@
         <th>Dimension</th>
         <td #colTypeRow
           *ngFor="let col of csvCols; let i = index"
-          class="col-type-container"
+          class="col-type-container" [class.selected]="selected[i]"
         >
 
             <select
@@ -192,10 +181,13 @@
 
       <tr>
         <th>Type</th>
-        <td *ngFor="let col of csvCols; let i = index">
+        <td *ngFor="let col of csvCols; let i = index"
+            class="col-type-container col-container"
+            [class.selected]="selected[i]"
+            >
           <ng-container *ngIf="colType[i]==='axis'">
             <select
-              value="{{ dialogState.spec?.dimensions[i]?.type }}"
+              [value]="dialogState.spec.dimensions[i]?.type "
               (change)="dialogState.spec.dimensions[i].type = $event.target.value"
             >
               <option value="string">string</option>
@@ -208,10 +200,13 @@
 
       <tr>
         <th>Format</th>
-        <td *ngFor="let col of csvCols; let i = index">
+        <td *ngFor="let col of csvCols; let i = index"
+            class="col-container" [class.selected]="selected[i]"
+            >
           <input
             *ngIf="colType[i]==='axis'"
             type="text"
+            [value]="dialogState.spec.dimensions[i]?.units"
             [matAutocomplete]="autocompleteFormat"
             class="form-control"
             (change)="dialogState.spec.dimensions[i].units = $event.target.value"
@@ -222,7 +217,7 @@
             #autocompleteFormat="matAutocomplete"
             (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
           >
-            <ng-container *ngIf="dialogState.spec?.dimensions[i]?.type === 'time'">
+            <ng-container *ngIf="dialogState.spec.dimensions[i]?.type === 'time'">
               <mat-option
                 *ngFor="let tfs of timeFormatStrings"
                 [value]="tfs.value"
@@ -236,13 +231,15 @@
 
       <tr>
         <th>Name</th>
-        <td *ngFor="let col of csvCols; let i = index">
+        <td *ngFor="let col of csvCols; let i = index"
+            class="col-container" [class.selected]="selected[i]"
+            >
           <input
             *ngIf="colType[i]==='axis'"
             type="text"
             [matAutocomplete]="autocompleteName"
             class="form-control"
-            value="{{ dialogState.spec.dimensionNames[i] }}"
+            [value]="dialogState.spec.dimensionNames[i]"
             (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
           />
           <mat-autocomplete
@@ -251,8 +248,8 @@
             #autocompleteName="matAutocomplete"
             (optionSelected)="dialogState.spec.dimensionNames[i] = $event.option.value"
           >
-            <mat-option [value]="parsedLines[selectedHeader][i]"
-              >{{ parsedLines[selectedHeader][i] }}
+            <mat-option [value]="parsedLines[dialogState.spec.headerRow][i]"
+              >{{ parsedLines[dialogState.spec.headerRow][i] }}
             </mat-option>
           </mat-autocomplete>
         </td>
@@ -260,13 +257,15 @@
 
       <tr *ngFor="let row of parsedLines; let rowIndex = index">
         <th class="header" (click)="selectHeader(rowIndex)">
-          <ng-container *ngIf="rowIndex === selectedHeader"
+          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow"
             >Header</ng-container
           >
         </th>
-        <td
+        <td class="table-cell"
           *ngFor="let rowElement of row; let colIndex = index"
-          (click)="selectRowAndCol(rowIndex, colIndex)"
+          (mousedown)="typeMouseDown(colIndex)"
+          (mousemove)="typeMouseMove(colIndex)"
+          (mouseup)="typeMouseUp(rowIndex,colIndex)"
           [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
         >
           {{ rowElement }}

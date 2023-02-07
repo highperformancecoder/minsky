@@ -1,0 +1,36 @@
+<div class="container" [formGroup]="editDimensionForm">
+  <div class="form-body">
+    <div class="form-row">
+    <div class="label">Type</div>
+      <select formControlName="type">
+        <option value="string">string</option>
+        <option value="value">value</option>
+        <option value="time">time</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="label">Units</div>
+      <input
+      [title]="tooltips[editDimensionForm.get('type').value]"
+          type="text"
+          formControlName="units"
+          [matAutocomplete]="auto"
+          class="form-control autocomplete"
+        />
+      <mat-autocomplete class="small-autocomplete" #auto="matAutocomplete">
+        <ng-container *ngIf="editDimensionForm.get('type').value === 'time'">
+          <mat-option
+            *ngFor="let tfs of timeFormatStrings"
+            [value]="tfs.value"
+          >
+            {{ tfs.label }}
+          </mat-option>
+        </ng-container>
+      </mat-autocomplete>
+    </div>
+  </div>
+  <div class="buttons">
+    <button mat-raised-button (click)="closeWindow()">Cancel</button>
+    <button mat-raised-button class="submit" (click)="handleSave()">Save</button>
+  </div>
+</div>

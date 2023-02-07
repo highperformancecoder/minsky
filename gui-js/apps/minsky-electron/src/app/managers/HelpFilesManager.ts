@@ -12,6 +12,7 @@ abstract class HelpFilesManager {
   }
 
   public static async initialize(directory: string) {
+    this.topicNodeMap["minsky"]="minsky.html"; // toplevel page
     await this.processFileOrDirectory(directory);
   }
 

@@ -7,14 +7,15 @@ ifneq ($(MAKECMDGOALS),clean)
 include $(ECOLAB_HOME)/include/Makefile
 endif
 
-VPATH= .. ../schema ../model ../engine ../tensor ../RESTService ../RavelCAPI $(ECOLAB_HOME)/include
+VPATH= .. ../schema ../model ../engine ../RESTService ../RavelCAPI/civita ../RavelCAPI $(ECOLAB_HOME)/include
 
 UNITTESTOBJS=main.o testCSVParser.o testDerivative.o testExpressionWalker.o testGrid.o testItemTab.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testXVector.o ticket-1461.o
 
-MINSKYOBJS=$(filter-out ../tclmain.o ../RESTService.o ../httpd.o ../addon.o ../dummy-addon.o ../itemTemplateInstantiations.o,$(wildcard ../*.o))
-FLAGS:=-I.. -I../RESTService -I../tensor -I../RavelCAPI $(FLAGS)
-FLAGS+=-std=c++14 -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -I../model -I../engine -I../schema
-LIBS+=-L../RavelCAPI -lravelCAPI -lboost_system -lboost_thread \
+MINSKYOBJS=$(filter-out ../tclmain.o ../RESTService.o ../httpd.o ../addon.o ../dummy-addon.o ../itemTemplateInstantiations.o ../typescriptAPI.o,$(wildcard ../*.o))
+FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI $(FLAGS)
+FLAGS+=-std=c++14  -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf \
+	-Wno-unused-local-typedefs -I../model -I../engine -I../schema
+LIBS+=-L../RavelCAPI -lravelCAPI -L../RavelCAPI/civita -lcivita -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lclipboard -lxcb -lX11 \
 	-lUnitTest++ -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
 
@@ -27,11 +28,6 @@ endif
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
 LIBS+=$(shell pkg-config --libs librsvg-2.0)
-
-JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
-ifneq ($(JSON_SPIRIT_HEADER),)
-  FLAGS+=-I$(JSON_SPIRIT_HEADER)
-endif
 
 EXES=cmpFp checkSchemasAreSame
 #testDatabase testGroup 

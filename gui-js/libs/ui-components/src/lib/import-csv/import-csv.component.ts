@@ -1,17 +1,14 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ChangeDetectorRef, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {
-  commandsMapping,
   dateTimeFormats,
-  importCSVerrorMessage,
   importCSVvariableName,
-  isWindows,
-  normalizeFilePathForPlatform,
+  VariableBase,
+  VariableValue,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
-import * as JSON5 from 'json5';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 enum ColType {
@@ -36,6 +33,12 @@ function separatorFromChar(sep: string): string {
   }
 }
 
+class Dimension
+{
+  type: string;
+  units: string;
+};
+
 @AutoUnsubscribe()
 @Component({
   selector: 'minsky-import-csv',
@@ -45,21 +48,19 @@ function separatorFromChar(sep: string): string {
 export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   form: FormGroup;
 
-  itemId: number;
+  itemId: string;
   systemWindowId: number;
   isInvokedUsingToolbar: boolean;
-  valueId: number;
-  variableValuesSubCommand: string;
+  valueId: string;
+  variableValuesSubCommand: VariableValue;
   timeFormatStrings = dateTimeFormats;
   parsedLines: string[][] = [];
   csvCols: any[];
-  selectedHeader = 0;
-  selectedRow = -1;
-  selectedCol = -1;
   colType: Array<ColType> = [];
+  selected: boolean[]; ///< per column whether column is selected
+  mouseDown=-1;       ///< record of column of previous mouseDown
   dialogState: any;
-  initialDimensionNames: string[];
-  @ViewChild('colTypeRow') colTypeRow: ElementRef<HTMLCollection>;
+  @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
 
   public get url(): AbstractControl {
@@ -104,7 +105,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private electronService: ElectronService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.route.queryParams.subscribe((params) => {
       this.itemId = params.itemId;
@@ -144,14 +146,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     (async () => {
       this.valueId = await this.getValueId();
-      this.variableValuesSubCommand = `/minsky/variableValues/@elem/${JSON5.stringify(this.valueId)}/second`;
-
+      this.variableValuesSubCommand = this.electronService.minsky.variableValues.elem(this.valueId).second;
+      
+      
       await this.getCSVDialogSpec();
       this.updateForm();
-      this.selectedHeader = this.dialogState.spec.headerRow as number;
       this.load();
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
-      this.setupListenerForCleanup();
     })();
   }
   ngAfterViewChecked() 	{
@@ -159,51 +160,23 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.inputCsvCanvasContainer)
     {
       var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
+      if (!table) return;
       for (var i=0; i<this.colType.length; ++i)
         {
-            var colType=table.rows[0].cells[i+1].children[0] as HTMLInputElement;
+            var colType=table.rows[0].cells[i+1]?.children[0] as HTMLInputElement;
             if (colType)
                 colType.value=this.colType[i];
             if (this.colType[i]===ColType.axis)
             {
-                var type=table.rows[1].cells[i+1].children[0] as HTMLSelectElement;
-                type.value=this.dialogState.spec.dimensions[i].type;
-                var format=table.rows[2].cells[i+1].children[0] as HTMLInputElement;
-                format.value=this.dialogState.spec.dimensions[i].units;
-                var name=table.rows[3].cells[i+1].children[0] as HTMLInputElement;
-                name.value=this.dialogState.spec.dimensionNames[i];
+              var type=table.rows[1].cells[i+1]?.children[0] as HTMLSelectElement;
+              var dimension=this.dialogState.spec.dimensions[i];
+              if (!dimension) dimension={type: "string", units: ""};
+              type.value=dimension.type;
             }
         }
     }
   }
   
-  private setupListenerForCleanup() {
-    this.electronService.remote.getCurrentWindow().on('close', async () => {
-      if (this.isInvokedUsingToolbar) {
-        const currentItemId = await this.electronService.sendMinskyCommandAndRender(
-          {
-            command: commandsMapping.CANVAS_ITEM_ID,
-          }
-        );
-        const currentItemName = await this.electronService.sendMinskyCommandAndRender(
-          {
-            command: commandsMapping.CANVAS_ITEM_NAME,
-          }
-        );
-        // We do this check because item focus might have changed when importing csv if user decided to work on something else
-
-        if (
-          currentItemId === this.itemId &&
-          currentItemName === importCSVvariableName
-        ) {
-          await this.electronService.sendMinskyCommandAndRender({
-            command: commandsMapping.CANVAS_DELETE_ITEM,
-          });
-        }
-      }
-    });
-  }
-
   updateForm() {
     this.url.setValue(this.dialogState.url);
     
@@ -223,78 +196,49 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async getValueId() {
-    const command = `/minsky/namedItems/@elem/"${this.itemId}"/second/valueId`;
-
-    const valueId = (await this.electronService.sendMinskyCommandAndRender({
-      command,
-    })) as number;
-
-    return valueId;
+    return new VariableBase(this.electronService.minsky.namedItems.elem(this.itemId).second).valueId();
   }
 
   async selectFile() {
-    const fileDialog = await this.electronService.remote.dialog.showOpenDialog({
+    const filePath = await this.electronService.openFileDialog({
       filters: [
         { extensions: ['csv'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },
       ],
     });
 
-    if (fileDialog.canceled || !fileDialog.filePaths) {
-      return;
-    }
-
-    const filePath = fileDialog.filePaths[0].toString();
-
+    if (!filePath) {return;}
     this.url.setValue(filePath);
     this.dialogState.url=filePath;
   }
 
   async load() {
-    const fileUrlOnServer = (await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: `${this.variableValuesSubCommand}/csvDialog/url`,
-      }
-    )) as string;
-
+    const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
     const fileUrl = this.url.value;
 
     if (fileUrl !== fileUrlOnServer) {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${
-          this.variableValuesSubCommand
-        }/csvDialog/url ${normalizeFilePathForPlatform(fileUrl)}`,
-      });
-
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${this.variableValuesSubCommand}/csvDialog/guessSpecAndLoadFile`,
-      });
+      await this.variableValuesSubCommand.csvDialog.url(fileUrl);
+      await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
+      await this.getCSVDialogSpec();
     } else {
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${this.variableValuesSubCommand}/csvDialog/loadFile`,
-      });
+      await this.variableValuesSubCommand.csvDialog.loadFile();
     }
 
     await this.parseLines();
   }
 
   async getCSVDialogSpec() {
-    this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog/spec/toSchema`,
-    });
-    this.dialogState = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog`,
-    })) as Record<string, unknown>;
-    this.initialDimensionNames = this.dialogState.spec.dimensionNames as string[];
+    this.variableValuesSubCommand.csvDialog.spec.toSchema();
+    this.dialogState = await this.variableValuesSubCommand.csvDialog.properties() as Record<string, unknown>;
   }
 
   async parseLines() {
-    this.parsedLines = (await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog/parseLines`,
-    })) as string[][];
+    this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines() as string[][];
 
-    this.csvCols = new Array(this.parsedLines[0]?.length);
-    this.colType = new Array(this.parsedLines[0]?.length).fill("ignore");
+    let header=this.dialogState.spec.headerRow;
+    this.csvCols = new Array(this.parsedLines[header]?.length);
+    this.colType = new Array(this.parsedLines[header]?.length).fill("ignore");
+    this.selected = new Array(this.parsedLines[header]?.length).fill(false);
     for (var i in this.dialogState.spec.dimensionCols as Array<number>)
     {
       var col=this.dialogState.spec.dimensionCols[i];
@@ -304,7 +248,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.dialogState.spec.dataCols)
       for (var i in this.dialogState.spec.dataCols as Array<number>)
     {
-      var col=this.dialogState.spec.dimensionCols[i];
+      var col=this.dialogState.spec.dataCols[i];
       if (col<this.colType.length)
         this.colType[col]=ColType.data;
     }
@@ -313,43 +257,45 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       for (var ii=this.dialogState.dataColOffset as number; ii<this.colType.length; ++ii)
         this.colType[ii]=ColType.data;
     
-    this.updateDimColsAndNames();
   }
   
   async selectHeader(index: number) {
-    this.selectedHeader = index;
-    this.dialogState.spec.headerRow = this.selectedHeader;
+    this.dialogState.spec.headerRow = index;
+    // explicitly selecting a header, make sure dataRowOffset is greater
+    if (this.dialogState.spec.dataRowOffset<=index)
+      this.dialogState.spec.dataRowOffset=index+1;
   }
 
   async selectRowAndCol(rowIndex: number, colIndex: number) {
-    this.selectedRow = rowIndex;
     this.dialogState.spec.dataRowOffset = rowIndex;
+    if (this.dialogState.spec.headerRow>=rowIndex)
+      this.dialogState.spec.headerRow=rowIndex-1;
 
-    this.selectedCol = colIndex;
+    
     this.dialogState.spec.dataColOffset = colIndex;
 
+    if (!this.parsedLines.length) return;
     for (let i = 0; i<this.parsedLines[0].length; i++)
-      //for (let i = this.selectedCol; this.dialogState.spec.columnar? i<this.selectedCol + 1: i < this.parsedLines.length; i++) {
-      if (i<this.selectedCol) {
+      if (i<colIndex) {
         if (this.colType[i]==ColType.data)
           this.colType[i]=ColType.ignore;
-      } else if (i===this.selectedCol || !this.columnar.value)
+      } else if (i===colIndex || !this.columnar.value) 
         this.colType[i]=ColType.data;
-    else
-      this.colType[i]=ColType.ignore;
+      else
+        this.colType[i]=ColType.ignore;
     this.ngAfterViewChecked();
   }
 
   getColorForCell(rowIndex: number, colIndex: number) {
     if (colIndex>=this.colType.length) return "red";
 
-    if (this.selectedHeader === rowIndex)  // header row
+    if (this.dialogState.spec.headerRow === rowIndex)  // header row
         switch (this.colType[colIndex]) {
         case 'data': return "blue";
         case 'axis': return "green";
         case "ignore": return "red";
         }
-    else if (this.selectedRow >= 0 && this.selectedRow > rowIndex)
+    else if (this.dialogState.spec.dataRowOffset >= 0 && this.dialogState.spec.dataRowOffset > rowIndex)
       return "red"; // ignore commentary at beginning of file
     else
       switch (this.colType[colIndex]) {
@@ -359,26 +305,49 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       }
   }
 
-  updateDimColsAndNames() {
-    this.dialogState.spec.dimensionCols = this.colType
-      .map((c, index) => (c===ColType.axis ? index : false))
-      .filter((v) => v !== false);
-    this.dialogState.spec.dataCols = this.colType
-      .map((c, index) => (c===ColType.data ? index : false))
-      .filter((v) => v !== false);
-
-    this.dialogState.spec.dimensionNames = this.parsedLines[
-      this.selectedHeader
-    ].filter((value, index) =>
-      (this.dialogState.spec.dimensionCols as number[]).includes(index)
-    );
-  }
-
-  setColType(column: number, type: ColType) {
+  setColTypeImpl(column: number, type: ColType) {
     this.colType[column]=type;
-    this.updateDimColsAndNames();
+    if (!this.dialogState.spec.dimensionNames[column])
+      this.dialogState.dimensionNames[column]=this.parsedLines[this.dialogState.spec.headerRow][column];
+    if (!this.dialogState.spec.dimensions[column])
+      this.dialogState.spec.dimensions[column]={type:"string",units:""} as Dimension;
+  }
+  
+  setColType(column: number, type: ColType) {
+    if (this.selected.every((x)=>!x)) { // nothing selected
+      this.setColTypeImpl(column, type);
+      return;
+    }
+      
+    for (let i=0; i<this.selected.length; ++i)
+      if (this.selected[i]) {
+        this.setColTypeImpl(i, type);
+      }
+    this.cdr.detectChanges();
   }
 
+  typeMouseDown(col: number) {
+    this.mouseDown=col;
+  }
+
+  typeMouseMove(col: number) {
+    if (this.mouseDown>=0 && col!==this.mouseDown) {
+      if (col<this.mouseDown) [col,this.mouseDown]=[this.mouseDown,col];
+      for (let i=0; i<this.selected.length; ++i)
+        this.selected[i]=i>=this.mouseDown && i<=col;
+    }
+  }
+  
+  typeMouseUp(row: number, col: number) {
+    this.typeMouseMove(col);
+    if (col===this.mouseDown)  // deselect all if ending on same column
+      if (this.selected.every((x)=>!x)) 
+        this.selectRowAndCol(row, col);
+      else
+        this.selected.fill(false);
+    this.mouseDown=-1;
+  }
+  
   async handleSubmit() {
     const {
       columnar,
@@ -393,6 +362,18 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       horizontalDimension,
     } = this.form.value;
 
+    this.dialogState.spec.dimensionCols=[];
+    this.dialogState.spec.dataCols=[];
+    for (let i=0; i<this.colType.length; ++i) 
+      switch (this.colType[i]) {
+      case ColType.axis: 
+        this.dialogState.spec.dimensionCols.push(i);
+        break;
+      case ColType.data:
+        this.dialogState.spec.dataCols.push(i);
+        break;
+    }
+
     const spec = {
       ...this.dialogState.spec,
       columnar,
@@ -406,46 +387,31 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       separator: separatorToChar(separator),
       horizontalDimension,
     };
-    const res = await this.electronService.sendMinskyCommandAndRender({
-      command: `${
-        commandsMapping.CANVAS_ITEM_IMPORT_FROM_CSV
-      } [${normalizeFilePathForPlatform(this.url.value)},${JSON5.stringify(
-        spec
-      )}]`,
-    });
 
-    if (res === importCSVerrorMessage) {
+    let v=new VariableBase(this.electronService.minsky.canvas.item);
+    // returns an error message on error
+    const res = await v.importFromCSV(this.url.value,spec) as unknown as string;
+
+    if (typeof res==='string') {
       const positiveResponseText = 'Yes';
       const negativeResponseText = 'No';
 
       const options: MessageBoxSyncOptions = {
         buttons: [positiveResponseText, negativeResponseText],
-        message: 'Something went wrong... Do you want to generate a report?',
+        message: `Something went wrong: ${res}\nDo you want to generate a report?`,
         title: 'Generate Report ?',
       };
 
-      const index = this.electronService.remote.dialog.showMessageBoxSync(
-        options
-      );
+      const index = await this.electronService.showMessageBoxSync(options);
 
       if (options.buttons[index] === positiveResponseText) {
         await this.doReport();
       }
-      this.closeWindow();
-
       return;
     }
 
-    const currentItemId = await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.CANVAS_ITEM_ID,
-      }
-    );
-    const currentItemName = await this.electronService.sendMinskyCommandAndRender(
-      {
-        command: commandsMapping.CANVAS_ITEM_NAME,
-      }
-    );
+    const currentItemId = await v.id();
+    const currentItemName = await v.name();
 
     if (
       this.isInvokedUsingToolbar &&
@@ -454,13 +420,11 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       this.url.value
     ) {
       const path = this.url.value as string;
-      const pathArray = isWindows() ? path.split(`\\`) : path.split(`/`);
+      const pathArray = this.electronService.isWindows() ? path.split(`\\`) : path.split(`/`);
 
       const fileName = pathArray[pathArray.length - 1].split(`.`)[0];
 
-      await this.electronService.sendMinskyCommandAndRender({
-        command: `${commandsMapping.RENAME_ITEM} "${fileName}"`,
-      });
+      await this.electronService.minsky.canvas.renameItem(fileName);
     }
 
     this.closeWindow();
@@ -471,34 +435,19 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       .toLowerCase()
       .split('.csv')[0];
 
-    const {
-      canceled,
-      filePath: _filePath,
-    } = await this.electronService.remote.dialog.showSaveDialog({
+     const filePath = await this.electronService.saveFileDialog({
       defaultPath: `${filePathWithoutExt}-error-report.csv`,
       title: 'Save report',
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [{ extensions: ['csv'], name: 'CSV' }],
     });
+    if (!filePath) return;
 
-    const filePath = normalizeFilePathForPlatform(_filePath);
-    const url = normalizeFilePathForPlatform(this.url.value);
-    if (canceled || !filePath) {
-      return;
-    }
-
-    await this.electronService.sendMinskyCommandAndRender({
-      command: `${this.variableValuesSubCommand}/csvDialog/reportFromFile [${url},${filePath}]`,
-    });
-
+    await this.variableValuesSubCommand.csvDialog.reportFromFile(this.url.value,filePath);
     return;
   }
 
-  closeWindow() {
-    if (this.electronService.isElectron) {
-      this.electronService.remote.getCurrentWindow().close();
-    }
-  }
+  closeWindow() {this.electronService.closeWindow();}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
   ngOnDestroy() {}

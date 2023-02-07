@@ -1,0 +1,12 @@
+<div class="container">
+  <div class="form-body">
+    <div *ngFor="let sliceLabel of sliceLabels" class="slice-label noselect" [class.selected]="sliceLabel.selected"
+    (click)="toggleSelected($event, sliceLabel)">{{sliceLabel.label}}</div>
+  </div>
+  <div class="buttons">
+    <button mat-raised-button (click)="closeWindow()">Cancel</button>
+    <button mat-raised-button class="submit" (click)="handleSave()">OK</button>
+    <button mat-raised-button (click)="selectAll(true)">All</button>
+    <button mat-raised-button (click)="selectAll(false)">Clear</button>
+  </div>
+</div>

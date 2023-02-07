@@ -8,11 +8,19 @@ fi
     
 rm *.log
 for i in Dockerfile-*[^~]; do
-    if docker build --network=host --build-arg project=$project --pull -f $i .; then
-        echo "$i PASSED" >$i.log
-    else
-        echo "$i FAILED" >$i.log
-    fi &
+    case $i in
+        Dockerfile-debian) versions="10 11";;
+        Dockerfile-ubuntu) versions="18.04 20.04 22.04";;
+        Dockerfile-fedora) versions="36 37";;
+        *) versions=default;;
+    esac
+    for version in $versions; do
+        if docker build --network=host --build-arg project=$project --build-arg version=$version --pull -f $i .; then
+            echo "$i-$version PASSED" >$i-$version.log
+        else
+            echo "$i-$version FAILED" >$i-$version.log
+        fi &
+    done
 done
 wait
 docker container prune -f

@@ -1,4 +1,4 @@
-/*
+ /*
   @copyright Steve Keen 2017
   @author Russell Standish
   This file is part of Minsky.
@@ -161,6 +161,10 @@ namespace schema3
               items.back().dataOpData=d->data;
               items.back().name=d->description();
             }
+          if (auto* s=dynamic_cast<minsky::Sheet*>(i))
+            {
+              items.back().showSlice=s->showSlice;
+            }
           if (auto* d=dynamic_cast<minsky::UserFunction*>(i))
             {
               items.back().expression=d->expression;
@@ -175,6 +179,7 @@ namespace schema3
                 {
                   items.back().ravelState=s;
                   items.back().dimensions=r->axisDimensions;
+                  items.back().editorMode=r->editorMode;
                 }
             }
           if (auto* l=dynamic_cast<minsky::Lock*>(i))
@@ -431,6 +436,8 @@ namespace schema3
         
         if (y.dimensions)
           x1->axisDimensions=*y.dimensions;
+        if (y.editorMode && *y.editorMode!=x1->editorMode)
+          x1->toggleEditorMode();
       }
     if (auto* x1=dynamic_cast<minsky::Lock*>(&x))
       {
@@ -499,6 +506,11 @@ namespace schema3
         if (y.legendGeometry)
           y.legendGeometry->setLegendGeometry(*x1);
         if (y.palette) x1->palette=*y.palette;
+      }
+    if (auto* x1=dynamic_cast<minsky::Sheet*>(&x))
+      {
+        if (y.showSlice)
+          x1->showSlice=*y.showSlice;
       }
     if (auto* x1=dynamic_cast<minsky::SwitchIcon*>(&x))
       {

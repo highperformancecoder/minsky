@@ -116,7 +116,7 @@ namespace minsky
     void makeDisplayPlot();
           
     void resize(const LassoBox&) override;
-    ClickType::Type clickType(float x, float y) override;
+    ClickType::Type clickType(float x, float y) const override;
 
     /// set autoscaling
     void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();}
@@ -132,6 +132,8 @@ namespace minsky
     // implemented as a single argument function here for exposure to TCL
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
 
+    void destroyFrame() override {RenderNativeWindow::destroyFrame();}
+    
   };
 
 }

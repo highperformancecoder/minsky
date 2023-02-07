@@ -1,4 +1,4 @@
-.SUFFIXES: .xcd .rcd .gch $(SUFFIXES)
+.SUFFIXES: .xcd .rcd .tcd .gch .gcd $(SUFFIXES)
 
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
@@ -18,6 +18,10 @@ ifeq ($(OS),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1
 endif
 
+ifdef MXE
+MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
+endif
+
 ifdef DISTCC
 CPLUSPLUS=distcc
 # number of jobs to do sub-makes
@@ -35,13 +39,8 @@ ifneq ($(build_ecolab),ecolab built)
 $(error "Making ecolab failed: check ecolab/build.log")
 endif
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc)
 $(warning $(build_RavelCAPI))
-endif
-
-JSON_SPIRIT_HEADER=$(call search,include/json_spirit)
-ifneq ($(JSON_SPIRIT_HEADER),)
-  FLAGS+=-I$(JSON_SPIRIT_HEADER)
 endif
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -103,7 +102,6 @@ MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o 
 ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
-TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
@@ -118,9 +116,12 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o addon.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o addon.o typescriptAPI.o
 
 EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
+ifndef MXE
+EXES+=RESTService/typescriptAPI
+endif
 
 DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
 MINSKYLIBS=-lminsky -lminskyEngine -lcivita
@@ -129,11 +130,11 @@ ifeq ($(HAVE_NODE),1)
 EXES+=gui-js/node-addons/minskyRESTService.node
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
+FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
 #-fvisibility-inlines-hidden
 
-VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
+VPATH= schema model engine gui-tk RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -149,12 +150,22 @@ VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/in
 .h.gch:
 	$(CPLUSPLUS) -c $(FLAGS) $(CXXFLAGS) $(OPT) -o $@ $<
 
+.h.gcd:
+	$(CPLUSPLUS) $(FLAGS)  $(CXXFLAGS) -MM -MG $< >$@
+	sed -i -e 's/.*\.o:/'$(*D)'\/'$(*F)'.gch:/' $@
+
+.h.tcd:
+	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
+	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
+	typescriptAPI >$@
+
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
 ifdef MEMPROFILE
 LIBS+=-ltcmalloc
 endif
 ifdef CPUPROFILE
+OPT+=-g
 LIBS+=-lprofiler
 endif
 
@@ -163,7 +174,7 @@ ifdef AEGIS
 # ensure all exes get built in AEGIS mode
 TESTS=tests 
 # enable TCL coverage testing
-FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor
+FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor -Wno-unknown-pragmas
 endif
 
 ifdef MXE
@@ -171,6 +182,15 @@ BOOST_EXT=-mt-x64
 EXE=.exe
 DL=dll
 FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
+# DLLS that need to be copied into the binary directory
+MXE_DLLS=libboost_filesystem-mt-x64 libboost_thread-mt-x64 libbz2 libcairo-2 libcroco-0 libcrypto-3-x64 libexpat-1 \
+libffi-7 libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
+libgobject-2 libgsl-25 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 \
+libpangoft2-1 libpangowin32-1 libpcre-1 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 libstdc++-6 \
+libtermcap libwinpthread-1 libxml2-2 tcl86 zlib1
+BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
+$(warning $(BINDIR))
+DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))
 else
 EXE=
 DL=so
@@ -193,20 +213,15 @@ endif
 #EXES=gui-tk/minsky$(EXE)
 #RESTService/RESTService 
 
-LIBS+=	-LRavelCAPI -lravelCAPI \
+LIBS+=	-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
-LIBS+=-lcrypt32 -lshcore
+LIBS+=-lcrypt32 -lbcrypt -lshcore
 else
-LIBS+=-lclipboard -lxcb -lX11
-endif
-
-ifdef CPUPROFILE
-OPT+=-g
-LIBS+=-lprofiler
+LIBS+=-lclipboard -lxcb -lX11 -ldl
 endif
 
 # RSVG dependencies calculated here
@@ -218,14 +233,9 @@ GUI_LIBS=
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 ifndef AEGIS
-default: $(EXES)
+default: $(EXES) gui-js/libs/shared/src/lib/backend/minsky.ts
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
-
-# this dependency is not worked out automatically because they're hidden by a #ifdef in minsky_epilogue.h
-$(MODEL_OBJS): plot.xcd signature.xcd
-
-$(ALL_OBJS): $(PRECOMPILED_HEADERS)
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
@@ -236,8 +246,13 @@ all: $(EXES) $(TESTS) minsky.xsd
 #endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
+$(ALL_OBJS): $(PRECOMPILED_HEADERS)
+
+# this dependency is not worked out automatically because they're hidden by a #ifdef in minsky_epilogue.h
+$(MODEL_OBJS): plot.xcd signature.xcd
+
 ifneq ($(MAKECMDGOALS),clean)
-include $(ALL_OBJS:.o=.d)
+include $(ALL_OBJS:.o=.d) $(PRECOMPILED_HEADERS:.gch=.gcd)
 endif
 
 ifdef MXE
@@ -286,6 +301,15 @@ RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL
 RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
+RESTService/typescriptAPI: typescriptAPI.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) $(FLAGS) $^  $(LIBS) -o $@
+
+
+ifndef MXE
+gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
+	RESTService/typescriptAPI > $@
+endif
+
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
 	rm -f $@
 	perl makeRefDb.pl doc/minsky/*.html >$@
@@ -309,6 +333,8 @@ gui-js/node-addons/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OB
 	mkdir -p gui-js/node-addons
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
+	mkdir -p gui-js/dynamic_libraries
+	cp $(DLLS) gui-js/dynamic_libraries
 else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.13 -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
@@ -333,23 +359,26 @@ dummy-addon.o: dummy-addon.cc
 node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
-$(EXES): RavelCAPI/libravelCAPI.a
+$(EXES):
+
+# TODO: can we automatically generate this dependency?
+#model/minsky.gch: stringKeyMap.cd assetClass.cd assetClass.xcd godleyTable.cd godleyTable.xcd
 
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.rcd *.gcda *.gcno *.so *.dll *.dylib
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd
 	-rm -f $(EXES)
-	-cd test; $(MAKE)  clean
-	-cd gui-tk; $(BASIC_CLEAN)
-	-cd model; $(BASIC_CLEAN)
-	-cd engine; $(BASIC_CLEAN)
-	-cd schema; $(BASIC_CLEAN)
-	-cd ecolab; $(MAKE) clean
-	-cd RavelCAPI; $(MAKE) clean
+	-cd test && $(MAKE)  clean
+	-cd gui-tk &&  $(BASIC_CLEAN)
+	-cd model && $(BASIC_CLEAN)
+	-cd engine && $(BASIC_CLEAN)
+	-cd schema && $(BASIC_CLEAN)
+	-cd ecolab && $(MAKE) clean
+	-cd RavelCAPI && $(MAKE) clean
 
 mac-dist: gui-tk/minsky gui-js/node-addons/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only
@@ -386,9 +415,13 @@ doxydoc: $(wildcard *.h) $(wildcard *.cc) \
 install-doxydoc: doxydoc
 	rsync -r -z --progress --delete doxydoc $(SF_WEB)
 
+
 # upload manual to SF
 install-manual: doc/minsky/labels.pl
 	rsync -r -z --progress --delete doc/minsky.html doc/minsky $(SF_WEB)/manual
+
+# run this after every full release
+install-release: install-doxydoc install-manual upload-schema
 
 # run the regression suite checking for the TCL code coverage
 tcl-cov:
@@ -412,7 +445,7 @@ lcov:
 	-$(MAKE) GCOV=1 sure
 	lcov -c -d .  --no-external -o lcovt.info
 	lcov -a lcovi.info -a lcovt.info -o lcov.info
-	lcov -r lcov.info */ecolab/* "*.cd" "*.xcd" -o lcovr.info 
+	lcov -r lcov.info */ecolab/* "*.cd" "*.xcd" "*.rcd" "*.tcd" -o lcovr.info 
 	genhtml -o coverage lcovr.info
 
 compile_commands.json: Makefile

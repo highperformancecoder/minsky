@@ -17,7 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef RESTPROCESS_H
+#ifndef MINSKY_EPILOGUE_H
+#define MINSKY_EPILOGUE_H
+
+#if defined(RESTPROCESS_H)
 
 namespace classdesc
 {
@@ -41,13 +44,13 @@ namespace classdesc
     static string name() {return "std::vector<unsigned long long>::const_iterator";}
   };
   
-#ifdef BOOST_GEOMETRY_GEOMETRIES_POINT_XY_HPP
+    #ifdef BOOST_GEOMETRY_GEOMETRIES_POINT_XY_HPP
   template <>
   struct tn<boost::geometry::model::d2::point_xy<float>>
   {
     static string name() {return "boost::geometry::model::d2::point_xy<float>";}
   };
-#endif
+    #endif
  
   
 }
@@ -95,13 +98,6 @@ namespace classdesc_access
     public cd::NullDescriptor<cd::json_unpack_t> {};
   template <> struct access_RESTProcess<ecolab::cairo::Surface>:
     public cd::NullDescriptor<cd::RESTProcess_t> {};
-
-//  template <> struct access_json_pack<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::json_pack_t> {};
-//  template <> struct access_json_unpack<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::json_unpack_t> {};
-//  template <> struct access_RESTProcess<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::RESTProcess_t> {};
 #endif
   
 #ifdef XVECTOR_H
@@ -144,7 +140,6 @@ namespace classdesc_access
 #endif
 #ifdef CIVITA_HYPERCUBE_H
 #include "hypercube.cd"
-//#include "hypercube.xcd"
 #endif
 
 #ifdef JSON_PACK_BASE_H
@@ -244,7 +239,6 @@ namespace classdesc_access
 #include "xvector.xcd"
 #endif
 
-#ifdef ITEM_H
-//#include "plotWidget.h"
-#endif
 #include <ecolab_epilogue.h>
+
+#endif

@@ -24,6 +24,8 @@
 #ifndef SHEET_H
 #define SHEET_H
 #include <itemT.h>
+#include "dynamicRavelCAPI.h"
+#include "showSlice.h"
 
 namespace minsky
 {
@@ -31,12 +33,44 @@ namespace minsky
   {
     
     CLASSDESC_ACCESS(Sheet);
+    ravel::Ravel inputRavel; ///< ravel for controlling input
+    /// value used for populating sheet. Potentially a tensor expression representing ravel manipulation
+    civita::TensorPtr value;
+    // size of ravel in screen coordinates
+    double ravelSize() const;
+    /// @{ ravel coordinate from screen coordinate
+    double ravelX(double xx) const;
+    double ravelY(double yy) const;
   public:
-    //    float m_width=100, m_height=100;
     Sheet();
+
+    // copy operations needed for clone, but not really used for now
+    // define them as empty operations to prevent double frees if accidentally used
+    void operator=(const Sheet&){}
+    Sheet(const Sheet&) {}
+    
+    bool onResizeHandle(float x, float y) const override;
+    void drawResizeHandles(cairo_t* cairo) const override;
+
+    bool onRavelButton(float, float) const;
+    bool inRavel(float, float) const;
     bool inItem(float, float) const override;
-    ClickType::Type clickType(float x, float y) override;   
+    void onMouseDown(float x, float y) override;
+    void onMouseUp(float x, float y) override;
+    bool onMouseMotion(float x, float y) override;
+    bool onMouseOver(float x, float y) override;
+    void onMouseLeave() override;
+    ClickType::Type clickType(float x, float y) const override;
+    std::vector<Point> corners() const override;
+    bool contains(float x, float y) const override;
+  
     void draw(cairo_t* cairo) const override;
+    
+    /// calculates the input value
+    void computeValue();
+    
+    bool showRavel=false;
+    ShowSlice showSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
   };
 }
 

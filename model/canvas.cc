@@ -29,7 +29,6 @@
 #include "canvas.rcd"
 #include "canvas.xcd"
 #include "eventInterface.rcd"
-#include "eventInterface.xcd"
 #include "polyRESTProcessBase.xcd"
 #include "nobble.h"
 #include "minsky_epilogue.h"
@@ -153,9 +152,19 @@ namespace minsky
       }
     if (fromPort.get())
       {
-          if (auto to=closestInPort(x,y))
+          if (auto to=closestInPort(x,y)) {
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
-        fromPort.reset();
+
+            // populate the destination tooltip if a Ravel
+            if (to->item().tooltip.empty() && dynamic_cast<Ravel*>(&to->item()))
+              if (auto v=fromPort->item().variableCast())
+                to->item().tooltip=v->name();
+            
+            fromPort.reset();
+            minsky().reset(); 
+          } else {
+            fromPort.reset();
+          }
       }
     
     if (wireFocus)
@@ -164,7 +173,7 @@ namespace minsky
     switch (lassoMode)
       {
       case LassoMode::lasso:
-        select(lasso.x0,lasso.y0,x,y);
+        select({lasso.x0,lasso.y0,x,y});
         requestRedraw();
         break;
       case LassoMode::itemResize:
@@ -205,6 +214,7 @@ namespace minsky
                     for (auto& i: selection.groups)
                       i->moveTo(i->x()+deltaX, i->y()+deltaY);
                   }
+                requestRedraw();
                 // check if the move has moved outside or into a group
                 if (auto g=itemFocus->group.lock())
                   if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
@@ -212,16 +222,19 @@ namespace minsky
                       if (auto toGroup=model->minimalEnclosingGroup
                           (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
                         {
+                          if (g.get()==toGroup) return;
                           // prevent moving a group inside itself
                           if (auto g=dynamic_cast<Group*>(itemFocus.get()))
                             if (g->higher(*toGroup))
                               return;
+                          selection.clear(); // prevent old wires from being held onto
                           toGroup->addItem(itemFocus);
                           toGroup->splitBoundaryCrossingWires();
                           g->splitBoundaryCrossingWires();
                         }
                       else
                         {
+                          selection.clear(); // prevent old wires from being held onto
                           model->addItem(itemFocus);
                           model->splitBoundaryCrossingWires();
                           g->splitBoundaryCrossingWires();
@@ -230,7 +243,6 @@ namespace minsky
                 if (auto g=itemFocus->group.lock())
                   if (g!=model)
                     g->checkAddIORegion(itemFocus);
-                requestRedraw();
                 return;
               case ClickType::onSlider:
                 if (auto v=itemFocus->variableCast())
@@ -397,6 +409,17 @@ namespace minsky
       minsky().copy();
   }
 
+  int Canvas::ravelsSelected()
+  {
+    int ravelsSelected = 0;
+    for (auto& i: selection.items) {
+      if (dynamic_pointer_cast<Ravel>(i))
+      {
+        ravelsSelected++;
+      }
+    }
+    return ravelsSelected;
+  }
   
   ItemPtr Canvas::itemAt(float x, float y)
   {
@@ -421,10 +444,11 @@ namespace minsky
     return item;
   }
   
-  void Canvas::getWireAt(float x, float y)
+  bool Canvas::getWireAt(float x, float y)
   {
     wire=model->findAny(&Group::wires,
                         [&](const WirePtr& i){return i->near(x,y);});
+    return wire.get();
   }
 
   void Canvas::groupSelection()
@@ -523,18 +547,20 @@ namespace minsky
   void Canvas::deleteItem()
   {
     if (item)
-      {
-        model->deleteItem(*item);
-        requestRedraw();
-      }
+    {
+      model->deleteItem(*item);
+      minsky().reset();
+    }
   }
   
   void Canvas::deleteWire()
   {
     if (wire)
+    {
       model->removeWire(*wire);
-    wire.reset();
-    requestRedraw();
+      wire.reset();
+      minsky().reset();
+    }
   }
   
   // For ticket 1092. Reinstate delete handle user interaction
@@ -780,7 +806,7 @@ namespace minsky
 
   void Canvas::copyVars(const std::vector<VariablePtr>& v)
   {
-    float maxWidth=0, totalHeight=0, yCentre=0;
+    float maxWidth=0, totalHeight=0;
     vector<float> widths, heights;
     // Throw error if no stock/flow vars on Godley icon. For ticket 1039 
     if (!v.empty()) {    
@@ -943,8 +969,7 @@ namespace minsky
       (&GroupItems::wires, [&](const Wires&, Wires::const_iterator i)
        {
          const Wire& w=**i;
-         if (w.visible()/* && updateRegion.intersects(w)*/) {
-           //didDrawSomething = true;
+         if (w.visible()) {
            w.draw(cairo);
          }
          return false;

@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
   ngOnInit() {
     if (this.electronService.isElectron) {
-      this.electronService.ipcRenderer.on(
+      this.electronService.on(
         events.RECORDING_STATUS_CHANGED,
         (event, { status }) => {
           switch (status) {

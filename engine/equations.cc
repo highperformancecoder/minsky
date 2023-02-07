@@ -74,7 +74,7 @@ namespace MathDAG
         values.resetValue(*result);
       }
     if (r && r->isFlowVar() && r!=result)
-      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
+      ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     assert(result->idx()>=0);
     doOneEvent(true);
     return result;
@@ -136,7 +136,6 @@ namespace MathDAG
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
       ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
-    //ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return result;
@@ -161,7 +160,7 @@ namespace MathDAG
       }
     assert(result->idx()>=0);
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
+      ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     doOneEvent(true);
     return result;
   }
@@ -436,7 +435,7 @@ namespace MathDAG
           }
       }
     if (type()!=integrate && r && r->isFlowVar() && result!=r)
-      ev.push_back(EvalOpPtr(copy, state, *r, *result));
+      ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     if (state && state->portsSize()>0)
       if (auto statePort=state->ports(0).lock()) 
         statePort->setVariableValue(result);
@@ -647,8 +646,9 @@ namespace MathDAG
            [&](const Items&, Items::const_iterator it){
              if (auto v=(*it)->variableCast())
                if (auto vv=v->vValue())
-                 variableSet.insert(dynamic_cast<VariableDAG*>
-                                    (makeDAG(v->valueId(), vv->name, vv->type()).get()));
+                 if (auto dag=dynamic_cast<VariableDAG*>
+                     (makeDAG(v->valueId(), vv->name, vv->type()).get()))
+                   variableSet.insert(dag);
              return false;
            });
         // TODO - if we can pass VariableDefOrder to the definition of variableSet, we don't need to resort...
@@ -717,7 +717,6 @@ namespace MathDAG
         expressionCache.insert(op, NodePtr(r));
         r->state=minsky.model->findItem(op);
         assert(r->state);
-        //assert( r->state->type()!=OperationType::numOps);
 
         r->arguments.resize(op.numPorts()-1);
         for (size_t i=1; i<op.portsSize(); ++i)
@@ -1031,9 +1030,12 @@ namespace MathDAG
                // ensure plot inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
          else if (auto s=dynamic_cast<Sheet*>(i->get()))
-           for (auto w: s->ports(0).lock()->wires())
+           {
+             for (auto w: s->ports(0).lock()->wires())
                // ensure sheet inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+             s->computeValue();
+           }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            for (auto w: r->ports(1).lock()->wires())
                // ensure sheet inputs are evaluated
@@ -1065,7 +1067,6 @@ namespace MathDAG
             if (godley.initialConditionRow(r)) continue;
             FlowCoef fc(godley.cell(r,c));
             if (fc.name.empty()) continue;
-            //            if (godley.signConventionReversed(c)) fc.coef*=-1;
 
             VariablePtr v(VariableType::flow, fc.name);
             v->group=gi.group;

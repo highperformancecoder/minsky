@@ -1,16 +1,12 @@
 import {
   CanvasItem,
   ClassType,
-  commandsMapping,
-  isEmptyObject,
-  isWindows,
-  MainRenderingTabs,
+  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, Sheet, SwitchIcon,
+  VariableBase, Functions
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
-import { RestServiceManager } from './RestServiceManager';
 import { WindowManager } from './WindowManager';
-import { GodleyPopup } from './GodleyMenuManager';
 import * as log from 'electron-log';
 
 export class ContextMenuManager {
@@ -18,7 +14,7 @@ export class ContextMenuManager {
   private static y: number = null;
 
   private static showAllPlotsOnTabChecked = false;
-
+  
   public static async initContextMenu(x: number, y: number, type: string, command: string) {
     switch (type)
     {
@@ -28,28 +24,20 @@ export class ContextMenuManager {
         this.x = x;
         this.y = y;
         
-        const currentTab = RestServiceManager.getCurrentTab();
-        
-        switch (currentTab) {
-        case MainRenderingTabs.canvas:
-          await this.initContextMenuForWiring(mainWindow);
-          break;
-          
-        case MainRenderingTabs.variables:
-          await this.initContextMenuForVariableTab(mainWindow);
-          break;
-          
-        case MainRenderingTabs.plot:
-          await this.initContextMenuForPlotTab(mainWindow);
-          break;
-          
-        default:
-          break;
-        }
+        const currentTab = WindowManager.currentTab;
+        if (currentTab.equal(minsky.canvas))
+          this.initContextMenuForWiring(mainWindow);
+        else if (currentTab.equal(minsky.variableTab))
+          this.initContextMenuForVariableTab(mainWindow);
+        else if (currentTab.equal(minsky.plotTab))
+          this.initContextMenuForPlotTab(mainWindow);
       }
       break;
       case "godley":
       this.initContextMenuForGodleyPopup(command,x,y);
+      break;
+      case "ravel":
+      this.initContextMenuForRavelPopup(command,x,y);
       break;
       default:
       log.warn("Unknown context menu for ",type);
@@ -60,30 +48,19 @@ export class ContextMenuManager {
   private static async initContextMenuForVariableTab(
     mainWindow: BrowserWindow
   ) {
-    const rowNumber = await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.VARIABLE_TAB_ROW_Y} ${this.y}`,
-    });
+    const rowNumber = minsky.variableTab.rowY(this.y);
 
-    const clickType = await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.VARIABLE_TAB_CLICK_TYPE} [${this.x}, ${this.y}]`,
-    });
+    const clickType = minsky.variableTab.clickType(this.x, this.y);
 
     if (clickType === `internal`) {
-      const varName = await RestServiceManager.handleMinskyProcess({
-        command: `${commandsMapping.VARIABLE_TAB_GET_VAR_NAME} ${rowNumber}`,
-      });
+      const varName = minsky.variableTab.getVarName(rowNumber);
 
       const menuItems = [
         new MenuItem({
           label: `Remove ${varName} from tab`,
-          click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: `${commandsMapping.VARIABLE_TAB_TOGGLE_VAR_DISPLAY} ${rowNumber}`,
-            });
-
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-            });
+          click:  () => {
+            minsky.variableTab.toggleVarDisplay(rowNumber);
+            minsky.variableTab.requestRedraw();
           },
         }),
       ];
@@ -95,22 +72,14 @@ export class ContextMenuManager {
   }
 
   private static async initContextMenuForPlotTab(mainWindow: BrowserWindow) {
-    const isPlot = await RestServiceManager.handleMinskyProcess({
-      command: `${commandsMapping.PLOT_TAB_GET_ITEM_AT} [${this.x},${this.y}]`,
-    });
-
-    if (isPlot) {
+    minsky.plotTab.getItemAt(this.x,this.y)
+    if (minsky.plotTab.item.properties()) {
       const menuItems = [
         new MenuItem({
           label: `Remove plot from tab`,
           click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.PLOT_TAB_TOGGLE_PLOT_DISPLAY,
-            });
-
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.REQUEST_REDRAW_SUBCOMMAND,
-            });
+            minsky.plotTab.togglePlotDisplay();
+            minsky.plotTab.requestRedraw();
           },
         }),
       ];
@@ -123,15 +92,9 @@ export class ContextMenuManager {
 
   private static async initContextMenuForWiring(mainWindow: BrowserWindow) {
     try {
-      const wire = await CommandsManager.getWireAt(this.x, this.y);
+      const isWirePresent = minsky.canvas.getWireAt(this.x, this.y);
 
-      const isWirePresent = !isEmptyObject(wire);
-
-      const isWireVisibleRes = await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_WIRE_VISIBLE,
-      });
-
-      const isWireVisible = !isEmptyObject(isWireVisibleRes);
+      const isWireVisible = minsky.canvas.wire.visible();
       const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
 
         if (isWirePresent && isWireVisible && (itemInfo?.classType!=ClassType.Group||itemInfo?.displayContents)) {
@@ -170,7 +133,7 @@ export class ContextMenuManager {
 
         return;
       }
-
+      
       ContextMenuManager.buildAndDisplayContextMenu(
         ContextMenuManager.canvasContext(),
         mainWindow
@@ -191,11 +154,7 @@ export class ContextMenuManager {
       const menuItems: MenuItem[] = [
         new MenuItem({
           label: 'Copy',
-          click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_COPY_ITEM,
-            });
-          },
+          click: () => {minsky.canvas.copyItem();}
         }),
         new MenuItem({
           label: 'Rename all instances',
@@ -224,19 +183,11 @@ export class ContextMenuManager {
         }),
         new MenuItem({
           label: 'Copy',
-          click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_COPY_ITEM,
-            });
-          },
+          click: () => {minsky.canvas.copyItem();}
         }),
         new MenuItem({
           label: 'Remove',
-          click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_REMOVE_ITEM_FROM_ITS_GROUP,
-            });
-          },
+          click: () => {minsky.canvas.removeItemFromItsGroup();}
         }),
       ];
 
@@ -250,25 +201,15 @@ export class ContextMenuManager {
     const menuItems = [
       new MenuItem({
         label: 'Description',
-        click: () => {
-          CommandsManager.postNote('wire');
-        },
+        click: () => {CommandsManager.postNote('wire');}
       }),
       new MenuItem({
         label: 'Straighten',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_WIRE_STRAIGHTEN,
-          });
-        },
+        click: () => {minsky.canvas.wire.straighten();}
       }),
       new MenuItem({
         label: 'Delete wire',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_DELETE_WIRE,
-          });
-        },
+        click: () => {minsky.canvas.deleteWire();}
       }),
     ];
 
@@ -276,28 +217,28 @@ export class ContextMenuManager {
   }
 
   private static canvasContext(): MenuItem[] {
+    const selectedItems = minsky.canvas.selection.items;
+    const selectionSize = selectedItems.size();
+    const ravelsSelected = minsky.canvas.ravelsSelected();
+
     const menuItems = [
       new MenuItem({
         label: 'Cut',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CUT,
-          });
-        },
+        click: () => {minsky.cut();},
+        enabled: selectionSize > 0
       }),
       new MenuItem({
         label: 'Copy selection',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.COPY,
-          });
-        },
+        click: () => {minsky.copy();},
+        enabled: selectionSize > 0
+
       }),
       new MenuItem({
         label: 'Save selection as',
         click: async () => {
           await CommandsManager.saveSelectionAsFile();
         },
+        enabled: selectionSize > 0
       }),
       new MenuItem({
         label: 'Paste selection',
@@ -307,36 +248,21 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Hide defining groups of selected variables',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_PUSH_DEFINING_VARS_TO_TAB,
-          });
-
+        click: async () => {minsky.canvas.pushDefiningVarsToTab();
           await CommandsManager.requestRedraw();
         },
       }),
       new MenuItem({
         label: 'Show all defining groups on canvas',
         click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_SHOW_DEFINING_VARS_ON_CANVAS,
-          });
-
+          minsky.canvas.showDefiningVarsOnCanvas();
           await CommandsManager.requestRedraw();
         },
       }),
 
       new MenuItem({
         label: 'Show all plots on tab',
-        type: 'checkbox',
-        checked: this.showAllPlotsOnTabChecked,
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_SHOW_ALL_PLOTS_ON_TAB,
-          });
-
-          this.showAllPlotsOnTabChecked = !this.showAllPlotsOnTabChecked;
-        },
+        click: () => {minsky.canvas.showPlotsOnTab();},
       }),
       new MenuItem({
         label: 'Bookmark here',
@@ -346,37 +272,23 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Group',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.GROUP_SELECTION,
-          });
-        },
+        click: () => {minsky.canvas.groupSelection();}
       }),
       new MenuItem({
-        label: 'Lock selected Ravels',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_LOCK_RAVELS_IN_SELECTION,
-          });
-        },
+        label: 'Link selected Ravels',
+        click: async () => {minsky.canvas.lockRavelsInSelection();},
+        enabled: ravelsSelected > 1
       }),
       new MenuItem({
-        label: 'Unlock selected Ravels',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_UNLOCK_RAVELS_IN_SELECTION,
-          });
-        },
+        label: 'Unlink selected Ravels',
+        click: async () => {minsky.canvas.unlockRavelsInSelection();},
+        enabled: ravelsSelected > 0
       }),
       new MenuItem({
         label: 'Open master group',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_OPEN_MODEL_IN_CANVAS,
-          });
-        },
+        click: () => {minsky.openModelInCanvas();}
       }),
-    ];
+          ];
 
     return menuItems;
   }
@@ -390,7 +302,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Help',
           visible:
-            RestServiceManager.getCurrentTab() === MainRenderingTabs.canvas,
+          WindowManager.currentTab.equal(minsky.canvas),
           click: async () => {
             await CommandsManager.help(this.x, this.y);
           },
@@ -462,11 +374,7 @@ export class ContextMenuManager {
           ...menuItems,
           new MenuItem({
             label: 'Copy item',
-            click: async () => {
-              await RestServiceManager.handleMinskyProcess({
-                command: commandsMapping.CANVAS_COPY_ITEM,
-              });
-            },
+            click: async () => {minsky.canvas.copyItem();}
           }),
         ];
 
@@ -483,7 +391,7 @@ export class ContextMenuManager {
       case ClassType.Ravel:
         menuItems = [
           ...menuItems,
-          ...(await ContextMenuManager.buildContextMenuForRavel()),
+          ...(await ContextMenuManager.buildContextMenuForRavel(new Ravel(minsky.canvas.item))),
         ];
 
         break;
@@ -496,6 +404,29 @@ export class ContextMenuManager {
 
         break;
 
+    case ClassType.Sheet:
+      let sheet=new Sheet(minsky.canvas.item);
+      menuItems = [
+          ...menuItems,
+        new MenuItem({
+          label: 'Row Slices',
+          submenu: [
+            {
+              label: 'Head',
+              click: () => {sheet.showSlice("head");}
+            },
+            {
+              label: 'Tail',
+              click: () => {sheet.showSlice("tail");}
+            },
+              {
+              label: 'Head & Tail',
+              click: () => {sheet.showSlice("headAndTail");}
+            },
+         ]
+        }),
+      ];
+      break;
       default:
         break;
     }
@@ -516,11 +447,8 @@ export class ContextMenuManager {
   private static async buildContextMenuForPlotWidget(
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
-    const displayPlotOnTabChecked = (await RestServiceManager.handleMinskyProcess(
-      {
-        command: commandsMapping.CANVAS_ITEM_GET_PLOT_TAB_DISPLAY,
-      }
-    )) as boolean;
+    const plot=new PlotWidget(minsky.canvas.item);
+    const displayPlotOnTabChecked = plot.plotTabDisplay();
 
     const menuItems = [
       new MenuItem({
@@ -531,11 +459,7 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Make Group Plot',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ITEM_MAKE_DISPLAY_PLOT,
-          });
-        },
+        click: async () => {plot.makeDisplayPlot();}
       }),
       new MenuItem({
         label: 'Options',
@@ -558,16 +482,12 @@ export class ContextMenuManager {
         label: 'Display plot on tab',
         type: 'checkbox',
         checked: displayPlotOnTabChecked,
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ITEM_TOGGLE_PLOT_TAB_DISPLAY,
-          });
-        },
+        click: async () => {plot.togglePlotTabDisplay();}
       }),
       new MenuItem({
         label: 'Export as CSV',
         click: async () => {
-          await CommandsManager.exportItemAsCSV();
+          await CommandsManager.exportItemAsCSV(plot);
         },
       }),
       new MenuItem({
@@ -576,26 +496,26 @@ export class ContextMenuManager {
           {
             label: 'SVG',
             click: async () => {
-              CommandsManager.exportItemAsImage('svg', 'SVG');
+              CommandsManager.exportItemAsImage(plot, 'svg', 'SVG');
             },
           },
           {
             label: 'PDF',
             click: async () => {
-              CommandsManager.exportItemAsImage('pdf', 'PDF');
+              CommandsManager.exportItemAsImage(plot, 'pdf', 'PDF');
             },
           },
           {
             label: 'PostScript',
             click: async () => {
-              CommandsManager.exportItemAsImage('ps', 'PostScript');
+              CommandsManager.exportItemAsImage(plot, 'ps', 'PostScript');
             },
           },
           {
             label: 'EMF',
-            visible: isWindows(),
+            visible: Functions.isWindows(),
             click: async () => {
-              CommandsManager.exportItemAsImage('emf', 'EMF');
+              CommandsManager.exportItemAsImage(plot, 'emf', 'EMF');
             },
           },
         ],
@@ -608,19 +528,10 @@ export class ContextMenuManager {
   private static async buildContextMenuForGodleyIcon(
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
-    const displayVariableChecked = (await RestServiceManager.handleMinskyProcess(
-      {
-        command: commandsMapping.CANVAS_ITEM_GET_VARIABLE_DISPLAY,
-      }
-    )) as boolean;
-
-    const rowColButtonsChecked = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM_GET_BUTTON_DISPLAY,
-    })) as boolean;
-
-    const editorModeChecked = (await RestServiceManager.handleMinskyProcess({
-      command: commandsMapping.CANVAS_ITEM_GET_EDITOR_MODE,
-    })) as boolean;
+    let godley=new GodleyIcon(minsky.canvas.item);
+    const displayVariableChecked = godley.variableDisplay();
+    const rowColButtonsChecked = godley.buttonDisplay();
+    const editorModeChecked = godley.editorMode();
 
     const menuItems = [
       new MenuItem({
@@ -645,47 +556,27 @@ export class ContextMenuManager {
         label: 'Editor mode',
         checked: editorModeChecked,
         type: 'checkbox',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ITEM_TOGGLE_EDITOR_MODE,
-          });
-        },
+        click: async () => {godley.toggleEditorMode();}
       }),
       new MenuItem({
         label: 'Row/Col buttons',
         checked: rowColButtonsChecked,
         type: 'checkbox',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ITEM_TOGGLE_BUTTONS,
-          });
-        },
+        click: async () => {godley.toggleButtons();}
       }),
       new MenuItem({
         label: 'Display variables',
         type: 'checkbox',
         checked: displayVariableChecked,
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ITEM_TOGGLE_VARIABLE_DISPLAY,
-          });
-        },
+        click: async () => {godley.toggleVariableDisplay();}
       }),
       new MenuItem({
         label: 'Copy flow variables',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_COPY_ALL_FLOW_VARS,
-          });
-        },
+        click: async () => {minsky.canvas.copyAllFlowVars();}
       }),
       new MenuItem({
         label: 'Copy stock variables',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_COPY_ALL_STOCK_VARS,
-          });
-        },
+        click: async () => {minsky.canvas.copyAllStockVars();}
       }),
       new MenuItem({
         label: 'Export as',
@@ -711,14 +602,12 @@ export class ContextMenuManager {
   private static async buildContextMenuForOperations(
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
-    let portValues = 'unknown';
+    let op=new OperationBase(minsky.canvas.item);
 
     try {
-      portValues = (await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_PORT_VALUES,
-      })) as string;
+      var portValues = op.portValues();
     } catch (error) {
-      portValues = 'unknown';
+      var portValues = 'unknown';
     }
 
     let menuItems = [
@@ -731,19 +620,15 @@ export class ContextMenuManager {
       }),
     ];
 
-    if ((await CommandsManager.getItemType()) === 'data') {
+    // TODO data is obsolete
+    if (op.type() === 'data') {
       menuItems.push(
         new MenuItem({
           label: 'Import Data',
           click: async () => {
             const filePath = await CommandsManager.getFilePathUsingSaveDialog();
-
-            if (filePath) {
-              await RestServiceManager.handleMinskyProcess({
-                command: `${commandsMapping.CANVAS_ITEM_READ_DATA} ${filePath}`,
-              });
-            }
-          },
+            if (filePath) {(new DataOp(op)).readData(filePath);}
+          }
         })
       );
     }
@@ -752,11 +637,7 @@ export class ContextMenuManager {
       ...menuItems,
       new MenuItem({
         label: 'Copy item',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_COPY_ITEM,
-          });
-        },
+        click: async () => {minsky.canvas.copyItem();}
       }),
       new MenuItem({
         label: 'Flip',
@@ -766,14 +647,12 @@ export class ContextMenuManager {
       }),
     ];
 
-    if ((await CommandsManager.getItemType()) === 'integrate') {
+    if (op.type() === 'integrate') {
       menuItems.push(
         new MenuItem({
           label: 'Toggle var binding',
           click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_ITEM_TOGGLE_COUPLED,
-            });
+            (new IntOp(op)).toggleCoupled();
             CommandsManager.requestRedraw();
           },
         })
@@ -781,11 +660,7 @@ export class ContextMenuManager {
       menuItems.push(
         new MenuItem({
           label: 'Select all instances',
-          click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_SELECT_ALL_VARIABLES,
-            });
-          },
+          click: () => {minsky.canvas.selectAllVariables();}
         })
       );
       menuItems.push(
@@ -801,6 +676,7 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForGroup(): Promise<MenuItem[]> {
+    let group=new Group(minsky.canvas.item);
     const menuItems = [
       new MenuItem({
         label: 'Edit',
@@ -810,39 +686,28 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Open in canvas',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_OPEN_GROUP_IN_CANVAS,
-          });
-        },
+        click: async () => {minsky.openGroupInCanvas();}
       }),
       new MenuItem({
         label: 'Zoom to display',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ZOOM_TO_DISPLAY,
-          });
-
+        click: async () => {minsky.canvas.zoomToDisplay();
           await CommandsManager.requestRedraw();
         },
       }),
       new MenuItem({
         label: 'Remove plot icon',
         click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ITEM_REMOVE_DISPLAY_PLOT,
-          });
-
+          group.removeDisplayPlot();
           await CommandsManager.requestRedraw();
         },
       }),
       new MenuItem({
         label: 'Copy',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_COPY_ITEM,
-          });
-        },
+        click: () => {minsky.canvas.copyItem();}
+      }),
+      new MenuItem({
+        label: 'Make subroutine',
+        click: () => {group.makeSubroutine();}
       }),
       new MenuItem({
         label: 'Save group as',
@@ -859,18 +724,14 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Flip Contents',
         click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ITEM_FLIP_CONTENTS,
-          });
+          group.flipContents();
           CommandsManager.requestRedraw();
         },
       }),
       new MenuItem({
         label: 'Ungroup',
         click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_UNGROUP_ITEM,
-          });
+          minsky.canvas.ungroupItem();
           CommandsManager.requestRedraw();
         },
       }),
@@ -879,50 +740,154 @@ export class ContextMenuManager {
     return menuItems;
   }
 
-  private static async buildContextMenuForRavel(): Promise<MenuItem[]> {
+  private static async buildContextMenuForRavel(ravel: Ravel): Promise<MenuItem[]> {
+    const aggregations = [{label: 'Σ', value: 'sum'},{label: 'Π', value: 'prod'},{label:'av',value:'av'},{label: 'σ', value: 'stddev'},{label: 'min', value: 'min'},{label: 'max', value: 'max'}];
+
+    const handleIndex = ravel.selectedHandle();
+    const sortOrder = ravel.sortOrder();
+    const editorMode = ravel.editorMode();
+
+    const ravelsSelected = minsky.canvas.ravelsSelected();
+    const allLockHandles = ravel.lockGroup.allLockHandles();
+
+    const lockHandlesAvailable = ravelsSelected > 1 || Object.keys(allLockHandles).length !== 0;
+    const unlockAvailable = Object.keys(allLockHandles).length !== 0;
+    const handleAvailable = handleIndex !== -1;
+
     let menuItems = [
+      new MenuItem({
+        label: 'Editor mode',
+        type: 'checkbox',
+        checked: editorMode,
+        click: () => {ravel.toggleEditorMode();}
+      }),
       new MenuItem({
         label: 'Export as CSV',
         click: async () => {
-          await CommandsManager.exportItemAsCSV();
+          await CommandsManager.exportItemAsCSV(ravel);
         },
       }),
+      new MenuItem({
+        label: 'Set next aggregation',
+        submenu: aggregations.map(agg => ({
+          label: agg.label,
+          click: async () => {ravel.nextReduction(agg.value);}
+        }))
+      }),
+      new MenuItem({ 
+        label: 'Link specific handles',
+        click: async () => {
+          CommandsManager.lockSpecificHandles(ravel);
+        },
+        enabled: lockHandlesAvailable 
+      }),
+      new MenuItem({
+        label: 'Unlink',
+        enabled: unlockAvailable,
+        click: async () => {
+          ravel.leaveLockGroup();
+          CommandsManager.requestRedraw();
+        },
+      })
     ];
 
-    if ((await CommandsManager.getLockGroup()).length) {
-      menuItems = [
-        ...menuItems,
-        new MenuItem({ label: 'Lock specific handles' }),
-        new MenuItem({ label: 'Axis properties' }),
-        new MenuItem({
-          label: 'Unlock',
+    let valueSort=(type: string,dir: string)=>{
+      return type+dir[0].toUpperCase()+dir.slice(1);
+    };
+    menuItems.push(...[new MenuItem(
+      {
+        label: 'Toggle axis calipers',
+        enabled: handleAvailable,
+        click: async () => {
+          ravel.toggleDisplayFilterCaliper();
+          ravel.broadcastStateToLockGroup();
+        }
+      }),
+      new MenuItem(
+      {
+        label: 'Sort axis',
+        enabled: handleAvailable,
+        submenu: ['none','forward','reverse'].map(so =>(<any>{
+          label: so,
+          type: 'radio',
+          checked: sortOrder == so,
+          click: () => {
+            ravel.setSortOrder(so);
+            ravel.broadcastStateToLockGroup();
+            minsky.reset();
+          }
+        })).concat(
+          ['forward','reverse'].map(vso =>(<any>{
+            label: `${vso} by value`,
+            type: 'radio',
+            checked: sortOrder == valueSort('static',vso),
+            click: async () => {
+              ravel.sortByValue(vso);
+              ravel.setSortOrder(valueSort('static',vso));
+              ravel.broadcastStateToLockGroup();
+              minsky.reset();
+          }
+        }))).concat(
+          ['forward','reverse'].map(vso =>(<any>{
+            label: `${vso} dynamically by value`,
+            type: 'radio',
+            checked: sortOrder == valueSort('dynamic',vso),
+            click: async () => {
+              ravel.sortByValue(vso);
+              ravel.setSortOrder(valueSort('dynamic',vso));
+              ravel.broadcastStateToLockGroup();
+              minsky.reset();
+          }
+        })))
+      }),
+      new MenuItem({
+        label: 'Pick axis slices',
+        enabled: handleAvailable,
+        click: async () => {
+          await CommandsManager.pickSlices(ravel,handleIndex);
+        }
+      }),
+    new MenuItem({
+      label: 'Axis properties',
+      enabled: handleAvailable,
+      submenu: [
+        {
+          label: 'Description',
           click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_ITEM_LEAVE_LOCK_GROUP,
-            });
-
-            CommandsManager.requestRedraw();
-          },
-        }),
-      ];
-    }
+            await CommandsManager.editHandleDescription(ravel,handleIndex);
+          }
+        },
+        {
+          label: 'Dimension',
+          click: async () => {
+            await CommandsManager.editHandleDimension(ravel,handleIndex);
+          }
+        },
+        {
+          label: 'Set aggregation',
+          submenu: aggregations.map(agg => ({
+            label: agg.label,
+            click: () => {
+              ravel.handleSetReduction(handleIndex, agg.value);
+            }
+          }))
+        }
+      ]
+    })]);
 
     return menuItems;
   }
 
   private static async buildContextMenuForSwitchIcon(): Promise<MenuItem[]> {
+    let switchIcon=new SwitchIcon(minsky.canvas.item);
     const menuItems = [
       new MenuItem({
         label: 'Add case',
-        click: async () => {
-          await CommandsManager.incrCase(1);
-        },
+        click: () => {switchIcon.setNumCases(switchIcon.numCases()+1);},
       }),
       new MenuItem({
         label: 'Delete case',
-        click: async () => {
-          await CommandsManager.incrCase(-1);
-        },
+        click: () => {switchIcon.setNumCases(switchIcon.numCases()-1);},
       }),
       new MenuItem({
         label: 'Flip',
@@ -936,37 +901,13 @@ export class ContextMenuManager {
   }
 
   private static async buildContextMenuForLock(): Promise<MenuItem[]> {
-    const menuItems = [];
-
-    const isItemLocked = await CommandsManager.isItemLocked();
-
-    const toggleLocked = async () => {
-      await RestServiceManager.handleMinskyProcess({
-        command: commandsMapping.CANVAS_ITEM_TOGGLE_LOCKED,
-      });
-    };
-
-    if (isItemLocked) {
-      menuItems.push(
-        new MenuItem({
-          label: 'Unlock',
-          click: async () => {
-            await toggleLocked();
-          },
-        })
-      );
-    } else {
-      menuItems.push(
-        new MenuItem({
-          label: 'Lock',
-          click: async () => {
-            await toggleLocked();
-          },
-        })
-      );
-    }
-
-    return menuItems;
+    let ravel=new Lock(minsky.canvas.item);
+    return [
+      new MenuItem({
+        label: ravel.locked()? 'Unlock': 'Lock',
+        click: async () => {ravel.toggleLocked();}
+      })
+    ];
   }
 
   private static async buildContextMenuForVariables(
@@ -981,10 +922,18 @@ export class ContextMenuManager {
       dims = await CommandsManager.getItemDims();
     }
 
+    let v=new VariableBase(minsky.canvas.item);
+    
     const menuItems = [
       dims && dims.length
         ? new MenuItem({ label: `Dims ${dims.toString()}` })
-        : new MenuItem({ label: `Value ${itemInfo?.value || ''}` }),
+        : new MenuItem({ label: `Value ${v.value()}` }),
+      new MenuItem({
+        label: "Local",
+        type: 'checkbox',
+        checked: v.local(),
+        click: async () => {v.toggleLocal();}
+      }),
       new MenuItem({
         label: 'Find definition',
         click: async () => {
@@ -993,11 +942,7 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Select all instances',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_SELECT_ALL_VARIABLES,
-          });
-        },
+        click: async () => {minsky.canvas.selectAllVariables();}
       }),
       new MenuItem({
         label: 'Find all instances',
@@ -1019,31 +964,19 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Copy item',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_COPY_ITEM,
-          });
-        },
+        click: () => {minsky.canvas.copyItem();}
       }),
       new MenuItem({
         label: 'Add integral',
-        click: async () => {
-          await RestServiceManager.handleMinskyProcess({
-            command: commandsMapping.CANVAS_ADD_INTEGRAL,
-          });
-        },
+        click: () => {minsky.addIntegral();}
       }),
     ];
 
-    if (await CommandsManager.isItemDefined()) {
+    if (v.defined()) {
       menuItems.push(
         new MenuItem({
           label: 'Display variable on tab',
-          click: async () => {
-            await RestServiceManager.handleMinskyProcess({
-              command: commandsMapping.CANVAS_ITEM_TOGGLE_VAR_TAB_DISPLAY,
-            });
-          },
+          click: () => {v.toggleVarTabDisplay();}
         })
       );
     }
@@ -1057,7 +990,7 @@ export class ContextMenuManager {
       })
     );
 
-    if ((await CommandsManager.getItemType()) === 'parameter') {
+    if (v.type() === 'parameter') {
       menuItems.push(
         new MenuItem({
           label: 'Import CSV',
@@ -1072,7 +1005,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Export as CSV',
         click: async () => {
-          await CommandsManager.exportItemAsCSV();
+          await CommandsManager.exportItemAsCSV(v);
         },
       })
     );
@@ -1082,98 +1015,99 @@ export class ContextMenuManager {
 
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
   {
+  //  console.log(`initContextMenuForGodleyPopup ${namedItemSubCommand}, ${x},${y}\n`);
+    let godley=new GodleyIcon(namedItemSubCommand);
+    
     var menu=new Menu();
     menu.append(new MenuItem({
       label: "Help",
       click: async ()=> {await CommandsManager.loadHelpFile("GodleyTable");},
     }));
-
-    var id=await RestServiceManager.handleMinskyProcess({
-      command: `${namedItemSubCommand}/id`,
-    }) as number;
+    
     menu.append(new MenuItem({
       label: "Title",
-      click: async ()=> {await CommandsManager.editGodleyTitle(id);},
+      click: async ()=> {await CommandsManager.editGodleyTitle(godley.id());},
     }));
 
-    var popup=new GodleyPopup(`${namedItemSubCommand}/popup`);
-    
-    switch (popup.clickTypeZoomed(x,y))
+    switch (godley.popup.clickTypeZoomed(x,y))
     {
       case "background": break;
       case "row0":
       menu.append(new MenuItem({
         label: "Add new stock variable",
-        click: async ()=> {popup.addStockVar(x);},
+        click: async ()=> {godley.popup.addStockVar(x);},
       }));
-
+      
       var importMenu=new Menu();
-      var importables=popup.matchingTableColumns(x);
+      var importables=godley.popup.matchingTableColumns(x);
       for (var i in importables)
         importMenu.append(new MenuItem({
           label: importables[i],
-          click: async (item)=> {popup.importStockVar(item.label,x);},
+          click: async (item)=> {godley.popup.importStockVar(item.label,x);},
         }));
-
+      
       menu.append(new MenuItem({
         label: "Import variable",
         submenu: importMenu,
       }));
-        
-       menu.append(new MenuItem({
+      
+      menu.append(new MenuItem({
         label: "Delete stock variable",
-         click: async ()=> {popup.deleteStockVar(x);},
-       }));
+        click: async ()=> {godley.popup.deleteStockVar(x);},
+      }));
       break;
       case "col0":
-       menu.append(new MenuItem({
+      menu.append(new MenuItem({
         label: "Add flow",
-         click: async ()=> {popup.addFlow(y);},
-       }));
-       menu.append(new MenuItem({
+        click: async ()=> {godley.popup.addFlow(y);},
+      }));
+      menu.append(new MenuItem({
         label: "Delete flow",
-         click: async ()=> {popup.deleteFlow(y);},
-       }));
+        click: async ()=> {godley.popup.deleteFlow(y);},
+      }));
       break;
       case "internal": break;
     } // switch clickTypeZoomed
-
-    var r=popup.rowYZoomed(y);
-    var c=popup.colXZoomed(x);
-    if (r!=popup.selectedRow() || c!=popup.selectedCol())
+    
+    var r=godley.popup.rowYZoomed(y);
+    var c=godley.popup.colXZoomed(x);
+    if (r!=godley.popup.selectedRow() || c!=godley.popup.selectedCol())
     {
-      popup.selectedRow(r);
-      popup.selectedCol(c);
-      popup.insertIdx(0);
-      popup.selectedIdx(0);
+      godley.popup.selectedRow(r);
+      godley.popup.selectedCol(c);
+      godley.popup.insertIdx(0);
+      godley.popup.selectIdx(0);
     }
-    var cell=await RestServiceManager.handleMinskyProcess({
-      command: `${namedItemSubCommand}/table/getCell [${r},${c}]`,
-    }) as string;
+    var cell=godley.table.getCell(r,c);
     if (cell.length>0 && (r!=1 || c!=0))
     {
       menu.append(new MenuItem({
         label: "Cut",
-        click: async ()=> {popup.cut();}
+        click: async ()=> {godley.popup.cut();}
       }));
       menu.append(new MenuItem({
         label: "Copy",
-        click: async ()=> {popup.copy();}
+        click: async ()=> {godley.popup.copy();}
       }));
     }
-
+    
     if (r!=1 || c!=0)
     {
-      var clip=await RestServiceManager.handleMinskyProcess({
-      command: "/minsky/clipboardEmpty",
-      }) as boolean;
+      var clip=minsky.clipboardEmpty();
       menu.append(new MenuItem({
         label: "Paste",
         enabled: !clip,
-        click: async ()=> {popup.paste();}
+        click: async ()=> {godley.popup.paste();}
       }));
     }
     menu.popup();
   }
-
+  
+  private static async initContextMenuForRavelPopup(namedItemSubCommand: string, x: number, y: number)
+  {
+    let ravel=new Ravel(namedItemSubCommand);
+    let menu=Menu.buildFromTemplate(await this.buildContextMenuForRavel(ravel));
+    menu.popup();
+  }
 }
+
