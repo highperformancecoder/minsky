@@ -54,12 +54,12 @@ namespace minsky
   void doOneEvent(bool idleTasksOnly) {}
 }
 
-tuple<string,string> splitFirstComponent(const string& x)
+tuple<string,string> splitFirstComponent(const boost::string_view& x)
 {
   if (x.empty() || x[0]!='/') return {};
   auto i=find(x.begin()+1, x.end(), '/');
   if (i==x.end())
-    return std::make_tuple(x,string());
+    return std::make_tuple(string(x),string());
   return std::make_tuple(string{x.begin(),i},string{i,x.end()});
 }
 
@@ -125,7 +125,7 @@ int main(int argc, const char* argv[])
       try
         {
           // handle rendering of named components
-          auto components=splitFirstComponent(req.target().to_string());
+          auto components=splitFirstComponent(req.target());
           if (get<0>(components)=="/render")
             {
               auto c=registry.find(get<1>(components));
@@ -167,7 +167,7 @@ int main(int argc, const char* argv[])
                 http::response<http::empty_body> response{http::status::ok, req.version()};
                 response.set(http::field::server, BOOST_BEAST_VERSION_STRING);
                 response.set(http::field::content_type, "text/html");
-                auto body=write(registry.process(req.target().to_string(),arguments));
+                auto body=write(registry.process(string(req.target()),arguments));
                 response.content_length(body.size());
                 response.keep_alive(req.keep_alive());
                 http::write(socket, response, ec);
@@ -182,7 +182,7 @@ int main(int argc, const char* argv[])
                 res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
                 res.set(http::field::content_type, "application/json");
                 res.set(http::field::access_control_allow_origin, "*");
-                auto cmd=req.target().to_string();
+                auto cmd=string(req.target());
                 res.body()=write(registry.process(cmd,arguments));
                 res.keep_alive(req.keep_alive());
                 http::write(socket, res, ec);
@@ -193,7 +193,7 @@ int main(int argc, const char* argv[])
               }
               break;
             default:
-              throw runtime_error("http method "+to_string(req.method()).to_string()+" not supported");
+              throw runtime_error("http method "+string(to_string(req.method()))+" not supported");
             }
         }
       catch (const std::exception& ex)

@@ -512,7 +512,7 @@ namespace minsky
       selection.ensureItemInserted(i);
   }
   
-  ClickType::Type GodleyIcon::clickType(float x, float y)
+  ClickType::Type GodleyIcon::clickType(float x, float y) const
   {
     if (m_editorMode) return Item::clickType(x,y);
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());

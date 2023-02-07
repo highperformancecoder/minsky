@@ -39,7 +39,7 @@ ifneq ($(build_ecolab),ecolab built)
 $(error "Making ecolab failed: check ecolab/build.log")
 endif
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)))
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc)
 $(warning $(build_RavelCAPI))
 endif
 
@@ -102,7 +102,6 @@ MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o 
 ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
-TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o interpolateHypercube.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
@@ -129,11 +128,11 @@ ifeq ($(HAVE_NODE),1)
 EXES+=gui-js/node-addons/minskyRESTService.node
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
+FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
 #-fvisibility-inlines-hidden
 
-VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
+VPATH= schema model engine gui-tk RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -166,7 +165,7 @@ ifdef AEGIS
 # ensure all exes get built in AEGIS mode
 TESTS=tests 
 # enable TCL coverage testing
-FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor
+FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor -Wno-unknown-pragmas
 endif
 
 ifdef MXE
@@ -205,7 +204,7 @@ endif
 #EXES=gui-tk/minsky$(EXE)
 #RESTService/RESTService 
 
-LIBS+=	-LRavelCAPI -lravelCAPI \
+LIBS+=	-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
@@ -213,7 +212,7 @@ LIBS+=	-LRavelCAPI -lravelCAPI \
 ifdef MXE
 LIBS+=-lcrypt32 -lbcrypt -lshcore
 else
-LIBS+=-lclipboard -lxcb -lX11
+LIBS+=-lclipboard -lxcb -lX11 -ldl
 endif
 
 # RSVG dependencies calculated here
@@ -349,7 +348,7 @@ dummy-addon.o: dummy-addon.cc
 node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
-$(EXES): RavelCAPI/libravelCAPI.a
+$(EXES):
 
 tests: $(EXES)
 	cd test; $(MAKE)
@@ -359,13 +358,13 @@ BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd
 	-rm -f $(EXES)
-	-cd test; $(MAKE)  clean
-	-cd gui-tk; $(BASIC_CLEAN)
-	-cd model; $(BASIC_CLEAN)
-	-cd engine; $(BASIC_CLEAN)
-	-cd schema; $(BASIC_CLEAN)
-	-cd ecolab; $(MAKE) clean
-	-cd RavelCAPI; $(MAKE) clean
+	-cd test && $(MAKE)  clean
+	-cd gui-tk &&  $(BASIC_CLEAN)
+	-cd model && $(BASIC_CLEAN)
+	-cd engine && $(BASIC_CLEAN)
+	-cd schema && $(BASIC_CLEAN)
+	-cd ecolab && $(MAKE) clean
+	-cd RavelCAPI && $(MAKE) clean
 
 mac-dist: gui-tk/minsky gui-js/node-addons/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only

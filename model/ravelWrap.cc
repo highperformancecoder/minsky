@@ -23,6 +23,7 @@
 #include "minskyTensorOps.h"
 #include "minsky.h"
 #include "pango.h"
+#include "minskyCairoRenderer.h"
 #include "minsky_epilogue.h"
 
 
@@ -30,7 +31,6 @@
 #include <cmath>
 using namespace std;
 
-#include "cairoRenderer.h"
 
 namespace minsky
 {
@@ -52,34 +52,6 @@ namespace minsky
       }
   }
 
-namespace
-{
-  struct CairoRenderer: public ravel::CairoRenderer
-  {
-    ecolab::Pango m_pango;
-    
-    static ecolab::Pango& pango(CAPIRenderer* r) {return static_cast<CairoRenderer*>(r)->m_pango;}
-
-    static void s_showText(CAPIRenderer* c, const char* s)
-    {
-      pango(c).setText(s);
-      pango(c).show();
-    }
-    static void s_setTextExtents(CAPIRenderer* c, const char* s)
-    {pango(c).setText(s);}
-    static double s_textWidth(CAPIRenderer* c) {return pango(c).width();}
-    static double s_textHeight(CAPIRenderer* c) {return pango(c).height();}
-
-    CairoRenderer(cairo_t* cairo): ravel::CairoRenderer(cairo), m_pango(cairo) {
-      showText=s_showText;
-      setTextExtents=s_setTextExtents;
-      textWidth=s_textWidth;
-      textHeight=s_textHeight;
-    }
-    
-  };
-}
-  
   void Ravel::draw(cairo_t* cairo) const
   {
     double  z=zoomFactor(), r=editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
@@ -158,6 +130,7 @@ namespace
   {
     double invZ=1/zoomFactor();
     wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
+    resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
   bool Ravel::onMouseMotion(float xx, float yy)
@@ -202,27 +175,7 @@ namespace
     auto state=initState.empty()? getState(): initState;
     bool redistribute=!initState.empty();
     initState.clear();
-    wrappedRavel.clear();
-    for (auto& i: hc.xvectors)
-      {
-        vector<string> ss;
-        for (auto& j: i) ss.push_back(str(j,i.dimension.units));
-        wrappedRavel.addHandle(i.name, ss);
-        size_t h=numHandles()-1;
-        wrappedRavel.displayFilterCaliper(h,false);
-        if (!redistribute)
-        // set forward sort order on value and time dimensions
-          switch (i.dimension.type)
-            {
-            case Dimension::time:
-            case Dimension::value:
-              wrappedRavel.orderLabels(h,HandleSort::forward,
-                                       ravel::toEnum<ravel::HandleSort::OrderType>(i.dimension.type),i.dimension.units);
-              break;
-            default:
-              break;
-            }
-      }
+    wrappedRavel.populateFromHypercube(hc);
     if (state.empty())
       {
         setRank(hc.rank());
@@ -255,6 +208,7 @@ namespace
   void Ravel::adjustSlicer(int n)
   {
     wrappedRavel.adjustSlicer(n);
+    resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
 
@@ -358,6 +312,24 @@ namespace
     return x;
   }
 
+  void Ravel::resortHandleIfDynamic()
+  {
+    if (wrappedRavel.rank()==1)
+      {
+        // TODO add a Ravel CAPI call to get order directly?
+        auto order=wrappedRavel.getHandleState(wrappedRavel.outputHandleIds()[0]).order;
+        switch (order)
+          {
+          case ravel::HandleSort::dynamicForward:
+          case ravel::HandleSort::dynamicReverse:
+            sortByValue(order);
+            break;
+          default:
+            break;
+          }
+      }
+  }
+
   ravel::HandleSort::Order Ravel::setHandleSortOrder(ravel::HandleSort::Order order, int handle)
   {
     if (handle>=0)
@@ -378,32 +350,51 @@ namespace
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
     if (wrappedRavel.rank()!=1) return;
-    auto currentPermutation=wrappedRavel.currentPermutation(wrappedRavel.selectedHandle());
-    setHandleSortOrder(ravel::HandleSort::none, wrappedRavel.outputHandleIds()[0]);
+    int outputHandle=wrappedRavel.outputHandleIds()[0];
+    auto currentPermutation=wrappedRavel.currentPermutation(outputHandle);
+    if (currentPermutation.empty())
+      for (size_t i=0; i<wrappedRavel.numSliceLabels(outputHandle); ++i)
+        currentPermutation.push_back(i);
+    
     try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
+
     auto vv=m_ports[0]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
 
-    vector<size_t> permutation;
+    vector<size_t> permutation, nonFinite;
     for (size_t i=0; i<std::min(currentPermutation.size(), vv->hypercube().xvectors[0].size()); ++i)
       if (std::isfinite(vv->atHCIndex(i)))
-        permutation.push_back(currentPermutation[i]);
+        permutation.push_back(i);
+      else
+        nonFinite.push_back(i);
 
     switch (dir)
       {
       case ravel::HandleSort::forward:
+      case ravel::HandleSort::staticForward:
+      case ravel::HandleSort::dynamicForward:
         sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
         {return vv->atHCIndex(i)<vv->atHCIndex(j);});
         break;
       case ravel::HandleSort::reverse:
+      case ravel::HandleSort::staticReverse:
+      case ravel::HandleSort::dynamicReverse:
         sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
         {return vv->atHCIndex(i)>vv->atHCIndex(j);});
         break;
       default:
         break;
       }
-    wrappedRavel.applyCustomPermutation(wrappedRavel.outputHandleIds()[0], permutation);
+
+    vector<size_t> slicedPermutation;
+    slicedPermutation.reserve(permutation.size());
+    for (auto i: permutation)
+      slicedPermutation.push_back(currentPermutation[i]);
+    for (auto i: nonFinite) // push back missing data to end of sequence
+      slicedPermutation.push_back(currentPermutation[i]);
+
+    wrappedRavel.applyCustomPermutation(outputHandle, slicedPermutation);
   }
   
   

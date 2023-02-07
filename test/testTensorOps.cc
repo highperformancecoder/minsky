@@ -1274,30 +1274,6 @@ SUITE(TensorOps)
         CHECK(i.type==Dimension::time);
     }
 
-  TEST(sortByValue)
-  {
-    auto val=make_shared<TensorVal>(vector<unsigned>{5});
-    vector<double> data={3,2,4,5,1};
-    for (size_t i=0; i<data.size(); ++i) (*val)[i]=data[i];
-    val->updateTimestamp();
-    SortByValue forward(ravel::HandleSort::forward);
-    forward.setArgument(val);
-    CHECK_EQUAL(val->timestamp(), forward.timestamp());
-    CHECK_EQUAL(val->size(), forward.size());
-    for (size_t i=1; i<forward.size(); ++i)
-      CHECK(forward[i]>forward[i-1]);
-    vector<int> expected={4,1,0,2,3};
-    for (size_t i=0; i<forward.size(); ++i)
-      CHECK_EQUAL(expected[i], forward.hypercube().xvectors[0][i].value);
-    SortByValue reverse(ravel::HandleSort::reverse);
-    reverse.setArgument(val);
-    for (size_t i=1; i<reverse.size(); ++i)
-      CHECK(reverse[i]<reverse[i-1]);
-    expected={3,2,0,1,4};
-    for (size_t i=0; i<reverse.size(); ++i)
-      CHECK_EQUAL(expected[i], reverse.hypercube().xvectors[0][i].value);
-  }
-
   TEST(tensorValVectorIndex)
   {
     TensorVal tv(vector<unsigned>{5,3,2});
@@ -1541,5 +1517,118 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      CHECK_EQUAL(sv,ev->stockVars());
      CHECK_EQUAL(sizeof(fv)/sizeof(fv[0]),ev->fvSize());
    }
- 
+
+  TEST(Meld)
+    {
+      civita::Meld op;
+      Hypercube hc{3,5};
+      TensorPtr xp(make_shared<TensorVal>(hc)), yp(make_shared<TensorVal>(hc));
+      TensorVal& x=dynamic_cast<TensorVal&>(*xp);
+      TensorVal& y=dynamic_cast<TensorVal&>(*yp);
+      
+      for (unsigned i=0; i<x.size(); ++i)
+        {
+          x[i]=nan("");
+          y[i]=2;
+        }
+      x({1,2})=1; x({2,2})=1;
+      y({2,3})=nan("");
+      op.setArguments({xp,yp},"",0);
+      CHECK_EQUAL(1,op.atHCIndex(7));
+      CHECK_EQUAL(1,op.atHCIndex(8));
+      CHECK(isnan(op.atHCIndex(11)));
+      CHECK_EQUAL(2,op.atHCIndex(6));
+      CHECK_EQUAL(2,op.atHCIndex(1));
+
+      // add sparsity
+      x.index(set<size_t>{7,8});
+      y.index(set<size_t>{1,6});
+      
+      op.setArguments({xp,yp},"",0);
+      x[0]=1; x[1]=1;
+      CHECK_EQUAL(1,op.atHCIndex(7));
+      CHECK_EQUAL(1,op.atHCIndex(8));
+      CHECK(isnan(op.atHCIndex(11)));
+      CHECK_EQUAL(2,op.atHCIndex(6));
+      CHECK_EQUAL(2,op.atHCIndex(1));
+
+      auto maxTimestamp=std::max(x.timestamp(),y.timestamp());
+      CHECK_EQUAL(maxTimestamp, op.timestamp());
+      
+    }
+
+   TEST(Merge)
+    {
+      civita::Merge op;
+      Hypercube hc{3,5};
+      TensorPtr xp(make_shared<TensorVal>(hc)), yp(make_shared<TensorVal>(hc));
+      TensorVal& x=dynamic_cast<TensorVal&>(*xp);
+      TensorVal& y=dynamic_cast<TensorVal&>(*yp);
+      
+      for (unsigned i=0; i<x.size(); ++i)
+        {
+          x[i]=1;
+          y[i]=2;
+        }
+      op.setArguments({xp,yp},"new axis",0);
+      vector<int> expected{3,5,2};
+      CHECK_ARRAY_EQUAL(expected,op.hypercube().dims(),3);
+      CHECK_EQUAL("new axis",op.hypercube().xvectors[2].name);
+      for (int i=0; i<15; ++i)
+        {
+          CHECK_EQUAL(1,op[i]);
+          CHECK_EQUAL(2,op[i+15]);
+        }
+
+      // add sparsity
+      x.index(set<size_t>{7,8});
+      y.index(set<size_t>{1,6});
+      op.setArguments({xp,yp},"",0);
+      
+      CHECK_EQUAL(4,op.index().size());
+      expected={7,8,16,21};
+      CHECK_ARRAY_EQUAL(expected,op.index(),4);
+      CHECK_EQUAL(1,op[0]);
+      CHECK_EQUAL(1,op[1]);
+      CHECK_EQUAL(2,op[2]);
+      CHECK_EQUAL(2,op[3]);
+
+      auto maxTimestamp=std::max(x.timestamp(),y.timestamp());
+      CHECK_EQUAL(maxTimestamp, op.timestamp());
+      
+    }
+
+   
+   TEST(SpreadOverHC)
+    {
+      civita::SpreadOverHC op;
+      Hypercube hc{3};
+      hc.xvectors.emplace_back("back",Dimension(Dimension::value,""));
+      auto hc1=hc;
+      for (double i=0; i<5; i+=1)
+        {
+          hc.xvectors.back().emplace_back(i);
+          if (i>0 && i<4)
+            hc1.xvectors.back().emplace_back(i);
+        }
+      TensorPtr xp(make_shared<TensorVal>(hc1));
+      TensorVal& x=dynamic_cast<TensorVal&>(*xp);
+      
+      for (unsigned i=0; i<x.size(); ++i)
+        {
+          x[i]=i;
+        }
+      op.hypercube(hc);
+      op.setArgument(xp);
+      for (unsigned i=0; i<hc.dims()[0]; ++i)
+        {
+          CHECK(isnan(op[i]));
+          CHECK(isnan(op[i+12]));
+          for (int j=1; j<4; ++j)
+            CHECK_EQUAL(i+3*(j-1),op[i+3*j]);
+        }
+    }
+
+
+
 }

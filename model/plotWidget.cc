@@ -327,7 +327,7 @@ namespace minsky
   }
 
   // specialisation to avoid rerendering plots (potentially expensive)
-  ClickType::Type PlotWidget::clickType(float x, float y)
+  ClickType::Type PlotWidget::clickType(float x, float y) const
   {
     // firstly, check whether a port has been selected
     double z=zoomFactor();  

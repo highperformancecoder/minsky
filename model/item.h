@@ -153,6 +153,9 @@ namespace minsky
           Rotate::operator=(Rotate(a,x,y));
       }
     } memoisedRotator;
+
+    static void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle);
+
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
@@ -182,7 +185,7 @@ namespace minsky
     }
     /// canvas bounding box.
     mutable BoundingBox bb;
-    bool contains(float xx, float yy) {
+    virtual bool contains(float xx, float yy) const {
       auto hz=resizeHandleSize(); // extend by resize handle size (which is also portRadius)
       return left()-hz<=xx && right()+hz>=xx && top()-hz<=yy && bottom()+hz>=yy; 
     }
@@ -226,7 +229,7 @@ namespace minsky
     void ensureBBValid() const {if (!bb.valid()) bb.update(*this);}
     float width()  const {return right()-left();}
     float height() const {return bottom()-top();}
-    std::vector<Point> corners() const; // 4 corners of item
+    virtual std::vector<Point> corners() const; // 4 corners of item
     float left()   const;
     float right()  const;
     float top()    const;
@@ -247,8 +250,10 @@ namespace minsky
     /// respond to mouse up events
     virtual void onMouseUp(float x, float y) {}
     /// respond to mouse motion events with button pressed
+    /// @return true if it needs to be rerendered
     virtual bool onMouseMotion(float x, float y) {return false;}
     /// respond to mouse motion events (hover) without button pressed
+    /// @return true if it needs to be rerendered
     virtual bool onMouseOver(float x, float y) {return false;}
     /// respond to mouse leave events (when mouse leaves item)
     virtual void onMouseLeave() {}
@@ -308,7 +313,7 @@ namespace minsky
     virtual void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
-    virtual ClickType::Type clickType(float x, float y);
+    virtual ClickType::Type clickType(float x, float y) const;
 
     /// returns closest output port to \a x,y
     virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 

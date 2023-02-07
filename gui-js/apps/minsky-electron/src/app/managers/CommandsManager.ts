@@ -8,7 +8,7 @@ import {
   InitializePopupWindowPayload,
   electronMenuBarHeightForWindows, HandleDescriptionPayload,
   importCSVvariableName,
-  minsky, GodleyIcon, Group, IntOp, Item, Ravel, VariableBase, Wire, Utility
+  minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
@@ -712,6 +712,11 @@ export class CommandsManager {
           await CommandsManager.postNote('item');
           break;
 
+      case ClassType.Lock:
+        new Lock(minsky.canvas.item).toggleLocked();
+        minsky.canvas.requestRedraw();
+        break;
+        
         default:
           break;
       }

@@ -646,8 +646,9 @@ namespace MathDAG
            [&](const Items&, Items::const_iterator it){
              if (auto v=(*it)->variableCast())
                if (auto vv=v->vValue())
-                 variableSet.insert(dynamic_cast<VariableDAG*>
-                                    (makeDAG(v->valueId(), vv->name, vv->type()).get()));
+                 if (auto dag=dynamic_cast<VariableDAG*>
+                     (makeDAG(v->valueId(), vv->name, vv->type()).get()))
+                   variableSet.insert(dag);
              return false;
            });
         // TODO - if we can pass VariableDefOrder to the definition of variableSet, we don't need to resort...
@@ -1029,9 +1030,12 @@ namespace MathDAG
                // ensure plot inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
          else if (auto s=dynamic_cast<Sheet*>(i->get()))
-           for (auto w: s->ports(0).lock()->wires())
+           {
+             for (auto w: s->ports(0).lock()->wires())
                // ensure sheet inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+             s->computeValue();
+           }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            for (auto w: r->ports(1).lock()->wires())
                // ensure sheet inputs are evaluated
