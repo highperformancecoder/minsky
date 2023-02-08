@@ -492,8 +492,8 @@ namespace minsky
                         for (const auto& i: xv)
                           {
                             xdefault.push_back(yearToPTime(i.value));
-                            if (abs(i.value-int(i.value))<0.05)
-                              newXticks.back().emplace_back(xdefault.back(), str(i.value));
+                            if (abs(i.value-int(i.value))<0.05) // only label years
+                              newXticks.back().emplace_back(xdefault.back(), str(int(i.value)));
                           }
                       else
                         for (const auto& i: xv)
