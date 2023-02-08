@@ -488,7 +488,7 @@ namespace minsky
                       break;
                     case Dimension::value:
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
-                        // interpret "year" as years since epoch (1/1/1970)
+                        // interpret "year" as Gregorian year date
                         for (const auto& i: xv)
                           {
                             xdefault.push_back(yearToPTime(i.value));
