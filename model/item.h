@@ -323,9 +323,9 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
     /// runs the RESTProcess descriptor suitable for this type
-    virtual void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d)
+    void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) override
     {::RESTProcess(rp,d,*this);}
-    virtual void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) const
+    void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) const override
     {::RESTProcess(rp,d,*this);}
     virtual void json_pack(classdesc::json_pack_t& j) const
     {::json_pack(j,"",*this);}

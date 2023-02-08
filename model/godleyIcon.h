@@ -62,7 +62,6 @@ namespace minsky
     
     GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets();}
     GodleyIcon(const GodleyIcon&)=default;
-    GodleyIcon& operator=(const GodleyIcon&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode

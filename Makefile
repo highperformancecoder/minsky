@@ -22,14 +22,6 @@ ifdef MXE
 MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
-ifdef DISTCC
-CPLUSPLUS=distcc
-# number of jobs to do sub-makes
-JOBS=-j 20
-else
-# number of jobs to do sub-makes
-JOBS=-j 4
-endif
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
@@ -41,6 +33,26 @@ endif
 include $(ECOLAB_HOME)/include/Makefile
 build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc)
 $(warning $(build_RavelCAPI))
+endif
+
+ifdef GCC
+CPLUSPLUS=g++
+else
+# default to clang if present
+HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
+ifeq ($(HAVE_CLANG),1)
+CPLUSPLUS=clang++
+$(warning clang selected)
+endif
+endif
+
+ifdef DISTCC
+CPLUSPLUS=distcc
+# number of jobs to do sub-makes
+JOBS=-j 20
+else
+# number of jobs to do sub-makes
+JOBS=-j 4
 endif
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -105,7 +117,9 @@ ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o ev
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
+ifeq ($(CPLUSPLUS),g++)
 PRECOMPILED_HEADERS=model/minsky.gch
+endif
 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=minskyRS.o RESTMinsky.o
@@ -130,7 +144,7 @@ ifeq ($(HAVE_NODE),1)
 EXES+=gui-js/node-addons/minskyRESTService.node
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
+FLAGS+=-Werror -std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
 #-fvisibility-inlines-hidden
 
@@ -360,9 +374,6 @@ node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
 $(EXES):
-
-# TODO: can we automatically generate this dependency?
-#model/minsky.gch: stringKeyMap.cd assetClass.cd assetClass.xcd godleyTable.cd godleyTable.xcd
 
 tests: $(EXES)
 	cd test; $(MAKE)
