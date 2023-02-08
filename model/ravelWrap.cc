@@ -66,6 +66,9 @@ namespace minsky
         tooltip="https://ravelation.hpcoders.com.au";
         detailedText=wrappedRavel.lastError();
       }
+    if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
+      return; // early return if at least 1 ravel already present
+    editorMode=true; // first ravel is in editor mode
   }
 
   void Ravel::draw(cairo_t* cairo) const

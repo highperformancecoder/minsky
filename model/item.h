@@ -50,7 +50,8 @@ namespace minsky
   class VariableBase;
   class OperationBase;
   class SwitchIcon;
-  class PlotWidget;    
+  class PlotWidget;
+  class Ravel;
 
   class Item;
   typedef std::shared_ptr<Item> ItemPtr;
@@ -120,6 +121,10 @@ namespace minsky
     /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
     virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
     virtual PlotWidget* plotWidgetCast() {return nullptr;}
+    /// @}            
+    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    virtual const Ravel* ravelCast() const {return nullptr;}
+    virtual Ravel* ravelCast() {return nullptr;}
     /// @}            
 
     /// insert this items controlled or controller items are inserted

@@ -1817,6 +1817,7 @@ export class Ravel extends Item {
   pickSliceLabels(a1: number,a2: string[]): void {return this.callMethod('pickSliceLabels',a1,a2);}
   pickedSliceLabels(): string[] {return this.callMethod('pickedSliceLabels');}
   populateHypercube(a1: civita__Hypercube): void {return this.callMethod('populateHypercube',a1);}
+  ravelCast(): Ravel {return this.callMethod('ravelCast');}
   redistributeHandles(): void {return this.callMethod('redistributeHandles');}
   resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
   resortHandleIfDynamic(): void {return this.callMethod('resortHandleIfDynamic');}
