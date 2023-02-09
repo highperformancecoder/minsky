@@ -434,10 +434,9 @@ namespace minsky
     
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
-    for (size_t n = 0; n < std::min(yvars.size(), xvars.size()); n++)
+    for (auto& i: yvars)
       {
-        auto& i = yvars[n];
-        if (i && xvars[n] && !i->hypercube().xvectors.empty())
+        if (i && !i->hypercube().xvectors.empty())
           {
             const auto& xv=i->hypercube().xvectors[0];
             if (xv.dimension.type==Dimension::time)
@@ -489,9 +488,13 @@ namespace minsky
                       break;
                     case Dimension::value:
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
-                        // interpret "year" as years since epoch (1/1/1970)
+                        // interpret "year" as Gregorian year date
                         for (const auto& i: xv)
-                          xdefault.push_back(yearToPTime(i.value));
+                          {
+                            xdefault.push_back(yearToPTime(i.value));
+                            if (abs(i.value-int(i.value))<0.05) // only label years
+                              newXticks.back().emplace_back(xdefault.back(), str(int(i.value)));
+                          }
                       else
                         for (const auto& i: xv)
                           xdefault.push_back(i.value);
