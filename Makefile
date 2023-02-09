@@ -37,11 +37,13 @@ endif
 
 ifdef GCC
 CPLUSPLUS=g++
+LINK=g++
 else
 # default to clang if present
 HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
 ifeq ($(HAVE_CLANG),1)
 CPLUSPLUS=clang++
+LINK=clang++
 $(warning clang selected)
 endif
 endif
