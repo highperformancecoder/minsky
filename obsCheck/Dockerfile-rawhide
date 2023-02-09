@@ -2,7 +2,8 @@ FROM fedora:rawhide
 ARG project=minsky
 ADD . /root
 RUN dnf install -y --allowerasing 'dnf-command(config-manager)' util-linux
-RUN dnf config-manager --add-repo https://download.opensuse.org/repositories/home:hpcoder1/Fedora_Rawhide/home:hpcoder1.repo --set-opt=*.gpgkey=https://download.opensuse.org/repositories/home:hpcoder1/Fedora_Rawhide/repodata/repomd.xml.key
+RUN dnf config-manager --add-repo https://download.opensuse.org/repositories/home:hpcoder1/Fedora_Rawhide/home:hpcoder1.repo --nogpgcheck
+RUN dnf config-manager --set-opt home:hpcoder1.repo.gpgkey=https://download.opensuse.org/repositories/home:hpcoder1/Fedora_Rawhide/repodata/repomd.xml.key
 RUN dnf install -y sudo $project
 RUN useradd -m minsky
 RUN sudo -u minsky minsky --version

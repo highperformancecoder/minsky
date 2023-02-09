@@ -30,8 +30,6 @@ ifneq ($(build_ecolab),ecolab built)
 $(error "Making ecolab failed: check ecolab/build.log")
 endif
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc)
-$(warning $(build_RavelCAPI))
 endif
 
 ifdef GCC
@@ -46,6 +44,13 @@ LINK=clang++
 $(warning clang selected)
 endif
 endif
+
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc CPLUSPLUS=$(CPLUSPLUS)
+ifneq ($(MAKECMDGOALS),clean)
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)) 
+$(warning $(build_RavelCAPI))
+endif
+
 
 ifdef DISTCC
 CPLUSPLUS=distcc
