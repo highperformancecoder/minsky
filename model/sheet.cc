@@ -212,7 +212,7 @@ namespace
 
 void Sheet::computeValue()
 {
-  if (m_ports[0] && (value=m_ports[0]->getVariableValue()) && inputRavel)
+  if (m_ports[0] && (value=m_ports[0]->getVariableValue()) && showRavel && inputRavel )
     {
       bool wasEmpty=inputRavel.numHandles()==0;
       inputRavel.populateFromHypercube(value->hypercube());
@@ -311,7 +311,7 @@ void Sheet::draw(cairo_t* cairo) const
 
   try
     {
-      if (!value) return;
+      if (!value || !m_ports[0] || m_ports[0]->numWires()==0) return;
       Pango pango(cairo);
       if (value->hypercube().rank()>2)
         {
@@ -414,10 +414,8 @@ void Sheet::draw(cairo_t* cairo) const
                   for (size_t i=adjustRowAndFinish.startRow; i<value->size(); ++i)
                     {
                       if (adjustRowAndFinish(i,y)) break;
-                      if (!value->index().empty())
-                        y=y0+value->index()[i]*rowHeight;
                       cairo_move_to(cairo,x,y);
-                      auto v=(*value)[i];
+                      auto v=value->atHCIndex(i);
                       if (!std::isnan(v))
                         {
                           pango.setMarkup(str(v));
