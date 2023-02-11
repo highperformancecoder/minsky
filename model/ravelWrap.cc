@@ -617,7 +617,19 @@ namespace minsky
                     }
                 }
             }
-          state.outputHandles=vector<string>(outputHandles.begin(),outputHandles.end());
+          // reorder output handle list according to the source ravel output order.
+          state.outputHandles.clear();
+          for (auto& i: sourceState.outputHandles)
+            {
+              auto o=outputHandles.find(i);
+              if (o!=outputHandles.end())
+                {
+                  state.outputHandles.push_back(i);
+                  outputHandles.erase(o);
+                }
+            }
+          // add remaining handles in order.
+          state.outputHandles.insert(state.outputHandles.end(), outputHandles.begin(), outputHandles.end());
           r->applyState(state);
         }
   }
