@@ -795,15 +795,16 @@ namespace minsky
   template <>
   struct GeneralTensorOp<OperationType::meld>: public civita::Meld
   {
+    using civita::Meld::setArguments;
     void setArguments(const std::vector<TensorPtr>& a1,
                       const std::vector<TensorPtr>& a2,
-                      const std::string& dimension={}, double argVal=0)
+                      const Args& opArgs) override
     {
       if (a1.empty() && a2.empty()) return;
       vector<TensorPtr> args=a1;
       args.insert(args.end(), a2.begin(), a2.end());
       meldArgsIntoCommonHypercube(args);
-      civita::Meld::setArguments(args,{dimension,argVal});
+      civita::Meld::setArguments(args,opArgs);
     }
   };
 
@@ -813,13 +814,13 @@ namespace minsky
     OperationPtr state;
     void setArguments(const std::vector<TensorPtr>& a1,
                       const std::vector<TensorPtr>& a2,
-                      const std::string& dimension={}, double argVal=0)
+                      const Args& opArgs) override
     {
       if (a1.empty() && a2.empty()) return;
       vector<TensorPtr> args=a1;
       args.insert(args.end(), a2.begin(), a2.end());
       meldArgsIntoCommonHypercube(args);
-      civita::Merge::setArguments(args,{dimension,argVal});
+      civita::Merge::setArguments(args,opArgs);
       
       // relabel slices along new dimension with variable names if available
       int stream=0;

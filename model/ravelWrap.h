@@ -84,6 +84,9 @@ namespace minsky
     void operator=(const Ravel&) {}
     Ravel(const Ravel&): popup(*this) {}
 
+    const Ravel* ravelCast() const override {return this;}
+    Ravel* ravelCast() override {return this;}
+
     /// local override of axis dimensionality
     Dimensions axisDimensions;
 

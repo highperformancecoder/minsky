@@ -66,6 +66,9 @@ namespace minsky
         tooltip="https://ravelation.hpcoders.com.au";
         detailedText=wrappedRavel.lastError();
       }
+    if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
+      return; // early return if at least 1 ravel already present
+    editorMode=true; // first ravel is in editor mode
   }
 
   void Ravel::draw(cairo_t* cairo) const
@@ -366,51 +369,11 @@ namespace minsky
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
     if (wrappedRavel.rank()!=1) return;
-    int outputHandle=wrappedRavel.outputHandleIds()[0];
-    auto currentPermutation=wrappedRavel.currentPermutation(outputHandle);
-    if (currentPermutation.empty())
-      for (size_t i=0; i<wrappedRavel.numSliceLabels(outputHandle); ++i)
-        currentPermutation.push_back(i);
-    
     try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
-
-    auto vv=m_ports[0]->getVariableValue();
+    auto vv=m_ports[1]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
-
-    vector<size_t> permutation, nonFinite;
-    for (size_t i=0; i<std::min(currentPermutation.size(), vv->hypercube().xvectors[0].size()); ++i)
-      if (std::isfinite(vv->atHCIndex(i)))
-        permutation.push_back(i);
-      else
-        nonFinite.push_back(i);
-
-    switch (dir)
-      {
-      case ravel::HandleSort::forward:
-      case ravel::HandleSort::staticForward:
-      case ravel::HandleSort::dynamicForward:
-        sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
-        {return vv->atHCIndex(i)<vv->atHCIndex(j);});
-        break;
-      case ravel::HandleSort::reverse:
-      case ravel::HandleSort::staticReverse:
-      case ravel::HandleSort::dynamicReverse:
-        sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
-        {return vv->atHCIndex(i)>vv->atHCIndex(j);});
-        break;
-      default:
-        break;
-      }
-
-    vector<size_t> slicedPermutation;
-    slicedPermutation.reserve(permutation.size());
-    for (auto i: permutation)
-      slicedPermutation.push_back(currentPermutation[i]);
-    for (auto i: nonFinite) // push back missing data to end of sequence
-      slicedPermutation.push_back(currentPermutation[i]);
-
-    wrappedRavel.applyCustomPermutation(outputHandle, slicedPermutation);
+    wrappedRavel.sortByValue(vv, dir);
   }
   
   
@@ -654,7 +617,19 @@ namespace minsky
                     }
                 }
             }
-          state.outputHandles=vector<string>(outputHandles.begin(),outputHandles.end());
+          // reorder output handle list according to the source ravel output order.
+          state.outputHandles.clear();
+          for (auto& i: sourceState.outputHandles)
+            {
+              auto o=outputHandles.find(i);
+              if (o!=outputHandles.end())
+                {
+                  state.outputHandles.push_back(i);
+                  outputHandles.erase(o);
+                }
+            }
+          // add remaining handles in order.
+          state.outputHandles.insert(state.outputHandles.end(), outputHandles.begin(), outputHandles.end());
           r->applyState(state);
         }
   }
