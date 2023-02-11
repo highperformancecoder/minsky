@@ -22,10 +22,11 @@
 // below, for ticket #327
 #define DISPLAY_POW_UPSIDE_DOWN
 
-#include "minsky.h"
-
 #define BOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
 #include <boost/geometry/geometry.hpp>
+
+#include "minsky.h"
+
 #include "cairoItems.h"
 #include "operation.h"
 #include "latexMarkup.h"
