@@ -1194,3 +1194,4 @@ namespace {
   template class ButtonWidget<ButtonWidgetEnums::col>;
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTableWindow);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTableEditor);
