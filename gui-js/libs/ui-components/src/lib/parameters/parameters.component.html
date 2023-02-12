@@ -25,7 +25,7 @@
             <div [title]="variable.sliderMax" class="data-cell numeric">{{variable.sliderMax}}</div>
             <div *ngIf="variable.isTensor" [title]="tensorText" class="data-cell numeric">{{tensorText}}</div>
             <div *ngIf="!variable.isTensor" [title]="variable.value" class="data-cell numeric">{{variable.value}}</div>
-            <div class="data-cell"><button (click)="onRemoveClick(variable)">remove</button></div>
+            <div *ngIf="type === 'variables'" class="data-cell remove-cell"><button (click)="onRemoveClick(variable)">remove</button></div>
         </div>
     </div>
 </div>

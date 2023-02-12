@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { events } from '@minsky/shared';
-import * as JSON5 from 'json5';
 
 @Component({
   selector: 'minsky-parameters',
@@ -23,6 +21,8 @@ export class ParametersComponent {
       if(this.type === 'parameters') {
         return electronService.minsky.parameterTab.getDisplayVariables();
       } else {
+        // populate required to make removal possible
+        electronService.minsky.variableTab.populateItemVector();
         return electronService.minsky.variableTab.getDisplayVariables();
       }
     })).subscribe((v: any) => this.prepareVariables(v));
