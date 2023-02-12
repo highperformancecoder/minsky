@@ -8,6 +8,7 @@ import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';
+import * as JSON5 from 'json5';
 
 export class ContextMenuManager {
   private static x: number = null;
@@ -27,8 +28,6 @@ export class ContextMenuManager {
         const currentTab = WindowManager.currentTab;
         if (currentTab.equal(minsky.canvas))
           this.initContextMenuForWiring(mainWindow);
-        else if (currentTab.equal(minsky.variableTab))
-          this.initContextMenuForVariableTab(mainWindow);
         else if (currentTab.equal(minsky.plotTab))
           this.initContextMenuForPlotTab(mainWindow);
       }
@@ -42,32 +41,6 @@ export class ContextMenuManager {
       default:
       log.warn("Unknown context menu for ",type);
       break;
-    }
-  }
-
-  private static async initContextMenuForVariableTab(
-    mainWindow: BrowserWindow
-  ) {
-    const rowNumber = minsky.variableTab.rowY(this.y);
-
-    const clickType = minsky.variableTab.clickType(this.x, this.y);
-
-    if (clickType === `internal`) {
-      const varName = minsky.variableTab.getVarName(rowNumber);
-
-      const menuItems = [
-        new MenuItem({
-          label: `Remove ${varName} from tab`,
-          click:  () => {
-            minsky.variableTab.toggleVarDisplay(rowNumber);
-            minsky.variableTab.requestRedraw();
-          },
-        }),
-      ];
-
-      ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
-
-      return;
     }
   }
 
