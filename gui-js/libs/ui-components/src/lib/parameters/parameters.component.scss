@@ -1,7 +1,49 @@
-@import '../../../../shared/src/lib/theme/variables.scss';
+.table-wrapper {
+  overflow: auto;
+  
+  div.table {
+    //width: 1000px;
 
-.wrapper {
-  text-align: center;
-  font-size: $secondary-font;
-  margin-top: $margin * 14;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    margin: 10px;
+
+    div.header-row {
+      font-weight: bold;
+      border-bottom: 1px solid black;
+    } 
+    
+    div.table-row:nth-child(even) {
+      background-color: #E9E9E9;
+    }
+    
+    div.table-row {
+      div.data-cell {
+        display: inline-block;
+
+        width: 80px;
+        text-align: left;
+
+        padding: 4px;
+
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      div.data-cell.wide {
+        width: 120px;
+      }
+
+      div.data-cell.extra-wide {
+        width: 240px;
+      }
+
+      div.data-cell.numeric {
+        text-align: right;
+      }
+    }
+  }
 }

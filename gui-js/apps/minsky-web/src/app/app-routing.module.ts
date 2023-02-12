@@ -19,7 +19,6 @@ import {
   PlotWidgetViewComponent,
   RavelViewComponent,
   RenameAllInstancesComponent,
-  VariablesComponent,
   VariablePaneComponent,
   WiringComponent,     
   EditHandleDescriptionComponent,
@@ -43,12 +42,8 @@ const routes: Routes = [
     component: EquationsComponent,
   },
   {
-    path: 'parameters',
+    path: 'itemTab/:tab',
     component: ParametersComponent,
-  },
-  {
-    path: 'variables',
-    component: VariablesComponent,
   },
   {
     path: 'headless/menu',

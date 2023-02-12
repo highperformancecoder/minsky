@@ -721,6 +721,7 @@ export class GodleyTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
+  getDisplayVariables(): object[] {return this.callMethod('getDisplayVariables');}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
@@ -1396,6 +1397,7 @@ export class Minsky extends CppClass {
   renderCanvasToPS(a1: string): void {return this.callMethod('renderCanvasToPS',a1);}
   renderCanvasToSVG(a1: string): void {return this.callMethod('renderCanvasToSVG',a1);}
   renderEquationsToImage(a1: string): void {return this.callMethod('renderEquationsToImage',a1);}
+  requestReset(a1: number): void {return this.callMethod('requestReset',a1);}
   reset(): void {return this.callMethod('reset');}
   resetIfFlagged(): boolean {return this.callMethod('resetIfFlagged');}
   reset_flag(): boolean {return this.callMethod('reset_flag');}
@@ -1505,6 +1507,7 @@ export class ParameterTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
+  getDisplayVariables(): object[] {return this.callMethod('getDisplayVariables');}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
@@ -1582,6 +1585,7 @@ export class PlotTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
+  getDisplayVariables(): object[] {return this.callMethod('getDisplayVariables');}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
@@ -2330,6 +2334,7 @@ export class VariableTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
+  getDisplayVariables(): object[] {return this.callMethod('getDisplayVariables');}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}

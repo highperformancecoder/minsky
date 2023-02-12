@@ -49,7 +49,43 @@ namespace minsky
                                          return false;
                                        });   	
   }
-  
+
+  std::vector<DisplayVariable> ItemTab::getDisplayVariables() {
+    std::vector<DisplayVariable> displayVariables;
+
+    minsky().canvas.model->recursiveDo(&GroupItems::items,
+      [&](Items&, Items::iterator i) {   
+        auto iptr = *i;                            
+        if (itemSelector(iptr)) 
+          {		                         
+          if (auto* v=iptr->variableCast()) {
+            DisplayVariable dv;
+            dv.name = v->name();
+            if(v->type()==VariableType::parameter) {
+              auto dims=v->dims();
+              for (size_t i=0; i<dims.size(); ++i)
+                dv.dimensions +=(i?",":"")+to_string(dims[i]);
+            } else {
+              dv.definition = v->definition();
+            }
+            dv.init = v->init();
+            dv.tooltip = v->tooltip;
+            dv.detailedText = v->detailedText;
+            dv.sliderStep = v->sliderStep;
+            dv.sliderMin = v->sliderMin;
+            dv.sliderMax = v->sliderMax;
+            dv.isTensor = !v->dims().empty();
+            if(!dv.isTensor) {
+              dv.value = v->value();
+            }
+            displayVariables.emplace_back(dv);
+            }
+          }
+        return false;
+      });
+    return displayVariables;
+  }
+
   void ItemTab::moveItemTo(float x, float y)
   {   
     if (itemFocus) {    

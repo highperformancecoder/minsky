@@ -71,7 +71,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     await this.getWindowRectInfo();
 
     clearTimeout(this.renderTimeout);
-    this.renderTimeout = setTimeout(() => this.renderFrame(), 100);
+    this.renderTimeout = setTimeout(() => this.renderFrame(), 300);
   }
 
   private async getWindowRectInfo() {

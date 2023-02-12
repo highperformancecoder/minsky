@@ -23,7 +23,6 @@ import { PlotWidgetOptionsComponent } from './plot-widget-options/plot-widget-op
 import { PlotWidgetViewComponent } from './plot-widget-view/plot-widget-view.component';
 import { RenameAllInstancesComponent } from './rename-all-instances/rename-all-instances.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
-import { VariablesComponent } from './variables/variables.component';
 import { AvailableOperationsComponent } from './wiring/available-operations/available-operations.component';
 import { VariableComponent } from './wiring/variable/variable.component';
 import { WiringComponent } from './wiring/wiring.component';
@@ -38,7 +37,6 @@ import { LockHandlesComponent } from './lock-handles/lock-handles.component';
     WiringComponent,
     EquationsComponent,
     ParametersComponent,
-    VariablesComponent,
     CliInputComponent,
     AvailableOperationsComponent,
     VariableComponent,
@@ -69,7 +67,6 @@ import { LockHandlesComponent } from './lock-handles/lock-handles.component';
     WiringComponent,
     EquationsComponent,
     ParametersComponent,
-    VariablesComponent,
     CliInputComponent,
     RenameAllInstancesComponent,
     InputModalComponent,
