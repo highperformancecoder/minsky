@@ -343,6 +343,7 @@ namespace minsky
           case ravel::HandleSort::dynamicReverse:
             {
               auto calipers=wrappedRavel.getCaliperPositions(outputHandleId);
+              // sortByValue of the whole range of the dimension
               wrappedRavel.displayFilterCaliper(outputHandleId,false);
               sortByValue(hs.order);
               wrappedRavel.displayFilterCaliper(outputHandleId,hs.displayFilterCaliper);
