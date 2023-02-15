@@ -335,13 +335,19 @@ namespace minsky
   {
     if (wrappedRavel.rank()==1)
       {
-        // TODO add a Ravel CAPI call to get order directly?
-        auto order=wrappedRavel.getHandleState(wrappedRavel.outputHandleIds()[0]).order;
-        switch (order)
+        int outputHandleId=wrappedRavel.outputHandleIds()[0];
+        auto hs=wrappedRavel.getHandleState(outputHandleId);
+        switch (hs.order)
           {
           case ravel::HandleSort::dynamicForward:
           case ravel::HandleSort::dynamicReverse:
-            sortByValue(order);
+            {
+              auto calipers=wrappedRavel.getCaliperPositions(outputHandleId);
+              wrappedRavel.displayFilterCaliper(outputHandleId,false);
+              sortByValue(hs.order);
+              wrappedRavel.displayFilterCaliper(outputHandleId,hs.displayFilterCaliper);
+              wrappedRavel.setCaliperPositions(outputHandleId,calipers.first,calipers.second);
+            }
             break;
           default:
             break;
