@@ -18,6 +18,8 @@
 */
 
 #include "panopticon.h"
+#include "panopticon.rcd"
+#include "nobble.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -58,3 +60,4 @@ bool Panopticon::redraw(int, int, int w, int h)
   surface->blit();
   return true;
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Panopticon);

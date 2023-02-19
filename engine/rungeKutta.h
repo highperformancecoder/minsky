@@ -48,6 +48,11 @@ namespace minsky
   protected:
     void evalEquations(double result[], double, const double vars[]);
     void evalJacobian(Matrix&, double, const double vars[]);
+    /// function to be integrated (internal use)
+    static int RKfunction(double, const double y[], double f[], void*);
+    /// compute jacobian (internal use)
+    static int jacobian(double, const double y[], double*, double dfdt[], void*);
+    friend struct RKdata;
   public:
     double t{0}; ///< time
     bool running=false; ///< controls whether simulation is running
@@ -58,10 +63,6 @@ namespace minsky
     /// checks whether a reset is required, and resets the simulation if so
     /// @return whether simulation was reset
     virtual bool resetIfFlagged() {return false;}
-    /// function to be integrated (internal use)
-    static int RKfunction(double, const double y[], double f[], void*);
-    /// compute jacobian (internal use)
-    static int jacobian(double, const double y[], double*, double dfdt[], void*);
     void rkreset(); ///< reset the simulation
     void rkstep();  ///< step the equations (by n steps, default 1)
     /// evaluate the flow equations without stepping.

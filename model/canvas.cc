@@ -17,13 +17,20 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef CLASSDESC_ARITIES
+#define CLASSDESC_ARITIES 0x3F 
+#include "minsky.h"
 #include "geometry.h"
 #include "canvas.h"
 #include "cairoItems.h"
-#include "minsky.h"
 #include "ravelWrap.h"
 #include <cairo_base.h>
 
+#include "canvas.rcd"
+#include "canvas.xcd"
+#include "eventInterface.rcd"
+#include "polyRESTProcessBase.xcd"
+#include "nobble.h"
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;
@@ -166,7 +173,7 @@ namespace minsky
     switch (lassoMode)
       {
       case LassoMode::lasso:
-        select(lasso.x0,lasso.y0,x,y);
+        select({lasso.x0,lasso.y0,x,y});
         requestRedraw();
         break;
       case LassoMode::itemResize:
@@ -360,10 +367,10 @@ namespace minsky
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
-  bool Canvas::keyPress(int keySym, const std::string& utf8, int state, float x, float y)
+  bool Canvas::keyPress(const KeyPressArgs& args)
   {
-    if (auto item=itemAt(x,y))
-      if (item->onKeyPress(keySym, utf8, state))
+    if (auto item=itemAt(args.x,args.y))
+      if (item->onKeyPress(args.keySym, args.utf8, args.state))
         {
           minsky().markEdited(); // keyPresses don't set the dirty flag by default
           requestRedraw();
@@ -1023,3 +1030,5 @@ namespace minsky
   
 }
 
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EventInterface);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Canvas);

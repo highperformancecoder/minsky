@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "item.h"
 #include "group.h"
 #include "zoom.h"
@@ -25,9 +26,14 @@
 #include "geometry.h"
 #include "selection.h"
 #include "lasso.h"
-#include "minsky.h"
 #include <pango.h>
 #include <cairo_base.h>
+#include "item.rcd"
+#include "noteBase.rcd"
+#include "noteBase.xcd"
+#include "polyRESTProcessBase.h"
+#include "polyRESTProcessBase.rcd"
+#include "polyRESTProcessBase.xcd"
 #include "minsky_epilogue.h"
 #include <exception>
 
@@ -430,3 +436,8 @@ namespace minsky
   }
   
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::NoteBase);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Item);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ClickType);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::BottomRightResizerItem);

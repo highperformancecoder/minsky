@@ -62,7 +62,6 @@ namespace minsky
     
     GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets();}
     GodleyIcon(const GodleyIcon&)=default;
-    GodleyIcon& operator=(const GodleyIcon&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
@@ -100,7 +99,11 @@ namespace minsky
     /// delete row before \a row
     void deleteRow(unsigned row);
     /// move the contents of cell at (srcRow, srcCol) to (destRow, destCol).
-    void moveCell(int srcRow, int srcCol, int destRow, int destCol);
+    struct MoveCellArgs
+    {
+      int srcRow, srcCol, destRow, destCol;
+    };
+    void moveCell(const GodleyIcon::MoveCellArgs&);
     /// flows, along with multipliers, appearing in \a col
     std::map<string,double> flowSignature(unsigned col) const;
 

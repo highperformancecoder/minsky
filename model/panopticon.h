@@ -24,15 +24,17 @@
 
 namespace minsky
 {
-  struct Panopticon: public RenderNativeWindow
+  class Panopticon: public RenderNativeWindow
   {
+    bool redraw(int, int, int width, int height) override;
+    CLASSDESC_ACCESS(Panopticon);
+  public:
     double cleft=0, ctop=0, cwidth=0, cheight=0;
     Exclude<Canvas::Timestamp> lastBoundsCheck;
     double width=0,height=0;
     Canvas& canvas;
     Exclude<cairo::SurfacePtr> cachedImage;
     Panopticon(Canvas& canvas): canvas(canvas)  {}
-    bool redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
 
     Panopticon(Panopticon&)=default;

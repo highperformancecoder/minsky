@@ -56,7 +56,14 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
       this.width
     ) {
       new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second)
-        .renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
+        .renderFrame({
+          parentWindowId: this.systemWindowId.toString(),
+          offsetLeft: this.leftOffset,
+          offsetTop: this.topOffset,
+          childWidth: this.width,
+          childHeight: this.height,
+          scalingFactor: -1
+        });
     }
   }
 

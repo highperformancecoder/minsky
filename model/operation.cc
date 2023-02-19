@@ -16,13 +16,12 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "minsky.h"
 #include "geometry.h"
-#define OPNAMEDEF
 #include "operation.h"
 #include "dataOp.h"
 #include "userFunction.h"
 #include "ravelWrap.h"
-#include "minsky.h"
 #include "str.h"
 #include "cairoItems.h"
 
@@ -1233,3 +1232,4 @@ namespace minsky
   {/* needs to be here, and is actually called */}
 
 }
+

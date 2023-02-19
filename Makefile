@@ -1,4 +1,4 @@
-.SUFFIXES: .xcd .rcd .tcd $(SUFFIXES)
+.SUFFIXES: .xcd .rcd .tcd .gch .gcd $(SUFFIXES)
 
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
@@ -22,15 +22,6 @@ ifdef MXE
 MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
-ifdef DISTCC
-CPLUSPLUS=distcc
-# number of jobs to do sub-makes
-JOBS=-j 20
-else
-# number of jobs to do sub-makes
-JOBS=-j 4
-endif
-
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
 build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) $(JOBS) all-without-models >build.log 2>&1; then echo "ecolab built"; fi)
@@ -39,8 +30,37 @@ ifneq ($(build_ecolab),ecolab built)
 $(error "Making ecolab failed: check ecolab/build.log")
 endif
 include $(ECOLAB_HOME)/include/Makefile
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES) FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc)
+endif
+
+ifndef MXE
+ifdef GCC
+CPLUSPLUS=g++
+LINK=g++
+else
+# default to clang if present
+HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
+ifeq ($(HAVE_CLANG),1)
+CPLUSPLUS=clang++
+LINK=clang++
+$(warning clang selected)
+endif
+endif
+endif
+
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc CPLUSPLUS=$(CPLUSPLUS)
+ifneq ($(MAKECMDGOALS),clean)
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)) 
 $(warning $(build_RavelCAPI))
+endif
+
+
+ifdef DISTCC
+CPLUSPLUS=distcc
+# number of jobs to do sub-makes
+JOBS=-j 20
+else
+# number of jobs to do sub-makes
+JOBS=-j 4
 endif
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -98,15 +118,19 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o panopticon.o parameterTab.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
+MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o panopticon.o parameterTab.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
 ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
 	operationType.o a85.o
 
-GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
-RESTSERVICE_OBJS=minskyRS.o dataOpRS.o intOpRS.o operatorRS1.o operatorRS2.o variablesRS.o itemRS.o ravelRS.o RESTMinsky.o userFunctionRS.o
+ifeq ($(CPLUSPLUS),g++)
+PRECOMPILED_HEADERS=model/minsky.gch
+endif
+
+GUI_TK_OBJS=tclmain.o minskyTCL.o
+RESTSERVICE_OBJS=minskyRS.o RESTMinsky.o
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
@@ -128,7 +152,11 @@ ifeq ($(HAVE_NODE),1)
 EXES+=gui-js/node-addons/minskyRESTService.node
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations
+ifndef MXE
+FLAGS+=-Werror
+endif
+
+FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
 #-fvisibility-inlines-hidden
 
@@ -144,6 +172,13 @@ VPATH= schema model engine gui-tk RESTService RavelCAPI/civita RavelCAPI $(ECOLA
 	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	RESTProcess >$@
+
+.h.gch:
+	$(CPLUSPLUS) -c $(FLAGS) $(CXXFLAGS) $(OPT) -o $@ $<
+
+.h.gcd:
+	$(CPLUSPLUS) $(FLAGS)  $(CXXFLAGS) -MM -MG $< >$@
+	sed -i -e 's/.*\.o:/'$(*D)'\/'$(*F)'.gch:/' $@
 
 .h.tcd:
 	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
@@ -194,7 +229,7 @@ BOOST_EXT=
       $(warning cannot figure out boost extension) 
     endif
   endif
-$(warning Boost extension=$(BOOST_EXT))
+ $(warning Boost extension=$(BOOST_EXT))
 endif
 
 ifeq ($(OS),CYGWIN)
@@ -237,11 +272,13 @@ all: $(EXES) $(TESTS) minsky.xsd
 #endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
+$(ALL_OBJS): $(PRECOMPILED_HEADERS)
+
 # this dependency is not worked out automatically because they're hidden by a #ifdef in minsky_epilogue.h
 $(MODEL_OBJS): plot.xcd signature.xcd
 
 ifneq ($(MAKECMDGOALS),clean)
-include $(ALL_OBJS:.o=.d)
+include $(ALL_OBJS:.o=.d) $(PRECOMPILED_HEADERS:.gch=.gcd)
 endif
 
 ifdef MXE

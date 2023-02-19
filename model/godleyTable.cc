@@ -16,11 +16,13 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "minsky.h"
 #include "godleyTable.h"
 #include "port.h"
-#include "minsky.h"
 #include "flowCoef.h"
 #include "godleyExport.h"
+#include "assetClass.rcd"
+#include "godleyTable.rcd"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -383,3 +385,4 @@ void GodleyTable::renameStock(const std::string& from, const std::string& to)
           }
       }
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTable);

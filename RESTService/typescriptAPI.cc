@@ -31,11 +31,13 @@
 #include "index.tcd"
 #include "intOp.tcd"
 #include "item.tcd"
+#include "itemT.tcd"
 #include "itemTab.tcd"
 #include "lasso.tcd"
 #include "lock.tcd"
 #include "noteBase.tcd"
 #include "operation.tcd"
+#include "operationBase.tcd"
 #include "operationType.tcd"
 #include "pango.tcd"
 #include "pannableTab.tcd"
@@ -283,8 +285,13 @@ int main()
 
   // dummy types
   cout << "class minsky__dummy {}\n";
+  cout << "class minsky__EventInterface__KeyPressArgs {}\n";
+  cout << "class minsky__GodleyIcon__MoveCellArgs {}\n";
+  cout << "class minsky__RenderNativeWindow__RenderFrameArgs {}\n";
+  cout << "class civita__ITensor__Args {}\n";
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";
+  cout << "class classdesc__RESTProcess_t {}\n";
   cout << "class classdesc__TCL_obj_t {}\n";
   cout << "class ecolab__cairo__Surface {}\n";
   cout << "class ecolab__Pango {}\n";

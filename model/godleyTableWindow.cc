@@ -17,12 +17,17 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "godleyTableWindow.h"
 #include "selection.h"
 #include "latexMarkup.h"
-#include "minsky.h"
 #include <pango.h>
+
+#include "assetClass.rcd"
+#include "godleyTableWindow.rcd"
+#include "godleyTableWindow.xcd"
 #include "minsky_epilogue.h"
+
 #include <boost/locale.hpp>
 
 using namespace std;
@@ -1188,3 +1193,5 @@ namespace {
   template class ButtonWidget<ButtonWidgetEnums::row>;
   template class ButtonWidget<ButtonWidgetEnums::col>;
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTableWindow);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTableEditor);

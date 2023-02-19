@@ -54,6 +54,7 @@ namespace minsky
     void copyVars(const std::vector<VariablePtr>&);
     void reportDrawTime(double) override;
     void mouseDownCommon(float x, float y);
+    bool redraw(int x0, int y0, int width, int height) override;
 
     /// flag indicating that a redraw is requested, but not yet redrawn
     bool m_redrawRequested=false;
@@ -140,16 +141,16 @@ namespace minsky
     void controlMouseDown(float x, float y) override;
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;
-    bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn) override;
+    bool keyPress(const EventInterface::KeyPressArgs&) override;
     void displayDelayedTooltip(float x, float y);
     
     /// return closest visible port to (x,y). nullptr is nothing suitable
     std::shared_ptr<Port> closestInPort(float x, float y) const;
 
     /// select all items in a given region
-    void select(float x0, float y0, float x1, float y1) {
-      select(LassoBox(x0,y0,x1,y1));
-    }
+//    void select(float x0, float y0, float x1, float y1) {
+//      select(LassoBox(x0,y0,x1,y1));
+//    }
     void select(const LassoBox&);
 
     int ravelsSelected();
@@ -261,7 +262,6 @@ namespace minsky
     //    void indicateItem() {itemIndicator=true;}
 
     /// redraw whole model
-    bool redraw(int x0, int y0, int width, int height) override;
     bool redraw();
     /// region to be updated
     LassoBox updateRegion{0,0,0,0};
@@ -285,5 +285,5 @@ namespace classdesc
 }
 
 #include "canvas.cd"
-#include "canvas.xcd"
+
 #endif

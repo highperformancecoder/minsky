@@ -26,9 +26,15 @@ As of now, we create the cairo surface with each call to `renderFrame`, though I
 Please especially review the lifecycle (constructors, desctructors and copy constructors) that I have defined in `renderNativeWindow.cc `. I think the WindowInformation object that is destroyed in the destructor for RenderNativeWindow can be reused (perhaps it can be made a static object?). Also - am not sure how to distinguish between destructor for RenderNativeWindow that will be called with each call to load model (or undo/redo as you mentioned), and the final call when minsky is closed.
  */
 
+#include "minsky.h"
 #include "renderNativeWindow.h"
 #include "windowInformation.h"
-#include "minsky.h"
+#include "cairoSurfaceImage.rcd"
+#include "cairoSurfaceImage.xcd"
+#include "renderNativeWindow.rcd"
+#include "renderNativeWindow.xcd"
+#include "plot.rcd"
+#include "plot.xcd"
 #include "minsky_epilogue.h"
 
 #include <stdexcept>
@@ -73,10 +79,10 @@ namespace minsky
     minsky().nativeWindowsToRedraw.erase(this);
   }
   
-  void RenderNativeWindow::renderFrame(uint64_t parentWindowId, int offsetLeft, int offsetTop, int childWidth, int childHeight, double scalingFactor)
+  void RenderNativeWindow::renderFrame(const RenderFrameArgs& args)
   {
     winInfoPtr.reset();
-    winInfoPtr = std::make_shared<WindowInformation>(parentWindowId, offsetLeft, offsetTop, childWidth, childHeight, scalingFactor, hasScrollBars(), [this](){draw();});
+    winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
     draw();
   }
@@ -145,10 +151,6 @@ namespace minsky
 #endif
   }
 
-  void RenderNativeWindow::resizeWindow(int offsetLeft, int offsetTop, int childWidth, int childHeight)
-  {
-    // TODO:: To be implemented... need to recreate child window
-  }
 
       double RenderNativeWindow::scaleFactor()
       {
@@ -162,3 +164,5 @@ namespace minsky
       }
 
 } // namespace minsky
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::RenderNativeWindow);

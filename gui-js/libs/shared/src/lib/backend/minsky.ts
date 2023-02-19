@@ -6,8 +6,13 @@ See RESTService/typescriptAPI for more information.
 import {CppClass, Sequence, Container, Map, Pair} from './backend';
 
 class minsky__dummy {}
+class minsky__EventInterface__KeyPressArgs {}
+class minsky__GodleyIcon__MoveCellArgs {}
+class minsky__RenderNativeWindow__RenderFrameArgs {}
+class civita__ITensor__Args {}
 class classdesc__json_pack_t {}
 class classdesc__pack_t {}
+class classdesc__RESTProcess_t {}
 class classdesc__TCL_obj_t {}
 class ecolab__cairo__Surface {}
 class ecolab__Pango {}
@@ -18,7 +23,7 @@ export class Item extends CppClass {
     super(prefix);
     this.bb=new BoundingBox(this.prefix()+'/bb');
   }
-  RESTProcess(a1: minsky__dummy,a2: string): void {return this.callMethod('RESTProcess',a1,a2);}
+  RESTProcess(a1: classdesc__RESTProcess_t,a2: string): void {return this.callMethod('RESTProcess',a1,a2);}
   TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
   adjustBookmark(): void {return this.callMethod('adjustBookmark');}
   attachedToDefiningVar(...args: any[]): boolean {return this.callMethod('attachedToDefiningVar',...args);}
@@ -141,7 +146,7 @@ export class VariableBase extends Item {
       super(prefix.prefix())
     this.bb=new BoundingBox(this.prefix()+'/bb');
   }
-  RESTProcess(a1: minsky__dummy,a2: string): void {return this.callMethod('RESTProcess',a1,a2);}
+  RESTProcess(a1: classdesc__RESTProcess_t,a2: string): void {return this.callMethod('RESTProcess',a1,a2);}
   TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
   accessibleVars(): string[] {return this.callMethod('accessibleVars');}
   adjustBookmark(): void {return this.callMethod('adjustBookmark');}
@@ -318,7 +323,7 @@ export class CSVDialog extends CppClass {
   guessSpecAndLoadFile(): void {return this.callMethod('guessSpecAndLoadFile');}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   headerForCol(a1: number): string {return this.callMethod('headerForCol',a1);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   loadFile(): void {return this.callMethod('loadFile');}
   loadFileFromName(a1: string): void {return this.callMethod('loadFileFromName',a1);}
   loadWebFile(a1: string): string {return this.callMethod('loadWebFile',a1);}
@@ -329,9 +334,8 @@ export class CSVDialog extends CppClass {
   numInitialLines(...args: number[]): number {return this.callMethod('numInitialLines',...args);}
   parseLines(): string[][] {return this.callMethod('parseLines');}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -340,7 +344,6 @@ export class CSVDialog extends CppClass {
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   reportFromFile(a1: string,a2: string): void {return this.callMethod('reportFromFile',a1,a2);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   rowOver(a1: number): number {return this.callMethod('rowOver',a1);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
@@ -408,7 +411,7 @@ export class Canvas extends CppClass {
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   itemAt(a1: number,a2: number): object {return this.callMethod('itemAt',a1,a2);}
   itemIndicator(...args: boolean[]): boolean {return this.callMethod('itemIndicator',...args);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   lassoMode(...args: string[]): string {return this.callMethod('lassoMode',...args);}
   lockRavelsInSelection(): void {return this.callMethod('lockRavelsInSelection');}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -422,7 +425,7 @@ export class Canvas extends CppClass {
   pushDefiningVarsToTab(): void {return this.callMethod('pushDefiningVarsToTab');}
   ravelsSelected(): number {return this.callMethod('ravelsSelected');}
   recentre(): void {return this.callMethod('recentre');}
-  redraw(...args: number[]): boolean {return this.callMethod('redraw',...args);}
+  redraw(): boolean {return this.callMethod('redraw');}
   redrawAll(...args: boolean[]): boolean {return this.callMethod('redrawAll',...args);}
   redrawRequested(): boolean {return this.callMethod('redrawRequested');}
   redrawUpdateRegion(): boolean {return this.callMethod('redrawUpdateRegion');}
@@ -430,7 +433,7 @@ export class Canvas extends CppClass {
   removeItemFromItsGroup(): void {return this.callMethod('removeItemFromItsGroup');}
   renameAllInstances(a1: string): void {return this.callMethod('renameAllInstances',a1);}
   renameItem(a1: string): void {return this.callMethod('renameItem',a1);}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -438,10 +441,9 @@ export class Canvas extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
-  select(...args: any[]): void {return this.callMethod('select',...args);}
+  select(a1: LassoBox): void {return this.callMethod('select',a1);}
   selectAllVariables(): void {return this.callMethod('selectAllVariables');}
   selectVar(a1: number,a2: number): boolean {return this.callMethod('selectVar',a1,a2);}
   setItemFocus(a1: Item): void {return this.callMethod('setItemFocus',a1);}
@@ -566,7 +568,7 @@ export class EquationDisplay extends CppClass {
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(): number {return this.callMethod('height');}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
   mouseMove(a1: number,a2: number): void {return this.callMethod('mouseMove',a1,a2);}
   mouseUp(a1: number,a2: number): void {return this.callMethod('mouseUp',a1,a2);}
@@ -575,7 +577,7 @@ export class EquationDisplay extends CppClass {
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   position(): number[] {return this.callMethod('position');}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -583,7 +585,6 @@ export class EquationDisplay extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
   vectorRender(a1: number,a2: minsky__dummy): object {return this.callMethod('vectorRender',a1,a2);}
@@ -616,15 +617,14 @@ export class FontDisplay extends CppClass {
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
   mouseMove(a1: number,a2: number): void {return this.callMethod('mouseMove',a1,a2);}
   mouseUp(a1: number,a2: number): void {return this.callMethod('mouseUp',a1,a2);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -632,7 +632,6 @@ export class FontDisplay extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
   vectorRender(a1: number,a2: minsky__dummy): object {return this.callMethod('vectorRender',a1,a2);}
@@ -668,7 +667,7 @@ export class GodleyIcon extends Item {
   inItem(a1: number,a2: number): boolean {return this.callMethod('inItem',a1,a2);}
   insertControlled(a1: Selection): void {return this.callMethod('insertControlled',a1);}
   leftMargin(): number {return this.callMethod('leftMargin');}
-  moveCell(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('moveCell',a1,a2,a3,a4);}
+  moveCell(a1: minsky__GodleyIcon__MoveCellArgs): void {return this.callMethod('moveCell',a1);}
   onKeyPress(a1: number,a2: string,a3: number): boolean {return this.callMethod('onKeyPress',a1,a2,a3);}
   onMouseDown(a1: number,a2: number): void {return this.callMethod('onMouseDown',a1,a2);}
   onMouseLeave(): void {return this.callMethod('onMouseLeave');}
@@ -730,7 +729,7 @@ export class GodleyTab extends CppClass {
   itemAt(a1: number,a2: number): object {return this.callMethod('itemAt',a1,a2);}
   itemSelector(a1: Item): boolean {return this.callMethod('itemSelector',a1);}
   justification(a1: number): string {return this.callMethod('justification',a1);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   m_height(...args: number[]): number {return this.callMethod('m_height',...args);}
   m_width(...args: number[]): number {return this.callMethod('m_width',...args);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -747,9 +746,8 @@ export class GodleyTab extends CppClass {
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   populateItemVector(): void {return this.callMethod('populateItemVector');}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -757,7 +755,6 @@ export class GodleyTab extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   rowY(a1: number): number {return this.callMethod('rowY',a1);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
@@ -944,9 +941,8 @@ export class GodleyTableWindow extends CppClass {
   position(): number[] {return this.callMethod('position');}
   pulldownHot(...args: number[]): number {return this.callMethod('pulldownHot',...args);}
   pushHistory(): void {return this.callMethod('pushHistory');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -955,7 +951,6 @@ export class GodleyTableWindow extends CppClass {
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
   requestRedrawCanvas(): void {return this.callMethod('requestRedrawCanvas');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   rowHeight(...args: number[]): number {return this.callMethod('rowHeight',...args);}
   rowYZoomed(a1: number): number {return this.callMethod('rowYZoomed',a1);}
@@ -1004,7 +999,7 @@ export class Group extends Item {
     this.svgRenderer=new SVGRenderer(this.prefix()+'/svgRenderer');
     this.wires=new Sequence<Wire>(this.prefix()+'/wires',Wire);
   }
-  RESTProcess(a1: minsky__dummy,a2: string): void {return this.callMethod('RESTProcess',a1,a2);}
+  RESTProcess(a1: classdesc__RESTProcess_t,a2: string): void {return this.callMethod('RESTProcess',a1,a2);}
   TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
   accessibleVars(): string[] {return this.callMethod('accessibleVars');}
   addBookmark(a1: string): void {return this.callMethod('addBookmark',a1);}
@@ -1035,7 +1030,6 @@ export class Group extends Item {
   computeDisplayZoom(): number {return this.callMethod('computeDisplayZoom');}
   computeRelZoom(): void {return this.callMethod('computeRelZoom');}
   contains(a1: number,a2: number): boolean {return this.callMethod('contains',a1,a2);}
-  contentBounds(a1: number,a2: number,a3: number,a4: number): number {return this.callMethod('contentBounds',a1,a2,a3,a4);}
   copy(): object {return this.callMethod('copy');}
   copyUnowned(): object {return this.callMethod('copyUnowned');}
   corners(): object[] {return this.callMethod('corners');}
@@ -1094,7 +1088,6 @@ export class Group extends Item {
   makeSubroutine(): void {return this.callMethod('makeSubroutine');}
   margins(a1: number,a2: number): void {return this.callMethod('margins',a1,a2);}
   marginsV(): number[] {return this.callMethod('marginsV');}
-  minimalEnclosingGroup(a1: number,a2: number,a3: number,a4: number,a5: Item): Group {return this.callMethod('minimalEnclosingGroup',a1,a2,a3,a4,a5);}
   mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveContents(a1: Group): void {return this.callMethod('moveContents',a1);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
@@ -1303,14 +1296,12 @@ export class Minsky extends CppClass {
     this.variableTab=new VariableTab(this.prefix()+'/variableTab');
     this.variableValues=new VariableValues(this.prefix()+'/variableValues');
   }
-  RKfunction(a1: number,a2: number,a3: number,a4: void): number {return this.callMethod('RKfunction',a1,a2,a3,a4);}
   addIntegral(): void {return this.callMethod('addIntegral');}
   assetClasses(): string[] {return this.callMethod('assetClasses');}
   autoLayout(): void {return this.callMethod('autoLayout');}
   autoSaveFile(): string {return this.callMethod('autoSaveFile');}
   availableOperations(): string[] {return this.callMethod('availableOperations');}
   availableOperationsMapping(): object[] {return this.callMethod('availableOperationsMapping');}
-  balanceColumns(a1: GodleyIcon,a2: number,a3: GodleyIcon,a4: number): void {return this.callMethod('balanceColumns',a1,a2,a3,a4);}
   balanceDuplicateColumns(a1: GodleyIcon,a2: number): void {return this.callMethod('balanceDuplicateColumns',a1,a2);}
   checkEquationOrder(): boolean {return this.callMethod('checkEquationOrder');}
   checkMemAllocation(a1: number): boolean {return this.callMethod('checkMemAllocation',a1);}
@@ -1355,7 +1346,6 @@ export class Minsky extends CppClass {
   initGodleys(): void {return this.callMethod('initGodleys');}
   inputWired(a1: string): boolean {return this.callMethod('inputWired',a1);}
   insertGroupFromFile(a1: string): void {return this.callMethod('insertGroupFromFile',a1);}
-  jacobian(a1: number,a2: number,a3: number,a4: number,a5: void): number {return this.callMethod('jacobian',a1,a2,a3,a4,a5);}
   lastT(...args: number[]): number {return this.callMethod('lastT',...args);}
   latex(a1: string,a2: boolean): void {return this.callMethod('latex',a1,a2);}
   latex2pango(a1: string): string {return this.callMethod('latex2pango',a1);}
@@ -1454,15 +1444,14 @@ export class Panopticon extends CppClass {
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(...args: number[]): number {return this.callMethod('height',...args);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
   mouseMove(a1: number,a2: number): void {return this.callMethod('mouseMove',a1,a2);}
   mouseUp(a1: number,a2: number): void {return this.callMethod('mouseUp',a1,a2);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -1470,7 +1459,6 @@ export class Panopticon extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
   vectorRender(a1: number,a2: minsky__dummy): object {return this.callMethod('vectorRender',a1,a2);}
@@ -1516,7 +1504,7 @@ export class ParameterTab extends CppClass {
   itemAt(a1: number,a2: number): object {return this.callMethod('itemAt',a1,a2);}
   itemSelector(a1: Item): boolean {return this.callMethod('itemSelector',a1);}
   justification(a1: number): string {return this.callMethod('justification',a1);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   m_height(...args: number[]): number {return this.callMethod('m_height',...args);}
   m_width(...args: number[]): number {return this.callMethod('m_width',...args);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -1533,9 +1521,8 @@ export class ParameterTab extends CppClass {
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   populateItemVector(): void {return this.callMethod('populateItemVector');}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -1543,7 +1530,6 @@ export class ParameterTab extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   rowY(a1: number): number {return this.callMethod('rowY',a1);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
@@ -1594,7 +1580,7 @@ export class PlotTab extends CppClass {
   itemAt(a1: number,a2: number): object {return this.callMethod('itemAt',a1,a2);}
   itemSelector(a1: Item): boolean {return this.callMethod('itemSelector',a1);}
   justification(a1: number): string {return this.callMethod('justification',a1);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   m_height(...args: number[]): number {return this.callMethod('m_height',...args);}
   m_width(...args: number[]): number {return this.callMethod('m_width',...args);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -1611,9 +1597,8 @@ export class PlotTab extends CppClass {
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   populateItemVector(): void {return this.callMethod('populateItemVector');}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -1621,7 +1606,6 @@ export class PlotTab extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   rowY(a1: number): number {return this.callMethod('rowY',a1);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
@@ -1699,7 +1683,7 @@ export class PlotWidget extends Item {
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   height(): number {return this.callMethod('height');}
   image(a1: object): string {return this.callMethod('image',a1);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   labelPen(a1: number,a2: string): void {return this.callMethod('labelPen',a1,a2);}
   labelheight(): number {return this.callMethod('labelheight');}
   leadingMarker(...args: boolean[]): boolean {return this.callMethod('leadingMarker',...args);}
@@ -1736,10 +1720,10 @@ export class PlotWidget extends Item {
   plotType(...args: string[]): string {return this.callMethod('plotType',...args);}
   plotWidgetCast(): PlotWidget {return this.callMethod('plotWidgetCast');}
   position(): number[] {return this.callMethod('position');}
-  redraw(...args: any[]): boolean {return this.callMethod('redraw',...args);}
+  redraw(): boolean {return this.callMethod('redraw');}
   redrawWithBounds(): void {return this.callMethod('redrawWithBounds');}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -1748,7 +1732,6 @@ export class PlotWidget extends Item {
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
   resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
   scalePlot(): void {return this.callMethod('scalePlot');}
@@ -1838,6 +1821,7 @@ export class Ravel extends Item {
   pickSliceLabels(a1: number,a2: string[]): void {return this.callMethod('pickSliceLabels',a1,a2);}
   pickedSliceLabels(): string[] {return this.callMethod('pickedSliceLabels');}
   populateHypercube(a1: civita__Hypercube): void {return this.callMethod('populateHypercube',a1);}
+  ravelCast(): Ravel {return this.callMethod('ravelCast');}
   redistributeHandles(): void {return this.callMethod('redistributeHandles');}
   resize(a1: LassoBox): void {return this.callMethod('resize',a1);}
   resortHandleIfDynamic(): void {return this.callMethod('resortHandleIfDynamic');}
@@ -1893,7 +1877,7 @@ export class RavelPopup extends CppClass {
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
   mouseLeave(): void {return this.callMethod('mouseLeave');}
   mouseMove(a1: number,a2: number): void {return this.callMethod('mouseMove',a1,a2);}
@@ -1901,9 +1885,8 @@ export class RavelPopup extends CppClass {
   mouseUp(a1: number,a2: number): void {return this.callMethod('mouseUp',a1,a2);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -1911,7 +1894,6 @@ export class RavelPopup extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
   vectorRender(a1: number,a2: minsky__dummy): object {return this.callMethod('vectorRender',a1,a2);}
@@ -1935,14 +1917,14 @@ export class RenderNativeWindow extends CppClass {
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
   mouseMove(a1: number,a2: number): void {return this.callMethod('mouseMove',a1,a2);}
   mouseUp(a1: number,a2: number): void {return this.callMethod('mouseUp',a1,a2);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
   position(): number[] {return this.callMethod('position');}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -1950,7 +1932,6 @@ export class RenderNativeWindow extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
   vectorRender(a1: number,a2: minsky__dummy): object {return this.callMethod('vectorRender',a1,a2);}
@@ -1989,7 +1970,7 @@ export class Selection extends CppClass {
     this.svgRenderer=new SVGRenderer(this.prefix()+'/svgRenderer');
     this.wires=new Sequence<Wire>(this.prefix()+'/wires',Wire);
   }
-  RESTProcess(a1: minsky__dummy,a2: string): void {return this.callMethod('RESTProcess',a1,a2);}
+  RESTProcess(a1: classdesc__RESTProcess_t,a2: string): void {return this.callMethod('RESTProcess',a1,a2);}
   TCL_obj(a1: classdesc__TCL_obj_t,a2: string): void {return this.callMethod('TCL_obj',a1,a2);}
   accessibleVars(): string[] {return this.callMethod('accessibleVars');}
   addBookmark(a1: string): void {return this.callMethod('addBookmark',a1);}
@@ -2020,7 +2001,6 @@ export class Selection extends CppClass {
   computeDisplayZoom(): number {return this.callMethod('computeDisplayZoom');}
   computeRelZoom(): void {return this.callMethod('computeRelZoom');}
   contains(...args: any[]): boolean {return this.callMethod('contains',...args);}
-  contentBounds(a1: number,a2: number,a3: number,a4: number): number {return this.callMethod('contentBounds',a1,a2,a3,a4);}
   copy(): object {return this.callMethod('copy');}
   copyUnowned(): object {return this.callMethod('copyUnowned');}
   corners(): object[] {return this.callMethod('corners');}
@@ -2083,7 +2063,6 @@ export class Selection extends CppClass {
   makeSubroutine(): void {return this.callMethod('makeSubroutine');}
   margins(a1: number,a2: number): void {return this.callMethod('margins',a1,a2);}
   marginsV(): number[] {return this.callMethod('marginsV');}
-  minimalEnclosingGroup(a1: number,a2: number,a3: number,a4: number,a5: Item): Group {return this.callMethod('minimalEnclosingGroup',a1,a2,a3,a4,a5);}
   mouseFocus(...args: boolean[]): boolean {return this.callMethod('mouseFocus',...args);}
   moveContents(a1: Group): void {return this.callMethod('moveContents',a1);}
   moveTo(a1: number,a2: number): void {return this.callMethod('moveTo',a1,a2);}
@@ -2257,7 +2236,7 @@ export class VariablePane extends CppClass {
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
   hasScrollBars(): boolean {return this.callMethod('hasScrollBars');}
   justification(a1: number): string {return this.callMethod('justification',a1);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
   mouseMove(a1: number,a2: number): void {return this.callMethod('mouseMove',a1,a2);}
   mousePressed(...args: boolean[]): boolean {return this.callMethod('mousePressed',...args);}
@@ -2271,9 +2250,8 @@ export class VariablePane extends CppClass {
   offsx(...args: number[]): number {return this.callMethod('offsx',...args);}
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -2281,7 +2259,6 @@ export class VariablePane extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   rowY(a1: number): number {return this.callMethod('rowY',a1);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
@@ -2343,7 +2320,7 @@ export class VariableTab extends CppClass {
   itemAt(a1: number,a2: number): object {return this.callMethod('itemAt',a1,a2);}
   itemSelector(a1: Item): boolean {return this.callMethod('itemSelector',a1);}
   justification(a1: number): string {return this.callMethod('justification',a1);}
-  keyPress(a1: number,a2: string,a3: number,a4: number,a5: number): boolean {return this.callMethod('keyPress',a1,a2,a3,a4,a5);}
+  keyPress(a1: minsky__EventInterface__KeyPressArgs): boolean {return this.callMethod('keyPress',a1);}
   m_height(...args: number[]): number {return this.callMethod('m_height',...args);}
   m_width(...args: number[]): number {return this.callMethod('m_width',...args);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -2360,9 +2337,8 @@ export class VariableTab extends CppClass {
   offsy(...args: number[]): number {return this.callMethod('offsy',...args);}
   populateItemVector(): void {return this.callMethod('populateItemVector');}
   position(): number[] {return this.callMethod('position');}
-  redraw(a1: number,a2: number,a3: number,a4: number): boolean {return this.callMethod('redraw',a1,a2,a3,a4);}
   registerImage(): void {return this.callMethod('registerImage');}
-  renderFrame(...args: any[]): void {return this.callMethod('renderFrame',...args);}
+  renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): void {return this.callMethod('renderFrame',a1);}
   renderToEMF(a1: string): void {return this.callMethod('renderToEMF',a1);}
   renderToPDF(a1: string): void {return this.callMethod('renderToPDF',a1);}
   renderToPNG(a1: string): void {return this.callMethod('renderToPNG',a1);}
@@ -2370,7 +2346,6 @@ export class VariableTab extends CppClass {
   renderToSVG(a1: string): void {return this.callMethod('renderToSVG',a1);}
   reportDrawTime(a1: number): void {return this.callMethod('reportDrawTime',a1);}
   requestRedraw(): void {return this.callMethod('requestRedraw');}
-  resizeWindow(a1: number,a2: number,a3: number,a4: number): void {return this.callMethod('resizeWindow',a1,a2,a3,a4);}
   resolutionScaleFactor(...args: number[]): number {return this.callMethod('resolutionScaleFactor',...args);}
   rowY(a1: number): number {return this.callMethod('rowY',a1);}
   scaleFactor(): number {return this.callMethod('scaleFactor');}
@@ -2411,7 +2386,7 @@ export class VariableValue extends CppClass {
   name(...args: string[]): string {return this.callMethod('name',...args);}
   rank(): number {return this.callMethod('rank');}
   reset_idx(): void {return this.callMethod('reset_idx');}
-  setArgument(a1: civita__ITensor,a2: string,a3: number): void {return this.callMethod('setArgument',a1,a2,a3);}
+  setArgument(a1: civita__ITensor,a2: civita__ITensor__Args): void {return this.callMethod('setArgument',a1,a2);}
   setArguments(...args: any[]): void {return this.callMethod('setArguments',...args);}
   setUnits(a1: string): void {return this.callMethod('setUnits',a1);}
   setValue(...args: any[]): number {return this.callMethod('setValue',...args);}
@@ -2515,7 +2490,7 @@ export class civita__ITensor extends CppClass {
   imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): void {return this.callMethod('imposeDimensions',a1);}
   index(): civita__Index {return this.callMethod('index');}
   rank(): number {return this.callMethod('rank');}
-  setArgument(a1: civita__ITensor,a2: string,a3: number): void {return this.callMethod('setArgument',a1,a2,a3);}
+  setArgument(a1: civita__ITensor,a2: civita__ITensor__Args): void {return this.callMethod('setArgument',a1,a2);}
   setArguments(...args: any[]): void {return this.callMethod('setArguments',...args);}
   shape(): number[] {return this.callMethod('shape');}
   size(): number {return this.callMethod('size');}
@@ -2545,7 +2520,7 @@ export class civita__TensorVal extends CppClass {
   imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): void {return this.callMethod('imposeDimensions',a1);}
   index(...args: any[]): civita__Index {return this.callMethod('index',...args);}
   rank(): number {return this.callMethod('rank');}
-  setArgument(a1: civita__ITensor,a2: string,a3: number): void {return this.callMethod('setArgument',a1,a2,a3);}
+  setArgument(a1: civita__ITensor,a2: civita__ITensor__Args): void {return this.callMethod('setArgument',a1,a2);}
   setArguments(...args: any[]): void {return this.callMethod('setArguments',...args);}
   shape(): number[] {return this.callMethod('shape');}
   size(): number {return this.callMethod('size');}

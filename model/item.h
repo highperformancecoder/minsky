@@ -38,10 +38,7 @@
 #include <iostream>
 #include <assert.h>
 
-namespace classdesc
-{
-  class RESTProcess_t;
-}
+#include <RESTProcess_base.h>
 
 namespace minsky 
 {
@@ -53,7 +50,8 @@ namespace minsky
   class VariableBase;
   class OperationBase;
   class SwitchIcon;
-  class PlotWidget;    
+  class PlotWidget;
+  class Ravel;
 
   class Item;
   typedef std::shared_ptr<Item> ItemPtr;
@@ -123,6 +121,10 @@ namespace minsky
     /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
     virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
     virtual PlotWidget* plotWidgetCast() {return nullptr;}
+    /// @}            
+    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    virtual const Ravel* ravelCast() const {return nullptr;}
+    virtual Ravel* ravelCast() {return nullptr;}
     /// @}            
 
     /// insert this items controlled or controller items are inserted
@@ -326,9 +328,12 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
     /// runs the RESTProcess descriptor suitable for this type
-    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) override;
-    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const override;
-    virtual void json_pack(classdesc::json_pack_t&) const;
+    void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) override
+    {::RESTProcess(rp,d,*this);}
+    void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) const override
+    {::RESTProcess(rp,d,*this);}
+    virtual void json_pack(classdesc::json_pack_t& j) const
+    {::json_pack(j,"",*this);}
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
@@ -353,37 +358,6 @@ namespace minsky
 
   typedef std::vector<ItemPtr> Items;
   
-  /** curiously recursive template pattern for generating overrides */
-  template <class T, class Base=Item>
-  struct ItemT: public Base
-  {
-    std::string classType() const override {
-      auto s=classdesc::typeName<T>();
-      // remove minsky namespace
-      static const char* ns="::minsky::";
-      static const int eop=strlen(ns);
-      if (s.substr(0,eop)==ns)
-        s=s.substr(eop);
-      return s;
-    }
-    ItemT* clone() const override {
-      auto r=new T(*dynamic_cast<const T*>(this));
-      r->group.reset();
-      return r;
-    }
-    void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d) override 
-    {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
-    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) override;
-    void RESTProcess(classdesc::RESTProcess_t&,const std::string&) const override;
-    void json_pack(classdesc::json_pack_t&) const override;
-    ItemT()=default;
-    ItemT(const ItemT&)=default;
-    ItemT& operator=(const ItemT&)=default;
-    // delete move operations to avoid the dreaded virtual-move-assign warning
-    ItemT(ItemT&&)=delete;
-    ItemT& operator=(ItemT&&)=delete;
-  };
-
   struct BottomRightResizerItem: public Item
   {
     bool onResizeHandle(float x, float y) const override; 
@@ -431,6 +405,5 @@ namespace classdesc_access
 }
 #include "item.cd"
 #include "item.xcd"
-
 #endif
 

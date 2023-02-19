@@ -16,10 +16,10 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "minsky.h"
 #include "plotWidget.h"
 #include "variable.h"
 #include "cairoItems.h"
-#include "minsky.h"
 #include "latexMarkup.h"
 #include "pango.h"
 #include <timer.h>
@@ -27,6 +27,14 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
+#include "itemT.rcd"
+#include "plot.rcd"
+#include "plot.xcd"
+#include "tensorInterface.rcd"
+#include "tensorInterface.xcd"
+#include "tensorVal.rcd"
+#include "tensorVal.xcd"
+#include "plotWidget.rcd"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -426,10 +434,9 @@ namespace minsky
     
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
-    for (size_t n = 0; n < std::min(yvars.size(), xvars.size()); n++)
+    for (auto& i: yvars)
       {
-        auto& i = yvars[n];
-        if (i && xvars[n] && !i->hypercube().xvectors.empty())
+        if (i && !i->hypercube().xvectors.empty())
           {
             const auto& xv=i->hypercube().xvectors[0];
             if (xv.dimension.type==Dimension::time)
@@ -481,9 +488,13 @@ namespace minsky
                       break;
                     case Dimension::value:
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
-                        // interpret "year" as years since epoch (1/1/1970)
+                        // interpret "year" as Gregorian year date
                         for (const auto& i: xv)
-                          xdefault.push_back(yearToPTime(i.value));
+                          {
+                            xdefault.push_back(yearToPTime(i.value));
+                            if (abs(i.value-int(i.value))<0.05) // only label years
+                              newXticks.back().emplace_back(xdefault.back(), str(int(i.value)));
+                          }
                       else
                         for (const auto& i: xv)
                           xdefault.push_back(i.value);
@@ -603,3 +614,4 @@ namespace minsky
   }
 
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotWidget);

@@ -17,12 +17,15 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "userFunction.h"
 #include "evalOp.h"
 #include "selection.h"
-#include "minsky.h"
+#include "itemT.rcd"
+#include "userFunction.rcd"
 #include "minsky_epilogue.h"
 
+#ifndef NO_EXPRTK
 // preload these system headers here, to prevent them from being loaded into anonymous namespace
 #include <algorithm>
 #include <cctype>
@@ -59,11 +62,26 @@
 #   include <sys/time.h>
 #   include <sys/types.h>
 #endif
-
+#endif
 
 namespace minsky
 {
   int UserFunction::nextId=0;
+
+  template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
+  {assert(false);}
+
+#ifdef NO_EXPRTK
+  // dummy implementations to satisfy the linker
+  UserFunction::UserFunction(const string&, const string&) {}
+  vector<string> UserFunction::symbolNames() const {return {};}
+  void UserFunction::compile() {}
+  double UserFunction::evaluate(double, double) {return {};}
+  double UserFunction::operator()(const vector<double>& p) {}
+  Units UserFunction::units(bool check) const {return {};}
+  string UserFunction::description(const string&) {return {};}
+  string UserFunction::name() const {return {};}
+#else
 
 #pragma GCC visibility push(hidden)
   namespace {
@@ -110,9 +128,6 @@ namespace minsky
     std::vector<ExprTkCallableFunction> functions;
   };
   
-
-  template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
-  {assert(false);}
 
   UserFunction::UserFunction(const string& name, const string& expression): impl(make_shared<Impl>()), argNames{"x","y"}, expression(expression)  {
     UserFunction::description(name);
@@ -240,6 +255,8 @@ namespace minsky
   }    
 
 
-  
+#endif
+ 
 }
 
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::UserFunction);

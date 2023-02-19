@@ -36,5 +36,4 @@ namespace minsky
 }
 
 #include "noteBase.cd"
-#include "noteBase.xcd"
 #endif

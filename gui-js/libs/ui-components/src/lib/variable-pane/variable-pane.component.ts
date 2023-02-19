@@ -85,8 +85,14 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       this.width
     ) {
       this.variablePane.updateWithHeight(this.height);
-      this.variablePane.renderFrame
-      (this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
+      this.variablePane.renderFrame({
+        parentWindowId: this.systemWindowId.toString(),
+        offsetLeft: this.leftOffset,
+        offsetTop: this.topOffset,
+        childWidth: this.width,
+        childHeight: this.height,
+        scalingFactor: -1
+      });
     }
   }
 

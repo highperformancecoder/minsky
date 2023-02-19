@@ -209,8 +209,14 @@ export class ApplicationMenuManager {
                 } = WindowManager;
 
             minsky.canvas.renderFrame
-            (activeWindows.get(1).systemWindowId,
-             leftOffset,electronTopOffset,canvasWidth,canvasHeight,scaleFactor);
+            ({
+              parentWindowId: activeWindows.get(1).systemWindowId.toString(),
+              offsetLeft: leftOffset,
+              offsetTop: electronTopOffset,
+              childWidth: canvasWidth,
+              childHeight: canvasHeight,
+              scaleFactor: scaleFactor
+            });
           },
         },
       ],

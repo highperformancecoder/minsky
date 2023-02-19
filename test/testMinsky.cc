@@ -87,14 +87,14 @@ SUITE(Minsky)
       auto mulOp=model->addItem(OperationBase::create(OperationType::multiply)); 
       CHECK_EQUAL(3, mulOp->portsSize());
  
-      model->addWire(*var["e"], *var["f"], 1, {});
-      model->addWire(*var["c"], *addOp, 1, {});
-      model->addWire(*var["d"], *addOp, 2, {});
-      model->addWire(*addOp, *intOp, 1, {});
-      model->addWire(*intOp->intVar, *var["a"], 1, {});
-      model->addWire(*intOp->intVar, *mulOp, 1, {});
-      model->addWire(*var["e"], *mulOp, 2, {});
-      model->addWire(*mulOp, *var["b"], 1, {});
+      model->addWire(*var["e"], *var["f"], 1);
+      model->addWire(*var["c"], *addOp, 1);
+      model->addWire(*var["d"], *addOp, 2);
+      model->addWire(*addOp, *intOp, 1);
+      model->addWire(*intOp->intVar, *var["a"], 1);
+      model->addWire(*intOp->intVar, *mulOp, 1);
+      model->addWire(*var["e"], *mulOp, 2);
+      model->addWire(*mulOp, *var["b"], 1);
 
       for (auto& w: model->wires)
         {
@@ -315,7 +315,7 @@ SUITE(Minsky)
       IntOp* intOp=dynamic_cast<IntOp*>(op2.get());
       CHECK(intOp);
       intOp->description("output");
-      model->addWire(*op1,*op2,1,vector<float>());
+      model->addWire(*op1,*op2,1);
 
       constructEquations();
       CHECK(variableValues.validEntries());
@@ -331,7 +331,7 @@ SUITE(Minsky)
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
-      model->addWire(*intOp->intVar, *op3, 1, vector<float>());
+      model->addWire(*intOp->intVar, *op3, 1);
       reset();
       running=true;
       step();
@@ -943,12 +943,12 @@ SUITE(Minsky)
       CHECK_EQUAL("b",godley2.cell(3,1));
 
       // move cell between columns
-      g1->moveCell(2,1,2,2);
+      g1->moveCell({2,1,2,2});
       CHECK_EQUAL("a",godley1.cell(2,2));
       CHECK_EQUAL("",godley1.cell(2,1));
       CHECK_EQUAL("",godley2.cell(2,1));
 
-      g1->moveCell(2,2,3,2);
+      g1->moveCell({2,2,3,2});
       CHECK_EQUAL("a",godley1.cell(3,2));
       CHECK_EQUAL("",godley1.cell(2,2));
     }

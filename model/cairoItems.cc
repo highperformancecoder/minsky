@@ -24,9 +24,11 @@
 
 #define BOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
 #include <boost/geometry/geometry.hpp>
+
+#include "minsky.h"
+
 #include "cairoItems.h"
 #include "operation.h"
-#include "minsky.h"
 #include "latexMarkup.h"
 #include <arrays.h>
 #include <pango.h>

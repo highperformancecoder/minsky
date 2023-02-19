@@ -17,12 +17,25 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "geometry.h"
 #include "valueId.h"
 #include "variable.h"
 #include "cairoItems.h"
-#include "minsky.h"
 #include "equations.h"
+#include "nobble.h"
+
+#include "dimension.rcd"
+#include "engNotation.rcd"
+#include "hypercube.xcd"
+#include "index.xcd"
+#include "itemT.rcd"
+#include "slider.rcd"
+#include "tensorInterface.xcd"
+#include "tensorVal.rcd"
+#include "tensorVal.xcd"
+#include "variable.rcd"
+
 #include <error.h>
 #include "minsky_epilogue.h"
 
@@ -707,3 +720,11 @@ void VariablePtr::makeConsistentWithValue()
 }
 
 int VarConstant::nextId=0;
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePtr);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::constant>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::parameter>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::flow>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::integral>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::stock>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::tempFlow>);

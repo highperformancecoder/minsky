@@ -22,6 +22,9 @@
 #include "selection.h"
 #include "lasso.h"
 #include <cairo_base.h>
+#include "itemT.rcd"
+#include "lock.rcd"
+#include "lock.xcd"
 #include "minsky_epilogue.h"
 using namespace std;
 
@@ -124,3 +127,5 @@ namespace minsky
   }
 
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Lock);

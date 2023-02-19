@@ -18,10 +18,13 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include <plotTab.h>
 #include <pango.h>
+#include "itemTab.xcd"
+#include "plotTab.rcd"
+#include "plotTab.xcd"
 #include "minsky_epilogue.h"
-#include "minsky.h"
 using namespace std;
 using ecolab::cairo::CairoSave;
 
@@ -53,3 +56,4 @@ namespace minsky
   }
   
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotTab);

@@ -49,6 +49,7 @@ namespace minsky
     unsigned m_numRows=0, m_numCols=0;
     classdesc::Exclude<std::vector<VariablePaneCell>> vars;
     CLASSDESC_ACCESS(VariablePane);
+    bool redraw(int, int, int width, int height) override;
   public:
     double offsx=0, offsy=0;
     float moveOffsX, moveOffsY;
@@ -63,7 +64,6 @@ namespace minsky
     void updateWithHeight(unsigned height);
     /// update variables from model, using previous height value
     void update();
-    bool redraw(int, int, int width, int height) override;
     unsigned numRows() const override {return m_numRows;}
     unsigned numCols() const override {return m_numCols;}
     bool evenHeight() const override {return false;}

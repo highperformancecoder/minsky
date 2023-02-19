@@ -17,9 +17,9 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "equations.h"
 #include "expr.h"
-#include "minsky.h"
 #include "str.h"
 #include "flowCoef.h"
 #include "userFunction.h"

@@ -20,6 +20,8 @@
 #include "dataOp.h"
 #include "selection.h"
 #include "lasso.h"
+#include "dataOp.rcd"
+#include "itemT.rcd"
 #include "minsky_epilogue.h"
 
 using namespace std;
@@ -96,3 +98,5 @@ namespace minsky
   {::unpack(x,d,*this);}
 
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::DataOp);

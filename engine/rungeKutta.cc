@@ -17,11 +17,14 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "rungeKutta.h"
 #include "variableValue.h"
 #include "error.h"
 #include "matrix.h"
-#include "minsky.h"
+#include "rungeKutta.rcd"
+#include "rungeKutta.xcd"
+#include "simulation.rcd"
 #include "minsky_epilogue.h"
 
 #include <gsl/gsl_errno.h>
@@ -274,3 +277,4 @@ namespace minsky
 
 
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::RungeKutta);

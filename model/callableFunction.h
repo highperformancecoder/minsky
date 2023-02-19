@@ -31,4 +31,6 @@ namespace minsky
     virtual std::string name() const=0;
   };
 }
+
+#include "callableFunction.xcd"
 #endif

@@ -17,12 +17,28 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "ravelWrap.h"
 #include "selection.h"
 #include "dimension.h"
 #include "minskyTensorOps.h"
-#include "minsky.h"
 #include "pango.h"
+
+#include "capiRenderer.xcd"
+#include "dimension.rcd"
+#include "dynamicRavelCAPI.rcd"
+#include "dynamicRavelCAPI.xcd"
+#include "handleLockInfo.rcd"
+#include "handleLockInfo.xcd"
+#include "hypercube.rcd"
+#include "hypercube.xcd"
+#include "itemT.rcd"
+#include "nobble.h"
+#include "ravelState.xcd"
+#include "ravelState.rcd"
+#include "ravelWrap.rcd"
+#include "ravelWrap.xcd"
+#include "xvector.rcd"
 #include "minskyCairoRenderer.h"
 #include "minsky_epilogue.h"
 
@@ -50,6 +66,9 @@ namespace minsky
         tooltip="https://ravelation.hpcoders.com.au";
         detailedText=wrappedRavel.lastError();
       }
+    if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
+      return; // early return if at least 1 ravel already present
+    editorMode=true; // first ravel is in editor mode
   }
 
   void Ravel::draw(cairo_t* cairo) const
@@ -350,51 +369,11 @@ namespace minsky
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
     if (wrappedRavel.rank()!=1) return;
-    int outputHandle=wrappedRavel.outputHandleIds()[0];
-    auto currentPermutation=wrappedRavel.currentPermutation(outputHandle);
-    if (currentPermutation.empty())
-      for (size_t i=0; i<wrappedRavel.numSliceLabels(outputHandle); ++i)
-        currentPermutation.push_back(i);
-    
     try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
-
-    auto vv=m_ports[0]->getVariableValue();
+    auto vv=m_ports[1]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
-
-    vector<size_t> permutation, nonFinite;
-    for (size_t i=0; i<std::min(currentPermutation.size(), vv->hypercube().xvectors[0].size()); ++i)
-      if (std::isfinite(vv->atHCIndex(i)))
-        permutation.push_back(i);
-      else
-        nonFinite.push_back(i);
-
-    switch (dir)
-      {
-      case ravel::HandleSort::forward:
-      case ravel::HandleSort::staticForward:
-      case ravel::HandleSort::dynamicForward:
-        sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
-        {return vv->atHCIndex(i)<vv->atHCIndex(j);});
-        break;
-      case ravel::HandleSort::reverse:
-      case ravel::HandleSort::staticReverse:
-      case ravel::HandleSort::dynamicReverse:
-        sort(permutation.begin(), permutation.end(), [&](size_t i, size_t j)
-        {return vv->atHCIndex(i)>vv->atHCIndex(j);});
-        break;
-      default:
-        break;
-      }
-
-    vector<size_t> slicedPermutation;
-    slicedPermutation.reserve(permutation.size());
-    for (auto i: permutation)
-      slicedPermutation.push_back(currentPermutation[i]);
-    for (auto i: nonFinite) // push back missing data to end of sequence
-      slicedPermutation.push_back(currentPermutation[i]);
-
-    wrappedRavel.applyCustomPermutation(outputHandle, slicedPermutation);
+    wrappedRavel.sortByValue(vv, dir);
   }
   
   
@@ -638,7 +617,19 @@ namespace minsky
                     }
                 }
             }
-          state.outputHandles=vector<string>(outputHandles.begin(),outputHandles.end());
+          // reorder output handle list according to the source ravel output order.
+          state.outputHandles.clear();
+          for (auto& i: sourceState.outputHandles)
+            {
+              auto o=outputHandles.find(i);
+              if (o!=outputHandles.end())
+                {
+                  state.outputHandles.push_back(i);
+                  outputHandles.erase(o);
+                }
+            }
+          // add remaining handles in order.
+          state.outputHandles.insert(state.outputHandles.end(), outputHandles.begin(), outputHandles.end());
           r->applyState(state);
         }
   }
@@ -819,9 +810,9 @@ namespace minsky
     requestRedraw();
   }
 
-  bool RavelPopup::keyPress(int keySym, const std::string& utf8, int state, float x, float y)
+  bool RavelPopup::keyPress(const KeyPressArgs& args)
   {
-    auto r=ravel.onKeyPress(keySym,utf8,state);
+    auto r=ravel.onKeyPress(args.keySym,args.utf8,args.state);
     if (r) requestRedraw();
     return r;
   }
@@ -829,3 +820,6 @@ namespace minsky
 }
 
   
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Ravel);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravel::RavelState);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravel::Ravel);

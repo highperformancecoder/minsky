@@ -133,7 +133,14 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
       this.height &&
       this.width
     ) {
-      this.namedItemSubCommand.renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
+      this.namedItemSubCommand.renderFrame({
+        parentWindowId: this.systemWindowId.toString(),
+        offsetLeft: this.leftOffset,
+        offsetTop: this.topOffset,
+        childWidth: this.width,
+        childHeight: this.height,
+        scalingFactor: -1
+      });
     }
   }
 

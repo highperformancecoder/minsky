@@ -17,10 +17,16 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef CLASSDESC_ARITIES
+#define CLASSDESC_ARITIES 0x3f
 #include "grid.h"
 #include "variablePane.h"
 #include "lasso.h"
 #include <pango.h>
+#include "grid.rcd"
+#include "grid.xcd"
+#include "pango.rcd"
+#include "pango.xcd"
 #include "minsky_epilogue.h"
 #include <algorithm>
 
@@ -115,3 +121,6 @@ namespace minsky
   template class Grid<VariablePaneCell>;
 
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Grid<minsky::ICell>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Grid<ecolab::Pango>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Grid<minsky::VariablePaneCell>);

@@ -69,7 +69,14 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
     ) {
       try {
         this.namedItem.popup
-          .renderFrame(this.systemWindowId,this.leftOffset,this.topOffset,this.width,this.height,-1);
+          .renderFrame({
+            parentWindowId: this.systemWindowId.toString(),
+            offsetLeft: this.leftOffset,
+            offsetTop: this.topOffset,
+            childWidth: this.width,
+            childHeight: this.height,
+            scalingFactor: -1
+          });
       } catch(ex) {
         const options: MessageBoxSyncOptions = {
           buttons: ['Yes'],

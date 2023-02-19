@@ -58,8 +58,15 @@ export class WindowManager {
 
   static renderFrame() {
     console.log(this.activeWindows.get(1).systemWindowId);
-    this.currentTab?.renderFrame(this.activeWindows.get(1).systemWindowId.toString(),
-                            this.leftOffset,this.electronTopOffset,this.canvasWidth,this.canvasHeight,this.scaleFactor);
+    this.currentTab?.renderFrame
+    ({
+      parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
+      offsetLeft: this.leftOffset,
+      offsetTop: this.electronTopOffset,
+      childWidth: this.canvasWidth,
+      childHeight: this.canvasHeight,
+      scalingFactor: this.scaleFactor
+    });
   }
     
   static setCurrentTab(tab: RenderNativeWindow) {

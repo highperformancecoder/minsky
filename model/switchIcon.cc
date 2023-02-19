@@ -16,9 +16,11 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "cairoItems.h"
-#include "switchIcon.h"
 #include "minsky.h"
+#include "cairoItems.h"
+#include "itemT.rcd"
+#include "switchIcon.h"
+#include "switchIcon.rcd"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -123,3 +125,4 @@ namespace minsky
   }
   
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::SwitchIcon);

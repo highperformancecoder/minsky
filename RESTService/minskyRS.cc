@@ -18,7 +18,9 @@
 */
 
 #include "minskyRS.h"
+#include "RESTProcess_base.h"
 #include "minsky_epilogue.h"
+
 
 namespace classdesc
 {
@@ -28,3 +30,4 @@ namespace classdesc
     t.add(d, new RESTProcessObject<minsky::Minsky>(m));
   }
 }
+

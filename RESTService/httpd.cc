@@ -20,6 +20,7 @@
 /// @file An http server implementation of the REST Service
 
 #include "minskyRS.h"
+#include "RESTProcess_base.h"
 #include "minsky_epilogue.h"
 
 #include <boost/beast.hpp>

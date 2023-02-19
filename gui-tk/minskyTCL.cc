@@ -17,6 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef CLASSDESC_ARITIES
+#define CLASSDESC_ARITIES 0x3F 
 #include "cairoItems.h"
 #include "minskyTCL.h"
 #include "minskyTCLObj.h"

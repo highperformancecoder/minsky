@@ -17,9 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "cairoItems.h"
 #include "intOp.h"
-#include "minsky.h"
+#include "intOp.rcd"
+#include "itemT.rcd"
 #include "minsky_epilogue.h"
 
 namespace minsky
@@ -323,3 +325,5 @@ namespace minsky
   {::unpack(x,d,*this);}
 
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::IntOp);

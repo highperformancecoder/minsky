@@ -49,7 +49,14 @@ export class KeyBindingsManager {
     if (keySymAndName.keysym) {
       // For godley popup, command sent by frontend is non-empty. It is the item accesor
       let renderer=command? new RenderNativeWindow(command): currentTab;
-      const isKeyPressHandled = renderer.keyPress(keySymAndName.keysym,_utf8,modifierKeyCode,mouseX,mouseY);
+      const isKeyPressHandled = renderer.keyPress(
+        {
+          keySym:keySymAndName.keysym,
+          utf8: _utf8,
+          state: modifierKeyCode,
+          x: mouseX,
+          y: mouseY
+        });
       
       if (
         !isKeyPressHandled &&

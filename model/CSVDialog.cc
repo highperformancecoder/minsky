@@ -21,7 +21,9 @@
 #include "group.h"                                                               
 #include "selection.h"
 #include "lasso.h"
-#include <pango.h>                                                               
+#include <pango.h>
+
+#include "CSVDialog.rcd"
 #include "minsky_epilogue.h"                                                     
 #include "zStream.h"
 #include "dimension.h"
@@ -448,3 +450,4 @@ std::vector<std::vector<std::string>> CSVDialog::parseLines() const
   return parsedLines;
 }
 
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CSVDialog);

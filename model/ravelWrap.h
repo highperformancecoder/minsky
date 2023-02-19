@@ -40,19 +40,19 @@ namespace minsky
     float width, height, scale=1;
     float localX(float x) const;
     float localY(float y) const;
+    bool redraw(int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(RavelPopup);
   public:
     RavelPopup(Ravel& ravel): ravel(ravel) {}
-    bool redraw(int x0, int y0, int width, int height) override;
     void mouseDown(float x, float y) override;
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;
     void mouseOver(float x, float y);
     void mouseLeave();
-    bool keyPress(int keySym, const std::string& utf8, int state, float x, float y) override;
+    bool keyPress(const EventInterface::KeyPressArgs&) override;
   };
   
-  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
+  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>, public classdesc::Exclude<ravel::Ravel>
   {
   public:
 
@@ -83,6 +83,9 @@ namespace minsky
     // define them as empty operations to prevent double frees if accidentally used
     void operator=(const Ravel&) {}
     Ravel(const Ravel&): popup(*this) {}
+
+    const Ravel* ravelCast() const override {return this;}
+    Ravel* ravelCast() override {return this;}
 
     /// local override of axis dimensionality
     Dimensions axisDimensions;

@@ -17,11 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "mdlReader.h"
 #include "operation.h"
 #include "userFunction.h"
 #include "selection.h" //TODO why is this needed?
-#include "minsky.h"
 #include "minsky_epilogue.h"
 
 #include <boost/locale.hpp>

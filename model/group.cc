@@ -17,14 +17,17 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "minsky.h"
 #include "cairoItems.h"
 #include "group.h"
 #include "wire.h"
 #include "operation.h"
-#include "minsky.h"
 #include "autoLayout.h"
 #include "equations.h"
 #include <cairo_base.h>
+#include "group.rcd"
+#include "itemT.rcd"
+#include "bookmark.rcd"
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;
@@ -1245,3 +1248,6 @@ namespace minsky
   }
   
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Group);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ItemT<minsky::Group>);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Bookmark);

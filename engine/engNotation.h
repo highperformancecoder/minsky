@@ -29,4 +29,5 @@ namespace minsky
   std::string expMultiplier(int exp);
 }
 
+#include "engNotation.xcd"
 #endif

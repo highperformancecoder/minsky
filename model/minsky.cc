@@ -16,9 +16,9 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "minsky.h"
 #include "cairoItems.h"
 #include "classdesc_access.h"
-#include "minsky.h"
 #include "flowCoef.h"
 #include "userFunction.h"
 #include "mdlReader.h"
@@ -35,6 +35,21 @@
 
 #include "minskyVersion.h"
 
+#include "fontDisplay.rcd"
+#include "minsky.rcd"
+#include "minsky.xcd"
+#include "signature.h"
+#include "signature.rcd"
+#include "signature.xcd"
+#include "dimension.rcd"
+#include "callableFunction.rcd"
+#include "tensorInterface.xcd"
+#include "tensorVal.xcd"
+#include "pannableTab.rcd"
+#include "pannableTab.xcd"
+#include "polyRESTProcessBase.h"
+#include "polyRESTProcessBase.rcd"
+#include "polyRESTProcessBase.xcd"
 #include "minsky_epilogue.h"
 
 #include <algorithm>
@@ -1613,3 +1628,16 @@ namespace minsky
   }
 }
 
+namespace classdesc
+{
+  // specialise for VariableValues to give it an associative container flavour.
+  // defining is_associative_container type attribute doesn't work
+  template <> inline
+  void RESTProcess(RESTProcess_t& t, const string& d, minsky::VariableValues& a)
+  {t.add(d, new RESTProcessAssociativeContainer<minsky::VariableValues>(a));}
+}
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(Minsky);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);

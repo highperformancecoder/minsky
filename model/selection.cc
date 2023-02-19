@@ -20,6 +20,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include "plotWidget.h"
+#include "selection.rcd"
 #include "minsky_epilogue.h"
 using namespace std;
 
@@ -114,3 +115,5 @@ namespace minsky
   }
   
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Selection);

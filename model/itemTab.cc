@@ -21,9 +21,17 @@
 #include "latexMarkup.h"
 #include "group.h"
 #include <pango.h>
-#include "minsky_epilogue.h"
 #include "minsky.h"
 #include "equations.h"
+#include "itemTab.rcd"
+#include "itemTab.xcd"
+#include "pannableTab.rcd"
+#include "pannableTab.xcd"
+#include "pango.xcd"
+#include "variableTab.h"
+#include "variableTab.rcd"
+#include "variableTab.xcd"
+#include "minsky_epilogue.h"
 using namespace std;
 using ecolab::cairo::Surface;
 using ecolab::Pango;
@@ -257,3 +265,5 @@ namespace minsky
   }    
 
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ItemTab);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableTab);
