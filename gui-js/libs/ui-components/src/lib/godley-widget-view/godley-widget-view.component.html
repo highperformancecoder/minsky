@@ -1,9 +1,87 @@
-<div
+<div *ngIf="canvasMode"
   id="godley-cairo-canvas-wrapper"
   #godleyCanvasElemWrapper
   (window:resize)="windowResize()"
 >
   <div id="godley-cairo-canvas" class="godley-cairo-canvas">
     <p>&nbsp;</p>
+  </div>
+</div>
+
+<div *ngIf="!canvasMode && htmlModeReady" class="table-wrapper" (mousewheel)=changeScale($event)>
+  <div class="table" [style.zoom]="zoomFactor">
+    <div class="table-row asset-classes-row">
+      <div class="data-cell narrow"></div>
+      <div class="data-cell wide"></div>
+      <div *ngFor="let columnVariable of assetVariables; let i = index" class="data-cell asset-class-header assets-header" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
+        <ng-container *ngIf="i === 0">Assets</ng-container>
+      </div>
+      <div *ngFor="let columnVariable of liabilityVariables; let i = index" class="data-cell asset-class-header liabilities-header" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
+        <ng-container *ngIf="i === 0">Liabilities</ng-container>
+      </div>
+      <div *ngFor="let columnVariable of equityVariables; let i = index" class="data-cell asset-class-header equity-header" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
+        <ng-container *ngIf="i === 0">Equity</ng-container>
+      </div>
+      <div class="data-cell asset-class-header ale-header firstOfClass">
+        A-L-E
+      </div>
+    </div>
+
+    <div class="table-row actions-row">
+      <div class="data-cell narrow"></div>
+      <div class="data-cell wide"></div>
+      <div *ngFor="let columnVariable of columnVariables; let i = index" class="data-cell buttons-cell" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
+        <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && equityVariables.length === 1)">
+          <div class="small-button add-button" (click)="onColumnAdd(i)"><div>✚</div></div>
+          <div class="small-button remove-button" (click)="onColumnDelete(i)"><div class="minus-icon">−</div></div>
+          <div class="small-button" *ngIf="i > 0" (click)="onColumnMove(i, -1)"><div>🡠</div></div>
+          <div class="small-button" *ngIf="i < columnVariables.length - 1" (click)="onColumnMove(i, 1)"><div>🡢</div></div>
+        </ng-container>
+      </div>
+      <div class="data-cell firstOfClass"></div>
+    </div>
+
+    <div class="table-row header-row">
+          <div class="data-cell narrow"></div>
+          <div class="data-cell wide">Flows <span class="arrow-icon">↓</span> / Stock Vars <span class="arrow-icon">→</span></div>
+          <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell colvar-header-cell" id="dataCell-2_{{j}}" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
+            <span class="colvar-header latex-cell" *ngIf="!isCellEditing(-2, j)" (click)="onCellFocus(-2, j, $event)" latex [title]="columnVariable.name" [equation]="columnVariable.name" [latexScale]="0.9"></span><span class="colvar-triangle" *ngIf="!isCellEditing(-2, j)">▼</span>
+            <input *ngIf="isCellEditing(-2, j)" type="text" [(ngModel)]="columnVariable.name" (blur)="finishEditing()"/>
+          </div>
+          <div class="data-cell firstOfClass"></div>
+    </div>
+
+    <div class="table-row initial-row">
+        <div class="data-cell narrow"></div>
+        <div class="data-cell wide">Initial Conditions</div>
+        <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell" id="dataCell-1_{{j}}" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
+          <input type="text" [(ngModel)]="initialValues[j]" (click)="$event.stopPropagation()" (focus)="onCellFocus(-1, j, $event, false)" (blur)="finishEditing()"/>
+        </div>
+        <div class="data-cell firstOfClass ale-cell">
+          <span class="latex-cell" latex [equation]="rowSums[0]" [latexScale]="0.9"></span>
+        </div>
+    </div>
+
+      <div *ngFor="let flow of flows; let i = index" class="table-row">
+          <div class="data-cell narrow buttons-cell">
+            <div class="small-button add-button" (click)="onRowAdd(i)"><div>✚</div></div>
+            <div class="small-button remove-button" (click)="onRowDelete(i)"><div class="minus-icon">−</div></div>
+            <div class="small-button" *ngIf="i > 0" (click)="onRowMove(i, -1)"><div>🡡</div></div>
+            <div class="small-button" *ngIf="i < flows.length - 1" (click)="onRowMove(i, 1)"><div>🡣</div></div>
+          </div>
+          <div [title]="flow.name" id="dataCell{{i}}_-1" class="data-cell wide">
+            <span *ngIf="!isCellEditing(i, -1)" (click)="onCellFocus(i, -1, $event)" class="latex-cell" latex [equation]="flow.name" [latexScale]="0.9"></span>
+            <input *ngIf="isCellEditing(i, -1)" (click)="$event.stopPropagation()" type="text" [(ngModel)]="flow.name" (blur)="finishEditing()"/>
+          </div>
+          <ng-container *ngIf="cellValues">
+            <div id="dataCell{{i}}_{{j}}" *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
+              <span *ngIf="!isCellEditing(i, j)" (click)="onCellFocus(i, j, $event)" class="latex-cell" [class.negative]="cellValues[i][j].startsWith('-')" latex [equation]="cellValues[i][j]" [latexScale]="0.9"></span>
+              <input *ngIf="isCellEditing(i, j)" (click)="$event.stopPropagation()" type="text" [(ngModel)]="cellValues[i][j]" (blur)="finishEditing()"/>
+            </div>
+          </ng-container>
+          <div class="data-cell firstOfClass ale-cell">
+            <span class="latex-cell" latex [equation]="rowSums[i + 1]" [latexScale]="0.9"></span>
+          </div>
+      </div>
   </div>
 </div>

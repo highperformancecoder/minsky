@@ -26,3 +26,4 @@ export * from './lib/rename-all-instances/rename-all-instances.component';
 export * from './lib/toolbar/toolbar.component';
 export * from './lib/ui-components.module';
 export * from './lib/wiring/wiring.component';
+export * from './lib/directives/latex.directive';

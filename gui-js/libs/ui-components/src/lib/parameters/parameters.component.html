@@ -1,5 +1,5 @@
-<div class="table-wrapper">
-    <div class="table">
+<div class="table-wrapper" (mousewheel)=changeScale($event)>
+    <div class="table" [style.zoom]="zoomFactor">
         <div class="table-row header-row">
             <div class="data-cell wide">Name</div>
             <div *ngIf="type === 'variables'" class="data-cell extra-wide">Definition</div>

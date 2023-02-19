@@ -28,6 +28,7 @@ import { VariableComponent } from './wiring/variable/variable.component';
 import { WiringComponent } from './wiring/wiring.component';
 import { PickSlicesComponent } from './pick-slices/pick-slices.component';
 import { LockHandlesComponent } from './lock-handles/lock-handles.component';
+import { LatexDirective } from './directives/latex.directive';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { LockHandlesComponent } from './lock-handles/lock-handles.component';
     GodleyWidgetViewComponent,
     PlotWidgetOptionsComponent,
     ImportCsvComponent,
+    LatexDirective
   ],
   imports: [CommonModule, SharedModule],
   exports: [

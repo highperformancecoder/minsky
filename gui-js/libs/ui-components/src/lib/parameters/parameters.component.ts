@@ -15,6 +15,12 @@ export class ParametersComponent {
 
   type: string;
 
+  // keep track of scale and zoom factors separately, because using zoom exclusively creates rounding errors
+  scaleBase = 1.1;
+  scalePower = 1;
+  scaleStep = 1 / 53;
+  zoomFactor = 1;
+
   constructor(private electronService: ElectronService, route: ActivatedRoute) {
     route.params.pipe(switchMap(p => {
       this.type = p['tab'];
@@ -38,4 +44,13 @@ export class ParametersComponent {
 
     this.variables.splice(variableIndex, 1);
   }
+
+  changeScale(e) {
+    if(e.ctrlKey) {
+      this.scalePower -= e.deltaY * this.scaleStep;
+
+      this.zoomFactor = Math.pow(this.scaleBase, this.scalePower);
+    }
+  }
+  
 }
