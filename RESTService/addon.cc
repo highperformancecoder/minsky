@@ -109,16 +109,6 @@ struct RedrawThread: public thread
 
     lock_guard<mutex> lock(redrawMutex);
 
-    /*try {
-      if((ptime&)minsky::minsky().pendingResetAt <= microsec_clock::local_time()) {
-        minsky::minsky().reset();
-        minsky::minsky().pendingResetAt = ptime(not_a_date_time);
-      }
-    } catch (const std::exception& ex)
-    {
-      cerr << ex.what() << endl;
-    }*/
-
     for (auto i: minsky::minsky().nativeWindowsToRedraw)
       try
         {

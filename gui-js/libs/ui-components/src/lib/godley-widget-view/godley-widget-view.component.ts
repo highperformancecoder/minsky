@@ -377,7 +377,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
       } else if(this.cellEditing[0] === -2) { // column variable names
         editedValue = this.columnVariables[this.cellEditing[1]].name;
       } else if(this.cellEditing[1] === -1) { // row variable names
-        editedValue = this.flows[this.cellEditing[0]].description;
+        editedValue = this.flows[this.cellEditing[0]].name;
       } else {
         editedValue = this.cellValues[this.cellEditing[0]][this.cellEditing[1]];
       }

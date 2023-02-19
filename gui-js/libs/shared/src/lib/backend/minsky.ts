@@ -1387,7 +1387,6 @@ export class Minsky extends CppClass {
   renderCanvasToPS(a1: string): void {return this.callMethod('renderCanvasToPS',a1);}
   renderCanvasToSVG(a1: string): void {return this.callMethod('renderCanvasToSVG',a1);}
   renderEquationsToImage(a1: string): void {return this.callMethod('renderEquationsToImage',a1);}
-  requestReset(a1: number): void {return this.callMethod('requestReset',a1);}
   reset(): void {return this.callMethod('reset');}
   resetIfFlagged(): boolean {return this.callMethod('resetIfFlagged');}
   reset_flag(): boolean {return this.callMethod('reset_flag');}

@@ -70,7 +70,7 @@
             <div class="small-button" *ngIf="i < flows.length - 1" (click)="onRowMove(i, 1)"><div>🡣</div></div>
           </div>
           <div [title]="flow.name" id="dataCell{{i}}_-1" class="data-cell wide">
-            <span *ngIf="!isCellEditing(i, -1)" (click)="onCellFocus(i, -1, $event)" class="latex-cell" latex [equation]="flow.name" [latexScale]="0.9"></span>
+            <span *ngIf="!isCellEditing(i, -1)" (click)="onCellFocus(i, -1, $event)" class="latex-cell" latex [equation]="flow.name" [replaceSpaces]="true" [latexScale]="0.9"></span>
             <input *ngIf="isCellEditing(i, -1)" (click)="$event.stopPropagation()" type="text" [(ngModel)]="flow.name" (blur)="finishEditing()"/>
           </div>
           <ng-container *ngIf="cellValues">

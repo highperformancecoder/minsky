@@ -12,12 +12,17 @@ export class LatexDirective implements OnChanges {
     @Input()
     latexScale: number = 1;
 
+    @Input()
+    replaceSpaces = false;W
+
     constructor(private el: ElementRef<HTMLElement>) { 
     
     }
 
     ngOnChanges(changes) {
-      const html: HTMLElement = MathJax.tex2svg(this.equation, {em: 12, ex: 6, display: false}).firstChild;
+      let equationValue = this.equation;
+      if(this.replaceSpaces) equationValue = equationValue.replace(/ /g, '\\,');
+      const html: HTMLElement = MathJax.tex2svg(equationValue, {em: 12, ex: 6, display: false}).firstChild;
       (<any>html).style.transform = `scale(${this.latexScale}, ${this.latexScale})`;
       this.el.nativeElement.innerHTML = '';
       this.el.nativeElement.append(html);

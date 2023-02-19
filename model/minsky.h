@@ -163,9 +163,6 @@ namespace minsky
     // Allow multiple equity columns.
     bool multipleEquities() const {return m_multipleEquities;}
     bool multipleEquities(const bool& m);
-
-    void requestReset(int delay);
-    Exclude<ptime> pendingResetAt = Exclude<ptime>(ptime(not_a_date_time));
     
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
