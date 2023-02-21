@@ -556,7 +556,7 @@ namespace minsky
         if (auto ri=dynamic_cast<Ravel*>(it->get()))
           for (size_t i=0; i<ri->numHandles(); ++i)
             if (varDimensions.count(ri->handleDescription(i)))
-              ri->setHandleSortOrder(ravel::HandleSort::forward, i);
+              ri->setHandleSortOrder(ravel::HandleSort::staticForward, i);
         return false;
       });
   }
