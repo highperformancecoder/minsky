@@ -82,11 +82,15 @@ namespace minsky
   string UserFunction::description(const string&) {return {};}
   string UserFunction::name() const {return {};}
 #else
+}
 
 #pragma GCC visibility push(hidden)
-  namespace {
-    // include anonymously to reduce the number of exported linker symbols
 #include <exprtk/exprtk.hpp>
+
+namespace minsky
+{
+  namespace
+  {
     // resolve overloads
     inline double isfinite(double x) {return std::isfinite(x);}
     inline double isinf(double x) {return std::isinf(x);}
@@ -253,10 +257,8 @@ namespace minsky
     assert (match.size()>1);
     return match[1];
   }    
-
+}
 
 #endif
- 
-}
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::UserFunction);
