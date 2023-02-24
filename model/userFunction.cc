@@ -84,7 +84,7 @@ namespace minsky
 #else
 }
 
-#pragma GCC visibility push(hidden)
+//#pragma GCC visibility push(hidden)
 #include <exprtk/exprtk.hpp>
 
 namespace minsky
@@ -123,7 +123,7 @@ namespace minsky
       }
     };
   }
-#pragma GCC visibility pop
+  //#pragma GCC visibility pop
 
   struct UserFunction::Impl
   {
