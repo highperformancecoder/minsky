@@ -463,9 +463,9 @@ namespace minsky
     // attach the plots
     model->recursiveDo
       (&Group::items,
-       [&](Items& m, Items::iterator i)
+       [&](Items& m, Items::iterator it)
        {
-         if (auto p=(*i)->plotWidgetCast())
+         if (auto p=(*it)->plotWidgetCast())
            {
              p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();
@@ -503,11 +503,11 @@ namespace minsky
                   (*i)->ports(0).lock()->wires().empty())
            (*i)->checkUnits(); // check anything with an unwired output port
          else if (auto p=(*i)->plotWidgetCast())
-           for (size_t i=0; i<p->portsSize(); ++i)
-             p->ports(i).lock()->checkUnits();
+           for (size_t j=0; j<p->portsSize(); ++j)
+             p->ports(j).lock()->checkUnits();
          else if (auto p=dynamic_cast<Sheet*>(i->get()))
-           for (size_t i=0; i<p->portsSize(); ++i)
-             p->ports(i).lock()->checkUnits();
+           for (size_t j=0; j<p->portsSize(); ++j)
+             p->ports(j).lock()->checkUnits();
          return false;
        });
   }
@@ -1018,8 +1018,8 @@ namespace minsky
                            [&](Items&,Items::iterator i) {
                              if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
                                {
-                                 for (unsigned i=1; i<g->table.cols(); ++i)
-                                   balanceDuplicateColumns(*g,i);
+                                 for (unsigned j=1; j<g->table.cols(); ++j)
+                                   balanceDuplicateColumns(*g,j);
                                }
                              return false;
                            });
