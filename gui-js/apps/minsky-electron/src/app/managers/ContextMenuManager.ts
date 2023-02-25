@@ -2,9 +2,9 @@ import {
   CanvasItem,
   ClassType,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, Sheet, SwitchIcon,
-  VariableBase, Functions
+  VariableBase, Functions, events
 } from '@minsky/shared';
-import { BrowserWindow, Menu, MenuItem } from 'electron';
+import { BrowserWindow, Menu, MenuItem, ipcMain, IpcMainEvent } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';
@@ -16,7 +16,7 @@ export class ContextMenuManager {
 
   private static showAllPlotsOnTabChecked = false;
   
-  public static async initContextMenu(x: number, y: number, type: string, command: string) {
+  public static async initContextMenu(event: IpcMainEvent, x: number, y: number, type: string, command: string) {
     switch (type)
     {
       case "canvas":
@@ -34,6 +34,9 @@ export class ContextMenuManager {
       break;
       case "godley":
       this.initContextMenuForGodleyPopup(command,x,y);
+      break;
+      case "html-godley":
+      this.initContextMenuForGodleyHTMLPopup(event, command,x,y);
       break;
       case "ravel":
       this.initContextMenuForRavelPopup(command,x,y);
@@ -986,12 +989,33 @@ export class ContextMenuManager {
     return menuItems;
   }
 
+  private static async initContextMenuForGodleyHTMLPopup(event: IpcMainEvent, command: string, r: number, c: number)
+  {
+    const parsed = JSON5.parse(command);
+    const godley=new GodleyIcon(parsed[0]);
+
+    const refreshFunction = () => event.sender.send(events.GODLEY_POPUP_REFRESH);
+      
+    this.initContextMenuForGodley(godley, r, c, parsed[1], refreshFunction);
+  }
+
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
   {
-  //  console.log(`initContextMenuForGodleyPopup ${namedItemSubCommand}, ${x},${y}\n`);
-    let godley=new GodleyIcon(namedItemSubCommand);
-    
+    //  console.log(`initContextMenuForGodleyPopup ${namedItemSubCommand}, ${x},${y}\n`);
+    const godley=new GodleyIcon(namedItemSubCommand);
+
+    const r=godley.popup.rowYZoomed(y);
+    const c=godley.popup.colXZoomed(x);
+
+    const clickType = godley.popup.clickTypeZoomed(x, y);
+
+    this.initContextMenuForGodley(godley, r, c, clickType, () => {});
+  }
+
+  private static async initContextMenuForGodley(godley: GodleyIcon, r: number, c: number, clickType: string, refreshFunction: () => void)
+  {
     var menu=new Menu();
+
     menu.append(new MenuItem({
       label: "Help",
       click: async ()=> {await CommandsManager.loadHelpFile("GodleyTable");},
@@ -999,24 +1023,33 @@ export class ContextMenuManager {
     
     menu.append(new MenuItem({
       label: "Title",
-      click: async ()=> {await CommandsManager.editGodleyTitle(godley.id());},
+      click: async ()=> {
+        await CommandsManager.editGodleyTitle(godley.id());
+        refreshFunction();
+      },
     }));
 
-    switch (godley.popup.clickTypeZoomed(x,y))
+    switch (clickType)
     {
       case "background": break;
       case "row0":
       menu.append(new MenuItem({
         label: "Add new stock variable",
-        click: async ()=> {godley.popup.addStockVar(x);},
+        click: async ()=> {
+          godley.popup.addStockVarByCol(c);
+          refreshFunction();
+        },
       }));
       
       var importMenu=new Menu();
-      var importables=godley.popup.matchingTableColumns(x);
+      var importables=godley.popup.matchingTableColumnsByCol(c);
       for (var i in importables)
         importMenu.append(new MenuItem({
           label: importables[i],
-          click: async (item)=> {godley.popup.importStockVar(item.label,x);},
+          click: async (item)=> {
+            godley.popup.importStockVarByCol(item.label, c);
+            refreshFunction();
+          },
         }));
       
       menu.append(new MenuItem({
@@ -1026,24 +1059,31 @@ export class ContextMenuManager {
       
       menu.append(new MenuItem({
         label: "Delete stock variable",
-        click: async ()=> {godley.popup.deleteStockVar(x);},
+        click: async ()=> {
+          godley.popup.deleteStockVarByCol(c);
+          refreshFunction();
+        },
       }));
       break;
       case "col0":
       menu.append(new MenuItem({
         label: "Add flow",
-        click: async ()=> {godley.popup.addFlow(y);},
+        click: async ()=> {
+          godley.popup.addFlowByRow(r);
+          refreshFunction();
+        },
       }));
       menu.append(new MenuItem({
         label: "Delete flow",
-        click: async ()=> {godley.popup.deleteFlow(y);},
+        click: async ()=> {
+          godley.popup.deleteFlowByRow(r);
+          refreshFunction();
+        },
       }));
       break;
       case "internal": break;
-    } // switch clickTypeZoomed
+    } // switch clickType
     
-    var r=godley.popup.rowYZoomed(y);
-    var c=godley.popup.colXZoomed(x);
     if (r!=godley.popup.selectedRow() || c!=godley.popup.selectedCol())
     {
       godley.popup.selectedRow(r);
@@ -1056,7 +1096,10 @@ export class ContextMenuManager {
     {
       menu.append(new MenuItem({
         label: "Cut",
-        click: async ()=> {godley.popup.cut();}
+        click: async ()=> {
+          godley.popup.cut();
+          refreshFunction();
+        }
       }));
       menu.append(new MenuItem({
         label: "Copy",
@@ -1070,7 +1113,10 @@ export class ContextMenuManager {
       menu.append(new MenuItem({
         label: "Paste",
         enabled: !clip,
-        click: async ()=> {godley.popup.paste();}
+        click: async ()=> {
+          godley.popup.paste();
+          refreshFunction();
+        }
       }));
     }
     menu.popup();

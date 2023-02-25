@@ -812,11 +812,12 @@ namespace minsky
   GodleyTableEditor::ClickType GodleyTableEditor::clickType(double x, double y) const
   {
     int c=colX(x), r=rowY(y);
+
     if (x<leftTableOffset && r>0)
       return rowWidget;
     if (y<topTableOffset && y>columnButtonsOffset && c>0)
       return colWidget;
-  
+
     if (r==0)
       {
         if (colLeftMargin[c+1]-x < pulldownHot)
@@ -836,20 +837,34 @@ namespace minsky
   std::set<string> GodleyTableEditor::matchingTableColumns(double x)
   {
     int col=colXZoomed(x);
+    return matchingTableColumnsByCol(col);
+  }
+
+  std::set<string> GodleyTableEditor::matchingTableColumnsByCol(int col)
+  {
     if (col<0||col>=static_cast<int>(godleyIcon().table.cols())) return {};
     return minsky().matchingTableColumns(godleyIcon(), godleyIcon().table._assetClass(col));
   }
 
   void GodleyTableEditor::addStockVar(double x)
   {
-    int c=colX(x);
-    if (c>0)
-      m_godleyIcon.table.insertCol(c+1);
+    int c=colXZoomed(x);
+    addStockVarByCol(c);
   }
+
+  void GodleyTableEditor::addStockVarByCol(int c)
+  {
+    if (c>0) m_godleyIcon.table.insertCol(c+1);
+  }
+
   void GodleyTableEditor::importStockVar(const string& name, double x)
   {
-    x/=zoomFactor;
-    int c=colX(x);
+    int c=colXZoomed(x);
+    importStockVarByCol(name, c);
+  }
+
+  void GodleyTableEditor::importStockVarByCol(const string& name, int c)
+  {
     if (c>0 && size_t(c)<m_godleyIcon.table.cols())
       {
         m_godleyIcon.table.cell(0,c)=name;
@@ -861,24 +876,36 @@ namespace minsky
 
   void GodleyTableEditor::deleteStockVar(double x)
   {
-    x/=zoomFactor;
-    int c=colX(x);
+    int c=colXZoomed(x);
+    deleteStockVarByCol(c);
+  }
+
+  void GodleyTableEditor::deleteStockVarByCol(int c)
+  {
     if (c>=0)
       m_godleyIcon.table.deleteCol(c+1);
   }
 
   void GodleyTableEditor::addFlow(double y)  
   {
-    y/=zoomFactor;
-    int r=rowY(y);
+    int r=rowYZoomed(y);
+    addFlowByRow(r);
+  }
+
+  void GodleyTableEditor::addFlowByRow(int r)  
+  {
     if (r>0)                                 
       m_godleyIcon.table.insertRow(r+1);
   }
 
   void GodleyTableEditor::deleteFlow(double y)
   {
-    y/=zoomFactor;
-    int r=rowY(y);
+    int r=rowYZoomed(y);
+    deleteFlowByRow(r);
+  }
+
+  void GodleyTableEditor::deleteFlowByRow(int r)
+  {
     if (r>1)                                       // Cannot delete flow in Initial Conditions row. For ticket 1064
       m_godleyIcon.deleteRow(r+1);
   }

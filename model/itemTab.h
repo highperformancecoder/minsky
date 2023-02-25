@@ -34,12 +34,9 @@ namespace minsky
       std::string name;
       std::string definition;
       std::string dimensions;
+      std::string type;
+      std::string units;
       std::string init;
-      std::string tooltip;
-      std::string detailedText;
-      double sliderStep;
-      double sliderMin;
-      double sliderMax;
       double value;
       bool isTensor;
   };

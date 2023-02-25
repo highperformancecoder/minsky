@@ -16,6 +16,8 @@ import {
   MinskyProcessPayload,
   minsky,
   RenderNativeWindow,
+  ImportStockPayload,
+  GodleyIcon
 } from '@minsky/shared';
 //import * as debug from 'debug';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
@@ -127,7 +129,15 @@ ipcMain.on(
 
 ipcMain.handle(
   events.GODLEY_VIEW_MOUSEDOWN,async (event, payload: MinskyProcessPayload) => {
-    GodleyMenuManager.mouseDown(payload.command,payload.mouseX,payload.mouseY);
+    let window=new GodleyIcon(minsky.namedItems.elem(payload.command).second).popup;
+    GodleyMenuManager.mouseDown(window,payload.mouseX,payload.mouseY);
+  }
+);
+
+ipcMain.handle(
+  events.GODLEY_VIEW_IMPORT_STOCK,async (event, payload: ImportStockPayload) => {
+    let window=new GodleyIcon(minsky.namedItems.elem(payload.command).second).popup;
+    GodleyMenuManager.importStock(window, payload.columnIndex, event);
   }
 );
 
@@ -224,7 +234,7 @@ ipcMain.handle(
 );
 
 ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command }) => {
-  await ContextMenuManager.initContextMenu(x, y, type, command);
+  await ContextMenuManager.initContextMenu(event, x, y, type, command);
 });
 
 ipcMain.on(

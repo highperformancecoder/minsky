@@ -75,15 +75,16 @@ namespace minsky
                 dv.dimensions +=(i?",":"")+to_string(dims[i]);
             } else {
               dv.definition = v->definition();
+              dv.type = VariableType::typeName(v->type()); 
             }
+            dv.units = v->units().latexStr();
             dv.init = v->init();
-            dv.tooltip = v->tooltip;
-            dv.detailedText = v->detailedText;
-            dv.sliderStep = v->sliderStep;
-            dv.sliderMin = v->sliderMin;
-            dv.sliderMax = v->sliderMax;
             dv.isTensor = !v->dims().empty();
-            if(!dv.isTensor) {
+            if(dv.isTensor) {
+              auto dims=v->dims();
+              for (size_t i=0; i<dims.size(); ++i)
+                dv.dimensions +=(i?",":"")+to_string(dims[i]);
+            } else {
               dv.value = v->value();
             }
             displayVariables.emplace_back(dv);

@@ -6,8 +6,10 @@ import {
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
   minsky, GodleyIcon,
+  GodleyTableWindow,
+  events
 } from '@minsky/shared';
-import { Menu, MenuItem } from 'electron';
+import { Menu, MenuItem, IpcMainInvokeEvent } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { StoreManager } from './StoreManager';
 
@@ -255,20 +257,27 @@ export class GodleyMenuManager {
   }
 
   /// handle mouse down events in a Godley view
-  static async mouseDown(itemId: string, x: number, y: number) {
-    let namedItem=new GodleyIcon(minsky.namedItems.elem(itemId).second).popup;
-    var clickType=namedItem.clickTypeZoomed(x,y);
+  static async mouseDown(window: GodleyTableWindow, x: number, y: number) {
+    var clickType=window.clickTypeZoomed(x,y);
     if (clickType==="importStock")
     {
-      var importOptions=namedItem.matchingTableColumns(x);
+      const c = window.colXZoomed(x);
+      this.importStock(window, c);
+    } else {window.mouseDown(x,y);}
+  }
+
+  static async importStock(window: GodleyTableWindow, c, event?: IpcMainInvokeEvent) {
+    var importOptions=window.matchingTableColumnsByCol(c);
       var menu=new Menu();
       for (var v in importOptions) 
         menu.append(new MenuItem({
           label: importOptions[v],
-          click: (item) => {namedItem.importStockVar(item.label,x);}
+          click: (item) => {
+            window.importStockVarByCol(item.label, c);
+            if(event) event.sender.send(events.GODLEY_POPUP_REFRESH);
+          }
         }));
       menu.popup();
-    } else {namedItem.mouseDown(x,y);}
   }
 }
 

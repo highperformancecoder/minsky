@@ -9,32 +9,32 @@
   <ng-container *ngIf="!router.url.includes('headless');">
     <minsky-header></minsky-header>
     <div class="tabs-section">
-    <div class="tabs example-button-row">
-      <button (click)="changeTab(MainRenderingTabs.canvas)" class="wiring" mat-raised-button>
-        Wiring
-      </button>
-      <button (click)="changeTab(MainRenderingTabs.equations)" class="equations" mat-raised-button>
-        Equations
-      </button>
-      <button (click)="changeTab(MainRenderingTabs.parameters)" class="parameters" mat-raised-button>
-        Parameters
-      </button>
-      <button (click)="changeTab(MainRenderingTabs.variables)" class="variables" mat-raised-button>
-        Variables
-      </button>
-      <button (click)="changeTab(MainRenderingTabs.plot)" class="plot" mat-raised-button>
-        Plots
-      </button>
-      <button (click)="changeTab(MainRenderingTabs.godley)" class="godley" mat-raised-button>
-        Godleys
-      </button>
+      <div class="tabs example-button-row">
+        <button (click)="changeTab(MainRenderingTabs.canvas)" class="wiring" mat-raised-button>
+          Wiring
+        </button>
+        <button (click)="changeTab(MainRenderingTabs.equations)" class="equations" mat-raised-button>
+          Equations
+        </button>
+        <button (click)="changeTab(MainRenderingTabs.parameters)" class="parameters" mat-raised-button>
+          Parameters
+        </button>
+        <button (click)="changeTab(MainRenderingTabs.variables)" class="variables" mat-raised-button>
+          Variables
+        </button>
+        <button (click)="changeTab(MainRenderingTabs.plot)" class="plot" mat-raised-button>
+          Plots
+        </button>
+        <button (click)="changeTab(MainRenderingTabs.godley)" class="godley" mat-raised-button>
+          Godleys
+        </button>
 
-      <span class="spacer"></span>
+        <span class="spacer"></span>
 
-      <button class="variables minsky-service" mat-raised-button (click)="startTerminal()">
-        Terminal
-      </button>
-    </div>
+        <button class="variables minsky-service" mat-raised-button (click)="startTerminal()">
+          Terminal
+        </button>
+      </div>
     <router-outlet></router-outlet>
   </div>
   </ng-container>
