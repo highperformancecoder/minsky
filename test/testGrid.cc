@@ -31,8 +31,8 @@ namespace
     SizedCellMock(double width=10, double height=5):
       m_width(width), m_height(height) {}
     double m_width, m_height;
-    double width() const {return m_width;}
-    double height() const {return m_height;}
+    double width() const override {return m_width;}
+    double height() const override {return m_height;}
   };
 
   struct GridMock: public Grid<ICell>
@@ -40,7 +40,7 @@ namespace
     unsigned numRows() const override {return 10;}
     unsigned numCols() const override {return 10;}
     vector<double> xpos, ypos; // capture moveTos
-    void moveCursorTo(double x, double y) {
+    void moveCursorTo(double x, double y) override {
       xpos.push_back(x);
       ypos.push_back(y);
     }

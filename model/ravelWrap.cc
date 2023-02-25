@@ -270,12 +270,12 @@ namespace minsky
 
   vector<string> Ravel::allSliceLabels() const
   {
-    return wrappedRavel.allSliceLabels(wrappedRavel.selectedHandle(),ravel::HandleSort::forward);
+    return wrappedRavel.allSliceLabels(wrappedRavel.selectedHandle(),ravel::HandleSort::staticForward);
   }
   
   vector<string> Ravel::allSliceLabelsAxis(int axis) const
   {
-    return wrappedRavel.allSliceLabels(axis,ravel::HandleSort::forward);
+    return wrappedRavel.allSliceLabels(axis,ravel::HandleSort::staticForward);
   }  
 
   vector<string> Ravel::pickedSliceLabels() const
@@ -354,7 +354,7 @@ namespace minsky
     if (handle>=0)
       {
         Dimension dim=dimension(handle);
-        wrappedRavel.orderLabels(handle,order,ravel::toEnum<ravel::HandleSort::OrderType>(dim.type),dim.units);
+        wrappedRavel.orderLabels(handle,order);
       }
     return order;
   }

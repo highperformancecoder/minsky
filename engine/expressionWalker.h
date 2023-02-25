@@ -100,9 +100,6 @@ namespace minsky
 #   include <sys/types.h>
 #endif
 
-// load into anonymous namespace to reduce the number of linker symbols being exported
-namespace
-{
 namespace exprtk
 {
   namespace details
@@ -291,6 +288,5 @@ namespace exprtk
 #undef exprtk_define_binary_op
 #undef exprtk_define_binary_fun_op
 #undef exprtk_define_binary_fun_op_impl
-}
 }
 #endif
