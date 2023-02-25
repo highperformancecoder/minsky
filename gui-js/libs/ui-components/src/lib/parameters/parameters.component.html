@@ -1,31 +1,26 @@
-<div class="table-wrapper" (mousewheel)=changeScale($event)>
-    <div class="table" [style.zoom]="zoomFactor">
+<div class="table-wrapper" (mousewheel)="changeScale($event)">
+    <div *ngIf="variables" class="table" [style.zoom]="scale.zoomFactor">
         <div class="table-row header-row">
-            <div class="data-cell wide">Name</div>
+            <div class="data-cell">Name</div>
             <div *ngIf="type === 'variables'" class="data-cell extra-wide">Definition</div>
-            <div *ngIf="type === 'parameters'" class="data-cell extra-wide">Dimensions</div>
+            <div class="data-cell wide">Dimensions</div>
+            <div *ngIf="type === 'variables'" class="data-cell">Type</div>
             <div class="data-cell numeric">Initial</div>
-            <div class="data-cell wide">Tooltip</div>
-            <div class="data-cell extra-wide">Detailed Text</div>
-            <div class="data-cell numeric">Slider Step</div>
-            <div class="data-cell numeric">Slider Min</div>
-            <div class="data-cell numeric">Slider Max</div>
             <div class="data-cell numeric">Value</div>
         </div>
 
         <div *ngFor="let variable of variables" class="table-row">
-            <div [title]="variable.name" class="data-cell wide">{{variable.name}}</div>
-            <div *ngIf="type === 'variables'" [title]="variable.definition" class="data-cell extra-wide">{{variable.definition}}</div>
-            <div *ngIf="type === 'parameters'" [title]="variable.dimensions" class="data-cell extra-wide">{{variable.dimensions}}</div>
-            <div [title]="variable.init" class="data-cell numeric">{{variable.init}}</div>
-            <div [title]="variable.tooltip" class="data-cell wide">{{variable.tooltip}}</div>
-            <div [title]="variable.detailedText" class="data-cell extra-wide">{{variable.detailedText}}</div>
-            <div [title]="variable.sliderStep" class="data-cell numeric">{{variable.sliderStep}}</div>
-            <div [title]="variable.sliderMin" class="data-cell numeric">{{variable.sliderMin}}</div>
-            <div [title]="variable.sliderMax" class="data-cell numeric">{{variable.sliderMax}}</div>
-            <div *ngIf="variable.isTensor" [title]="tensorText" class="data-cell numeric">{{tensorText}}</div>
-            <div *ngIf="!variable.isTensor" [title]="variable.value" class="data-cell numeric">{{variable.value}}</div>
-            <div *ngIf="type === 'variables'" class="data-cell remove-cell"><button (click)="onRemoveClick(variable)">remove</button></div>
+            <div [title]="variable.name" class="data-cell" latex [equation]="variable.name"></div>
+            <div *ngIf="type === 'variables'" [title]="variable.definition" class="data-cell extra-wide" latex [equation]="variable.definition"></div>
+            <div [title]="variable.dimensions" class="data-cell wide" latex [equation]="variable.dimensions"></div>
+            <div *ngIf="type === 'variables'" [title]="variable.type" class="data-cell">{{variable.type}}</div>
+            <div [title]="variable.init" class="data-cell numeric" latex equation="{{truncateValue(variable.init)}}{{variable.units}}"></div>
+            <div *ngIf="variable.isTensor" [title]="tensorText" class="data-cell numeric" latex [equation]="tensorText"></div>
+            <div *ngIf="!variable.isTensor" [title]="variable.value" class="data-cell numeric" latex equation="{{truncateValue(variable.value)}}{{variable.units}}"></div>
         </div>
     </div>
+
+    <div *ngIf="!variables" class="spinner">
+        <mat-spinner color="#ffa600" mode="indeterminate"></mat-spinner>
+      </div>
 </div>

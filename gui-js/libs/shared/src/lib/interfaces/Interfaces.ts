@@ -34,6 +34,11 @@ export interface MinskyProcessPayload {
   location?: number;
 }
 
+export interface ImportStockPayload {
+  command: string;
+  columnIndex: number;
+}
+
 export interface HandleDescriptionPayload {
   command: string;
   handleIndex: number;

@@ -25,6 +25,9 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable, of } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 
+import * as JSON5 from 'json5';
+import { ScaleHandler } from '../scale-handler/scale-handler.class';
+
 @AutoUnsubscribe()
 @Component({
   selector: 'minsky-godley-widget-view',
@@ -36,6 +39,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   itemId: string;
   systemWindowId: string;
+  windowId: number;
   godleyIcon: GodleyIcon;
   namedItemSubCommand: GodleyTableWindow;
 
@@ -67,13 +71,9 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   rowSums = [];
   cellValues = [];
 
-  cellEditing = [undefined, undefined];
+  scale = new ScaleHandler();
 
-  // keep track of scale and zoom factors separately, because using zoom exclusively creates rounding errors
-  scaleBase = 1.1;
-  scalePower = 1;
-  scaleStep = 1 / 53;
-  zoomFactor = 1;
+  cellEditing = [undefined, undefined];
 
   yoffs = 0; // extra offset required on some systems
 
@@ -93,6 +93,12 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   async ngOnInit() {
     this.godleyIcon = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
     this.namedItemSubCommand = this.godleyIcon.popup;
+
+    this.windowId = (await this.electronService.getCurrentWindow()).id;
+
+    this.electronService.on(events.GODLEY_POPUP_REFRESH, async e => {
+      await this.hardRefresh();
+    });
 
     await this.hardRefresh();
   }
@@ -177,7 +183,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
       this.electronService.send(events.CONTEXT_MENU, {
         x: event.x,
         y: event.y,
-        type: "godley",
+        type: 'godley',
         command: this.godleyIcon.prefix(),
       });
     });
@@ -229,9 +235,20 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     this.redraw();
   }
 
+  async contextMenu(i: number, j: number, clickType: string) {
+    const frameId = (await this.electronService.getCurrentWindow()).id;
+
+    this.electronService.send(events.CONTEXT_MENU, {
+      x: i,
+      y: j,
+      type: 'html-godley',
+      command: JSON5.stringify([this.godleyIcon.prefix(), clickType, frameId]),
+    });
+  }
+
   async onRowAdd(i) {
     if(i >= 0 && i < this.flows.length) {
-      this.godleyIcon.table.insertRow(i+3);
+      this.godleyIcon.table.insertRow(i+1);
       //this.variables.splice(i + 1, 0, "new");
       await this.hardRefresh();
     }
@@ -239,7 +256,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async onRowDelete(i) {
     if(i >= 0 && i < this.flows.length) {
-      this.godleyIcon.deleteRow(i+3);
+      this.godleyIcon.deleteRow(i+1);
       //this.variables.splice(i, 1);
       await this.hardRefresh();
     }
@@ -248,7 +265,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   async onRowMove(i, n) {
     const resultIndex = i + n;
     if(resultIndex >= 0 && resultIndex < this.flows.length) {
-      this.godleyIcon.table.moveRow(i+2,n);
+      this.godleyIcon.table.moveRow(i,n);
       //const deleted = this.variables.splice(i, 1);
       //this.variables.splice(i+n, 0, deleted[0]);
       await this.hardRefresh();
@@ -257,7 +274,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async onColumnAdd(i) {
     if(i >= 0 && i < this.columnVariables.length) {
-      this.godleyIcon.table.insertCol(i+1);
+      this.godleyIcon.table.insertCol(i);
       //this.columnVariables.splice(i + 1, 0, "new");
       await this.hardRefresh();
     }
@@ -265,7 +282,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async onColumnDelete(i) {
     if(i >= 0 && i < this.columnVariables.length) {
-      this.godleyIcon.table.deleteCol(i+1);
+      this.godleyIcon.table.deleteCol(i);
       //this.columnVariables.splice(i, 1);
       await this.hardRefresh();
     }
@@ -274,7 +291,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   async onColumnMove(i, n) {
     const resultIndex = i + n;
     if(resultIndex >= 0 && resultIndex < this.flows.length) {
-      this.godleyIcon.table.moveCol(i+1,n);
+      this.godleyIcon.table.moveCol(i,n);
       //const deleted = this.columnVariables.splice(i, 1);
       //this.columnVariables.splice(i+n, 0, deleted[0]);
       await this.hardRefresh();
@@ -321,15 +338,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
       lastClass = assetClass;
     }
 
-    const cellValues = [];
-    for(let i = 0; i < flows.length; i++) {
-      const cellRow = [];
-      for(let j = 0; j < columnVariables.length; j++) {
-        cellRow.push(allData[i + 2][j + 1]);
-      }
-      cellValues.push(cellRow);
-    }
-
     const initialValues = [];
     for(let i = 0; i < columnVariables.length; i++) {
       initialValues.push(allData[1][i+1]);
@@ -340,11 +348,13 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     this.assetVariables = assetVariables;
     this.liabilityVariables = liabilityVariables;
     this.equityVariables = equityVariables;
-    this.cellValues = cellValues;
+    this.cellValues = allData;
     this.initialValues = initialValues;
     this.rowSums = rowSums;
 
     this.htmlModeReady = true;
+
+    this.cdRef.detectChanges();
   }
 
   async onCellFocus(i, j, event, handleFocus = true) {
@@ -371,22 +381,19 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async finishEditing() {
     if(this.editingAnything()) {
-      let editedValue;
-      if(this.cellEditing[0] === -1) { // initial conditions row
-        editedValue = this.initialValues[this.cellEditing[1]];
-      } else if(this.cellEditing[0] === -2) { // column variable names
-        editedValue = this.columnVariables[this.cellEditing[1]].name;
-      } else if(this.cellEditing[1] === -1) { // row variable names
-        editedValue = this.flows[this.cellEditing[0]].name;
-      } else {
-        editedValue = this.cellValues[this.cellEditing[0]][this.cellEditing[1]];
-      }
-      this.godleyIcon.setCell(this.cellEditing[0] + 2, this.cellEditing[1] + 1, editedValue);
+      const editedValue = this.cellValues[this.cellEditing[0]][this.cellEditing[1]];
+      
+      this.godleyIcon.setCell(this.cellEditing[0], this.cellEditing[1], editedValue);
 
       this.cellEditing[0] = undefined;
       this.cellEditing[1] = undefined;
+
       await this.hardRefresh();
     }
+  }
+
+  delayedFinishEditing() {
+    setTimeout(() => this.finishEditing(), 200);
   }
 
   editingAnything() {
@@ -395,10 +402,15 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   changeScale(e) {
     if(e.ctrlKey) {
-      this.scalePower -= e.deltaY * this.scaleStep;
-
-      this.zoomFactor = Math.pow(this.scaleBase, this.scalePower);
+      this.scale.changeScale(e.deltaY);
     }
+  }
+
+  onWedgeClick(columnIndex, event) {
+    this.electronService.invoke(events.GODLEY_VIEW_IMPORT_STOCK, {
+      command: this.itemId,
+      columnIndex: columnIndex
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method

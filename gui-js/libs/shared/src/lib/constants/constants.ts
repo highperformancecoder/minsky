@@ -30,6 +30,7 @@ export const events = {
   GET_CURRENT_WINDOW: 'get-current-window',
   GET_PREFERENCES: 'get-preferences',
   GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
+  GODLEY_VIEW_IMPORT_STOCK: 'godley-view-import-stock',
   IMPORT_CSV: 'import-csv',
   INIT_MENU_FOR_GODLEY_VIEW: 'init-menu-for-godley-view',
   KEY_PRESS: 'key-press',
@@ -49,6 +50,7 @@ export const events = {
   SET_BACKGROUND_COLOR: 'set-background-color',
   UPDATE_BOOKMARK_LIST: 'update-bookmark-list',
   UPDATE_PREFERENCES: 'update-preferences',
+  GODLEY_POPUP_REFRESH: 'godley-popup-refresh'
 };
 
 // add non exposed commands here to get intellisense on the terminal popup

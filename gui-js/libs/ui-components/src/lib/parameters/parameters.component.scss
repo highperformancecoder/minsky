@@ -1,7 +1,7 @@
 .table-wrapper {
+  height: calc(100vh - 100px);
+  width: 100vw;
   overflow: auto;
-
-  height: 100%;
   
   div.table {
     display: flex;
@@ -32,7 +32,7 @@
         justify-content: flex-start;
         align-items: center;
 
-        flex: 0 0 100px;
+        flex: 2 0 100px;
 
         text-align: left;
 

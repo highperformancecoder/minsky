@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { ScaleHandler } from '../scale-handler/scale-handler.class';
+import { uniqBy, sortBy } from 'lodash-es';
 
 @Component({
   selector: 'minsky-parameters',
@@ -9,17 +11,13 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./parameters.component.scss'],
 })
 export class ParametersComponent {
-  variables = [];
+  variables;
 
   tensorText = '<tensor>';
 
   type: string;
 
-  // keep track of scale and zoom factors separately, because using zoom exclusively creates rounding errors
-  scaleBase = 1.1;
-  scalePower = 1;
-  scaleStep = 1 / 53;
-  zoomFactor = 1;
+  scale = new ScaleHandler();
 
   constructor(private electronService: ElectronService, route: ActivatedRoute) {
     route.params.pipe(switchMap(p => {
@@ -27,30 +25,27 @@ export class ParametersComponent {
       if(this.type === 'parameters') {
         return electronService.minsky.parameterTab.getDisplayVariables();
       } else {
-        // populate required to make removal possible
-        electronService.minsky.variableTab.populateItemVector();
         return electronService.minsky.variableTab.getDisplayVariables();
       }
     })).subscribe((v: any) => this.prepareVariables(v));
   }
 
-  prepareVariables(variables) {
-    this.variables = variables;
-  }
-
-  async onRemoveClick(variable) {
-    const variableIndex = this.variables.indexOf(variable);
-    this.electronService.minsky.variableTab.toggleVarDisplay(variableIndex + 1); // 1-based indexing
-
-    this.variables.splice(variableIndex, 1);
+  prepareVariables(variables: any[]) {
+    // why tf is this uniqBy necessary?! sort duplicates rows..? js' own .sort function does the same thing
+    this.variables = uniqBy(sortBy(variables, ['type', 'name']), v => v.name);
   }
 
   changeScale(e) {
     if(e.ctrlKey) {
-      this.scalePower -= e.deltaY * this.scaleStep;
-
-      this.zoomFactor = Math.pow(this.scaleBase, this.scalePower);
+      this.scale.changeScale(e.deltaY);
     }
+  }
+
+  truncateValue(value: string) {
+    if(isNaN(+value)) return value;
+    const stringDecimals = String(+value - Math.floor(+value));
+    if(stringDecimals.length > 6) return (+value).toFixed(4);
+    return String(value);
   }
   
 }
