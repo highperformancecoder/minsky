@@ -32,10 +32,10 @@
       <div class="data-cell wide"></div>
       <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell buttons-cell" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
         <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && equityVariables.length === 1)">
-          <div class="small-button add-button" (click)="onColumnAdd(j+1)"><div>✚</div></div>
-          <div class="small-button remove-button" (click)="onColumnDelete(j+1)"><div class="minus-icon">−</div></div>
-          <div class="small-button" *ngIf="j > 0" (click)="onColumnMove(j+1, -1)"><div>🡠</div></div>
-          <div class="small-button" *ngIf="j < columnVariables.length - 1" (click)="onColumnMove(j+1, 1)"><div>🡢</div></div>
+          <div class="small-button add-button" (click)="onColumnAdd(j+1)"><span class="material-icons">add</span></div>
+          <div class="small-button remove-button" (click)="onColumnDelete(j+1)"><span class="material-icons">remove</span></div>
+          <div class="small-button" *ngIf="j > 0" (click)="onColumnMove(j+1, -1)"><span class="material-icons">arrow_back</span></div>
+          <div class="small-button" *ngIf="j < columnVariables.length - 1" (click)="onColumnMove(j+1, 1)"><span class="material-icons">arrow_forward</span></div>
         </ng-container>
       </div>
       <div class="data-cell firstOfClass"></div>
@@ -66,10 +66,10 @@
 
       <div *ngFor="let flow of flows; let i = index" class="table-row">
           <div class="data-cell narrow buttons-cell">
-            <div class="small-button add-button" (click)="onRowAdd(i+2)"><div>✚</div></div>
-            <div class="small-button remove-button" (click)="onRowDelete(i+2)"><div class="minus-icon">−</div></div>
-            <div class="small-button" *ngIf="i > 0" (click)="onRowMove(i+2, -1)"><div>🡡</div></div>
-            <div class="small-button" *ngIf="i < flows.length - 1" (click)="onRowMove(i+2, 1)"><div>🡣</div></div>
+            <div class="small-button add-button" (click)="onRowAdd(i+2)"><span class="material-icons">add</span></div>
+            <div class="small-button remove-button" (click)="onRowDelete(i+2)"><span class="material-icons">remove</span></div>
+            <div class="small-button" *ngIf="i > 0" (click)="onRowMove(i+2, -1)"><span class="material-icons">arrow_upward</span></div>
+            <div class="small-button" *ngIf="i < flows.length - 1" (click)="onRowMove(i+2, 1)"><span class="material-icons">arrow_downward</span></div>
           </div>
           <div [title]="flow.name" id="dataCell{{i+2}}_0" class="data-cell wide" (contextmenu)="contextMenu(i+2, 0, 'col0')">
             <span *ngIf="!isCellEditing(i+2, 0)" (click)="onCellFocus(i+2, 0, $event)" class="latex-cell" latex [title]="cellValues[i+2][0]" [equation]="cellValues[i+2][0]" [replaceSpaces]="true" [latexScale]="0.9"></span>

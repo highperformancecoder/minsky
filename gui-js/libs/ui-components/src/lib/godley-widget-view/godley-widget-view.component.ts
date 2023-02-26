@@ -5,8 +5,7 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
-  ViewChild,
-  HostListener
+  ViewChild
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -22,7 +21,7 @@ import {
   GodleyTableWindow
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { fromEvent, Observable, of } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 
 import * as JSON5 from 'json5';
@@ -96,11 +95,13 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
     this.windowId = (await this.electronService.getCurrentWindow()).id;
 
-    this.electronService.on(events.GODLEY_POPUP_REFRESH, async e => {
-      await this.hardRefresh();
-    });
+    if(!this.canvasMode) {
+      this.electronService.on(events.GODLEY_POPUP_REFRESH, async e => {
+        await this.hardRefresh();
+      });
 
-    await this.hardRefresh();
+      await this.hardRefresh();
+    }
   }
 
   ngAfterViewInit() {

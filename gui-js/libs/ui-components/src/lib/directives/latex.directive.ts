@@ -13,7 +13,7 @@ export class LatexDirective implements OnChanges {
     latexScale: number = 1;
 
     @Input()
-    replaceSpaces = false;W
+    replaceSpaces = false;
 
     constructor(private el: ElementRef<HTMLElement>) { 
     

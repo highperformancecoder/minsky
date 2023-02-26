@@ -4,7 +4,7 @@ import {
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, Sheet, SwitchIcon,
   VariableBase, Functions, events
 } from '@minsky/shared';
-import { BrowserWindow, Menu, MenuItem, ipcMain, IpcMainEvent } from 'electron';
+import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';

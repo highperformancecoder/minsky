@@ -132,23 +132,14 @@
 
   margin: 1px;
 
-  padding: 2px 7px 8px 3px;
-
   font-size: 10px;
 
   border: 1px solid black;
 
-  div {
-    font-weight: bold;
-    text-align: center;
-    width: 4px;
-    height: 4px;
-  }
-
-  div.minus-icon {
-    font-weight: 1000;
-    margin-left: 1px;
-    margin-right: -1px;
+  span.material-icons {
+    font-size: 13px;
+    overflow: hidden;
+    margin: 1px 1px -1.5px 1px;
   }
 }
 
