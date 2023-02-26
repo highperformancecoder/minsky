@@ -63,7 +63,7 @@ namespace minsky
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
     //std::string m_filename;
     std::string explanation; // explanation of Ravel bits displayed as tooltip
-    ravel::HandleSort::Order previousOrder=ravel::HandleSort::forward;
+    ravel::HandleSort::Order previousOrder=ravel::HandleSort::staticForward;
     
     /// used entirely to defer persisted state data until after first
     /// load from a variable

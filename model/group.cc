@@ -189,8 +189,8 @@ namespace minsky
           {
             // walk up parent groups to see if this variable is mentioned
             for (auto g=group.lock(); g; g=g->group.lock())
-              for (auto& i: g->items)
-                if (auto vi=i->variableCast())
+              for (auto& item: g->items)
+                if (auto vi=item->variableCast())
                   if (vi->valueId()==v->valueId())
                     goto outer_scope_variable_found;
             v->name(v->rawName().substr(1)); // make variable local

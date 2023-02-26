@@ -197,10 +197,9 @@ namespace minsky
       map<double,double> xData;
       if (regex_match(data,match,lookupPairsPattern))
         {
-          auto data=match[2].str();
           regex extractHead(R"(\(([^,]*),([^)]*)\)(,(\(.*\)))*)");
           // note match[3] is the trailing data, match[4] strips the leading ,
-          for (auto data=match[2].str(); regex_match(data, match, extractHead); data=match[4])
+          for (auto d=match[2].str(); regex_match(d, match, extractHead); d=match[4])
             xData[stod(match[1])]=stod(match[2]);
         }
       else

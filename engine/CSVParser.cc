@@ -560,7 +560,7 @@ namespace minsky
   }
 
   template <class P>
-  void loadValueFromCSVFileT(VariableValue& v, istream& input, const DataSpec& spec)
+  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec)
   {
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
@@ -749,16 +749,16 @@ namespace minsky
 
         if (log(tmpData.size())-hc.logNumElements()>=log(0.5)) 
           { // dense case
-            v.index({});
+            vv.index({});
             if (!cminsky().checkMemAllocation(hc.numElements()*sizeof(double)))
               throw runtime_error("memory threshold exceeded");            
-            v.hypercube(hc);
+            vv.hypercube(hc);
             // stash the data into vv tensorInit field
-            v.tensorInit.index({});
-            v.tensorInit.hypercube(hc);
-            for (auto& i: v.tensorInit)
+            vv.tensorInit.index({});
+            vv.tensorInit.hypercube(hc);
+            for (auto& i: vv.tensorInit)
               i=spec.missingValue;
-            auto dims=v.hypercube().dims();
+            auto dims=vv.hypercube().dims();
             for (auto& i: tmpData)
               {
                 size_t idx=0;
@@ -769,7 +769,7 @@ namespace minsky
                     assert(dimLabels[j].count(i.first[j]));
                     idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
                   }
-                v.tensorInit[idx]=i.second;  
+                vv.tensorInit[idx]=i.second;  
               }
           }    
         else 
@@ -793,12 +793,12 @@ namespace minsky
                   indexValue.emplace(idx, i.second);
               }
 
-            v.tensorInit.index(indexValue);
-            v.tensorInit.hypercube(hc);
+            vv.tensorInit.index(indexValue);
+            vv.tensorInit.hypercube(hc);
             size_t j=0;
             for (auto& i: indexValue)
-              v.tensorInit[j++]=i.second;
-            v=v.tensorInit;
+              vv.tensorInit[j++]=i.second;
+            vv=vv.tensorInit;
           }                 
 
       }
