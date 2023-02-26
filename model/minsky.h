@@ -63,6 +63,7 @@ namespace minsky
   using namespace std;
   using classdesc::shared_ptr;
   using namespace civita;
+  using namespace boost::posix_time;
   
   struct CallableFunction;
   class VariableInstanceList;
@@ -144,7 +145,7 @@ namespace minsky
     /// write current state of all variables to the log file
     void logVariables() const;
 
-    Exclude<boost::posix_time::ptime> lastRedraw;
+    Exclude<ptime> lastRedraw;
 
     bool m_multipleEquities=false;    
     

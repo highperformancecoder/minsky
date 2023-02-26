@@ -46,11 +46,11 @@ export class WindowUtilityService {
         // No need to set canvas width / height - we don't use the frontend canvas at all
         // this.minskyCanvasElement.width = this.scrollableAreaWidth;
         // this.minskyCanvasElement.height = this.scrollableAreaHeight;
+      }
 
-        this.minskyCanvasElement.style.width = this.scrollableAreaWidth + 'px';
+      this.minskyCanvasElement.style.width = this.scrollableAreaWidth + 'px';
         this.minskyCanvasElement.style.height =
           this.scrollableAreaHeight + 'px';
-      }
 
       // After setting the above, container gets scrollbars, so we need to compute drawableWidth & Height only now (clientWidth/clientHeight change after scrollbar addition)
 

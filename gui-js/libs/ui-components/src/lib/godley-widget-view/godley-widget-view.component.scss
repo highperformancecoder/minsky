@@ -5,6 +5,7 @@
   width: 100vw;
   border: 1px solid $toolbar-box;
   overflow: scroll;
+  position: relative;
 }
 
 .godley-cairo-canvas {
@@ -14,4 +15,175 @@
 
 #godley-cairo-canvas-wrapper {
   overflow: hidden;
+}
+
+.table-wrapper {
+  overflow: auto;
+  height: 100vh;
+  
+  div.table {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    padding: 10px;
+
+    div.header-row > div.data-cell {
+      font-weight: bold;
+      border-bottom: 1px solid black;
+    }
+
+    div.table-row:nth-child(even) > div.data-cell {
+      background-color: #E9E9E9;
+    }
+
+    div.table-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+
+      div.data-cell {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        flex: 2 0 120px;
+
+        text-align: left;
+
+        //padding: 0px;
+
+        text-overflow: ellipsis;
+        overflow: hidden;
+
+        //background-color: green;
+
+        //border: 1px solid grey;
+
+        input {
+          display: block;
+
+          width: 100%;
+          height: 22px;
+        }
+
+        .latex-cell {
+          cursor: text;
+          width: 100%;
+          height: 22px;
+
+          padding: 3px 4px;
+        }
+      }
+
+      .ale-cell {
+        padding: 2px;
+      }
+
+      div.data-cell.narrow {
+        flex: 0 0 80px;
+      }
+
+      div.data-cell.wide {
+        flex: 3 0 190px;
+      }
+
+      div.data-cell.extra-wide {
+        flex: 6 0 240px;
+      }
+
+      div.data-cell.numeric {
+        justify-content: flex-end;
+      }
+
+      div.data-cell.colvar-header-cell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .colvar-header {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          flex: 1 0 0px;
+        }
+
+        .colvar-triangle {
+          flex: 0 0 15px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.small-button {
+  border-radius: 3px;
+
+  display: inline-block;
+
+  cursor: pointer;
+
+  user-select: none;
+
+  margin: 1px;
+
+  font-size: 10px;
+
+  border: 1px solid black;
+
+  span.material-icons {
+    font-size: 13px;
+    overflow: hidden;
+    margin: 1px 1px -1.5px 1px;
+  }
+}
+
+.add-button {
+  color: rgb(0, 150, 0);
+}
+
+.remove-button {
+  color: rgb(190, 0, 0);
+}
+
+.asset-class-header {
+  padding-left: 4px;
+}
+
+.assets-header {
+
+}
+
+.liabilities-header {
+  color: rgb(190, 0, 0);
+}
+
+.equity-header {
+  color: darkgoldenrod;
+}
+
+.ale-header {
+
+}
+
+.arrow-icon {
+  margin: 0px 4px;
+  padding-bottom: 4px;
+}
+
+.lassOfClass {
+  border-right: 3px solid #777;
+}
+
+.firstOfClass {
+  border-left: 3px solid #777;
+}
+
+.negative {
+  color: rgb(190, 0, 0);
 }

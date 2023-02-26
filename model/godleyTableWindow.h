@@ -139,10 +139,15 @@ namespace minsky
     
     /// add/delete rows/columns at x,y
     void addStockVar(double x);
+    void addStockVarByCol(int c);
     void importStockVar(const std::string& name, double x);
+    void importStockVarByCol(const std::string& name, int c);
     void deleteStockVar(double x);
+    void deleteStockVarByCol(int c);
     void addFlow(double y);
+    void addFlowByRow(int r);
     void deleteFlow(double y);
+    void deleteFlowByRow(int r);
     
     int colXZoomed(double x) const {return colX(x/zoomFactor);}
     int rowYZoomed(double y) const {return rowY(y/zoomFactor);}
@@ -188,6 +193,7 @@ namespace minsky
     ClickType clickType(double x, double y) const;
     /// return list of matching table columns for column at \a x
     std::set<string> matchingTableColumns(double x);
+    std::set<string> matchingTableColumnsByCol(int c);
    
   protected:
     std::vector<ButtonWidget<row>> rowWidgets;

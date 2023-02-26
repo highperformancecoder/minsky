@@ -29,6 +29,7 @@
 using namespace Napi;
 using namespace std;
 using namespace classdesc;
+using namespace boost::posix_time;
 
 namespace minsky
 {
@@ -105,7 +106,9 @@ struct RedrawThread: public thread
     running=true;
     // sleep slightly to throttle requests on this service
     this_thread::sleep_for(chrono::milliseconds(10));
+
     lock_guard<mutex> lock(redrawMutex);
+
     for (auto i: minsky::minsky().nativeWindowsToRedraw)
       try
         {

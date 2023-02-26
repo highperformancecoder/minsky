@@ -51,7 +51,7 @@
               "apps/minsky-web/src/assets"
             ],
             "styles": ["apps/minsky-web/src/styles.scss"],
-            "scripts": [],
+            "scripts": ["node_modules/mathjax/es5/tex-svg.js"],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
