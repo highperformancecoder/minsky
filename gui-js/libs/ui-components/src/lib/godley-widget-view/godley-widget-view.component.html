@@ -13,14 +13,10 @@
     <div class="table-row asset-classes-row">
       <div class="data-cell narrow"></div>
       <div class="data-cell wide"></div>
-      <div *ngFor="let columnVariable of assetVariables; let i = index" class="data-cell asset-class-header assets-header" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
-        <ng-container *ngIf="i === 0">Assets</ng-container>
-      </div>
-      <div *ngFor="let columnVariable of liabilityVariables; let i = index" class="data-cell asset-class-header liabilities-header" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
-        <ng-container *ngIf="i === 0">Liabilities</ng-container>
-      </div>
-      <div *ngFor="let columnVariable of equityVariables; let i = index" class="data-cell asset-class-header equity-header" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
-        <ng-container *ngIf="i === 0">Equity</ng-container>
+      <div *ngFor="let columnVariable of columnVariables; let i = index" class="data-cell asset-class-header assets-header" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
+        <span class="assets-header" *ngIf="columnVariable.firstOfClass && columnVariable.assetClass === 'asset'">Assets</span>
+        <span class="liabilities-header" *ngIf="columnVariable.firstOfClass && columnVariable.assetClass === 'liability'">Liabilities</span>
+        <span class="equity-header" *ngIf="columnVariable.firstOfClass && columnVariable.assetClass === 'equity'">Equity</span>
       </div>
       <div class="data-cell asset-class-header ale-header firstOfClass">
         A-L-E
@@ -31,11 +27,11 @@
       <div class="data-cell narrow"></div>
       <div class="data-cell wide"></div>
       <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell buttons-cell" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
-        <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && equityVariables.length === 1)">
-          <div class="small-button add-button" (click)="onColumnAdd(j+1)"><span class="material-icons">add</span></div>
-          <div class="small-button remove-button" (click)="onColumnDelete(j+1)"><span class="material-icons">remove</span></div>
-          <div class="small-button" *ngIf="j > 0" (click)="onColumnMove(j+1, -1)"><span class="material-icons">arrow_back</span></div>
-          <div class="small-button" *ngIf="j < columnVariables.length - 1" (click)="onColumnMove(j+1, 1)"><span class="material-icons">arrow_forward</span></div>
+        <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && singleEquity)">
+          <div class="small-button add-button" (click)="onColumnAdd(j)"><span class="material-icons">add</span></div>
+          <div class="small-button remove-button" (click)="onColumnDelete(j)"><span class="material-icons">remove</span></div>
+          <div class="small-button" *ngIf="j > 0" (click)="onColumnMove(j, -1)"><span class="material-icons">arrow_back</span></div>
+          <div class="small-button" *ngIf="j < columnVariables.length - 1" (click)="onColumnMove(j, 1)"><span class="material-icons">arrow_forward</span></div>
         </ng-container>
       </div>
       <div class="data-cell firstOfClass"></div>
@@ -54,10 +50,12 @@
     </div>
 
     <div class="table-row initial-row">
-        <div class="data-cell narrow"></div>
+        <div class="data-cell narrow buttons-cell">
+          <div class="small-button add-button" (click)="onRowAdd(-1)"><span class="material-icons">add</span></div>
+        </div>
         <div class="data-cell wide">Initial Conditions</div>
         <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell" id="dataCell1_{{j+1}}" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass" (contextmenu)="contextMenu(1, j+1)">
-          <input type="text" [(ngModel)]="cellValues[1][j+1]" (click)="$event.stopPropagation()" (focus)="onCellFocus(1, j+1, $event, false)" (blur)="delayedFinishEditing()"/>
+          <input type="text" [(ngModel)]="cellValues[1][j+1]" (click)="$event.stopPropagation()" (focus)="onCellFocus(1, j+1, $event, false)" (keyup)="delayedFinishEditing()"/>
         </div>
         <div class="data-cell firstOfClass ale-cell">
           <span class="latex-cell" latex [equation]="rowSums[0]" [latexScale]="0.9"></span>
@@ -66,10 +64,10 @@
 
       <div *ngFor="let flow of flows; let i = index" class="table-row">
           <div class="data-cell narrow buttons-cell">
-            <div class="small-button add-button" (click)="onRowAdd(i+2)"><span class="material-icons">add</span></div>
-            <div class="small-button remove-button" (click)="onRowDelete(i+2)"><span class="material-icons">remove</span></div>
-            <div class="small-button" *ngIf="i > 0" (click)="onRowMove(i+2, -1)"><span class="material-icons">arrow_upward</span></div>
-            <div class="small-button" *ngIf="i < flows.length - 1" (click)="onRowMove(i+2, 1)"><span class="material-icons">arrow_downward</span></div>
+            <div class="small-button add-button" (click)="onRowAdd(i)"><span class="material-icons">add</span></div>
+            <div class="small-button remove-button" (click)="onRowDelete(i)"><span class="material-icons">remove</span></div>
+            <div class="small-button" *ngIf="i > 0" (click)="onRowMove(i, -1)"><span class="material-icons">arrow_upward</span></div>
+            <div class="small-button" *ngIf="i < flows.length - 1" (click)="onRowMove(i, 1)"><span class="material-icons">arrow_downward</span></div>
           </div>
           <div [title]="flow.name" id="dataCell{{i+2}}_0" class="data-cell wide" (contextmenu)="contextMenu(i+2, 0, 'col0')">
             <span *ngIf="!isCellEditing(i+2, 0)" (click)="onCellFocus(i+2, 0, $event)" class="latex-cell" latex [title]="cellValues[i+2][0]" [equation]="cellValues[i+2][0]" [replaceSpaces]="true" [latexScale]="0.9"></span>
