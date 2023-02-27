@@ -55,7 +55,7 @@
         </div>
         <div class="data-cell wide">Initial Conditions</div>
         <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell" id="dataCell1_{{j+1}}" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass" (contextmenu)="contextMenu(1, j+1)">
-          <input type="text" [(ngModel)]="cellValues[1][j+1]" (click)="$event.stopPropagation()" (focus)="onCellFocus(1, j+1, $event, false)" (keyup)="delayedFinishEditing()"/>
+          <input type="text" [(ngModel)]="cellValues[1][j+1]" (click)="$event.stopPropagation()" (focus)="onCellFocus(1, j+1, $event, false)" (blur)="delayedFinishEditing()"/>
         </div>
         <div class="data-cell firstOfClass ale-cell">
           <span class="latex-cell" latex [equation]="rowSums[0]" [latexScale]="0.9"></span>
