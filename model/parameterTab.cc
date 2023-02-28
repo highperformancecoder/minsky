@@ -24,6 +24,7 @@
 #include "plotWidget.h"
 
 #include "itemTab.rcd"
+#include "itemTab.xcd"
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
 #include "pango.xcd"

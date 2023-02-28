@@ -29,6 +29,18 @@
 
 namespace minsky
 {
+  class DisplayVariable {
+      public:
+      std::string name;
+      std::string definition;
+      std::string dimensions;
+      std::string type;
+      std::string units;
+      std::string init;
+      double value;
+      bool isTensor;
+  };
+
   class ItemTabCellPtr: public std::shared_ptr<ecolab::Pango>
   {
     cairo_t* cachedCairo=nullptr;
@@ -66,7 +78,8 @@ namespace minsky
       if (surface.get())
         cairo_move_to(surface->cairo(),x,y);
     }
-    
+
+    virtual std::vector<DisplayVariable> getDisplayVariables();
     virtual void populateItemVector();
     virtual bool itemSelector(const ItemPtr& i) = 0;
     void toggleVarDisplay(int i) const {if (i>0 && i-1<int(itemVector.size())) (itemVector[i-1])->variableCast()->toggleVarTabDisplay(); else return;}    

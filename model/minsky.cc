@@ -1618,7 +1618,6 @@ namespace minsky
     else
       autoSaver.reset(new BackgroundSaver(file));
   }
-
 }
 
 namespace classdesc

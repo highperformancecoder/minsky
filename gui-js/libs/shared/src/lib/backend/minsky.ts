@@ -720,6 +720,7 @@ export class GodleyTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
+  getDisplayVariables(): object[] {return this.callMethod('getDisplayVariables');}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
@@ -816,7 +817,9 @@ export class GodleyTableEditor extends CppClass {
     this.colLeftMargin=new Sequence<number>(this.prefix()+'/colLeftMargin');
   }
   addFlow(a1: number): void {return this.callMethod('addFlow',a1);}
+  addFlowByRow(a1: number): void {return this.callMethod('addFlowByRow',a1);}
   addStockVar(a1: number): void {return this.callMethod('addStockVar',a1);}
+  addStockVarByCol(a1: number): void {return this.callMethod('addStockVarByCol',a1);}
   adjustWidgets(): void {return this.callMethod('adjustWidgets');}
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
   clickTypeZoomed(a1: number,a2: number): string {return this.callMethod('clickTypeZoomed',a1,a2);}
@@ -826,7 +829,9 @@ export class GodleyTableEditor extends CppClass {
   cut(): void {return this.callMethod('cut');}
   delSelection(): void {return this.callMethod('delSelection');}
   deleteFlow(a1: number): void {return this.callMethod('deleteFlow',a1);}
+  deleteFlowByRow(a1: number): void {return this.callMethod('deleteFlowByRow',a1);}
   deleteStockVar(a1: number): void {return this.callMethod('deleteStockVar',a1);}
+  deleteStockVarByCol(a1: number): void {return this.callMethod('deleteStockVarByCol',a1);}
   disableButtons(): void {return this.callMethod('disableButtons');}
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   drawButtons(...args: boolean[]): boolean {return this.callMethod('drawButtons',...args);}
@@ -840,10 +845,12 @@ export class GodleyTableEditor extends CppClass {
   hoverCol(...args: number[]): number {return this.callMethod('hoverCol',...args);}
   hoverRow(...args: number[]): number {return this.callMethod('hoverRow',...args);}
   importStockVar(a1: string,a2: number): void {return this.callMethod('importStockVar',a1,a2);}
+  importStockVarByCol(a1: string,a2: number): void {return this.callMethod('importStockVarByCol',a1,a2);}
   insertIdx(...args: number[]): number {return this.callMethod('insertIdx',...args);}
   keyPress(a1: number,a2: string): void {return this.callMethod('keyPress',a1,a2);}
   leftTableOffset(...args: number[]): number {return this.callMethod('leftTableOffset',...args);}
   matchingTableColumns(a1: number): string[] {return this.callMethod('matchingTableColumns',a1);}
+  matchingTableColumnsByCol(a1: number): string[] {return this.callMethod('matchingTableColumnsByCol',a1);}
   maxHistory(...args: number[]): number {return this.callMethod('maxHistory',...args);}
   minColumnWidth(...args: number[]): number {return this.callMethod('minColumnWidth',...args);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -890,7 +897,9 @@ export class GodleyTableWindow extends CppClass {
     this.wire=new Wire(this.prefix()+'/wire');
   }
   addFlow(a1: number): void {return this.callMethod('addFlow',a1);}
+  addFlowByRow(a1: number): void {return this.callMethod('addFlowByRow',a1);}
   addStockVar(a1: number): void {return this.callMethod('addStockVar',a1);}
+  addStockVarByCol(a1: number): void {return this.callMethod('addStockVarByCol',a1);}
   adjustWidgets(): void {return this.callMethod('adjustWidgets');}
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
   clickTypeZoomed(a1: number,a2: number): string {return this.callMethod('clickTypeZoomed',a1,a2);}
@@ -901,7 +910,9 @@ export class GodleyTableWindow extends CppClass {
   cut(): void {return this.callMethod('cut');}
   delSelection(): void {return this.callMethod('delSelection');}
   deleteFlow(a1: number): void {return this.callMethod('deleteFlow',a1);}
+  deleteFlowByRow(a1: number): void {return this.callMethod('deleteFlowByRow',a1);}
   deleteStockVar(a1: number): void {return this.callMethod('deleteStockVar',a1);}
+  deleteStockVarByCol(a1: number): void {return this.callMethod('deleteStockVarByCol',a1);}
   destroyFrame(): void {return this.callMethod('destroyFrame');}
   disable(): void {return this.callMethod('disable');}
   disableButtons(): void {return this.callMethod('disableButtons');}
@@ -920,10 +931,12 @@ export class GodleyTableWindow extends CppClass {
   hoverCol(...args: number[]): number {return this.callMethod('hoverCol',...args);}
   hoverRow(...args: number[]): number {return this.callMethod('hoverRow',...args);}
   importStockVar(a1: string,a2: number): void {return this.callMethod('importStockVar',a1,a2);}
+  importStockVarByCol(a1: string,a2: number): void {return this.callMethod('importStockVarByCol',a1,a2);}
   insertIdx(...args: number[]): number {return this.callMethod('insertIdx',...args);}
   keyPress(...args: any[]): boolean {return this.callMethod('keyPress',...args);}
   leftTableOffset(...args: number[]): number {return this.callMethod('leftTableOffset',...args);}
   matchingTableColumns(a1: number): string[] {return this.callMethod('matchingTableColumns',a1);}
+  matchingTableColumnsByCol(a1: number): string[] {return this.callMethod('matchingTableColumnsByCol',a1);}
   maxHistory(...args: number[]): number {return this.callMethod('maxHistory',...args);}
   minColumnWidth(...args: number[]): number {return this.callMethod('minColumnWidth',...args);}
   mouseDown(a1: number,a2: number): void {return this.callMethod('mouseDown',a1,a2);}
@@ -1493,6 +1506,7 @@ export class ParameterTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
+  getDisplayVariables(): object[] {return this.callMethod('getDisplayVariables');}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
@@ -1568,6 +1582,7 @@ export class PlotTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
+  getDisplayVariables(): object[] {return this.callMethod('getDisplayVariables');}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}
@@ -2307,6 +2322,7 @@ export class VariableTab extends CppClass {
   displayDelayedTooltip(a1: number,a2: number): void {return this.callMethod('displayDelayedTooltip',a1,a2);}
   draw(...args: any[]): void {return this.callMethod('draw',...args);}
   evenHeight(): boolean {return this.callMethod('evenHeight');}
+  getDisplayVariables(): object[] {return this.callMethod('getDisplayVariables');}
   getItemAt(a1: number,a2: number): boolean {return this.callMethod('getItemAt',a1,a2);}
   getVarName(a1: number): string {return this.callMethod('getVarName',a1);}
   getWireAt(a1: number,a2: number): boolean {return this.callMethod('getWireAt',a1,a2);}

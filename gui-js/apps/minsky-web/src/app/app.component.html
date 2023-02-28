@@ -1,35 +1,32 @@
-<div (window:resize)="windowResize()">
-  <div *ngIf="loader" class="spinner">
-    <mat-spinner color="#ffa600" mode="indeterminate"></mat-spinner>
-  </div>
+<div *ngIf="loading" class="spinner">
+  <mat-spinner color="#ffa600" mode="indeterminate"></mat-spinner>
+</div>
 
-  <ng-container *ngIf="router.url.includes('headless'); else container_with_toolbar">
+<ng-container *ngIf="!loading">
+  <ng-container *ngIf="router.url.includes('headless');">
     <router-outlet></router-outlet>
   </ng-container>
-
-  <ng-template #container_with_toolbar>
+  <ng-container *ngIf="!router.url.includes('headless');">
     <minsky-header></minsky-header>
     <div class="tabs-section">
       <div class="tabs example-button-row">
         <button (click)="changeTab(MainRenderingTabs.canvas)" class="wiring" mat-raised-button>
-          <label>Wiring</label>
+          Wiring
         </button>
         <button (click)="changeTab(MainRenderingTabs.equations)" class="equations" mat-raised-button>
-          <label>Equations</label>
+          Equations
         </button>
         <button (click)="changeTab(MainRenderingTabs.parameters)" class="parameters" mat-raised-button>
-          <label>Parameters</label>
+          Parameters
         </button>
         <button (click)="changeTab(MainRenderingTabs.variables)" class="variables" mat-raised-button>
-          <label>Variables</label>
+          Variables
         </button>
-
         <button (click)="changeTab(MainRenderingTabs.plot)" class="plot" mat-raised-button>
-          <label>Plots</label>
+          Plots
         </button>
-
         <button (click)="changeTab(MainRenderingTabs.godley)" class="godley" mat-raised-button>
-          <label>Godleys</label>
+          Godleys
         </button>
 
         <span class="spacer"></span>
@@ -38,7 +35,7 @@
           Terminal
         </button>
       </div>
-      <router-outlet></router-outlet>
-    </div>
-  </ng-template>
-</div>
+    <router-outlet></router-outlet>
+  </div>
+  </ng-container>
+</ng-container>

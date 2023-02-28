@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component, HostListener, DoCheck, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
 import { events, MainRenderingTabs, RenderNativeWindow } from '@minsky/shared';
@@ -9,42 +9,67 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
-  loader = false;
+export class AppComponent implements DoCheck {
+  htmlTabs = [MainRenderingTabs.parameters, MainRenderingTabs.variables];
+
+  loading = true;
     MainRenderingTabs = MainRenderingTabs;
     private windowUtilityService: WindowUtilityService;
+    private resizeTimeout;
   constructor(
     private electronService: ElectronService,
     private cmService: CommunicationService,
     private translate: TranslateService,
+    private cdRef: ChangeDetectorRef,
     public router: Router
   ) {
     this.windowUtilityService=new WindowUtilityService(electronService);
     this.translate.setDefaultLang('en');
   }
 
-  ngAfterViewInit() {
-    // When the event DOMContentLoaded occurs, it is safe to access the DOM
-    document.addEventListener('DOMContentLoaded', async () => {
-      await this.cmService.setWindowSizeAndCanvasOffsets();
-    });
-
-    this.cmService.setBackgroundColor();
-
-    document.addEventListener('keydown', (event) => {
-      switch (event.key) {
-        case 'Escape':
-          this.handleEscKey(event);
-          break;
-
-        case 'Enter':
-          this.handleEnterKey(event);
-          break;
-
-        default:
-          break;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if(!this.htmlTabs.includes(this.cmService.currentTab)) {
+      if(!this.resizeTimeout) {
+        this.cmService.setWindowSizeAndCanvasOffsets();
+        this.resizeTimeout = setTimeout(() => {}, 300);
+      } else {
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
+          this.cmService.setWindowSizeAndCanvasOffsets();
+          clearTimeout(this.resizeTimeout);
+        }, 300);
       }
-    });
+    }
+  }
+
+  ngDoCheck() {
+    if(this.loading && this.router.url !== '/') {
+      this.loading = false;
+      this.cdRef.detectChanges();
+
+      // When the event DOMContentLoaded occurs, it is safe to access the DOM
+      document.addEventListener('DOMContentLoaded', async () => {
+        await this.cmService.setWindowSizeAndCanvasOffsets();
+      });
+
+      this.cmService.setBackgroundColor();
+
+      document.addEventListener('keydown', (event) => {
+        switch (event.key) {
+          case 'Escape':
+            this.handleEscKey(event);
+            break;
+
+          case 'Enter':
+            this.handleEnterKey(event);
+            break;
+
+          default:
+            break;
+        }
+      });
+    }  
   }
 
   // close modals with ESC
@@ -82,23 +107,37 @@ export class AppComponent implements AfterViewInit {
       });
   }
 
-  async windowResize() {
-    await this.cmService.setWindowSizeAndCanvasOffsets();
-  }
-
   async changeTab(tab: MainRenderingTabs) {
-    new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
+    if(this.htmlTabs.includes(tab)) {
+      if(!this.htmlTabs.includes(this.cmService.currentTab)) {
+        new RenderNativeWindow(this.cmService.currentTab).disable();
+      }
+  
+      this.cmService.currentTab = tab;
 
-    this.cmService.currentTab = tab;
-    if (this.electronService.isElectron) {
-      await this.windowUtilityService.reInitialize();
-      var container=this.windowUtilityService.getMinskyContainerElement();
-      const scrollableArea=this.windowUtilityService.getScrollableArea();
-      container.scrollTop=scrollableArea.height / 2;
-      container.scrollLeft=scrollableArea.width / 2;
-      const payload = { newTab: tab };
-      await this.electronService.send(events.CHANGE_MAIN_TAB, payload);
-      this.cmService.resetScroll();
+      this.router.navigate([tab]);
+    } else {
+      this.router.navigate(['/wiring']);
+
+      
+      if (this.electronService.isElectron) {
+        if(!this.htmlTabs.includes(this.cmService.currentTab)) {
+          new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
+        }
+    
+        this.cmService.currentTab = tab;
+
+        setTimeout(async ()=> {
+          await this.windowUtilityService.reInitialize();
+          var container=this.windowUtilityService.getMinskyContainerElement();
+          const scrollableArea=this.windowUtilityService.getScrollableArea();
+          container.scrollTop=scrollableArea.height / 2;
+          container.scrollLeft=scrollableArea.width / 2;
+          const payload = { newTab: tab };
+          await this.electronService.send(events.CHANGE_MAIN_TAB, payload);
+          this.cmService.resetScroll();
+        }, 1);
+      }
     }
   }
 
@@ -109,6 +148,8 @@ export class AppComponent implements AfterViewInit {
         url: `#/headless/terminal`,
         width: 800,
         height: 668,
+        minWidth: 350,
+        minHeight: 400,
         modal: false,
       });
     }

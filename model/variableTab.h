@@ -29,7 +29,7 @@ namespace minsky
   class VariableTab: public PannableTab<ItemTab>
   {	  
   public:
-    bool itemSelector(const ItemPtr& i) override {if (auto v=i->variableCast()) return v->type()!=VariableType::parameter && v->attachedToDefiningVar(); return false;}  
+    bool itemSelector(const ItemPtr& i) override {if (auto v=i->variableCast()) return v->type()!=VariableType::parameter /*&& v->attachedToDefiningVar() this filtered variables based on varTabDisplay boolean */; return false;}  
   };
   
 }

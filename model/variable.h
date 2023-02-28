@@ -184,7 +184,7 @@ namespace minsky
 
     bool varTabDisplay=false;
     void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
-    bool attachedToDefiningVar(std::set<const Item*>&) const override {return varTabDisplay;}
+    bool attachedToDefiningVar(std::set<const Item*>&) const override {return varTabDisplay;} // <-- does this definition make any sense??
     using Item::attachedToDefiningVar;
     /// formula defining this variable
     std::string definition() const;

@@ -1,9 +1,11 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
-  ViewChild,
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -16,11 +18,14 @@ import {
   ZOOM_OUT_FACTOR,
   events,
   GodleyIcon,
-  GodleyTableWindow,
+  GodleyTableWindow
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
+
+import * as JSON5 from 'json5';
+import { ScaleHandler } from '../scale-handler/scale-handler.class';
 
 @AutoUnsubscribe()
 @Component({
@@ -28,12 +33,13 @@ import { sampleTime } from 'rxjs/operators';
   templateUrl: './godley-widget-view.component.html',
   styleUrls: ['./godley-widget-view.component.scss'],
 })
-export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
+export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild('godleyCanvasElemWrapper') godleyCanvasElemWrapper: ElementRef;
 
   itemId: string;
   systemWindowId: string;
-  namedItem: GodleyIcon;
+  windowId: number;
+  godleyIcon: GodleyIcon;
   namedItemSubCommand: GodleyTableWindow;
 
   leftOffset = 0;
@@ -43,7 +49,30 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   godleyCanvasContainer: HTMLElement;
   mouseMove$: Observable<MouseEvent>;
 
+  Math = Math;
+
   renderTimeout;
+
+  // in canvas mode, the C++ layer writes to the godley-cairo-canvas element
+  // this can be re-enabled to compare the visual output and interaction between the canvas based renderer and the HTML based one
+  // switching this interactively without reinitialzing the window doesn't work, because the C++ output is very persistent. may need to clear it somehow.
+  canvasMode = false;
+
+  htmlModeReady = false;
+
+  assetVariables = [];
+  liabilityVariables = [];
+  equityVariables = [];
+  columnVariables = [];
+  flows = [];
+
+  initialValues = [];
+  rowSums = [];
+  cellValues = [];
+
+  scale = new ScaleHandler();
+
+  cellEditing = [undefined, undefined];
 
   yoffs = 0; // extra offset required on some systems
 
@@ -51,7 +80,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     private communicationService: CommunicationService,
     private windowUtilityService: WindowUtilityService,
     private electronService: ElectronService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdRef: ChangeDetectorRef
   ) {
     this.route.queryParams.subscribe((params) => {
       this.itemId = params.itemId;
@@ -59,19 +89,34 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     });
   }
 
+  async ngOnInit() {
+    this.godleyIcon = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
+    this.namedItemSubCommand = this.godleyIcon.popup;
+
+    this.windowId = (await this.electronService.getCurrentWindow()).id;
+
+    if(!this.canvasMode) {
+      this.electronService.on(events.GODLEY_POPUP_REFRESH, async e => {
+        await this.hardRefresh();
+      });
+
+      await this.hardRefresh();
+    }
+  }
+
   ngAfterViewInit() {
-    this.namedItem = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
-    this.namedItemSubCommand = this.namedItem.popup;
-    this.windowResize();
-    this.initEvents();
-    if (this.electronService.isMacOS()) this.yoffs=-20; // why, o why, Mac?
+    if(this.canvasMode) {
+      this.windowResize();
+      this.initEvents();
+      if (this.electronService.isMacOS()) this.yoffs=-20; // why, o why, Mac?
+    }
   }
 
   async windowResize() {
     await this.getWindowRectInfo();
 
     clearTimeout(this.renderTimeout);
-    this.renderTimeout = setTimeout(() => this.renderFrame(), 100);
+    this.renderTimeout = setTimeout(() => this.renderFrame(), 300);
   }
 
   private async getWindowRectInfo() {
@@ -89,6 +134,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
 
   renderFrame() {
     if (
+      this.canvasMode &&
       this.systemWindowId &&
       this.itemId &&
       this.height &&
@@ -138,8 +184,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
       this.electronService.send(events.CONTEXT_MENU, {
         x: event.x,
         y: event.y,
-        type: "godley",
-        command: this.namedItem.prefix(),
+        type: 'godley',
+        command: this.godleyIcon.prefix(),
       });
     });
 
@@ -176,8 +222,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
   async handleScroll(scrollTop: number, scrollLeft: number) {
     //TODO: throttle here if required
 
-    const cols = await this.namedItem.table.cols();
-    const rows = await this.namedItem.table.rows();
+    const cols = await this.godleyIcon.table.cols();
+    const rows = await this.godleyIcon.table.rows();
 
     const stepX = this.godleyCanvasContainer.scrollHeight / (cols-1);
     const stepY = this.godleyCanvasContainer.scrollHeight / (rows-1);
@@ -188,6 +234,184 @@ export class GodleyWidgetViewComponent implements OnDestroy, AfterViewInit {
     this.namedItemSubCommand.scrollColStart(currentStepX);
     this.namedItemSubCommand.scrollRowStart(currentStepY);
     this.redraw();
+  }
+
+  async contextMenu(i: number, j: number, clickType: string) {
+    const frameId = (await this.electronService.getCurrentWindow()).id;
+
+    this.electronService.send(events.CONTEXT_MENU, {
+      x: i,
+      y: j,
+      type: 'html-godley',
+      command: JSON5.stringify([this.godleyIcon.prefix(), clickType, frameId]),
+    });
+  }
+
+  async onRowAdd(i) {
+    if(i >= 0 && i < this.flows.length) {
+      this.godleyIcon.table.insertRow(i+1);
+      //this.variables.splice(i + 1, 0, "new");
+      await this.hardRefresh();
+    }
+  }
+
+  async onRowDelete(i) {
+    if(i >= 0 && i < this.flows.length) {
+      this.godleyIcon.deleteRow(i+1);
+      //this.variables.splice(i, 1);
+      await this.hardRefresh();
+    }
+  }
+
+  async onRowMove(i, n) {
+    const resultIndex = i + n;
+    if(resultIndex >= 0 && resultIndex < this.flows.length) {
+      this.godleyIcon.table.moveRow(i,n);
+      //const deleted = this.variables.splice(i, 1);
+      //this.variables.splice(i+n, 0, deleted[0]);
+      await this.hardRefresh();
+    }
+  }
+
+  async onColumnAdd(i) {
+    if(i >= 0 && i < this.columnVariables.length) {
+      this.godleyIcon.table.insertCol(i);
+      //this.columnVariables.splice(i + 1, 0, "new");
+      await this.hardRefresh();
+    }
+  }
+
+  async onColumnDelete(i) {
+    if(i >= 0 && i < this.columnVariables.length) {
+      this.godleyIcon.table.deleteCol(i);
+      //this.columnVariables.splice(i, 1);
+      await this.hardRefresh();
+    }
+  }
+
+  async onColumnMove(i, n) {
+    const resultIndex = i + n;
+    if(resultIndex >= 0 && resultIndex < this.flows.length) {
+      this.godleyIcon.table.moveCol(i,n);
+      //const deleted = this.columnVariables.splice(i, 1);
+      //this.columnVariables.splice(i+n, 0, deleted[0]);
+      await this.hardRefresh();
+    }
+  }
+
+  async hardRefresh(update = true) {
+    if(update) this.godleyIcon.update();
+
+    const allData: string[][] = <any>await this.godleyIcon.table.getData();
+
+    const flows = allData.slice(2).map(dataRow => ({
+      name: dataRow[0]
+    }));
+
+    const rowSums = [await this.godleyIcon.rowSum(1)];
+    for(let i = 0; i < flows.length; i++) rowSums.push(await this.godleyIcon.rowSum(i + 2));
+
+    var columnVariableNames = (<string[]>allData[0]).slice(1);
+    const columnVariables = [];
+    const assetVariables = [];
+    const liabilityVariables = [];
+    const equityVariables = [];
+    let lastClass;
+    for(let i = 0; i < columnVariableNames.length; i++) {
+      const assetClass = <any>await this.godleyIcon.table._assetClass(i + 1);
+      const newVar = {
+        assetClass: assetClass,
+        name: columnVariableNames[i]
+      };
+      columnVariables.push(newVar);
+
+      if(`${assetClass}` === 'asset') assetVariables.push(newVar);
+      if(`${assetClass}` === 'liability') liabilityVariables.push(newVar);
+      if(`${assetClass}` === 'equity') equityVariables.push(newVar);
+
+      if(assetClass !== lastClass) {
+        columnVariables[columnVariables.length - 1].firstOfClass = true;
+        if(i !== 0) {
+          columnVariables[columnVariables.length - 2].lastOfClass = true;
+        }
+      }
+
+      lastClass = assetClass;
+    }
+
+    const initialValues = [];
+    for(let i = 0; i < columnVariables.length; i++) {
+      initialValues.push(allData[1][i+1]);
+    }
+
+    this.flows = flows;
+    this.columnVariables = columnVariables;
+    this.assetVariables = assetVariables;
+    this.liabilityVariables = liabilityVariables;
+    this.equityVariables = equityVariables;
+    this.cellValues = allData;
+    this.initialValues = initialValues;
+    this.rowSums = rowSums;
+
+    this.htmlModeReady = true;
+
+    this.cdRef.detectChanges();
+  }
+
+  async onCellFocus(i, j, event, handleFocus = true) {
+    if(i !== this.cellEditing[0] || j !== this.cellEditing[1]) {
+      await this.finishEditing();
+    }
+
+    this.cellEditing[0] = i;
+    this.cellEditing[1] = j;
+
+    if(handleFocus) {
+      this.cdRef.detectChanges();
+      
+      const inputElement: HTMLInputElement = document.querySelector(`#dataCell${i}_${j} > input`);
+      if(inputElement) inputElement.focus();
+
+      event.stopPropagation();
+    }
+  }
+
+  isCellEditing(i, j) {
+    return this.cellEditing[0] === i && this.cellEditing[1] === j;
+  }
+
+  async finishEditing() {
+    if(this.editingAnything()) {
+      const editedValue = this.cellValues[this.cellEditing[0]][this.cellEditing[1]];
+      
+      this.godleyIcon.setCell(this.cellEditing[0], this.cellEditing[1], editedValue);
+
+      this.cellEditing[0] = undefined;
+      this.cellEditing[1] = undefined;
+
+      await this.hardRefresh();
+    }
+  }
+
+  delayedFinishEditing() {
+    setTimeout(() => this.finishEditing(), 200);
+  }
+
+  editingAnything() {
+    return this.cellEditing[0] !== undefined && this.cellEditing[1] !== undefined;
+  }
+
+  changeScale(e) {
+    if(e.ctrlKey) {
+      this.scale.changeScale(e.deltaY);
+    }
+  }
+
+  onWedgeClick(columnIndex, event) {
+    this.electronService.invoke(events.GODLEY_VIEW_IMPORT_STOCK, {
+      command: this.itemId,
+      columnIndex: columnIndex
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method

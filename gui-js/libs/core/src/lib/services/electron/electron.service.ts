@@ -17,7 +17,7 @@ export class ElectronService {
     if (this.isElectron) {
       this.ipcRenderer = window['electron'].ipcRenderer;
       this.platform = window['electron'].platform;
-      this.on = window['electron'].ipcRendererOn
+      this.on = window['electron'].ipcRendererOn;
       this.minsky=new Minsky("/minsky");
       CppClass.backend=async (...args)=>{
         return await this.ipcRenderer.invoke(events.BACKEND, ...args);
@@ -34,7 +34,6 @@ export class ElectronService {
 
   isWindows() {return this.platform === 'win32';}
   isMacOS() {return this.platform === 'darwin';}
-
   
   async getCurrentWindow(): Promise<CurrentWindowDetails> {
     return this.ipcRenderer.invoke(events.GET_CURRENT_WINDOW);
@@ -80,5 +79,4 @@ export class ElectronService {
   async recordingReplay(): Promise<void> {
     return await this.ipcRenderer.invoke(events.RECORDING_REPLAY);
   }
-  
 }
