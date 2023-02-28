@@ -60,11 +60,10 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   htmlModeReady = false;
 
-  assetVariables = [];
-  liabilityVariables = [];
-  equityVariables = [];
   columnVariables = [];
   flows = [];
+
+  singleEquity = false;
 
   initialValues = [];
   rowSums = [];
@@ -248,55 +247,39 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   }
 
   async onRowAdd(i) {
-    if(i >= 0 && i < this.flows.length) {
-      this.godleyIcon.table.insertRow(i+1);
-      //this.variables.splice(i + 1, 0, "new");
-      await this.hardRefresh();
-    }
+    await this.finishEditing();
+    this.godleyIcon.table.insertRow(i+3);
+    await this.hardRefresh();
   }
 
   async onRowDelete(i) {
-    if(i >= 0 && i < this.flows.length) {
-      this.godleyIcon.deleteRow(i+1);
-      //this.variables.splice(i, 1);
-      await this.hardRefresh();
-    }
+    await this.finishEditing();
+    this.godleyIcon.deleteRow(i+3);
+    await this.hardRefresh();
   }
 
   async onRowMove(i, n) {
-    const resultIndex = i + n;
-    if(resultIndex >= 0 && resultIndex < this.flows.length) {
-      this.godleyIcon.table.moveRow(i,n);
-      //const deleted = this.variables.splice(i, 1);
-      //this.variables.splice(i+n, 0, deleted[0]);
-      await this.hardRefresh();
-    }
+    await this.finishEditing();
+    this.godleyIcon.table.moveRow(i+2,n);
+    await this.hardRefresh();
   }
 
   async onColumnAdd(i) {
-    if(i >= 0 && i < this.columnVariables.length) {
-      this.godleyIcon.table.insertCol(i);
-      //this.columnVariables.splice(i + 1, 0, "new");
-      await this.hardRefresh();
-    }
+    await this.finishEditing();
+    this.godleyIcon.table.insertCol(i+2);
+    await this.hardRefresh();
   }
 
   async onColumnDelete(i) {
-    if(i >= 0 && i < this.columnVariables.length) {
-      this.godleyIcon.table.deleteCol(i);
-      //this.columnVariables.splice(i, 1);
-      await this.hardRefresh();
-    }
+    await this.finishEditing();
+    this.godleyIcon.table.deleteCol(i+2);
+    await this.hardRefresh();
   }
 
   async onColumnMove(i, n) {
-    const resultIndex = i + n;
-    if(resultIndex >= 0 && resultIndex < this.flows.length) {
-      this.godleyIcon.table.moveCol(i,n);
-      //const deleted = this.columnVariables.splice(i, 1);
-      //this.columnVariables.splice(i+n, 0, deleted[0]);
-      await this.hardRefresh();
-    }
+    await this.finishEditing();
+    this.godleyIcon.table.moveCol(i+1,n);
+    await this.hardRefresh();
   }
 
   async hardRefresh(update = true) {
@@ -313,9 +296,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
     var columnVariableNames = (<string[]>allData[0]).slice(1);
     const columnVariables = [];
-    const assetVariables = [];
-    const liabilityVariables = [];
-    const equityVariables = [];
     let lastClass;
     for(let i = 0; i < columnVariableNames.length; i++) {
       const assetClass = <any>await this.godleyIcon.table._assetClass(i + 1);
@@ -324,10 +304,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
         name: columnVariableNames[i]
       };
       columnVariables.push(newVar);
-
-      if(`${assetClass}` === 'asset') assetVariables.push(newVar);
-      if(`${assetClass}` === 'liability') liabilityVariables.push(newVar);
-      if(`${assetClass}` === 'equity') equityVariables.push(newVar);
 
       if(assetClass !== lastClass) {
         columnVariables[columnVariables.length - 1].firstOfClass = true;
@@ -346,12 +322,11 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
     this.flows = flows;
     this.columnVariables = columnVariables;
-    this.assetVariables = assetVariables;
-    this.liabilityVariables = liabilityVariables;
-    this.equityVariables = equityVariables;
     this.cellValues = allData;
     this.initialValues = initialValues;
     this.rowSums = rowSums;
+
+    this.singleEquity = this.columnVariables.filter(cv => cv.assetClass === 'equity').length === 1;
 
     this.htmlModeReady = true;
 
