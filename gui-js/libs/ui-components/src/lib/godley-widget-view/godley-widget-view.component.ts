@@ -63,7 +63,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   columnVariables = [];
   flows = [];
 
-  singleEquity = false;
+  multiEquityAllowed = false;
 
   initialValues = [];
   rowSums = [];
@@ -89,6 +89,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   }
 
   async ngOnInit() {
+    this.multiEquityAllowed = await this.electronService.minsky.multipleEquities();
+
     this.godleyIcon = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
     this.namedItemSubCommand = this.godleyIcon.popup;
 
@@ -325,8 +327,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     this.cellValues = allData;
     this.initialValues = initialValues;
     this.rowSums = rowSums;
-
-    this.singleEquity = this.columnVariables.filter(cv => cv.assetClass === 'equity').length === 1;
 
     this.htmlModeReady = true;
 

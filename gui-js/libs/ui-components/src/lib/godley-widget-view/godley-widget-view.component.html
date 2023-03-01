@@ -25,13 +25,15 @@
 
     <div class="table-row actions-row">
       <div class="data-cell narrow"></div>
-      <div class="data-cell wide"></div>
+      <div class="data-cell wide">{{multiEquityAllowed}}</div>
       <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell buttons-cell" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
-        <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && singleEquity)">
+        <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && !multiEquityAllowed)">
           <div class="small-button add-button" (click)="onColumnAdd(j)"><span class="material-icons">add</span></div>
           <div class="small-button remove-button" (click)="onColumnDelete(j)"><span class="material-icons">remove</span></div>
           <div class="small-button" *ngIf="j > 0" (click)="onColumnMove(j, -1)"><span class="material-icons">arrow_back</span></div>
-          <div class="small-button" *ngIf="j < columnVariables.length - 1" (click)="onColumnMove(j, 1)"><span class="material-icons">arrow_forward</span></div>
+          <div class="small-button" *ngIf="j < columnVariables.length - 1 && !(!multiEquityAllowed && columnVariable.assetClass === 'liability' && columnVariable.lastOfClass)" (click)="onColumnMove(j, 1)">
+            <span class="material-icons">arrow_forward </span>
+          </div>
         </ng-container>
       </div>
       <div class="data-cell firstOfClass"></div>
