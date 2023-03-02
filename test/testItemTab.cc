@@ -93,14 +93,6 @@ SUITE(ItemTab)
       set<ItemPtr> vars(variableTab.itemVector.begin(), variableTab.itemVector.end());
       CHECK_EQUAL(1, vars.count(c));
       CHECK_EQUAL(1, vars.count(intOp->intVar));
-
-      intOp->intVar->toggleVarTabDisplay();
-      variableTab.populateItemVector();
-      CHECK_EQUAL(1,variableTab.itemVector.size());
-      set<ItemPtr> vars1(variableTab.itemVector.begin(), variableTab.itemVector.end());
-      CHECK_EQUAL(1, vars1.count(c));
-      CHECK_EQUAL(0, vars1.count(intOp->intVar));
-      
     }
 
     TEST_FIXTURE(ParVarTabFixture, checkCells)

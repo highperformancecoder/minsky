@@ -325,8 +325,8 @@ namespace minsky
       if (rank()==0) return;
       
       auto& xv=hc.xvectors[rank()==1? 0: dimension];
-      if (delta>=xv.size() || delta<=-xv.size())
-        throw std::runtime_error("Δ larger than dimension size");
+      if (abs(delta)>=xv.size())
+        throw std::runtime_error("Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(xv.size())+")");
       if (delta>=0)
         xv.erase(xv.begin(), xv.begin()+delta);
       else 
