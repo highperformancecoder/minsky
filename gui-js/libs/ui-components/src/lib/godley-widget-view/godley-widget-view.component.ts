@@ -63,7 +63,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   columnVariables = [];
   flows = [];
 
-  singleEquity = false;
+  multiEquityAllowed = false;
 
   initialValues = [];
   rowSums = [];
@@ -89,6 +89,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   }
 
   async ngOnInit() {
+    this.multiEquityAllowed = await this.electronService.minsky.multipleEquities();
+
     this.godleyIcon = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
     this.namedItemSubCommand = this.godleyIcon.popup;
 
@@ -326,8 +328,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     this.initialValues = initialValues;
     this.rowSums = rowSums;
 
-    this.singleEquity = this.columnVariables.filter(cv => cv.assetClass === 'equity').length === 1;
-
     this.htmlModeReady = true;
 
     this.cdRef.detectChanges();
@@ -344,25 +344,31 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     if(handleFocus) {
       this.cdRef.detectChanges();
       
-      const inputElement: HTMLInputElement = document.querySelector(`#dataCell${i}_${j} > input`);
-      if(inputElement) inputElement.focus();
+      this.focusInput(i,j);
 
       event.stopPropagation();
     }
+  }
+
+  focusInput(i, j) {
+    const inputElement: HTMLInputElement = document.querySelector(`#dataCell${i}_${j} > input`);
+      if(inputElement) inputElement.focus();
   }
 
   isCellEditing(i, j) {
     return this.cellEditing[0] === i && this.cellEditing[1] === j;
   }
 
-  async finishEditing() {
+  async finishEditing(clearEditing = true) {
     if(this.editingAnything()) {
       const editedValue = this.cellValues[this.cellEditing[0]][this.cellEditing[1]];
       
       this.godleyIcon.setCell(this.cellEditing[0], this.cellEditing[1], editedValue);
 
-      this.cellEditing[0] = undefined;
-      this.cellEditing[1] = undefined;
+      if(clearEditing) {
+        this.cellEditing[0] = undefined;
+        this.cellEditing[1] = undefined;
+      }
 
       await this.hardRefresh();
     }
@@ -387,6 +393,51 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
       command: this.itemId,
       columnIndex: columnIndex
     });
+  }
+
+  async inputKeyup(e: KeyboardEvent) {
+    if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) && this.editingAnything()) {
+      switch(e.key) {
+        case 'ArrowUp':
+          e.stopPropagation();
+          e.preventDefault();
+          await this.finishEditing(false);
+          this.cellEditing[0]--;
+          this.cdRef.detectChanges();
+          this.focusInput(this.cellEditing[0], this.cellEditing[1]);
+        break;
+        case 'ArrowDown':
+          e.stopPropagation();
+          e.preventDefault();
+          await this.finishEditing(false);
+          this.cellEditing[0]++;
+          this.cdRef.detectChanges();
+          this.focusInput(this.cellEditing[0], this.cellEditing[1]);
+        break;
+        case 'ArrowLeft':
+          var element = e.target as HTMLInputElement;
+          if(element.selectionStart == 0) {
+            e.stopPropagation();
+            e.preventDefault();
+            await this.finishEditing(false);
+            this.cellEditing[1]--;
+            this.cdRef.detectChanges();
+            this.focusInput(this.cellEditing[0], this.cellEditing[1]);
+          }
+        break;
+        case 'ArrowRight':
+          var element = e.target as HTMLInputElement;
+          if(element.selectionStart == element.value.length) {
+            e.stopPropagation();
+            e.preventDefault();
+            await this.finishEditing(false);
+            this.cellEditing[1]++;
+            this.cdRef.detectChanges();
+            this.focusInput(this.cellEditing[0], this.cellEditing[1]);
+          }
+        break;
+      }
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
