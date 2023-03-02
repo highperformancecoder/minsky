@@ -25,13 +25,15 @@
 
     <div class="table-row actions-row">
       <div class="data-cell narrow"></div>
-      <div class="data-cell wide"></div>
+      <div class="data-cell wide">{{multiEquityAllowed}}</div>
       <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell buttons-cell" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
-        <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && singleEquity)">
+        <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && !multiEquityAllowed)">
           <div class="small-button add-button" (click)="onColumnAdd(j)"><span class="material-icons">add</span></div>
           <div class="small-button remove-button" (click)="onColumnDelete(j)"><span class="material-icons">remove</span></div>
           <div class="small-button" *ngIf="j > 0" (click)="onColumnMove(j, -1)"><span class="material-icons">arrow_back</span></div>
-          <div class="small-button" *ngIf="j < columnVariables.length - 1" (click)="onColumnMove(j, 1)"><span class="material-icons">arrow_forward</span></div>
+          <div class="small-button" *ngIf="j < columnVariables.length - 1 && !(!multiEquityAllowed && columnVariable.assetClass === 'liability' && columnVariable.lastOfClass)" (click)="onColumnMove(j, 1)">
+            <span class="material-icons">arrow_forward </span>
+          </div>
         </ng-container>
       </div>
       <div class="data-cell firstOfClass"></div>
@@ -44,7 +46,7 @@
             <ng-container *ngIf="!isCellEditing(0, j+1)">
               <span class="colvar-header latex-cell" (click)="onCellFocus(0, j+1, $event)" latex [title]="cellValues[0][j+1]" [equation]="cellValues[0][j+1]" [latexScale]="0.9"></span><span class="colvar-triangle" (click)="onWedgeClick(j+1, $event)">▼</span>
             </ng-container>
-            <input *ngIf="isCellEditing(0, j+1)" type="text" [(ngModel)]="cellValues[0][j+1]" (blur)="delayedFinishEditing()"/>
+            <input *ngIf="isCellEditing(0, j+1)" type="text" [(ngModel)]="cellValues[0][j+1]" (keydown)="inputKeyup($event)" (blur)="delayedFinishEditing()"/>
           </div>
           <div class="data-cell firstOfClass"></div>
     </div>
@@ -55,7 +57,7 @@
         </div>
         <div class="data-cell wide">Initial Conditions</div>
         <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell" id="dataCell1_{{j+1}}" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass" (contextmenu)="contextMenu(1, j+1)">
-          <input type="text" [(ngModel)]="cellValues[1][j+1]" (click)="$event.stopPropagation()" (focus)="onCellFocus(1, j+1, $event, false)" (blur)="delayedFinishEditing()"/>
+          <input type="text" [(ngModel)]="cellValues[1][j+1]" (click)="$event.stopPropagation()" (focus)="onCellFocus(1, j+1, $event, false)" (keydown)="inputKeyup($event)" (blur)="delayedFinishEditing()"/>
         </div>
         <div class="data-cell firstOfClass ale-cell">
           <span class="latex-cell" latex [equation]="rowSums[0]" [latexScale]="0.9"></span>
@@ -71,12 +73,12 @@
           </div>
           <div [title]="flow.name" id="dataCell{{i+2}}_0" class="data-cell wide" (contextmenu)="contextMenu(i+2, 0, 'col0')">
             <span *ngIf="!isCellEditing(i+2, 0)" (click)="onCellFocus(i+2, 0, $event)" class="latex-cell" latex [title]="cellValues[i+2][0]" [equation]="cellValues[i+2][0]" [replaceSpaces]="true" [latexScale]="0.9"></span>
-            <input *ngIf="isCellEditing(i+2, 0)" (click)="$event.stopPropagation()" type="text" [(ngModel)]="cellValues[i+2][0]" (blur)="delayedFinishEditing()"/>
+            <input *ngIf="isCellEditing(i+2, 0)" (click)="$event.stopPropagation()" type="text" [(ngModel)]="cellValues[i+2][0]" (keydown)="inputKeyup($event)" (blur)="delayedFinishEditing()"/>
           </div>
           <ng-container *ngIf="cellValues">
             <div id="dataCell{{i+2}}_{{j+1}}" *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass" (contextmenu)="contextMenu(i+2, j+1, 'internal')">
               <span *ngIf="!isCellEditing(i+2, j+1)" (click)="onCellFocus(i+2, j+1, $event)" class="latex-cell" [class.negative]="cellValues[i+2][j+1].startsWith('-')" latex [title]="cellValues[i+2][j+1]" [equation]="cellValues[i+2][j+1]" [latexScale]="0.9"></span>
-              <input *ngIf="isCellEditing(i+2, j+1)" (click)="$event.stopPropagation()" type="text" [(ngModel)]="cellValues[i+2][j+1]" (blur)="delayedFinishEditing()"/>
+              <input *ngIf="isCellEditing(i+2, j+1)" (click)="$event.stopPropagation()" type="text" [(ngModel)]="cellValues[i+2][j+1]" (keydown)="inputKeyup($event)" (blur)="delayedFinishEditing()"/>
             </div>
           </ng-container>
           <div class="data-cell firstOfClass ale-cell">
