@@ -365,7 +365,7 @@ namespace minsky
 
     bool sameSlice(size_t i, size_t j) const
     {
-      return rank()==1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
+      return rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
     }
     
     void computeTensor() const override
