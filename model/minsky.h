@@ -96,6 +96,8 @@ namespace minsky
 
     enum StateFlags {is_edited=1, reset_needed=2, fullEqnDisplay_needed=4};
     int flags=reset_needed;
+
+    std::chrono::time_point<std::chrono::system_clock> resetAt;
     
     std::vector<int> flagStack;
 
@@ -175,6 +177,11 @@ namespace minsky
       variablePane.update();
       canvas.requestRedraw();
       canvas.model.updateTimestamp();
+    }
+    void requestReset() {
+      flags|=reset_needed;
+      // schedule reset for 1 second in the future
+      resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(500);
     }
 
     /// @{ push and pop state of the flags

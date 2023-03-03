@@ -97,7 +97,7 @@ mutex redrawMutex;
 struct RedrawThread: public thread
 {
   RedrawThread(): thread([this]{run();}) {}
-  ~RedrawThread() {join();}
+  ~RedrawThread() {if (joinable()) join();}
   atomic<bool> running; //< flag indicating thread is still running
   void run() {
 #if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
@@ -128,6 +128,29 @@ struct RedrawThread: public thread
 
 unique_ptr<RedrawThread> redrawThread(new RedrawThread);
 
+struct ResetThread: public thread
+{
+  ResetThread(): thread([this]{run();}) {}
+  ~ResetThread() {if (joinable()) join();}
+  atomic<bool> running; //< flag indicating thread is still running
+  void run() {
+#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
+    pthread_setname_np(pthread_self(),"reset thread");
+#endif
+    running=true;
+
+    while (std::chrono::system_clock::now()<minsky::minsky().resetAt)
+      this_thread::sleep_for(chrono::milliseconds(100));
+    lock_guard<mutex> lock(redrawMutex);
+    minsky::minsky().reset();
+    if (!redrawThread->running)
+      redrawThread.reset(new RedrawThread);
+    running=false;
+  }
+};
+
+unique_ptr<ResetThread> resetThread;
+ 
 Value setMessageCallback(const Napi::CallbackInfo& info)
 {
   Env env = info.Env();
@@ -207,6 +230,11 @@ Value RESTCall(const Napi::CallbackInfo& info)
         replace(cmd.begin(), cmd.end(), '/', '.');
         minsky::minsky().commandHook(cmd,nargs);
       }
+
+      // arrange for deferred reset of minsky model
+      if (minsky::minsky().reset_flag() && (!resetThread || !resetThread->running))
+        resetThread.reset(new ResetThread);
+      
       if (!minsky::minsky().nativeWindowsToRedraw.empty())
         {
           if (redrawThread->running)

@@ -245,6 +245,7 @@ namespace minsky
         return false;
       }
     if (state>0) minsky().reset(); //reset if any modifier key pressed
+    else minsky().requestReset();
     return true;
   }
 
@@ -376,7 +377,7 @@ namespace minsky
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
     if (wrappedRavel.rank()!=1) return;
-    try {minsky().reset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
+    try {minsky().requestReset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
     auto vv=m_ports[1]->getVariableValue();
     if (!vv)
       throw runtime_error("Cannot sort handle at the moment");
@@ -809,7 +810,7 @@ namespace minsky
   void RavelPopup::mouseOver(float x, float y) {
     ravel.wrappedRavel.onMouseOver(localX(x),localY(y));
     ravel.broadcastStateToLockGroup();
-    minsky().reset();
+    minsky().requestReset();
     requestRedraw();
   }
   void RavelPopup::mouseLeave() {

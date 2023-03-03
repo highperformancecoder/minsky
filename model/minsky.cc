@@ -919,10 +919,10 @@ namespace minsky
          return false;
        });
 
-    if (running)
+    //    if (running)
       flags &= ~reset_needed; // clear reset flag
-    else
-      flags |= reset_needed; // enforce another reset at simulation start
+//    else
+//      flags |= reset_needed; // enforce another reset at simulation start
     running=false;
 
     canvas.requestRedraw();

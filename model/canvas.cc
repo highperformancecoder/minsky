@@ -148,7 +148,7 @@ namespace minsky
       {
         itemFocus->onMouseUp(x,y);
         itemFocus.reset(); // prevent spurious mousemove events being processed
-        minsky().reset();
+        minsky().requestReset();
       }
     if (fromPort.get())
       {
@@ -161,7 +161,7 @@ namespace minsky
                 to->item().tooltip=v->name();
             
             fromPort.reset();
-            minsky().reset(); 
+            minsky().requestReset(); 
           } else {
             fromPort.reset();
           }
@@ -364,6 +364,8 @@ namespace minsky
                                                 return false;
                                               });
           }
+        if (minsky().reset_flag())
+          minsky().requestReset(); // postpone reset whilst mousing
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
@@ -549,7 +551,7 @@ namespace minsky
     if (item)
     {
       model->deleteItem(*item);
-      minsky().reset();
+      minsky().requestReset();
     }
   }
   
@@ -559,7 +561,7 @@ namespace minsky
     {
       model->removeWire(*wire);
       wire.reset();
-      minsky().reset();
+      minsky().requestReset();
     }
   }
   
@@ -685,7 +687,7 @@ namespace minsky
             g->update();
             assert(model->numItems()==numItems);
           }
-      minsky().reset();   // Updates model after variables rename. For ticket 1109.    
+      minsky().requestReset();   // Updates model after variables rename. For ticket 1109.    
       }
    }
   
