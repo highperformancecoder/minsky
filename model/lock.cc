@@ -60,7 +60,10 @@ namespace minsky
       lockedState.clear();
     else
       if (auto* r=ravelInput())
-        lockedState=r->getState();
+        {
+          lockedState=r->getState();
+          tooltip=ravel::Ravel::description(lockedState);
+        }
       else
         throw_error("Locks can only be applied to Ravels");
   }
