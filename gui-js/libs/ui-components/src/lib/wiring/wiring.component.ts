@@ -31,7 +31,7 @@ export class WiringComponent implements OnInit, OnDestroy {
     private electronService: ElectronService,
     private windowUtilityService: WindowUtilityService,
     private zone: NgZone,
-    private changeDetectorRef: ChangeDetectorRef
+    public changeDetectorRef: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -112,6 +112,7 @@ export class WiringComponent implements OnInit, OnDestroy {
 
         this.electronService.on(events.CURSOR_BUSY, async (event, busy: boolean)=>{
           document.body.style.cursor=busy? 'wait': 'default';
+          this.electronService.log(`cursor busy received ${busy}`);
         });
         
         this.mouseMove$ = fromEvent<MouseEvent>(

@@ -178,11 +178,7 @@ namespace minsky
       canvas.requestRedraw();
       canvas.model.updateTimestamp();
     }
-    void requestReset() {
-      flags|=reset_needed;
-      // schedule reset for 1 second in the future
-      resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(500);
-    }
+    void requestReset();
 
     /// @{ push and pop state of the flags
     void pushFlags() {flagStack.push_back(flags);}

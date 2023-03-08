@@ -91,7 +91,7 @@ namespace minsky
 
 minsky::AddOnMinsky& addOnMinsky=static_cast<minsky::AddOnMinsky&>(minsky::minsky());
 
-mutex redrawMutex;
+mutex redrawMutex, resetMutex;
 
 // delay process redrawing to throttle redrawing
 struct RedrawThread: public thread
@@ -141,8 +141,13 @@ struct ResetThread: public thread
 
     while (std::chrono::system_clock::now()<minsky::minsky().resetAt)
       this_thread::sleep_for(chrono::milliseconds(100));
-    lock_guard<mutex> lock(redrawMutex);
-    minsky::minsky().reset();
+    lock_guard<mutex> lock(resetMutex);
+    try
+      {
+        minsky::minsky().reset();
+      }
+    catch (...)
+      {} // absorb all exceptions to prevent terminate being called.
     if (!redrawThread->running)
       redrawThread.reset(new RedrawThread);
     running=false;
@@ -204,8 +209,9 @@ Value RESTCall(const Napi::CallbackInfo& info)
       string cmd=info[0].ToString();
       Value response;
       {
+        lock_guard<mutex> resetLock(resetMutex);
         bool redrawWasRunning=redrawThread->running;
-        lock_guard<mutex> lock(redrawMutex);
+        lock_guard<mutex> redrawLock(redrawMutex);
         // add a small delay after obtaining the lock to ensure the pango cleanup routines are run. See ticket #1358. 
         if (redrawWasRunning)
           this_thread::sleep_for(chrono::milliseconds(5));

@@ -82,7 +82,9 @@ if ("JEST_WORKER_ID" in process.env) {
   });
 
   restService.setBusyCursorCallback(function (busy: boolean) {
-    WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
+    //WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
+    WindowManager.getMainWindow()?.webContents?.insertCSS('html, body { cursor: "busy"; }');
+    console.log("cursor busy sent",busy);
   });
 }
 

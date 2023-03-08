@@ -518,6 +518,14 @@ namespace minsky
       i.second->units.clear();
     timeUnit.clear();
   }
+
+  void Minsky::requestReset()
+  {
+    flags|=reset_needed;
+    // schedule reset for some time in the future
+    resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(500);
+  }
+
   
   void Minsky::populateMissingDimensions() {
     model->recursiveDo
