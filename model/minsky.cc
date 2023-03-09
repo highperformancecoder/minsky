@@ -1023,9 +1023,10 @@ namespace minsky
                                }
                              return false;
                            });
-    
+
         // try resetting the system, but ignore any errors
         reset();
+        populateMissingDimensions();
       }
     catch (...) {}
     canvas.requestRedraw();
