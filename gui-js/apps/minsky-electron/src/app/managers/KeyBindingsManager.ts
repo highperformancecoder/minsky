@@ -22,6 +22,7 @@ export class KeyBindingsManager {
       location,
       command = '',
     } = payload;
+
     let { key } = payload;
 
     if (shift && key === 'Tab') {
@@ -176,7 +177,6 @@ export class KeyBindingsManager {
     let executed = true;
     const { key } = payload;
 
-    console.log(`handleOnKeyPressFallback ${JSON5.stringify(payload)}`);
     switch (key) {
     case 'Backspace':
     case 'Delete':
@@ -184,7 +184,6 @@ export class KeyBindingsManager {
       break;
 
     case '+':
-      console.log('calling handlePlusKey');
       await this.handlePlusKey(payload);
       break;
 
