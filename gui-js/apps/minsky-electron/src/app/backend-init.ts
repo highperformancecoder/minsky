@@ -29,7 +29,7 @@ function logFilter(c: string) {
 }
 
 /** core function to call into C++ object heirarachy */
-export function backend(command: string, ...args: any[]) {
+export async function backend(command: string, ...args: any[]) {
   if (!command) {
     log.error('backend called without any command');
     return {};
@@ -47,7 +47,7 @@ export function backend(command: string, ...args: any[]) {
     }
     CppClass.record(`${command} ${arg}`);
 
-    const response = restService.call(command, arg);
+    let response=await restService.call(command, arg);
     if (logFilter(command))
       log.info('Rest API: ',command,arg,"=>",response);
     return JSON5.parse(response);
@@ -83,32 +83,35 @@ if ("JEST_WORKER_ID" in process.env) {
 
   restService.setBusyCursorCallback(function (busy: boolean) {
     //WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
-    WindowManager.getMainWindow()?.webContents?.insertCSS('html, body { cursor: "busy"; }');
+    //WindowManager.getMainWindow()?.webContents?.insertCSS('html, body { cursor: "busy"; }');
+    WindowManager.getMainWindow()?.setProgressBar(0.5);
     console.log("cursor busy sent",busy);
   });
 }
 
 // Sanity checks before we get started
-if (backend("/minsky/minskyVersion")!==version)
-  setTimeout(()=>{
-    dialog.showMessageBoxSync({
-      message: "Mismatch of front end and back end versions",
-      type: 'warning',
-    });
+setTimeout(async()=>{
+  if (await backend("/minsky/minskyVersion")!==version)
+    setTimeout(()=>{
+      dialog.showMessageBoxSync({
+        message: "Mismatch of front end and back end versions",
+        type: 'warning',
+      });
+    },1000);
+
+  if (await backend("/minsky/ravelExpired"))
+    setTimeout(()=>{
+      const button=dialog.showMessageBoxSync({
+        message: "Your Ravel license has expired",
+        type: 'warning',
+        buttons: ["OK","Upgrade"],
+      });
+      if (button==1)
+        shell.openExternal("https://ravelation.hpcoders.com.au");
   },1000);
-
-if (backend("/minsky/ravelExpired"))
-  setTimeout(()=>{
-    const button=dialog.showMessageBoxSync({
-      message: "Your Ravel license has expired",
-      type: 'warning',
-      buttons: ["OK","Upgrade"],
-    });
-    if (button==1)
-      shell.openExternal("https://ravelation.hpcoders.com.au");
-  },1000);
-
-
+  
+}, 1);
+           
 // load icon resources needed for GUI
 export function loadResources()
 {

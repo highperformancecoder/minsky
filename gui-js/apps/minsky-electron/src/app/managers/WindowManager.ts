@@ -3,11 +3,11 @@ import {
   AppLayoutPayload,
   CreateWindowPayload,
   Functions,
-  minsky,
+//  minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   rendererAppName,
   rendererAppURL,
-  RenderNativeWindow,
+//  RenderNativeWindow,
   Utility,
 } from '@minsky/shared';
 //import * as debug from 'debug';
@@ -26,7 +26,7 @@ export class WindowManager {
   static canvasHeight: number;
   static canvasWidth: number;
   static scaleFactor: number;
-  static currentTab: RenderNativeWindow=minsky.canvas;
+  static currentTab;//: RenderNativeWindow=minsky.canvas;
   
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();
@@ -69,7 +69,7 @@ export class WindowManager {
     });
   }
     
-  static setCurrentTab(tab: RenderNativeWindow) {
+  static setCurrentTab(tab/*: RenderNativeWindow*/) {
     if (this.currentTab!==tab) {
       this.currentTab?.disable();
       this.currentTab=tab;

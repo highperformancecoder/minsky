@@ -35,18 +35,161 @@ namespace minsky
 {
   namespace
   {
+
+    // all NAPI calls involving an Env must be called on Javascript's
+    // thread. In order to pass something back to Javascript's thread,
+    // we need to use a ThreadSafeFunction
+    struct PromiseResolver
+    {
+      Napi::Promise::Deferred promise;
+      using Arg=pair<bool,string>;
+
+      void doResolve(Arg* arg) {
+        resolvePromise.Acquire();
+        resolvePromise.BlockingCall(arg);
+        resolvePromise.Release();
+      }
+      void resolve(const std::string& result) {
+        Arg arg{true, result};
+        doResolve(&arg);
+      }
+      void reject(const std::string& error) {
+        Arg arg{false, error};
+        doResolve(&arg);
+      }
+
+
+      // function called back from Javascript eventually
+      static void jsCallback(Napi::Env, Napi::Function, PromiseResolver* promiseResolver, Arg* arg)
+      {
+        if (!promiseResolver) return;
+        auto result=String::New(promiseResolver->promise.Env(), utf_to_utf<char16_t>(arg->second));
+        if (arg->first)
+          promiseResolver->promise.Resolve(result);
+        else
+          promiseResolver->promise.Reject(result);
+//        delete promiseResolver; // cleans up object allocated in Command::Command() below
+      }
+      Napi::TypedThreadSafeFunction<PromiseResolver,Arg,jsCallback> resolvePromise;
+      
+      PromiseResolver(const Napi::Env& env):
+        promise(env),
+        resolvePromise(Napi::TypedThreadSafeFunction<PromiseResolver,Arg,jsCallback>::New
+                       (promise.Env(),/*Napi::Function::New(promise.Env(),jsCallback),*/ "TSFN", 0, 2, this))
+      {}
+    };
+    
+    struct Command
+    {
+      PromiseResolver* promiseResolver;
+      string command;
+      json_pack_t arguments;
+      Command(const Napi::Env& env, const string& command, const json_pack_t& arguments):
+        promiseResolver(new PromiseResolver(env)), // ownership passed to JS interpreter
+        //promiseResolver(nullptr),
+        command(command),
+        arguments(arguments) {}
+    };
+  
     struct AddOnMinsky: public RESTMinsky
     {
       Env* env=nullptr;
       FunctionReference messageCallback;
       FunctionReference busyCursorCallback;
-
+      deque<unique_ptr<Command>> minskyCommands;
+      mutex cmdMutex;
+      atomic<bool> running{true};
+      std::thread thread;
+      
+      AddOnMinsky(): thread([this](){run();}) {flags=0;}
+      
       ~AddOnMinsky() {
         // because this object is used as a static object, suppress
         // the callback destructors to avoid freeing the references at
         // shutdown time.
         messageCallback.SuppressDestruct();
         busyCursorCallback.SuppressDestruct();
+        running=false;
+        if (thread.joinable()) thread.join();
+      }
+
+      void run()
+      {
+#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
+        pthread_setname_np(pthread_self(),"minsky thread");
+#endif
+
+        while (running)
+          {
+            unique_ptr<Command> command;
+            {
+              lock_guard<mutex> lock(cmdMutex);
+              if (!minskyCommands.empty())
+                {
+                  command=move(minskyCommands.front());
+                  minskyCommands.pop_front();
+                }
+            }
+            
+            if (!command) // perform housekeeping
+              {
+                if (reset_flag())
+                  try
+                    {
+                      reset();
+                    }
+                  catch (...)
+                    {}
+                for (auto i: nativeWindowsToRedraw)
+                  try
+                    {
+                      i->draw();
+                    }
+                  catch (const std::exception& ex)
+                    {
+                      /* absorb and log any exceptions, cannot do anything anyway */
+                      cerr << ex.what() << endl;
+                      break;
+                    }
+                  catch (...) {break;}
+                nativeWindowsToRedraw.clear();
+                this_thread::sleep_for(chrono::milliseconds(10));
+                continue;
+              }
+
+            try
+              {
+                Env e=command->promiseResolver->promise.Env();
+                env=&e; // TODO: can we do the callback env a little less clumsily?
+                // disable quoting wide characters in UTF-8 strings
+                auto result=write(registry.process(command->command, command->arguments),json5_parser::raw_utf8);
+                // Javascript needs the result returns as UTF-16.
+                command->promiseResolver->resolve(result);
+                int nargs=1;
+                switch (command->arguments.type())
+                  {
+                  case json5_parser::array_type:
+                    nargs=command->arguments.get_array().size();
+                    break;
+                  case json5_parser::null_type:
+                    nargs=0;
+                    break;
+                  default:
+                    break;
+                  }
+                command->command.erase(0,1); // remove leading '/'
+                replace(command->command.begin(), command->command.end(), '/', '.');
+                commandHook(command->command,nargs);
+              }
+            catch (const std::exception& ex)
+              {
+                command->promiseResolver->reject(ex.what());
+              }
+            catch (...)
+              {
+                command->promiseResolver->reject("Unknown exception");
+              }
+          }
       }
       
       void message(const std::string& msg) override
@@ -91,70 +234,70 @@ namespace minsky
 
 minsky::AddOnMinsky& addOnMinsky=static_cast<minsky::AddOnMinsky&>(minsky::minsky());
 
-mutex redrawMutex, resetMutex;
-
-// delay process redrawing to throttle redrawing
-struct RedrawThread: public thread
-{
-  RedrawThread(): thread([this]{run();}) {}
-  ~RedrawThread() {if (joinable()) join();}
-  atomic<bool> running; //< flag indicating thread is still running
-  void run() {
-#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
-    pthread_setname_np(pthread_self(),"redraw thread");
-#endif
-    running=true;
-    // sleep slightly to throttle requests on this service
-    this_thread::sleep_for(chrono::milliseconds(10));
-
-    lock_guard<mutex> lock(redrawMutex);
-
-    for (auto i: minsky::minsky().nativeWindowsToRedraw)
-      try
-        {
-          i->draw();
-        }
-      catch (const std::exception& ex)
-        {
-          /* absorb and log any exceptions, cannot do anything anyway */
-          cerr << ex.what() << endl;
-          break;
-        }
-      catch (...) {break;}
-    minsky::minsky().nativeWindowsToRedraw.clear();
-    running=false;
-  }
-};
-
-unique_ptr<RedrawThread> redrawThread(new RedrawThread);
-
-struct ResetThread: public thread
-{
-  ResetThread(): thread([this]{run();}) {}
-  ~ResetThread() {if (joinable()) join();}
-  atomic<bool> running; //< flag indicating thread is still running
-  void run() {
-#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
-    pthread_setname_np(pthread_self(),"reset thread");
-#endif
-    running=true;
-
-    while (std::chrono::system_clock::now()<minsky::minsky().resetAt)
-      this_thread::sleep_for(chrono::milliseconds(100));
-    lock_guard<mutex> lock(resetMutex);
-    try
-      {
-        minsky::minsky().reset();
-      }
-    catch (...)
-      {} // absorb all exceptions to prevent terminate being called.
-    if (!redrawThread->running)
-      redrawThread.reset(new RedrawThread);
-    running=false;
-  }
-};
-
-unique_ptr<ResetThread> resetThread;
+//mutex redrawMutex, resetMutex;
+//
+//// delay process redrawing to throttle redrawing
+//struct RedrawThread: public thread
+//{
+//  RedrawThread(): thread([this]{run();}) {}
+//  ~RedrawThread() {if (joinable()) join();}
+//  atomic<bool> running; //< flag indicating thread is still running
+//  void run() {
+//#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
+//    pthread_setname_np(pthread_self(),"redraw thread");
+//#endif
+//    running=true;
+//    // sleep slightly to throttle requests on this service
+//    this_thread::sleep_for(chrono::milliseconds(10));
+//
+//    lock_guard<mutex> lock(redrawMutex);
+//
+//    for (auto i: minsky::minsky().nativeWindowsToRedraw)
+//      try
+//        {
+//          i->draw();
+//        }
+//      catch (const std::exception& ex)
+//        {
+//          /* absorb and log any exceptions, cannot do anything anyway */
+//          cerr << ex.what() << endl;
+//          break;
+//        }
+//      catch (...) {break;}
+//    minsky::minsky().nativeWindowsToRedraw.clear();
+//    running=false;
+//  }
+//};
+//
+//unique_ptr<RedrawThread> redrawThread(new RedrawThread);
+//
+//struct ResetThread: public thread
+//{
+//  ResetThread(): thread([this]{run();}) {}
+//  ~ResetThread() {if (joinable()) join();}
+//  atomic<bool> running; //< flag indicating thread is still running
+//  void run() {
+//#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
+//    pthread_setname_np(pthread_self(),"reset thread");
+//#endif
+//    running=true;
+//
+//    while (std::chrono::system_clock::now()<minsky::minsky().resetAt)
+//      this_thread::sleep_for(chrono::milliseconds(100));
+//    lock_guard<mutex> lock(resetMutex);
+//    try
+//      {
+//        minsky::minsky().reset();
+//      }
+//    catch (...)
+//      {} // absorb all exceptions to prevent terminate being called.
+//    if (!redrawThread->running)
+//      redrawThread.reset(new RedrawThread);
+//    running=false;
+//  }
+//};
+//
+//unique_ptr<ResetThread> resetThread;
  
 Value setMessageCallback(const Napi::CallbackInfo& info)
 {
@@ -178,11 +321,17 @@ Value setBusyCursorCallback(const Napi::CallbackInfo& info)
   return env.Null();
 }
 
-struct SetMinskyEnv
-{
-  SetMinskyEnv(Env& env) {addOnMinsky.env=&env;}
-  ~SetMinskyEnv() {addOnMinsky.env=nullptr;}
-};
+//struct SetMinskyEnv
+//{
+//  SetMinskyEnv(Env& env) {addOnMinsky.env=&env;}
+//  ~SetMinskyEnv() {addOnMinsky.env=nullptr;}
+//};
+//
+//
+//thread minskyThread([](){
+// });
+//
+
 
 Value RESTCall(const Napi::CallbackInfo& info)
 {
@@ -206,59 +355,9 @@ Value RESTCall(const Napi::CallbackInfo& info)
           if (!jsonArguments.empty())
             read(jsonArguments, arguments);
         }
-      string cmd=info[0].ToString();
-      Value response;
-      {
-        lock_guard<mutex> resetLock(resetMutex);
-        bool redrawWasRunning=redrawThread->running;
-        lock_guard<mutex> redrawLock(redrawMutex);
-        // add a small delay after obtaining the lock to ensure the pango cleanup routines are run. See ticket #1358. 
-        if (redrawWasRunning)
-          this_thread::sleep_for(chrono::milliseconds(5));
-        SetMinskyEnv minskyEnv(env);
-        // disable quoting wide characters in UTF-8 strings
-        auto result=write(addOnMinsky.registry.process(cmd, arguments),json5_parser::raw_utf8);
-        // Javascript needs the result returns as UTF-16.
-        response=String::New(env, utf_to_utf<char16_t>(result));
-        int nargs=1;
-        switch (arguments.type())
-          {
-          case json5_parser::array_type:
-            nargs=arguments.get_array().size();
-            break;
-          case json5_parser::null_type:
-            nargs=0;
-            break;
-          default:
-            break;
-          }
-        cmd.erase(0,1); // remove leading '/'
-        replace(cmd.begin(), cmd.end(), '/', '.');
-        minsky::minsky().commandHook(cmd,nargs);
-      }
-
-      // arrange for deferred reset of minsky model
-      if (minsky::minsky().reset_flag() && (!resetThread || !resetThread->running))
-        resetThread.reset(new ResetThread);
-      
-      if (!minsky::minsky().nativeWindowsToRedraw.empty())
-        {
-          if (redrawThread->running)
-            this_thread::yield(); // yield to the render thread
-          else if (minsky::minsky().running)
-            { // in-thread rendering whilst simulation is running
-              for (auto& i: minsky::minsky().nativeWindowsToRedraw)
-                try
-                  {
-                    i->draw();
-                  }
-                catch(...) {}
-              minsky::minsky().nativeWindowsToRedraw.clear();
-            }
-          else
-            redrawThread.reset(new RedrawThread); // start a new render thread
-        }
-      return response;
+      lock_guard<mutex> lock(addOnMinsky.cmdMutex);
+      addOnMinsky.minskyCommands.emplace_back(new minsky::Command{env,info[0].ToString(),arguments});
+      return addOnMinsky.minskyCommands.back()->promiseResolver->promise.Promise();
     }
   catch (const std::exception& ex)
     {

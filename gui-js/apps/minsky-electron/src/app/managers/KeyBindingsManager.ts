@@ -309,7 +309,7 @@ export class KeyBindingsManager {
     }
 
     if (minsky.canvas.getItemAt(mouseX, mouseY)) {
-      await CommandsManager.deleteCurrentItemHavingId(minsky.canvas.item.id());
+      await CommandsManager.deleteCurrentItemHavingId(await minsky.canvas.item.id());
       return;
     }
     if (minsky.canvas.getWireAt(mouseX, mouseY)) {

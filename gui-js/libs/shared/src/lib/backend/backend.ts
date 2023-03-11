@@ -6,12 +6,12 @@ export class CppClass
   public static record=(cmd: string)=>{}; // recording support: see RecordingsManager
   protected m_prefix: string;
   constructor(prefix: string) {this.m_prefix=prefix;}
-  protected callMethod(method: string,...args)
+  protected async callMethod(method: string,...args)
   {
     return CppClass.backend(`${this.m_prefix}/${method}`, ...args);
   }
-  public properties(...args) {return CppClass.backend(this.m_prefix, ...args);}
-  public $list(): string[] {return this.callMethod("@list");} // $ prevents this method from being shadowed by a C++ method
+  public async properties(...args) {return CppClass.backend(this.m_prefix, ...args);}
+  public async $list(): Promise<string[]> {return this.callMethod("@list");} // $ prevents this method from being shadowed by a C++ method
   /// returns if this proxy object and x refer to the same backend object
   public equal(x: CppClass): boolean {return this.m_prefix===x.m_prefix;}
   public prefix(): string {return this.m_prefix;}
@@ -39,8 +39,8 @@ export class Map<Key, Value> extends CppClass
   }
   insert(key: Key, value: Value) {this.callMethod("@insert",{first: key, second:value});}
   erase(key: Key) {this.callMethod("@erase",key);}
-  size(): number {return this.callMethod("@size");}
-  keys(): Key[] {return this.callMethod("@keys");}
+  size(): Promise<number> {return this.callMethod("@size");}
+  keys(): Promise<Key[]> {return this.callMethod("@keys");}
 };
 
 export class Container<Key,Value=Key> extends CppClass
@@ -54,8 +54,8 @@ export class Container<Key,Value=Key> extends CppClass
   }
   insert(key: Key) {this.callMethod("@insert",key);}
   erase(key: Key) {this.callMethod("@erase",key);}
-  size(): number {return this.callMethod("@size");}
-  properties(...args): Value[] {return super.properties(...args) as Value[];}
+  size(): Promise<number> {return this.callMethod("@size");}
+  properties(...args): Promise<Value[]> {return super.properties(...args) as Promise<Value[]>;}
 };
 
 export class Sequence<Value> extends Container<number,Value>

@@ -111,7 +111,7 @@ export class ContextMenuManager {
       }
       
       ContextMenuManager.buildAndDisplayContextMenu(
-        ContextMenuManager.canvasContext(),
+        await ContextMenuManager.canvasContext(),
         mainWindow
       );
 
@@ -192,10 +192,10 @@ export class ContextMenuManager {
     return menuItems;
   }
 
-  private static canvasContext(): MenuItem[] {
+  private static async canvasContext(): Promise<MenuItem[]> {
     const selectedItems = minsky.canvas.selection.items;
-    const selectionSize = selectedItems.size();
-    const ravelsSelected = minsky.canvas.ravelsSelected();
+    const selectionSize = await selectedItems.size();
+    const ravelsSelected = await minsky.canvas.ravelsSelected();
 
     const menuItems = [
       new MenuItem({
@@ -424,7 +424,7 @@ export class ContextMenuManager {
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
     const plot=new PlotWidget(minsky.canvas.item);
-    const displayPlotOnTabChecked = plot.plotTabDisplay();
+    const displayPlotOnTabChecked = await plot.plotTabDisplay();
 
     const menuItems = [
       new MenuItem({
@@ -505,9 +505,9 @@ export class ContextMenuManager {
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
     let godley=new GodleyIcon(minsky.canvas.item);
-    const displayVariableChecked = godley.variableDisplay();
-    const rowColButtonsChecked = godley.buttonDisplay();
-    const editorModeChecked = godley.editorMode();
+    const displayVariableChecked = await godley.variableDisplay();
+    const rowColButtonsChecked = await godley.buttonDisplay();
+    const editorModeChecked = await godley.editorMode();
 
     const menuItems = [
       new MenuItem({
@@ -580,11 +580,10 @@ export class ContextMenuManager {
   ): Promise<MenuItem[]> {
     let op=new OperationBase(minsky.canvas.item);
 
-    try {
-      var portValues = op.portValues();
-    } catch (error) {
-      var portValues = 'unknown';
-    }
+    let portValues;
+    op.portValues().
+      then((x)=>{portValues=x;}).
+      catch((x)=>{portValues = 'unknown';});
 
     let menuItems = [
       new MenuItem({ label: `Port values ${portValues}}` }),
@@ -597,7 +596,7 @@ export class ContextMenuManager {
     ];
 
     // TODO data is obsolete
-    if (op.type() === 'data') {
+    if (await op.type() === 'data') {
       menuItems.push(
         new MenuItem({
           label: 'Import Data',
@@ -623,7 +622,7 @@ export class ContextMenuManager {
       }),
     ];
 
-    if (op.type() === 'integrate') {
+    if (await op.type() === 'integrate') {
       menuItems.push(
         new MenuItem({
           label: 'Toggle var binding',
@@ -719,12 +718,12 @@ export class ContextMenuManager {
   private static async buildContextMenuForRavel(ravel: Ravel): Promise<MenuItem[]> {
     const aggregations = [{label: 'Σ', value: 'sum'},{label: 'Π', value: 'prod'},{label:'av',value:'av'},{label: 'σ', value: 'stddev'},{label: 'min', value: 'min'},{label: 'max', value: 'max'}];
 
-    const handleIndex = ravel.selectedHandle();
-    const sortOrder = ravel.sortOrder();
-    const editorMode = ravel.editorMode();
+    const handleIndex = await ravel.selectedHandle();
+    const sortOrder = await ravel.sortOrder();
+    const editorMode = await ravel.editorMode();
 
-    const ravelsSelected = minsky.canvas.ravelsSelected();
-    const allLockHandles = ravel.lockGroup.allLockHandles();
+    const ravelsSelected = await minsky.canvas.ravelsSelected();
+    const allLockHandles = await ravel.lockGroup.allLockHandles();
 
     const lockHandlesAvailable = ravelsSelected > 1 || Object.keys(allLockHandles).length !== 0;
     const unlockAvailable = Object.keys(allLockHandles).length !== 0;
@@ -859,11 +858,11 @@ export class ContextMenuManager {
     const menuItems = [
       new MenuItem({
         label: 'Add case',
-        click: () => {switchIcon.setNumCases(switchIcon.numCases()+1);},
+        click: async () => {switchIcon.setNumCases(await switchIcon.numCases()+1);},
       }),
       new MenuItem({
         label: 'Delete case',
-        click: () => {switchIcon.setNumCases(switchIcon.numCases()-1);},
+        click: async () => {switchIcon.setNumCases(await switchIcon.numCases()-1);},
       }),
       new MenuItem({
         label: 'Flip',
@@ -907,7 +906,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: "Local",
         type: 'checkbox',
-        checked: v.local(),
+        checked: await v.local(),
         click: async () => {v.toggleLocal();}
       }),
       new MenuItem({
@@ -966,7 +965,7 @@ export class ContextMenuManager {
       })
     );
 
-    if (v.type() === 'parameter') {
+    if (await v.type() === 'parameter') {
       menuItems.push(
         new MenuItem({
           label: 'Import CSV',
@@ -1001,14 +1000,10 @@ export class ContextMenuManager {
 
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
   {
-    //  console.log(`initContextMenuForGodleyPopup ${namedItemSubCommand}, ${x},${y}\n`);
     const godley=new GodleyIcon(namedItemSubCommand);
-
-    const r=godley.popup.rowYZoomed(y);
-    const c=godley.popup.colXZoomed(x);
-
-    const clickType = godley.popup.clickTypeZoomed(x, y);
-
+    const r=await godley.popup.rowYZoomed(y);
+    const c=await godley.popup.colXZoomed(x);
+    const clickType = await godley.popup.clickTypeZoomed(x, y);
     this.initContextMenuForGodley(godley, r, c, clickType, () => {});
   }
 
@@ -1024,7 +1019,7 @@ export class ContextMenuManager {
     menu.append(new MenuItem({
       label: "Title",
       click: async ()=> {
-        await CommandsManager.editGodleyTitle(godley.id());
+        await CommandsManager.editGodleyTitle(await godley.id());
         refreshFunction();
       },
     }));
@@ -1084,14 +1079,14 @@ export class ContextMenuManager {
       case "internal": break;
     } // switch clickType
     
-    if (r!=godley.popup.selectedRow() || c!=godley.popup.selectedCol())
+    if (r!=await godley.popup.selectedRow() || c!=await godley.popup.selectedCol())
     {
       godley.popup.selectedRow(r);
       godley.popup.selectedCol(c);
       godley.popup.insertIdx(0);
       godley.popup.selectIdx(0);
     }
-    var cell=godley.table.getCell(r,c);
+    var cell=await godley.table.getCell(r,c);
     if (cell.length>0 && (r!=1 || c!=0))
     {
       menu.append(new MenuItem({
