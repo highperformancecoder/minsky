@@ -68,23 +68,17 @@ namespace
 void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver)
 {
       if (!promiseResolver) return;
-      //tsPromiseResolver.Acquire();
-      cout << "jsCallback: ("<<pthread_self()<<") "<<promiseResolver->success<<" "<<promiseResolver->result.substr(0,50)<<endl;
+      // Javascript needs the result returns as UTF-16.
       auto result=String::New(env, utf_to_utf<char16_t>(promiseResolver->result));
-      cout << "result created"<<endl;
       if (promiseResolver->success)
         promiseResolver->promise.Resolve(result);
       else
         promiseResolver->promise.Reject(result);
-      cout << "resolve done"<<std::endl;
       delete promiseResolver; // cleans up object allocated in Command::Command() below
-      //tsPromiseResolver.Release();
     }
 
   void PromiseResolver::doResolve() {
-    cout<<"Blocking call"<<endl;
     tsPromiseResolver.BlockingCall(this);
-    cout<<"Blocking call done"<<endl;
   }
 
 
@@ -136,7 +130,6 @@ namespace minsky
       {
         lock_guard<mutex> lock(cmdMutex);
         minskyCommands.emplace_back(new Command{env,command,arguments});
-        cout << "Invoking command "<<minskyCommands.back()->command<<" on thread "<<pthread_self()<<endl;
         return minskyCommands.back()->promiseResolver->promise.Promise();
       }
       
@@ -145,8 +138,6 @@ namespace minsky
 #if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
         pthread_setname_np(pthread_self(),"minsky thread");
 #endif
-        bool threadAcquired=false;
-
         while (running)
           {
             unique_ptr<Command> command;
@@ -164,12 +155,10 @@ namespace minsky
                 if (reset_flag())
                   try
                     {
-                      cout << "reset flag set"<<endl;
                       reset();
                     }
                   catch (...)
                     {}
-                flags&=~reset_needed;
                 for (auto i: nativeWindowsToRedraw)
                   try
                     {
@@ -189,17 +178,12 @@ namespace minsky
 
             try
               {
-                //if (!threadAcquired) tsPromiseResolver.Acquire();
-                threadAcquired=true;
                 Env e=command->promiseResolver->promise.Env();
                 env=&e; // TODO: can we do the callback env a little less clumsily?
-                // disable quoting wide characters in UTF-8 strings
-                cout << "Doing command: "<<command->command<<"("<<write(command->arguments)<<")"<<endl;
                 lock_guard<mutex> lock(minskyCmdMutex);
                 LocalMinsky lm(*this);
+                // disable quoting wide characters in UTF-8 strings
                 auto result=write(registry.process(command->command, command->arguments),json5_parser::raw_utf8);
-                // Javascript needs the result returns as UTF-16.
-                cout << "Resolving command: "<<result.substr(0,50)<<endl;
                 command->promiseResolver->resolve(result);
                 int nargs=1;
                 switch (command->arguments.type())
@@ -274,7 +258,6 @@ struct MinskyAddon: public Addon<MinskyAddon>
   
   MinskyAddon(Env env, Object exports)
   {
-    cout << "Initialising addon on thread "<<pthread_self()<<endl;
     tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,jsCallback>::New
       (env,"TSResolver", 0, 2, nullptr);
   
