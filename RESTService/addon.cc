@@ -70,7 +70,6 @@ void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseRe
       if (!promiseResolver) return;
       tsPromiseResolver.Acquire();
       cout << "jsCallback: ("<<pthread_self()<<") "<<promiseResolver->success<<" "<<promiseResolver->result.substr(0,50)<<endl;
-      //EscapableHandleScope scope(promiseResolver->promise.Env());
       auto result=String::New(env, utf_to_utf<char16_t>(promiseResolver->result));
       cout << "result created"<<endl;
       if (promiseResolver->success)
@@ -83,11 +82,9 @@ void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseRe
     }
 
   void PromiseResolver::doResolve() {
-    //tsPromiseResolver.Acquire();
     cout<<"Blocking call"<<endl;
     tsPromiseResolver.BlockingCall(this);
     cout<<"Blocking call done"<<endl;
-    //tsPromiseResolver.Release();
   }
 
 
@@ -98,7 +95,6 @@ void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseRe
       json_pack_t arguments;
       Command(const Napi::Env& env, const string& command, const json_pack_t& arguments):
         promiseResolver(new PromiseResolver(env)), // ownership passed to JS interpreter
-        //promiseResolver(nullptr),
         command(command),
         arguments(arguments) {}
     };
@@ -275,72 +271,6 @@ namespace minsky
   void doOneEvent(bool idleTasksOnly) {}
 }
 
-
-//mutex redrawMutex, resetMutex;
-//
-//// delay process redrawing to throttle redrawing
-//struct RedrawThread: public thread
-//{
-//  RedrawThread(): thread([this]{run();}) {}
-//  ~RedrawThread() {if (joinable()) join();}
-//  atomic<bool> running; //< flag indicating thread is still running
-//  void run() {
-//#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
-//    pthread_setname_np(pthread_self(),"redraw thread");
-//#endif
-//    running=true;
-//    // sleep slightly to throttle requests on this service
-//    this_thread::sleep_for(chrono::milliseconds(10));
-//
-//    lock_guard<mutex> lock(redrawMutex);
-//
-//    for (auto i: minsky::minsky().nativeWindowsToRedraw)
-//      try
-//        {
-//          i->draw();
-//        }
-//      catch (const std::exception& ex)
-//        {
-//          /* absorb and log any exceptions, cannot do anything anyway */
-//          cerr << ex.what() << endl;
-//          break;
-//        }
-//      catch (...) {break;}
-//    minsky::minsky().nativeWindowsToRedraw.clear();
-//    running=false;
-//  }
-//};
-//
-//unique_ptr<RedrawThread> redrawThread(new RedrawThread);
-//
-//struct ResetThread: public thread
-//{
-//  ResetThread(): thread([this]{run();}) {}
-//  ~ResetThread() {if (joinable()) join();}
-//  atomic<bool> running; //< flag indicating thread is still running
-//  void run() {
-//#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
-//    pthread_setname_np(pthread_self(),"reset thread");
-//#endif
-//    running=true;
-//
-//    while (std::chrono::system_clock::now()<minsky::minsky().resetAt)
-//      this_thread::sleep_for(chrono::milliseconds(100));
-//    lock_guard<mutex> lock(resetMutex);
-//    try
-//      {
-//        minsky::minsky().reset();
-//      }
-//    catch (...)
-//      {} // absorb all exceptions to prevent terminate being called.
-//    if (!redrawThread->running)
-//      redrawThread.reset(new RedrawThread);
-//    running=false;
-//  }
-//};
-//
-//unique_ptr<ResetThread> resetThread;
-
 struct MinskyAddon: public Addon<MinskyAddon>
 {
   minsky::AddOnMinsky addOnMinsky;
@@ -351,7 +281,6 @@ struct MinskyAddon: public Addon<MinskyAddon>
     cout << "Initialising addon on thread "<<pthread_self()<<endl;
     tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,jsCallback>::New
       (env,"TSResolver", 0, 2, nullptr);
-    //tsPromiseResolver.Release();
   
     
     DefineAddon(exports, {
@@ -383,18 +312,6 @@ struct MinskyAddon: public Addon<MinskyAddon>
     addOnMinsky.busyCursorCallback=Persistent(info[0].As<Function>());
     return env.Null();
   }
-
-//struct SetMinskyEnv
-//{
-//  SetMinskyEnv(Env& env) {addOnMinsky.env=&env;}
-//  ~SetMinskyEnv() {addOnMinsky.env=nullptr;}
-//};
-//
-//
-//thread minskyThread([](){
-// });
-//
-
 
   Value call(const Napi::CallbackInfo& info)
   {
