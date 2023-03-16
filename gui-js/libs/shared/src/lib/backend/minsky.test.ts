@@ -1,10 +1,10 @@
 import {describe, expect, test} from '@jest/globals';
-// import {
-//   minsky,
-//   GodleyIcon,
-//   PlotWidget,
-//   VariableBase,
-// } from './index';
+ import {
+   minsky,
+   GodleyIcon,
+   PlotWidget,
+   VariableBase,
+ } from './index';
 import * as fs from 'fs';
 import * as JSON5 from 'json5';
 
@@ -15,27 +15,27 @@ describe('dummy',()=>{
   });
 });
 
-// var tmpDir;
-// beforeAll(()=>{
-//   tmpDir=fs.mkdtempSync("minsky-jest");
-// });
-// afterAll(()=>{
-//   fs.rmdirSync(tmpDir,{recursive: true});
-// });
-//            
-// beforeEach(()=>{
-//   minsky.clearAllMaps();
-// });
-// 
-// describe('Minsky load/save', ()=>{
-//   test('save empty',()=>{
-//     minsky.save(tmpDir+"/foo.mky");
-//   });
-//   test('load empty', ()=>{
-//     minsky.load(tmpDir+"/foo.mky");
-//   });
-// });
-// 
+var tmpDir;
+beforeAll(()=>{
+  tmpDir=fs.mkdtempSync("minsky-jest");
+});
+afterAll(()=>{
+  fs.rmSync(tmpDir,{recursive: true});
+});
+           
+//beforeEach(()=>{
+//  minsky.clearAllMaps();
+//});
+
+//describe('Minsky load/save', ()=>{
+//  test('save empty',()=>{
+//    minsky.save(tmpDir+"/foo.mky");
+//  });
+//  test('load empty', ()=>{
+//    minsky.load(tmpDir+"/foo.mky");
+//  });
+//});
+ 
 // describe('Named Items',()=>{
 //   test('name item', ()=>{
 //     minsky.canvas.addOperation("time");

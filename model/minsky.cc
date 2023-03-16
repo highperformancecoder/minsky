@@ -884,7 +884,7 @@ namespace minsky
       }
 
     canvas.itemIndicator=false;
-    BusyCursor busy(*this);
+    //    BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     lastT=t0;
     constructEquations();
@@ -896,10 +896,10 @@ namespace minsky
 
     if (!stockVars.empty())
       rkreset();
-      
+    
     // update flow variable
     evalEquations();
-    
+  
     model->recursiveDo
       (&Group::items,
        [&](Items& m, Items::iterator i)
@@ -928,9 +928,9 @@ namespace minsky
        });
 
     //    if (running)
-      flags &= ~reset_needed; // clear reset flag
-//    else
-//      flags |= reset_needed; // enforce another reset at simulation start
+    flags &= ~reset_needed; // clear reset flag
+    // else
+    //  flags |= reset_needed; // enforce another reset at simulation start
     running=false;
 
     canvas.requestRedraw();

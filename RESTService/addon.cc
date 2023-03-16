@@ -31,54 +31,66 @@ using namespace std;
 using namespace classdesc;
 using namespace boost::posix_time;
 
-namespace minsky
+namespace
 {
-  namespace
-  {
 
     // all NAPI calls involving an Env must be called on Javascript's
     // thread. In order to pass something back to Javascript's thread,
     // we need to use a ThreadSafeFunction
     struct PromiseResolver
     {
-      Napi::Promise::Deferred promise;
-      using Arg=pair<bool,string>;
+      Promise::Deferred promise;
+      bool success;
+      string result;
 
-      void doResolve(Arg* arg) {
-        resolvePromise.Acquire();
-        resolvePromise.BlockingCall(arg);
-        resolvePromise.Release();
-      }
+      void doResolve(); 
       void resolve(const std::string& result) {
-        Arg arg{true, result};
-        doResolve(&arg);
+        success=true;
+        this->result=result;
+        doResolve();
       }
       void reject(const std::string& error) {
-        Arg arg{false, error};
-        doResolve(&arg);
+        success=false;
+        result=error;
+        doResolve();
       }
-
-
-      // function called back from Javascript eventually
-      static void jsCallback(Napi::Env, Napi::Function, PromiseResolver* promiseResolver, Arg* arg)
-      {
-        if (!promiseResolver) return;
-        auto result=String::New(promiseResolver->promise.Env(), utf_to_utf<char16_t>(arg->second));
-        if (arg->first)
-          promiseResolver->promise.Resolve(result);
-        else
-          promiseResolver->promise.Reject(result);
-//        delete promiseResolver; // cleans up object allocated in Command::Command() below
-      }
-      Napi::TypedThreadSafeFunction<PromiseResolver,Arg,jsCallback> resolvePromise;
       
       PromiseResolver(const Napi::Env& env):
-        promise(env),
-        resolvePromise(Napi::TypedThreadSafeFunction<PromiseResolver,Arg,jsCallback>::New
-                       (promise.Env(),/*Napi::Function::New(promise.Env(),jsCallback),*/ "TSFN", 0, 2, this))
+        promise(env)
       {}
     };
-    
+
+    // function called back from Javascript eventually
+  static void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver);
+
+  TypedThreadSafeFunction<void,PromiseResolver,jsCallback> tsPromiseResolver;
+  
+void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver)
+{
+      if (!promiseResolver) return;
+      tsPromiseResolver.Acquire();
+      cout << "jsCallback: ("<<pthread_self()<<") "<<promiseResolver->success<<" "<<promiseResolver->result.substr(0,50)<<endl;
+      //EscapableHandleScope scope(promiseResolver->promise.Env());
+      auto result=String::New(env, utf_to_utf<char16_t>(promiseResolver->result));
+      cout << "result created"<<endl;
+      if (promiseResolver->success)
+        promiseResolver->promise.Resolve(result);
+      else
+        promiseResolver->promise.Reject(result);
+      cout << "resolve done"<<std::endl;
+      //delete promiseResolver; // cleans up object allocated in Command::Command() below
+      tsPromiseResolver.Release();
+    }
+
+  void PromiseResolver::doResolve() {
+    //tsPromiseResolver.Acquire();
+    cout<<"Blocking call"<<endl;
+    tsPromiseResolver.BlockingCall(this);
+    cout<<"Blocking call done"<<endl;
+    //tsPromiseResolver.Release();
+  }
+
+
     struct Command
     {
       PromiseResolver* promiseResolver;
@@ -91,6 +103,12 @@ namespace minsky
         arguments(arguments) {}
     };
   
+}
+
+namespace minsky
+{
+  namespace
+  {
     struct AddOnMinsky: public RESTMinsky
     {
       Env* env=nullptr;
@@ -113,11 +131,20 @@ namespace minsky
         if (thread.joinable()) thread.join();
       }
 
+      Value queueCommand(Env env, const string& command, const json_pack_t& arguments)
+      {
+        lock_guard<mutex> lock(cmdMutex);
+        minskyCommands.emplace_back(new Command{env,command,arguments});
+        cout << "Invoking command "<<minskyCommands.back()->command<<" on thread "<<pthread_self()<<endl;
+        return minskyCommands.back()->promiseResolver->promise.Promise();
+      }
+      
       void run()
       {
 #if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
         pthread_setname_np(pthread_self(),"minsky thread");
 #endif
+        bool threadAcquired=false;
 
         while (running)
           {
@@ -136,14 +163,16 @@ namespace minsky
                 if (reset_flag())
                   try
                     {
+                      cout << "reset flag set"<<endl;
                       reset();
                     }
                   catch (...)
                     {}
+                flags&=~reset_needed;
                 for (auto i: nativeWindowsToRedraw)
                   try
                     {
-                      i->draw();
+                      //i->draw();
                     }
                   catch (const std::exception& ex)
                     {
@@ -159,11 +188,15 @@ namespace minsky
 
             try
               {
+                //if (!threadAcquired) tsPromiseResolver.Acquire();
+                threadAcquired=true;
                 Env e=command->promiseResolver->promise.Env();
                 env=&e; // TODO: can we do the callback env a little less clumsily?
                 // disable quoting wide characters in UTF-8 strings
+                cout << "Doing command: "<<command->command<<"("<<write(command->arguments)<<")"<<endl;
                 auto result=write(registry.process(command->command, command->arguments),json5_parser::raw_utf8);
                 // Javascript needs the result returns as UTF-16.
+                cout << "Resolving command: "<<result.substr(0,50)<<endl;
                 command->promiseResolver->resolve(result);
                 int nargs=1;
                 switch (command->arguments.type())
@@ -183,13 +216,17 @@ namespace minsky
               }
             catch (const std::exception& ex)
               {
+                cout << "Rejecting command: "<<ex.what()<<endl;
                 command->promiseResolver->reject(ex.what());
               }
             catch (...)
               {
                 command->promiseResolver->reject("Unknown exception");
               }
-          }
+          } 
+        cout << "releasing..."<<endl;
+       /*if (threadAcquired)*/ tsPromiseResolver.Release();
+        cout << "released"<<endl;
       }
       
       void message(const std::string& msg) override
@@ -355,9 +392,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
           if (!jsonArguments.empty())
             read(jsonArguments, arguments);
         }
-      lock_guard<mutex> lock(addOnMinsky.cmdMutex);
-      addOnMinsky.minskyCommands.emplace_back(new minsky::Command{env,info[0].ToString(),arguments});
-      return addOnMinsky.minskyCommands.back()->promiseResolver->promise.Promise();
+      return addOnMinsky.queueCommand(env,info[0].ToString(),arguments);
     }
   catch (const std::exception& ex)
     {
@@ -373,6 +408,11 @@ Value RESTCall(const Napi::CallbackInfo& info)
 }
 
 Object Init(Env env, Object exports) {
+  cout << "Initialising addon on thread "<<pthread_self()<<endl;
+  tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,jsCallback>::New
+    (env,"TSResolver", 0, 2, nullptr);
+  //tsPromiseResolver.Release();
+  
   RESTProcess(addOnMinsky.registry,"/minsky",minsky::minsky());
   
   exports.Set(String::New(env, "call"), Function::New(env, RESTCall));
