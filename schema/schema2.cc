@@ -54,7 +54,7 @@ namespace schema2
     
     a.hypercube(hc); //dimension data
     assert(a.size()==data.size());
-    memcpy(a.begin(),&data[0],data.size()*sizeof(data[0]));
+    memcpy(a.begin(),data.data(),data.size()*sizeof(data[0]));
   }
 
   struct Schema1Layout

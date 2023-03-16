@@ -103,7 +103,7 @@ namespace schema3
     a.index(std::move(index)); //NOLINT
     a.hypercube(std::move(hc)); //dimension data
     assert(a.size()==data.size());
-    memcpy(a.begin(),&data[0],data.size()*sizeof(data[0]));
+    memcpy(a.begin(),data.data(),data.size()*sizeof(data[0]));
   }
 
   Optional<classdesc::CDATA> Item::convertTensorDataFromSchema2(const Optional<classdesc::CDATA>& x)

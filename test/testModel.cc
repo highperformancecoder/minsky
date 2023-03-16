@@ -276,7 +276,7 @@ SUITE(Group)
       CHECK_CLOSE(group0->bb.height(), g->bb.height(), 1e-2);
       CHECK_CLOSE(group0->x(),g->x(), 1e-2);
       CHECK_CLOSE(group0->y(),g->y(), 1e-2);
-      CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 1e-2);
+      CHECK_ARRAY_CLOSE(group0->cBounds().data(), g->cBounds().data(), 4, 1e-2);
 
       save("copy.mky");
       
@@ -320,7 +320,7 @@ SUITE(Group)
           CHECK(w2->from()->item().group.lock()==g);
           auto c1=w1->coords(), c2=w2->coords();
           CHECK_EQUAL(c1.size(), c2.size());
-          CHECK_ARRAY_CLOSE(&c1[0], &c2[0], c1.size(), 1e-2);
+          CHECK_ARRAY_CLOSE(c1.data(), c2.data(), c1.size(), 1e-2);
         }
       for (size_t i=0; i<group0->groups.size(); i++)
         {

@@ -499,7 +499,7 @@ SUITE(TensorOps)
 
       // another example - check for corner cases
       vector<double> data{0.36,0.412,0.877,0.437,0.751};
-      memcpy(fromVal.begin(),&data[0],data.size()*sizeof(data[0]));
+      memcpy(fromVal.begin(),data.data(),data.size()*sizeof(data[0]));
       
       eval();
       expected={1,3};
@@ -685,7 +685,7 @@ SUITE(TensorOps)
       toVal[3]=2;   // on exact point
 
       CHECK_EQUAL(fv.size(), fromVal.size());
-      memcpy(&fromVal[0], &fv[0], sizeof(double)*fv.size());
+      memcpy(&fromVal[0], fv.data(), sizeof(double)*fv.size());
       
       // apply gather to the orignal vector and the index results.
       OperationPtr gatherOp(OperationType::gather);
@@ -755,7 +755,7 @@ SUITE(TensorOps)
       toVal[3]=1950;   // on exact point
 
       CHECK_EQUAL(fv.size(), fromVal.size());
-      memcpy(&fromVal[0], &fv[0], sizeof(double)*fv.size());
+      memcpy(&fromVal[0], fv.data(), sizeof(double)*fv.size());
       
       // apply gather to the orignal vector and the index results.
       OperationPtr gatherOp(OperationType::gather);
@@ -819,7 +819,7 @@ SUITE(TensorOps)
       toVal[3]=1950;   // on exact point
 
       CHECK_EQUAL(fv.size(), fromVal.size());
-      memcpy(&fromVal[0], &fv[0], sizeof(double)*fv.size());
+      memcpy(&fromVal[0], fv.data(), sizeof(double)*fv.size());
       
       // apply gather to the orignal vector and the index results.
       OperationPtr gatherOp(OperationType::gather);
