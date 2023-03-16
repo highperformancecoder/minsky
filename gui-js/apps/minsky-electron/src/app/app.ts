@@ -18,7 +18,7 @@ import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
-import { backend, loadResources } from './backend-init';
+import { backend, loadResources, sanityCheck } from './backend-init';
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -211,6 +211,7 @@ export default class App {
     // invert the effect of display scaling on canvas fonts.
     backend('/minsky/fontScale', (1/displayScale));
     setTimeout(async () => {loadResources();}, 100);
+    setTimeout(async () => {sanityCheck();}, 100);
     
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data

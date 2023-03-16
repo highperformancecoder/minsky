@@ -90,7 +90,10 @@ CppClass.backend=backend;
 //}
 
 // Sanity checks before we get started
-setTimeout(async()=>{
+
+export function sanityCheck()
+{
+  setTimeout(async()=>{
   if (await backend("/minsky/minskyVersion")!==version)
     setTimeout(()=>{
       dialog.showMessageBoxSync({
@@ -111,7 +114,8 @@ setTimeout(async()=>{
   },1000);
   
 }, 1);
-           
+}
+
 // load icon resources needed for GUI
 export function loadResources()
 {

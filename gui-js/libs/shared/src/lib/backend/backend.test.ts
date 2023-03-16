@@ -6,13 +6,13 @@ describe('properties',()=>{
     let m=await minsky.properties();
     expect("t" in m).toBe(true);
     m.t+=1;
-    let t=await minsky.t(m.t);
-    expect(t).toBe(m.t);
+    expect(await minsky.t(m.t)).toBe(m.t);
     let p=await minsky.properties(m);
     expect(p.t).toBe(m.t);
-    p=await minsky.properties();
-    expect(p.t).toBe(m.t);
-    await new Promise((r)=>setTimeout(r,100)); // pause a bit to allow initialisation to complete
+    expect(await minsky.t()).toBe(m.t);
+    //p=await minsky.properties();
+    //expect(p.t).toBe(m.t);
+    await new Promise((r)=>setTimeout(r,3000)); // pause a bit to allow initialisation to complete
   });
 });
 

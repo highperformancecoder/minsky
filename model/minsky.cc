@@ -884,7 +884,7 @@ namespace minsky
       }
 
     canvas.itemIndicator=false;
-    //    BusyCursor busy(*this);
+    BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     lastT=t0;
     constructEquations();
