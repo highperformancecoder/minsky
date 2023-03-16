@@ -68,7 +68,7 @@ namespace
 void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver)
 {
       if (!promiseResolver) return;
-      tsPromiseResolver.Acquire();
+      //tsPromiseResolver.Acquire();
       cout << "jsCallback: ("<<pthread_self()<<") "<<promiseResolver->success<<" "<<promiseResolver->result.substr(0,50)<<endl;
       auto result=String::New(env, utf_to_utf<char16_t>(promiseResolver->result));
       cout << "result created"<<endl;
@@ -77,8 +77,8 @@ void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseRe
       else
         promiseResolver->promise.Reject(result);
       cout << "resolve done"<<std::endl;
-      //delete promiseResolver; // cleans up object allocated in Command::Command() below
-      tsPromiseResolver.Release();
+      delete promiseResolver; // cleans up object allocated in Command::Command() below
+      //tsPromiseResolver.Release();
     }
 
   void PromiseResolver::doResolve() {
@@ -219,7 +219,6 @@ namespace minsky
               }
             catch (const std::exception& ex)
               {
-                cout << "Rejecting command: "<<ex.what()<<endl;
                 command->promiseResolver->reject(ex.what());
               }
             catch (...)
@@ -227,9 +226,6 @@ namespace minsky
                 command->promiseResolver->reject("Unknown exception");
               }
           } 
-        cout << "releasing..."<<endl;
-       /*if (threadAcquired)*/ tsPromiseResolver.Release();
-        cout << "released"<<endl;
       }
       
 //      void message(const std::string& msg) override
