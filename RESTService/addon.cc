@@ -99,7 +99,9 @@ namespace minsky
 {
   namespace
   {
-    mutex minskyCmdMutex; // ensure access to only one global Minsky object at a time
+    // ensure access to only one global Minsky object at a time,
+    // particular needed for jest tests, which run in parallel
+    mutex minskyCmdMutex; 
 
     struct AddOnMinsky: public RESTMinsky
     {
@@ -162,7 +164,7 @@ namespace minsky
                 for (auto i: nativeWindowsToRedraw)
                   try
                     {
-                      //i->draw();
+                      i->draw();
                     }
                   catch (const std::exception& ex)
                     {
@@ -181,7 +183,7 @@ namespace minsky
                 Env e=command->promiseResolver->promise.Env();
                 env=&e; // TODO: can we do the callback env a little less clumsily?
                 lock_guard<mutex> lock(minskyCmdMutex);
-                LocalMinsky lm(*this);
+                LocalMinsky lm(*this); // sets this to be the global minsky object
                 // disable quoting wide characters in UTF-8 strings
                 auto result=write(registry.process(command->command, command->arguments),json5_parser::raw_utf8);
                 command->promiseResolver->resolve(result);
@@ -238,7 +240,7 @@ namespace minsky
 
   Minsky& minsky()
   {
-    static AddOnMinsky s_minsky;
+    static Minsky s_minsky;
     if (l_minsky)
       return *l_minsky;
     return s_minsky;
