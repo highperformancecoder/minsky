@@ -359,19 +359,19 @@ export class CommandsManager {
   }
 
   static async mouseDown(mouseX: number, mouseY: number): Promise<void> {
-    WindowManager.currentTab.mouseDown(mouseX, mouseY);
+    WindowManager.currentTab?.mouseDown(mouseX, mouseY);
   }
 
   static async mouseUp(mouseX: number, mouseY: number): Promise<void> {
-    WindowManager.currentTab.mouseUp(mouseX, mouseY);
+    WindowManager.currentTab?.mouseUp(mouseX, mouseY);
   }
 
   static async mouseMove(mouseX: number, mouseY: number): Promise<void> {
-    WindowManager.currentTab.mouseMove(mouseX, mouseY);
+    WindowManager.currentTab?.mouseMove(mouseX, mouseY);
   }
 
   static async requestRedraw(): Promise<void> {
-    WindowManager.currentTab.requestRedraw();
+    WindowManager.currentTab?.requestRedraw();
   }
 
   static async canCurrentSystemBeClosed(): Promise<boolean> {

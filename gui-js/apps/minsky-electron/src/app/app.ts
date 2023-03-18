@@ -205,11 +205,12 @@ export default class App {
     //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
     // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
     // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-   let displayScale;
-    backend('/minsky/canvas/scaleFactor').then((x)=>{displayScale=x as number;});
-    App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
-    // invert the effect of display scaling on canvas fonts.
-    backend('/minsky/fontScale', (1/displayScale));
+    setTimeout(async () => {
+      let displayScale=await backend('/minsky/canvas/scaleFactor');
+      App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
+      // invert the effect of display scaling on canvas fonts.
+      backend('/minsky/fontScale', (1/displayScale));
+    });
     setTimeout(async () => {loadResources();}, 100);
     setTimeout(async () => {sanityCheck();}, 100);
     

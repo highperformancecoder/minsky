@@ -3,7 +3,7 @@ import {
   AppLayoutPayload,
   CreateWindowPayload,
   Functions,
-//  minsky,
+  minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   rendererAppName,
   rendererAppURL,
@@ -26,7 +26,7 @@ export class WindowManager {
   static canvasHeight: number;
   static canvasWidth: number;
   static scaleFactor: number;
-  static currentTab;//: RenderNativeWindow=minsky.canvas;
+  static currentTab=minsky.canvas;
   
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();
