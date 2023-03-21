@@ -114,7 +114,7 @@ namespace minsky
       std::thread thread;
       
       AddOnMinsky(): thread([this](){run();}) {
-        flags=0;
+        //flags=0;
         RESTProcess(registry,"/minsky",static_cast<Minsky&>(*this));
       }
       
@@ -160,7 +160,7 @@ namespace minsky
                       reset();
                     }
                   catch (...)
-                    {}
+                    {flags=0;}
                 for (auto i: nativeWindowsToRedraw)
                   try
                     {

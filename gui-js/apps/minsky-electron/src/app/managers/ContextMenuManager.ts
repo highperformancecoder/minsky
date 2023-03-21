@@ -48,8 +48,7 @@ export class ContextMenuManager {
   }
 
   private static async initContextMenuForPlotTab(mainWindow: BrowserWindow) {
-    minsky.plotTab.getItemAt(this.x,this.y)
-    if (minsky.plotTab.item.properties()) {
+    if (await minsky.plotTab.getItemAt(this.x,this.y)) {
       const menuItems = [
         new MenuItem({
           label: `Remove plot from tab`,
@@ -68,9 +67,9 @@ export class ContextMenuManager {
 
   private static async initContextMenuForWiring(mainWindow: BrowserWindow) {
     try {
-      const isWirePresent = minsky.canvas.getWireAt(this.x, this.y);
+      const isWirePresent = await minsky.canvas.getWireAt(this.x, this.y);
 
-      const isWireVisible = minsky.canvas.wire.visible();
+      const isWireVisible = await minsky.canvas.wire.visible();
       const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
 
         if (isWirePresent && isWireVisible && (itemInfo?.classType!=ClassType.Group||itemInfo?.displayContents)) {

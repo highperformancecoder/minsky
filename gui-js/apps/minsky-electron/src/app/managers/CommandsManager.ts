@@ -375,7 +375,7 @@ export class CommandsManager {
   }
 
   static async canCurrentSystemBeClosed(): Promise<boolean> {
-    if (!minsky.edited()) {
+    if (!await minsky.edited()) {
       return true;
     }
 
@@ -591,11 +591,14 @@ export class CommandsManager {
 
   static async editVar() {
     const v=new VariableBase(minsky.canvas.item);
+    const name=await v.name();
+    const type=await v.type();
+    const local=await v.local();
     WindowManager.createPopupWindowWithRouting({
       width: 500,
       height: 650,
-      title: `Edit ${v.name() || ''}`,
-      url: `#/headless/menu/insert/create-variable?type=${v.type()}&name=${v.name()||''}&isEditMode=true&local=${v.local()}`,
+      title: `Edit ${name} || ''}`,
+      url: `#/headless/menu/insert/create-variable?type=${type}&name=${name||''}&isEditMode=true&local=${local}`,
     });
   }
 
@@ -928,8 +931,8 @@ export class CommandsManager {
     await CommandsManager.requestRedraw();
   };
 
-  private static defaultSaveOptions(): SaveDialogOptions {
-    let defaultExtension; minsky.model.defaultExtension().then((x)=>{defaultExtension=x;});
+  private static async defaultSaveOptions(): Promise<SaveDialogOptions> {
+    let defaultExtension=await minsky.model.defaultExtension();
     return {
               filters: [
                 {

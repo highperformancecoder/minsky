@@ -29,7 +29,7 @@ function logFilter(c: string) {
 }
 
 /** core function to call into C++ object heirarachy */
-export async function backend(command: string, ...args: any[]) {
+export async function backend(command: string, ...args: any[]): Promise<any> {
   if (!command) {
     log.error('backend called without any command');
     return {};
