@@ -25,6 +25,7 @@
 
 #include <exception>
 #include <atomic>
+#include <future>
 
 using namespace Napi;
 using namespace std;
@@ -60,27 +61,24 @@ namespace
       {}
     };
 
-    // function called back from Javascript eventually
-  static void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver);
+  // function called back from Javascript eventually
+  void resolvePromise(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver)
+  {
+    if (!promiseResolver) return;
+    // Javascript needs the result returns as UTF-16.
+    auto result=String::New(env, utf_to_utf<char16_t>(promiseResolver->result));
+    if (promiseResolver->success)
+      promiseResolver->promise.Resolve(result);
+    else
+      promiseResolver->promise.Reject(result);
+    delete promiseResolver; // cleans up object allocated in Command::Command() below
+  }
 
-  TypedThreadSafeFunction<void,PromiseResolver,jsCallback> tsPromiseResolver;
+  TypedThreadSafeFunction<void,PromiseResolver,resolvePromise> tsPromiseResolver;
   
-void jsCallback(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver)
-{
-      if (!promiseResolver) return;
-      // Javascript needs the result returns as UTF-16.
-      auto result=String::New(env, utf_to_utf<char16_t>(promiseResolver->result));
-      if (promiseResolver->success)
-        promiseResolver->promise.Resolve(result);
-      else
-        promiseResolver->promise.Reject(result);
-      delete promiseResolver; // cleans up object allocated in Command::Command() below
-    }
-
   void PromiseResolver::doResolve() {
     tsPromiseResolver.BlockingCall(this);
   }
-
 
     struct Command
     {
@@ -105,25 +103,16 @@ namespace minsky
 
     struct AddOnMinsky: public RESTMinsky
     {
-      Env* env=nullptr;
-      FunctionReference messageCallback;
-      FunctionReference busyCursorCallback;
       deque<unique_ptr<Command>> minskyCommands;
       mutex cmdMutex;
       atomic<bool> running{true};
       std::thread thread;
       
       AddOnMinsky(): thread([this](){run();}) {
-        //flags=0;
         RESTProcess(registry,"/minsky",static_cast<Minsky&>(*this));
       }
       
       ~AddOnMinsky() {
-        // because this object is used as a static object, suppress
-        // the callback destructors to avoid freeing the references at
-        // shutdown time.
-        messageCallback.SuppressDestruct();
-        busyCursorCallback.SuppressDestruct();
         running=false;
         if (thread.joinable()) thread.join();
       }
@@ -180,8 +169,6 @@ namespace minsky
 
             try
               {
-                Env e=command->promiseResolver->promise.Env();
-                env=&e; // TODO: can we do the callback env a little less clumsily?
                 lock_guard<mutex> lock(minskyCmdMutex);
                 LocalMinsky lm(*this); // sets this to be the global minsky object
                 // disable quoting wide characters in UTF-8 strings
@@ -213,26 +200,87 @@ namespace minsky
               }
           } 
       }
+
+      mutable string theMessage;
+      mutable vector<string> messageButtons;
+      mutable promise<unsigned> userResponse;
+      static void messageCallback(Napi::Env env, Napi::Function fn, void*, AddOnMinsky* addonMinsky)
+      {
+        auto buttons=Array::New(env);
+        for (unsigned i=0; i< addonMinsky->messageButtons.size(); ++i)
+          buttons[i]=String::New(env,addonMinsky->messageButtons[i]);
+        addonMinsky->userResponse.set_value(fn({String::New(env,addonMinsky->theMessage), buttons}).As<Number>().Int32Value());
+      }
+
+      bool messageCallbackSet=false;
+      TypedThreadSafeFunction<void,AddOnMinsky,messageCallback> tsMessageCallback;
+      Value setMessageCallback(const Napi::CallbackInfo& info)
+      {
+        Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        messageCallbackSet=true;
+        tsMessageCallback=TypedThreadSafeFunction<void,AddOnMinsky,messageCallback>::New
+          (env,info[0].As<Function>(), "message",0,2,nullptr);
+        
+        return env.Null();
+      }
+
       
-//      void message(const std::string& msg) override
-//      {if (env) messageCallback({String::New(*env,msg),Array::New(*env)});}
-//      bool checkMemAllocation(std::size_t bytes) const override {
-//        bool r=true;
-//        if (env && bytes>0.2*physicalMem())
-//          {
-//            auto buttons=Array::New(*env);
-//            buttons[0U]=String::New(*env,"No");
-//            buttons[1U]=String::New(*env,"Yes");
-//            r=messageCallback({
-//                String::New(*env,"Allocation will use more than 50% of available memory. Do you want to proceed?"),
-//                  buttons}).As<Number>().Int32Value();
-//          }
-//        return r;
-//      }
-//      void setBusyCursor() override
-//      {if (env) busyCursorCallback({Boolean::New(*env,true)});}
-//      void clearBusyCursor() override
-//      {if (env) busyCursorCallback({Boolean::New(*env,false)});}
+      void message(const std::string& msg) override
+      {
+        if (!messageCallbackSet) return;
+        theMessage=msg;
+        messageButtons.clear(); // empty buttons imply a single OK button
+        userResponse={}; //reset the promise
+        tsMessageCallback.BlockingCall(const_cast<AddOnMinsky*>(this));
+      }
+
+      bool checkMemAllocation(std::size_t bytes) const override {
+        if (messageCallbackSet && bytes>0.2*physicalMem())
+          {
+            theMessage="Allocation will use more than 50% of available memory. Do you want to proceed?";
+            messageButtons={"No","Yes"};
+            userResponse={}; //reset the promise
+            tsMessageCallback.BlockingCall(const_cast<AddOnMinsky*>(this));
+            return userResponse.get_future().get();
+          }
+        return true;
+      }
+      
+      static void busyCursorCallback(Napi::Env env, Napi::Function fn, void*, bool* busy)
+      {
+        fn({Boolean::New(env,*busy)});
+      }
+      
+      bool busyCursorCallbackSet=false;
+      TypedThreadSafeFunction<void,bool,busyCursorCallback> tsBusyCursorCallback;
+      Value setBusyCursorCallback(const Napi::CallbackInfo& info)
+      {
+        Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        busyCursorCallbackSet=true;
+        tsBusyCursorCallback=TypedThreadSafeFunction<void,bool,busyCursorCallback>::New
+          (env,info[0].As<Function>(), "setBusyCursor",0,2,nullptr);
+        return env.Null();
+      }
+
+      bool busyCursor=false;
+      void doBusyCursor(bool bc)
+      {
+        if (!busyCursorCallbackSet) return;
+        busyCursor=bc;
+        tsBusyCursorCallback.BlockingCall(&busyCursor);
+      }
+      void setBusyCursor() override
+      {doBusyCursor(true);}
+      void clearBusyCursor() override
+      {doBusyCursor(false);}
     };
     
     Minsky* l_minsky=NULL;
@@ -257,10 +305,10 @@ struct MinskyAddon: public Addon<MinskyAddon>
 {
   minsky::AddOnMinsky addOnMinsky;
   minsky::LocalMinsky lm{addOnMinsky};
-  
+
   MinskyAddon(Env env, Object exports)
   {
-    tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,jsCallback>::New
+    tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,resolvePromise>::New
       (env,"TSResolver", 0, 2, nullptr);
   
     
@@ -272,27 +320,8 @@ struct MinskyAddon: public Addon<MinskyAddon>
   }
   
 
-  Value setMessageCallback(const Napi::CallbackInfo& info)
-  {
-    Env env = info.Env();
-    if (info.Length()<1 || !info[0].IsFunction())
-      {
-        Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
-      }
-    addOnMinsky.messageCallback=Persistent(info[0].As<Function>());
-    return env.Null();
-  }
-
-  Value setBusyCursorCallback(const Napi::CallbackInfo& info)
-  {
-    Env env = info.Env();
-    if (info.Length()<1 || !info[0].IsFunction())
-      {
-        Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
-      }
-    addOnMinsky.busyCursorCallback=Persistent(info[0].As<Function>());
-    return env.Null();
-  }
+  Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}
+  Value setBusyCursorCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBusyCursorCallback(info);}
 
   Value call(const Napi::CallbackInfo& info)
   {

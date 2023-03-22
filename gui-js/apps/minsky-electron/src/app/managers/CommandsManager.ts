@@ -957,7 +957,7 @@ export class CommandsManager {
   }
     
   static async saveAs() {
-    const saveDialog = await dialog.showSaveDialog(CommandsManager.defaultSaveOptions());
+    const saveDialog = await dialog.showSaveDialog(await CommandsManager.defaultSaveOptions());
     
     const { canceled, filePath: filePath } = saveDialog;
     

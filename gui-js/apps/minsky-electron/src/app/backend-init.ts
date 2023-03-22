@@ -65,29 +65,26 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
 
 CppClass.backend=backend;
 
-//if ("JEST_WORKER_ID" in process.env) {
-//  restService.setMessageCallback(function (msg: string, buttons: string[]) {
-//    log.info(msg);
-//  });
-//  restService.setBusyCursorCallback(function (busy: boolean) {});
-//} else {
-//  restService.setMessageCallback(function (msg: string, buttons: string[]) {
-//    if (msg && dialog)
-//      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-//        message: msg,
-//        type: 'info',
-//        buttons: buttons,
-//      });
-//    return 0;
-//  });
-//
-//  restService.setBusyCursorCallback(function (busy: boolean) {
-//    //WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
-//    //WindowManager.getMainWindow()?.webContents?.insertCSS('html, body { cursor: "busy"; }');
-//    WindowManager.getMainWindow()?.setProgressBar(0.5);
-//    console.log("cursor busy sent",busy);
-//  });
-//}
+if ("JEST_WORKER_ID" in process.env) {
+  restService.setMessageCallback(function (msg: string, buttons: string[]) {
+    log.info(msg);
+  });
+  restService.setBusyCursorCallback(function (busy: boolean) {});
+} else {
+  restService.setMessageCallback(function (msg: string, buttons: string[]) {
+    if (msg && dialog)
+      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+        message: msg,
+        type: 'info',
+        buttons: buttons,
+      });
+    return 0;
+  });
+
+  restService.setBusyCursorCallback(function (busy: boolean) {
+    WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
+  });
+}
 
 // Sanity checks before we get started
 
