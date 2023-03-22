@@ -344,7 +344,7 @@ namespace minsky
     ostringstream os;
     for (const auto& i: xv)
       {
-        if (&i>&xv[0]) os<<",";
+        if (&i>xv.data()) os<<",";
         os<<json(static_cast<const NamedDimension&>(i));
       }
     of<<quoted("RavelHypercube=["+os.str()+"]")<<endl;

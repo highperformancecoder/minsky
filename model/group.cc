@@ -59,7 +59,7 @@ namespace minsky
       }
 
     for (auto& i: equations)
-      i->eval(&flow[0], flow.size(),ValueVector::stockVars.data());
+      i->eval(flow.data(), flow.size(),ValueVector::stockVars.data());
     return flow[outVariables[0]->vValue()->idx()];
   }
 

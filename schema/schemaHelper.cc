@@ -54,7 +54,7 @@ namespace minsky
     zs.deflate();
     
     vector<char> cbuf(a85::size_for_a85(zs.total_out,false));
-    a85::to_a85(&zbuf[0],zs.total_out, &cbuf[0], false);
+    a85::to_a85(zbuf.data(),zs.total_out, cbuf.data(), false);
     // this ensures that the escape sequence ']]>' never appears in the data
     replace(cbuf.begin(),cbuf.end(),']','~');
     return CDATA(cbuf.begin(),cbuf.end());

@@ -786,24 +786,13 @@ export class ContextMenuManager {
           type: 'radio',
           checked: sortOrder == so,
           click: () => {
-            ravel.setSortOrder(so);
+            ravel.setSortOrder(valueSort('static',so));
             ravel.broadcastStateToLockGroup();
             minsky.reset();
           }
         })).concat(
           ['forward','reverse'].map(vso =>(<any>{
-            label: `${vso} by value`,
-            type: 'radio',
-            checked: sortOrder == valueSort('static',vso),
-            click: async () => {
-              ravel.sortByValue(vso);
-              ravel.setSortOrder(valueSort('static',vso));
-              ravel.broadcastStateToLockGroup();
-              minsky.reset();
-          }
-        }))).concat(
-          ['forward','reverse'].map(vso =>(<any>{
-            label: `${vso} dynamically by value`,
+            label: `${vso} dynamically`,
             type: 'radio',
             checked: sortOrder == valueSort('dynamic',vso),
             click: async () => {

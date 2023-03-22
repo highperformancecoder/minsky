@@ -537,11 +537,9 @@ export class CommunicationService {
     }
 
     const isMainWindow = await this.windowUtilityService.isMainWindow();
-    if (isMainWindow && (event.ctrlKey || event.metaKey) && (event.key.match("[Noq]")))
+    if (isMainWindow && (event.ctrlKey || event.metaKey) && (event.key.match("^[Noq]$")))
       return; // perform menu accelerator only
 
-    
-    
     if (
       isMainWindow &&
       ((this.dialogRef && event.ctrlKey) || (this.dialogRef && event.altKey) || (this.dialogRef && event.metaKey))

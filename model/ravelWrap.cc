@@ -725,7 +725,7 @@ namespace minsky
   
   void RavelLockGroup::addHandleInfo(const std::weak_ptr<Ravel>& ravel)
   {
-    auto ravelIdx=&ravel-&m_ravels[0];
+    auto ravelIdx=&ravel-m_ravels.data();
     assert(ravelIdx>=0);
     if (ravelIdx<0 || size_t(ravelIdx)>=m_ravels.size()) return;
     if (auto r=ravel.lock())

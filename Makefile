@@ -140,20 +140,35 @@ endif
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o addon.o typescriptAPI.o
 
-EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
+
+ifneq ($(GUI_TK),1)
+
+EXES=RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
+ifeq ($(HAVE_NODE),1)
+EXES+=gui-js/node-addons/minskyRESTService.node
+endif
 ifndef MXE
 EXES+=RESTService/typescriptAPI
+ifndef GUI_TK
+ifeq ($(OS), "Linux")
+EXES+=gui-tk/minsky$(EXE)
 endif
+endif
+endif
+
+else
+EXES=gui-tk/minsky$(EXE)
+endif
+
 
 DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
 MINSKYLIBS=-lminsky -lminskyEngine -lcivita
 
-ifeq ($(HAVE_NODE),1)
-EXES+=gui-js/node-addons/minskyRESTService.node
-endif
 
+ifndef NOWERROR
 ifndef MXE
 FLAGS+=-Werror
+endif
 endif
 
 FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
@@ -236,9 +251,6 @@ ifeq ($(OS),CYGWIN)
 FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
-#EXES=gui-tk/minsky$(EXE)
-#RESTService/RESTService 
-
 LIBS+=	-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
@@ -309,7 +321,7 @@ RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
 getContext.o: getContext.cc
-	g++ -ObjC++ $(FLAGS) -DMAC_OSX_TK -I/opt/local/include -Iinclude -c $< -o $@
+	g++ -ObjC++ $(FLAGS) -I/opt/local/include -Iinclude -c $< -o $@
 
 gui-tk/minsky$(EXE): $(GUI_TK_OBJS)  $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 $(LIBS) $(GUI_LIBS) -o $@
@@ -415,12 +427,26 @@ minsky.xsd: gui-tk/minsky
 upload-schema: minsky.xsd
 	scp minsky.xsd $(SF_WEB)
 
-install: gui-tk/minsky$(EXE)
-	mkdir -p $(PREFIX)/bin
+install: $(EXES)
+ifneq ($(GUI_TK),1)
+	mkdir -p $(PREFIX)/bin $(PREFIX)/lib/minsky/resources/node-addons
+	cp RESTService/minsky-RESTService $(PREFIX)/bin
+	cp RESTService/minsky-httpd $(PREFIX)/bin
+	cp gui-js/node-addons/*.node $(PREFIX)/lib/minsky/resources/node-addons
+ifndef GUI_TK
+ifeq ($(OS), "Linux")
+ifndef MXE
 	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
-	mkdir -p $(PREFIX)/lib/minsky
 	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
-	cp RESTService/minskyRESTService.node $(PREFIX)/lib/minsky
+endif
+endif
+endif
+else
+	mkdir -p $(PREFIX)/bin $(PREFIX)/lib/minsky
+	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
+	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
+endif
+
 
 
 # runs the regression tests
