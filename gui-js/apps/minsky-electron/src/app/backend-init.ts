@@ -1,6 +1,7 @@
 import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
 import { dialog, shell } from 'electron';
+import * as ProgressBar from 'electron-progressbar';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';
 
@@ -65,6 +66,8 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
 
 CppClass.backend=backend;
 
+let progressBar;
+
 if ("JEST_WORKER_ID" in process.env) {
   restService.setMessageCallback(function (msg: string, buttons: string[]) {
     log.info(msg);
@@ -83,6 +86,20 @@ if ("JEST_WORKER_ID" in process.env) {
 
   restService.setBusyCursorCallback(function (busy: boolean) {
     WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
+    if (busy)  {
+      if (progressBar) progressBar.close();
+      progressBar=new ProgressBar({text: 'hang on', indeterminate: false});
+      if (progressBar.isCompleted())
+        progressBar.value=0;
+      setInterval(function() {
+        if(!progressBar.isCompleted()){
+          progressBar.value += 1;
+        }
+      }, 500);
+    } else if (progressBar) {
+      progressBar.setCompleted();
+      progressBar.close();
+    }
   });
 }
 
