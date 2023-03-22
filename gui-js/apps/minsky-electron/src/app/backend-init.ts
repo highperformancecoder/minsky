@@ -86,20 +86,16 @@ if ("JEST_WORKER_ID" in process.env) {
 
   restService.setBusyCursorCallback(function (busy: boolean) {
     WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
-    if (busy)  {
-      if (progressBar) progressBar.close();
-      progressBar=new ProgressBar({text: 'hang on', indeterminate: false});
-      if (progressBar.isCompleted())
-        progressBar.value=0;
-      setInterval(function() {
-        if(!progressBar.isCompleted()){
-          progressBar.value += 1;
-        }
-      }, 500);
-    } else if (progressBar) {
+    if (progressBar && !busy) {
       progressBar.setCompleted();
       progressBar.close();
     }
+  });
+
+  restService.setProgressCallback(function (title: string, val: number) {
+    if (!progressBar || progressBar.isCompleted())
+      progressBar=new ProgressBar({text: title, indeterminate: false});
+    progressBar.value=val;
   });
 }
 

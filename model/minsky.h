@@ -417,6 +417,8 @@ namespace minsky
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
+    /// set progress bar, out of 100, labelling the progress bar with \a title
+    virtual void progress(const std::string& title,int) {}
 
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}

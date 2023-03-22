@@ -281,6 +281,35 @@ namespace minsky
       {doBusyCursor(true);}
       void clearBusyCursor() override
       {doBusyCursor(false);}
+
+      static void progressCallback(Napi::Env env, Napi::Function fn, void*, AddOnMinsky* addon)
+      {
+        fn({String::New(env,addon->progressTitle), Number::New(env,addon->progressValue)});
+      }
+      
+      int progressValue=0;
+      string progressTitle;
+      void progress(const string& title, int x) override
+      {
+        if (!progressCallbackSet) return;
+        progressValue=x;
+        progressTitle=title;
+        tsProgressCallback.BlockingCall(this);
+      }
+      bool progressCallbackSet=false;
+      TypedThreadSafeFunction<void,AddOnMinsky,progressCallback> tsProgressCallback;
+      Value setProgressCallback(const Napi::CallbackInfo& info)
+      {
+        Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        progressCallbackSet=true;
+        tsProgressCallback=TypedThreadSafeFunction<void,AddOnMinsky,progressCallback>::New
+          (env,info[0].As<Function>(), "progress",0,2,nullptr);
+        return env.Null();
+      }
     };
     
     Minsky* l_minsky=NULL;
@@ -315,13 +344,15 @@ struct MinskyAddon: public Addon<MinskyAddon>
     DefineAddon(exports, {
         InstanceMethod("call", &MinskyAddon::call),
         InstanceMethod("setMessageCallback", &MinskyAddon::setMessageCallback),
-        InstanceMethod("setBusyCursorCallback", &MinskyAddon::setBusyCursorCallback)
+        InstanceMethod("setBusyCursorCallback", &MinskyAddon::setBusyCursorCallback),
+        InstanceMethod("setProgressCallback", &MinskyAddon::setProgressCallback)
       });
   }
   
 
   Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}
   Value setBusyCursorCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBusyCursorCallback(info);}
+  Value setProgressCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setProgressCallback(info);}
 
   Value call(const Napi::CallbackInfo& info)
   {

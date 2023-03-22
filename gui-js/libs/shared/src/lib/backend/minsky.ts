@@ -1385,6 +1385,7 @@ export class Minsky extends CppClass {
   async popFlags(): Promise<void> {return this.callMethod('popFlags');}
   async populateMissingDimensions(): Promise<void> {return this.callMethod('populateMissingDimensions');}
   async populateMissingDimensionsFromVariable(a1: VariableValue): Promise<void> {return this.callMethod('populateMissingDimensionsFromVariable',a1);}
+  async progress(a1: string,a2: number): Promise<void> {return this.callMethod('progress',a1,a2);}
   async pushFlags(): Promise<void> {return this.callMethod('pushFlags');}
   async pushHistory(): Promise<boolean> {return this.callMethod('pushHistory');}
   async randomLayout(): Promise<void> {return this.callMethod('randomLayout');}
