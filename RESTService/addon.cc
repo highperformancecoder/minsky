@@ -65,7 +65,7 @@ namespace
   void resolvePromise(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver)
   {
     if (!promiseResolver) return;
-    // Javascript needs the result returns as UTF-16.
+    // Javascript needs the result returned as UTF-16.
     auto result=String::New(env, utf_to_utf<char16_t>(promiseResolver->result));
     if (promiseResolver->success)
       promiseResolver->promise.Resolve(result);
@@ -83,7 +83,6 @@ namespace
     struct Command
     {
       PromiseResolver* promiseResolver;
-      promise<string> cppPromise; // used for synching commands
       string command;
       json_pack_t arguments;
       Command(const Napi::Env& env, const string& command, const json_pack_t& arguments):
@@ -125,15 +124,36 @@ namespace minsky
         if (sync)
           {
             command.erase(syncPos);
+            // Javascript needs the result returned as UTF-16.
+            return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
           }
-        cout << "executing "<<command<<" sync="<<sync<<endl;
-        {
-          lock_guard<mutex> lock(cmdMutex);
-          minskyCommands.emplace_back(new Command{env,command,arguments});
-        }
-        if (sync)
-          return String::New(env,minskyCommands.back()->cppPromise.get_future().get());
+        lock_guard<mutex> lock(cmdMutex);
+        minskyCommands.emplace_back(new Command{env,command,arguments});
         return minskyCommands.back()->promiseResolver->promise.Promise();
+      }
+
+      string doCommand(string command, const json_pack_t& arguments)
+      {
+        lock_guard<mutex> lock(minskyCmdMutex);
+        LocalMinsky lm(*this); // sets this to be the global minsky object
+        // disable quoting wide characters in UTF-8 strings
+        auto result=write(registry.process(command, arguments),json5_parser::raw_utf8);
+        int nargs=1;
+        switch (arguments.type())
+          {
+          case json5_parser::array_type:
+            nargs=arguments.get_array().size();
+            break;
+          case json5_parser::null_type:
+            nargs=0;
+            break;
+          default:
+            break;
+          }
+        command.erase(0,1); // remove leading '/'
+        replace(command.begin(), command.end(), '/', '.');
+        commandHook(command,nargs);
+        return result;
       }
       
       void run()
@@ -158,6 +178,8 @@ namespace minsky
                 if (reset_flag())
                   try
                     {
+                      lock_guard<mutex> lock(minskyCmdMutex);
+                      LocalMinsky lm(*this); // sets this to be the global minsky object
                       reset();
                     }
                   catch (...)
@@ -165,6 +187,8 @@ namespace minsky
                 for (auto i: nativeWindowsToRedraw)
                   try
                     {
+                      lock_guard<mutex> lock(minskyCmdMutex);
+                      LocalMinsky lm(*this); // sets this to be the global minsky object
                       i->draw();
                     }
                   catch (const std::exception& ex)
@@ -181,38 +205,15 @@ namespace minsky
 
             try
               {
-                lock_guard<mutex> lock(minskyCmdMutex);
-                LocalMinsky lm(*this); // sets this to be the global minsky object
-                // disable quoting wide characters in UTF-8 strings
-                auto result=write(registry.process(command->command, command->arguments),json5_parser::raw_utf8);
-                command->promiseResolver->resolve(result);
-                int nargs=1;
-                switch (command->arguments.type())
-                  {
-                  case json5_parser::array_type:
-                    nargs=command->arguments.get_array().size();
-                    break;
-                  case json5_parser::null_type:
-                    nargs=0;
-                    break;
-                  default:
-                    break;
-                  }
-                command->command.erase(0,1); // remove leading '/'
-                replace(command->command.begin(), command->command.end(), '/', '.');
-                commandHook(command->command,nargs);
-                cout<<"Setting promise for: "<<command->command<<endl;
-                command->cppPromise.set_value(result);
+                command->promiseResolver->resolve(doCommand(command->command, command->arguments));
               }
             catch (const std::exception& ex)
               {
                 command->promiseResolver->reject(ex.what());
-                command->cppPromise.set_exception(std::current_exception());
               }
             catch (...)
               {
                 command->promiseResolver->reject("Unknown exception");
-                command->cppPromise.set_exception(std::current_exception());
               }
           } 
       }
