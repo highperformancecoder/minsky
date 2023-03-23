@@ -83,6 +83,7 @@ namespace
     struct Command
     {
       PromiseResolver* promiseResolver;
+      promise<string> cppPromise; // used for synching commands
       string command;
       json_pack_t arguments;
       Command(const Napi::Env& env, const string& command, const json_pack_t& arguments):
@@ -117,10 +118,21 @@ namespace minsky
         if (thread.joinable()) thread.join();
       }
 
-      Value queueCommand(Env env, const string& command, const json_pack_t& arguments)
+      Value queueCommand(Env env, string command, const json_pack_t& arguments)
       {
-        lock_guard<mutex> lock(cmdMutex);
-        minskyCommands.emplace_back(new Command{env,command,arguments});
+        auto syncPos=command.rfind("/$sync");
+        bool sync=syncPos==command.size()-6;
+        if (sync)
+          {
+            command.erase(syncPos);
+          }
+        cout << "executing "<<command<<" sync="<<sync<<endl;
+        {
+          lock_guard<mutex> lock(cmdMutex);
+          minskyCommands.emplace_back(new Command{env,command,arguments});
+        }
+        if (sync)
+          return String::New(env,minskyCommands.back()->cppPromise.get_future().get());
         return minskyCommands.back()->promiseResolver->promise.Promise();
       }
       
@@ -189,14 +201,18 @@ namespace minsky
                 command->command.erase(0,1); // remove leading '/'
                 replace(command->command.begin(), command->command.end(), '/', '.');
                 commandHook(command->command,nargs);
+                cout<<"Setting promise for: "<<command->command<<endl;
+                command->cppPromise.set_value(result);
               }
             catch (const std::exception& ex)
               {
                 command->promiseResolver->reject(ex.what());
+                command->cppPromise.set_exception(std::current_exception());
               }
             catch (...)
               {
                 command->promiseResolver->reject("Unknown exception");
+                command->cppPromise.set_exception(std::current_exception());
               }
           } 
       }

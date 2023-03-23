@@ -6,9 +6,13 @@ export class CppClass
   public static record=(cmd: string)=>{}; // recording support: see RecordingsManager
   protected m_prefix: string;
   constructor(prefix: string) {this.m_prefix=prefix;}
-  protected async callMethod(method: string,...args)
+  protected async callMethod(method: string,...args): Promise<any>
   {
     return CppClass.backend(`${this.m_prefix}/${method}`, ...args);
+  }
+  public callMethodSync(method: string,...args)
+  {
+    return CppClass.backend(`${this.m_prefix}/${method}/$sync`, ...args);
   }
   public async properties(...args) {return CppClass.backend(this.m_prefix, ...args);}
   public async $list(): Promise<string[]> {return this.callMethod("@list");} // $ prevents this method from being shadowed by a C++ method
