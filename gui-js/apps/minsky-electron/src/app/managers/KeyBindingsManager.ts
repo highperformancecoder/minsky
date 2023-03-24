@@ -62,7 +62,7 @@ export class KeyBindingsManager {
       if (
         !isKeyPressHandled &&
           !command &&
-          currentTab.equal(minsky.canvas)
+          currentTab.$equal(minsky.canvas)
       ) {
         return await this.handleOnKeyPressFallback({key:keySymAndName.name, ctrl, mouseX, mouseY});
       }
@@ -70,7 +70,7 @@ export class KeyBindingsManager {
     }
 
     let res: boolean | string = false;
-    if (!command && currentTab.equal(minsky.canvas)) {
+    if (!command && currentTab.$equal(minsky.canvas)) {
       res = await this.handleOnKeyPressFallback(payload);
     }
     return res;

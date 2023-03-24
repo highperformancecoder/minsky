@@ -198,7 +198,7 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
             cout <<","<<klass.valueType;
           cout << ")\n";
           cout << "    else\n";
-          cout << "      super(prefix.prefix()";
+          cout << "      super(prefix.$prefix()";
           if (!klass.valueType.empty())
             cout <<","<<klass.valueType;
           cout <<")\n";
@@ -213,7 +213,7 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
           if (!prop.second.construction.empty())
             cout << "    this."<<prop.first<<"="<<prop.second.construction<<"\n";
           else
-            cout << "    this."<<prop.first<<"=new "<<prop.second.type<<"(this.prefix()+'/"<<prop.first<<"');\n"; 
+            cout << "    this."<<prop.first<<"=new "<<prop.second.type<<"(this.$prefix()+'/"<<prop.first<<"');\n"; 
         }
       cout << "  }\n";
 
@@ -226,7 +226,7 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
               if (i>0) cout<<",";
               cout<<method.second.args[i].name<<": "<<method.second.args[i].type;
             }
-          cout << "): Promise<"<<method.second.returnType<<"> {return this.callMethod('"<<method.first<<"'";
+          cout << "): Promise<"<<method.second.returnType<<"> {return this.$callMethod('"<<method.first<<"'";
           for (auto& arg: method.second.args)
             cout<<","<<arg.name;
           cout<<");}\n";

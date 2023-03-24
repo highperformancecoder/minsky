@@ -71,6 +71,7 @@ let progressBar;
 if ("JEST_WORKER_ID" in process.env) {
   restService.setMessageCallback(function (msg: string, buttons: string[]) {
     log.info(msg);
+    return 0;
   });
   restService.setBusyCursorCallback(function (busy: boolean) {});
 } else {

@@ -385,9 +385,11 @@ namespace minsky
   void GroupItems::adjustWiresGroup(Wire& w)
   {
     // Find common ancestor group, and move wire to it
-    assert(w.from() && w.to());
+    if (!w.from() && !w.to()) return;
+        //assert(w.from() && w.to());
     shared_ptr<Group> p1=w.from()->item().group.lock(), p2=w.to()->item().group.lock();
-    assert(p1 && p2);
+    //    assert(p1 && p2);
+    if (!p1||!p2) return;
     unsigned l1=p1->level(), l2=p2->level();
     for (; p1 && l1>l2; l1--) p1=p1->group.lock();
     for (; p2 && l2>l1; l2--) p2=p2->group.lock();

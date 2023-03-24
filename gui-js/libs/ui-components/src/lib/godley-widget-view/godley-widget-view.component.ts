@@ -186,7 +186,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
         x: event.x,
         y: event.y,
         type: 'godley',
-        command: this.godleyIcon.prefix(),
+        command: this.godleyIcon.$prefix(),
       });
     });
 
@@ -244,7 +244,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
       x: i,
       y: j,
       type: 'html-godley',
-      command: JSON5.stringify([this.godleyIcon.prefix(), clickType, frameId]),
+      command: JSON5.stringify([this.godleyIcon.$prefix(), clickType, frameId]),
     });
   }
 

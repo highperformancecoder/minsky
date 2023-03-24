@@ -53,6 +53,7 @@
 #include <string>
 #include <set>
 #include <deque>
+#include <cstdio>
 
 #include <ecolab.h>
 #include <xml_pack_base.h>
@@ -501,6 +502,9 @@ namespace minsky
     {return checkMemAllocation(std::numeric_limits<size_t>::max());}
 
     VariablePane variablePane;
+
+    /// Used to implement a pause until return pressed for attaching debugger purposes
+    char getc() const {return std::getc(stdin);}
   };
 
   /// global minsky object

@@ -927,7 +927,7 @@ export class CommandsManager {
       window.context.webContents.insertCSS(style);
     });
 
-    minsky.canvas.backgroundColour.properties({r: r/255, g: g/255, b: b/255, a: 1});
+    minsky.canvas.backgroundColour.$properties({r: r/255, g: g/255, b: b/255, a: 1});
     await CommandsManager.requestRedraw();
   };
 
@@ -974,7 +974,7 @@ export class CommandsManager {
     const description = ravel.handleDescription(handleIndex);
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Description`,
-        url: `#/headless/edit-handle-description?command=${ravel.prefix()}&handleIndex=${handleIndex}&description=${description}`,
+        url: `#/headless/edit-handle-description?command=${ravel.$prefix()}&handleIndex=${handleIndex}&description=${description}`,
         height: 90,
         width: 300,
       });
@@ -991,7 +991,7 @@ export class CommandsManager {
 
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Dimension`,
-        url: `#/headless/edit-handle-dimension?command=${ravel.prefix()}&handleIndex=${handleIndex}&type=${type}&units=${units}`,
+        url: `#/headless/edit-handle-dimension?command=${ravel.$prefix()}&handleIndex=${handleIndex}&type=${type}&units=${units}`,
         height: 180,
         width: 300,
       });
@@ -1009,7 +1009,7 @@ export class CommandsManager {
     
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Pick slices`,
-      url: `#/headless/pick-slices?command=${ravel.prefix()}&handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
+      url: `#/headless/pick-slices?command=${ravel.$prefix()}&handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
       height: 400,
       width: 400,
     });
@@ -1030,7 +1030,7 @@ export class CommandsManager {
       if(Object.keys(allLockHandles).length === 0) return;
     }
 
-    const lockgroup = await ravel.lockGroup.properties();
+    const lockgroup = await ravel.lockGroup.$properties();
     if(lockgroup.handleLockInfo.length === 0) {
       ravel.lockGroup.setLockHandles(allLockHandles);
     }

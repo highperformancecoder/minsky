@@ -26,9 +26,9 @@ export class ContextMenuManager {
         this.y = y;
         
         const currentTab = WindowManager.currentTab;
-        if (currentTab.equal(minsky.canvas))
+        if (currentTab.$equal(minsky.canvas))
           this.initContextMenuForWiring(mainWindow);
-        else if (currentTab.equal(minsky.plotTab))
+        else if (currentTab.$equal(minsky.plotTab))
           this.initContextMenuForPlotTab(mainWindow);
       }
       break;
@@ -277,7 +277,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Help',
           visible:
-          WindowManager.currentTab.equal(minsky.canvas),
+          WindowManager.currentTab.$equal(minsky.canvas),
           click: async () => {
             await CommandsManager.help(this.x, this.y);
           },

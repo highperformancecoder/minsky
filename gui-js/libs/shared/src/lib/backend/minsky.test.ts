@@ -1,13 +1,27 @@
 import {describe, expect, test} from '@jest/globals';
- import {
+import {
+  CppClass,
    minsky,
    GodleyIcon,
    PlotWidget,
-   VariableBase,
+  VariableBase,
  } from './index';
 import * as fs from 'fs';
 import * as JSON5 from 'json5';
 
+const restService = require('bindings')('../../node-addons/minskyRESTService.node');
+
+// replace backend with a synchronous call
+CppClass.backend=(command: string, ...args: any[])=>{
+  var arg='';
+  if (args.length>1) {
+    arg=JSON5.stringify(args, {quote: '"'});
+  } else if (args.length===1) {
+    arg=JSON5.stringify(args[0], {quote: '"'});
+  }
+  console.log(command);
+  return JSON5.parse(restService.call(`${command}/$sync`, arg));
+};
 
 describe('dummy',()=>{
   test('dummy',()=>{
@@ -28,10 +42,8 @@ beforeEach(()=>{
 });
 
 describe('Minsky tests', ()=>{
-  test('save empty',()=>{
+  test('save empty & load',()=>{
     minsky.save(tmpDir+"/foo.mky");
-  });
-  test('load empty', ()=>{
     minsky.load(tmpDir+"/foo.mky");
   });
  
@@ -42,7 +54,7 @@ describe('Minsky tests', ()=>{
      console.log(JSON5.stringify(await minsky.namedItems.elem("foo")));
      expect(await minsky.namedItems.elem("foo").second.classType()).toBe("Operation:time");
      expect(await minsky.namedItems.size()).toBe(1);
-     minsky.namedItems.insert("fooBar",await minsky.canvas.item.properties());
+     minsky.namedItems.insert("fooBar",await minsky.canvas.item.$properties());
      expect(await minsky.namedItems.size()).toBe(2);
      // TODO erase doesn't quite work
      minsky.namedItems.erase("foo");
@@ -76,24 +88,24 @@ describe('Minsky tests', ()=>{
      expect(await minsky.edited()).toBe(false);
    });
  
-   test('copy/cut/paste',async ()=>{
-     minsky.load("../examples/GoodwinLinear02.mky");
-     minsky.canvas.selection.clear();
-     minsky.copy();
-     expect(await minsky.clipboardEmpty()).toBe(true);
-     minsky.canvas.mouseDown(0,0);
-     minsky.canvas.mouseUp(200,200);
-     minsky.copy();
-     expect(await minsky.canvas.selection.empty()).toBe(false);
-     expect(await minsky.clipboardEmpty()).toBe(false);
-     let numItems=await minsky.model.items.size();
-     let numSelected=await minsky.canvas.selection.items.size();
-     expect(numItems).toBeGreaterThan(0);
-     expect(numSelected).toBeGreaterThan(0);
-     minsky.cut();
-     expect(await minsky.model.items.size()+numSelected).toBe(numItems);
-     minsky.paste();
-     expect(await minsky.model.items.size()).toBe(numItems);
+  test('copy/cut/paste',async ()=>{
+    minsky.load("../examples/GoodwinLinear02.mky");
+    minsky.canvas.selection.clear();
+    minsky.copy();
+    expect(await minsky.clipboardEmpty()).toBe(true);
+    minsky.canvas.mouseDown(0,0);
+    minsky.canvas.mouseUp(200,200);
+    minsky.copy();
+    expect(await minsky.canvas.selection.empty()).toBe(false);
+    expect(await minsky.clipboardEmpty()).toBe(false);
+    let numItems=await minsky.model.items.size();
+    let numSelected=await minsky.canvas.selection.items.size();
+    expect(numItems).toBeGreaterThan(0);
+    expect(numSelected).toBeGreaterThan(0);
+    minsky.cut();
+    expect(await minsky.model.items.size()+numSelected).toBe(numItems);
+    minsky.paste();
+    expect(await minsky.model.items.size()).toBe(numItems);
    });
    
    test('undo',async ()=>{
@@ -192,7 +204,7 @@ describe('Minsky tests', ()=>{
      minsky.canvas.mouseUp(await minsky.canvas.item.portX(1), await minsky.canvas.item.portY(1)); // should add a wire
      expect(await minsky.model.wires.size()).toBe(1);
      minsky.canvas.getWireAt(150,150);
-     expect(await minsky.canvas.wire.properties()).not.toBe({});
+     expect(await minsky.canvas.wire.$properties()).not.toBe({});
      minsky.canvas.deleteWire();
      expect(await minsky.model.wires.size()).toBe(0);
    });
