@@ -109,6 +109,7 @@ namespace minsky
       std::thread thread;
       
       AddOnMinsky(): thread([this](){run();}) {
+        flags=0;
         RESTProcess(registry,"/minsky",static_cast<Minsky&>(*this));
       }
       
@@ -175,7 +176,7 @@ namespace minsky
             
             if (!command) // perform housekeeping
               {
-                if (reset_flag())
+                if (reset_flag() && resetAt<std::chrono::system_clock::now())
                   try
                     {
                       lock_guard<mutex> lock(minskyCmdMutex);
@@ -183,7 +184,7 @@ namespace minsky
                       reset();
                     }
                   catch (...)
-                    {flags=0;}
+                    {flags&=~reset_needed;}
                 for (auto i: nativeWindowsToRedraw)
                   try
                     {

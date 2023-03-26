@@ -98,7 +98,7 @@ namespace minsky
     enum StateFlags {is_edited=1, reset_needed=2, fullEqnDisplay_needed=4};
     int flags=reset_needed;
 
-    std::chrono::time_point<std::chrono::system_clock> resetAt;
+    std::chrono::time_point<std::chrono::system_clock> resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
     
     std::vector<int> flagStack;
 
