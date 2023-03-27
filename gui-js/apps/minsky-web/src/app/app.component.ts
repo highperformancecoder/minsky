@@ -110,7 +110,7 @@ export class AppComponent implements DoCheck {
   async changeTab(tab: MainRenderingTabs) {
     if(this.htmlTabs.includes(tab)) {
       if(!this.htmlTabs.includes(this.cmService.currentTab)) {
-        new RenderNativeWindow(this.cmService.currentTab).disable();
+        await new RenderNativeWindow(this.cmService.currentTab).disable();
       }
   
       this.cmService.currentTab = tab;
@@ -122,7 +122,7 @@ export class AppComponent implements DoCheck {
       
       if (this.electronService.isElectron) {
         if(!this.htmlTabs.includes(this.cmService.currentTab)) {
-          new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
+          await new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
         }
     
         this.cmService.currentTab = tab;

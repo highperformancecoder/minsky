@@ -68,9 +68,9 @@ export class WindowManager {
                                     });
   }
     
-  static setCurrentTab(tab/*: RenderNativeWindow*/) {
+  static async setCurrentTab(tab/*: RenderNativeWindow*/) {
     if (this.currentTab!==tab) {
-      this.currentTab?.disable();
+      await this.currentTab?.disable();
       this.currentTab=tab;
       this.renderFrame();
     }

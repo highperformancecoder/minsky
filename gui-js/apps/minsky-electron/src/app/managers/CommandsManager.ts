@@ -1017,7 +1017,7 @@ export class CommandsManager {
   }
 
   static async savePickSlices(payload: PickSlicesPayload) {
-    (new Ravel(payload.command)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
+    await (new Ravel(payload.command)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
     minsky.reset();
   }
 
