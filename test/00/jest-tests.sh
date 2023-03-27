@@ -9,6 +9,8 @@ npm test minsky-web
 # why is npm test failing?
 #npm test shared -- --runInBand
 pushd libs/shared
+# a bit clunky, but npm test shared doesn't seem to do the right thing.
+ln -sf ../../../examples ..
 jest
 popd
 #npm test ui-components
