@@ -45,10 +45,15 @@ export class CommandsManager {
   ): Promise<ClassType | string> {
     const classTypeRes = await minsky.canvas.item.classType();
 
+    if (typeof classTypeRes!=="string")
+      return "";
     if (raw && classTypeRes) {
       return classTypeRes;
     }
 
+    console.log(typeof classTypeRes);
+    console.log(classTypeRes);
+    
     const classType = classTypeRes.includes(':')
       ? classTypeRes.split(':')[0]
       : classTypeRes;
