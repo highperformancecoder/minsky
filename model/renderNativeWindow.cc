@@ -72,6 +72,7 @@ namespace minsky
   void RenderNativeWindow::disable()
   {
     winInfoPtr.reset();
+    surface.reset();
   }
   
   RenderNativeWindow::~RenderNativeWindow()

@@ -77,6 +77,7 @@ namespace minsky
 #ifdef USE_WIN32_SURFACE
       PAINTSTRUCT ps;
       HDC dc=BeginPaint(winfo.childWindowId, &ps);
+      cout<<"blitting"<<endl;
       BitBlt(dc, x, y, width,height,winfo.hdcMem,x,y,SRCCOPY);
       EndPaint(winfo.childWindowId, &ps);
       SetWindowPos(winfo.childWindowId,HWND_TOP,winfo.offsetLeft,winfo.offsetTop,winfo.childWidth,winfo.childHeight,0);
