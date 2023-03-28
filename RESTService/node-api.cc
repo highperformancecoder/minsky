@@ -144,6 +144,59 @@ extern "C"
   NAPIFN(napi_set_element, (napi_env env, napi_value object,uint32_t index, napi_value value),
          (env,object,index,value));
 
+
+  NAPIFN(napi_get_instance_data, (napi_env env, void** data),(env,data));
+
+  NAPIFN(napi_create_threadsafe_function, (napi_env env,
+                                           napi_value func,
+                                           napi_value async_resource,
+                                           napi_value async_resource_name,
+                                           size_t max_queue_size,
+                                           size_t initial_thread_count,
+                                           void* thread_finalize_data,
+                                           napi_finalize thread_finalize_cb,
+                                           void* context,
+                                           napi_threadsafe_function_call_js call_js_cb,
+                                           napi_threadsafe_function* result),
+         (env,func,async_resource,async_resource_name,max_queue_size,initial_thread_count,thread_finalize_data,thread_finalize_cb,context,call_js_cb,result));
+
+  NAPIFN(napi_create_promise, (napi_env env,
+                               napi_deferred* deferred,
+                               napi_value* promise),
+         (env,deferred,promise));
+
+  NAPIFN(napi_define_properties, (napi_env env,
+                                  napi_value object,
+                                  size_t property_count,
+                                  const napi_property_descriptor* properties),
+         (env,object,property_count,properties));
+
+  NAPIFN(napi_set_instance_data, (napi_env env,
+                                  void* data,
+                                  napi_finalize finalize_cb,
+                                  void* finalize_hint),
+         (env,data,finalize_cb,finalize_hint));
+
+  NAPIFN(napi_create_double, (napi_env env,
+                              double value,
+                              napi_value* result),
+         (env,value,result));
+
+  NAPIFN(napi_resolve_deferred, (napi_env env,
+                                 napi_deferred deferred,
+                                 napi_value resolution),
+         (env,deferred,resolution));
+
+  NAPIFN(napi_reject_deferred, (napi_env env,
+                                napi_deferred deferred,
+                                napi_value rejection),
+         (env,deferred,rejection));
+
+  NAPIFN(napi_call_threadsafe_function,
+         (napi_threadsafe_function func,
+          void* data,
+          napi_threadsafe_function_call_mode is_blocking),
+         (func,data,is_blocking));
 }
 
 

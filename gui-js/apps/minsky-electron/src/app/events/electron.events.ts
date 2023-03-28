@@ -44,8 +44,8 @@ ipcMain.handle(events.GET_APP_VERSION, () => {
   return environment.version;
 });
 
-ipcMain.handle(events.BACKEND, (event, ...args: any[])=>{
-  return CppClass.backend(...args);
+ipcMain.handle(events.BACKEND, async (event, ...args: any[])=>{
+  return await CppClass.backend(...args);
 });
 
 ipcMain.handle(events.LOG, (event, msg:string)=>{console.log(msg);});
@@ -177,7 +177,7 @@ ipcMain.handle(
 ipcMain.handle(
   events.CURRENT_TAB_POSITION,
   async (event)=>{
-    return WindowManager.currentTab.position();
+    return await WindowManager.currentTab?.position();
   }
 );
 

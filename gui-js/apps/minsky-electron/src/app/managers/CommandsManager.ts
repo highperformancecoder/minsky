@@ -43,12 +43,17 @@ export class CommandsManager {
   private static async getCurrentItemClassType(
     raw = false
   ): Promise<ClassType | string> {
-    const classTypeRes = minsky.canvas.item.classType();
+    const classTypeRes = await minsky.canvas.item.classType();
 
+    if (typeof classTypeRes!=="string")
+      return "";
     if (raw && classTypeRes) {
       return classTypeRes;
     }
 
+    console.log(typeof classTypeRes);
+    console.log(classTypeRes);
+    
     const classType = classTypeRes.includes(':')
       ? classTypeRes.split(':')[0]
       : classTypeRes;
@@ -66,8 +71,8 @@ export class CommandsManager {
     }
 
     const classType = (await this.getCurrentItemClassType()) as ClassType;
-    const id = minsky.canvas.item.id();
-    const displayContents=classType==="Group"? new Group(minsky.canvas.item).displayContents(): false;
+    const id = await minsky.canvas.item.id();
+    const displayContents=classType==="Group"? await new Group(minsky.canvas.item).displayContents(): false;
 
     const itemInfo: CanvasItem = { classType, id, displayContents };
     return itemInfo;
@@ -83,7 +88,7 @@ export class CommandsManager {
 
   static async flip(): Promise<void> {
     minsky.canvas.item.flip();
-    minsky.canvas.defaultRotation((minsky.canvas.defaultRotation()+180)%360);
+    minsky.canvas.defaultRotation((await minsky.canvas.defaultRotation()+180)%360);
   }
 
   static async exportItemAsImage(
@@ -152,14 +157,14 @@ export class CommandsManager {
       case ClassType.Variable:
       case ClassType.VarConstant:
         CommandsManager.openRenameInstancesDialog(
-          new VariableBase(minsky.canvas.item).name()
+          await new VariableBase(minsky.canvas.item).name()
         );
         break;
 
       case ClassType.IntOp:
       case ClassType.DataOp:
         CommandsManager.openRenameInstancesDialog(
-          new IntOp(minsky.canvas.item).description()
+          await new IntOp(minsky.canvas.item).description()
         );
         break;
 
@@ -178,7 +183,7 @@ export class CommandsManager {
   }
 
   static async editGodleyTitle(itemId: string = ""): Promise<void> {
-    let title = new GodleyIcon(minsky.canvas.item).table.title();
+    let title = await new GodleyIcon(minsky.canvas.item).table.title();
 
     if (Functions.isEmptyObject(title)) {
       title = '';
@@ -216,7 +221,7 @@ export class CommandsManager {
 
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
-      url: `#/headless/edit-description?type=${type}&bookmark=${item.bookmark()}&tooltip=${item.tooltip()}&detailedText=${encodeURI(item.detailedText())}`,
+      url: `#/headless/edit-description?type=${type}&bookmark=${item.bookmark()}&tooltip=${item.tooltip()}&detailedText=${encodeURI(await item.detailedText())}`,
     });
     Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
@@ -301,16 +306,16 @@ export class CommandsManager {
     const findVariableDefinition = minsky.canvas.findVariableDefinition();
 
     if (findVariableDefinition) {
-      const itemX = minsky.model.x();
-      const itemY = minsky.model.y();
+      const itemX = await minsky.model.x();
+      const itemY = await minsky.model.y();
       const { canvasHeight, canvasWidth } = WindowManager;
 
       if (
         Math.abs(itemX - 0.5 * canvasWidth) > 0.5 * canvasWidth ||
         Math.abs(itemY - 0.5 * canvasHeight) > 0.5 * canvasHeight
       ) {
-        const posX = itemX - minsky.canvas.item.x() + 0.5 * canvasWidth;
-        const posY = itemY - minsky.canvas.item.y() + 0.5 * canvasHeight;
+        const posX = itemX - (await minsky.canvas.item.x()) + 0.5 * canvasWidth;
+        const posY = itemY - (await minsky.canvas.item.y()) + 0.5 * canvasHeight;
         minsky.canvas.moveTo(posX,posY);
       }
       minsky.canvas.itemIndicator(true);
@@ -359,23 +364,23 @@ export class CommandsManager {
   }
 
   static async mouseDown(mouseX: number, mouseY: number): Promise<void> {
-    WindowManager.currentTab.mouseDown(mouseX, mouseY);
+    WindowManager.currentTab?.mouseDown(mouseX, mouseY);
   }
 
   static async mouseUp(mouseX: number, mouseY: number): Promise<void> {
-    WindowManager.currentTab.mouseUp(mouseX, mouseY);
+    WindowManager.currentTab?.mouseUp(mouseX, mouseY);
   }
 
   static async mouseMove(mouseX: number, mouseY: number): Promise<void> {
-    WindowManager.currentTab.mouseMove(mouseX, mouseY);
+    WindowManager.currentTab?.mouseMove(mouseX, mouseY);
   }
 
   static async requestRedraw(): Promise<void> {
-    WindowManager.currentTab.requestRedraw();
+    WindowManager.currentTab?.requestRedraw();
   }
 
   static async canCurrentSystemBeClosed(): Promise<boolean> {
-    if (!minsky.edited()) {
+    if (!await minsky.edited()) {
       return true;
     }
 
@@ -436,7 +441,7 @@ export class CommandsManager {
   }
 
   static async saveGroupAsFile(): Promise<void> {
-    const defaultExtension = minsky.model.defaultExtension();
+    const defaultExtension = await minsky.model.defaultExtension();
 
     const saveDialog = await dialog.showSaveDialog({
       filters: [
@@ -574,7 +579,7 @@ export class CommandsManager {
 
   static async findAllInstances() {
     minsky.listAllInstances();
-    const instances = minsky.variableInstanceList.names();
+    const instances = await minsky.variableInstanceList.names();
 
     if (!instances.length) {
       return;
@@ -591,11 +596,14 @@ export class CommandsManager {
 
   static async editVar() {
     const v=new VariableBase(minsky.canvas.item);
+    const name=await v.name();
+    const type=await v.type();
+    const local=await v.local();
     WindowManager.createPopupWindowWithRouting({
       width: 500,
       height: 650,
-      title: `Edit ${v.name() || ''}`,
-      url: `#/headless/menu/insert/create-variable?type=${v.type()}&name=${v.name()||''}&isEditMode=true&local=${v.local()}`,
+      title: `Edit ${name} || ''}`,
+      url: `#/headless/menu/insert/create-variable?type=${type}&name=${name||''}&isEditMode=true&local=${local}`,
     });
   }
 
@@ -844,7 +852,7 @@ export class CommandsManager {
       return;
     }
 
-    const logVarList = minsky.logVarList.properties();
+    const logVarList = await minsky.logVarList.properties();
 
     if (logVarList && logVarList.length) {
       const itemsNotInSelectedItems = logVarList.filter(
@@ -884,8 +892,8 @@ export class CommandsManager {
       {
         window.on('close', async () => {
           let v=new VariableBase(minsky.canvas.item)
-          const currentItemId = v.id();
-          const currentItemName = v.name();
+          const currentItemId = await v.id();
+          const currentItemName = await v.name();
           // We do this check because item focus might have changed when importing csv if user decided to work on something else
 
           if (currentItemId === itemInfo.id && currentItemName === importCSVvariableName
@@ -924,12 +932,12 @@ export class CommandsManager {
       window.context.webContents.insertCSS(style);
     });
 
-    minsky.canvas.backgroundColour.properties({r: r/255, g: g/255, b: b/255, a: 1});
+    minsky.canvas.backgroundColour.$properties({r: r/255, g: g/255, b: b/255, a: 1});
     await CommandsManager.requestRedraw();
   };
 
-  private static defaultSaveOptions(): SaveDialogOptions {
-    const defaultExtension = minsky.model.defaultExtension();
+  private static async defaultSaveOptions(): Promise<SaveDialogOptions> {
+    let defaultExtension=await minsky.model.defaultExtension();
     return {
               filters: [
                 {
@@ -954,7 +962,7 @@ export class CommandsManager {
   }
     
   static async saveAs() {
-    const saveDialog = await dialog.showSaveDialog(CommandsManager.defaultSaveOptions());
+    const saveDialog = await dialog.showSaveDialog(await CommandsManager.defaultSaveOptions());
     
     const { canceled, filePath: filePath } = saveDialog;
     
@@ -971,7 +979,7 @@ export class CommandsManager {
     const description = ravel.handleDescription(handleIndex);
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Description`,
-        url: `#/headless/edit-handle-description?command=${ravel.prefix()}&handleIndex=${handleIndex}&description=${description}`,
+        url: `#/headless/edit-handle-description?command=${ravel.$prefix()}&handleIndex=${handleIndex}&description=${description}`,
         height: 90,
         width: 300,
       });
@@ -988,7 +996,7 @@ export class CommandsManager {
 
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Dimension`,
-        url: `#/headless/edit-handle-dimension?command=${ravel.prefix()}&handleIndex=${handleIndex}&type=${type}&units=${units}`,
+        url: `#/headless/edit-handle-dimension?command=${ravel.$prefix()}&handleIndex=${handleIndex}&type=${type}&units=${units}`,
         height: 180,
         width: 300,
       });
@@ -1001,12 +1009,12 @@ export class CommandsManager {
 
   static async pickSlices(ravel: Ravel, handleIndex: number) {
     // encode slice labels for transport through CGI URI 
-    const allSliceLabels = ravel.allSliceLabels().map(x=>encodeURIComponent(x));
-    const pickedSliceLabels = ravel.pickedSliceLabels().map(x=>encodeURIComponent(x));
+    const allSliceLabels = (await ravel.allSliceLabels()).map(x=>encodeURIComponent(x));
+    const pickedSliceLabels = (await ravel.pickedSliceLabels()).map(x=>encodeURIComponent(x));
     
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Pick slices`,
-      url: `#/headless/pick-slices?command=${ravel.prefix()}&handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
+      url: `#/headless/pick-slices?command=${ravel.$prefix()}&handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
       height: 400,
       width: 400,
     });
@@ -1014,24 +1022,24 @@ export class CommandsManager {
   }
 
   static async savePickSlices(payload: PickSlicesPayload) {
-    (new Ravel(payload.command)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
+    await (new Ravel(payload.command)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
     minsky.reset();
   }
 
   static async lockSpecificHandles(ravel: Ravel) {
-    let allLockHandles = ravel.lockGroup.allLockHandles();
+    let allLockHandles = await ravel.lockGroup.allLockHandles();
     if(Object.keys(allLockHandles).length === 0) {
       minsky.canvas.lockRavelsInSelection();
-      allLockHandles = ravel.lockGroup.allLockHandles();
+      allLockHandles = await ravel.lockGroup.allLockHandles();
       console.log(typeof allLockHandles,allLockHandles.length);
       if(Object.keys(allLockHandles).length === 0) return;
     }
 
-    const lockgroup = ravel.lockGroup.properties();
+    const lockgroup = await ravel.lockGroup.$properties();
     if(lockgroup.handleLockInfo.length === 0) {
       ravel.lockGroup.setLockHandles(allLockHandles);
     }
-    const ravelNames = ravel.lockGroup.ravelNames();
+    const ravelNames = await ravel.lockGroup.ravelNames();
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Lock specific handles`,
       url: `#/headless/lock-handles?handleLockInfo=${JSON5.stringify(lockgroup.handleLockInfo)}&ravelNames=${ravelNames.join()}&lockHandles=${allLockHandles.join()}`,

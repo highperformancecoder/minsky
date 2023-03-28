@@ -53,6 +53,7 @@
 #include <string>
 #include <set>
 #include <deque>
+#include <cstdio>
 
 #include <ecolab.h>
 #include <xml_pack_base.h>
@@ -96,6 +97,8 @@ namespace minsky
 
     enum StateFlags {is_edited=1, reset_needed=2, fullEqnDisplay_needed=4};
     int flags=reset_needed;
+
+    std::chrono::time_point<std::chrono::system_clock> resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
     
     std::vector<int> flagStack;
 
@@ -176,6 +179,7 @@ namespace minsky
       canvas.requestRedraw();
       canvas.model.updateTimestamp();
     }
+    void requestReset();
 
     /// @{ push and pop state of the flags
     void pushFlags() {flagStack.push_back(flags);}
@@ -414,6 +418,8 @@ namespace minsky
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
+    /// set progress bar, out of 100, labelling the progress bar with \a title
+    virtual void progress(const std::string& title,int) {}
 
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
@@ -496,6 +502,9 @@ namespace minsky
     {return checkMemAllocation(std::numeric_limits<size_t>::max());}
 
     VariablePane variablePane;
+
+    /// Used to implement a pause until return pressed for attaching debugger purposes
+    char getc() const {return std::getc(stdin);}
   };
 
   /// global minsky object

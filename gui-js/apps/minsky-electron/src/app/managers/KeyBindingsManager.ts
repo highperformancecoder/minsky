@@ -50,7 +50,7 @@ export class KeyBindingsManager {
     if (keySymAndName.keysym) {
       // For godley popup, command sent by frontend is non-empty. It is the item accesor
       let renderer=command? new RenderNativeWindow(command): currentTab;
-      const isKeyPressHandled = renderer.keyPress(
+      const isKeyPressHandled = await renderer.keyPress(
         {
           keySym:keySymAndName.keysym,
           utf8: _utf8,
@@ -62,7 +62,7 @@ export class KeyBindingsManager {
       if (
         !isKeyPressHandled &&
           !command &&
-          currentTab.equal(minsky.canvas)
+          currentTab.$equal(minsky.canvas)
       ) {
         return await this.handleOnKeyPressFallback({key:keySymAndName.name, ctrl, mouseX, mouseY});
       }
@@ -70,7 +70,7 @@ export class KeyBindingsManager {
     }
 
     let res: boolean | string = false;
-    if (!command && currentTab.equal(minsky.canvas)) {
+    if (!command && currentTab.$equal(minsky.canvas)) {
       res = await this.handleOnKeyPressFallback(payload);
     }
     return res;
@@ -307,11 +307,11 @@ export class KeyBindingsManager {
       return;
     }
 
-    if (minsky.canvas.getItemAt(mouseX, mouseY)) {
-      await CommandsManager.deleteCurrentItemHavingId(minsky.canvas.item.id());
+    if (await minsky.canvas.getItemAt(mouseX, mouseY)) {
+      await CommandsManager.deleteCurrentItemHavingId(await minsky.canvas.item.id());
       return;
     }
-    if (minsky.canvas.getWireAt(mouseX, mouseY)) {
+    if (await minsky.canvas.getWireAt(mouseX, mouseY)) {
       minsky.canvas.deleteWire();
       return;
     }

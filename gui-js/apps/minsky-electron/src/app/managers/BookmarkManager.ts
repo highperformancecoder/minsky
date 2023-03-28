@@ -49,7 +49,7 @@ export class BookmarkManager {
               click: async () => {
                 minsky.model.deleteBookmark(index);
                 
-                const _bookmarks = minsky.model.bookmarkList();
+                const _bookmarks = await minsky.model.bookmarkList();
                 await CommandsManager.requestRedraw();
 
                 await this.populateBookmarks(_bookmarks as string[]);
@@ -64,7 +64,7 @@ export class BookmarkManager {
     addNewBookmarks();
   }
 
-  static updateBookmarkList() {
-    this.populateBookmarks(minsky.canvas.model.bookmarkList());
+  static async updateBookmarkList() {
+    this.populateBookmarks(await minsky.canvas.model.bookmarkList());
   }
 }

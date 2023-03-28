@@ -229,7 +229,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async getCSVDialogSpec() {
     this.variableValuesSubCommand.csvDialog.spec.toSchema();
-    this.dialogState = await this.variableValuesSubCommand.csvDialog.properties() as Record<string, unknown>;
+    this.dialogState = await this.variableValuesSubCommand.csvDialog.$properties() as Record<string, unknown>;
   }
 
   async parseLines() {

@@ -518,6 +518,14 @@ namespace minsky
       i.second->units.clear();
     timeUnit.clear();
   }
+
+  void Minsky::requestReset()
+  {
+    flags|=reset_needed;
+    // schedule reset for some time in the future
+    resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(500);
+  }
+
   
   void Minsky::populateMissingDimensions() {
     model->recursiveDo
@@ -876,7 +884,7 @@ namespace minsky
       }
 
     canvas.itemIndicator=false;
-    BusyCursor busy(*this);
+    //    BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     lastT=t0;
     constructEquations();
@@ -888,10 +896,10 @@ namespace minsky
 
     if (!stockVars.empty())
       rkreset();
-      
+    
     // update flow variable
     evalEquations();
-    
+  
     model->recursiveDo
       (&Group::items,
        [&](Items& m, Items::iterator i)
@@ -919,10 +927,10 @@ namespace minsky
          return false;
        });
 
-    if (running)
-      flags &= ~reset_needed; // clear reset flag
-    else
-      flags |= reset_needed; // enforce another reset at simulation start
+    //    if (running)
+    flags &= ~reset_needed; // clear reset flag
+    // else
+    //  flags |= reset_needed; // enforce another reset at simulation start
     running=false;
 
     canvas.requestRedraw();

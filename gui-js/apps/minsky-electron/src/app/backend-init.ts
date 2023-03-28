@@ -1,6 +1,7 @@
 import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
 import { dialog, shell } from 'electron';
+import * as ProgressBar from 'electron-progressbar';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';
 
@@ -29,7 +30,7 @@ function logFilter(c: string) {
 }
 
 /** core function to call into C++ object heirarachy */
-export function backend(command: string, ...args: any[]) {
+export async function backend(command: string, ...args: any[]): Promise<any> {
   if (!command) {
     log.error('backend called without any command');
     return {};
@@ -47,7 +48,7 @@ export function backend(command: string, ...args: any[]) {
     }
     CppClass.record(`${command} ${arg}`);
 
-    const response = restService.call(command, arg);
+    let response=await restService.call(command, arg);
     if (logFilter(command))
       log.info('Rest API: ',command,arg,"=>",response);
     return JSON5.parse(response);
@@ -65,9 +66,12 @@ export function backend(command: string, ...args: any[]) {
 
 CppClass.backend=backend;
 
+let progressBar;
+
 if ("JEST_WORKER_ID" in process.env) {
   restService.setMessageCallback(function (msg: string, buttons: string[]) {
     log.info(msg);
+    return 0;
   });
   restService.setBusyCursorCallback(function (busy: boolean) {});
 } else {
@@ -83,29 +87,45 @@ if ("JEST_WORKER_ID" in process.env) {
 
   restService.setBusyCursorCallback(function (busy: boolean) {
     WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
+    if (progressBar && !busy) {
+      progressBar.setCompleted();
+      progressBar.close();
+    }
+  });
+
+  restService.setProgressCallback(function (title: string, val: number) {
+    if (!progressBar || progressBar.isCompleted())
+      progressBar=new ProgressBar({text: title, indeterminate: false});
+    progressBar.value=val;
   });
 }
 
 // Sanity checks before we get started
-if (backend("/minsky/minskyVersion")!==version)
-  setTimeout(()=>{
-    dialog.showMessageBoxSync({
-      message: "Mismatch of front end and back end versions",
-      type: 'warning',
-    });
-  },1000);
 
-if (backend("/minsky/ravelExpired"))
-  setTimeout(()=>{
-    const button=dialog.showMessageBoxSync({
-      message: "Your Ravel license has expired",
-      type: 'warning',
-      buttons: ["OK","Upgrade"],
-    });
-    if (button==1)
-      shell.openExternal("https://ravelation.hpcoders.com.au");
-  },1000);
+export function sanityCheck()
+{
+  setTimeout(async()=>{
+  if (await backend("/minsky/minskyVersion")!==version)
+    setTimeout(()=>{
+      dialog.showMessageBoxSync({
+        message: "Mismatch of front end and back end versions",
+        type: 'warning',
+      });
+    },1000);
 
+  if (await backend("/minsky/ravelExpired"))
+    setTimeout(()=>{
+      const button=dialog.showMessageBoxSync({
+        message: "Your Ravel license has expired",
+        type: 'warning',
+        buttons: ["OK","Upgrade"],
+      });
+      if (button==1)
+        shell.openExternal("https://ravelation.hpcoders.com.au");
+  },1000);
+  
+}, 1);
+}
 
 // load icon resources needed for GUI
 export function loadResources()

@@ -258,7 +258,7 @@ export class GodleyMenuManager {
 
   /// handle mouse down events in a Godley view
   static async mouseDown(window: GodleyTableWindow, x: number, y: number) {
-    var clickType=window.clickTypeZoomed(x,y);
+    var clickType=await window.clickTypeZoomed(x,y);
     if (clickType==="importStock")
     {
       const c = window.colXZoomed(x);
