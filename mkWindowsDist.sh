@@ -11,6 +11,6 @@ else
 fi
 npm run export:package:windows
 java -jar $HOME/usr/bin/jsign-4.1.jar --keystore $WINDOWS_SIGN_CERTIFICATE_NAME --storetype PKCS12 --storepass "$WINDOWS_SIGN_TOKEN_PASSWORD" dist/executables/$name-$version.exe
-echo cp dist/executables/$name-$version.exe /tmp
+echo dist/executables/$name-$version.exe /tmp
 cp dist/executables/$name-$version.exe /tmp
 popd
