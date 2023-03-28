@@ -27,7 +27,8 @@ export default class App {
   static application: Electron.App;
   static BrowserWindow;
   static directlyClose = false;
-
+  static cliArguments=[]; // first argument passed on command line
+  
   private static onWindowAllClosed() {
       App.application.quit();
   }
@@ -45,6 +46,8 @@ export default class App {
     App.initMainWindow();
     await App.initMenu();
     App.loadMainWindow();
+    if (App.cliArguments.length>1)
+      CommandsManager.openNamedFile(App.cliArguments[1]);
   }
 
   private static async initMenu() {
@@ -185,6 +188,9 @@ export default class App {
         let minskyVersion=minsky.minskyVersion();
         process.stdout.write(`${minskyVersion}\n`);
         process.exit(minskyVersion===version? 0: 1);
+      default:
+        App.cliArguments.push(process.argv[arg]);
+        break;
       }
     
     
