@@ -48,8 +48,20 @@ For those using emacs (comme moi-meme), I have configured the project so that ty
 - You will need to install tsc somewhere in your path, eg "zypper install typescript"
 - You should install the [tide package](https://github.com/ananthakumaran/tide/). Note that `M-x package-install` did not work for me, I had to download the tarfiles directly from [Melpa](https://melpa.org/), and run `M-x package-install-file` to install the packages manually.
 
+## Debugging with gdb
+
+- You can debug an `npm start` session by using `ps -ef|grep main.js` to find the minsky process, then use the pid to attach to in gdb.
+- Alternatively, you can create an executable with `npm run export:package:linux` and open it with `gdb gui-js/dist/executables/linux-unpacked/minsky`.
+- For unit tests, cd to the directory containing `jest.config.js` (eg gui-js/libs/shared), then run (eg)
+~~~~
+   gdb `which node`
+   r /usr/local/bin/jest src/lib/backend/minsky.test.ts
+~~~~
+Regular jest CLI arguments can be provided. You will need to install the jest package (npm install jest perhaps?)
+
+
 ## Roadmap
 
-- Refactor Civita library into standalone library
+- See [planned features](https://sourceforge.net/p/minsky/features/)
 - Emscripten classdesc descriptor to support Minsky in a browser.
 
