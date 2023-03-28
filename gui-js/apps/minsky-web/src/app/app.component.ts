@@ -110,7 +110,7 @@ export class AppComponent implements DoCheck {
   async changeTab(tab: MainRenderingTabs) {
     if(this.htmlTabs.includes(tab)) {
       if(!this.htmlTabs.includes(this.cmService.currentTab)) {
-        await new RenderNativeWindow(this.cmService.currentTab).disable();
+        new RenderNativeWindow(this.cmService.currentTab).$callMethodSync("disable");
       }
   
       this.cmService.currentTab = tab;
