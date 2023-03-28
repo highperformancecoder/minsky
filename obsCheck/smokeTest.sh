@@ -15,7 +15,7 @@ for i in Dockerfile-*[^~]; do
         *) versions=default;;
     esac
     for version in $versions; do
-        if docker build --network=host --build-arg project=$project --build-arg version=$version --pull -f $i .; then
+        if docker build --label obsSmokeTest --network=host --build-arg project=$project --build-arg version=$version --pull -f $i .; then
             echo "$i-$version PASSED" >$i-$version.log
         else
             echo "$i-$version FAILED" >$i-$version.log
@@ -23,7 +23,7 @@ for i in Dockerfile-*[^~]; do
     done
 done
 wait
-docker container prune -f
+docker container prune -f --filter label=obsSmokeTest
 cat *.log
 # check if any child process failed, and emit an appropriate status code
 grep FAILED *.log &>/dev/null
