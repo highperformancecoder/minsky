@@ -273,6 +273,16 @@ FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 ifndef AEGIS
 default: $(EXES) gui-js/libs/shared/src/lib/backend/minsky.ts
 	-$(CHMOD) a+x *.tcl *.sh *.pl
+ifeq ($(OS),Linux)
+ifdef MXE
+	sh mkWindowsDist.sh
+else
+	cd gui-js; npm run export:package:linux
+endif
+endif
+ifeq ($(OS),Darwin)
+	cd gui-js; npm run export:package:macosx
+endif
 endif
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
@@ -283,6 +293,7 @@ all: $(EXES) $(TESTS) minsky.xsd
 #	if ping -c 1 www.google.com; then linkchecker -f linkcheckerrc gui-tk/library/help/minsky.html; fi
 #endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
+
 
 $(ALL_OBJS): $(PRECOMPILED_HEADERS)
 

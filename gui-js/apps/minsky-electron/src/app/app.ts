@@ -27,7 +27,8 @@ export default class App {
   static application: Electron.App;
   static BrowserWindow;
   static directlyClose = false;
-
+  static cliArguments=[]; // first argument passed on command line
+  
   private static onWindowAllClosed() {
       App.application.quit();
   }
@@ -45,6 +46,8 @@ export default class App {
     App.initMainWindow();
     await App.initMenu();
     App.loadMainWindow();
+    if (App.cliArguments.length>1)
+      CommandsManager.openNamedFile(App.cliArguments[1]);
   }
 
   private static async initMenu() {
@@ -180,15 +183,21 @@ export default class App {
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
 
-    // process CLI options prior to running up any GUI
-    for (var arg in process.argv)
-      switch(process.argv[arg]) {
-      case '--version':
-        let minskyVersion; minsky.minskyVersion().then((x)=>{minskyVersion=x;});
-        process.stdout.write(`${minskyVersion}\n`);
-        process.exit(minskyVersion===version? 0: 1);
+    // when run from npm start, argv[0] is 'electron'
+    if (process.argv[0].slice(-8)!=='electron')
+      // process CLI options prior to running up any GUI
+      for (var arg in process.argv) {
+        switch(process.argv[arg]) {
+        case '--version':
+          let minskyVersion=minsky.$callMethodSync("minskyVersion");
+          process.stdout.write(`${minskyVersion}\n`);
+          process.exit(minskyVersion===version? 0: 1);
+          break;
+        default:
+          App.cliArguments.push(process.argv[arg]);
+          break;
+        }
       }
-    
     
     // we pass the Electron.App object and the
     // Electron.BrowserWindow into this function
