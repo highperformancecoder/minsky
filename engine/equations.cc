@@ -543,7 +543,12 @@ namespace MathDAG
       (&Group::groups,
        [&](const Groups&, Groups::const_iterator it){
          if (!(*it)->name().empty())
-           userDefinedFunctions.emplace((*it)->name()+(*it)->arguments(), (*it)->formula());
+           try
+             {
+               userDefinedFunctions.emplace((*it)->name()+(*it)->arguments(), (*it)->formula());
+             }
+           catch (const std::exception&)
+             {/* if we can't generate a function definition, too bad, too sad. */}
          return false;
        });
     
