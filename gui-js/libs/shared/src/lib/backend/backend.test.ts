@@ -13,7 +13,7 @@ describe('properties',()=>{
     expect(await minsky.t()).toBe(m.t);
     p=await minsky.$properties();
     expect(p.t).toBe(m.t);
-    await new Promise((r)=>setTimeout(r,1000)); // pause a bit to allow initialisation to complete
+//    await new Promise((r)=>setTimeout(r,1000)); // pause a bit to allow initialisation to complete
   });
 });
 
