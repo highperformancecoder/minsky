@@ -436,45 +436,8 @@ export class CommunicationService {
     }
   }
 
-  async createVariable(params: {
-    variableName: string;
-    type: string;
-    units: string;
-    value: any;
-    rotation: any;
-    shortDescription: string;
-    detailedDescription: string;
-    sliderBoundsMax: number;
-    sliderBoundsMin: number;
-    sliderStepSize: number;
-  }) {
-    this.electronService.minsky.canvas.addVariable(params.variableName,params.type);
-    let v=new VariableBase(this.electronService.minsky.canvas.itemFocus);
-    v.setUnits(params.units);
-    v.init(params.value);
-    v.initSliderBounds(); // ensure slider bounds starts with a reasonable value
-    v.rotation(params.rotation || 0);
-    v.tooltip(params.shortDescription);
-    v.detailedText(params.detailedDescription);
-    if (params.sliderBoundsMax) v.sliderMax(params.sliderBoundsMax);
-    if (params.sliderBoundsMin) v.sliderMin(params.sliderBoundsMin);
-    if (params.sliderStepSize) v.sliderStep(params.sliderStepSize);
-  }
-
   async importData() {
-    await this.createVariable({
-      variableName: importCSVvariableName,
-      type: 'parameter',
-      units: '',
-      value: '',
-      rotation: 0,
-      shortDescription: '',
-      detailedDescription: '',
-      sliderBoundsMax: 0,
-      sliderBoundsMin: 0,
-      sliderStepSize: 0,
-    });
-
+    this.electronService.minsky.canvas.addVariable(importCSVvariableName,'parameter');
     this.electronService.minsky.canvas.mouseUp(this.mouseX, this.mouseY);
 
     const payload: MinskyProcessPayload = {
