@@ -669,10 +669,13 @@ namespace minsky
     // reverse lookup tables for mapping flow variable to destination row numbers via row labels
     map<string,string> srcRowLabels;
     map<string, int> destRowLabels;
+    set<string> uniqueSrcRowLabels; // check for uniqueness of source row labels
     for (size_t row=1; row!=srcTable.rows(); ++row)
       if (!srcTable.initialConditionRow(row) && !srcTable.cell(row,0).empty() &&
           !srcTable.cell(row,srcCol).empty())
         {
+          if (!uniqueSrcRowLabels.insert(srcTable.cell(row,0)).second)
+            throw runtime_error("Duplicate source row label: "+srcTable.cell(row,0));
           FlowCoef fc(srcTable.cell(row,srcCol));
           if (!fc.name.empty())
             srcRowLabels[srcGodley.valueId(fc.name)]=
