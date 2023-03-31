@@ -444,7 +444,7 @@ export class CommunicationService {
       mouseX: this.mouseX,
       mouseY: this.mouseY,
     };
-    await this.electronService.invoke(events.IMPORT_CSV, payload);
+    this.electronService.invoke(events.IMPORT_CSV, payload);
   }
 
   onMouseWheelZoom = async (event: WheelEvent) => {
