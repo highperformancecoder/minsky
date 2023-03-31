@@ -163,8 +163,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     await this.createVariable();
   }
 
-  async editVariable() {
-    let item=new VariableBase(this.electronService.minsky.canvas.item);
+  async saveVariableParams(item: VariableBase) {
     item.name(this._name);
     item.retype(this.type.value);
     item.setUnits(this.units.value || '');
@@ -180,21 +179,12 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     this.closeWindow();
   }
 
-  async createVariable() {
+  
+  async editVariable() {this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.item));}
 
-    await this.commService.createVariable({
-      variableName: this._name,
-      type: this.type.value,
-      units: this.units.value || '',
-      value: this.value.value,
-      rotation: this.rotation.value || 0,
-      shortDescription: this.shortDescription.value,
-      detailedDescription: this.detailedDescription.value,
-      sliderStepSize: this.sliderStepSize.value || 0,
-      sliderBoundsMax: this.sliderBoundsMax.value || 0,
-      sliderBoundsMin: this.sliderBoundsMin.value || 0,
-    });
-    this.closeWindow();
+  async createVariable() {
+    this.electronService.minsky.canvas.addVariable(this._name,this.type.value);
+    this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.itemFocus))
   }
 
   closeWindow() {
