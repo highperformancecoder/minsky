@@ -132,9 +132,9 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     const rotation = await item.rotation();
     const tooltip = await item.tooltip();
     const detailedText = await item.detailedText();
-    const sliderMax = await item.sliderMax();
-    const sliderMin = await item.sliderMin();
-    const sliderStep = await item.sliderStep();
+    const sliderMax = Number((await item.sliderMax()).toPrecision(3));
+    const sliderMin = Number((await item.sliderMin()).toPrecision(3));
+    const sliderStep = Number((await item.sliderStep()).toPrecision(3));
     const sliderStepRel = await item.sliderStepRel();
 
     this.local.setValue(local);
@@ -169,14 +169,14 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     item.retype(this.type.value);
     item.setUnits(this.units.value || '');
     item.init(this.value.value);
+    item.initSliderBounds(); // ensure slider bounds starts with a reasonable value
     item.rotation(this.rotation.value || 0);
     item.tooltip(this.shortDescription.value);
     item.detailedText(this.detailedDescription.value);
-    item.sliderMax(this.sliderBoundsMax.value || 0);
-    item.sliderMin(this.sliderBoundsMin.value || 0);
-    item.sliderStep(this.sliderStepSize.value || 0);
+    if (this.sliderBoundsMax.value) item.sliderMax(this.sliderBoundsMax.value);
+    if (this.sliderBoundsMin.value) item.sliderMin(this.sliderBoundsMin.value);
+    if (this.sliderStepSize.value) item.sliderStep(this.sliderStepSize.value);
     item.sliderStepRel(this.sliderStepRel.value);
-    item.sliderBoundsSet(true);
     this.closeWindow();
   }
 
