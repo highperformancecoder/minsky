@@ -452,13 +452,13 @@ export class CommunicationService {
     let v=new VariableBase(this.electronService.minsky.canvas.itemFocus);
     v.setUnits(params.units);
     v.init(params.value);
+    v.initSliderBounds(); // ensure slider bounds starts with a reasonable value
     v.rotation(params.rotation || 0);
     v.tooltip(params.shortDescription);
     v.detailedText(params.detailedDescription);
-    v.sliderMax(params.sliderBoundsMax || 0);
-    v.sliderMin(params.sliderBoundsMin || 0);
-    v.sliderStep(params.sliderStepSize || 0);
-    v.sliderBoundsSet(true);
+    if (params.sliderBoundsMax) v.sliderMax(params.sliderBoundsMax);
+    if (params.sliderBoundsMin) v.sliderMin(params.sliderBoundsMin);
+    if (params.sliderStepSize) v.sliderStep(params.sliderStepSize);
   }
 
   async importData() {
