@@ -595,7 +595,7 @@ export class CommandsManager {
       width: 500,
       height: 650,
       title: `Edit ${v.name() || ''}`,
-      url: `#/headless/menu/insert/create-variable?type=${v.type()}&name=${v.name()||''}&isEditMode=true&local=${v.local()}`,
+      url: `#/headless/menu/insert/create-variable?type=${v.type()}&name=${encodeURIComponent(v.name())||''}&isEditMode=true&local=${v.local()}`,
     });
   }
 
