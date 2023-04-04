@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Minsky
+Exec=minsky %U
+Terminal=false
+Type=Application
+Icon=minsky
+StartupWMClass=minsky
+Comment=Graphical dynamical systems simulator oriented towards economics
+Categories=Science;
