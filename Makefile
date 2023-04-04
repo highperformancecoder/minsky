@@ -277,7 +277,9 @@ ifeq ($(OS),Linux)
 ifdef MXE
 	sh mkWindowsDist.sh
 else
+ifndef OBS
 	cd gui-js; npm run export:package:linux
+endif
 endif
 endif
 ifeq ($(OS),Darwin)
