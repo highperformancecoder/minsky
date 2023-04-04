@@ -239,7 +239,7 @@ void Sheet::computeValue()
               auto pivot=make_shared<civita::Pivot>();
               pivot->setArgument(value,{});
               pivot->setOrientation(vector<string>{xv[1].name,xv[0].name});
-              value=move(pivot);
+              value=std::move(pivot);
             }
         }
     }

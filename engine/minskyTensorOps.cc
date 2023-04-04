@@ -331,7 +331,7 @@ namespace minsky
         xv.erase(xv.begin(), xv.begin()+delta);
       else 
         xv.erase(xv.end()+delta, xv.end());
-      cachedResult.hypercube(move(hc));
+      cachedResult.hypercube(std::move(hc));
       
       // determine offset in hypercube space
       auto dims=arg->hypercube().dims();
@@ -447,7 +447,7 @@ namespace minsky
         Hypercube hc;
         hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());        
         hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
-        cachedResult.hypercube(move(hc));
+        cachedResult.hypercube(std::move(hc));
                 
       }
     }    
@@ -503,7 +503,7 @@ namespace minsky
       Hypercube hc;
       hc.xvectors.insert(hc.xvectors.begin(), xv2.begin(), xv2.end());         
       hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end());           
-      cachedResult.hypercube(move(hc));
+      cachedResult.hypercube(std::move(hc));
         
       
     }      
@@ -722,7 +722,7 @@ namespace minsky
             while (!axisNames.insert(to_string(++axisName)).second); // find a name that hasn't been used
             xv.name=to_string(axisName);
           }
-      cachedResult.hypercube(move(hc));
+      cachedResult.hypercube(std::move(hc));
     }
       
   };
@@ -1058,7 +1058,7 @@ namespace minsky
     OperationPtr tmp(OperationType::copy);
     auto copy=dynamic_pointer_cast<ITensor>(tensorOpFactory.create(tmp));
     copy->setArgument(make_shared<ConstTensorVarVal>(src,result.ev));
-    rhs=move(copy);
+    rhs=std::move(copy);
     assert(result.size()==rhs->size());
   }   
 
