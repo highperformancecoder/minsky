@@ -8,9 +8,20 @@ import {
 import * as fs from 'fs';
 import * as JSON5 from 'json5';
 
+let cwd=process.cwd();
+if (cwd.endsWith('shared'))
+  var examples='../../../examples';
+else if (cwd.endsWith('gui-js'))
+  var example='../examples';
+else {
+  console.log(`cwd=${cwd}`);
+  console.log("I don't know where the examples directory is, sorry");
+  process.exitCode=1;
+}
+
 var tmpDir;
 beforeAll(()=>{
-  tmpDir=fs.mkdtempSync("minsky-jest");
+  tmpDir=fs.mkdtempSync("/tmp/minsky-jest");
 });
 afterAll(()=>{
   fs.rmdirSync(tmpDir,{recursive: true});
