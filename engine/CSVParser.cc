@@ -501,7 +501,7 @@ namespace minsky
     for (size_t row=0; getline(input, buf); ++row)
       {
         // remove trailing carriage returns
-        if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
+        if (!buf.empty() && buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
         if (row==spec.headerRow)
           {
             output<<"error"<<spec.separator<<buf<<endl;
@@ -521,11 +521,14 @@ namespace minsky
               if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.count(i))
                 {
                   string x=*field;
-                  if (x.back()=='\r') x=x.substr(0,x.size()-1); //deal with MS nonsense
-                  if (!x.empty() && !isNumerical(x))
+                  if (!x.empty())
                     {
-                      output<<"invalid numerical data"<<spec.separator<<buf<<endl;
-                      continue;
+                      if (x.back()=='\r') x=x.substr(0,x.size()-1); //deal with MS nonsense
+                      if (!isNumerical(x))
+                        {
+                          output<<"invalid numerical data"<<spec.separator<<buf<<endl;
+                          continue;
+                        }
                     }
                   if (spec.columnar) break; // only one column to check
                 }
