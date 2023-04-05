@@ -9,6 +9,12 @@ fi
 pushd gui-js
 npm run export:package:linux
 pushd dist/executables/
-mv linux-unpacked $name
-rm $name/resources/node-addons/*.node
+mkdir $name
+mv linux-unpacked $name/app
+rm $name/app/resources/node-addons/*.node
+popd
+popd
+cp minsky.desktop gui-js/dist/executables/$name/
+cp gui-tk/icons/MinskyLogo.svg gui-js/dist/executables/$name/minsky.svg
+pushd gui-js/dist/executables/
 tar zcvf /tmp/$name.tar.gz $name
