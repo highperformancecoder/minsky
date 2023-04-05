@@ -99,6 +99,7 @@ namespace minsky
     int flags=reset_needed;
 
     std::chrono::time_point<std::chrono::system_clock> resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
+    std::chrono::milliseconds resetDuration;
     
     std::vector<int> flagStack;
 

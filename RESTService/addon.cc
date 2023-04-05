@@ -137,6 +137,10 @@ namespace minsky
       {
         lock_guard<mutex> lock(minskyCmdMutex);
         LocalMinsky lm(*this); // sets this to be the global minsky object
+
+        // if reset requested, postpone it
+        if (reset_flag()) requestReset();
+        
         // disable quoting wide characters in UTF-8 strings
         auto result=write(registry.process(command, arguments),json5_parser::raw_utf8);
         int nargs=1;

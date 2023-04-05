@@ -521,9 +521,14 @@ namespace minsky
 
   void Minsky::requestReset()
   {
+    if (resetDuration<chrono::milliseconds(500))
+      {
+        reset();
+        return;
+      }
     flags|=reset_needed;
     // schedule reset for some time in the future
-    resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(500);
+    resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
   }
 
   
@@ -886,8 +891,9 @@ namespace minsky
         if (RKThreadRunning) return;
       }
 
+    auto start=chrono::high_resolution_clock::now();
     canvas.itemIndicator=false;
-    //    BusyCursor busy(*this);
+    BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     lastT=t0;
     constructEquations();
@@ -932,6 +938,7 @@ namespace minsky
 
     //    if (running)
     flags &= ~reset_needed; // clear reset flag
+    resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
     // else
     //  flags |= reset_needed; // enforce another reset at simulation start
     running=false;
@@ -940,7 +947,9 @@ namespace minsky
     godleyTab.requestRedraw();
     plotTab.requestRedraw();
     variableTab.requestRedraw();
-    parameterTab.requestRedraw();    
+    parameterTab.requestRedraw();
+
+    resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
   }
 
   vector<double> Minsky::step()

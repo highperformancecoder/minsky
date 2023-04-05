@@ -256,7 +256,7 @@ namespace minsky
                     // adjusting the slider whilst paused. See ticket #812
                     minsky().pushHistory();
                     if (minsky().reset_flag())
-                      minsky().reset();
+                      minsky().requestReset();
                     minsky().evalEquations();
                     requestRedraw();
                   }
