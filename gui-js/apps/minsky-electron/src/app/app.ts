@@ -194,6 +194,7 @@ export default class App {
           process.exit(minskyVersion===version? 0: 1);
           break;
         default:
+          if (process.argv[arg][0]!=='-')
           App.cliArguments.push(process.argv[arg]);
           break;
         }

@@ -559,7 +559,7 @@ std::string VariableBase::definition() const
   if (type()!=VariableType::parameter)
     {
       if (varDAG && varDAG->rhs && varDAG->type!=VariableType::constant && varDAG->type!=VariableType::integral)
-        o << varDAG->rhs->matlab();
+        o << varDAG->rhs->latex();
       else return system.getDefFromIntVar(*this).str();
     }
           
