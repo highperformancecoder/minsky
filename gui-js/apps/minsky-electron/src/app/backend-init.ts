@@ -4,12 +4,15 @@ import { dialog, shell } from 'electron';
 import * as ProgressBar from 'electron-progressbar';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';
+import * as path from 'path';
 
 const log=elog? elog: console;
 if (!Utility.isDevelopmentMode()) { //clobber logging in production
   log.info=function(...args: any[]){};
 }
 
+console.log(process.execPath);
+process.chdir(path.dirname(process.execPath));
 const addonDir = Utility.isPackaged()
       ? '../../node-addons'
       : '../../node-addons';

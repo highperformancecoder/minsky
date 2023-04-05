@@ -1,5 +1,4 @@
 import 'jest-preset-angular/setup-jest';
-//import '../../../apps/minsky-electron/src/app/backend-init';
 import * as JSON5 from 'json5';
 import {CppClass} from '@minsky/shared';
 

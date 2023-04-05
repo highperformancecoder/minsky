@@ -175,6 +175,10 @@ FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRa
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
 #-fvisibility-inlines-hidden
 
+ifeq ($(DEBUG), 1)
+FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
+endif
+
 VPATH= schema model engine gui-tk RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
@@ -277,7 +281,9 @@ ifeq ($(OS),Linux)
 ifdef MXE
 	sh mkWindowsDist.sh
 else
+ifndef OBS
 	cd gui-js; npm run export:package:linux
+endif
 endif
 endif
 ifeq ($(OS),Darwin)

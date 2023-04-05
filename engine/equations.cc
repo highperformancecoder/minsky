@@ -873,7 +873,7 @@ namespace MathDAG
     ostringstream o;
          
     VariableDAGPtr input=expressionCache.getIntegralInput(v.valueId());    
-    if (input && input->rhs) input->rhs->matlab(o);    
+    if (input && input->rhs) input->rhs->latex(o);    
     
     return o;
   }        
