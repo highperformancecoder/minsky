@@ -28,6 +28,7 @@
 #include "group.rcd"
 #include "itemT.rcd"
 #include "bookmark.rcd"
+#include "progress.h"
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;
@@ -1235,16 +1236,14 @@ namespace minsky
 
   void Group::autoLayout()
   {
-    minsky().setBusyCursor();
+    BusyCursor busy(minsky());
     layoutGroup(*this);
-    minsky().clearBusyCursor();
   }
 
   void Group::randomLayout()
   {
-    minsky().setBusyCursor();
+    BusyCursor busy(minsky());
     randomizeLayout(*this);
-    minsky().clearBusyCursor();
   }
   
 }
