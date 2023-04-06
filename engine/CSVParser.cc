@@ -563,8 +563,9 @@ namespace minsky
   }
 
   template <class P>
-  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec)
+  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
+    BusyCursor busy(minsky());
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
     typedef vector<string> Key;
@@ -576,15 +577,19 @@ namespace minsky
     vector<typename Key::value_type> horizontalLabels;
     vector<AnyVal> anyVal;
 
+    ProgressUpdater pu(minsky().progressState, "Importing CSV",3);
     for (auto i: spec.dimensionCols)
       {
         hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
         hc.xvectors.back().dimension=spec.dimensions[i];
         anyVal.emplace_back(spec.dimensions[i]);
       }
+    ++minsky().progressState;
     size_t row=0, col=0;
+    uintmax_t bytesRead=0;
     try
       {
+        ProgressUpdater pu(minsky().progressState, "Parsing file",1);
         for (; getline(input, buf); ++row)
           {
 #if defined(__linux__) // TODO remove or generalise
@@ -727,7 +732,10 @@ namespace minsky
           
 
               }
+            bytesRead+=buf.size();
+            pu.setProgress(double(bytesRead)/fileSize);
           }
+        ++minsky().progressState;
 
         // remove zero length dimensions
         {
@@ -749,6 +757,7 @@ namespace minsky
         
         for (auto& xv: hc.xvectors)
           xv.imposeDimension();
+        ++minsky().progressState;
 
         if (log(tmpData.size())-hc.logNumElements()>=log(0.5)) 
           { // dense case
@@ -762,6 +771,7 @@ namespace minsky
             for (auto& i: vv.tensorInit)
               i=spec.missingValue;
             auto dims=vv.hypercube().dims();
+            ProgressUpdater pu(minsky().progressState,"Loading data",tmpData.size());
             for (auto& i: tmpData)
               {
                 size_t idx=0;
@@ -772,7 +782,8 @@ namespace minsky
                     assert(dimLabels[j].count(i.first[j]));
                     idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
                   }
-                vv.tensorInit[idx]=i.second;  
+                vv.tensorInit[idx]=i.second;
+                ++minsky().progressState;
               }
           }    
         else 
@@ -780,28 +791,39 @@ namespace minsky
             if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
               throw runtime_error("memory threshold exceeded");	  	  		
             auto dims=hc.dims();
+            ProgressUpdater pu(minsky().progressState,"Indexing and loading",2);
               
             map<size_t,double> indexValue; // intermediate stash to sort index vector
-            for (auto& i: tmpData)
-              {
-                size_t idx=0;
-                assert (dims.size()==i.first.size());
-                assert(dimLabels.size()==dims.size());
-                for (int j=dims.size()-1; j>=0; --j)
-                  {
-                    assert(dimLabels[j].count(i.first[j]));
-                    idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-                  }
-                if (!isnan(i.second))
-                  indexValue.emplace(idx, i.second);
-              }
+            {
+              ProgressUpdater pu(minsky().progressState,"Building index",tmpData.size());
+              for (auto& i: tmpData)
+                {
+                  size_t idx=0;
+                  assert (dims.size()==i.first.size());
+                  assert(dimLabels.size()==dims.size());
+                  for (int j=dims.size()-1; j>=0; --j)
+                    {
+                      assert(dimLabels[j].count(i.first[j]));
+                      idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                    }
+                  if (!isnan(i.second))
+                    indexValue.emplace(idx, i.second);
+                  ++minsky().progressState;
+                }
 
-            vv.tensorInit.index(indexValue);
-            vv.tensorInit.hypercube(hc);
-            size_t j=0;
-            for (auto& i: indexValue)
-              vv.tensorInit[j++]=i.second;
-            vv=vv.tensorInit;
+              vv.tensorInit.index(indexValue);
+              vv.tensorInit.hypercube(hc);
+            }
+            {
+              ProgressUpdater pu(minsky().progressState,"Loading data",indexValue.size());
+              size_t j=0;
+              for (auto& i: indexValue)
+                {
+                  vv.tensorInit[j++]=i.second;
+                  ++minsky().progressState;
+                }
+              vv=vv.tensorInit;
+            }
           }                 
 
       }
@@ -819,12 +841,12 @@ namespace minsky
       }
   }
   
-  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
     if (spec.separator==' ')
-      loadValueFromCSVFileT<SpaceSeparatorParser>(v,input,spec);
+      loadValueFromCSVFileT<SpaceSeparatorParser>(v,input,spec,fileSize);
     else
-      loadValueFromCSVFileT<Parser>(v,input,spec);
+      loadValueFromCSVFileT<Parser>(v,input,spec,fileSize);
   }
 }
 

@@ -56,14 +56,15 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
       log.info('Rest API: ',command,arg,"=>",response);
     return JSON5.parse(response);
   } catch (error) {
-    log.error('Rest API: ',command,arg,'=>Exception caught: ' + error?.message);
+    if (typeof(error)!=="string") error=error?.message;
+    log.error('Rest API: ',command,arg,'=>Exception caught: ' + error);
     if (!dialog) throw error; // rethrow to force error in jest environment
-      if (error?.message && command !== '/minsky/canvas/item/importFromCSV')
+      if (error && command !== '/minsky/canvas/item/importFromCSV')
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-          message: error.message,
+          message: error,
           type: 'error',
         });
-      return error?.message;
+      return error;
   }
 }
 

@@ -69,6 +69,11 @@ namespace minsky
         }
       updatedProgress.displayProgress();
     }
+    /// Sets the progress to a given fraction of this stack's allocation
+    void setProgress(double fraction) {
+      updatedProgress.progress=savedProgress.progress+savedProgress.delta*fraction;
+      updatedProgress.displayProgress();
+    }
     ~ProgressUpdater() {
       updatedProgress=savedProgress;
       if (!updatedProgress.updaterStack)
