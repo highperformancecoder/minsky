@@ -214,7 +214,6 @@ namespace minsky
               }
             catch (const std::exception& ex)
               {
-                cout<<"Rejecting with "<<ex.what()<<endl;
                 command->promiseResolver->reject(ex.what());
               }
             catch (...)
