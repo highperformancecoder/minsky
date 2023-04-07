@@ -75,7 +75,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-        make 
+        make OBS=1
     #   make release
 
     - name: Perform CodeQL Analysis
