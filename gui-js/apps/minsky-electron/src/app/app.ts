@@ -188,8 +188,15 @@ export default class App {
         switch(process.argv[arg]) {
         case '--version':
           let minskyVersion=minsky.minskyVersion();
-          process.stdout.write(`${minskyVersion}\n`);
-          process.exit(minskyVersion===version? 0: 1);
+          if (minskyVersion===version)
+          {
+            process.stdout.write(`${minskyVersion}\n`);
+            process.exit(0);
+          } else
+          {
+            process.stdout.write(`${version}/${minskyVersion}\n`);
+            process.exit(1);
+          }
           break;
         default:
           if (process.argv[arg][0]!=='-')
