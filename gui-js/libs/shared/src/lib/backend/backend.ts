@@ -3,6 +3,7 @@ import * as JSON5 from 'json5';
 export class CppClass
 {
   public static backend : (...args)=>any; // pass command to destination: see backend-init and electron.service
+  public static backendSync : (...args)=>any; // pass command to destination: see backend-init and electron.service
   public static record=(cmd: string)=>{}; // recording support: see RecordingsManager
   protected m_prefix: string;
   constructor(prefix: string) {this.m_prefix=prefix;}
@@ -12,9 +13,10 @@ export class CppClass
   {
     return CppClass.backend(`${this.m_prefix}/${method}`, ...args);
   }
+  // calls the method on this thread
   public $callMethodSync(method: string,...args)
   {
-    return CppClass.backend(`${this.m_prefix}/${method}/$sync`, ...args);
+    return CppClass.backendSync(`${this.m_prefix}/${method}`, ...args);
   }
   public async $properties(...args) {return CppClass.backend(this.m_prefix, ...args);}
   public async $list(): Promise<string[]> {return this.$callMethod("@list");} // $ prevents this method from being shadowed by a C++ method

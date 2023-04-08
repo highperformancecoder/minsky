@@ -188,14 +188,24 @@ export default class App {
       // process CLI options prior to running up any GUI
       for (var arg in process.argv) {
         switch(process.argv[arg]) {
-        case '--version':
-          let minskyVersion=minsky.$callMethodSync("minskyVersion");
-          process.stdout.write(`${minskyVersion}\n`);
-          process.exit(minskyVersion===version? 0: 1);
+        case '--version': {
+            let minskyVersion=minsky.$callMethodSync("minskyVersion");
+            if (minskyVersion===version)
+            {
+              process.stdout.write(`${version}\n`);
+              process.exit(0);
+            }
+            else
+            {
+              process.stdout.write(`${version}/${minskyVersion}\n`);
+              process.exit(1);
+            }
+          }
           break;
         default:
+          // pass argument on for an initial model load
           if (process.argv[arg][0]!=='-')
-          App.cliArguments.push(process.argv[arg]);
+            App.cliArguments.push(process.argv[arg]);
           break;
         }
       }
