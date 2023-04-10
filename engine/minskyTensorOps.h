@@ -126,7 +126,7 @@ namespace minsky
     TensorVarVal(const std::shared_ptr<VariableValue>& vv, const shared_ptr<EvalCommon>& ev):
       TensorVarValBase<VariableValue,ITensorVal>(vv,ev) {}
     using ITensorVal::index;
-    const Index& index(Index&& x) override {return value->index(move(x));}
+    const Index& index(Index&& x) override {return value->index(std::move(x));}
     const Index& index() const override {return value->index();}
     const Hypercube& hypercube(const Hypercube& hc) override {return value->hypercube(hc);}
     const Hypercube& hypercube(Hypercube&& hc) override {return value->hypercube(std::move(hc));}

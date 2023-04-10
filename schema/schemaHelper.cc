@@ -43,7 +43,7 @@ namespace minsky
 
     InflateZStream zs(zbuf);
     zs.inflate();
-    return move(zs.output);
+    return std::move(zs.output);
   }
 
 

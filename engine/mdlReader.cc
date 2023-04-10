@@ -235,8 +235,8 @@ namespace minsky
       auto& tensorInit=dataVar->vValue()->tensorInit;
       for (auto& i: xData)
         xVals.push_back(i.first);
-      Hypercube hc; hc.xvectors.push_back(move(xVals));
-      tensorInit.hypercube(move(hc));
+      Hypercube hc; hc.xvectors.push_back(std::move(xVals));
+      tensorInit.hypercube(std::move(hc));
 
       assert(tensorInit.size()==xData.size());
       auto j=tensorInit.begin();
