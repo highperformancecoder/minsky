@@ -202,10 +202,38 @@ string VariableBase::name()  const
   return utf_to_utf<char>(m_name);
 }
 
+namespace
+{
+  const char specialLatex[]="#$%&";
+  // find and quote certain LaTeX characters
+  string quoteLaTeX(const std::string& x)
+  {
+    string quotedName;
+    int next=0;
+    for (auto p=x.find_first_of(specialLatex); p!=string::npos;
+         p=x.find_first_of(specialLatex,p+1))
+      {
+        if (p==0||x[p-1]!='\\')
+          quotedName+=x.substr(next,p-next)+'\\'+x[p];
+        else
+          quotedName+=x.substr(next,p-next+1);
+        next=p+1;
+      }
+    return quotedName+x.substr(next);
+  }
+}
+
 string VariableBase::name(const std::string& name) 
 {
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
+
+  // check if we need to quote certain characters that have meaning in LaTeX 
+  for (auto p=name.find_first_of(specialLatex); p!=string::npos;
+       p=name.find_first_of(specialLatex,p+1))
+    if (p==0||name[p-1]!='\\')
+      return this->name(quoteLaTeX(name));
+  
   // Ensure value of variable is preserved after rename. For ticket 1106.	
   auto tmpVV=vValue();
   // ensure integral variables are not global when wired to an integral operation

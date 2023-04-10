@@ -574,7 +574,7 @@ export class CommunicationService {
   private showCreateVariablePopup(title: string, params: TypeValueName) {
     const urlParts = Object.keys(params)
       .map((pKey) => {
-        return `${pKey}=${params[pKey]}`;
+        return `${pKey}=${encodeURIComponent(params[pKey])}`;
       })
       .join('&');
 

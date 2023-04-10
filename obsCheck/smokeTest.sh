@@ -15,7 +15,7 @@ for i in Dockerfile-*[^~]; do
         *) versions=default;;
     esac
     for version in $versions; do
-        if docker build --label obsSmokeTest --network=host --build-arg project=$project --build-arg version=$version --pull -f $i .; then
+        if docker build --label obsSmokeTest --network=host --build-arg project=$project --build-arg version=$version --pull --no-cache -f $i .; then
             echo "$i-$version PASSED" >$i-$version.log
         else
             echo "$i-$version FAILED" >$i-$version.log

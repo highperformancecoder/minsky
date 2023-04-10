@@ -33,6 +33,11 @@ namespace
     const char* first, *second;
   }
     symbolData[]={
+      {"#","#"},
+      {"$","$"},
+      {"%","%"},
+      {"&","&amp;"},
+      {"_","_"},
       {"{","{"},
       {"}","}"},
       {"euro","€"},
@@ -683,6 +688,10 @@ namespace
         return r;
       }
 
+    // symbols that stand for themselves
+    if (strchr("#$%&_{}",*input))
+      return string(input++,1);
+    
     // normal LaTeX token processing
     while (*input!='\0' && isalpha(*input))
       r+=*input++;
