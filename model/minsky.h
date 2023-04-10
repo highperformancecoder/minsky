@@ -41,6 +41,7 @@
 #include "parameterTab.h"
 #include "plotTab.h"
 #include "plotWidget.h"
+#include "progress.h"
 #include "ravelWrap.h"
 #include "rungeKutta.h"
 #include "saver.h"
@@ -99,6 +100,10 @@ namespace minsky
     int flags=reset_needed;
 
     std::chrono::time_point<std::chrono::system_clock> resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
+    std::chrono::milliseconds resetDuration;
+
+    Progress progressState;
+    int busyCursorStack=0;
     
     std::vector<int> flagStack;
 

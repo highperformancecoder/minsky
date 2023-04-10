@@ -112,7 +112,6 @@ export class WiringComponent implements OnInit, OnDestroy {
 
         this.electronService.on(events.CURSOR_BUSY, async (event, busy: boolean)=>{
           document.body.style.cursor=busy? 'wait': 'default';
-          this.electronService.log(`cursor busy received ${busy}`);
         });
         
         this.mouseMove$ = fromEvent<MouseEvent>(

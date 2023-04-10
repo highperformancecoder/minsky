@@ -96,6 +96,8 @@ CppClass.backend=backend;
 CppClass.backendSync=backendSync;
 
 let progressBar;
+let progress={text:"", value:0, indeterminate: false};
+let initProgressBar;
 
 if ("JEST_WORKER_ID" in process.env) {
   restService.setMessageCallback(function (msg: string, buttons: string[]) {
@@ -116,16 +118,33 @@ if ("JEST_WORKER_ID" in process.env) {
 
   restService.setBusyCursorCallback(function (busy: boolean) {
     WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
-    if (progressBar && !busy) {
-      progressBar.setCompleted();
-      progressBar.close();
+    if (!initProgressBar && busy)
+      initProgressBar=setTimeout(()=>{
+        progressBar=new ProgressBar(progress);
+        progressBar.value=progress.value;
+        initProgressBar=null;
+      }, 3000);
+    if (!busy) {
+      clearTimeout(initProgressBar);
+      initProgressBar=null;
+      if (progressBar) {
+        progressBar.setCompleted();
+        progressBar.close();
+        progressBar=null;
+        progress.text="";
+        progress.value=0;
+      }
     }
   });
 
   restService.setProgressCallback(function (title: string, val: number) {
-    if (!progressBar || progressBar.isCompleted())
-      progressBar=new ProgressBar({text: title, indeterminate: false});
-    progressBar.value=val;
+    progress.text=title;
+    progress.value=val;
+    if (progressBar)
+    {
+      progressBar.text=title;
+      progressBar.value=val;
+    }
   });
 }
 

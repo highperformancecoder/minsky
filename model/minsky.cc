@@ -73,13 +73,6 @@ using namespace boost::posix_time;
 
 namespace
 {
-  struct BusyCursor
-  {
-    Minsky& minsky;
-    BusyCursor(Minsky& m): minsky(m) {minsky.setBusyCursor();}
-    ~BusyCursor() {minsky.clearBusyCursor();}
-  };
-
   /// list the possible string values of an enum (for TCL)
   template <class E> vector<string> enumVals()
   {
@@ -96,7 +89,7 @@ namespace minsky
   bool EquationDisplay::redraw(int x0, int y0, int width, int height)
   {
     if (surface.get()) {
-      m.setBusyCursor();
+      BusyCursor busy(m);
       MathDAG::SystemOfEquations system(m);
       cairo_rectangle(surface->cairo(),0,0,width,height);
       cairo_clip(surface->cairo());
@@ -111,7 +104,6 @@ namespace minsky
           m_height=surf.height();
           m.flags &= ~Minsky::fullEqnDisplay_needed;
         }
-      m.clearBusyCursor();
       return true;
     }
     return surface.get();
@@ -422,10 +414,12 @@ namespace minsky
   {
     if (cycleCheck()) throw error("cyclic network detected");
 
+    ProgressUpdater pu(progressState,"Construct equations",8);
     garbageCollect();
     equations.clear();
     integrals.clear();
-
+    ++progressState;
+    
     // add all user defined functions to the global symbol tables
     userFunctions.clear();
     model->recursiveDo
@@ -435,12 +429,14 @@ namespace minsky
            userFunctions[valueIdFromScope((*it)->group.lock(), f->name())]=f;
          return false;
        });
+    ++progressState;
     model->recursiveDo
       (&Group::groups,
        [this](const Groups&, Groups::const_iterator it){
          userFunctions[valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
          return false;
        });
+    ++progressState;
 
     try
       {
@@ -451,15 +447,19 @@ namespace minsky
         // do not block reset() on dimensional analysis failure
         message(ex.what());
       }
-    
+    ++progressState;
+  
     EvalOpBase::timeUnit=timeUnit;
 
     MathDAG::SystemOfEquations system(*this);
+    ++progressState;
     assert(variableValues.validEntries());
     system.populateEvalOpVector(equations, integrals);
+    ++progressState;
     assert(variableValues.validEntries());
     system.updatePortVariableValue(equations);
-    
+    ++progressState;
+   
     // attach the plots
     model->recursiveDo
       (&Group::items,
@@ -521,9 +521,14 @@ namespace minsky
 
   void Minsky::requestReset()
   {
+    if (resetDuration<chrono::milliseconds(500))
+      {
+        reset();
+        return;
+      }
     flags|=reset_needed;
     // schedule reset for some time in the future
-    resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(500);
+    resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
   }
 
   
@@ -886,23 +891,28 @@ namespace minsky
         if (RKThreadRunning) return;
       }
 
+    auto start=chrono::high_resolution_clock::now();
     canvas.itemIndicator=false;
-    //    BusyCursor busy(*this);
+    BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     lastT=t0;
+    ProgressUpdater pu(progressState,"Resetting",5);
     constructEquations();
+    ++progressState;
     // if no stock variables in system, add a dummy stock variable to
     // make the simulation proceed
     if (stockVars.empty()) stockVars.resize(1,0);
 
     initGodleys();
+    ++progressState;
 
     if (!stockVars.empty())
       rkreset();
     
     // update flow variable
     evalEquations();
-  
+    ++progressState;
+
     model->recursiveDo
       (&Group::items,
        [&](Items& m, Items::iterator i)
@@ -929,9 +939,11 @@ namespace minsky
            }
          return false;
        });
+    ++progressState;
 
     //    if (running)
     flags &= ~reset_needed; // clear reset flag
+    resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
     // else
     //  flags |= reset_needed; // enforce another reset at simulation start
     running=false;
@@ -940,7 +952,9 @@ namespace minsky
     godleyTab.requestRedraw();
     plotTab.requestRedraw();
     variableTab.requestRedraw();
-    parameterTab.requestRedraw();    
+    parameterTab.requestRedraw();
+
+    resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
   }
 
   vector<double> Minsky::step()
@@ -1007,21 +1021,24 @@ namespace minsky
 
   void Minsky::load(const std::string& filename) 
   {
-    BusyCursor busy(*this);
     clearAllMaps();
 
     ifstream inf(filename);
     if (!inf)
       throw runtime_error("failed to open "+filename);
     stripByteOrderingMarker(inf);
-    xml_unpack_t saveFile(inf);
-    schema3::Minsky currentSchema(saveFile);
-    currentSchema.populateMinsky(*this);
-    if (currentSchema.schemaVersion<currentSchema.version)
-      message("You are converting the model from an older version of Minsky. "
-              "Once you save this file, you may not be able to open this file"
-              " in older versions of Minsky.");
-  
+    
+    {
+      BusyCursor busy(*this);
+      xml_unpack_t saveFile(inf);
+      schema3::Minsky currentSchema(saveFile);
+      currentSchema.populateMinsky(*this);
+      if (currentSchema.schemaVersion<currentSchema.version)
+        message("You are converting the model from an older version of Minsky. "
+                "Once you save this file, you may not be able to open this file"
+                " in older versions of Minsky.");
+    }
+    
     // try balancing all Godley tables
     try
       {
@@ -1630,6 +1647,19 @@ namespace minsky
     else
       autoSaver.reset(new BackgroundSaver(file));
   }
+
+  BusyCursor::BusyCursor(Minsky& m): minsky(m)
+  {if (!minsky.busyCursorStack++) minsky.setBusyCursor();}
+
+  BusyCursor::~BusyCursor()
+  {if (!--minsky.busyCursorStack) minsky.clearBusyCursor();}
+
+  
+  void Progress::displayProgress()
+  {
+    minsky().progress(title, progress+0.5);
+  }
+
 }
 
 namespace classdesc
