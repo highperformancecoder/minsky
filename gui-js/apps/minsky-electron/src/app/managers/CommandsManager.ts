@@ -171,7 +171,7 @@ export class CommandsManager {
   private static openRenameInstancesDialog(name: string) {
     WindowManager.createPopupWindowWithRouting({
       title: `Rename ${name}`,
-      url: `#/headless/rename-all-instances?name=${name?.slice(1, 1) || ''}`,
+      url: `#/headless/rename-all-instances?name=${encodeURIComponent(name?.slice(1, 1)) || ''}`,
       height: 100,
       width: 400,
     });
@@ -186,7 +186,7 @@ export class CommandsManager {
 
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
-      url: `#/headless/edit-godley-title?title=${title || ''}&itemId=${itemId}`,
+      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${itemId}`,
       useContentSize: true,
       height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
@@ -216,7 +216,7 @@ export class CommandsManager {
 
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Description`,
-      url: `#/headless/edit-description?type=${type}&bookmark=${item.bookmark()}&tooltip=${item.tooltip()}&detailedText=${encodeURI(item.detailedText())}`,
+      url: `#/headless/edit-description?type=${type}&bookmark=${item.bookmark()}&tooltip=${encodeURIComponent(item.tooltip())}&detailedText=${encodeURIComponent(item.detailedText())}`,
     });
     Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
@@ -595,7 +595,7 @@ export class CommandsManager {
       width: 500,
       height: 650,
       title: `Edit ${v.name() || ''}`,
-      url: `#/headless/menu/insert/create-variable?type=${v.type()}&name=${v.name()||''}&isEditMode=true&local=${v.local()}`,
+      url: `#/headless/menu/insert/create-variable?type=${v.type()}&name=${encodeURIComponent(v.name())||''}&isEditMode=true&local=${v.local()}`,
     });
   }
 
@@ -971,7 +971,7 @@ export class CommandsManager {
     const description = ravel.handleDescription(handleIndex);
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Description`,
-        url: `#/headless/edit-handle-description?command=${ravel.prefix()}&handleIndex=${handleIndex}&description=${description}`,
+        url: `#/headless/edit-handle-description?command=${ravel.prefix()}&handleIndex=${handleIndex}&description=${encodeURIComponent(description)}`,
         height: 90,
         width: 300,
       });
@@ -988,7 +988,7 @@ export class CommandsManager {
 
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Dimension`,
-        url: `#/headless/edit-handle-dimension?command=${ravel.prefix()}&handleIndex=${handleIndex}&type=${type}&units=${units}`,
+        url: `#/headless/edit-handle-dimension?command=${ravel.prefix()}&handleIndex=${handleIndex}&type=${type}&units=${encodeURIComponent(units)}`,
         height: 180,
         width: 300,
       });
@@ -1034,7 +1034,7 @@ export class CommandsManager {
     const ravelNames = ravel.lockGroup.ravelNames();
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Lock specific handles`,
-      url: `#/headless/lock-handles?handleLockInfo=${JSON5.stringify(lockgroup.handleLockInfo)}&ravelNames=${ravelNames.join()}&lockHandles=${allLockHandles.join()}`,
+      url: `#/headless/lock-handles?handleLockInfo=${encodeURIComponent(JSON5.stringify(lockgroup.handleLockInfo))}&ravelNames=${encodeURIComponent(ravelNames.join())}&lockHandles=${encodeURIComponent(allLockHandles.join())}`,
       height: 200,
       width: 600,
     });
