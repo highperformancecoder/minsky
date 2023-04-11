@@ -68,7 +68,33 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
   }
 }
 
+export function backendSync(command: string, ...args: any[]) {
+  if (!command) {
+    log.error('backend called without any command');
+    return {};
+  }
+  if (!restService) {
+    log.error('Rest Service not ready');
+    return {};
+  }
+
+    var arg='';
+    if (args.length>1) {
+      arg=JSON5.stringify(args, {quote: '"'});
+    } else if (args.length===1) {
+      arg=JSON5.stringify(args[0], {quote: '"'});
+    }
+
+    let response=restService.call(command+"/$sync", arg);
+    if (logFilter(command))
+      log.info('Rest API: ',command,arg,"=>",response);
+    return JSON5.parse(response);
+}
+
+
+
 CppClass.backend=backend;
+CppClass.backendSync=backendSync;
 
 let progressBar;
 let progress={text:"", value:0, indeterminate: false};

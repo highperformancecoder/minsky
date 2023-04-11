@@ -1351,7 +1351,7 @@ namespace minsky
         schema3::Minsky m;
         history[historyPtr-1].reseto()>>m;
         // stash tensorInit data for later restoration
-        auto stashedValues=move(variableValues);
+        auto stashedValues=std::move(variableValues);
         clearAllMaps(false);
         model->clear();
         m.populateGroup(*model);
@@ -1360,7 +1360,7 @@ namespace minsky
           {
             auto stashedValue=stashedValues.find(v.first);
             if (stashedValue!=stashedValues.end())
-              v.second->tensorInit=move(stashedValue->second->tensorInit);
+              v.second->tensorInit=std::move(stashedValue->second->tensorInit);
           }
         try {reset();}
         catch (...) {}
