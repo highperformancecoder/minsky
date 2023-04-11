@@ -602,13 +602,8 @@ export class CommandsManager {
     WindowManager.createPopupWindowWithRouting({
       width: 500,
       height: 650,
-<<<<<<< HEAD
       title: `Edit ${name} || ''}`,
-      url: `#/headless/menu/insert/create-variable?type=${type}&name=${name||''}&isEditMode=true&local=${local}`,
-=======
-      title: `Edit ${v.name() || ''}`,
-      url: `#/headless/menu/insert/create-variable?type=${v.type()}&name=${encodeURIComponent(v.name())||''}&isEditMode=true&local=${v.local()}`,
->>>>>>> master
+      url: `#/headless/menu/insert/create-variable?type=${type}&name=${encodeURIComponent(name)||''}&isEditMode=true&local=${local}`,
     });
   }
 
@@ -981,14 +976,10 @@ export class CommandsManager {
   }
   
   static async editHandleDescription(ravel: Ravel, handleIndex: number) {
-    const description = ravel.handleDescription(handleIndex);
+    const description = await ravel.handleDescription(handleIndex);
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Description`,
-<<<<<<< HEAD
-        url: `#/headless/edit-handle-description?command=${ravel.$prefix()}&handleIndex=${handleIndex}&description=${description}`,
-=======
-        url: `#/headless/edit-handle-description?command=${ravel.prefix()}&handleIndex=${handleIndex}&description=${encodeURIComponent(description)}`,
->>>>>>> master
+        url: `#/headless/edit-handle-description?command=${ravel.$prefix()}&handleIndex=${handleIndex}&description=${encodeURIComponent(description)}`,
         height: 90,
         width: 300,
       });
@@ -1000,16 +991,12 @@ export class CommandsManager {
   }
   
   static async editHandleDimension(ravel: Ravel, handleIndex: number) {
-    const type = ravel.dimensionType();
-    const units = ravel.dimensionUnitsFormat();
+    const type = await ravel.dimensionType();
+    const units = await ravel.dimensionUnitsFormat();
 
     const window=WindowManager.createPopupWindowWithRouting({
         title: `Handle Dimension`,
-<<<<<<< HEAD
-        url: `#/headless/edit-handle-dimension?command=${ravel.$prefix()}&handleIndex=${handleIndex}&type=${type}&units=${units}`,
-=======
-        url: `#/headless/edit-handle-dimension?command=${ravel.prefix()}&handleIndex=${handleIndex}&type=${type}&units=${encodeURIComponent(units)}`,
->>>>>>> master
+        url: `#/headless/edit-handle-dimension?command=${ravel.$prefix()}&handleIndex=${handleIndex}&type=${type}&units=${encodeURIComponent(units)}`,
         height: 180,
         width: 300,
       });
