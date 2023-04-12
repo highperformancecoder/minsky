@@ -10,7 +10,7 @@ import {
 } from '@minsky/shared';
 import { BrowserWindow, dialog, screen } from 'electron';
 import * as log from 'electron-log';
-import { join } from 'path';
+import { isAbsolute, join } from 'path';
 import { format } from 'url';
 import { ApplicationMenuManager } from './managers/ApplicationMenuManager';
 import { CommandsManager } from './managers/CommandsManager';
@@ -18,7 +18,7 @@ import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
-import { backend, loadResources, sanityCheck } from './backend-init';
+import { backend, initialWorkingDirectory, loadResources, sanityCheck } from './backend-init';
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -46,8 +46,11 @@ export default class App {
     App.initMainWindow();
     await App.initMenu();
     App.loadMainWindow();
-    if (App.cliArguments.length>1)
+    if (App.cliArguments.length>1) {
+      if (!isAbsolute(App.cliArguments[1]))
+        App.cliArguments[1]=join(initialWorkingDirectory,App.cliArguments[1]);
       CommandsManager.openNamedFile(App.cliArguments[1]);
+    }
   }
 
   private static async initMenu() {
@@ -209,7 +212,7 @@ export default class App {
           break;
         }
       }
-    
+
     // we pass the Electron.App object and the
     // Electron.BrowserWindow into this function
     // so this class has no dependencies. This
