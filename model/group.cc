@@ -522,7 +522,7 @@ namespace minsky
       return IORegion::output;
     if (-w+left>dx)
       return IORegion::input;
-    if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
+    if ((-h+topMargin*z>dy && dy<0) || (h-topMargin*z<dy && dy>0))     
       return IORegion::topBottom;  
     return IORegion::none;
   }
