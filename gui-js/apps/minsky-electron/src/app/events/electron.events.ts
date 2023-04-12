@@ -17,7 +17,7 @@ import {
   minsky,
   RenderNativeWindow,
   ImportStockPayload,
-  GodleyIcon
+  GodleyIcon,
 } from '@minsky/shared';
 //import * as debug from 'debug';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
@@ -30,6 +30,7 @@ import { RecentFilesManager } from '../managers/RecentFilesManager';
 import { RecordingManager } from '../managers/RecordingManager';
 import { StoreManager, MinskyPreferences } from '../managers/StoreManager';
 import { WindowManager } from '../managers/WindowManager';
+import {restService} from '../backend-init';
 
 //const logUpdateEvent = debug('minsky:electron_update_event');
 
@@ -49,6 +50,8 @@ ipcMain.handle(events.BACKEND, async (event, ...args: any[])=>{
 });
 
 ipcMain.handle(events.LOG, (event, msg:string)=>{console.log(msg);});
+
+ipcMain.handle('cancel-progress',()=>{restService.cancelProgress();});
 
 ipcMain.handle(events.GET_CURRENT_WINDOW, (event) => {
   let window=BrowserWindow.fromWebContents(event.sender);

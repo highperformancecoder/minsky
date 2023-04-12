@@ -108,20 +108,20 @@ const cancelButtonStyle=`
    background-color:rgba(220,0,0,1);
    background-image: linear-gradient(to top left, rgba(0,0,0,0.2), rgba(0,0,0,0.2) 30%, rgba(0,0,0,0));
    box-shadow: inset 2px 2px 3px rgba(255,255,255,0.6), inset -2px -2px 3px rgba(0,0,0,0.6);
-`;
+`.replace(/\n/g,'');
 
-const cancelButton=`<button type="button" style="${cancelButtonStyle.replace(/\n/g,'')}" autofocus="true" onclick="cancelMinsky(event)">Cancel</button>`;
+const cancelButton=
+      `<button type="button" style="${cancelButtonStyle}" onclick="cancelMinsky()">Cancel</button>`;
 
 const injectCancelButton=`
-   console.log("in inject button");
-    let cancelMinsky=()=>{ipcRenderer.invoke('log','cancelling');};
+   function cancelMinsky() {ipcRenderer.invoke('cancel-progress');}
    const cancelButtonDiv=document.createElement("div");
    cancelButtonDiv.setAttribute('style','text-align:center;padding:5px;');
    cancelButtonDiv.innerHTML='${cancelButton}';
    document.body.appendChild(cancelButtonDiv);
 `;
 
-let progress={text:"", value:0, indeterminate: false, /*detail: injectCancelButton*/};
+let progress={text:"", value:0, indeterminate: false,};
 let progressBar;
 let initProgressBar;
 
@@ -147,10 +147,6 @@ if ("JEST_WORKER_ID" in process.env) {
     if (!initProgressBar && busy)
       initProgressBar=setTimeout(()=>{
         progressBar=new ProgressBar(progress);
-//        progressBar._window.webContents.openDevTools({
-//          mode: 'detach',
-//          activate: false,
-//        });
         progressBar.on('ready',()=>{progressBar._window.webContents.executeJavaScript(injectCancelButton);});
         progressBar.value=progress.value;
         initProgressBar=null;
