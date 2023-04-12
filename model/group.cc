@@ -523,7 +523,7 @@ namespace minsky
       return IORegion::output;
     if (-w+left>dx)
       return IORegion::input;
-    if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
+    if ((-h+topMargin*z>dy && dy<0) || (h-topMargin*z<dy && dy>0))     
       return IORegion::topBottom;  
     return IORegion::none;
   }
@@ -909,7 +909,7 @@ namespace minsky
       return ClickType::outside;
     if (auto item=select(x,y))
       return item->clickType(x,y);
-    if ((abs(x-this->x())<w && abs(y-this->y())<h) || inIORegion(x,y)==IORegion::topBottom) // check also if (x,y) is within top and bottom margins of group. for feature 88
+    if ((abs(x-this->x())<w && abs(y-this->y())<h+topMargin*z)) // check also if (x,y) is within top and bottom margins of group. for feature 88
       return ClickType::onItem;
     return ClickType::outside;
   }

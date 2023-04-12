@@ -1355,6 +1355,8 @@ namespace minsky
         clearAllMaps(false);
         model->clear();
         m.populateGroup(*model);
+        model->setZoom(m.zoomFactor);
+        
         // restore tensorInit data
         for (auto& v: variableValues)
           {
