@@ -209,9 +209,6 @@ string GodleyTable::rowSum(int row) const
 
   for (size_t c=1; c<cols(); ++c)
     {
-      // ignore duplicate columns. For #1353.
-      if (!colNamesSeen.insert(trimWS(cell(0,c))).second)
-        continue;
       FlowCoef fc(cell(row,c));
       if (!fc.name.empty()||initialConditionRow(row))
         {
