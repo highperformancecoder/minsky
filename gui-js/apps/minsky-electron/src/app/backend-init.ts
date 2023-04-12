@@ -10,7 +10,7 @@ if (!Utility.isDevelopmentMode()) { //clobber logging in production
   log.info=function(...args: any[]){};
 }
 
-console.log(process.execPath);
+export const initialWorkingDirectory=process.cwd();
 process.chdir(path.dirname(process.execPath));
 const addonDir = Utility.isPackaged()
       ? '../../node-addons'
