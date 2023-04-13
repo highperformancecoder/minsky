@@ -5,6 +5,7 @@
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "build": {
     "beforePack": "beforePackHook.js",
+    "appId": "au.com.hpcoders.Minsky",
     "artifactName": "${productName}-${version}.${ext}",
     "mac": {
       "icon": "../minsky.app/Contents/Resources/MinskyLogo.icns"
