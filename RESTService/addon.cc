@@ -27,6 +27,10 @@
 #include <atomic>
 #include <future>
 
+#ifdef MAC_OSX_TK
+#define DRAW_ON_MAIN_THREAD
+#endif
+
 using namespace Napi;
 using namespace std;
 using namespace classdesc;
@@ -160,6 +164,41 @@ namespace minsky
         commandHook(command,nargs);
         return result;
       }
+
+      void drawNativeWindows()
+      {
+        lock_guard<mutex> lock(minskyCmdMutex);
+        for (auto i: nativeWindowsToRedraw)
+          try
+            {
+              LocalMinsky lm(*this); // sets this to be the global minsky object
+              i->draw();
+            }
+          catch (const std::exception& ex)
+            {
+              /* absorb and log any exceptions, cannot do anything anyway */
+              cerr << ex.what() << endl;
+              break;
+            }
+          catch (...) {break;}
+        nativeWindowsToRedraw.clear();
+      }
+
+      // arrange for native window drawing to happen on node's main thread, required for MacOSX.
+      atomic<bool> drawLaunched{false};
+      static void tsDrawNativeWindows(Napi::Env env, Napi::Function, AddOnMinsky* minsky, void*)
+      {
+        minsky->drawNativeWindows();
+        minsky->drawLaunched=false;
+      }
+      
+      TypedThreadSafeFunction<AddOnMinsky,void,tsDrawNativeWindows> tsDrawNativeWindows_;
+
+      void launchDrawNativeWindows()
+      {
+        drawLaunched=true;
+        tsDrawNativeWindows_.BlockingCall(this);
+      }
       
       void run()
       {
@@ -189,21 +228,12 @@ namespace minsky
                     }
                   catch (...)
                     {flags&=~reset_needed;}
-                for (auto i: nativeWindowsToRedraw)
-                  try
-                    {
-                      lock_guard<mutex> lock(minskyCmdMutex);
-                      LocalMinsky lm(*this); // sets this to be the global minsky object
-                      i->draw();
-                    }
-                  catch (const std::exception& ex)
-                    {
-                      /* absorb and log any exceptions, cannot do anything anyway */
-                      cerr << ex.what() << endl;
-                      break;
-                    }
-                  catch (...) {break;}
-                nativeWindowsToRedraw.clear();
+#ifdef DRAW_ON_MAIN_THREAD
+                if (!drawLaunched && nativeWindowsToRedraw.size())
+                  launchDrawNativeWindows();
+#else
+                drawNativeWindows();
+#endif
                 this_thread::sleep_for(chrono::milliseconds(10));
                 continue;
               }
@@ -359,9 +389,11 @@ struct MinskyAddon: public Addon<MinskyAddon>
 
   MinskyAddon(Env env, Object exports)
   {
-    tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,resolvePromise>::New
-      (env,"TSResolver", 0, 2, nullptr);
-  
+    tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,resolvePromise>::
+      New(env,"TSResolver", 0, 2, nullptr);
+    addOnMinsky.tsDrawNativeWindows_=
+      TypedThreadSafeFunction<minsky::AddOnMinsky,void,minsky::AddOnMinsky::tsDrawNativeWindows>::
+      New(env,"TSDrawNativeWindows",0, 2,&addOnMinsky);
     
     DefineAddon(exports, {
         InstanceMethod("call", &MinskyAddon::call),
