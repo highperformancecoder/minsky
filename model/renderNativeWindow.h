@@ -53,6 +53,7 @@ namespace minsky
     void destroyFrame();
     void draw();
     void requestRedraw();
+    void macOSXRedraw();
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
     RenderNativeWindow()=default;

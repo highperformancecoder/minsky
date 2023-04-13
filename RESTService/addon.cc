@@ -27,10 +27,6 @@
 #include <atomic>
 #include <future>
 
-#ifdef MAC_OSX_TK
-#define DRAW_ON_MAIN_THREAD
-#endif
-
 using namespace Napi;
 using namespace std;
 using namespace classdesc;
@@ -187,14 +183,20 @@ namespace minsky
       // arrange for native window drawing to happen on node's main thread, required for MacOSX.
       atomic<bool> drawLaunched{false};
       static void tsDrawNativeWindows(Napi::Env env, Napi::Function, AddOnMinsky* minsky, void*)
-      {
-        minsky->drawNativeWindows();
-        minsky->drawLaunched=false;
-      }
+      {minsky->macOSXDrawNativeWindows();}
       
       TypedThreadSafeFunction<AddOnMinsky,void,tsDrawNativeWindows> tsDrawNativeWindows_;
 
-      void launchDrawNativeWindows()
+      void macOSXDrawNativeWindows()
+      {
+        lock_guard<mutex> lock(minskyCmdMutex);
+        for (auto i: nativeWindowsToRedraw)
+          i->macOSXRedraw();
+        nativeWindowsToRedraw.clear();
+        drawLaunched=false;
+       }
+      
+      void macOSXLaunchDrawNativeWindows()
       {
         drawLaunched=true;
         tsDrawNativeWindows_.BlockingCall(this);
@@ -228,9 +230,9 @@ namespace minsky
                     }
                   catch (...)
                     {flags&=~reset_needed;}
-#ifdef DRAW_ON_MAIN_THREAD
+#ifdef MAC_OSX_TK
                 if (!drawLaunched && nativeWindowsToRedraw.size())
-                  launchDrawNativeWindows();
+                  macOSXDrawNativeWindows();
 #else
                 drawNativeWindows();
 #endif
