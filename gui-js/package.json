@@ -25,11 +25,13 @@
     "fileAssociations": [
       {
         "ext": "mky",
+        "mimeType": "application/au.com.hpcoders.Minsky",
         "name": "Minsky",
         "icon": "apps/minsky-electron/src/assets/MinskyLogo"
       },
       {
         "ext": "rvl",
+        "mimeType": "application/au.com.hpcoders.Ravelation",
         "name": "Ravel",
         "icon": "apps/minsky-electron/src/assets/RavelLogo"
       }
