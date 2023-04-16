@@ -18,7 +18,7 @@ import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
-import { backend, initialWorkingDirectory, loadResources, sanityCheck } from './backend-init';
+import { backend, backendSync, initialWorkingDirectory, loadResources, sanityCheck } from './backend-init';
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -192,7 +192,7 @@ export default class App {
       for (var arg in process.argv) {
         switch(process.argv[arg]) {
         case '--version': {
-            let minskyVersion=minsky.$callMethodSync("minskyVersion");
+            let minskyVersion=backendSync("/minsky/minskyVersion");
             if (minskyVersion===version)
             {
               process.stdout.write(`${version}\n`);
