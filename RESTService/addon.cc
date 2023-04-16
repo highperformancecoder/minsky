@@ -232,7 +232,7 @@ namespace minsky
                     {flags&=~reset_needed;}
 #ifdef MAC_OSX_TK
                 if (!drawLaunched && nativeWindowsToRedraw.size())
-                  macOSXDrawNativeWindows();
+                  macOSXLaunchDrawNativeWindows();
 #else
                 drawNativeWindows();
 #endif
