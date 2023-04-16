@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Minsky
-Exec=minsky %U
+Exec=minsky %f
 Terminal=false
 Type=Application
 Icon=au.com.hpcoders.Minsky
