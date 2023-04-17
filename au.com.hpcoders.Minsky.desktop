@@ -1,9 +1,10 @@
 [Desktop Entry]
 Name=Minsky
-Exec=minsky %U
+Exec=minsky %f
 Terminal=false
 Type=Application
-Icon=minsky
+Icon=au.com.hpcoders.Minsky
 StartupWMClass=minsky
 Comment=Graphical dynamical systems simulator oriented towards economics
+MimeType=application/au.com.hpcoders.Minsky;application/au.com.hpcoders.Ravelation;
 Categories=Science;
