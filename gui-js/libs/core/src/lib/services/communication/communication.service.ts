@@ -438,11 +438,10 @@ export class CommunicationService {
 
   async importData() {
     this.electronService.minsky.canvas.addVariable(importCSVvariableName,'parameter');
-    this.electronService.minsky.canvas.mouseUp(this.mouseX, this.mouseY);
 
     const payload: MinskyProcessPayload = {
-      mouseX: this.mouseX,
-      mouseY: this.mouseY,
+      mouseX: await this.electronService.minsky.canvas.itemFocus.x(),
+      mouseY: await this.electronService.minsky.canvas.itemFocus.y(),
     };
     this.electronService.invoke(events.IMPORT_CSV, payload);
   }

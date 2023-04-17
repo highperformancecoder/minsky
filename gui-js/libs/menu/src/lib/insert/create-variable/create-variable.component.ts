@@ -172,9 +172,9 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     item.rotation(this.rotation.value || 0);
     item.tooltip(this.shortDescription.value);
     item.detailedText(this.detailedDescription.value);
-    if (this.sliderBoundsMax.value) item.sliderMax(this.sliderBoundsMax.value);
-    if (this.sliderBoundsMin.value) item.sliderMin(this.sliderBoundsMin.value);
-    if (this.sliderStepSize.value) item.sliderStep(this.sliderStepSize.value);
+    if (typeof this.sliderBoundsMax.value=='number') item.sliderMax(this.sliderBoundsMax.value);
+    if (typeof this.sliderBoundsMin.value=='number') item.sliderMin(this.sliderBoundsMin.value);
+    if (typeof this.sliderStepSize.value=='number') item.sliderStep(this.sliderStepSize.value);
     item.sliderStepRel(this.sliderStepRel.value);
     this.closeWindow();
   }

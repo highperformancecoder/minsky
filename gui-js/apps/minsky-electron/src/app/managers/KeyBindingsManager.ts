@@ -209,6 +209,11 @@ export class KeyBindingsManager {
       minsky.canvas.addOperation("pow");
       await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
       break;
+      
+    case '%':
+      minsky.canvas.addOperation("percent");
+      await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
+      break;
 
     case '&':
       minsky.canvas.addOperation("integrate");
