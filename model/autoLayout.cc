@@ -170,9 +170,10 @@ namespace minsky
 
     double temp=10;
     // use the cooling schedule to drive the progress bar
+    ProgressUpdater pu(minsky().progressState, "Autolaying out...", 100);
     fruchterman_reingold_force_directed_layout
       (gg,pm, Topology(layoutSize), attractive_force(WireForce()).repulsive_force(RepulsiveForce()).
-       cooling([&temp](){minsky().progress("Autolaying out...",10*(10-temp)); return std::max(0., temp-=0.1);}));
+       cooling([&temp,&pu](){pu.setProgress(0.1*(10-temp)); return std::max(0., temp-=0.1);}));
     // maybe not needed
     //.force_pairs(boost::all_force_pairs())
     

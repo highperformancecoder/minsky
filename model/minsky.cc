@@ -1659,6 +1659,11 @@ namespace minsky
   
   void Progress::displayProgress()
   {
+    if (*cancel)
+      {
+        *cancel=false;
+        throw std::runtime_error("Cancelled");
+      }
     minsky().progress(title, progress+0.5);
   }
 

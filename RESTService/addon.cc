@@ -401,7 +401,8 @@ struct MinskyAddon: public Addon<MinskyAddon>
         InstanceMethod("call", &MinskyAddon::call),
         InstanceMethod("setMessageCallback", &MinskyAddon::setMessageCallback),
         InstanceMethod("setBusyCursorCallback", &MinskyAddon::setBusyCursorCallback),
-        InstanceMethod("setProgressCallback", &MinskyAddon::setProgressCallback)
+        InstanceMethod("setProgressCallback", &MinskyAddon::setProgressCallback),
+        InstanceMethod("cancelProgress", &MinskyAddon::cancelProgress)
       });
   }
   
@@ -409,6 +410,8 @@ struct MinskyAddon: public Addon<MinskyAddon>
   Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}
   Value setBusyCursorCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBusyCursorCallback(info);}
   Value setProgressCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setProgressCallback(info);}
+  Value cancelProgress(const Napi::CallbackInfo& info) {*addOnMinsky.progressState.cancel=true; return info.Env().Null();}
+    
 
   Value call(const Napi::CallbackInfo& info)
   {

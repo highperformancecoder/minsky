@@ -100,7 +100,8 @@ namespace minsky
   void reportFromCSVFile(std::istream& input, std::ostream& output, const DataSpec& spec);
 
   /// load a variableValue from a stream according to data spec
-  void loadValueFromCSVFile(VariableValue&,std::istream&,const DataSpec&);
+  /// @param fileSize size of file to read (for progress bar)
+  void loadValueFromCSVFile(VariableValue&,std::istream&,const DataSpec&,uintmax_t fileSize);
 }
 
 #include "CSVParser.cd"
