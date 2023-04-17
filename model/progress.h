@@ -34,11 +34,12 @@ namespace minsky
   class Progress
   {
     std::string title;
-    double delta=1;
+    double delta=100;
     double progress=0;
     bool updaterStack=false; // whether under updater control
     friend class ProgressUpdater;
   public:
+    std::shared_ptr<std::atomic<bool>> cancel=std::make_shared<std::atomic<bool>>(false); ///< set to true to cancel process in progreess
     void displayProgress();
     void operator++() {
       if (progress+delta<=100)
@@ -67,6 +68,11 @@ namespace minsky
           updatedProgress.updaterStack=true;
           updatedProgress.delta=100.0/numSteps;
         }
+      updatedProgress.displayProgress();
+    }
+    /// Sets the progress to a given fraction of this stack's allocation
+    void setProgress(double fraction) {
+      updatedProgress.progress=savedProgress.progress+savedProgress.delta*fraction;
       updatedProgress.displayProgress();
     }
     ~ProgressUpdater() {

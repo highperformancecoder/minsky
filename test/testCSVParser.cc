@@ -186,7 +186,7 @@ SUITE(CSVParser)
       horizontalDimName="foobar";
       
       VariableValue v(VariableType::parameter);
-      loadValueFromCSVFile(v,is,*this);
+      loadValueFromCSVFile(v,is,*this,0);
 
       CHECK_EQUAL(3, v.rank());
       CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
@@ -225,7 +225,7 @@ SUITE(CSVParser)
       horizontalDimName="foobar";
       
       VariableValue v;
-      loadValueFromCSVFile(v,is,*this);
+      loadValueFromCSVFile(v,is,*this,0);
 
       CHECK_EQUAL(3, v.rank());
       CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
@@ -306,41 +306,41 @@ SUITE(CSVParser)
       VariableValue v(VariableType::parameter);
       {
         istringstream is(input);
-        CHECK_THROW(loadValueFromCSVFile(v,is,*this), std::exception);
+        CHECK_THROW(loadValueFromCSVFile(v,is,*this,0), std::exception);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=sum;
-        loadValueFromCSVFile(v,is,*this);
+        loadValueFromCSVFile(v,is,*this,0);
         CHECK_EQUAL(2.2, v.tensorInit[0]);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=product;
-        loadValueFromCSVFile(v,is,*this);
+        loadValueFromCSVFile(v,is,*this,0);
         CHECK_EQUAL(1.2, v.tensorInit[0]);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=min;
-        loadValueFromCSVFile(v,is,*this);
+        loadValueFromCSVFile(v,is,*this,0);
         CHECK_EQUAL(1, v.tensorInit[0]);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=max;
-        loadValueFromCSVFile(v,is,*this);
+        loadValueFromCSVFile(v,is,*this,0);
         CHECK_EQUAL(1.2, v.tensorInit[0]);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=av;
-        loadValueFromCSVFile(v,is,*this);
+        loadValueFromCSVFile(v,is,*this,0);
         CHECK_EQUAL(1.1, v.tensorInit[0]);
       }
     }
@@ -377,7 +377,7 @@ SUITE(CSVParser)
       VariableValue newV(VariableType::flow);
       {
         ifstream f("tmp.csv");
-        loadValueFromCSVFile(newV,f,spec);
+        loadValueFromCSVFile(newV,f,spec,0);
       }
 
       CHECK(newV.hypercube().xvectors==v.hypercube().xvectors);

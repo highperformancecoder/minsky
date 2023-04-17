@@ -41,7 +41,9 @@
 
 #include <boost/regex.hpp>
 #include <boost/locale.hpp>
+#include <boost/filesystem.hpp>
 using namespace boost::locale::conv;
+using boost::filesystem::file_size;
 
 using namespace classdesc;
 using namespace ecolab;
@@ -430,7 +432,7 @@ void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spe
     std::ifstream is(filename);
     v->csvDialog.spec=spec;
     v->csvDialog.url=filename;
-    loadValueFromCSVFile(*v, is, v->csvDialog.spec);
+    loadValueFromCSVFile(*v, is, v->csvDialog.spec,file_size(filename));
     minsky().populateMissingDimensionsFromVariable(*v);
   }
 }
