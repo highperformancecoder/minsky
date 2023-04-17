@@ -14,7 +14,7 @@ mv linux-unpacked $name/app
 rm $name/app/resources/node-addons/*.node
 popd
 popd
-cp minsky.desktop gui-js/dist/executables/$name/
-cp gui-tk/icons/MinskyLogo.svg gui-js/dist/executables/$name/minsky.svg
+cp au.com.hpcoders.{Minsky.desktop,{Minsky,Ravelation}-mime.xml} gui-js/dist/executables/$name/
+cp gui-tk/icons/MinskyLogo.svg gui-js/dist/executables/$name/au.com.hpcoders.Minsky.svg
 pushd gui-js/dist/executables/
 tar zcvf /tmp/$name.tar.gz $name
