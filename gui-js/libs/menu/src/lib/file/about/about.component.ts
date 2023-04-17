@@ -9,7 +9,6 @@ import { version } from '@minsky/shared';
 })
 export class AboutComponent implements OnInit {
   angularVersion = VERSION.full;
-  ecolabVersion: string;
   minskyVersion: string;
   frontEndVersion: string;
   ravelVersion: string;
@@ -19,7 +18,6 @@ export class AboutComponent implements OnInit {
   ngOnInit(): void {
     (async () => {
       let minsky=this.electronService.minsky;
-      this.ecolabVersion = await minsky.ecolabVersion();
       this.ravelVersion = await minsky.ravelVersion();
       this.minskyVersion = await minsky.minskyVersion();
       this.frontEndVersion=version;
