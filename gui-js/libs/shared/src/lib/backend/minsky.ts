@@ -2421,6 +2421,7 @@ export class VariableValue extends CppClass {
   async shape(): Promise<number[]> {return this.$callMethod('shape');}
   async size(): Promise<number> {return this.$callMethod('size');}
   async sliderVisible(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderVisible',...args);}
+  async summary(): Promise<object> {return this.$callMethod('summary');}
   async temp(): Promise<boolean> {return this.$callMethod('temp');}
   async type(): Promise<string> {return this.$callMethod('type');}
   async typeName(a1: number): Promise<string> {return this.$callMethod('typeName',a1);}

@@ -2,7 +2,7 @@
     <div *ngIf="variables" class="table" [style.zoom]="scale.zoomFactor">
 
         <div *ngFor="let type of types" class="table-row">
-          <span class="caret" (click)="toggleCaret($event)">{{type}}
+          <span class="caret" (click)="toggleCaret($event)">{{type}} - {{variables[type].length}}
             <div class="nested">
               
               <div class="table-row header-row">

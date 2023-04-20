@@ -80,7 +80,7 @@ namespace minsky
 
     /// dimension units of this value
     Units units;
-    bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
+    bool unitsCached=false; // optimisation to prevent evaluating this units value more than oncestring
     void setUnits(const std::string& x) {units=Units(x);}
 
     bool sliderVisible=false; // determined at reset time
@@ -160,6 +160,20 @@ namespace minsky
     CSVDialog csvDialog;
     
     void exportAsCSV(const std::string& filename, const std::string& comment="") const;
+
+    /// summary for the variable tab (aka summary tab).
+    struct Summary
+    {
+      std::string name; ///< LaTeXable name
+      std::string definition; ///< LaTeXable definition 
+      std::string udfDefinition; ///< use function compatible definition
+      std::string init; ///< initial value
+      double value=nan(""); ///< value, if scalar
+      std::string scope; ///< name, id of scope if local, ":" if global
+      std::vector<unsigned> dimensions; ///< dimensions (empty if scalar
+      std::string units;
+    };
+    Summary summary() const;
   };
 
   struct ValueVector

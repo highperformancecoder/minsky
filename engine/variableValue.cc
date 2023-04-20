@@ -367,6 +367,30 @@ namespace minsky
           of << *d << endl;
         }
   }
+
+  VariableValue::Summary VariableValue::summary() const
+  {
+    MathDAG::SystemOfEquations system(cminsky());
+    auto varNode=system.getNodeFromValueId(valueId());
+
+    string scopeName=":";
+    if (auto scope=m_scope.lock())
+      if (scope!=cminsky().model)
+        scopeName=scope->title.empty()? scope->id(): scope->title;
+    
+    return Summary{
+      name,
+      varNode && varNode->rhs? varNode->rhs->latexStr():"",
+      varNode && varNode->rhs? varNode->rhs->matlabStr():"",
+      init,
+      value(),
+      scopeName,
+      hypercube().dims(),
+      units.latexStr()
+    };
+    
+  }
+
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Units);
