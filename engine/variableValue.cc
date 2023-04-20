@@ -379,6 +379,7 @@ namespace minsky
         scopeName=scope->title.empty()? scope->id(): scope->title;
     
     return Summary{
+      valueId(),
       name,
       varNode && varNode->rhs? varNode->rhs->latexStr():"",
       varNode && varNode->rhs? varNode->rhs->matlabStr():"",

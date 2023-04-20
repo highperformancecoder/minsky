@@ -2444,6 +2444,7 @@ export class VariableValues extends Map<string,VariableValue> {
   async reset(): Promise<void> {return this.$callMethod('reset');}
   async resetUnitsCache(): Promise<void> {return this.$callMethod('resetUnitsCache');}
   async resetValue(a1: VariableValue): Promise<void> {return this.$callMethod('resetValue',a1);}
+  async summarise(): Promise<object[]> {return this.$callMethod('summarise');}
   async validEntries(): Promise<boolean> {return this.$callMethod('validEntries');}
 }
 

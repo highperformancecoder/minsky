@@ -164,6 +164,7 @@ namespace minsky
     /// summary for the variable tab (aka summary tab).
     struct Summary
     {
+      std::string valueId;
       std::string name; ///< LaTeXable name
       std::string definition; ///< LaTeXable definition 
       std::string udfDefinition; ///< use function compatible definition
