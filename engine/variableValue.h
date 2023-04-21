@@ -166,6 +166,7 @@ namespace minsky
     {
       std::string valueId;
       std::string name; ///< LaTeXable name
+      VariableType::Type type;
       std::string definition; ///< LaTeXable definition 
       std::string udfDefinition; ///< use function compatible definition
       std::string init; ///< initial value

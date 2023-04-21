@@ -381,6 +381,7 @@ namespace minsky
     return Summary{
       valueId(),
       name,
+      type(),
       varNode && varNode->rhs? varNode->rhs->latexStr():"",
       varNode && varNode->rhs? varNode->rhs->matlabStr():"",
       init,
