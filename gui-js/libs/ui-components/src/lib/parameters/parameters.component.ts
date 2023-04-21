@@ -1,17 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { ScaleHandler } from '../scale-handler/scale-handler.class';
-import { uniqBy, sortBy } from 'lodash-es';
-import * as JSON5 from 'json5';
 
 @Component({
   selector: 'minsky-parameters',
   templateUrl: './parameters.component.html',
   styleUrls: ['./parameters.component.scss'],
 })
-export class ParametersComponent {
+export class ParametersComponent implements OnInit {
   variables;
 
   tensorText = '<tensor>';
@@ -22,20 +20,22 @@ export class ParametersComponent {
   scale = new ScaleHandler();
 
   constructor(private electronService: ElectronService, route: ActivatedRoute) {
-    route.params.pipe(switchMap(p => {
-      this.type = p['tab'];
-      if(this.type === 'parameters') {
-        return electronService.minsky.parameterTab.getDisplayVariables();
-      } else {
-        return electronService.minsky.variableTab.getDisplayVariables();
-      }
-    })).subscribe((v: any) => this.prepareVariables(v));
+//    route.params.pipe(switchMap(p => {
+//      
+//      this.type = p['tab'];
+//      if(this.type === 'parameters') {
+//        return electronService.minsky.parameterTab.getDisplayVariables();
+//      } else {
+//        return electronService.minsky.variableTab.getDisplayVariables();
+//      }
+//    })).subscribe((v: any) => this.prepareVariables(v));
   }
 
-  prepareVariables(variables: any[]) {
+  async ngOnInit() {
+    let variables=await this.electronService.minsky.variableValues.summarise();
     this.variables={};
     for (let v in variables) {
-      let type=variables[v].type;
+      let type=variables[v]["type"];
       if (this.variables[type])
         this.variables[type].push(variables[v]);
       else
@@ -46,8 +46,6 @@ export class ParametersComponent {
     this.types.sort();
     for (let type in this.variables)
       this.variables[type].sort((x,y)=>{return x.name<y.name;});
-    // why tf is this uniqBy necessary?! sort duplicates rows..? js' own .sort function does the same thing
-    //  this.variables[type] = uniqBy(sortBy(variables[type], ['name']), v => v.name);
   }
 
   toggleCaret(event) {
