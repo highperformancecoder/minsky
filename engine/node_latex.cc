@@ -639,7 +639,7 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::runningProduct>::latex(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"\\left[\\product_{j=0}^i\\left("<<arguments[0][0]->latex()<<"\\right)_i\\right])";
+    return o<<"\\left[\\prod_{j=0}^i\\left("<<arguments[0][0]->latex()<<"\\right)_i\\right])";
   }
 
   template <>
