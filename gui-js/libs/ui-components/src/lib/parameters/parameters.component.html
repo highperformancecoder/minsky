@@ -1,33 +1,36 @@
 <div class="table-wrapper" (mousewheel)="changeScale($event)">
-    <div *ngIf="variables" class="table" [style.zoom]="scale.zoomFactor">
+    <div class="table" [style.zoom]="scale.zoomFactor">
 
-        <div *ngFor="let type of types" class="table-row">
-          <span class="caret" (click)="toggleCaret($event)">{{type}} - {{variables[type].length}}
-            <div class="nested">
-              
-              <div class="table-row header-row">
-                <div class="data-cell">Name</div>
-                <div *ngIf="type === 'flow'" class="data-cell extra-wide">Definition</div>
-                <div class="data-cell wide">Dimensions</div>
-                <div class="data-cell numeric">Initial</div>
-                <div class="data-cell numeric">Value</div>
+      <div *ngFor="let category of ['allVariables','globalVariables','groups','godleys']">
+        <span class="caret" (click)="toggleCaret($event)">{{labels[category]}} - {{numVars[category]}}
+          <div *ngFor="let type of types(category)" class="nested">
+            <span class="caret" style="margin:10px" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
+              <div class="nested">
+                <div class="table-row header-row">
+                  <div class="data-cell">Name</div>
+                  <div *ngIf="type === 'flow'" class="data-cell extra-wide">Definition</div>
+                  <div class="data-cell wide">Dimensions</div>
+                  <div class="data-cell numeric">Initial</div>
+                  <div class="data-cell numeric">Value</div>
+                </div>
+
+                <div *ngFor="let variable of this[category][type]"
+                     class="table-row">
+                  <div [title]="variable.name" class="data-cell" latex [equation]="variable.name"></div>
+                  <div *ngIf="type === 'flow'" [title]="variable.definition" class="data-cell extra-wide" latex [equation]="variable.definition"></div>
+                  <div [title]="variable.dimensions" class="data-cell wide">{{variable.dimensions.toString()}}</div>
+                  <div [title]="variable.init" class="data-cell numeric" latex equation="{{truncateValue(variable.init)}}{{variable.units}}"></div>
+                  <div *ngIf="variable.isTensor" [title]="tensorText" class="data-cell numeric" latex [equation]="tensorText"></div>
+                  <div *ngIf="!variable.dimensions.length"
+                       [title]="variable.value" class="data-cell numeric"
+                       latex
+                       equation="{{truncateValue(variable.value)}}{{variable.units}}"></div>
+                </div>
               </div>
-
-              <div *ngFor="let variable of variables[type]" class="table-row">
-                <div [title]="variable.name" class="data-cell" latex [equation]="variable.name"></div>
-                <div *ngIf="type === 'flow'" [title]="variable.definition" class="data-cell extra-wide" latex [equation]="variable.definition"></div>
-                <div [title]="variable.dimensions" class="data-cell wide">{{variable.dimensions.toString()}}</div>
-                <div [title]="variable.init" class="data-cell numeric" latex equation="{{truncateValue(variable.init)}}{{variable.units}}"></div>
-                <div *ngIf="variable.isTensor" [title]="tensorText" class="data-cell numeric" latex [equation]="tensorText"></div>
-                <div *ngIf="!variable.dimensions.length"
-                     [title]="variable.value" class="data-cell numeric"
-                     latex
-                     equation="{{truncateValue(variable.value)}}{{variable.units}}"></div>
-              </div>
-            </div>
-          </span>
-        </div>
-
+            </span>
+          </div>
+        </span>
+      </div>
     </div>
 
     <!--div *ngIf="!variables" class="spinner">

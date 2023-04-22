@@ -10,47 +10,63 @@ import { ScaleHandler } from '../scale-handler/scale-handler.class';
   styleUrls: ['./parameters.component.scss'],
 })
 export class ParametersComponent implements OnInit {
-  variables;
+  allVariables;
+  globalVariables;
+  groups={};
+  godleys={};
 
-  tensorText = '<tensor>';
-
-  type: string;
-  types: string[];
-
+  labels={allVariables: 'All Variables', globalVariables: 'Global Variables', groups: 'Groups', godleys: 'Godleys'};
+  numVars={allVariables: 0, globalVariables: 0, groups: 0, godleys: 0};
+    
   scale = new ScaleHandler();
 
-  constructor(private electronService: ElectronService, route: ActivatedRoute) {
-//    route.params.pipe(switchMap(p => {
-//      
-//      this.type = p['tab'];
-//      if(this.type === 'parameters') {
-//        return electronService.minsky.parameterTab.getDisplayVariables();
-//      } else {
-//        return electronService.minsky.variableTab.getDisplayVariables();
-//      }
-//    })).subscribe((v: any) => this.prepareVariables(v));
-  }
+  constructor(private electronService: ElectronService, route: ActivatedRoute) {}
 
   async ngOnInit() {
     let variables=await this.electronService.minsky.variableValues.summarise();
-    this.variables={};
+    this.allVariables={};
+    this.globalVariables={};
     for (let v in variables) {
       let type=variables[v]["type"];
-      if (this.variables[type])
-        this.variables[type].push(variables[v]);
+      if (this.allVariables[type])
+        this.allVariables[type].push(variables[v]);
       else
-        this.variables[type]=[variables[v]];
+        this.allVariables[type]=[variables[v]];
+      if (variables[v]["scope"]===":")
+      {
+        if (this.globalVariables[type])
+          this.globalVariables[type].push(variables[v]);
+        else
+          this.globalVariables[type]=[variables[v]];
+      }
     }
 
-    this.types=Object.keys(this.variables);
-    this.types.sort();
-    for (let type in this.variables)
-      this.variables[type].sort((x,y)=>{return x.name<y.name;});
+   for (let type in this.allVariables)
+    {
+      this.allVariables[type].sort((x,y)=>{return x.name<y.name;});
+      this.numVars.allVariables+=this.allVariables[type].length;
+    }
+    for (let type in this.globalVariables)
+    {
+      this.globalVariables[type].sort((x,y)=>{return x.name<y.name;});
+      this.numVars.globalVariables+=this.globalVariables[type].length;
+    }
   }
 
+  types(category: string): string[] {
+    if (!this[category]) return [];
+    return Object.keys(this[category]).sort();
+  }
+  
   toggleCaret(event) {
     event.target.classList.toggle("caret-down");
-    event.target.querySelector(".nested").classList.toggle("active");
+    let nestedElements=event.target.childNodes;
+    for (let i in nestedElements) 
+      nestedElements[i].classList?.toggle("active");
+    nestedElements=event.target.querySelectorAll(".caret");
+    // why do we need to add this event listener? Why isn't the (click)= annotation enough?
+    for (let i in nestedElements) 
+      nestedElements[i].addEventListener("click",()=>this.toggleCaret({target:nestedElements[i]}));
   }
   
   changeScale(e) {
@@ -59,6 +75,8 @@ export class ParametersComponent implements OnInit {
     }
   }
 
+  
+  
   truncateValue(value: string) {
     if(isNaN(+value)) return value;
     const stringDecimals = String(+value - Math.floor(+value));
