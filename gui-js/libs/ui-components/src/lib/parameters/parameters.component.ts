@@ -15,7 +15,7 @@ export class ParametersComponent implements OnInit {
   groups={};
   godleys={};
 
-  labels={allVariables: 'All Variables', globalVariables: 'Global Variables', groups: 'Local Variables', godleys: 'Stocks'};
+  labels={allVariables: 'All Variables', globalVariables: 'Global Variables', groups: 'Local Variables', godleys: 'Godley Variables'};
   numVars={allVariables: 0, globalVariables: 0, groups: 0, godleys: 0};
     
   scale = new ScaleHandler();
@@ -40,8 +40,6 @@ export class ParametersComponent implements OnInit {
         this.append(this.globalVariables, type, variables[v]);
       else
         this.append(this.groups, variables[v]["scope"], variables[v]);
-      if (variables[v]["godley"])
-        this.append(this.godleys, variables[v]["godley"],variables[v]);
     }
 
     for (let type in this.allVariables)
@@ -60,13 +58,18 @@ export class ParametersComponent implements OnInit {
       this.numVars[name]=this.groups[name].length;
     }
     this.numVars.groups=Object.keys(this.groups).length;
+
+    // now process Godley table variables
+    variables=await this.electronService.minsky.model.summariseGodleys();
+    for (let v in variables) {
+      this.append(this.godleys, variables[v]["godley"], variables[v]);
+    }
     for (let name in this.godleys)
     {
       this.godleys[name].sort((x,y)=>{return x.type<y.type || x.type===y.type && x.name<y.name;});
       this.numVars[name]=this.godleys[name].length;
+      this.numVars.godleys+=this.godleys[name].length;
     }
-    this.numVars.godleys=Object.keys(this.godleys).length;
-
   }
 
   types(category: string): string[] {

@@ -368,7 +368,7 @@ namespace minsky
         }
   }
 
-  VariableValue::Summary VariableValue::summary() const
+  Summary VariableValue::summary() const
   {
     MathDAG::SystemOfEquations system(cminsky());
     MathDAG::VariableDAGPtr varNode;

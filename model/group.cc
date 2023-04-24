@@ -1245,6 +1245,20 @@ namespace minsky
     BusyCursor busy(minsky());
     randomizeLayout(*this);
   }
+
+  vector<Summary> Group::summariseGodleys() const
+  {
+    vector<Summary> r;
+    recursiveDo(&GroupItems::items, [&](const Items&,Items::const_iterator i) {
+      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+        {
+          auto summary=g->summarise();
+          r.insert(r.end(),summary.begin(), summary.end());
+        }
+      return false;
+    });
+    return r;
+  }
   
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Group);

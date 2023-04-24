@@ -27,6 +27,7 @@
 #include "CSVDialog.h"
 #include "latexMarkup.h"
 #include "valueId.h"
+#include "variableSummary.h"
 #include <regex> 
 #include <utility>
 #include <boost/locale.hpp>
@@ -161,21 +162,6 @@ namespace minsky
     
     void exportAsCSV(const std::string& filename, const std::string& comment="") const;
 
-    /// summary for the variable tab (aka summary tab).
-    struct Summary
-    {
-      std::string valueId;
-      std::string name; ///< LaTeXable name
-      VariableType::Type type;
-      std::string definition; ///< LaTeXable definition 
-      std::string udfDefinition; ///< use function compatible definition
-      std::string init; ///< initial value
-      double value=nan(""); ///< value, if scalar
-      std::string scope; ///< name, id of scope if local, ":" if global
-      std::string godley; ///< name or id of Godley table, if contained in a Godley table
-      std::vector<unsigned> dimensions; ///< dimensions (empty if scalar
-      std::string units;
-    };
     Summary summary() const;
   };
 

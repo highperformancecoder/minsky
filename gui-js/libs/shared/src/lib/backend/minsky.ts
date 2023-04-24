@@ -687,6 +687,7 @@ export class GodleyIcon extends Item {
   async setCurrency(a1: string): Promise<void> {return this.$callMethod('setCurrency',a1);}
   async stockVarUnits(a1: string,a2: boolean): Promise<object> {return this.$callMethod('stockVarUnits',a1,a2);}
   async stockVars(): Promise<Sequence<VariableBase>> {return this.$callMethod('stockVars');}
+  async summarise(): Promise<object[]> {return this.$callMethod('summarise');}
   async toggleButtons(): Promise<void> {return this.$callMethod('toggleButtons');}
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async toggleVariableDisplay(): Promise<void> {return this.$callMethod('toggleVariableDisplay');}
@@ -1148,6 +1149,7 @@ export class Group extends Item {
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
   async setZoom(a1: number): Promise<void> {return this.$callMethod('setZoom',a1);}
   async splitBoundaryCrossingWires(): Promise<void> {return this.$callMethod('splitBoundaryCrossingWires');}
+  async summariseGodleys(): Promise<object[]> {return this.$callMethod('summariseGodleys');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
@@ -2128,6 +2130,7 @@ export class Selection extends CppClass {
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
   async setZoom(a1: number): Promise<void> {return this.$callMethod('setZoom',a1);}
   async splitBoundaryCrossingWires(): Promise<void> {return this.$callMethod('splitBoundaryCrossingWires');}
+  async summariseGodleys(): Promise<object[]> {return this.$callMethod('summariseGodleys');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
   async toggleItemMembership(a1: Item): Promise<void> {return this.$callMethod('toggleItemMembership',a1);}

@@ -69,8 +69,8 @@ namespace minsky
       return initValue(v, visited);
     }
 
-    std::vector<VariableValue::Summary> summarise() const {
-      std::vector<VariableValue::Summary> summary;
+    std::vector<Summary> summarise() const {
+      std::vector<Summary> summary;
       for (auto& v: *this)
         summary.emplace_back(v.second->summary());
       return summary;
