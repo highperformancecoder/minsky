@@ -15,7 +15,7 @@ export class ParametersComponent implements OnInit {
   groups={};
   godleys={};
 
-  labels={allVariables: 'All Variables', globalVariables: 'Global Variables', groups: 'Group Local Variables', godleys: 'Godley Variables'};
+  labels={allVariables: 'All Variables', globalVariables: 'Global Variables', groups: 'Local Variables', godleys: 'Stocks'};
   numVars={allVariables: 0, globalVariables: 0, groups: 0, godleys: 0};
     
   scale = new ScaleHandler();

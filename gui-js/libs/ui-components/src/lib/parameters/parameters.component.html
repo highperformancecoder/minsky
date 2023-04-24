@@ -8,9 +8,9 @@
               <div class="nested">
                 <div class="table-row header-row">
                   <div class="data-cell">Name</div>
-                  <div *ngIf="category==='groups'||category==='godleys'"
+                  <div *ngIf="category==='allVariables'"
                        class="data-cell">Type</div>
-                  <div *ngIf="type === 'flow'" class="data-cell extra-wide">Definition</div>
+                  <div class="data-cell extra-wide">Definition</div>
                   <div class="data-cell wide">Dimensions</div>
                   <div class="data-cell numeric">Initial</div>
                   <div class="data-cell numeric">Value</div>
@@ -20,11 +20,9 @@
                      class="table-row">
                   <div [title]="variable.name" class="data-cell"
                        latex [equation]="variable.name"></div>
-                  <div *ngIf="category==='groups'||category==='godleys'"
+                  <div *ngIf="category==='allVariables'"
                        class="data-cell" >{{variable.type}}</div>
-                  <div *ngIf="variable.type === 'flow'"
-                       [title]="variable.definition" class="data-cell
-                                                            extra-wide" latex
+                  <div [title]="variable.definition" class="data-cell extra-wide" latex
                        [equation]="variable.definition"></div>
                   <div [title]="variable.dimensions" class="data-cell wide">{{variable.dimensions.toString()}}</div>
                   <div [title]="variable.init" class="data-cell numeric" latex equation="{{truncateValue(variable.init)}}{{variable.units}}"></div>

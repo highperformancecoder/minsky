@@ -371,7 +371,17 @@ namespace minsky
   VariableValue::Summary VariableValue::summary() const
   {
     MathDAG::SystemOfEquations system(cminsky());
-    auto varNode=system.getNodeFromValueId(valueId());
+    MathDAG::VariableDAGPtr varNode;
+    switch (type())
+      {
+      case integral:
+      case stock:
+        varNode=system.getNodeFromIntVar(valueId());
+        break;
+      default:
+        varNode=system.getNodeFromValueId(valueId());
+        break;
+      }
 
     string scopeName=":";
     if (auto scope=m_scope.lock())
@@ -382,12 +392,13 @@ namespace minsky
     if (auto var=cminsky().definingVar(valueId()))
       if (auto controller=dynamic_pointer_cast<GodleyIcon>(var->controller.lock()))
         godleyName=controller->table.title.empty()? controller->id(): controller->table.title;
+
     
     return Summary{
       valueId(),
       name,
       type(),
-      varNode && varNode->rhs? varNode->rhs->latexStr():"",
+      varNode && varNode->rhs? varNode->rhs->latexStr(): "",
       varNode && varNode->rhs? varNode->rhs->matlabStr():"",
       init,
       value(),

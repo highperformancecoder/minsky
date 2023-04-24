@@ -420,6 +420,8 @@ namespace MathDAG
     VariableDAGPtr getNodeFromVar(const VariableBase& v);
     VariableDAGPtr getNodeFromValueId(const std::string& v)
     {return dynamic_pointer_cast<VariableDAG>(expressionCache[v]);}
+    VariableDAGPtr getNodeFromIntVar(const std::string& valueId)
+    {return expressionCache.getIntegralInput(valueId);}
     ostringstream getDefFromIntVar(const VariableBase& v);
 
     /// render equations into a cairo context
