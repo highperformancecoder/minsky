@@ -377,6 +377,11 @@ namespace minsky
     if (auto scope=m_scope.lock())
       if (scope!=cminsky().model)
         scopeName=scope->title.empty()? scope->id(): scope->title;
+
+    string godleyName;
+    if (auto var=cminsky().definingVar(valueId()))
+      if (auto controller=dynamic_pointer_cast<GodleyIcon>(var->controller.lock()))
+        godleyName=controller->table.title.empty()? controller->id(): controller->table.title;
     
     return Summary{
       valueId(),
@@ -387,6 +392,7 @@ namespace minsky
       init,
       value(),
       scopeName,
+      godleyName,
       hypercube().dims(),
       units.latexStr()
     };

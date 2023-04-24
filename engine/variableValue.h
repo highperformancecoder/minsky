@@ -172,6 +172,7 @@ namespace minsky
       std::string init; ///< initial value
       double value=nan(""); ///< value, if scalar
       std::string scope; ///< name, id of scope if local, ":" if global
+      std::string godley; ///< name or id of Godley table, if contained in a Godley table
       std::vector<unsigned> dimensions; ///< dimensions (empty if scalar
       std::string units;
     };

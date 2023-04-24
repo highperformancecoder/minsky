@@ -15,33 +15,36 @@ export class ParametersComponent implements OnInit {
   groups={};
   godleys={};
 
-  labels={allVariables: 'All Variables', globalVariables: 'Global Variables', groups: 'Groups', godleys: 'Godleys'};
+  labels={allVariables: 'All Variables', globalVariables: 'Global Variables', groups: 'Group Local Variables', godleys: 'Godley Variables'};
   numVars={allVariables: 0, globalVariables: 0, groups: 0, godleys: 0};
     
   scale = new ScaleHandler();
 
   constructor(private electronService: ElectronService, route: ActivatedRoute) {}
 
+  append(o: Object, key: string, v) {
+    if (o[key])
+      o[key].push(v);
+    else
+      o[key]=[v];
+  }
+  
   async ngOnInit() {
     let variables=await this.electronService.minsky.variableValues.summarise();
     this.allVariables={};
     this.globalVariables={};
     for (let v in variables) {
       let type=variables[v]["type"];
-      if (this.allVariables[type])
-        this.allVariables[type].push(variables[v]);
-      else
-        this.allVariables[type]=[variables[v]];
+      this.append(this.allVariables, type, variables[v]);
       if (variables[v]["scope"]===":")
-      {
-        if (this.globalVariables[type])
-          this.globalVariables[type].push(variables[v]);
-        else
-          this.globalVariables[type]=[variables[v]];
-      }
+        this.append(this.globalVariables, type, variables[v]);
+      else
+        this.append(this.groups, variables[v]["scope"], variables[v]);
+      if (variables[v]["godley"])
+        this.append(this.godleys, variables[v]["godley"],variables[v]);
     }
 
-   for (let type in this.allVariables)
+    for (let type in this.allVariables)
     {
       this.allVariables[type].sort((x,y)=>{return x.name<y.name;});
       this.numVars.allVariables+=this.allVariables[type].length;
@@ -51,6 +54,19 @@ export class ParametersComponent implements OnInit {
       this.globalVariables[type].sort((x,y)=>{return x.name<y.name;});
       this.numVars.globalVariables+=this.globalVariables[type].length;
     }
+    for (let name in this.groups)
+    {
+      this.groups[name].sort((x,y)=>{return x.type<y.type || x.type===y.type && x.name<y.name;});
+      this.numVars[name]=this.groups[name].length;
+    }
+    this.numVars.groups=Object.keys(this.groups).length;
+    for (let name in this.godleys)
+    {
+      this.godleys[name].sort((x,y)=>{return x.type<y.type || x.type===y.type && x.name<y.name;});
+      this.numVars[name]=this.godleys[name].length;
+    }
+    this.numVars.godleys=Object.keys(this.godleys).length;
+
   }
 
   types(category: string): string[] {
@@ -65,7 +81,7 @@ export class ParametersComponent implements OnInit {
       nestedElements[i].classList?.toggle("active");
     nestedElements=event.target.querySelectorAll(".caret");
     // why do we need to add this event listener? Why isn't the (click)= annotation enough?
-    for (let i in nestedElements) 
+    for (let i=0; i<nestedElements.length; ++i) 
       nestedElements[i].addEventListener("click",()=>this.toggleCaret({target:nestedElements[i]}));
   }
   
