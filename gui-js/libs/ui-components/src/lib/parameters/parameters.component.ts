@@ -56,8 +56,8 @@ export class ParametersComponent implements OnInit {
     {
       this.groups[name].sort((x,y)=>{return x.type<y.type || x.type===y.type && x.name<y.name;});
       this.numVars[name]=this.groups[name].length;
+      this.numVars.groups+=this.groups[name].length;
     }
-    this.numVars.groups=Object.keys(this.groups).length;
 
     // now process Godley table variables
     variables=await this.electronService.minsky.model.summariseGodleys();

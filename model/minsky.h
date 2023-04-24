@@ -37,8 +37,8 @@
 #include "canvas.h"
 #include "lock.h"
 #include "operation.h"
+#include "pannableTab.h"
 #include "panopticon.h"
-#include "parameterTab.h"
 #include "plotTab.h"
 #include "plotWidget.h"
 #include "progress.h"
@@ -46,7 +46,6 @@
 #include "rungeKutta.h"
 #include "saver.h"
 #include "stringKeyMap.h"
-#include "variableTab.h"
 #include "variablePane.h"
 #include "version.h"
 
@@ -163,8 +162,6 @@ namespace minsky
     PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
-    ParameterTab parameterTab;
-    VariableTab variableTab;
     PlotTab plotTab;
     GodleyTab godleyTab;
     

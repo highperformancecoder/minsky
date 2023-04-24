@@ -951,8 +951,6 @@ namespace minsky
     canvas.requestRedraw();
     godleyTab.requestRedraw();
     plotTab.requestRedraw();
-    variableTab.requestRedraw();
-    parameterTab.requestRedraw();
 
     resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
   }
@@ -976,7 +974,6 @@ namespace minsky
         canvas.requestRedraw();
         godleyTab.requestRedraw();
         plotTab.requestRedraw();
-        variableTab.requestRedraw();
         lastRedraw=microsec_clock::local_time();
       }
 
