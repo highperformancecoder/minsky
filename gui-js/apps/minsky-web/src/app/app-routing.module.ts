@@ -14,7 +14,7 @@ import {
   GodleyWidgetViewComponent,
   ImportCsvComponent,
   PageNotFoundComponent,
-  ParametersComponent,
+  SummaryComponent,
   PlotWidgetOptionsComponent,
   PlotWidgetViewComponent,
   RavelViewComponent,
@@ -43,7 +43,7 @@ const routes: Routes = [
   },
   {
     path: 'itemTab/:tab',
-    component: ParametersComponent,
+    component: SummaryComponent,
   },
   {
     path: 'headless/menu',

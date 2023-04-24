@@ -6,10 +6,10 @@ import { ScaleHandler } from '../scale-handler/scale-handler.class';
 
 @Component({
   selector: 'minsky-parameters',
-  templateUrl: './parameters.component.html',
-  styleUrls: ['./parameters.component.scss'],
+  templateUrl: './summary.component.html',
+  styleUrls: ['./summary.component.scss'],
 })
-export class ParametersComponent implements OnInit {
+export class SummaryComponent implements OnInit {
   allVariables;
   globalVariables;
   groups={};

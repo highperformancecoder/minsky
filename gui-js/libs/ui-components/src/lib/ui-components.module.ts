@@ -18,7 +18,7 @@ import { HeaderComponent } from './header/header.component';
 import { ImportCsvComponent } from './import-csv/import-csv.component';
 import { InputModalComponent } from './input-modal/input-modal.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { ParametersComponent } from './parameters/parameters.component';
+import { SummaryComponent } from './summary/summary.component';
 import { PlotWidgetOptionsComponent } from './plot-widget-options/plot-widget-options.component';
 import { PlotWidgetViewComponent } from './plot-widget-view/plot-widget-view.component';
 import { RenameAllInstancesComponent } from './rename-all-instances/rename-all-instances.component';
@@ -37,7 +37,7 @@ import { LatexDirective } from './directives/latex.directive';
     PageNotFoundComponent,
     WiringComponent,
     EquationsComponent,
-    ParametersComponent,
+    SummaryComponent,
     CliInputComponent,
     AvailableOperationsComponent,
     VariableComponent,
@@ -68,7 +68,7 @@ import { LatexDirective } from './directives/latex.directive';
     ToolbarComponent,
     WiringComponent,
     EquationsComponent,
-    ParametersComponent,
+    SummaryComponent,
     CliInputComponent,
     RenameAllInstancesComponent,
     InputModalComponent,
