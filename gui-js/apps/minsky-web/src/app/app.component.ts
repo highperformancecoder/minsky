@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements DoCheck {
-  htmlTabs = [MainRenderingTabs.parameters, MainRenderingTabs.variables];
+  htmlTabs = [MainRenderingTabs.summary];
 
   loading = true;
     MainRenderingTabs = MainRenderingTabs;

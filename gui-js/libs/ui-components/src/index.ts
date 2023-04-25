@@ -18,7 +18,7 @@ export * from './lib/header/header.component';
 export * from './lib/import-csv/import-csv.component';
 export * from './lib/input-modal/input-modal.component';
 export * from './lib/page-not-found/page-not-found.component';
-export * from './lib/parameters/parameters.component';
+export * from './lib/summary/summary.component';
 export * from './lib/plot-widget-options/plot-widget-options.component';
 export * from './lib/plot-widget-view/plot-widget-view.component';
 export * from './lib/ravel-widget-view/ravel-widget-view.component';

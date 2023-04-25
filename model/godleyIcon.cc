@@ -266,6 +266,24 @@ namespace minsky
     return r;
   }
 
+  vector<Summary> GodleyIcon::summarise() const
+  {
+    vector<Summary> r;
+    for (auto& i: stockVars())
+      if (auto vv=i->vValue())
+        {
+          r.push_back(vv->summary());
+          r.back().godley=table.title.empty()? id(): table.title;
+        }
+    for (auto& i: flowVars())
+      if (auto vv=i->vValue())
+        {
+          r.push_back(vv->summary());
+          r.back().godley=table.title.empty()? id(): table.title;
+        }
+    return r;
+  }
+  
   void GodleyIcon::update()
   {
     updateVars(m_stockVars, table.getColumnVariables(), VariableType::stock);

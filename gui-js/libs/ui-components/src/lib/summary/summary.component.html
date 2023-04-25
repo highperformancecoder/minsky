@@ -1,0 +1,80 @@
+<div class="table-wrapper" (mousewheel)="changeScale($event)">
+    <div class="table" [style.zoom]="scale.zoomFactor">
+      <!-- all variables anbd global variables -->
+      <div *ngFor="let category of ['allVariables','globalVariables']">
+        <span class="caret" (click)="toggleCaret($event)">{{labels[category]}} - {{numVars[category]}}
+          <div *ngFor="let type of types(category)" class="nested">
+            <span class="caret one-indent" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
+              <div class="nested">
+                <div class="table-row header-row">
+                  <div class="data-cell">Name</div>
+                  <div *ngIf="category==='allVariables'"
+                       class="data-cell">Type</div>
+                  <div class="data-cell extra-wide">Definition</div>
+                  <div class="data-cell wide">Dimensions</div>
+                  <div class="data-cell numeric">Initial</div>
+                  <div class="data-cell numeric">Value</div>
+                </div>
+
+                <div *ngFor="let variable of this[category][type]"
+                     class="table-row">
+                  <div [title]="variable.name" class="data-cell"
+                       latex [equation]="variable.name"></div>
+                  <div *ngIf="category==='allVariables'"
+                       class="data-cell" >{{variable.type}}</div>
+                  <div [title]="variable.definition" class="data-cell extra-wide" latex
+                       [equation]="variable.definition"></div>
+                  <div [title]="variable.dimensions" class="data-cell wide">{{variable.dimensions.toString()}}</div>
+                  <div [title]="variable.init" class="data-cell numeric" latex equation="{{truncateValue(variable.init)}}{{variable.units}}"></div>
+                  <div *ngIf="!variable.dimensions.length"
+                       [title]="variable.value" class="data-cell numeric"
+                       latex
+                       equation="{{truncateValue(variable.value)}}{{variable.units}}"></div>
+                </div>
+              </div>
+            </span>
+          </div>
+        </span>
+      </div>
+     
+      <div *ngFor="let category of ['groups','godleys']">
+        <span class="caret" (click)="toggleCaret($event)">{{labels[category]}} - {{numVars[category]}}
+          <div *ngFor="let type of types(category)" class="nested">
+            <span class="caret one-indent" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
+              <div class="nested">
+                <div class="table-row header-row">
+                  <div class="data-cell">Name</div>
+                  <div class="data-cell">Type</div>
+                  <div class="data-cell extra-wide">Definition</div>
+                  <div class="data-cell wide">Dimensions</div>
+                  <div class="data-cell numeric">Initial</div>
+                  <div class="data-cell numeric">Value</div>
+                </div>
+
+                <div *ngFor="let variable of this[category][type]"
+                     class="table-row">
+                  <div [title]="variable.name" class="data-cell"
+                       latex [equation]="variable.name"></div>
+                  <div class="data-cell" >{{variable.type}}</div>
+                  <div [title]="variable.definition" class="data-cell
+                                                            extra-wide" latex
+                       [equation]="variable.definition"></div>
+                  <div [title]="variable.dimensions" class="data-cell wide">{{variable.dimensions?.toString()}}</div>
+                  <div [title]="variable.init" class="data-cell numeric" latex equation="{{truncateValue(variable.init)}}{{variable.units}}"></div>
+                  <div *ngIf="!variable.dimensions?.length"
+                       [title]="variable.value" class="data-cell numeric"
+                       latex
+                       equation="{{truncateValue(variable.value)}}{{variable.units}}"></div>
+                </div>
+              </div>
+            </span>
+          </div>
+        </span>
+      </div>
+
+    </div>
+
+    <!--div *ngIf="!variables" class="spinner">
+        <mat-spinner color="#ffa600" mode="indeterminate"></mat-spinner>
+      </div-->
+</div>

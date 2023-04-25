@@ -41,6 +41,7 @@
 #include "tensorVal.h"      // for operator<<
 #include "variable.h"       // for VariablePtr, VariableBase
 #include "variableType.h"   // for operator<<
+#include "variableSummary.h"
 #include "wire.h"           // for WirePtr, Wires, Wire, error
 namespace classdesc { class pack_t; }
 namespace classdesc_access { template <class T> struct access_pack; }
@@ -424,6 +425,9 @@ namespace minsky
     void autoLayout();
     /// randomly lay out items in this group
     void randomLayout();
+
+    /// produce a summary of godley table variables
+    std::vector<Summary> summariseGodleys() const;
     
   };
 
