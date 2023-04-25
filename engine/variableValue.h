@@ -81,7 +81,7 @@ namespace minsky
 
     /// dimension units of this value
     Units units;
-    bool unitsCached=false; // optimisation to prevent evaluating this units value more than oncestring
+    bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
     void setUnits(const std::string& x) {units=Units(x);}
 
     bool sliderVisible=false; // determined at reset time
