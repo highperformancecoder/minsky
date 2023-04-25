@@ -4,7 +4,7 @@
       <div *ngFor="let category of ['allVariables','globalVariables']">
         <span class="caret" (click)="toggleCaret($event)">{{labels[category]}} - {{numVars[category]}}
           <div *ngFor="let type of types(category)" class="nested">
-            <span class="caret" style="margin:10px" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
+            <span class="caret one-indent" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
               <div class="nested">
                 <div class="table-row header-row">
                   <div class="data-cell">Name</div>
@@ -40,7 +40,7 @@
       <div *ngFor="let category of ['groups','godleys']">
         <span class="caret" (click)="toggleCaret($event)">{{labels[category]}} - {{numVars[category]}}
           <div *ngFor="let type of types(category)" class="nested">
-            <span class="caret" style="margin:10px" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
+            <span class="caret one-indent" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
               <div class="nested">
                 <div class="table-row header-row">
                   <div class="data-cell">Name</div>
