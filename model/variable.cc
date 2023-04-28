@@ -78,7 +78,9 @@ void VariableBase::addPorts()
 
 bool VariableBase::inputWired() const
 {
-  return m_ports.size()>1 && !m_ports[1]->wires().empty();
+  if (auto p=ports(1).lock())
+    return !p->wires().empty();
+  return false;
 }
 
 std::vector<std::string> VariableBase::accessibleVars() const

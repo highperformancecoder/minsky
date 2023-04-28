@@ -232,6 +232,7 @@ namespace minsky
     Variable(const Variable& x): ItemT<Variable<T>, VariableBase>(x) {this->addPorts();}
     Variable& operator=(const Variable& x) {
       VariableBase::operator=(x);
+      this->controller=nullptr; // copy is not controlled by same object
       this->addPorts();
       return *this;
     }
