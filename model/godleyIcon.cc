@@ -124,6 +124,8 @@ namespace minsky
                 // add new variable
                 vars.push_back(newVar);
                 alreadyAdded.insert(newVar->valueId());
+                if (varType==VariableType::stock) // newly added variables should take the default dimension
+                  newVar->setUnits(currency);
               }
             else
               if (myGroup)

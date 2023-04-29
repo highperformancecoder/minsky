@@ -658,6 +658,7 @@ export class GodleyIcon extends Item {
   buttonDisplay(): boolean {return this.callMethod('buttonDisplay');}
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
   clone(): GodleyIcon {return this.callMethod('clone');}
+  currency(...args: string[]): string {return this.callMethod('currency',...args);}
   deleteRow(a1: number): void {return this.callMethod('deleteRow',a1);}
   destroyFrame(): void {return this.callMethod('destroyFrame');}
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
