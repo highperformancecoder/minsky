@@ -72,7 +72,7 @@ namespace minsky
     bool buttonDisplay() const;
     void toggleButtons(); 
 
-    bool variableDisplay=true;
+    bool variableDisplay=false;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay; update();}
 
     /// table data. Must be declared before editor
