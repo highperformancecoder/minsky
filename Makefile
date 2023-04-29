@@ -150,7 +150,7 @@ endif
 ifndef MXE
 EXES+=RESTService/typescriptAPI
 ifndef GUI_TK
-ifeq ($(OS), "Linux")
+ifeq ($(OS), Linux)
 EXES+=gui-tk/minsky$(EXE)
 endif
 endif
