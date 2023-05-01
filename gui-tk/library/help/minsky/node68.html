@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>User defined function</TITLE>
-<META NAME="description" CONTENT="User defined function">
+<TITLE>Factorial !</TITLE>
+<META NAME="description" CONTENT="Factorial !">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,51 +23,67 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1029"
+<A NAME="tex2html1041"
   HREF="node69.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1027"
+<A NAME="tex2html1039"
   HREF="node49.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1021"
+<A NAME="tex2html1033"
   HREF="node67.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1030"
-  HREF="node69.html">copy</A>
-<B> Up:</B> <A NAME="tex2html1028"
+<B> Next:</B> <A NAME="tex2html1042"
+  HREF="node69.html">Polygamma</A>
+<B> Up:</B> <A NAME="tex2html1040"
   HREF="node49.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1022"
-  HREF="node67.html">differentiate</A>
+<B> Previous:</B> <A NAME="tex2html1034"
+  HREF="node67.html">Gamma</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004119000000000000000"></A><A NAME="Operation:userFunction"></A><A NAME="UserFunction"></A>
+<H2><A NAME="SECTION004119000000000000000"></A><A NAME="Operation:fact"></A>
 <BR>
-User defined function
-</H2>
+Factorial !
+</H2> Returns the factorial
+of its argument:
+<P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{eqnarray*}
+0&!=&1\\
+  n! &=& \prod_{i=1}^n i\\
+\end{eqnarray*}
+ -->
+<IMG
+ WIDTH="95" HEIGHT="84" BORDER="0"
+ SRC="img182.png"
+ ALT="\begin{eqnarray*}
+0&amp;!=&amp;1\\
+n! &amp;=&amp; \prod_{i=1}^n i\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+<BR CLEAR="ALL"><P></P>
+Note:
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+n!=\Gamma(n+1)
+\end{displaymath}
+ -->
 
-<P>
-A user defined function is a functioned defined by an algebraic
-expression. Support for this feature is courtesy of the wonderful
-<A NAME="tex2html8"
-  HREF="http://www.partow.net/programming/exprtk/index.html">exprtk</A>
-library developed by Arash Partow.
-
-<P>
-A user defined function has a <EM>name</EM>, <EM>parameters</EM> and an <EM>  expression</EM>. Example expressions are things like <code>x+y</code> or
-<code>sin(x)</code>. More details of the sorts of expressions possible can be
-found in the <A HREF="node122.html#ExprTk">User Defined Functions</A> section of the
-manual.
-
-<P>
-The parameters are specified as part of the name, so a user defined
-function adding x and y would be called <code>useradd(a,y)</code> and the
-sin example might be called <code>mysin(x)</code>. Functions with up to two
-arguments can be wired on the canvas. User defined functions can call other
-user defined functions, so specifiying more than 2 parameters can be a
-useful thing to do. 
+<IMG
+ WIDTH="93" HEIGHT="29" BORDER="0"
+ SRC="img183.png"
+ ALT="\begin{displaymath}
+n!=\Gamma(n+1)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+which is how it is implemented in Minsky.
 
 <P>
 <BR><HR>

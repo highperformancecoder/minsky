@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>copy</TITLE>
-<META NAME="description" CONTENT="copy">
+<TITLE>Polygamma </TITLE>
+<META NAME="description" CONTENT="Polygamma ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,32 +23,61 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1039"
+<A NAME="tex2html1051"
   HREF="node70.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1037"
+<A NAME="tex2html1049"
   HREF="node49.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1031"
+<A NAME="tex2html1043"
   HREF="node68.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1040"
-  HREF="node70.html">integrate</A>
-<B> Up:</B> <A NAME="tex2html1038"
+<B> Next:</B> <A NAME="tex2html1052"
+  HREF="node70.html">time</A>
+<B> Up:</B> <A NAME="tex2html1050"
   HREF="node49.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1032"
-  HREF="node68.html">User defined function</A>
+<B> Previous:</B> <A NAME="tex2html1044"
+  HREF="node68.html">Factorial !</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004120000000000000000"></A><A NAME="Operation:copy"></A>
-<BR>
-copy
-</H2> This just copies its input to its output,
-which is redundant on wiring diagrams, but is needed for internal
-purposes.
+<H2><A NAME="SECTION004120000000000000000">
+Polygamma <SPAN CLASS="MATH"><IMG
+ WIDTH="55" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$\psi ^{(n)}(x)$"></SPAN></A>
+</H2> Returns the polygamma function
+of the first argument <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img57.png"
+ ALT="$x$"></SPAN>, with the order <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img184.png"
+ ALT="$n$"></SPAN> being goven by the floor
+of the second argument.
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\psi^{(n)}(x)=\frac{d^{n+1}}{dx^{n+1}}\ln\Gamma(x)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="167" HEIGHT="41" BORDER="0"
+ SRC="img185.png"
+ ALT="\begin{displaymath}
+\psi^{(n)}(x)=\frac{d^{n+1}}{dx^{n+1}}\ln\Gamma(x)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+It relationship to the derivative of the Gamma function (and
+factorials) is why Minsky provides this function.
 
 <P>
 <BR><HR>

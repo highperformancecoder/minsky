@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>outer product </TITLE>
-<META NAME="description" CONTENT="outer product ">
+<TITLE>difference </TITLE>
+<META NAME="description" CONTENT="difference ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,74 +14,45 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node102.html">
 <LINK REL="previous" HREF="node100.html">
-<LINK REL="up" HREF="node86.html">
+<LINK REL="up" HREF="node90.html">
 <LINK REL="next" HREF="node102.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1370"
+<A NAME="tex2html1384"
   HREF="node102.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1368"
-  HREF="node86.html">
+<A NAME="tex2html1382"
+  HREF="node90.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1364"
+<A NAME="tex2html1376"
   HREF="node100.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1371"
-  HREF="node102.html">Switch</A>
-<B> Up:</B> <A NAME="tex2html1369"
-  HREF="node86.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1365"
-  HREF="node100.html">inner product</A>
+<B> Next:</B> <A NAME="tex2html1385"
+  HREF="node102.html">index</A>
+<B> Up:</B> <A NAME="tex2html1383"
+  HREF="node90.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1377"
+  HREF="node100.html">running product</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004215000000000000000"></A><A NAME="Operation:outerProduct"></A>
+<H2><A NAME="SECTION004211000000000000000"></A><A NAME="Operation:difference"></A>
 <BR>
-outer product <SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+difference <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
  SRC="img23.png"
- ALT="$\otimes $"></SPAN>
+ ALT="$\Delta $"></SPAN>
 </H2>
-Computes 
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
-x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="280" HEIGHT="31" BORDER="0"
- SRC="img199.png"
- ALT="\begin{displaymath}
-z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
-x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-where <SPAN CLASS="MATH"><IMG
- WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img197.png"
- ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img198.png"
- ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img55.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img56.png"
- ALT="$y$"></SPAN> respectively.
+Computes the nearest neighbour difference along a given direction. The
+optional argument can be used to specify the number of neighbours to
+skip in computing the differences.
 
 <P>
 <BR><HR>
