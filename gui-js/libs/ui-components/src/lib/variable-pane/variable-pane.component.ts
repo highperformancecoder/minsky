@@ -103,23 +103,25 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       'mousemove'
     ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
+    // vertical offset to allow room for the filter buttons
+    const offset=this.electronService.isMacOS()? 20: -15; // why, o why, Mac?
     this.mouseMove$.subscribe((event: MouseEvent) => {
       const { clientX, clientY } = event;
       this.mouseX = clientX;
       this.mouseY = clientY;
-      this.variablePane.mouseMove(clientX,clientY);
+      this.variablePane.mouseMove(clientX,clientY+offset);
       this.variablePane.requestRedraw();
     });
 
     this.variablePaneContainer.addEventListener('mousedown', (event) => {
       const { clientX, clientY } = event;
-      this.variablePane.mouseDown(clientX,clientY);
+      this.variablePane.mouseDown(clientX,clientY+offset);
       this.variablePane.requestRedraw();
     });
 
     this.variablePaneContainer.addEventListener('mouseup', (event) => {
       const { clientX, clientY } = event;
-      this.variablePane.mouseUp(clientX,clientY);
+      this.variablePane.mouseUp(clientX,clientY+offset);
       this.variablePane.requestRedraw();
     });
 
