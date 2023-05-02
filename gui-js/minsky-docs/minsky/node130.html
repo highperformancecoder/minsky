@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Boolean Operations</TITLE>
-<META NAME="description" CONTENT="Boolean Operations">
+<TITLE>Copyright notice</TITLE>
+<META NAME="description" CONTENT="Copyright notice">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,108 +16,42 @@
 
 <LINK REL="next" HREF="node131.html">
 <LINK REL="previous" HREF="node129.html">
-<LINK REL="up" HREF="node127.html">
+<LINK REL="up" HREF="node126.html">
 <LINK REL="next" HREF="node131.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1680"
+<A NAME="tex2html1685"
   HREF="node131.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1678"
-  HREF="node127.html">
+<A NAME="tex2html1683"
+  HREF="node126.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1672"
+<A NAME="tex2html1677"
   HREF="node129.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1681"
-  HREF="node131.html">General Purpose Functions</A>
-<B> Up:</B> <A NAME="tex2html1679"
-  HREF="node127.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1673"
-  HREF="node129.html">Equalities &amp; Inequalities</A>
+<B> Next:</B> <A NAME="tex2html1686"
+  HREF="node131.html">Built-in operations &amp; functions</A>
+<B> Up:</B> <A NAME="tex2html1684"
+  HREF="node126.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1678"
+  HREF="node129.html">Example expressions</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00553000000000000000">
-Boolean Operations</A>
-</H2>
-
+<H1><A NAME="SECTION00540000000000000000">
+Copyright notice</A>
+</H1>
+Free  use  of  the  C++  Mathematical  Expression  Toolkit  Library is
+permitted under the guidelines and in accordance with the most current
+version of the <A NAME="tex2html27"
+  HREF="http://www.opensource.org/licenses/MIT">MIT License</A>
 <P>
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">OPERATOR</TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>DEFINITION</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>true</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True state or any value other than zero (typically 1).</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>false</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>False state, value of exactly zero.</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>and</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical AND, True only if x and y are both true. (eg: <code>x and y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>mand</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Multi-input logical AND, True only if all inputs are true. Left to right short-circuiting of expressions. (eg: <code>mand(x &gt; y, z &lt; w, u or v, w and x)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>mor</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Multi-input logical OR, True if at least one of the inputs
-are true. Left to right short-circuiting of expressions.  (eg:
-<code>mor(x &gt; y, z &lt; w, u or v, w and x)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>nand</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical NAND, True only if either x or y is false. (eg: <code>x nand y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>nor</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical NOR, True only if the result of x or y is false (eg: <code>x nor y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>not</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical NOT, Negate the logical sense of the input. (eg: <code>not(x and y) == x nand y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>or</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical OR, True if either x or y is true. (eg: <code>x or y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>xor</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical XOR, True only if the logical states of x and y differ.  (eg: <code>x xor y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>xnor</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical XNOR, True iff the biconditional of x and y is
-satisfied.  (eg: <code>x xnor y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>&amp;</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Similar to AND but with left to right expression short circuiting optimisation.  (eg: <code>(x &amp; y) == (y and x)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>|</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Similar to OR but with left to right expression short
-circuiting optimisation.  (eg: <code>(x | y) == (y or x)</code>)</TD>
-</TR>
-</TABLE>
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1680"
-  HREF="node131.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1678"
-  HREF="node127.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1672"
-  HREF="node129.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1681"
-  HREF="node131.html">General Purpose Functions</A>
-<B> Up:</B> <A NAME="tex2html1679"
-  HREF="node127.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1673"
-  HREF="node129.html">Equalities &amp; Inequalities</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

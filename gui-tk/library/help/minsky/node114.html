@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Sheet Widget</TITLE>
-<META NAME="description" CONTENT="Sheet Widget">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,7 +15,7 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node115.html">
-<LINK REL="previous" HREF="node113.html">
+<LINK REL="previous" HREF="node107.html">
 <LINK REL="up" HREF="node48.html">
 <LINK REL="next" HREF="node115.html">
 </HEAD>
@@ -23,43 +23,52 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1504"
+<A NAME="tex2html1516"
   HREF="node115.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1502"
+<A NAME="tex2html1514"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1496"
+<A NAME="tex2html1508"
   HREF="node113.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1505"
-  HREF="node115.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html1503"
+<B> Next:</B> <A NAME="tex2html1517"
+  HREF="node115.html">Tensor values</A>
+<B> Up:</B> <A NAME="tex2html1515"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1497"
-  HREF="node113.html">Plot widget</A>
+<B> Previous:</B> <A NAME="tex2html1509"
+  HREF="node113.html">Duplicate keys</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00490000000000000000"></A>
- <A NAME="Sheet"></A>
-<BR>
-Sheet Widget
-</H1> The Sheet widget displays input data as a
- number, rather than as a 2D graph, as in the case of the plot widget.
- To use the Sheet widget, simply wire a variable or other item on your
- canvas to the left-hand side of the sheet widget box. This will diplay
- the input data as a number. Note that only one wire can be connected to
- a sheet, as the sheet can only display a single input value.
+<H1><A NAME="SECTION00450000000000000000">
+Wires</A>
+</H1>
 
 <P>
-The sheet widget can also display rank 0, 1 and rank 2 tensors. These ranks are
- single values, a string of values, or a 2D matrix of values, respectively.
- For example, if you create a parameter, and set the initial condition to rand(3,5)
- (for reference, see section (&#167;<A HREF="node106.html#tensor-init">4.4.3</A>) ), you can wire that into a sheet.
- The sheet will then diplay the data in a grid display within the widget box.
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire
+attached, with the exception of <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img44.png"
+ ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img221.png"
+ ALT="$\times/\div$"></SPAN>, where the
+multiple wires are summed or multiplied, respectively, and similarly max/min.
+
+<P>
+Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
 <BR><HR>

@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Context Menu</TITLE>
-<META NAME="description" CONTENT="Context Menu">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,189 +23,106 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1534"
+<A NAME="tex2html1546"
   HREF="node118.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1532"
+<A NAME="tex2html1544"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1526"
+<A NAME="tex2html1538"
   HREF="node116.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1535"
-  HREF="node118.html">Canvas background</A>
-<B> Up:</B> <A NAME="tex2html1533"
+<B> Next:</B> <A NAME="tex2html1547"
+  HREF="node118.html">Sheet Widget</A>
+<B> Up:</B> <A NAME="tex2html1545"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1527"
-  HREF="node116.html">Godley Tables</A>
+<B> Previous:</B> <A NAME="tex2html1539"
+  HREF="node116.html">Groups</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004120000000000000000">
-Context Menu</A>
+<H1><A NAME="SECTION00480000000000000000"></A>
+<A NAME="PlotWidget"></A>
+<BR>
+Plot widget
 </H1>
 
 <P>
-All canvas items have a context menu, which allow a variety of
-operations to be applied to the canvas item. Common context menu items
-are explained here:
-<DL>
-<DT><STRONG>Help</STRONG></DT>
-<DD>bring up context specific help for the item
-</DD>
-<DT><STRONG>Description</STRONG></DT>
-<DD>Attach an annotation to the item. This is only
-visible by selecting the description item from the context menu,
-although whatever is set as the &ldquo;Short Description&rdquo; will also appear
-as a tooltip whenever the mouse hovers over the item.
-</DD>
-<DT><STRONG>Port values</STRONG></DT>
-<DD>When running a simulation, you can drill down into
-the actual values at the input and output ports of the variable or
-operation, which is a useful aid for debugging models.
-</DD>
-<DT><STRONG>Edit</STRONG></DT>
-<DD>set or query various attributes of an item. This function
-can also be accessed by double clicking on the item. (Plot widgets
-behave slightly differently).
-</DD>
-<DT><STRONG>Copy</STRONG></DT>
-<DD>Creates a copy of an item, retaining the same attributes
-of the original. This is very useful for creating copies of the same
-variable to reduce the amount of overlapping wiring (aka &ldquo;rats nest")
-in a model.
-</DD>
-<DT><STRONG>Flip</STRONG></DT>
-<DD>actually rotates an object through <SPAN CLASS="MATH"><IMG
- WIDTH="35" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
- SRC="img229.png"
- ALT="$180^\circ$"></SPAN>. You can
-specify aribtrary rotations of objects through the edit menu.
-</DD>
-<DT><STRONG>Raise/Lower</STRONG></DT>
-<DD>Raise and lower the canvas items relative to each
-other. You may need to do this if a large item such as a Godley table
-or plot is obscuring a wire, making it hard to access the wire's
-context menu or handles,
-</DD>
-<DT><STRONG>Browse object</STRONG></DT>
-<DD>gives a low level drilldown of the internal C++
-object this canvas item represents. It is perhaps more of interest to
-developers. 
-</DD>
-<DT><STRONG>Delete</STRONG></DT>
-<DD>delete the object.
-</DD>
-</DL>
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
 
 <P>
-Item specific context menu items:
-<DL>
-<DT><STRONG>variables, parameters and constants</STRONG></DT>
-<DD>
-<DL>
-<DT><STRONG>Slider</STRONG></DT>
-<DD>add a slider control to a variable. This is most
-effective for controlling parameters and constants, but can also be
-used to control inputless variables.
-</DD>
-<DT><STRONG>Add integral</STRONG></DT>
-<DD>attach an integration operation, and convert the
-variable into an integral type
-</DD>
-</DL>
-</DD>
-<DT><STRONG>integrals</STRONG></DT>
-<DD>
-<DL>
-<DT><STRONG>Copy Var</STRONG></DT>
-<DD>copy just the integration variable, not the
-integration operation
-</DD>
-<DT><STRONG>Toggle Var Binding</STRONG></DT>
-<DD>Normally, integrals are tightly bound to their
-variables. By toggling the binding, the integral icon can then be
-moved independently of the variable it is bound to. 
-</DD>
-</DL>
-</DD>
-<DT><STRONG>Godley tables</STRONG></DT>
-<DD>
-<DL>
-<DT><STRONG>Open Godley Table</STRONG></DT>
-<DD>opens a spreadsheet to allow financial flows
-defining the Godley table to be entered or modified.
-</DD>
-<DT><STRONG>Resize Godley Table</STRONG></DT>
-<DD>allows the icon to be resized.
-</DD>
-<DT><STRONG>Edit/Copy var</STRONG></DT>
-<DD>allows individual stock and flow variables to be
-copied or edited.
-</DD>
-<DT><STRONG>Export to file</STRONG></DT>
-<DD>export table contents as either CSV data, or as a LaTeX
-table, for import into other software.
-</DD>
-</DL>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="241" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
+ SRC="img233.png"
+ ALT="\includegraphics{images/plotWidget.eps}">
+
+</DIV>
 
 <P>
-</DD>
-<DT><STRONG>Groups</STRONG></DT>
-<DD>
 <DL>
-<DT><STRONG>Zoom to Display</STRONG></DT>
-<DD>Zoom the canvas sufficiently to see the
-contents of the group.
+<DT><STRONG>left hand edge</STRONG></DT>
+<DD>Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
 </DD>
-<DT><STRONG>Resize</STRONG></DT>
-<DD>Resize the group icon on the canvas.
+<DT><STRONG>right hand edge</STRONG></DT>
+<DD>Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
 </DD>
-<DT><STRONG>Save group as</STRONG></DT>
-<DD>Save the group in it's own Minsky file.
-</DD>
-<DT><STRONG>Flip contents</STRONG></DT>
-<DD>Rotate each item within the group by 180<SPAN CLASS="MATH"><IMG
- WIDTH="11" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
- SRC="img230.png"
- ALT="$^\circ$"></SPAN>
-</DD>
-<DT><STRONG>Ungroup</STRONG></DT>
-<DD>Ungroup the group, leaving it's contents as icons on
-the canvas.
-</DD>
-<DT><STRONG>contentBounds</STRONG></DT>
-<DD>Draws a box on the canvas indicating the smallest
-bounding box containing the group items.
-</DD>
-</DL>
+<DT><STRONG>bottom edge</STRONG></DT>
+<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img57.png"
+ ALT="$x$"></SPAN>-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
 
 <P>
-</DD>
-<DT><STRONG>Plot Widgets</STRONG></DT>
-<DD>
-<DL>
-<DT><STRONG>Expand</STRONG></DT>
-<DD>By double-clicking, or selecting &ldquo;Expand&rdquo; from the context menu, a
-popup window is created of the plot, which can be used examine the
-plotting in more detail.
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="529" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
+ SRC="img234.png"
+ ALT="\includegraphics{images/plotLissajous.eps}">
+
+</DIV>
 
 <P>
+If only one bottom port is connected, then that controls all pens
+  simultaneously, and if no ports are connected, then the simulation
+  time is used to provide the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img57.png"
+ ALT="$x$"></SPAN> coordinates
 </DD>
-<DT><STRONG>Resize</STRONG></DT>
-<DD>Allows you to resize the plot icon on the canvas
-</DD>
-<DT><STRONG>Options</STRONG></DT>
-<DD>Customize the plot by adding a title, axes labels and
-  control the number of axis ticks and grid lines on the detailed
-  plot. You can also add a legend, which is populated from the names
-  of variables attached to the plot.
-</DD>
-</DL>
+<DT><STRONG>corners</STRONG></DT>
+<DD>Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img57.png"
+ ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img58.png"
+ ALT="$y$"></SPAN> and right hand
+  <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img58.png"
+ ALT="$y$"></SPAN> axes. If left unwired, the scales are determined automatically
+  from the data. This can be used, for example, to implement a sliding
+  window graph
 
 <P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="480" HEIGHT="424" ALIGN="BOTTOM" BORDER="0"
+ SRC="img235.png"
+ ALT="\includegraphics{images/plotSlidingWindow.eps}">
+
+</DIV>
 </DD>
 </DL>
 
@@ -213,22 +130,22 @@ plotting in more detail.
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html1534"
+<A NAME="tex2html1546"
   HREF="node118.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1532"
+<A NAME="tex2html1544"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1526"
+<A NAME="tex2html1538"
   HREF="node116.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1535"
-  HREF="node118.html">Canvas background</A>
-<B> Up:</B> <A NAME="tex2html1533"
+<B> Next:</B> <A NAME="tex2html1547"
+  HREF="node118.html">Sheet Widget</A>
+<B> Up:</B> <A NAME="tex2html1545"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1527"
-  HREF="node116.html">Godley Tables</A></DIV>
+<B> Previous:</B> <A NAME="tex2html1539"
+  HREF="node116.html">Groups</A></DIV>
 <!--End of Navigation Panel-->
 
 </BODY>

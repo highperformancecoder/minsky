@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>index</TITLE>
-<META NAME="description" CONTENT="index">
+<TITLE>supindex</TITLE>
+<META NAME="description" CONTENT="supindex">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,81 +16,38 @@
 
 <LINK REL="next" HREF="node99.html">
 <LINK REL="previous" HREF="node97.html">
-<LINK REL="up" HREF="node86.html">
+<LINK REL="up" HREF="node90.html">
 <LINK REL="next" HREF="node99.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1342"
+<A NAME="tex2html1354"
   HREF="node99.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1340"
-  HREF="node86.html">
+<A NAME="tex2html1352"
+  HREF="node90.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1334"
+<A NAME="tex2html1346"
   HREF="node97.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1343"
-  HREF="node99.html">gather</A>
-<B> Up:</B> <A NAME="tex2html1341"
-  HREF="node86.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1335"
-  HREF="node97.html">difference</A>
+<B> Next:</B> <A NAME="tex2html1355"
+  HREF="node99.html">running sum</A>
+<B> Up:</B> <A NAME="tex2html1353"
+  HREF="node90.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1347"
+  HREF="node97.html">infindex</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004212000000000000000"></A><A NAME="Operation:index"></A>
+<H2><A NAME="SECTION00428000000000000000"></A><A NAME="Operation:supIndex"></A>
 <BR>
-index
-</H2>
-
-<P>
-Returns the index within the hypecube where the input is true (ie
-<SPAN CLASS="MATH"><IMG
- WIDTH="41" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img189.png"
- ALT="$&gt;0.5$"></SPAN>). For example, where
-<P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{eqnarray*}
-\iota(3,3) &=& \left(\begin{array}{ccc}
-  0 & 3 & 6 \\
-  1 & 4 & 7 \\
-  2 & 5 & 8 \\
-  \end{array}\right),\\
-  \mathrm{idx}(\iota(3,3)<5) &=&
-  \left(\begin{array}{ccc}
-    0 & 3 &\\
-    1 & 4 &\\
-    2 & &
-  \end{array}\right),\\
-\end{eqnarray*}
- -->
-<IMG
- WIDTH="255" HEIGHT="134" BORDER="0"
- SRC="img190.png"
- ALT="\begin{eqnarray*}
-\iota(3,3) &amp;=&amp; \left(\begin{array}{ccc}
-0 &amp; 3 &amp; 6 \\
-1 &amp; 4...
-...ray}{ccc}
-0 &amp; 3 &amp;\\
-1 &amp; 4 &amp;\\
-2 &amp; &amp;
-\end{array}\right),\\
-\end{eqnarray*}"></DIV>
-<BR CLEAR="ALL"><P></P>
-<BR CLEAR="ALL"><P></P>
-Note that the output array has the same shape as the input, with
-unused values padded with NANs (missing value).
-
-<P>
-Dimension and argument parameters are unused.
+supindex
+</H2> Return the index of
+the greatest value along a given axis.
 
 <P>
 <BR><HR>

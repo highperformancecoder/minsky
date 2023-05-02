@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Variables</TITLE>
-<META NAME="description" CONTENT="Variables">
+<TITLE>gather</TITLE>
+<META NAME="description" CONTENT="gather">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,124 +14,86 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node110.html">
+<LINK REL="next" HREF="node104.html">
 <LINK REL="previous" HREF="node102.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="up" HREF="node90.html">
 <LINK REL="next" HREF="node104.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1390"
+<A NAME="tex2html1404"
   HREF="node104.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1388"
-  HREF="node48.html">
+<A NAME="tex2html1402"
+  HREF="node90.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1382"
+<A NAME="tex2html1396"
   HREF="node102.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1391"
-  HREF="node104.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1389"
-  HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1383"
-  HREF="node102.html">Switch</A>
+<B> Next:</B> <A NAME="tex2html1405"
+  HREF="node104.html">inner product</A>
+<B> Up:</B> <A NAME="tex2html1403"
+  HREF="node90.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1397"
+  HREF="node102.html">index</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00440000000000000000"></A><A NAME="Variable:constant"></A><A NAME="VarConstant"></A><A NAME="Variable:parameter"></A><A NAME="Variable:flow"></A><A NAME="Variable:integral"></A><A NAME="Variable:stock"></A>
+<H2><A NAME="SECTION004213000000000000000"></A><A NAME="Operation:gather"></A>
 <BR>
-Variables
-</H1>
+gather
+</H2>
 
 <P>
-Variables represent values in a calculation, and come in a number of
-varieties:
-<DL>
-<DT><STRONG>Constants</STRONG></DT>
-<DD>represent an explicit numerical value, and do not
-have a name. Their graphical representation shows the actual value of
-the constant.
-</DD>
-<DT><STRONG>Parameters</STRONG></DT>
-<DD>are named constants. All instances of a given name
-  represent the same value, as with all other named variables, so
-  changing the value of one parameter, either through its edit menu,
-  or through a slider, will affect all the others of that
-  name. Parameters may be <A HREF="#CSV_____import">imported from a CSV file</A>, which is one way of inserting a tensor into the
-  simulation.
-</DD>
-<DT><STRONG>Flow variables</STRONG></DT>
-<DD>have an input port that defines how the value is
-to be calculated. Only one flow variable of a given name can have its
-input port connected, as they all refer to the same quantity. If no
-input ports are connected, then flow variables act just like
-parameters.
-</DD>
-<DT><STRONG>Integral variables</STRONG></DT>
-<DD>represent the result of integrating its
-input over time  by means of the differential
-equation solver. The integrand is represented by the input to an
-integral operator that is attached to the integral variable.
-</DD>
-<DT><STRONG>Stock variables</STRONG></DT>
-<DD>are the columns of Godley tables, and represent
-the integral over time of the sum of the flow variables making up the
-column.
-</DD>
-</DL>
+Gather collects the values at index locations indexed by the second
+argument. The output tensor has shape <!-- MATH
+ $[i_0, \ldots i_{ir}, a_0,\ldots
+a_{j-1},a_{j+1},\ldots a_{ar}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="242" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img198.png"
+ ALT="$[i_0, \ldots i_{ir}, a_0,\ldots
+a_{j-1},a_{j+1},\ldots a_{ar}]$"></SPAN> where <!-- MATH
+ $[a_0,\ldots,a_{ar}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="86" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img199.png"
+ ALT="$[a_0,\ldots,a_{ar}]$"></SPAN> is the
+shape of the first argument, and <!-- MATH
+ $[i_0,\ldots,i_{ir}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="78" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img200.png"
+ ALT="$[i_0,\ldots,i_{ir}]$"></SPAN> is the shape of
+the second second (index) argument, and <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img201.png"
+ ALT="$j$"></SPAN> is the axis along which
+the gather is performed.
 
 <P>
-Variables may be converted between types in the variable edit menu,
-available from the context menu, subject to certain rules. For example,
-a variable whose input is wired anywhere on the canvas cannot be
-changed from &ldquo;flow&rdquo;. Stock variables need to be defined in a Godley
-table, and so on.
+If the index is not an integer, the gather will linearly interpolate between
+the values on either side. So, for example, <!-- MATH
+ $x[2.5] = 0.5 (x[2]+x[3])$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="167" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img202.png"
+ ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>.
+
+<P>
+If the index value is outside the range of the x-vector (&#167;<A HREF="node115.html#x-vector">4.6</A>) along the axis
+being gathered, then NAN is assigned to that tensor element.
 
 <P>
 <BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html1392"
-  HREF="node104.html">Variable names</A>
-<LI><A NAME="tex2html1393"
-  HREF="node105.html">Initial conditions</A>
-<LI><A NAME="tex2html1394"
-  HREF="node106.html">Tensor valued initial conditions</A>
-<LI><A NAME="tex2html1395"
-  HREF="node107.html">Sliders</A>
-<LI><A NAME="tex2html1396"
-  HREF="node108.html">Importing a parameter from a CSV file</A>
-<LI><A NAME="tex2html1397"
-  HREF="node109.html">Duplicate keys</A>
-</UL>
-<!--End of Table of Child-Links-->
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1390"
-  HREF="node104.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1388"
-  HREF="node48.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1382"
-  HREF="node102.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1391"
-  HREF="node104.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1389"
-  HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1383"
-  HREF="node102.html">Switch</A></DIV>
-<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

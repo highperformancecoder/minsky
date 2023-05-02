@@ -66,6 +66,37 @@ ports are labelled $x$ and $y$, referring the the formula $x^y$.
 \subsection{not $\neg$}\label{Operation:not_} The output is 1 or 0, depending
   on whether $x\le0.5$ is true (1) or false (0) respectively.
 
+\subsection{time $t$}\label{Operation:time}  Returns the current value
+of system time.
+
+\subsection{Gamma $\Gamma$}\label{Operation:Gamma} Returns the Gamma
+function of its argument:
+\begin{displaymath}
+  \Gamma(x)=\int_0^\infty t^{x-1}e^{-t}dt
+\end{displaymath}
+
+\subsection{Factorial !}\label{Operation:fact} Returns the factorial
+of its argument:
+\begin{eqnarray*}
+    0!&=&1\\
+  n! &=& \prod_{i=1}^n i\\
+\end{eqnarray*}
+Note:
+\begin{displaymath}
+  n!=\Gamma(n+1)
+\end{displaymath}
+which is how it is implemented in Minsky.
+
+\subsection{Polygamma $\psi^{(n)}(x)$}\label{Operation:polygamma} Returns the polygamma function
+of the first argument $x$, with the order $n$ being given by the floor
+of the second argument.
+\begin{displaymath}
+  \psi^{(n)}(x)=\frac{d^{n+1}}{dx^{n+1}}\ln\Gamma(x)
+\end{displaymath}
+
+It relationship to the derivative of the Gamma function (and
+factorials) is why Minsky provides this function.
+
 \subsection{time $t$}\label{Operation:time}  Returns the current value of system time.
 
 \subsection{differentiate $d/dt$}\label{Operation:differentiate}

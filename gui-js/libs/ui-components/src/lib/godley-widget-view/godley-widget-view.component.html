@@ -25,7 +25,7 @@
 
     <div class="table-row actions-row">
       <div class="data-cell narrow"></div>
-      <div class="data-cell wide">{{multiEquityAllowed}}</div>
+      <div class="data-cell wide"></div>
       <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell buttons-cell" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass">
         <ng-container *ngIf="!((columnVariable.assetClass === 'equity') && !multiEquityAllowed)">
           <div class="small-button add-button" (click)="onColumnAdd(j)"><span class="material-icons">add</span></div>

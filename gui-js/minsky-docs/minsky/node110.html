@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Wires</TITLE>
-<META NAME="description" CONTENT="Wires">
+<TITLE>Tensor valued initial conditions</TITLE>
+<META NAME="description" CONTENT="Tensor valued initial conditions">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,60 +15,99 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node111.html">
-<LINK REL="previous" HREF="node103.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="previous" HREF="node109.html">
+<LINK REL="up" HREF="node107.html">
 <LINK REL="next" HREF="node111.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1464"
+<A NAME="tex2html1478"
   HREF="node111.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1462"
-  HREF="node48.html">
+<A NAME="tex2html1476"
+  HREF="node107.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1456"
+<A NAME="tex2html1470"
   HREF="node109.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1465"
-  HREF="node111.html">Tensor values</A>
-<B> Up:</B> <A NAME="tex2html1463"
-  HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1457"
-  HREF="node109.html">Duplicate keys</A>
+<B> Next:</B> <A NAME="tex2html1479"
+  HREF="node111.html">Sliders</A>
+<B> Up:</B> <A NAME="tex2html1477"
+  HREF="node107.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html1471"
+  HREF="node109.html">Initial conditions</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00450000000000000000">
-Wires</A>
-</H1>
+<H2><A NAME="SECTION00443000000000000000"></A><A NAME="tensor-init"></A><A NAME="2517"></A>
+<BR>
+Tensor valued initial conditions
+</H2>
 
 <P>
-Wire represent the flow of values from one operation to the next. To
-add a wire to the canvas, click on the output port of an operation or
-variable (right hand side of the icon in its initial unrotated
-orientation), and then drag it towards an input port (on the left hand
-side of an unrotated icon). You can't connect an operator to itself
-(that would be a loop, which is not allowed, unless passing through an
-integral), nor can an input port have more than one wire
-attached, with the exception of <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img42.png"
- ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img214.png"
- ALT="$\times/\div$"></SPAN>, where the
-multiple wires are summed or multiplied, respectively, and similarly max/min.
+There is also a simple functional language, which allows for the
+generation of tensor-valued operations. These functions take the form
+<EM>func</EM><!-- MATH
+ $(n_1,n_2,\ldots,n_r)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="109" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img209.png"
+ ALT="$(n_1,n_2,\ldots,n_r)$"></SPAN> where <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img210.png"
+ ALT="$r$"></SPAN> is the desired rank, and
+<SPAN CLASS="MATH"><IMG
+ WIDTH="49" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img211.png"
+ ALT="$n_1,n_2,$"></SPAN> etc are the dimensions of the tensor. Available
+functions include:
 
 <P>
-Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
-a handle is dragged out of a straight line with its neighbours, new
-handles appear on either side. Handles can be removed by
-double-clicking on them.
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="RIGHT">name</TD>
+<TD ALIGN="LEFT">description</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>one</code></TD>
+<TD ALIGN="LEFT">the tensor is filled with `1'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>zero</code></TD>
+<TD ALIGN="LEFT">the tensor is filled with `0'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>iota</code></TD>
+<TD ALIGN="LEFT">the arithmetic sequence <!-- MATH
+ $(0,1,...\prod_in_i)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="100" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img212.png"
+ ALT="$(0,1,...\prod_in_i)$"></SPAN></TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>eye</code></TD>
+<TD ALIGN="LEFT">diagonal elements filled with `1', offdiagonal `0'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>rand</code></TD>
+<TD ALIGN="LEFT">tensor filled with random numbers in the range <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img213.png"
+ ALT="$[0,1)$"></SPAN></TD>
+</TR>
+</TABLE>
+<A NAME="2522"></A><A NAME="2523"></A><A NAME="2524"></A><A NAME="2525"></A><A NAME="2526"></A>
+
+<P>
+
+<UL>
+<LI><code>eye</code> is equivalent to <code>one</code> for vectors.
+</LI>
+<LI><code>rand</code> generates different random numbers each time the simulation
+  is reset, and uses the clib <code>rand()</code> function.
+</LI>
+</UL>
 
 <P>
 <BR><HR>

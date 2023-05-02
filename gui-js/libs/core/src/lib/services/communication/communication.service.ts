@@ -598,7 +598,7 @@ export class CommunicationService {
         return;
       }
 
-      if (multipleKeyString.charAt(0) === '-') {
+      if (!isNaN(Number(multipleKeyString))) {
         this.showCreateVariablePopup('Create Constant', {
           type: 'constant',
           value: multipleKeyString,
@@ -606,26 +606,19 @@ export class CommunicationService {
         return;
       }
 
-      const operationsMap = await this.electronService.minsky.availableOperations();
-      const operation = operationsMap[multipleKeyString.toLowerCase()];
+      const operations = await this.electronService.minsky.availableOperations();
+      const operation = multipleKeyString.toLowerCase();
 
-      if (operation) {
+      if (operations.includes(operation)) {
         this.addOperation(operation);
         return;
       }
 
-      const value = parseFloat(multipleKeyString);
-      const isConstant = !isNaN(value);
-      const popupTitle = isConstant
-        ? 'Create Constant'
-        : 'Specify Variable Name';
+      const popupTitle = 'Specify Variable Name';
       const params: TypeValueName = {
-        type: isConstant ? 'constant' : 'flow',
+        type: 'flow',
         name: multipleKeyString,
       };
-      if (isConstant) {
-        params.value = value;
-      }
 
       this.showCreateVariablePopup(popupTitle, params);
       return;
