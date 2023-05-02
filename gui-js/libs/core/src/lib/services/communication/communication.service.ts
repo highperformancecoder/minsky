@@ -305,14 +305,14 @@ export class CommunicationService {
 
   private async resetZoom(centerX: number, centerY: number) {
     let minsky=this.electronService.minsky;
-    const zoomFactor = await minsky.model.zoomFactor();
+    const zoomFactor = await minsky.canvas.model.zoomFactor();
     if (zoomFactor > 0) {
-      const relZoom = await minsky.model.relZoom();
+      const relZoom = await minsky.canvas.model.relZoom();
 
       //if relZoom = 0 ;use relZoom as 1 to avoid returning infinity
       minsky.canvas.zoom(centerX,centerY,1 / (relZoom || 1));
     } else {
-      minsky.model.setZoom(1);
+      minsky.canvas.model.setZoom(1);
     }
 
     minsky.canvas.recentre();
@@ -321,7 +321,7 @@ export class CommunicationService {
 
   private async zoomToFit(canvasWidth: number, canvasHeight: number) {
      let minsky=this.electronService.minsky;
-    const cBounds = await minsky.model.cBounds();
+    const cBounds = await minsky.canvas.model.cBounds();
 
     const zoomFactorX = canvasWidth / (cBounds[2] - cBounds[0]);
     const zoomFactorY = canvasHeight / (cBounds[3] - cBounds[1]);
