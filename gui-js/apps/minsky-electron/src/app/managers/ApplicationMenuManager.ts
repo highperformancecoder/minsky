@@ -87,7 +87,7 @@ export class ApplicationMenuManager {
               }
               const filePath = _dialog.filePaths[0].toString();
 
-              CommandsManager.openNamedFile(filePath);
+              await CommandsManager.openNamedFile(filePath);
             } catch (error) {
               console.error(error);
             }
