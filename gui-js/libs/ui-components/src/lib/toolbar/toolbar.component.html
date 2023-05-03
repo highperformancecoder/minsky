@@ -1,6 +1,6 @@
 <div class="toolbar-section">
   <div class="play-controls m-a-0">
-    <button class="btn play-btn" title="Play/Stop" (click)="playButton()">
+    <button class="btn play-btn toolButton" classType="RunButtons" title="Play/Stop" (click)="playButton()">
       <img
         src="{{
           this.showPlayButton
@@ -11,15 +11,15 @@
         class="btn-icon"
       />
     </button>
-    <button class="btn reset-btn" title="Reset" (click)="resetButton()">
+    <button class="btn reset-btn toolButton" classType="RunButtons" title="Reset" (click)="resetButton()">
       <img src="assets/images/icons/stop.svg" alt="" class="btn-icon" />
     </button>
-    <button class="btn step-btn" title="Step" (click)="stepButton()">
+    <button class="btn step-btn toolButton" classType="RunButtons" title="Step" (click)="stepButton()">
       <img src="assets/images/icons/step-forward.svg" alt="" class="btn-icon" />
     </button>
   </div>
 
-  <div class="range-input-control m-a-0">
+  <div class="range-input-control m-a-0 toolButton" classType="Speedslider" >
     <div class="range-input-label">Simulation Speed</div>
     <div class="range-input-wrapper">
       <span class="slow-label">Slow</span>
@@ -37,7 +37,7 @@
   </div>
 
   <div class="play-controls zoom-controls-container m-a-0">
-    <button class="btn zoom-btn" title="Zoom Out">
+    <button class="btn zoom-btn toolButton" classType="ZoomButtons" title="Zoom Out">
       <img
         src="assets/images/icons/zoom-out.svg"
         alt=""
@@ -45,7 +45,7 @@
         (click)="zoomOutButton()"
       />
     </button>
-    <button class="btn zoom-btn" title="Zoom In">
+    <button class="btn zoom-btn toolButton" classType="ZoomButtons" title="Zoom In">
       <img
         src="assets/images/icons/zoom-in.svg"
         alt=""
@@ -53,7 +53,7 @@
         (click)="zoomInButton()"
       />
     </button>
-    <button class="btn zoom-btn" title="Reset Zoom/Origin">
+    <button class="btn zoom-btn toolButton" classType="ZoomButtons" title="Reset Zoom/Origin">
       <img
         src="assets/images/icons/reset-zoom.svg"
         alt=""
@@ -61,7 +61,7 @@
         (click)="resetZoomButton()"
       />
     </button>
-    <button class="btn zoom-btn" title="Zoom to fit">
+    <button class="btn zoom-btn toolButton" classType="ZoomButtons" title="Zoom to fit">
       <img
         src="assets/images/icons/zoom-to-fit.svg"
         alt=""
