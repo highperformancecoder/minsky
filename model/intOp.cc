@@ -79,6 +79,7 @@ namespace minsky
 
       cairo_save(cairo); 
       cairo_scale(cairo,z,z);
+      if (textFlipped) cairo_rotate(cairo, M_PI);
       double sf = scaleFactor();  
       cairo_scale(cairo,sf,sf);		  
       cairo_move_to(cairo,-7,4.5);
