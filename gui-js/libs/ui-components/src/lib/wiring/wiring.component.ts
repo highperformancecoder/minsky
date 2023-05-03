@@ -101,6 +101,23 @@ export class WiringComponent implements OnInit, OnDestroy {
           // TextInputUtilities.show();
           if (event.key==='Shift' && document?.body?.style)
             document.body.style.cursor='grab';
+          // check if over a toolbar button. We have to do it in such a kludgy way, because keydown events are only sent to focussed elements, and typically buttons do not obtain focus.
+          if (event.code==='F1') {
+            let elems=document.querySelectorAll(':hover');
+            var elem;
+            for (let i=0; i<elems.length; ++i)
+              if (elems[i].classList.contains('toolButton')) {
+                elem=elems[i];
+                break;
+              }
+            let classType=elem?.getAttribute('classType');
+            if (!classType && elem) classType=elem['classType']; // submenu items render custom attributes differently
+            if (classType) {
+              this.electronService.send(events.HELP_FOR, {classType});
+              return;
+            }
+          }
+          // TODO - move this method out of cmService
           await this.cmService.handleKeyDown({ event });
         });
 
@@ -152,7 +169,7 @@ export class WiringComponent implements OnInit, OnDestroy {
       }
     });
   }
-
+  
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
   ngOnDestroy() {}
 }

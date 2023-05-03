@@ -257,6 +257,8 @@ export class KeyBindingsManager {
       }
       break;
 
+    case 'F1':
+      CommandsManager.help(payload.mouseX, payload.mouseY);
     default:
       executed = false;
       break;

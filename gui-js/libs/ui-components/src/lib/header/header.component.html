@@ -1,7 +1,7 @@
 <div class="toolbar-controls">
   <div class="record-controls m-a-0">
     <button
-      class="btn recalculate-btn"
+      class="btn recalculate-btn toolButton" classType="Recalculate"
       title="Recalculate"
       (click)="recalculateButton()"
       
@@ -10,7 +10,7 @@
            class="btn-icon" />
     </button>
     <button
-      class="btn record-btn"
+      class="btn record-btn toolButton" classType="RecReplayButtons"
       [ngClass]="{ focus: isRecordingOn }"
       title="Record"
       (click)="recordButton()"
@@ -18,7 +18,7 @@
       <img src="assets/images/icons/record.svg" alt="" class="btn-icon" />
     </button>
     <button
-      class="btn replay-btn"
+      class="btn replay-btn toolButton" classType="RecReplayButtons"
       [ngClass]="{ focus: isReplayRecordingOn }"
       title="Simulate/Recording Replay"
       (click)="recordingReplyButton()"
@@ -33,7 +33,7 @@
         <input
           type="checkbox"
           id="reverseSimulationCheckbox"
-          class="reverse-simulation-checkbox"
+          class="reverse-simulation-checkbox  toolButton" classType="RunButtons"
           (click)="reverseCheckboxButton($event)"
         />
       </div>
@@ -45,7 +45,7 @@
       (toolbarEvent)="handleToolbarEvent($event)"
     ></minsky-toolbar>
   </div>
-  <div class="time-info">
+  <div class="time-info toolButton" classType="SimTime">
     <span class="time">t:{{ commService.t }}</span>
     <span class="delta-time">&Delta;t:{{ commService.deltaT }}</span>
   </div>

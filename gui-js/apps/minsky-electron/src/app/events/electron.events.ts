@@ -244,6 +244,13 @@ ipcMain.on(
   }
 );
 
+ipcMain.on(
+  events.HELP_FOR,
+  async (event, { classType }) => {
+    CommandsManager.loadHelpFile(classType);
+  }
+);
+
 ipcMain.on(events.DOUBLE_CLICK, async (event, payload) => {
   await CommandsManager.handleDoubleClick(payload);
 });
