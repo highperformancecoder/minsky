@@ -101,6 +101,20 @@ export class WiringComponent implements OnInit, OnDestroy {
           // TextInputUtilities.show();
           if (event.key==='Shift' && document?.body?.style)
             document.body.style.cursor='grab';
+          // check if on a toolbar button
+          if (event.code==='F1') {
+            let elems=document.querySelectorAll(':hover');
+            var elem;
+            for (let i=0; i<elems.length; ++i)
+              if (elems[i].classList.contains('toolButton')) {
+                elem=elems[i];
+                break;
+              }
+            if (elem) {
+              this.displayHelpFor(elem.getAttribute('classType'));
+              return;
+            }
+          }
           await this.cmService.handleKeyDown({ event });
         });
 
@@ -151,6 +165,10 @@ export class WiringComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+  
+  displayHelpFor(classType: string) {
+    this.electronService.send(events.HELP_FOR, {classType});
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method

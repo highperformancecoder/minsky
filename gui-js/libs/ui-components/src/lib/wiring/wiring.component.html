@@ -11,7 +11,8 @@
       <button class="tab" (click)="electronService.minsky.canvas.addRavel()">
         <img src="assets/images/icons/ravel.gif" alt="Ravel" title="Ravel" />
       </button>
-      <button class="tab" (click)="electronService.minsky.canvas.addPlot()">
+      <button class="tab toolButton" classType="PlotWidget"
+              (click)="electronService.minsky.canvas.addPlot()">
         <img
           src="assets/images/icons/plot.gif"
           alt="PlotWidget"
