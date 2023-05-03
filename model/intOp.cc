@@ -74,6 +74,9 @@ namespace minsky
           cairo_rotate(cairo,-rotation()*M_PI/180.0);
         }
     
+      cairo_save(cairo);
+      cairo_rotate(cairo, angle); 
+
       cairo_save(cairo); 
       cairo_scale(cairo,z,z);
       double sf = scaleFactor();  
@@ -85,9 +88,7 @@ namespace minsky
         
       int intVarWidth=0;
     
-      cairo_save(cairo);
-      cairo_rotate(cairo, angle); 
-    
+   
       cairo_move_to(cairo,l,h);
       cairo_line_to(cairo,l,-h);
       cairo_line_to(cairo,r,0);     
