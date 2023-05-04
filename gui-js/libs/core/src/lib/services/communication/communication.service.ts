@@ -259,15 +259,13 @@ export class CommunicationService {
     this.syncRunUntilTime();
     this.isSimulationOn=true;
     this.simulate();
+    this.electronService.minsky.dimensionalAnalysis();
   }
+  
   private simulate() {
     setTimeout(async () => {
       if (this.isSimulationOn) {
-        const [
-          t,
-          deltaT,
-        ] = await this.electronService.minsky.step();
-
+        const [t, deltaT] = await this.electronService.minsky.step();
         this.updateSimulationTime(t, deltaT);
         this.simulate();
       }
@@ -283,12 +281,11 @@ export class CommunicationService {
     this.isSimulationOn = false;
     await this.electronService.minsky.running(false);
 
-    await this.electronService.minsky.reset();
-
+    this.electronService.minsky.reset();
+    this.electronService.minsky.dimensionalAnalysis();
+    
     const t = await this.electronService.minsky.t();
-
     const deltaT = await this.electronService.minsky.deltaT();
-
     this.updateSimulationTime(t, deltaT);
   }
 
