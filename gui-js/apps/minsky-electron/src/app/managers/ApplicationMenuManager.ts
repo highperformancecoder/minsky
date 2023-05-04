@@ -544,7 +544,7 @@ export class ApplicationMenuManager {
       role: 'help',
       submenu: [
         {
-          label: 'Minsky Documentation',
+          label: 'Minsky Documentation (F1)',
           click() {CommandsManager.loadHelpFile("minsky");}
         },
       ],
