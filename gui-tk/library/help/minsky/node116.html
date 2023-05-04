@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Groups</TITLE>
-<META NAME="description" CONTENT="Groups">
+<TITLE>Tensor values</TITLE>
+<META NAME="description" CONTENT="Tensor values">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,112 +23,201 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1536"
+<A NAME="tex2html1539"
   HREF="node117.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1534"
+<A NAME="tex2html1537"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1528"
+<A NAME="tex2html1531"
   HREF="node115.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1537"
-  HREF="node117.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html1535"
+<B> Next:</B> <A NAME="tex2html1540"
+  HREF="node117.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html1538"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1529"
-  HREF="node115.html">Tensor values</A>
+<B> Previous:</B> <A NAME="tex2html1532"
+  HREF="node115.html">Wires</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00470000000000000000"></A><A NAME="Group"></A>
+<H1><A NAME="SECTION00460000000000000000"></A><A NAME="2586"></A>
 <BR>
-Groups
+Tensor values
 </H1>
 
 <P>
-Grouping gives the capability to create reusable modules, or subroutines that
-can dramatically simplify more complicated systems. Groups may be
-created in the following ways:
-
-<UL>
-<LI>by lassoing a number of items to select them, then selecting
-&ldquo;group&rdquo; from the canvas context menu, or the edit menu.
-</LI>
-<LI>by pasting the selection. You may &ldquo;ungroup&rdquo; the group from the
-context menu if you don't desire the result of the paste to be a group.
-</LI>
-<LI>by copying another group
-</LI>
-<LI>by inserting a Minsky file as a group
-</LI>
-</UL>
+Variables may have tensor values, or sets of data. Different tensors
+are sorted by rank. For example, a tensor of rank 0 may appear as a
+single number, let's refer to it as <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img57.png"
+ ALT="$x$"></SPAN>. A tensor of rank 1 may appear
+as a sequence of numbers, let's say <SPAN CLASS="MATH"><IMG
+ WIDTH="52" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img222.png"
+ ALT="$(x x x x)$"></SPAN>. Rank 2 means a tensor
+appears as a 2D sequence of numbers, for example:
 
 <P>
-Zooming in on a group allows you see and edit its contents. Groups may
-be nested heirarchically, which gives an excellent way of zooming in
-to see the detail of a model, or zooming out to get an overview of
-it. The group context menu item &ldquo;Zoom to display&rdquo; zooms the canvas
-in just enough for the group's contents to be visible.
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\left(
+  \begin{array}{ccc}
+    x& x& x\\
+    x& x& x\\
+    x& x& x
+  \end{array}
+  \right)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="95" HEIGHT="64" BORDER="0"
+ SRC="img223.png"
+ ALT="\begin{displaymath}
+\left(
+\begin{array}{ccc}
+x&amp; x&amp; x\\
+x&amp; x&amp; x\\
+x&amp; x&amp; x
+\end{array} \right)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
-You may also select &ldquo;Open in canvas&rdquo; from the context menu. This
-replaces the current canvas contents with the contents of the group,
-allowing you to edit the contents of the group directly without the
-distractions of the rest of the model. Select &ldquo;Open master group&rdquo; to
-return to the top level group occupying the canvas.
+A tensor of rank 3 will appear as a three-dimensional cube,
+rank 4 as a four-dimensional hypercube, and so on. Two 
+ways of getting tensor values into Minsky are via tensor-valued 
+initial conditions (&#167;<A HREF="node110.html#tensor-init">4.4.3</A>), or by importing a CSV 
+file into a parameter (&#167;<A HREF="node112.html#CSV_import">4.4.5</A>). Scalar 
+operations are extended to operating elementwise over tensors, 
+and a number of operations exist for operating on tensors 
+(&#167;<A HREF="node90.html#tensor_operations">4.2</A>).
 
 <P>
-Around the edges of a group are input or output variables, which allow
-one to parameterise the group. One can drag a variable and dock it in
-the I/O area to create a new input or output for the group.
+When two or more tensors are combined with a binary operation (such 
+as addition or multiplication), they must have the same rank. For example,
+two tensors of rank 2 can be multiplied together, but a tensor of rank 2 and 
+a tensor of rank 3 cannot. They may have differing dimensions, which means
+the values within each tensor may not necessarily match up 1-to-1 exactly.
+To understand what happens when a given dimension is mismatched requires 
+understanding the concept of an x-vector<A NAME="2595"></A><A NAME="x-vector"></A>.
 
 <P>
-When creating a group, or dragging a variable or operation into or out
-of a group, if a wire ends up crossing the group boundary, a new
-temporary variable is added as an I/O variable.
+When Minsky is given tensor values, it sorts the values within each tensor
+by corresponding dimensions. For example, a rank 2 tensor would have its
+values sorted into two sets of data. This data can be in the form of numbers,
+dates (time values), or strings. Minsky will then look at cross-sections of the
+datasets in order to process the values within. When the dimensions of two
+tensors match up, for example two rank 2 tensors, the corresponding
+cross-sections of both tensors should also match up. When they don't, a
+weighted interpolation of the corresponding values is taken. This involves
+using an x-vector. 
 
 <P>
-Variable names within groups are locally scoped to that group. That
-means that a variable of the same name outside the group refers to a
-different entity completely. One can refer to variables outside the
-current scope by prepending the variable name with a `:'. This refers
-to a local variable within an outer scope, going all the way to global
-scope if no such variable exists. In this way, two groups can share
-a variable reference to a variable by using the `:' prefix, and you
-can limit the scope of the shared variable by placing a local variable
-of the same name in an outer group that both groups are contain within.
+An x-vector is a vector of real values, strings or date/time values. 
+If no x-vector is explicitly provided, then implicitly it consists of the the values
+<!-- MATH
+ $(0,\ldots,n_i-1)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="102" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img224.png"
+ ALT="$(0,\ldots,n_i-1)$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img225.png"
+ ALT="$n_i$"></SPAN> is the dimension size of axis <SPAN CLASS="MATH"><IMG
+ WIDTH="9" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img226.png"
+ ALT="$i$"></SPAN>
+of the tensor.
 
 <P>
-A group can also be exported to a file from the context menu.
-This allows you to build up a library of building blocks. There is a
-github project &ldquo;minsky-models&rdquo; allowing people to publish their
-building blocks and models for others to use. In the future, we hope
-to integrate Minsky with this github repository, allowing even more
-seamless sharing of models.
+For example, if the first tensor consists of three elements <!-- MATH
+ $(x_0, x_1, x_2)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img227.png"
+ ALT="$(x_0, x_1, x_2)$"></SPAN>
+and the second consist of a number of different elements that roughly
+correspond to the same three elements, these can be added together.
+The x-vector starts with the first tensor's value of <SPAN CLASS="MATH"><IMG
+ WIDTH="32" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img228.png"
+ ALT="$(x_0)$"></SPAN> and looks for a
+matching value in the second tensor. If it can't find a direct match, it will
+search for nearby values which roughly correspond. It can then take those
+values and interpolate the corresponding value based on where in the tensor
+it appears. This is weighted, so say there are four values nearby, the program
+will average those out and find where a value in the middle of those four
+values would appear, and what that hypothetical value would be. To take
+another example:
+
+<P>
+Suppose the first tensor was a vector <SPAN CLASS="MATH"><IMG
+ WIDTH="56" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img229.png"
+ ALT="$(x_0,x_1)$"></SPAN> and had an
+x-vector (1,3) and the second tensor <SPAN CLASS="MATH"><IMG
+ WIDTH="75" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img230.png"
+ ALT="$(y_0,y_1,y_2)$"></SPAN> had an x-vector
+(0,2,3), then the resulting tensor will be <!-- MATH
+ $(x_0+0.5(y_0+y_1),
+x_1+y_2)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="192" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img231.png"
+ ALT="$(x_0+0.5(y_0+y_1),
+x_1+y_2)$"></SPAN>. If the x-vector were date/time data, then the tensor values
+will be interpolated according to the actual time values. If the first
+tensor's x-vector value lies outside the second tensor's x-vector,
+then it doesn't result in a value being included in the output. The
+resultant x-vector's range of values is the intersection of input
+tensors' x-vector ranges.
+
+<P>
+If both tensor had string x-vectors, then the resultant tensor will
+only have values where both input tensors have the same string value
+in their x-vectors. In the above case, where the x-vectors were
+('1','3') and ('0','2','3') the resulting tensor will be the scalar <SPAN CLASS="MATH"><IMG
+ WIDTH="54" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img232.png"
+ ALT="$x_1+y_2$"></SPAN>.
+
+<P>
+It goes without saying that the type of the x-vector for each axis
+must also match.
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html1536"
+<A NAME="tex2html1539"
   HREF="node117.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1534"
+<A NAME="tex2html1537"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1528"
+<A NAME="tex2html1531"
   HREF="node115.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1537"
-  HREF="node117.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html1535"
+<B> Next:</B> <A NAME="tex2html1540"
+  HREF="node117.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html1538"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1529"
-  HREF="node115.html">Tensor values</A></DIV>
+<B> Previous:</B> <A NAME="tex2html1532"
+  HREF="node115.html">Wires</A></DIV>
 <!--End of Navigation Panel-->
 
 </BODY>
