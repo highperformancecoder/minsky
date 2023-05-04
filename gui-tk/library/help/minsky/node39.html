@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Entering flows between accounts</TITLE>
-<META NAME="description" CONTENT="Entering flows between accounts">
+<TITLE>Defining flows</TITLE>
+<META NAME="description" CONTENT="Defining flows">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,163 +16,187 @@
 
 <LINK REL="next" HREF="node40.html">
 <LINK REL="previous" HREF="node38.html">
-<LINK REL="up" HREF="node36.html">
+<LINK REL="up" HREF="node35.html">
 <LINK REL="next" HREF="node40.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html636"
+<A NAME="tex2html634"
   HREF="node40.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html634"
-  HREF="node36.html">
+<A NAME="tex2html632"
+  HREF="node35.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html628"
+<A NAME="tex2html626"
   HREF="node38.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html637"
-  HREF="node40.html">Defining flows</A>
-<B> Up:</B> <A NAME="tex2html635"
-  HREF="node36.html">Creating a banking model</A>
-<B> Previous:</B> <A NAME="tex2html629"
-  HREF="node38.html">Entering accounts</A>
+<B> Next:</B> <A NAME="tex2html635"
+  HREF="node40.html">Copying Godley Table input</A>
+<B> Up:</B> <A NAME="tex2html633"
+  HREF="node35.html">Creating a banking model</A>
+<B> Previous:</B> <A NAME="tex2html627"
+  HREF="node38.html">Entering flows between accounts</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00245300000000000000">
-Entering flows between accounts</A>
+<H3><A NAME="SECTION00245400000000000000">
+Defining flows</A>
 </H3>
 
 <P>
-Flows between accounts are entered by typing text labels in the
-accounts involved. The source label is entered as a simple name--for
-example, if Patient is lending money to Impatient, the word &ldquo;Lend&rdquo;
-could be used to describe this action. Firstly you need to create a
-row beneath the &ldquo;Initial Conditions&rdquo; row (which records the amount of
-money in each account when the simulation begins). You do this by
-clicking on the `+' key on the Initial Conditions row. This creates a
-blank row for recording a flow between accounts.
+The entries in the Godley Table represent flows of money, which are
+denominated in money units per unit of time. The relevant time
+dimension for an economic simulation is a year (whereas in engineering
+applications, the relevant time dimension is a second), so whatever
+you enter there represents a flow of money per year.
+
+<P>
+You define the value of flows by attaching a constant or variable to
+the input side of the flow into the bank as shown on the Canvas. For
+example, you could assign Lend a value of 10 (which would represent a
+loan of $10 per year by Patient to Impatient) by:
+
+<P>
+Create a constant with a value of 10, and attaching this to the input
+side of Lend:
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts1.eps}}$
+ $\scalebox{0.5}{\includegraphics{images/NewItem149.eps}}$
  -->
 <IMG
- WIDTH="483" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
- SRC="img94.png"
- ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts1.eps}}">
+ WIDTH="240" HEIGHT="231" ALIGN="BOTTOM" BORDER="0"
+ SRC="img101.png"
+ ALT="\scalebox{0.5}{\includegraphics{images/NewItem149.eps}}">
 </DIV>
 
 <P>
-The cell below &ldquo;Initial Conditions&rdquo; is used to give a verbal
-description of what the flow is: 
+What you have now defined is an annual flow from Patient to Impatient
+of $10. In the dynamic equations this model generates, Minsky
+converts all amounts in accounts to positive sums--it shows the
+financial system from the point of the overall economy, rather than
+from the point of view of the bank:
+
+<P>
+<P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{eqnarray*}
+\mathrm{Lend}&=&10\\
+\frac{d\mathrm{Impatient}}{dt}&=&\mathrm{Lend}\\
+\frac{d\mathrm{Patient}}{dt}&=&-\mathrm{Lend}\\
+\frac{d\mathrm{Reserves}}{dt}&=&\\
+\frac{d\mathrm{Safe}}{dt}&=&
+\end{eqnarray*}
+ -->
+<IMG
+ WIDTH="171" HEIGHT="182" BORDER="0"
+ SRC="img102.png"
+ ALT="\begin{eqnarray*}
+\mathrm{Lend}&amp;=&amp;10\\
+\frac{d\mathrm{Impatient}}{dt}&amp;=&amp;\mathrm...
+...\frac{d\mathrm{Reserves}}{dt}&amp;=&amp;\\
+\frac{d\mathrm{Safe}}{dt}&amp;=&amp;
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+<BR CLEAR="ALL"><P></P>
+
+<P>
+If you attach a graph to the accounts at the bottom of the bank block,
+you will see the impact of this flow over time on the balances of the
+two accounts. Patient's account begins at $100 and falls at $10 per
+year, while Impatient's account begins at $0 and rises by $10 per
+year.
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts2.eps}}$
+ $\scalebox{0.7}{\includegraphics{images/NewItem151.eps}}$
  -->
 <IMG
- WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
- SRC="img95.png"
- ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts2.eps}}">
+ WIDTH="398" HEIGHT="486" ALIGN="BOTTOM" BORDER="0"
+ SRC="img103.png"
+ ALT="\scalebox{0.7}{\includegraphics{images/NewItem151.eps}}">
 </DIV>
 
 <P>
-The flows between accounts are then recorded in the relevant cells
-underneath the columns. Here we will start with putting the label
-&ldquo;-Lend&rdquo; into the Patient column. It is negative, because Patient is
-lending to Impatient.
+Obviously this will result in a negative total worth for Patient after
+10 years, so it is not a realistic model. A more sensible simple model
+would relate lending to the amount left in Patient's account (and a
+more complex model would relate this to many other variables in the
+model). That is done in the next example, where a constant &ldquo;lendrate&rdquo;
+has been defined and given the value of 0.1, and Lend is now defined
+as 0.1 times the balance in Patient's account. This now results in a
+smooth exponential decay of the amount in the Patient account, matched
+by a rise in the amount in Impatient account.
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts3.eps}}$
+ $\scalebox{0.7}{\includegraphics{images/NewItem152.eps}}$
  -->
 <IMG
- WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts3.eps}}">
+ WIDTH="460" HEIGHT="513" ALIGN="BOTTOM" BORDER="0"
+ SRC="img104.png"
+ ALT="\scalebox{0.7}{\includegraphics{images/NewItem152.eps}}">
 </DIV>
 
 <P>
-Notice that the program shows that the Row Sum for this transaction is
-currently &ldquo;Lend&rdquo;, when it should be zero to obey the double-entry
-bookkeeping rule that all rows must balance. This is because a
-destination for &ldquo;Lend&rdquo; has not yet been specified. Please note that different
-asset class columns follow different +ve and -ve rules, so an asset and a liability
-with the same value might need to both be +ve or both -ve to sum to zero. The destination
-is Impatient's account, and to balance the row to zero this part of
-the transaction must be entered as &ldquo;Lend&rdquo;: 
+This is because the equation you have defined is identical to a
+radioactive decay equation, with the amount in the Patient account
+falling at 10 percent per year:
 
 <P>
-<DIV ALIGN="CENTER">
+<P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
- $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts4.eps}}$
+ \begin{eqnarray*}
+\mathrm{Lend}&=&\mathrm{lendrate}\times\mathrm{Patient}\\
+\frac{d\mathrm{Impatient}}{dt}&=&\mathrm{Lend}\\
+\frac{d\mathrm{Patient}}{dt}&=&-\mathrm{Lend}\\
+\end{eqnarray*}
  -->
 <IMG
- WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
- SRC="img97.png"
- ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts4.eps}}">
-</DIV>
+ WIDTH="249" HEIGHT="118" BORDER="0"
+ SRC="img105.png"
+ ALT="\begin{eqnarray*}
+\mathrm{Lend}&amp;=&amp;\mathrm{lendrate}\times\mathrm{Patient}\\
+\fr...
+...mathrm{Lend}\\
+\frac{d\mathrm{Patient}}{dt}&amp;=&amp;-\mathrm{Lend}\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+<BR CLEAR="ALL"><P></P>
 
 <P>
-The accounting equation also applies to the Initial Conditions (the amount of money
-in each of the accounts prior to the flows between accounts): the
-Initial Conditions must balance. This requires that there are
-entries on the Asset side of the Banking ledger that exactly match the
-sum of Liabilities and Equity: 
-
-<P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}$
- -->
-<IMG
- WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
- SRC="img98.png"
- ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}">
-</DIV>
-
-<P>
-As you enter flows, these appear on the left hand side of the bank block:
-
-<P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\scalebox{0.5}{\includegraphics{images/NewItem147.eps}}$
- -->
-<IMG
- WIDTH="196" HEIGHT="231" ALIGN="BOTTOM" BORDER="0"
- SRC="img99.png"
- ALT="\scalebox{0.5}{\includegraphics{images/NewItem147.eps}}">
-</DIV>
+Note however that there are now wires crossing over other wires? There
+is a neater way to define flows. 
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html636"
+<A NAME="tex2html634"
   HREF="node40.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html634"
-  HREF="node36.html">
+<A NAME="tex2html632"
+  HREF="node35.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html628"
+<A NAME="tex2html626"
   HREF="node38.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html637"
-  HREF="node40.html">Defining flows</A>
-<B> Up:</B> <A NAME="tex2html635"
-  HREF="node36.html">Creating a banking model</A>
-<B> Previous:</B> <A NAME="tex2html629"
-  HREF="node38.html">Entering accounts</A></DIV>
+<B> Next:</B> <A NAME="tex2html635"
+  HREF="node40.html">Copying Godley Table input</A>
+<B> Up:</B> <A NAME="tex2html633"
+  HREF="node35.html">Creating a banking model</A>
+<B> Previous:</B> <A NAME="tex2html627"
+  HREF="node38.html">Entering flows between accounts</A></DIV>
 <!--End of Navigation Panel-->
 
 </BODY>

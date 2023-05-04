@@ -442,16 +442,6 @@ namespace minsky
          return false;
        });
 
-    try
-      {
-        dimensionalAnalysis();
-      }
-    catch (const std::exception& ex)
-      {
-        // do not block reset() on dimensional analysis failure
-        message(ex.what());
-      }
-    
     EvalOpBase::timeUnit=timeUnit;
 
     MathDAG::SystemOfEquations system(*this);

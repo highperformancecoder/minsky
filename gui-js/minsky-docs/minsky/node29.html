@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>The Panopticon</TITLE>
-<META NAME="description" CONTENT="The Panopticon">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,7 +14,6 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node30.html">
 <LINK REL="previous" HREF="node28.html">
 <LINK REL="up" HREF="node7.html">
 <LINK REL="next" HREF="node30.html">
@@ -23,37 +22,97 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html523"
+<A NAME="tex2html519"
   HREF="node30.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html521"
+<A NAME="tex2html517"
   HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html515"
+<A NAME="tex2html513"
   HREF="node28.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html524"
-  HREF="node30.html">Wires</A>
-<B> Up:</B> <A NAME="tex2html522"
+<B> Next:</B> <A NAME="tex2html520"
+  HREF="node30.html">Working with Minsky</A>
+<B> Up:</B> <A NAME="tex2html518"
   HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html516"
+<B> Previous:</B> <A NAME="tex2html514"
   HREF="node28.html">Godleys tab</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION002316000000000000000"></A><A NAME="Panopticon"></A>
+<H2><A NAME="SECTION002316000000000000000"></A>
+<A NAME="Wires"></A>
 <BR>
-The Panopticon
+Wires
 </H2>
 
 <P>
-On the top right hand corner of the design canvas is a small recessed
-panel showing a miniature version of the entire model, with the
-current view port shown. This feature aids navigation around more
-complex models. This feature may optionally be disabled through the
-preferences panel, as it may cause unacceptable overheads for bigger models.
+The wires in a model connect blocks together to define equations. For
+example, to write an equation for 100/33, you would place a
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/const.eps}}$
+ -->
+<IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img81.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/const.eps}}">
+   on the canvas, and give it the value of 100:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem122.png}}$
+ -->
+</DIV>
+
+<P>
+Then do the same for 33, and place a divide block on the canvas:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="127" HEIGHT="141" ALIGN="BOTTOM" BORDER="0"
+ SRC="img83.png"
+ ALT="\includegraphics{images/NewItem123.eps}">
+
+</DIV>
+
+<P>
+Then click on the right hand edge of 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/const100.eps}}$
+ -->
+<IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img84.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/const100.eps}}">
+  
+and drag to extend the wire to the numerator (<SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$\times $"></SPAN>) port of the divide operation.
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="137" HEIGHT="101" ALIGN="BOTTOM" BORDER="0"
+ SRC="img85.png"
+ ALT="\includegraphics{images/wireExample1.eps}">
+
+</DIV>
+
+<P>
+Finally, add the other wire.
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="137" HEIGHT="101" ALIGN="BOTTOM" BORDER="0"
+ SRC="img86.png"
+ ALT="\includegraphics{images/wireExample2.eps}">
+
+</DIV>
 
 <P>
 <BR><HR>

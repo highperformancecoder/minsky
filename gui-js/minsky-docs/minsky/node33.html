@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Inserting a model component</TITLE>
-<META NAME="description" CONTENT="Inserting a model component">
+<TITLE>Creating an equation</TITLE>
+<META NAME="description" CONTENT="Creating an equation">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,80 +16,102 @@
 
 <LINK REL="next" HREF="node34.html">
 <LINK REL="previous" HREF="node32.html">
-<LINK REL="up" HREF="node31.html">
+<LINK REL="up" HREF="node30.html">
 <LINK REL="next" HREF="node34.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html571"
+<A NAME="tex2html569"
   HREF="node34.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html569"
-  HREF="node31.html">
+<A NAME="tex2html567"
+  HREF="node30.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html563"
+<A NAME="tex2html561"
   HREF="node32.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html572"
-  HREF="node34.html">Creating an equation</A>
-<B> Up:</B> <A NAME="tex2html570"
-  HREF="node31.html">Working with Minsky</A>
-<B> Previous:</B> <A NAME="tex2html564"
-  HREF="node32.html">Components in Minsky</A>
+<B> Next:</B> <A NAME="tex2html570"
+  HREF="node34.html">Wiring components together</A>
+<B> Up:</B> <A NAME="tex2html568"
+  HREF="node30.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html562"
+  HREF="node32.html">Inserting a model component</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00242000000000000000">
-Inserting a model component</A>
+<H2><A NAME="SECTION00243000000000000000">
+Creating an equation</A>
 </H2>
 
 <P>
-There are three ways to insert a component of a model onto the Canvas:
+Equations are entered in Minsky graphically. Mathematical operations
+like addition, multiplication and subtraction are performed by wiring
+the inputs up to the relevant mathematical block. The output of the
+block is then the result of the equation. 
 
-<OL>
-<LI>Click on the desired Icon on the Icon Palette, drag the block
-onto the Canvas and release the mouse where you want to insert it 
+<P>
+For example, a simple equation like
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+100/3 = 33.3
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="89" HEIGHT="29" BORDER="0"
+ SRC="img87.png"
+ ALT="\begin{displaymath}
+100/3 = 33.3
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem130.png"
+ ALT="783"> :
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem18.png"
- ALT="782">
+ WIDTH="551" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
+ SRC="img88.png"
+ ALT="\includegraphics{images/NewItem129.eps}">
 
 </DIV>
 
 <P>
-</LI>
-<LI>Choose Insert from the menu and select the desired block there
+If you click on the equation tab, you will see that it is:
 
 <P>
-<DIV ALIGN="CENTER">
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}
+ -->
+
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem159.png"
- ALT="538">
-  
+ WIDTH="99" HEIGHT="39" BORDER="0"
+ SRC="img89.png"
+ ALT="\begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}">
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
-</LI>
-<LI>Right-click on an existing block and choose copy. Then place the
-copy where you want it on the palette. 
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem161.png"
- ALT="541">
-
-</DIV>
-
-<P>
-</LI>
-</OL>
+Very complex equations--including dynamic elements like integral
+blocks and Godley Tables--are designed by wiring up lots of
+components, with the output of one being the input of the next. See
+the tutorial for examples.
 
 <P>
 <BR><HR>
