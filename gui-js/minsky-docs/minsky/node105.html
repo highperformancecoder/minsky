@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>outer product </TITLE>
-<META NAME="description" CONTENT="outer product ">
+<TITLE>Switch</TITLE>
+<META NAME="description" CONTENT="Switch">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,74 +14,86 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node104.html">
-<LINK REL="up" HREF="node90.html">
+<LINK REL="next" HREF="node106.html">
+<LINK REL="previous" HREF="node89.html">
+<LINK REL="up" HREF="node47.html">
 <LINK REL="next" HREF="node106.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1424"
+<A NAME="tex2html1421"
   HREF="node106.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1422"
-  HREF="node90.html">
+<A NAME="tex2html1419"
+  HREF="node47.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1418"
+<A NAME="tex2html1413"
   HREF="node104.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1425"
-  HREF="node106.html">Switch</A>
-<B> Up:</B> <A NAME="tex2html1423"
-  HREF="node90.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1419"
-  HREF="node104.html">inner product</A>
+<B> Next:</B> <A NAME="tex2html1422"
+  HREF="node106.html">Variables</A>
+<B> Up:</B> <A NAME="tex2html1420"
+  HREF="node47.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1414"
+  HREF="node104.html">outer product</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004215000000000000000"></A><A NAME="Operation:outerProduct"></A>
+<H1><A NAME="SECTION00430000000000000000"></A><A NAME="SwitchIcon"></A>
 <BR>
-outer product <SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img25.png"
- ALT="$\otimes $"></SPAN>
-</H2>
-Computes 
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
-x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
-\end{displaymath}
- -->
+Switch
+</H1>
 
+<P>
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
+ -->
 <IMG
- WIDTH="280" HEIGHT="31" BORDER="0"
- SRC="img206.png"
- ALT="\begin{displaymath}
-z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
-x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
-\end{displaymath}">
+ WIDTH="19" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img63.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
+  
+A switch block (also known as a case block, or select in the Fortran
+world) is a way of selecting from a range of alternatives according
+to the value of the input, effectively defining a piecewise function.
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
+ -->
+<IMG
+ WIDTH="555" HEIGHT="269" ALIGN="BOTTOM" BORDER="0"
+ SRC="img208.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}">
+<EM>An example switch block with 3 cases</EM>
+
 </DIV>
-<BR CLEAR="ALL">
-<P></P>
-where <SPAN CLASS="MATH"><IMG
- WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img204.png"
- ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img205.png"
- ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img57.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img58.png"
- ALT="$y$"></SPAN> respectively.
+
+<P>
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1,
+or false and true, a two case switch statement will naturally appear
+&ldquo;upside down&rdquo; to how you might think of an if statement. In other
+words, it looks like:
+
+<P>
+<IMG
+ WIDTH="163" HEIGHT="66" ALIGN="MIDDLE" BORDER="0"
+ SRC="img209.png"
+ ALT="$\textstyle \parbox{\textwidth}{
+{\tt if not }{\em condition} {\tt then}\\
+\ldots
+{\tt else}\\
+\ldots
+}$">
+<P>
+You can add or remove cases through the context menu. 
 
 <P>
 <BR><HR>

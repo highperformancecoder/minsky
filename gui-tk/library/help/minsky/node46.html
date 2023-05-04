@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Basic Banking model</TITLE>
-<META NAME="description" CONTENT="Basic Banking model">
+<TITLE>Loanable Funds</TITLE>
+<META NAME="description" CONTENT="Loanable Funds">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,56 +15,207 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="previous" HREF="node45.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="up" HREF="node45.html">
 <LINK REL="next" HREF="node47.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html706"
+<A NAME="tex2html702"
   HREF="node47.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html704"
-  HREF="node44.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html700"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html696"
   HREF="node45.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html707"
-  HREF="node47.html">Loanable Funds</A>
-<B> Up:</B> <A NAME="tex2html705"
-  HREF="node44.html">Tutorial</A>
-<B> Previous:</B> <A NAME="tex2html701"
-  HREF="node45.html">Basic System Dynamics model</A>
+<B> Next:</B> <A NAME="tex2html703"
+  HREF="node47.html">Reference</A>
+<B> Up:</B> <A NAME="tex2html701"
+  HREF="node45.html">Basic Banking model</A>
+<B> Previous:</B> <A NAME="tex2html697"
+  HREF="node45.html">Basic Banking model</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00320000000000000000"></A><A NAME="tut:basicBankModel"></A>
+<H2><A NAME="SECTION00321000000000000000">
+Loanable Funds</A>
+</H2>
+
+<P>
+Our model begins with the single operation of Patient lending to
+Impatient at a rate that, if kept constant at its initial level of of
+$10 per annum, would empty the Patient account in 10 years. Because
+the rate of outflow declines as the Patient account declines, the
+money in the account decays towards zero but never quite reaches it.
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}$
+ -->
+<IMG
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img99.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}">
+</DIV>
+
+<P>
+Many more actions need to be added to this model to complete it. For a
+start, Impatient should be paying interest to Patient on the amount
+lent. Add an additional row to the Godley Table by clicking on the
+`+' key
+next to &ldquo;Patient lends to Impatient&rdquo; to create a blank row:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts6.eps}}$
+ -->
+<IMG
+ WIDTH="499" HEIGHT="78" ALIGN="BOTTOM" BORDER="0"
+ SRC="img165.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts6.eps}}">
+</DIV>
+
+<P>
+Then label this flow &ldquo;Impatient pays interest&rdquo; and make the entry
+&ldquo;Interest&rdquo; into the cell for Patient on that row. Make the matching
+entry &ldquo;-Interest&rdquo; in the cell for Impatient. The flow &ldquo;Interest&rdquo; now
+appears on the input side of the Godley Table on the Canvas: 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts7.eps}}$
+ -->
+<IMG
+ WIDTH="499" HEIGHT="78" ALIGN="BOTTOM" BORDER="0"
+ SRC="img166.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts7.eps}}">
+</DIV>
+
+<P>
+Interest now has to be defined. It will be the amount in Impatient's
+account (since this began at zero) multiplied by the rate of interest
+charged by Patient:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="383" HEIGHT="123" ALIGN="BOTTOM" BORDER="0"
+ SRC="img167.png"
+ ALT="\includegraphics{images/NewItem173.eps}">
+
+</DIV>
+
+<P>
+With that definition, the dynamics of the model change: rather than
+the Patient account falling to zero and Impatient rising to 100, the
+two accounts stabilize once the outflow of new loans by Patient equals
+the inflow of interest payments by Impatient:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem174.eps}}$
+ -->
+<IMG
+ WIDTH="555" HEIGHT="480" ALIGN="BOTTOM" BORDER="0"
+ SRC="img168.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem174.eps}}">
+</DIV>
+
+<P>
+Though it stabilizes, this is is still a very incomplete model:
+neither Patient nor Impatient are doing anything with the money apart
+from lending it and paying interest. I am now going to assume that
+Impatient is borrowing the money in order to hire workers to work at a
+factory and produce output for sale. So we now need another account
+called Workers, and a payment from Impatient to Workers called Wage:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts8.eps}}$
+ -->
+<IMG
+ WIDTH="558" HEIGHT="91" ALIGN="BOTTOM" BORDER="0"
+ SRC="img169.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts8.eps}}">
+</DIV>
+
+<P>
+In a more complex model, the Wage bill could be related to the current
+rate times the number of workers in employment. In this simple model I
+will regard the wage as a function of the amount of money in
+Impatient's account turning over several times a year in the payment
+of wages. Using a time constant, I will assume that the amount in
+Impatient's account turns over 3 times a year paying wages, so that
+the time constant <SPAN CLASS="MATH"><IMG
+ WIDTH="21" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img170.png"
+ ALT="$\tau_T$"></SPAN> is 1/3rd of a year:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="248" HEIGHT="81" ALIGN="BOTTOM" BORDER="0"
+ SRC="img171.png"
+ ALT="\includegraphics{images/NewItem176.eps}">
+
+</DIV>
+
+<P>
+The dynamics of this incomplete model are very different again: very
+little money turns up in the Impatient account, and all of the money
+ends up in the Workers account. However economic activity also ceases
+as both lending and the flow of wages falls towards zero:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem177.eps}}$
+ -->
+<IMG
+ WIDTH="555" HEIGHT="482" ALIGN="BOTTOM" BORDER="0"
+ SRC="img172.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem177.eps}}">
+</DIV>
+
+<P>
+This is because wages are being paid to workers, but they are doing
+nothing with it. So we need to include consumption by workers-and by
+Patient as well. Here the reason time constants are useful may be more
+obvious. The time constant for consumption by Workers is given the
+very low value of 0.05--or 1/20th of a year--which indicates that if
+their initial rate of consumption was maintained without any wage
+income, they would reduce their bank balances to zero in 1/20th of a
+year or about 2.5 weeks.
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html702"
+  HREF="node47.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html700"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html696"
+  HREF="node45.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-Basic Banking model
-</H1>
-
-<P>
-If you haven't yet read the section on <A HREF="node36.html#creatingBankingModel">Creating a Banking
-Model</A>, do so now. This tutorial starts from the
-skeleton of the &ldquo;Loanable Funds&rdquo; model built in that section, and
-using <A HREF="node42.html#time-constants">time constants</A> to specify how quickly
-lending occurs.  
-
-<P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html708"
-  HREF="node47.html">Loanable Funds</A>
-</UL>
-<!--End of Table of Child-Links-->
-<BR><HR>
+<B> Next:</B> <A NAME="tex2html703"
+  HREF="node47.html">Reference</A>
+<B> Up:</B> <A NAME="tex2html701"
+  HREF="node45.html">Basic Banking model</A>
+<B> Previous:</B> <A NAME="tex2html697"
+  HREF="node45.html">Basic Banking model</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

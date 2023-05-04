@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Introduction</TITLE>
-<META NAME="description" CONTENT="Introduction">
+<TITLE>Capabilities</TITLE>
+<META NAME="description" CONTENT="Capabilities">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,61 +16,111 @@
 
 <LINK REL="next" HREF="node129.html">
 <LINK REL="previous" HREF="node127.html">
-<LINK REL="up" HREF="node127.html">
+<LINK REL="up" HREF="node126.html">
 <LINK REL="next" HREF="node129.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1668"
+<A NAME="tex2html1665"
   HREF="node129.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1666"
-  HREF="node127.html">
+<A NAME="tex2html1663"
+  HREF="node126.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1660"
+<A NAME="tex2html1657"
   HREF="node127.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1669"
-  HREF="node129.html">Capabilities</A>
-<B> Up:</B> <A NAME="tex2html1667"
-  HREF="node127.html">User defined functions</A>
-<B> Previous:</B> <A NAME="tex2html1661"
-  HREF="node127.html">User defined functions</A>
+<B> Next:</B> <A NAME="tex2html1666"
+  HREF="node129.html">Example expressions</A>
+<B> Up:</B> <A NAME="tex2html1664"
+  HREF="node126.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1658"
+  HREF="node127.html">Introduction</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00510000000000000000">
-Introduction</A>
+<H1><A NAME="SECTION00520000000000000000">
+Capabilities</A>
 </H1>
-The <A NAME="tex2html26"
-  HREF="https://www.partow.net/programming/exprtk/index.html">C++ Mathematical Expression  Toolkit Library (ExprTk)</A>
-is  a simple
-to  use,   easy  to   integrate  and   extremely  efficient   run-time
-mathematical  expression parsing  and evaluation  engine. The  parsing
-engine  supports numerous  forms  of  functional and  logic processing
-semantics and is easily extensible.
+The  ExprTk expression  evaluator supports  the following  fundamental
+arithmetic operations, functions and processes:
 
 <P>
-With Minsky's user defined functions, expressions can refer to Minsky
-variables accessible from the current scope (ie local Minsky variables
-will hide global variables), and also parameters declared as part of
-the function name. One can also call other user defined functions,
-which is the only way a user defined function with more than 2
-parameters can be used. For 0-2 parameters, user defined functions can
-be wired into a Minsky computation.
+<DL>
+<DT><STRONG>Types:</STRONG></DT>
+<DD>Scalar, Vector, String
 
 <P>
-ExprTk identifiers (such as variable names and function names) consist
-of alphanumeric characters plus '_' and '.'. They must start with a
-letter. Minsky is reserving the underscore and full stop to act as an
-escape sequence, in order to refer to the full range of possible
-Minsky variable identifiers, including all unicode characters. This
-section will be updated once that feature is in place -- for now,
-please avoid using those characters in identifiers.
+</DD>
+<DT><STRONG>Basic operators:</STRONG></DT>
+<DD><code>+, -, *, /, %, ^</code>
+
+<P>
+</DD>
+<DT><STRONG>Assignment:</STRONG></DT>
+<DD><code>:=, +=, -=, *=, /=, %=</code>
+
+<P>
+</DD>
+<DT><STRONG>Equalities &amp; Inequalities:</STRONG></DT>
+<DD><code>=, ==, &lt;&gt;, !=, &lt;, &lt;=, &gt;, &gt;=</code>
+
+<P>
+</DD>
+<DT><STRONG>Logic operators:</STRONG></DT>
+<DD>and, mand, mor, nand, nor, not, or, shl, shr,
+                       xnor, xor, true, false
+
+<P>
+</DD>
+<DT><STRONG>Functions:</STRONG></DT>
+<DD>abs, avg, ceil, clamp, equal, erf, erfc,  exp,
+                       expm1, floor, frac,  log, log10, log1p,  log2,
+                       logn,  max,  min,  mul,  ncdf,  nequal,  root,
+                       round, roundn, sgn, sqrt, sum, swap, trunc
+
+<P>
+</DD>
+<DT><STRONG>Trigonometry:</STRONG></DT>
+<DD>acos, acosh, asin, asinh, atan, atanh,  atan2,
+                       cos,  cosh, cot,  csc, sec,  sin, sinc,  sinh,
+                       tan, tanh, hypot, rad2deg, deg2grad,  deg2rad,
+                       grad2deg
+
+<P>
+</DD>
+<DT><STRONG>Control structures:</STRONG></DT>
+<DD>if-then-else, ternary conditional, switch-case,
+                       return-statement
+
+<P>
+</DD>
+<DT><STRONG>Loop statements:</STRONG></DT>
+<DD>while, for, repeat-until, break, continue
+
+<P>
+</DD>
+<DT><STRONG>String processing:</STRONG></DT>
+<DD>in, like, ilike, concatenation
+
+<P>
+</DD>
+<DT><STRONG>Optimisations:</STRONG></DT>
+<DD>constant-folding, simple strength reduction and
+                       dead code elimination
+
+<P>
+</DD>
+<DT><STRONG>Calculus:</STRONG></DT>
+<DD>numerical integration and differentiation
+
+<P>
+</DD>
+</DL>
 
 <P>
 <BR><HR>

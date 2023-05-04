@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Factorial !</TITLE>
-<META NAME="description" CONTENT="Factorial !">
+<TITLE>Polygamma </TITLE>
+<META NAME="description" CONTENT="Polygamma ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,74 +16,69 @@
 
 <LINK REL="next" HREF="node69.html">
 <LINK REL="previous" HREF="node67.html">
-<LINK REL="up" HREF="node49.html">
+<LINK REL="up" HREF="node48.html">
 <LINK REL="next" HREF="node69.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1043"
+<A NAME="tex2html1040"
   HREF="node69.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1041"
-  HREF="node49.html">
+<A NAME="tex2html1038"
+  HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1035"
+<A NAME="tex2html1032"
   HREF="node67.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1044"
-  HREF="node69.html">Polygamma</A>
-<B> Up:</B> <A NAME="tex2html1042"
-  HREF="node49.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1036"
-  HREF="node67.html">Gamma</A>
+<B> Next:</B> <A NAME="tex2html1041"
+  HREF="node69.html">time</A>
+<B> Up:</B> <A NAME="tex2html1039"
+  HREF="node48.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html1033"
+  HREF="node67.html">Factorial !</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004119000000000000000"></A><A NAME="Operation:fact"></A>
+<H2><A NAME="SECTION004120000000000000000"></A><A NAME="Operation:polygamma"></A>
 <BR>
-Factorial !
-</H2> Returns the factorial
-of its argument:
-<P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{eqnarray*}
-0!&=&1\\
-  n! &=& \prod_{i=1}^n i\\
-\end{eqnarray*}
- -->
-<IMG
- WIDTH="87" HEIGHT="84" BORDER="0"
- SRC="img182.png"
- ALT="\begin{eqnarray*}
-0!&amp;=&amp;1\\
-n! &amp;=&amp; \prod_{i=1}^n i\\
-\end{eqnarray*}"></DIV>
-<BR CLEAR="ALL"><P></P>
-<BR CLEAR="ALL"><P></P>
-Note:
+Polygamma <SPAN CLASS="MATH"><IMG
+ WIDTH="55" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$\psi ^{(n)}(x)$"></SPAN>
+</H2> Returns the polygamma function
+of the first argument <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img57.png"
+ ALT="$x$"></SPAN>, with the order <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img185.png"
+ ALT="$n$"></SPAN> being given by the floor
+of the second argument.
 <BR><P></P>
 <DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
-n!=\Gamma(n+1)
+\psi^{(n)}(x)=\frac{d^{n+1}}{dx^{n+1}}\ln\Gamma(x)
 \end{displaymath}
  -->
 
 <IMG
- WIDTH="93" HEIGHT="29" BORDER="0"
- SRC="img183.png"
+ WIDTH="167" HEIGHT="41" BORDER="0"
+ SRC="img186.png"
  ALT="\begin{displaymath}
-n!=\Gamma(n+1)
+\psi^{(n)}(x)=\frac{d^{n+1}}{dx^{n+1}}\ln\Gamma(x)
 \end{displaymath}">
 </DIV>
 <BR CLEAR="ALL">
 <P></P>
-which is how it is implemented in Minsky.
+
+<P>
+It relationship to the derivative of the Gamma function (and
+factorials) is why Minsky provides this function.
 
 <P>
 <BR><HR>
