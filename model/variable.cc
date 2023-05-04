@@ -238,8 +238,7 @@ string VariableBase::name(const std::string& name)
   
   // Ensure value of variable is preserved after rename. For ticket 1106.	
   auto tmpVV=vValue();
-  // ensure integral variables are not global when wired to an integral operation
-  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
+  m_name=name;
   ensureValueExists(tmpVV.get(),name);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   if (auto controllingItem=controller.lock())
