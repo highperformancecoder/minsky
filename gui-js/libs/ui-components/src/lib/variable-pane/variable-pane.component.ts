@@ -12,6 +12,7 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import {
+  events,
   VariablePane,
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -132,15 +133,17 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
 
   onKeyDown =  (event: KeyboardEvent) => {
     if (event.shiftKey) {
+      document.body.style.cursor='grab';
       this.variablePane.shift(true);
       this.variablePane.requestRedraw();
     }
+    if (event.code==='F1')
+      this.electronService.send(events.HELP_FOR, {classType:'VariableBrowser'});
   };
   onKeyUp = (event: KeyboardEvent) => {
-      if (event.shiftKey) {
-        this.variablePane.shift(false);
-        this.variablePane.requestRedraw();
-      }
+    document.body.style.cursor='default';
+    this.variablePane.shift(false);
+    this.variablePane.requestRedraw();
   };
 
   select(id) {
