@@ -974,6 +974,14 @@ namespace minsky
                   cairo_translate(cairo,width,height);
                   cairo_rotate(cairo,M_PI);  // rotate plot to keep it right way up.
                 }
+              // propagate plot type to underling ecolab::Plot
+              auto& pt=const_cast<Plot*>(static_cast<const Plot*>(displayPlot.get()))->plotType;
+              switch (displayPlot->plotType)
+                {
+                case PlotWidget::line: pt=Plot::line; break;
+                case PlotWidget::bar:  pt=Plot::bar;  break;
+                default: break;
+                }
               displayPlot->Plot::draw(cairo, width, height);
             }
           else
