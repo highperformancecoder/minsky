@@ -967,6 +967,13 @@ namespace minsky
         {
           if (displayPlot)
             {
+              cairo::CairoSave cs(cairo);
+              double fm=std::fmod(rotation(),360);
+              if (!((fm>-90 && fm<90) || fm>270 || fm<-270))
+                {
+                  cairo_translate(cairo,width,height);
+                  cairo_rotate(cairo,M_PI);  // rotate plot to keep it right way up.
+                }
               displayPlot->Plot::draw(cairo, width, height);
             }
           else
