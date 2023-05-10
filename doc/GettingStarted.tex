@@ -181,14 +181,16 @@ The options menu allows you to customise aspects of Minsky.
 variables are displayed in the Godley table whilst a simulation is
 running. This will tend to slow down the simulation somewhat.
 \item Godley table output style --- whether $+/-$ or DR/CR (debit/credit)
-indicators are used.
+  indicators are used.
+\item Enable multiple equity columns - whether Godley table have more
+  than one equity columns.
 \item Number of recent files to display --- affects the \htmlref{recent
 files}{recentfiles} menu.
 \item\label{wrap-equations} Wrap long equations in LaTeX export. If ticked, use the breqn
 package to produce nicer looking automatically line-wrapped
 formulae. Because not all LaTeX implementations are guaranteed to
 support breqn, untick this option if you find difficulty.
-\item\index{Panopticon} enable/disable the \htmlref{panopticon}{Panopticon}.
+\item\label{font} select a font for variable names etc.
 \end{itemize}
 
 \item[Background colour] --- select a colour from which a colour scheme
@@ -196,10 +198,12 @@ is computed.
 
 \end{description}
 
-\subsubsection{Runge Kutta}
+\subsubsection{Simulation}
 \label{RungeKutta}
 
 \begin{itemize}
+\item Time unit allows one to specify units for the time dimension for
+  dimensional analysis. eg ``year'', ``s'' etc.
 \item Controls aspect of the adaptive Runge-Kutta equation solver, which
 trade off performance and accuracy of the model. 
 \item Note a first order explicit solver is the classic Jacobi method, which is the fastest,
@@ -224,7 +228,7 @@ simulation.
 \item Start time is the value of the system $t$ variable when the
   system is reset.
 \item Run until time can be used to pause the simulation ince t
-  reaches a certain value. Setting this to ``Inf'' causes the
+  reaches a certain value. Setting this to ``Infinity'' causes the
   simulation to run indefinitely, or until some arithmetic error
   occurs.
 \end{itemize}
