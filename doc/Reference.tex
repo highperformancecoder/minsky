@@ -555,7 +555,7 @@ example is as follows:
 \end{center}
 
 In this example, Minsky has failed to determine where the data starts,
-probably because of the ``Unit'' and ``Frequency'' columns. So the first
+probably because of the columns to the right of the ``Price'' columns. So the first
 thing to do is tell it where the data is located by clicking on the
 first cell of the data region. 
 
@@ -563,17 +563,32 @@ first cell of the data region.
 \resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData.eps}}
 \end{center}
 
-Note that the data region must lie in the bottom right corner of the
-table, so you might need to rearrange the CSV file using a speadsheet
-program to ensure this. The ``columnar'' option exists as a way of
-ignoring any data to the right of a single data column, useful for the
-case where some free form comments are appended to the rows.
+Note that this causes all columns to the right of ``Price paid'' to be
+treated as data, which is not right since the columns to the right of
+``Propieter'' are text based columns, not data. So we need to mark
+those columns as either ``axis'' or ``ignore''. To do that, select
+drag on the header field, which will cause those columns to be
+selected, like so:
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedColumns.eps}}
+\end{center}
+
+Then in the dimensions row, select ``axis'', which flips the selected
+columns:
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedAxes.eps}}
+\end{center}
+
+
 
 Now the axes index labels are rendered in blue, the axes names in
-green and the data is in black. In this example, some axes duplicate
+green and the data is in black. In this example, some axes have unique
+values, which are not particularly useful to scan over. Other examples
+might have columns that duplicate
 others, in effect the data is a planar slice through the hypercube. We
-can remove these axes from the data by deselecting the column using
-the checkbox in the ``Dimension'' row. The deselected columns are
+can remove these axes from the data by marking the column ``ignore'' in the ``Dimension'' row. The deselected columns are
 rendered in red, indicating data that is commented out:
 
 \begin{center}
@@ -582,7 +597,14 @@ rendered in red, indicating data that is commented out:
 
 In this example, the axis names has not been correctly
 inferred. Whilst, one can manually edit the axis names in the ``Name''
-line, a quick shortcut is to drag ``Header'' and drop it on ``Name'':
+line, a quick shortcut is to drag ``Header'' and drop it on
+``Name''. (Note the intention is for this to be the case - currently
+each column name has to be set individually).
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesNamed.eps}}
+\end{center}
+
 
 The Date column is current parsed as strings, which not only will be
 sorted incorrectly, but even if the data were in a YYYYMMDD format
@@ -641,18 +663,14 @@ expressed like 1972-Q1, use ``\verb+%Y-Q%Q+''. Note that only \%Y and
 
 Even in the current settings, you may still get a message ``exhausted
 memory --- try reducing the rank'', or a similar message about hitting
-a 20\% of physical memory threshold. In some cases, ``titles''
-and ``addresses'' might be pretty much unique for each record, leading to a
-large, but very sparse hypercube. If you remove those columns, as per
-
-\begin{center}
-\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogRemoved.eps}}
-\end{center}
-
-then you may encounter the ``Duplicate key'' message. In this case, we want
+a 20\% of physical memory threshold. In some cases, ``titles'' and
+``addresses'' might be pretty much unique for each record, leading to
+a large, but very sparse hypercube. If you remove those columns, then
+you may encounter the ``Duplicate key'' message. In this case, we want
 to aggregate over these records, which we can do by setting
-``Duplicate Key Action'' to sum. After some additional playing around
-with dimensions to aggregate over, we can get the data imported.
+``Duplicate Key Action'' to sum or maybe average for this
+example. After some additional playing around with dimensions to
+aggregate over, we can get the data imported.
 
 \begin{center}
 \resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal.eps}}
