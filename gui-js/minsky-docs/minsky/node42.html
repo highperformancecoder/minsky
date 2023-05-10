@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Multiple banks</TITLE>
-<META NAME="description" CONTENT="Multiple banks">
+<TITLE>Using &ldquo;Time Constants&rdquo;</TITLE>
+<META NAME="description" CONTENT="Using &ldquo;Time Constants&rdquo;">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,63 +14,84 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node43.html">
 <LINK REL="previous" HREF="node41.html">
-<LINK REL="up" HREF="node35.html">
+<LINK REL="up" HREF="node36.html">
 <LINK REL="next" HREF="node43.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html662"
+<A NAME="tex2html667"
   HREF="node43.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html660"
-  HREF="node35.html">
+<A NAME="tex2html665"
+  HREF="node36.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html656"
+<A NAME="tex2html659"
   HREF="node41.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html663"
-  HREF="node43.html">Tutorial</A>
-<B> Up:</B> <A NAME="tex2html661"
-  HREF="node35.html">Creating a banking model</A>
-<B> Previous:</B> <A NAME="tex2html657"
-  HREF="node41.html">Using &ldquo;Time Constants&rdquo;</A>
+<B> Next:</B> <A NAME="tex2html668"
+  HREF="node43.html">Multiple banks</A>
+<B> Up:</B> <A NAME="tex2html666"
+  HREF="node36.html">Creating a banking model</A>
+<B> Previous:</B> <A NAME="tex2html660"
+  HREF="node41.html">Copying Godley Table input</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00245700000000000000">
-Multiple banks</A>
+<H3><A NAME="SECTION00245600000000000000"></A>
+<A NAME="time-constants"></A>
+<BR>
+Using &ldquo;Time Constants&rdquo;
 </H3>
 
 <P>
-There can be any number of Godley Tables--each representing a
-different financial institution or sector in an economy--in the one
-diagram. The name of the institution can be altered by clicking on the
-default name (&ldquo;Godley0&rdquo; in the first one created) and altering
-it. Here is an example with 4 such institutions/sectors defined:
+The value of 0.1 means that the amount of money in the Patient account
+falls by one tenth every year (and therefore tapers towards zero). An
+equivalent way to express this is that the &ldquo;time constant&rdquo; for
+lending is the inverse of 1/10, or ten years. The next model uses a
+variable called <SPAN CLASS="MATH"><IMG
+ WIDTH="41" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img108.png"
+ ALT="$\tau_{Lend}$"></SPAN>, and gives it a value of 10: 
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- WIDTH="410" HEIGHT="366" ALIGN="BOTTOM" BORDER="0"
- SRC="img111.png"
- ALT="\includegraphics{images/NewItem136.eps}">
+ WIDTH="332" HEIGHT="120" ALIGN="BOTTOM" BORDER="0"
+ SRC="img109.png"
+ ALT="\includegraphics{images/NewItem158.eps}">
 
 </DIV>
 
 <P>
-If there are interlocking accounts in these banks--if one lends to
-another for example--then what is an asset for one must be shown as a
-liability for the other. 
+As the simulation shows, the two models have precisely the same result
+numerically:
 
 <P>
-Godley tables may be further placed in <EM>groups</EM>, which allows
-scoping of the flow variables and their defining equations, whilst
-still allowing the tables to be coupled via global variables.
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{!}{0.9\textheight}{\includegraphics{images/NewItem157.eps}}$
+ -->
+<IMG
+ WIDTH="572" HEIGHT="899" ALIGN="BOTTOM" BORDER="0"
+ SRC="img110.png"
+ ALT="\resizebox{!}{0.9\textheight}{\includegraphics{images/NewItem157.eps}}">
+</DIV>
+
+<P>
+The advantage of the time constant approach is that it is defined in
+terms of the time that a process takes. A time constant of 10 says
+that, if this rate of lending was sustained (rather than declining as
+the account falls), then in <B><EM>precisely</EM></B> 10 years, the Patient account
+would be empty. The advantages of this formulation will be more
+obvious in the <A HREF="node44.html#tutorial">tutorial</A>.
+
+<P>
 <BR><HR>
 
 </BODY>
