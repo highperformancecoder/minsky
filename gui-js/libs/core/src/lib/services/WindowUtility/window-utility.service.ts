@@ -68,7 +68,6 @@ export class WindowUtilityService {
 
   public async getElectronMenuBarHeight(): Promise<number> {
     if (this.electronService.isWindows()) return electronMenuBarHeightForWindows;
-    if (this.electronService.isMacOS()) return 0;
     
     const currentWindow = await this.electronService.getCurrentWindow();
     const currentWindowSize = currentWindow.size[1];
