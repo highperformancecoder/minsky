@@ -65,9 +65,9 @@ namespace minsky
         return r;
       }
       void setBusyCursor() override
-      {if (env) busyCursorCallback({Boolean::New(*env,true)});}
+      {/*if (env) busyCursorCallback({Boolean::New(*env,true)});*/}
       void clearBusyCursor() override
-      {if (env) busyCursorCallback({Boolean::New(*env,false)});}
+      {/*if (env) busyCursorCallback({Boolean::New(*env,false)});*/}
     };
     
     Minsky* l_minsky=NULL;
