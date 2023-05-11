@@ -9,7 +9,7 @@
             <div class="data-cell numeric">Value</div>
         </div>
 
-        <div *ngFor="let variable of variables" class="table-row">
+        <div *ngFor="let variable of variables" class="table-row" (contextmenu)="contextMenu(':'+variable.name)">
             <div [title]="variable.name" class="data-cell" latex [equation]="variable.name"></div>
             <div *ngIf="type === 'variables'" [title]="variable.definition" class="data-cell extra-wide" latex [equation]="variable.definition"></div>
             <div [title]="variable.dimensions" class="data-cell wide" latex [equation]="variable.dimensions"></div>

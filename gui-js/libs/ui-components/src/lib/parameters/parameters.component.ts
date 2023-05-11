@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { events } from '@minsky/shared';
 import { ElectronService } from '@minsky/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
@@ -47,5 +48,12 @@ export class ParametersComponent {
     if(stringDecimals.length > 6) return (+value).toFixed(4);
     return String(value);
   }
-  
+
+  contextMenu(valueId: string) {
+    this.electronService.log(`sending context menu: ${valueId}`);
+    this.electronService.send(events.CONTEXT_MENU, {
+      type: 'html-summary',
+      command: valueId,
+    });
+  }
 }
