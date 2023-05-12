@@ -6,19 +6,20 @@
 - download and install the latest XCode from the App Store. 
 NB unfortunately, the XCode command line tools package is out of date, so you will need to install the full multigigabyte XCode package, even though we only need the command line tools.
 - download ports installer for your version of MacOSX
+- Now install port prerequisistes for Minsky. 
+  - port install cairo pango gsl librsvg boost cmake pkgconfig tk
+  - Minksy 3.x does not use Tk, so the X11 version suffices. For 2.x or earlier, tcl/tk needs to be installed from source code if using Aqua. See below. 
+  - json_spirit needs to be installed from source code, but is not needed for Minsky 3.x
+- Currently, Mac builds are done on a High Sierra virtual machine, and the binary packages for High Sierra are used, so that is the mininum OS version for the MacOSX Minsky release. 
+
+# Enabling MacPorts to support earlier versions of MacOSX to the current system 
 - edit the file /opt/local/etc/macports/macports.conf, and add the following
   - macosx_deployment_target 10.12
   - buildfromsource         always
 - Install rust, needed to build librsvg. Note, this cannot be built from source in this configuration, so do a binary install:
   - port -b install rust
-- Now install port prerequisistes for Minsky. 
-  - port install cairo pango gsl librsvg boost cmake pkgconfig
-  - tcl/tk needs to be installed from source code if using Aqua. See below. If using X11, then you can use the MacPorts build of tk.
-  - json_spirit needs to be installed from source code
 - if you already have ports installed, you can recompile for the new deployment target with
   port upgrade --force installed
-- Currently, Mac builds are done on a High Sierra virtual machine, and the binary packages for High Sierra are used, so that is the mininum OS version for the MacOSX Minsky release. 
-
 
 # compile TCL/Tk from source code
 
