@@ -34,8 +34,8 @@ Package Managers
 It is recommended that you use your package manager wherever possible to install the prerequisites. Package managers are:
 
 * Cygwin setup.exe for Cygwin, which is a nice GUI interface
-* MXE: type make <package-name> in the top level directory. See the [Windows Release build notes](WindowsRelease.md) for more details.
-* MacPorts: use the ports command: eg ports install _package-name_. see the [MacOSX Release build notes](MacRelease.md) for more details.
+* MXE: type make <package-name> in the top level directory. See the [Windows Release build notes](githubdocs/WindowsRelease.md) for more details.
+* MacPorts: use the ports command: eg ports install _package-name_. see the [MacOSX Release build notes](githubdocs/MacRelease.md) for more details.
 * Debian/Ubuntu: use apt: eg apt install _package-name_-dev. Note the trailing -dev, which installs the header files and static library stubs.
 * Redhat/Fedora/CentOS: use yum: eg yum install _package-name_-devel.
 * SUSE/OpenSUSE: use zypper, or the yast2 GUI interface: eg zypper install _package-name_-devel.
