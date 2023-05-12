@@ -17,6 +17,7 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
   - json_spirit needs to be installed from source code
 - if you already have ports installed, you can recompile for the new deployment target with
   port upgrade --force installed
+- Currently, Mac builds are done on a High Sierra virtual machine, and the binary packages for High Sierra are used, so that is the mininum OS version for the MacOSX Minsky release. 
 
 
 # compile TCL/Tk from source code
@@ -38,9 +39,4 @@ Because we need to use an internal function with tk when compiling Minsky for Aq
 By default, Minsky builds in Aqua mode. This may cause build errors if the prerequisites are built for X11. To disable Aqua, specify MAC_OSX_TK= on the make command line.
   - make MAC_OSX_TK=1 mac-dist
   
-This builds the minskyRESTService.node, and rewrites the dynamic library references. This can be run over an ssh connection if nexecessary.
-
-
-- `cd gui-js`
-- `npm run export:package:mac`
-This produces a dmg file in dist/executables. This step must be run on the Macintosh console, as it makes use of code signing, which has to be run on the console.
+This builds the minskyRESTService.node, and rewrites the dynamic library references, signs the executables, produces a dmg file in dist/executables and submits the binary package to Apple for notarisation. This must be run on the Macintosh console, as it makes use of code signing, which has to be run on the console, not over an ssh connection. Notarisation takes 5-10 minutes, and if approved, should be stapled to the .dmg file. The Make step prints out the command to run the stapler.
