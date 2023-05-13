@@ -124,6 +124,8 @@ namespace minsky
                 // add new variable
                 vars.push_back(newVar);
                 alreadyAdded.insert(newVar->valueId());
+                if (varType==VariableType::stock) // newly added variables should take the default dimension
+                  newVar->setUnits(currency);
               }
             else
               if (myGroup)
@@ -339,6 +341,46 @@ namespace minsky
         float iw=this->iWidth(), ih=this->iHeight();
         this->iWidth(max(iw, 1.8f*stockH));
         this->iHeight(max(ih, 1.8f*flowH));
+      }
+    else
+      { // if any variables have attached wires, create a copy to carry the wire
+        for (auto& v: m_stockVars)
+          if (auto p=v->ports(0).lock())
+            if (!p->wires().empty())
+              {
+                if (auto g=group.lock())
+                  {
+                    auto newVar=g->addItem(v->clone());
+                    if (auto w=p->wires().front())
+                      if (auto from=newVar->ports(0).lock())
+                        {
+                          w->moveToPorts(from, w->to());
+                          continue;
+                        }
+                  }
+                // in falling through to here, we've failed to create and wire a variable copy
+                variableDisplay=true;
+                throw_error("Cowardly refusing to hide a wired variable");
+              }
+        
+        for (auto& v: m_flowVars)
+          if (auto p=v->ports(1).lock())
+            if (!p->wires().empty())
+              {
+                if (auto g=group.lock())
+                  {
+                    auto newVar=g->addItem(v->clone());
+                    if (auto w=p->wires().front())
+                      if (auto to=newVar->ports(1).lock())
+                        {
+                          w->moveToPorts(w->from(), to);
+                          continue;
+                        }
+                  }
+                // in falling through to here, we've failed to create and wire a variable copy
+                variableDisplay=true;
+                throw_error("Cowardly refusing to hide a wired variable");
+              }
       }
     
     positionVariables();

@@ -1,5 +1,5 @@
 <button
-  class="tab"
+  class="tab toolButton" classType="Variables"
   [matMenuTriggerFor]="variable"
   aria-label="Tensor Operations"
 >
@@ -7,16 +7,19 @@
 </button>
 
 <mat-menu yPosition="above" #variable="matMenu">
-  <span mat-menu-item class="tab" (click)="createVariable('flow')">
+  <span mat-menu-item class="tab toolButton" classType="Variable:flow"
+  (click)="createVariable('flow')">
     Variable
   </span>
-  <span mat-menu-item class="tab" (click)="createVariable('constant')">
+  <span mat-menu-item class="tab toolButton" classType="VarConstant" (click)="createVariable('constant')">
     Constant
   </span>
-  <span mat-menu-item class="tab" (click)="createVariable('parameter')">
+  <span mat-menu-item class="tab toolButton"
+        classType="Variable:parameter" (click)="createVariable('parameter')">
     Parameter
   </span>
-  <span mat-menu-item class="tab" (click)="openVariablePane()">
+  <span mat-menu-item class="tab toolButton"
+    classType="VariableBrowser" (click)="openVariablePane()">
     Browser
   </span>
 </mat-menu>

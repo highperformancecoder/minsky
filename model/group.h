@@ -69,6 +69,9 @@ namespace minsky
     WirePtr addWire(const std::weak_ptr<Port>& from,
                     const std::weak_ptr<Port>& to, 
                     const std::vector<float>& coords);
+    /// rename variable so that it maintains most general scope possible 
+    void renameVar(const GroupPtr& origGroup, VariableBase& v);
+    CLASSDESC_ACCESS(GroupItems);
     friend class Canvas;
   public:
     Items items;
@@ -96,7 +99,6 @@ namespace minsky
       bookmarks.clear();
     }
     bool empty() const {return items.empty() && groups.empty() && wires.empty();}
-
 
     /// tests that groups are arranged heirarchically without any recurrence
     virtual bool nocycles() const=0; 
@@ -181,7 +183,6 @@ namespace minsky
     /// adjust wire's group to be the least common ancestor of its ports
     static void adjustWiresGroup(Wire& w);
 
-    
     /// total number of items in this and child groups
     std::size_t numItems() const; 
     /// total number of wires in this and child groups
@@ -233,7 +234,7 @@ namespace minsky
     /// etc in this group. Returns the zoom scale (aka local zoom) of
     /// the contained items, or 1 if the group is empty.
     float contentBounds(double& x0, double& y0, double& x1, double& y1) const;
-    
+
   public:
     std::string title;
     std:: string name() const override {return title;}
@@ -308,6 +309,7 @@ namespace minsky
     /// returns true if this is higher in the heirarchy than the argument
     /// this->higher(*this) is false
     bool higher(const Group&) const;
+
     /// return level in the heirarchy
     unsigned level() const;
 

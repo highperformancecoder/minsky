@@ -259,15 +259,13 @@ export class CommunicationService {
     this.syncRunUntilTime();
     this.isSimulationOn=true;
     this.simulate();
+    this.electronService.minsky.dimensionalAnalysis();
   }
+  
   private simulate() {
     setTimeout(async () => {
       if (this.isSimulationOn) {
-        const [
-          t,
-          deltaT,
-        ] = await this.electronService.minsky.step();
-
+        const [t, deltaT] = await this.electronService.minsky.step();
         this.updateSimulationTime(t, deltaT);
         this.simulate();
       }
@@ -283,12 +281,11 @@ export class CommunicationService {
     this.isSimulationOn = false;
     await this.electronService.minsky.running(false);
 
-    await this.electronService.minsky.reset();
-
+    this.electronService.minsky.reset();
+    this.electronService.minsky.dimensionalAnalysis();
+    
     const t = await this.electronService.minsky.t();
-
     const deltaT = await this.electronService.minsky.deltaT();
-
     this.updateSimulationTime(t, deltaT);
   }
 
@@ -305,14 +302,14 @@ export class CommunicationService {
 
   private async resetZoom(centerX: number, centerY: number) {
     let minsky=this.electronService.minsky;
-    const zoomFactor = await minsky.model.zoomFactor();
+    const zoomFactor = await minsky.canvas.model.zoomFactor();
     if (zoomFactor > 0) {
-      const relZoom = await minsky.model.relZoom();
+      const relZoom = await minsky.canvas.model.relZoom();
 
       //if relZoom = 0 ;use relZoom as 1 to avoid returning infinity
       minsky.canvas.zoom(centerX,centerY,1 / (relZoom || 1));
     } else {
-      minsky.model.setZoom(1);
+      minsky.canvas.model.setZoom(1);
     }
 
     minsky.canvas.recentre();
@@ -321,7 +318,7 @@ export class CommunicationService {
 
   private async zoomToFit(canvasWidth: number, canvasHeight: number) {
      let minsky=this.electronService.minsky;
-    const cBounds = await minsky.model.cBounds();
+    const cBounds = await minsky.canvas.model.cBounds();
 
     const zoomFactorX = canvasWidth / (cBounds[2] - cBounds[0]);
     const zoomFactorY = canvasHeight / (cBounds[3] - cBounds[1]);
@@ -398,7 +395,7 @@ export class CommunicationService {
         return;
       }
 
-      const yoffs=this.electronService.isMacOS()? 5: 0; // why, o why, Mac?
+      const yoffs=this.electronService.isMacOS()? -15: 0; // why, o why, Mac?
 
       let minsky=this.electronService.minsky;
       switch (type) {
@@ -598,7 +595,7 @@ export class CommunicationService {
         return;
       }
 
-      if (multipleKeyString.charAt(0) === '-') {
+      if (!isNaN(Number(multipleKeyString))) {
         this.showCreateVariablePopup('Create Constant', {
           type: 'constant',
           value: multipleKeyString,
@@ -606,26 +603,19 @@ export class CommunicationService {
         return;
       }
 
-      const operationsMap = await this.electronService.minsky.availableOperations();
-      const operation = operationsMap[multipleKeyString.toLowerCase()];
+      const operations = await this.electronService.minsky.availableOperations();
+      const operation = multipleKeyString.toLowerCase();
 
-      if (operation) {
+      if (operations.includes(operation)) {
         this.addOperation(operation);
         return;
       }
 
-      const value = parseFloat(multipleKeyString);
-      const isConstant = !isNaN(value);
-      const popupTitle = isConstant
-        ? 'Create Constant'
-        : 'Specify Variable Name';
+      const popupTitle = 'Specify Variable Name';
       const params: TypeValueName = {
-        type: isConstant ? 'constant' : 'flow',
+        type: 'flow',
         name: multipleKeyString,
       };
-      if (isConstant) {
-        params.value = value;
-      }
 
       this.showCreateVariablePopup(popupTitle, params);
       return;
@@ -638,4 +628,5 @@ export class CommunicationService {
       mouseY: this.mouseY,
     });
   }
+
 }

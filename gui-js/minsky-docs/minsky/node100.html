@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>inner product </TITLE>
-<META NAME="description" CONTENT="inner product ">
+<TITLE>running product </TITLE>
+<META NAME="description" CONTENT="running product ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,79 +16,106 @@
 
 <LINK REL="next" HREF="node101.html">
 <LINK REL="previous" HREF="node99.html">
-<LINK REL="up" HREF="node86.html">
+<LINK REL="up" HREF="node90.html">
 <LINK REL="next" HREF="node101.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1362"
+<A NAME="tex2html1376"
   HREF="node101.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1360"
-  HREF="node86.html">
+<A NAME="tex2html1374"
+  HREF="node90.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1354"
+<A NAME="tex2html1368"
   HREF="node99.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1363"
-  HREF="node101.html">outer product</A>
-<B> Up:</B> <A NAME="tex2html1361"
-  HREF="node86.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1355"
-  HREF="node99.html">gather</A>
+<B> Next:</B> <A NAME="tex2html1377"
+  HREF="node101.html">difference</A>
+<B> Up:</B> <A NAME="tex2html1375"
+  HREF="node90.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1369"
+  HREF="node99.html">running sum</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004214000000000000000"></A><A NAME="Operation:innerProduct"></A>
+<H2><A NAME="SECTION004210000000000000000"></A>
+<A NAME="Operation:runningProduct"></A>
 <BR>
-inner product <SPAN CLASS="MATH"><IMG
- WIDTH="8" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+running product <SPAN CLASS="MATH"><IMG
+ WIDTH="34" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
  SRC="img22.png"
- ALT="$\cdot $"></SPAN>
-</H2>
-Computes
+ ALT="$\prod +$"></SPAN>
+</H2> Computes the running
+product of the input tensor along a given axis. For example, take
+this rank 2 tensor:
+
+<P>
 <BR><P></P>
 <DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
-z_{i_1,\ldots,i_{r_x-1},j_1,\ldots,j_{r_y-1}} =
-\sum_k x_{i_1\ldots,i_{a-1},k,i_{a+1}\ldots,i_{r_x-1}}
-y_{j_1,\ldots,j_{r_y-1},k},
+\left(
+  \begin{array}{cccc}
+    1& 2& 3& 4\\
+    5& 4& 3& 2\\
+    8& 7& 6& 5
+  \end{array}
+  \right)
 \end{displaymath}
  -->
 
 <IMG
- WIDTH="417" HEIGHT="45" BORDER="0"
- SRC="img196.png"
+ WIDTH="116" HEIGHT="64" BORDER="0"
+ SRC="img194.png"
  ALT="\begin{displaymath}
-z_{i_1,\ldots,i_{r_x-1},j_1,\ldots,j_{r_y-1}} =
-\sum_k x_{i_...
-...i_{a-1},k,i_{a+1}\ldots,i_{r_x-1}}
-y_{j_1,\ldots,j_{r_y-1},k},
+\left(
+\begin{array}{cccc}
+1&amp; 2&amp; 3&amp; 4 \\
+5&amp; 4&amp; 3&amp; 2 \\
+8&amp; 7&amp; 6&amp; 5
+\end{array} \right)
 \end{displaymath}">
 </DIV>
 <BR CLEAR="ALL">
 <P></P>
-where <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img112.png"
- ALT="$a$"></SPAN> is the given axis, and <SPAN CLASS="MATH"><IMG
- WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img197.png"
- ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img198.png"
- ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img55.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img56.png"
- ALT="$y$"></SPAN> respectively.
+
+<P>
+The running product of this tensor, along the horizontal dimension, is: 
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\left(
+  \begin{array}{cccc}
+    1& 2& 6& 24\\
+    5& 20& 60& 120\\
+    8& 56& 336& 1680
+  \end{array}
+  \right)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="163" HEIGHT="64" BORDER="0"
+ SRC="img196.png"
+ ALT="\begin{displaymath}
+\left(
+\begin{array}{cccc}
+1&amp; 2&amp; 6&amp; 24\\
+5&amp; 20&amp; 60&amp; 120\\
+8&amp; 56&amp; 336&amp; 1680
+\end{array} \right)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
 <BR><HR>

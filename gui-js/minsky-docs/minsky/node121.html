@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Ravel</TITLE>
-<META NAME="description" CONTENT="Ravel">
+<TITLE>Godley Tables</TITLE>
+<META NAME="description" CONTENT="Godley Tables">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,6 +14,7 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node122.html">
 <LINK REL="previous" HREF="node120.html">
 <LINK REL="up" HREF="node48.html">
 <LINK REL="next" HREF="node122.html">
@@ -22,43 +23,102 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1572"
+<A NAME="tex2html1589"
   HREF="node122.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1570"
+<A NAME="tex2html1587"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1566"
+<A NAME="tex2html1581"
   HREF="node120.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1573"
-  HREF="node122.html">User defined functions</A>
-<B> Up:</B> <A NAME="tex2html1571"
+<B> Next:</B> <A NAME="tex2html1590"
+  HREF="node122.html">Context Menu</A>
+<B> Up:</B> <A NAME="tex2html1588"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1567"
-  HREF="node120.html">Bookmarks</A>
+<B> Previous:</B> <A NAME="tex2html1582"
+  HREF="node120.html">Note Widget</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004160000000000000000"></A><A NAME="Ravel"></A><A NAME="Lock"></A>
+<H1><A NAME="SECTION004110000000000000000"></A><A NAME="godley"></A><A NAME="GodleyIcon"></A>
 <BR>
-Ravel
+Godley Tables
 </H1>
 
 <P>
-Ravel is a skunkworks project enabling the interactive manipulation of
-multidimensional datacubes. This is a commercial technology, and you
-will need a license to use the software, as well as a copy of the
-Ravel plugin. This is still under active development, but you can read
-some more about it at <A NAME="tex2html24"
-  HREF="https://ravelation.hpcoders.com.au">Ravelation</A>.
+Godley tables describes sets of financial flows from the point of view
+of a particular economic agent, such as a bank. The columns of the
+table represent accounts (possibly aggregated), which are treated as
+integration variables by the system. Accounts may be assets,
+liabilities or equities. Assets may appear as liabilities in another
+agent's Godley table, and vice versa, with the sense of the financial
+flows treated oppositely (a credit flow increasing the asset of one
+entity will appear as a debit flow, increasing the value of a
+liability). Transfers between accounts should satisfy the <EM>  accounting equation</EM><A NAME="2636"></A>
+(Assets-Liabilities-Equities = 0). So if the transfer is between an
+asset and a liability, then it should appear with the same sign (both
+positive or both negative), otherwise between two accounts of the same
+type, or between a liability and an equity, the terms should have
+opposite signs.
 
 <P>
-The Lock widget is used to fix the output of a Ravel at a particular
-point in time, making it easy to compare two different ravel settings.
-<BR><HR>
+Instead of signed flows, one can optionally use CR and DR prefixes, as
+specified in the options panel. Each row of the table should have have
+one CR entry, and one DR entry. The row sum column should be zero if
+it is done correctly.
+
+<P>
+The first row specifies the stock variables, after which follow the
+flow rows. Usually, the row marked &ldquo;Initial Conditions&rdquo; comes next,
+but may be placed in any position. These specify the initial
+conditions of the stock variables, and may refer to a multiple of
+another variable, just like the <A HREF="node109.html#var:init">initial condition
+field</A>, or just be a numerical value.
+
+<P>
+Finally come the flows. The first column is a simple textual label
+(the phrase &ldquo;Initial Conditions&rdquo;, regardless of capitalisation, is a
+reserved phrase for setting stock variable initial conditions)
+identifying the flow. The flows themselves are written as a numerical
+multiplier times a flow variable. For example, if you wanted to transfer
+an amount between the asset and liability column, you might write
+&ldquo;Amount" in both columns, which would satisfy the equation A-L-E=0.
+It would also be possible to write &ldquo;2Amount" in the asset column, 
+along with &ldquo;Amount" in both the Liability and Equity columns. This would
+still satisfy A-L-E=0.
+
+<P>
+The Godley table also shows the value of the entered variable, displayed within the table.
+For example, if you set &ldquo;Amount" to equal the value of system time, on opening
+the Godley table, wherever you entered &ldquo;Amount" in the table the cell would show
+&ldquo;Amount = 0.00" if the system time was set to 0.00. This provides a helpful
+tool for displaying the value of the variable at that point in the simulation.
+This feature can be enabled or disabled in the preferences panel.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1589"
+  HREF="node122.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1587"
+  HREF="node48.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1581"
+  HREF="node120.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1590"
+  HREF="node122.html">Context Menu</A>
+<B> Up:</B> <A NAME="tex2html1588"
+  HREF="node48.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1582"
+  HREF="node120.html">Note Widget</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

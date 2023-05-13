@@ -438,17 +438,6 @@ namespace minsky
        });
     ++progressState;
 
-    try
-      {
-        dimensionalAnalysis();
-      }
-    catch (const std::exception& ex)
-      {
-        // do not block reset() on dimensional analysis failure
-        message(ex.what());
-      }
-    ++progressState;
-  
     EvalOpBase::timeUnit=timeUnit;
 
     MathDAG::SystemOfEquations system(*this);
@@ -661,10 +650,9 @@ namespace minsky
            [&](Items& m, Items::iterator i)
            {
              if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
-               if (&gi->table!=&srcTable) // skip source table
-                 for (size_t col=1; col<gi->table.cols(); col++)
-                   if (trimWS(gi->table.cell(0,col))==colName) // we have a match
-                     balanceDuplicateColumns(*gi, col);
+               for (size_t col=1; col<gi->table.cols(); col++)
+                 if (trimWS(gi->table.cell(0,col))==colName) // we have a match
+                   balanceDuplicateColumns(*gi, col);
              return false;
            });
       }

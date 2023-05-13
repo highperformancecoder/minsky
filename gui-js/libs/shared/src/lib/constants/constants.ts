@@ -31,6 +31,7 @@ export const events = {
   GET_PREFERENCES: 'get-preferences',
   GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
   GODLEY_VIEW_IMPORT_STOCK: 'godley-view-import-stock',
+  HELP_FOR: 'help-for',
   IMPORT_CSV: 'import-csv',
   INIT_MENU_FOR_GODLEY_VIEW: 'init-menu-for-godley-view',
   KEY_PRESS: 'key-press',

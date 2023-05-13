@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Dimensional Analysis</TITLE>
-<META NAME="description" CONTENT="Dimensional Analysis">
+<TITLE>Sheet Widget</TITLE>
+<META NAME="description" CONTENT="Sheet Widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,114 +23,46 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1554"
+<A NAME="tex2html1569"
   HREF="node120.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1552"
+<A NAME="tex2html1567"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1546"
+<A NAME="tex2html1561"
   HREF="node118.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1555"
-  HREF="node120.html">Bookmarks</A>
-<B> Up:</B> <A NAME="tex2html1553"
+<B> Next:</B> <A NAME="tex2html1570"
+  HREF="node120.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html1568"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1547"
-  HREF="node118.html">Canvas background</A>
+<B> Previous:</B> <A NAME="tex2html1562"
+  HREF="node118.html">Plot widget</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004140000000000000000">
-Dimensional Analysis</A>
-</H1>
-
-<P>
-Dimensional analysis is the idea of attaching units of measurement
-(eg metre or second) to the quantities being computed. It provides an 
-additional constraint that the system must satisfy, reducing the chance 
-of wiring errors. Two different units being added together will throw up 
-an error - you cannot add 2 metres to 3 kilograms. But it should be 
-possible add 2 metres to 3 feet, and get the correct answer. You may need 
-to explicitly add a multiply operation to convert from one unit to another,
-for example, dividing the 3 feet by 3.281 before adding it to the 2 metres,
-providing a total of 2.914 meters.
-
-<P>
-<SPAN  CLASS="textbf">Using Dimensional Analysis in Minsky</SPAN>
-
-<P>
-To attach units to quantities in Minsky, you use the units field of the 
-variable/parameters/constants edit dialog box. Each word typed in this box 
-describes a separate unit. &ldquo;&rdquo; followed by an integer is used to 
-represent a power. Finally, a single &ldquo;/&rdquo; indicates that the following units 
-are on the denominator, dividing the first set of units by the second. So 
-to represent the unit of acceleration, you can equivalently type all of the following:
-
-<P>
-
-<UL>
-<LI><code>m/s^2</code>
-</LI>
-<LI><code>m/s s</code>
-</LI>
-<LI><code>m/s^-2</code>
-</LI>
-</UL>
-
-<P>
-Or spelling it out in full:
-
-<P>
-
-<UL>
-<LI><code>metre/second^2</code>
-</LI>
-<LI><code>metre second^-2</code>
-</LI>
-<LI><code>metre / second second</code>
-</LI>
-</UL>
-
-<P>
-Note that metre and m are distinctly different units in Minsky.
-
-<P>
-Consider the network introduced in the <A HREF="node2.html#intro:new">New to System Dynamics</A>
-section of the Minsky manual. For GDP, one could enter $/year for the units. Labor 
-Productivity should be expressed in terms of $ per person year. If the system
-does not accept $/person year, you can enter this as <code>$ person^-1 year^-1</code>. 
-Finally, Population has units of person. Press reset, and the Workers variable 
-automatically has units of person, and EmpRate is dimensionless.
-
-<P>
-All function objects require dimensionless inputs. You can use dimensional 
-analysis to prevent incorrectly feeding a degree measurement into a sin, by 
-requiring them to be multiplied by a radiansPerDegree parameter.
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1554"
-  HREF="node120.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1552"
-  HREF="node48.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1546"
-  HREF="node118.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<H1><A NAME="SECTION00490000000000000000"></A>
+ <A NAME="Sheet"></A>
 <BR>
-<B> Next:</B> <A NAME="tex2html1555"
-  HREF="node120.html">Bookmarks</A>
-<B> Up:</B> <A NAME="tex2html1553"
-  HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1547"
-  HREF="node118.html">Canvas background</A></DIV>
-<!--End of Navigation Panel-->
+Sheet Widget
+</H1> The Sheet widget displays input data as a
+ number, rather than as a 2D graph, as in the case of the plot widget.
+ To use the Sheet widget, simply wire a variable or other item on your
+ canvas to the left-hand side of the sheet widget box. This will diplay
+ the input data as a number. Note that only one wire can be connected to
+ a sheet, as the sheet can only display a single input value.
+
+<P>
+The sheet widget can also display rank 0, 1 and rank 2 tensors. These ranks are
+ single values, a string of values, or a 2D matrix of values, respectively.
+ For example, if you create a parameter, and set the initial condition to rand(3,5)
+ (for reference, see section (&#167;<A HREF="node110.html#tensor-init">4.4.3</A>) ), you can wire that into a sheet.
+ The sheet will then diplay the data in a grid display within the widget box.
+
+<P>
+<BR><HR>
 
 </BODY>
 </HTML>

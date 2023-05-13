@@ -87,7 +87,7 @@ export class ApplicationMenuManager {
               }
               const filePath = _dialog.filePaths[0].toString();
 
-              CommandsManager.openNamedFile(filePath);
+              await CommandsManager.openNamedFile(filePath);
             } catch (error) {
               console.error(error);
             }
@@ -293,6 +293,12 @@ export class ApplicationMenuManager {
   }
 
   private static getInsertMenu(): MenuItemConstructorOptions {
+    let varDialogParams={
+      width: 400,
+      height: 500,
+      title: 'Create',
+      url: '',
+    };
     return {
       label: 'Insert',
       id: 'insert',
@@ -314,34 +320,22 @@ export class ApplicationMenuManager {
             {
               label: 'variable',
               click() {
-                WindowManager.createPopupWindowWithRouting({
-                  width: 400,
-                  height: 450,
-                  title: 'Specify variable name',
-                  url: `#/headless/menu/insert/create-variable?type=flow`,
-                });
+                varDialogParams.url='#/headless/menu/insert/create-variable?type=flow';
+                WindowManager.createPopupWindowWithRouting(varDialogParams);
               },
             },
             {
               label: 'constant',
               click() {
-                WindowManager.createPopupWindowWithRouting({
-                  width: 400,
-                  height: 450,
-                  title: 'Specify variable name',
-                  url: `#/headless/menu/insert/create-variable?type=constant`,
-                });
+                varDialogParams.url='#/headless/menu/insert/create-variable?type=constant';
+                WindowManager.createPopupWindowWithRouting(varDialogParams);
               },
             },
             {
               label: 'parameter',
               click() {
-                WindowManager.createPopupWindowWithRouting({
-                  width: 400,
-                  height: 450,
-                  title: 'Specify variable name',
-                  url: `#/headless/menu/insert/create-variable?type=parameter`,
-                });
+                varDialogParams.url='#/headless/menu/insert/create-variable?type=parameter';
+                WindowManager.createPopupWindowWithRouting(varDialogParams);
               },
             },
           ],
@@ -550,7 +544,7 @@ export class ApplicationMenuManager {
       role: 'help',
       submenu: [
         {
-          label: 'Minsky Documentation',
+          label: 'Minsky Documentation (F1)',
           click() {CommandsManager.loadHelpFile("minsky");}
         },
       ],

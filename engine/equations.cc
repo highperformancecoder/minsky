@@ -260,28 +260,27 @@ namespace MathDAG
                   return;
                 }
         }
-      
-      if (!argIdx.empty() && !argIdx[0].empty())
+
         {
           size_t i=0;
           if (accum==OperationType::add)
-            while (i<argIdx[0].size() && argIdx[0][i].isZero())
+            while (!argIdx.empty() && i<argIdx[0].size() && argIdx[0][i].isZero())
               i++;
-          if (i<argIdx[0].size())
+          if (!argIdx.empty() && i<argIdx[0].size())
             {
               ev.push_back(EvalOpPtr(OperationType::copy, state, r, argIdx[0][i]));
               for (++i; i<argIdx[0].size(); ++i)
                 if (accum!=OperationType::add || !argIdx[0][i].isZero())
                   ev.push_back(EvalOpPtr(accum, state, r, r, argIdx[0][i]));
             }
+          else
+            {
+              //TODO: could be cleaned up if we don't need to support constant operators
+              ev.push_back(EvalOpPtr(OperationType::constant, state, r));
+              dynamic_cast<ConstantEvalOp&>(*ev.back()).value=groupIdentity;
+            }
         }
-      else
-        {
-          //TODO: could be cleaned up if we don't need to support constant operators
-          ev.push_back(EvalOpPtr(OperationType::constant, state, r));
-          dynamic_cast<ConstantEvalOp&>(*ev.back()).value=groupIdentity;
-        }
-
+ 
       if (argIdx.size()>1)
         {
           if (argIdx[1].size()==1)

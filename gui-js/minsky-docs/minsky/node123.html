@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Introduction</TITLE>
-<META NAME="description" CONTENT="Introduction">
+<TITLE>Canvas background</TITLE>
+<META NAME="description" CONTENT="Canvas background">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,61 +16,82 @@
 
 <LINK REL="next" HREF="node124.html">
 <LINK REL="previous" HREF="node122.html">
-<LINK REL="up" HREF="node122.html">
+<LINK REL="up" HREF="node48.html">
 <LINK REL="next" HREF="node124.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1603"
+<A NAME="tex2html1609"
   HREF="node124.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1601"
-  HREF="node122.html">
+<A NAME="tex2html1607"
+  HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1595"
+<A NAME="tex2html1601"
   HREF="node122.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1604"
-  HREF="node124.html">Capabilities</A>
-<B> Up:</B> <A NAME="tex2html1602"
-  HREF="node122.html">User defined functions</A>
-<B> Previous:</B> <A NAME="tex2html1596"
-  HREF="node122.html">User defined functions</A>
+<B> Next:</B> <A NAME="tex2html1610"
+  HREF="node124.html">Dimensional Analysis</A>
+<B> Up:</B> <A NAME="tex2html1608"
+  HREF="node48.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1602"
+  HREF="node122.html">Context Menu</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00510000000000000000">
-Introduction</A>
+<H1><A NAME="SECTION004130000000000000000">
+Canvas background</A>
 </H1>
-The <A NAME="tex2html26"
-  HREF="https://www.partow.net/programming/exprtk/index.html">C++ Mathematical Expression  Toolkit Library (ExprTk)</A>
-is  a simple
-to  use,   easy  to   integrate  and   extremely  efficient   run-time
-mathematical  expression parsing  and evaluation  engine. The  parsing
-engine  supports numerous  forms  of  functional and  logic processing
-semantics and is easily extensible.
 
 <P>
-With Minsky's user defined functions, expressions can refer to Minsky
-variables accessible from the current scope (ie local Minsky variables
-will hide global variables), and also parameters declared as part of
-the function name. One can also call other user defined functions,
-which is the only way a user defined function with more than 2
-parameters can be used. For 0-2 parameters, user defined functions can
-be wired into a Minsky computation.
+The canvas is not simply an inert place for the canvas items to
+exist. There is also a background context menu, giving access to the
+edit menu functionality such as cut/copy/paste, and also keyboard entry.
 
 <P>
-ExprTk identifiers (such as variable names and function names) consist
-of alphanumeric characters plus '_' and '.'. They must start with a
-letter. Minsky is reserving the underscore and full stop to act as an
-escape sequence, in order to refer to the full range of possible
-Minsky variable identifiers, including all unicode characters. This
-section will be updated once that feature is in place -- for now,
-please avoid using those characters in identifiers.
+The following keystrokes insert an operation
+
+<P>
+<TABLE CELLPADDING=3>
+<TR><TD ALIGN="RIGHT"><code>+</code></TD>
+<TD ALIGN="LEFT">add</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>-</code></TD>
+<TD ALIGN="LEFT">subtract</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>*</code></TD>
+<TD ALIGN="LEFT">multiply</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code></code>/</TD>
+<TD ALIGN="LEFT">divide</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>^</code></TD>
+<TD ALIGN="LEFT">pow</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>%</code></TD>
+<TD ALIGN="LEFT">percent operator</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>&amp;</code></TD>
+<TD ALIGN="LEFT">integral</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>=</code></TD>
+<TD ALIGN="LEFT">Godley table</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>@</code></TD>
+<TD ALIGN="LEFT">plot</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>#</code></TD>
+<TD ALIGN="LEFT">start a text comment, finish with return</TD>
+</TR>
+</TABLE>
+
+<P>
+Typing any other character, then return will insert an operation (if
+the name matches), or otherwise a variable with that name.
 
 <P>
 <BR><HR>

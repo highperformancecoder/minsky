@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>running product </TITLE>
-<META NAME="description" CONTENT="running product ">
+<TITLE>all</TITLE>
+<META NAME="description" CONTENT="all">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,106 +16,38 @@
 
 <LINK REL="next" HREF="node97.html">
 <LINK REL="previous" HREF="node95.html">
-<LINK REL="up" HREF="node86.html">
+<LINK REL="up" HREF="node90.html">
 <LINK REL="next" HREF="node97.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1322"
+<A NAME="tex2html1336"
   HREF="node97.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1320"
-  HREF="node86.html">
+<A NAME="tex2html1334"
+  HREF="node90.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1314"
+<A NAME="tex2html1328"
   HREF="node95.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1323"
-  HREF="node97.html">difference</A>
-<B> Up:</B> <A NAME="tex2html1321"
-  HREF="node86.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1315"
-  HREF="node95.html">running sum</A>
+<B> Next:</B> <A NAME="tex2html1337"
+  HREF="node97.html">infindex</A>
+<B> Up:</B> <A NAME="tex2html1335"
+  HREF="node90.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1329"
+  HREF="node95.html">any</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004210000000000000000"></A>
-<A NAME="Operation:runningProduct"></A>
+<H2><A NAME="SECTION00426000000000000000"></A><A NAME="Operation:all"></A>
 <BR>
-running product <SPAN CLASS="MATH"><IMG
- WIDTH="34" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img20.png"
- ALT="$\prod +$"></SPAN>
-</H2> Computes the running
-product of the input tensor along a given axis. For example, take
-this rank 2 tensor:
-
-<P>
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-\left(
-  \begin{array}{cccc}
-    1& 2& 3& 4\\
-    5& 4& 3& 2\\
-    8& 7& 6& 5
-  \end{array}
-  \right)
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="116" HEIGHT="64" BORDER="0"
- SRC="img186.png"
- ALT="\begin{displaymath}
-\left(
-\begin{array}{cccc}
-1&amp; 2&amp; 3&amp; 4 \\
-5&amp; 4&amp; 3&amp; 2 \\
-8&amp; 7&amp; 6&amp; 5
-\end{array} \right)
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-
-<P>
-The running product of this tensor, along the horizontal dimension, is: 
-
-<P>
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-\left(
-  \begin{array}{cccc}
-    1& 2& 6& 24\\
-    5& 20& 60& 120\\
-    8& 56& 336& 1680
-  \end{array}
-  \right)
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="163" HEIGHT="64" BORDER="0"
- SRC="img188.png"
- ALT="\begin{displaymath}
-\left(
-\begin{array}{cccc}
-1&amp; 2&amp; 6&amp; 24\\
-5&amp; 20&amp; 60&amp; 120\\
-8&amp; 56&amp; 336&amp; 1680
-\end{array} \right)
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
+all
+</H2> Return 1 if all values
+along a given axis are nonzero, otherwise return 0 if any are zero. 
 
 <P>
 <BR><HR>

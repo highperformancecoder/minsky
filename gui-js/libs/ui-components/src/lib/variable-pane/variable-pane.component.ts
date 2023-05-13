@@ -12,6 +12,7 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import {
+  events,
   VariablePane,
 } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -71,7 +72,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     const clientRect = this.variablePaneContainer.getBoundingClientRect();
 
     this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = 20;
+    this.topOffset = this.electronService.isMacOS()? -40: 20; // why, o why, Mac?
     
     this.height = Math.round(this.variablePaneContainer.clientHeight);
     this.width = Math.round(this.variablePaneContainer.clientWidth-this.topOffset);
@@ -103,23 +104,25 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       'mousemove'
     ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
+    // vertical offset to allow room for the filter buttons
+    const offset=this.electronService.isMacOS()? 20: -15; // why, o why, Mac?
     this.mouseMove$.subscribe((event: MouseEvent) => {
       const { clientX, clientY } = event;
       this.mouseX = clientX;
       this.mouseY = clientY;
-      this.variablePane.mouseMove(clientX,clientY);
+      this.variablePane.mouseMove(clientX,clientY+offset);
       this.variablePane.requestRedraw();
     });
 
     this.variablePaneContainer.addEventListener('mousedown', (event) => {
       const { clientX, clientY } = event;
-      this.variablePane.mouseDown(clientX,clientY);
+      this.variablePane.mouseDown(clientX,clientY+offset);
       this.variablePane.requestRedraw();
     });
 
     this.variablePaneContainer.addEventListener('mouseup', (event) => {
       const { clientX, clientY } = event;
-      this.variablePane.mouseUp(clientX,clientY);
+      this.variablePane.mouseUp(clientX,clientY+offset);
       this.variablePane.requestRedraw();
     });
 
@@ -130,15 +133,17 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
 
   onKeyDown =  (event: KeyboardEvent) => {
     if (event.shiftKey) {
+      document.body.style.cursor='grab';
       this.variablePane.shift(true);
       this.variablePane.requestRedraw();
     }
+    if (event.code==='F1')
+      this.electronService.send(events.HELP_FOR, {classType:'VariableBrowser'});
   };
   onKeyUp = (event: KeyboardEvent) => {
-      if (event.shiftKey) {
-        this.variablePane.shift(false);
-        this.variablePane.requestRedraw();
-      }
+    document.body.style.cursor='default';
+    this.variablePane.shift(false);
+    this.variablePane.requestRedraw();
   };
 
   select(id) {

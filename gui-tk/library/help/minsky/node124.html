@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Capabilities</TITLE>
-<META NAME="description" CONTENT="Capabilities">
+<TITLE>Dimensional Analysis</TITLE>
+<META NAME="description" CONTENT="Dimensional Analysis">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,114 +16,121 @@
 
 <LINK REL="next" HREF="node125.html">
 <LINK REL="previous" HREF="node123.html">
-<LINK REL="up" HREF="node122.html">
+<LINK REL="up" HREF="node48.html">
 <LINK REL="next" HREF="node125.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1613"
+<A NAME="tex2html1619"
   HREF="node125.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1611"
-  HREF="node122.html">
+<A NAME="tex2html1617"
+  HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1605"
+<A NAME="tex2html1611"
   HREF="node123.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1614"
-  HREF="node125.html">Example expressions</A>
-<B> Up:</B> <A NAME="tex2html1612"
-  HREF="node122.html">User defined functions</A>
-<B> Previous:</B> <A NAME="tex2html1606"
-  HREF="node123.html">Introduction</A>
+<B> Next:</B> <A NAME="tex2html1620"
+  HREF="node125.html">Bookmarks</A>
+<B> Up:</B> <A NAME="tex2html1618"
+  HREF="node48.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1612"
+  HREF="node123.html">Canvas background</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00520000000000000000">
-Capabilities</A>
+<H1><A NAME="SECTION004140000000000000000">
+Dimensional Analysis</A>
 </H1>
-The  ExprTk expression  evaluator supports  the following  fundamental
-arithmetic operations, functions and processes:
 
 <P>
-<DL>
-<DT><STRONG>Types:</STRONG></DT>
-<DD>Scalar, Vector, String
+Dimensional analysis is the idea of attaching units of measurement
+(eg metre or second) to the quantities being computed. It provides an 
+additional constraint that the system must satisfy, reducing the chance 
+of wiring errors. Two different units being added together will throw up 
+an error - you cannot add 2 metres to 3 kilograms. But it should be 
+possible add 2 metres to 3 feet, and get the correct answer. You may need 
+to explicitly add a multiply operation to convert from one unit to another,
+for example, dividing the 3 feet by 3.281 before adding it to the 2 metres,
+providing a total of 2.914 meters.
 
 <P>
-</DD>
-<DT><STRONG>Basic operators:</STRONG></DT>
-<DD><code>+, -, *, /, %, ^</code>
+<SPAN  CLASS="textbf">Using Dimensional Analysis in Minsky</SPAN>
 
 <P>
-</DD>
-<DT><STRONG>Assignment:</STRONG></DT>
-<DD><code>:=, +=, -=, *=, /=, %=</code>
+To attach units to quantities in Minsky, you use the units field of the 
+variable/parameters/constants edit dialog box. Each word typed in this box 
+describes a separate unit. &ldquo;&rdquo; followed by an integer is used to 
+represent a power. Finally, a single &ldquo;/&rdquo; indicates that the following units 
+are on the denominator, dividing the first set of units by the second. So 
+to represent the unit of acceleration, you can equivalently type all of the following:
 
 <P>
-</DD>
-<DT><STRONG>Equalities &amp; Inequalities:</STRONG></DT>
-<DD><code>=, ==, &lt;&gt;, !=, &lt;, &lt;=, &gt;, &gt;=</code>
+
+<UL>
+<LI><code>m/s^2</code>
+</LI>
+<LI><code>m/s s</code>
+</LI>
+<LI><code>m/s^-2</code>
+</LI>
+</UL>
 
 <P>
-</DD>
-<DT><STRONG>Logic operators:</STRONG></DT>
-<DD>and, mand, mor, nand, nor, not, or, shl, shr,
-                       xnor, xor, true, false
+Or spelling it out in full:
 
 <P>
-</DD>
-<DT><STRONG>Functions:</STRONG></DT>
-<DD>abs, avg, ceil, clamp, equal, erf, erfc,  exp,
-                       expm1, floor, frac,  log, log10, log1p,  log2,
-                       logn,  max,  min,  mul,  ncdf,  nequal,  root,
-                       round, roundn, sgn, sqrt, sum, swap, trunc
+
+<UL>
+<LI><code>metre/second^2</code>
+</LI>
+<LI><code>metre second^-2</code>
+</LI>
+<LI><code>metre / second second</code>
+</LI>
+</UL>
 
 <P>
-</DD>
-<DT><STRONG>Trigonometry:</STRONG></DT>
-<DD>acos, acosh, asin, asinh, atan, atanh,  atan2,
-                       cos,  cosh, cot,  csc, sec,  sin, sinc,  sinh,
-                       tan, tanh, hypot, rad2deg, deg2grad,  deg2rad,
-                       grad2deg
+Note that metre and m are distinctly different units in Minsky.
 
 <P>
-</DD>
-<DT><STRONG>Control structures:</STRONG></DT>
-<DD>if-then-else, ternary conditional, switch-case,
-                       return-statement
+Consider the network introduced in the <A HREF="node2.html#intro:new">New to System Dynamics</A>
+section of the Minsky manual. For GDP, one could enter $/year for the units. Labor 
+Productivity should be expressed in terms of $ per person year. If the system
+does not accept $/person year, you can enter this as <code>$ person^-1 year^-1</code>. 
+Finally, Population has units of person. Press reset, and the Workers variable 
+automatically has units of person, and EmpRate is dimensionless.
 
 <P>
-</DD>
-<DT><STRONG>Loop statements:</STRONG></DT>
-<DD>while, for, repeat-until, break, continue
+All function objects require dimensionless inputs. You can use dimensional 
+analysis to prevent incorrectly feeding a degree measurement into a sin, by 
+requiring them to be multiplied by a radiansPerDegree parameter.
 
 <P>
-</DD>
-<DT><STRONG>String processing:</STRONG></DT>
-<DD>in, like, ilike, concatenation
 
-<P>
-</DD>
-<DT><STRONG>Optimisations:</STRONG></DT>
-<DD>constant-folding, simple strength reduction and
-                       dead code elimination
-
-<P>
-</DD>
-<DT><STRONG>Calculus:</STRONG></DT>
-<DD>numerical integration and differentiation
-
-<P>
-</DD>
-</DL>
-
-<P>
-<BR><HR>
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1619"
+  HREF="node125.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1617"
+  HREF="node48.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1611"
+  HREF="node123.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1620"
+  HREF="node125.html">Bookmarks</A>
+<B> Up:</B> <A NAME="tex2html1618"
+  HREF="node48.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1612"
+  HREF="node123.html">Canvas background</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

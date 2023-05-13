@@ -72,7 +72,7 @@ namespace minsky
     bool buttonDisplay() const;
     void toggleButtons(); 
 
-    bool variableDisplay=true;
+    bool variableDisplay=false;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay; update();}
 
     /// table data. Must be declared before editor
@@ -143,8 +143,9 @@ namespace minsky
     /// @param check indicates whether a consistency check is applied
     Units stockVarUnits(const std::string& stockName, bool check) const;
 
+    std::string currency;
     void setCurrency(const std::string& currency) 
-    {for (auto& i: m_stockVars) i->setUnits(currency);}
+    {this->currency=currency; for (auto& i: m_stockVars) i->setUnits(currency);}
       
     void insertControlled(Selection& selection) override;
 

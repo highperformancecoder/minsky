@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Equalities &amp; Inequalities</TITLE>
-<META NAME="description" CONTENT="Equalities &amp; Inequalities">
+<TITLE>Capabilities</TITLE>
+<META NAME="description" CONTENT="Capabilities">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,54 +23,104 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1670"
+<A NAME="tex2html1678"
   HREF="node130.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1668"
+<A NAME="tex2html1676"
   HREF="node127.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1662"
+<A NAME="tex2html1670"
   HREF="node128.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1671"
-  HREF="node130.html">Boolean Operations</A>
-<B> Up:</B> <A NAME="tex2html1669"
-  HREF="node127.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1663"
-  HREF="node128.html">Arithmetic &amp; Assignment Operators</A>
+<B> Next:</B> <A NAME="tex2html1679"
+  HREF="node130.html">Example expressions</A>
+<B> Up:</B> <A NAME="tex2html1677"
+  HREF="node127.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1671"
+  HREF="node128.html">Introduction</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00552000000000000000">
-Equalities &amp; Inequalities</A>
-</H2>
+<H1><A NAME="SECTION00520000000000000000">
+Capabilities</A>
+</H1>
+The  ExprTk expression  evaluator supports  the following  fundamental
+arithmetic operations, functions and processes:
 
 <P>
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">OPERATOR</TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>DEFINITION</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>==</code> or <code>=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x is strictly equal to y. (eg: <code>x == y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>&lt;&gt;</code> or <code>!=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x does not equal y. (eg: <code>x &lt;&gt; y</code> or <code>x != y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>&lt;</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x is less than y. (eg: <code>x &lt; y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>&lt;=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x is less than or equal to y. (eg: <code>x &lt;= y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>&gt;</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x is greater than y. (eg: <code>x &gt; y</code></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>&gt;=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x greater than or equal to y. (eg: <code>x &gt;= y</code>)</TD>
-</TR>
-</TABLE>
+<DL>
+<DT><STRONG>Types:</STRONG></DT>
+<DD>Scalar, Vector, String
+
+<P>
+</DD>
+<DT><STRONG>Basic operators:</STRONG></DT>
+<DD><code>+, -, *, /, %, ^</code>
+
+<P>
+</DD>
+<DT><STRONG>Assignment:</STRONG></DT>
+<DD><code>:=, +=, -=, *=, /=, %=</code>
+
+<P>
+</DD>
+<DT><STRONG>Equalities &amp; Inequalities:</STRONG></DT>
+<DD><code>=, ==, &lt;&gt;, !=, &lt;, &lt;=, &gt;, &gt;=</code>
+
+<P>
+</DD>
+<DT><STRONG>Logic operators:</STRONG></DT>
+<DD>and, mand, mor, nand, nor, not, or, shl, shr,
+                       xnor, xor, true, false
+
+<P>
+</DD>
+<DT><STRONG>Functions:</STRONG></DT>
+<DD>abs, avg, ceil, clamp, equal, erf, erfc,  exp,
+                       expm1, floor, frac,  log, log10, log1p,  log2,
+                       logn,  max,  min,  mul,  ncdf,  nequal,  root,
+                       round, roundn, sgn, sqrt, sum, swap, trunc
+
+<P>
+</DD>
+<DT><STRONG>Trigonometry:</STRONG></DT>
+<DD>acos, acosh, asin, asinh, atan, atanh,  atan2,
+                       cos,  cosh, cot,  csc, sec,  sin, sinc,  sinh,
+                       tan, tanh, hypot, rad2deg, deg2grad,  deg2rad,
+                       grad2deg
+
+<P>
+</DD>
+<DT><STRONG>Control structures:</STRONG></DT>
+<DD>if-then-else, ternary conditional, switch-case,
+                       return-statement
+
+<P>
+</DD>
+<DT><STRONG>Loop statements:</STRONG></DT>
+<DD>while, for, repeat-until, break, continue
+
+<P>
+</DD>
+<DT><STRONG>String processing:</STRONG></DT>
+<DD>in, like, ilike, concatenation
+
+<P>
+</DD>
+<DT><STRONG>Optimisations:</STRONG></DT>
+<DD>constant-folding, simple strength reduction and
+                       dead code elimination
+
+<P>
+</DD>
+<DT><STRONG>Calculus:</STRONG></DT>
+<DD>numerical integration and differentiation
+
+<P>
+</DD>
+</DL>
 
 <P>
 <BR><HR>

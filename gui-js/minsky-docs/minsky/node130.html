@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Boolean Operations</TITLE>
-<META NAME="description" CONTENT="Boolean Operations">
+<TITLE>Example expressions</TITLE>
+<META NAME="description" CONTENT="Example expressions">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,101 +23,79 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1680"
+<A NAME="tex2html1688"
   HREF="node131.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1678"
+<A NAME="tex2html1686"
   HREF="node127.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1672"
+<A NAME="tex2html1680"
   HREF="node129.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1681"
-  HREF="node131.html">General Purpose Functions</A>
-<B> Up:</B> <A NAME="tex2html1679"
-  HREF="node127.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1673"
-  HREF="node129.html">Equalities &amp; Inequalities</A>
+<B> Next:</B> <A NAME="tex2html1689"
+  HREF="node131.html">Copyright notice</A>
+<B> Up:</B> <A NAME="tex2html1687"
+  HREF="node127.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1681"
+  HREF="node129.html">Capabilities</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00553000000000000000">
-Boolean Operations</A>
-</H2>
-
-<P>
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">OPERATOR</TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>DEFINITION</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>true</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True state or any value other than zero (typically 1).</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>false</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>False state, value of exactly zero.</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>and</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical AND, True only if x and y are both true. (eg: <code>x and y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>mand</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Multi-input logical AND, True only if all inputs are true. Left to right short-circuiting of expressions. (eg: <code>mand(x &gt; y, z &lt; w, u or v, w and x)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>mor</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Multi-input logical OR, True if at least one of the inputs
-are true. Left to right short-circuiting of expressions.  (eg:
-<code>mor(x &gt; y, z &lt; w, u or v, w and x)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>nand</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical NAND, True only if either x or y is false. (eg: <code>x nand y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>nor</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical NOR, True only if the result of x or y is false (eg: <code>x nor y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>not</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical NOT, Negate the logical sense of the input. (eg: <code>not(x and y) == x nand y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>or</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical OR, True if either x or y is true. (eg: <code>x or y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>xor</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical XOR, True only if the logical states of x and y differ.  (eg: <code>x xor y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>xnor</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Logical XNOR, True iff the biconditional of x and y is
-satisfied.  (eg: <code>x xnor y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>&amp;</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Similar to AND but with left to right expression short circuiting optimisation.  (eg: <code>(x &amp; y) == (y and x)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>|</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Similar to OR but with left to right expression short
-circuiting optimisation.  (eg: <code>(x | y) == (y or x)</code>)</TD>
-</TR>
-</TABLE>
+<H1><A NAME="SECTION00530000000000000000">
+Example expressions</A>
+</H1>
+The following is  a short listing  of infix format  based mathematical
+expressions that can be parsed and evaluated using the ExprTk library.
 
 <P>
 
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1680"
-  HREF="node131.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1678"
-  HREF="node127.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1672"
-  HREF="node129.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1681"
-  HREF="node131.html">General Purpose Functions</A>
-<B> Up:</B> <A NAME="tex2html1679"
-  HREF="node127.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1673"
-  HREF="node129.html">Equalities &amp; Inequalities</A></DIV>
-<!--End of Navigation Panel-->
+<UL>
+<LI><code>sqrt(1 - (3 / x^2))</code>
+</LI>
+<LI><code>clamp(-1, sin(2 * pi * x) + cos(y / 2 * pi), +1)</code>
+</LI>
+<LI><code>sin(2.34e-3 * x)</code>
+</LI>
+<LI><code>if(((x[2] + 2) == 3) and ((y + 5) &lt;= 9),1 + w, 2 / z)</code>
+</LI>
+<LI><code>inrange(-2,m,+2) == if(({-2 &lt;= m} and [m &lt;= +2]),1,0)</code>
+</LI>
+<LI><code>({1/1}*[1/2]+(1/3))-{1/4}^[1/5]+(1/6)-({1/7}+[1/8]*(1/9))</code>
+</LI>
+<LI><code>a * exp(2.2 / 3.3 * t) + c</code>
+</LI>
+<LI><code>z := x + sin(2.567 * pi / y)</code>
+</LI>
+<LI><code>u := 2.123 * {pi * z} / (w := x + cos(y / pi))</code>
+</LI>
+<LI><code>2x + 3y + 4z + 5w == 2 * x + 3 * y + 4 * z + 5 * w</code>
+</LI>
+<LI><code>3(x + y) / 2.9 + 1.234e+12 == 3 * (x + y) / 2.9 + 1.234e+12</code>
+</LI>
+<LI><code>(x + y)3.3 + 1 / 4.5 == [x + y] * 3.3 + 1 / 4.5</code>
+</LI>
+<LI><code>(x + y[i])z + 1.1 / 2.7 == (x + y[i]) * z + 1.1 / 2.7</code>
+</LI>
+<LI><code>(sin(x / pi) cos(2y) + 1) == (sin(x / pi) * cos(2 * y) + 1)</code>
+</LI>
+<LI><code>75x^17 + 25.1x^5 - 35x^4 - 15.2x^3 + 40x^2 - 15.3x + 1</code>
+</LI>
+<LI><code>(avg(x,y) &lt;= x + y ? x - y : x * y) + 2.345 * pi / x</code>
+</LI>
+<LI><code>while (x &lt;= 100) { x -= 1; }</code>
+</LI>
+<LI><code>x &lt;= 'abc123' and (y in 'AString') or ('1x2y3z' != z)</code>
+</LI>
+<LI><code>((x + 'abc') like '*123*') or ('a123b' ilike y)</code>
+</LI>
+<LI><code>sgn(+1.2^3.4z / -5.6y) &lt;= {-7.8^9 / -10.11x }</code>
+</LI>
+</UL>
+
+<P>
+<BR><HR>
 
 </BODY>
 </HTML>

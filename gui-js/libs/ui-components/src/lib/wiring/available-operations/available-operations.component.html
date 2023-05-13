@@ -1,5 +1,5 @@
 <ng-container *ngIf="title && operations.length">
-  <button class="tab" [matMenuTriggerFor]="opMenu" aria-label="{{ title }}">
+  <button class="tab toolButton" classType="Operations" [matMenuTriggerFor]="opMenu" aria-label="{{ title }}">
     <img
       src="assets/images/icons/{{ operations[0] }}.gif"
       alt="{{ title }}"
@@ -10,8 +10,9 @@
   <mat-menu yPosition="above" #opMenu="matMenu" class="horizontal">
     <ng-container *ngFor="let operation of operations">
       <button id="button{{operation}}"
-        mat-menu-item
-        class="tab"
+              classType="Operation:{{ operation }}"
+              mat-menu-item
+        class="tab toolButton"
         (click)="communicationService.addOperation(operation)"
         (dragstart)="onButtonDrag($event, operation)"
       >

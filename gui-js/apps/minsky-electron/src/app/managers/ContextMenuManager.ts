@@ -38,6 +38,9 @@ export class ContextMenuManager {
       case "html-godley":
       this.initContextMenuForGodleyHTMLPopup(event, command,x,y);
       break;
+      case "html-summary":
+      this.initContextMenuForSummaryTab(command);
+      break;
       case "ravel":
       this.initContextMenuForRavelPopup(command,x,y);
       break;
@@ -938,7 +941,7 @@ export class ContextMenuManager {
     if (v.defined()) {
       menuItems.push(
         new MenuItem({
-          label: 'Display variable on tab',
+          label: 'Hide variable definition',
           click: () => {v.toggleVarTabDisplay();}
         })
       );
@@ -995,6 +998,16 @@ export class ContextMenuManager {
     this.initContextMenuForGodley(godley, r, c, clickType, () => {});
   }
 
+  private static async initContextMenuForSummaryTab(valueId: string)
+  {
+    var menu=new Menu();
+    menu.append(new MenuItem({
+      label: "Show variable on canvas",
+      click: async ()=> {await minsky.showVariableDefinitionOnCanvas(valueId);},
+    }));
+    menu.popup();
+  }
+  
   private static async initContextMenuForGodley(godley: GodleyIcon, r: number, c: number, clickType: string, refreshFunction: () => void)
   {
     var menu=new Menu();

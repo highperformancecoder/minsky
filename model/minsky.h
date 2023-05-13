@@ -272,6 +272,11 @@ namespace minsky
 
     void makeVariablesConsistent();
 
+    void showVariableDefinitionOnCanvas(const std::string& valueId) {
+      if (auto v=definingVar(valueId))
+        v->varTabDisplay=false;
+    }
+    
     void imposeDimensions();
 
     // runs over all ports and variables removing those not in use

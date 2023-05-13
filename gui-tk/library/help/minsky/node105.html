@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Initial conditions</TITLE>
-<META NAME="description" CONTENT="Initial conditions">
+<TITLE>outer product </TITLE>
+<META NAME="description" CONTENT="outer product ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,50 +14,74 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node106.html">
 <LINK REL="previous" HREF="node104.html">
-<LINK REL="up" HREF="node103.html">
+<LINK REL="up" HREF="node90.html">
 <LINK REL="next" HREF="node106.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1416"
+<A NAME="tex2html1424"
   HREF="node106.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1414"
-  HREF="node103.html">
+<A NAME="tex2html1422"
+  HREF="node90.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1408"
+<A NAME="tex2html1418"
   HREF="node104.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1417"
-  HREF="node106.html">Tensor valued initial conditions</A>
-<B> Up:</B> <A NAME="tex2html1415"
-  HREF="node103.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1409"
-  HREF="node104.html">Variable names</A>
+<B> Next:</B> <A NAME="tex2html1425"
+  HREF="node106.html">Switch</A>
+<B> Up:</B> <A NAME="tex2html1423"
+  HREF="node90.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1419"
+  HREF="node104.html">inner product</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00442000000000000000"></A><A NAME="var:init"></A><A NAME="2492"></A>
+<H2><A NAME="SECTION004215000000000000000"></A><A NAME="Operation:outerProduct"></A>
 <BR>
-Initial conditions
+outer product <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img25.png"
+ ALT="$\otimes $"></SPAN>
 </H2>
+Computes 
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
+x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
+\end{displaymath}
+ -->
 
-<P>
-Variable initial conditions can be defined through the &ldquo;init value&rdquo;
-field of the variable edit menu, or in the case of Godley table stock
-variables, through the initial condition row of the Godley table. An
-initial value can be a simple number, or it can be a multiple of
-another named variable (or parameter). In case of symbolic
-definitions, it would be possible to set up a circular reference where
-the initial value of variable A is defined in terms of the initial
-value of variable B, which in turn depends on the intial value of
-A. Such a pathological situation is detected when the system is reset.
+<IMG
+ WIDTH="280" HEIGHT="31" BORDER="0"
+ SRC="img207.png"
+ ALT="\begin{displaymath}
+z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
+x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+where <SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img205.png"
+ ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img206.png"
+ ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img58.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img59.png"
+ ALT="$y$"></SPAN> respectively.
 
 <P>
 <BR><HR>

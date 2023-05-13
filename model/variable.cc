@@ -80,7 +80,9 @@ void VariableBase::addPorts()
 
 bool VariableBase::inputWired() const
 {
-  return m_ports.size()>1 && !m_ports[1]->wires().empty();
+  if (auto p=ports(1).lock())
+    return !p->wires().empty();
+  return false;
 }
 
 std::vector<std::string> VariableBase::accessibleVars() const
@@ -238,8 +240,7 @@ string VariableBase::name(const std::string& name)
   
   // Ensure value of variable is preserved after rename. For ticket 1106.	
   auto tmpVV=vValue();
-  // ensure integral variables are not global when wired to an integral operation
-  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
+  m_name=name;
   ensureValueExists(tmpVV.get(),name);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   if (auto controllingItem=controller.lock())
@@ -494,8 +495,10 @@ bool VariableBase::visibleWithinGroup() const
   // ensure pars, constants and flows with invisible out wires are made invisible. for ticket 1275  
   if ((type()==constant || type()==parameter) && !m_ports[0]->wires().empty())
   {
-    return !std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(), [](Wire* w)
-                       {return w->attachedToDefiningVar() && !w->visible();});
+    return !(controller.lock() ||
+             std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(),
+                         [](Wire* w) {return w->attachedToDefiningVar() && !w->visible();}
+                         ));
   }  
   // ensure flow vars with out wires remain visible. for ticket 1275
     if (attachedToDefiningVar())

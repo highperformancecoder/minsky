@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Canvas background</TITLE>
-<META NAME="description" CONTENT="Canvas background">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,78 +23,130 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1544"
+<A NAME="tex2html1559"
   HREF="node119.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1542"
+<A NAME="tex2html1557"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1536"
+<A NAME="tex2html1551"
   HREF="node117.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1545"
-  HREF="node119.html">Dimensional Analysis</A>
-<B> Up:</B> <A NAME="tex2html1543"
+<B> Next:</B> <A NAME="tex2html1560"
+  HREF="node119.html">Sheet Widget</A>
+<B> Up:</B> <A NAME="tex2html1558"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1537"
-  HREF="node117.html">Context Menu</A>
+<B> Previous:</B> <A NAME="tex2html1552"
+  HREF="node117.html">Groups</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004130000000000000000">
-Canvas background</A>
+<H1><A NAME="SECTION00480000000000000000"></A>
+<A NAME="PlotWidget"></A>
+<BR>
+Plot widget
 </H1>
 
 <P>
-The canvas is not simply an inert place for the canvas items to
-exist. There is also a background context menu, giving access to the
-edit menu functionality such as cut/copy/paste, and also keyboard entry.
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
 
 <P>
-The following keystrokes insert an operation
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="241" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
+ SRC="img234.png"
+ ALT="\includegraphics{images/plotWidget.eps}">
+
+</DIV>
 
 <P>
-<TABLE CELLPADDING=3>
-<TR><TD ALIGN="RIGHT"><code>+</code></TD>
-<TD ALIGN="LEFT">add</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>-</code></TD>
-<TD ALIGN="LEFT">subtract</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>*</code></TD>
-<TD ALIGN="LEFT">multiply</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code></code>/</TD>
-<TD ALIGN="LEFT">divide</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>^</code></TD>
-<TD ALIGN="LEFT">pow</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>%</code></TD>
-<TD ALIGN="LEFT">percent operator</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>&amp;</code></TD>
-<TD ALIGN="LEFT">integral</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>=</code></TD>
-<TD ALIGN="LEFT">Godley table</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>@</code></TD>
-<TD ALIGN="LEFT">plot</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>#</code></TD>
-<TD ALIGN="LEFT">start a text comment, finish with return</TD>
-</TR>
-</TABLE>
+<DL>
+<DT><STRONG>left hand edge</STRONG></DT>
+<DD>Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
+</DD>
+<DT><STRONG>right hand edge</STRONG></DT>
+<DD>Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
+</DD>
+<DT><STRONG>bottom edge</STRONG></DT>
+<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img58.png"
+ ALT="$x$"></SPAN>-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
 
 <P>
-Typing any other character, then return will insert an operation (if
-the name matches), or otherwise a variable with that name.
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="529" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
+ SRC="img235.png"
+ ALT="\includegraphics{images/plotLissajous.eps}">
+
+</DIV>
 
 <P>
-<BR><HR>
+If only one bottom port is connected, then that controls all pens
+  simultaneously, and if no ports are connected, then the simulation
+  time is used to provide the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img58.png"
+ ALT="$x$"></SPAN> coordinates
+</DD>
+<DT><STRONG>corners</STRONG></DT>
+<DD>Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img58.png"
+ ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img59.png"
+ ALT="$y$"></SPAN> and right hand
+  <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img59.png"
+ ALT="$y$"></SPAN> axes. If left unwired, the scales are determined automatically
+  from the data. This can be used, for example, to implement a sliding
+  window graph
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="480" HEIGHT="424" ALIGN="BOTTOM" BORDER="0"
+ SRC="img236.png"
+ ALT="\includegraphics{images/plotSlidingWindow.eps}">
+
+</DIV>
+</DD>
+</DL>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1559"
+  HREF="node119.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1557"
+  HREF="node48.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1551"
+  HREF="node117.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1560"
+  HREF="node119.html">Sheet Widget</A>
+<B> Up:</B> <A NAME="tex2html1558"
+  HREF="node48.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1552"
+  HREF="node117.html">Groups</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

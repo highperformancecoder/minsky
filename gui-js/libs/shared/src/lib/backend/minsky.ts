@@ -662,6 +662,7 @@ export class GodleyIcon extends Item {
   async buttonDisplay(): Promise<boolean> {return this.$callMethod('buttonDisplay');}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
   async clone(): Promise<GodleyIcon> {return this.$callMethod('clone');}
+  async currency(...args: string[]): Promise<string> {return this.$callMethod('currency',...args);}
   async deleteRow(a1: number): Promise<void> {return this.$callMethod('deleteRow',a1);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
@@ -1425,6 +1426,7 @@ export class Minsky extends CppClass {
   async setGroupIconResource(a1: string): Promise<void> {return this.$callMethod('setGroupIconResource',a1);}
   async setLockIconResource(a1: string,a2: string): Promise<void> {return this.$callMethod('setLockIconResource',a1,a2);}
   async setRavelIconResource(a1: string): Promise<void> {return this.$callMethod('setRavelIconResource',a1);}
+  async showVariableDefinitionOnCanvas(a1: string): Promise<void> {return this.$callMethod('showVariableDefinitionOnCanvas',a1);}
   async simulationDelay(...args: number[]): Promise<number> {return this.$callMethod('simulationDelay',...args);}
   async srand(a1: number): Promise<void> {return this.$callMethod('srand',a1);}
   async step(): Promise<number[]> {return this.$callMethod('step');}

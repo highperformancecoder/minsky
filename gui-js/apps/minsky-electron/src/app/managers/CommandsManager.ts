@@ -615,12 +615,12 @@ export class CommandsManager {
         height = 240;
         break;
       case ClassType.Operation:
-        height = 180;
-        width = 300;
+        height = 250;
+        width = 350;
         break;
       case ClassType.UserFunction:
-        height = 180;
-        width = 300;
+        height = 250;
+        width = 350;
         break;
       default:
         height = 410;

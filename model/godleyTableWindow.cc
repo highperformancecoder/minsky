@@ -404,11 +404,16 @@ namespace minsky
                 {
                   if (selectedCol>=int(scrollColStart)) i=selectedCol-scrollColStart+1;
                   double x=colLeftMargin[i];
-                  cairo_set_source_rgba(cairo,1,1,1,1);
-                  cairo_rectangle(cairo,x,y,colLeftMargin[i+1]-x,rowHeight);
-                  cairo_fill(cairo);
+                  {
+                    cairo::CairoSave cs(cairo);
+                    cairo_set_source_rgba(cairo,1,1,1,1);
+                    cairo_rectangle(cairo,x,y,colLeftMargin[i+1]-x,rowHeight);
+                    cairo_fill_preserve(cairo);
+                    cairo_set_source_rgba(cairo,1,.55,0,1);
+                    cairo_set_line_width(cairo,2);
+                    cairo_stroke(cairo);
+                  }
                   pango.setMarkup(defang(m_godleyIcon.table.cell(selectedRow,selectedCol)));
-                  cairo_set_source_rgba(cairo,0,0,0,1);
                   cairo_move_to(cairo,x,y);
                   pango.show();
 				  

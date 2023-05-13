@@ -291,7 +291,34 @@ namespace minsky
     return findAny(&Group::items, [&](const ItemPtr& x){return x.get()==&it;});
   }
 
+  void GroupItems::renameVar(const GroupPtr& origGroup, VariableBase& v)
+  {
+    if (auto thisGroup=self.lock())
+      {
+        if (origGroup->higher(*thisGroup))
+          {
+            // moving local var into an inner group, make global
+            if (v.rawName()[0]!=':')
+              v.name(':'+v.rawName());
+          }
+        else if (thisGroup->higher(*origGroup))
+          {
+            // moving global var into an outer group, link up with variable of same name (if existing)
+            if (v.name()[0]==':')
+              for (auto& i: items)
+                if (auto vv=i->variableCast())
+                  if (vv->name()==v.name().substr(1))
+                    v.name(v.name().substr(1));
+          }
+        else
+          // moving between unrelated groups
+          if (v.name()[0]==':' && valueId(thisGroup,v.name()) != valueId(origGroup,v.name()))
+            // maintain linkage if possible, otherwise make local
+            v.name(v.name().substr(1));
+      }
+  }
 
+  
   ItemPtr GroupItems::addItem(const shared_ptr<Item>& it, bool inSchema)
   {
     if (!it) return it;
@@ -322,29 +349,7 @@ namespace minsky
     if (auto v=it->variableCast())
       {
         if (!inSchema && origGroup)
-          if (auto destGroup=self.lock())
-            {
-              if (origGroup->higher(*destGroup))
-                {
-                  // moving local var into an inner group, make global
-                  if (v->rawName()[0]!=':')
-                    v->name(':'+v->rawName());
-                }
-              else if (destGroup->higher(*origGroup))
-                {
-                  // moving global var into an outer group, link up with variable of same name (if existing)
-                  if (v->name()[0]==':')
-                    for (auto& i: items)
-                      if (auto vv=i->variableCast())
-                        if (vv->name()==v->name().substr(1))
-                          v->name(v->name().substr(1));
-                }
-              else
-                // moving between unrelated groups
-                if (v->name()[0]==':' && valueId(destGroup,v->name()) != valueId(origGroup,v->name()))
-                  // maintain linkage if possible, otherwise make local
-                  v->name(v->name().substr(1));
-            }
+          renameVar(origGroup, *v);
         v->init(init); //NB calls ensureValueExists()
         // if value didn't exist before, units will be empty. Do not overwrite any previous units set. For #1461.
         if (units.length()) v->setUnits(units);
@@ -366,8 +371,11 @@ namespace minsky
     if (auto intOp=dynamic_cast<IntOp*>(it.get()))
       if (intOp->intVar)
         {
-         if (auto oldG=intOp->intVar->group.lock())
+          if (!inSchema && origGroup)
+            renameVar(origGroup, *intOp->intVar);
+          if (auto oldG=intOp->intVar->group.lock())
            {
+                 
              if (oldG.get()!=this)
                addItem(oldG->removeItem(*intOp->intVar),inSchema);
            }
@@ -960,6 +968,21 @@ namespace minsky
         {
           if (displayPlot)
             {
+              cairo::CairoSave cs(cairo);
+              double fm=std::fmod(rotation(),360);
+              if (!((fm>-90 && fm<90) || fm>270 || fm<-270))
+                {
+                  cairo_translate(cairo,width,height);
+                  cairo_rotate(cairo,M_PI);  // rotate plot to keep it right way up.
+                }
+              // propagate plot type to underling ecolab::Plot
+              auto& pt=const_cast<Plot*>(static_cast<const Plot*>(displayPlot.get()))->plotType;
+              switch (displayPlot->plotType)
+                {
+                case PlotWidget::line: pt=Plot::line; break;
+                case PlotWidget::bar:  pt=Plot::bar;  break;
+                default: break;
+                }
               displayPlot->Plot::draw(cairo, width, height);
             }
           else

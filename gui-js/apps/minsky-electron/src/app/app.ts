@@ -13,6 +13,7 @@ import * as log from 'electron-log';
 import { isAbsolute, join } from 'path';
 import { format } from 'url';
 import { ApplicationMenuManager } from './managers/ApplicationMenuManager';
+import { BookmarkManager } from './managers/BookmarkManager';
 import { CommandsManager } from './managers/CommandsManager';
 import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
@@ -49,7 +50,8 @@ export default class App {
     if (App.cliArguments.length>1) {
       if (!isAbsolute(App.cliArguments[1]))
         App.cliArguments[1]=join(initialWorkingDirectory,App.cliArguments[1]);
-      CommandsManager.openNamedFile(App.cliArguments[1]);
+      await CommandsManager.openNamedFile(App.cliArguments[1]);
+      BookmarkManager.updateBookmarkList();
     }
   }
 

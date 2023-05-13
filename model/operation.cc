@@ -44,7 +44,8 @@ namespace
   struct DrawBinOp
   {
     cairo_t *cairo;
-    DrawBinOp(cairo_t *cairo): cairo(cairo) {}
+    double zoomFactor;
+    DrawBinOp(cairo_t *cairo, double z=1): cairo(cairo), zoomFactor(z) {}
 
     void drawPlus() const
     {
@@ -82,9 +83,17 @@ namespace
       cairo_stroke(cairo);
     }
 
+    void drawSymbol(const char* s) const
+    {
+      cairo_scale(cairo,zoomFactor,zoomFactor);
+      cairo_move_to(cairo,-5,0);
+      cairo_show_text(cairo,s);
+    }
+
     // puts a small symbol to identify port
     // x, y = position of symbol
-    void drawPort(void (DrawBinOp::*symbol)() const, float x, float y, float rotation)  const
+    template <class F>
+    void drawPort(F f, float x, float y, float rotation)  const
     {
       CairoSave cs(cairo);
       
@@ -99,7 +108,7 @@ namespace
       
       // and counter-rotate
       cairo_rotate(cairo, -angle);
-      (this->*symbol)();
+      f();
     }
   };
 }
@@ -281,9 +290,16 @@ namespace minsky
               m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
               break;
             case 3: default:
-              m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,-h+3));
-              m_ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,h-3));
+              m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,textFlipped? h-3: -h+3));
+              m_ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,textFlipped? -h+3: h-3));
               break;
+            }
+          if (t==OperationType::userFunction)
+            {
+              cairo_set_source_rgb(cairo,0,0,0);
+              DrawBinOp drawBinOp(cairo, zoomFactor());
+              drawBinOp.drawPort([&](){drawBinOp.drawSymbol("x");},-1.1*w,-1.1*h,rotation());
+              drawBinOp.drawPort([&](){drawBinOp.drawSymbol("y");},-1.1*w,1.1*h,rotation());
             }
           if (mouseFocus)
             {
@@ -762,18 +778,13 @@ namespace minsky
     cairo_rel_move_to(cairo,0,-4);
     cairo_set_font_size(cairo,7);
     cairo_show_text(cairo,"y");
-    cairo_set_font_size(cairo,5);
-    cairo_move_to(cairo, l+1, -h+6);
+    DrawBinOp d(cairo);
 #ifdef DISPLAY_POW_UPSIDE_DOWN
-    cairo_show_text(cairo,"y");
+    d.drawPort([&](){d.drawSymbol("y");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("x");}, l, h, rotation());
 #else
-    cairo_show_text(cairo,"x");
-#endif
-    cairo_move_to(cairo, l+1, h-3);
-#ifdef DISPLAY_POW_UPSIDE_DOWN
-    cairo_show_text(cairo,"x");
-#else
-    cairo_show_text(cairo,"y");
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
 #endif
   }
 
@@ -782,7 +793,10 @@ namespace minsky
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"≤");
+    cairo_show_text(cairo,"x≤y");
+    DrawBinOp d(cairo);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
   template <> void Operation<OperationType::lt>::iconDraw(cairo_t* cairo) const
@@ -790,7 +804,10 @@ namespace minsky
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"<");
+    cairo_show_text(cairo,"x<y");
+    DrawBinOp d(cairo);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
   template <> void Operation<OperationType::eq>::iconDraw(cairo_t* cairo) const
@@ -798,7 +815,10 @@ namespace minsky
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"=");
+    cairo_show_text(cairo,"x=y");
+    DrawBinOp d(cairo);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
   template <> void Operation<OperationType::min>::iconDraw(cairo_t* cairo) const
@@ -863,15 +883,9 @@ namespace minsky
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"log");
-    cairo_rel_move_to(cairo,0,3);
-    cairo_set_font_size(cairo,7);
-    cairo_show_text(cairo,"b");
-    cairo_set_font_size(cairo,5);
-    cairo_move_to(cairo, l+1, -h+6);
-    cairo_show_text(cairo,"x");
-    cairo_move_to(cairo, l+1, h-3);
-    cairo_show_text(cairo,"b");
-  
+    DrawBinOp d(cairo);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("b");}, l, h, rotation());
   }
 
   template <> void Operation<OperationType::sin>::iconDraw(cairo_t* cairo) const
@@ -1011,6 +1025,9 @@ namespace minsky
     std::string order="("+to_string(static_cast<unsigned>(m_ports[2]->value()))+")";
     cairo_show_text(cairo,order.c_str());
     cairo_rel_move_to(cairo,0,-2);
+    DrawBinOp d(cairo);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("n");}, l, h, rotation());
   }     
   template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
   {
@@ -1025,8 +1042,8 @@ namespace minsky
     cairo_scale(cairo,sf,sf); 	  
     DrawBinOp d(cairo);
     d.drawPlus();
-    d.drawPort(&DrawBinOp::drawPlus, l, h, rotation());
-    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation());
+    d.drawPort([&](){d.drawPlus();}, l, h, rotation());
+    d.drawPort([&](){d.drawPlus();}, l, -h, rotation());
   }
 
   template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
@@ -1035,8 +1052,8 @@ namespace minsky
     cairo_scale(cairo,sf,sf);	  
     DrawBinOp d(cairo);
     d.drawMinus();
-    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation());
-    d.drawPort(&DrawBinOp::drawMinus, l, h, rotation());
+    d.drawPort([&](){d.drawPlus();}, l, -h, rotation());
+    d.drawPort([&](){d.drawMinus();}, l, h, rotation());
   }
 
   template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
@@ -1045,8 +1062,8 @@ namespace minsky
     cairo_scale(cairo,sf,sf);  
     DrawBinOp d(cairo);
     d.drawMultiply();
-    d.drawPort(&DrawBinOp::drawMultiply, l, h, rotation());
-    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation());
+    d.drawPort([&](){d.drawMultiply();}, l, h, rotation());
+    d.drawPort([&](){d.drawMultiply();}, l, -h, rotation());
   }
 
   template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
@@ -1055,8 +1072,8 @@ namespace minsky
     cairo_scale(cairo,sf,sf);	  
     DrawBinOp d(cairo);
     d.drawDivide();
-    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation());
-    d.drawPort(&DrawBinOp::drawDivide, l, h, rotation());
+    d.drawPort([&](){d.drawMultiply();}, l, -h, rotation());
+    d.drawPort([&](){d.drawDivide();}, l, h, rotation());
   }
 
   template <> void Operation<OperationType::sum>::iconDraw(cairo_t* cairo) const

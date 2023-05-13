@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Note Widget</TITLE>
-<META NAME="description" CONTENT="Note Widget">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,7 +15,7 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node116.html">
-<LINK REL="previous" HREF="node114.html">
+<LINK REL="previous" HREF="node107.html">
 <LINK REL="up" HREF="node48.html">
 <LINK REL="next" HREF="node116.html">
 </HEAD>
@@ -23,37 +23,52 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1514"
+<A NAME="tex2html1529"
   HREF="node116.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1512"
+<A NAME="tex2html1527"
   HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1506"
+<A NAME="tex2html1521"
   HREF="node114.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1515"
-  HREF="node116.html">Godley Tables</A>
-<B> Up:</B> <A NAME="tex2html1513"
+<B> Next:</B> <A NAME="tex2html1530"
+  HREF="node116.html">Tensor values</A>
+<B> Up:</B> <A NAME="tex2html1528"
   HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1507"
-  HREF="node114.html">Sheet Widget</A>
+<B> Previous:</B> <A NAME="tex2html1522"
+  HREF="node114.html">Variable Browser</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004100000000000000000"></A>
- <A NAME="Notes"></A><A NAME="Item"></A>
-<BR>
-Note Widget
-</H1> Notes allow arbitrary text to be
-placed on the canvas for explanatory purposes. Anything that can be
-entered on the keyboard can be placed here, including unicode
-characters, and LaTeX formatting is supported. A note
-widget, like all canvas items, allow short additional tooltips to be
-specified. It is also possible to annotate an ordinary block with some text
-that is accessed through the edit menu, or as a tooltip.
+<H1><A NAME="SECTION00450000000000000000">
+Wires</A>
+</H1>
+
+<P>
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire
+attached, with the exception of <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img44.png"
+ ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img222.png"
+ ALT="$\times/\div$"></SPAN>, where the
+multiple wires are summed or multiplied, respectively, and similarly max/min.
+
+<P>
+Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
 <BR><HR>

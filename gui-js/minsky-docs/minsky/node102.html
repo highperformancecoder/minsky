@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Switch</TITLE>
-<META NAME="description" CONTENT="Switch">
+<TITLE>index</TITLE>
+<META NAME="description" CONTENT="index">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,85 +15,82 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node103.html">
-<LINK REL="previous" HREF="node86.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="previous" HREF="node101.html">
+<LINK REL="up" HREF="node90.html">
 <LINK REL="next" HREF="node103.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1380"
+<A NAME="tex2html1396"
   HREF="node103.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1378"
-  HREF="node48.html">
+<A NAME="tex2html1394"
+  HREF="node90.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1372"
+<A NAME="tex2html1388"
   HREF="node101.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1381"
-  HREF="node103.html">Variables</A>
-<B> Up:</B> <A NAME="tex2html1379"
-  HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1373"
-  HREF="node101.html">outer product</A>
+<B> Next:</B> <A NAME="tex2html1397"
+  HREF="node103.html">gather</A>
+<B> Up:</B> <A NAME="tex2html1395"
+  HREF="node90.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1389"
+  HREF="node101.html">difference</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00430000000000000000"></A><A NAME="SwitchIcon"></A>
+<H2><A NAME="SECTION004212000000000000000"></A><A NAME="Operation:index"></A>
 <BR>
-Switch
-</H1>
+index
+</H2>
 
 <P>
-
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
- -->
-<IMG
- WIDTH="19" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img61.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
-  
-A switch block (also known as a case block, or select in the Fortran
-world) is a way of selecting from a range of alternatives according
-to the value of the input, effectively defining a piecewise function.
-
-<P>
-<DIV ALIGN="CENTER">
+Returns the index within the hypecube where the input is true (ie
+<SPAN CLASS="MATH"><IMG
+ WIDTH="41" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img197.png"
+ ALT="$&gt;0.5$"></SPAN>). For example, where
+<P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
+ \begin{eqnarray*}
+\iota(3,3) &=& \left(\begin{array}{ccc}
+  0 & 3 & 6 \\
+  1 & 4 & 7 \\
+  2 & 5 & 8 \\
+  \end{array}\right),\\
+  \mathrm{idx}(\iota(3,3)<5) &=&
+  \left(\begin{array}{ccc}
+    0 & 3 &\\
+    1 & 4 &\\
+    2 & &
+  \end{array}\right),\\
+\end{eqnarray*}
  -->
 <IMG
- WIDTH="555" HEIGHT="269" ALIGN="BOTTOM" BORDER="0"
- SRC="img200.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}">
-<EM>An example switch block with 3 cases</EM>
-
-</DIV>
+ WIDTH="255" HEIGHT="134" BORDER="0"
+ SRC="img198.png"
+ ALT="\begin{eqnarray*}
+\iota(3,3) &amp;=&amp; \left(\begin{array}{ccc}
+0 &amp; 3 &amp; 6 \\
+1 &amp; 4...
+...ray}{ccc}
+0 &amp; 3 &amp;\\
+1 &amp; 4 &amp;\\
+2 &amp; &amp;
+\end{array}\right),\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+<BR CLEAR="ALL"><P></P>
+Note that the output array has the same shape as the input, with
+unused values padded with NANs (missing value).
 
 <P>
-The default switch has two cases, and can be used to implement an
-if/then/else construct. However, because the two cases are 0 and 1,
-or false and true, a two case switch statement will naturally appear
-&ldquo;upside down&rdquo; to how you might think of an if statement. In other
-words, it looks like:
-
-<P>
-<IMG
- WIDTH="163" HEIGHT="66" ALIGN="MIDDLE" BORDER="0"
- SRC="img201.png"
- ALT="$\textstyle \parbox{\textwidth}{
-{\tt if not }{\em condition} {\tt then}\\
-\ldots
-{\tt else}\\
-\ldots
-}$">
-<P>
-You can add or remove cases through the context menu. 
+Dimension and argument parameters are unused.
 
 <P>
 <BR><HR>

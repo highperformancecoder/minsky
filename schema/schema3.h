@@ -140,6 +140,7 @@ namespace schema3
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
     Optional<bool> editorMode, buttonDisplay, variableDisplay;
+    Optional<string> currency;
     // Plot specific fields
     Optional<bool> logx, logy, ypercent, plotTabDisplay;
     Optional<minsky::PlotWidget::PlotType> plotType;
@@ -180,7 +181,8 @@ namespace schema3
       name(g.table.title), data(g.table.getData()),
       assetClasses(g.table._assetClass()),
       editorMode(g.editorMode()),
-      buttonDisplay(g.buttonDisplay()), variableDisplay(g.variableDisplay) {}
+      buttonDisplay(g.buttonDisplay()), variableDisplay(g.variableDisplay),
+      currency(g.currency) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports), name(p.title),
       logx(p.logx), logy(p.logy), ypercent(p.percent), plotTabDisplay(p.plotTabDisplay),

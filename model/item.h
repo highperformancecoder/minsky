@@ -171,8 +171,7 @@ namespace minsky
     
     /// return a weak reference to the ith port
     virtual std::weak_ptr<Port> ports(std::size_t i) const {
-      assert(i<m_ports.size());
-      return m_ports[i];
+      return i<m_ports.size()? m_ports[i]: nullptr;
     }
     /// number of ports
     std::size_t portsSize() const {return m_ports.size();}
