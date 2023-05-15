@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Note Widget</TITLE>
-<META NAME="description" CONTENT="Note Widget">
+<TITLE>Sheet Widget</TITLE>
+<META NAME="description" CONTENT="Sheet Widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,44 +16,50 @@
 
 <LINK REL="next" HREF="node120.html">
 <LINK REL="previous" HREF="node118.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node48.html">
 <LINK REL="next" HREF="node120.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1566"
+<A NAME="tex2html1569"
   HREF="node120.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1564"
-  HREF="node47.html">
+<A NAME="tex2html1567"
+  HREF="node48.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1558"
+<A NAME="tex2html1561"
   HREF="node118.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1567"
-  HREF="node120.html">Godley Tables</A>
-<B> Up:</B> <A NAME="tex2html1565"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1559"
-  HREF="node118.html">Sheet Widget</A>
+<B> Next:</B> <A NAME="tex2html1570"
+  HREF="node120.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html1568"
+  HREF="node48.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1562"
+  HREF="node118.html">Plot widget</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004100000000000000000"></A>
- <A NAME="Notes"></A><A NAME="Item"></A>
+<H1><A NAME="SECTION00490000000000000000"></A>
+ <A NAME="Sheet"></A>
 <BR>
-Note Widget
-</H1> Notes allow arbitrary text to be
-placed on the canvas for explanatory purposes. Anything that can be
-entered on the keyboard can be placed here, including unicode
-characters, and LaTeX formatting is supported. A note
-widget, like all canvas items, allow short additional tooltips to be
-specified. It is also possible to annotate an ordinary block with some text
-that is accessed through the edit menu, or as a tooltip.
+Sheet Widget
+</H1> The Sheet widget displays input data as a
+ number, rather than as a 2D graph, as in the case of the plot widget.
+ To use the Sheet widget, simply wire a variable or other item on your
+ canvas to the left-hand side of the sheet widget box. This will diplay
+ the input data as a number. Note that only one wire can be connected to
+ a sheet, as the sheet can only display a single input value.
+
+<P>
+The sheet widget can also display rank 0, 1 and rank 2 tensors. These ranks are
+ single values, a string of values, or a 2D matrix of values, respectively.
+ For example, if you create a parameter, and set the initial condition to rand(3,5)
+ (for reference, see section (&#167;<A HREF="node110.html#tensor-init">4.4.3</A>) ), you can wire that into a sheet.
+ The sheet will then diplay the data in a grid display within the widget box.
 
 <P>
 <BR><HR>

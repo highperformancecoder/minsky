@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Factorial !</TITLE>
-<META NAME="description" CONTENT="Factorial !">
+<TITLE>Gamma </TITLE>
+<META NAME="description" CONTENT="Gamma ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,74 +16,58 @@
 
 <LINK REL="next" HREF="node68.html">
 <LINK REL="previous" HREF="node66.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="up" HREF="node49.html">
 <LINK REL="next" HREF="node68.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1030"
+<A NAME="tex2html1033"
   HREF="node68.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1028"
-  HREF="node48.html">
+<A NAME="tex2html1031"
+  HREF="node49.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1022"
+<A NAME="tex2html1025"
   HREF="node66.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1031"
-  HREF="node68.html">Polygamma</A>
-<B> Up:</B> <A NAME="tex2html1029"
-  HREF="node48.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1023"
-  HREF="node66.html">Gamma</A>
+<B> Next:</B> <A NAME="tex2html1034"
+  HREF="node68.html">Factorial !</A>
+<B> Up:</B> <A NAME="tex2html1032"
+  HREF="node49.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html1026"
+  HREF="node66.html">time</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004119000000000000000"></A><A NAME="Operation:fact"></A>
+<H2><A NAME="SECTION004118000000000000000"></A><A NAME="Operation:Gamma"></A>
 <BR>
-Factorial !
-</H2> Returns the factorial
-of its argument:
-<P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{eqnarray*}
-0!&=&1\\
-  n! &=& \prod_{i=1}^n i\\
-\end{eqnarray*}
- -->
-<IMG
- WIDTH="87" HEIGHT="84" BORDER="0"
- SRC="img183.png"
- ALT="\begin{eqnarray*}
-0!&amp;=&amp;1\\
-n! &amp;=&amp; \prod_{i=1}^n i\\
-\end{eqnarray*}"></DIV>
-<BR CLEAR="ALL"><P></P>
-<BR CLEAR="ALL"><P></P>
-Note:
+Gamma <SPAN CLASS="MATH"><IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$\Gamma $"></SPAN>
+</H2> Returns the Gamma
+function of its argument:
 <BR><P></P>
 <DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
-n!=\Gamma(n+1)
+\Gamma(x)=\int_0^\infty t^{x-1}e^{-t}dt
 \end{displaymath}
  -->
 
 <IMG
- WIDTH="93" HEIGHT="29" BORDER="0"
- SRC="img184.png"
+ WIDTH="152" HEIGHT="44" BORDER="0"
+ SRC="img182.png"
  ALT="\begin{displaymath}
-n!=\Gamma(n+1)
+\Gamma(x)=\int_0^\infty t^{x-1}e^{-t}dt
 \end{displaymath}">
 </DIV>
 <BR CLEAR="ALL">
 <P></P>
-which is how it is implemented in Minsky.
 
 <P>
 <BR><HR>

@@ -181,14 +181,16 @@ The options menu allows you to customise aspects of Minsky.
 variables are displayed in the Godley table whilst a simulation is
 running. This will tend to slow down the simulation somewhat.
 \item Godley table output style --- whether $+/-$ or DR/CR (debit/credit)
-indicators are used.
+  indicators are used.
+\item Enable multiple equity columns - whether Godley table have more
+  than one equity columns.
 \item Number of recent files to display --- affects the \htmlref{recent
 files}{recentfiles} menu.
 \item\label{wrap-equations} Wrap long equations in LaTeX export. If ticked, use the breqn
 package to produce nicer looking automatically line-wrapped
 formulae. Because not all LaTeX implementations are guaranteed to
 support breqn, untick this option if you find difficulty.
-\item\index{Panopticon} enable/disable the \htmlref{panopticon}{Panopticon}.
+\item\label{font} select a font for variable names etc.
 \end{itemize}
 
 \item[Background colour] --- select a colour from which a colour scheme
@@ -196,10 +198,12 @@ is computed.
 
 \end{description}
 
-\subsubsection{Runge Kutta}
+\subsubsection{Simulation}
 \label{RungeKutta}
 
 \begin{itemize}
+\item Time unit allows one to specify units for the time dimension for
+  dimensional analysis. eg ``year'', ``s'' etc.
 \item Controls aspect of the adaptive Runge-Kutta equation solver, which
 trade off performance and accuracy of the model. 
 \item Note a first order explicit solver is the classic Jacobi method, which is the fastest,
@@ -224,7 +228,7 @@ simulation.
 \item Start time is the value of the system $t$ variable when the
   system is reset.
 \item Run until time can be used to pause the simulation ince t
-  reaches a certain value. Setting this to ``Inf'' causes the
+  reaches a certain value. Setting this to ``Infinity'' causes the
   simulation to run indefinitely, or until some arithmetic error
   occurs.
 \end{itemize}
@@ -426,7 +430,7 @@ number of icons will grow over time, but the key ones are implemented
 now: 
 
 \begin{description}
-\item[Import data] Opens an import CSV file dialog, allowing the
+\item[Import data] \buttonIcon{importData.eps} Opens an import CSV file dialog, allowing the
   creation of a parameter from a CSV data file. See
   \htmlref{Importing CSV files}{Operation:csvImport}.
 
@@ -753,7 +757,7 @@ can be used to construct more complex models.
 \subsection{Inserting a model component}
 
 
-There are three ways to insert a component of a model onto the Canvas:
+There are five ways to insert a component of a model onto the Canvas:
 \begin{enumerate}
 \item Click on the desired Icon on the Icon Palette, drag the block
 onto the Canvas and release the mouse where you want to insert it 
@@ -782,8 +786,16 @@ copy where you want it on the palette.
 \htmladdimg{NewItem161.png}
 \end{center}
 
+\item Variables can be inserted by typing the variable name on the
+  canvas, and constants enetered by typing the numerical
+  value. Similarly, operations can be inserted by typing the operator
+  name (eg \verb+sin+, or \verb+*+). Notes can be inserted by starting
+  the note with a \verb+#+ character.
 
+\item Variables can also be picked from the \hyperref[ref]{Variable
+    Browser}{Variable Browser}{}{VariableBrowser} and placed on the canvas.
 \end{enumerate}
+
 
 \subsection{Creating an equation}
 

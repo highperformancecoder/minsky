@@ -493,8 +493,10 @@ bool VariableBase::visibleWithinGroup() const
   // ensure pars, constants and flows with invisible out wires are made invisible. for ticket 1275  
   if ((type()==constant || type()==parameter) && !m_ports[0]->wires().empty())
   {
-    return !std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(), [](Wire* w)
-                       {return w->attachedToDefiningVar() && !w->visible();});
+    return !(controller.lock() ||
+             std::any_of(m_ports[0]->wires().begin(),m_ports[0]->wires().end(),
+                         [](Wire* w) {return w->attachedToDefiningVar() && !w->visible();}
+                         ));
   }  
   // ensure flow vars with out wires remain visible. for ticket 1275
     if (attachedToDefiningVar())

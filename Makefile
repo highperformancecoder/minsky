@@ -287,7 +287,7 @@ endif
 endif
 endif
 ifeq ($(OS),Darwin)
-	cd gui-js; npm run export:package:macosx
+	cd gui-js; npm run export:package:mac
 endif
 endif
 

@@ -72,7 +72,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     const clientRect = this.variablePaneContainer.getBoundingClientRect();
 
     this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = 20;
+    this.topOffset = this.electronService.isMacOS()? -40: 20; // why, o why, Mac?
     
     this.height = Math.round(this.variablePaneContainer.clientHeight);
     this.width = Math.round(this.variablePaneContainer.clientWidth-this.topOffset);

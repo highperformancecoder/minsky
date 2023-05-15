@@ -1420,6 +1420,7 @@ export class Minsky extends CppClass {
   setGroupIconResource(a1: string): void {return this.callMethod('setGroupIconResource',a1);}
   setLockIconResource(a1: string,a2: string): void {return this.callMethod('setLockIconResource',a1,a2);}
   setRavelIconResource(a1: string): void {return this.callMethod('setRavelIconResource',a1);}
+  showVariableDefinitionOnCanvas(a1: string): void {return this.callMethod('showVariableDefinitionOnCanvas',a1);}
   simulationDelay(...args: number[]): number {return this.callMethod('simulationDelay',...args);}
   srand(a1: number): void {return this.callMethod('srand',a1);}
   step(): number[] {return this.callMethod('step');}
