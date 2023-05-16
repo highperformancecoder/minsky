@@ -57,15 +57,19 @@ export class WindowManager {
   }
 
   static renderFrame() {
-    this.currentTab?.$callMethodSync('renderFrame',
-                                    {
-                                      parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
-                                      offsetLeft: this.leftOffset,
-                                      offsetTop: this.electronTopOffset,
-                                      childWidth: this.canvasWidth,
-                                      childHeight: this.canvasHeight,
-                                      scalingFactor: this.scaleFactor
-                                    });
+    try
+    {
+      this.currentTab?.$callMethodSync('renderFrame',
+                                       {
+                                         parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
+                                         offsetLeft: this.leftOffset,
+                                         offsetTop: this.electronTopOffset,
+                                         childWidth: this.canvasWidth,
+                                         childHeight: this.canvasHeight,
+                                         scalingFactor: this.scaleFactor
+                                       });
+    }
+    catch (err) {} // absorb exceptions, which will mostly be due to bad windows 
   }
     
   static async setCurrentTab(tab/*: RenderNativeWindow*/) {

@@ -24,8 +24,18 @@
                        class="data-cell" >{{variable.type}}</div>
                   <div [title]="variable.definition" class="data-cell extra-wide" latex
                        [equation]="variable.definition"></div>
-                  <div [title]="variable.dimensions" class="data-cell wide">{{variable.dimensions.toString()}}</div>
-                  <div [title]="variable.init" class="data-cell numeric" latex equation="{{truncateValue(variable.init)}}{{variable.units}}"></div>
+                  <div [title]="variable.dimensions" class="data-cell
+                                                            wide">{{variable.dimensions.toString()}}</div>
+                  <div *ngIf="!editing(variable,'init')"
+                       [title]="variable.init"
+                       (click)="edit($event,variable,'init')"
+                       class="data-cell numeric" latex
+                       equation="{{truncateValue(variable.init)}}{{variable.units}}">
+                  </div>
+                  <input *ngIf="editing(variable,'init')"
+                         (keydown.return)="finishEditing()"
+                         (click)="$event.stopImmediatePropagation()"
+                         type="text" [(ngModel)]="editCellContents"/>
                   <div *ngIf="!variable.dimensions.length"
                        [title]="variable.value" class="data-cell numeric"
                        latex
