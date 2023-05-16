@@ -117,7 +117,15 @@ export class SummaryComponent implements OnInit {
     event.stopImmediatePropagation();
     this.editRow=variable;
     this.editCol=member;
-    this.editCellContents=variable[member];
+    switch (member)
+    {
+      case 'definition':
+      this.editCellContents=variable.udfDefinition;
+      break;
+      default:
+      this.editCellContents=variable[member];
+      break;
+    }
   }
 
   finishEditing() {
