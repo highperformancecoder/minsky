@@ -122,6 +122,12 @@ export class SummaryComponent implements OnInit {
 
   finishEditing() {
     this.editRow[this.editCol]=this.editCellContents;
+    switch (this.editCol)
+    {
+      case 'init':
+      this.electronService.minsky.variableValues.elem(this.editRow.valueId).second.init(this.editCellContents);
+      break;
+    }
     this.editRow=null;
   }
   

@@ -1,4 +1,4 @@
-<div class="table-wrapper" (mousewheel)="changeScale($event)">
+<div class="table-wrapper" (mousewheel)="changeScale($event)" (keyup)="$event.stopImmediatePropagation()" (keydown)="$event.stopImmediatePropagation()">
     <div class="table" [style.zoom]="scale.zoomFactor">
       <!-- all variables anbd global variables -->
       <div *ngFor="let category of ['allVariables','globalVariables']">
@@ -33,7 +33,7 @@
                        equation="{{truncateValue(variable.init)}}{{variable.units}}">
                   </div>
                   <input *ngIf="editing(variable,'init')"
-                         (keydown.return)="finishEditing()"
+                         (keydown.Enter)="finishEditing()"
                          (click)="$event.stopImmediatePropagation()"
                          type="text" [(ngModel)]="editCellContents"/>
                   <div *ngIf="!variable.dimensions.length"
