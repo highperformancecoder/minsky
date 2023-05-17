@@ -72,7 +72,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     const clientRect = this.variablePaneContainer.getBoundingClientRect();
 
     this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = this.electronService.isMacOS()? -40: 20; // why, o why, Mac?
+    this.topOffset = 20; 
     
     this.height = Math.round(this.variablePaneContainer.clientHeight);
     this.width = Math.round(this.variablePaneContainer.clientWidth-this.topOffset);
@@ -105,7 +105,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
     // vertical offset to allow room for the filter buttons
-    const offset=this.electronService.isMacOS()? 20: -15; // why, o why, Mac?
+    const offset=-15;
     this.mouseMove$.subscribe((event: MouseEvent) => {
       const { clientX, clientY } = event;
       this.mouseX = clientX;

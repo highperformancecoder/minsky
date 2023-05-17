@@ -50,8 +50,15 @@ export default class App {
     if (App.cliArguments.length>1) {
       if (!isAbsolute(App.cliArguments[1]))
         App.cliArguments[1]=join(initialWorkingDirectory,App.cliArguments[1]);
-      await CommandsManager.openNamedFile(App.cliArguments[1]);
-      BookmarkManager.updateBookmarkList();
+	console.log(App.cliArguments[1]);
+	try
+	{
+          await CommandsManager.openNamedFile(App.cliArguments[1]);
+          BookmarkManager.updateBookmarkList();
+	}
+	catch (...) {
+	// Macs sometimes put extra guff on the command line, so ignore errors
+	}
     }
   }
 
@@ -78,8 +85,8 @@ export default class App {
   private static initMainWindow() {
     const display = screen.getPrimaryDisplay();
     const workAreaSize = display.workAreaSize;
-    const width = Math.round(workAreaSize.width * 0.9);
-    const height = Math.round(workAreaSize.height * 0.9);
+    const width = Math.round(Math.max(1000, workAreaSize.width * 0.9));
+    const height = Math.round(Math.max(600, workAreaSize.height * 0.9));
 
     // Create the browser window.
     App.mainWindow = new BrowserWindow({

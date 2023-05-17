@@ -60,9 +60,16 @@ export class WindowUtilityService {
       const clientRect = this.minskyCanvasContainer.getBoundingClientRect();
 
       this.leftOffset = clientRect.left;
-      this.topOffset = clientRect.top;
-
-      this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
+      if (this.electronService.isMacOS())
+      {
+	this.topOffset=-30; // put in by hand, I don't know how to calculate this.
+	this.electronMenuBarHeight=0;
+      }
+      else
+      {
+        this.topOffset = clientRect.top;
+        this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
+      }
     }
   }
 
