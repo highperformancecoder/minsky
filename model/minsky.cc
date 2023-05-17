@@ -1570,6 +1570,7 @@ namespace minsky
           bool notFlipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
           udf->moveTo(var->x()+(notFlipped? -2:2)*var->width(), var->y());
           group->addWire(udf->ports(0), var->ports(1));
+          // TODO clean up orphaned items.
         }
   }
 
