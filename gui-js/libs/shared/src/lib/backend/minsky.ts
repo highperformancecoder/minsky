@@ -1138,6 +1138,7 @@ export class Group extends Item {
   async removeGroup(a1: Group): Promise<object> {return this.$callMethod('removeGroup',a1);}
   async removeItem(a1: Item): Promise<object> {return this.$callMethod('removeItem',a1);}
   async removeWire(a1: Wire): Promise<object> {return this.$callMethod('removeWire',a1);}
+  async renameAllInstances(a1: string,a2: string): Promise<void> {return this.$callMethod('renameAllInstances',a1,a2);}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
   async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}
   async resizeOnContents(): Promise<void> {return this.$callMethod('resizeOnContents');}
@@ -2038,6 +2039,7 @@ export class Selection extends CppClass {
   async removeGroup(a1: Group): Promise<object> {return this.$callMethod('removeGroup',a1);}
   async removeItem(a1: Item): Promise<object> {return this.$callMethod('removeItem',a1);}
   async removeWire(a1: Wire): Promise<object> {return this.$callMethod('removeWire',a1);}
+  async renameAllInstances(a1: string,a2: string): Promise<void> {return this.$callMethod('renameAllInstances',a1,a2);}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
   async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}
   async resizeOnContents(): Promise<void> {return this.$callMethod('resizeOnContents');}

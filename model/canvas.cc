@@ -617,13 +617,6 @@ namespace minsky
        }
   }
 
-  namespace
-  {
-    // return true if scope g refers to the global model group
-    bool isGlobal(const GroupPtr& g)
-    {return !g || g==cminsky().model;}
-  }
-  
   void Canvas::renameAllInstances(const string newName)
   {
     auto var=item->variableCast();
@@ -634,60 +627,7 @@ namespace minsky
       {
         // cache name and valueId for later use as var gets invalidated in the recursiveDo
         auto valueId=var->valueId();
-        auto varScope=scope(var->group.lock(), valueId);
-        string fromName=var->rawName();
-        // unqualified versions of the names
-        string uqFromName=fromName.substr(fromName[0]==':'? 1: 0);
-        string uqNewName = newName.substr(newName[0]==':'? 1: 0);
-        set<GodleyIcon*> godleysToUpdate;
-#ifndef NDEBUG
-        auto numItems=model->numItems();
-#endif
-        model->recursiveDo
-          (&GroupItems::items, [&](Items&,Items::iterator i)
-           {
-             if (auto v=(*i)->variableCast())
-               if (v->valueId()==valueId)
-                 {			 
-                   if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
-                     {
-                       if (varScope==g->group.lock() ||
-                           (!varScope && g->group.lock()==cminsky().model)) // fix local variables
-                         g->table.rename(uqFromName, uqNewName);
-                       
-                       // scope of an external ref in the Godley Table
-                       auto externalVarScope=scope(g->group.lock(), ':'+uqNewName);
-                       // if we didn't find it, perhaps the outerscope variable hasn't been changed
-                       if (!externalVarScope)
-                         externalVarScope=scope(g->group.lock(), ':'+uqFromName);
-
-                       if (varScope==externalVarScope ||  (isGlobal(varScope) && isGlobal(externalVarScope)))
-                         // fix external variable references
-                         g->table.rename(':'+uqFromName, ':'+uqNewName);
-                       // GodleyIcon::update invalidates the iterator, so postpone update
-                       godleysToUpdate.insert(g);
-                     }
-                   else
-                     {
-                       if (varScope==v->group.lock() ||
-                           (!newName.empty() && newName[0]==':') )
-                         v->name(newName);
-                       else
-                         v->name(":"+newName);
-                       if (auto vv=v->vValue()) {
-                        v->retype(vv->type()); // ensure correct type. Note this invalidates v.
-                       }
-                     }
-                 }
-             return false;
-           });
-        assert(model->numItems()==numItems);
-        for (auto g: godleysToUpdate)
-          {
-            g->update();
-            assert(model->numItems()==numItems);
-          }
-      minsky().requestReset();   // Updates model after variables rename. For ticket 1109.    
+        model->renameAllInstances(valueId, newName);
       }
    }
   

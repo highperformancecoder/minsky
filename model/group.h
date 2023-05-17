@@ -430,6 +430,9 @@ namespace minsky
 
     /// produce a summary of godley table variables
     std::vector<Summary> summariseGodleys() const;
+
+    /// rename all instances of a variable matching \a valueId to \a newName
+    void renameAllInstances(const std::string& valueId, const std::string& newName);
     
   };
 
