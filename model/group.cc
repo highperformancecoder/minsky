@@ -1298,7 +1298,7 @@ namespace minsky
       string uqNewName = newName.substr(newName[0]==':'? 1: 0);
       set<GodleyIcon*> godleysToUpdate;
 #ifndef NDEBUG
-      auto numItems=model->numItems();
+      auto numItems=this->numItems();
 #endif
       recursiveDo
           (&GroupItems::items, [&](Items&,Items::iterator i)
@@ -1338,7 +1338,7 @@ namespace minsky
         for (auto g: godleysToUpdate)
           {
             g->update();
-            assert(model->numItems()==numItems);
+            assert(this->numItems()==numItems);
           }
       minsky().requestReset();   // Updates model after variables rename. For ticket 1109.    
     }

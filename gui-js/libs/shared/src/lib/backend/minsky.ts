@@ -1422,6 +1422,7 @@ export class Minsky extends CppClass {
   async setAllDEmode(a1: boolean): Promise<void> {return this.$callMethod('setAllDEmode',a1);}
   async setAutoSaveFile(a1: string): Promise<void> {return this.$callMethod('setAutoSaveFile',a1);}
   async setBusyCursor(): Promise<void> {return this.$callMethod('setBusyCursor');}
+  async setDefinition(a1: string,a2: string): Promise<void> {return this.$callMethod('setDefinition',a1,a2);}
   async setGodleyDisplayValue(a1: boolean,a2: string): Promise<void> {return this.$callMethod('setGodleyDisplayValue',a1,a2);}
   async setGodleyIconResource(a1: string): Promise<void> {return this.$callMethod('setGodleyIconResource',a1);}
   async setGroupIconResource(a1: string): Promise<void> {return this.$callMethod('setGroupIconResource',a1);}

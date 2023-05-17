@@ -142,6 +142,9 @@ export class SummaryComponent implements OnInit {
       this.electronService.minsky.model.renameAllInstances(this.editRow.valueId, this.editCellContents);
       this.ngOnInit(); // force rereading of item valueIds.
       break;
+      case 'definition':
+      this.electronService.minsky.setDefinition(this.editRow.valueId, this.editCellContents);
+      break;
     }
     this.editRow=null;
   }

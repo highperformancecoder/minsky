@@ -512,6 +512,9 @@ namespace minsky
 
     /// Used to implement a pause until return pressed for attaching debugger purposes
     char getc() const {return std::getc(stdin);}
+
+    /// add/replace a definition for a flow variable given by \a valueId
+    void setDefinition(const std::string& valueId, const std::string& definition);
   };
 
   /// global minsky object

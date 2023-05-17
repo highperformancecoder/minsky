@@ -188,7 +188,7 @@ namespace minsky
     using Item::attachedToDefiningVar;
     /// formula defining this variable
     std::string definition() const;
-    
+
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */

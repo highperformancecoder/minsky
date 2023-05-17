@@ -1546,6 +1546,33 @@ namespace minsky
         }
     variableInstanceList.reset();
   }
+
+  void Minsky::setDefinition(const std::string& valueId, const std::string& definition)
+  {
+    auto var=definingVar(valueId);
+    if (!var) // find
+      var=dynamic_pointer_cast<VariableBase>(model->findAny(&GroupItems::items, [&](const ItemPtr& it) {
+        if (auto v=it->variableCast())
+          return v->valueId()==valueId;
+        return false;
+      }));
+    if (var)
+      if (auto p=var->ports(1).lock())
+        {
+          if (!p->wires().empty())
+            model->removeWire(*p->wires().front());
+          auto group=var->group.lock();
+          if (!group) group=model;
+          auto udf=new UserFunction(var->name()+"()");
+          group->addItem(udf); // ownership passed
+          udf->expression=definition;
+          double fm=std::fmod(var->rotation(),360);
+          bool notFlipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
+          udf->moveTo(var->x()+(notFlipped? -2:2)*var->width(), var->y());
+          group->addWire(udf->ports(0), var->ports(1));
+        }
+  }
+
   
   void Minsky::redrawAllGodleyTables()
   {
