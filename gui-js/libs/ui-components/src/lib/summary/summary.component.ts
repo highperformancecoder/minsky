@@ -111,7 +111,7 @@ export class SummaryComponent implements OnInit {
   }
 
   editing(variable, member: string): boolean {
-    return variable===this.editRow && member===this.editCol; 
+    return (variable.type==='flow' || member!=='definition') && variable===this.editRow && member===this.editCol; 
   }
   edit(event, variable, member: string) {
     event.stopImmediatePropagation();

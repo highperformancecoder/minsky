@@ -1,11 +1,14 @@
-<div class="table-wrapper" (mousewheel)="changeScale($event)" (keyup)="$event.stopImmediatePropagation()" (keydown)="$event.stopImmediatePropagation()">
+<div class="table-wrapper" (mousewheel)="changeScale($event)"
+     (keyup)="$event.stopImmediatePropagation()"
+     (keydown)="$event.stopImmediatePropagation()"
+     >
     <div class="table" [style.zoom]="scale.zoomFactor">
       <!-- all variables anbd global variables -->
       <div *ngFor="let category of ['allVariables','globalVariables','groups','godleys']">
         <span class="caret" (click)="toggleCaret($event)">{{labels[category]}} - {{numVars[category]}}
           <div *ngFor="let type of types(category)" class="nested">
             <span *ngIf="type!=='constant'" class="caret one-indent" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
-              <div class="nested">
+              <div class="nested" (click)="$event.stopImmediatePropagation()">
                 <div class="table-row header-row">
                   <div *ngIf="['groups','godleys'].includes(category)"
                        class="data-cell">Type</div>
