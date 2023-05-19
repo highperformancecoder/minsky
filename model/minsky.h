@@ -158,6 +158,10 @@ namespace minsky
     
     /// balance two Godley columns
     void balanceColumns(const GodleyIcon& srcGodley, int srcCol, GodleyIcon& destGodley, int destCol) const;
+
+    /// remove the definition network from \a wire, up to, but not including attached variables.
+    void removeItems(Wire& wire);
+
   public:
     PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};

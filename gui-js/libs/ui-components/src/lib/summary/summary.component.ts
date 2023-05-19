@@ -144,6 +144,8 @@ export class SummaryComponent implements OnInit {
       break;
       case 'definition':
       this.electronService.minsky.setDefinition(this.editRow.valueId, this.editCellContents);
+      this.editRow.definition='\\text{'+this.editCellContents+'}';
+      this.editRow.udfDefinition=this.editCellContents;
       break;
     }
     this.editRow=null;

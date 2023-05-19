@@ -512,7 +512,12 @@ namespace minsky
   {
     if (resetDuration<chrono::milliseconds(500))
       {
-        reset();
+        try
+          {
+            reset();
+          }
+        catch (...)
+          {}
         return;
       }
     flags|=reset_needed;
@@ -1547,6 +1552,26 @@ namespace minsky
     variableInstanceList.reset();
   }
 
+  void Minsky::removeItems(Wire& wire)
+  {
+    if (wire.from()->wires().size()==1)
+      { // only remove higher up the network if this item is the only item feeding from it
+        auto& item=wire.from()->item();
+        if (!item.variableCast())
+          {
+            for (size_t i=1; i<item.portsSize(); ++i)
+              if (auto p=item.ports(i).lock())
+                for (auto w: p->wires())
+                  removeItems(*w);
+            model->removeItem(item);
+          }
+        else if (auto p=item.ports(1).lock())
+          if (p->wires().empty())
+            model->removeItem(item); // remove non-definition variables as well
+      }
+    model->removeWire(wire);
+  }
+  
   void Minsky::setDefinition(const std::string& valueId, const std::string& definition)
   {
     auto var=definingVar(valueId);
@@ -1559,18 +1584,26 @@ namespace minsky
     if (var)
       if (auto p=var->ports(1).lock())
         {
-          if (!p->wires().empty())
-            model->removeWire(*p->wires().front());
           auto group=var->group.lock();
           if (!group) group=model;
-          auto udf=new UserFunction(var->name()+"()");
-          group->addItem(udf); // ownership passed
+          UserFunction* udf=p->wires().empty()? nullptr: dynamic_cast<UserFunction*>(&p->wires().front()->from()->item());
+          if (!udf)
+            {
+              // remove previous definition network
+              for (auto w: p->wires())
+                {
+                  assert(w);
+                  removeItems(*w);
+                }
+
+              udf=new UserFunction(var->name()+"()");
+              group->addItem(udf); // ownership passed
+              double fm=std::fmod(var->rotation(),360);
+              bool notFlipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
+              udf->moveTo(var->x()+(notFlipped? -1:1)*0.6*(var->width()+udf->width()), var->y());
+              group->addWire(udf->ports(0), var->ports(1));
+            }
           udf->expression=definition;
-          double fm=std::fmod(var->rotation(),360);
-          bool notFlipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-          udf->moveTo(var->x()+(notFlipped? -2:2)*var->width(), var->y());
-          group->addWire(udf->ports(0), var->ports(1));
-          // TODO clean up orphaned items.
         }
   }
 
