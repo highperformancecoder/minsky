@@ -513,7 +513,8 @@ From the context menu, one can select a slider to be attached to a
 variable, which is a GUI ``knob'' allowing one to control a variable's
 initial value, or the value of a parameter or constant. Adjusting the
 slider of an integral (or stock) variable while the system is running
-actually adjusts the present value of the variable.
+actually adjusts the present value of the variable. The sliders can
+also be adjusted using the keyboard arrow keys.
 
 Slider parameters are specified in the edit menu: max, min and step
 size. A relative slider means that the step size is expressed as a
@@ -1102,12 +1103,19 @@ Item specific context menu items:
         
 \end{description}
 
-\section{Canvas background}
+\section{Canvas background and keyboard shortcuts}
 
 The canvas is not simply an inert place for the canvas items to
 exist. There is also a background context menu, giving access to the
 edit menu functionality such as cut/copy/paste, and also keyboard
 entry.
+
+Special keys:
+\begin{tabular}{rl}
+  F1 & context sensitive help\\
+  Shift & enter panning mode\\
+  $\leftarrow,\rightarrow,\uparrow,\downarrow$ & adjust sliders, adjust Ravel slicers\\
+\end{tabular}  
 
 The following keystrokes insert an operation
 
@@ -1210,3 +1218,4 @@ some more about it at
 
 The Lock widget is used to fix the output of a Ravel at a particular
 point in time, making it easy to compare two different ravel settings.
+

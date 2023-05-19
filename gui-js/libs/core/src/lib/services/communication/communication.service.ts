@@ -395,7 +395,7 @@ export class CommunicationService {
         return;
       }
 
-      const yoffs=this.electronService.isMacOS()? -142: 0; // why, o why, Mac?
+      const yoffs=this.electronService.isMacOS()? -172: 0; // why, o why, Mac?
 
       let minsky=this.electronService.minsky;
       switch (type) {
