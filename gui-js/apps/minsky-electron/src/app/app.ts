@@ -56,7 +56,7 @@ export default class App {
           await CommandsManager.openNamedFile(App.cliArguments[1]);
           BookmarkManager.updateBookmarkList();
 	}
-	catch (...) {
+	catch (err) {
 	// Macs sometimes put extra guff on the command line, so ignore errors
 	}
     }
