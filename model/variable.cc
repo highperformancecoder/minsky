@@ -737,6 +737,22 @@ void VariableBase::draw(cairo_t *cairo) const
     // Rescale size of variable attached to intop. For ticket 94
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
+    if (cminsky().phillips && vv && vv->rank()==0)
+      {
+        auto maxV=minsky().maxValue[units()];
+        if (maxV>0)
+          {
+            CairoSave cs(cairo);
+            auto f=abs(value())/maxV;
+            auto fracHeight=2*h*((f<1)? f:1);
+            cairo_rectangle(cairo,-0.5*width(),0.5*height(),width(),-fracHeight);
+            if (value()>=0)
+              cairo_set_source_rgba(cairo,0,0,1,0.3);
+            else
+              cairo_set_source_rgba(cairo,1,0,0,0.3);
+            cairo_fill(cairo);
+          }
+      }
 }
 
 void VariableBase::resize(const LassoBox& b)

@@ -965,6 +965,14 @@ namespace minsky
         lastRedraw=microsec_clock::local_time();
       }
 
+    // update maxValue
+    for (auto& v: variableValues)
+      {
+        auto& val=maxValue[v.second->units];
+        if (abs(v.second->value())>val && v.second->rank()==0)
+          val=abs(v.second->value());
+      }
+    
     return {t, deltaT()};
   }
   

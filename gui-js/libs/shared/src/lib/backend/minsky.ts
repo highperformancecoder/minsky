@@ -1284,6 +1284,7 @@ export class Minsky extends CppClass {
   fontSampler: FontDisplay;
   godleyTab: GodleyTab;
   logVarList: Container<string>;
+  maxValue: Map<Units,number>;
   model: Group;
   namedItems: Map<string,Item>;
   panopticon: Panopticon;
@@ -1303,6 +1304,7 @@ export class Minsky extends CppClass {
     this.fontSampler=new FontDisplay(this.$prefix()+'/fontSampler');
     this.godleyTab=new GodleyTab(this.$prefix()+'/godleyTab');
     this.logVarList=new Container<string>(this.$prefix()+'/logVarList');
+    this.maxValue=new Map<Units,number>(this.$prefix()+'/maxValue');
     this.model=new Group(this.$prefix()+'/model');
     this.namedItems=new Map<string,Item>(this.$prefix()+'/namedItems',Item);
     this.panopticon=new Panopticon(this.$prefix()+'/panopticon');
@@ -1386,6 +1388,7 @@ export class Minsky extends CppClass {
   async openModelInCanvas(): Promise<void> {return this.$callMethod('openModelInCanvas');}
   async order(...args: number[]): Promise<number> {return this.$callMethod('order',...args);}
   async paste(): Promise<void> {return this.$callMethod('paste');}
+  async phillips(...args: boolean[]): Promise<boolean> {return this.$callMethod('phillips',...args);}
   async physicalMem(): Promise<number> {return this.$callMethod('physicalMem');}
   async popFlags(): Promise<void> {return this.$callMethod('popFlags');}
   async populateMissingDimensions(): Promise<void> {return this.$callMethod('populateMissingDimensions');}
