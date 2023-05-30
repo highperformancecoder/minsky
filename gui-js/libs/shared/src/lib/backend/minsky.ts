@@ -1284,6 +1284,7 @@ export class Minsky extends CppClass {
   fontSampler: FontDisplay;
   godleyTab: GodleyTab;
   logVarList: Container<string>;
+  maxFlowValue: Map<Units,number>;
   maxValue: Map<Units,number>;
   model: Group;
   namedItems: Map<string,Item>;
@@ -1304,6 +1305,7 @@ export class Minsky extends CppClass {
     this.fontSampler=new FontDisplay(this.$prefix()+'/fontSampler');
     this.godleyTab=new GodleyTab(this.$prefix()+'/godleyTab');
     this.logVarList=new Container<string>(this.$prefix()+'/logVarList');
+    this.maxFlowValue=new Map<Units,number>(this.$prefix()+'/maxFlowValue');
     this.maxValue=new Map<Units,number>(this.$prefix()+'/maxValue');
     this.model=new Group(this.$prefix()+'/model');
     this.namedItems=new Map<string,Item>(this.$prefix()+'/namedItems',Item);
@@ -2306,7 +2308,7 @@ export class Wire extends CppClass {
   async coords(...args: any[]): Promise<number[]> {return this.$callMethod('coords',...args);}
   async deleteHandle(a1: number,a2: number): Promise<void> {return this.$callMethod('deleteHandle',a1,a2);}
   async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
-  async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
+  async draw(a1: minsky__dummy,a2: boolean): Promise<void> {return this.$callMethod('draw',a1,a2);}
   async editHandle(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('editHandle',a1,a2,a3);}
   async from(): Promise<object> {return this.$callMethod('from');}
   async insertHandle(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('insertHandle',a1,a2,a3);}

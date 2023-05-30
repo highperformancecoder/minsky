@@ -376,7 +376,7 @@ namespace
     return (to()->item().attachedToDefiningVar(visited));
   }    
    
-  void Wire::draw(cairo_t* cairo) const
+  void Wire::draw(cairo_t* cairo, bool reverseArrow) const
   {
     auto coords=this->coords();
     if (coords.size()<4 || !visible()) return;

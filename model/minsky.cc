@@ -152,6 +152,7 @@ namespace minsky
     equations.clear();
     integrals.clear();
     variableValues.clear();
+    maxValue.clear();
     UserFunction::nextId=0;
     
     flowVars.clear();

@@ -743,9 +743,10 @@ void VariableBase::draw(cairo_t *cairo) const
         if (maxV>0)
           {
             CairoSave cs(cairo);
+            cairo_rotate(cairo,rv.angle);
             auto f=abs(value())/maxV;
             auto fracHeight=2*h*((f<1)? f:1);
-            cairo_rectangle(cairo,-0.5*width(),0.5*height(),width(),-fracHeight);
+            cairo_rectangle(cairo,-1.1*w,h,2.2*w,-fracHeight);
             if (value()>=0)
               cairo_set_source_rgba(cairo,0,0,1,0.3);
             else

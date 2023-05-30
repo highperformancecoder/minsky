@@ -74,7 +74,7 @@ namespace minsky
       return attachedToDefiningVar(visited);
     }
     /// draw this item into a cairo context
-    void draw(cairo_t* cairo) const;
+    void draw(cairo_t* cairo, bool reverseArrow=false) const;
     
     /// display coordinates 
     std::vector<float> coords() const;
