@@ -69,7 +69,10 @@ export class WindowManager {
                                          scalingFactor: this.scaleFactor
                                        });
     }
-    catch (err) {} // absorb exceptions, which will mostly be due to bad windows 
+    catch (err) {
+      // absorb exceptions, which will mostly be due to bad windows
+      console.log(err);
+    }
   }
     
   static async setCurrentTab(tab/*: RenderNativeWindow*/) {
