@@ -27,6 +27,7 @@
 #include "itemTab.xcd"
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
+#include "pango.rcd"
 #include "pango.xcd"
 #include "variableTab.h"
 #include "variableTab.rcd"
