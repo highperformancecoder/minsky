@@ -64,7 +64,7 @@ namespace minsky
     return true;
   }
 
-  void PhillipsDiagram::updateFromModel()
+  void PhillipsDiagram::init()
   {
     stocks.clear();
     flows.clear();

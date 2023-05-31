@@ -51,7 +51,7 @@ namespace minsky
     static std::map<Units, double> maxStock;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// populate phillips diagram from Godley tables in model
-    void updateFromModel();
+    void init() override;
     void updateMaxValues();
   };
 }
