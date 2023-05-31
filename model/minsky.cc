@@ -157,6 +157,7 @@ namespace minsky
   void Minsky::clearAllMaps(bool doClearHistory)
   {
     model->clear();
+    canvas.openGroupInCanvas(model);
     equations.clear();
     integrals.clear();
     variableValues.clear();
