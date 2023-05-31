@@ -39,6 +39,7 @@
 #include "operation.h"
 #include "pannableTab.h"
 #include "panopticon.h"
+#include "phillipsDiagram.h"
 #include "plotTab.h"
 #include "plotWidget.h"
 #include "progress.h"
@@ -162,6 +163,7 @@ namespace minsky
     PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
+    PhillipsDiagram phillipsDiagram;
     PlotTab plotTab;
     GodleyTab godleyTab;
     

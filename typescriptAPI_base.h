@@ -326,8 +326,9 @@ namespace classdesc
   typename enable_if<is_map<B>, void>::T
   typescriptAPI(typescriptAPI_t& t,const std::string&)
   {
-    t[typescriptType<C>()].super="Map<"+typescriptType<typename B::key_type>()+","+
-      typescriptType<typename B::mapped_type>()+">";
+    if (typescriptType<C>().substr(0,4)!="Map<")
+      t[typescriptType<C>()].super="Map<"+typescriptType<typename B::key_type>()+","+
+        typescriptType<typename B::mapped_type>()+">";
   }
 
   template <class C, class B, class T>

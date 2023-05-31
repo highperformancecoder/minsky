@@ -42,6 +42,7 @@
 #include "pango.tcd"
 #include "pannableTab.tcd"
 #include "panopticon.tcd"
+#include "phillipsDiagram.tcd"
 #include "plot.tcd"
 #include "plotTab.tcd"
 #include "plotWidget.tcd"

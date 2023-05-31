@@ -19,6 +19,7 @@
 
 #ifndef PHILLIPS_DIAGRAM_H
 #define PHILLIPS_DIAGRAM_H
+#include "classdesc_access.h"
 #include "renderNativeWindow.h"
 #include "variable.h"
 #include "wire.h"
@@ -31,6 +32,7 @@ namespace minsky
   class PhillipsFlow: public Wire
   {
   public:
+    PhillipsFlow()=default;
     PhillipsFlow(const std::string& name, const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to):
       Wire(from,to), flow(name) {}
     static std::map<Units, double> maxFlow;
@@ -44,6 +46,7 @@ namespace minsky
     bool redraw(int, int, int width, int height) override;
     std::map<std::string, Variable<VariableType::stock>> stocks;
     std::vector<PhillipsFlow> flows;
+    CLASSDESC_ACCESS(PhillipsDiagram);
   public:
     static std::map<Units, double> maxStock;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
@@ -52,4 +55,6 @@ namespace minsky
     void updateMaxValues();
   };
 }
+
+#include "phillipsDiagram.cd"
 #endif
