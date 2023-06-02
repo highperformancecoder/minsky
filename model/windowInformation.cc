@@ -66,7 +66,9 @@ namespace minsky
     {
       char errorMessage[256];
       XGetErrorText(ev->display, ev->error_code, errorMessage, sizeof(errorMessage));
-      throw runtime_error(errorMessage);
+      //throw runtime_error(errorMessage);
+      fputs(errorMessage,stderr);
+      return 0;
     }
     
     int xinitThreadsStatus=XInitThreads();
