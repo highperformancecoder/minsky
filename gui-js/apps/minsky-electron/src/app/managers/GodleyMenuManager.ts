@@ -23,8 +23,7 @@ export class GodleyMenuManager {
     const godley = new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
     const menu = Menu.buildFromTemplate([
       scope.getGodleyFileMenuItem(window, godley),
-      // TODO remove itemInfo from this call
-      scope.getGodleyEditMenuItem(itemInfo, godley),
+      scope.getGodleyEditMenuItem(godley),
       scope.getGodleyViewMenuItem(window),
       scope.getGodleyOptionsMenuItem(window),
       new MenuItem({
@@ -198,7 +197,6 @@ export class GodleyMenuManager {
   }
 
   private static getGodleyEditMenuItem(
-    itemInfo: CanvasItem,
     godley: GodleyIcon
   ) {
     return new MenuItem({
@@ -216,7 +214,7 @@ export class GodleyMenuManager {
         },
         {
           label: 'Title',
-          click: () => {CommandsManager.editGodleyTitle(itemInfo.id);},
+          click: () => {CommandsManager.editGodleyTitle(godley);},
         },
         {
           label: 'Cut',

@@ -522,7 +522,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Title',
         click: () => {
-          CommandsManager.editGodleyTitle();
+          CommandsManager.editGodleyTitle(godley);
         },
       }),
       new MenuItem({
@@ -1026,7 +1026,7 @@ export class ContextMenuManager {
     menu.append(new MenuItem({
       label: "Title",
       click: async ()=> {
-        await CommandsManager.editGodleyTitle(godley.id());
+        await CommandsManager.editGodleyTitle(godley);
         refreshFunction();
       },
     }));

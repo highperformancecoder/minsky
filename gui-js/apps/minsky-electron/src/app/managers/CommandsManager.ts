@@ -179,16 +179,17 @@ export class CommandsManager {
     });
   }
 
-  static async editGodleyTitle(itemId: string = ""): Promise<void> {
-    let title = new GodleyIcon(minsky.canvas.item).table.title();
+  static async editGodleyTitle(godley: GodleyIcon): Promise<void> {
+    let title = godley.table.title();
 
     if (Functions.isEmptyObject(title)) {
       title = '';
     }
-
+    
+    minsky.nameCurrentItem(minsky.canvas.item?.id()); // name current item
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
-      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${itemId}`,
+      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godley.id()}`,
       useContentSize: true,
       height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
