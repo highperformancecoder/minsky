@@ -12,20 +12,21 @@ import {
 import { Menu, MenuItem, IpcMainInvokeEvent } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { StoreManager } from './StoreManager';
+import { WindowManager,} from './WindowManager';
 
 export class GodleyMenuManager {
-  public static createMenusForGodleyView(
+  public static async createMenusForGodleyView(
     window: Electron.BrowserWindow,
     itemInfo: CanvasItem
   ) {
     const scope = this;
     const godley = new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
     const menu = Menu.buildFromTemplate([
-      scope.getGodleyFileMenuItem(godley),
+      scope.getGodleyFileMenuItem(itemInfo, godley),
       // TODO remove itemInfo from this call
       scope.getGodleyEditMenuItem(itemInfo, godley),
       scope.getGodleyViewMenuItem(window, godley),
-      scope.getGodleyOptionsMenuItem(),
+      scope.getGodleyOptionsMenuItem(itemInfo),
       new MenuItem({
         label: 'Help',
         submenu: [
@@ -46,12 +47,17 @@ export class GodleyMenuManager {
     return menu;
   }
 
+  private static refresh(id: string) {
+    WindowManager.getWindowByUid(id).context?.webContents?.send(events.GODLEY_POPUP_REFRESH);
+  }
+
   private static async setGodleyPreferences(
     property:
       | 'enableMultipleEquityColumns'
       | 'godleyTableShowValues'
       | 'godleyTableOutputStyle',
-    value: boolean | GodleyTableOutputStyles
+    value: boolean | GodleyTableOutputStyles,
+    id: string
   ) {
     const preferences = StoreManager.store.get('preferences');
     let {
@@ -63,7 +69,7 @@ export class GodleyMenuManager {
     if (property === 'enableMultipleEquityColumns') {
       enableMultipleEquityColumns = value as boolean;
       minsky.multipleEquities(enableMultipleEquityColumns);
-
+      GodleyMenuManager.refresh(id);
     } else {
       if (property === 'godleyTableOutputStyle') {
         godleyTableOutputStyle = value as GodleyTableOutputStyles;
@@ -83,7 +89,7 @@ export class GodleyMenuManager {
     });
   }
 
-  private static getGodleyOptionsMenuItem() {
+  private static getGodleyOptionsMenuItem(itemInfo: CanvasItem) {
     const scope = this;
     // CAVEAT:: Electron does not support dynamic menu labels  https://github.com/electron/electron/issues/5055)
     // Recreating menus from scratch leads to glitches after few clicks. Hence we have added submenus instead of providing toggle options / checkboxes
@@ -91,49 +97,53 @@ export class GodleyMenuManager {
     return new MenuItem({
       label: 'Options',
       submenu: [
-        {
-          label: 'Values',
-          submenu: [
-            {
-              label: 'Show',
-              click: async () => {
-                await scope.setGodleyPreferences('godleyTableShowValues', true);
-              },
-            },
-            {
-              label: 'Hide',
-              click: async () => {
-                await scope.setGodleyPreferences(
-                  'godleyTableShowValues',
-                  false
-                );
-              },
-            },
-          ],
-        },
-        {
-          label: 'DR/CR Style',
-          submenu: [
-            {
-              label: 'Sign',
-              click: async () => {
-                await scope.setGodleyPreferences(
-                  'godleyTableOutputStyle',
-                  GodleyTableOutputStyles.SIGN
-                );
-              },
-            },
-            {
-              label: 'DR/CR',
-              click: async () => {
-                await scope.setGodleyPreferences(
-                  'godleyTableOutputStyle',
-                  GodleyTableOutputStyles.DRCR
-                );
-              },
-            },
-          ],
-        },
+// disabling values and DR/CR style, as this functionality is not currently supported in the HTML Godley popup.
+        //        {
+//          label: 'Values',
+//          submenu: [
+//            {
+//              label: 'Show',
+//              click: async () => {
+//                await scope.setGodleyPreferences('godleyTableShowValues', true, itemInfo.id);
+//              },
+//            },
+//            {
+//              label: 'Hide',
+//              click: async () => {
+//                await scope.setGodleyPreferences(
+//                  'godleyTableShowValues',
+//                  false,
+//                  itemInfo.id
+//                );
+//              },
+//            },
+//          ],
+//        },
+//        {
+//          label: 'DR/CR Style',
+//          submenu: [
+//            {
+//              label: 'Sign',
+//              click: async () => {
+//                await scope.setGodleyPreferences(
+//                  'godleyTableOutputStyle',
+//                  GodleyTableOutputStyles.SIGN,
+//                  itemInfo.id
+//                );
+//              },
+//            },
+//            {
+//              label: 'DR/CR',
+//              click: async () => {
+//                await scope.setGodleyPreferences(
+//                  'godleyTableOutputStyle',
+//                  GodleyTableOutputStyles.DRCR,
+//                  itemInfo.id
+//                );
+//              },
+//            },
+//          ],
+//        },
         {
           label: 'Multiple Equity Column',
           submenu: [
@@ -142,7 +152,8 @@ export class GodleyMenuManager {
               click: async () => {
                 await scope.setGodleyPreferences(
                   'enableMultipleEquityColumns',
-                  true
+                  true,
+                  itemInfo.id
                 );
               },
             },
@@ -151,7 +162,8 @@ export class GodleyMenuManager {
               click: async () => {
                 await scope.setGodleyPreferences(
                   'enableMultipleEquityColumns',
-                  false
+                  false,
+                  itemInfo.id
                 );
               },
             },
@@ -229,7 +241,7 @@ export class GodleyMenuManager {
     });
   }
 
-  private static getGodleyFileMenuItem(godley: GodleyIcon) {
+  private static getGodleyFileMenuItem(itemInfo: CanvasItem, godley: GodleyIcon) {
     return new MenuItem({
       label: 'File',
       submenu: [
@@ -252,6 +264,10 @@ export class GodleyMenuManager {
             },
           ],
         },
+        {
+          label: 'Refresh',
+          click: () => {GodleyMenuManager.refresh(itemInfo.id);},
+        }
       ],
     });
   }

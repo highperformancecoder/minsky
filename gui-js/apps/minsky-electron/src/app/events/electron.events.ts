@@ -119,7 +119,7 @@ ipcMain.on(
     event,
     parameters: { window: BrowserWindow; itemInfo: CanvasItem }
   ) => {
-    const menu = GodleyMenuManager.createMenusForGodleyView(
+    const menu = await GodleyMenuManager.createMenusForGodleyView(
       parameters.window,
       parameters.itemInfo
     );

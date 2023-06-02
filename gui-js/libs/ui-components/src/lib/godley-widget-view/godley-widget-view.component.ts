@@ -89,8 +89,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   }
 
   async ngOnInit() {
-    this.multiEquityAllowed = await this.electronService.minsky.multipleEquities();
-
     this.godleyIcon = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
     this.namedItemSubCommand = this.godleyIcon.popup;
 
@@ -285,6 +283,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   }
 
   async hardRefresh(update = true) {
+    this.multiEquityAllowed = await this.electronService.minsky.multipleEquities();
+
     if(update) this.godleyIcon.update();
 
     const allData: string[][] = <any>await this.godleyIcon.table.getData();
