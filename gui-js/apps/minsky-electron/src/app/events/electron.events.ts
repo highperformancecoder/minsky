@@ -208,11 +208,7 @@ ipcMain.handle(
     } = preferences;
 
     StoreManager.store.set('preferences', preferences);
-
-    minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
-    minsky.multipleEquities(enableMultipleEquityColumns);
-    minsky.defaultFont(font);
-    RecentFilesManager.updateNumberOfRecentFilesToDisplay();
+    await CommandsManager.applyPreferences();
     return;
   }
 );

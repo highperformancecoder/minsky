@@ -16,6 +16,8 @@ import * as JSON5 from 'json5';
 import { join } from 'path';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
+import { StoreManager } from './StoreManager';
+import { RecentFilesManager } from './RecentFilesManager';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -1040,4 +1042,18 @@ export class CommandsManager {
     });
     Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
+
+  static async applyPreferences() {
+    const {
+      enableMultipleEquityColumns,
+      godleyTableShowValues,
+      godleyTableOutputStyle,
+      font,
+    } = StoreManager.store.get('preferences');
+    minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
+    minsky.multipleEquities(enableMultipleEquityColumns);
+    minsky.defaultFont(font);
+    RecentFilesManager.updateNumberOfRecentFilesToDisplay();
+  }
+  
 }

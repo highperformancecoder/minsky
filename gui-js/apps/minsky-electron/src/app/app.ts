@@ -136,6 +136,7 @@ export default class App {
 
     WindowManager.activeWindows.set(App.mainWindow.id, mainWindowDetails);
 
+    CommandsManager.applyPreferences();
     //logWindows(WindowManager.activeWindows);
 
     App.mainWindow.on('close', async (e) => {
