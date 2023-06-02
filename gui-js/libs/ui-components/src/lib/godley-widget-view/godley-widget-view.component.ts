@@ -53,6 +53,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   renderTimeout;
 
+  zoomFactor=1;
+  
   // in canvas mode, the C++ layer writes to the godley-cairo-canvas element
   // this can be re-enabled to compare the visual output and interaction between the canvas based renderer and the HTML based one
   // switching this interactively without reinitialzing the window doesn't work, because the C++ output is very persistent. may need to clear it somehow.
@@ -97,6 +99,11 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     if(!this.canvasMode) {
       this.electronService.on(events.GODLEY_POPUP_REFRESH, async e => {
         await this.hardRefresh();
+      });
+    this.electronService.on(events.ZOOM, (event, ratio)=>{this.zoom(ratio);});
+      this.electronService.on(events.RESET_ZOOM, (event, ratio)=>{
+        this.zoomFactor=1;
+        document.body.style.zoom='100%';
       });
 
       await this.hardRefresh();
@@ -190,6 +197,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
     this.godleyCanvasContainer.onwheel = this.onMouseWheelZoom;
     document.onkeydown = this.onKeyDown;
+
   }
 
   async redraw() {
@@ -438,6 +446,11 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
         break;
       }
     }
+  }
+
+  zoom(ratio: number) {
+    this.zoomFactor*=ratio;
+    document.body.style.zoom = `${Math.round(this.zoomFactor*100)}%`;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method

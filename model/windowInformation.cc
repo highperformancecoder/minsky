@@ -62,11 +62,13 @@ namespace minsky
 #ifdef USE_WIN32_SURFACE
 #elif defined(MAC_OSX_TK)
 #else
+    // log any X11 errors on the console - X11 errors will occur on a
+    // background thread that may not catch exceptions, so exceptions
+    // are inappropriate.
     int throwOnXError(Display *, XErrorEvent *ev)
     {
       char errorMessage[256];
       XGetErrorText(ev->display, ev->error_code, errorMessage, sizeof(errorMessage));
-      //throw runtime_error(errorMessage);
       fputs(errorMessage,stderr);
       return 0;
     }

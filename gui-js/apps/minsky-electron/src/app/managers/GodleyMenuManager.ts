@@ -22,11 +22,11 @@ export class GodleyMenuManager {
     const scope = this;
     const godley = new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
     const menu = Menu.buildFromTemplate([
-      scope.getGodleyFileMenuItem(itemInfo, godley),
+      scope.getGodleyFileMenuItem(window, godley),
       // TODO remove itemInfo from this call
       scope.getGodleyEditMenuItem(itemInfo, godley),
-      scope.getGodleyViewMenuItem(window, godley),
-      scope.getGodleyOptionsMenuItem(itemInfo),
+      scope.getGodleyViewMenuItem(window),
+      scope.getGodleyOptionsMenuItem(window),
       new MenuItem({
         label: 'Help',
         submenu: [
@@ -47,8 +47,8 @@ export class GodleyMenuManager {
     return menu;
   }
 
-  private static refresh(id: string) {
-    WindowManager.getWindowByUid(id).context?.webContents?.send(events.GODLEY_POPUP_REFRESH);
+  private static refresh(window: Electron.BrowserWindow) {
+    window.webContents?.send(events.GODLEY_POPUP_REFRESH);
   }
 
   private static async setGodleyPreferences(
@@ -57,7 +57,7 @@ export class GodleyMenuManager {
       | 'godleyTableShowValues'
       | 'godleyTableOutputStyle',
     value: boolean | GodleyTableOutputStyles,
-    id: string
+    window: Electron.BrowserWindow,
   ) {
     const preferences = StoreManager.store.get('preferences');
     let {
@@ -69,7 +69,7 @@ export class GodleyMenuManager {
     if (property === 'enableMultipleEquityColumns') {
       enableMultipleEquityColumns = value as boolean;
       minsky.multipleEquities(enableMultipleEquityColumns);
-      GodleyMenuManager.refresh(id);
+      GodleyMenuManager.refresh(window);
     } else {
       if (property === 'godleyTableOutputStyle') {
         godleyTableOutputStyle = value as GodleyTableOutputStyles;
@@ -89,7 +89,7 @@ export class GodleyMenuManager {
     });
   }
 
-  private static getGodleyOptionsMenuItem(itemInfo: CanvasItem) {
+  private static getGodleyOptionsMenuItem(window: Electron.BrowserWindow) {
     const scope = this;
     // CAVEAT:: Electron does not support dynamic menu labels  https://github.com/electron/electron/issues/5055)
     // Recreating menus from scratch leads to glitches after few clicks. Hence we have added submenus instead of providing toggle options / checkboxes
@@ -153,7 +153,7 @@ export class GodleyMenuManager {
                 await scope.setGodleyPreferences(
                   'enableMultipleEquityColumns',
                   true,
-                  itemInfo.id
+                  window
                 );
               },
             },
@@ -163,7 +163,7 @@ export class GodleyMenuManager {
                 await scope.setGodleyPreferences(
                   'enableMultipleEquityColumns',
                   false,
-                  itemInfo.id
+                  window
                 );
               },
             },
@@ -175,7 +175,6 @@ export class GodleyMenuManager {
 
   private static getGodleyViewMenuItem(
     window: Electron.BrowserWindow,
-    godley: GodleyIcon
   ) {
     return new MenuItem({
       label: 'View',
@@ -183,19 +182,16 @@ export class GodleyMenuManager {
         {
           label: 'Zoom In',
           accelerator: 'CmdOrCtrl + Plus',
-          click: async () => {godley.popup.zoom(0,0,ZOOM_IN_FACTOR);}
+          click: async () => {window.webContents?.send(events.ZOOM, 1.1);}
         },
         {
           label: 'Zoom Out',
           accelerator: 'CmdOrCtrl + Minus',
-          click: async () => {godley.popup.zoom(0,0,ZOOM_OUT_FACTOR);}
+          click: async () => {window.webContents?.send(events.ZOOM, 1.0/1.1);}
         },
         {
           label: 'Reset Zoom',
-          click: async () => {
-            godley.popup.zoomFactor(1);
-            godley.popup.requestRedraw();
-          },
+          click: async () => {window.webContents?.send(events.RESET_ZOOM);}
         },
       ],
     });
@@ -241,7 +237,7 @@ export class GodleyMenuManager {
     });
   }
 
-  private static getGodleyFileMenuItem(itemInfo: CanvasItem, godley: GodleyIcon) {
+  private static getGodleyFileMenuItem(window: Electron.BrowserWindow, godley: GodleyIcon) {
     return new MenuItem({
       label: 'File',
       submenu: [
@@ -266,7 +262,7 @@ export class GodleyMenuManager {
         },
         {
           label: 'Refresh',
-          click: () => {GodleyMenuManager.refresh(itemInfo.id);},
+          click: () => {GodleyMenuManager.refresh(window);},
         }
       ],
     });
