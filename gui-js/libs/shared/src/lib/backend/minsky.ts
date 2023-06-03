@@ -774,6 +774,7 @@ export class GodleyTable extends CppClass {
   }
   _assetClass(...args: any[]): Sequence<string> {return this.callMethod('_assetClass',...args);}
   assetClass(a1: object): string {return this.callMethod('assetClass',a1);}
+  balanceEquity(a1: number): void {return this.callMethod('balanceEquity',a1);}
   cell(a1: number,a2: number): string {return this.callMethod('cell',a1,a2);}
   cellInTable(a1: number,a2: number): boolean {return this.callMethod('cellInTable',a1,a2);}
   clear(): void {return this.callMethod('clear');}
@@ -802,6 +803,7 @@ export class GodleyTable extends CppClass {
   renameStock(a1: string,a2: string): void {return this.callMethod('renameStock',a1,a2);}
   resize(a1: number,a2: number): void {return this.callMethod('resize',a1,a2);}
   rowSum(a1: number): string {return this.callMethod('rowSum',a1);}
+  rowSumAsMap(a1: number): object {return this.callMethod('rowSumAsMap',a1);}
   rows(): number {return this.callMethod('rows');}
   savedText(...args: string[]): string {return this.callMethod('savedText',...args);}
   setCell(a1: number,a2: number,a3: string): void {return this.callMethod('setCell',a1,a2,a3);}
@@ -809,6 +811,7 @@ export class GodleyTable extends CppClass {
   signConventionReversed(a1: number): boolean {return this.callMethod('signConventionReversed',a1);}
   singleEquity(): boolean {return this.callMethod('singleEquity');}
   singularRow(a1: number,a2: number): boolean {return this.callMethod('singularRow',a1,a2);}
+  stringify(a1: Map<string,number>): string {return this.callMethod('stringify',a1);}
   title(...args: string[]): string {return this.callMethod('title',...args);}
 }
 
@@ -1311,6 +1314,7 @@ export class Minsky extends CppClass {
     this.variableValues=new VariableValues(this.prefix()+'/variableValues');
   }
   addIntegral(): void {return this.callMethod('addIntegral');}
+  allGodleyFlowVars(): string[] {return this.callMethod('allGodleyFlowVars');}
   assetClasses(): string[] {return this.callMethod('assetClasses');}
   autoLayout(): void {return this.callMethod('autoLayout');}
   autoSaveFile(): string {return this.callMethod('autoSaveFile');}

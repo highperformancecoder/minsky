@@ -827,6 +827,20 @@ namespace minsky
        });  // TODO - this lambda is FAR too long!
   }
 
+  vector<string> Minsky::allGodleyFlowVars() const
+  {
+    set<string> r;
+    model->recursiveDo(&GroupItems::items, [&](const Items, Items::const_iterator i) {
+      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+        {
+          auto flowVars=g->table.getVariables();
+          r.insert(flowVars.begin(),flowVars.end());
+        }
+      return false;
+    });
+    return {r.begin(),r.end()};
+  }
+  
   namespace
   {
     struct GodleyIt: public vector<GodleyIcon*>::iterator
