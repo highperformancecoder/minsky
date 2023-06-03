@@ -160,7 +160,10 @@ namespace minsky
       else
         return "";
     }
-
+    void setCell(unsigned row, unsigned col, const string& data) {
+      cell(row,col)=data;
+    }
+    
     /// get the set of column labels, in column order
     std::vector<std::string> getColumnVariables() const;
     /// get the vector of unique variable names from the interior of the

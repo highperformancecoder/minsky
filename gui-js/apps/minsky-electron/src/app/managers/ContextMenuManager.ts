@@ -1121,6 +1121,33 @@ export class ContextMenuManager {
         }
       }));
     }
+    const flows=godley.table.getVariables();
+    var flowMenu=new Menu();
+    for (let i=0; i<flows.length; ++i)
+      flowMenu.append(new MenuItem({
+        label: flows[i],
+        submenu: [
+          {
+            label: '+',
+            click: ()=>{
+              godley.table.setCell(r,c,flows[i]);
+              refreshFunction();
+            }
+          },
+          {
+            label: '-',
+            click: ()=>{
+              godley.table.setCell(r,c,`-${flows[i]}`);
+              refreshFunction();
+            }
+          },
+        ]            
+      }));
+    menu.append(new MenuItem({
+      label: 'Insert flow',
+      submenu: flowMenu,
+    }));
+                
     menu.popup();
   }
   

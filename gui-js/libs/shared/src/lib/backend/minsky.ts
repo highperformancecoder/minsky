@@ -804,6 +804,7 @@ export class GodleyTable extends CppClass {
   rowSum(a1: number): string {return this.callMethod('rowSum',a1);}
   rows(): number {return this.callMethod('rows');}
   savedText(...args: string[]): string {return this.callMethod('savedText',...args);}
+  setCell(a1: number,a2: number,a3: string): void {return this.callMethod('setCell',a1,a2,a3);}
   setDEmode(a1: boolean): void {return this.callMethod('setDEmode',a1);}
   signConventionReversed(a1: number): boolean {return this.callMethod('signConventionReversed',a1);}
   singleEquity(): boolean {return this.callMethod('singleEquity');}
