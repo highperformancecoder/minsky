@@ -232,7 +232,7 @@ namespace minsky
                           toGroup->splitBoundaryCrossingWires();
                           g->splitBoundaryCrossingWires();
                         }
-                      else
+                      else if (g!=model)
                         {
                           selection.clear(); // prevent old wires from being held onto
                           model->addItem(itemFocus);
