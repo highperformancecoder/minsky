@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   AppLayoutPayload,
+  Canvas,
   CppClass,
   events,
   HeaderEvent,
@@ -397,17 +398,18 @@ export class CommunicationService {
 
       const yoffs=this.electronService.isMacOS()? -172: 0; // why, o why, Mac?
 
-      let minsky=this.electronService.minsky;
+      let canvas=new Canvas(this.currentTab);
+      
       switch (type) {
 
       case 'mousedown':
-        minsky.canvas.mouseDown(clientX,this.mouseY+yoffs);
+        canvas.mouseDown(clientX,this.mouseY+yoffs);
         break;
       case 'mouseup':
-        minsky.canvas.mouseUp(clientX,this.mouseY+yoffs);
+        canvas.mouseUp(clientX,this.mouseY+yoffs);
         break;
       case 'mousemove':
-        minsky.canvas.mouseMove(clientX,this.mouseY+yoffs);
+        canvas.mouseMove(clientX,this.mouseY+yoffs);
         break;
       }
     }
