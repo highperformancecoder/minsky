@@ -170,11 +170,14 @@ namespace minsky
 
   void Item::adjustBookmark() const
   {
-    auto& bookmarks=minsky().model->bookmarks;
-    if (bookmark)
-      minsky().model->addBookmarkXY(left(),top(),bookmarkId());
-    else
-      bookmarks.erase(bookmarkId());
+    if (auto g=group.lock())
+      {
+        auto& bookmarks=g->bookmarks;
+        if (bookmark)
+          g->addBookmarkXY(left(),top(),bookmarkId());
+        else
+          bookmarks.erase(bookmarkId());
+      }
   }
   
   Point BottomRightResizerItem::resizeHandleCoords() const
