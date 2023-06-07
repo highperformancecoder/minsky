@@ -404,7 +404,7 @@ export class CommandsManager {
 
   static async undo(changes: number) {
     WindowManager.activeWindows.forEach((window) => {
-      if (!window.isMainWindow && !window.title==='Variables') {
+      if (!window.isMainWindow && window.context.title!=='Variables') {
         window.context.close();
       }
     });

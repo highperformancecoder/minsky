@@ -339,11 +339,13 @@ export class CommunicationService {
 
     this.mouseX = clientX;
     this.mouseY = clientY - Math.round(offset.top);
+    const yoffs=this.electronService.isMacOS()? -172: 0; // why, o why, Mac?
+    
 
     if (event === 'contextmenu') {
       this.electronService.send(events.CONTEXT_MENU, {
         x: this.mouseX,
-        y: this.mouseY,
+        y: this.mouseY+yoffs,
         type: "canvas",
       });
       return;
@@ -395,8 +397,6 @@ export class CommunicationService {
           this.scrollPositionAtMouseDown.x + deltaX;
         return;
       }
-
-      const yoffs=this.electronService.isMacOS()? -172: 0; // why, o why, Mac?
 
       let canvas=new Canvas(this.currentTab);
       
