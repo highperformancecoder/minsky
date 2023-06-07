@@ -1028,6 +1028,7 @@ namespace minsky
                                  for (unsigned j=1; j<g->table.cols(); ++j)
                                    balanceDuplicateColumns(*g,j);
                                }
+                             (*i)->adjustBookmark();
                              return false;
                            });
 
