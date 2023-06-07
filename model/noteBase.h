@@ -32,6 +32,7 @@ namespace minsky
     std::string detailedText, tooltip;
     /// adjust bookmark list to reflect current configuration
     virtual void adjustBookmark() const {}
+    virtual void updateBoundingBox() {}
   };
 }
 

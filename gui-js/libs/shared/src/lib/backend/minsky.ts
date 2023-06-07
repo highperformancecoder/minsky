@@ -2462,6 +2462,7 @@ export class Wire extends CppClass {
   to(): object {return this.callMethod('to');}
   tooltip(...args: string[]): string {return this.callMethod('tooltip',...args);}
   units(a1: boolean): object {return this.callMethod('units',a1);}
+  updateBoundingBox(): void {return this.callMethod('updateBoundingBox');}
   visible(): boolean {return this.callMethod('visible');}
 }
 
