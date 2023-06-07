@@ -22,8 +22,17 @@ export class ApplicationMenuManager {
   public static createMainApplicationMenu() {
     const scope = this;
     const menu = Menu.buildFromTemplate([
-      ...(Functions.isMacOS()
-    ? [{
+      scope.getFileMenu(),
+      scope.getEditMenu(),
+      scope.getBookmarksMenu(),
+      scope.getInsertMenu(),
+      scope.getOptionsMenu(),
+      scope.getSimulationMenu(),
+      scope.getHelpMenu(),
+    ]);
+
+    if (Functions.isMacOS())
+      menu.insert(0, new MenuItem({
         label: "Minsky",
         submenu: [
         {
@@ -38,7 +47,7 @@ export class ApplicationMenuManager {
             shell.beep();
           },
         },
-          { type: 'separator' },
+        { type: 'separator' },
         {
           label: 'Preferences',
           click() {
@@ -59,16 +68,7 @@ export class ApplicationMenuManager {
           { type: 'separator' },
           { role: 'quit' }
         ]
-      }]
-    : []),
-      scope.getFileMenu(),
-      scope.getEditMenu(),
-      scope.getBookmarksMenu(),
-      scope.getInsertMenu(),
-      scope.getOptionsMenu(),
-      scope.getSimulationMenu(),
-      scope.getHelpMenu(),
-    ]);
+    }));
 
     Menu.setApplicationMenu(menu);
     return menu;
