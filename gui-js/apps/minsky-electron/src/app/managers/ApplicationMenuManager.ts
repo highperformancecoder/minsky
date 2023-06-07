@@ -22,6 +22,45 @@ export class ApplicationMenuManager {
   public static createMainApplicationMenu() {
     const scope = this;
     const menu = Menu.buildFromTemplate([
+      ...(Functions.isMacOS()
+    ? [{
+        label: "Minsky",
+        submenu: [
+        {
+          label: 'About Minsky',
+          click() {
+            WindowManager.createPopupWindowWithRouting({
+              width: 420,
+              height: 500,
+              title: '',
+              url: `#/headless/menu/file/about`,
+            });
+            shell.beep();
+          },
+        },
+          { type: 'separator' },
+        {
+          label: 'Preferences',
+          click() {
+            WindowManager.createPopupWindowWithRouting({
+              width: 500,
+              useContentSize: true,
+              height: 550+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
+              title: 'Preferences',
+              url: `#/headless/menu/options/preferences`,
+            });
+          },
+        },
+          { role: 'services' },
+          { type: 'separator' },
+          { role: 'hide' },
+          { role: 'hideOthers' },
+          { role: 'unhide' },
+          { type: 'separator' },
+          { role: 'quit' }
+        ]
+      }]
+    : []),
       scope.getFileMenu(),
       scope.getEditMenu(),
       scope.getBookmarksMenu(),
