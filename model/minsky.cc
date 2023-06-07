@@ -1028,6 +1028,7 @@ namespace minsky
                                  for (unsigned j=1; j<g->table.cols(); ++j)
                                    balanceDuplicateColumns(*g,j);
                                }
+                             (*i)->adjustBookmark();
                              return false;
                            });
 
@@ -1190,6 +1191,8 @@ namespace minsky
         }
     
     canvas.itemIndicator=canvas.item.get();
+    canvas.model->moveTo(100-canvas.item->x()+canvas.model->x(),
+                         100-canvas.item->y()+canvas.model->y());
     //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
     if (!RKThreadRunning) canvas.requestRedraw();
   }
@@ -1331,6 +1334,15 @@ namespace minsky
         history[historyPtr-1].reseto()>>m;
         // stash tensorInit data for later restoration
         auto stashedValues=std::move(variableValues);
+        // preserve bookmarks. For now, we can only preserve model and canvas.model bookmarks
+        // count the total number of bookmarks
+        unsigned numBookmarks=0;
+        model->recursiveDo(&GroupItems::groups, [&](const Groups&,const Groups::const_iterator i) {
+          numBookmarks+=(*i)->bookmarks.size();
+          return false;
+        });
+        auto stashedGlobalBookmarks=model->bookmarks;
+        auto stashedCanvasBookmarks=canvas.model->bookmarks;
         clearAllMaps(false);
         model->clear();
         m.populateGroup(*model);
@@ -1343,6 +1355,16 @@ namespace minsky
             if (stashedValue!=stashedValues.end())
               v.second->tensorInit=std::move(stashedValue->second->tensorInit);
           }
+        // restore bookmarks
+        model->bookmarks=std::move(stashedGlobalBookmarks);
+        canvas.model->bookmarks=std::move(stashedCanvasBookmarks);
+        unsigned numBookmarksAfterwards=0;
+        model->recursiveDo(&GroupItems::groups, [&](Groups,const Groups::const_iterator i) {
+          numBookmarksAfterwards+=(*i)->bookmarks.size();
+          return false;
+        });
+        if (numBookmarksAfterwards!=numBookmarks)
+          message("This undo/redo operation potentially deletes some bookmarks");
         try {reset();}
         catch (...) {}
           

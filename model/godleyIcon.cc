@@ -439,7 +439,6 @@ namespace minsky
         const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
         const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
         const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
-        cout << editor.zoomFactor<<endl;
         const_cast<GodleyTableEditor&>(editor).draw(cairo);
         titley=-0.5*h;
         w+=2*border*z;

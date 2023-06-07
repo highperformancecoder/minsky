@@ -5,6 +5,7 @@ import {
   VariableBase, Functions, events
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
+import { BookmarkManager } from './BookmarkManager';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';
@@ -265,7 +266,10 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Open master group',
-        click: () => {minsky.openModelInCanvas();}
+        click: () => {
+          minsky.openModelInCanvas();
+          BookmarkManager.updateBookmarkList();
+        }
       }),
           ];
 
@@ -665,7 +669,10 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Open in canvas',
-        click: async () => {minsky.openGroupInCanvas();}
+        click: async () => {
+          minsky.openGroupInCanvas();
+          BookmarkManager.updateBookmarkList();
+        }
       }),
       new MenuItem({
         label: 'Zoom to display',
