@@ -439,6 +439,7 @@ namespace minsky
         const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
         const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
         const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
+        cout << editor.zoomFactor<<endl;
         const_cast<GodleyTableEditor&>(editor).draw(cairo);
         titley=-0.5*h;
         w+=2*border*z;
@@ -573,9 +574,9 @@ namespace minsky
   }
 
   float GodleyIcon::toEditorX(float xx) const
-  {return xx-x()+0.5f*width()-2*border-leftMargin();}
+  {return xx-x()+0.5f*width()-2*border*zoomFactor()-leftMargin();}
   float GodleyIcon::toEditorY(float yy) const
-  {return yy-y()+0.5f*height()-2*border-titleOffs();}
+  {return yy-y()+0.5f*height()-2*border*zoomFactor()-titleOffs();}
   
   void GodleyIcon::onMouseDown(float x, float y)
   {if (m_editorMode) editor.mouseDown(toEditorX(x),toEditorY(y));}
