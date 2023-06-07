@@ -44,7 +44,7 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
-  struct GroupItems;
+  class GroupItems;
   class Group; 
   class VariablePtr;
   class VariableBase;

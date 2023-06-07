@@ -224,6 +224,7 @@ namespace minsky
   
   template <OperationType::Type op> struct MultiWireBinOp: public TensorBinOp<op>
   {
+    using TensorBinOp<op>::setArguments;
     void setArguments(const std::vector<TensorPtr>& a1,
                       const std::vector<TensorPtr>& a2,
                       const ITensor::Args&) override
@@ -814,6 +815,7 @@ namespace minsky
   struct GeneralTensorOp<OperationType::merge>: public civita::Merge, public SetState
   {
     OperationPtr state;
+    using civita::Merge::setArguments;
     void setArguments(const std::vector<TensorPtr>& a1,
                       const std::vector<TensorPtr>& a2,
                       const Args& opArgs) override

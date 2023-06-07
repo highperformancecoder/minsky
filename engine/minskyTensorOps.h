@@ -111,6 +111,7 @@ namespace minsky
       value(vv), ev(ev) {}
     const Hypercube& hypercube() const override {return value->hypercube();}
     const Index& index() const override {return value->index();}
+    using I::index;
     std::size_t size() const override {return value->size();}
    
     double dFlow(std::size_t ti, std::size_t fi) const override 

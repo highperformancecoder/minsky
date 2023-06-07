@@ -251,7 +251,7 @@ namespace minsky
           labelPen(i, latexToPango(yvars[i]->name));
   }
 
-  void PlotWidget::mouseDown(double x,double y)
+  void PlotWidget::mouseDown(float x,float y)
   {
     clickX=x;
     clickY=y;
@@ -265,7 +265,7 @@ namespace minsky
     oldLegendFontSz=legendFontSz;
   }
   
-  void PlotWidget::mouseMove(double x,double y)
+  void PlotWidget::mouseMove(float x,float y)
   {
     double z=zoomFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
