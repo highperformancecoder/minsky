@@ -148,9 +148,6 @@ namespace minsky
     std::shared_ptr<Port> closestInPort(float x, float y) const;
 
     /// select all items in a given region
-//    void select(float x0, float y0, float x1, float y1) {
-//      select(LassoBox(x0,y0,x1,y1));
-//    }
     void select(const LassoBox&);
 
     int ravelsSelected();

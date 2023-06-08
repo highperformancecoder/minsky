@@ -851,7 +851,6 @@ namespace minsky
     size_t m_size=1;
     vector<TensorPtr> args;
   public:
-    //void setArguments(const std::vector<TensorPtr>& a,const std::string& axis={},double argv=0) override {
     void setArguments(const std::vector<TensorPtr>& a,const Args& av={"",0}) override {
       args=a;
       if (args.size()<2)

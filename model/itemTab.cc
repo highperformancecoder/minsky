@@ -63,8 +63,8 @@ namespace minsky
     std::vector<DisplayVariable> displayVariables;
 
     minsky().canvas.model->recursiveDo(&GroupItems::items,
-      [&](Items&, Items::iterator i) {   
-        auto iptr = *i;                            
+      [&](Items&, Items::iterator it) {   
+        auto iptr = *it;                            
         if (itemSelector(iptr)) 
           {		                         
           if (auto* v=iptr->variableCast()) {
