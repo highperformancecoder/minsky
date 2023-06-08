@@ -73,6 +73,8 @@ namespace minsky
     // manage the port structures associated with this operation
     virtual void addPorts();
 
+    void drawUserFunction(cairo_t* cairo) const;
+    
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;
     float scaleFactor() const override;       

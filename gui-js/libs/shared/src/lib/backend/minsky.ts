@@ -119,6 +119,7 @@ export class OperationBase extends Item {
   dimensions(): string[] {return this.callMethod('dimensions');}
   draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   drawResizeHandles(a1: minsky__dummy): void {return this.callMethod('drawResizeHandles',a1);}
+  drawUserFunction(a1: minsky__dummy): void {return this.callMethod('drawUserFunction',a1);}
   h(...args: number[]): number {return this.callMethod('h',...args);}
   iconDraw(a1: minsky__dummy): void {return this.callMethod('iconDraw',a1);}
   l(...args: number[]): number {return this.callMethod('l',...args);}
@@ -470,6 +471,7 @@ export class DataOp extends Item {
   }
   deriv(a1: number): number {return this.callMethod('deriv',a1);}
   description(...args: any[]): string {return this.callMethod('description',...args);}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   initRandom(a1: number,a2: number,a3: number): void {return this.callMethod('initRandom',a1,a2,a3);}
   interpolate(a1: number): number {return this.callMethod('interpolate',a1);}
   pack(a1: classdesc__pack_t,a2: string): void {return this.callMethod('pack',a1,a2);}
@@ -2211,6 +2213,7 @@ export class UserFunction extends Item {
   create(a1: string): UserFunction {return this.callMethod('create',a1);}
   description(...args: any[]): string {return this.callMethod('description',...args);}
   displayTooltip(a1: minsky__dummy,a2: string): void {return this.callMethod('displayTooltip',a1,a2);}
+  draw(a1: minsky__dummy): void {return this.callMethod('draw',a1);}
   evaluate(a1: number,a2: number): number {return this.callMethod('evaluate',a1,a2);}
   expression(...args: string[]): string {return this.callMethod('expression',...args);}
   name(): string {return this.callMethod('name');}

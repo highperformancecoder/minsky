@@ -50,6 +50,13 @@ namespace minsky
 
     /// called to initialise a variable value when no input wire is connected
     //    void initOutputVariableValue(VariableValue&) const;
+
+    void draw(cairo_t* cairo) const override {
+      if (description().empty())
+        OperationBase::draw(cairo);
+      else
+        drawUserFunction(cairo);
+    }
     
     void pack(classdesc::pack_t& x, const std::string& d) const override;
     void unpack(classdesc::unpack_t& x, const std::string& d) override;
