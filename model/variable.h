@@ -156,9 +156,6 @@ namespace minsky
     virtual double value() const override;  
     /// @}
     
-    //    void setValue(const TensorVal&);
-
-    
     /// sets variable value (or init value)
     void sliderSet(double x);
     /// initialise slider bounds when slider first opened
