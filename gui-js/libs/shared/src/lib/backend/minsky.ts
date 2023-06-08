@@ -181,6 +181,7 @@ export class VariableBase extends Item {
   drawResizeHandles(a1: minsky__dummy): void {return this.callMethod('drawResizeHandles',a1);}
   drawSelected(a1: minsky__dummy): void {return this.callMethod('drawSelected',a1);}
   dummyDraw(): void {return this.callMethod('dummyDraw');}
+  enableSlider(...args: boolean[]): boolean {return this.callMethod('enableSlider',...args);}
   engExp(): object {return this.callMethod('engExp');}
   ensureBBValid(): void {return this.callMethod('ensureBBValid');}
   ensureValueExists(a1: VariableValue,a2: string): void {return this.callMethod('ensureValueExists',a1,a2);}
@@ -247,6 +248,7 @@ export class VariableBase extends Item {
   sliderSet(a1: number): void {return this.callMethod('sliderSet',a1);}
   sliderStep(...args: number[]): number {return this.callMethod('sliderStep',...args);}
   sliderStepRel(...args: boolean[]): boolean {return this.callMethod('sliderStepRel',...args);}
+  sliderVisible(): boolean {return this.callMethod('sliderVisible');}
   temp(): boolean {return this.callMethod('temp');}
   throw_error(a1: string): void {return this.callMethod('throw_error',a1);}
   toggleLocal(): void {return this.callMethod('toggleLocal');}

@@ -155,6 +155,9 @@ namespace minsky
     virtual double value(const double&);
     virtual double value() const override;  
     /// @}
+
+    /// returns true if slider is to be drawn
+    bool sliderVisible() const;
     
     /// sets variable value (or init value)
     void sliderSet(double x);
