@@ -177,6 +177,7 @@ namespace minsky
           g->addBookmarkXY(left(),top(),bookmarkId());
         else
           bookmarks.erase(bookmarkId());
+        minsky().bookmarkRefresh();
       }
   }
   

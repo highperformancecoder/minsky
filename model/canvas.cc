@@ -780,6 +780,7 @@ namespace minsky
         if (auto parent=model->group.lock())
           model->setZoom(parent->zoomFactor());
         model=g;
+        minsky().bookmarkRefresh();
         float zoomFactor=1.1*model->displayZoom;
         if (!model->displayContents())
           {

@@ -1321,6 +1321,7 @@ export class Minsky extends CppClass {
   availableOperations(): string[] {return this.callMethod('availableOperations');}
   availableOperationsMapping(): object[] {return this.callMethod('availableOperationsMapping');}
   balanceDuplicateColumns(a1: GodleyIcon,a2: number): void {return this.callMethod('balanceDuplicateColumns',a1,a2);}
+  bookmarkRefresh(): void {return this.callMethod('bookmarkRefresh');}
   checkEquationOrder(): boolean {return this.callMethod('checkEquationOrder');}
   checkMemAllocation(a1: number): boolean {return this.callMethod('checkMemAllocation',a1);}
   checkPushHistory(): void {return this.callMethod('checkPushHistory');}
