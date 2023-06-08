@@ -164,7 +164,7 @@ namespace minsky
     /** add item. 
         @param inSchema - if building a group from schema processing, rather than generally
     */
-    ItemPtr addItem(const std::shared_ptr<Item>&, bool inSchema=false);
+    virtual ItemPtr addItem(const std::shared_ptr<Item>&, bool inSchema=false);
     ItemPtr removeItem(const Item&);
 
     GroupPtr addGroup(const std::shared_ptr<Group>&);
@@ -256,17 +256,18 @@ namespace minsky
     Group* clone() const override {throw error("Groups cannot be cloned");}
     static SVGRenderer svgRenderer;
 
+    using GroupItems::addItem;
+    ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false) override
+    {
+      if (it && it->bookmark)
+        addBookmarkXY(it->left(),it->top(),it->bookmarkId());
+      return GroupItems::addItem(it,inSchema);
+    }
+
+
     /// Make all variables not present in outerscope local to this group
     void makeSubroutine();
     
-    // TODO fix up the need for this override - see ticket #786
-    ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false)
-    {
-      auto r=GroupItems::addItem(it,inSchema);
-      return r;
-    }
-    ItemPtr addItem(Item* it) {return addItem(std::shared_ptr<Item>(it));}
-
     void draw(cairo_t*) const override;
 
     /// draw representations of edge variables around group icon

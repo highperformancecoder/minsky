@@ -1,5 +1,6 @@
 import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
+import { BookmarkManager } from './managers/BookmarkManager';
 import { dialog, shell } from 'electron';
 import * as JSON5 from 'json5';
 import * as elog from 'electron-log';
@@ -86,6 +87,10 @@ if ("JEST_WORKER_ID" in process.env) {
 
   restService.setBusyCursorCallback(function (busy: boolean) {
     WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
+  });
+
+  restService.setBookmarkRefreshCallback(()=>{
+    setTimeout(()=>{BookmarkManager.updateBookmarkList();},10);
   });
 }
 

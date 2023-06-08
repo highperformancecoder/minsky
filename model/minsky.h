@@ -421,7 +421,9 @@ namespace minsky
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
-
+    /// refresh the bookmark menu after changes
+    virtual void bookmarkRefresh() {}
+    
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
 

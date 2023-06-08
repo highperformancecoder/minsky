@@ -40,6 +40,7 @@ namespace minsky
       Env* env=nullptr;
       FunctionReference messageCallback;
       FunctionReference busyCursorCallback;
+      FunctionReference bookmarkRefreshCallback;
 
       ~AddOnMinsky() {
         // because this object is used as a static object, suppress
@@ -66,6 +67,8 @@ namespace minsky
       }
       void setBusyCursor() override {}
       void clearBusyCursor() override {}
+      void bookmarkRefresh() override
+      {if (env) bookmarkRefreshCallback({});}
     };
     
     Minsky* l_minsky=NULL;
@@ -145,6 +148,17 @@ Value setBusyCursorCallback(const Napi::CallbackInfo& info)
       Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
     }
   addOnMinsky.busyCursorCallback=Persistent(info[0].As<Function>());
+  return env.Null();
+}
+
+Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info)
+{
+  Env env = info.Env();
+  if (info.Length()<1 || !info[0].IsFunction())
+    {
+      Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+    }
+  addOnMinsky.bookmarkRefreshCallback=Persistent(info[0].As<Function>());
   return env.Null();
 }
 
@@ -243,6 +257,7 @@ Object Init(Env env, Object exports) {
   exports.Set(String::New(env, "call"), Function::New(env, RESTCall));
   exports.Set(String::New(env, "setMessageCallback"), Function::New(env, setMessageCallback));
   exports.Set(String::New(env, "setBusyCursorCallback"), Function::New(env, setBusyCursorCallback));
+  exports.Set(String::New(env, "setBookmarkRefreshCallback"), Function::New(env, setBookmarkRefreshCallback));
   return exports;
 }
 
