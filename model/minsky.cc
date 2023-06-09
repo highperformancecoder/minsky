@@ -640,7 +640,7 @@ namespace minsky
            {
              if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
                for (size_t col=1; col<gi->table.cols(); col++)
-                 if (trimWS(gi->table.cell(0,col))==colName) // we have a match
+                 if ((&gi->table!=&srcTable || col!=srcCol) && trimWS(gi->table.cell(0,col))==colName) // we have a match
                    balanceDuplicateColumns(*gi, col);
              return false;
            });
