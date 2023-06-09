@@ -512,6 +512,15 @@ bool VariableBase::visibleWithinGroup() const
   return !controller.lock();
 }
 
+bool VariableBase::sliderVisible() const
+{
+  auto vv=vValue();
+  return enableSlider &&
+    (!vv && type()==parameter ||
+     (vv && vv->size()==1 &&
+      (type()==parameter || vv->sliderVisible)));
+}
+
 
 void VariableBase::sliderSet(double x)
 {
@@ -531,13 +540,11 @@ void VariableBase::initSliderBounds() const
         {
           sliderMin=-1;
           sliderMax=1;
-          sliderStep=0.1;
         }
       else
         {
           sliderMin=-value()*10;
           sliderMax=value()*10;
-          sliderStep=abs(0.1*value());           
         }
       sliderStepRel=false;
       sliderBoundsSet=true;
@@ -551,8 +558,10 @@ void VariableBase::adjustSliderBounds() const
   // For feature 47
     if (vv->size()==1 && !isnan(vv->value()))  // make sure sliderBoundsSet is defined. for tickets 1258/1263
       {
-        if (sliderMax<vv->value()) sliderMax=vv->value();
-        if (sliderMin>vv->value()) sliderMin=vv->value();
+        if (sliderMax<vv->value())
+          sliderMax=vv->value()? 10*vv->value():1;
+        if (sliderMin>vv->value())
+          sliderMin=vv->value()? -10*vv->value():-1;
         sliderStep=maxSliderSteps(); 
         sliderBoundsSet=true;	                    
       }
@@ -698,7 +707,7 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo_close_path(cairo);
       clipPath.reset(new cairo::Path(cairo));
       cairo_stroke(cairo);
-      if (vv && vv->sliderVisible && vv->size()==1)
+      if (sliderVisible())
         {
           // draw slider
           CairoSave cs(cairo);
