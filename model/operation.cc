@@ -232,7 +232,7 @@ namespace minsky
     auto& c=dynamic_cast<const NamedOp&>(*this);
           
     Pango pango(cairo);
-    pango.setFontSize(10*scaleFactor()*z);
+    pango.setFontSize(10.0*scaleFactor()*z);
     pango.setMarkup(latexToPango(c.description()));
     pango.angle=angle + (textFlipped? M_PI: 0);
     Rotate r(rotation()+ (textFlipped? 180: 0),0,0);

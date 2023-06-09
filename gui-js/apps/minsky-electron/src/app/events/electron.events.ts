@@ -200,13 +200,6 @@ ipcMain.handle(events.GET_PREFERENCES, () => {
 ipcMain.handle(
   events.UPDATE_PREFERENCES,
   async (event, preferences: MinskyPreferences) => {
-    const {
-      enableMultipleEquityColumns,
-      godleyTableShowValues,
-      godleyTableOutputStyle,
-      font,
-    } = preferences;
-
     StoreManager.store.set('preferences', preferences);
     await CommandsManager.applyPreferences();
     return;

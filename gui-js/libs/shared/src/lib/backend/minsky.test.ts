@@ -12,7 +12,7 @@ let cwd=process.cwd();
 if (cwd.endsWith('shared'))
   var examples='../../../examples';
 else if (cwd.endsWith('gui-js'))
-  var example='../examples';
+  var examples='../examples';
 else {
   console.log(`cwd=${cwd}`);
   console.log("I don't know where the examples directory is, sorry");
@@ -91,7 +91,7 @@ describe('dirty flag',()=>{
 
 describe('clipboard',()=>{
   test('copy/cut/paste',()=>{
-    minsky.load("../examples/GoodwinLinear02.mky");
+    minsky.load(`${examples}/GoodwinLinear02.mky`);
     minsky.canvas.selection.clear();
     minsky.copy();
     expect(minsky.clipboardEmpty()).toBe(true);
