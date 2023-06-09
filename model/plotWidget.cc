@@ -521,39 +521,51 @@ namespace minsky
                   xdefault.push_back(i);
               x=xdefault.data();
             }
-          
-          // higher rank y objects treated as multiple y vectors to plot
-          auto startPen=extraPen;
+
           const auto& idx=yv->index();
-          if (idx.empty())
-            for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
-              {
-                setPen(extraPen, x, yv->begin()+j, d[0]);
-                extraPen++;
-              }
-          else // data is sparse
-            for (size_t j=0; j<idx.size(); ++j)
-              {
-                auto div=lldiv(idx[j], d[0]);
-                if (size_t(div.quot)<maxNumTensorElementsToPlot)
-                  {
-                    addPt(startPen+div.quot, x[div.rem], (*yv)[j]);
-                    if (extraPen<=startPen+div.quot) extraPen=startPen+div.quot+1;
-                  }
-              }
-          // compute the pen labels
-          for (int j=0; startPen<extraPen; ++startPen, ++j)
+          if (yv->rank()==1)
             {
-              string label;
-              size_t stride=1;
-              for (size_t i=1; i<yv->hypercube().rank(); ++i)
+              // 1D data's pen attributes should match the input port
+              if (idx.empty())
+                setPen(pen, x, yv->begin(), d[0]);
+              else
+                for (size_t j=0; j<idx.size(); ++j)
+                  addPt(pen,x[idx[j]], (*yv)[j]);
+            }
+          else
+            {
+              // higher rank y objects treated as multiple y vectors to plot
+              auto startPen=extraPen;
+              if (idx.empty())
+                for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
+                  {
+                    setPen(extraPen, x, yv->begin()+j, d[0]);
+                    extraPen++;
+                  }
+              else // data is sparse
+                for (size_t j=0; j<idx.size(); ++j)
+                  {
+                    auto div=lldiv(idx[j], d[0]);
+                    if (size_t(div.quot)<maxNumTensorElementsToPlot)
+                      {
+                        addPt(startPen+div.quot, x[div.rem], (*yv)[j]);
+                        if (extraPen<=startPen+div.quot) extraPen=startPen+div.quot+1;
+                      }
+                  }
+              // compute the pen labels
+              for (int j=0; startPen<extraPen; ++startPen, ++j)
                 {
-                  label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
-                  stride*=d[i];
+                  string label;
+                  size_t stride=1;
+                  for (size_t i=1; i<yv->hypercube().rank(); ++i)
+                    {
+                      label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
+                      stride*=d[i];
+                    }
+                  if (pen>=numLines)
+                    assignSide(startPen,Side::right);
+                  labelPen(startPen,defang(label));
                 }
-              if (pen>=numLines)
-                assignSide(startPen,Side::right);
-              labelPen(startPen,defang(label));
             }
         }
     scalePlot();

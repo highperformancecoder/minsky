@@ -515,7 +515,10 @@ bool VariableBase::visibleWithinGroup() const
 bool VariableBase::sliderVisible() const
 {
   auto vv=vValue();
-  return enableSlider && (type()==parameter || vv && vv->sliderVisible && vv->size()==1);
+  return enableSlider &&
+    (!vv && type()==parameter ||
+     (vv && vv->size()==1 &&
+      (type()==parameter || vv->sliderVisible)));
 }
 
 
