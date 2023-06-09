@@ -66,8 +66,7 @@ double Sheet::ravelY(double yy) const
 bool Sheet::onResizeHandle(float xx, float yy) const
 {
   float dx=xx-x(), dy=yy-y();
-  double z=zoomFactor();
-  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor(), b=border*zoomFactor();
+  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();
   return fabs(dx)>=w-resizeHandleSize() && fabs(dx)<=w+resizeHandleSize() &&
     fabs(dy)>=h-resizeHandleSize() && fabs(dy)<=h+resizeHandleSize() &&
     (!inputRavel || dx>0 || dy>0);
