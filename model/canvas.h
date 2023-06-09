@@ -55,6 +55,7 @@ namespace minsky
     void reportDrawTime(double) override;
     void mouseDownCommon(float x, float y);
     bool redraw(int x0, int y0, int width, int height) override;
+    void mouseMoveOnItem(float x, float y);
 
     /// flag indicating that a redraw is requested, but not yet redrawn
     bool m_redrawRequested=false;
