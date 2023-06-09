@@ -3,8 +3,6 @@ import {
   ClassType,
   GodleyTableOutputStyles,
   Functions,
-  ZOOM_IN_FACTOR,
-  ZOOM_OUT_FACTOR,
   minsky, GodleyIcon,
   GodleyTableWindow,
   events
@@ -12,7 +10,6 @@ import {
 import { Menu, MenuItem, IpcMainInvokeEvent } from 'electron';
 import { CommandsManager } from './CommandsManager';
 import { StoreManager } from './StoreManager';
-import { WindowManager,} from './WindowManager';
 
 export class GodleyMenuManager {
   public static async createMenusForGodleyView(

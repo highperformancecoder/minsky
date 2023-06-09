@@ -13,7 +13,6 @@ import {
   TypeValueName,
   ZOOM_IN_FACTOR,
   ZOOM_OUT_FACTOR,
-  VariableBase,
 } from '@minsky/shared';
 import { BehaviorSubject } from 'rxjs';
 import { WindowUtilityService } from '../WindowUtility/window-utility.service';
