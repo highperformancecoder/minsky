@@ -205,7 +205,6 @@ namespace minsky
   {
     if (it.plotWidgetCast()==displayPlot.get()) removeDisplayPlot();
     bookmarks.erase(it.bookmarkId());
-    minsky().bookmarkRefresh();
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
         {
@@ -244,6 +243,7 @@ namespace minsky
         r->deleteAttachedWires();
         r->removeControlledItems();
         minsky().runItemDeletedCallback(*r);
+        minsky().bookmarkRefresh();
       }
   }
 
