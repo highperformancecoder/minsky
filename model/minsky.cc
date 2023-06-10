@@ -1192,7 +1192,8 @@ namespace minsky
         }
     
     canvas.itemIndicator=canvas.item.get();
-    canvas.model->moveTo(100-canvas.item->x()+canvas.model->x(),
+    if (canvas.item)
+      canvas.model->moveTo(100-canvas.item->x()+canvas.model->x(),
                          100-canvas.item->y()+canvas.model->y());
     //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
     if (!RKThreadRunning) canvas.requestRedraw();
