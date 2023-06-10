@@ -15,3 +15,7 @@ CppClass.backend=(command: string, ...args: any[])=>{
   console.log(command);
   return JSON5.parse(restService.call(`${command}`, arg));
 };
+
+restService.setMessageCallback(function (msg: string, buttons: string[]) {});
+restService.setBusyCursorCallback(function (busy: boolean) {});
+restService.setBookmarkRefreshCallback(()=>{});

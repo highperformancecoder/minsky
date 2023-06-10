@@ -1,3 +1,6 @@
+
+// See gui-js/libs/shared/src/test-setup.ts for the equivalent definitions for the jest environment.
+
 import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
 import { BookmarkManager } from './managers/BookmarkManager';
@@ -69,30 +72,23 @@ export function backend(command: string, ...args: any[]) {
 
 CppClass.backend=backend;
 
-if ("JEST_WORKER_ID" in process.env) {
-  restService.setMessageCallback(function (msg: string, buttons: string[]) {
-    log.info(msg);
-  });
-  restService.setBusyCursorCallback(function (busy: boolean) {});
-} else {
-  restService.setMessageCallback(function (msg: string, buttons: string[]) {
-    if (msg && dialog)
-      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-        message: msg,
-        type: 'info',
-        buttons: buttons,
-      });
-    return 0;
-  });
+restService.setMessageCallback(function (msg: string, buttons: string[]) {
+  if (msg && dialog)
+    return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+      message: msg,
+      type: 'info',
+      buttons: buttons,
+    });
+  return 0;
+});
 
-  restService.setBusyCursorCallback(function (busy: boolean) {
-    WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
-  });
+restService.setBusyCursorCallback(function (busy: boolean) {
+  WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
+});
 
-  restService.setBookmarkRefreshCallback(()=>{
-    setTimeout(()=>{BookmarkManager.updateBookmarkList();},10);
-  });
-}
+restService.setBookmarkRefreshCallback(()=>{
+  setTimeout(()=>{BookmarkManager.updateBookmarkList();},10);
+});
 
 // Sanity checks before we get started
 if (backend("/minsky/minskyVersion")!==version)
