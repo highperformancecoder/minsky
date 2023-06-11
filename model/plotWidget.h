@@ -124,8 +124,8 @@ namespace minsky
     void scalePlot();
 
     /// @{ handle mouse events
-    void mouseDown(double,double);
-    void mouseMove(double,double);
+    void mouseDown(float,float) override;
+    void mouseMove(float,float) override;
     /// @}
 
     /// export the plotted data as a CSV file

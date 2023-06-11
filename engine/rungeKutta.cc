@@ -130,6 +130,7 @@ namespace minsky
   void RungeKutta::rkstep()
   {
     if (nSteps<1) return;
+    running=true; // this ensure reset flag is cleared
     resetIfFlagged();
     running=true;
     

@@ -130,6 +130,17 @@ void GodleyTable::moveCol(int col, int n)
   savedText=data[0][col];
 }
 
+void GodleyTable::balanceEquity(int col)
+{
+  if (_assetClass(col)!=equity) return;
+  for (int r=1; r<rows(); ++r)
+    {
+      cell(r,col)="";
+      auto sum=rowSumAsMap(r);
+      cell(r,col)=stringify(sum);
+    }
+}
+
 
 vector<string> GodleyTable::getColumnVariables() const
 {
@@ -198,7 +209,7 @@ string GodleyTable::assetClass(TCL_args args)
   return classdesc::enumKey<AssetClass>(_assetClass(col));
 }
 
-string GodleyTable::rowSum(int row) const
+map<string,double> GodleyTable::rowSumAsMap(int row) const
 {
   if (row==0)
     throw runtime_error("rowSum not valid for stock var names");
@@ -220,9 +231,14 @@ string GodleyTable::rowSum(int row) const
         }
     }
 
+  return sum;
+}
+
+string GodleyTable::stringify(const map<string,double>& sum)
+{
   // create symbolic representation of each term
   ostringstream ret;
-  for (map<string,double>::iterator i=sum.begin(); i!=sum.end(); ++i)
+  for (auto i=sum.begin(); i!=sum.end(); ++i)
     if (i->second!=0)
       {
         if (!ret.str().empty() &&i->second>0)

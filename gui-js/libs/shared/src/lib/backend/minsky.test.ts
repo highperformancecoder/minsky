@@ -13,7 +13,7 @@ let cwd=process.cwd();
 if (cwd.endsWith('shared'))
   var examples='../../../examples';
 else if (cwd.endsWith('gui-js'))
-  var example='../examples';
+  var examples='../examples';
 else {
   console.log(`cwd=${cwd}`);
   console.log("I don't know where the examples directory is, sorry");
@@ -42,7 +42,6 @@ describe('Minsky tests', ()=>{
      minsky.canvas.addOperation("time");
      minsky.canvas.getItemAt(0,0);
      minsky.nameCurrentItem("foo");
-     console.log(JSON5.stringify(await minsky.namedItems.elem("foo")));
      expect(await minsky.namedItems.elem("foo").second.classType()).toBe("Operation:time");
      expect(await minsky.namedItems.size()).toBe(1);
      minsky.namedItems.insert("fooBar",await minsky.canvas.item.$properties());
@@ -80,7 +79,7 @@ describe('Minsky tests', ()=>{
    });
  
   test('copy/cut/paste',async ()=>{
-    minsky.load("../examples/GoodwinLinear02.mky");
+     minsky.load(`${examples}/GoodwinLinear02.mky`);
     minsky.canvas.selection.clear();
     minsky.copy();
     expect(await minsky.clipboardEmpty()).toBe(true);

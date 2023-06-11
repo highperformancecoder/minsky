@@ -192,6 +192,52 @@ namespace minsky
     itemFocus.reset();
     wireFocus.reset();
   }
+
+  void Canvas::mouseMoveOnItem(float x, float y)
+  {
+    updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
+    // move item relatively to avoid accidental moves on double click
+    if (selection.empty() || !selection.contains(itemFocus))
+      itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
+    else
+      {
+        // move the whole selection
+        auto deltaX=x-moveOffsX-itemFocus->x(), deltaY=y-moveOffsY-itemFocus->y();
+        for (auto& i: selection.items)
+          i->moveTo(i->x()+deltaX, i->y()+deltaY);
+        for (auto& i: selection.groups)
+          i->moveTo(i->x()+deltaX, i->y()+deltaY);
+      }
+    requestRedraw();
+    // check if the move has moved outside or into a group
+    if (auto g=itemFocus->group.lock())
+      if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
+        {
+          if (auto toGroup=model->minimalEnclosingGroup
+              (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
+            {
+              if (g.get()==toGroup) return;
+              // prevent moving a group inside itself
+              if (auto g=dynamic_cast<Group*>(itemFocus.get()))
+                if (g->higher(*toGroup))
+                  return;
+              selection.clear(); // prevent old wires from being held onto
+              toGroup->addItem(itemFocus);
+              toGroup->splitBoundaryCrossingWires();
+              g->splitBoundaryCrossingWires();
+            }
+          else if (g!=model)
+            {
+              selection.clear(); // prevent old wires from being held onto
+              model->addItem(itemFocus);
+              model->splitBoundaryCrossingWires();
+              g->splitBoundaryCrossingWires();
+            }
+        }
+    if (auto g=itemFocus->group.lock())
+      if (g!=model)
+        g->checkAddIORegion(itemFocus);
+  }
   
   void Canvas::mouseMove(float x, float y)
     try
@@ -201,48 +247,7 @@ namespace minsky
             switch (clickType)
               {
               case ClickType::onItem:
-                updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
-                // move item relatively to avoid accidental moves on double click
-                if (selection.empty() || !selection.contains(itemFocus))
-                  itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
-                else
-                  {
-                    // move the whole selection
-                    auto deltaX=x-moveOffsX-itemFocus->x(), deltaY=y-moveOffsY-itemFocus->y();
-                    for (auto& i: selection.items)
-                      i->moveTo(i->x()+deltaX, i->y()+deltaY);
-                    for (auto& i: selection.groups)
-                      i->moveTo(i->x()+deltaX, i->y()+deltaY);
-                  }
-                requestRedraw();
-                // check if the move has moved outside or into a group
-                if (auto g=itemFocus->group.lock())
-                  if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
-                    {
-                      if (auto toGroup=model->minimalEnclosingGroup
-                          (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
-                        {
-                          if (g.get()==toGroup) return;
-                          // prevent moving a group inside itself
-                          if (auto g=dynamic_cast<Group*>(itemFocus.get()))
-                            if (g->higher(*toGroup))
-                              return;
-                          selection.clear(); // prevent old wires from being held onto
-                          toGroup->addItem(itemFocus);
-                          toGroup->splitBoundaryCrossingWires();
-                          g->splitBoundaryCrossingWires();
-                        }
-                      else
-                        {
-                          selection.clear(); // prevent old wires from being held onto
-                          model->addItem(itemFocus);
-                          model->splitBoundaryCrossingWires();
-                          g->splitBoundaryCrossingWires();
-                        }
-                    }
-                if (auto g=itemFocus->group.lock())
-                  if (g!=model)
-                    g->checkAddIORegion(itemFocus);
+                mouseMoveOnItem(x,y);
                 return;
               case ClickType::onSlider:
                 if (auto v=itemFocus->variableCast())
@@ -782,6 +787,7 @@ namespace minsky
         if (auto parent=model->group.lock())
           model->setZoom(parent->zoomFactor());
         model=g;
+        minsky().bookmarkRefresh();
         float zoomFactor=1.1*model->displayZoom;
         if (!model->displayContents())
           {

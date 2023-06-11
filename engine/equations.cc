@@ -503,6 +503,8 @@ namespace MathDAG
                        {
                          // try again later
                          integralInputs.emplace_back(input,i->ports(1).lock()->wires()[0]);
+                         // clear error indicator
+                         minsky::minsky().canvas.itemIndicator=false;
                        }
                    }
                 

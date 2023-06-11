@@ -229,6 +229,8 @@ namespace minsky
     /// makes all duplicated columns consistent with \a srcTable, \a srcCol
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 
+    std::vector<std::string> allGodleyFlowVars() const;
+    
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky():
       ECOLAB_ACESSOR_INIT(Minsky, multipleEquities),
@@ -428,6 +430,9 @@ namespace minsky
     /// set progress bar, out of 100, labelling the progress bar with \a title
     virtual void progress(const std::string& title,int) {}
 
+    /// refresh the bookmark menu after changes
+    virtual void bookmarkRefresh() {}
+    
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
 

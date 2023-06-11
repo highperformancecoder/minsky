@@ -16,6 +16,8 @@ import * as JSON5 from 'json5';
 import { join } from 'path';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
+import { StoreManager } from './StoreManager';
+import { RecentFilesManager } from './RecentFilesManager';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -182,16 +184,17 @@ export class CommandsManager {
     });
   }
 
-  static async editGodleyTitle(itemId: string = ""): Promise<void> {
-    let title = await new GodleyIcon(minsky.canvas.item).table.title();
+  static async editGodleyTitle(godley: GodleyIcon): Promise<void> {
+    let title = await godley.table.title();
 
     if (Functions.isEmptyObject(title)) {
       title = '';
     }
-
+    
+    minsky.nameCurrentItem(minsky.canvas.item?.id()); // name current item
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
-      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${itemId}`,
+      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godley.id()}`,
       useContentSize: true,
       height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
@@ -406,7 +409,7 @@ export class CommandsManager {
 
   static async undo(changes: number) {
     WindowManager.activeWindows.forEach((window) => {
-      if (!window.isMainWindow) {
+      if (!window.isMainWindow && window.context.title!=='Variables') {
         window.context.close();
       }
     });
@@ -1048,4 +1051,18 @@ export class CommandsManager {
     });
     Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
   }
+
+  static async applyPreferences() {
+    const {
+      enableMultipleEquityColumns,
+      godleyTableShowValues,
+      godleyTableOutputStyle,
+      font,
+    } = StoreManager.store.get('preferences');
+    minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
+    minsky.multipleEquities(enableMultipleEquityColumns);
+    minsky.defaultFont(font);
+    RecentFilesManager.updateNumberOfRecentFilesToDisplay();
+  }
+  
 }

@@ -122,7 +122,7 @@ ipcMain.on(
     event,
     parameters: { window: BrowserWindow; itemInfo: CanvasItem }
   ) => {
-    const menu = GodleyMenuManager.createMenusForGodleyView(
+    const menu = await GodleyMenuManager.createMenusForGodleyView(
       parameters.window,
       parameters.itemInfo
     );
@@ -203,19 +203,8 @@ ipcMain.handle(events.GET_PREFERENCES, () => {
 ipcMain.handle(
   events.UPDATE_PREFERENCES,
   async (event, preferences: MinskyPreferences) => {
-    const {
-      enableMultipleEquityColumns,
-      godleyTableShowValues,
-      godleyTableOutputStyle,
-      font,
-    } = preferences;
-
     StoreManager.store.set('preferences', preferences);
-
-    minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
-    minsky.multipleEquities(enableMultipleEquityColumns);
-    minsky.defaultFont(font);
-    RecentFilesManager.updateNumberOfRecentFilesToDisplay();
+    await CommandsManager.applyPreferences();
     return;
   }
 );

@@ -205,6 +205,7 @@ namespace minsky
   ItemPtr GroupItems::removeItem(const Item& it)
   {
     if (it.plotWidgetCast()==displayPlot.get()) removeDisplayPlot();
+    bookmarks.erase(it.bookmarkId());
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
         {
@@ -243,6 +244,7 @@ namespace minsky
         r->deleteAttachedWires();
         r->removeControlledItems();
         minsky().runItemDeletedCallback(*r);
+        minsky().bookmarkRefresh();
       }
   }
 
@@ -322,6 +324,7 @@ namespace minsky
   ItemPtr GroupItems::addItem(const shared_ptr<Item>& it, bool inSchema)
   {
     if (!it) return it;
+    minsky().bookmarkRefresh();
     if (auto x=dynamic_pointer_cast<Group>(it))
       return addGroup(x);
    

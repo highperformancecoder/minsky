@@ -60,7 +60,10 @@ namespace minsky
   {
     if (!item) return; //nothing to do
     if (auto g=dynamic_pointer_cast<Group>(item))
-      ensureGroupInserted(g);
+      {
+        ensureGroupInserted(g);
+        return;
+      }
     auto i=find(items.begin(), items.end(), item);
     if (i==items.end())
       insertItem(item);

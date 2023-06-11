@@ -1,5 +1,9 @@
+
+// See gui-js/libs/shared/src/test-setup.ts for the equivalent definitions for the jest environment.
+
 import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
+import { BookmarkManager } from './managers/BookmarkManager';
 import { dialog, shell } from 'electron';
 import * as ProgressBar from 'electron-progressbar';
 import * as JSON5 from 'json5';
@@ -125,55 +129,52 @@ let progress={text:"", value:0, indeterminate: false,};
 let progressBar;
 let initProgressBar;
 
-if ("JEST_WORKER_ID" in process.env) {
-  restService.setMessageCallback(function (msg: string, buttons: string[]) {
-    log.info(msg);
-    return 0;
-  });
-  restService.setBusyCursorCallback(function (busy: boolean) {});
-} else {
-  restService.setMessageCallback(function (msg: string, buttons: string[]) {
-    if (msg && dialog)
-      return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-        message: msg,
-        type: 'info',
-        buttons: buttons,
-      });
-    return 0;
-  });
+restService.setMessageCallback(function (msg: string, buttons: string[]) {
+  if (msg && dialog)
+    return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+      message: msg,
+      type: 'info',
+      buttons: buttons,
+    });
+  return 0;
+});
 
-  restService.setBusyCursorCallback(function (busy: boolean) {
-    WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
-    if (!initProgressBar && busy)
-      initProgressBar=setTimeout(()=>{
-        progressBar=new ProgressBar(progress);
-        progressBar.on('ready',()=>{progressBar._window.webContents.executeJavaScript(injectCancelButton);});
-        progressBar.value=progress.value;
-        initProgressBar=null;
-      }, 3000);
-    if (!busy) {
-      clearTimeout(initProgressBar);
+restService.setBusyCursorCallback(function (busy: boolean) {
+  WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
+  if (!initProgressBar && busy)
+    initProgressBar=setTimeout(()=>{
+      progressBar=new ProgressBar(progress);
+      progressBar.on('ready',()=>{progressBar._window.webContents.executeJavaScript(injectCancelButton);});
+      progressBar.value=progress.value;
       initProgressBar=null;
-      if (progressBar) {
-        progressBar.setCompleted();
-        progressBar.close();
-        progressBar=null;
-        progress.text="";
-        progress.value=0;
-      }
+    }, 3000);
+  if (!busy) {
+    clearTimeout(initProgressBar);
+    initProgressBar=null;
+    if (progressBar) {
+      progressBar.setCompleted();
+      progressBar.close();
+      progressBar=null;
+      progress.text="";
+      progress.value=0;
     }
-  });
+  }
+});
 
-  restService.setProgressCallback(function (title: string, val: number) {
-    progress.text=title;
-    progress.value=val;
-    if (progressBar)
-    {
-      progressBar.text=title;
-      progressBar.value=val;
-    }
-  });
-}
+restService.setProgressCallback(function (title: string, val: number) {
+  progress.text=title;
+  progress.value=val;
+  if (progressBar)
+  {
+    progressBar.text=title;
+    progressBar.value=val;
+  }
+});
+
+
+restService.setBookmarkRefreshCallback(()=>{
+  setTimeout(()=>{BookmarkManager.updateBookmarkList();},10);
+});
 
 // Sanity checks before we get started
 
