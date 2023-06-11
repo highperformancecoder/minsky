@@ -516,7 +516,7 @@ bool VariableBase::sliderVisible() const
 {
   auto vv=vValue();
   return enableSlider &&
-    (!vv && type()==parameter ||
+    ((!vv && type()==parameter) ||
      (vv && vv->size()==1 &&
       (type()==parameter || vv->sliderVisible)));
 }
