@@ -48,6 +48,7 @@ namespace minsky
         // shutdown time.
         messageCallback.SuppressDestruct();
         busyCursorCallback.SuppressDestruct();
+        bookmarkRefreshCallback.SuppressDestruct();
       }
       
       void message(const std::string& msg) override
