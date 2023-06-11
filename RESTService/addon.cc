@@ -139,7 +139,9 @@ namespace minsky
         LocalMinsky lm(*this); // sets this to be the global minsky object
 
         // if reset requested, postpone it
-        if (reset_flag()) requestReset();
+        if (reset_flag())
+          resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
+
         
         // disable quoting wide characters in UTF-8 strings
         auto result=write(registry.process(command, arguments),json5_parser::raw_utf8);
@@ -364,6 +366,31 @@ namespace minsky
           (env,info[0].As<Function>(), "progress",0,2,nullptr);
         return env.Null();
       }
+      
+      static void bookmarkRefreshCallback(Napi::Env env, Napi::Function fn, void*, AddOnMinsky* addon)
+      {
+        fn({});
+      }
+      
+      void bookmarkRefresh() override
+      {
+        if (!bookmarkRefreshSet) return;
+        tsBookmarkRefreshCallback.BlockingCall(this);
+      }
+      bool bookmarkRefreshSet=false;
+      TypedThreadSafeFunction<void,AddOnMinsky,bookmarkRefreshCallback> tsBookmarkRefreshCallback;
+      Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info)
+      {
+        Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        bookmarkRefreshSet=true;
+        tsBookmarkRefreshCallback=TypedThreadSafeFunction<void,AddOnMinsky,bookmarkRefreshCallback>::New
+          (env,info[0].As<Function>(), "refreshBookmark",0,2,nullptr);
+        return env.Null();
+      }
     };
     
     Minsky* l_minsky=NULL;
@@ -402,6 +429,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
         InstanceMethod("setMessageCallback", &MinskyAddon::setMessageCallback),
         InstanceMethod("setBusyCursorCallback", &MinskyAddon::setBusyCursorCallback),
         InstanceMethod("setProgressCallback", &MinskyAddon::setProgressCallback),
+        InstanceMethod("setBookmarkRefreshCallback", &MinskyAddon::setBookmarkRefreshCallback),
         InstanceMethod("cancelProgress", &MinskyAddon::cancelProgress)
       });
   }
@@ -410,6 +438,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
   Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}
   Value setBusyCursorCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBusyCursorCallback(info);}
   Value setProgressCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setProgressCallback(info);}
+  Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBookmarkRefreshCallback(info);}
   Value cancelProgress(const Napi::CallbackInfo& info) {*addOnMinsky.progressState.cancel=true; return info.Env().Null();}
     
 

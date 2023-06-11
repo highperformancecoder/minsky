@@ -187,13 +187,6 @@ namespace classdesc
 {
   class json_pack_t;
   struct RESTProcess_t;
-  
-//  template <>
-//  struct tn<std::chrono::time_point<std::chrono::system_clock>>
-//  {
-//    static string name() {return "std::chrono::time_point<std::chrono::system_clock>";}
-//  };
-
 }
 
 
@@ -230,11 +223,6 @@ namespace classdesc_access
     template void access_RESTProcess<type>::operator()(classdesc::RESTProcess_t&,const std::string&,const type&); \
   }
 
-//#ifdef CIVITA_HYPERCUBE_H
-//#include "hypercube.cd"
-//#include "hypercube.xcd"
-//#endif
-//
 #ifdef CIVITA_XVECTOR_H
 #include "xvector.xcd"
 #endif

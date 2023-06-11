@@ -14,7 +14,7 @@ UNITTESTOBJS=main.o testCSVParser.o testDerivative.o testExpressionWalker.o test
 MINSKYOBJS=$(filter-out ../tclmain.o ../minskyTCL.o ../RESTService.o ../httpd.o ../addon.o ../dummy-addon.o ../itemTemplateInstantiations.o ../typescriptAPI.o,$(wildcard ../*.o)) localMinsky.o
 FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI $(FLAGS)
 FLAGS+=-std=c++14  -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf \
-	-Wno-unused-local-typedefs -I../model -I../engine -I../schema
+  -Wno-unknown-warning-option -Wno-unused-local-typedefs -Wno-unused-command-line-argument -I../model -I../engine -I../schema
 LIBS+=-L../RavelCAPI -lravelCAPI -L../RavelCAPI/civita -lcivita -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lclipboard -lxcb -lX11 \
 	-lUnitTest++ -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl

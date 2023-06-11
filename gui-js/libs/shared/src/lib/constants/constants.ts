@@ -29,6 +29,7 @@ export const events = {
   GET_APP_VERSION: 'get-app-version',
   GET_CURRENT_WINDOW: 'get-current-window',
   GET_PREFERENCES: 'get-preferences',
+  GODLEY_POPUP_REFRESH: 'godley-popup-refresh',
   GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
   GODLEY_VIEW_IMPORT_STOCK: 'godley-view-import-stock',
   HELP_FOR: 'help-for',
@@ -43,6 +44,7 @@ export const events = {
   RECORDING_REPLAY: 'recording-replay',
   RECORDING_STATUS_CHANGED: 'recording-status-changed',
   REPLAY_RECORDING: 'replay-recording',
+  RESET_ZOOM: 'reset-zoom',
   SAVE_FILE_DIALOG: 'save-file-dialog',
   SAVE_HANDLE_DESCRIPTION: 'save-handle-description',
   SAVE_HANDLE_DIMENSION: 'save-handle-dimension',
@@ -51,7 +53,7 @@ export const events = {
   SET_BACKGROUND_COLOR: 'set-background-color',
   UPDATE_BOOKMARK_LIST: 'update-bookmark-list',
   UPDATE_PREFERENCES: 'update-preferences',
-  GODLEY_POPUP_REFRESH: 'godley-popup-refresh'
+  ZOOM: 'zoom',
 };
 
 // add non exposed commands here to get intellisense on the terminal popup

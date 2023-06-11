@@ -160,7 +160,13 @@ namespace minsky
       else
         return "";
     }
+    void setCell(unsigned row, unsigned col, const string& data) {
+      cell(row,col)=data;
+    }
 
+    /// insert A-L into the equity column \a c, such that A-L-E=0
+    void balanceEquity(int col);
+    
     /// get the set of column labels, in column order
     std::vector<std::string> getColumnVariables() const;
     /// get the vector of unique variable names from the interior of the
@@ -176,8 +182,11 @@ namespace minsky
     /// toggle flow signs according to double entry compliant mode
     void setDEmode(bool doubleEntryCompliant);
 
+    std::map<std::string,double> rowSumAsMap(int row) const;
+    static std::string stringify(const std::map<std::string,double>&);
+    
     /// return the symbolic sum across a row
-    string rowSum(int row) const;
+    std::string rowSum(int row) const {return stringify(rowSumAsMap(row));}
 
     /// accessor for schema access
     const Data& getData() const {return data;}

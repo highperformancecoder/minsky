@@ -149,6 +149,7 @@ namespace minsky
   void Minsky::clearAllMaps(bool doClearHistory)
   {
     model->clear();
+    canvas.openGroupInCanvas(model);
     equations.clear();
     integrals.clear();
     variableValues.clear();
@@ -656,7 +657,7 @@ namespace minsky
            {
              if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
                for (size_t col=1; col<gi->table.cols(); col++)
-                 if (trimWS(gi->table.cell(0,col))==colName) // we have a match
+                 if ((&gi->table!=&srcTable || col!=srcCol) && trimWS(gi->table.cell(0,col))==colName) // we have a match
                    balanceDuplicateColumns(*gi, col);
              return false;
            });
@@ -843,6 +844,20 @@ namespace minsky
        });  // TODO - this lambda is FAR too long!
   }
 
+  vector<string> Minsky::allGodleyFlowVars() const
+  {
+    set<string> r;
+    model->recursiveDo(&GroupItems::items, [&](const Items, Items::const_iterator i) {
+      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+        {
+          auto flowVars=g->table.getVariables();
+          r.insert(flowVars.begin(),flowVars.end());
+        }
+      return false;
+    });
+    return {r.begin(),r.end()};
+  }
+  
   namespace
   {
     struct GodleyIt: public vector<GodleyIcon*>::iterator
@@ -928,7 +943,8 @@ namespace minsky
          else if (auto v=(*i)->variableCast())
            { //determine whether a slider should be shown
              if (auto vv=v->vValue())
-               vv->sliderVisible = v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId()));
+               vv->sliderVisible = v->enableSlider &&
+                 (v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId())));
            }
          return false;
        });
@@ -1039,6 +1055,7 @@ namespace minsky
                                  for (unsigned j=1; j<g->table.cols(); ++j)
                                    balanceDuplicateColumns(*g,j);
                                }
+                             (*i)->adjustBookmark();
                              return false;
                            });
 
@@ -1201,6 +1218,9 @@ namespace minsky
         }
     
     canvas.itemIndicator=canvas.item.get();
+    if (canvas.item)
+      canvas.model->moveTo(100-canvas.item->x()+canvas.model->x(),
+                         100-canvas.item->y()+canvas.model->y());
     //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
     if (!RKThreadRunning) canvas.requestRedraw();
   }
@@ -1342,6 +1362,15 @@ namespace minsky
         history[historyPtr-1].reseto()>>m;
         // stash tensorInit data for later restoration
         auto stashedValues=std::move(variableValues);
+        // preserve bookmarks. For now, we can only preserve model and canvas.model bookmarks
+        // count the total number of bookmarks
+        unsigned numBookmarks=0;
+        model->recursiveDo(&GroupItems::groups, [&](const Groups&,const Groups::const_iterator i) {
+          numBookmarks+=(*i)->bookmarks.size();
+          return false;
+        });
+        auto stashedGlobalBookmarks=model->bookmarks;
+        auto stashedCanvasBookmarks=canvas.model->bookmarks;
         clearAllMaps(false);
         model->clear();
         m.populateGroup(*model);
@@ -1354,6 +1383,16 @@ namespace minsky
             if (stashedValue!=stashedValues.end())
               v.second->tensorInit=std::move(stashedValue->second->tensorInit);
           }
+        // restore bookmarks
+        model->bookmarks=std::move(stashedGlobalBookmarks);
+        canvas.model->bookmarks=std::move(stashedCanvasBookmarks);
+        unsigned numBookmarksAfterwards=0;
+        model->recursiveDo(&GroupItems::groups, [&](Groups,const Groups::const_iterator i) {
+          numBookmarksAfterwards+=(*i)->bookmarks.size();
+          return false;
+        });
+        if (numBookmarksAfterwards!=numBookmarks)
+          message("This undo/redo operation potentially deletes some bookmarks");
         try {reset();}
         catch (...) {}
           

@@ -24,6 +24,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include "operation.h"
+#include "pango.h"
 #include "plotWidget.h"
 #include "SVGItem.h"
 #include "wire.rcd"
@@ -454,30 +455,53 @@ namespace
 
     // draw handles
     if (mouseFocus)
-      {    
-        cairo_save(cairo);        
-        cairo_set_source_rgb(cairo,0,0,1);
-        if (cairoCoords.empty() || coords.size()==4)
+      {
+          cairo::CairoSave cs(cairo);
+          cairo_set_source_rgb(cairo,0,0,1);
+          if (cairoCoords.empty() || coords.size()==4)
+            {
+              double midx=0.5*(coords[0]+coords[2]);
+              double midy=0.5*(coords[1]+coords[3]);
+              cairo_arc(cairo,midx,midy,1.5*handleRadius, 0, 2*M_PI);
+              cairo_fill(cairo);
+            } 
+          else 
+            {
+              size_t numSmallHandles=0.5*(coords.size()-4)+1, numCairoCoords=cairoCoords.size()-1;
+              for (size_t i=0; i<coords.size()-3; i+=2)
+                {
+                  double midx=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].first;
+                  double midy=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].second;
+                  cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
+                  if (i>0) // draw existing interior gripping handle            
+                    cairo_arc(cairo,coords[i],coords[i+1],1.5*handleRadius, 0, 2*M_PI); 
+                  cairo_fill(cairo);
+                } 
+            }
+      }
+    if (mouseFocus && !tooltip.empty())
+      {
+        cairo::CairoSave cs(cairo);
+        string toolTipText=latexToPango(tooltip);
+        ecolab::Pango pango(cairo);
+        pango.setMarkup(toolTipText);
+        // place tooltip on centre dot if an odd number of control points, or halfway between otherwise
+        auto dd=div(coords.size(),4);
+        assert(dd.rem%2==0);
+        if (dd.quot%2==1) dd.quot+=dd.rem-1; // adjust so the dd.quot points to an x coordinate
+        double midx=coords[dd.quot], midy=coords[dd.quot+1];
+        if (dd.rem==0)
           {
-            double midx=0.5*(coords[0]+coords[2]);
-            double midy=0.5*(coords[1]+coords[3]);
-            cairo_arc(cairo,midx,midy,1.5*handleRadius, 0, 2*M_PI);
-            cairo_fill(cairo);
-          } 
-        else 
-          {
-            size_t numSmallHandles=0.5*(coords.size()-4)+1, numCairoCoords=cairoCoords.size()-1;
-            for (size_t i=0; i<coords.size()-3; i+=2)
-              {
-                double midx=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].first;
-                double midy=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].second;
-                cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
-                if (i>0) // draw existing interior gripping handle            
-                  cairo_arc(cairo,coords[i],coords[i+1],1.5*handleRadius, 0, 2*M_PI); 
-                cairo_fill(cairo);
-              } 
+            midx=0.5*(coords[dd.quot]+coords[dd.quot+2]);
+            midy=0.5*(coords[dd.quot+1]+coords[dd.quot+3]);
           }
-        cairo_restore(cairo);
+        cairo_translate(cairo,midx,midy);
+        cairo_rectangle(cairo,0,0,pango.width(),pango.height());
+        cairo_set_source_rgb(cairo,1,1,1);
+        cairo_fill_preserve(cairo);
+        cairo_set_source_rgb(cairo,0,0,0);
+        pango.show();
+        cairo_stroke(cairo);
       }
   }
 

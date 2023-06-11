@@ -3,8 +3,6 @@ import {
   ClassType,
   GodleyTableOutputStyles,
   Functions,
-  ZOOM_IN_FACTOR,
-  ZOOM_OUT_FACTOR,
   minsky, GodleyIcon,
   GodleyTableWindow,
   events
@@ -14,18 +12,17 @@ import { CommandsManager } from './CommandsManager';
 import { StoreManager } from './StoreManager';
 
 export class GodleyMenuManager {
-  public static createMenusForGodleyView(
+  public static async createMenusForGodleyView(
     window: Electron.BrowserWindow,
     itemInfo: CanvasItem
   ) {
     const scope = this;
     const godley = new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
     const menu = Menu.buildFromTemplate([
-      scope.getGodleyFileMenuItem(godley),
-      // TODO remove itemInfo from this call
-      scope.getGodleyEditMenuItem(itemInfo, godley),
-      scope.getGodleyViewMenuItem(window, godley),
-      scope.getGodleyOptionsMenuItem(),
+      scope.getGodleyFileMenuItem(window, godley),
+      scope.getGodleyEditMenuItem(godley),
+      scope.getGodleyViewMenuItem(window),
+      scope.getGodleyOptionsMenuItem(window),
       new MenuItem({
         label: 'Help',
         submenu: [
@@ -46,12 +43,17 @@ export class GodleyMenuManager {
     return menu;
   }
 
+  private static refresh(window: Electron.BrowserWindow) {
+    window.webContents?.send(events.GODLEY_POPUP_REFRESH);
+  }
+
   private static async setGodleyPreferences(
     property:
       | 'enableMultipleEquityColumns'
       | 'godleyTableShowValues'
       | 'godleyTableOutputStyle',
-    value: boolean | GodleyTableOutputStyles
+    value: boolean | GodleyTableOutputStyles,
+    window: Electron.BrowserWindow,
   ) {
     const preferences = StoreManager.store.get('preferences');
     let {
@@ -63,7 +65,7 @@ export class GodleyMenuManager {
     if (property === 'enableMultipleEquityColumns') {
       enableMultipleEquityColumns = value as boolean;
       minsky.multipleEquities(enableMultipleEquityColumns);
-
+      GodleyMenuManager.refresh(window);
     } else {
       if (property === 'godleyTableOutputStyle') {
         godleyTableOutputStyle = value as GodleyTableOutputStyles;
@@ -83,7 +85,7 @@ export class GodleyMenuManager {
     });
   }
 
-  private static getGodleyOptionsMenuItem() {
+  private static getGodleyOptionsMenuItem(window: Electron.BrowserWindow) {
     const scope = this;
     // CAVEAT:: Electron does not support dynamic menu labels  https://github.com/electron/electron/issues/5055)
     // Recreating menus from scratch leads to glitches after few clicks. Hence we have added submenus instead of providing toggle options / checkboxes
@@ -91,49 +93,53 @@ export class GodleyMenuManager {
     return new MenuItem({
       label: 'Options',
       submenu: [
-        {
-          label: 'Values',
-          submenu: [
-            {
-              label: 'Show',
-              click: async () => {
-                await scope.setGodleyPreferences('godleyTableShowValues', true);
-              },
-            },
-            {
-              label: 'Hide',
-              click: async () => {
-                await scope.setGodleyPreferences(
-                  'godleyTableShowValues',
-                  false
-                );
-              },
-            },
-          ],
-        },
-        {
-          label: 'DR/CR Style',
-          submenu: [
-            {
-              label: 'Sign',
-              click: async () => {
-                await scope.setGodleyPreferences(
-                  'godleyTableOutputStyle',
-                  GodleyTableOutputStyles.SIGN
-                );
-              },
-            },
-            {
-              label: 'DR/CR',
-              click: async () => {
-                await scope.setGodleyPreferences(
-                  'godleyTableOutputStyle',
-                  GodleyTableOutputStyles.DRCR
-                );
-              },
-            },
-          ],
-        },
+// disabling values and DR/CR style, as this functionality is not currently supported in the HTML Godley popup.
+        //        {
+//          label: 'Values',
+//          submenu: [
+//            {
+//              label: 'Show',
+//              click: async () => {
+//                await scope.setGodleyPreferences('godleyTableShowValues', true, itemInfo.id);
+//              },
+//            },
+//            {
+//              label: 'Hide',
+//              click: async () => {
+//                await scope.setGodleyPreferences(
+//                  'godleyTableShowValues',
+//                  false,
+//                  itemInfo.id
+//                );
+//              },
+//            },
+//          ],
+//        },
+//        {
+//          label: 'DR/CR Style',
+//          submenu: [
+//            {
+//              label: 'Sign',
+//              click: async () => {
+//                await scope.setGodleyPreferences(
+//                  'godleyTableOutputStyle',
+//                  GodleyTableOutputStyles.SIGN,
+//                  itemInfo.id
+//                );
+//              },
+//            },
+//            {
+//              label: 'DR/CR',
+//              click: async () => {
+//                await scope.setGodleyPreferences(
+//                  'godleyTableOutputStyle',
+//                  GodleyTableOutputStyles.DRCR,
+//                  itemInfo.id
+//                );
+//              },
+//            },
+//          ],
+//        },
         {
           label: 'Multiple Equity Column',
           submenu: [
@@ -142,7 +148,8 @@ export class GodleyMenuManager {
               click: async () => {
                 await scope.setGodleyPreferences(
                   'enableMultipleEquityColumns',
-                  true
+                  true,
+                  window
                 );
               },
             },
@@ -151,7 +158,8 @@ export class GodleyMenuManager {
               click: async () => {
                 await scope.setGodleyPreferences(
                   'enableMultipleEquityColumns',
-                  false
+                  false,
+                  window
                 );
               },
             },
@@ -163,7 +171,6 @@ export class GodleyMenuManager {
 
   private static getGodleyViewMenuItem(
     window: Electron.BrowserWindow,
-    godley: GodleyIcon
   ) {
     return new MenuItem({
       label: 'View',
@@ -171,26 +178,22 @@ export class GodleyMenuManager {
         {
           label: 'Zoom In',
           accelerator: 'CmdOrCtrl + Plus',
-          click: async () => {godley.popup.zoom(0,0,ZOOM_IN_FACTOR);}
+          click: async () => {window.webContents?.send(events.ZOOM, 1.1);}
         },
         {
           label: 'Zoom Out',
           accelerator: 'CmdOrCtrl + Minus',
-          click: async () => {godley.popup.zoom(0,0,ZOOM_OUT_FACTOR);}
+          click: async () => {window.webContents?.send(events.ZOOM, 1.0/1.1);}
         },
         {
           label: 'Reset Zoom',
-          click: async () => {
-            godley.popup.zoomFactor(1);
-            godley.popup.requestRedraw();
-          },
+          click: async () => {window.webContents?.send(events.RESET_ZOOM);}
         },
       ],
     });
   }
 
   private static getGodleyEditMenuItem(
-    itemInfo: CanvasItem,
     godley: GodleyIcon
   ) {
     return new MenuItem({
@@ -208,7 +211,7 @@ export class GodleyMenuManager {
         },
         {
           label: 'Title',
-          click: () => {CommandsManager.editGodleyTitle(itemInfo.id);},
+          click: () => {CommandsManager.editGodleyTitle(godley);},
         },
         {
           label: 'Cut',
@@ -229,7 +232,7 @@ export class GodleyMenuManager {
     });
   }
 
-  private static getGodleyFileMenuItem(godley: GodleyIcon) {
+  private static getGodleyFileMenuItem(window: Electron.BrowserWindow, godley: GodleyIcon) {
     return new MenuItem({
       label: 'File',
       submenu: [
@@ -252,6 +255,10 @@ export class GodleyMenuManager {
             },
           ],
         },
+        {
+          label: 'Refresh',
+          click: () => {GodleyMenuManager.refresh(window);},
+        }
       ],
     });
   }

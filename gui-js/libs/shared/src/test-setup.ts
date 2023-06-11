@@ -12,7 +12,10 @@ CppClass.backend=(command: string, ...args: any[])=>{
   } else if (args.length===1) {
     arg=JSON5.stringify(args[0], {quote: '"'});
   }
-  console.log(command);
+  //console.log(command);
   return JSON5.parse(restService.call(`${command}/$sync`, arg));
 };
 
+restService.setMessageCallback(function (msg: string, buttons: string[]) {return 0;});
+restService.setBusyCursorCallback(function (busy: boolean) {});
+restService.setBookmarkRefreshCallback(()=>{});

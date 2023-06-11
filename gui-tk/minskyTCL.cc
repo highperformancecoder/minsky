@@ -158,6 +158,7 @@ namespace minsky
         if (photo)
           cairoSurface.reset(new cairo::TkPhotoSurface(photo));        
       }
+      using T::draw;
       void draw()
       {
         initMatrix();

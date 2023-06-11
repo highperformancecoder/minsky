@@ -55,6 +55,7 @@ namespace minsky
     void reportDrawTime(double) override;
     void mouseDownCommon(float x, float y);
     bool redraw(int x0, int y0, int width, int height) override;
+    void mouseMoveOnItem(float x, float y);
 
     /// flag indicating that a redraw is requested, but not yet redrawn
     bool m_redrawRequested=false;
@@ -148,9 +149,6 @@ namespace minsky
     std::shared_ptr<Port> closestInPort(float x, float y) const;
 
     /// select all items in a given region
-//    void select(float x0, float y0, float x1, float y1) {
-//      select(LassoBox(x0,y0,x1,y1));
-//    }
     void select(const LassoBox&);
 
     int ravelsSelected();
