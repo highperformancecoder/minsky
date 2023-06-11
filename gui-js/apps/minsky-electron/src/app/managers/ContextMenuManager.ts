@@ -5,6 +5,7 @@ import {
   VariableBase, Functions, events
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
+import { BookmarkManager } from './BookmarkManager';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
 import * as log from 'electron-log';
@@ -264,7 +265,10 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Open master group',
-        click: () => {minsky.openModelInCanvas();}
+        click: () => {
+          minsky.openModelInCanvas();
+          BookmarkManager.updateBookmarkList();
+        }
       }),
           ];
 
@@ -521,7 +525,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Title',
         click: () => {
-          CommandsManager.editGodleyTitle();
+          CommandsManager.editGodleyTitle(godley);
         },
       }),
       new MenuItem({
@@ -663,7 +667,10 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Open in canvas',
-        click: async () => {minsky.openGroupInCanvas();}
+        click: async () => {
+          minsky.openGroupInCanvas();
+          BookmarkManager.updateBookmarkList();
+        }
       }),
       new MenuItem({
         label: 'Zoom to display',
@@ -1020,7 +1027,7 @@ export class ContextMenuManager {
     menu.append(new MenuItem({
       label: "Title",
       click: async ()=> {
-        await CommandsManager.editGodleyTitle(await godley.id());
+        await CommandsManager.editGodleyTitle(godley);
         refreshFunction();
       },
     }));
@@ -1115,6 +1122,42 @@ export class ContextMenuManager {
         }
       }));
     }
+    const flows=godley.table.getVariables();
+    var flowMenu=new Menu();
+    for (let i=0; i<flows.length; ++i)
+      flowMenu.append(new MenuItem({
+        label: flows[i],
+        submenu: [
+          {
+            label: '+',
+            click: ()=>{
+              godley.table.setCell(r,c,flows[i]);
+              refreshFunction();
+            }
+          },
+          {
+            label: '-',
+            click: ()=>{
+              godley.table.setCell(r,c,`-${flows[i]}`);
+              refreshFunction();
+            }
+          },
+        ]            
+      }));
+    menu.append(new MenuItem({
+      label: 'Insert flow',
+      submenu: flowMenu,
+    }));
+
+    if (godley.table._assetClass()[c]==="equity")
+      menu.append(new MenuItem({
+        label: 'Balance equity',
+        click: ()=>{
+          godley.table.balanceEquity(c);
+          refreshFunction();
+        }
+      }));
+    
     menu.popup();
   }
   

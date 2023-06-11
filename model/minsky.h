@@ -159,6 +159,10 @@ namespace minsky
     
     /// balance two Godley columns
     void balanceColumns(const GodleyIcon& srcGodley, int srcCol, GodleyIcon& destGodley, int destCol) const;
+
+    /// remove the definition network from \a wire, up to, but not including attached variables.
+    void removeItems(Wire& wire);
+
   public:
     PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};
@@ -235,6 +239,8 @@ namespace minsky
     /// makes all duplicated columns consistent with \a srcTable, \a srcCol
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 
+    std::vector<std::string> allGodleyFlowVars() const;
+    
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky():
       ECOLAB_ACESSOR_INIT(Minsky, multipleEquities),
@@ -434,6 +440,9 @@ namespace minsky
     /// set progress bar, out of 100, labelling the progress bar with \a title
     virtual void progress(const std::string& title,int) {}
 
+    /// refresh the bookmark menu after changes
+    virtual void bookmarkRefresh() {}
+    
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
 
@@ -518,6 +527,9 @@ namespace minsky
 
     /// Used to implement a pause until return pressed for attaching debugger purposes
     char getc() const {return std::getc(stdin);}
+
+    /// add/replace a definition for a flow variable given by \a valueId
+    void setDefinition(const std::string& valueId, const std::string& definition);
   };
 
   /// global minsky object

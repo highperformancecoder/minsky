@@ -95,10 +95,7 @@ export class WiringComponent implements OnInit, OnDestroy {
         });
         minskyCanvasContainer.onwheel = this.cmService.onMouseWheelZoom;
 
-        // TextInputUtilities.bindEvents();
-
-        document.body.addEventListener('keydown', async (event) => {
-          // TextInputUtilities.show();
+        document.body.onkeydown=async (event) => {
           if (event.key==='Shift' && document?.body?.style)
             document.body.style.cursor='grab';
           // check if over a toolbar button. We have to do it in such a kludgy way, because keydown events are only sent to focussed elements, and typically buttons do not obtain focus.
@@ -119,13 +116,13 @@ export class WiringComponent implements OnInit, OnDestroy {
           }
           // TODO - move this method out of cmService
           await this.cmService.handleKeyDown({ event });
-        });
+        };
 
-        document.body.addEventListener('keyup', async (event) => {
+        document.body.onkeyup=async (event) => {
           if (event.key==='Shift' && document?.body?.style)
             document.body.style.cursor='default';          
           await this.cmService.handleKeyUp(event);
-        });
+        };
 
         this.electronService.on(events.CURSOR_BUSY, async (event, busy: boolean)=>{
           document.body.style.cursor=busy? 'wait': 'default';

@@ -52,6 +52,7 @@ export class EditDescriptionComponent implements OnInit {
       item.tooltip(this.editDescriptionForm.get('tooltip').value);
       item.detailedText(this.editDescriptionForm.get('detailedText').value);
       item.adjustBookmark();
+      item.updateBoundingBox();
       this.electronService.send(events.UPDATE_BOOKMARK_LIST);
     }
     this.closeWindow();

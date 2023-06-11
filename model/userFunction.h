@@ -56,6 +56,8 @@ namespace  minsky
     // required by the compiler
     static UserFunction* create(OperationType::Type t) 
     {return (t==OperationType::userFunction)? new UserFunction: nullptr;}
+
+    void draw(cairo_t* cairo) const override {drawUserFunction(cairo);}
     
   };
 

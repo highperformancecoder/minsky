@@ -60,6 +60,9 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     return this.form.get('detailedDescription');
   }
 
+  public get enableSlider(): AbstractControl {
+    return this.form.get('enableSlider');
+  }
   public get sliderBoundsMax(): AbstractControl {
     return this.form.get('sliderBoundsMax');
   }
@@ -99,6 +102,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
       rotation: new FormControl(0),
       shortDescription: new FormControl(''),
       detailedDescription: new FormControl(''),
+      enableSlider: new FormControl(true),
       sliderBoundsMax: new FormControl(null),
       sliderBoundsMin: new FormControl(null),
       sliderStepSize: new FormControl(null),
@@ -132,6 +136,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     const rotation = await item.rotation();
     const tooltip = await item.tooltip();
     const detailedText = await item.detailedText();
+    const enableSlider = await item.enableSlider();
     const sliderMax = Number((await item.sliderMax()).toPrecision(3));
     const sliderMin = Number((await item.sliderMin()).toPrecision(3));
     const sliderStep = Number((await item.sliderStep()).toPrecision(3));
@@ -143,6 +148,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     this.rotation.setValue(rotation);
     this.shortDescription.setValue(tooltip);
     this.detailedDescription.setValue(detailedText);
+    this.enableSlider.setValue(enableSlider);
     this.sliderBoundsMax.setValue(sliderMax);
     this.sliderBoundsMin.setValue(sliderMin);
     this.sliderStepSize.setValue(sliderStep);
@@ -172,6 +178,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     item.rotation(this.rotation.value || 0);
     item.tooltip(this.shortDescription.value);
     item.detailedText(this.detailedDescription.value);
+    item.enableSlider(this.enableSlider.value);
     if (typeof this.sliderBoundsMax.value=='number') item.sliderMax(this.sliderBoundsMax.value);
     if (typeof this.sliderBoundsMin.value=='number') item.sliderMin(this.sliderBoundsMin.value);
     if (typeof this.sliderStepSize.value=='number') item.sliderStep(this.sliderStepSize.value);

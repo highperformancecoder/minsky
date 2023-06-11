@@ -6,7 +6,6 @@ import {
 import * as utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
-import * as JSON5 from 'json5';
 
 export class KeyBindingsManager {
   static async handleOnKeyPress(

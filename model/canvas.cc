@@ -192,6 +192,52 @@ namespace minsky
     itemFocus.reset();
     wireFocus.reset();
   }
+
+  void Canvas::mouseMoveOnItem(float x, float y)
+  {
+    updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
+    // move item relatively to avoid accidental moves on double click
+    if (selection.empty() || !selection.contains(itemFocus))
+      itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
+    else
+      {
+        // move the whole selection
+        auto deltaX=x-moveOffsX-itemFocus->x(), deltaY=y-moveOffsY-itemFocus->y();
+        for (auto& i: selection.items)
+          i->moveTo(i->x()+deltaX, i->y()+deltaY);
+        for (auto& i: selection.groups)
+          i->moveTo(i->x()+deltaX, i->y()+deltaY);
+      }
+    requestRedraw();
+    // check if the move has moved outside or into a group
+    if (auto g=itemFocus->group.lock())
+      if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
+        {
+          if (auto toGroup=model->minimalEnclosingGroup
+              (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
+            {
+              if (g.get()==toGroup) return;
+              // prevent moving a group inside itself
+              if (auto g=dynamic_cast<Group*>(itemFocus.get()))
+                if (g->higher(*toGroup))
+                  return;
+              selection.clear(); // prevent old wires from being held onto
+              toGroup->addItem(itemFocus);
+              toGroup->splitBoundaryCrossingWires();
+              g->splitBoundaryCrossingWires();
+            }
+          else if (g!=model)
+            {
+              selection.clear(); // prevent old wires from being held onto
+              model->addItem(itemFocus);
+              model->splitBoundaryCrossingWires();
+              g->splitBoundaryCrossingWires();
+            }
+        }
+    if (auto g=itemFocus->group.lock())
+      if (g!=model)
+        g->checkAddIORegion(itemFocus);
+  }
   
   void Canvas::mouseMove(float x, float y)
     try
@@ -201,48 +247,7 @@ namespace minsky
             switch (clickType)
               {
               case ClickType::onItem:
-                updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
-                // move item relatively to avoid accidental moves on double click
-                if (selection.empty() || !selection.contains(itemFocus))
-                  itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
-                else
-                  {
-                    // move the whole selection
-                    auto deltaX=x-moveOffsX-itemFocus->x(), deltaY=y-moveOffsY-itemFocus->y();
-                    for (auto& i: selection.items)
-                      i->moveTo(i->x()+deltaX, i->y()+deltaY);
-                    for (auto& i: selection.groups)
-                      i->moveTo(i->x()+deltaX, i->y()+deltaY);
-                  }
-                requestRedraw();
-                // check if the move has moved outside or into a group
-                if (auto g=itemFocus->group.lock())
-                  if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
-                    {
-                      if (auto toGroup=model->minimalEnclosingGroup
-                          (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
-                        {
-                          if (g.get()==toGroup) return;
-                          // prevent moving a group inside itself
-                          if (auto g=dynamic_cast<Group*>(itemFocus.get()))
-                            if (g->higher(*toGroup))
-                              return;
-                          selection.clear(); // prevent old wires from being held onto
-                          toGroup->addItem(itemFocus);
-                          toGroup->splitBoundaryCrossingWires();
-                          g->splitBoundaryCrossingWires();
-                        }
-                      else
-                        {
-                          selection.clear(); // prevent old wires from being held onto
-                          model->addItem(itemFocus);
-                          model->splitBoundaryCrossingWires();
-                          g->splitBoundaryCrossingWires();
-                        }
-                    }
-                if (auto g=itemFocus->group.lock())
-                  if (g!=model)
-                    g->checkAddIORegion(itemFocus);
+                mouseMoveOnItem(x,y);
                 return;
               case ClickType::onSlider:
                 if (auto v=itemFocus->variableCast())
@@ -617,13 +622,6 @@ namespace minsky
        }
   }
 
-  namespace
-  {
-    // return true if scope g refers to the global model group
-    bool isGlobal(const GroupPtr& g)
-    {return !g || g==cminsky().model;}
-  }
-  
   void Canvas::renameAllInstances(const string newName)
   {
     auto var=item->variableCast();
@@ -634,60 +632,7 @@ namespace minsky
       {
         // cache name and valueId for later use as var gets invalidated in the recursiveDo
         auto valueId=var->valueId();
-        auto varScope=scope(var->group.lock(), valueId);
-        string fromName=var->rawName();
-        // unqualified versions of the names
-        string uqFromName=fromName.substr(fromName[0]==':'? 1: 0);
-        string uqNewName = newName.substr(newName[0]==':'? 1: 0);
-        set<GodleyIcon*> godleysToUpdate;
-#ifndef NDEBUG
-        auto numItems=model->numItems();
-#endif
-        model->recursiveDo
-          (&GroupItems::items, [&](Items&,Items::iterator i)
-           {
-             if (auto v=(*i)->variableCast())
-               if (v->valueId()==valueId)
-                 {			 
-                   if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
-                     {
-                       if (varScope==g->group.lock() ||
-                           (!varScope && g->group.lock()==cminsky().model)) // fix local variables
-                         g->table.rename(uqFromName, uqNewName);
-                       
-                       // scope of an external ref in the Godley Table
-                       auto externalVarScope=scope(g->group.lock(), ':'+uqNewName);
-                       // if we didn't find it, perhaps the outerscope variable hasn't been changed
-                       if (!externalVarScope)
-                         externalVarScope=scope(g->group.lock(), ':'+uqFromName);
-
-                       if (varScope==externalVarScope ||  (isGlobal(varScope) && isGlobal(externalVarScope)))
-                         // fix external variable references
-                         g->table.rename(':'+uqFromName, ':'+uqNewName);
-                       // GodleyIcon::update invalidates the iterator, so postpone update
-                       godleysToUpdate.insert(g);
-                     }
-                   else
-                     {
-                       if (varScope==v->group.lock() ||
-                           (!newName.empty() && newName[0]==':') )
-                         v->name(newName);
-                       else
-                         v->name(":"+newName);
-                       if (auto vv=v->vValue()) {
-                        v->retype(vv->type()); // ensure correct type. Note this invalidates v.
-                       }
-                     }
-                 }
-             return false;
-           });
-        assert(model->numItems()==numItems);
-        for (auto g: godleysToUpdate)
-          {
-            g->update();
-            assert(model->numItems()==numItems);
-          }
-      minsky().requestReset();   // Updates model after variables rename. For ticket 1109.    
+        model->renameAllInstances(valueId, newName);
       }
    }
   
@@ -782,6 +727,7 @@ namespace minsky
         if (auto parent=model->group.lock())
           model->setZoom(parent->zoomFactor());
         model=g;
+        minsky().bookmarkRefresh();
         float zoomFactor=1.1*model->displayZoom;
         if (!model->displayContents())
           {

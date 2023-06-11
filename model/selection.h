@@ -52,6 +52,7 @@ namespace minsky
     }
     /// return if item is contained in selection
     bool contains(const ItemPtr& item) const;
+    using Item::contains;
   };
 
 }

@@ -34,6 +34,7 @@
 #include "tensorVal.rcd"
 #include "tensorVal.xcd"
 #include "units.rcd"
+#include "userFunction.h"
 #include "variableValue.rcd"
 #include "variableValues.rcd"
 #include "variableValues.xcd"
@@ -389,17 +390,28 @@ namespace minsky
         scopeName=scope->title.empty()? scope->id(): scope->title;
 
     string godleyName;
+    string definition=varNode && varNode->rhs? varNode->rhs->latexStr(): "";
+    string udfDefinition=varNode && varNode->rhs? varNode->rhs->matlabStr():"";
     if (auto var=cminsky().definingVar(valueId()))
-      if (auto controller=dynamic_pointer_cast<GodleyIcon>(var->controller.lock()))
-        godleyName=controller->table.title.empty()? controller->id(): controller->table.title;
+      {
+        if (auto controller=dynamic_pointer_cast<GodleyIcon>(var->controller.lock()))
+          godleyName=controller->table.title.empty()? controller->id(): controller->table.title;
+        if (auto p=var->ports(1).lock())
+          if (!p->wires().empty())
+            if (auto udf=dynamic_cast<UserFunction*>(&p->wires().front()->from()->item()))
+              {
+                definition="\\text{"+udf->expression+"}";
+                udfDefinition=udf->expression;
+              }
+      }
 
     
     return Summary{
       valueId(),
       name,
       type(),
-      varNode && varNode->rhs? varNode->rhs->latexStr(): "",
-      varNode && varNode->rhs? varNode->rhs->matlabStr():"",
+      definition,
+      udfDefinition,
       init,
       value(),
       scopeName,

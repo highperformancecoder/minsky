@@ -44,7 +44,7 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
-  struct GroupItems;
+  class GroupItems;
   class Group; 
   class VariablePtr;
   class VariableBase;
@@ -190,7 +190,7 @@ namespace minsky
       auto hz=resizeHandleSize(); // extend by resize handle size (which is also portRadius)
       return left()-hz<=xx && right()+hz>=xx && top()-hz<=yy && bottom()+hz>=yy; 
     }
-    void updateBoundingBox() {bb.update(*this);}
+    void updateBoundingBox() override {bb.update(*this);}
     
     /// mark item on canvas, then throw
     [[noreturn]] void throw_error(const std::string&) const;

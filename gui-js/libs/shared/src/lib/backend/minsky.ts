@@ -119,6 +119,7 @@ export class OperationBase extends Item {
   async dimensions(): Promise<string[]> {return this.$callMethod('dimensions');}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async drawResizeHandles(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
+  async drawUserFunction(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawUserFunction',a1);}
   async h(...args: number[]): Promise<number> {return this.$callMethod('h',...args);}
   async iconDraw(a1: minsky__dummy): Promise<void> {return this.$callMethod('iconDraw',a1);}
   async l(...args: number[]): Promise<number> {return this.$callMethod('l',...args);}
@@ -180,6 +181,7 @@ export class VariableBase extends Item {
   async drawResizeHandles(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
   async drawSelected(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawSelected',a1);}
   async dummyDraw(): Promise<void> {return this.$callMethod('dummyDraw');}
+  async enableSlider(...args: boolean[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
   async engExp(): Promise<object> {return this.$callMethod('engExp');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
   async ensureValueExists(a1: VariableValue,a2: string): Promise<void> {return this.$callMethod('ensureValueExists',a1,a2);}
@@ -246,6 +248,7 @@ export class VariableBase extends Item {
   async sliderSet(a1: number): Promise<void> {return this.$callMethod('sliderSet',a1);}
   async sliderStep(...args: number[]): Promise<number> {return this.$callMethod('sliderStep',...args);}
   async sliderStepRel(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderStepRel',...args);}
+  async sliderVisible(): Promise<boolean> {return this.$callMethod('sliderVisible');}
   async temp(): Promise<boolean> {return this.$callMethod('temp');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
   async toggleLocal(): Promise<void> {return this.$callMethod('toggleLocal');}
@@ -474,6 +477,7 @@ export class DataOp extends Item {
   }
   async deriv(a1: number): Promise<number> {return this.$callMethod('deriv',a1);}
   async description(...args: any[]): Promise<string> {return this.$callMethod('description',...args);}
+  async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async initRandom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('initRandom',a1,a2,a3);}
   async interpolate(a1: number): Promise<number> {return this.$callMethod('interpolate',a1);}
   async pack(a1: classdesc__pack_t,a2: string): Promise<void> {return this.$callMethod('pack',a1,a2);}
@@ -784,6 +788,7 @@ export class GodleyTable extends CppClass {
   }
   async _assetClass(...args: any[]): Promise<Sequence<string>> {return this.$callMethod('_assetClass',...args);}
   async assetClass(a1: object): Promise<string> {return this.$callMethod('assetClass',a1);}
+  async balanceEquity(a1: number): Promise<void> {return this.$callMethod('balanceEquity',a1);}
   async cell(a1: number,a2: number): Promise<string> {return this.$callMethod('cell',a1,a2);}
   async cellInTable(a1: number,a2: number): Promise<boolean> {return this.$callMethod('cellInTable',a1,a2);}
   async clear(): Promise<void> {return this.$callMethod('clear');}
@@ -812,12 +817,15 @@ export class GodleyTable extends CppClass {
   async renameStock(a1: string,a2: string): Promise<void> {return this.$callMethod('renameStock',a1,a2);}
   async resize(a1: number,a2: number): Promise<void> {return this.$callMethod('resize',a1,a2);}
   async rowSum(a1: number): Promise<string> {return this.$callMethod('rowSum',a1);}
+  async rowSumAsMap(a1: number): Promise<object> {return this.$callMethod('rowSumAsMap',a1);}
   async rows(): Promise<number> {return this.$callMethod('rows');}
   async savedText(...args: string[]): Promise<string> {return this.$callMethod('savedText',...args);}
+  async setCell(a1: number,a2: number,a3: string): Promise<void> {return this.$callMethod('setCell',a1,a2,a3);}
   async setDEmode(a1: boolean): Promise<void> {return this.$callMethod('setDEmode',a1);}
   async signConventionReversed(a1: number): Promise<boolean> {return this.$callMethod('signConventionReversed',a1);}
   async singleEquity(): Promise<boolean> {return this.$callMethod('singleEquity');}
   async singularRow(a1: number,a2: number): Promise<boolean> {return this.$callMethod('singularRow',a1,a2);}
+  async stringify(a1: Map<string,number>): Promise<string> {return this.$callMethod('stringify',a1);}
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
 }
 
@@ -1144,6 +1152,7 @@ export class Group extends Item {
   async removeGroup(a1: Group): Promise<object> {return this.$callMethod('removeGroup',a1);}
   async removeItem(a1: Item): Promise<object> {return this.$callMethod('removeItem',a1);}
   async removeWire(a1: Wire): Promise<object> {return this.$callMethod('removeWire',a1);}
+  async renameAllInstances(a1: string,a2: string): Promise<void> {return this.$callMethod('renameAllInstances',a1,a2);}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
   async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}
   async resizeOnContents(): Promise<void> {return this.$callMethod('resizeOnContents');}
@@ -1325,12 +1334,14 @@ export class Minsky extends CppClass {
     this.variableValues=new VariableValues(this.$prefix()+'/variableValues');
   }
   async addIntegral(): Promise<void> {return this.$callMethod('addIntegral');}
+  async allGodleyFlowVars(): Promise<string[]> {return this.$callMethod('allGodleyFlowVars');}
   async assetClasses(): Promise<string[]> {return this.$callMethod('assetClasses');}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async autoSaveFile(): Promise<string> {return this.$callMethod('autoSaveFile');}
   async availableOperations(): Promise<string[]> {return this.$callMethod('availableOperations');}
   async availableOperationsMapping(): Promise<object[]> {return this.$callMethod('availableOperationsMapping');}
   async balanceDuplicateColumns(a1: GodleyIcon,a2: number): Promise<void> {return this.$callMethod('balanceDuplicateColumns',a1,a2);}
+  async bookmarkRefresh(): Promise<void> {return this.$callMethod('bookmarkRefresh');}
   async checkEquationOrder(): Promise<boolean> {return this.$callMethod('checkEquationOrder');}
   async checkMemAllocation(a1: number): Promise<boolean> {return this.$callMethod('checkMemAllocation',a1);}
   async checkPushHistory(): Promise<void> {return this.$callMethod('checkPushHistory');}
@@ -1434,6 +1445,7 @@ export class Minsky extends CppClass {
   async setAllDEmode(a1: boolean): Promise<void> {return this.$callMethod('setAllDEmode',a1);}
   async setAutoSaveFile(a1: string): Promise<void> {return this.$callMethod('setAutoSaveFile',a1);}
   async setBusyCursor(): Promise<void> {return this.$callMethod('setBusyCursor');}
+  async setDefinition(a1: string,a2: string): Promise<void> {return this.$callMethod('setDefinition',a1,a2);}
   async setGodleyDisplayValue(a1: boolean,a2: string): Promise<void> {return this.$callMethod('setGodleyDisplayValue',a1,a2);}
   async setGodleyIconResource(a1: string): Promise<void> {return this.$callMethod('setGodleyIconResource',a1);}
   async setGroupIconResource(a1: string): Promise<void> {return this.$callMethod('setGroupIconResource',a1);}
@@ -2099,6 +2111,7 @@ export class Selection extends CppClass {
   async removeGroup(a1: Group): Promise<object> {return this.$callMethod('removeGroup',a1);}
   async removeItem(a1: Item): Promise<object> {return this.$callMethod('removeItem',a1);}
   async removeWire(a1: Wire): Promise<object> {return this.$callMethod('removeWire',a1);}
+  async renameAllInstances(a1: string,a2: string): Promise<void> {return this.$callMethod('renameAllInstances',a1,a2);}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
   async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}
   async resizeOnContents(): Promise<void> {return this.$callMethod('resizeOnContents');}
@@ -2201,6 +2214,7 @@ export class UserFunction extends Item {
   async create(a1: string): Promise<UserFunction> {return this.$callMethod('create',a1);}
   async description(...args: any[]): Promise<string> {return this.$callMethod('description',...args);}
   async displayTooltip(a1: minsky__dummy,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
+  async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async evaluate(a1: number,a2: number): Promise<number> {return this.$callMethod('evaluate',a1,a2);}
   async expression(...args: string[]): Promise<string> {return this.$callMethod('expression',...args);}
   async name(): Promise<string> {return this.$callMethod('name');}
@@ -2381,6 +2395,7 @@ export class Wire extends CppClass {
   async to(): Promise<object> {return this.$callMethod('to');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
+  async updateBoundingBox(): Promise<void> {return this.$callMethod('updateBoundingBox');}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
 }
 

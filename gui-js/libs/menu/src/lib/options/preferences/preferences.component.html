@@ -10,7 +10,8 @@
           type="checkbox"
           class="godley-table-show-values-checkbox"
           id="godleyTableShowValues"
-        />
+          (change)="updatePreferences()"
+          />
       </div>
 
       <div class="form-control">
@@ -23,6 +24,7 @@
             id="drCrRadio"
             name="godleyTableOutputStyle"
             value="DRCR"
+            (change)="updatePreferences()"
           />
           <label for="drCrRadio">DR/CR</label>
         </span>
@@ -35,6 +37,7 @@
             id="plusMinusRadio"
             name="godleyTableOutputStyle"
             value="sign"
+            (change)="updatePreferences()"
           />
           <label for="plusMinusRadio">+/-</label>
         </span>
@@ -49,6 +52,7 @@
           type="checkbox"
           class="enable-multiple-equity-columns-checkbox"
           id="enableMultipleEquityColumns"
+          (change)="updatePreferences()"
         />
       </div>
 

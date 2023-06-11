@@ -22,6 +22,7 @@
 
 #include "CSVParser.rcd"
 #include "dataSpecSchema.rcd"
+#include "dimension.rcd"
 #include "nobble.h"
 #include "minsky_epilogue.h"
 

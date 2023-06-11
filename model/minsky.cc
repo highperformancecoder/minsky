@@ -149,6 +149,7 @@ namespace minsky
   void Minsky::clearAllMaps(bool doClearHistory)
   {
     model->clear();
+    canvas.openGroupInCanvas(model);
     equations.clear();
     integrals.clear();
     variableValues.clear();
@@ -513,7 +514,12 @@ namespace minsky
   {
     if (resetDuration<chrono::milliseconds(500))
       {
-        reset();
+        try
+          {
+            reset();
+          }
+        catch (...)
+          {}
         return;
       }
     flags|=reset_needed;
@@ -652,7 +658,7 @@ namespace minsky
            {
              if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
                for (size_t col=1; col<gi->table.cols(); col++)
-                 if (trimWS(gi->table.cell(0,col))==colName) // we have a match
+                 if ((&gi->table!=&srcTable || col!=srcCol) && trimWS(gi->table.cell(0,col))==colName) // we have a match
                    balanceDuplicateColumns(*gi, col);
              return false;
            });
@@ -839,6 +845,20 @@ namespace minsky
        });  // TODO - this lambda is FAR too long!
   }
 
+  vector<string> Minsky::allGodleyFlowVars() const
+  {
+    set<string> r;
+    model->recursiveDo(&GroupItems::items, [&](const Items, Items::const_iterator i) {
+      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+        {
+          auto flowVars=g->table.getVariables();
+          r.insert(flowVars.begin(),flowVars.end());
+        }
+      return false;
+    });
+    return {r.begin(),r.end()};
+  }
+  
   namespace
   {
     struct GodleyIt: public vector<GodleyIcon*>::iterator
@@ -924,7 +944,8 @@ namespace minsky
          else if (auto v=(*i)->variableCast())
            { //determine whether a slider should be shown
              if (auto vv=v->vValue())
-               vv->sliderVisible = v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId()));
+               vv->sliderVisible = v->enableSlider &&
+                 (v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId())));
            }
          return false;
        });
@@ -1043,6 +1064,7 @@ namespace minsky
                                  for (unsigned j=1; j<g->table.cols(); ++j)
                                    balanceDuplicateColumns(*g,j);
                                }
+                             (*i)->adjustBookmark();
                              return false;
                            });
 
@@ -1205,6 +1227,9 @@ namespace minsky
         }
     
     canvas.itemIndicator=canvas.item.get();
+    if (canvas.item)
+      canvas.model->moveTo(100-canvas.item->x()+canvas.model->x(),
+                         100-canvas.item->y()+canvas.model->y());
     //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
     if (!RKThreadRunning) canvas.requestRedraw();
   }
@@ -1346,6 +1371,15 @@ namespace minsky
         history[historyPtr-1].reseto()>>m;
         // stash tensorInit data for later restoration
         auto stashedValues=std::move(variableValues);
+        // preserve bookmarks. For now, we can only preserve model and canvas.model bookmarks
+        // count the total number of bookmarks
+        unsigned numBookmarks=0;
+        model->recursiveDo(&GroupItems::groups, [&](const Groups&,const Groups::const_iterator i) {
+          numBookmarks+=(*i)->bookmarks.size();
+          return false;
+        });
+        auto stashedGlobalBookmarks=model->bookmarks;
+        auto stashedCanvasBookmarks=canvas.model->bookmarks;
         clearAllMaps(false);
         model->clear();
         m.populateGroup(*model);
@@ -1358,6 +1392,16 @@ namespace minsky
             if (stashedValue!=stashedValues.end())
               v.second->tensorInit=std::move(stashedValue->second->tensorInit);
           }
+        // restore bookmarks
+        model->bookmarks=std::move(stashedGlobalBookmarks);
+        canvas.model->bookmarks=std::move(stashedCanvasBookmarks);
+        unsigned numBookmarksAfterwards=0;
+        model->recursiveDo(&GroupItems::groups, [&](Groups,const Groups::const_iterator i) {
+          numBookmarksAfterwards+=(*i)->bookmarks.size();
+          return false;
+        });
+        if (numBookmarksAfterwards!=numBookmarks)
+          message("This undo/redo operation potentially deletes some bookmarks");
         try {reset();}
         catch (...) {}
           
@@ -1555,6 +1599,62 @@ namespace minsky
         }
     variableInstanceList.reset();
   }
+
+  void Minsky::removeItems(Wire& wire)
+  {
+    if (wire.from()->wires().size()==1)
+      { // only remove higher up the network if this item is the only item feeding from it
+        auto& item=wire.from()->item();
+        if (!item.variableCast())
+          {
+            for (size_t i=1; i<item.portsSize(); ++i)
+              if (auto p=item.ports(i).lock())
+                for (auto w: p->wires())
+                  removeItems(*w);
+            model->removeItem(item);
+          }
+        else if (auto p=item.ports(1).lock())
+          if (p->wires().empty())
+            model->removeItem(item); // remove non-definition variables as well
+      }
+    model->removeWire(wire);
+  }
+  
+  void Minsky::setDefinition(const std::string& valueId, const std::string& definition)
+  {
+    auto var=definingVar(valueId);
+    if (!var) // find
+      var=dynamic_pointer_cast<VariableBase>(model->findAny(&GroupItems::items, [&](const ItemPtr& it) {
+        if (auto v=it->variableCast())
+          return v->valueId()==valueId;
+        return false;
+      }));
+    if (var)
+      if (auto p=var->ports(1).lock())
+        {
+          auto group=var->group.lock();
+          if (!group) group=model;
+          UserFunction* udf=p->wires().empty()? nullptr: dynamic_cast<UserFunction*>(&p->wires().front()->from()->item());
+          if (!udf)
+            {
+              // remove previous definition network
+              for (auto w: p->wires())
+                {
+                  assert(w);
+                  removeItems(*w);
+                }
+
+              udf=new UserFunction(var->name()+"()");
+              group->addItem(udf); // ownership passed
+              double fm=std::fmod(var->rotation(),360);
+              bool notFlipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
+              udf->moveTo(var->x()+(notFlipped? -1:1)*0.6*(var->width()+udf->width()), var->y());
+              group->addWire(udf->ports(0), var->ports(1));
+            }
+          udf->expression=definition;
+        }
+  }
+
   
   void Minsky::redrawAllGodleyTables()
   {

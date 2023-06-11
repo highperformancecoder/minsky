@@ -42,7 +42,11 @@ namespace minsky
          if (const auto* v=(*i)->variableCast())
            if (v->valueId()==valueId)
              {
-               bookmarks.emplace_back(this->model.x()-v->x()+50, this->model.y()-v->y()+50, v->zoomFactor(),
+               if (auto controller=v->controller.lock())
+                 bookmarks.emplace_back(this->model.x()-controller->left()+50, this->model.y()-controller->top()+50, controller->zoomFactor(),
+                                      v->name()+"@("+to_string(int(v->x()))+","+to_string(int(v->y()))+")");
+               else
+                 bookmarks.emplace_back(this->model.x()-v->left()+50, this->model.y()-v->top()+50, v->zoomFactor(),
                                       v->name()+"@("+to_string(int(v->x()))+","+to_string(int(v->y()))+")");
                items.push_back(*i);
              }

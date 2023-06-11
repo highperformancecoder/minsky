@@ -26,7 +26,7 @@
 
 namespace schema3
 {
-  class Minsky;
+  struct Minsky;
 }
 
 namespace minsky

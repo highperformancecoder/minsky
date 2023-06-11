@@ -15,6 +15,10 @@ export class SummaryComponent implements OnInit {
   groups={};
   godleys={};
 
+  editRow=null;  ///< row of the current cell being edited
+  editCol='';   ///< column of the current cell being edited
+  editCellContents=''; ///< contents of cell being edited
+  
   labels={allVariables: 'All Variables', globalVariables: 'Global Variables', groups: 'Local Variables', godleys: 'Godley Variables'};
   numVars={allVariables: 0, globalVariables: 0, groups: 0, godleys: 0};
     
@@ -85,7 +89,10 @@ export class SummaryComponent implements OnInit {
     nestedElements=event.target.querySelectorAll(".caret");
     // why do we need to add this event listener? Why isn't the (click)= annotation enough?
     for (let i=0; i<nestedElements.length; ++i) 
+    {
       nestedElements[i].addEventListener("click",()=>this.toggleCaret({target:nestedElements[i]}));
+      this.electronService.log(`${nestedElements[i].classList}`);
+    }
   }
   
   changeScale(e) {
@@ -101,6 +108,47 @@ export class SummaryComponent implements OnInit {
     const stringDecimals = String(+value - Math.floor(+value));
     if(stringDecimals.length > 6) return (+value).toFixed(4);
     return String(value);
+  }
+
+  editing(variable, member: string): boolean {
+    return (variable.type==='flow' || member!=='definition') && variable===this.editRow && member===this.editCol; 
+  }
+  edit(event, variable, member: string) {
+    event.stopImmediatePropagation();
+    this.editRow=variable;
+    this.editCol=member;
+    switch (member)
+    {
+      case 'definition':
+      this.editCellContents=variable.udfDefinition;
+      break;
+      default:
+      this.editCellContents=variable[member];
+      break;
+    }
+  }
+
+  finishEditing() {
+    this.editRow[this.editCol]=this.editCellContents;
+    switch (this.editCol)
+    {
+      case 'init':
+      this.electronService.minsky.variableValues.elem(this.editRow.valueId).second.init(this.editCellContents);
+      break;
+      case 'units':
+      this.electronService.minsky.variableValues.elem(this.editRow.valueId).second.setUnits(this.editCellContents);
+      break;
+      case 'name':
+      this.electronService.minsky.model.renameAllInstances(this.editRow.valueId, this.editCellContents);
+      this.ngOnInit(); // force rereading of item valueIds.
+      break;
+      case 'definition':
+      this.electronService.minsky.setDefinition(this.editRow.valueId, this.editCellContents);
+      this.editRow.definition='\\text{'+this.editCellContents+'}';
+      this.editRow.udfDefinition=this.editCellContents;
+      break;
+    }
+    this.editRow=null;
   }
   
 }
