@@ -1122,7 +1122,7 @@ export class ContextMenuManager {
         }
       }));
     }
-    const flows=godley.table.getVariables();
+    const flows=await godley.table.getVariables();
     var flowMenu=new Menu();
     for (let i=0; i<flows.length; ++i)
       flowMenu.append(new MenuItem({
