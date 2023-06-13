@@ -268,6 +268,8 @@ int main()
   api.addSubclass<IntOp,Item>();
   api.addSubclass<Lock,Item>();
   api.addSubclass<OperationBase,Item>();
+  api.addSubclass<PhillipsFlow,Item>();
+  api.addSubclass<PhillipsStock,Item>();
   api.addSubclass<PlotWidget,Item>();
   api.addSubclass<Ravel,Item>();
   api.addSubclass<Sheet,Item>();
@@ -299,6 +301,9 @@ int main()
   // these need to be declared in a specific order
   vector<string> exportFirst{"Item","OperationBase","VariableBase"};
   for (auto& i: exportFirst) exportClass(i,api[i]);
+
+  cout << "class minsky__Variable<T> extends VariableBase {}\n";
+  cout << "class minsky__VariableType__TypeT {}\n";
 
   // then export the rest
   for (auto& i: api)

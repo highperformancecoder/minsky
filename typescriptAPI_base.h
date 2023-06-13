@@ -108,6 +108,7 @@ namespace classdesc
       }
 
     std::replace(cppName.begin(), cppName.end(), ':', '_');
+    cppName.erase(std::remove(cppName.begin(), cppName.end(),' '), cppName.end());
     return cppName;
   }
 

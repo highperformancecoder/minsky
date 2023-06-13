@@ -108,7 +108,8 @@ namespace minsky
     
     for (auto& i: stocks)
       {
-        i.second.moveTo(100*cos(angle),100*sin(angle));
+        i.second.moveTo(100*cos(angle)+500,100*sin(angle)+500);
+        i.second.rotation(angle*180.0/M_PI);
         angle+=delta;
       }
   }

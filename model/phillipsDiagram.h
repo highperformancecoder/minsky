@@ -36,18 +36,28 @@ namespace minsky
     PhillipsFlow(const std::string& name, const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to):
       Wire(from,to), flow(name) {}
     static std::map<Units, double> maxFlow;
-    Variable<VariableType::flow> flow;
+    classdesc::Exclude<Variable<VariableType::flow>> flow;
     double coeficient=1;
     void draw(cairo_t*);
   };
+
+  using StockVar=Variable<VariableType::stock>;
+  
+  class PhillipsStock: public StockVar
+  {
+  public:
+    std::size_t numPorts() const override {return 2;}
+    PhillipsStock()=default;
+    PhillipsStock(const StockVar& x): Variable<VariableType::stock>(x) {addPorts();}
+   };
   
   class PhillipsDiagram: public RenderNativeWindow
   {
     bool redraw(int, int, int width, int height) override;
-    std::map<std::string, Variable<VariableType::stock>> stocks;
-    std::vector<PhillipsFlow> flows;
     CLASSDESC_ACCESS(PhillipsDiagram);
   public:
+    std::map<std::string, PhillipsStock> stocks;
+    std::vector<PhillipsFlow> flows;
     static std::map<Units, double> maxStock;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// populate phillips diagram from Godley tables in model
