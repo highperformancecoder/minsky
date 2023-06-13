@@ -45,11 +45,11 @@ namespace minsky
   {
     if  (!surface.get()) return false;
     auto cairo=surface->cairo();
-    for (auto& i: flows)
-      i.draw(cairo);
     for (auto& i: stocks)
       {
         CairoSave cs(cairo);
+        cairo_identity_matrix(cairo);
+        cairo_translate(cairo,i.second.x(), i.second.y());
         i.second.draw(cairo);
         double maxV=maxStock[i.second.units()];
         if (maxV==0) continue;
@@ -61,6 +61,8 @@ namespace minsky
           cairo_set_source_rgba(cairo,1,0,0,0.3);
         cairo_fill(cairo);
       }
+    for (auto& i: flows)
+      i.draw(cairo);
     return true;
   }
 

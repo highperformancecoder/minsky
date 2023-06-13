@@ -289,6 +289,7 @@ int main()
   cout << "class minsky__EventInterface__KeyPressArgs {}\n";
   cout << "class minsky__GodleyIcon__MoveCellArgs {}\n";
   cout << "class minsky__RenderNativeWindow__RenderFrameArgs {}\n";
+  cout << "class minsky__VariableType__TypeT {}\n";
   cout << "class civita__ITensor__Args {}\n";
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";
@@ -302,8 +303,7 @@ int main()
   vector<string> exportFirst{"Item","OperationBase","VariableBase"};
   for (auto& i: exportFirst) exportClass(i,api[i]);
 
-  cout << "class minsky__Variable<T> extends VariableBase {}\n";
-  cout << "class minsky__VariableType__TypeT {}\n";
+//  cout << "class minsky__Variable<T> extends VariableBase {}\n";
 
   // then export the rest
   for (auto& i: api)

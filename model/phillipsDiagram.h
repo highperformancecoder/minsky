@@ -29,6 +29,8 @@
 
 namespace minsky
 {
+  using FlowVar=Variable<VariableType::flow>;
+  using StockVar=Variable<VariableType::stock>;
   class PhillipsFlow: public Wire
   {
   public:
@@ -36,20 +38,24 @@ namespace minsky
     PhillipsFlow(const std::string& name, const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to):
       Wire(from,to), flow(name) {}
     static std::map<Units, double> maxFlow;
-    classdesc::Exclude<Variable<VariableType::flow>> flow;
+    FlowVar flow;
     double coeficient=1;
     void draw(cairo_t*);
   };
 
-  using StockVar=Variable<VariableType::stock>;
   
   class PhillipsStock: public StockVar
   {
   public:
-    std::size_t numPorts() const override {return 2;}
     PhillipsStock()=default;
-    PhillipsStock(const StockVar& x): Variable<VariableType::stock>(x) {addPorts();}
-   };
+    PhillipsStock(const StockVar& x): StockVar(x) {addPorts();}
+    std::size_t numPorts() const override {return 2;}
+    void draw(cairo_t* cairo) const override {
+      StockVar::draw(cairo);
+      // colocate input and output ports on the input side
+      m_ports[0]->moveTo(m_ports[1]->x(), m_ports[1]->y());
+    }
+  };
   
   class PhillipsDiagram: public RenderNativeWindow
   {
