@@ -34,10 +34,11 @@ namespace minsky
   {
     CairoSave cs(cairo);
     double value=this->value();
-    double maxV=maxFlow[units()];
+    double& maxV=maxFlow[units()];
+    if (abs(value)>maxV) maxV=abs(value);
     double lineWidth=1;
     if (maxV>0)
-      lineWidth=std::max(1.0, 30*abs(value)/maxV);
+      lineWidth=std::max(1.0, 10*abs(value)/maxV);
     cairo_set_line_width(cairo, lineWidth);
     Wire::draw(cairo,value>=0);
   }
@@ -124,7 +125,7 @@ namespace minsky
                     else
                       {
                         auto flow=flows.emplace(make_pair(d.name,s.name), PhillipsFlow(dest.ports(0), source.ports(1))).first;
-                        flow->second.addTerm(-s.coef*d.coef, i.first); 
+                        flow->second.addTerm(s.coef*d.coef, i.first); 
                       }
                   }
           }

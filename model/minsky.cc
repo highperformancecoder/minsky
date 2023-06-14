@@ -964,8 +964,18 @@ namespace minsky
     godleyTab.requestRedraw();
     plotTab.requestRedraw();
     phillipsDiagram.requestRedraw();
+    
+    // update maxValues
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
+    for (auto& v: variableValues)
+      {
+        if (v.second->type()==VariableType::stock)
+          {
+            PhillipsStock::maxStock[v.second->units]+=v.second->value();
+          }
+      }
+    for (auto& i: PhillipsStock::maxStock) i.second=abs(i.second);
     
     resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
   }
@@ -993,28 +1003,17 @@ namespace minsky
         lastRedraw=microsec_clock::local_time();
       }
 
-    // update maxValue
-    for (auto& v: variableValues)
-      {
-        // TODO - I don't think we'll need maxValue any more.
-        auto& val=maxValue[v.second->units];
-        if (abs(v.second->value())>val && v.second->rank()==0)
-          val=abs(v.second->value());
-        if (v.second->type()==VariableType::stock)
-          {
-            auto& val=PhillipsStock::maxStock[v.second->units];
-            if (abs(v.second->value())>val && v.second->rank()==0)
-              val=abs(v.second->value());
-          }
-        if (v.second->type()==VariableType::flow)
-          {
-            auto& val=PhillipsFlow::maxFlow[v.second->units];
-            if (abs(v.second->value())>val && v.second->rank()==0)
-              val=abs(v.second->value());
-          }
-      }
-    
-    return {t, deltaT()};
+//    for (auto& v: variableValues)
+//      {
+//        if (v.second->type()==VariableType::flow)
+//          {
+//            auto& val=PhillipsFlow::maxFlow[v.second->units];
+//            if (abs(v.second->value())>val && v.second->rank()==0)
+//              val=abs(v.second->value());
+//          }
+//      }
+
+        return {t, deltaT()};
   }
   
   string Minsky::diagnoseNonFinite() const
