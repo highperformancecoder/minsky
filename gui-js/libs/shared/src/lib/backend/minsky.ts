@@ -277,6 +277,7 @@ export class VariableBase extends Item {
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
 
+class minsky__Variable<T> extends VariableBase {}
 export class Bookmark extends CppClass {
   constructor(prefix: string){
     super(prefix);
@@ -1515,17 +1516,15 @@ export class Panopticon extends CppClass {
 
 export class PhillipsDiagram extends CppClass {
   backgroundColour: ecolab__cairo__Colour;
-  flows: Sequence<PhillipsFlow>;
+  flows: Map<Pair<string,string>,PhillipsFlow>;
   item: Item;
-  maxStock: Map<Units,number>;
   stocks: Map<string,PhillipsStock>;
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.flows=new Sequence<PhillipsFlow>(this.$prefix()+'/flows',PhillipsFlow);
+    this.flows=new Map<Pair<string,string>,PhillipsFlow>(this.$prefix()+'/flows',PhillipsFlow);
     this.item=new Item(this.$prefix()+'/item');
-    this.maxStock=new Map<Units,number>(this.$prefix()+'/maxStock');
     this.stocks=new Map<string,PhillipsStock>(this.$prefix()+'/stocks',PhillipsStock);
     this.wire=new Wire(this.$prefix()+'/wire');
   }
@@ -1561,20 +1560,18 @@ export class PhillipsDiagram extends CppClass {
 }
 
 export class PhillipsFlow extends Item {
-  flow: minsky__Variable<minsky__VariableType__TypeT>;
   maxFlow: Map<Units,number>;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
     else
       super(prefix.$prefix())
-    this.flow=new minsky__Variable<minsky__VariableType__TypeT>(this.$prefix()+'/flow');
     this.maxFlow=new Map<Units,number>(this.$prefix()+'/maxFlow');
   }
+  async addTerm(a1: number,a2: string): Promise<void> {return this.$callMethod('addTerm',a1,a2);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async attachedToDefiningVar(...args: Container<Item>[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
-  async coeficient(...args: number[]): Promise<number> {return this.$callMethod('coeficient',...args);}
   async coords(...args: any[]): Promise<number[]> {return this.$callMethod('coords',...args);}
   async deleteHandle(a1: number,a2: number): Promise<void> {return this.$callMethod('deleteHandle',a1,a2);}
   async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
@@ -1593,17 +1590,20 @@ export class PhillipsFlow extends Item {
   async straighten(): Promise<void> {return this.$callMethod('straighten');}
   async to(): Promise<object> {return this.$callMethod('to');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
-  async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
+  async units(...args: boolean[]): Promise<object> {return this.$callMethod('units',...args);}
   async updateBoundingBox(): Promise<void> {return this.$callMethod('updateBoundingBox');}
+  async value(): Promise<number> {return this.$callMethod('value');}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
 }
 
 export class PhillipsStock extends Item {
+  maxStock: Map<Units,number>;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
     else
       super(prefix.$prefix())
+    this.maxStock=new Map<Units,number>(this.$prefix()+'/maxStock');
   }
   async classType(): Promise<string> {return this.$callMethod('classType');}
   async clone(): Promise<minsky__Variable<minsky__VariableType__TypeT>> {return this.$callMethod('clone');}
@@ -2569,140 +2569,6 @@ export class ecolab__cairo__Colour extends CppClass {
   async b(...args: number[]): Promise<number> {return this.$callMethod('b',...args);}
   async g(...args: number[]): Promise<number> {return this.$callMethod('g',...args);}
   async r(...args: number[]): Promise<number> {return this.$callMethod('r',...args);}
-}
-
-export class minsky__Variable<minsky__VariableType__TypeT> extends CppClass {
-  bb: BoundingBox;
-  constructor(prefix: string){
-    super(prefix);
-    this.bb=new BoundingBox(this.$prefix()+'/bb');
-  }
-  async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
-  async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
-  async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
-  async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
-  async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
-  async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
-  async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
-  async bottom(): Promise<number> {return this.$callMethod('bottom');}
-  async checkUnits(): Promise<object> {return this.$callMethod('checkUnits');}
-  async classType(): Promise<string> {return this.$callMethod('classType');}
-  async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
-  async clone(): Promise<Item> {return this.$callMethod('clone');}
-  async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
-  async closestOutPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestOutPort',a1,a2);}
-  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
-  async corners(): Promise<object[]> {return this.$callMethod('corners');}
-  async create(a1: string): Promise<VariableBase> {return this.$callMethod('create',a1);}
-  async defined(): Promise<boolean> {return this.$callMethod('defined');}
-  async definition(): Promise<string> {return this.$callMethod('definition');}
-  async deleteAttachedWires(): Promise<void> {return this.$callMethod('deleteAttachedWires');}
-  async deleteCallback(...args: string[]): Promise<string> {return this.$callMethod('deleteCallback',...args);}
-  async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
-  async dimLabels(): Promise<string[]> {return this.$callMethod('dimLabels');}
-  async dims(): Promise<number[]> {return this.$callMethod('dims');}
-  async disableDelayedTooltip(): Promise<void> {return this.$callMethod('disableDelayedTooltip');}
-  async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
-  async displayTooltip(a1: minsky__dummy,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
-  async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
-  async drawPorts(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawPorts',a1);}
-  async drawResizeHandles(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
-  async drawSelected(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawSelected',a1);}
-  async dummyDraw(): Promise<void> {return this.$callMethod('dummyDraw');}
-  async enableSlider(...args: boolean[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
-  async engExp(): Promise<object> {return this.$callMethod('engExp');}
-  async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
-  async ensureValueExists(a1: VariableValue,a2: string): Promise<void> {return this.$callMethod('ensureValueExists',a1,a2);}
-  async exportAsCSV(a1: string): Promise<void> {return this.$callMethod('exportAsCSV',a1);}
-  async flip(): Promise<void> {return this.$callMethod('flip');}
-  async getDimLabelsPicked(): Promise<object> {return this.$callMethod('getDimLabelsPicked');}
-  async height(): Promise<number> {return this.$callMethod('height');}
-  async iHeight(...args: any[]): Promise<number> {return this.$callMethod('iHeight',...args);}
-  async iWidth(...args: any[]): Promise<number> {return this.$callMethod('iWidth',...args);}
-  async id(): Promise<string> {return this.$callMethod('id');}
-  async importFromCSV(a1: string,a2: DataSpecSchema): Promise<void> {return this.$callMethod('importFromCSV',a1,a2);}
-  async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
-  async init(...args: any[]): Promise<string> {return this.$callMethod('init',...args);}
-  async initSliderBounds(): Promise<void> {return this.$callMethod('initSliderBounds');}
-  async inputWired(): Promise<boolean> {return this.$callMethod('inputWired');}
-  async ioVar(): Promise<boolean> {return this.$callMethod('ioVar');}
-  async isStock(): Promise<boolean> {return this.$callMethod('isStock');}
-  async itemPtrFromThis(): Promise<object> {return this.$callMethod('itemPtrFromThis');}
-  async itemTabInitialised(...args: boolean[]): Promise<boolean> {return this.$callMethod('itemTabInitialised',...args);}
-  async itemTabX(...args: number[]): Promise<number> {return this.$callMethod('itemTabX',...args);}
-  async itemTabY(...args: number[]): Promise<number> {return this.$callMethod('itemTabY',...args);}
-  async json_pack(a1: classdesc__json_pack_t): Promise<void> {return this.$callMethod('json_pack',a1);}
-  async left(): Promise<number> {return this.$callMethod('left');}
-  async lhs(): Promise<boolean> {return this.$callMethod('lhs');}
-  async local(): Promise<boolean> {return this.$callMethod('local');}
-  async m_sf(...args: number[]): Promise<number> {return this.$callMethod('m_sf',...args);}
-  async m_x(...args: number[]): Promise<number> {return this.$callMethod('m_x',...args);}
-  async m_y(...args: number[]): Promise<number> {return this.$callMethod('m_y',...args);}
-  async mantissa(a1: EngNotation,a2: number): Promise<string> {return this.$callMethod('mantissa',a1,a2);}
-  async maxSliderSteps(): Promise<number> {return this.$callMethod('maxSliderSteps');}
-  async mouseFocus(...args: boolean[]): Promise<boolean> {return this.$callMethod('mouseFocus',...args);}
-  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
-  async name(...args: any[]): Promise<string> {return this.$callMethod('name',...args);}
-  async numPorts(): Promise<number> {return this.$callMethod('numPorts');}
-  async onBorder(...args: boolean[]): Promise<boolean> {return this.$callMethod('onBorder',...args);}
-  async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}
-  async onMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseDown',a1,a2);}
-  async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
-  async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
-  async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
-  async onResizeHandle(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onResizeHandle',a1,a2);}
-  async onResizeHandles(...args: boolean[]): Promise<boolean> {return this.$callMethod('onResizeHandles',...args);}
-  async portX(a1: number): Promise<number> {return this.$callMethod('portX',a1);}
-  async portY(a1: number): Promise<number> {return this.$callMethod('portY',a1);}
-  async ports(a1: number): Promise<object> {return this.$callMethod('ports',a1);}
-  async portsSize(): Promise<number> {return this.$callMethod('portsSize');}
-  async rawName(): Promise<string> {return this.$callMethod('rawName');}
-  async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
-  async resizeHandleCoords(): Promise<object> {return this.$callMethod('resizeHandleCoords');}
-  async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}
-  async retype(a1: string): Promise<void> {return this.$callMethod('retype',a1);}
-  async right(): Promise<number> {return this.$callMethod('right');}
-  async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
-  async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
-  async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
-  async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
-  async setDimLabelsPicked(a1: string,a2: string): Promise<object> {return this.$callMethod('setDimLabelsPicked',a1,a2);}
-  async setUnits(a1: string): Promise<void> {return this.$callMethod('setUnits',a1);}
-  async sliderBoundsSet(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderBoundsSet',...args);}
-  async sliderMax(...args: number[]): Promise<number> {return this.$callMethod('sliderMax',...args);}
-  async sliderMin(...args: number[]): Promise<number> {return this.$callMethod('sliderMin',...args);}
-  async sliderSet(a1: number): Promise<void> {return this.$callMethod('sliderSet',a1);}
-  async sliderStep(...args: number[]): Promise<number> {return this.$callMethod('sliderStep',...args);}
-  async sliderStepRel(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderStepRel',...args);}
-  async sliderVisible(): Promise<boolean> {return this.$callMethod('sliderVisible');}
-  async temp(): Promise<boolean> {return this.$callMethod('temp');}
-  async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
-  async toggleLocal(): Promise<void> {return this.$callMethod('toggleLocal');}
-  async toggleVarTabDisplay(): Promise<void> {return this.$callMethod('toggleVarTabDisplay');}
-  async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
-  async top(): Promise<number> {return this.$callMethod('top');}
-  async type(): Promise<string> {return this.$callMethod('type');}
-  async typeName(a1: number): Promise<string> {return this.$callMethod('typeName',a1);}
-  async units(...args: boolean[]): Promise<object> {return this.$callMethod('units',...args);}
-  async unitsStr(): Promise<string> {return this.$callMethod('unitsStr');}
-  async updateBoundingBox(): Promise<void> {return this.$callMethod('updateBoundingBox');}
-  async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
-  async vValue(): Promise<object> {return this.$callMethod('vValue');}
-  async value(...args: any[]): Promise<number> {return this.$callMethod('value',...args);}
-  async valueId(): Promise<string> {return this.$callMethod('valueId');}
-  async valueIdInCurrentScope(a1: string): Promise<string> {return this.$callMethod('valueIdInCurrentScope',a1);}
-  async varTabDisplay(...args: boolean[]): Promise<boolean> {return this.$callMethod('varTabDisplay',...args);}
-  async variableCast(): Promise<VariableBase> {return this.$callMethod('variableCast');}
-  async varsPassed(...args: number[]): Promise<number> {return this.$callMethod('varsPassed',...args);}
-  async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
-  async width(): Promise<number> {return this.$callMethod('width');}
-  async x(): Promise<number> {return this.$callMethod('x');}
-  async y(): Promise<number> {return this.$callMethod('y');}
-  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
 
 export class ravel__HandleState extends CppClass {

@@ -303,7 +303,7 @@ int main()
   vector<string> exportFirst{"Item","OperationBase","VariableBase"};
   for (auto& i: exportFirst) exportClass(i,api[i]);
 
-//  cout << "class minsky__Variable<T> extends VariableBase {}\n";
+  cout << "class minsky__Variable<T> extends VariableBase {}\n";
 
   // then export the rest
   for (auto& i: api)

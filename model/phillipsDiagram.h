@@ -31,15 +31,28 @@ namespace minsky
 {
   using FlowVar=Variable<VariableType::flow>;
   using StockVar=Variable<VariableType::stock>;
+
   class PhillipsFlow: public Wire
   {
+    std::vector<std::pair<double, FlowVar>> terms;
+    CLASSDESC_ACCESS(PhillipsFlow);
   public:
     PhillipsFlow()=default;
-    PhillipsFlow(const std::string& name, const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to):
-      Wire(from,to), flow(name) {}
+    PhillipsFlow(const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to):
+      Wire(from,to) {}
     static std::map<Units, double> maxFlow;
-    FlowVar flow;
-    double coeficient=1;
+
+    Units units() const {
+      if (terms.empty()) return {};
+      return terms.front().second.units();
+    }
+    void addTerm(double coef, const std::string& name) {terms.emplace_back(coef, name);}
+    double value() const {
+      double r=0;
+      for (auto& i: terms)
+        r+=i.first*i.second.value();
+      return r;
+    }
     void draw(cairo_t*);
   };
 
@@ -49,6 +62,7 @@ namespace minsky
   public:
     PhillipsStock()=default;
     PhillipsStock(const StockVar& x): StockVar(x) {addPorts();}
+    static std::map<Units, double> maxStock;
     std::size_t numPorts() const override {return 2;}
     void draw(cairo_t* cairo) const override;
   };
@@ -59,8 +73,7 @@ namespace minsky
     CLASSDESC_ACCESS(PhillipsDiagram);
   public:
     std::map<std::string, PhillipsStock> stocks;
-    std::vector<PhillipsFlow> flows;
-    static std::map<Units, double> maxStock;
+    std::map<std::pair<std::string,std::string>, PhillipsFlow> flows;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// populate phillips diagram from Godley tables in model
     void init() override;

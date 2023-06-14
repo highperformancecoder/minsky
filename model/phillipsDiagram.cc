@@ -28,16 +28,16 @@ using ecolab::cairo::CairoSave;
 namespace minsky
 {
   std::map<Units, double> PhillipsFlow::maxFlow;
-  std::map<Units, double> PhillipsDiagram::maxStock;
+  std::map<Units, double> PhillipsStock::maxStock;
   
   void PhillipsFlow::draw(cairo_t* cairo)
   {
     CairoSave cs(cairo);
-    double value=coeficient*flow.value();
-    double maxV=maxFlow[flow.units()];
+    double value=this->value();
+    double maxV=maxFlow[units()];
     double lineWidth=1;
     if (maxV>0)
-      lineWidth=std::max(1.0, 5*abs(value)/maxV);
+      lineWidth=std::max(1.0, 30*abs(value)/maxV);
     cairo_set_line_width(cairo, lineWidth);
     Wire::draw(cairo,value>=0);
   }
@@ -47,17 +47,13 @@ namespace minsky
     StockVar::draw(cairo);
     // colocate input and output ports on the input side
     m_ports[0]->moveTo(m_ports[1]->x(), m_ports[1]->y());
-    auto maxV=PhillipsDiagram::maxStock[units()];
+    auto maxV=maxStock[units()];
     if (maxV>0)
       {
         CairoSave cs(cairo);
-        //RenderVariable rv(*this,cairo);
         auto w=width()*zoomFactor(); 
         auto h=height()*zoomFactor();
-        //cairo_rotate(cairo,rotation() * M_PI / 180.0);
         auto f=value()/maxV;
-        //auto fracHeight=h*((f<1)? f:1);
-        //cairo_rectangle(cairo,-0.6*w,h,1.2*w,-fracHeight);
         if (f>=0)
           {
             cairo_set_source_rgba(cairo,0,0,1,0.3);
@@ -83,18 +79,9 @@ namespace minsky
         cairo_identity_matrix(cairo);
         cairo_translate(cairo,i.second.x(), i.second.y());
         i.second.draw(cairo);
-//        double maxV=maxStock[i.second.units()];
-//        if (maxV==0) continue;
-//        double value=i.second.value();
-//        cairo_rectangle(cairo,-0.5*i.second.width(),0.5*i.second.height(),i.second.width(),i.second.height()*value/maxV);
-//        if (value>=0)
-//          cairo_set_source_rgba(cairo,0,0,1,0.3);
-//        else
-//          cairo_set_source_rgba(cairo,1,0,0,0.3);
-//        cairo_fill(cairo);
       }
     for (auto& i: flows)
-      i.draw(cairo);
+      i.second.draw(cairo);
     return true;
   }
 
@@ -127,10 +114,18 @@ namespace minsky
                   {
                     auto& source=stocks[g->valueId(s.name)];
                     auto& dest=stocks[g->valueId(d.name)];
-                    flows.emplace_back(i.first,source.ports(0), dest.ports(1));
-                    flows.back().flow.group=g->group;
-                    flows.back().coeficient=s.coef*d.coef;
-                    flows.back().tooltip=g->table.cell(r,0);
+                    auto key=make_pair(s.name,d.name);
+                    bool swapped=false;
+                    if (s.name<d.name)// canonicalise flow by inserting in reverse direction
+                      {
+                        auto flow=flows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
+                        flow->second.addTerm(s.coef*d.coef, i.first); 
+                      }
+                    else
+                      {
+                        auto flow=flows.emplace(make_pair(d.name,s.name), PhillipsFlow(dest.ports(0), source.ports(1))).first;
+                        flow->second.addTerm(-s.coef*d.coef, i.first); 
+                      }
                   }
           }
         }
@@ -146,6 +141,7 @@ namespace minsky
         i.second.rotation(angle*180.0/M_PI);
         angle+=delta;
       }
+
   }
 
   void PhillipsDiagram::updateMaxValues()
