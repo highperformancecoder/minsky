@@ -83,7 +83,7 @@ namespace minsky
                 FlowCoef fc(g->table.cell(r,c));
                 if (fc.coef)
                   {
-                    if (fc.coef>0 && !g->table.signConventionReversed(c) || g->table.signConventionReversed(c))
+                    if (fc.coef>0 && !g->table.signConventionReversed(c) || fc.coef<0 && g->table.signConventionReversed(c))
                       sources[fc.name].emplace_back(fc.coef,g->table.cell(0,c));
                     else 
                       destinations[fc.name].emplace_back(fc.coef,g->table.cell(0,c));
