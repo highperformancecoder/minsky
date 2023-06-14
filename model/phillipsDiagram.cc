@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairoItems.h"
 #include "phillipsDiagram.h"
 #include "phillipsDiagram.rcd"
 #include "phillipsDiagram.xcd"
@@ -41,6 +42,37 @@ namespace minsky
     Wire::draw(cairo,value>=0);
   }
 
+  void PhillipsStock::draw(cairo_t* cairo) const
+  {
+    StockVar::draw(cairo);
+    // colocate input and output ports on the input side
+    m_ports[0]->moveTo(m_ports[1]->x(), m_ports[1]->y());
+    auto maxV=PhillipsDiagram::maxStock[units()];
+    if (maxV>0)
+      {
+        CairoSave cs(cairo);
+        //RenderVariable rv(*this,cairo);
+        auto w=width()*zoomFactor(); 
+        auto h=height()*zoomFactor();
+        //cairo_rotate(cairo,rotation() * M_PI / 180.0);
+        auto f=value()/maxV;
+        //auto fracHeight=h*((f<1)? f:1);
+        //cairo_rectangle(cairo,-0.6*w,h,1.2*w,-fracHeight);
+        if (f>=0)
+          {
+            cairo_set_source_rgba(cairo,0,0,1,0.3);
+            cairo_rectangle(cairo,-0.6*w,0.5*h,1.2*w,-f*h);
+          }
+        else
+          {
+            cairo_set_source_rgba(cairo,1,0,0,0.3);
+            cairo_rectangle(cairo,-0.6*w,-0.5*h,1.2*w,-f*h);
+          }
+        cairo_fill(cairo);
+      }
+  }
+
+  
   bool PhillipsDiagram::redraw(int, int, int width, int height)
   {
     if  (!surface.get()) return false;
@@ -51,15 +83,15 @@ namespace minsky
         cairo_identity_matrix(cairo);
         cairo_translate(cairo,i.second.x(), i.second.y());
         i.second.draw(cairo);
-        double maxV=maxStock[i.second.units()];
-        if (maxV==0) continue;
-        double value=i.second.value();
-        cairo_rectangle(cairo,-0.5*i.second.width(),0.5*i.second.height(),i.second.width(),i.second.height()*value/maxV);
-        if (value>=0)
-          cairo_set_source_rgba(cairo,0,0,1,0.3);
-        else
-          cairo_set_source_rgba(cairo,1,0,0,0.3);
-        cairo_fill(cairo);
+//        double maxV=maxStock[i.second.units()];
+//        if (maxV==0) continue;
+//        double value=i.second.value();
+//        cairo_rectangle(cairo,-0.5*i.second.width(),0.5*i.second.height(),i.second.width(),i.second.height()*value/maxV);
+//        if (value>=0)
+//          cairo_set_source_rgba(cairo,0,0,1,0.3);
+//        else
+//          cairo_set_source_rgba(cairo,1,0,0,0.3);
+//        cairo_fill(cairo);
       }
     for (auto& i: flows)
       i.draw(cairo);

@@ -961,7 +961,8 @@ namespace minsky
     canvas.requestRedraw();
     godleyTab.requestRedraw();
     plotTab.requestRedraw();
-
+    phillipsDiagram.requestRedraw();
+    
     resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
   }
 
@@ -984,15 +985,23 @@ namespace minsky
         canvas.requestRedraw();
         godleyTab.requestRedraw();
         plotTab.requestRedraw();
+        phillipsDiagram.requestRedraw();
         lastRedraw=microsec_clock::local_time();
       }
 
     // update maxValue
     for (auto& v: variableValues)
       {
+        // TODO - I don't think we'll need maxValue any more.
         auto& val=maxValue[v.second->units];
         if (abs(v.second->value())>val && v.second->rank()==0)
           val=abs(v.second->value());
+        if (v.second->type()==VariableType::stock)
+          {
+            auto& val=PhillipsDiagram::maxStock[v.second->units];
+            if (abs(v.second->value())>val && v.second->rank()==0)
+              val=abs(v.second->value());
+          }
       }
     
     return {t, deltaT()};
