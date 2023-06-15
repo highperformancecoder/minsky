@@ -141,10 +141,18 @@ namespace minsky
 
         // now layout the diagram
     double angle=0, delta=2*M_PI/stocks.size();
+
+    if (stocks.empty()) return;
+
+    auto h=stocks.begin()->second.height();
+    auto maxW=stocks.begin()->second.width();
+    for (auto& i: stocks) maxW=max(maxW,i.second.width());
+    // calculate radius to ensure vars do not overlap
+    auto r=0.5*maxW+h/delta;
     
     for (auto& i: stocks)
       {
-        i.second.moveTo(100*cos(angle)+150,100*sin(angle)+150);
+        i.second.moveTo(r*(cos(angle)+1)+maxW+50,r*(sin(angle)+1)+maxW+50);
         i.second.rotation(angle*180.0/M_PI);
         angle+=delta;
       }
