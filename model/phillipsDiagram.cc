@@ -38,7 +38,13 @@ namespace minsky
     if (abs(value)>maxV) maxV=abs(value);
     double lineWidth=1;
     if (maxV>0)
-      lineWidth=std::max(1.0, 10*abs(value)/maxV);
+      {
+        double lw=5*abs(value)/maxV;
+        lineWidth=std::max(1.0, lw);
+        static const double dashLength=3;
+        if (lw<1)
+          cairo_set_dash(cairo,&dashLength,1,0);
+      }
     cairo_set_line_width(cairo, lineWidth);
     Wire::draw(cairo,value>=0);
   }
@@ -120,7 +126,7 @@ namespace minsky
                     if (s.name<d.name)// canonicalise flow by inserting in reverse direction
                       {
                         auto flow=flows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
-                        flow->second.addTerm(s.coef*d.coef, i.first); 
+                        flow->second.addTerm(-s.coef*d.coef, i.first); 
                       }
                     else
                       {
@@ -138,7 +144,7 @@ namespace minsky
     
     for (auto& i: stocks)
       {
-        i.second.moveTo(100*cos(angle)+500,100*sin(angle)+500);
+        i.second.moveTo(100*cos(angle)+150,100*sin(angle)+150);
         i.second.rotation(angle*180.0/M_PI);
         angle+=delta;
       }

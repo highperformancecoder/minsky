@@ -109,10 +109,10 @@ namespace minsky
   {
     if (attachedToDefiningVar()) return false;	  
     auto f=from(), t=to();
-    assert(f->item().group.lock() && t->item().group.lock());
+    auto fgroup=f->item().group.lock(), tgroup=t->item().group.lock();
     return f && t && 
-      (f->item().group.lock()->displayContents() ||
-       t->item().group.lock()->displayContents());
+      (!fgroup || fgroup->displayContents() ||
+       !tgroup || tgroup->displayContents());
   }
 
   void Wire::moveToPorts(const shared_ptr<Port>& from, const shared_ptr<Port>& to)
