@@ -148,7 +148,7 @@ namespace minsky
     auto maxW=stocks.begin()->second.width();
     for (auto& i: stocks) maxW=max(maxW,i.second.width());
     // calculate radius to ensure vars do not overlap
-    auto r=0.5*maxW+h/delta;
+    auto r=h/delta + 0.5*maxW;
     
     for (auto& i: stocks)
       {

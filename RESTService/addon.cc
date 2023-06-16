@@ -216,7 +216,7 @@ namespace minsky
               lock_guard<mutex> lock(cmdMutex);
               if (!minskyCommands.empty())
                 {
-                  command=move(minskyCommands.front());
+                  command=std::move(minskyCommands.front());
                   minskyCommands.pop_front();
                 }
             }

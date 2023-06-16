@@ -61,7 +61,12 @@ namespace minsky
   {
   public:
     PhillipsStock()=default;
-    PhillipsStock(const StockVar& x): StockVar(x) {group.reset(); addPorts();}
+    PhillipsStock(const StockVar& x): StockVar(x) {
+      group.reset();
+      addPorts();
+      rotation(0);
+      updateBoundingBox();
+    }
     static std::map<Units, double> maxStock;
     std::size_t numPorts() const override {return 2;}
     void draw(cairo_t* cairo) const override;
