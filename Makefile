@@ -47,7 +47,7 @@ endif
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc CPLUSPLUS=$(CPLUSPLUS)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc CPLUSPLUS=$(CPLUSPLUS) GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
 build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)) 
 $(warning $(build_RavelCAPI))
@@ -504,7 +504,7 @@ js-dist:
 
 lcov:
 	$(MAKE) clean
-	-$(MAKE) GCOV=1 tests
+	-$(MAKE) GCC=1 GCOV=1 tests
 	lcov -i -c -d . --no-external -o lcovi.info
 # ensure schema export code is exercised
 	-$(MAKE) GCOV=1 minsky.xsd
