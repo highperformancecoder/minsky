@@ -9,7 +9,7 @@ endif
 
 VPATH= .. ../schema ../model ../engine ../RESTService ../RavelCAPI/civita ../RavelCAPI $(ECOLAB_HOME)/include
 
-UNITTESTOBJS=main.o testCSVParser.o testDerivative.o testExpressionWalker.o testGrid.o testItemTab.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testXVector.o ticket-1461.o
+UNITTESTOBJS=main.o testCSVParser.o testDerivative.o testExpressionWalker.o testGrid.o testItemTab.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testPannableTab.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testXVector.o ticket-1461.o
 
 MINSKYOBJS=$(filter-out ../tclmain.o ../minskyTCL.o ../RESTService.o ../httpd.o ../addon.o ../dummy-addon.o ../itemTemplateInstantiations.o ../typescriptAPI.o,$(wildcard ../*.o)) localMinsky.o
 FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI $(FLAGS)
