@@ -3,29 +3,34 @@
   <minskyVersion>3.1.0-rc.7</minskyVersion>
   <wires>
    <Wire>
-    <id>74</id>
+    <id>78</id>
     <from>56</from>
     <to>54</to>
    </Wire>
    <Wire>
-    <id>75</id>
-    <from>58</from>
-    <to>62</to>
+    <id>79</id>
+    <from>60</from>
+    <to>58</to>
    </Wire>
    <Wire>
-    <id>76</id>
-    <from>61</from>
+    <id>80</id>
+    <from>62</from>
     <to>66</to>
    </Wire>
    <Wire>
-    <id>77</id>
+    <id>81</id>
     <from>65</from>
-    <to>69</to>
+    <to>70</to>
    </Wire>
    <Wire>
-    <id>78</id>
-    <from>71</from>
-    <to>63</to>
+    <id>82</id>
+    <from>69</from>
+    <to>73</to>
+   </Wire>
+   <Wire>
+    <id>83</id>
+    <from>75</from>
+    <to>67</to>
    </Wire>
   </wires>
   <items>
@@ -665,7 +670,7 @@
     </ports>
     <bookmark>false</bookmark>
     <name>iota</name>
-    <init>iota(3,3)</init>
+    <init>iota(10,2)</init>
     <slider>
      <stepRel>false</stepRel>
      <min>-1</min>
@@ -700,7 +705,74 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>60</id>
+    <id>59</id>
+    <type>Sheet</type>
+    <x>1108</x>
+    <y>340</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>100</width>
+    <height>100</height>
+    <ports>
+     <int>58</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <showSlice>head</showSlice>
+   </Item>
+   <Item>
+    <id>61</id>
+    <type>Variable:parameter</type>
+    <x>946</x>
+    <y>338</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>60</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <name>scalar</name>
+    <init>10</init>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>100</max>
+     <step>0.0101</step>
+    </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
+   </Item>
+   <Item>
+    <id>64</id>
     <type>Variable:flow</type>
     <x>-41</x>
     <y>0</y>
@@ -711,8 +783,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>58</int>
-     <int>59</int>
+     <int>62</int>
+     <int>63</int>
     </ports>
     <bookmark>false</bookmark>
     <name>i1</name>
@@ -751,7 +823,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>64</id>
+    <id>68</id>
     <type>Operation:add</type>
     <x>-21.2554</x>
     <y>1.30011</y>
@@ -762,15 +834,15 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>61</int>
-     <int>62</int>
-     <int>63</int>
+     <int>65</int>
+     <int>66</int>
+     <int>67</int>
     </ports>
     <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>67</id>
+    <id>71</id>
     <type>Operation:exp</type>
     <x>18.7446</x>
     <y>1.30011</y>
@@ -781,14 +853,14 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>65</int>
-     <int>66</int>
+     <int>69</int>
+     <int>70</int>
     </ports>
     <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>70</id>
+    <id>74</id>
     <type>Variable:flow</type>
     <x>36</x>
     <y>0</y>
@@ -799,8 +871,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>68</int>
-     <int>69</int>
+     <int>72</int>
+     <int>73</int>
     </ports>
     <bookmark>false</bookmark>
     <name>out</name>
@@ -839,7 +911,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>73</id>
+    <id>77</id>
     <type>Variable:flow</type>
     <x>-41</x>
     <y>-24</y>
@@ -850,8 +922,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>71</int>
-     <int>72</int>
+     <int>75</int>
+     <int>76</int>
     </ports>
     <bookmark>false</bookmark>
     <name>i2</name>
@@ -892,7 +964,7 @@
   </items>
   <groups>
    <Group>
-    <id>79</id>
+    <id>84</id>
     <type>Group</type>
     <x>268.496</x>
     <y>321.861</y>
@@ -906,19 +978,19 @@
     </ports>
     <bookmark>false</bookmark>
     <items>
-     <int>60</int>
      <int>64</int>
-     <int>67</int>
-     <int>70</int>
-     <int>73</int>
+     <int>68</int>
+     <int>71</int>
+     <int>74</int>
+     <int>77</int>
     </items>
     <displayPlot>-1</displayPlot>
     <inVariables>
-     <int>60</int>
-     <int>73</int>
+     <int>64</int>
+     <int>77</int>
     </inVariables>
     <outVariables>
-     <int>70</int>
+     <int>74</int>
     </outVariables>
    </Group>
   </groups>
