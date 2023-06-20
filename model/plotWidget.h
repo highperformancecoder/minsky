@@ -126,6 +126,10 @@ namespace minsky
     /// @{ handle mouse events
     void mouseDown(float,float) override;
     void mouseMove(float,float) override;
+    void mouseUp(float x,float y) override {
+      mouseMove(x,y);
+      ct=ClickType::outside;
+    }
     /// @}
 
     /// export the plotted data as a CSV file
