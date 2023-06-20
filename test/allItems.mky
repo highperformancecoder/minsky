@@ -1,26 +1,31 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-beta.25</minskyVersion>
+  <minskyVersion>3.1.0-rc.7</minskyVersion>
   <wires>
    <Wire>
-    <id>70</id>
-    <from>54</from>
-    <to>58</to>
+    <id>74</id>
+    <from>56</from>
+    <to>54</to>
    </Wire>
    <Wire>
-    <id>71</id>
-    <from>57</from>
+    <id>75</id>
+    <from>58</from>
     <to>62</to>
    </Wire>
    <Wire>
-    <id>72</id>
+    <id>76</id>
     <from>61</from>
-    <to>65</to>
+    <to>66</to>
    </Wire>
    <Wire>
-    <id>73</id>
-    <from>67</from>
-    <to>59</to>
+    <id>77</id>
+    <from>65</from>
+    <to>69</to>
+   </Wire>
+   <Wire>
+    <id>78</id>
+    <from>71</from>
+    <to>63</to>
    </Wire>
   </wires>
   <items>
@@ -30,23 +35,33 @@
     <type>Item</type>
     <x>0</x>
     <y>0</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>4</id>
     <type>IntOp</type>
     <x>290</x>
     <y>48.0001</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>1</int>
      <int>2</int>
      <int>3</int>
     </ports>
+    <bookmark>false</bookmark>
     <intVar>18</intVar>
     <arg>1</arg>
    </Item>
@@ -55,25 +70,35 @@
     <type>Operation:add</type>
     <x>455</x>
     <y>0</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>30</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>5</int>
      <int>6</int>
      <int>7</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
     <id>10</id>
     <type>Variable:stock</type>
-    <x>-1.1341</x>
-    <y>217.5</y>
+    <x>1.0659</x>
+    <y>215.773</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>9</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>stock1</name>
     <init>0</init>
     <slider>
@@ -82,18 +107,49 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>13</id>
     <type>Variable:flow</type>
-    <x>-48.149</x>
-    <y>59.6</y>
+    <x>-45.6945</x>
+    <y>57.6</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>11</int>
      <int>12</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>flow1</name>
     <init>0</init>
     <slider>
@@ -102,18 +158,49 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>16</id>
     <type>Variable:flow</type>
     <x>262</x>
     <y>178</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>30</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>14</int>
      <int>15</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>aaa</name>
     <init>0</init>
     <slider>
@@ -122,18 +209,49 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>18</id>
     <type>Variable:integral</type>
     <x>337</x>
     <y>48.0001</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>1</int>
      <int>17</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>int1</name>
     <init>0</init>
     <slider>
@@ -142,14 +260,44 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>41</id>
     <type>PlotWidget</type>
     <x>610.999</x>
     <y>125</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>150</width>
+    <height>150</height>
     <ports>
      <int>19</int>
      <int>20</int>
@@ -174,16 +322,21 @@
      <int>39</int>
      <int>40</int>
     </ports>
-    <width>150</width>
-    <height>150</height>
+    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
+    <plotTabDisplay>true</plotTabDisplay>
     <plotType>line</plotType>
     <nxTicks>10</nxTicks>
     <nyTicks>10</nyTicks>
     <xtickAngle>-45</xtickAngle>
     <exp_threshold>4</exp_threshold>
+    <legendGeometry>
+     <legendLeft>0.1</legendLeft>
+     <legendTop>0.95</legendTop>
+     <legendFontSz>0.03</legendFontSz>
+    </legendGeometry>
     <palette>
      <LineStyle>
       <colour>
@@ -194,8 +347,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -204,8 +355,6 @@
        <b>0</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -218,8 +367,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -230,8 +377,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -240,8 +385,6 @@
        <b>1</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -254,8 +397,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -264,8 +405,6 @@
        <b>0</b>
        <a>1</a>
       </colour>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
       <width>1</width>
       <dashStyle>solid</dashStyle>
      </LineStyle>
@@ -278,8 +417,6 @@
       </colour>
       <width>1</width>
       <dashStyle>solid</dashStyle>
-      <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
    </Item>
@@ -288,28 +425,36 @@
     <type>SwitchIcon</type>
     <x>468</x>
     <y>179</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>17.6</width>
+    <height>17.6</height>
     <ports>
      <int>42</int>
      <int>43</int>
      <int>44</int>
      <int>45</int>
     </ports>
+    <bookmark>false</bookmark>
    </Item>
    <Item>
     <id>47</id>
     <type>GodleyIcon</type>
     <x>44</x>
     <y>123</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>177.298</width>
+    <height>186</height>
     <ports>
      <int>12</int>
      <int>9</int>
     </ports>
-    <width>177.298</width>
-    <height>186</height>
+    <bookmark>false</bookmark>
     <name>title</name>
     <data>
      <vector>
@@ -346,14 +491,17 @@
     <type>GodleyIcon</type>
     <x>597.812</x>
     <y>313.25</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>402.375</width>
+    <height>125.5</height>
     <ports>
      <int>49</int>
      <int>50</int>
     </ports>
-    <width>402.375</width>
-    <height>125.5</height>
+    <bookmark>false</bookmark>
     <data>
      <vector>
       <string></string>
@@ -387,13 +535,18 @@
    <Item>
     <id>51</id>
     <type>Variable:stock</type>
-    <x>416.744</x>
-    <y>337</y>
+    <x>416.743</x>
+    <y>336.909</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>50</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>stock2</name>
     <init>0</init>
     <slider>
@@ -402,18 +555,49 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
     <id>53</id>
     <type>Variable:flow</type>
-    <x>429.625</x>
+    <x>429.352</x>
     <y>294.425</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>52</int>
      <int>49</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>flow2</name>
     <slider>
      <stepRel>false</stepRel>
@@ -421,18 +605,116 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
-    <id>56</id>
+    <id>55</id>
+    <type>Sheet</type>
+    <x>980.5</x>
+    <y>125.5</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1.02976</scaleFactor>
+    <rotation>0</rotation>
+    <width>357</width>
+    <height>173</height>
+    <ports>
+     <int>54</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <showSlice>head</showSlice>
+   </Item>
+   <Item>
+    <id>57</id>
+    <type>Variable:parameter</type>
+    <x>752</x>
+    <y>101</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>56</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <name>iota</name>
+    <init>iota(3,3)</init>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.0002</step>
+    </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
+   </Item>
+   <Item>
+    <id>60</id>
     <type>Variable:flow</type>
     <x>-41</x>
     <y>0</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
-     <int>54</int>
-     <int>55</int>
+     <int>58</int>
+     <int>59</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>i1</name>
     <init>0</init>
     <slider>
@@ -441,45 +723,86 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
-    <id>60</id>
+    <id>64</id>
     <type>Operation:add</type>
     <x>-21.2554</x>
     <y>1.30011</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
-    <ports>
-     <int>57</int>
-     <int>58</int>
-     <int>59</int>
-    </ports>
-    <arg>1</arg>
-   </Item>
-   <Item>
-    <id>63</id>
-    <type>Operation:exp</type>
-    <x>18.7446</x>
-    <y>1.30011</y>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
      <int>61</int>
      <int>62</int>
+     <int>63</int>
     </ports>
+    <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>66</id>
+    <id>67</id>
+    <type>Operation:exp</type>
+    <x>18.7446</x>
+    <y>1.30011</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>65</int>
+     <int>66</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>70</id>
     <type>Variable:flow</type>
     <x>36</x>
     <y>0</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
-     <int>64</int>
-     <int>65</int>
+     <int>68</int>
+     <int>69</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>out</name>
     <init>0</init>
     <slider>
@@ -488,18 +811,49 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
    <Item>
-    <id>69</id>
+    <id>73</id>
     <type>Variable:flow</type>
     <x>-41</x>
     <y>-24</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
     <ports>
-     <int>67</int>
-     <int>68</int>
+     <int>71</int>
+     <int>72</int>
     </ports>
+    <bookmark>false</bookmark>
     <name>i2</name>
     <init>0</init>
     <slider>
@@ -508,36 +862,68 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <csvDataSpec>
+     <dataRowOffset>0</dataRowOffset>
+     <dataColOffset>0</dataColOffset>
+     <separator>,</separator>
+     <quote>&quot;</quote>
+     <escape>\</escape>
+     <decSeparator>.</decSeparator>
+     <mergeDelimiters>false</mergeDelimiters>
+     <columnar>false</columnar>
+     <missingValue>NaN</missingValue>
+     <headerRow>0</headerRow>
+     <horizontalDimName>?</horizontalDimName>
+     <horizontalDimension>
+      <type>string</type>
+      <units></units>
+     </horizontalDimension>
+     <duplicateKeyAction>throwException</duplicateKeyAction>
+     <dimensionCols>
+     </dimensionCols>
+     <dataCols>
+     </dataCols>
+     <dimensions>
+     </dimensions>
+     <dimensionNames>
+     </dimensionNames>
+    </csvDataSpec>
    </Item>
   </items>
   <groups>
    <Group>
-    <id>74</id>
+    <id>79</id>
     <type>Group</type>
     <x>268.496</x>
     <y>321.861</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
-    <ports>
-    </ports>
     <width>100</width>
     <height>100</height>
+    <ports>
+    </ports>
+    <bookmark>false</bookmark>
     <items>
-     <int>56</int>
      <int>60</int>
-     <int>63</int>
-     <int>66</int>
-     <int>69</int>
+     <int>64</int>
+     <int>67</int>
+     <int>70</int>
+     <int>73</int>
     </items>
+    <displayPlot>-1</displayPlot>
     <inVariables>
-     <int>56</int>
-     <int>69</int>
+     <int>60</int>
+     <int>73</int>
     </inVariables>
     <outVariables>
-     <int>66</int>
+     <int>70</int>
     </outVariables>
    </Group>
   </groups>
+  <lockGroups>
+  </lockGroups>
   <rungeKutta>
    <stepMin>0</stepMin>
    <stepMax>0.01</stepMax>
@@ -548,6 +934,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
+   <tmax>INF</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>
