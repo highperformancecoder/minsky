@@ -1738,7 +1738,6 @@ export class PlotWidget extends Item {
   pack(a1: classdesc__pack_t): void {return this.callMethod('pack',a1);}
   percent(...args: boolean[]): boolean {return this.callMethod('percent',...args);}
   plot(a1: object): void {return this.callMethod('plot',a1);}
-  plotOnTab(): boolean {return this.callMethod('plotOnTab');}
   plotTabDisplay(...args: boolean[]): boolean {return this.callMethod('plotTabDisplay',...args);}
   plotType(...args: string[]): string {return this.callMethod('plotType',...args);}
   plotWidgetCast(): PlotWidget {return this.callMethod('plotWidgetCast');}
