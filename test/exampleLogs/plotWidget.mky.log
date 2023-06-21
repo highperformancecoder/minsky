@@ -1,11 +1,11 @@
 nsteps 10
-0.03 
-0.1 
-0.17 
-0.24 
-0.31 
-0.38 
-0.45 
-0.52 
-0.59 
-0.66 
+0.03 {:cos} 0.99955 {:sin} 0.0299955 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.1 {:cos} 0.995004 {:sin} 0.0998334 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.17 {:cos} 0.985585 {:sin} 0.169182 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.24 {:cos} 0.971338 {:sin} 0.237703 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.31 {:cos} 0.952334 {:sin} 0.305059 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.38 {:cos} 0.928665 {:sin} 0.37092 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.45 {:cos} 0.900447 {:sin} 0.434966 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.52 {:cos} 0.867819 {:sin} 0.49688 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.59 {:cos} 0.830941 {:sin} 0.556361 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+0.66 {:cos} 0.789992 {:sin} 0.613117 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
