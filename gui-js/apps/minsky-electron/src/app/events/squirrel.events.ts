@@ -7,7 +7,6 @@
 import { spawn } from 'child_process';
 import { app } from 'electron';
 import { basename, join, resolve } from 'path';
-import { environment } from '@minsky/shared';
 
 export default class SquirrelEvents {
   private static isAppFirstRun = false;
@@ -21,7 +20,7 @@ export default class SquirrelEvents {
   private static exeName = resolve(
     join(
       SquirrelEvents.appRootFolder,
-      'app-' + environment.version,
+      'app-foobar',
       basename(process.execPath)
     )
   );
