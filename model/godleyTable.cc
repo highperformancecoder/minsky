@@ -133,7 +133,7 @@ void GodleyTable::moveCol(int col, int n)
 void GodleyTable::balanceEquity(int col)
 {
   if (_assetClass(col)!=equity) return;
-  for (int r=1; r<rows(); ++r)
+  for (unsigned r=1; r<rows(); ++r)
     {
       cell(r,col)="";
       auto sum=rowSumAsMap(r);
