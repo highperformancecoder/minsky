@@ -110,7 +110,6 @@ namespace minsky
     
     bool plotTabDisplay=true; // ensure plots persisted on plot tab, but can optionally be made hidden. for ticket 1298
     void togglePlotTabDisplay() {plotTabDisplay=!plotTabDisplay;}     
-    //bool plotOnTab() const {return plotTabDisplay;}     
     
     /// add this as a display plot to its group
     void makeDisplayPlot();
