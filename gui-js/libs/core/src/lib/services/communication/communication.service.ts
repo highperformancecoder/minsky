@@ -448,7 +448,6 @@ export class CommunicationService {
   onMouseWheelZoom = async (event: WheelEvent) => {
     event.preventDefault();
     const { deltaY } = event;
-    this.electronService.log(`deltaY=${deltaY}`);
     const zoomIn = deltaY < 0;
     const offset = this.windowUtilityService.getMinskyCanvasOffset();
 
