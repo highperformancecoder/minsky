@@ -119,8 +119,10 @@ export function loadResources()
         ? __dirname+'/assets'
         : process.resourcesPath+'/assets';
 
+  backend('/minsky/pushFlags');
   backend('/minsky/setGodleyIconResource',assetsDir+'/godley.svg');
   backend('/minsky/setGroupIconResource',assetsDir+'/group.svg');
   backend('/minsky/setRavelIconResource',assetsDir+'/ravel-logo.svg');
   backend('/minsky/setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
+  backend('/minsky/popFlags');
 }
