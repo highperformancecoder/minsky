@@ -93,11 +93,13 @@ namespace minsky
     /// if binary op, then the union of dimension names is returned
     std::vector<std::string> dimensions() const;
     Units units(bool check=false) const override;
-
+    
   protected:
 
     friend struct EvalOpBase;
     friend struct SchemaHelper;
+  private:
+    Units unitsBinOpCase(bool check) const;
   };
 
   

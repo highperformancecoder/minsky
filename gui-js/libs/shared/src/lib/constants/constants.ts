@@ -26,7 +26,7 @@ export const events = {
   CURSOR_BUSY: 'cursor-busy',
   DISPLAY_MOUSE_COORDINATES: 'display-mouse-coordinates',
   DOUBLE_CLICK: 'double-click',
-  GET_APP_VERSION: 'get-app-version',
+//  GET_APP_VERSION: 'get-app-version',
   GET_CURRENT_WINDOW: 'get-current-window',
   GET_PREFERENCES: 'get-preferences',
   GODLEY_POPUP_REFRESH: 'godley-popup-refresh',

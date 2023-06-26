@@ -460,6 +460,79 @@ namespace minsky
     };
   }
 
+  Units OperationBase::unitsBinOpCase(bool check) const
+  {
+    switch (type())
+      {
+        // these binops need to have dimensionless units
+      case log: case and_: case or_: case polygamma: case userFunction:
+
+        if (check && !m_ports[1]->units(check).empty())
+          throw_error("function inputs not dimensionless");
+        return {};
+      case pow:
+        {
+          auto r=m_ports[1]->units(check);
+
+          if (!r.empty())
+            {
+              if (!m_ports[2]->wires().empty())
+                if (auto v=dynamic_cast<VarConstant*>(&m_ports[2]->wires()[0]->from()->item()))
+                  if (fracPart(v->value())==0)
+                    {
+                      for (auto& i: r) i.second*=v->value();
+                      r.normalise();
+                      return r;
+                    }
+              if (check)
+                throw_error("dimensioned pow only possible if exponent is a constant integer");
+            }
+          return r;
+        }
+        // these binops must have compatible units
+      case le: case lt: case eq:
+        {
+          if (check)
+            CheckConsistent(*this);
+          return {};
+        }
+      case add: case subtract: case max: case min:
+        {
+          if (check)
+            return CheckConsistent(*this);
+          if (!m_ports[1]->wires().empty())
+            return m_ports[1]->wires()[0]->units(check);
+          if (!m_ports[2]->wires().empty())
+            return m_ports[2]->wires()[0]->units(check);
+          return {};
+        }
+        // multiply and divide are especially computed
+      case multiply: case divide:
+        {
+          Units units;
+          for (auto w: m_ports[1]->wires())
+            {
+              auto tmp=w->units(check);
+              for (auto& i: tmp)
+                units[i.first]+=i.second;
+            }
+          int f=(type()==multiply)? 1: -1; //indices are negated for division
+          for (auto w: m_ports[2]->wires())
+            {
+              auto tmp=w->units(check);
+              for (auto& i: tmp)
+                units[i.first]+=f*i.second;
+            }
+          units.normalise();
+          return units;
+        }
+      default:
+        if (check)
+          throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+        return {};
+      }
+  }
+  
   Units OperationBase::units(bool check) const
   {
     // default operations are dimensionless, but check that inputs are also
@@ -485,75 +558,7 @@ namespace minsky
         }
         return {};
       case binop:
-        switch (type())
-          {
-            // these binops need to have dimensionless units
-          case log: case and_: case or_: case polygamma: case userFunction:
-
-            if (check && !m_ports[1]->units(check).empty())
-              throw_error("function inputs not dimensionless");
-            return {};
-          case pow:
-            {
-              auto r=m_ports[1]->units(check);
-
-              if (!r.empty())
-                {
-                  if (!m_ports[2]->wires().empty())
-                    if (auto v=dynamic_cast<VarConstant*>(&m_ports[2]->wires()[0]->from()->item()))
-                      if (fracPart(v->value())==0)
-                        {
-                          for (auto& i: r) i.second*=v->value();
-                          r.normalise();
-                          return r;
-                        }
-                  if (check)
-                    throw_error("dimensioned pow only possible if exponent is a constant integer");
-                }
-              return r;
-            }
-            // these binops must have compatible units
-          case le: case lt: case eq:
-            {
-              if (check)
-                CheckConsistent(*this);
-              return {};
-            }
-          case add: case subtract: case max: case min:
-            {
-              if (check)
-                return CheckConsistent(*this);
-              if (!m_ports[1]->wires().empty())
-                return m_ports[1]->wires()[0]->units(check);
-              if (!m_ports[2]->wires().empty())
-                return m_ports[2]->wires()[0]->units(check);
-              return {};
-            }
-            // multiply and divide are especially computed
-          case multiply: case divide:
-            {
-              Units units;
-              for (auto w: m_ports[1]->wires())
-                {
-                  auto tmp=w->units(check);
-                  for (auto& i: tmp)
-                    units[i.first]+=i.second;
-                }
-              int f=(type()==multiply)? 1: -1; //indices are negated for division
-              for (auto w: m_ports[2]->wires())
-                {
-                  auto tmp=w->units(check);
-                  for (auto& i: tmp)
-                    units[i.first]+=f*i.second;
-                }
-              units.normalise();
-              return units;
-            }
-          default:
-            if (check)
-              throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
-            return {};
-          }
+        return unitsBinOpCase(check);
       default:
         if (check)
           throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");

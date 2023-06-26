@@ -52,6 +52,8 @@ export class CommunicationService {
   mouseX: number;
   mouseY: number;
 
+  awaitingZoom=false; // flag to avoid backing up zoom events
+  
   drag = false;
   currentReplayJSON: ReplayJSON[] = [];
 
@@ -458,8 +460,11 @@ export class CommunicationService {
       zoomFactor = ZOOM_OUT_FACTOR;
     }
 
+    if (this.awaitingZoom) return; // remove zoom events coming too fast
+    this.awaitingZoom=true;
     await this.electronService.minsky.canvas.zoom(x,y,zoomFactor);
-
+    this.awaitingZoom=false;
+    
     // schedule resetScroll when zooming stops
     if (!this.resetScrollWhenIdle)
       this.resetScrollWhenIdle=setTimeout(()=>{var self=this; self.resetScroll(); self.resetScrollWhenIdle=null;}, 100);
