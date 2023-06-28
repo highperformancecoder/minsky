@@ -166,7 +166,7 @@ export class WindowManager {
     payload: CreateWindowPayload,
     onCloseCallback?: (ev : Electron.Event) => void
   ) {
-    const { width, height, minWidth, minHeight, title, modal = true, backgroundColor } = payload;
+    const { width, height, minWidth, minHeight, title, modal = true, backgroundColor, alwaysOnTop } = payload;
 
     const childWindow = new BrowserWindow({
       width,
@@ -180,6 +180,7 @@ export class WindowManager {
       parent: null /* modal ? mainWindow : null */, // Having a parent hides control on MacOS
       modal,
       backgroundColor,
+      alwaysOnTop,
       webPreferences: {
         contextIsolation: true,
         preload: join(__dirname, 'preload.js'),
