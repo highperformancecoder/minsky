@@ -100,12 +100,11 @@ struct RedrawThread: public thread
 {
   RedrawThread(): thread([this]{run();}) {}
   ~RedrawThread() {join();}
-  atomic<bool> running; //< flag indicating thread is still running
+  atomic<bool> running{true}; //< flag indicating thread is still running
   void run() {
 #if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
     pthread_setname_np(pthread_self(),"redraw thread");
 #endif
-    running=true;
     // sleep slightly to throttle requests on this service
     this_thread::sleep_for(chrono::milliseconds(10));
 
@@ -235,7 +234,10 @@ Value RESTCall(const Napi::CallbackInfo& info)
               minsky::minsky().nativeWindowsToRedraw.clear();
             }
           else
-            redrawThread.reset(new RedrawThread); // start a new render thread
+            {
+              redrawThread.reset(); // esnure old thread is joined
+              redrawThread.reset(new RedrawThread); // start a new render thread
+            }
         }
       return response;
     }

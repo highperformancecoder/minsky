@@ -54,6 +54,8 @@ export function backend(command: string, ...args: any[]) {
     }
     CppClass.record(`${command} ${arg}`);
 
+    if (logFilter(command))
+      log.info('start Rest API: ',command,arg);
     const response = restService.call(command, arg);
     if (logFilter(command))
       log.info('Rest API: ',command,arg,"=>",response);
