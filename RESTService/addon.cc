@@ -256,7 +256,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
 
 Object Init(Env env, Object exports) {
   RESTProcess(addOnMinsky.registry,"/minsky",minsky::minsky());
-  
+  env.AddCleanupHook([redraw=&redrawThread](){redraw->reset();}); // ensure redraw thread is stopped before exiting JS environment.
   exports.Set(String::New(env, "call"), Function::New(env, RESTCall));
   exports.Set(String::New(env, "setMessageCallback"), Function::New(env, setMessageCallback));
   exports.Set(String::New(env, "setBusyCursorCallback"), Function::New(env, setBusyCursorCallback));
