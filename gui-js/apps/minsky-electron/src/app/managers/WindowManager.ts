@@ -57,7 +57,6 @@ export class WindowManager {
   }
 
   static renderFrame() {
-    console.log(this.activeWindows.get(1).systemWindowId);
     this.currentTab?.renderFrame
     ({
       parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),

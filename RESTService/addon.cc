@@ -235,7 +235,7 @@ Value RESTCall(const Napi::CallbackInfo& info)
             }
           else
             {
-              redrawThread.reset(); // esnure old thread is joined
+              redrawThread.reset(); // ensure old thread is joined
               redrawThread.reset(new RedrawThread); // start a new render thread
             }
         }
