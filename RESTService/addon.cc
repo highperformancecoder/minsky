@@ -98,7 +98,7 @@ mutex redrawMutex;
 // delay process redrawing to throttle redrawing
 struct RedrawThread: public thread
 {
-  RedrawThread(): thread([this]{run();}) {}
+  RedrawThread() {thread::operator=(thread([this]{run();}));}
   ~RedrawThread() {join();}
   atomic<bool> running{true}; //< flag indicating thread is still running
   void run() {

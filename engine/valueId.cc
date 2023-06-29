@@ -23,7 +23,6 @@
 #include "latexMarkup.h"
 #include "minsky_epilogue.h"
 
-#include <regex>
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;
 using namespace std;
@@ -32,9 +31,24 @@ namespace minsky
 {
   bool isValueId(const string& name)
   {
-    static regex pattern("((constant)?\\d*:[^:\\ \f\n\r\t\v]+)");
-    return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-      regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
+    // original code, left for reference
+    //    static regex pattern("((constant)?\\d*:[^:\\ \f\n\r\t\v]+)");
+    //    return name.length()>1 && name.substr(name.length()-2)!=":_" &&
+    //      regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
+
+    static char constantPrefix[]="constant:";
+    static unsigned prefixLen=strlen(constantPrefix);
+    auto nameCStr=name.c_str();
+    char* endp=nullptr;
+    strtoull(nameCStr,&endp,10);
+    if ((endp && *endp==':') || (name.length()>prefixLen && strncmp(constantPrefix,nameCStr,prefixLen)==0))
+      {
+        for (auto c=nameCStr+prefixLen; *c!='\0'; ++c)
+          if (strchr(":\\ \f\n\r\t\v",*c))
+            return false;
+        return true;
+      }
+    return false;
   }
 
   string valueId(size_t scope, const string& name)
@@ -54,16 +68,23 @@ namespace minsky
 
   size_t scope(const string& name) 
   {
-    smatch m;
     auto nm=utf_to_utf<char>(name);
-    if (regex_search(nm, m, regex(R"((\d*)]?:.*)")))
-      if (m.size()>1 && m[1].matched && !m[1].str().empty())
-        return stoull(m[1].str());
-      else
-        return 0;
-    else
-      // no scope information is present
-      throw error("scope requested for local variable");
+    auto nameCStr=nm.c_str();
+    char* endp=nullptr;
+    size_t r=strtoull(nameCStr,&endp,10);
+    if (endp && *endp==':')
+      return r;
+    throw error("scope requested for local variable");
+    // old implementation left for reference
+    // smatch m;
+    //    if (regex_search(nm, m, regex(R"((\d*)]?:.*)")))
+    //      if (m.size()>1 && m[1].matched && !m[1].str().empty())
+    //        return stoull(m[1].str());
+    //      else
+    //        return 0;
+    //    else
+    //      // no scope information is present
+    //      throw error("scope requested for local variable");
   }
 
   GroupPtr scope(GroupPtr scope, const string& a_name)

@@ -45,7 +45,8 @@ namespace minsky
   class VariablePtr;
   struct SchemaHelper;
   class GodleyIcon;
-
+  class RenderVariable;
+  
   /// exception-safe increment/decrement of a counter in a block
   struct IncrDecrCounter
   {
@@ -74,6 +75,8 @@ namespace minsky
   protected:
  
     friend struct minsky::SchemaHelper;
+
+    mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
     
   private:
     CLASSDESC_ACCESS(VariableBase);

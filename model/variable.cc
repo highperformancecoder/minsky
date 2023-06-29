@@ -39,7 +39,6 @@
 #include <error.h>
 #include "minsky_epilogue.h"
 
-#include <boost/regex.hpp>
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;
 
@@ -244,6 +243,7 @@ string VariableBase::name(const std::string& name)
   if (auto controllingItem=controller.lock())
     // integrals in particular may have had their size changed with intVar changing name
     controllingItem->updateBoundingBox();
+  cachedNameRender.reset();
   return this->name();
 }
 
@@ -612,22 +612,23 @@ void VariableBase::draw(cairo_t *cairo) const
     double fm=std::fmod(rotation(),360);
     float z=zoomFactor();
 
-    RenderVariable rv(*this,cairo);
+    if (!cachedNameRender || cairo!=cachedNameRender->cairoContext())
+      cachedNameRender=std::make_shared<RenderVariable>(*this,cairo);
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
     bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
     Rotate r(rotation() + (notflipped? 0: 180),0,0);
-    rv.angle=angle+(notflipped? 0: M_PI);
+    cachedNameRender->angle=angle+(notflipped? 0: M_PI);
 
     // parameters of icon in userspace (unscaled) coordinates
     float w, h, hoffs, scaleFactor;
-    w=rv.width()*z; 
-    h=rv.height()*z;
+    w=cachedNameRender->width()*z; 
+    h=cachedNameRender->height()*z;
     scaleFactor=max(1.0f,min(0.5f*iWidth()*z/w,0.5f*iHeight()*z/h));
-    if (rv.width()<0.5*iWidth()) w=0.5*iWidth()*z;
-    if (rv.height()<0.5*iHeight()) h=0.5*iHeight()*z;
-    rv.setFontSize(12.0*scaleFactor*z);
-    hoffs=rv.top()*z;
+    if (cachedNameRender->width()<0.5*iWidth()) w=0.5*iWidth()*z;
+    if (cachedNameRender->height()<0.5*iHeight()) h=0.5*iHeight()*z;
+    cachedNameRender->setFontSize(12.0*scaleFactor*z);
+    hoffs=cachedNameRender->top()*z;
   
 
     cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
@@ -635,7 +636,7 @@ void VariableBase::draw(cairo_t *cairo) const
       CairoSave cs(cairo);
       if (local())
         cairo_set_source_rgb(cairo,0,0,1);
-      rv.show();
+      cachedNameRender->show();
     }
 
     auto vv=vValue();
@@ -714,7 +715,7 @@ void VariableBase::draw(cairo_t *cairo) const
           cairo_set_source_rgb(cairo,0,0,0);
           try
             {
-              cairo_arc(cairo,(notflipped?1.0:-1.0)*z*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+              cairo_arc(cairo,(notflipped?1.0:-1.0)*z*cachedNameRender->handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
             }
           catch (const error&) {} // handlePos() may throw.
           cairo_fill(cairo);
