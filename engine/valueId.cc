@@ -51,11 +51,16 @@ namespace minsky
     return false;
   }
 
+  string canonicalName(const string& name)
+  {
+    return utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
+  }
+
   string valueId(size_t scope, const string& name)
   {
-      auto tmp=":"+utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
-      if (scope==0) return tmp;
-      return to_string(scope)+tmp;
+    auto tmp=":"+canonicalName(name);
+    if (scope==0) return tmp;
+    return to_string(scope)+tmp;
   }
 
   string valueId(const string& name)
@@ -89,16 +94,16 @@ namespace minsky
 
   GroupPtr scope(GroupPtr scope, const string& a_name)
   {
-    auto name=utf_to_utf<char>(stripActive(utf_to_utf<char>(a_name)));
+    auto name=canonicalName(a_name);
     if (name[0]==':' && scope)
       {
+        string uqName=name.substr(1);
         // find maximum enclosing scope that has this same-named variable
         for (auto g=scope->group.lock(); g; g=g->group.lock())
           for (auto& i: g->items)
             if (auto v=i->variableCast())
               {
-                auto n=stripActive(v->name());
-                if (n==name.substr(1)) // without ':' qualifier
+                if (v->canonicalName()==uqName)
                   {
                     scope=g;
                     goto break_outerloop;

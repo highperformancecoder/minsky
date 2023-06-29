@@ -33,8 +33,11 @@ namespace minsky
   /// construct a valueId
   std::string valueId(size_t scope, const std::string& name);
   std::string valueId(const std::string& name);
-  std::string valueId(const GroupPtr& ref, const std::string& name); 
- 
+  std::string valueId(const GroupPtr& ref, const std::string& name);
+
+  /// convert a raw name into a canonical name - this is not idempotent.
+  std::string canonicalName(const std::string& name);
+  
   /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
   /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
   GroupPtr scope(GroupPtr ref, const std::string& name);

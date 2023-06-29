@@ -80,7 +80,8 @@ namespace minsky
     
   private:
     CLASSDESC_ACCESS(VariableBase);
-    std::string m_name; 
+    std::string m_name;
+    std::string m_canonicalName; ///< latex processed and active stripped version of name
     std::pair<std::string,std::string> m_dimLabelsPicked;    
     mutable int unitsCtr=0; ///< for detecting reentrancy in units()
     static int stockVarsPassed; ///< for detecting reentrancy in units()
@@ -120,6 +121,7 @@ namespace minsky
     /// @{ variable displayed name
     virtual std::string name() const;
     virtual std::string name(const std::string& nm);
+    const std::string& canonicalName() const {return m_canonicalName;}
     /// @}
 
     /// accessor for the name member (may differ from name() with top
