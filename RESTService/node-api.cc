@@ -144,6 +144,7 @@ extern "C"
   NAPIFN(napi_set_element, (napi_env env, napi_value object,uint32_t index, napi_value value),
          (env,object,index,value));
 
+  NAPIFN(napi_add_env_cleanup_hook, (napi_env env, void (*fun)(void* arg), void* arg), (env,fun,arg));
 }
 
 
