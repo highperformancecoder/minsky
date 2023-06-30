@@ -158,7 +158,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Edit',
           click: async () => {
-            await CommandsManager.editItem(itemInfo.classType);
+            await CommandsManager.editVar();
           },
         }),
         new MenuItem({
