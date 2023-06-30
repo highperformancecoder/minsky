@@ -735,7 +735,7 @@ namespace MathDAG
             r->arguments.emplace_back();
             for (auto& i: uf->symbolNames())
               {
-                auto vv=minsky.variableValues.find(valueId(op.group.lock(), i));
+                auto vv=minsky.variableValues.find(valueId(op.group.lock(), canonicalName(i)));
                 if (vv!=minsky.variableValues.end())
                   {
                     r->arguments.back().emplace_back(makeDAG(vv->first,vv->second->name,vv->second->type()));
@@ -1061,7 +1061,7 @@ namespace MathDAG
         if (uqName(colName).empty())
           continue; // ignore empty Godley columns
         // resolve scope
-        colName=valueId(gi.group.lock(), colName);
+        colName=valueId(gi.group.lock(), canonicalName(colName));
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];

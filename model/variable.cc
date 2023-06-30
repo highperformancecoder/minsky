@@ -179,7 +179,7 @@ vector<string> VariableBase::dimLabels() const
 
 string VariableBase::valueId() const 
 {
-  return minsky::valueId(group.lock(), m_name);
+  return minsky::valueId(group.lock(), (local()?"":":")+canonicalName());
 }
 
 std::string VariableBase::valueIdInCurrentScope(const std::string& nm) const

@@ -33,6 +33,8 @@ namespace minsky
   /// construct a valueId
   std::string valueId(size_t scope, const std::string& name);
   std::string valueId(const std::string& name);
+
+  /// construct a valueId. \@ name should be canonicalised
   std::string valueId(const GroupPtr& ref, const std::string& name);
 
   /// convert a raw name into a canonical name - this is not idempotent.

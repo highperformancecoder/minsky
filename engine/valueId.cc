@@ -41,9 +41,11 @@ namespace minsky
     auto nameCStr=name.c_str();
     char* endp=nullptr;
     strtoull(nameCStr,&endp,10);
-    if ((endp && *endp==':') || (name.length()>prefixLen && strncmp(constantPrefix,nameCStr,prefixLen)==0))
+    if (*endp==':' || (name.length()>prefixLen && strncmp(constantPrefix,nameCStr,prefixLen)==0))
       {
-        for (auto c=nameCStr+prefixLen; *c!='\0'; ++c)
+        // check unqualified name portion has no verboten characters
+        const char* uqName=*endp==':'? endp+1: nameCStr+prefixLen;
+        for (auto c=uqName; *c!='\0'; ++c)
           if (strchr(":\\ \f\n\r\t\v",*c))
             return false;
         return true;
@@ -58,18 +60,18 @@ namespace minsky
 
   string valueId(size_t scope, const string& name)
   {
-    auto tmp=":"+canonicalName(name);
+    auto tmp=":"+name;
     if (scope==0) return tmp;
     return to_string(scope)+tmp;
   }
 
   string valueId(const string& name)
   {
-    return valueId(scope(name), utf_to_utf<char>(name));
+    return valueId(scope(name), canonicalName(name));
   }
 
   string valueId(const GroupPtr& ref, const string& name) 
-  {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(name));}
+  {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(uqName(name)));}
 
   size_t scope(const string& name) 
   {
@@ -95,15 +97,14 @@ namespace minsky
   GroupPtr scope(GroupPtr scope, const string& a_name)
   {
     auto name=canonicalName(a_name);
-    if (name[0]==':' && scope)
+    if (a_name[0]==':' && scope)
       {
-        string uqName=name.substr(1);
         // find maximum enclosing scope that has this same-named variable
         for (auto g=scope->group.lock(); g; g=g->group.lock())
           for (auto& i: g->items)
             if (auto v=i->variableCast())
               {
-                if (v->canonicalName()==uqName)
+                if (v->canonicalName()==name)
                   {
                     scope=g;
                     goto break_outerloop;
