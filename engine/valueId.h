@@ -30,11 +30,13 @@ namespace minsky
   /// check that name is a valid valueId (useful for assertions)
   bool isValueId(const std::string& name);
 
-  /// construct a valueId
+  /// construct a valueId \@ name should be canonicalised
   std::string valueId(size_t scope, const std::string& name);
+  /// construct a valueId from fully qualified name \@ name should not be canonicalised
   std::string valueId(const std::string& name);
 
-  /// construct a valueId. \@ name should be canonicalised
+  /// construct a valueId. \@ name should not be canonicalised
+  /// if name has leading :, then heirarchy is searched for matching local name
   std::string valueId(const GroupPtr& ref, const std::string& name);
 
   /// convert a raw name into a canonical name - this is not idempotent.
@@ -43,6 +45,8 @@ namespace minsky
   /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
   /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
   GroupPtr scope(GroupPtr ref, const std::string& name);
+
+  /// value Id from scope and canonical name \a name
   std::string valueIdFromScope(const GroupPtr& scope, const std::string& name);
     
   /// extract scope from a qualified variable name

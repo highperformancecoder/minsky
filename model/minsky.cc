@@ -859,7 +859,7 @@ namespace minsky
       bool initialConditionRow(int row) const
       {return Super::operator*()->table.initialConditionRow(row);}
       string valueId(const std::string& x) const {
-        return valueIdFromScope(Super::operator*()->group.lock(), x);
+        return valueIdFromScope(Super::operator*()->group.lock(), canonicalName(x));
       }
     };
   }

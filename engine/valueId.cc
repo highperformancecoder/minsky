@@ -71,7 +71,7 @@ namespace minsky
   }
 
   string valueId(const GroupPtr& ref, const string& name) 
-  {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(uqName(name)));}
+  {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), canonicalName(name));}
 
   size_t scope(const string& name) 
   {

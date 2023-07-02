@@ -233,7 +233,7 @@ namespace minsky
       }
         
     // resolve name
-    auto valueId=minsky::valueId(v.m_scope.lock(), canonicalName(fc.name));
+    auto valueId=minsky::valueId(v.m_scope.lock(), fc.name);
     if (visited.count(valueId))
       throw error("circular definition of initial value for %s",
                   fc.name.c_str());
