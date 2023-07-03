@@ -35,7 +35,8 @@ namespace minsky
     //    static regex pattern("((constant)?\\d*:[^:\\ \f\n\r\t\v]+)");
     //    return name.length()>1 && name.substr(name.length()-2)!=":_" &&
     //      regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
-
+    if (name.substr(name.length()-2)==":_") return false;
+    
     static char constantPrefix[]="constant:";
     static unsigned prefixLen=strlen(constantPrefix);
     auto nameCStr=name.c_str();

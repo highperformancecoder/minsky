@@ -156,6 +156,7 @@ export class VariableBase extends Item {
   bookmark(...args: boolean[]): boolean {return this.callMethod('bookmark',...args);}
   bookmarkId(): string {return this.callMethod('bookmarkId');}
   bottom(): number {return this.callMethod('bottom');}
+  canonicalName(): string {return this.callMethod('canonicalName');}
   checkUnits(): object {return this.callMethod('checkUnits');}
   classType(): string {return this.callMethod('classType');}
   clickType(a1: number,a2: number): string {return this.callMethod('clickType',a1,a2);}
