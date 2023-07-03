@@ -40,6 +40,8 @@
 #include <accessor.h>
 #include <cairo/cairo.h>
 
+namespace ecolab {class Pango;}
+
 namespace minsky
 {
   class VariablePtr;
@@ -72,12 +74,8 @@ namespace minsky
   {
   public:
     typedef VariableType::Type Type;
-  protected:
- 
     friend struct minsky::SchemaHelper;
 
-    mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
-    
   private:
     CLASSDESC_ACCESS(VariableBase);
     std::string m_name;
@@ -87,6 +85,13 @@ namespace minsky
     static int stockVarsPassed; ///< for detecting reentrancy in units()
 
     void insertControlled(Selection& selection) override;
+
+    /// cached Pango objects
+    mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
+    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedMantissa;
+    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedExponent;
+    mutable double cachedValue;
+
   protected:
     void addPorts();
     

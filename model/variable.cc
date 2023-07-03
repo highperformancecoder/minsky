@@ -646,41 +646,51 @@ void VariableBase::draw(cairo_t *cairo) const
     if (type()!=constant && !ioVar() && vv && vv->size()==1)
       try
         {
-          auto val=engExp();    
+          if (!cachedMantissa || cachedMantissa->cairoContext()!=cairo)
+            {
+              cachedMantissa=make_shared<Pango>(cairo);
+              cachedExponent=make_shared<Pango>(cairo);
+              cachedValue=nan("");
+            }
           
-          Pango pangoVal(cairo);
-          if (!isnan(value())) {
-            pangoVal.setFontSize(6.0*scaleFactor*z);
-            if (sliderBoundsSet && vv->sliderVisible)
-              pangoVal.setMarkup
-                (mantissa(val,
-                          int(1+
-                              (sliderStepRel?
-                               -log10(maxSliderSteps()):
-                               log10(value()/maxSliderSteps())
-                               ))));
-            else
-              pangoVal.setMarkup(mantissa(val));
-          }
-          else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-            pangoVal.setFontSize(8.0*scaleFactor*z);
-            if (signbit(value())) pangoVal.setMarkup("-∞");
-            else pangoVal.setMarkup("∞");
-          }
-          else {  // Display all other NaN cases as ???. For ticket 1155
-            pangoVal.setFontSize(6.0*scaleFactor*z);
-            pangoVal.setMarkup("???");
-          }
-          pangoVal.angle=angle+(notflipped? 0: M_PI);
-
-          cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
-                        r.y(w-pangoVal.width()-2,-h-hoffs+2));
-          pangoVal.show();
+          auto val=engExp();    
+          if (value()!=cachedValue)
+            {
+              cachedValue=value();
+              if (!isnan(value())) {
+                cachedMantissa->setFontSize(6.0*scaleFactor*z);
+                if (sliderBoundsSet && vv->sliderVisible)
+                  cachedMantissa->setMarkup
+                    (mantissa(val,
+                              int(1+
+                                  (sliderStepRel?
+                                   -log10(maxSliderSteps()):
+                                   log10(value()/maxSliderSteps())
+                                   ))));
+                else
+                  cachedMantissa->setMarkup(mantissa(val));
+              }
+              else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
+                cachedMantissa->setFontSize(8.0*scaleFactor*z);
+                if (signbit(value())) cachedMantissa->setMarkup("-∞");
+                else cachedMantissa->setMarkup("∞");
+              }
+              else {  // Display all other NaN cases as ???. For ticket 1155
+                cachedMantissa->setFontSize(6.0*scaleFactor*z);
+                cachedMantissa->setMarkup("???");
+              }
+              cachedExponent->setFontSize(6.0*scaleFactor*z);
+              cachedExponent->setMarkup(expMultiplier(val.engExp));
+            }
+          cachedMantissa->angle=angle+(notflipped? 0: M_PI);
+            
+          cairo_move_to(cairo,r.x(w-cachedMantissa->width()-2,-h-hoffs+2),
+                        r.y(w-cachedMantissa->width()-2,-h-hoffs+2));
+          cachedMantissa->show();
           if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
             {
-              pangoVal.setMarkup(expMultiplier(val.engExp));
-              cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
-              pangoVal.show();
+              cairo_move_to(cairo,r.x(w-cachedExponent->width()-2,0),r.y(w-cachedExponent->width()-2,0));
+              cachedExponent->show();
             }
         }
       catch (...) {} // ignore errors in obtaining values
