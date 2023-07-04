@@ -39,6 +39,8 @@
 #include <pack_base.h>
 #include "operationType.h"
 
+namespace ecolab {class Pango;}
+
 namespace minsky
 {
   class OperationPtr;
@@ -48,13 +50,16 @@ namespace minsky
                        public BottomRightResizerItem, public OperationType
   {
     CLASSDESC_ACCESS(OperationBase);
+  protected:
+    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedPango;
+    /// check if cachedPango is up to date, and if not recreate
+    void setCachedText(cairo_t*, const std::string&, double) const;
   public:
     static constexpr float l=-8, h=12, r=12;
     typedef OperationType::Type Type;
 
     virtual std::size_t numPorts() const=0;
-    ///factory method. \a ports is used for recreating an object read
-    ///from a schema
+    ///factory method. 
     static OperationBase* create(Type type); 
     virtual Type type() const=0;
 

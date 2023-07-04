@@ -161,7 +161,6 @@ export class KeyBindingsManager {
             // characters in the range 0xff00 to 0xffff.
           _keysym = keyName.charCodeAt(0);
         }
-      console.log(`keyName=${keyName}, keySym=${_keysym}\n`);
       return {
             keysym: _keysym,
             name: keyName,

@@ -300,6 +300,14 @@ namespace minsky
     return;
   }
   
+  void OperationBase::setCachedText(cairo_t* cairo, const std::string& text, double size) const
+  {
+    if (cachedPango && cairo==cachedPango->cairoContext()) return;
+    cachedPango=make_shared<Pango>(cairo);
+    cachedPango->setMarkup(text);
+    cachedPango->setFontSize(size);
+  }
+
   
   void OperationBase::draw(cairo_t* cairo) const
   {
@@ -698,30 +706,27 @@ namespace minsky
   {
     double sf = scaleFactor();  	  
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(9*sf);
-    pango.setMarkup("∞");
-    pango.show();    
+    setCachedText(cairo,"∞",9);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();    
   }
 
   template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("%");
-    pango.show();
+    setCachedText(cairo,"%",7);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();
   }   
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor();  	  	  
     cairo_move_to(cairo,-4,-5);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("→");
-    pango.show();
+    setCachedText(cairo, "→",7);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
@@ -991,10 +996,9 @@ namespace minsky
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-7,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("⌊x⌋");
-    pango.show();
+    setCachedText(cairo, "⌊x⌋",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
   template <> void Operation<OperationType::frac>::iconDraw(cairo_t* cairo) const
   {
@@ -1078,20 +1082,18 @@ namespace minsky
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("∑");
-    pango.show();
+    setCachedText(cairo, "∑", 7);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::product>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("∏");
-    pango.show();
+    setCachedText(cairo, "∏",7);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::infimum>::iconDraw(cairo_t* cairo) const
@@ -1152,50 +1154,45 @@ namespace minsky
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-7,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("∑+");
-    pango.show();
+    setCachedText(cairo, "∑+",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-6,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("∏×");
-    pango.show();
+    setCachedText(cairo, "∏×",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("Δ");
-    pango.show();
+    setCachedText(cairo, "Δ",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::innerProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(14*sf);
-    pango.setMarkup("·");
-    pango.show();
+    setCachedText(cairo, "·",14);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::outerProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(10*sf);
-    pango.setMarkup("⊗");
-    pango.show();
+    setCachedText(cairo, "⊗",10);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::index>::iconDraw(cairo_t* cairo) const
@@ -1225,20 +1222,18 @@ namespace minsky
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(10*sf);
-    pango.setMarkup("⭄");
-    pango.show();
+    setCachedText(cairo, "⭄",10);
+    cairo_scale(cairo,sf,sf);  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::merge>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(10*sf);
-    pango.setMarkup("⫤");
-    pango.show();
+    setCachedText(cairo, "⫤",10);
+    cairo_scale(cairo,sf,sf);  
+    cachedPango->show();
   }
 
   
