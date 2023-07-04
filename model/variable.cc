@@ -369,6 +369,8 @@ Units VariableBase::units(bool check) const
                 units=i->units(check);
               else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
                 units=g->stockVarUnits(name(),check);
+              else // I/O variable
+                units=vv->units;
               if (check && units.str()!=vv->units.str())
                 {
                   if (auto i=controller.lock())
