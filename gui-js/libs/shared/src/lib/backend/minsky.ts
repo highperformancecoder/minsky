@@ -1766,10 +1766,10 @@ export class PlotWidget extends Item {
   updateIcon(a1: number): void {return this.callMethod('updateIcon',a1);}
   vectorRender(a1: number,a2: minsky__dummy): object {return this.callMethod('vectorRender',a1,a2);}
   width(): number {return this.callMethod('width');}
-  xlabel(...args: string[]): string {return this.callMethod('xlabel',...args);}
+  xlabel(...args: any[]): string {return this.callMethod('xlabel',...args);}
   xtickAngle(...args: number[]): number {return this.callMethod('xtickAngle',...args);}
-  y1label(...args: string[]): string {return this.callMethod('y1label',...args);}
-  ylabel(...args: string[]): string {return this.callMethod('ylabel',...args);}
+  y1label(...args: any[]): string {return this.callMethod('y1label',...args);}
+  ylabel(...args: any[]): string {return this.callMethod('ylabel',...args);}
   zoom(a1: number,a2: number,a3: number): void {return this.callMethod('zoom',a1,a2,a3);}
 }
 

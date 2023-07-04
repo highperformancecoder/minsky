@@ -89,7 +89,7 @@ namespace minsky
     double w=iWidth()*z, h=iHeight()*z;
 
     // if any titling, draw an extra bounding box (ticket #285)
-    if (!title.empty()||!xlabel.empty()||!ylabel.empty()||!y1label.empty())
+    if (!title.empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty())
       {
         cairo_rectangle(cairo,-0.5*w+10,-0.5*h,w-20,h-10);
         cairo_set_line_width(cairo,1);
@@ -109,7 +109,7 @@ namespace minsky
         pango.setFontSize(fabs(fy));
         pango.setMarkup(latexToPango(title));   
         cairo_set_source_rgb(cairo,0,0,0);
-        cairo_move_to(cairo,0.5*(w-pango.width()), 0/*pango.height()*/);
+        cairo_move_to(cairo,0.5*(w-pango.width()), 0);
         pango.show();
 
         // allow some room for the title
