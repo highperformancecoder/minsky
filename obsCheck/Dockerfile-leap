@@ -1,7 +1,9 @@
-FROM opensuse/leap:15.4
+ARG version=15.5
+FROM opensuse/leap:$version
 ARG project=minsky
+ARG version
 ADD . /root
-RUN zypper addrepo https://download.opensuse.org/repositories/home:hpcoder1/15.4/home:hpcoder1.repo
+RUN zypper addrepo https://download.opensuse.org/repositories/home:hpcoder1/${version}/home:hpcoder1.repo
 RUN zypper --gpg-auto-import-keys refresh
 RUN zypper --non-interactive install $project
 RUN useradd -m minsky
