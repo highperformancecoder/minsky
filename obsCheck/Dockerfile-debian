@@ -4,7 +4,7 @@ ARG project=minsky
 ARG version
 ADD . /root
 RUN apt-get update -qq -y
-RUN apt-get install -y wget gnupg2
+RUN apt-get install -y wget gnupg
 RUN wget -nv https://download.opensuse.org/repositories/home:hpcoder1/Debian_${version}/Release.key -O Release.key
 RUN apt-key add - < Release.key
 RUN echo "deb http://download.opensuse.org/repositories/home:/hpcoder1/Debian_${version}/ /" > /etc/apt/sources.list.d/home:hpcoder1.list
