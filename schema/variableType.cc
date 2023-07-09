@@ -23,7 +23,6 @@ using namespace classdesc;
 
 #include <string>
 #include <sstream>
-#include <regex>
 using namespace std;
 
 namespace minsky

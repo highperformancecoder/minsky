@@ -172,8 +172,15 @@ restService.setProgressCallback(function (title: string, val: number) {
 });
 
 
+var bookmarkRefreshTimer;
 restService.setBookmarkRefreshCallback(()=>{
-  setTimeout(()=>{BookmarkManager.updateBookmarkList();},10);
+  if (bookmarkRefreshTimer)
+    bookmarkRefreshTimer.refresh(); // coalesce repeated calls to refreshBookmarkList
+  else
+    bookmarkRefreshTimer=setTimeout(()=>{
+      bookmarkRefreshTimer=null;
+      BookmarkManager.updateBookmarkList();
+    },10);
 });
 
 // Sanity checks before we get started

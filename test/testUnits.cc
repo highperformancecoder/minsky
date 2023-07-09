@@ -88,10 +88,10 @@ SUITE(Units)
       timeUnit="s";
       model->addItem(from1);
       model->addItem(from2);
-      from1->setUnits("m");
-      from2->setUnits("s");
     }
     void init(OperationType::Type op) {
+      from1->setUnits("m");
+      from2->setUnits("s");
       opp.reset(OperationBase::create(op));
       model->addItem(opp);
       if (opp->portsSize()>1)

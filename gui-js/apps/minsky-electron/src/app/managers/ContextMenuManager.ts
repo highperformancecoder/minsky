@@ -157,7 +157,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Edit',
           click: async () => {
-            await CommandsManager.editItem(itemInfo.classType);
+            await CommandsManager.editVar();
           },
         }),
         new MenuItem({
@@ -1122,7 +1122,7 @@ export class ContextMenuManager {
         }
       }));
     }
-    const flows=godley.table.getVariables();
+    const flows=await godley.table.getVariables();
     var flowMenu=new Menu();
     for (let i=0; i<flows.length; ++i)
       flowMenu.append(new MenuItem({

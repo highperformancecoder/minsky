@@ -300,6 +300,14 @@ namespace minsky
     return;
   }
   
+  void OperationBase::setCachedText(cairo_t* cairo, const std::string& text, double size) const
+  {
+    if (cachedPango && cairo==cachedPango->cairoContext()) return;
+    cachedPango=make_shared<Pango>(cairo);
+    cachedPango->setMarkup(text);
+    cachedPango->setFontSize(size);
+  }
+
   
   void OperationBase::draw(cairo_t* cairo) const
   {
@@ -460,6 +468,79 @@ namespace minsky
     };
   }
 
+  Units OperationBase::unitsBinOpCase(bool check) const
+  {
+    switch (type())
+      {
+        // these binops need to have dimensionless units
+      case log: case and_: case or_: case polygamma: case userFunction:
+
+        if (check && !m_ports[1]->units(check).empty())
+          throw_error("function inputs not dimensionless");
+        return {};
+      case pow:
+        {
+          auto r=m_ports[1]->units(check);
+
+          if (!r.empty())
+            {
+              if (!m_ports[2]->wires().empty())
+                if (auto v=dynamic_cast<VarConstant*>(&m_ports[2]->wires()[0]->from()->item()))
+                  if (fracPart(v->value())==0)
+                    {
+                      for (auto& i: r) i.second*=v->value();
+                      r.normalise();
+                      return r;
+                    }
+              if (check)
+                throw_error("dimensioned pow only possible if exponent is a constant integer");
+            }
+          return r;
+        }
+        // these binops must have compatible units
+      case le: case lt: case eq:
+        {
+          if (check)
+            CheckConsistent(*this);
+          return {};
+        }
+      case add: case subtract: case max: case min:
+        {
+          if (check)
+            return CheckConsistent(*this);
+          if (!m_ports[1]->wires().empty())
+            return m_ports[1]->wires()[0]->units(check);
+          if (!m_ports[2]->wires().empty())
+            return m_ports[2]->wires()[0]->units(check);
+          return {};
+        }
+        // multiply and divide are especially computed
+      case multiply: case divide:
+        {
+          Units units;
+          for (auto w: m_ports[1]->wires())
+            {
+              auto tmp=w->units(check);
+              for (auto& i: tmp)
+                units[i.first]+=i.second;
+            }
+          int f=(type()==multiply)? 1: -1; //indices are negated for division
+          for (auto w: m_ports[2]->wires())
+            {
+              auto tmp=w->units(check);
+              for (auto& i: tmp)
+                units[i.first]+=f*i.second;
+            }
+          units.normalise();
+          return units;
+        }
+      default:
+        if (check)
+          throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+        return {};
+      }
+  }
+  
   Units OperationBase::units(bool check) const
   {
     // default operations are dimensionless, but check that inputs are also
@@ -485,75 +566,7 @@ namespace minsky
         }
         return {};
       case binop:
-        switch (type())
-          {
-            // these binops need to have dimensionless units
-          case log: case and_: case or_: case polygamma: case userFunction:
-
-            if (check && !m_ports[1]->units(check).empty())
-              throw_error("function inputs not dimensionless");
-            return {};
-          case pow:
-            {
-              auto r=m_ports[1]->units(check);
-
-              if (!r.empty())
-                {
-                  if (!m_ports[2]->wires().empty())
-                    if (auto v=dynamic_cast<VarConstant*>(&m_ports[2]->wires()[0]->from()->item()))
-                      if (fracPart(v->value())==0)
-                        {
-                          for (auto& i: r) i.second*=v->value();
-                          r.normalise();
-                          return r;
-                        }
-                  if (check)
-                    throw_error("dimensioned pow only possible if exponent is a constant integer");
-                }
-              return r;
-            }
-            // these binops must have compatible units
-          case le: case lt: case eq:
-            {
-              if (check)
-                CheckConsistent(*this);
-              return {};
-            }
-          case add: case subtract: case max: case min:
-            {
-              if (check)
-                return CheckConsistent(*this);
-              if (!m_ports[1]->wires().empty())
-                return m_ports[1]->wires()[0]->units(check);
-              if (!m_ports[2]->wires().empty())
-                return m_ports[2]->wires()[0]->units(check);
-              return {};
-            }
-            // multiply and divide are especially computed
-          case multiply: case divide:
-            {
-              Units units;
-              for (auto w: m_ports[1]->wires())
-                {
-                  auto tmp=w->units(check);
-                  for (auto& i: tmp)
-                    units[i.first]+=i.second;
-                }
-              int f=(type()==multiply)? 1: -1; //indices are negated for division
-              for (auto w: m_ports[2]->wires())
-                {
-                  auto tmp=w->units(check);
-                  for (auto& i: tmp)
-                    units[i.first]+=f*i.second;
-                }
-              units.normalise();
-              return units;
-            }
-          default:
-            if (check)
-              throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
-            return {};
-          }
+        return unitsBinOpCase(check);
       default:
         if (check)
           throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
@@ -693,30 +706,27 @@ namespace minsky
   {
     double sf = scaleFactor();  	  
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(9*sf);
-    pango.setMarkup("∞");
-    pango.show();    
+    setCachedText(cairo,"∞",9);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();    
   }
 
   template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("%");
-    pango.show();
+    setCachedText(cairo,"%",7);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();
   }   
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor();  	  	  
     cairo_move_to(cairo,-4,-5);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("→");
-    pango.show();
+    setCachedText(cairo, "→",7);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
@@ -986,10 +996,9 @@ namespace minsky
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-7,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("⌊x⌋");
-    pango.show();
+    setCachedText(cairo, "⌊x⌋",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
   template <> void Operation<OperationType::frac>::iconDraw(cairo_t* cairo) const
   {
@@ -1073,20 +1082,18 @@ namespace minsky
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("∑");
-    pango.show();
+    setCachedText(cairo, "∑", 7);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::product>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("∏");
-    pango.show();
+    setCachedText(cairo, "∏",7);
+    cairo_scale(cairo,sf,sf);		  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::infimum>::iconDraw(cairo_t* cairo) const
@@ -1147,50 +1154,45 @@ namespace minsky
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-7,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("∑+");
-    pango.show();
+    setCachedText(cairo, "∑+",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-6,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("∏×");
-    pango.show();
+    setCachedText(cairo, "∏×",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf);
-    pango.setMarkup("Δ");
-    pango.show();
+    setCachedText(cairo, "Δ",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::innerProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(14*sf);
-    pango.setMarkup("·");
-    pango.show();
+    setCachedText(cairo, "·",14);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::outerProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(10*sf);
-    pango.setMarkup("⊗");
-    pango.show();
+    setCachedText(cairo, "⊗",10);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::index>::iconDraw(cairo_t* cairo) const
@@ -1220,20 +1222,18 @@ namespace minsky
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(10*sf);
-    pango.setMarkup("⭄");
-    pango.show();
+    setCachedText(cairo, "⭄",10);
+    cairo_scale(cairo,sf,sf);  
+    cachedPango->show();
   }
 
   template <> void Operation<OperationType::merge>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    Pango pango(cairo);
-    pango.setFontSize(10*sf);
-    pango.setMarkup("⫤");
-    pango.show();
+    setCachedText(cairo, "⫤",10);
+    cairo_scale(cairo,sf,sf);  
+    cachedPango->show();
   }
 
   

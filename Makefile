@@ -47,7 +47,7 @@ endif
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc CPLUSPLUS=$(CPLUSPLUS)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc CPLUSPLUS=$(CPLUSPLUS) GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
 build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)) 
 $(warning $(build_RavelCAPI))
@@ -171,7 +171,12 @@ FLAGS+=-Werror
 endif
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-unused-command-line-argument -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
+FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
+
+ifeq ($(CPLUSPLUS),clang++)
+FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option
+endif
+
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
 #-fvisibility-inlines-hidden
 
@@ -504,7 +509,7 @@ js-dist:
 
 lcov:
 	$(MAKE) clean
-	-$(MAKE) GCOV=1 tests
+	-$(MAKE) GCC=1 GCOV=1 tests
 	lcov -i -c -d . --no-external -o lcovi.info
 # ensure schema export code is exercised
 	-$(MAKE) GCOV=1 minsky.xsd

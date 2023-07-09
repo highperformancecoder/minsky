@@ -1,0 +1,10 @@
+name: "Minsky CodeQL overrides"
+
+query-filters:
+  - exclude:
+     # excluded because it falsly triggers on classdesc includes (.cd etc)
+     id: cpp/include-non-header
+  - exclude:
+     # excluded because of things like CairoSave
+     id: cpp/declaration-hides-variable
+ 

@@ -59,6 +59,9 @@ For those using emacs (comme moi-meme), I have configured the project so that ty
 ~~~~
 Regular jest CLI arguments can be provided. You will need to install the jest package (npm install jest perhaps?)
 
+## Profiling
+
+Unfortunately gperftools do not work with the JS frontend. Indeed, most of the time minsky will crash under profiling. For now, profiling requires the use of the old Tk version of minsky.
 
 ## Roadmap
 

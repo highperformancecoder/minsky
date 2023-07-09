@@ -156,6 +156,7 @@ export class VariableBase extends Item {
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
   async bottom(): Promise<number> {return this.$callMethod('bottom');}
+  async canonicalName(): Promise<string> {return this.$callMethod('canonicalName');}
   async checkUnits(): Promise<object> {return this.$callMethod('checkUnits');}
   async classType(): Promise<string> {return this.$callMethod('classType');}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
@@ -1672,7 +1673,6 @@ export class PlotWidget extends Item {
   async pack(a1: classdesc__pack_t): Promise<void> {return this.$callMethod('pack',a1);}
   async percent(...args: boolean[]): Promise<boolean> {return this.$callMethod('percent',...args);}
   async plot(a1: object): Promise<void> {return this.$callMethod('plot',a1);}
-  async plotOnTab(): Promise<boolean> {return this.$callMethod('plotOnTab');}
   async plotTabDisplay(...args: boolean[]): Promise<boolean> {return this.$callMethod('plotTabDisplay',...args);}
   async plotType(...args: string[]): Promise<string> {return this.$callMethod('plotType',...args);}
   async plotWidgetCast(): Promise<PlotWidget> {return this.$callMethod('plotWidgetCast');}
@@ -1700,10 +1700,10 @@ export class PlotWidget extends Item {
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
   async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async width(): Promise<number> {return this.$callMethod('width');}
-  async xlabel(...args: string[]): Promise<string> {return this.$callMethod('xlabel',...args);}
+  async xlabel(...args: any[]): Promise<string> {return this.$callMethod('xlabel',...args);}
   async xtickAngle(...args: number[]): Promise<number> {return this.$callMethod('xtickAngle',...args);}
-  async y1label(...args: string[]): Promise<string> {return this.$callMethod('y1label',...args);}
-  async ylabel(...args: string[]): Promise<string> {return this.$callMethod('ylabel',...args);}
+  async y1label(...args: any[]): Promise<string> {return this.$callMethod('y1label',...args);}
+  async ylabel(...args: any[]): Promise<string> {return this.$callMethod('ylabel',...args);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
 }
 

@@ -134,6 +134,7 @@ export interface CreateWindowPayload {
   url?: string;
   minWidth?: number;
   minHeight?: number;
+  alwaysOnTop?: boolean;
 }
 
 

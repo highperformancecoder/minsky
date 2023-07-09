@@ -58,6 +58,29 @@ for {set i 0} {\$i<[minsky.model.groups.size]} {incr i} {
 }
 minsky.canvas.renderToSVG allItemsSelected.svg
 
+for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
+  minsky.model.items(\$i).selected 0
+  minsky.model.items(\$i).onBorder 1
+}
+minsky.canvas.renderToSVG allItemsOnBorder.svg
+
+for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
+  if {[ minsky.model.items(\$i).classType]=="Sheet"} {
+    minsky.model.items(\$i).showSlice "headAndTail"
+    minsky.model.items(\$i).updateBoundingBox
+  }
+}
+minsky.canvas.renderToSVG allItemsHeadAndTail.svg
+
+for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
+  if {[ minsky.model.items(\$i).classType]=="Sheet"} {
+    minsky.model.items(\$i).showSlice "tail"           
+    minsky.model.items(\$i).updateBoundingBox
+  }
+}
+minsky.canvas.renderToSVG allItemsTail.svg
+
+
 tcl_exit
 EOF
 

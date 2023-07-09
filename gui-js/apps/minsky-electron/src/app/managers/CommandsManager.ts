@@ -191,7 +191,7 @@ export class CommandsManager {
       title = '';
     }
     
-    minsky.nameCurrentItem(minsky.canvas.item?.id()); // name current item
+    minsky.nameCurrentItem(await minsky.canvas.item?.id()); // name current item
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
       url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godley.id()}`,

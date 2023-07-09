@@ -31,7 +31,7 @@ SUITE(Variable)
   TEST(scoping)
     {
       CHECK_EQUAL(0, scope(":foo"));
-      CHECK_EQUAL(1, scope("furry[1]:foo"));
+      CHECK_THROW(scope("furry[1]:foo"), std::exception);
       CHECK_EQUAL(1, scope("1:foo"));
       CHECK_THROW(scope("foo"), ecolab::error);
       
@@ -42,7 +42,6 @@ SUITE(Variable)
 
       CHECK_EQUAL(":foo",minsky::valueId(0,"foo"));
       CHECK_EQUAL("1:foo",minsky::valueId(1,"foo"));
-      CHECK_EQUAL("1:foo",minsky::valueId("furry[1]:foo"));
       CHECK_EQUAL(":foo",minsky::valueId(":foo"));
       CHECK_THROW(minsky::valueId("foo"), ecolab::error);
 

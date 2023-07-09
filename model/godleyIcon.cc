@@ -518,7 +518,7 @@ namespace minsky
         double sum=0, absSum=0;
         for (size_t c=1; c<table.cols(); ++c)
           {
-            auto i=stockVars.find(valueIdFromScope(group.lock(), trimWS(table.cell(0,c))));
+            auto i=stockVars.find(minsky::valueId(group.lock(), trimWS(table.cell(0,c))));
             if (i!=stockVars.end())
               {
                 sum+=(table.signConventionReversed(c)? -1: 1)*i->second->value();

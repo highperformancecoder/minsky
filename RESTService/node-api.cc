@@ -197,6 +197,7 @@ extern "C"
           void* data,
           napi_threadsafe_function_call_mode is_blocking),
          (func,data,is_blocking));
+  NAPIFN(napi_add_env_cleanup_hook, (napi_env env, void (*fun)(void* arg), void* arg), (env,fun,arg));
 }
 
 

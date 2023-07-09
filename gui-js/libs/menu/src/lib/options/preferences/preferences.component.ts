@@ -36,7 +36,6 @@ export class PreferencesComponent implements OnInit {
   async updatePreferences() {
     if (this.electronService.isElectron) {
       const preferences = this.form.value;
-      this.electronService.log(this.form.value);
       await this.electronService.invoke(
         events.UPDATE_PREFERENCES,
         preferences

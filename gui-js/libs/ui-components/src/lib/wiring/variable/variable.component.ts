@@ -40,12 +40,12 @@ export class VariableComponent {
     }
   }
     openVariablePane() {
-       this.electronService.send(events.CREATE_MENU_POPUP, {
+      this.electronService.send(events.CREATE_MENU_POPUP, {
         title: 'Variables',
-           url: "#/headless/variable-pane",
+        url: "#/headless/variable-pane",
         width: 400,
         height: 450,
+        alwaysOnTop: true,
       });
-       
   }
 }

@@ -495,9 +495,9 @@ namespace schema3
         if (y.ypercent) x1->percent=*y.ypercent;
         if (y.plotTabDisplay) x1->plotTabDisplay=*y.plotTabDisplay;
         if (y.plotType) x1->plotType=*y.plotType;
-        if (y.xlabel) x1->xlabel=*y.xlabel;
-        if (y.ylabel) x1->ylabel=*y.ylabel;
-        if (y.y1label) x1->y1label=*y.y1label;
+        if (y.xlabel) x1->xlabel(*y.xlabel);
+        if (y.ylabel) x1->ylabel(*y.ylabel);
+        if (y.y1label) x1->y1label(*y.y1label);
         if (y.nxTicks) x1->nxTicks=*y.nxTicks;
         if (y.nyTicks) x1->nyTicks=*y.nyTicks;
         if (y.xtickAngle) x1->xtickAngle=*y.xtickAngle;
