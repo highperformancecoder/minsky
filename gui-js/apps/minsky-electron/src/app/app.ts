@@ -43,14 +43,15 @@ export default class App {
       ? join(process.resourcesPath, 'minsky-docs')
       : __dirname + '/../../../minsky-docs/';
 
+    backend('/minsky/pushFlags');
     await HelpFilesManager.initialize(helpFilesFolder);
     App.initMainWindow();
     await App.initMenu();
     App.loadMainWindow();
+    backend('/minsky/popFlags');
     if (App.cliArguments.length>1) {
       if (!isAbsolute(App.cliArguments[1]))
         App.cliArguments[1]=join(initialWorkingDirectory,App.cliArguments[1]);
-	console.log(App.cliArguments[1]);
 	try
 	{
           await CommandsManager.openNamedFile(App.cliArguments[1]);
@@ -139,7 +140,6 @@ export default class App {
     WindowManager.activeWindows.set(App.mainWindow.id, mainWindowDetails);
 
     CommandsManager.applyPreferences();
-    //logWindows(WindowManager.activeWindows);
 
     App.mainWindow.on('close', async (e) => {
       if (!App.directlyClose) {

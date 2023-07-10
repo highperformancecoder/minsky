@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>au.com.hpcoders.Minsky</id>
+  <name>Minsky</name>
+  <summary>A systems dynamics economics modeling software</summary>
+  <developer_name>High Performance Coders</developer_name>
+  <description><p>Minsky brings system dynamics and monetary modelling to economics. Models are defined using flowcharts on a drawing canvas (as are Matlab's Simulink, Vensim, Stella, etc). Minsky's unique feature is the "Godley Table", which uses double entry bookkeeping to generate stock-flow consistent models of financial flows.</p><p>Minsky is good for demonstrating mathematics too, with the most "math-like" interface in system dynamics.</p><p>Features:<ul><li>Graphical modelling environment similar to Vensim and Simulink</li><li>Unique feature of Godley table for modelling financial flows</li><li>Dynamic graphs embedded in canvas</li><li>Change simulation parameters on the fly to explore effects of economic policy, etc.</li><li>System ODE solver</li><li>Export of system as XML, LaTeX, SVG</li></ul></p></description>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <url type="bugtracker">https://sourceforge.net/p/minsky/tickets/</url>
+  <url type="donation">https://www.patreon.com/hpcoder</url>
+  <url type="help">https://www.profstevekeen.com/minsky/</url>
+  <url type="homepage">https://sourceforge.net/projects/minsky/</url>
+  <url type="vcs-browser">https://github.com/highperformancecoder/minsky</url>
+  <url type="contribute">https://github.com/highperformancecoder/minsky</url>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">https://a.fsdn.com/con/app/proj/minsky/screenshots/DebtDeflation.PNG</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://a.fsdn.com/con/app/proj/minsky/screenshots/DoublePendulum.PNG</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://a.fsdn.com/con/app/proj/minsky/screenshots/minsky3.png</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://a.fsdn.com/con/app/proj/minsky/screenshots/Lorenz.PNG</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.0"/>
+  <launchable type="desktop-id">au.com.hpcoders.Minsky.desktop</launchable>
+  <update_contact>hpcoder_AT_hpcoders.com.au</update_contact>
+</component>

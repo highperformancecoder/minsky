@@ -33,7 +33,7 @@ namespace minsky
 
   bool PlotTab::itemSelector(const ItemPtr& i)
   {
-	if (auto* p=i->plotWidgetCast()) return p->plotOnTab();
+	if (auto* p=i->plotWidgetCast()) return p->plotTabDisplay;
 	return false;
   }	
 

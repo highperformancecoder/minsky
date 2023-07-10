@@ -188,8 +188,8 @@ namespace
         case ShowSlice::headAndTail:
           startRow=0;
           numRows=0.5*height/rowHeight;
-          tailStartRow=size-numRows;
-          if ((startRow+2*numRows)*rowHeight>height)
+          tailStartRow=size-numRows+1;
+          if (2*numRows*rowHeight>height)
             tailStartRow++;
           break;
         case ShowSlice::tail:
@@ -386,7 +386,7 @@ void Sheet::draw(cairo_t* cairo) const
                 }
 
               auto dims=value->hypercube().dims();
-              double dataHeight=m_height-(dims.size()==2?2*rowHeight:0);
+              double dataHeight=m_height-(dims.size()==2?2*(rowHeight+3):0);
               ElisionRowChecker adjustRowAndFinish(showSlice,dataHeight,rowHeight,dims[0]);
               
               // draw in label column

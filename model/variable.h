@@ -40,12 +40,15 @@
 #include <accessor.h>
 #include <cairo/cairo.h>
 
+namespace ecolab {class Pango;}
+
 namespace minsky
 {
   class VariablePtr;
   struct SchemaHelper;
   class GodleyIcon;
-
+  class RenderVariable;
+  
   /// exception-safe increment/decrement of a counter in a block
   struct IncrDecrCounter
   {
@@ -71,18 +74,24 @@ namespace minsky
   {
   public:
     typedef VariableType::Type Type;
-  protected:
- 
     friend struct minsky::SchemaHelper;
-    
+
   private:
     CLASSDESC_ACCESS(VariableBase);
-    std::string m_name; 
+    std::string m_name;
+    std::string m_canonicalName; ///< latex processed and active stripped version of name
     std::pair<std::string,std::string> m_dimLabelsPicked;    
     mutable int unitsCtr=0; ///< for detecting reentrancy in units()
     static int stockVarsPassed; ///< for detecting reentrancy in units()
 
     void insertControlled(Selection& selection) override;
+
+    /// cached Pango objects
+    mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
+    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedMantissa;
+    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedExponent;
+    mutable double cachedValue;
+
   protected:
     void addPorts();
     
@@ -117,6 +126,7 @@ namespace minsky
     /// @{ variable displayed name
     virtual std::string name() const;
     virtual std::string name(const std::string& nm);
+    const std::string& canonicalName() const {return m_canonicalName;}
     /// @}
 
     /// accessor for the name member (may differ from name() with top

@@ -23,7 +23,6 @@
 #include "latexMarkup.h"
 #include "minsky_epilogue.h"
 
-#include <regex>
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;
 using namespace std;
@@ -32,52 +31,81 @@ namespace minsky
 {
   bool isValueId(const string& name)
   {
-    static regex pattern("((constant)?\\d*:[^:\\ \f\n\r\t\v]+)");
-    return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-      regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
+    // original code, left for reference
+    //    static regex pattern("((constant)?\\d*:[^:\\ \f\n\r\t\v]+)");
+    //    return name.length()>1 && name.substr(name.length()-2)!=":_" &&
+    //      regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
+    if (name.substr(name.length()-2)==":_") return false;
+    
+    static char constantPrefix[]="constant:";
+    static unsigned prefixLen=strlen(constantPrefix);
+    auto nameCStr=name.c_str();
+    char* endp=nullptr;
+    strtoull(nameCStr,&endp,10);
+    if (*endp==':' || (name.length()>prefixLen && strncmp(constantPrefix,nameCStr,prefixLen)==0))
+      {
+        // check unqualified name portion has no verboten characters
+        const char* uqName=*endp==':'? endp+1: nameCStr+prefixLen;
+        for (auto c=uqName; *c!='\0'; ++c)
+          if (strchr(":\\ \f\n\r\t\v",*c))
+            return false;
+        return true;
+      }
+    return false;
+  }
+
+  string canonicalName(const string& name)
+  {
+    return utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
   }
 
   string valueId(size_t scope, const string& name)
   {
-      auto tmp=":"+utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
-      if (scope==0) return tmp;
-      return to_string(scope)+tmp;
+    auto tmp=":"+name;
+    if (scope==0) return tmp;
+    return to_string(scope)+tmp;
   }
 
   string valueId(const string& name)
   {
-    return valueId(scope(name), utf_to_utf<char>(name));
+    return valueId(scope(name), canonicalName(name));
   }
 
   string valueId(const GroupPtr& ref, const string& name) 
-  {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(name));}
+  {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), canonicalName(name));}
 
   size_t scope(const string& name) 
   {
-    smatch m;
     auto nm=utf_to_utf<char>(name);
-    if (regex_search(nm, m, regex(R"((\d*)]?:.*)")))
-      if (m.size()>1 && m[1].matched && !m[1].str().empty())
-        return stoull(m[1].str());
-      else
-        return 0;
-    else
-      // no scope information is present
-      throw error("scope requested for local variable");
+    auto nameCStr=nm.c_str();
+    char* endp=nullptr;
+    size_t r=strtoull(nameCStr,&endp,10);
+    if (endp && *endp==':')
+      return r;
+    throw error("scope requested for local variable");
+    // old implementation left for reference
+    // smatch m;
+    //    if (regex_search(nm, m, regex(R"((\d*)]?:.*)")))
+    //      if (m.size()>1 && m[1].matched && !m[1].str().empty())
+    //        return stoull(m[1].str());
+    //      else
+    //        return 0;
+    //    else
+    //      // no scope information is present
+    //      throw error("scope requested for local variable");
   }
 
   GroupPtr scope(GroupPtr scope, const string& a_name)
   {
-    auto name=utf_to_utf<char>(stripActive(utf_to_utf<char>(a_name)));
-    if (name[0]==':' && scope)
+    auto name=canonicalName(a_name);
+    if (a_name[0]==':' && scope)
       {
         // find maximum enclosing scope that has this same-named variable
         for (auto g=scope->group.lock(); g; g=g->group.lock())
           for (auto& i: g->items)
             if (auto v=i->variableCast())
               {
-                auto n=stripActive(v->name());
-                if (n==name.substr(1)) // without ':' qualifier
+                if (v->canonicalName()==name)
                   {
                     scope=g;
                     goto break_outerloop;

@@ -1,5 +1,4 @@
 export * from './lib/backend/index';
-export * from './lib/environment';
 export * from './lib/constants/constants';
 export * from './lib/constants/magicNumbers';
 export * from './lib/constants/MainRenderingTabs';

@@ -55,6 +55,7 @@ for i in examples/*.mky; do
             if [ $i = "examples/reductionsTest.mky" -a $implicit ]; then continue; fi
             if [ $i = "examples/scansTest.mky" -a $implicit ]; then continue; fi
             if [ $i = "examples/indexing.mky" -a $implicit  ]; then continue; fi
+            if [ $i = "examples/plotWidget.mky" ]; then continue; fi
             cat >extraOpts.tcl <<EOF
 minsky.implicit $implicit
 minsky.order $order

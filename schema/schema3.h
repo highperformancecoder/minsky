@@ -187,7 +187,7 @@ namespace schema3
       ItemBase(id,static_cast<const minsky::Item&>(p),ports), name(p.title),
       logx(p.logx), logy(p.logy), ypercent(p.percent), plotTabDisplay(p.plotTabDisplay),
       plotType(p.plotType),
-      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
+      xlabel(p.xlabel()), ylabel(p.ylabel()), y1label(p.y1label()),
       nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
       exp_threshold(p.exp_threshold), legendGeometry(LegendGeometry(p)), palette(p.palette)
     {

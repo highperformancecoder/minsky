@@ -8,7 +8,6 @@ import {
   CanvasItem,
   ChangeTabPayload,
   CppClass,
-  environment,
   events,
   HandleDescriptionPayload,
   HandleDimensionPayload,
@@ -39,11 +38,6 @@ export default class ElectronEvents {
     return ipcMain;
   }
 }
-
-// Retrieve app version
-ipcMain.handle(events.GET_APP_VERSION, () => {
-  return environment.version;
-});
 
 ipcMain.handle(events.BACKEND, async (event, ...args: any[])=>{
   return await CppClass.backend(...args);

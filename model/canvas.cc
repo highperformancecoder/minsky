@@ -546,7 +546,7 @@ namespace minsky
        (&GroupItems::items, [&](const Items&,Items::const_iterator i)
         {
           if (auto p=(*i)->plotWidgetCast())
-            if (!p->plotOnTab()) p->togglePlotTabDisplay();	 
+            if (!p->plotTabDisplay) p->togglePlotTabDisplay();	 
           return false;
         });
   }    

@@ -22,6 +22,7 @@
 #include "renderNativeWindow.h"
 #include <TCL_obj_base.h>
 #include "classdesc_access.h"
+#include "latexMarkup.h"
 #include "plot.h"
 #include "variable.h"
 #include "variableValue.h"
@@ -62,6 +63,10 @@ namespace minsky
 
     bool xIsSecsSinceEpoch=false;
     bool redraw(int, int, int, int) override;
+
+    // shadow labels, so we can interpret as LaTeX code rather than Pango markup
+    std::string m_xlabel, m_ylabel, m_y1label;
+    
   public:
     using Item::x;
     using Item::y;
@@ -95,7 +100,24 @@ namespace minsky
     
     const PlotWidget* plotWidgetCast() const override {return this;}
     PlotWidget* plotWidgetCast() override {return this;}          
-    
+
+    /// shadowed label commands to allow latex intepretation
+    const std::string& xlabel() const {return m_xlabel;}
+    const std::string& xlabel(const std::string& x) {
+      ecolab::Plot::xlabel=latexToPangoNonItalicised(x);
+      return m_xlabel=x;
+    }
+    const std::string& ylabel() const {return m_ylabel;}
+    const std::string& ylabel(const std::string& x) {
+      ecolab::Plot::ylabel=latexToPangoNonItalicised(x);
+      return m_ylabel=x;
+    }
+    const std::string& y1label() const {return m_y1label;}
+    const std::string& y1label(const std::string& x) {
+      ecolab::Plot::y1label=latexToPangoNonItalicised(x);
+      return m_y1label=x;
+    }
+   
     void addPlotPt(double t); ///< add another plot point
     void updateIcon(double t) override {addPlotPt(t);}
     /// add vector/tensor curves to plot
@@ -110,7 +132,6 @@ namespace minsky
     
     bool plotTabDisplay=true; // ensure plots persisted on plot tab, but can optionally be made hidden. for ticket 1298
     void togglePlotTabDisplay() {plotTabDisplay=!plotTabDisplay;}     
-    bool plotOnTab() const {return plotTabDisplay;}     
     
     /// add this as a display plot to its group
     void makeDisplayPlot();
@@ -126,6 +147,10 @@ namespace minsky
     /// @{ handle mouse events
     void mouseDown(float,float) override;
     void mouseMove(float,float) override;
+    void mouseUp(float x,float y) override {
+      mouseMove(x,y);
+      ct=ClickType::outside;
+    }
     /// @}
 
     /// export the plotted data as a CSV file

@@ -660,7 +660,7 @@ namespace minsky
            {
              if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
                for (size_t col=1; col<gi->table.cols(); col++)
-                 if ((&gi->table!=&srcTable || col!=srcCol) && trimWS(gi->table.cell(0,col))==colName) // we have a match
+                 if ((&gi->table!=&srcTable || int(col)!=srcCol) && trimWS(gi->table.cell(0,col))==colName) // we have a match
                    balanceDuplicateColumns(*gi, col);
              return false;
            });
@@ -879,7 +879,7 @@ namespace minsky
       bool initialConditionRow(int row) const
       {return Super::operator*()->table.initialConditionRow(row);}
       string valueId(const std::string& x) const {
-        return valueIdFromScope(Super::operator*()->group.lock(), x);
+        return valueIdFromScope(Super::operator*()->group.lock(), canonicalName(x));
       }
     };
   }
