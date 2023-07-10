@@ -57,19 +57,19 @@ export const events = {
 
 // add non exposed commands here to get intellisense on the terminal popup
 export const unExposedTerminalCommands = [
-  '/minsky/model/cBounds',
-  '/minsky/model/zoomFactor',
-  '/minsky/model/relZoom',
-  '/minsky/model/setZoom',
-  '/minsky/canvas/itemFocus/initValue',
-  '/minsky/canvas/itemFocus/tooltip',
-  '/minsky/canvas/itemFocus/detailedText',
-  '/minsky/canvas/itemFocus/sliderMax',
-  '/minsky/canvas/itemFocus/sliderMin',
-  '/minsky/canvas/itemFocus/sliderStep',
-  '/minsky/canvas/itemFocus/sliderStepRel',
-  '/minsky/canvas/itemFocus/rotation',
-  '/minsky/canvas/itemFocus/setUnits',
+  'minsky.model.cBounds',
+  'minsky.model.zoomFactor',
+  'minsky.model.relZoom',
+  'minsky.model.setZoom',
+  'minsky.canvas.itemFocus.initValue',
+  'minsky.canvas.itemFocus.tooltip',
+  'minsky.canvas.itemFocus.detailedText',
+  'minsky.canvas.itemFocus.sliderMax',
+  'minsky.canvas.itemFocus.sliderMin',
+  'minsky.canvas.itemFocus.sliderStep',
+  'minsky.canvas.itemFocus.sliderStepRel',
+  'minsky.canvas.itemFocus.rotation',
+  'minsky.canvas.itemFocus.setUnits',
 ];
 
 export const dateTimeFormats = [

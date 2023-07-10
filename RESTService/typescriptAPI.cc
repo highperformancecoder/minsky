@@ -211,7 +211,7 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
           if (!prop.second.construction.empty())
             cout << "    this."<<prop.first<<"="<<prop.second.construction<<"\n";
           else
-            cout << "    this."<<prop.first<<"=new "<<prop.second.type<<"(this.$prefix()+'/"<<prop.first<<"');\n"; 
+            cout << "    this."<<prop.first<<"=new "<<prop.second.type<<"(this.$prefix()+'."<<prop.first<<"');\n"; 
         }
       cout << "  }\n";
 
@@ -304,5 +304,5 @@ int main()
     if (find(exportFirst.begin(), exportFirst.end(), i.first)==exportFirst.end())
       exportClass(i.first, i.second);
 
-  cout << "export var minsky=new Minsky('/minsky');\n";
+  cout << "export var minsky=new Minsky('minsky');\n";
 }

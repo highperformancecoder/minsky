@@ -207,7 +207,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   onKeyDown = async (event: KeyboardEvent) => {
     await this.communicationService.handleKeyDown({
       event,
-      command: `/minsky/namedItems/@elem/"${this.itemId}"/second/popup`,
+      command: `minsky.namedItems.@elem."${this.itemId}".second.popup`,
     });
 
     await this.redraw();

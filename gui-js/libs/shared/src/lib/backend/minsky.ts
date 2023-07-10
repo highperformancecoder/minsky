@@ -21,7 +21,7 @@ export class Item extends CppClass {
   bb: BoundingBox;
   constructor(prefix: string){
     super(prefix);
-    this.bb=new BoundingBox(this.$prefix()+'/bb');
+    this.bb=new BoundingBox(this.$prefix()+'.bb');
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
   async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
@@ -145,7 +145,7 @@ export class VariableBase extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.bb=new BoundingBox(this.$prefix()+'/bb');
+    this.bb=new BoundingBox(this.$prefix()+'.bb');
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
   async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
@@ -309,10 +309,10 @@ export class CSVDialog extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.item=new Item(this.$prefix()+'/item');
-    this.spec=new DataSpec(this.$prefix()+'/spec');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.item=new Item(this.$prefix()+'.item');
+    this.spec=new DataSpec(this.$prefix()+'.spec');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async colWidth(...args: number[]): Promise<number> {return this.$callMethod('colWidth',...args);}
   async columnOver(a1: number): Promise<number> {return this.$callMethod('columnOver',a1);}
@@ -372,16 +372,16 @@ export class Canvas extends CppClass {
   wireFocus: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.item=new Item(this.$prefix()+'/item');
-    this.itemFocus=new Item(this.$prefix()+'/itemFocus');
-    this.itemVector=new Sequence<Item>(this.$prefix()+'/itemVector',Item);
-    this.lasso=new LassoBox(this.$prefix()+'/lasso');
-    this.model=new Group(this.$prefix()+'/model');
-    this.selection=new Selection(this.$prefix()+'/selection');
-    this.updateRegion=new LassoBox(this.$prefix()+'/updateRegion');
-    this.wire=new Wire(this.$prefix()+'/wire');
-    this.wireFocus=new Wire(this.$prefix()+'/wireFocus');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.item=new Item(this.$prefix()+'.item');
+    this.itemFocus=new Item(this.$prefix()+'.itemFocus');
+    this.itemVector=new Sequence<Item>(this.$prefix()+'.itemVector',Item);
+    this.lasso=new LassoBox(this.$prefix()+'.lasso');
+    this.model=new Group(this.$prefix()+'.model');
+    this.selection=new Selection(this.$prefix()+'.selection');
+    this.updateRegion=new LassoBox(this.$prefix()+'.updateRegion');
+    this.wire=new Wire(this.$prefix()+'.wire');
+    this.wireFocus=new Wire(this.$prefix()+'.wireFocus');
   }
   async addGodley(): Promise<void> {return this.$callMethod('addGodley');}
   async addGroup(): Promise<void> {return this.$callMethod('addGroup');}
@@ -472,7 +472,7 @@ export class DataOp extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.data=new Map<number,number>(this.$prefix()+'/data');
+    this.data=new Map<number,number>(this.$prefix()+'.data');
   }
   async deriv(a1: number): Promise<number> {return this.$callMethod('deriv',a1);}
   async description(...args: any[]): Promise<string> {return this.$callMethod('description',...args);}
@@ -493,11 +493,11 @@ export class DataSpec extends CppClass {
   horizontalDimension: civita__Dimension;
   constructor(prefix: string){
     super(prefix);
-    this.dataCols=new Container<number>(this.$prefix()+'/dataCols');
-    this.dimensionCols=new Container<number>(this.$prefix()+'/dimensionCols');
-    this.dimensionNames=new Sequence<string>(this.$prefix()+'/dimensionNames');
-    this.dimensions=new Sequence<civita__Dimension>(this.$prefix()+'/dimensions',civita__Dimension);
-    this.horizontalDimension=new civita__Dimension(this.$prefix()+'/horizontalDimension');
+    this.dataCols=new Container<number>(this.$prefix()+'.dataCols');
+    this.dimensionCols=new Container<number>(this.$prefix()+'.dimensionCols');
+    this.dimensionNames=new Sequence<string>(this.$prefix()+'.dimensionNames');
+    this.dimensions=new Sequence<civita__Dimension>(this.$prefix()+'.dimensions',civita__Dimension);
+    this.horizontalDimension=new civita__Dimension(this.$prefix()+'.horizontalDimension');
   }
   async columnar(...args: boolean[]): Promise<boolean> {return this.$callMethod('columnar',...args);}
   async dataColOffset(...args: number[]): Promise<number> {return this.$callMethod('dataColOffset',...args);}
@@ -529,11 +529,11 @@ export class DataSpecSchema extends CppClass {
   horizontalDimension: civita__Dimension;
   constructor(prefix: string){
     super(prefix);
-    this.dataCols=new Container<number>(this.$prefix()+'/dataCols');
-    this.dimensionCols=new Container<number>(this.$prefix()+'/dimensionCols');
-    this.dimensionNames=new Sequence<string>(this.$prefix()+'/dimensionNames');
-    this.dimensions=new Sequence<civita__Dimension>(this.$prefix()+'/dimensions',civita__Dimension);
-    this.horizontalDimension=new civita__Dimension(this.$prefix()+'/horizontalDimension');
+    this.dataCols=new Container<number>(this.$prefix()+'.dataCols');
+    this.dimensionCols=new Container<number>(this.$prefix()+'.dimensionCols');
+    this.dimensionNames=new Sequence<string>(this.$prefix()+'.dimensionNames');
+    this.dimensions=new Sequence<civita__Dimension>(this.$prefix()+'.dimensions',civita__Dimension);
+    this.horizontalDimension=new civita__Dimension(this.$prefix()+'.horizontalDimension');
   }
   async columnar(...args: boolean[]): Promise<boolean> {return this.$callMethod('columnar',...args);}
   async dataColOffset(...args: number[]): Promise<number> {return this.$callMethod('dataColOffset',...args);}
@@ -563,9 +563,9 @@ export class EquationDisplay extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.item=new Item(this.$prefix()+'/item');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.item=new Item(this.$prefix()+'.item');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
@@ -614,9 +614,9 @@ export class FontDisplay extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.item=new Item(this.$prefix()+'/item');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.item=new Item(this.$prefix()+'.item');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
@@ -657,10 +657,10 @@ export class GodleyIcon extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.editor=new GodleyTableEditor(this.$prefix()+'/editor');
-    this.popup=new GodleyTableWindow(this.$prefix()+'/popup');
-    this.svgRenderer=new SVGRenderer(this.$prefix()+'/svgRenderer');
-    this.table=new GodleyTable(this.$prefix()+'/table');
+    this.editor=new GodleyTableEditor(this.$prefix()+'.editor');
+    this.popup=new GodleyTableWindow(this.$prefix()+'.popup');
+    this.svgRenderer=new SVGRenderer(this.$prefix()+'.svgRenderer');
+    this.table=new GodleyTable(this.$prefix()+'.table');
   }
   async adjustPopupWidgets(): Promise<void> {return this.$callMethod('adjustPopupWidgets');}
   async bottomMargin(): Promise<number> {return this.$callMethod('bottomMargin');}
@@ -713,14 +713,14 @@ export class GodleyTab extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'/bottomRowMargin');
-    this.item=new Item(this.$prefix()+'/item');
-    this.itemFocus=new Item(this.$prefix()+'/itemFocus');
-    this.itemVector=new Sequence<Item>(this.$prefix()+'/itemVector',Item);
-    this.rightColMargin=new Sequence<number>(this.$prefix()+'/rightColMargin');
-    this.varAttrib=new Sequence<string>(this.$prefix()+'/varAttrib');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'.bottomRowMargin');
+    this.item=new Item(this.$prefix()+'.item');
+    this.itemFocus=new Item(this.$prefix()+'.itemFocus');
+    this.itemVector=new Sequence<Item>(this.$prefix()+'.itemVector',Item);
+    this.rightColMargin=new Sequence<number>(this.$prefix()+'.rightColMargin');
+    this.varAttrib=new Sequence<string>(this.$prefix()+'.varAttrib');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async cell(a1: number,a2: number): Promise<ecolab__Pango> {return this.$callMethod('cell',a1,a2);}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
@@ -829,7 +829,7 @@ export class GodleyTableEditor extends CppClass {
   colLeftMargin: Sequence<number>;
   constructor(prefix: string){
     super(prefix);
-    this.colLeftMargin=new Sequence<number>(this.$prefix()+'/colLeftMargin');
+    this.colLeftMargin=new Sequence<number>(this.$prefix()+'.colLeftMargin');
   }
   async addFlow(a1: number): Promise<void> {return this.$callMethod('addFlow',a1);}
   async addFlowByRow(a1: number): Promise<void> {return this.$callMethod('addFlowByRow',a1);}
@@ -906,10 +906,10 @@ export class GodleyTableWindow extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.colLeftMargin=new Sequence<number>(this.$prefix()+'/colLeftMargin');
-    this.item=new Item(this.$prefix()+'/item');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.colLeftMargin=new Sequence<number>(this.$prefix()+'.colLeftMargin');
+    this.item=new Item(this.$prefix()+'.item');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async addFlow(a1: number): Promise<void> {return this.$callMethod('addFlow',a1);}
   async addFlowByRow(a1: number): Promise<void> {return this.$callMethod('addFlowByRow',a1);}
@@ -1017,15 +1017,15 @@ export class Group extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.bb=new BoundingBox(this.$prefix()+'/bb');
-    this.bookmarks=new Container<Bookmark>(this.$prefix()+'/bookmarks',Bookmark);
-    this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'/createdIOvariables',VariableBase);
-    this.groups=new Sequence<Group>(this.$prefix()+'/groups',Group);
-    this.inVariables=new Sequence<VariableBase>(this.$prefix()+'/inVariables',VariableBase);
-    this.items=new Sequence<Item>(this.$prefix()+'/items',Item);
-    this.outVariables=new Sequence<VariableBase>(this.$prefix()+'/outVariables',VariableBase);
-    this.svgRenderer=new SVGRenderer(this.$prefix()+'/svgRenderer');
-    this.wires=new Sequence<Wire>(this.$prefix()+'/wires',Wire);
+    this.bb=new BoundingBox(this.$prefix()+'.bb');
+    this.bookmarks=new Container<Bookmark>(this.$prefix()+'.bookmarks',Bookmark);
+    this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'.createdIOvariables',VariableBase);
+    this.groups=new Sequence<Group>(this.$prefix()+'.groups',Group);
+    this.inVariables=new Sequence<VariableBase>(this.$prefix()+'.inVariables',VariableBase);
+    this.items=new Sequence<Item>(this.$prefix()+'.items',Item);
+    this.outVariables=new Sequence<VariableBase>(this.$prefix()+'.outVariables',VariableBase);
+    this.svgRenderer=new SVGRenderer(this.$prefix()+'.svgRenderer');
+    this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
   async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
@@ -1189,13 +1189,13 @@ export class GroupItems extends CppClass {
   wires: Sequence<Wire>;
   constructor(prefix: string){
     super(prefix);
-    this.bookmarks=new Container<Bookmark>(this.$prefix()+'/bookmarks',Bookmark);
-    this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'/createdIOvariables',VariableBase);
-    this.groups=new Sequence<Group>(this.$prefix()+'/groups',Group);
-    this.inVariables=new Sequence<VariableBase>(this.$prefix()+'/inVariables',VariableBase);
-    this.items=new Sequence<Item>(this.$prefix()+'/items',Item);
-    this.outVariables=new Sequence<VariableBase>(this.$prefix()+'/outVariables',VariableBase);
-    this.wires=new Sequence<Wire>(this.$prefix()+'/wires',Wire);
+    this.bookmarks=new Container<Bookmark>(this.$prefix()+'.bookmarks',Bookmark);
+    this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'.createdIOvariables',VariableBase);
+    this.groups=new Sequence<Group>(this.$prefix()+'.groups',Group);
+    this.inVariables=new Sequence<VariableBase>(this.$prefix()+'.inVariables',VariableBase);
+    this.items=new Sequence<Item>(this.$prefix()+'.items',Item);
+    this.outVariables=new Sequence<VariableBase>(this.$prefix()+'.outVariables',VariableBase);
+    this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
   async addGroup(a1: Group): Promise<object> {return this.$callMethod('addGroup',a1);}
   async addItem(...args: any[]): Promise<object> {return this.$callMethod('addItem',...args);}
@@ -1220,7 +1220,7 @@ export class HandleLockInfo extends CppClass {
   handleNames: Sequence<string>;
   constructor(prefix: string){
     super(prefix);
-    this.handleNames=new Sequence<string>(this.$prefix()+'/handleNames');
+    this.handleNames=new Sequence<string>(this.$prefix()+'.handleNames');
   }
   async calipers(...args: boolean[]): Promise<boolean> {return this.$callMethod('calipers',...args);}
   async order(...args: boolean[]): Promise<boolean> {return this.$callMethod('order',...args);}
@@ -1235,7 +1235,7 @@ export class IntOp extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.intVar=new VariableBase(this.$prefix()+'/intVar');
+    this.intVar=new VariableBase(this.$prefix()+'.intVar');
   }
   async attachedToDefiningVar(a1: Container<Item>): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',a1);}
   async coupled(): Promise<boolean> {return this.$callMethod('coupled');}
@@ -1273,9 +1273,9 @@ export class Lock extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.lockedIcon=new SVGRenderer(this.$prefix()+'/lockedIcon');
-    this.lockedState=new ravel__RavelState(this.$prefix()+'/lockedState');
-    this.unlockedIcon=new SVGRenderer(this.$prefix()+'/unlockedIcon');
+    this.lockedIcon=new SVGRenderer(this.$prefix()+'.lockedIcon');
+    this.lockedState=new ravel__RavelState(this.$prefix()+'.lockedState');
+    this.unlockedIcon=new SVGRenderer(this.$prefix()+'.unlockedIcon');
   }
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async locked(): Promise<boolean> {return this.$callMethod('locked');}
@@ -1304,23 +1304,23 @@ export class Minsky extends CppClass {
   variableValues: VariableValues;
   constructor(prefix: string){
     super(prefix);
-    this.canvas=new Canvas(this.$prefix()+'/canvas');
-    this.conversions=new civita__Conversions(this.$prefix()+'/conversions');
-    this.dimensions=new Map<string,civita__Dimension>(this.$prefix()+'/dimensions',civita__Dimension);
-    this.equationDisplay=new EquationDisplay(this.$prefix()+'/equationDisplay');
-    this.evalGodley=new EvalGodley(this.$prefix()+'/evalGodley');
-    this.flowVars=new Sequence<number>(this.$prefix()+'/flowVars');
-    this.fontSampler=new FontDisplay(this.$prefix()+'/fontSampler');
-    this.godleyTab=new GodleyTab(this.$prefix()+'/godleyTab');
-    this.logVarList=new Container<string>(this.$prefix()+'/logVarList');
-    this.model=new Group(this.$prefix()+'/model');
-    this.namedItems=new Map<string,Item>(this.$prefix()+'/namedItems',Item);
-    this.panopticon=new Panopticon(this.$prefix()+'/panopticon');
-    this.plotTab=new PlotTab(this.$prefix()+'/plotTab');
-    this.stockVars=new Sequence<number>(this.$prefix()+'/stockVars');
-    this.variableInstanceList=new VariableInstanceList(this.$prefix()+'/variableInstanceList');
-    this.variablePane=new VariablePane(this.$prefix()+'/variablePane');
-    this.variableValues=new VariableValues(this.$prefix()+'/variableValues');
+    this.canvas=new Canvas(this.$prefix()+'.canvas');
+    this.conversions=new civita__Conversions(this.$prefix()+'.conversions');
+    this.dimensions=new Map<string,civita__Dimension>(this.$prefix()+'.dimensions',civita__Dimension);
+    this.equationDisplay=new EquationDisplay(this.$prefix()+'.equationDisplay');
+    this.evalGodley=new EvalGodley(this.$prefix()+'.evalGodley');
+    this.flowVars=new Sequence<number>(this.$prefix()+'.flowVars');
+    this.fontSampler=new FontDisplay(this.$prefix()+'.fontSampler');
+    this.godleyTab=new GodleyTab(this.$prefix()+'.godleyTab');
+    this.logVarList=new Container<string>(this.$prefix()+'.logVarList');
+    this.model=new Group(this.$prefix()+'.model');
+    this.namedItems=new Map<string,Item>(this.$prefix()+'.namedItems',Item);
+    this.panopticon=new Panopticon(this.$prefix()+'.panopticon');
+    this.plotTab=new PlotTab(this.$prefix()+'.plotTab');
+    this.stockVars=new Sequence<number>(this.$prefix()+'.stockVars');
+    this.variableInstanceList=new VariableInstanceList(this.$prefix()+'.variableInstanceList');
+    this.variablePane=new VariablePane(this.$prefix()+'.variablePane');
+    this.variableValues=new VariableValues(this.$prefix()+'.variableValues');
   }
   async addIntegral(): Promise<void> {return this.$callMethod('addIntegral');}
   async allGodleyFlowVars(): Promise<string[]> {return this.$callMethod('allGodleyFlowVars');}
@@ -1460,9 +1460,9 @@ export class Panopticon extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.item=new Item(this.$prefix()+'/item');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.item=new Item(this.$prefix()+'.item');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async cheight(...args: number[]): Promise<number> {return this.$callMethod('cheight',...args);}
   async cleft(...args: number[]): Promise<number> {return this.$callMethod('cleft',...args);}
@@ -1510,14 +1510,14 @@ export class PlotTab extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'/bottomRowMargin');
-    this.item=new Item(this.$prefix()+'/item');
-    this.itemFocus=new Item(this.$prefix()+'/itemFocus');
-    this.itemVector=new Sequence<Item>(this.$prefix()+'/itemVector',Item);
-    this.rightColMargin=new Sequence<number>(this.$prefix()+'/rightColMargin');
-    this.varAttrib=new Sequence<string>(this.$prefix()+'/varAttrib');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'.bottomRowMargin');
+    this.item=new Item(this.$prefix()+'.item');
+    this.itemFocus=new Item(this.$prefix()+'.itemFocus');
+    this.itemVector=new Sequence<Item>(this.$prefix()+'.itemVector',Item);
+    this.rightColMargin=new Sequence<number>(this.$prefix()+'.rightColMargin');
+    this.varAttrib=new Sequence<string>(this.$prefix()+'.varAttrib');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async cell(a1: number,a2: number): Promise<ecolab__Pango> {return this.$callMethod('cell',a1,a2);}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
@@ -1594,18 +1594,18 @@ export class PlotWidget extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.item=new Item(this.$prefix()+'/item');
-    this.palette=new Sequence<ecolab__Plot__LineStyle>(this.$prefix()+'/palette',ecolab__Plot__LineStyle);
-    this.wire=new Wire(this.$prefix()+'/wire');
-    this.xmaxVar=new VariableValue(this.$prefix()+'/xmaxVar');
-    this.xminVar=new VariableValue(this.$prefix()+'/xminVar');
-    this.xvars=new Sequence<VariableValue>(this.$prefix()+'/xvars',VariableValue);
-    this.y1maxVar=new VariableValue(this.$prefix()+'/y1maxVar');
-    this.y1minVar=new VariableValue(this.$prefix()+'/y1minVar');
-    this.ymaxVar=new VariableValue(this.$prefix()+'/ymaxVar');
-    this.yminVar=new VariableValue(this.$prefix()+'/yminVar');
-    this.yvars=new Sequence<VariableValue>(this.$prefix()+'/yvars',VariableValue);
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.item=new Item(this.$prefix()+'.item');
+    this.palette=new Sequence<ecolab__Plot__LineStyle>(this.$prefix()+'.palette',ecolab__Plot__LineStyle);
+    this.wire=new Wire(this.$prefix()+'.wire');
+    this.xmaxVar=new VariableValue(this.$prefix()+'.xmaxVar');
+    this.xminVar=new VariableValue(this.$prefix()+'.xminVar');
+    this.xvars=new Sequence<VariableValue>(this.$prefix()+'.xvars',VariableValue);
+    this.y1maxVar=new VariableValue(this.$prefix()+'.y1maxVar');
+    this.y1minVar=new VariableValue(this.$prefix()+'.y1minVar');
+    this.ymaxVar=new VariableValue(this.$prefix()+'.ymaxVar');
+    this.yminVar=new VariableValue(this.$prefix()+'.yminVar');
+    this.yvars=new Sequence<VariableValue>(this.$prefix()+'.yvars',VariableValue);
   }
   async AssignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('AssignSide',a1,a2);}
   async Image(...args: any[]): Promise<string> {return this.$callMethod('Image',...args);}
@@ -1738,10 +1738,10 @@ export class Ravel extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.axisDimensions=new Map<string,civita__Dimension>(this.$prefix()+'/axisDimensions',civita__Dimension);
-    this.lockGroup=new RavelLockGroup(this.$prefix()+'/lockGroup');
-    this.popup=new RavelPopup(this.$prefix()+'/popup');
-    this.svgRenderer=new SVGRenderer(this.$prefix()+'/svgRenderer');
+    this.axisDimensions=new Map<string,civita__Dimension>(this.$prefix()+'.axisDimensions',civita__Dimension);
+    this.lockGroup=new RavelLockGroup(this.$prefix()+'.lockGroup');
+    this.popup=new RavelPopup(this.$prefix()+'.popup');
+    this.svgRenderer=new SVGRenderer(this.$prefix()+'.svgRenderer');
   }
   async adjustSlicer(a1: number): Promise<void> {return this.$callMethod('adjustSlicer',a1);}
   async allSliceLabels(): Promise<string[]> {return this.$callMethod('allSliceLabels');}
@@ -1801,7 +1801,7 @@ export class RavelLockGroup extends CppClass {
   handleLockInfo: Sequence<HandleLockInfo>;
   constructor(prefix: string){
     super(prefix);
-    this.handleLockInfo=new Sequence<HandleLockInfo>(this.$prefix()+'/handleLockInfo',HandleLockInfo);
+    this.handleLockInfo=new Sequence<HandleLockInfo>(this.$prefix()+'.handleLockInfo',HandleLockInfo);
   }
   async addHandleInfo(a1: Ravel): Promise<void> {return this.$callMethod('addHandleInfo',a1);}
   async addRavel(a1: Ravel): Promise<void> {return this.$callMethod('addRavel',a1);}
@@ -1823,9 +1823,9 @@ export class RavelPopup extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.item=new Item(this.$prefix()+'/item');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.item=new Item(this.$prefix()+'.item');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
@@ -1864,9 +1864,9 @@ export class RenderNativeWindow extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.item=new Item(this.$prefix()+'/item');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.item=new Item(this.$prefix()+'.item');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
@@ -1919,15 +1919,15 @@ export class Selection extends CppClass {
   wires: Sequence<Wire>;
   constructor(prefix: string){
     super(prefix);
-    this.bb=new BoundingBox(this.$prefix()+'/bb');
-    this.bookmarks=new Container<Bookmark>(this.$prefix()+'/bookmarks',Bookmark);
-    this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'/createdIOvariables',VariableBase);
-    this.groups=new Sequence<Group>(this.$prefix()+'/groups',Group);
-    this.inVariables=new Sequence<VariableBase>(this.$prefix()+'/inVariables',VariableBase);
-    this.items=new Sequence<Item>(this.$prefix()+'/items',Item);
-    this.outVariables=new Sequence<VariableBase>(this.$prefix()+'/outVariables',VariableBase);
-    this.svgRenderer=new SVGRenderer(this.$prefix()+'/svgRenderer');
-    this.wires=new Sequence<Wire>(this.$prefix()+'/wires',Wire);
+    this.bb=new BoundingBox(this.$prefix()+'.bb');
+    this.bookmarks=new Container<Bookmark>(this.$prefix()+'.bookmarks',Bookmark);
+    this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'.createdIOvariables',VariableBase);
+    this.groups=new Sequence<Group>(this.$prefix()+'.groups',Group);
+    this.inVariables=new Sequence<VariableBase>(this.$prefix()+'.inVariables',VariableBase);
+    this.items=new Sequence<Item>(this.$prefix()+'.items',Item);
+    this.outVariables=new Sequence<VariableBase>(this.$prefix()+'.outVariables',VariableBase);
+    this.svgRenderer=new SVGRenderer(this.$prefix()+'.svgRenderer');
+    this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
   async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
@@ -2146,8 +2146,8 @@ export class UserFunction extends Item {
       super(prefix)
     else
       super(prefix.$prefix())
-    this.argNames=new Sequence<string>(this.$prefix()+'/argNames');
-    this.argVals=new Sequence<number>(this.$prefix()+'/argVals');
+    this.argNames=new Sequence<string>(this.$prefix()+'.argNames');
+    this.argVals=new Sequence<number>(this.$prefix()+'.argVals');
   }
   async compile(): Promise<void> {return this.$callMethod('compile');}
   async create(a1: string): Promise<UserFunction> {return this.$callMethod('create',a1);}
@@ -2179,12 +2179,12 @@ export class VariablePane extends CppClass {
   wire: Wire;
   constructor(prefix: string){
     super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'/backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'/bottomRowMargin');
-    this.item=new Item(this.$prefix()+'/item');
-    this.rightColMargin=new Sequence<number>(this.$prefix()+'/rightColMargin');
-    this.selection=new Container<string>(this.$prefix()+'/selection');
-    this.wire=new Wire(this.$prefix()+'/wire');
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'.bottomRowMargin');
+    this.item=new Item(this.$prefix()+'.item');
+    this.rightColMargin=new Sequence<number>(this.$prefix()+'.rightColMargin');
+    this.selection=new Container<string>(this.$prefix()+'.selection');
+    this.wire=new Wire(this.$prefix()+'.wire');
   }
   async cell(a1: number,a2: number): Promise<VariablePaneCell> {return this.$callMethod('cell',a1,a2);}
   async colX(a1: number): Promise<number> {return this.$callMethod('colX',a1);}
@@ -2251,9 +2251,9 @@ export class VariableValue extends CppClass {
   units: Units;
   constructor(prefix: string){
     super(prefix);
-    this.csvDialog=new CSVDialog(this.$prefix()+'/csvDialog');
-    this.tensorInit=new civita__TensorVal(this.$prefix()+'/tensorInit');
-    this.units=new Units(this.$prefix()+'/units');
+    this.csvDialog=new CSVDialog(this.$prefix()+'.csvDialog');
+    this.tensorInit=new civita__TensorVal(this.$prefix()+'.tensorInit');
+    this.units=new Units(this.$prefix()+'.units');
   }
   async allocValue(): Promise<VariableValue> {return this.$callMethod('allocValue');}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
@@ -2359,7 +2359,7 @@ export class civita__Hypercube extends CppClass {
   xvectors: Sequence<civita__XVector>;
   constructor(prefix: string){
     super(prefix);
-    this.xvectors=new Sequence<civita__XVector>(this.$prefix()+'/xvectors',civita__XVector);
+    this.xvectors=new Sequence<civita__XVector>(this.$prefix()+'.xvectors',civita__XVector);
   }
   async dimLabels(): Promise<string[]> {return this.$callMethod('dimLabels');}
   async dims(...args: any[]): Promise<number[]> {return this.$callMethod('dims',...args);}
@@ -2422,7 +2422,7 @@ export class civita__XVector extends CppClass {
   dimension: civita__Dimension;
   constructor(prefix: string){
     super(prefix);
-    this.dimension=new civita__Dimension(this.$prefix()+'/dimension');
+    this.dimension=new civita__Dimension(this.$prefix()+'.dimension');
   }
   async checkThisType(): Promise<boolean> {return this.$callMethod('checkThisType');}
   async imposeDimension(): Promise<void> {return this.$callMethod('imposeDimension');}
@@ -2435,7 +2435,7 @@ export class ecolab__Plot__LineStyle extends CppClass {
   colour: ecolab__cairo__Colour;
   constructor(prefix: string){
     super(prefix);
-    this.colour=new ecolab__cairo__Colour(this.$prefix()+'/colour');
+    this.colour=new ecolab__cairo__Colour(this.$prefix()+'.colour');
   }
   async dashPattern(): Promise<number[]> {return this.$callMethod('dashPattern');}
   async dashStyle(...args: string[]): Promise<string> {return this.$callMethod('dashStyle',...args);}
@@ -2456,7 +2456,7 @@ export class ravel__HandleState extends CppClass {
   customOrder: Sequence<string>;
   constructor(prefix: string){
     super(prefix);
-    this.customOrder=new Sequence<string>(this.$prefix()+'/customOrder');
+    this.customOrder=new Sequence<string>(this.$prefix()+'.customOrder');
   }
   async collapsed(...args: boolean[]): Promise<boolean> {return this.$callMethod('collapsed',...args);}
   async description(...args: string[]): Promise<string> {return this.$callMethod('description',...args);}
@@ -2476,12 +2476,12 @@ export class ravel__RavelState extends CppClass {
   outputHandles: Sequence<string>;
   constructor(prefix: string){
     super(prefix);
-    this.handleStates=new Sequence<ravel__HandleState>(this.$prefix()+'/handleStates',ravel__HandleState);
-    this.outputHandles=new Sequence<string>(this.$prefix()+'/outputHandles');
+    this.handleStates=new Sequence<ravel__HandleState>(this.$prefix()+'.handleStates',ravel__HandleState);
+    this.outputHandles=new Sequence<string>(this.$prefix()+'.outputHandles');
   }
   async clear(): Promise<void> {return this.$callMethod('clear');}
   async empty(): Promise<boolean> {return this.$callMethod('empty');}
   async radius(...args: number[]): Promise<number> {return this.$callMethod('radius',...args);}
 }
 
-export var minsky=new Minsky('/minsky');
+export var minsky=new Minsky('minsky');
