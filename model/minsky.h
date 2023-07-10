@@ -208,7 +208,6 @@ namespace minsky
     VariableValues variableValues;
     Dimensions dimensions;
     Conversions conversions;
-    bool phillips=false; ///< display as a phillips diagram
     /// stash the maximum absolute value obtained by a dimensioned quantity
     std::map<Units, double> maxValue;
     std::map<Units, double> maxFlowValue; // max flow values along wires

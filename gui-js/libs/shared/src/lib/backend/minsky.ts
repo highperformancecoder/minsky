@@ -1412,7 +1412,6 @@ export class Minsky extends CppClass {
   async openModelInCanvas(): Promise<void> {return this.$callMethod('openModelInCanvas');}
   async order(...args: number[]): Promise<number> {return this.$callMethod('order',...args);}
   async paste(): Promise<void> {return this.$callMethod('paste');}
-  async phillips(...args: boolean[]): Promise<boolean> {return this.$callMethod('phillips',...args);}
   async physicalMem(): Promise<number> {return this.$callMethod('physicalMem');}
   async popFlags(): Promise<void> {return this.$callMethod('popFlags');}
   async populateMissingDimensions(): Promise<void> {return this.$callMethod('populateMissingDimensions');}

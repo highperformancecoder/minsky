@@ -1003,17 +1003,7 @@ namespace minsky
         lastRedraw=microsec_clock::local_time();
       }
 
-//    for (auto& v: variableValues)
-//      {
-//        if (v.second->type()==VariableType::flow)
-//          {
-//            auto& val=PhillipsFlow::maxFlow[v.second->units];
-//            if (abs(v.second->value())>val && v.second->rank()==0)
-//              val=abs(v.second->value());
-//          }
-//      }
-
-        return {t, deltaT()};
+    return {t, deltaT()};
   }
   
   string Minsky::diagnoseNonFinite() const
