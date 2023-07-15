@@ -63,7 +63,7 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
     if (typeof(error)!=="string") error=error?.message;
     log.error('Rest API: ',command,arg,'=>Exception caught: ' + error);
     if (!dialog) throw error; // rethrow to force error in jest environment
-      if (error && command !== '/minsky/canvas/item/importFromCSV')
+      if (error && command !== 'minsky.canvas.item.importFromCSV')
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
           message: error,
           type: 'error',
@@ -89,7 +89,7 @@ export function backendSync(command: string, ...args: any[]) {
       arg=JSON5.stringify(args[0], {quote: '"'});
     }
 
-    let response=restService.call(command+"/$sync", arg);
+    let response=restService.call(command+".$sync", arg);
     if (logFilter(command))
       log.info('Rest API: ',command,arg,"=>",response);
     return JSON5.parse(response);
@@ -188,7 +188,7 @@ restService.setBookmarkRefreshCallback(()=>{
 export function sanityCheck()
 {
   setTimeout(async()=>{
-  if (await backend("/minsky/minskyVersion")!==version)
+  if (await backend("minsky.minskyVersion")!==version)
     setTimeout(()=>{
       dialog.showMessageBoxSync({
         message: "Mismatch of front end and back end versions",
@@ -196,7 +196,7 @@ export function sanityCheck()
       });
     },1000);
 
-  if (await backend("/minsky/ravelExpired"))
+  if (await backend("minsky.ravelExpired"))
     setTimeout(()=>{
       const button=dialog.showMessageBoxSync({
         message: "Your Ravel license has expired",
@@ -218,8 +218,8 @@ export function loadResources()
         ? __dirname+'/assets'
         : process.resourcesPath+'/assets';
 
-  backend('/minsky/setGodleyIconResource',assetsDir+'/godley.svg');
-  backend('/minsky/setGroupIconResource',assetsDir+'/group.svg');
-  backend('/minsky/setRavelIconResource',assetsDir+'/ravel-logo.svg');
-  backend('/minsky/setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
+  backend('minsky.setGodleyIconResource',assetsDir+'/godley.svg');
+  backend('minsky.setGroupIconResource',assetsDir+'/group.svg');
+  backend('minsky.setRavelIconResource',assetsDir+'/ravel-logo.svg');
+  backend('minsky.setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
 }

@@ -55,6 +55,12 @@ using namespace minsky;
 
 RESTMinsky rminsky;
 
+string toREST(string x)
+{
+  replace(x.begin(),x.end(),'.','/');
+  return '/'+x;
+}
+
 void processBuffer(const string& buffer)
 {
   if (buffer[0]=='#') return;
@@ -66,7 +72,7 @@ void processBuffer(const string& buffer)
   if (buffer=="/list")
     {
       for (auto& i: rminsky.registry)
-        cout << i.first << endl;
+        cout << toREST(i.first) << endl;
       return;
     }
 
@@ -85,10 +91,10 @@ void processBuffer(const string& buffer)
           nargs = jin.type()==json5_parser::array_type? jin.get_array().size(): 1;
         }
       cout<<cmd<<"=>";
-      write(rminsky.registry.process(cmd, jin),cout);
-      cout << endl;
       cmd.erase(0,1); // remove leading '/'
       replace(cmd.begin(), cmd.end(), '/', '.');
+      write(rminsky.registry.process(cmd, jin),cout);
+      cout << endl;
       rminsky.commandHook(cmd, nargs);
     }
   catch (const std::exception& ex)
@@ -100,7 +106,7 @@ void processBuffer(const string& buffer)
 int main(int argc, const char* argv[])
 {
   LocalMinsky lm(rminsky);
-  RESTProcess(rminsky.registry,"/minsky",minsky::minsky());
+  RESTProcess(rminsky.registry,"minsky",minsky::minsky());
 
   bool batch=argc>1 && argv[1]==string("-batch");
     

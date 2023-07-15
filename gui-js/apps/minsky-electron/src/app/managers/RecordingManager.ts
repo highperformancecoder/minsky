@@ -93,9 +93,9 @@ export class RecordingManager {
     }
 
     const recordIgnoreCommands = [
-      '/minsky/canvas/getItemAt',
-      '/minsky/canvas/getItemAtFocus',
-      '/minsky/canvas/getWireAt'
+      'minsky.canvas.getItemAt',
+      'minsky.canvas.getItemAtFocus',
+      'minsky.canvas.getWireAt'
     ];
 
     if (!recordIgnoreCommands.find((cmd) => command.includes(cmd)))

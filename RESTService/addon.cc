@@ -110,7 +110,7 @@ namespace minsky
       
       AddOnMinsky(): thread([this](){run();}) {
         flags=0;
-        RESTProcess(registry,"/minsky",static_cast<Minsky&>(*this));
+        RESTProcess(registry,"minsky",static_cast<Minsky&>(*this));
       }
       
       ~AddOnMinsky() {
@@ -157,8 +157,6 @@ namespace minsky
           default:
             break;
           }
-        command.erase(0,1); // remove leading '/'
-        replace(command.begin(), command.end(), '/', '.');
         commandHook(command,nargs);
         return result;
       }

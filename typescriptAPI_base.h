@@ -352,7 +352,7 @@ namespace classdesc
   std::string construct(const std::string& container, const std::string name)
   {
     string tn=typescriptType<VT>();
-    return "new "+container+"(this.$prefix()+'/"+name+"'"+
+    return "new "+container+"(this.$prefix()+'."+name+"'"+
       ((is_string<VT>::value || is_enum<VT>::value || is_arithmetic<VT>::value)?"":","+tn)+");";
   }
   

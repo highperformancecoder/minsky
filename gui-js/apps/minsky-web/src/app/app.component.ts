@@ -117,7 +117,7 @@ export class AppComponent implements DoCheck {
 
       this.router.navigate([tab]);
     } else {
-      this.router.navigate(['/wiring']);
+      this.router.navigate(['wiring']);
 
       
       if (this.electronService.isElectron) {

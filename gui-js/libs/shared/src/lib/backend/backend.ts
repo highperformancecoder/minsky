@@ -11,12 +11,12 @@ export class CppClass
   // the following methods start with $ to avoid clashing with any auto-generated C++ methods in derived classes
   protected async $callMethod(method: string,...args): Promise<any>
   {
-    return CppClass.backend(`${this.m_prefix}/${method}`, ...args);
+    return CppClass.backend(`${this.m_prefix}.${method}`, ...args);
   }
   // calls the method on this thread
   public $callMethodSync(method: string,...args)
   {
-    return CppClass.backend(`${this.m_prefix}/${method}/$sync`, ...args);
+    return CppClass.backend(`${this.m_prefix}.${method}.$sync`, ...args);
   }
   public async $properties(...args) {return CppClass.backend(this.m_prefix, ...args);}
   public async $list(): Promise<string[]> {return this.$callMethod("@list");} // $ prevents this method from being shadowed by a C++ method
@@ -40,7 +40,7 @@ export class Map<Key, Value> extends CppClass
   valueType: any;  // stash a reference to the actual type here, for use in a new expression
   constructor(prefix: string, valueType: any=null) {super(prefix); this.valueType=valueType;}
   elem(key: Key) {
-    const cmd=`${this.m_prefix}/@elem/${JSON5.stringify(key)}/second`;
+    const cmd=`${this.m_prefix}.@elem.${JSON5.stringify(key)}.second`;
     // if proxy type provided, instantiate that, otherwise return the current value
     return new Pair<Key,Value>
       (key,this.valueType? new this.valueType(cmd): this.$callMethod(cmd));
@@ -57,7 +57,7 @@ export class Container<Key,Value=Key> extends CppClass
   constructor(prefix: string, type: any=null) {super(prefix); this.type=type}
   elem(key: Key) {
     // if proxy type provided, instantiate that, otherwise return the current value
-    const cmd=`${this.m_prefix}/@elem/${JSON5.stringify(key)}`;
+    const cmd=`${this.m_prefix}.@elem.${JSON5.stringify(key)}`;
     return this.type? new this.type(cmd): this.$callMethod(cmd);
   }
   insert(key: Key) {this.$callMethod("@insert",key);}
