@@ -120,7 +120,7 @@ namespace minsky
 
       Value queueCommand(Env env, string command, const json_pack_t& arguments)
       {
-        auto syncPos=command.rfind("/$sync");
+        auto syncPos=command.rfind(".$sync");
         bool sync=syncPos==command.size()-6;
         if (sync)
           {

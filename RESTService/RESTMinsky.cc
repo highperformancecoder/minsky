@@ -28,20 +28,18 @@ namespace minsky
 {
   Minsky::CmdData RESTMinsky::getCommandData(const string& dottedCommand) const 
   {
-    string slashedCommand="/"+dottedCommand;
-    replace(slashedCommand.begin(), slashedCommand.end(), '.','/');
-    switch (registry.count(slashedCommand))
+    switch (registry.count(dottedCommand))
       {
       case 0:
         return no_command;
       case 1:
         {
-          auto& cmd=*registry.find(slashedCommand)->second;
+          auto& cmd=*registry.find(dottedCommand)->second;
           return cmd.isConst()? is_const: cmd.isObject()? is_setterGetter: generic;
         }
       case 2:
         {
-          auto firstCmd=registry.find(slashedCommand), secondCmd=firstCmd;
+          auto firstCmd=registry.find(dottedCommand), secondCmd=firstCmd;
           ++secondCmd;
           if (firstCmd->second->arity()+secondCmd->second->arity() == 1)
             return is_setterGetter;
