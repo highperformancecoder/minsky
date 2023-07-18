@@ -81,6 +81,7 @@ namespace minsky
   
   void RenderNativeWindow::renderFrame(const RenderFrameArgs& args)
   {
+    init();
     winInfoPtr.reset();
     winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works

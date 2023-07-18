@@ -39,6 +39,7 @@
 #include "operation.h"
 #include "pannableTab.h"
 #include "panopticon.h"
+#include "phillipsDiagram.h"
 #include "plotTab.h"
 #include "plotWidget.h"
 #include "progress.h"
@@ -166,6 +167,7 @@ namespace minsky
     PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
+    PhillipsDiagram phillipsDiagram;
     PlotTab plotTab;
     GodleyTab godleyTab;
     
@@ -206,6 +208,9 @@ namespace minsky
     VariableValues variableValues;
     Dimensions dimensions;
     Conversions conversions;
+    /// stash the maximum absolute value obtained by a dimensioned quantity
+    std::map<Units, double> maxValue;
+    std::map<Units, double> maxFlowValue; // max flow values along wires
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
     void populateMissingDimensionsFromVariable(const VariableValue&);

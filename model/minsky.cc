@@ -153,6 +153,9 @@ namespace minsky
     equations.clear();
     integrals.clear();
     variableValues.clear();
+    maxValue.clear();
+    PhillipsFlow::maxFlow.clear();
+    PhillipsStock::maxStock.clear();
     UserFunction::nextId=0;
     
     flowVars.clear();
@@ -960,7 +963,20 @@ namespace minsky
     canvas.requestRedraw();
     godleyTab.requestRedraw();
     plotTab.requestRedraw();
-
+    phillipsDiagram.requestRedraw();
+    
+    // update maxValues
+    PhillipsFlow::maxFlow.clear();
+    PhillipsStock::maxStock.clear();
+    for (auto& v: variableValues)
+      {
+        if (v.second->type()==VariableType::stock)
+          {
+            PhillipsStock::maxStock[v.second->units]+=v.second->value();
+          }
+      }
+    for (auto& i: PhillipsStock::maxStock) i.second=abs(i.second);
+    
     resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
   }
 
@@ -983,6 +999,7 @@ namespace minsky
         canvas.requestRedraw();
         godleyTab.requestRedraw();
         plotTab.requestRedraw();
+        phillipsDiagram.requestRedraw();
         lastRedraw=microsec_clock::local_time();
       }
 

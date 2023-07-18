@@ -49,6 +49,8 @@ namespace minsky
     };
     
     ~RenderNativeWindow() override;
+    /// perform any initialisation of any subclasses of this 
+    virtual void init() {};
     void renderFrame(const RenderFrameArgs& args);
     void destroyFrame();
     void draw();

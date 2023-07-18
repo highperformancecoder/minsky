@@ -42,6 +42,7 @@
 #include "pango.tcd"
 #include "pannableTab.tcd"
 #include "panopticon.tcd"
+#include "phillipsDiagram.tcd"
 #include "plot.tcd"
 #include "plotTab.tcd"
 #include "plotWidget.tcd"
@@ -267,6 +268,8 @@ int main()
   api.addSubclass<IntOp,Item>();
   api.addSubclass<Lock,Item>();
   api.addSubclass<OperationBase,Item>();
+  api.addSubclass<PhillipsFlow,Item>();
+  api.addSubclass<PhillipsStock,Item>();
   api.addSubclass<PlotWidget,Item>();
   api.addSubclass<Ravel,Item>();
   api.addSubclass<Sheet,Item>();
@@ -286,6 +289,7 @@ int main()
   cout << "class minsky__EventInterface__KeyPressArgs {}\n";
   cout << "class minsky__GodleyIcon__MoveCellArgs {}\n";
   cout << "class minsky__RenderNativeWindow__RenderFrameArgs {}\n";
+  cout << "class minsky__VariableType__TypeT {}\n";
   cout << "class civita__ITensor__Args {}\n";
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";
@@ -298,6 +302,8 @@ int main()
   // these need to be declared in a specific order
   vector<string> exportFirst{"Item","OperationBase","VariableBase"};
   for (auto& i: exportFirst) exportClass(i,api[i]);
+
+  cout << "class minsky__Variable<T> extends VariableBase {}\n";
 
   // then export the rest
   for (auto& i: api)
