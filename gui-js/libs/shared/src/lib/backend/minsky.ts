@@ -1285,6 +1285,7 @@ export class Lock extends Item {
     this.lockedState=new ravel__RavelState(this.$prefix()+'.lockedState');
     this.unlockedIcon=new SVGRenderer(this.$prefix()+'.unlockedIcon');
   }
+  async addPorts(): Promise<void> {return this.$callMethod('addPorts');}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async locked(): Promise<boolean> {return this.$callMethod('locked');}
   async ravelInput(): Promise<Ravel> {return this.$callMethod('ravelInput');}
