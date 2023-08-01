@@ -312,6 +312,7 @@ void Sheet::draw(cairo_t* cairo) const
     {
       if (!value || !m_ports[0] || m_ports[0]->numWires()==0) return;
       Pango pango(cairo);
+      pango.setFontSize(12.0);
       if (value->hypercube().rank()>2)
         {
           pango.setMarkup("Error: rank>2");
