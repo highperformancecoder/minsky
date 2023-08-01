@@ -146,7 +146,7 @@ namespace minsky
       if (auto integ=dynamic_cast<IntOp*>(i.get()))
         integrals.emplace(integ, integ->coupled());
     for (auto& i: itemsCopy)
-        cloneMap[i.get()]=r->addItem(i->clone());
+      cloneMap[i.get()]=r->addItem(i->clone(),true);
     for (auto& i: groups)
       cloneMap[i.get()]=r->addGroup(i->copyUnowned());
     for (auto& w: wires) 

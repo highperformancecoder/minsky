@@ -161,9 +161,9 @@ namespace minsky
     }
 
     /// add item, ownership is passed
-    ItemPtr addItem(Item* it) {return addItem(std::shared_ptr<Item>(it));}
+    ItemPtr addItem(Item* it, bool inSchema=false) {return addItem(std::shared_ptr<Item>(it),inSchema);}
     /** add item. 
-        @param inSchema - if building a group from schema processing, rather than generally
+        @param inSchema - if building a group from schema processing, rather than generally. Does not adjust item position within group if true.
     */
     virtual ItemPtr addItem(const std::shared_ptr<Item>&, bool inSchema=false);
     ItemPtr removeItem(const Item&);

@@ -1042,7 +1042,7 @@ export class Group extends Item {
   async addBookmarkXY(a1: number,a2: number,a3: string): Promise<void> {return this.$callMethod('addBookmarkXY',a1,a2,a3);}
   async addGroup(a1: Group): Promise<object> {return this.$callMethod('addGroup',a1);}
   async addInputVar(): Promise<void> {return this.$callMethod('addInputVar');}
-  async addItem(...args: any[]): Promise<object> {return this.$callMethod('addItem',...args);}
+  async addItem(a1: Item,a2: boolean): Promise<object> {return this.$callMethod('addItem',a1,a2);}
   async addOutputVar(): Promise<void> {return this.$callMethod('addOutputVar');}
   async addWire(...args: any[]): Promise<object> {return this.$callMethod('addWire',...args);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
@@ -1206,7 +1206,7 @@ export class GroupItems extends CppClass {
     this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
   async addGroup(a1: Group): Promise<object> {return this.$callMethod('addGroup',a1);}
-  async addItem(...args: any[]): Promise<object> {return this.$callMethod('addItem',...args);}
+  async addItem(a1: Item,a2: boolean): Promise<object> {return this.$callMethod('addItem',a1,a2);}
   async addWire(...args: any[]): Promise<object> {return this.$callMethod('addWire',...args);}
   async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async clear(): Promise<void> {return this.$callMethod('clear');}
@@ -2054,7 +2054,7 @@ export class Selection extends CppClass {
   async addBookmarkXY(a1: number,a2: number,a3: string): Promise<void> {return this.$callMethod('addBookmarkXY',a1,a2,a3);}
   async addGroup(a1: Group): Promise<object> {return this.$callMethod('addGroup',a1);}
   async addInputVar(): Promise<void> {return this.$callMethod('addInputVar');}
-  async addItem(...args: any[]): Promise<object> {return this.$callMethod('addItem',...args);}
+  async addItem(a1: Item,a2: boolean): Promise<object> {return this.$callMethod('addItem',a1,a2);}
   async addOutputVar(): Promise<void> {return this.$callMethod('addOutputVar');}
   async addWire(...args: any[]): Promise<object> {return this.$callMethod('addWire',...args);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
