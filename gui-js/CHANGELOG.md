@@ -1,6 +1,16 @@
-## <small>7.2.1 (2020-06-20)</small>
+# Changelog
 
-- ref/ keep only 1 eslint config ([e942747](https://github.com/maximegris/angular-electron/commit/e942747))
+This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+## 0.0.1 (2023-08-05)
+
+
+### Reverts
+
+* Revert "Report that .exe file is being copied to tmp." ([c7c6e6b](https://github.com/highperformancecoder/minsky/commit/c7c6e6be808f79484c8c95939088f5bbbb8c9f14))
+* Revert "Bump electron from 11.5.0 to 13.6.6 in /gui-js" ([5e24244](https://github.com/highperformancecoder/minsky/commit/5e24244e4a5887877efce8f8c72b9fa39e1b7da1))
+
+
 
 ## 7.2.0 (2020-06-20)
 
