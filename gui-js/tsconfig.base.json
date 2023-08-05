@@ -18,10 +18,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@minsky/menu": ["libs/menu/src/index.ts"],
       "@minsky/core": ["libs/core/src/index.ts"],
-      "@minsky/shared": ["libs/shared/src/index.ts"],
+      "@minsky/menu": ["libs/menu/src/index.ts"],
       "@minsky/minsky-server": ["libs/minsky-server/src/index.ts"],
+      "@minsky/shared": ["libs/shared/src/index.ts"],
       "@minsky/ui-components": ["libs/ui-components/src/index.ts"]
     }
   },

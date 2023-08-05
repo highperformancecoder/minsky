@@ -100,10 +100,10 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
       this.electronService.on(events.GODLEY_POPUP_REFRESH, async e => {
         await this.hardRefresh();
       });
-    this.electronService.on(events.ZOOM, (event, ratio)=>{this.zoom(ratio);});
+      this.electronService.on(events.ZOOM, (event, ratio)=>{this.zoom(ratio);});
       this.electronService.on(events.RESET_ZOOM, (event, ratio)=>{
         this.zoomFactor=1;
-        document.body.style.zoom='100%';
+        document.body.style.setProperty('zoom','100%');
       });
 
       await this.hardRefresh();
@@ -450,7 +450,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   zoom(ratio: number) {
     this.zoomFactor*=ratio;
-    document.body.style.zoom = `${Math.round(this.zoomFactor*100)}%`;
+    document.body.style.setProperty('zoom', `${Math.round(this.zoomFactor*100)}%`);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method

@@ -16,40 +16,40 @@
   "npmScope": "minsky",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
+      "runner": "nx-cloud",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e", "compodoc"]
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e",
+          "compodoc"
+        ],
+        "accessToken": "NmJmODc0MDItZWZiZC00ZmYzLWJlMGEtMzE5ZjA4Nzc4YTk5fHJlYWQtd3JpdGU=",
+        "parallel": 3
       }
     }
   },
-  "projects": {
-    "minsky-electron": {
-      "tags": []
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "targetDefaults": {
+    "e2e": {
+      "inputs": [
+        "default",
+        "^default"
+      ]
     },
-    "minsky-web": {
-      "tags": []
-    },
-    "minsky-web-e2e": {
-      "tags": [],
-      "implicitDependencies": ["minsky-web"]
-    },
-    "menu": {
-      "tags": []
-    },
-    "core": {
-      "tags": []
-    },
-    "shared": {
-      "tags": []
-    },
-    "minsky-server": {
-      "tags": []
-    },
-    "ui-components": {
-      "tags": []
-    },
-    "workspace": {
-      "tags": []
+    "lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json"
+      ]
     }
   }
 }
