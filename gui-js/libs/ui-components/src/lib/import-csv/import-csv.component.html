@@ -162,13 +162,31 @@
   <!-- Table START -->
   <div #importCsvCanvasContainer id="import-csv-canvas-container" class="canvas-container">
     <table *ngIf="parsedLines.length">
+
+      <tr>
+        <th>Name</th>
+        <td *ngFor="let col of csvCols; let i = index"
+          class="col-type-container" [class.selected]="selected[i]"
+          (mousedown)="typeMouseDown(i)"
+          (mousemove)="typeMouseMove(i)"
+          (mouseup)="typeMouseUp('name',i)"
+            >
+          <input
+            *ngIf="colType[i]==='axis'"
+            type="text"
+            class="form-control"
+            [value]="dialogState.spec.dimensionNames[i]"
+            (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
+          >
+        </td>
+      </tr>
+
       <tr>
         <th>Dimension</th>
         <td #colTypeRow
           *ngFor="let col of csvCols; let i = index"
           class="col-type-container" [class.selected]="selected[i]"
         >
-
             <select
               (change)="setColType(i,$event.target.value)"
             >
@@ -225,32 +243,6 @@
                 {{ tfs.label }}
               </mat-option>
             </ng-container>
-          </mat-autocomplete>
-        </td>
-      </tr>
-
-      <tr>
-        <th>Name</th>
-        <td *ngFor="let col of csvCols; let i = index"
-            class="col-container" [class.selected]="selected[i]"
-            >
-          <input
-            *ngIf="colType[i]==='axis'"
-            type="text"
-            [matAutocomplete]="autocompleteName"
-            class="form-control"
-            [value]="dialogState.spec.dimensionNames[i]"
-            (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
-          />
-          <mat-autocomplete
-            id="name_{{ i }}"
-            [panelWidth]="'10rem'"
-            #autocompleteName="matAutocomplete"
-            (optionSelected)="dialogState.spec.dimensionNames[i] = $event.option.value"
-          >
-            <mat-option [value]="parsedLines[dialogState.spec.headerRow][i]"
-              >{{ parsedLines[dialogState.spec.headerRow][i] }}
-            </mat-option>
           </mat-autocomplete>
         </td>
       </tr>

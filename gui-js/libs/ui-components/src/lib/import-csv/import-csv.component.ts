@@ -163,12 +163,12 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!table) return;
       for (var i=0; i<this.colType.length; ++i)
         {
-            var colType=table.rows[0].cells[i+1]?.children[0] as HTMLInputElement;
+            var colType=table.rows[1].cells[i+1]?.children[0] as HTMLInputElement;
             if (colType)
                 colType.value=this.colType[i];
             if (this.colType[i]===ColType.axis)
             {
-              var type=table.rows[1].cells[i+1]?.children[0] as HTMLSelectElement;
+              var type=table.rows[2].cells[i+1]?.children[0] as HTMLSelectElement;
               var dimension=this.dialogState.spec.dimensions[i];
               if (!dimension) dimension={type: "string", units: ""};
               type.value=dimension.type;
@@ -323,6 +323,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.selected[i]) {
         this.setColTypeImpl(i, type);
       }
+    this.selected.fill(false);
     this.cdr.detectChanges();
   }
 
@@ -338,13 +339,18 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   
-  typeMouseUp(row: number, col: number) {
+  typeMouseUp(row: any, col: number) {
     this.typeMouseMove(col);
     if (col===this.mouseDown)  // deselect all if ending on same column
-      if (this.selected.every((x)=>!x)) 
-        this.selectRowAndCol(row, col);
-      else
-        this.selected.fill(false);
+      if (this.selected.every((x)=>!x)) {
+        if (Number.isInteger(row))
+          this.selectRowAndCol(row, col);
+        else
+           this.dialogState.spec.dimensionNames[col]=this.parsedLines[this.dialogState.spec.headerRow][col]
+      }
+    else
+      this.selected.fill(false);
+    this.cdr.detectChanges();
     this.mouseDown=-1;
   }
   
