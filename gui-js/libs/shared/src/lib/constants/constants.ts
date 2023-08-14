@@ -21,6 +21,7 @@ export const events = {
   CLOSE_WINDOW: 'close-window',
   CONTEXT_MENU: 'context-menu',
   CREATE_MENU_POPUP: 'create-menu-popup',
+  CSV_IMPORT_REFRESH: 'csv-import-refresh',
   CURRENT_TAB_MOVE_TO: 'current-tab-move-to',
   CURRENT_TAB_POSITION: 'current-tab-position',
   CURSOR_BUSY: 'cursor-busy',

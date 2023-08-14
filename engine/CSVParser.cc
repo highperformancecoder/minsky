@@ -298,6 +298,7 @@ void DataSpec::setDataArea(size_t row, size_t col)
   m_nRowAxes=row;
   const size_t maxCols=16384; // Excel's limit
   m_nColAxes=std::min(col, maxCols);
+  numCols=std::max(numCols, m_nColAxes);
   if (headerRow>=row)
     headerRow=row>0? row-1: 0;
   if (row==headerRow) row++; //TODO handle no header properly
@@ -305,6 +306,11 @@ void DataSpec::setDataArea(size_t row, size_t col)
   if (dimensionNames.size()<nColAxes()) dimensionNames.resize(nColAxes());
   // remove any dimensionCols > nColAxes
   dimensionCols.erase(dimensionCols.lower_bound(nColAxes()), dimensionCols.end());
+  // adjust ignored columns
+  for (unsigned i=0; i<m_nColAxes; ++i)
+    dataCols.erase(i);
+  for (unsigned i=m_nColAxes; i<numCols; ++i)
+    dataCols.insert(i);
 }
 
 

@@ -219,7 +219,7 @@ ipcMain.handle(
   }
 );
 
-ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command }) => {
+ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command}) => {
   await ContextMenuManager.initContextMenu(event, x, y, type, command);
 });
 

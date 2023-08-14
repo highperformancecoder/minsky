@@ -4,12 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {
   dateTimeFormats,
+  events,
   importCSVvariableName,
   VariableBase,
   VariableValue,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import * as JSON5 from 'json5';
 
 enum ColType {
   axis="axis",
@@ -132,6 +134,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
         units: new FormControl(''),
       }),
     });
+
+    this.electronService.on(events.CSV_IMPORT_REFRESH, async e=>{
+      await this.getCSVDialogSpec();
+      this.updateColumnTypes();
+      this.updateForm();
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnInit() {
@@ -232,13 +241,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dialogState = await this.variableValuesSubCommand.csvDialog.$properties() as Record<string, unknown>;
   }
 
-  async parseLines() {
-    this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines() as string[][];
-
-    let header=this.dialogState.spec.headerRow;
-    this.csvCols = new Array(this.parsedLines[header]?.length);
-    this.colType = new Array(this.parsedLines[header]?.length).fill("ignore");
-    this.selected = new Array(this.parsedLines[header]?.length).fill(false);
+  updateColumnTypes() {
+    this.colType = new Array(this.parsedLines[this.dialogState.spec.headerRow]?.length).fill("ignore");
     for (var i in this.dialogState.spec.dimensionCols as Array<number>)
     {
       var col=this.dialogState.spec.dimensionCols[i];
@@ -256,7 +260,17 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       // emulate old behaviour, if no datacols specified, all columns to the right of dataColOffset are data
       for (var ii=this.dialogState.dataColOffset as number; ii<this.colType.length; ++ii)
         this.colType[ii]=ColType.data;
+    this.electronService.log(JSON5.stringify(this.colType));
+  }
+  
+  async parseLines() {
+    this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines() as string[][];
+    await this.getCSVDialogSpec();
     
+    let header=this.dialogState.spec.headerRow;
+    this.csvCols = new Array(this.parsedLines[header]?.length);
+    this.selected = new Array(this.parsedLines[header]?.length).fill(false);
+    this.updateColumnTypes();
   }
   
   async selectHeader(index: number) {
@@ -327,46 +341,48 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  typeMouseDown(col: number) {
-    this.mouseDown=col;
+  typeMouseDown(event: any, col: number) {
+    if (event?.button===0)
+      this.mouseDown=col;
   }
 
-  typeMouseMove(col: number) {
-    if (this.mouseDown>=0 && col!==this.mouseDown) {
+  typeMouseMove(event: any, col: number) {
+    if (event?.button===0 && this.mouseDown>=0 && col!==this.mouseDown) {
       if (col<this.mouseDown) [col,this.mouseDown]=[this.mouseDown,col];
       for (let i=0; i<this.selected.length; ++i)
         this.selected[i]=i>=this.mouseDown && i<=col;
     }
   }
   
-  typeMouseUp(row: any, col: number) {
-    this.typeMouseMove(col);
-    if (col===this.mouseDown)  // deselect all if ending on same column
-      if (this.selected.every((x)=>!x)) {
-        if (Number.isInteger(row))
-          this.selectRowAndCol(row, col);
-        else
-           this.dialogState.spec.dimensionNames[col]=this.parsedLines[this.dialogState.spec.headerRow][col]
-      }
-    else
-      this.selected.fill(false);
-    this.cdr.detectChanges();
-    this.mouseDown=-1;
+  typeMouseUp(event: any, row: any, col: number) {
+    if (event?.button===0) {
+      this.typeMouseMove(event,col);
+      if (col===this.mouseDown)  // deselect all if ending on same column
+        if (this.selected.every((x)=>!x)) {
+          if (Number.isInteger(row))
+            this.selectRowAndCol(row, col);
+          else
+            this.dialogState.spec.dimensionNames[col]=this.parsedLines[this.dialogState.spec.headerRow][col]
+        }
+      else
+        this.selected.fill(false);
+      this.cdr.detectChanges();
+      this.mouseDown=-1;
+    }
   }
-  
-  async handleSubmit() {
-    const {
-      columnar,
-      decSeparator,
-      duplicateKeyAction,
-      escape,
-      horizontalDimName,
-      mergeDelimiters,
-      missingValue,
-      quote,
-      separator,
-      horizontalDimension,
-    } = this.form.value;
+
+  updateSpecFromForm() {
+    var spec=this.dialogState.spec;
+    spec.columnar=this.columnar.value;
+    spec.decSeparator=this.decSeparator.value;
+    spec.duplicateKeyAction=this.duplicateKeyAction.value;
+    spec.escape=this.escape.value;
+    spec.horizontalDimName=this.horizontalDimName.value;
+    spec.mergeDelimiters=this.mergeDelimiters.value;
+    spec.missingValue=this.missingValue.value;
+    spec.quote=this.quote.value;
+    spec.separator=this.separator.value;
+    spec.horizontalDimension=this.horizontalDimension.value;
 
     this.dialogState.spec.dimensionCols=[];
     this.dialogState.spec.dataCols=[];
@@ -379,24 +395,14 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dialogState.spec.dataCols.push(i);
         break;
     }
-
-    const spec = {
-      ...this.dialogState.spec,
-      columnar,
-      decSeparator,
-      duplicateKeyAction,
-      escape,
-      horizontalDimName,
-      mergeDelimiters,
-      missingValue,
-      quote,
-      separator: separatorToChar(separator),
-      horizontalDimension,
-    };
-
+  }
+  
+  async handleSubmit() {
+    this.updateSpecFromForm();
+    
     let v=new VariableBase(this.electronService.minsky.canvas.item);
     // returns an error message on error
-    const res = await v.importFromCSV(this.url.value,spec) as unknown as string;
+    const res = await v.importFromCSV(this.url.value,this.dialogState.spec) as unknown as string;
 
     if (typeof res==='string') {
       const positiveResponseText = 'Yes';
@@ -451,6 +457,18 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     await this.variableValuesSubCommand.csvDialog.reportFromFile(this.url.value,filePath);
     return;
+  }
+
+  async contextMenu(row: number, col: number) {
+    // update C++ spec with current state
+    this.updateSpecFromForm();
+    await this.variableValuesSubCommand.csvDialog.spec.$properties(this.dialogState.spec);
+    this.electronService.send(events.CONTEXT_MENU, {
+      x: row,
+      y: col,
+      type: 'csv-import',
+      command: this.variableValuesSubCommand.$prefix(),
+    });
   }
 
   closeWindow() {this.electronService.closeWindow();}

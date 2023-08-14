@@ -167,9 +167,9 @@
         <th>Name</th>
         <td *ngFor="let col of csvCols; let i = index"
           class="col-type-container" [class.selected]="selected[i]"
-          (mousedown)="typeMouseDown(i)"
-          (mousemove)="typeMouseMove(i)"
-          (mouseup)="typeMouseUp('name',i)"
+          (mousedown)="typeMouseDown($event,i)"
+          (mousemove)="typeMouseMove($event,i)"
+          (mouseup)="typeMouseUp($event,'name',i)"
             >
           <input
             *ngIf="colType[i]==='axis'"
@@ -254,10 +254,11 @@
           >
         </th>
         <td class="table-cell"
-          *ngFor="let rowElement of row; let colIndex = index"
-          (mousedown)="typeMouseDown(colIndex)"
-          (mousemove)="typeMouseMove(colIndex)"
-          (mouseup)="typeMouseUp(rowIndex,colIndex)"
+            *ngFor="let rowElement of row; let colIndex = index"
+            (mousedown)="typeMouseDown($event,colIndex)"
+            (mousemove)="typeMouseMove($event,colIndex)"
+            (mouseup)="typeMouseUp($event,rowIndex,colIndex)"
+            (contextmenu)="contextMenu(rowIndex,colIndex)"
           [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
         >
           {{ rowElement }}

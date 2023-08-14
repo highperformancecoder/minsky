@@ -244,13 +244,11 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   }
 
   async contextMenu(i: number, j: number, clickType: string) {
-    const frameId = (await this.electronService.getCurrentWindow()).id;
-
     this.electronService.send(events.CONTEXT_MENU, {
       x: i,
       y: j,
       type: 'html-godley',
-      command: JSON5.stringify([this.godleyIcon.$prefix(), clickType, frameId]),
+      command: JSON5.stringify([this.godleyIcon.$prefix(), clickType]),
     });
   }
 

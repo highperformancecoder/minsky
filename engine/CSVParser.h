@@ -54,6 +54,7 @@ namespace minsky
       DataSpecSchema::operator=(x);
       setDataArea(dataRowOffset, dataColOffset);
       dimensionCols=x.dimensionCols; // revert clobber by setDataArea
+      dataCols=x.dataCols; // revert clobber by setDataArea
       return *this;
     }
     
@@ -65,6 +66,7 @@ namespace minsky
         dimensionCols.erase(i);
     }
 
+    /// set top left cell of the data area
     void setDataArea(std::size_t row, std::size_t col);
     
     /// initial stab at dataspec from examining stream

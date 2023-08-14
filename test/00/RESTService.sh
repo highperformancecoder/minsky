@@ -34,7 +34,7 @@ EOF
 if [ $? -ne 0 ]; then fail; fi
 
 cat >reference <<EOF
-/minsky/variableValues/@elem/"constant:one"=>{"first":"constant:one","second":{"csvDialog":{"backgroundColour":{"a":1,"b":0.80000000000000004,"g":0.80000000000000004,"r":0.80000000000000004},"colWidth":50,"flashNameRow":false,"item":{},"resolutionScaleFactor":1,"spec":{"columnar":false,"dataColOffset":0,"dataCols":[],"dataRowOffset":0,"decSeparator":".","dimensionCols":[],"dimensionNames":[],"dimensions":[],"duplicateKeyAction":"throwException","escape":"\\\\","headerRow":0,"horizontalDimName":"?","horizontalDimension":{"type":"string","units":""},"mergeDelimiters":false,"missingValue":NaN,"quote":"\"","separator":","},"url":"","wire":{},"xoffs":80},"godleyOverridden":false,"init":"1","name":"constant:one","sliderVisible":false,"tensorInit":{},"units":[],"unitsCached":false}}
+/minsky/variableValues/@elem/"constant:one"=>{"first":"constant:one","second":{"csvDialog":{"backgroundColour":{"a":1,"b":0.80000000000000004,"g":0.80000000000000004,"r":0.80000000000000004},"colWidth":50,"flashNameRow":false,"item":{},"resolutionScaleFactor":1,"spec":{"columnar":false,"dataColOffset":0,"dataCols":[],"dataRowOffset":0,"decSeparator":".","dimensionCols":[],"dimensionNames":[],"dimensions":[],"duplicateKeyAction":"throwException","escape":"\\\\","headerRow":0,"horizontalDimName":"?","horizontalDimension":{"type":"string","units":""},"mergeDelimiters":false,"missingValue":NaN,"numCols":0,"quote":"\\"","separator":","},"url":"","wire":{},"xoffs":80},"godleyOverridden":false,"init":"1","name":"constant:one","sliderVisible":false,"tensorInit":{},"units":[],"unitsCached":false}}
 EOF
 
 diff -q -w output reference

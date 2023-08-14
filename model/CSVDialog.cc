@@ -415,23 +415,7 @@ size_t CSVDialog::rowOver(double y) const
   return size_t(y/rowHeight);
 }
 
-void CSVDialog::copyHeaderRowToDimNames(size_t row)
-{
-  auto parsedLines=parseLines();
-  if (row>=parseLines().size()) return;
-  for (size_t c=0; c<spec.dimensionNames.size() && c<parsedLines[row].size(); ++c)
-    spec.dimensionNames[c]=parsedLines[row][c];
-}
-
-std::string CSVDialog::headerForCol(size_t col) const
-{
-  auto parsedLines=parseLines();
-  if (spec.headerRow<parsedLines.size() && col<parsedLines[spec.headerRow].size())
-    return parsedLines[spec.headerRow][col];
-  return "";
-}
-
-std::vector<std::vector<std::string>> CSVDialog::parseLines() const
+std::vector<std::vector<std::string>> CSVDialog::parseLines()
 {
   vector<vector<string>> parsedLines;
   if (spec.mergeDelimiters)
@@ -447,7 +431,29 @@ std::vector<std::vector<std::string>> CSVDialog::parseLines() const
     parsedLines=::parseLines
       (boost::escaped_list_separator<char>(spec.escape,spec.separator,spec.quote),
        initialLines);
+  if (spec.headerRow<parsedLines.size())
+    spec.numCols=parsedLines[spec.headerRow].size();
+  else if (parsedLines.empty())
+    spec.numCols=0;
+  else
+    spec.numCols=parsedLines.front().size();
   return parsedLines;
+}
+
+void CSVDialog::populateHeaders()
+{
+  auto parsedLines=parseLines();
+  if (spec.headerRow>parsedLines.size()) return;
+  spec.dimensionNames=parsedLines[spec.headerRow];
+}
+
+void CSVDialog::populateHeader(size_t col)
+{
+  auto parsedLines=parseLines();
+  if (spec.headerRow>parsedLines.size()) return;
+  auto& headers=parsedLines[spec.headerRow];
+  if (col<headers.size())
+    spec.dimensionNames[col]=headers[col];
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CSVDialog);

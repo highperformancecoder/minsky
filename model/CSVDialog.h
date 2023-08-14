@@ -69,9 +69,11 @@ namespace minsky
     std::size_t columnOver(double x) const;
     /// return row mouse is over
     std::size_t rowOver(double y) const;
-    void copyHeaderRowToDimNames(std::size_t row);
-    std::string headerForCol(std::size_t col) const;
-    std::vector<std::vector<std::string> > parseLines() const;
+    std::vector<std::vector<std::string> > parseLines();
+    /// populate all column names from the headers row
+    void populateHeaders();
+    /// populate the name of column \a col with the data from the header row
+    void populateHeader(size_t col);
   };
 }
 

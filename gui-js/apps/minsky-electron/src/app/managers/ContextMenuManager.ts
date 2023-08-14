@@ -2,7 +2,7 @@ import {
   CanvasItem,
   ClassType,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, Sheet, SwitchIcon,
-  VariableBase, Functions, events
+  VariableBase, VariableValue, Functions, events
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
 import { BookmarkManager } from './BookmarkManager';
@@ -44,6 +44,9 @@ export class ContextMenuManager {
       break;
       case "ravel":
       this.initContextMenuForRavelPopup(command,x,y);
+      break;
+      case "csv-import":
+      this.initContextMenuForCSVImport(event, command,x,y);
       break;
       default:
       log.warn("Unknown context menu for ",type);
@@ -1165,6 +1168,59 @@ export class ContextMenuManager {
   {
     let ravel=new Ravel(namedItemSubCommand);
     let menu=Menu.buildFromTemplate(await this.buildContextMenuForRavel(ravel));
+    menu.popup();
+  }
+
+  private static async initContextMenuForCSVImport(event: IpcMainEvent, variableValue: string, row: number, col: number)
+  {
+    const refresh=()=>event.sender.send(events.CSV_IMPORT_REFRESH);
+    const value=new VariableValue(variableValue);
+    var menu=Menu.buildFromTemplate([
+      new MenuItem({
+        label: 'Set as header row',
+        click: ()=>{
+          value.csvDialog.spec.headerRow(row);
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Populate column labels',
+        click: async ()=>{
+          value.csvDialog.populateHeaders();
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Populate current column label',
+        click: ()=>{
+          value.csvDialog.populateHeader(col);
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Set start of data row, and column',
+        click: ()=>{
+          value.csvDialog.spec.setDataArea(row,col);
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Set start of data row',
+        click: async ()=>{
+          let c=await value.csvDialog.spec.nColAxes();
+          value.csvDialog.spec.setDataArea(row,c);
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Set start of data column',
+        click: async ()=>{
+          let r=await value.csvDialog.spec.nRowAxes();
+          value.csvDialog.spec.setDataArea(r,col);
+          refresh();
+        },
+      }),
+      ]);
     menu.popup();
   }
 }

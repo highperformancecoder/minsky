@@ -319,7 +319,6 @@ export class CSVDialog extends CppClass {
   async colWidth(...args: number[]): Promise<number> {return this.$callMethod('colWidth',...args);}
   async columnOver(a1: number): Promise<number> {return this.$callMethod('columnOver',a1);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
-  async copyHeaderRowToDimNames(a1: number): Promise<void> {return this.$callMethod('copyHeaderRowToDimNames',a1);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
@@ -328,7 +327,6 @@ export class CSVDialog extends CppClass {
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async guessSpecAndLoadFile(): Promise<void> {return this.$callMethod('guessSpecAndLoadFile');}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
-  async headerForCol(a1: number): Promise<string> {return this.$callMethod('headerForCol',a1);}
   async init(): Promise<void> {return this.$callMethod('init');}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async loadFile(): Promise<void> {return this.$callMethod('loadFile');}
@@ -341,6 +339,8 @@ export class CSVDialog extends CppClass {
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
   async numInitialLines(...args: number[]): Promise<number> {return this.$callMethod('numInitialLines',...args);}
   async parseLines(): Promise<string[][]> {return this.$callMethod('parseLines');}
+  async populateHeader(a1: number): Promise<void> {return this.$callMethod('populateHeader',a1);}
+  async populateHeaders(): Promise<void> {return this.$callMethod('populateHeaders');}
   async position(): Promise<number[]> {return this.$callMethod('position');}
   async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
   async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
@@ -517,6 +517,7 @@ export class DataSpec extends CppClass {
   async missingValue(...args: number[]): Promise<number> {return this.$callMethod('missingValue',...args);}
   async nColAxes(): Promise<number> {return this.$callMethod('nColAxes');}
   async nRowAxes(): Promise<number> {return this.$callMethod('nRowAxes');}
+  async numCols(...args: number[]): Promise<number> {return this.$callMethod('numCols',...args);}
   async populateFromRavelMetadata(a1: string,a2: number): Promise<void> {return this.$callMethod('populateFromRavelMetadata',a1,a2);}
   async quote(...args: number[]): Promise<number> {return this.$callMethod('quote',...args);}
   async separator(...args: number[]): Promise<number> {return this.$callMethod('separator',...args);}
@@ -549,6 +550,7 @@ export class DataSpecSchema extends CppClass {
   async horizontalDimName(...args: string[]): Promise<string> {return this.$callMethod('horizontalDimName',...args);}
   async mergeDelimiters(...args: boolean[]): Promise<boolean> {return this.$callMethod('mergeDelimiters',...args);}
   async missingValue(...args: number[]): Promise<number> {return this.$callMethod('missingValue',...args);}
+  async numCols(...args: number[]): Promise<number> {return this.$callMethod('numCols',...args);}
   async quote(...args: number[]): Promise<number> {return this.$callMethod('quote',...args);}
   async separator(...args: number[]): Promise<number> {return this.$callMethod('separator',...args);}
 }
