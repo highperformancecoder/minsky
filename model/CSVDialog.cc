@@ -227,6 +227,7 @@ void CSVDialog::guessSpecAndLoadFile()
   string fname = url.find("://")==string::npos? url: loadWebFile(url);
   spec.guessFromFile(fname);
   loadFileFromName(fname);
+  classifyColumns();
 }
 
 void CSVDialog::loadFileFromName(const std::string& fname)
@@ -454,6 +455,45 @@ void CSVDialog::populateHeader(size_t col)
   auto& headers=parsedLines[spec.headerRow];
   if (col<headers.size())
     spec.dimensionNames[col]=headers[col];
+}
+
+void CSVDialog::classifyColumns()
+{
+  auto parsedLines=parseLines();
+  spec.dimensionCols.clear();
+  spec.dataCols.clear();
+  spec.dimensions.resize(spec.numCols);
+  for (auto col=0; col<spec.numCols; ++col)
+    {
+      bool entryFound=false, timeFound=true, numberFound=true;
+      for (size_t row=spec.dataRowOffset; row<parsedLines.size(); ++row)
+        if (col<parsedLines[row].size() && !parsedLines[row][col].empty())
+          {
+            entryFound=true;
+            if (numberFound && !isNumerical(parsedLines[row][col]))
+              numberFound=false;
+            static AnyVal any(Dimension(Dimension::time,""));
+            if (timeFound)
+              try
+                {any(parsedLines[row][col]);}
+              catch (...)
+                {timeFound=false;}
+          }
+      if (entryFound)
+        {
+          if (numberFound)
+            spec.dataCols.insert(col);
+          else
+            {
+              spec.dimensionCols.insert(col);
+              if (timeFound)
+                spec.dimensions[col].type=Dimension::time;
+              else
+                spec.dimensions[col].type=Dimension::string;
+              spec.dimensions[col].units.clear();
+            }
+        }
+    }
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CSVDialog);

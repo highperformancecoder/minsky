@@ -316,6 +316,7 @@ export class CSVDialog extends CppClass {
     this.spec=new DataSpec(this.$prefix()+'.spec');
     this.wire=new Wire(this.$prefix()+'.wire');
   }
+  async classifyColumns(): Promise<void> {return this.$callMethod('classifyColumns');}
   async colWidth(...args: number[]): Promise<number> {return this.$callMethod('colWidth',...args);}
   async columnOver(a1: number): Promise<number> {return this.$callMethod('columnOver',a1);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}

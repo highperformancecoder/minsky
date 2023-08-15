@@ -1184,6 +1184,13 @@ export class ContextMenuManager {
         },
       }),
       new MenuItem({
+        label: 'Auto-classify columns as axis/data',
+        click: async ()=>{
+          value.csvDialog.classifyColumns();
+          refresh();
+        },
+      }),
+      new MenuItem({
         label: 'Populate column labels',
         click: async ()=>{
           value.csvDialog.populateHeaders();

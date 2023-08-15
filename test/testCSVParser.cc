@@ -24,6 +24,8 @@
 #include "variableValue.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
+#include <boost/filesystem.hpp>
+
 using namespace minsky;
 using namespace std;
 using namespace civita;
@@ -166,6 +168,36 @@ SUITE(CSVParser)
       string url="https://www.hpcoders.com.au/BIS_GDP.csv";
       CHECK(loadWebFile(url)!="");      
     }     
+
+  TEST_FIXTURE(CSVDialog,classifyColumns)
+    {
+      string input="10,2022/10/2,hello,\n"
+        "'£5,150,000','2023/1/3','foo bar',\n"
+        "2 00,2023/1/3,ggg,\n";
+
+      url=boost::filesystem::unique_path().string();
+      {
+        ofstream of(url);
+        of<<input;
+      }
+
+      spec.quote='\'';
+      spec.dataRowOffset=0;
+      loadFile();
+      classifyColumns();
+      CHECK_EQUAL(4,spec.numCols);
+      CHECK(spec.dataCols.count(0));
+      CHECK(!spec.dimensionCols.count(0));
+      CHECK(!spec.dataCols.count(1));
+      CHECK(spec.dimensionCols.count(1));
+      CHECK(spec.dimensions[1].type==Dimension::time);
+      CHECK(!spec.dataCols.count(2));
+      CHECK(spec.dimensionCols.count(2));
+      CHECK(spec.dimensions[2].type==Dimension::string);
+      CHECK(!spec.dataCols.count(3));
+      CHECK(!spec.dimensionCols.count(3));
+    }
+
   
   TEST_FIXTURE(DataSpec,loadVar)
     {
@@ -175,6 +207,7 @@ SUITE(CSVParser)
         "A;A;1.2;1.3;1.4\n"
         "A;B;1;2;3\n"
         "B;A;3;2;1\n";
+
       istringstream is(input);
       
       separator=';';
@@ -385,5 +418,7 @@ SUITE(CSVParser)
       for (size_t i=0; i<v.size(); ++i)
         CHECK_CLOSE(v[i], newV.tensorInit[i], 0.001*v[1]);
     }
+
+  
   
 }

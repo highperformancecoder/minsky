@@ -213,34 +213,26 @@ namespace
     //strip possible quote characters
     if (!s.empty() && s[0]==s[s.size()-1] && !isalnum(s[0]))
       {
-        double r=stod(s.substr(1),&charsProcd);
+        double r=quotedStoD(s.substr(1,s.size()-2),charsProcd);
         charsProcd+=2;
         return r;
       }
-    return stod(s,&charsProcd);
+    // strip any leading non-numerical characters ([^0-9.,])
+    auto n=s.find_first_of("0123456789,.");
+    return stod(s.substr(n),&charsProcd);
   }
 
   string stripWSAndDecimalSep(const string& s)
   {
     string r;
     for (auto c: s)
-      if (!isspace(c) && c!=',' && c!='.')
+      if (r.empty() && !isdigit(c) && c!=',' && c!='.')
+        continue; // ignore prefixes
+      else if (!isspace(c) && c!=',' && c!='.')
         r+=c;
     return r;
   }
 
-  bool isNumerical(const string& s)
-  {
-    size_t charsProcd;
-    string stripped=stripWSAndDecimalSep(s);
-    try
-      {
-        quotedStoD(stripped, charsProcd);
-      }
-    catch (...) {return false;}
-    return charsProcd==stripped.size();
-  }
-  
   // returns first position of v such that all elements in that or later
   // positions are numerical or null
   size_t firstNumerical(const vector<string>& v)
@@ -271,6 +263,21 @@ namespace
     for (size_t i=start; i<v.size(); ++i)
       if (!v[i].empty()) return false;
     return true;
+  }
+}
+
+namespace minsky
+{
+  bool isNumerical(const string& s)
+  {
+    size_t charsProcd;
+    string stripped=stripWSAndDecimalSep(s);
+    try
+      {
+        quotedStoD(stripped, charsProcd);
+      }
+    catch (...) {return false;}
+    return charsProcd==stripped.size();
   }
 }
 
@@ -678,8 +685,10 @@ namespace minsky
                       for (auto c: *field)
                         if (c==spec.decSeparator)
                           s+='.';
+                        else if (s.empty() && !isdigit(c))
+                          continue; // skip non-numeric prefix
                         else if (!isspace(c) && c!='.' && c!=',')
-                        s+=c;                    
+                          s+=c;                    
 
                     // TODO - this disallows special floating point values - is this right?
                     bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');

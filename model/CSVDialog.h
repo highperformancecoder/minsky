@@ -74,7 +74,11 @@ namespace minsky
     void populateHeaders();
     /// populate the name of column \a col with the data from the header row
     void populateHeader(size_t col);
+    /// try to classify axis,data,ignore columns based on read in data
+    void classifyColumns();
   };
+
+  bool isNumerical(const std::string& s);
 }
 
 #include "CSVDialog.cd"
