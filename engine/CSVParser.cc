@@ -226,9 +226,7 @@ namespace
   {
     string r;
     for (auto c: s)
-      if (r.empty() && !isdigit(c) && c!=',' && c!='.')
-        continue; // ignore prefixes
-      else if (!isspace(c) && c!=',' && c!='.')
+      if (!isspace(c) && c!=',' && c!='.')
         r+=c;
     return r;
   }
