@@ -365,6 +365,8 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     double av=sum/(starts.size());
     for (; starts.size()>m_nRowAxes && (starts[m_nRowAxes]>av); 
          ++m_nRowAxes);
+    // if nRowAxes exceeds numInitialLines, assume first row is a header row, and that that is all there is.
+    if (m_nRowAxes>=row-1) m_nRowAxes=1;
     m_nColAxes=0;
     for (size_t i=nRowAxes(); i<starts.size(); ++i)
       m_nColAxes=std::max(m_nColAxes,starts[i]);
