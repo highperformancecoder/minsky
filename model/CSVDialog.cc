@@ -432,12 +432,10 @@ std::vector<std::vector<std::string>> CSVDialog::parseLines()
     parsedLines=::parseLines
       (boost::escaped_list_separator<char>(spec.escape,spec.separator,spec.quote),
        initialLines);
-  if (spec.headerRow<parsedLines.size())
-    spec.numCols=parsedLines[spec.headerRow].size();
-  else if (parsedLines.empty())
-    spec.numCols=0;
-  else
-    spec.numCols=parsedLines.front().size();
+
+  spec.numCols=0;
+  for (auto& i: parsedLines)
+    spec.numCols=std::max(spec.numCols, i.size());
   return parsedLines;
 }
 
