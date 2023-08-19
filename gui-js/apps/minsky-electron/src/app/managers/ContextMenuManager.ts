@@ -797,7 +797,7 @@ export class ContextMenuManager {
         submenu: ['none','forward','reverse'].map(so =>(<any>{
           label: so,
           type: 'radio',
-          checked: sortOrder == so,
+          checked: sortOrder == valueSort('static',so),
           click: () => {
             ravel.setSortOrder(valueSort('static',so));
             ravel.broadcastStateToLockGroup();
