@@ -381,7 +381,17 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     spec.mergeDelimiters=this.mergeDelimiters.value;
     spec.missingValue=this.missingValue.value;
     spec.quote=this.quote.value;
-    spec.separator=this.separator.value;
+    switch (this.separator.value) {
+    case 'tab':
+      spec.separator='\t';
+      break;
+    case 'space':
+      spec.separator=' ';
+      break;
+    default:
+      spec.separator=this.separator.value;
+      break;
+    }
     spec.horizontalDimension=this.horizontalDimension.value;
 
     this.dialogState.spec.dimensionCols=[];
