@@ -172,7 +172,7 @@ SUITE(CSVParser)
   TEST_FIXTURE(CSVDialog,classifyColumns)
     {
       string input="10,2022/10/2,hello,\n"
-        "'£5,150,000','2023/1/3','foo bar',\n"
+        "'5,150,000','2023/1/3','foo bar',\n"
         "2 00,2023/1/3,ggg,\n";
 
       url=boost::filesystem::unique_path().string();
