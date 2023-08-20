@@ -272,7 +272,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selected = new Array(this.parsedLines[header]?.length).fill(false);
     this.updateColumnTypes();
   }
-  
+
+  onSeparatorChange() {
+    this.updateSpecFromForm();
+    this.variableValuesSubCommand.csvDialog.spec.$properties(this.dialogState.spec);
+    this.parseLines();
+  }
+    
   async selectHeader(index: number) {
     this.dialogState.spec.headerRow = index;
     // explicitly selecting a header, make sure dataRowOffset is greater

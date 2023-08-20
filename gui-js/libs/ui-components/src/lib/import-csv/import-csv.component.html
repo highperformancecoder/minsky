@@ -25,6 +25,7 @@
         formControlName="separator"
         [matAutocomplete]="autocompleteSeparator"
         class="form-control autocomplete"
+        (change)="onSeparatorChange()"
       />
       <mat-autocomplete
         [panelWidth]="'10rem'"
