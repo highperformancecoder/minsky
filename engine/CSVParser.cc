@@ -637,10 +637,14 @@ namespace minsky
                           horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i]),spec.horizontalDimension.units));
                     hc.xvectors.emplace_back(spec.horizontalDimName);
                     hc.xvectors.back().dimension=spec.horizontalDimension;
-                    for (auto& i: horizontalLabels) hc.xvectors.back().emplace_back(i);
+                    set<typename Key::value_type> uniqueLabels;
                     dimLabels.emplace_back();
-                    for (size_t i=0; i<horizontalLabels.size(); ++i)
-                      dimLabels.back()[horizontalLabels[i]]=i;
+                    for (auto& i: horizontalLabels)
+                      if (uniqueLabels.insert(i).second)
+                        {
+                          dimLabels.back()[i]=hc.xvectors.back().size();
+                          hc.xvectors.back().emplace_back(i);
+                        }
                   }
               }
             else if (row>=spec.nRowAxes())// in data section
