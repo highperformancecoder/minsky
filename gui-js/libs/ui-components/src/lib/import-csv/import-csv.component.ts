@@ -229,6 +229,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       await this.variableValuesSubCommand.csvDialog.url(fileUrl);
       await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
       await this.getCSVDialogSpec();
+      this.updateForm();
     } else {
       await this.variableValuesSubCommand.csvDialog.loadFile();
     }
