@@ -615,7 +615,7 @@ namespace minsky
             }
 #endif
             // remove trailing carriage returns
-            if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
+            if (!buf.empty() && buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
             assert(spec.headerRow<=spec.nRowAxes());
