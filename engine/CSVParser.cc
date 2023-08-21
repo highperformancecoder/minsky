@@ -576,6 +576,39 @@ namespace minsky
       reportFromCSVFileT<Parser>(input,output,spec);
   }
 
+  // handle DOS files with '\r' '\n' line terminators
+  void chomp(string& buf)
+  {
+    if (!buf.empty() && buf.back()=='\r')
+      buf.erase(buf.size()-1);
+  }
+  
+  // gets a line, accounting for quoted newlines
+  bool getWholeLine(istream& input, string& line, char quote, char separator)
+  {
+    bool r=getline(input,line).good();
+    chomp(line);
+    while (r)
+      {
+        // count the number of quote characters after last separator. If odd, then line is not terminated correctly
+        auto n=line.rfind(separator);
+        if (n==string::npos)
+          n=0;
+        else
+          ++n;
+        int quoteCount=0;
+        for (; n<line.size(); ++n)
+          if (line[n]==quote)
+            ++quoteCount;
+        if (quoteCount%2==0) break; // data line correctly terminated
+        string buf;
+        r=getline(input,buf).good(); // read next line and append
+        chomp(buf);
+        line+=buf;
+      }
+    return r;
+  }
+  
   template <class P>
   void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
@@ -604,7 +637,45 @@ namespace minsky
     try
       {
         ProgressUpdater pu(minsky().progressState, "Parsing file",1);
-        for (; getline(input, buf); ++row)
+        // skip header lines except for headerRow
+        if (spec.headerRow<spec.nRowAxes() && !spec.columnar)
+          {
+            for (; row<spec.headerRow; ++row)
+              getline(input,buf);
+            getWholeLine(input, buf, spec.quote, spec.separator);
+            ++row;
+            boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
+            vector<string> parsedRow(tok.begin(), tok.end());
+            tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1);
+            if (tabularFormat)
+              {
+                anyVal.emplace_back(spec.horizontalDimension);
+                // legacy situation where all data columns are to the right
+                if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
+                  for (auto i=parsedRow.begin()+spec.nColAxes(); i!=parsedRow.end(); ++i)
+                    horizontalLabels.emplace_back(str(anyVal.back()(*i),spec.horizontalDimension.units));
+                else
+                  // explicitly specified data columns
+                  for (auto i: spec.dataCols)
+                    if (i<parsedRow.size())
+                      horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i]),spec.horizontalDimension.units));
+                hc.xvectors.emplace_back(spec.horizontalDimName);
+                hc.xvectors.back().dimension=spec.horizontalDimension;
+                set<typename Key::value_type> uniqueLabels;
+                dimLabels.emplace_back();
+                for (auto& i: horizontalLabels)
+                  if (uniqueLabels.insert(i).second)
+                    {
+                      dimLabels.back()[i]=hc.xvectors.back().size();
+                      hc.xvectors.back().emplace_back(i);
+                    }
+              }
+          }
+        for (; row<spec.nRowAxes(); ++row)
+          getline(input,buf);
+            
+        
+        for (; getWholeLine(input, buf, spec.quote, spec.separator); ++row)
           {
 #if defined(__linux__) // TODO remove or generalise
             {
@@ -614,144 +685,111 @@ namespace minsky
                 throw runtime_error("exhausted memory");
             }
 #endif
-            // remove trailing carriage returns
-            if (!buf.empty() && buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
             assert(spec.headerRow<=spec.nRowAxes());
-            if (spec.headerRow<spec.nRowAxes() && row==spec.headerRow && !spec.columnar) // in header section
-              {
-                vector<string> parsedRow(tok.begin(), tok.end());
-                tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1);
-                if (tabularFormat)
-                  {
-                    anyVal.emplace_back(spec.horizontalDimension);
-                    // legacy situation where all data columns are to the right
-                    if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
-                      for (auto i=parsedRow.begin()+spec.nColAxes(); i!=parsedRow.end(); ++i)
-                        horizontalLabels.emplace_back(str(anyVal.back()(*i),spec.horizontalDimension.units));
-                    else
-                      // explicitly specified data columns
-                      for (auto i: spec.dataCols)
-                        if (i<parsedRow.size())
-                          horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i]),spec.horizontalDimension.units));
-                    hc.xvectors.emplace_back(spec.horizontalDimName);
-                    hc.xvectors.back().dimension=spec.horizontalDimension;
-                    set<typename Key::value_type> uniqueLabels;
-                    dimLabels.emplace_back();
-                    for (auto& i: horizontalLabels)
-                      if (uniqueLabels.insert(i).second)
-                        {
-                          dimLabels.back()[i]=hc.xvectors.back().size();
-                          hc.xvectors.back().emplace_back(i);
-                        }
-                  }
-              }
-            else if (row>=spec.nRowAxes())// in data section
-              {
-                Key key;
-                auto field=tok.begin();
-                size_t dim=0, dataCols=0;
-                col=0;
-                for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
-                  if (spec.dimensionCols.count(col))
+            Key key;
+            auto field=tok.begin();
+            size_t dim=0, dataCols=0;
+            col=0;
+            for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
+              if (spec.dimensionCols.count(col))
+                {
+                  if (dim>=hc.xvectors.size())
+                    hc.xvectors.emplace_back("?"); // no header present
+                  try
                     {
-                      if (dim>=hc.xvectors.size())
-                        hc.xvectors.emplace_back("?"); // no header present
-                      try
-                        {
-                          auto keyElem=anyVal[dim](*field);
-                          auto skeyElem=str(keyElem, spec.dimensions[dim].units);
-                          if (dimLabels[dim].emplace(skeyElem, dimLabels[dim].size()).second)
-                            hc.xvectors[dim].emplace_back(keyElem);
-                          key.emplace_back(skeyElem);
-                        }
-                      catch (...)
-                        {
-                          throw std::runtime_error("Invalid data: "+*field+" for "+
-                                                   to_string(spec.dimensions[dim].type)+
-                                                   " dimensioned column: "+spec.dimensionNames[dim]);
-                        }
-                      dim++;
+                      auto keyElem=anyVal[dim](*field);
+                      auto skeyElem=str(keyElem, spec.dimensions[dim].units);
+                      if (dimLabels[dim].emplace(skeyElem, dimLabels[dim].size()).second)
+                        hc.xvectors[dim].emplace_back(keyElem);
+                      key.emplace_back(skeyElem);
                     }
-
-                col=0;
-                for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
-                  if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
-                    {                    
-                      if (tabularFormat)
-                        key.emplace_back(horizontalLabels[dataCols]);
-                      else if (dataCols)
-                        break; // only 1 value column, everything to right ignored
-                    
-                      // remove thousands separators, and set decimal separator to '.' ("C" locale)
-                      string s;
-                      for (auto c: *field)
-                        if (c==spec.decSeparator)
-                          s+='.';
-                        else if (s.empty() && !isdigit(c))
-                          continue; // skip non-numeric prefix
-                        else if (!isspace(c) && c!='.' && c!=',')
-                          s+=c;                    
-
-                    // TODO - this disallows special floating point values - is this right?
-                    bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
-                    if (valueExists || !isnan(spec.missingValue))
-                      {
-                        auto i=tmpData.find(key);
-                        double v=spec.missingValue;
-                        if (valueExists)
-                          try
-                            {
-                              v=stod(s);
-                              if (i==tmpData.end())
-                                tmpData.emplace(key,v);
-                            }
-                          catch (...) // value misunderstood
-                            {
-                              if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
-                                valueExists=false;
-                            }
-                        if (valueExists && i!=tmpData.end())
-                          switch (spec.duplicateKeyAction)
-                            {
-                            case DataSpec::throwException:
-                              throw DuplicateKey(key); 
-                            case DataSpec::sum:
-                              i->second+=v;
-                              break;
-                            case DataSpec::product:
-                              i->second*=v;
-                              break;
-                            case DataSpec::min:
-                              if (v<i->second)
-                                i->second=v;
-                              break;
-                            case DataSpec::max:
-                              if (v>i->second)
-                                i->second=v;
-                              break;
-                            case DataSpec::av:
-                              {
-                                int& c=tmpCnt[key]; // c initialised to 0
-                                i->second=((c+1)*i->second + v)/(c+2);
-                                c++;
-                              }
-                              break;
-                            }
-                      }
-                    dataCols++;
-                    if (tabularFormat)
-                      key.pop_back();
-                    else
-                      break; // only one column of data needs to be read
+                  catch (...)
+                    {
+                      throw std::runtime_error("Invalid data: "+*field+" for "+
+                                               to_string(spec.dimensions[dim].type)+
+                                               " dimensioned column: "+spec.dimensionNames[dim]);
                     }
-              
-                if (!dataCols)
-                  throw NoDataColumns();
-          
+                  dim++;
+                }
+            
+            col=0;
+            for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
+              if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
+                {                    
+                  if (tabularFormat)
+                    key.emplace_back(horizontalLabels[dataCols]);
+                  else if (dataCols)
+                    break; // only 1 value column, everything to right ignored
+                  
+                  // remove thousands separators, and set decimal separator to '.' ("C" locale)
+                  string s;
+                  for (auto c: *field)
+                    if (c==spec.decSeparator)
+                      s+='.';
+                    else if (s.empty() && !isdigit(c))
+                      continue; // skip non-numeric prefix
+                    else if (!isspace(c) && c!='.' && c!=',')
+                      s+=c;                    
+                  
+                  // TODO - this disallows special floating point values - is this right?
+                  bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
+                  if (valueExists || !isnan(spec.missingValue))
+                    {
+                      auto i=tmpData.find(key);
+                      double v=spec.missingValue;
+                      if (valueExists)
+                        try
+                          {
+                            v=stod(s);
+                            if (i==tmpData.end())
+                              tmpData.emplace(key,v);
+                          }
+                        catch (...) // value misunderstood
+                          {
+                            if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                              valueExists=false;
+                          }
+                      if (valueExists && i!=tmpData.end())
+                        switch (spec.duplicateKeyAction)
+                          {
+                          case DataSpec::throwException:
+                            throw DuplicateKey(key); 
+                          case DataSpec::sum:
+                            i->second+=v;
+                            break;
+                          case DataSpec::product:
+                            i->second*=v;
+                            break;
+                          case DataSpec::min:
+                            if (v<i->second)
+                              i->second=v;
+                            break;
+                          case DataSpec::max:
+                            if (v>i->second)
+                              i->second=v;
+                            break;
+                          case DataSpec::av:
+                            {
+                              int& c=tmpCnt[key]; // c initialised to 0
+                              i->second=((c+1)*i->second + v)/(c+2);
+                              c++;
+                            }
+                            break;
+                          }
+                    }
+                  dataCols++;
+                  if (tabularFormat)
+                    key.pop_back();
+                  else
+                    break; // only one column of data needs to be read
+                }
+            
+            if (!dataCols)
+              throw NoDataColumns();
+            
 
-              }
             bytesRead+=buf.size();
             pu.setProgress(double(bytesRead)/fileSize);
           }
