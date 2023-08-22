@@ -351,7 +351,7 @@ SUITE(CSVParser)
                         v.tensorInit, 6, 1e-4);
     }
 
- TEST_FIXTURE(DataSpec,loadVarSpace)
+   TEST_FIXTURE(DataSpec,loadVarSpace)
     {
       string input="A comment\n"
         "  foobar\n" // horizontal dim name
@@ -531,6 +531,29 @@ SUITE(CSVParser)
         CHECK_CLOSE(v[i], newV.tensorInit[i], 0.001*v[1]);
     }
 
+  string testEscapeDoubledQuotes(string x)
+  {
+    DataSpec spec;
+    spec.quote='\'';
+    spec.separator=',';
+    spec.escape='&';
+    escapeDoubledQuotes(x,spec);
+    return x;
+  }
   
+  TEST(escapeDoubledQuotes)
+    {
+      CHECK_EQUAL("foo",testEscapeDoubledQuotes("foo"));
+      CHECK_EQUAL("'foo'",testEscapeDoubledQuotes("'foo'"));
+      CHECK_EQUAL("&'foo&'",testEscapeDoubledQuotes("''foo''"));                 // not strictly CSV standard
+      CHECK_EQUAL("'&'foo&''",testEscapeDoubledQuotes("'''foo'''"));
+      CHECK_EQUAL("'&'&''",testEscapeDoubledQuotes("''''''"));
+      CHECK_EQUAL("'fo&'o'",testEscapeDoubledQuotes("'fo''o'"));
+      CHECK_EQUAL("foo,bar",testEscapeDoubledQuotes("foo,bar"));
+      CHECK_EQUAL("'foo','bar'",testEscapeDoubledQuotes("'foo','bar'"));
+      CHECK_EQUAL("&'foo&',&'bar&'",testEscapeDoubledQuotes("''foo'',''bar''")); // not strictly CSV standard
+      CHECK_EQUAL("'&'foo&'','&'bar&''",testEscapeDoubledQuotes("'''foo''','''bar'''"));
+      CHECK_EQUAL("'fo&'o','b&'ar'",testEscapeDoubledQuotes("'fo''o','b''ar'"));
+    }
   
 }

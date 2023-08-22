@@ -584,21 +584,21 @@ namespace minsky
   }
   
   // gets a line, accounting for quoted newlines
-  bool getWholeLine(istream& input, string& line, char quote, char separator)
+  bool getWholeLine(istream& input, string& line, const DataSpec& spec)
   {
     bool r=getline(input,line).good();
     chomp(line);
     while (r)
       {
         // count the number of quote characters after last separator. If odd, then line is not terminated correctly
-        auto n=line.rfind(separator);
+        auto n=line.rfind(spec.separator);
         if (n==string::npos)
           n=0;
         else
           ++n;
         int quoteCount=0;
         for (; n<line.size(); ++n)
-          if (line[n]==quote)
+          if (line[n]==spec.quote)
             ++quoteCount;
         if (quoteCount%2==0) break; // data line correctly terminated
         string buf;
@@ -606,7 +606,22 @@ namespace minsky
         chomp(buf);
         line+=buf;
       }
+    escapeDoubledQuotes(line,spec);
     return r;
+  }
+
+  void escapeDoubledQuotes(std::string& line,const DataSpec& spec)
+  {
+    // replace doubled quotes with escape quote
+    for (size_t i=1; i<line.size(); ++i)
+      if (line[i]==spec.quote && line[i-1]==spec.quote &&
+         (i==1 && (i==line.size()-1|| line[i+1]!=spec.quote) ||                                       // deal with leading ""
+            i>1 &&
+            (line[i-2]!=spec.quote && line[i-2]!=spec.escape &&
+             (line[i-2]!=spec.separator || i==line.size()-1|| line[i+1]!=spec.quote)  // deal with ,''
+             ||            // deal with "" middle or end
+             (line[i-2]==spec.quote && (i==2 || line[i-3]==spec.separator || line[i-3]==spec.escape))))) // deal with leading """
+          line[i-1]=spec.escape;
   }
   
   template <class P>
@@ -642,7 +657,7 @@ namespace minsky
           {
             for (; row<spec.headerRow; ++row)
               getline(input,buf);
-            getWholeLine(input, buf, spec.quote, spec.separator);
+            getWholeLine(input, buf, spec);
             ++row;
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
             vector<string> parsedRow(tok.begin(), tok.end());
@@ -675,7 +690,7 @@ namespace minsky
           getline(input,buf);
             
         
-        for (; getWholeLine(input, buf, spec.quote, spec.separator); ++row)
+        for (; getWholeLine(input, buf, spec); ++row)
           {
 #if defined(__linux__) // TODO remove or generalise
             {
