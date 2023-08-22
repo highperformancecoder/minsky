@@ -315,7 +315,43 @@ SUITE(CSVParser)
                         v.tensorInit, 4, 1e-4);
     }
 
-  TEST_FIXTURE(DataSpec,loadVarSpace)
+   TEST_FIXTURE(DataSpec,dotTimeSep)
+    {
+      string input=
+        "country;2014.01;2014.02;2014.10\n" 
+        "Aus;10;;\n"
+        "UK;;10;20\n";
+
+      istringstream is(input);
+      
+      separator=';';
+      setDataArea(1,1);
+      missingValue=-1;
+      headerRow=0;
+      dimensionNames={"country"};
+      dimensionCols={0};
+      horizontalDimName="date";
+      horizontalDimension.type=Dimension::time;
+      
+      VariableValue v(VariableType::parameter);
+      loadValueFromCSVFile(v,is,*this,0);
+
+      CHECK_EQUAL(2, v.rank());
+      CHECK_ARRAY_EQUAL(vector<unsigned>({2,3}),v.hypercube().dims(),2);
+      CHECK_EQUAL("country", v.hypercube().xvectors[0].name);
+      CHECK_EQUAL("Aus", str(v.hypercube().xvectors[0][0]));
+      CHECK_EQUAL("UK", str(v.hypercube().xvectors[0][1]));
+      CHECK_EQUAL("date", v.hypercube().xvectors[1].name);
+      CHECK_EQUAL("2014-01-01T00:00:00", str(v.hypercube().xvectors[1][0]));
+      CHECK_EQUAL("2014-02-01T00:00:00", str(v.hypercube().xvectors[1][1]));
+      CHECK_EQUAL("2014-10-01T00:00:00", str(v.hypercube().xvectors[1][2]));
+      CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
+      CHECK_EQUAL(6, v.tensorInit.size());
+      CHECK_ARRAY_CLOSE(vector<double>({10,-1,-1,10,-1,20}),
+                        v.tensorInit, 6, 1e-4);
+    }
+
+ TEST_FIXTURE(DataSpec,loadVarSpace)
     {
       string input="A comment\n"
         "  foobar\n" // horizontal dim name

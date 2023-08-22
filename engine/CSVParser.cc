@@ -695,6 +695,10 @@ namespace minsky
             for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
               if (spec.dimensionCols.count(col))
                 {
+                  // detect blank data lines (favourite Excel artifact)
+                  if (spec.dimensions[dim].type!=Dimension::string && field->empty())
+                    goto keyEmptyGotoNextLine;
+                  
                   if (dim>=hc.xvectors.size())
                     hc.xvectors.emplace_back("?"); // no header present
                   try
@@ -713,7 +717,7 @@ namespace minsky
                     }
                   dim++;
                 }
-            
+
             col=0;
             for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
               if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
@@ -792,6 +796,7 @@ namespace minsky
 
             bytesRead+=buf.size();
             pu.setProgress(double(bytesRead)/fileSize);
+          keyEmptyGotoNextLine:;
           }
         ++minsky().progressState;
 
