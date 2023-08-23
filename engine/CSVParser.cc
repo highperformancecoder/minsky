@@ -820,7 +820,7 @@ namespace minsky
           auto d=dimLabels.begin();
           assert(hc.xvectors.size()==dimLabels.size());
           for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
-              if (i->empty())
+              if (i->size()<2)
                 {
                   hc.xvectors.erase(i);
                   dimLabels.erase(d);

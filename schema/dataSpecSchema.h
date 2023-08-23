@@ -34,6 +34,7 @@ namespace minsky
     char separator=',', quote='"', escape='\\', decSeparator='.';
     bool mergeDelimiters=false;
     bool columnar=false;
+    bool counter=false; ///< add a count data field
     double missingValue=nan("");
     /// number of header rows
     std::size_t headerRow=0;
