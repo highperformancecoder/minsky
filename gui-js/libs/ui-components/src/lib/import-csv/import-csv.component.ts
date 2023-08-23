@@ -315,7 +315,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   getColorForCell(rowIndex: number, colIndex: number) {
     if (colIndex>=this.colType.length) return "red";
 
-    if (this.dialogState.spec.headerRow === rowIndex)  // header row
+    if (this.dialogState.spec.headerRow === rowIndex && this.dialogState.spec.headerRow < this.dialogState.spec.dataRowOffset)  // header row
         switch (this.colType[colIndex]) {
         case 'data': return "blue";
         case 'axis': return "green";

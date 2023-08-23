@@ -178,7 +178,7 @@
           (mouseup)="typeMouseUp($event,'name',i)"
             >
           <input
-            *ngIf="colType[i]==='axis'"
+            *ngIf="colType[i]==='axis'||colType[i]==='data'"
             type="text"
             class="form-control"
             [value]="dialogState.spec.dimensionNames[i]"
@@ -255,7 +255,8 @@
 
       <tr *ngFor="let row of parsedLines; let rowIndex = index">
         <th class="header" (click)="selectHeader(rowIndex)">
-          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow"
+          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow
+            && dialogState.spec.headerRow < dialogState.spec.dataRowOffset"
             >Header</ng-container
           >
         </th>

@@ -306,7 +306,6 @@ void DataSpec::setDataArea(size_t row, size_t col)
   numCols=std::max(numCols, m_nColAxes);
   if (headerRow>=row)
     headerRow=row>0? row-1: 0;
-  if (row==headerRow) row++; //TODO handle no header properly
   if (dimensions.size()<nColAxes()) dimensions.resize(nColAxes());
   if (dimensionNames.size()<nColAxes()) dimensionNames.resize(nColAxes());
   // remove any dimensionCols > nColAxes
@@ -653,39 +652,30 @@ namespace minsky
       {
         ProgressUpdater pu(minsky().progressState, "Parsing file",1);
         // skip header lines except for headerRow
-        if (spec.headerRow<spec.nRowAxes() && !spec.columnar)
+        tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
+        if (tabularFormat)
           {
-            for (; row<spec.headerRow; ++row)
-              getline(input,buf);
-            getWholeLine(input, buf, spec);
-            ++row;
-            boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
-            vector<string> parsedRow(tok.begin(), tok.end());
-            tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1);
-            if (tabularFormat)
-              {
-                anyVal.emplace_back(spec.horizontalDimension);
-                // legacy situation where all data columns are to the right
-                if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
-                  for (auto i=parsedRow.begin()+spec.nColAxes(); i!=parsedRow.end(); ++i)
-                    horizontalLabels.emplace_back(str(anyVal.back()(*i),spec.horizontalDimension.units));
-                else
-                  // explicitly specified data columns
-                  for (auto i: spec.dataCols)
-                    if (i<parsedRow.size())
-                      horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i]),spec.horizontalDimension.units));
-                hc.xvectors.emplace_back(spec.horizontalDimName);
-                hc.xvectors.back().dimension=spec.horizontalDimension;
-                set<typename Key::value_type> uniqueLabels;
-                dimLabels.emplace_back();
-                for (auto& i: horizontalLabels)
-                  if (uniqueLabels.insert(i).second)
-                    {
-                      dimLabels.back()[i]=hc.xvectors.back().size();
-                      hc.xvectors.back().emplace_back(i);
-                    }
-              }
+            anyVal.emplace_back(spec.horizontalDimension);
+            // legacy situation where all data columns are to the right
+            if (spec.dataCols.empty())
+              for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
+                  horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+            else
+              // explicitly specified data columns
+              for (auto i: spec.dataCols)
+                horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+            hc.xvectors.emplace_back(spec.horizontalDimName);
+            hc.xvectors.back().dimension=spec.horizontalDimension;
+            set<typename Key::value_type> uniqueLabels;
+            dimLabels.emplace_back();
+            for (auto& i: horizontalLabels)
+              if (uniqueLabels.insert(i).second)
+                {
+                  dimLabels.back()[i]=hc.xvectors.back().size();
+                  hc.xvectors.back().emplace_back(i);
+                }
           }
+          
         for (; row<spec.nRowAxes(); ++row)
           getline(input,buf);
             
