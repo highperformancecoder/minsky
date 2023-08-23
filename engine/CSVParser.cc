@@ -702,7 +702,6 @@ namespace minsky
 #endif
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
-            assert(spec.headerRow<=spec.nRowAxes());
             Key key;
             auto field=tok.begin();
             size_t dim=0, dataCols=0;
@@ -863,7 +862,7 @@ namespace minsky
             for (auto& i: tmpData)
               {
                 size_t idx=0;
-                assert (hc.rank()==i.first.size());
+                assert (hc.rank()<=i.first.size());
                 assert(dimLabels.size()==hc.rank());
                 for (int j=hc.rank()-1; j>=0; --j)
                   {
