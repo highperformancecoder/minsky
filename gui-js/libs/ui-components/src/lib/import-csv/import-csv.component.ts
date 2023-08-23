@@ -71,6 +71,9 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   public get columnar(): AbstractControl {
     return this.form.get('columnar');
   }
+  public get counter(): AbstractControl {
+    return this.form.get('counter');
+  }
   public get separator(): AbstractControl {
     return this.form.get('separator');
   }
@@ -118,6 +121,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.form = new FormGroup({
       columnar: new FormControl(false),
+      counter: new FormControl(false),
       decSeparator: new FormControl('.'),
       duplicateKeyAction: new FormControl('throwException'),
       escape: new FormControl(''),
@@ -190,6 +194,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.url.setValue(this.dialogState.url);
     
     this.columnar.setValue(this.dialogState.spec.columnar);
+    this.counter.setValue(this.dialogState.spec.counter);
     this.decSeparator.setValue(this.dialogState.spec.decSeparator);
     this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
     this.escape.setValue(this.dialogState.spec.escape);
@@ -381,6 +386,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSpecFromForm() {
     var spec=this.dialogState.spec;
     spec.columnar=this.columnar.value;
+    spec.counter=this.counter.value;
     spec.decSeparator=this.decSeparator.value;
     spec.duplicateKeyAction=this.duplicateKeyAction.value;
     spec.escape=this.escape.value;

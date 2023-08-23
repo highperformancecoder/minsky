@@ -192,7 +192,7 @@ namespace
   
   struct NoDataColumns: public std::exception
   {
-    const char* what() const noexcept override {return "No data columns";}
+    const char* what() const noexcept override {return "No data columns\nIf dataset has no data, try selecting counter";}
   };
   struct DuplicateKey: public std::exception
   {
@@ -756,47 +756,52 @@ namespace minsky
                   bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
                   if (valueExists || !isnan(spec.missingValue))
                     {
-                      auto i=tmpData.find(key);
-                      double v=spec.missingValue;
-                      if (valueExists)
-                        try
-                          {
-                            v=stod(s);
-                            if (i==tmpData.end())
-                              tmpData.emplace(key,v);
-                          }
-                        catch (...) // value misunderstood
-                          {
-                            if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
-                              valueExists=false;
-                          }
-                      if (valueExists && i!=tmpData.end())
-                        switch (spec.duplicateKeyAction)
-                          {
-                          case DataSpec::throwException:
-                            throw DuplicateKey(key); 
-                          case DataSpec::sum:
-                            i->second+=v;
-                            break;
-                          case DataSpec::product:
-                            i->second*=v;
-                            break;
-                          case DataSpec::min:
-                            if (v<i->second)
-                              i->second=v;
-                            break;
-                          case DataSpec::max:
-                            if (v>i->second)
-                              i->second=v;
-                            break;
-                          case DataSpec::av:
-                            {
-                              int& c=tmpCnt[key]; // c initialised to 0
-                              i->second=((c+1)*i->second + v)/(c+2);
-                              c++;
-                            }
-                            break;
-                          }
+                      if (spec.counter)
+                        tmpData[key]+=1;
+                      else
+                        {
+                          auto i=tmpData.find(key);
+                          double v=spec.missingValue;
+                          if (valueExists)
+                            try
+                              {
+                                v=stod(s);
+                                if (i==tmpData.end())
+                                  tmpData.emplace(key,v);
+                              }
+                            catch (...) // value misunderstood
+                              {
+                                if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                                  valueExists=false;
+                              }
+                          if (valueExists && i!=tmpData.end())
+                            switch (spec.duplicateKeyAction)
+                              {
+                              case DataSpec::throwException:
+                                throw DuplicateKey(key); 
+                              case DataSpec::sum:
+                                i->second+=v;
+                                break;
+                              case DataSpec::product:
+                                i->second*=v;
+                                break;
+                              case DataSpec::min:
+                                if (v<i->second)
+                                  i->second=v;
+                                break;
+                              case DataSpec::max:
+                                if (v>i->second)
+                                  i->second=v;
+                                break;
+                              case DataSpec::av:
+                                {
+                                  int& c=tmpCnt[key]; // c initialised to 0
+                                  i->second=((c+1)*i->second + v)/(c+2);
+                                  c++;
+                                }
+                                break;
+                              }
+                        }
                     }
                   dataCols++;
                   if (tabularFormat)
@@ -806,7 +811,12 @@ namespace minsky
                 }
             
             if (!dataCols)
-              throw NoDataColumns();
+              {
+                if (spec.counter)
+                  tmpData[key]+=1;
+                else
+                  throw NoDataColumns();
+              }
             
 
             bytesRead+=buf.size();
