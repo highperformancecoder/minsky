@@ -16,7 +16,7 @@ export class CppClass
   // calls the method on this thread
   public $callMethodSync(method: string,...args)
   {
-    return CppClass.backend(`${this.m_prefix}.${method}.$sync`, ...args);
+    return CppClass.backendSync(`${this.m_prefix}.${method}`, ...args);
   }
   public async $properties(...args) {return CppClass.backend(this.m_prefix, ...args);}
   public async $list(): Promise<string[]> {return this.$callMethod("@list");} // $ prevents this method from being shadowed by a C++ method
