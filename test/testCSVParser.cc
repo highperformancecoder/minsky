@@ -212,9 +212,10 @@ SUITE(CSVParser)
       
       separator=';';
       setDataArea(3,2);
+      numCols=5;
       missingValue=-1;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
       
@@ -253,9 +254,10 @@ SUITE(CSVParser)
       separator=';';
       quote='\'';
       setDataArea(3,2);
+      numCols=5;
       missingValue=-1;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
       
@@ -291,9 +293,10 @@ SUITE(CSVParser)
       
       separator=';';
       setDataArea(1,1);
+      numCols=4;
       missingValue=-1;
       headerRow=0;
-      dimensionNames={"country"};
+      dimensionNames={"country","2014","2014-01","2014-02"};
       dimensionCols={0};
       horizontalDimName="date";
       horizontalDimension.type=Dimension::time;
@@ -326,9 +329,10 @@ SUITE(CSVParser)
       
       separator=';';
       setDataArea(1,1);
+      numCols=4;
       missingValue=-1;
       headerRow=0;
-      dimensionNames={"country"};
+      dimensionNames={"country","2014.01","2014.02","2014.10"};
       dimensionCols={0};
       horizontalDimName="date";
       horizontalDimension.type=Dimension::time;
@@ -363,9 +367,10 @@ SUITE(CSVParser)
       
       separator=' ';
       setDataArea(3,2);
+      numCols=5;
       missingValue=-1;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
       
@@ -404,8 +409,9 @@ SUITE(CSVParser)
       
       separator=';';
       setDataArea(3,2);
+      numCols=5;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
       
@@ -442,9 +448,10 @@ SUITE(CSVParser)
       
       separator=';';
       setDataArea(3,2);
+      numCols=5;
       missingValue=-1;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
 
