@@ -90,8 +90,7 @@ export default class App {
     const height = Math.round(Math.max(600, workAreaSize.height * 0.9));
 
     // Create the browser window.
-    let ravelVersion;
-    minsky.ravelVersion().then((res)=>{ravelVersion=res;});
+    let ravelVersion=minsky.$callMethodSync("ravelVersion");
     App.mainWindow = new BrowserWindow({
       width: width,
       height: height,
