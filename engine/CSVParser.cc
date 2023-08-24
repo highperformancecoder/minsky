@@ -614,12 +614,12 @@ namespace minsky
     // replace doubled quotes with escape quote
     for (size_t i=1; i<line.size(); ++i)
       if (line[i]==spec.quote && line[i-1]==spec.quote &&
-         (i==1 && (i==line.size()-1|| line[i+1]!=spec.quote) ||                                       // deal with leading ""
-            i>1 &&
-            (line[i-2]!=spec.quote && line[i-2]!=spec.escape &&
-             (line[i-2]!=spec.separator || i==line.size()-1|| line[i+1]!=spec.quote)  // deal with ,''
+          ((i==1 && (i==line.size()-1|| line[i+1]!=spec.quote)) ||                                       // deal with leading ""
+           (i>1 &&
+          ((line[i-2]!=spec.quote && line[i-2]!=spec.escape &&
+             (line[i-2]!=spec.separator || i==line.size()-1|| line[i+1]!=spec.quote))  // deal with ,''
              ||            // deal with "" middle or end
-             (line[i-2]==spec.quote && (i==2 || line[i-3]==spec.separator || line[i-3]==spec.escape))))) // deal with leading """
+           (line[i-2]==spec.quote && (i==2 || line[i-3]==spec.separator || line[i-3]==spec.escape)))))) // deal with leading """
           line[i-1]=spec.escape;
   }
   
