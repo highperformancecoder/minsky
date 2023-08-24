@@ -172,7 +172,7 @@ SUITE(CSVParser)
   TEST_FIXTURE(CSVDialog,classifyColumns)
     {
       string input="10,2022/10/2,hello,\n"
-        "'£5,150,000','2023/1/3','foo bar',\n"
+        "'5,150,000','2023/1/3','foo bar',\n"
         "2 00,2023/1/3,ggg,\n";
 
       url=boost::filesystem::unique_path().string();
@@ -212,9 +212,10 @@ SUITE(CSVParser)
       
       separator=';';
       setDataArea(3,2);
+      numCols=5;
       missingValue=-1;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
       
@@ -238,8 +239,123 @@ SUITE(CSVParser)
       CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
                         v.tensorInit, 12, 1e-4);
     }
+  
+   TEST_FIXTURE(DataSpec,embeddedNewline)
+    {
+      string input="A comment\n"
+        ";;foobar\n" // horizontal dim name
+        "foo;bar;A;B;C\n"
+        "A;'A\nB';1.2;1.3;1.4\n"
+        "A;B;1;'2\n.0';3\n"
+        "B;AB;3;2;1\n";
 
-  TEST_FIXTURE(DataSpec,loadVarSpace)
+      istringstream is(input);
+      
+      separator=';';
+      quote='\'';
+      setDataArea(3,2);
+      numCols=5;
+      missingValue=-1;
+      headerRow=2;
+      dimensionNames={"foo","bar","A","B","C"};
+      dimensionCols={0,1};
+      horizontalDimName="foobar";
+      
+      VariableValue v(VariableType::parameter);
+      loadValueFromCSVFile(v,is,*this,0);
+
+      CHECK_EQUAL(3, v.rank());
+      CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
+      CHECK_EQUAL("foo", v.hypercube().xvectors[0].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[0][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[0][1]));
+      CHECK_EQUAL("bar", v.hypercube().xvectors[1].name);
+      CHECK_EQUAL("AB", str(v.hypercube().xvectors[1][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[1][1]));
+      CHECK_EQUAL("foobar", v.hypercube().xvectors[2].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[2][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[2][1]));
+      CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
+      CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
+      CHECK_EQUAL(12, v.tensorInit.size());
+      CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
+                        v.tensorInit, 12, 1e-4);
+    }
+ 
+  TEST_FIXTURE(DataSpec,januaryDoubleDip)
+    {
+      string input=
+        "country;2014;2014-01;2014-02\n" 
+        "Aus;10;;\n"
+        "UK;;10;20\n";
+
+      istringstream is(input);
+      
+      separator=';';
+      setDataArea(1,1);
+      numCols=4;
+      missingValue=-1;
+      headerRow=0;
+      dimensionNames={"country","2014","2014-01","2014-02"};
+      dimensionCols={0};
+      horizontalDimName="date";
+      horizontalDimension.type=Dimension::time;
+      
+      VariableValue v(VariableType::parameter);
+      loadValueFromCSVFile(v,is,*this,0);
+
+      CHECK_EQUAL(2, v.rank());
+      CHECK_ARRAY_EQUAL(vector<unsigned>({2,2}),v.hypercube().dims(),2);
+      CHECK_EQUAL("country", v.hypercube().xvectors[0].name);
+      CHECK_EQUAL("Aus", str(v.hypercube().xvectors[0][0]));
+      CHECK_EQUAL("UK", str(v.hypercube().xvectors[0][1]));
+      CHECK_EQUAL("date", v.hypercube().xvectors[1].name);
+      CHECK_EQUAL("2014-01-01T00:00:00", str(v.hypercube().xvectors[1][0]));
+      CHECK_EQUAL("2014-02-01T00:00:00", str(v.hypercube().xvectors[1][1]));
+      CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
+      CHECK_EQUAL(4, v.tensorInit.size());
+      CHECK_ARRAY_CLOSE(vector<double>({10,10,-1,20}),
+                        v.tensorInit, 4, 1e-4);
+    }
+
+   TEST_FIXTURE(DataSpec,dotTimeSep)
+    {
+      string input=
+        "country;2014.01;2014.02;2014.10\n" 
+        "Aus;10;;\n"
+        "UK;;10;20\n";
+
+      istringstream is(input);
+      
+      separator=';';
+      setDataArea(1,1);
+      numCols=4;
+      missingValue=-1;
+      headerRow=0;
+      dimensionNames={"country","2014.01","2014.02","2014.10"};
+      dimensionCols={0};
+      horizontalDimName="date";
+      horizontalDimension.type=Dimension::time;
+      
+      VariableValue v(VariableType::parameter);
+      loadValueFromCSVFile(v,is,*this,0);
+
+      CHECK_EQUAL(2, v.rank());
+      CHECK_ARRAY_EQUAL(vector<unsigned>({2,3}),v.hypercube().dims(),2);
+      CHECK_EQUAL("country", v.hypercube().xvectors[0].name);
+      CHECK_EQUAL("Aus", str(v.hypercube().xvectors[0][0]));
+      CHECK_EQUAL("UK", str(v.hypercube().xvectors[0][1]));
+      CHECK_EQUAL("date", v.hypercube().xvectors[1].name);
+      CHECK_EQUAL("2014-01-01T00:00:00", str(v.hypercube().xvectors[1][0]));
+      CHECK_EQUAL("2014-02-01T00:00:00", str(v.hypercube().xvectors[1][1]));
+      CHECK_EQUAL("2014-10-01T00:00:00", str(v.hypercube().xvectors[1][2]));
+      CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
+      CHECK_EQUAL(6, v.tensorInit.size());
+      CHECK_ARRAY_CLOSE(vector<double>({10,-1,-1,10,-1,20}),
+                        v.tensorInit, 6, 1e-4);
+    }
+
+   TEST_FIXTURE(DataSpec,loadVarSpace)
     {
       string input="A comment\n"
         "  foobar\n" // horizontal dim name
@@ -251,9 +367,10 @@ SUITE(CSVParser)
       
       separator=' ';
       setDataArea(3,2);
+      numCols=5;
       missingValue=-1;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
       
@@ -292,8 +409,9 @@ SUITE(CSVParser)
       
       separator=';';
       setDataArea(3,2);
+      numCols=5;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
       
@@ -330,9 +448,10 @@ SUITE(CSVParser)
       
       separator=';';
       setDataArea(3,2);
+      numCols=5;
       missingValue=-1;
       headerRow=2;
-      dimensionNames={"foo","bar"};
+      dimensionNames={"foo","bar","A","B","C"};
       dimensionCols={0,1};
       horizontalDimName="foobar";
 
@@ -419,6 +538,29 @@ SUITE(CSVParser)
         CHECK_CLOSE(v[i], newV.tensorInit[i], 0.001*v[1]);
     }
 
+  string testEscapeDoubledQuotes(string x)
+  {
+    DataSpec spec;
+    spec.quote='\'';
+    spec.separator=',';
+    spec.escape='&';
+    escapeDoubledQuotes(x,spec);
+    return x;
+  }
   
+  TEST(escapeDoubledQuotes)
+    {
+      CHECK_EQUAL("foo",testEscapeDoubledQuotes("foo"));
+      CHECK_EQUAL("'foo'",testEscapeDoubledQuotes("'foo'"));
+      CHECK_EQUAL("&'foo&'",testEscapeDoubledQuotes("''foo''"));                 // not strictly CSV standard
+      CHECK_EQUAL("'&'foo&''",testEscapeDoubledQuotes("'''foo'''"));
+      CHECK_EQUAL("'&'&''",testEscapeDoubledQuotes("''''''"));
+      CHECK_EQUAL("'fo&'o'",testEscapeDoubledQuotes("'fo''o'"));
+      CHECK_EQUAL("foo,bar",testEscapeDoubledQuotes("foo,bar"));
+      CHECK_EQUAL("'foo','bar'",testEscapeDoubledQuotes("'foo','bar'"));
+      CHECK_EQUAL("&'foo&',&'bar&'",testEscapeDoubledQuotes("''foo'',''bar''")); // not strictly CSV standard
+      CHECK_EQUAL("'&'foo&'','&'bar&''",testEscapeDoubledQuotes("'''foo''','''bar'''"));
+      CHECK_EQUAL("'fo&'o','b&'ar'",testEscapeDoubledQuotes("'fo''o','b''ar'"));
+    }
   
 }

@@ -104,6 +104,9 @@ namespace minsky
   /// load a variableValue from a stream according to data spec
   /// @param fileSize size of file to read (for progress bar)
   void loadValueFromCSVFile(VariableValue&,std::istream&,const DataSpec&,uintmax_t fileSize);
+
+  /// replace doubled quotes with escaped quotes
+  void escapeDoubledQuotes(std::string&,const DataSpec&);
 }
 
 #include "CSVParser.cd"

@@ -41,7 +41,7 @@ namespace minsky
     bool redraw(int, int, int width, int height) override;
     
   public:
-    static const unsigned numInitialLines=30;
+    static const unsigned numInitialLines=100;
     double xoffs=80;
     double colWidth=50;
     bool flashNameRow=false;

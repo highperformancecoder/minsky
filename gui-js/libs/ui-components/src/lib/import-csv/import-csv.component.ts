@@ -71,6 +71,9 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   public get columnar(): AbstractControl {
     return this.form.get('columnar');
   }
+  public get counter(): AbstractControl {
+    return this.form.get('counter');
+  }
   public get separator(): AbstractControl {
     return this.form.get('separator');
   }
@@ -118,6 +121,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.form = new FormGroup({
       columnar: new FormControl(false),
+      counter: new FormControl(false),
       decSeparator: new FormControl('.'),
       duplicateKeyAction: new FormControl('throwException'),
       escape: new FormControl(''),
@@ -190,6 +194,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.url.setValue(this.dialogState.url);
     
     this.columnar.setValue(this.dialogState.spec.columnar);
+    this.counter.setValue(this.dialogState.spec.counter);
     this.decSeparator.setValue(this.dialogState.spec.decSeparator);
     this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
     this.escape.setValue(this.dialogState.spec.escape);
@@ -229,6 +234,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       await this.variableValuesSubCommand.csvDialog.url(fileUrl);
       await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
       await this.getCSVDialogSpec();
+      this.updateForm();
     } else {
       await this.variableValuesSubCommand.csvDialog.loadFile();
     }
@@ -272,7 +278,13 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selected = new Array(this.parsedLines[header]?.length).fill(false);
     this.updateColumnTypes();
   }
-  
+
+  onSeparatorChange() {
+    this.updateSpecFromForm();
+    this.variableValuesSubCommand.csvDialog.spec.$properties(this.dialogState.spec);
+    this.parseLines();
+  }
+    
   async selectHeader(index: number) {
     this.dialogState.spec.headerRow = index;
     // explicitly selecting a header, make sure dataRowOffset is greater
@@ -303,7 +315,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   getColorForCell(rowIndex: number, colIndex: number) {
     if (colIndex>=this.colType.length) return "red";
 
-    if (this.dialogState.spec.headerRow === rowIndex)  // header row
+    if (this.dialogState.spec.headerRow === rowIndex && this.dialogState.spec.headerRow < this.dialogState.spec.dataRowOffset)  // header row
         switch (this.colType[colIndex]) {
         case 'data': return "blue";
         case 'axis': return "green";
@@ -374,6 +386,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSpecFromForm() {
     var spec=this.dialogState.spec;
     spec.columnar=this.columnar.value;
+    spec.counter=this.counter.value;
     spec.decSeparator=this.decSeparator.value;
     spec.duplicateKeyAction=this.duplicateKeyAction.value;
     spec.escape=this.escape.value;
@@ -381,7 +394,17 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     spec.mergeDelimiters=this.mergeDelimiters.value;
     spec.missingValue=this.missingValue.value;
     spec.quote=this.quote.value;
-    spec.separator=this.separator.value;
+    switch (this.separator.value) {
+    case 'tab':
+      spec.separator='\t';
+      break;
+    case 'space':
+      spec.separator=' ';
+      break;
+    default:
+      spec.separator=this.separator.value;
+      break;
+    }
     spec.horizontalDimension=this.horizontalDimension.value;
 
     this.dialogState.spec.dimensionCols=[];

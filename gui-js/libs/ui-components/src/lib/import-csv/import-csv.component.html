@@ -14,7 +14,7 @@
   <div class="options-row">
     <span>
       <label for="columnar">Columnar</label>
-      <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(dialogState.spec.nRowAxes,dialogState.spec.nColAxes)"/>
+      <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(dialogState.spec.dataRowOffset,dialogState.spec.dataColOffset)"/>
     </span>
 
     <span>
@@ -25,6 +25,7 @@
         formControlName="separator"
         [matAutocomplete]="autocompleteSeparator"
         class="form-control autocomplete"
+        (change)="onSeparatorChange()"
       />
       <mat-autocomplete
         [panelWidth]="'10rem'"
@@ -118,6 +119,11 @@
     </span>
 
     <span>
+      <label for="counter">Counter</label>
+      <input id="counter" type="checkbox" formControlName="counter"/>
+    </span>
+
+    <span>
       <label for="horizontal-dimension">Horizontal Dimension</label>
       <input
         id="horizontal-dimension"
@@ -172,7 +178,7 @@
           (mouseup)="typeMouseUp($event,'name',i)"
             >
           <input
-            *ngIf="colType[i]==='axis'"
+            *ngIf="colType[i]==='axis'||colType[i]==='data'"
             type="text"
             class="form-control"
             [value]="dialogState.spec.dimensionNames[i]"
@@ -249,7 +255,8 @@
 
       <tr *ngFor="let row of parsedLines; let rowIndex = index">
         <th class="header" (click)="selectHeader(rowIndex)">
-          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow"
+          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow
+            && dialogState.spec.headerRow < dialogState.spec.dataRowOffset"
             >Header</ng-container
           >
         </th>
