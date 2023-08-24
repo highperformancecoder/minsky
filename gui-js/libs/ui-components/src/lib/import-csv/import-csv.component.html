@@ -13,7 +13,13 @@
 
   <div class="options-row">
     <span>
-      <label for="separator">Separator</label>
+      <label for="dontFail" title="Selecting this discards erroneous
+      data from being imported.">Don't fail on invalid data</label>
+      <input id="dontFail" type="checkbox" formControlName="dontFail"/>
+    </span>
+
+     <span>
+      <label for="separator" title="CSV separator.">Separator</label>
       <input
         id="separator"
         type="text"
@@ -34,7 +40,8 @@
     </span>
 
     <span>
-      <label for="decimal-separator">Decimal Separator</label>
+      <label for="decimal-separator" title="Separator of units and
+      fraction part of numbers: '.' for UK/US data, '.' for European data.">Decimal Separator</label>
       <input
         id="decimal-separator"
         type="text"
@@ -49,7 +56,8 @@
     </span>
 
     <span>
-      <label for="escape">Escape</label>
+      <label for="escape" title="Character used to embed special
+      characetrs in strings, such as quotes.">Escape</label>
       <input
         id="escape"
         type="text"
@@ -63,7 +71,7 @@
     </span>
 
     <span>
-      <label for="quote">Quote</label>
+      <label for="quote" title="CSV quote character.">Quote</label>
       <input
         id="quote"
         type="text"
@@ -78,7 +86,9 @@
     </span>
 
     <span>
-      <label for="merge-delimiters">Merge Delimiters</label>
+      <label for="merge-delimiters" title="Consecutive separators
+      treated as a single separator. Mostly useful for space delimited
+      files.">Merge Delimiters</label>
       <input
         id="merge-delimiters"
         type="checkbox"
@@ -86,7 +96,8 @@
       />
     </span>
     <span>
-      <label for="missing-value">Missing Value</label>
+      <label for="missing-value" title="Value to substitute for
+      missing data.">Missing Value</label>
       <input
         id="missing-value"
         type="text"
@@ -101,7 +112,10 @@
     </span>
 
     <span>
-      <label for="duplicate-key-action">Duplicate Key Action</label>
+      <label for="duplicate-key-action"
+             title="What to do if multiple values exist for the same
+             data element."
+             >Duplicate Key Action</label>
 
       <select id="duplicate-key-action" formControlName="duplicateKeyAction">
             <option value="throwException">throwException</option>
@@ -114,12 +128,14 @@
     </span>
 
     <span>
-      <label for="counter">Counter</label>
+      <label for="counter" title="Counts elements instead of reading
+      data. Particularly useful if no numerical data in file.">Counter</label>
       <input id="counter" type="checkbox" formControlName="counter"/>
     </span>
 
     <span>
-      <label for="horizontal-dimension">Horizontal Dimension</label>
+      <label for="horizontal-dimension"
+             title="Name of the collection of data columns.">Horizontal Dimension</label>
       <input
         id="horizontal-dimension"
         type="text"
@@ -128,7 +144,7 @@
     </span>
     <ng-container [formGroup]="horizontalDimension">
       <span>
-        <label for="type">Type</label>
+        <label for="type" title="Type of horizontal dimension.">Type</label>
         <select id="type" formControlName="type">
           <option value="string">string</option>
           <option value="value">value</option>
@@ -137,7 +153,8 @@
       </span>
 
       <span>
-        <label for="format">Format</label>
+        <label for="format" title="Format field for the horizontal
+        dimension. Mostly useful for time dimensions.">Format</label>
         <input
           id="units"
           type="text"

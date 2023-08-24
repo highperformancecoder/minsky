@@ -192,7 +192,7 @@ namespace
   
   struct NoDataColumns: public std::exception
   {
-    const char* what() const noexcept override {return "No data columns\nIf dataset has no data, try selecting counter";}
+    const char* what() const noexcept override {return "No data columns specified\nIf dataset has no data, try selecting counter";}
   };
   struct DuplicateKey: public std::exception
   {
@@ -200,10 +200,12 @@ namespace
     DuplicateKey(const vector<Any>& x) {
       for (auto& i: x)
         msg+=":"+str(i);
+      msg+="\nTry selecting a different duplicate key action";
     }
     DuplicateKey(const vector<string>& x) {
       for (auto& i: x)
         msg+=":"+i;
+      msg+="\nTry selecting a different duplicate key action";
     }
     const char* what() const noexcept override {return msg.c_str();}
   };
@@ -699,7 +701,7 @@ namespace minsky
                 {
                   // detect blank data lines (favourite Excel artifact)
                   if (spec.dimensions[dim].type!=Dimension::string && field->empty())
-                    goto keyEmptyGotoNextLine;
+                    goto invalidKeyGotoNextLine;
                   
                   if (dim>=hc.xvectors.size())
                     hc.xvectors.emplace_back("?"); // no header present
@@ -713,7 +715,10 @@ namespace minsky
                     }
                   catch (...)
                     {
-                      throw std::runtime_error("Invalid data: "+*field+" for "+
+                      if (spec.dontFail)
+                        goto invalidKeyGotoNextLine;
+                      else
+                        throw std::runtime_error("Invalid data: "+*field+" for "+
                                                to_string(spec.dimensions[dim].type)+
                                                " dimensioned column: "+spec.dimensionNames[dim]);
                     }
@@ -799,7 +804,7 @@ namespace minsky
             
             if (!dataCols)
               {
-                if (spec.counter)
+                if (spec.counter || spec.dontFail)
                   tmpData[key]+=1;
                 else
                   throw NoDataColumns();
@@ -808,7 +813,7 @@ namespace minsky
 
             bytesRead+=buf.size();
             pu.setProgress(double(bytesRead)/fileSize);
-          keyEmptyGotoNextLine:;
+          invalidKeyGotoNextLine:;
           }
         ++minsky().progressState;
 
