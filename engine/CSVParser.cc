@@ -487,7 +487,6 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
  {
    vector<NamedDimension> ravelMetadata;
    json(ravelMetadata,metadata);
-   columnar=true;
    headerRow=row+2;
    setDataArea(headerRow, ravelMetadata.size());
    dimensionNames.clear();
@@ -543,7 +542,6 @@ namespace minsky
                           continue;
                         }
                     }
-                  if (spec.columnar) break; // only one column to check
                 }
 
             if ((spec.dataCols.empty() && i<=spec.nColAxes()) || i<=*spec.dataCols.end())
