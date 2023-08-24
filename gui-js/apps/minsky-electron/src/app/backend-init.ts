@@ -164,8 +164,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
 restService.setProgressCallback(function (title: string, val: number) {
   progress.text=title;
   progress.value=val;
-  if (progressBar)
-  {
+  if (progressBar && !progressBar.isCompleted())  {
     progressBar.text=title;
     progressBar.value=val;
   }
