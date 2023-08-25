@@ -369,7 +369,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       this.typeMouseMove(event,col);
       if (col===this.mouseDown)  // deselect all if ending on same column
         if (this.selected.every((x)=>!x)) {
-          if (Number.isInteger(row))
+          // hide selectRowAndColumn behind a modifier key to prevent accidental settings.
+          if (Number.isInteger(row) && (event.shiftKey||event.ctrlKey||event.altKey))
             this.selectRowAndCol(row, col);
           else
             this.dialogState.spec.dimensionNames[col]=this.parsedLines[this.dialogState.spec.headerRow][col]
