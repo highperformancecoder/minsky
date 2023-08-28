@@ -825,6 +825,13 @@ namespace minsky
       args.insert(args.end(), a2.begin(), a2.end());
       meldArgsIntoCommonHypercube(args);
       civita::Merge::setArguments(args,opArgs);
+
+      static const char distinctErrorMsg[]="Please use a distinct name for the synthetic dimension produced by this operation";
+      if (!hypercube().dimsAreDistinct())
+        {
+          if (state) state->throw_error(distinctErrorMsg);
+          else throw runtime_error(distinctErrorMsg);
+        }
       
       // relabel slices along new dimension with variable names if available
       int stream=0;
