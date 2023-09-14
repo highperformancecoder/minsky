@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Switch</TITLE>
-<META NAME="description" CONTENT="Switch">
+<TITLE>Slice</TITLE>
+<META NAME="description" CONTENT="Slice">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,86 +14,64 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node107.html">
-<LINK REL="previous" HREF="node90.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="previous" HREF="node105.html">
+<LINK REL="up" HREF="node88.html">
 <LINK REL="next" HREF="node107.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1434"
+<A NAME="tex2html1442"
   HREF="node107.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1432"
-  HREF="node48.html">
+<A NAME="tex2html1440"
+  HREF="node88.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1426"
+<A NAME="tex2html1436"
   HREF="node105.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1435"
-  HREF="node107.html">Variables</A>
-<B> Up:</B> <A NAME="tex2html1433"
-  HREF="node48.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1427"
-  HREF="node105.html">outer product</A>
+<B> Next:</B> <A NAME="tex2html1443"
+  HREF="node107.html">Switch</A>
+<B> Up:</B> <A NAME="tex2html1441"
+  HREF="node88.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1437"
+  HREF="node105.html">Merge</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00430000000000000000"></A><A NAME="SwitchIcon"></A>
+<H2><A NAME="SECTION004218000000000000000"></A><A NAME="Operation:slice"></A>
 <BR>
-Switch
-</H1>
+Slice
+</H2>
 
 <P>
-
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
+Slice will cut off a tensor along a given axis by the argument, as
+configured in the operation edit dialog. For
+example <!-- MATH
+ $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+  3)=\{x_1,x_2,x_3\}$
  -->
-<IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img64.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
-  
-A switch block (also known as a case block, or select in the Fortran
-world) is a way of selecting from a range of alternatives according
-to the value of the input, effectively defining a piecewise function.
+<SPAN CLASS="MATH"><IMG
+ WIDTH="262" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img216.png"
+ ALT="$\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+3)=\{x_1,x_2,x_3\}$"></SPAN>. If the tensor is rank one (ie a vector), it is
+  not necessary to specify the axis.
 
 <P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
+If the slice argument is negative, then it refers to the number of
+elements from the end of that axis. For example <!-- MATH
+ $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+  -3)=\{x_{n-3},x_{n-2},x_{n-1}\}$
  -->
-<IMG
- WIDTH="555" HEIGHT="269" ALIGN="BOTTOM" BORDER="0"
- SRC="img208.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}">
-<EM>An example switch block with 3 cases</EM>
-
-</DIV>
-
-<P>
-The default switch has two cases, and can be used to implement an
-if/then/else construct. However, because the two cases are 0 and 1,
-or false and true, a two case switch statement will naturally appear
-&ldquo;upside down&rdquo; to how you might think of an if statement. In other
-words, it looks like:
-
-<P>
-<IMG
- WIDTH="163" HEIGHT="66" ALIGN="MIDDLE" BORDER="0"
- SRC="img209.png"
- ALT="$\textstyle \parbox{\textwidth}{
-{\tt if not }{\em condition} {\tt then}\\
-\ldots
-{\tt else}\\
-\ldots
-}$">
-<P>
-You can add or remove cases through the context menu. 
+<SPAN CLASS="MATH"><IMG
+ WIDTH="328" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img217.png"
+ ALT="$\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+-3)=\{x_{n-3},x_{n-2},x_{n-1}\}$"></SPAN>.
 
 <P>
 <BR><HR>
