@@ -1,9 +1,11 @@
 *.o
 *.d
 *.cd
-*.exe
-*.xcd
+*.pcd
 *.rcd
+*.tcd
+*.xcd
+*.exe
 *~
 *.aux
 *.dvi
@@ -11,6 +13,7 @@
 *.out
 .vscode
 doxydoc
+minsky.xsd
 test/unittests
 test/tcl-cov
 test/testDatabase
@@ -27,4 +30,6 @@ node_modules/*
 gui-js/node_modules/*
 gui-js/documentation/*
 gui-js/dist/*
+gui-js/coverage/*
+gui-js/node-addons/minskyRESTService.node
 doc/minsky/*

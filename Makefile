@@ -1,4 +1,4 @@
-.SUFFIXES: .xcd .rcd .tcd .gch .gcd $(SUFFIXES)
+.SUFFIXES: .xcd .rcd .tcd .gch .gcd .pcd $(SUFFIXES)
 
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
@@ -138,7 +138,7 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o
 
 
 ifneq ($(GUI_TK),1)
@@ -196,6 +196,11 @@ VPATH= schema model engine gui-tk RESTService RavelCAPI/civita RavelCAPI $(ECOLA
 	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	RESTProcess >$@
+
+.h.pcd:
+	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
+	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -i $< \
+	python >$@
 
 .h.gch:
 	$(CPLUSPLUS) -c $(FLAGS) $(CXXFLAGS) $(OPT) -o $@ $<
@@ -418,6 +423,9 @@ dummy-addon.o: dummy-addon.cc
 
 node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
+
+pyminsky.so: pyminsky.o $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
+	g++ -fPIC -shared -Wl,-soname,example $^ `pkg-config --libs python3` -lboost_python3 -o $^
 
 $(EXES):
 
