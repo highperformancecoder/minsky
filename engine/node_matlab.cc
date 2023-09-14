@@ -639,5 +639,15 @@ namespace MathDAG
     checkArg(0,0);checkArg(1,0);
     return o<<"meld("<<arguments[0][0]->matlab()<<","<<arguments[1][0]->matlab()<<")";
   }
+  template <>
+  ostream& OperationDAG<OperationType::slice>::matlab(ostream& o) const
+  {
+    checkArg(0,0);checkArg(1,0);
+    double slice=0;
+    if (state)
+      if (auto o=state->operationCast())
+        slice=o->arg;
+    return o<<"slice("<<arguments[0][0]->matlab()<<","<<slice<<")";
+  }
 
 }

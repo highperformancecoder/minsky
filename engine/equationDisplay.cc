@@ -1045,6 +1045,23 @@ namespace MathDAG
     });
   }
 
+  template <>
+  void OperationDAG<OperationType::slice>::render(Surface& surf) const
+  {
+    if (arguments.size()<1 ||  arguments[0].empty())
+      throw error("incorrectly wired");
+    print(surf.cairo(),"slice",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){
+      arguments[0][0]->render(surf);
+      print(surf.cairo(),",",Anchor::nw);
+      string slice="0";
+      if (state)
+        if (auto o=state->operationCast())
+          slice=to_string(o->arg);
+      print(surf.cairo(),slice,Anchor::nw);
+    });
+  }
+
 
 
 }
