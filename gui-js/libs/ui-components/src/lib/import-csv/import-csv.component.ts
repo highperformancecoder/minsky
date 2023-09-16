@@ -68,8 +68,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   public get url(): AbstractControl {
     return this.form.get('url');
   }
-  public get columnar(): AbstractControl {
-    return this.form.get('columnar');
+  public get dontFail(): AbstractControl {
+    return this.form.get('dontFail');
   }
   public get counter(): AbstractControl {
     return this.form.get('counter');
@@ -120,7 +120,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.form = new FormGroup({
-      columnar: new FormControl(false),
+      dontFail: new FormControl(false),
       counter: new FormControl(false),
       decSeparator: new FormControl('.'),
       duplicateKeyAction: new FormControl('throwException'),
@@ -193,7 +193,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   updateForm() {
     this.url.setValue(this.dialogState.url);
     
-    this.columnar.setValue(this.dialogState.spec.columnar);
+    this.dontFail.setValue(this.dialogState.spec.dontFail);
     this.counter.setValue(this.dialogState.spec.counter);
     this.decSeparator.setValue(this.dialogState.spec.decSeparator);
     this.duplicateKeyAction.setValue(this.dialogState.spec.duplicateKeyAction);
@@ -305,10 +305,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       if (i<colIndex) {
         if (this.colType[i]==ColType.data)
           this.colType[i]=ColType.ignore;
-      } else if (i===colIndex || !this.columnar.value) 
+      } else 
         this.colType[i]=ColType.data;
-      else
-        this.colType[i]=ColType.ignore;
     this.ngAfterViewChecked();
   }
 
@@ -371,7 +369,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       this.typeMouseMove(event,col);
       if (col===this.mouseDown)  // deselect all if ending on same column
         if (this.selected.every((x)=>!x)) {
-          if (Number.isInteger(row))
+          // hide selectRowAndColumn behind a modifier key to prevent accidental settings.
+          if (Number.isInteger(row) && (event.shiftKey||event.ctrlKey||event.altKey))
             this.selectRowAndCol(row, col);
           else
             this.dialogState.spec.dimensionNames[col]=this.parsedLines[this.dialogState.spec.headerRow][col]
@@ -385,7 +384,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
   updateSpecFromForm() {
     var spec=this.dialogState.spec;
-    spec.columnar=this.columnar.value;
+    spec.dontFail=this.dontFail.value;
     spec.counter=this.counter.value;
     spec.decSeparator=this.decSeparator.value;
     spec.duplicateKeyAction=this.duplicateKeyAction.value;
