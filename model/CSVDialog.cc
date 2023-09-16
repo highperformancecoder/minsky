@@ -371,13 +371,12 @@ bool CSVDialog::redraw(int, int, int, int)
               CairoSave cs(cairo);
               pango.setText(line[col]);
               pango.setxy(x, y);
-              if (row==spec.headerRow && !(spec.columnar && col>spec.nColAxes()))
+              if (row==spec.headerRow)
                 if (col<spec.nColAxes())
                   cairo_set_source_rgb(surface->cairo(),0,0.7,0);
                 else
                   cairo_set_source_rgb(surface->cairo(),0,0,1);
-              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.count(col)) ||
-                       (spec.columnar && col>spec.nColAxes()))
+              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.count(col)))
                 cairo_set_source_rgb(surface->cairo(),1,0,0);
               else if (col<spec.nColAxes())
                 cairo_set_source_rgb(surface->cairo(),0,0,1);

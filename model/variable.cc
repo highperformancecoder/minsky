@@ -440,6 +440,8 @@ void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spe
     v->csvDialog.url=filename;
     loadValueFromCSVFile(*v, is, v->csvDialog.spec,file_size(filename));
     minsky().populateMissingDimensionsFromVariable(*v);
+    if (!v->hypercube().dimsAreDistinct())
+      throw_error("Axes of imported data should all have distinct names");
   }
 }
 
