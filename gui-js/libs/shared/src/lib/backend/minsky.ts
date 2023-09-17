@@ -2487,6 +2487,7 @@ export class civita__Hypercube extends CppClass {
   }
   async dimLabels(): Promise<string[]> {return this.$callMethod('dimLabels');}
   async dims(...args: any[]): Promise<number[]> {return this.$callMethod('dims',...args);}
+  async dimsAreDistinct(): Promise<boolean> {return this.$callMethod('dimsAreDistinct');}
   async fromJson(a1: string): Promise<object> {return this.$callMethod('fromJson',a1);}
   async json(): Promise<string> {return this.$callMethod('json');}
   async logNumElements(): Promise<number> {return this.$callMethod('logNumElements');}

@@ -424,8 +424,9 @@ dummy-addon.o: dummy-addon.cc
 node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
+FLAGS+=`pkg-config --cflags python3`
 pyminsky.so: pyminsky.o $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
-	g++ -fPIC -shared -Wl,-soname,example $^ `pkg-config --libs python3` -lboost_python3 -o $^
+	g++ -fPIC -shared -Wl,-soname,minsky $^ $(LIBS)  -lboost_python3 `pkg-config --libs python3` -o $@
 
 $(EXES):
 
