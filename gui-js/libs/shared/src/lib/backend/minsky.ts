@@ -504,11 +504,11 @@ export class DataSpec extends CppClass {
     this.dimensions=new Sequence<civita__Dimension>(this.$prefix()+'.dimensions',civita__Dimension);
     this.horizontalDimension=new civita__Dimension(this.$prefix()+'.horizontalDimension');
   }
-  async columnar(...args: boolean[]): Promise<boolean> {return this.$callMethod('columnar',...args);}
   async counter(...args: boolean[]): Promise<boolean> {return this.$callMethod('counter',...args);}
   async dataColOffset(...args: number[]): Promise<number> {return this.$callMethod('dataColOffset',...args);}
   async dataRowOffset(...args: number[]): Promise<number> {return this.$callMethod('dataRowOffset',...args);}
   async decSeparator(...args: number[]): Promise<number> {return this.$callMethod('decSeparator',...args);}
+  async dontFail(...args: boolean[]): Promise<boolean> {return this.$callMethod('dontFail',...args);}
   async duplicateKeyAction(...args: string[]): Promise<string> {return this.$callMethod('duplicateKeyAction',...args);}
   async escape(...args: number[]): Promise<number> {return this.$callMethod('escape',...args);}
   async guessFromFile(a1: string): Promise<void> {return this.$callMethod('guessFromFile',a1);}
@@ -542,11 +542,11 @@ export class DataSpecSchema extends CppClass {
     this.dimensions=new Sequence<civita__Dimension>(this.$prefix()+'.dimensions',civita__Dimension);
     this.horizontalDimension=new civita__Dimension(this.$prefix()+'.horizontalDimension');
   }
-  async columnar(...args: boolean[]): Promise<boolean> {return this.$callMethod('columnar',...args);}
   async counter(...args: boolean[]): Promise<boolean> {return this.$callMethod('counter',...args);}
   async dataColOffset(...args: number[]): Promise<number> {return this.$callMethod('dataColOffset',...args);}
   async dataRowOffset(...args: number[]): Promise<number> {return this.$callMethod('dataRowOffset',...args);}
   async decSeparator(...args: number[]): Promise<number> {return this.$callMethod('decSeparator',...args);}
+  async dontFail(...args: boolean[]): Promise<boolean> {return this.$callMethod('dontFail',...args);}
   async duplicateKeyAction(...args: string[]): Promise<string> {return this.$callMethod('duplicateKeyAction',...args);}
   async escape(...args: number[]): Promise<number> {return this.$callMethod('escape',...args);}
   async headerRow(...args: number[]): Promise<number> {return this.$callMethod('headerRow',...args);}
