@@ -105,6 +105,7 @@ namespace minsky
     template <> int numArguments<OperationType::gather>() {return 2;} 
     template <> int numArguments<OperationType::meld>() {return 2;} 
     template <> int numArguments<OperationType::merge>() {return 2;} 
+    template <> int numArguments<OperationType::slice>() {return 1;} 
     template <> int numArguments<OperationType::ravel>() {return 1;}     
     template <> int numArguments<OperationType::numOps>() {return -1;} //no output port as well
   }

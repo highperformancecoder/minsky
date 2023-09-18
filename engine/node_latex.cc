@@ -690,6 +690,17 @@ namespace MathDAG
     return o<<"\\mathrm{merge}\\left("<<arguments[0][0]->latex()<<","<<arguments[1][0]->latex()<<"\\right)";
   }
 
+  template <>
+  ostream& OperationDAG<OperationType::slice>::latex(ostream& o) const
+  {
+    checkArg(0,0); checkArg(1,0);
+    double slice=0;
+    if (state)
+      if (auto o=state->operationCast())
+        slice=o->arg;
+    return o<<"\\mathrm{slice}\\left("<<arguments[0][0]->latex()<<","<<slice<<"\\right)";
+  }
+
   
   
 }

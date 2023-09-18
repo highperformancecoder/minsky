@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Entering accounts</TITLE>
-<META NAME="description" CONTENT="Entering accounts">
+<TITLE>Entering flows between accounts</TITLE>
+<META NAME="description" CONTENT="Entering flows between accounts">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,144 +16,163 @@
 
 <LINK REL="next" HREF="node39.html">
 <LINK REL="previous" HREF="node37.html">
-<LINK REL="up" HREF="node36.html">
+<LINK REL="up" HREF="node35.html">
 <LINK REL="next" HREF="node39.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html627"
+<A NAME="tex2html631"
   HREF="node39.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html625"
-  HREF="node36.html">
+<A NAME="tex2html629"
+  HREF="node35.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html619"
+<A NAME="tex2html623"
   HREF="node37.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html628"
-  HREF="node39.html">Entering flows between accounts</A>
-<B> Up:</B> <A NAME="tex2html626"
-  HREF="node36.html">Creating a banking model</A>
-<B> Previous:</B> <A NAME="tex2html620"
-  HREF="node37.html">Creating a bank</A>
+<B> Next:</B> <A NAME="tex2html632"
+  HREF="node39.html">Defining flows</A>
+<B> Up:</B> <A NAME="tex2html630"
+  HREF="node35.html">Creating a banking model</A>
+<B> Previous:</B> <A NAME="tex2html624"
+  HREF="node37.html">Entering accounts</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00245200000000000000">
-Entering accounts</A>
+<H3><A NAME="SECTION00245300000000000000">
+Entering flows between accounts</A>
 </H3>
 
 <P>
-Double click or right click on the Godley table block to bring up the
-Godley Table. The table is divided up into sections representing the
-different accounting asset classes: Asset, Liability and
-Equity. Assets represent what you have to hand at any point in time,
-and should always be the sum of liabilities and equity. Liabilities
-represent amounts that are owed to other parties, and equity the
-amount of capital owned. The column <code>A-L-E</code> represents the <EM>  accounting equation</EM> (Assets<SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img1.png"
- ALT="$-$"></SPAN>Liabilities<SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img1.png"
- ALT="$-$"></SPAN>Equity), and a properly
-formatted Godley table adhering to <EM>double entry accounting
-  conventions</EM> will have this column zero for all rows.
-
-<P>
-When a Godley Table is first loaded, each accounting class has room
-for one account (also known as a <EM>stock</EM>) to be defined. To create
-an additional accounts, click on the `+' button above the first
-account. One click then adds another column in which an additional
-account can be defined. Note that the table will delete excess blank
-accounts, so you should name them as you go. You can chancge the asset
-class of an account by moving it into the appropriate sector using the
-<SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img92.png"
- ALT="$\leftarrow$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img37.png"
- ALT="$\rightarrow$"></SPAN> buttons, or by clicking and dragging
-the column variable name (the first row of the column).
+Flows between accounts are entered by typing text labels in the
+accounts involved. The source label is entered as a simple name--for
+example, if Patient is lending money to Impatient, the word &ldquo;Lend&rdquo;
+could be used to describe this action. Firstly you need to create a
+row beneath the &ldquo;Initial Conditions&rdquo; row (which records the amount of
+money in each account when the simulation begins). You do this by
+clicking on the `+' key on the Initial Conditions row. This creates a
+blank row for recording a flow between accounts.
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}$
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts1.eps}}$
  -->
 <IMG
- WIDTH="401" HEIGHT="51" ALIGN="BOTTOM" BORDER="0"
- SRC="img68.png"
- ALT="\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}">
+ WIDTH="483" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img96.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts1.eps}}">
 </DIV>
 
 <P>
-A column can be deleted by clicking on the `-' button above the column.
-
-<P>
-To define bank accounts in the system you enter a name into the row
-labeled &ldquo;Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img36.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img37.png"
- ALT="$\rightarrow$"></SPAN>&rdquo;. For example, if you were
-going to define a banking sector that operated simply as an
-intermediary between &ldquo;Patient&rdquo; people and &ldquo;Impatient&rdquo; people--as
-in the Neoclassical &ldquo;Loanable Funds&rdquo; model-you might define the
-following accounts: 
+The cell below &ldquo;Initial Conditions&rdquo; is used to give a verbal
+description of what the flow is: 
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts.eps}}$
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts2.eps}}$
  -->
 <IMG
- WIDTH="483" HEIGHT="51" ALIGN="BOTTOM" BORDER="0"
- SRC="img93.png"
- ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts.eps}}">
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img97.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts2.eps}}">
 </DIV>
 
 <P>
-As you enter the accounts, they appear at the bottom of the Bank block on the canvas:
+The flows between accounts are then recorded in the relevant cells
+underneath the columns. Here we will start with putting the label
+&ldquo;-Lend&rdquo; into the Patient column. It is negative, because Patient is
+lending to Impatient.
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\scalebox{0.5}{\includegraphics{images/NewItem145.eps}}$
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts3.eps}}$
  -->
 <IMG
- WIDTH="175" HEIGHT="231" ALIGN="BOTTOM" BORDER="0"
- SRC="img94.png"
- ALT="\scalebox{0.5}{\includegraphics{images/NewItem145.eps}}">
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img98.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts3.eps}}">
+</DIV>
+
+<P>
+Notice that the program shows that the Row Sum for this transaction is
+currently &ldquo;Lend&rdquo;, when it should be zero to obey the double-entry
+bookkeeping rule that all rows must balance. This is because a
+destination for &ldquo;Lend&rdquo; has not yet been specified. Please note that different
+asset class columns follow different +ve and -ve rules, so an asset and a liability
+with the same value might need to both be +ve or both -ve to sum to zero. The destination
+is Impatient's account, and to balance the row to zero this part of
+the transaction must be entered as &ldquo;Lend&rdquo;: 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts4.eps}}$
+ -->
+<IMG
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img99.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts4.eps}}">
+</DIV>
+
+<P>
+The accounting equation also applies to the Initial Conditions (the amount of money
+in each of the accounts prior to the flows between accounts): the
+Initial Conditions must balance. This requires that there are
+entries on the Asset side of the Banking ledger that exactly match the
+sum of Liabilities and Equity: 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}$
+ -->
+<IMG
+ WIDTH="499" HEIGHT="64" ALIGN="BOTTOM" BORDER="0"
+ SRC="img100.png"
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}">
+</DIV>
+
+<P>
+As you enter flows, these appear on the left hand side of the bank block:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\includegraphics{images/NewItem147.eps}}$
+ -->
+<IMG
+ WIDTH="196" HEIGHT="231" ALIGN="BOTTOM" BORDER="0"
+ SRC="img101.png"
+ ALT="\scalebox{0.5}{\includegraphics{images/NewItem147.eps}}">
 </DIV>
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html627"
+<A NAME="tex2html631"
   HREF="node39.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html625"
-  HREF="node36.html">
+<A NAME="tex2html629"
+  HREF="node35.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html619"
+<A NAME="tex2html623"
   HREF="node37.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html628"
-  HREF="node39.html">Entering flows between accounts</A>
-<B> Up:</B> <A NAME="tex2html626"
-  HREF="node36.html">Creating a banking model</A>
-<B> Previous:</B> <A NAME="tex2html620"
-  HREF="node37.html">Creating a bank</A></DIV>
+<B> Next:</B> <A NAME="tex2html632"
+  HREF="node39.html">Defining flows</A>
+<B> Up:</B> <A NAME="tex2html630"
+  HREF="node35.html">Creating a banking model</A>
+<B> Previous:</B> <A NAME="tex2html624"
+  HREF="node37.html">Entering accounts</A></DIV>
 <!--End of Navigation Panel-->
 
 </BODY>

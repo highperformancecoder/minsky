@@ -35,12 +35,12 @@ namespace minsky
                euler, pi, zero, one, inf, percent,// fundamental constants
                // multiwire binary ops
                add, subtract, multiply, divide, min, max, 
+               // underscores to avoid C++ keywords. Can be filtered at UI
                and_, or_,
                // single wire binops
                log, pow, polygamma, 
                lt, le, eq, 
                userFunction,
-               // underscores to avoid C++ keywords. Can be filtered at UI
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
@@ -50,7 +50,7 @@ namespace minsky
                // scans
                runningSum, runningProduct, difference,
                // other tensor ops
-               innerProduct, outerProduct, index, gather, meld, merge,
+               innerProduct, outerProduct, index, gather, meld, merge, slice,
                numOps // last operation, for iteration purposes
     };
     /// return the symbolic name of \a type
