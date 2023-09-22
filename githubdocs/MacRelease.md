@@ -23,7 +23,7 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
 
 # compile TCL/Tk from source code
 
-This step is no longer needed for Minsky 3.x, but left for historical interest for building ealier versions of Minsky.
+This step should no longer be needed for Minsky 3.x, but is currently, because the current EcoLab library requires it.
 
 Because we need to use an internal function with tk when compiling Minsky for Aqua, we have to staticly link to the library. 
 
