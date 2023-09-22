@@ -15,7 +15,7 @@ Dependencies
 * gmake
 * boost 1.66.0 or later 
 * json_spirit (for older versions of Minsky, more recent versions have git submoduled json5_parser, so json_spirit is not needed)
-* jtanx's libclipboard
+* [jtanx's libclipboard](https://github.com/jtanx/libclipboard)
 * TCL/Tk
 * cairo
 * pango
