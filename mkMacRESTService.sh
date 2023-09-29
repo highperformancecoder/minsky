@@ -65,10 +65,6 @@ mkdir -p $MAC_DIST_DIR
 
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 
-# due to the presence of -isystem /usr/local/lib, which is needed for other idiocies, libjson_spirit is not correctly rewritten by the above
-#rewrite_dylib /usr/local/lib/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
-#install_name_tool -change libjson_spirit.dylib @loader_path/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
-
 pushd gui-js
 npm run export:package:mac
 popd
