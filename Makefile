@@ -1,8 +1,5 @@
 .SUFFIXES: .xcd .rcd .tcd .gch .gcd $(SUFFIXES)
 
-# location of minsky executable when building mac-dist
-MAC_DIST_DIR=minsky.app/Contents/MacOS
-
 SF_WEB=hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
 
 # location of TCL and TK libraries 
@@ -30,6 +27,13 @@ ifneq ($(build_ecolab),ecolab built)
 $(error "Making ecolab failed: check ecolab/build.log")
 endif
 include $(ECOLAB_HOME)/include/Makefile
+endif
+
+ifeq ($(OS),Darwin)
+# location of minsky executable when building mac-dist
+MAC_DIST_DIR=minsky.app/Contents/MacOS
+# default min version is the machine doing the building.
+MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|cut -f2)
 endif
 
 ifndef MXE
@@ -397,7 +401,7 @@ ifdef MXE
 	cp $(DLLS) gui-js/dynamic_libraries
 else
 ifeq ($(OS),Darwin)
-	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=10.13 -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
+	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
 else
 	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
@@ -441,7 +445,7 @@ mac-dist: gui-tk/minsky gui-js/node-addons/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only
 #	mkdir -p minsky.app/Contents/MacOS
 #	sh -v mkMacDist.sh
-	sh -v mkMacRESTService.sh
+	bash -v mkMacRESTService.sh
 
 minsky.xsd: gui-tk/minsky
 	gui-tk/minsky exportSchema.tcl 3
