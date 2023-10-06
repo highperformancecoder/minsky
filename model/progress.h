@@ -20,6 +20,7 @@
 #ifndef PROGRESS_H
 #define PROGRESS_H
 #include <string>
+#include <atomic>
 
 namespace minsky
 {
