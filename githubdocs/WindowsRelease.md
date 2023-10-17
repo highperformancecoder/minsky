@@ -8,6 +8,12 @@
 - For Minsky 2.20 or less, MXE_TARGETS=i686-w64-mingw32.static
 
 - Install necessary prerequisites from your package manager as required by the above line (eg flex, gperf, intltool, scons).
+- Ensure the usr/bin directory of the cloned repo is in your PATH.
+- Compile libclipboard from source code:
+  * git clone git@github.com:jtanx/libclipboard.git
+  * cd libclipboard
+  * x86_64-w64-mingw32.shared-cmake .
+  * make install
 
 - Then compile Minsky with
 
