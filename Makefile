@@ -75,18 +75,17 @@ ifneq ($(MAKECMDGOALS),clean)
     ifeq ($(OS),Darwin)
       NODE_HEADER=/usr/local/include/node
     else
-      NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
       ifdef MXE
-        NODE_HEADER=/usr/include/node$(NODE_VERSION)
         NODE_API+=node-api.o
-      else
-        ifeq ($(OS),CYGWIN)
-          NODE_API+=node-api.o
-        endif
-        NODE_HEADER=$(call search,include/node$(NODE_VERSION))
-        ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs
-          NODE_HEADER=$(call search,include/node)
-        endif
+      endif
+      ifeq ($(OS),CYGWIN)
+        NODE_API+=node-api.o
+      endif
+      NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
+      nsearch=$(firstword $(foreach dir,$(DIRS) /usr,$(wildcard $(dir)/$(1))))
+      NODE_HEADER=$(call nsearch,include/node$(NODE_VERSION))
+      ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs, also if node version doesn't match, create a link in your include search path (eg ~/usr/include/node
+        NODE_HEADER=$(call nsearch,include/node)
       endif
     endif
     # if we haven't found an installed version of the Node SDK, then
