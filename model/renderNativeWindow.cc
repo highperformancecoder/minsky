@@ -81,6 +81,7 @@ namespace minsky
   
   void RenderNativeWindow::renderFrame(const RenderFrameArgs& args)
   {
+    m_frameArgs=args;
     init();
     winInfoPtr.reset();
     winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});

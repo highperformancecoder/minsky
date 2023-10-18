@@ -1236,8 +1236,14 @@ namespace minsky
     
     canvas.itemIndicator=canvas.item.get();
     if (canvas.item)
-      canvas.model->moveTo(100-canvas.item->x()+canvas.model->x(),
-                         100-canvas.item->y()+canvas.model->y());
+      {
+        auto physX=canvas.item->x();
+        auto physY=canvas.item->y();
+        if (physX<100 || physX>canvas.frameArgs().childWidth-100 ||
+            physY<100 || physY>canvas.frameArgs().childHeight-100)
+          canvas.model->moveTo(0.5*canvas.frameArgs().childWidth-physX+canvas.model->x(),
+                               0.5*canvas.frameArgs().childHeight-physY+canvas.model->y());
+      }
     //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
     if (!RKThreadRunning) canvas.requestRedraw();
   }
