@@ -8,6 +8,7 @@ import {
   importCSVvariableName,
   VariableBase,
   VariableValue,
+  Zoomable,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -47,7 +48,7 @@ class Dimension
   templateUrl: './import-csv.component.html',
   styleUrls: ['./import-csv.component.scss'],
 })
-export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ImportCsvComponent  extends Zoomable implements OnInit, AfterViewInit, OnDestroy {
   form: FormGroup;
 
   itemId: string;
@@ -64,6 +65,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   dialogState: any;
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
+
 
   public get url(): AbstractControl {
     return this.form.get('url');
@@ -113,6 +115,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {
+    super();
     this.route.queryParams.subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
@@ -154,6 +157,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
         await this.parseLines();
       }
     });
+    document.onkeydown=this.onKeyDown;
   }
 
   ngAfterViewInit() {
@@ -189,6 +193,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
   }
+
   
   updateForm() {
     this.url.setValue(this.dialogState.url);

@@ -182,7 +182,7 @@ export class GodleyMenuManager {
         },
         {
           label: 'Zoom Out',
-          accelerator: 'CmdOrCtrl + Minus',
+          accelerator: 'CmdOrCtrl + -',
           click: async () => {window.webContents?.send(events.ZOOM, 1.0/1.1);}
         },
         {
