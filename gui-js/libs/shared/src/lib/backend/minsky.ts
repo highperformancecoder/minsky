@@ -324,6 +324,7 @@ export class CSVDialog extends CppClass {
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async flashNameRow(...args: boolean[]): Promise<boolean> {return this.$callMethod('flashNameRow',...args);}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async guessSpecAndLoadFile(): Promise<void> {return this.$callMethod('guessSpecAndLoadFile');}
@@ -413,6 +414,7 @@ export class Canvas extends CppClass {
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async findVariableDefinition(): Promise<boolean> {return this.$callMethod('findVariableDefinition');}
   async focusFollowsMouse(...args: boolean[]): Promise<boolean> {return this.$callMethod('focusFollowsMouse',...args);}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async groupSelection(): Promise<void> {return this.$callMethod('groupSelection');}
@@ -580,6 +582,7 @@ export class EquationDisplay extends CppClass {
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
@@ -632,6 +635,7 @@ export class FontDisplay extends CppClass {
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
@@ -742,6 +746,7 @@ export class GodleyTab extends CppClass {
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
   async draw(...args: any[]): Promise<void> {return this.$callMethod('draw',...args);}
   async evenHeight(): Promise<boolean> {return this.$callMethod('evenHeight');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getVarName(a1: number): Promise<string> {return this.$callMethod('getVarName',a1);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
@@ -946,6 +951,7 @@ export class GodleyTableWindow extends CppClass {
   async draw(...args: any[]): Promise<void> {return this.$callMethod('draw',...args);}
   async drawButtons(...args: boolean[]): Promise<boolean> {return this.$callMethod('drawButtons',...args);}
   async enableButtons(): Promise<void> {return this.$callMethod('enableButtons');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async godleyIcon(): Promise<GodleyIcon> {return this.$callMethod('godleyIcon');}
@@ -1492,6 +1498,7 @@ export class Panopticon extends CppClass {
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
@@ -1538,6 +1545,7 @@ export class PhillipsDiagram extends CppClass {
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
@@ -1647,6 +1655,7 @@ export class PlotTab extends CppClass {
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
   async draw(...args: any[]): Promise<void> {return this.$callMethod('draw',...args);}
   async evenHeight(): Promise<boolean> {return this.$callMethod('evenHeight');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getVarName(a1: number): Promise<string> {return this.$callMethod('getVarName',a1);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
@@ -1754,6 +1763,7 @@ export class PlotWidget extends Item {
   async exportAsCSV(...args: any[]): Promise<void> {return this.$callMethod('exportAsCSV',...args);}
   async extendPalette(): Promise<void> {return this.$callMethod('extendPalette');}
   async fontScale(...args: number[]): Promise<number> {return this.$callMethod('fontScale',...args);}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async grid(...args: boolean[]): Promise<boolean> {return this.$callMethod('grid',...args);}
@@ -1952,6 +1962,7 @@ export class RavelPopup extends CppClass {
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
@@ -1994,6 +2005,7 @@ export class RenderNativeWindow extends CppClass {
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
@@ -2317,6 +2329,7 @@ export class VariablePane extends CppClass {
   async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async evenHeight(): Promise<boolean> {return this.$callMethod('evenHeight');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
