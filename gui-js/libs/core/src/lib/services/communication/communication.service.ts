@@ -5,6 +5,7 @@ import {
   Canvas,
   CppClass,
   events,
+  EventInterface,
   HeaderEvent,
   importCSVvariableName,
   MainRenderingTabs,
@@ -52,8 +53,8 @@ export class CommunicationService {
   mouseX: number;
   mouseY: number;
 
-  awaitingZoom=false; // flag to avoid backing up zoom events
-  
+  awaitingZoom = false; // flag to avoid backing up zoom events
+
   drag = false;
   currentReplayJSON: ReplayJSON[] = [];
 
@@ -66,12 +67,12 @@ export class CommunicationService {
 
   resetScrollWhenIdle: any;
 
-    
+
   private dialogRef: MatDialogRef<DialogComponent, any> = null;
   availableOperations = null;
 
-  resetScroll=()=>{}; // callback to reset canvas scrollbars
-  
+  resetScroll = () => { }; // callback to reset canvas scrollbars
+
   constructor(
     // private socket: Socket,
     private electronService: ElectronService,
@@ -82,7 +83,7 @@ export class CommunicationService {
     this.scrollPositionAtMouseDown = null;
     this.mousePositionAtMouseDown = null;
     this.initReplay();
-    this.electronService.on('reset-scroll', async()=>{this.resetScroll();});
+    this.electronService.on('reset-scroll', async () => { this.resetScroll(); });
   }
 
   private async syncRunUntilTime() {
@@ -107,17 +108,16 @@ export class CommunicationService {
 
   replayNextCommand() {
     const { command: commandArgs } = this.currentReplayJSON.shift();
-    const sep=commandArgs.trim().indexOf(' ');
-    const command = commandArgs.substring(0,sep);
-    if (sep===-1)
+    const sep = commandArgs.trim().indexOf(' ');
+    const command = commandArgs.substring(0, sep);
+    if (sep === -1)
       CppClass.backend(command);
-    else
-    {
+    else {
       const args = JSON5.parse(commandArgs.substring(sep));
-      CppClass.backend(command,args);
+      CppClass.backend(command, args);
     }
-  }  
-  
+  }
+
   startReplay() {
     setTimeout(async () => {
       if (!this.currentReplayJSON.length) {
@@ -172,61 +172,61 @@ export class CommunicationService {
         const dimensions = this.windowUtilityService.getDrawableArea();
         const canvasWidth = dimensions.width;
         const canvasHeight = dimensions.height;
-        let minsky=this.electronService.minsky;
-        
+        let minsky = this.electronService.minsky;
+        let currentTab = new EventInterface(this.currentTab);
         switch (target) {
-        case 'ZOOM_OUT':
-          await minsky.canvas.zoom(canvasWidth/2, canvasHeight/2, ZOOM_OUT_FACTOR);
-          this.resetScroll();
-          break;
-        case 'ZOOM_IN':
-          await minsky.canvas.zoom(canvasWidth/2, canvasHeight/2, ZOOM_IN_FACTOR);
-          this.resetScroll();
-          break;
-        case 'RESET_ZOOM':
-          await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
-          this.resetScroll();
-          break;
-        case 'ZOOM_TO_FIT':
-          await this.zoomToFit(canvasWidth, canvasHeight);
-          this.resetScroll();
-          break;
-        case 'SIMULATION_SPEED':
-          await this.updateSimulationSpeed(message);
-          break;
-        case 'PLAY':
-          this.currentReplayJSON.length
-            ? this.continueReplay()
-            : this.initSimulation();
-          
-          break;
-        case 'PAUSE':
-          this.currentReplayJSON.length
-            ? this.pauseReplay()
-            : await this.pauseSimulation();
-          break;
-        case 'RESET':
-          this.showPlayButton$.next(true);
-          this.currentReplayJSON.length
-            ? this.stopReplay()
-            : await this.stopSimulation();
-          break;
-        case 'STEP':
-          this.currentReplayJSON.length
-            ? this.stepReplay()
-            : await this.stepSimulation();
-          break;
-        case 'REVERSE_CHECKBOX':
-          minsky.reverse(message.value as boolean);
-          break;
-        case 'RECORD':
-          this.electronService.record();
-          break;
-        case 'RECORDING_REPLAY':
-          this.electronService.recordingReplay();
-          break;
-        default:
-          break;
+          case 'ZOOM_OUT':
+            await currentTab.zoom(canvasWidth / 2, canvasHeight / 2, ZOOM_OUT_FACTOR);
+            this.resetScroll();
+            break;
+          case 'ZOOM_IN':
+            await currentTab.zoom(canvasWidth / 2, canvasHeight / 2, ZOOM_IN_FACTOR);
+            this.resetScroll();
+            break;
+          case 'RESET_ZOOM':
+            await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
+            this.resetScroll();
+            break;
+          case 'ZOOM_TO_FIT':
+            await this.zoomToFit(canvasWidth, canvasHeight);
+            this.resetScroll();
+            break;
+          case 'SIMULATION_SPEED':
+            await this.updateSimulationSpeed(message);
+            break;
+          case 'PLAY':
+            this.currentReplayJSON.length
+              ? this.continueReplay()
+              : this.initSimulation();
+
+            break;
+          case 'PAUSE':
+            this.currentReplayJSON.length
+              ? this.pauseReplay()
+              : await this.pauseSimulation();
+            break;
+          case 'RESET':
+            this.showPlayButton$.next(true);
+            this.currentReplayJSON.length
+              ? this.stopReplay()
+              : await this.stopSimulation();
+            break;
+          case 'STEP':
+            this.currentReplayJSON.length
+              ? this.stepReplay()
+              : await this.stepSimulation();
+            break;
+          case 'REVERSE_CHECKBOX':
+            minsky.reverse(message.value as boolean);
+            break;
+          case 'RECORD':
+            this.electronService.record();
+            break;
+          case 'RECORDING_REPLAY':
+            this.electronService.recordingReplay();
+            break;
+          default:
+            break;
         }
       }
     } catch (error) {
@@ -242,7 +242,7 @@ export class CommunicationService {
 
     const currentDelay: number = 12 - (speed * 12) / (150 - 0);
 
-    this.delay = currentDelay? Math.round(Math.pow(10, currentDelay / 4)): 0;
+    this.delay = currentDelay ? Math.round(Math.pow(10, currentDelay / 4)) : 0;
   }
 
   private async stepSimulation() {
@@ -259,11 +259,11 @@ export class CommunicationService {
 
   private startSimulation() {
     this.syncRunUntilTime();
-    this.isSimulationOn=true;
+    this.isSimulationOn = true;
     this.simulate();
     this.electronService.minsky.dimensionalAnalysis();
   }
-  
+
   private simulate() {
     setTimeout(async () => {
       if (this.isSimulationOn) {
@@ -285,7 +285,7 @@ export class CommunicationService {
 
     this.electronService.minsky.reset();
     this.electronService.minsky.dimensionalAnalysis();
-    
+
     const t = await this.electronService.minsky.t();
     const deltaT = await this.electronService.minsky.deltaT();
     this.updateSimulationTime(t, deltaT);
@@ -303,23 +303,31 @@ export class CommunicationService {
   }
 
   private async resetZoom(centerX: number, centerY: number) {
-    let minsky=this.electronService.minsky;
-    const zoomFactor = await minsky.canvas.model.zoomFactor();
-    if (zoomFactor > 0) {
-      const relZoom = await minsky.canvas.model.relZoom();
+    if (this.currentTab === MainRenderingTabs.canvas) {
+      let minsky = this.electronService.minsky;
+      const zoomFactor = await minsky.canvas.model.zoomFactor();
+      if (zoomFactor > 0) {
+        const relZoom = await minsky.canvas.model.relZoom();
 
-      //if relZoom = 0 ;use relZoom as 1 to avoid returning infinity
-      minsky.canvas.zoom(centerX,centerY,1 / (relZoom || 1));
+        //if relZoom = 0 ;use relZoom as 1 to avoid returning infinity
+        minsky.canvas.zoom(centerX, centerY, 1 / (relZoom || 1));
+      } else {
+        minsky.canvas.model.setZoom(1);
+      }
+
+      minsky.canvas.recentre();
+      minsky.canvas.requestRedraw();
     } else {
-      minsky.canvas.model.setZoom(1);
+      let currentTab = new EventInterface(this.currentTab);
+      const zoomFactor = await currentTab.zoomFactor();
+      if (zoomFactor > 0)
+        currentTab.zoom(centerX, centerY, 1 / zoomFactor);
     }
-
-    minsky.canvas.recentre();
-    minsky.canvas.requestRedraw();
   }
 
   private async zoomToFit(canvasWidth: number, canvasHeight: number) {
-     let minsky=this.electronService.minsky;
+    if (this.currentTab !== MainRenderingTabs.canvas) return;
+    let minsky = this.electronService.minsky;
     const cBounds = await minsky.canvas.model.cBounds();
 
     const zoomFactorX = canvasWidth / (cBounds[2] - cBounds[0]);
@@ -329,7 +337,7 @@ export class CommunicationService {
     const x = 0.5 * (cBounds[2] + cBounds[0]);
     const y = 0.5 * (cBounds[3] + cBounds[1]);
 
-    minsky.canvas.zoom(x,y,zoomFactor);
+    minsky.canvas.zoom(x, y, zoomFactor);
     minsky.canvas.recentre();
     minsky.canvas.requestRedraw();
   }
@@ -340,12 +348,12 @@ export class CommunicationService {
 
     this.mouseX = clientX;
     this.mouseY = clientY - Math.round(offset.top);
-    const yoffs=this.electronService.isMacOS()? -172: 0; // why, o why, Mac?
+    const yoffs = this.electronService.isMacOS() ? -172 : 0; // why, o why, Mac?
 
     if (event === 'contextmenu') {
       this.electronService.send(events.CONTEXT_MENU, {
         x: this.mouseX,
-        y: this.mouseY+yoffs,
+        y: this.mouseY + yoffs,
         type: "canvas",
       });
       return;
@@ -398,19 +406,19 @@ export class CommunicationService {
         return;
       }
 
-      let canvas=new Canvas(this.currentTab);
-      
+      let canvas = new Canvas(this.currentTab);
+
       switch (type) {
 
-      case 'mousedown':
-        canvas.mouseDown(clientX,this.mouseY+yoffs);
-        break;
-      case 'mouseup':
-        canvas.mouseUp(clientX,this.mouseY+yoffs);
-        break;
-      case 'mousemove':
-        canvas.mouseMove(clientX,this.mouseY+yoffs);
-        break;
+        case 'mousedown':
+          canvas.mouseDown(clientX, this.mouseY + yoffs);
+          break;
+        case 'mouseup':
+          canvas.mouseUp(clientX, this.mouseY + yoffs);
+          break;
+        case 'mousemove':
+          canvas.mouseMove(clientX, this.mouseY + yoffs);
+          break;
       }
     }
   }
@@ -436,7 +444,7 @@ export class CommunicationService {
   }
 
   async importData() {
-    this.electronService.minsky.canvas.addVariable(importCSVvariableName,'parameter');
+    this.electronService.minsky.canvas.addVariable(importCSVvariableName, 'parameter');
 
     const payload: MinskyProcessPayload = {
       mouseX: await this.electronService.minsky.canvas.itemFocus.x(),
@@ -461,13 +469,14 @@ export class CommunicationService {
     }
 
     if (this.awaitingZoom) return; // remove zoom events coming too fast
-    this.awaitingZoom=true;
-    await this.electronService.minsky.canvas.zoom(x,y,zoomFactor);
-    this.awaitingZoom=false;
-    
+    this.awaitingZoom = true;
+    let currentTab = new EventInterface(this.currentTab);
+    await currentTab.zoom(x, y, zoomFactor);
+    this.awaitingZoom = false;
+
     // schedule resetScroll when zooming stops
     if (!this.resetScrollWhenIdle)
-      this.resetScrollWhenIdle=setTimeout(()=>{var self=this; self.resetScroll(); self.resetScrollWhenIdle=null;}, 100);
+      this.resetScrollWhenIdle = setTimeout(() => { var self = this; self.resetScroll(); self.resetScrollWhenIdle = null; }, 100);
     else
       this.resetScrollWhenIdle.refresh();
   };
@@ -494,7 +503,7 @@ export class CommunicationService {
         'ArrowDown',
         'PageUp',
         'PageDown',
-      ].includes(event.key) || (event.key==' ' && !this.dialogRef)
+      ].includes(event.key) || (event.key == ' ' && !this.dialogRef)
     ) {
       // this is to prevent scroll events on press if arrow and page up/down keys
       event.preventDefault();
@@ -524,7 +533,7 @@ export class CommunicationService {
       location: event.location,
     };
 
-    
+
     if (!isMainWindow) {
       await this.electronService.invoke(
         events.KEY_PRESS,
@@ -549,16 +558,16 @@ export class CommunicationService {
 
       if (
         !isKeyHandled &&
-          event.key.length === 1 &&
-          event.key.match(asciiRegex) &&
-          !event.altKey &&
-          !event.ctrlKey &&
-          !event.metaKey
+        event.key.length === 1 &&
+        event.key.match(asciiRegex) &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey
       ) {
         this.dialogRef = this.dialog.open(DialogComponent, {
           width: '600px',
           position: { top: '0', left: '33.33%' },
-          data: {value: event.key},
+          data: { value: event.key },
         });
         this.dialogRef.componentInstance.setValue(event.key);
 

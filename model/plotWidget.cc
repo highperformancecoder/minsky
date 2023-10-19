@@ -85,7 +85,7 @@ namespace minsky
   
   void PlotWidget::draw(cairo_t* cairo) const
   {
-    double z=zoomFactor();
+    double z=Item::zoomFactor();
     double w=iWidth()*z, h=iHeight()*z;
 
     // if any titling, draw an extra bounding box (ticket #285)
@@ -256,7 +256,7 @@ namespace minsky
     clickX=x;
     clickY=y;
     ct=clickType(x,y);
-    double z=zoomFactor();
+    double z=Item::zoomFactor();
     double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
     if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
@@ -267,7 +267,7 @@ namespace minsky
   
   void PlotWidget::mouseMove(float x,float y)
   {
-    double z=zoomFactor();
+    double z=Item::zoomFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     double dx=x-this->x(), dy=y-this->y();
     double gw=iWidth()*z-2*portSpace;
@@ -327,7 +327,7 @@ namespace minsky
 
   void PlotWidget::resize(const LassoBox& x)
   {
-    float invZ=1/zoomFactor();
+    float invZ=1/Item::zoomFactor();
     iWidth(abs(x.x1-x.x0)*invZ);
     iHeight(abs(x.y1-x.y0)*invZ);
     Item::moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
@@ -338,7 +338,7 @@ namespace minsky
   ClickType::Type PlotWidget::clickType(float x, float y) const
   {
     // firstly, check whether a port has been selected
-    double z=zoomFactor();  
+    double z=Item::zoomFactor();  
     for (auto& p: m_ports)
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*z)
