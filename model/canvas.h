@@ -131,6 +131,8 @@ namespace minsky
       model->zoom(x,y,z);
       requestRedraw();
     }
+
+    double zoomFactor() const override {return model->zoomFactor();}
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}

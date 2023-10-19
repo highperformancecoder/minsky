@@ -17,6 +17,7 @@
 #include "dataOp.tcd"
 #include "dimension.tcd"
 #include "engNotation.tcd"
+#include "equationDisplay.tcd"
 #include "evalGodley.tcd"
 #include "eventInterface.tcd"
 #include "fontDisplay.tcd"
@@ -248,6 +249,7 @@ int main()
   api.addClass<DataSpecSchema>();
   api.addClass<ecolab::Plot::LineStyle>();
   api.addClass<EngNotation>();
+  api.addClass<EventInterface>();
   api.addClass<GroupItems>();
   api.addClass<HandleLockInfo>();
   api.addClass<PannableTab<EquationDisplay>>();

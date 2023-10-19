@@ -232,7 +232,8 @@ namespace minsky
     void mouseDown(float x, float y) override {GodleyTableEditor::mouseDown(x,y);}
     void mouseUp(float x, float y) override {GodleyTableEditor::mouseUp(x,y);}
     void mouseMove(float x, float y) override {GodleyTableEditor::mouseMove(x,y);}
-    void zoom(double, double, double z) override {zoomFactor*=z; requestRedraw();}
+    void zoom(double, double, double z) override {GodleyTableEditor::zoomFactor*=z; requestRedraw();}
+    double zoomFactor() const override {return GodleyTableEditor::zoomFactor;}
     bool keyPress(const EventInterface::KeyPressArgs& args) override
     {GodleyTableEditor::keyPress(args.keySym,args.utf8); return true;}
     bool hasScrollBars() const override {return true;}

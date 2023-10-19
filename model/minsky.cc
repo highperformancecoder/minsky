@@ -86,29 +86,6 @@ namespace
 
 namespace minsky
 {
-  bool EquationDisplay::redraw(int x0, int y0, int width, int height)
-  {
-    if (surface.get()) {
-      BusyCursor busy(m);
-      MathDAG::SystemOfEquations system(m);
-      cairo_rectangle(surface->cairo(),0,0,width,height);
-      cairo_clip(surface->cairo());
-      cairo_move_to(surface->cairo(),offsx,offsy);
-      system.renderEquations(*surface,height);
-      if (m.flags & Minsky::fullEqnDisplay_needed)
-        {
-          ecolab::cairo::Surface surf
-            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-          system.renderEquations(surf,std::numeric_limits<double>::max());
-          m_width=surf.width();
-          m_height=surf.height();
-          m.flags &= ~Minsky::fullEqnDisplay_needed;
-        }
-      return true;
-    }
-    return surface.get();
-  }
-
   bool Minsky::multipleEquities(const bool& m) {
     m_multipleEquities=m;
     canvas.requestRedraw();

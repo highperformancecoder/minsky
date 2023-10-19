@@ -27,6 +27,7 @@
 #include "clipboard.h"
 #include "dimension.h"
 #include "evalOp.h"
+#include "equationDisplay.h"
 #include "equations.h"
 #include "fontDisplay.h"
 #include "godleyIcon.h"
@@ -72,23 +73,6 @@ namespace minsky
   
   class SaveThread;
   
-  // handle the display of rendered equations on the screen
-  class EquationDisplay: public RenderNativeWindow
-  {
-    Minsky& m;
-    double m_width=0, m_height=0;
-    bool redraw(int x0, int y0, int width, int height) override;
-    CLASSDESC_ACCESS(EquationDisplay);
-  public:
-    float offsx=0, offsy=0; // pan controls
-    double width() const {return m_width;}
-    double height() const {return m_height;}
-    EquationDisplay(Minsky& m): m(m) {}
-    EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
-    EquationDisplay(const EquationDisplay&)=default;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
-  };
-
   // a place to put working variables of the Minsky class that needn't
   // be serialised.
   struct MinskyExclude
