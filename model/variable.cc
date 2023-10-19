@@ -244,11 +244,11 @@ string VariableBase::name(const std::string& name)
   m_name=name;
   m_canonicalName=minsky::canonicalName(name);
   ensureValueExists(tmpVV.get(),name);
+  cachedNameRender.reset();
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   if (auto controllingItem=controller.lock())
     // integrals in particular may have had their size changed with intVar changing name
     controllingItem->updateBoundingBox();
-  cachedNameRender.reset();
   return this->name();
 }
 
