@@ -112,9 +112,10 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   zoom(ratio: number) {
     this.zoomFactor *= ratio;
-    this.fullDialog.nativeElement.style.setProperty('zoom', `${Math.round(this.zoomFactor * 100)}%`);
-    this.fullDialog.nativeElement.style.setProperty('width', `${Math.round(100/this.zoomFactor)}vw`);
-    this.fullDialog.nativeElement.style.setProperty('height', `${Math.round(100/this.zoomFactor)}vh`);
+    let style=this.fullDialog.nativeElement.style;
+    style.setProperty('zoom', `${Math.round(this.zoomFactor * 100)}%`);
+    style.setProperty('width', `${Math.round(100/this.zoomFactor)}vw`);
+    style.setProperty('height', `${Math.round(100/this.zoomFactor)}vh`);
   }
 
   constructor(
