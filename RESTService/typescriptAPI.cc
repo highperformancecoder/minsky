@@ -45,6 +45,7 @@
 #include "panopticon.tcd"
 #include "phillipsDiagram.tcd"
 #include "plot.tcd"
+#include "plotOptions.tcd"
 #include "plotTab.tcd"
 #include "plotWidget.tcd"
 #include "polyRESTProcessBase.tcd"
@@ -96,6 +97,10 @@ namespace classdesc_access
   
   template <>
   struct access_typescriptAPI<std::vector<civita::any>>:
+    public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
+  
+  template <class T>
+  struct access_typescriptAPI<minsky::Optional<T>>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
 }
 

@@ -46,7 +46,8 @@ namespace minsky
   {
     PlotOptions()=default;
     PlotOptions(const Base& x): Base(x) {}
-    Optional<bool> logx, logy, ypercent, plotTabDisplay;
+    Optional<std::string> name; //name, description or title
+    Optional<bool> logx, logy, ypercent, plotTabDisplay, grid, subgrid;
     Optional<minsky::PlotWidget::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
@@ -54,10 +55,13 @@ namespace minsky
     Optional<ecolab::Plot::Side> legend;
     Optional<LegendGeometry> legendGeometry;
     PlotOptions& operator=(const PlotWidget& plot) {
+      name=plot.title;
       logx=plot.logx;
       logy=plot.logy;
       ypercent=plot.percent;
       plotTabDisplay=plot.plotTabDisplay;
+      grid=plot.grid;
+      subgrid=plot.subgrid;
       plotType=plot.plotType;
       xlabel=plot.xlabel();
       ylabel=plot.ylabel();
@@ -72,10 +76,13 @@ namespace minsky
     }
     void applyPlotOptions(PlotWidget& plot) const
     {
+      if (name) plot.title=*name;
       if (logx) plot.logx=*logx;
       if (logy) plot.logy=*logy;
       if (ypercent) plot.percent=*ypercent;
       if (plotTabDisplay) plot.plotTabDisplay=*plotTabDisplay;
+      if (grid) plot.grid=*grid;
+      if (subgrid) plot.subgrid=*subgrid;
       if (plotType) plot.plotType=*plotType;
       if (xlabel) plot.xlabel(*xlabel);
       if (ylabel) plot.ylabel(*ylabel);
