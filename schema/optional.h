@@ -73,7 +73,6 @@ namespace classdesc
   /*
     This code ensure optional fields are not exported when empty 
   */
-
   template <class T>
   void xsd_generate(xsd_generate_t& g, const string& d, const minsky::Optional<T>& a) 
   {
@@ -84,6 +83,9 @@ namespace classdesc
   template <class T> inline void xml_pack(xml_pack_t& t,const string& d,minsky::Optional<T>& a)
   {if (a) ::xml_pack(t,d,*a);}
 }
+
+using classdesc::xsd_generate;
+using classdesc::xml_pack;
 
 #include "optional.cd"
 #include "optional.xcd"

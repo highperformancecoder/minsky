@@ -55,7 +55,6 @@ namespace schema3
   using minsky::Optional;
   using minsky::HandleLockInfo;  //for Ravel lock groups
   
- 
   struct Note
   {
     Optional<std::string> detailedText, tooltip;
@@ -65,7 +64,7 @@ namespace schema3
   };
 
   // attribute common to all items
-  struct ItemBase: public Note
+  struct ItemBase: public minsky::PlotOptions<Note>
   {
     int id=-1;
     std::string type;
@@ -78,11 +77,11 @@ namespace schema3
     bool bookmark=false;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
-      Note(it), id(id), type(it.classType()),
+      minsky::PlotOptions<Note>(Note(it)), id(id), type(it.classType()),
       x(it.m_x), y(it.m_y), itemTabX(it.itemTabX), itemTabY(it.itemTabY), scaleFactor(it.m_sf),
       rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports), bookmark(it.bookmark) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type), x(it.x), y(it.y),
+      minsky::PlotOptions<Note>(it), id(it.id), type(type), x(it.x), y(it.y),
       rotation(it.rotation), width(it.width? *it.width: 0), height(it.height?*it.height:0),
       ports(it.ports) {}
   };
@@ -96,19 +95,6 @@ namespace schema3
       stepRel(stepRel), min(min), max(max), step(step) {}
     Slider(const schema2::Slider& s):
       stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
-  };
-
-  struct LegendGeometry
-  {
-    double legendLeft=0.9, legendTop=0.95, legendFontSz=0.03;
-    LegendGeometry()=default;
-    LegendGeometry(const ecolab::Plot& plot):
-      legendLeft(plot.legendLeft), legendTop(plot.legendTop), legendFontSz(plot.legendFontSz) {}
-    void setLegendGeometry(ecolab::Plot& plot) const {
-      plot.legendLeft=legendLeft;
-      plot.legendTop=legendTop;
-      plot.legendFontSz=legendFontSz;
-    }
   };
 
   struct LockGroup
@@ -141,14 +127,6 @@ namespace schema3
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
     Optional<bool> editorMode, buttonDisplay, variableDisplay;
     Optional<string> currency;
-    // Plot specific fields
-    Optional<bool> logx, logy, ypercent, plotTabDisplay;
-    Optional<minsky::PlotWidget::PlotType> plotType;
-    Optional<std::string> xlabel, ylabel, y1label;
-    Optional<int> nxTicks, nyTicks;
-    Optional<double> xtickAngle, exp_threshold;
-    Optional<ecolab::Plot::Side> legend;
-    Optional<LegendGeometry> legendGeometry;
     // sheet specific fields
     Optional<minsky::ShowSlice> showSlice;
     // group specific fields
@@ -185,13 +163,9 @@ namespace schema3
       currency(g.currency) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports), name(p.title),
-      logx(p.logx), logy(p.logy), ypercent(p.percent), plotTabDisplay(p.plotTabDisplay),
-      plotType(p.plotType),
-      xlabel(p.xlabel()), ylabel(p.ylabel()), y1label(p.y1label()),
-      nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
-      exp_threshold(p.exp_threshold), legendGeometry(LegendGeometry(p)), palette(p.palette)
+       palette(p.palette)
     {
-      if (p.legend) legend=p.legendSide;
+      static_cast<PlotOptions&>(*this)=p;
     }
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
@@ -208,12 +182,8 @@ namespace schema3
       slider(it.slider), intVar(it.intVar), dataOpData(it.dataOpData), filename(it.filename),
       ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
       axis(it.axis), arg(it.arg), data(it.data), assetClasses(it.assetClasses),
-      logx(it.logx), logy(it.logy), ypercent(it.ypercent),
-      plotType(minsky::PlotWidget::PlotType(it.plotType? int(*it.plotType): 0)),
-      xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
-      nxTicks(it.nxTicks), nyTicks(it.nyTicks), xtickAngle(it.xtickAngle),
-      exp_threshold(it.exp_threshold), legend(it.legend), bookmarks(it.bookmarks),
-      tensorData(convertTensorDataFromSchema2(it.tensorData)), palette(it.palette)
+      bookmarks(it.bookmarks), tensorData(convertTensorDataFromSchema2(it.tensorData)),
+      palette(it.palette)
     {}
 
                  
