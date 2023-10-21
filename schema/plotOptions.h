@@ -54,6 +54,7 @@ namespace minsky
     Optional<double> xtickAngle, exp_threshold;
     Optional<ecolab::Plot::Side> legend;
     Optional<LegendGeometry> legendGeometry;
+    Optional<std::vector<ecolab::Plot::LineStyle>> palette;
     PlotOptions& operator=(const PlotWidget& plot) {
       name=plot.title;
       logx=plot.logx;
@@ -72,6 +73,7 @@ namespace minsky
       exp_threshold=plot.exp_threshold;
       if (plot.legend) legend=plot.legendSide;
       legendGeometry=LegendGeometry(plot);
+      palette=plot.palette;
       return *this;
     }
     void applyPlotOptions(PlotWidget& plot) const
@@ -95,6 +97,7 @@ namespace minsky
       if (legend) plot.legendSide=*legend;
       if (legendGeometry)
         legendGeometry->setLegendGeometry(plot);
+      if (palette) plot.palette=*palette;
     }
   };
 }

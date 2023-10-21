@@ -105,7 +105,6 @@ namespace schema3
   
   struct Item: public ItemBase
   {
-    Optional<std::string> name; //name, description or title
     Optional<std::string> init;
     Optional<std::string> units;
     Optional<Slider> slider;
@@ -141,7 +140,8 @@ namespace schema3
     // minsky object importers
     Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      name(v.rawName()), init(v.init()) {
+      init(v.init()) {
+      name=v.rawName();
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
@@ -156,13 +156,12 @@ namespace schema3
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      name(g.table.title), data(g.table.getData()),
-      assetClasses(g.table._assetClass()),
-      editorMode(g.editorMode()),
-      buttonDisplay(g.buttonDisplay()), variableDisplay(g.variableDisplay),
-      currency(g.currency) {}
+      data(g.table.getData()), assetClasses(g.table._assetClass()),
+      editorMode(g.editorMode()), buttonDisplay(g.buttonDisplay()),
+      variableDisplay(g.variableDisplay), currency(g.currency)
+    {name=g.table.title;}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(p),ports), name(p.title),
+      ItemBase(id,static_cast<const minsky::Item&>(p),ports),
        palette(p.palette)
     {
       static_cast<PlotOptions&>(*this)=p;
@@ -172,19 +171,19 @@ namespace schema3
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      name(g.title), bookmarks(std::vector<minsky::Bookmark>(g.bookmarks.begin(), g.bookmarks.end())) {} 
+      bookmarks(std::vector<minsky::Bookmark>(g.bookmarks.begin(), g.bookmarks.end()))
+    {name=g.title;} 
 
     static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
     Item(const schema2::Item& it):
-      ItemBase(it,it.type), name(it.name), init(it.init),
-      units(it.units),
+      ItemBase(it,it.type), init(it.init), units(it.units),
       slider(it.slider), intVar(it.intVar), dataOpData(it.dataOpData), filename(it.filename),
       ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
       axis(it.axis), arg(it.arg), data(it.data), assetClasses(it.assetClasses),
       bookmarks(it.bookmarks), tensorData(convertTensorDataFromSchema2(it.tensorData)),
       palette(it.palette)
-    {}
+    {name=it.name;}
 
                  
   };
