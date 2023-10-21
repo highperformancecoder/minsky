@@ -186,6 +186,7 @@ export class CommandsManager {
 
   static async editGodleyTitle(godley: GodleyIcon): Promise<void> {
     let title = await godley.table.title();
+    let godleyId = await godley.id();
 
     if (Functions.isEmptyObject(title)) {
       title = '';
@@ -194,7 +195,7 @@ export class CommandsManager {
     minsky.nameCurrentItem(await minsky.canvas.item?.id()); // name current item
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
-      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godley.id()}`,
+      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godleyId}`,
       useContentSize: true,
       height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
