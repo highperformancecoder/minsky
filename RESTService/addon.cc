@@ -225,8 +225,11 @@ namespace minsky
                   try
                     {
                       lock_guard<mutex> lock(minskyCmdMutex);
-                      LocalMinsky lm(*this); // sets this to be the global minsky object
-                      reset();
+                      if (reset_flag()) // check again, in case another thread got there first
+                        {
+                          LocalMinsky lm(*this); // sets this to be the global minsky object
+                          reset();
+                        }
                     }
                   catch (...)
                     {flags&=~reset_needed;}
