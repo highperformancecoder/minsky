@@ -53,9 +53,6 @@ export class CommandsManager {
       return classTypeRes;
     }
 
-    console.log(typeof classTypeRes);
-    console.log(classTypeRes);
-    
     const classType = classTypeRes.includes(':')
       ? classTypeRes.split(':')[0]
       : classTypeRes;
@@ -1035,7 +1032,6 @@ export class CommandsManager {
     if(Object.keys(allLockHandles).length === 0) {
       minsky.canvas.lockRavelsInSelection();
       allLockHandles = await ravel.lockGroup.allLockHandles();
-      console.log(typeof allLockHandles,allLockHandles.length);
       if(Object.keys(allLockHandles).length === 0) return;
     }
 

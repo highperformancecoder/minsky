@@ -615,6 +615,7 @@ namespace minsky
         xvars.resize(pen-2*numLines+1);
         xvars[pen-2*numLines]=var;
       }
+    justDataChanged=false;
     scalePlot();
   }
 
