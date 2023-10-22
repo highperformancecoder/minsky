@@ -484,6 +484,9 @@ namespace minsky
 
   
   void Minsky::populateMissingDimensions() {
+    // populate from variable value table first, then override by ravels
+    for (auto& v: variableValues)
+      populateMissingDimensionsFromVariable(*v.second);
     model->recursiveDo
       (&Group::items,[&](Items& m, Items::iterator it)
       {
