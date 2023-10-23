@@ -428,30 +428,6 @@ namespace minsky
     ++progressState;
     assert(variableValues.validEntries());
     system.updatePortVariableValue(equations);
-    ++progressState;
-   
-    // attach the plots
-    model->recursiveDo
-      (&Group::items,
-       [&](Items& m, Items::iterator it)
-       {
-         if (auto p=(*it)->plotWidgetCast())
-           {
-             p->disconnectAllVars();// clear any old associations
-             p->clearPenAttributes();
-             p->autoScale();
-             for (size_t i=0; i<p->portsSize(); ++i)
-               {
-                 auto pp=p->ports(i).lock();
-                 if (!pp->wires().empty())
-                   if (auto vv=pp->getVariableValue())
-                     if (vv->idx()>=0)
-                       p->connectVar(vv, i);
-               }
-           }
-         
-         return false;
-       });
   }
 
   void Minsky::dimensionalAnalysis() const
@@ -508,6 +484,9 @@ namespace minsky
 
   
   void Minsky::populateMissingDimensions() {
+    // populate from variable value table first, then override by ravels
+    for (auto& v: variableValues)
+      populateMissingDimensionsFromVariable(*v.second);
     model->recursiveDo
       (&Group::items,[&](Items& m, Items::iterator it)
       {
@@ -901,20 +880,12 @@ namespace minsky
     evalEquations();
     ++progressState;
 
+    // populate ravel hypercubes first, before reattaching plots.
     model->recursiveDo
       (&Group::items,
        [&](Items& m, Items::iterator i)
        {
-         if (auto p=(*i)->plotWidgetCast())
-           {
-             p->clear();
-             if (running)
-               p->updateIcon(t);
-             else
-               p->addConstantCurves();
-             p->requestRedraw();
-           }
-         else if (auto r=dynamic_cast<Ravel*>(i->get()))
+         if (auto r=dynamic_cast<Ravel*>(i->get()))
            {
              if (r->ports(1).lock()->numWires()>0)
                if (auto vv=r->ports(1).lock()->getVariableValue())
@@ -925,6 +896,34 @@ namespace minsky
              if (auto vv=v->vValue())
                vv->sliderVisible = v->enableSlider &&
                  (v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId())));
+           }
+         return false;
+       });
+
+    // attach the plots
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto p=(*i)->plotWidgetCast())
+           {
+             p->disconnectAllVars();// clear any old associations
+             p->clearPenAttributes();
+             p->autoScale();
+             for (size_t i=0; i<p->portsSize(); ++i)
+               {
+                 auto pp=p->ports(i).lock();
+                 if (!pp->wires().empty())
+                   if (auto vv=pp->getVariableValue())
+                     if (vv->idx()>=0)
+                       p->connectVar(vv, i);
+               }
+             p->clear();
+             if (running)
+               p->updateIcon(t);
+             else
+               p->addConstantCurves();
+             p->requestRedraw();
            }
          return false;
        });
