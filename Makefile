@@ -281,6 +281,10 @@ endif
 FLAGS+=$(shell $(PKG_CONFIG) --cflags librsvg-2.0)
 LIBS+=$(shell $(PKG_CONFIG) --libs librsvg-2.0)
 
+# Python dependencies here
+FLAGS+=$(shell $(PKG_CONFIG) --cflags python3)
+LIBS+=$(shell $(PKG_CONFIG) --libs python3)
+
 GUI_LIBS=
 # disable a deprecation warning that comes from Wt
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
@@ -408,6 +412,9 @@ else
 	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
 endif
+
+pyminsky.so: pyminsky.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+	$(LINK) -shared -o $@ $^ $(LIBS)
 
 RESTService/dummy-addon.node: dummy-addon.o $(NODE_API)
 ifdef MXE
