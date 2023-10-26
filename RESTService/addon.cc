@@ -120,14 +120,21 @@ namespace minsky
 
       Value queueCommand(Env env, string command, const json_pack_t& arguments)
       {
+        // TODO use string::endsWith when we change our C++ standard
         auto syncPos=command.rfind(".$sync");
-        bool sync=syncPos==command.size()-6;
+        bool sync=syncPos!=string::npos && syncPos==command.size()-6;
         if (sync)
           {
             command.erase(syncPos);
             // Javascript needs the result returned as UTF-16.
             return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
           }
+#ifdef _WIN32
+        // renderFrame needs to be called synchronously, otherwise inexplicable hangs occur on Windows.
+        syncPos=command.rfind(".renderFrame");
+        if (syncPos!=string::npos && syncPos==command.size()-12)
+          return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
+#endif
         lock_guard<mutex> lock(cmdMutex);
         minskyCommands.emplace_back(new Command{env,command,arguments});
         return minskyCommands.back()->promiseResolver->promise.Promise();
