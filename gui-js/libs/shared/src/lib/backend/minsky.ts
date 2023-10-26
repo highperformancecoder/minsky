@@ -399,6 +399,7 @@ export class Canvas extends CppClass {
   async addSheet(): Promise<void> {return this.$callMethod('addSheet');}
   async addSwitch(): Promise<void> {return this.$callMethod('addSwitch');}
   async addVariable(a1: string,a2: string): Promise<void> {return this.$callMethod('addVariable',a1,a2);}
+  async applyDefaultPlotOptions(): Promise<void> {return this.$callMethod('applyDefaultPlotOptions');}
   async clickType(...args: string[]): Promise<string> {return this.$callMethod('clickType',...args);}
   async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
@@ -460,6 +461,7 @@ export class Canvas extends CppClass {
   async select(a1: LassoBox): Promise<void> {return this.$callMethod('select',a1);}
   async selectAllVariables(): Promise<void> {return this.$callMethod('selectAllVariables');}
   async selectVar(a1: number,a2: number): Promise<boolean> {return this.$callMethod('selectVar',a1,a2);}
+  async setDefaultPlotOptions(): Promise<void> {return this.$callMethod('setDefaultPlotOptions');}
   async setItemFocus(a1: Item): Promise<void> {return this.$callMethod('setItemFocus',a1);}
   async showDefiningVarsOnCanvas(): Promise<void> {return this.$callMethod('showDefiningVarsOnCanvas');}
   async showPlotsOnTab(): Promise<void> {return this.$callMethod('showPlotsOnTab');}
@@ -2264,6 +2266,7 @@ export class Sheet extends Item {
   async drawResizeHandles(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async inRavel(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inRavel',a1,a2);}
+  async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}
   async onMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseDown',a1,a2);}
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
   async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
@@ -2271,6 +2274,9 @@ export class Sheet extends Item {
   async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
   async onRavelButton(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onRavelButton',a1,a2);}
   async onResizeHandle(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onResizeHandle',a1,a2);}
+  async scrollDown(): Promise<boolean> {return this.$callMethod('scrollDown');}
+  async scrollUp(): Promise<boolean> {return this.$callMethod('scrollUp');}
+  async setSliceIndicator(): Promise<void> {return this.$callMethod('setSliceIndicator');}
   async showRavel(...args: boolean[]): Promise<boolean> {return this.$callMethod('showRavel',...args);}
   async showSlice(...args: string[]): Promise<string> {return this.$callMethod('showSlice',...args);}
 }

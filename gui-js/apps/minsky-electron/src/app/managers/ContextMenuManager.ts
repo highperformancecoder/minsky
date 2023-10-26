@@ -453,6 +453,18 @@ export class ContextMenuManager {
         },
       }),
       new MenuItem({
+        label: 'Set options as default',
+        click: async () => {
+          minsky.canvas.setDefaultPlotOptions();
+        },
+      }),
+      new MenuItem({
+        label: 'Apply default options',
+        click: async () => {
+          minsky.canvas.applyDefaultPlotOptions();
+        },
+      }),
+      new MenuItem({
         label: 'Pen Styles',
         click: () => {
           WindowManager.createPopupWindowWithRouting({

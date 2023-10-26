@@ -975,7 +975,19 @@ namespace minsky
     // ensure screen refresh time is less than a third
     minsky().maxWaitMS=(t>0.03)? 3000*t: 100.0;
   }
-  
+
+  void Canvas::applyDefaultPlotOptions() {
+      if (auto p=item->plotWidgetCast()) {
+        // stash titles to restore later
+        string title(p->title), xlabel(p->xlabel()),
+          ylabel(p->ylabel()), y1label(p->y1label());
+        defaultPlotOptions.applyPlotOptions(*p);
+        p->title=title, p->xlabel(xlabel),
+          p->ylabel(ylabel), p->y1label(y1label);
+      }
+    }
+
+
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EventInterface);
