@@ -1,4 +1,4 @@
- /*
+/*
   @copyright Steve Keen 2017
   @author Russell Standish
   This file is part of Minsky.
@@ -490,25 +490,7 @@ namespace schema3
       {
         x1->bb.update(*x1);        
         if (y.name) x1->title=*y.name;
-        if (y.logx) x1->logx=*y.logx;
-        if (y.logy) x1->logy=*y.logy;
-        if (y.ypercent) x1->percent=*y.ypercent;
-        if (y.plotTabDisplay) x1->plotTabDisplay=*y.plotTabDisplay;
-        if (y.plotType) x1->plotType=*y.plotType;
-        if (y.xlabel) x1->xlabel(*y.xlabel);
-        if (y.ylabel) x1->ylabel(*y.ylabel);
-        if (y.y1label) x1->y1label(*y.y1label);
-        if (y.nxTicks) x1->nxTicks=*y.nxTicks;
-        if (y.nyTicks) x1->nyTicks=*y.nyTicks;
-        if (y.xtickAngle) x1->xtickAngle=*y.xtickAngle;
-        if (y.exp_threshold) x1->exp_threshold=*y.exp_threshold;
-        if (y.legend)
-          {
-            x1->legend=true;
-            x1->legendSide=*y.legend;
-          }
-        if (y.legendGeometry)
-          y.legendGeometry->setLegendGeometry(*x1);
+        y.applyPlotOptions(*x1);
         if (y.palette) x1->palette=*y.palette;
       }
     if (auto* x1=dynamic_cast<minsky::Sheet*>(&x))

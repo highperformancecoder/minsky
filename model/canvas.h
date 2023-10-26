@@ -23,6 +23,7 @@
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
+#include "plotOptions.h"
 #include "plotWidget.h"
 #include "selection.h"
 #include "switchIcon.h"
@@ -59,6 +60,10 @@ namespace minsky
 
     /// flag indicating that a redraw is requested, but not yet redrawn
     bool m_redrawRequested=false;
+    
+    /// options to apply to a new plot widget
+    PlotOptions<> defaultPlotOptions;
+    
   public:
     typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
     struct Model: public GroupPtr
@@ -185,7 +190,10 @@ namespace minsky
       setItemFocus(model->addItem(new Item));
       itemFocus->detailedText=text;
     }
-    void addPlot() {setItemFocus(model->addItem(new PlotWidget));}
+    void addPlot() {
+      setItemFocus(model->addItem(new PlotWidget));
+      defaultPlotOptions.applyPlotOptions(*itemFocus->plotWidgetCast());
+    }
     void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
     void addGroup() {setItemFocus(model->addItem(new Group));}
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
@@ -276,6 +284,13 @@ namespace minsky
     /// request a redraw on the screen
     void requestRedraw() {m_redrawRequested=true; if (surface().get()) surface()->requestRedraw();}
     bool hasScrollBars() const override {return true;}
+
+    void setDefaultPlotOptions() {
+      if (auto p=item->plotWidgetCast())
+        defaultPlotOptions=*p;
+    }
+
+    void applyDefaultPlotOptions();
   };
 }
 
