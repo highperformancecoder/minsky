@@ -141,7 +141,7 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o
 
 
 ifneq ($(GUI_TK),1)
@@ -355,7 +355,7 @@ RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 getContext.o: getContext.cc
 	g++ -ObjC++ $(FLAGS) -I/opt/local/include -Iinclude -c $< -o $@
 
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS)  $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+gui-tk/minsky$(EXE): $(GUI_TK_OBJS)  $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 $(LIBS) $(GUI_LIBS) -o $@
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
@@ -365,13 +365,13 @@ ifdef MXE
 	cp -r $(TK_LIB) gui-tk/library/tk
 endif
 
-RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
-RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
-RESTService/typescriptAPI: typescriptAPI.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+RESTService/typescriptAPI: typescriptAPI.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	$(LINK) $(FLAGS) $^  $(LIBS) -o $@
 
 
@@ -399,7 +399,7 @@ endif
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
 # N-API node embedded RESTService
-gui-js/node-addons/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
+gui-js/node-addons/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	mkdir -p gui-js/node-addons
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
@@ -413,8 +413,15 @@ else
 endif
 endif
 
-pyminsky.so: pyminsky.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) $(TENSOR_OBJS)
-	$(LINK) -shared -o $@ $^ $(LIBS)
+libminsky.a: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
+	ar r $@ $^
+
+pyminsky.so: pyminsky.o libminsky.a
+	$(LINK) -shared -o $@ $^ libminsky.a $(LIBS)
+
+# used to find undefined symbols in pyminsky.so
+pyminsky-test: test/testmain.o pyminsky.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
+	$(LINK) -o $@ $^ $(LIBS) -lpthread -ltirpc
 
 RESTService/dummy-addon.node: dummy-addon.o $(NODE_API)
 ifdef MXE

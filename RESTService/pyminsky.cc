@@ -1,3 +1,25 @@
+/*
+  @copyright Steve Keen 2023
+  @author Russell Standish
+  This file is part of Minsky.
+
+  Minsky is free software: you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Minsky is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#define REST_PROCESS_BUFFER classdesc::PythonBuffer
+#include "pythonBuffer.h"
+
 #include "minskyRS.h"
 #include "RESTMinsky.h"
 #include "minsky_epilogue.h"
@@ -6,9 +28,14 @@
 using namespace minsky;
 namespace
 {
-  struct ModuleMinsky: public RESTMinsky
+
+  struct ModuleMinsky: public Minsky
   {
-    ModuleMinsky() {RESTProcess(registry,"minsky",static_cast<Minsky&>(*this));}
+    RESTProcess_t registry;
+    ModuleMinsky() {
+      classdesc_access::access_RESTProcess<minsky::Minsky>()(registry,"minsky",static_cast<Minsky&>(*this));
+      registry.add("minsky", new RESTProcessObject<minsky::Minsky>(*this));
+    }
   };
 
   ModuleMinsky& moduleMinsky()
@@ -20,22 +47,23 @@ namespace
   // JSON for now
   PyObject* call(PyObject* self, PyObject* args)
   {
-    const char* command="", *jsonArguments=nullptr;
-    if (!PyArg_ParseTuple(args, "ss", &command, &jsonArguments))
+    string command=PyUnicode_AsUTF8(PySequence_GetItem(args,0));
+    PythonBuffer arguments;
+    if (PySequence_Size(args)>1)
       {
-        // try a no argument version
-        PyErr_Clear();
-        PyArg_ParseTuple(args, "s",&command);
+        arguments=PythonBuffer(RESTProcessType::array);
+        for (size_t i=1; i<PySequence_Size(args); ++i)
+          arguments.push_back(PySequence_GetItem(args,i));
       }
+    if (PyErr_Occurred())
+      PyErr_Print();
     try
       {
         cout<<"command="<<command<<endl;
-        json_pack_t arguments(json5_parser::mValue{});
-        if (jsonArguments)
-          read(jsonArguments, arguments);
-        auto result=write(moduleMinsky().registry.process(command, arguments),json5_parser::raw_utf8);
-        cout<<"result="<<result<<endl;
-        return Py_BuildValue("s",result.c_str());
+        auto result=moduleMinsky().registry.process(command, arguments).getPyObject();
+        if (PyErr_Occurred())
+          PyErr_Print();
+        return result;
       }
     catch (const std::exception& ex)
       {
@@ -81,3 +109,4 @@ PyMODINIT_FUNC PyInit_pyminsky(void)
 {
   return PyModule_Create(&pyminsky);
 }
+
