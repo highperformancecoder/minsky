@@ -27,6 +27,7 @@
 #include "CSVDialog.h"
 #include "latexMarkup.h"
 #include "valueId.h"
+#include "variableSummary.h"
 #include <regex> 
 #include <utility>
 #include <boost/locale.hpp>
@@ -160,6 +161,8 @@ namespace minsky
     CSVDialog csvDialog;
     
     void exportAsCSV(const std::string& filename, const std::string& comment="") const;
+
+    Summary summary() const;
   };
 
   struct ValueVector

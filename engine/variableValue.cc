@@ -34,6 +34,7 @@
 #include "tensorVal.rcd"
 #include "tensorVal.xcd"
 #include "units.rcd"
+#include "userFunction.h"
 #include "variableValue.rcd"
 #include "variableValues.rcd"
 #include "variableValues.xcd"
@@ -128,13 +129,13 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        assert(idxInRange());
+        //        assert(idxInRange());
          if (size_t(m_idx)<ValueVector::flowVars.size())
            return ValueVector::flowVars[m_idx];
          break;
       case stock:
       case integral:
-        assert(idxInRange());
+        //        assert(idxInRange());
         if (size_t(m_idx)<ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx];
         break;
@@ -367,6 +368,60 @@ namespace minsky
           of << *d << endl;
         }
   }
+
+  Summary VariableValue::summary() const
+  {
+    MathDAG::SystemOfEquations system(cminsky());
+    MathDAG::VariableDAGPtr varNode;
+    switch (type())
+      {
+      case integral:
+      case stock:
+        varNode=system.getNodeFromIntVar(valueId());
+        break;
+      default:
+        varNode=system.getNodeFromValueId(valueId());
+        break;
+      }
+
+    string scopeName=":";
+    if (auto scope=m_scope.lock())
+      if (scope!=cminsky().model)
+        scopeName=scope->title.empty()? scope->id(): scope->title;
+
+    string godleyName;
+    string definition=varNode && varNode->rhs? varNode->rhs->latexStr(): "";
+    string udfDefinition=varNode && varNode->rhs? varNode->rhs->matlabStr():"";
+    if (auto var=cminsky().definingVar(valueId()))
+      {
+        if (auto controller=dynamic_pointer_cast<GodleyIcon>(var->controller.lock()))
+          godleyName=controller->table.title.empty()? controller->id(): controller->table.title;
+        if (auto p=var->ports(1).lock())
+          if (!p->wires().empty())
+            if (auto udf=dynamic_cast<UserFunction*>(&p->wires().front()->from()->item()))
+              {
+                definition="\\text{"+udf->expression+"}";
+                udfDefinition=udf->expression;
+              }
+      }
+
+    
+    return Summary{
+      valueId(),
+      name,
+      type(),
+      definition,
+      udfDefinition,
+      init,
+      value(),
+      scopeName,
+      godleyName,
+      hypercube().dims(),
+      units.latexStr()
+    };
+    
+  }
+
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Units);

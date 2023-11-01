@@ -123,7 +123,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
         x: event.x,
         y: event.y,
         type: 'ravel',
-        command: this.namedItem.prefix(),
+        command: this.namedItem.$prefix(),
       });
     });
 
@@ -132,7 +132,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
       this.communicationService.mouseX=this.communicationService.mouseY=0;
       await this.communicationService.handleKeyDown({
         event,
-        command: `/minsky/namedItems/@elem/"${this.itemId}"/second/popup`,
+        command: `minsky.namedItems.@elem."${this.itemId}".second.popup`,
       });
     };
   }

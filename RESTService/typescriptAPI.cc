@@ -17,6 +17,7 @@
 #include "dataOp.tcd"
 #include "dimension.tcd"
 #include "engNotation.tcd"
+#include "equationDisplay.tcd"
 #include "evalGodley.tcd"
 #include "eventInterface.tcd"
 #include "fontDisplay.tcd"
@@ -42,8 +43,9 @@
 #include "pango.tcd"
 #include "pannableTab.tcd"
 #include "panopticon.tcd"
-#include "parameterTab.tcd"
+#include "phillipsDiagram.tcd"
 #include "plot.tcd"
+#include "plotOptions.tcd"
 #include "plotTab.tcd"
 #include "plotWidget.tcd"
 #include "polyRESTProcessBase.tcd"
@@ -68,7 +70,6 @@
 #include "variableInstanceList.tcd"
 #include "variable.tcd"
 #include "variablePane.tcd"
-#include "variableTab.tcd"
 #include "variableType.tcd"
 #include "variableValue.tcd"
 #include "variableValues.tcd"
@@ -96,6 +97,10 @@ namespace classdesc_access
   
   template <>
   struct access_typescriptAPI<std::vector<civita::any>>:
+    public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
+  
+  template <class T>
+  struct access_typescriptAPI<minsky::Optional<T>>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
 }
 
@@ -198,7 +203,7 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
             cout <<","<<klass.valueType;
           cout << ")\n";
           cout << "    else\n";
-          cout << "      super(prefix.prefix()";
+          cout << "      super(prefix.$prefix()";
           if (!klass.valueType.empty())
             cout <<","<<klass.valueType;
           cout <<")\n";
@@ -213,20 +218,20 @@ void exportClass(const std::string& name, const minsky::typescriptAPI_ns::ClassT
           if (!prop.second.construction.empty())
             cout << "    this."<<prop.first<<"="<<prop.second.construction<<"\n";
           else
-            cout << "    this."<<prop.first<<"=new "<<prop.second.type<<"(this.prefix()+'/"<<prop.first<<"');\n"; 
+            cout << "    this."<<prop.first<<"=new "<<prop.second.type<<"(this.$prefix()+'."<<prop.first<<"');\n"; 
         }
       cout << "  }\n";
 
       // methods
       for (auto& method: klass.methods)
         {
-          cout << "  "<<method.first<<"(";
+          cout << "  async "<<method.first<<"(";
           for (size_t i=0; i<method.second.args.size(); ++i)
             {
               if (i>0) cout<<",";
               cout<<method.second.args[i].name<<": "<<method.second.args[i].type;
             }
-          cout << "): "<<method.second.returnType<<" {return this.callMethod('"<<method.first<<"'";
+          cout << "): Promise<"<<method.second.returnType<<"> {return this.$callMethod('"<<method.first<<"'";
           for (auto& arg: method.second.args)
             cout<<","<<arg.name;
           cout<<");}\n";
@@ -249,6 +254,7 @@ int main()
   api.addClass<DataSpecSchema>();
   api.addClass<ecolab::Plot::LineStyle>();
   api.addClass<EngNotation>();
+  api.addClass<EventInterface>();
   api.addClass<GroupItems>();
   api.addClass<HandleLockInfo>();
   api.addClass<PannableTab<EquationDisplay>>();
@@ -269,6 +275,8 @@ int main()
   api.addSubclass<IntOp,Item>();
   api.addSubclass<Lock,Item>();
   api.addSubclass<OperationBase,Item>();
+  api.addSubclass<PhillipsFlow,Item>();
+  api.addSubclass<PhillipsStock,Item>();
   api.addSubclass<PlotWidget,Item>();
   api.addSubclass<Ravel,Item>();
   api.addSubclass<Sheet,Item>();
@@ -288,6 +296,7 @@ int main()
   cout << "class minsky__EventInterface__KeyPressArgs {}\n";
   cout << "class minsky__GodleyIcon__MoveCellArgs {}\n";
   cout << "class minsky__RenderNativeWindow__RenderFrameArgs {}\n";
+  cout << "class minsky__VariableType__TypeT {}\n";
   cout << "class civita__ITensor__Args {}\n";
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";
@@ -301,10 +310,12 @@ int main()
   vector<string> exportFirst{"Item","OperationBase","VariableBase"};
   for (auto& i: exportFirst) exportClass(i,api[i]);
 
+  cout << "class minsky__Variable<T> extends VariableBase {}\n";
+
   // then export the rest
   for (auto& i: api)
     if (find(exportFirst.begin(), exportFirst.end(), i.first)==exportFirst.end())
       exportClass(i.first, i.second);
 
-  cout << "export var minsky=new Minsky('/minsky');\n";
+  cout << "export var minsky=new Minsky('minsky');\n";
 }

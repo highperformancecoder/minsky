@@ -2,7 +2,7 @@ import {
   CanvasItem,
   ClassType,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, Sheet, SwitchIcon,
-  VariableBase, Functions, events
+  VariableBase, VariableValue, Functions, events
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
 import { BookmarkManager } from './BookmarkManager';
@@ -27,9 +27,9 @@ export class ContextMenuManager {
         this.y = y;
         
         const currentTab = WindowManager.currentTab;
-        if (currentTab.equal(minsky.canvas))
+        if (currentTab.$equal(minsky.canvas))
           this.initContextMenuForWiring(mainWindow);
-        else if (currentTab.equal(minsky.plotTab))
+        else if (currentTab.$equal(minsky.plotTab))
           this.initContextMenuForPlotTab(mainWindow);
       }
       break;
@@ -45,6 +45,9 @@ export class ContextMenuManager {
       case "ravel":
       this.initContextMenuForRavelPopup(command,x,y);
       break;
+      case "csv-import":
+      this.initContextMenuForCSVImport(event, command,x,y);
+      break;
       default:
       log.warn("Unknown context menu for ",type);
       break;
@@ -52,8 +55,7 @@ export class ContextMenuManager {
   }
 
   private static async initContextMenuForPlotTab(mainWindow: BrowserWindow) {
-    minsky.plotTab.getItemAt(this.x,this.y)
-    if (minsky.plotTab.item.properties()) {
+    if (await minsky.plotTab.getItemAt(this.x,this.y)) {
       const menuItems = [
         new MenuItem({
           label: `Remove plot from tab`,
@@ -72,9 +74,9 @@ export class ContextMenuManager {
 
   private static async initContextMenuForWiring(mainWindow: BrowserWindow) {
     try {
-      const isWirePresent = minsky.canvas.getWireAt(this.x, this.y);
+      const isWirePresent = await minsky.canvas.getWireAt(this.x, this.y);
 
-      const isWireVisible = minsky.canvas.wire.visible();
+      const isWireVisible = await minsky.canvas.wire.visible();
       const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
 
         if (isWirePresent && isWireVisible && (itemInfo?.classType!=ClassType.Group||itemInfo?.displayContents)) {
@@ -115,7 +117,7 @@ export class ContextMenuManager {
       }
       
       ContextMenuManager.buildAndDisplayContextMenu(
-        ContextMenuManager.canvasContext(),
+        await ContextMenuManager.canvasContext(),
         mainWindow
       );
 
@@ -196,10 +198,10 @@ export class ContextMenuManager {
     return menuItems;
   }
 
-  private static canvasContext(): MenuItem[] {
+  private static async canvasContext(): Promise<MenuItem[]> {
     const selectedItems = minsky.canvas.selection.items;
-    const selectionSize = selectedItems.size();
-    const ravelsSelected = minsky.canvas.ravelsSelected();
+    const selectionSize = await selectedItems.size();
+    const ravelsSelected = await minsky.canvas.ravelsSelected();
 
     const menuItems = [
       new MenuItem({
@@ -285,7 +287,7 @@ export class ContextMenuManager {
         new MenuItem({
           label: 'Help',
           visible:
-          WindowManager.currentTab.equal(minsky.canvas),
+          WindowManager.currentTab.$equal(minsky.canvas),
           click: async () => {
             await CommandsManager.help(this.x, this.y);
           },
@@ -431,7 +433,7 @@ export class ContextMenuManager {
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
     const plot=new PlotWidget(minsky.canvas.item);
-    const displayPlotOnTabChecked = plot.plotTabDisplay();
+    const displayPlotOnTabChecked = await plot.plotTabDisplay();
 
     const menuItems = [
       new MenuItem({
@@ -448,6 +450,18 @@ export class ContextMenuManager {
         label: 'Options',
         click: async () => {
           await CommandsManager.openPlotWindowOptions(itemInfo);
+        },
+      }),
+      new MenuItem({
+        label: 'Set options as default',
+        click: async () => {
+          minsky.canvas.setDefaultPlotOptions();
+        },
+      }),
+      new MenuItem({
+        label: 'Apply default options',
+        click: async () => {
+          minsky.canvas.applyDefaultPlotOptions();
         },
       }),
       new MenuItem({
@@ -512,9 +526,9 @@ export class ContextMenuManager {
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
     let godley=new GodleyIcon(minsky.canvas.item);
-    const displayVariableChecked = godley.variableDisplay();
-    const rowColButtonsChecked = godley.buttonDisplay();
-    const editorModeChecked = godley.editorMode();
+    const displayVariableChecked = await godley.variableDisplay();
+    const rowColButtonsChecked = await godley.buttonDisplay();
+    const editorModeChecked = await godley.editorMode();
 
     const menuItems = [
       new MenuItem({
@@ -587,11 +601,10 @@ export class ContextMenuManager {
   ): Promise<MenuItem[]> {
     let op=new OperationBase(minsky.canvas.item);
 
-    try {
-      var portValues = op.portValues();
-    } catch (error) {
-      var portValues = 'unknown';
-    }
+    let portValues;
+    op.portValues().
+      then((x)=>{portValues=x;}).
+      catch((x)=>{portValues = 'unknown';});
 
     let menuItems = [
       new MenuItem({ label: `Port values ${portValues}}` }),
@@ -604,7 +617,7 @@ export class ContextMenuManager {
     ];
 
     // TODO data is obsolete
-    if (op.type() === 'data') {
+    if (await op.type() === 'data') {
       menuItems.push(
         new MenuItem({
           label: 'Import Data',
@@ -630,7 +643,7 @@ export class ContextMenuManager {
       }),
     ];
 
-    if (op.type() === 'integrate') {
+    if (await op.type() === 'integrate') {
       menuItems.push(
         new MenuItem({
           label: 'Toggle var binding',
@@ -729,12 +742,12 @@ export class ContextMenuManager {
   private static async buildContextMenuForRavel(ravel: Ravel): Promise<MenuItem[]> {
     const aggregations = [{label: 'Σ', value: 'sum'},{label: 'Π', value: 'prod'},{label:'av',value:'av'},{label: 'σ', value: 'stddev'},{label: 'min', value: 'min'},{label: 'max', value: 'max'}];
 
-    const handleIndex = ravel.selectedHandle();
-    const sortOrder = ravel.sortOrder();
-    const editorMode = ravel.editorMode();
+    const handleIndex = await ravel.selectedHandle();
+    const sortOrder = await ravel.sortOrder();
+    const editorMode = await ravel.editorMode();
 
-    const ravelsSelected = minsky.canvas.ravelsSelected();
-    const allLockHandles = ravel.lockGroup.allLockHandles();
+    const ravelsSelected = await minsky.canvas.ravelsSelected();
+    const allLockHandles = await ravel.lockGroup.allLockHandles();
 
     const lockHandlesAvailable = ravelsSelected > 1 || Object.keys(allLockHandles).length !== 0;
     const unlockAvailable = Object.keys(allLockHandles).length !== 0;
@@ -796,7 +809,7 @@ export class ContextMenuManager {
         submenu: ['none','forward','reverse'].map(so =>(<any>{
           label: so,
           type: 'radio',
-          checked: sortOrder == so,
+          checked: sortOrder == valueSort('static',so),
           click: () => {
             ravel.setSortOrder(valueSort('static',so));
             ravel.broadcastStateToLockGroup();
@@ -858,11 +871,11 @@ export class ContextMenuManager {
     const menuItems = [
       new MenuItem({
         label: 'Add case',
-        click: () => {switchIcon.setNumCases(switchIcon.numCases()+1);},
+        click: async () => {switchIcon.setNumCases(await switchIcon.numCases()+1);},
       }),
       new MenuItem({
         label: 'Delete case',
-        click: () => {switchIcon.setNumCases(switchIcon.numCases()-1);},
+        click: async () => {switchIcon.setNumCases(await switchIcon.numCases()-1);},
       }),
       new MenuItem({
         label: 'Flip',
@@ -901,12 +914,12 @@ export class ContextMenuManager {
     
     const menuItems = [
       dims && dims.length
-        ? new MenuItem({ label: `Dims ${dims.toString()}` })
-        : new MenuItem({ label: `Value ${v.value()}` }),
+        ? new MenuItem({ label: `Dims ${await dims.toString()}` })
+        : new MenuItem({ label: `Value ${await v.value()}` }),
       new MenuItem({
         label: "Local",
         type: 'checkbox',
-        checked: v.local(),
+        checked: await v.local(),
         click: async () => {v.toggleLocal();}
       }),
       new MenuItem({
@@ -965,7 +978,7 @@ export class ContextMenuManager {
       })
     );
 
-    if (v.type() === 'parameter') {
+    if (await v.type() === 'parameter') {
       menuItems.push(
         new MenuItem({
           label: 'Import CSV',
@@ -1000,14 +1013,10 @@ export class ContextMenuManager {
 
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
   {
-    //  console.log(`initContextMenuForGodleyPopup ${namedItemSubCommand}, ${x},${y}\n`);
     const godley=new GodleyIcon(namedItemSubCommand);
-
-    const r=godley.popup.rowYZoomed(y);
-    const c=godley.popup.colXZoomed(x);
-
-    const clickType = godley.popup.clickTypeZoomed(x, y);
-
+    const r=await godley.popup.rowYZoomed(y);
+    const c=await godley.popup.colXZoomed(x);
+    const clickType = await godley.popup.clickTypeZoomed(x, y);
     this.initContextMenuForGodley(godley, r, c, clickType, () => {});
   }
 
@@ -1093,14 +1102,14 @@ export class ContextMenuManager {
       case "internal": break;
     } // switch clickType
     
-    if (r!=godley.popup.selectedRow() || c!=godley.popup.selectedCol())
+    if (r!=await godley.popup.selectedRow() || c!=await godley.popup.selectedCol())
     {
       godley.popup.selectedRow(r);
       godley.popup.selectedCol(c);
       godley.popup.insertIdx(0);
       godley.popup.selectIdx(0);
     }
-    var cell=godley.table.getCell(r,c);
+    var cell=await godley.table.getCell(r,c);
     if (cell.length>0 && (r!=1 || c!=0))
     {
       menu.append(new MenuItem({
@@ -1128,7 +1137,7 @@ export class ContextMenuManager {
         }
       }));
     }
-    const flows=godley.table.getVariables();
+    const flows=await godley.table.getVariables();
     var flowMenu=new Menu();
     for (let i=0; i<flows.length; ++i)
       flowMenu.append(new MenuItem({
@@ -1171,6 +1180,66 @@ export class ContextMenuManager {
   {
     let ravel=new Ravel(namedItemSubCommand);
     let menu=Menu.buildFromTemplate(await this.buildContextMenuForRavel(ravel));
+    menu.popup();
+  }
+
+  private static async initContextMenuForCSVImport(event: IpcMainEvent, variableValue: string, row: number, col: number)
+  {
+    const refresh=()=>event.sender.send(events.CSV_IMPORT_REFRESH);
+    const value=new VariableValue(variableValue);
+    var menu=Menu.buildFromTemplate([
+      new MenuItem({
+        label: 'Set as header row',
+        click: ()=>{
+          value.csvDialog.spec.headerRow(row);
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Auto-classify columns as axis/data',
+        click: async ()=>{
+          value.csvDialog.classifyColumns();
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Populate column labels',
+        click: async ()=>{
+          value.csvDialog.populateHeaders();
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Populate current column label',
+        click: ()=>{
+          value.csvDialog.populateHeader(col);
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Set start of data row, and column',
+        click: ()=>{
+          value.csvDialog.spec.setDataArea(row,col);
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Set start of data row',
+        click: async ()=>{
+          let c=await value.csvDialog.spec.nColAxes();
+          value.csvDialog.spec.setDataArea(row,c);
+          refresh();
+        },
+      }),
+      new MenuItem({
+        label: 'Set start of data column',
+        click: async ()=>{
+          let r=await value.csvDialog.spec.nRowAxes();
+          value.csvDialog.spec.setDataArea(r,col);
+          refresh();
+        },
+      }),
+      ]);
     menu.popup();
   }
 }

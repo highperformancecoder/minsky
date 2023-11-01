@@ -65,18 +65,18 @@ mkdir -p $MAC_DIST_DIR
 
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 
-# due to the presence of -isystem /usr/local/lib, which is needed for other idiocies, libjson_spirit is not correctly rewritten by the above
-#rewrite_dylib /usr/local/lib/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
-#install_name_tool -change libjson_spirit.dylib @loader_path/libjson_spirit.dylib $MAC_DIST_DIR/minskyRESTService.node
-
 pushd gui-js
 npm run export:package:mac
 popd
 
-echo xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $target
-xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $target
-echo "Sleeping for a bit for software to be notarised"
-sleep 60
+# notarytool is introduced from Big Sur onwards, altool has been deprecated.
+if [ `sw_vers|grep ProductVersion|cut -f2|cut -f1 -d.` -lt 11 ]; then
+   xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $target
+else
+    # Note: use xcrun notarytool store-credentials --apple-id apple@hpcoders.com.au --team-id 3J798GK5A7 --password "...", and specify "NotaryTool" as the profile id.
+    xcrun notarytool submit $target  --keychain-profile NotaryTool  --wait
+fi
+   
 xcrun stapler staple $target
 if [ $? -ne 0 ]; then
     echo "Manually staple with:"

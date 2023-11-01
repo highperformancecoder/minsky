@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements DoCheck {
-  htmlTabs = [MainRenderingTabs.parameters, MainRenderingTabs.variables];
+  htmlTabs = [MainRenderingTabs.summary];
 
   loading = true;
     MainRenderingTabs = MainRenderingTabs;
@@ -110,19 +110,19 @@ export class AppComponent implements DoCheck {
   async changeTab(tab: MainRenderingTabs) {
     if(this.htmlTabs.includes(tab)) {
       if(!this.htmlTabs.includes(this.cmService.currentTab)) {
-        new RenderNativeWindow(this.cmService.currentTab).disable();
+        new RenderNativeWindow(this.cmService.currentTab).$callMethodSync("disable");
       }
   
       this.cmService.currentTab = tab;
 
       this.router.navigate([tab]);
     } else {
-      this.router.navigate(['/wiring']);
+      this.router.navigate(['wiring']);
 
       
       if (this.electronService.isElectron) {
         if(!this.htmlTabs.includes(this.cmService.currentTab)) {
-          new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
+          await new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
         }
     
         this.cmService.currentTab = tab;

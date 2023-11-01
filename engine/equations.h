@@ -88,9 +88,11 @@ namespace MathDAG
     /// brackets are necessary.
     virtual int BODMASlevel() const=0; 
     /// writes LaTeX representation of this DAG to the stream
-    virtual ostream& latex(ostream&) const=0; 
+    virtual ostream& latex(ostream&) const=0;
+    std::string latexStr() const {ostringstream o; latex(o); return o.str();}
     /// writes a matlab representation of this DAG to the stream
-    virtual ostream& matlab(ostream&) const=0; 
+    virtual ostream& matlab(ostream&) const=0;
+    std::string matlabStr() const {ostringstream o; matlab(o); return o.str();}
     /// renders a visual representation of this node to \a surf
     /// graphic extends right from the current pen position (which
     /// needs to be defined), and pen is moved to the right edge of
@@ -416,6 +418,10 @@ namespace MathDAG
     NodePtr zero{new ConstantDAG("0")}, one{new ConstantDAG("1")};
     
     VariableDAGPtr getNodeFromVar(const VariableBase& v);
+    VariableDAGPtr getNodeFromValueId(const std::string& v)
+    {return dynamic_pointer_cast<VariableDAG>(expressionCache[v]);}
+    VariableDAGPtr getNodeFromIntVar(const std::string& valueId)
+    {return expressionCache.getIntegralInput(valueId);}
     ostringstream getDefFromIntVar(const VariableBase& v);
 
     /// render equations into a cairo context

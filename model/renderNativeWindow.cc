@@ -81,6 +81,8 @@ namespace minsky
   
   void RenderNativeWindow::renderFrame(const RenderFrameArgs& args)
   {
+    m_frameArgs=args;
+    init();
     winInfoPtr.reset();
     winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
@@ -89,25 +91,29 @@ namespace minsky
 
   void RenderNativeWindow::destroyFrame() {winInfoPtr.reset();}
 
+  void RenderNativeWindow::macOSXRedraw()
+  {
+#ifdef MAC_OSX_TK
+    if (!winInfoPtr.get()) return;
+    winInfoPtr->requestRedraw();
+#endif
+  }
 
   
   void RenderNativeWindow::requestRedraw()
   {
     if (!winInfoPtr.get()) return;
-#ifdef MAC_OSX_TK
-    winInfoPtr->requestRedraw();
-#else
+    macOSXRedraw();
     minsky().nativeWindowsToRedraw.insert(this);
-#endif
   }
 
   
   void RenderNativeWindow::draw()
   {
     if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
-    {
-      return;
-    }
+      {
+        return;
+      }
 
 #ifdef FPS_PROFILING_ON
     unsigned long t0_render_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -152,16 +158,16 @@ namespace minsky
   }
 
 
-      double RenderNativeWindow::scaleFactor()
-      {
+  double RenderNativeWindow::scaleFactor()
+  {
 #ifdef WIN32
-        DEVICE_SCALE_FACTOR scaleFactor;
-        GetScaleFactorForMonitor(MonitorFromPoint(POINT{0,0}, MONITOR_DEFAULTTOPRIMARY), &scaleFactor);
-        return scaleFactor/100.0;
+    DEVICE_SCALE_FACTOR scaleFactor;
+    GetScaleFactorForMonitor(MonitorFromPoint(POINT{0,0}, MONITOR_DEFAULTTOPRIMARY), &scaleFactor);
+    return scaleFactor/100.0;
 #else
-        return 1;
+    return 1;
 #endif
-      }
+  }
 
 } // namespace minsky
 

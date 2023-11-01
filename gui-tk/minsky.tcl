@@ -985,13 +985,6 @@ proc addTab {window label surface} {
 addTab wiring "Wiring" minsky.canvas
 addTab equations "Equations" minsky.equationDisplay
 pack .equations.canvas -fill both -expand 1
-addTab parameters "Parameters" minsky.parameterTab
-pack .parameters.canvas -fill both -expand 1
-addTab variables "Variables" minsky.variableTab
-pack .variables.canvas -fill both -expand 1
-
-bind .variables.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
-menu .variables.context -tearoff 0   
 
 addTab plts "Plots" minsky.plotTab
 pack .plts.canvas -fill both -expand 1
@@ -1069,8 +1062,6 @@ minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
 bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
 bind .equations.canvas <Configure> {setScrollBars}
-bind .parameters.canvas <Configure> {setScrollBars}
-bind .variables.canvas <Configure> {setScrollBars}
 bind .plts.canvas <Configure> {setScrollBars}
 bind .gdlys.canvas <Configure> {setScrollBars}
 
@@ -1262,22 +1253,6 @@ bind .equations.canvas <Button-1> {
     set panOffsY [expr %y-[equationDisplay.offsy]]
 }
 bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
-
-# parameters pan mode
-.parameters.canvas configure -cursor $panIcon
-bind .parameters.canvas <Button-1> {
-    set panOffsX [expr %x-[parameterTab.offsx]]
-    set panOffsY [expr %y-[parameterTab.offsy]]
-}
-bind .parameters.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
-
-# variables pan mode
-.variables.canvas configure -cursor $panIcon
-bind .variables.canvas <Button-1> {
-    set panOffsX [expr %x-[variableTab.offsx]]
-    set panOffsY [expr %y-[variableTab.offsy]]
-}
-bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 # plots pan mode
 bind .plts.canvas <Shift-Button-1> {

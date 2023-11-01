@@ -54,7 +54,7 @@ export class CliInputComponent implements OnInit, OnDestroy {
     if (this.electronService.isElectron) {
       let _commands = await this.electronService.minsky.$list();
 
-      _commands = _commands.map((c) => `/minsky${c}`);
+      _commands = _commands.map((c) => `minsky${c}`);
 
       this.commands = [..._commands, ...unExposedTerminalCommands];
     }

@@ -9,3 +9,4 @@ export * from './lib/interfaces/Interfaces';
 export * from './lib/material/material.module';
 export * from './lib/shared.module';
 export * from './lib/utility';
+export * from './lib/zoomable';

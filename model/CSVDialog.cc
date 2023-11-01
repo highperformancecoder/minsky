@@ -227,6 +227,7 @@ void CSVDialog::guessSpecAndLoadFile()
   string fname = url.find("://")==string::npos? url: loadWebFile(url);
   spec.guessFromFile(fname);
   loadFileFromName(fname);
+  classifyColumns();
 }
 
 void CSVDialog::loadFileFromName(const std::string& fname)
@@ -238,6 +239,9 @@ void CSVDialog::loadFileFromName(const std::string& fname)
     {
       initialLines.emplace_back();
       getline(is, initialLines.back());
+      // chomp any final '\r' character (DOS files)
+      if (!initialLines.back().empty() && initialLines.back().back()=='\r')
+        initialLines.back().erase(initialLines.back().end()-1);
     }
   // Ensure dimensions.size() is the same as nColAxes() upon first load of a CSV file. For ticket 974.
   if (spec.dimensions.size()<spec.nColAxes()) spec.setDataArea(spec.nRowAxes(),spec.nColAxes());    
@@ -367,13 +371,12 @@ bool CSVDialog::redraw(int, int, int, int)
               CairoSave cs(cairo);
               pango.setText(line[col]);
               pango.setxy(x, y);
-              if (row==spec.headerRow && !(spec.columnar && col>spec.nColAxes()))
+              if (row==spec.headerRow)
                 if (col<spec.nColAxes())
                   cairo_set_source_rgb(surface->cairo(),0,0.7,0);
                 else
                   cairo_set_source_rgb(surface->cairo(),0,0,1);
-              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.count(col)) ||
-                       (spec.columnar && col>spec.nColAxes()))
+              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.count(col)))
                 cairo_set_source_rgb(surface->cairo(),1,0,0);
               else if (col<spec.nColAxes())
                 cairo_set_source_rgb(surface->cairo(),0,0,1);
@@ -415,23 +418,7 @@ size_t CSVDialog::rowOver(double y) const
   return size_t(y/rowHeight);
 }
 
-void CSVDialog::copyHeaderRowToDimNames(size_t row)
-{
-  auto parsedLines=parseLines();
-  if (row>=parseLines().size()) return;
-  for (size_t c=0; c<spec.dimensionNames.size() && c<parsedLines[row].size(); ++c)
-    spec.dimensionNames[c]=parsedLines[row][c];
-}
-
-std::string CSVDialog::headerForCol(size_t col) const
-{
-  auto parsedLines=parseLines();
-  if (spec.headerRow<parsedLines.size() && col<parsedLines[spec.headerRow].size())
-    return parsedLines[spec.headerRow][col];
-  return "";
-}
-
-std::vector<std::vector<std::string>> CSVDialog::parseLines() const
+std::vector<std::vector<std::string>> CSVDialog::parseLines()
 {
   vector<vector<string>> parsedLines;
   if (spec.mergeDelimiters)
@@ -447,7 +434,66 @@ std::vector<std::vector<std::string>> CSVDialog::parseLines() const
     parsedLines=::parseLines
       (boost::escaped_list_separator<char>(spec.escape,spec.separator,spec.quote),
        initialLines);
+
+  spec.numCols=0;
+  for (auto& i: parsedLines)
+    spec.numCols=std::max(spec.numCols, i.size());
   return parsedLines;
+}
+
+void CSVDialog::populateHeaders()
+{
+  auto parsedLines=parseLines();
+  if (spec.headerRow>parsedLines.size()) return;
+  spec.dimensionNames=parsedLines[spec.headerRow];
+}
+
+void CSVDialog::populateHeader(size_t col)
+{
+  auto parsedLines=parseLines();
+  if (spec.headerRow>parsedLines.size()) return;
+  auto& headers=parsedLines[spec.headerRow];
+  if (col<headers.size())
+    spec.dimensionNames[col]=headers[col];
+}
+
+void CSVDialog::classifyColumns()
+{
+  auto parsedLines=parseLines();
+  spec.dimensionCols.clear();
+  spec.dataCols.clear();
+  spec.dimensions.resize(spec.numCols);
+  for (auto col=0; col<spec.numCols; ++col)
+    {
+      bool entryFound=false, timeFound=true, numberFound=true;
+      for (size_t row=spec.dataRowOffset; row<parsedLines.size(); ++row)
+        if (col<parsedLines[row].size() && !parsedLines[row][col].empty())
+          {
+            entryFound=true;
+            if (numberFound && !isNumerical(parsedLines[row][col]))
+              numberFound=false;
+            static AnyVal any(Dimension(Dimension::time,""));
+            if (timeFound)
+              try
+                {any(parsedLines[row][col]);}
+              catch (...)
+                {timeFound=false;}
+          }
+      if (entryFound)
+        {
+          if (numberFound)
+            spec.dataCols.insert(col);
+          else
+            {
+              spec.dimensionCols.insert(col);
+              if (timeFound)
+                spec.dimensions[col].type=Dimension::time;
+              else
+                spec.dimensions[col].type=Dimension::string;
+              spec.dimensions[col].units.clear();
+            }
+        }
+    }
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CSVDialog);

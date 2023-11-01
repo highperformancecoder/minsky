@@ -38,10 +38,16 @@ namespace minsky
     tooltip="Double click to lock/unlock";
     iWidth(30);
     iHeight(30);
+    addPorts();
+  }
+
+  void Lock::addPorts()
+  {
+    m_ports.clear();
     m_ports.emplace_back(make_shared<Port>(*this));
-    m_ports[0]->moveTo(15,0);
+    m_ports[0]->moveTo(x()+15,y());
     m_ports.emplace_back(make_shared<InputPort>(*this));
-    m_ports[1]->moveTo(-15,0);
+    m_ports[1]->moveTo(x()-15,y());
   }
 
   Ravel* Lock::ravelInput() const

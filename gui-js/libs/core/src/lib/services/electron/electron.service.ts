@@ -18,7 +18,7 @@ export class ElectronService {
       this.ipcRenderer = window['electron'].ipcRenderer;
       this.platform = window['electron'].platform;
       this.on = window['electron'].ipcRendererOn;
-      this.minsky=new Minsky("/minsky");
+      this.minsky=new Minsky("minsky");
       CppClass.backend=async (...args)=>{
         return await this.ipcRenderer.invoke(events.BACKEND, ...args);
       }

@@ -29,9 +29,6 @@
 #include "pannableTab.xcd"
 #include "pango.rcd"
 #include "pango.xcd"
-#include "variableTab.h"
-#include "variableTab.rcd"
-#include "variableTab.xcd"
 #include "minsky_epilogue.h"
 using namespace std;
 using ecolab::cairo::Surface;
@@ -57,43 +54,6 @@ namespace minsky
                                            }
                                          return false;
                                        });   	
-  }
-
-  std::vector<DisplayVariable> ItemTab::getDisplayVariables() {
-    std::vector<DisplayVariable> displayVariables;
-
-    minsky().canvas.model->recursiveDo(&GroupItems::items,
-      [&](Items&, Items::iterator it) {   
-        auto iptr = *it;                            
-        if (itemSelector(iptr)) 
-          {		                         
-          if (auto* v=iptr->variableCast()) {
-            DisplayVariable dv;
-            dv.name = v->name();
-            if(v->type()==VariableType::parameter) {
-              auto dims=v->dims();
-              for (size_t i=0; i<dims.size(); ++i)
-                dv.dimensions +=(i?",":"")+to_string(dims[i]);
-            } else {
-              dv.definition = v->definition();
-              dv.type = VariableType::typeName(v->type()); 
-            }
-            dv.units = v->units().latexStr();
-            dv.init = v->init();
-            dv.isTensor = !v->dims().empty();
-            if(dv.isTensor) {
-              auto dims=v->dims();
-              for (size_t i=0; i<dims.size(); ++i)
-                dv.dimensions +=(i?",":"")+to_string(dims[i]);
-            } else {
-              dv.value = v->value();
-            }
-            displayVariables.emplace_back(dv);
-            }
-          }
-        return false;
-      });
-    return displayVariables;
   }
 
   void ItemTab::moveItemTo(float x, float y)
@@ -268,4 +228,3 @@ namespace minsky
 
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ItemTab);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableTab);

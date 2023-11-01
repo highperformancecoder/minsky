@@ -41,7 +41,7 @@ namespace minsky
     bool redraw(int, int, int width, int height) override;
     
   public:
-    static const unsigned numInitialLines=30;
+    static const unsigned numInitialLines=100;
     double xoffs=80;
     double colWidth=50;
     bool flashNameRow=false;
@@ -69,10 +69,16 @@ namespace minsky
     std::size_t columnOver(double x) const;
     /// return row mouse is over
     std::size_t rowOver(double y) const;
-    void copyHeaderRowToDimNames(std::size_t row);
-    std::string headerForCol(std::size_t col) const;
-    std::vector<std::vector<std::string> > parseLines() const;
+    std::vector<std::vector<std::string> > parseLines();
+    /// populate all column names from the headers row
+    void populateHeaders();
+    /// populate the name of column \a col with the data from the header row
+    void populateHeader(size_t col);
+    /// try to classify axis,data,ignore columns based on read in data
+    void classifyColumns();
   };
+
+  bool isNumerical(const std::string& s);
 }
 
 #include "CSVDialog.cd"

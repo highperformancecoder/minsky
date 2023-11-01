@@ -19,7 +19,7 @@ import { HelpFilesManager } from './managers/HelpFilesManager';
 import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
-import { backend, initialWorkingDirectory, loadResources } from './backend-init';
+import { backend, backendSync, initialWorkingDirectory, loadResources, sanityCheck } from './backend-init';
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -43,12 +43,12 @@ export default class App {
       ? join(process.resourcesPath, 'minsky-docs')
       : __dirname + '/../../../minsky-docs/';
 
-    backend('/minsky/pushFlags');
+    backend('minsky.pushFlags');
     await HelpFilesManager.initialize(helpFilesFolder);
     App.initMainWindow();
     await App.initMenu();
     App.loadMainWindow();
-    backend('/minsky/popFlags');
+    backend('minsky.popFlags');
     if (App.cliArguments.length>1) {
       if (!isAbsolute(App.cliArguments[1]))
         App.cliArguments[1]=join(initialWorkingDirectory,App.cliArguments[1]);
@@ -90,6 +90,7 @@ export default class App {
     const height = Math.round(Math.max(600, workAreaSize.height * 0.9));
 
     // Create the browser window.
+    let ravelVersion=minsky.$callMethodSync("ravelVersion");
     App.mainWindow = new BrowserWindow({
       width: width,
       height: height,
@@ -102,7 +103,7 @@ export default class App {
       },
       x: 0,
       y: 0,
-      title: minsky.ravelVersion()==="unavailable"? 'Minsky':'Ravel',
+      title: ravelVersion==="unavailable"? 'Minsky':'Ravel',
       icon: __dirname + '/assets/favicon.png',
       resizable: true,
       // autoHideMenuBar: true,
@@ -199,21 +200,24 @@ export default class App {
       // process CLI options prior to running up any GUI
       for (var arg in process.argv) {
         switch(process.argv[arg]) {
-        case '--version':
-          let minskyVersion=minsky.minskyVersion();
-          if (minskyVersion===version)
-          {
-            process.stdout.write(`${minskyVersion}\n`);
-            process.exit(0);
-          } else
-          {
-            process.stdout.write(`${version}/${minskyVersion}\n`);
-            process.exit(1);
+        case '--version': {
+            let minskyVersion=backendSync("minsky.minskyVersion");
+            if (minskyVersion===version)
+            {
+              process.stdout.write(`${version}\n`);
+              process.exit(0);
+            }
+            else
+            {
+              process.stdout.write(`${version}/${minskyVersion}\n`);
+              process.exit(1);
+            }
           }
           break;
         default:
+          // pass argument on for an initial model load
           if (process.argv[arg][0]!=='-')
-          App.cliArguments.push(process.argv[arg]);
+            App.cliArguments.push(process.argv[arg]);
           break;
         }
       }
@@ -233,11 +237,12 @@ export default class App {
     //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
     // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
     // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-    const displayScale=backend('/minsky/canvas/scaleFactor') as number;
+    let displayScale=backendSync('minsky.canvas.scaleFactor');
     App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
     // invert the effect of display scaling on canvas fonts.
-    backend('/minsky/fontScale', (1/displayScale));
-    setTimeout(async () => {loadResources();}, 100);
+    backendSync('minsky.fontScale', (1/displayScale));
+    loadResources();
+    sanityCheck();
     
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data

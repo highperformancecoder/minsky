@@ -21,6 +21,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include "userFunction.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 
 #include <map>
@@ -167,8 +168,12 @@ namespace minsky
         positions[i.second]=p;
       }
 
+    double temp=10;
+    // use the cooling schedule to drive the progress bar
+    ProgressUpdater pu(minsky().progressState, "Autolaying out...", 100);
     fruchterman_reingold_force_directed_layout
-      (gg,pm, Topology(layoutSize), attractive_force(WireForce()).repulsive_force(RepulsiveForce()));
+      (gg,pm, Topology(layoutSize), attractive_force(WireForce()).repulsive_force(RepulsiveForce()).
+       cooling([&temp,&pu](){pu.setProgress(0.1*(10-temp)); return std::max(0., temp-=0.1);}));
     // maybe not needed
     //.force_pairs(boost::all_force_pairs())
     

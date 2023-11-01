@@ -39,7 +39,8 @@ export class DimensionsComponent implements OnInit {
   ngOnInit() {
     (async () => {
       if (this.electronService.isElectron) {
-        const dimensions = (await this.electronService.minsky.dimensions.properties()) as Record<string, Second>;
+        this.electronService.minsky.populateMissingDimensions();
+        const dimensions = (await this.electronService.minsky.dimensions.$properties()) as Record<string, Second>;
 
         for (const [key, args] of Object.entries(dimensions)) {
           this.originalDimensionNames.push(key);
@@ -75,7 +76,7 @@ export class DimensionsComponent implements OnInit {
     for (let i=0; i<newDimensions.length; ++i)
       if (i<this.originalDimensionNames.length && newDimensions[i].dimension !== this.originalDimensionNames[i])
         this.electronService.minsky.renameDimension(this.originalDimensionNames[i],newDimensions[i].dimension); 
-    await this.electronService.minsky.dimensions.properties(this.getDimensions());
+    await this.electronService.minsky.dimensions.$properties(this.getDimensions());
     await this.electronService.minsky.imposeDimensions();
     this.electronService.minsky.reset();
     this.closeWindow();
