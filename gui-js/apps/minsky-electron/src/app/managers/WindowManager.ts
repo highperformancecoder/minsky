@@ -59,7 +59,7 @@ export class WindowManager {
   static renderFrame() {
     try
     {
-      this.currentTab?.$callMethodSync('renderFrame',
+      this.currentTab?.renderFrame(
                                        {
                                          parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
                                          offsetLeft: this.leftOffset,
