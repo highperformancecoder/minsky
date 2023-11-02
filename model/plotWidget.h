@@ -77,7 +77,7 @@ namespace minsky
     std::vector<std::shared_ptr<VariableValue>> xvars;
 
     /// variable ports specifying plot size
-    VariableValue xminVar, xmaxVar, yminVar, ymaxVar, y1minVar, y1maxVar;
+    std::shared_ptr<VariableValue> xminVar, xmaxVar, yminVar, ymaxVar, y1minVar, y1maxVar;
     /// number of ticks to show in canvas item
     unsigned displayNTicks{3};
     double displayFontSize{3};
@@ -140,7 +140,7 @@ namespace minsky
     ClickType::Type clickType(float x, float y) const override;
 
     /// set autoscaling
-    void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();}
+    void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=nullptr;}
     /// sets the plot scale and pen labels
     void scalePlot();
 

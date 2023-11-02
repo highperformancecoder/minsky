@@ -129,10 +129,14 @@ namespace minsky
     canvas.openGroupInCanvas(model);
     equations.clear();
     integrals.clear();
+    for (auto& i: variableValues)
+      if (i.second.use_count()>1)
+        cout<<"multiple refs to: "<<i.second->name<<endl;
     variableValues.clear();
     maxValue.clear();
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
+    userFunctions.clear();
     UserFunction::nextId=0;
     
     flowVars.clear();
@@ -1020,7 +1024,8 @@ namespace minsky
 
   void Minsky::load(const std::string& filename) 
   {
-    clearAllMaps();
+    running=false;
+    clearAllMaps(true);
 
     ifstream inf(filename);
     if (!inf)

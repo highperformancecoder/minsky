@@ -105,7 +105,7 @@ namespace MathDAG
     /// flowVariable has been provided in \a result, that may be used
     /// directly, otherwise a copy operation is added to ensure it
     /// receives the result.
-    virtual std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={})=0;
+    virtual VariableValuePtr addEvalOps(EvalOpVector&, const VariableValuePtr& result={})=0;
     /// returns evaluation order in sequence of variable defintions
     /// @param maxOrder is used to limit the recursion depth
     virtual int order(unsigned maxOrder) const=0;
@@ -125,7 +125,7 @@ namespace MathDAG
     // SystemOfEquations via a templated method.
     virtual std::shared_ptr<Node> derivative(SystemOfEquations&) const=0;
     /// reference to where this node's value is stored
-    std::shared_ptr<VariableValue> result, tmpResult{std::make_shared<VariableValue>(VariableValue::tempFlow)};
+    VariableValuePtr result;//, tmpResult{VariableValue::tempFlow};
   };
 
   typedef std::shared_ptr<Node> NodePtr;
@@ -164,7 +164,7 @@ namespace MathDAG
     ostream& latex(ostream& o) const  override {return o<<value;}
     ostream& matlab(ostream& o) const  override {return o<<value;}
     void render(ecolab::cairo::Surface& surf) const override;
-    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>&) override;
+    VariableValuePtr addEvalOps(EvalOpVector&, const VariableValuePtr&) override;
     NodePtr derivative(SystemOfEquations&) const override;
   };
 
@@ -198,7 +198,7 @@ namespace MathDAG
     using Node::addEvalOps;
     ostream& latex(ostream&) const override;
     ostream& matlab(ostream&) const override;
-    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& v={}) override;
+    VariableValuePtr addEvalOps(EvalOpVector&, const VariableValuePtr& v={}) override;
     void render(ecolab::cairo::Surface& surf) const override;
     NodePtr derivative(SystemOfEquations&) const override; 
     /// adds a TensorEvalOp, returns true if successful
@@ -211,7 +211,7 @@ namespace MathDAG
   /// Variable DAG in that it doesn't refer to the VariableValue
   struct IntegralInputVariableDAG: public VariableDAG
   {
-    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&,const std::shared_ptr<VariableValue>&) override;
+    VariableValuePtr addEvalOps(EvalOpVector&,const VariableValuePtr&) override;
   };
 
   struct OperationDAGBase: public Node, public OperationType  
@@ -228,7 +228,7 @@ namespace MathDAG
     int order(unsigned maxOrder) const override;
     bool tensorEval(std::set<const Node*>&) const override;
     using Node::tensorEval;
-    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>&) override;
+    VariableValuePtr addEvalOps(EvalOpVector&, const VariableValuePtr&) override;
     void checkArg(unsigned i, unsigned j) const;
   };
 
@@ -282,7 +282,7 @@ namespace MathDAG
     ostream& latex(ostream& o) const override  {return o<<"locked";} 
     ostream& matlab(ostream& o) const override  {return o<<"";} 
     void render(ecolab::cairo::Surface& surf) const override;
-    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={}) override;
+    VariableValuePtr addEvalOps(EvalOpVector&, const VariableValuePtr& result={}) override;
     int order(unsigned maxOrder) const override {return rhs? rhs->order(maxOrder-1)+1:0;}
     bool tensorEval(std::set<const Node*>&) const override {return true;}
     std::shared_ptr<Node> derivative(SystemOfEquations&) const override

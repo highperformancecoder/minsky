@@ -54,13 +54,13 @@ namespace MathDAG
 
   }
 
-  shared_ptr<VariableValue> ConstantDAG::addEvalOps
-  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
+  VariableValuePtr ConstantDAG::addEvalOps
+  (EvalOpVector& ev, const VariableValuePtr& r)
   {
-    if (!result || result->idx()<0)
+    if (result->idx()<0)
       {
         VariableValues& values=minsky::minsky().variableValues;
-        if (r && r->isFlowVar())
+        if (r->type()!=VariableType::undefined && r->isFlowVar())
           {
             result=r;
             // set the initial value of the actual variableValue (if it exists)
@@ -69,11 +69,14 @@ namespace MathDAG
               v->second->init=value;
           }
         else
-          result=tmpResult;
+          {
+            result=VariableValuePtr(VariableType::tempFlow);
+            result->allocValue();
+          }
         result->init=value;
         values.resetValue(*result);
       }
-    if (r && r->isFlowVar() && r!=result)
+    if (r->type()!=VariableType::undefined && r->isFlowVar() && r!=result)
       ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     assert(result->idx()>=0);
     doOneEvent(true);
@@ -113,10 +116,10 @@ namespace MathDAG
     return false;
   }
   
-  shared_ptr<VariableValue> VariableDAG::addEvalOps
-  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
+  VariableValuePtr VariableDAG::addEvalOps
+  (EvalOpVector& ev, const VariableValuePtr& r)
   {
-    if (!result || result->idx()<0)
+    if (result->idx()<0)
       {
         assert(isValueId(valueId));
         auto ri=minsky::minsky().variableValues.find(valueId);
@@ -134,24 +137,26 @@ namespace MathDAG
         else
           if (result->idx()<0) result->allocValue();
       }
-    if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
+    if (r->type()!=VariableType::undefined && r->isFlowVar() && (r!=result || result->isFlowVar()))
       ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     assert(result->idx()>=0);
     doOneEvent(true);
     return result;
   }
 
-  shared_ptr<VariableValue> IntegralInputVariableDAG::addEvalOps
-  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
+  VariableValuePtr IntegralInputVariableDAG::addEvalOps
+  (EvalOpVector& ev, const VariableValuePtr& r)
   {
-    if (!result)
+    assert(result);
+    if (result->type()==VariableType::undefined)
       {
-        if (r && r->isFlowVar())
+        assert(r);
+        if (r->type()!=VariableType::undefined && r->isFlowVar())
           result=r;
         else
           {
-            result=tmpResult;
-            if (tmpResult->idx()<0) tmpResult->allocValue();
+            result=VariableValuePtr(VariableType::tempFlow);
+            result->allocValue();
           }
         if (rhs)
           rhs->addEvalOps(ev, result);
@@ -228,33 +233,34 @@ namespace MathDAG
 
   namespace
   {
-    void cumulate(EvalOpVector& ev, const ItemPtr& state, VariableValue& r,
-                  const vector<vector<VariableValue> >& argIdx,
+    void cumulate(EvalOpVector& ev, const ItemPtr& state, VariableValuePtr& r,
+                  const vector<vector<VariableValuePtr> >& argIdx,
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
+      assert(r);
       // check if any arguments have x-vectors, and if so, initialise r.xVector
       // For feature 47
       for (auto& i: argIdx)
         if (!i.empty())
           {
             // initialise r's xVector
-            r.hypercube(i[0].hypercube());
+            r->hypercube(i[0]->hypercube());
             break;
           }
-      if (r.rank()>0)
+      if (r->rank()>0)
         throw runtime_error("Scalar processing not supported in tensor code, try adding an intermediate variable");
-      if (r.idx()==-1) r.allocValue();
+      if (r->idx()==-1) r->allocValue();
 
       // short circuit multiplications if any of the terms are constant zero
       if (accum==OperationType::multiply)
         {
           if (op==OperationType::divide)
             for (auto& i: argIdx[1])
-              if (i.isZero())
+              if (i->isZero())
                 throw runtime_error("divide by constant zero");
           for (auto& i: argIdx)
             for (auto& j: i)
-              if (j.isZero())
+              if (j->isZero())
                 {
                   r=j;
                   return;
@@ -264,19 +270,19 @@ namespace MathDAG
         {
           size_t i=0;
           if (accum==OperationType::add)
-            while (!argIdx.empty() && i<argIdx[0].size() && argIdx[0][i].isZero())
+            while (!argIdx.empty() && i<argIdx[0].size() && argIdx[0][i]->isZero())
               i++;
           if (!argIdx.empty() && i<argIdx[0].size())
             {
-              ev.push_back(EvalOpPtr(OperationType::copy, state, r, argIdx[0][i]));
+              ev.push_back(EvalOpPtr(OperationType::copy, state, *r, *argIdx[0][i]));
               for (++i; i<argIdx[0].size(); ++i)
-                if (accum!=OperationType::add || !argIdx[0][i].isZero())
-                  ev.push_back(EvalOpPtr(accum, state, r, r, argIdx[0][i]));
+                if (accum!=OperationType::add || !argIdx[0][i]->isZero())
+                  ev.push_back(EvalOpPtr(accum, state, *r, *r, *argIdx[0][i]));
             }
           else
             {
               //TODO: could be cleaned up if we don't need to support constant operators
-              ev.push_back(EvalOpPtr(OperationType::constant, state, r));
+              ev.push_back(EvalOpPtr(OperationType::constant, state, *r));
               dynamic_cast<ConstantEvalOp&>(*ev.back()).value=groupIdentity;
             }
         }
@@ -285,52 +291,57 @@ namespace MathDAG
         {
           if (argIdx[1].size()==1)
             // eliminate redundant copy operation when only one wire
-            ev.push_back(EvalOpPtr(op, state, r, r, argIdx[1][0]));
+            ev.push_back(EvalOpPtr(op, state, *r, *r, *argIdx[1][0]));
           else if (argIdx[1].size()>1)
             {
               // multiple wires to second input port
               VariableValue tmp(VariableType::tempFlow);
-              tmp.hypercube(r.hypercube());
+              tmp.hypercube(r->hypercube());
               size_t i=0;
               if (accum==OperationType::add)
-                while (i<argIdx[1].size() && argIdx[1][i].isZero()) i++;
+                while (i<argIdx[1].size() && argIdx[1][i]->isZero()) i++;
               if (i<argIdx[1].size())
                 {
-                  ev.push_back(EvalOpPtr(OperationType::copy, state, tmp, argIdx[1][i]));
+                  ev.push_back(EvalOpPtr(OperationType::copy, state, tmp, *argIdx[1][i]));
                   for (++i; i<argIdx[1].size(); ++i)
-                    if (accum!=OperationType::add || !argIdx[1][i].isZero())
-                      ev.push_back(EvalOpPtr(accum, state, tmp, tmp, argIdx[1][i]));
-                  ev.push_back(EvalOpPtr(op, state, r, r, tmp));
+                    if (accum!=OperationType::add || !argIdx[1][i]->isZero())
+                      ev.push_back(EvalOpPtr(accum, state, tmp, tmp, *argIdx[1][i]));
+                  ev.push_back(EvalOpPtr(op, state, *r, *r, tmp));
                 }
             }
         }
     }
   }
 
-  shared_ptr<VariableValue> OperationDAGBase::addEvalOps
-  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
+  VariableValuePtr OperationDAGBase::addEvalOps
+  (EvalOpVector& ev, const VariableValuePtr& r)
   {
-    if (!result)
+    assert(result);
+    if (result->type()==VariableType::undefined)
       {
         assert(!dynamic_cast<IntOp*>(state.get()));
-        if (r && r->isFlowVar())
+        if (r->type()!=VariableType::undefined && r->isFlowVar())
           result=r;
         else
-          result=tmpResult;
+          {
+            result=VariableValuePtr(VariableType::tempFlow);
+            result->allocValue();
+          }
         if (tensorEval() && addTensorOp(result, *this, ev))
           return result;
-        
+        assert(result->type()!=VariableType::undefined);
+        assert(result->idx()>=0);
         
         // prepare argument expressions
-        vector<vector<VariableValue> > argIdx(arguments.size());
+        vector<vector<VariableValuePtr> > argIdx(arguments.size());
         for (size_t i=0; type()!=integrate && i<arguments.size(); ++i)
           for (size_t j=0; j<arguments[i].size(); ++j)
             if (arguments[i][j])
-              argIdx[i].push_back(*arguments[i][j]->addEvalOps(ev));
+              argIdx[i].push_back(arguments[i][j]->addEvalOps(ev));
             else
               {
-                argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
-                argIdx[i].back().allocValue();
+                argIdx[i].push_back(VariableValuePtr(VariableValue::tempFlow));
+                argIdx[i].back()->allocValue();
               }
 
         try
@@ -339,28 +350,28 @@ namespace MathDAG
             switch (type())
               {
               case add:
-                cumulate(ev, state, *result, argIdx, add, add, 0);
+                cumulate(ev, state, result, argIdx, add, add, 0);
                 break;
               case subtract:
-                cumulate(ev, state, *result, argIdx, subtract, add, 0);
+                cumulate(ev, state, result, argIdx, subtract, add, 0);
                 break;
               case multiply:
-                cumulate(ev, state, *result, argIdx, multiply, multiply, 1);
+                cumulate(ev, state, result, argIdx, multiply, multiply, 1);
                 break;
               case divide:
-                cumulate(ev, state, *result, argIdx, divide, multiply, 1);
+                cumulate(ev, state, result, argIdx, divide, multiply, 1);
                 break;
               case min:
-                cumulate(ev, state, *result, argIdx, min, min, numeric_limits<double>::max());
+                cumulate(ev, state, result, argIdx, min, min, numeric_limits<double>::max());
                 break;
               case max:
-                cumulate(ev, state, *result, argIdx, max, max, -numeric_limits<double>::max());
+                cumulate(ev, state, result, argIdx, max, max, -numeric_limits<double>::max());
                 break;
               case and_:
-                cumulate(ev, state, *result, argIdx, and_, and_, 1);
+                cumulate(ev, state, result, argIdx, and_, and_, 1);
                 break;
               case or_:
-                cumulate(ev, state, *result, argIdx, or_, or_, 0);
+                cumulate(ev, state, result, argIdx, or_, or_, 0);
                 break;
               case constant:
                 if (state) minsky::minsky().displayErrorItem(*state);
@@ -369,28 +380,28 @@ namespace MathDAG
                 for (size_t i=0; i<arguments.size(); ++i)
                   if (arguments[i].empty())
                     {
-                      argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
-                      argIdx[i].back().allocValue();
+                      argIdx[i].push_back(VariableValuePtr(VariableValue::tempFlow));
+                      argIdx[i].back()->allocValue();
                       // ensure units are compatible (as we're doing comparisons with zero)
                       if (i>0)
-                        argIdx[i][0].units=argIdx[i-1][0].units;
+                        argIdx[i][0]->units=argIdx[i-1][0]->units;
                       else if (arguments.size()>1 && !argIdx[1].empty())
-                        argIdx[0][0].units=argIdx[1][0].units;
+                        argIdx[0][0]->units=argIdx[1][0]->units;
                     }
-                ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
+                ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0], *argIdx[1][0])); 
                 break;
               case userFunction:
                 for (size_t i=0; i<arguments.size(); ++i)
                   if (arguments[i].empty())
                     {
                       argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
-                      argIdx[i].back().allocValue();
+                      argIdx[i].back()->allocValue();
                     }
-                ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
+                ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0], *argIdx[1][0])); 
                 break;
               case data:
                 if (!argIdx.empty() && argIdx[0].size()==1)
-                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
+                  ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
                 break;            
@@ -415,10 +426,10 @@ namespace MathDAG
                           ev.push_back(EvalOpPtr(type(), state, *result));
                           break;
                         case 1:
-                          ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
+                          ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0]));
                           break;
                         case 2:
-                          ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
+                          ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0], *argIdx[1][0]));
                           break;
                         default:
                           throw error("Too many arguments");
@@ -433,7 +444,7 @@ namespace MathDAG
             throw;
           }
       }
-    if (type()!=integrate && r && r->isFlowVar() && result!=r)
+    if (type()!=integrate && r->type()!=VariableType::undefined && r->isFlowVar() && result!=r)
       ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     if (state && state->portsSize()>0)
       if (auto statePort=state->ports(0).lock()) 
@@ -782,20 +793,23 @@ namespace MathDAG
     return r;
   };
 
-  std::shared_ptr<VariableValue> LockDAG::addEvalOps(EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
+  VariableValuePtr LockDAG::addEvalOps(EvalOpVector& ev, const VariableValuePtr& r)
   {
     if (!result)
       {
         if (r && r->isFlowVar())
           result=r;
         else
-          result=tmpResult;
+          {
+            result=VariableValuePtr(VariableType::tempFlow);
+            result->allocValue();
+          }
       }
 
     if (!rhs) return result;
     if (lock.locked())
       {
-        auto chain=createRavelChain(lock.lockedState, rhs->addEvalOps(ev,nullptr));
+        auto chain=createRavelChain(lock.lockedState, rhs->addEvalOps(ev,{}));
         if (chain.empty()) return {};
         result->index(chain.back()->index());
         result->hypercube(chain.back()->hypercube());

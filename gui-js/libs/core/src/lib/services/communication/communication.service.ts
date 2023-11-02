@@ -45,7 +45,6 @@ export class CommunicationService {
   };
 
   currentTab = MainRenderingTabs.canvas;
-  private isSimulationOn: boolean;
   showPlayButton$ = new BehaviorSubject<boolean>(true);
   t = '0';
   deltaT = '0';
@@ -79,7 +78,6 @@ export class CommunicationService {
     private windowUtilityService: WindowUtilityService,
     private dialog: MatDialog
   ) {
-    this.isSimulationOn = false;
     this.scrollPositionAtMouseDown = null;
     this.mousePositionAtMouseDown = null;
     this.initReplay();
@@ -252,21 +250,19 @@ export class CommunicationService {
   }
 
   private async initSimulation() {
-    this.isSimulationOn = true;
     await this.electronService.minsky.running(true);
     this.startSimulation();
   }
 
   private startSimulation() {
     this.syncRunUntilTime();
-    this.isSimulationOn = true;
     this.simulate();
     this.electronService.minsky.dimensionalAnalysis();
   }
 
   private simulate() {
     setTimeout(async () => {
-      if (this.isSimulationOn) {
+      if (await this.electronService.minsky.running()) {
         const [t, deltaT] = await this.electronService.minsky.step();
         this.updateSimulationTime(t, deltaT);
         this.simulate();
@@ -275,12 +271,10 @@ export class CommunicationService {
   }
 
   private async pauseSimulation() {
-    this.isSimulationOn = false;
     await this.electronService.minsky.running(false);
   }
 
   private async stopSimulation() {
-    this.isSimulationOn = false;
     await this.electronService.minsky.running(false);
 
     this.electronService.minsky.reset();

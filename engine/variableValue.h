@@ -46,7 +46,7 @@ namespace minsky
     CLASSDESC_ACCESS(VariableValue);
   private:
     Type m_type;
-    int m_idx; /// index into value vector
+    int m_idx=-1; /// index into value vector
     double& valRef(); 
     const double& valRef() const;
     std::vector<unsigned> m_dims;
@@ -141,12 +141,17 @@ namespace minsky
     using ITensorVal::hypercube;
                                                                            
     VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
-      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
+      m_type(type), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
 
     VariableValue(VariableType::Type type, const VariableValue& vv):  VariableValue(vv) {
       m_type=type;
       m_idx=-1;
     }
+
+    //VariableValue(const VariableValue&)=delete;
+    void operator=(const VariableValue&)=delete;
+    
+    //~VariableValue() {if (!name.empty() && m_idx>=0) std::cout<<"disposing of "<<name<<" @ "<<m_idx<<std::endl;}
     
     using ITensorVal::operator=;
     VariableValue& operator=(TensorVal const&);

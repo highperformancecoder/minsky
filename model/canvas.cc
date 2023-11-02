@@ -748,6 +748,11 @@ namespace minsky
               }
           }
         model->zoom(model->x(),model->y(),zoomFactor);
+        this->item.reset();
+        itemFocus.reset();
+        wire.reset();
+        selection.clear();
+        fromPort.reset();
         requestRedraw();
       }
   }
