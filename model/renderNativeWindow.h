@@ -30,10 +30,6 @@ namespace minsky
   class WindowInformation;
   class RenderNativeWindow : public ecolab::CairoSurface, public EventInterface
   {
-  private:
-    CLASSDESC_ACCESS(RenderNativeWindow); 
-    classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
-
   public:
     static ecolab::cairo::Colour backgroundColour;
     void disable();
@@ -47,12 +43,18 @@ namespace minsky
       int childHeight;
       double scalingFactor=0;
     };
+
+    
+    const RenderFrameArgs& frameArgs() const {return m_frameArgs;}
     
     ~RenderNativeWindow() override;
+    /// perform any initialisation of any subclasses of this 
+    virtual void init() {};
     void renderFrame(const RenderFrameArgs& args);
     void destroyFrame();
     void draw();
     void requestRedraw();
+    void macOSXRedraw();
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
     RenderNativeWindow()=default;
@@ -60,6 +62,11 @@ namespace minsky
     static double scaleFactor();
     /// return whether this window has scrollbars (needed for MacOSX).
     virtual bool hasScrollBars() const {return false;}
+    
+  private:
+    CLASSDESC_ACCESS(RenderNativeWindow); 
+    classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
+    RenderFrameArgs m_frameArgs;
   };
 } // namespace minsky
 

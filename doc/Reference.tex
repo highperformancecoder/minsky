@@ -99,9 +99,6 @@ of the second argument.
 It relationship to the derivative of the Gamma function (and
 factorials) is why Minsky provides this function.
 
-\subsection{time $t$}\label{Operation:time} Returns the current value
-of system time.
-
 \subsection{differentiate $d/dt$}\label{Operation:differentiate}
 Symbolically differentiates its input with respect to system time,
 producing d/dt[input].  For further explanation regarding
@@ -392,6 +389,47 @@ Computes
 \end{displaymath}
 where $r_x$ and $r_y$ are the ranks of $x$ and $y$ respectively.
 
+\subsection{Meld}\label{Operation:meld}
+
+The meld operation merges the hypercubes of its input tensors. The
+value at a given hypercube value is given by the value of the first
+tensor that has a value defined at that hypercube point. So ordering of
+input tensors does matter where the data is inconsistent between input
+tensors.
+
+For example, consider the following inputs and x-vectors:
+
+\begin{enumerate}
+\item \label{ex1} $\{1.0, 2.0, 3.0\}$ with x-vector $\{1,2,3\}$, and
+  \item \label {ex2} $\{0.0,1.5,4.0\}$ with x-vector $\{0,2,4\}$
+  \end{enumerate}
+then the resultant output has x-vector $\{0,1,2,3,4\}$ and the values
+are $\{0.0,1.0,2.0,3.0,4.0\}$ if \ref{ex1} is connected to port 1 and
+\ref{ex2} connected to port 2. If they were connected the other way
+around, the the values would be $\{0.0,1.0,1.5,3.0,4.0\}$.
+
+\subsection{Merge}\label{Operation:merge}
+
+The merge operation takes $n$ tensors, finds the union hypercube (ie
+the hypercube that contains all the input tensor hypercubes) and
+spreads the tensors as necessary to make them conformant. Finally,
+the resultant tensor has an additional string dimensioned axis, each
+element of which is one of the input tensors. This dimension should be
+named using the operation edit dialog. It is an error for a hypercube
+to contain more than one axis with the same name.
+
+\subsection{Slice}\label{Operation:slice}
+
+Slice will cut off a tensor along a given axis by the argument, as
+configured in the operation edit dialog. For
+example $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+  3)=\{x_1,x_2,x_3\}$. If the tensor is rank one (ie a vector), it is
+  not necessary to specify the axis.
+
+If the slice argument is negative, then it refers to the number of
+elements from the end of that axis. For example $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+  -3)=\{x_{n-3},x_{n-2},x_{n-1}\}$.
+  
 \section{Switch}\label{SwitchIcon}
 
 \buttonIcon{switchIcon.eps} A switch block (also known as a case

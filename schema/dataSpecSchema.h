@@ -28,11 +28,13 @@ namespace minsky
   struct DataSpecSchema
   {
     // these fields are only used for persistence. Need to be handled specially within schema code
-    std::size_t dataRowOffset, dataColOffset; 
+    std::size_t dataRowOffset, dataColOffset;
+    std::size_t numCols=0; ///< number of columns in CSV. Must be > dataColOffset
     
     char separator=',', quote='"', escape='\\', decSeparator='.';
     bool mergeDelimiters=false;
-    bool columnar=false;
+    bool counter=false; ///< count data items, not read their values
+    bool dontFail=false; ///< do not throw an error on corrupt data
     double missingValue=nan("");
     /// number of header rows
     std::size_t headerRow=0;

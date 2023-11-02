@@ -69,6 +69,13 @@ namespace minsky
       return initValue(v, visited);
     }
 
+    std::vector<Summary> summarise() const {
+      std::vector<Summary> summary;
+      for (auto& v: *this)
+        summary.emplace_back(v.second->summary());
+      return summary;
+    }
+    
     /// checks that all entry names are valid
     bool validEntries() const;
     void resetUnitsCache() {

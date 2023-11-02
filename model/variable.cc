@@ -42,7 +42,9 @@
 #include <algorithm>
 
 #include <boost/locale.hpp>
+#include <boost/filesystem.hpp>
 using namespace boost::locale::conv;
+using boost::filesystem::file_size;
 
 using namespace classdesc;
 using namespace ecolab;
@@ -242,11 +244,11 @@ string VariableBase::name(const std::string& name)
   m_name=name;
   m_canonicalName=minsky::canonicalName(name);
   ensureValueExists(tmpVV.get(),name);
+  cachedNameRender.reset();
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   if (auto controllingItem=controller.lock())
     // integrals in particular may have had their size changed with intVar changing name
     controllingItem->updateBoundingBox();
-  cachedNameRender.reset();
   return this->name();
 }
 
@@ -436,8 +438,10 @@ void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spe
     std::ifstream is(filename);
     v->csvDialog.spec=spec;
     v->csvDialog.url=filename;
-    loadValueFromCSVFile(*v, is, v->csvDialog.spec);
+    loadValueFromCSVFile(*v, is, v->csvDialog.spec,file_size(filename));
     minsky().populateMissingDimensionsFromVariable(*v);
+    if (!v->hypercube().dimsAreDistinct())
+      throw_error("Axes of imported data should all have distinct names");
   }
 }
 

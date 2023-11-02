@@ -192,7 +192,7 @@ namespace
   
   struct NoDataColumns: public std::exception
   {
-    const char* what() const noexcept override {return "No data columns";}
+    const char* what() const noexcept override {return "No data columns specified\nIf dataset has no data, try selecting counter";}
   };
   struct DuplicateKey: public std::exception
   {
@@ -200,10 +200,12 @@ namespace
     DuplicateKey(const vector<Any>& x) {
       for (auto& i: x)
         msg+=":"+str(i);
+      msg+="\nTry selecting a different duplicate key action";
     }
     DuplicateKey(const vector<string>& x) {
       for (auto& i: x)
         msg+=":"+i;
+      msg+="\nTry selecting a different duplicate key action";
     }
     const char* what() const noexcept override {return msg.c_str();}
   };
@@ -213,11 +215,13 @@ namespace
     //strip possible quote characters
     if (!s.empty() && s[0]==s[s.size()-1] && !isalnum(s[0]))
       {
-        double r=stod(s.substr(1),&charsProcd);
+        double r=quotedStoD(s.substr(1,s.size()-2),charsProcd);
         charsProcd+=2;
         return r;
       }
-    return stod(s,&charsProcd);
+    // strip any leading non-numerical characters ([^0-9.,])
+    auto n=s.find_first_of("0123456789,.");
+    return stod(s.substr(n),&charsProcd);
   }
 
   string stripWSAndDecimalSep(const string& s)
@@ -229,18 +233,6 @@ namespace
     return r;
   }
 
-  bool isNumerical(const string& s)
-  {
-    size_t charsProcd;
-    string stripped=stripWSAndDecimalSep(s);
-    try
-      {
-        quotedStoD(stripped, charsProcd);
-      }
-    catch (...) {return false;}
-    return charsProcd==stripped.size();
-  }
-  
   // returns first position of v such that all elements in that or later
   // positions are numerical or null
   size_t firstNumerical(const vector<string>& v)
@@ -274,6 +266,21 @@ namespace
   }
 }
 
+namespace minsky
+{
+  bool isNumerical(const string& s)
+  {
+    size_t charsProcd;
+    string stripped=stripWSAndDecimalSep(s);
+    try
+      {
+        quotedStoD(stripped, charsProcd);
+      }
+    catch (...) {return false;}
+    return charsProcd==stripped.size();
+  }
+}
+
 namespace std
 {
   template <>
@@ -298,13 +305,18 @@ void DataSpec::setDataArea(size_t row, size_t col)
   m_nRowAxes=row;
   const size_t maxCols=16384; // Excel's limit
   m_nColAxes=std::min(col, maxCols);
+  numCols=std::max(numCols, m_nColAxes);
   if (headerRow>=row)
     headerRow=row>0? row-1: 0;
-  if (row==headerRow) row++; //TODO handle no header properly
   if (dimensions.size()<nColAxes()) dimensions.resize(nColAxes());
   if (dimensionNames.size()<nColAxes()) dimensionNames.resize(nColAxes());
   // remove any dimensionCols > nColAxes
   dimensionCols.erase(dimensionCols.lower_bound(nColAxes()), dimensionCols.end());
+  // adjust ignored columns
+  for (unsigned i=0; i<m_nColAxes; ++i)
+    dataCols.erase(i);
+  for (unsigned i=m_nColAxes; i<numCols; ++i)
+    dataCols.insert(i);
 }
 
 
@@ -354,6 +366,8 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     double av=sum/(starts.size());
     for (; starts.size()>m_nRowAxes && (starts[m_nRowAxes]>av); 
          ++m_nRowAxes);
+    // if nRowAxes exceeds numInitialLines, assume first row is a header row, and that that is all there is.
+    if (m_nRowAxes>=row-1) m_nRowAxes=1;
     m_nColAxes=0;
     for (size_t i=nRowAxes(); i<starts.size(); ++i)
       m_nColAxes=std::max(m_nColAxes,starts[i]);
@@ -475,7 +489,6 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
  {
    vector<NamedDimension> ravelMetadata;
    json(ravelMetadata,metadata);
-   columnar=true;
    headerRow=row+2;
    setDataArea(headerRow, ravelMetadata.size());
    dimensionNames.clear();
@@ -531,7 +544,6 @@ namespace minsky
                           continue;
                         }
                     }
-                  if (spec.columnar) break; // only one column to check
                 }
 
             if ((spec.dataCols.empty() && i<=spec.nColAxes()) || i<=*spec.dataCols.end())
@@ -563,9 +575,58 @@ namespace minsky
       reportFromCSVFileT<Parser>(input,output,spec);
   }
 
-  template <class P>
-  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec)
+  // handle DOS files with '\r' '\n' line terminators
+  void chomp(string& buf)
   {
+    if (!buf.empty() && buf.back()=='\r')
+      buf.erase(buf.size()-1);
+  }
+  
+  // gets a line, accounting for quoted newlines
+  bool getWholeLine(istream& input, string& line, const DataSpec& spec)
+  {
+    bool r=getline(input,line).good();
+    chomp(line);
+    while (r)
+      {
+        // count the number of quote characters after last separator. If odd, then line is not terminated correctly
+        auto n=line.rfind(spec.separator);
+        if (n==string::npos)
+          n=0;
+        else
+          ++n;
+        int quoteCount=0;
+        for (; n<line.size(); ++n)
+          if (line[n]==spec.quote)
+            ++quoteCount;
+        if (quoteCount%2==0) break; // data line correctly terminated
+        string buf;
+        r=getline(input,buf).good(); // read next line and append
+        chomp(buf);
+        line+=buf;
+      }
+    escapeDoubledQuotes(line,spec);
+    return r;
+  }
+
+  void escapeDoubledQuotes(std::string& line,const DataSpec& spec)
+  {
+    // replace doubled quotes with escape quote
+    for (size_t i=1; i<line.size(); ++i)
+      if (line[i]==spec.quote && line[i-1]==spec.quote &&
+          ((i==1 && (i==line.size()-1|| line[i+1]!=spec.quote)) ||                                       // deal with leading ""
+           (i>1 &&
+          ((line[i-2]!=spec.quote && line[i-2]!=spec.escape &&
+             (line[i-2]!=spec.separator || i==line.size()-1|| line[i+1]!=spec.quote))  // deal with ,''
+             ||            // deal with "" middle or end
+           (line[i-2]==spec.quote && (i==2 || line[i-3]==spec.separator || line[i-3]==spec.escape)))))) // deal with leading """
+          line[i-1]=spec.escape;
+  }
+  
+  template <class P>
+  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize)
+  {
+    BusyCursor busy(minsky());
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
     typedef vector<string> Key;
@@ -577,16 +638,49 @@ namespace minsky
     vector<typename Key::value_type> horizontalLabels;
     vector<AnyVal> anyVal;
 
+    ProgressUpdater pu(minsky().progressState, "Importing CSV",3);
     for (auto i: spec.dimensionCols)
       {
         hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
         hc.xvectors.back().dimension=spec.dimensions[i];
         anyVal.emplace_back(spec.dimensions[i]);
       }
+    ++minsky().progressState;
     size_t row=0, col=0;
+    uintmax_t bytesRead=0;
     try
       {
-        for (; getline(input, buf); ++row)
+        ProgressUpdater pu(minsky().progressState, "Parsing file",1);
+        // skip header lines except for headerRow
+        tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
+        if (tabularFormat)
+          {
+            anyVal.emplace_back(spec.horizontalDimension);
+            // legacy situation where all data columns are to the right
+            if (spec.dataCols.empty())
+              for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
+                  horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+            else
+              // explicitly specified data columns
+              for (auto i: spec.dataCols)
+                horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+            hc.xvectors.emplace_back(spec.horizontalDimName);
+            hc.xvectors.back().dimension=spec.horizontalDimension;
+            set<typename Key::value_type> uniqueLabels;
+            dimLabels.emplace_back();
+            for (auto& i: horizontalLabels)
+              if (uniqueLabels.insert(i).second)
+                {
+                  dimLabels.back()[i]=hc.xvectors.back().size();
+                  hc.xvectors.back().emplace_back(i);
+                }
+          }
+          
+        for (; row<spec.nRowAxes(); ++row)
+          getline(input,buf);
+            
+        
+        for (; getWholeLine(input, buf, spec); ++row)
           {
 #if defined(__linux__) // TODO remove or generalise
             {
@@ -596,146 +690,139 @@ namespace minsky
                 throw runtime_error("exhausted memory");
             }
 #endif
-            // remove trailing carriage returns
-            if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
-            assert(spec.headerRow<=spec.nRowAxes());
-            if (spec.headerRow<spec.nRowAxes() && row==spec.headerRow && !spec.columnar) // in header section
-              {
-                vector<string> parsedRow(tok.begin(), tok.end());
-                tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1);
-                if (tabularFormat)
-                  {
-                    anyVal.emplace_back(spec.horizontalDimension);
-                    // legacy situation where all data columns are to the right
-                    if (spec.dataCols.empty() && parsedRow.size()>spec.nColAxes()+1)
-                      for (auto i=parsedRow.begin()+spec.nColAxes(); i!=parsedRow.end(); ++i)
-                        horizontalLabels.emplace_back(str(anyVal.back()(*i),spec.horizontalDimension.units));
-                    else
-                      // explicitly specified data columns
-                      for (auto i: spec.dataCols)
-                        if (i<parsedRow.size())
-                          horizontalLabels.emplace_back(str(anyVal.back()(parsedRow[i]),spec.horizontalDimension.units));
-                    hc.xvectors.emplace_back(spec.horizontalDimName);
-                    hc.xvectors.back().dimension=spec.horizontalDimension;
-                    for (auto& i: horizontalLabels) hc.xvectors.back().emplace_back(i);
-                    dimLabels.emplace_back();
-                    for (size_t i=0; i<horizontalLabels.size(); ++i)
-                      dimLabels.back()[horizontalLabels[i]]=i;
-                  }
-              }
-            else if (row>=spec.nRowAxes())// in data section
-              {
-                Key key;
-                auto field=tok.begin();
-                size_t dim=0, dataCols=0;
-                col=0;
-                for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
-                  if (spec.dimensionCols.count(col))
+            Key key;
+            auto field=tok.begin();
+            size_t dim=0, dataCols=0;
+            col=0;
+            for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
+              if (spec.dimensionCols.count(col))
+                {
+                  // detect blank data lines (favourite Excel artifact)
+                  if (spec.dimensions[dim].type!=Dimension::string && field->empty())
+                    goto invalidKeyGotoNextLine;
+                  
+                  if (dim>=hc.xvectors.size())
+                    hc.xvectors.emplace_back("?"); // no header present
+                  try
                     {
-                      if (dim>=hc.xvectors.size())
-                        hc.xvectors.emplace_back("?"); // no header present
-                      try
-                        {
-                          auto keyElem=anyVal[dim](*field);
-                          auto skeyElem=str(keyElem, spec.dimensions[dim].units);
-                          if (dimLabels[dim].emplace(skeyElem, dimLabels[dim].size()).second)
-                            hc.xvectors[dim].emplace_back(keyElem);
-                          key.emplace_back(skeyElem);
-                        }
-                      catch (...)
-                        {
-                          throw std::runtime_error("Invalid data: "+*field+" for "+
-                                                   to_string(spec.dimensions[dim].type)+
-                                                   " dimensioned column: "+spec.dimensionNames[dim]);
-                        }
-                      dim++;
+                      auto keyElem=anyVal[dim](*field);
+                      auto skeyElem=str(keyElem, spec.dimensions[dim].units);
+                      if (dimLabels[dim].emplace(skeyElem, dimLabels[dim].size()).second)
+                        hc.xvectors[dim].emplace_back(keyElem);
+                      key.emplace_back(skeyElem);
                     }
+                  catch (...)
+                    {
+                      if (spec.dontFail)
+                        goto invalidKeyGotoNextLine;
+                      else
+                        throw std::runtime_error("Invalid data: "+*field+" for "+
+                                               to_string(spec.dimensions[dim].type)+
+                                               " dimensioned column: "+spec.dimensionNames[dim]);
+                    }
+                  dim++;
+                }
 
-                col=0;
-                for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
-                  if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
-                    {                    
-                      if (tabularFormat)
-                        key.emplace_back(horizontalLabels[dataCols]);
-                      else if (dataCols)
-                        break; // only 1 value column, everything to right ignored
-                    
-                      // remove thousands separators, and set decimal separator to '.' ("C" locale)
-                      string s;
-                      for (auto c: *field)
-                        if (c==spec.decSeparator)
-                          s+='.';
-                        else if (!isspace(c) && c!='.' && c!=',')
-                        s+=c;                    
-
-                    // TODO - this disallows special floating point values - is this right?
-                    bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
-                    if (valueExists || !isnan(spec.missingValue))
-                      {
-                        auto i=tmpData.find(key);
-                        double v=spec.missingValue;
-                        if (valueExists)
-                          try
-                            {
-                              v=stod(s);
-                              if (i==tmpData.end())
-                                tmpData.emplace(key,v);
-                            }
-                          catch (...) // value misunderstood
-                            {
-                              if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
-                                valueExists=false;
-                            }
-                        if (valueExists && i!=tmpData.end())
-                          switch (spec.duplicateKeyAction)
-                            {
-                            case DataSpec::throwException:
-                              throw DuplicateKey(key); 
-                            case DataSpec::sum:
-                              i->second+=v;
-                              break;
-                            case DataSpec::product:
-                              i->second*=v;
-                              break;
-                            case DataSpec::min:
-                              if (v<i->second)
-                                i->second=v;
-                              break;
-                            case DataSpec::max:
-                              if (v>i->second)
-                                i->second=v;
-                              break;
-                            case DataSpec::av:
+            col=0;
+            for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
+              if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
+                {                    
+                  if (tabularFormat)
+                    key.emplace_back(horizontalLabels[dataCols]);
+                  else if (dataCols)
+                    break; // only 1 value column, everything to right ignored
+                  
+                  // remove thousands separators, and set decimal separator to '.' ("C" locale)
+                  string s;
+                  for (auto c: *field)
+                    if (c==spec.decSeparator)
+                      s+='.';
+                    else if (s.empty() && !isdigit(c))
+                      continue; // skip non-numeric prefix
+                    else if (!isspace(c) && c!='.' && c!=',')
+                      s+=c;                    
+                  
+                  // TODO - this disallows special floating point values - is this right?
+                  bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
+                  if (valueExists || !isnan(spec.missingValue))
+                    {
+                      if (spec.counter)
+                        tmpData[key]+=1;
+                      else
+                        {
+                          auto i=tmpData.find(key);
+                          double v=spec.missingValue;
+                          if (valueExists)
+                            try
                               {
-                                int& c=tmpCnt[key]; // c initialised to 0
-                                i->second=((c+1)*i->second + v)/(c+2);
-                                c++;
+                                v=stod(s);
+                                if (i==tmpData.end())
+                                  tmpData.emplace(key,v);
                               }
-                              break;
-                            }
-                      }
-                    dataCols++;
-                    if (tabularFormat)
-                      key.pop_back();
-                    else
-                      break; // only one column of data needs to be read
+                            catch (...) // value misunderstood
+                              {
+                                if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                                  valueExists=false;
+                              }
+                          if (valueExists && i!=tmpData.end())
+                            switch (spec.duplicateKeyAction)
+                              {
+                              case DataSpec::throwException:
+                                throw DuplicateKey(key); 
+                              case DataSpec::sum:
+                                i->second+=v;
+                                break;
+                              case DataSpec::product:
+                                i->second*=v;
+                                break;
+                              case DataSpec::min:
+                                if (v<i->second)
+                                  i->second=v;
+                                break;
+                              case DataSpec::max:
+                                if (v>i->second)
+                                  i->second=v;
+                                break;
+                              case DataSpec::av:
+                                {
+                                  int& c=tmpCnt[key]; // c initialised to 0
+                                  i->second=((c+1)*i->second + v)/(c+2);
+                                  c++;
+                                }
+                                break;
+                              }
+                        }
                     }
-              
-                if (!dataCols)
+                  dataCols++;
+                  if (tabularFormat)
+                    key.pop_back();
+                  else
+                    break; // only one column of data needs to be read
+                }
+            
+            if (!dataCols)
+              {
+                if (spec.counter || spec.dontFail)
+                  tmpData[key]+=1;
+                else
                   throw NoDataColumns();
-          
-
               }
+            
+
+            bytesRead+=buf.size();
+            pu.setProgress(double(bytesRead)/fileSize);
+          invalidKeyGotoNextLine:;
           }
+        ++minsky().progressState;
 
         // remove zero length dimensions
         {
           auto d=dimLabels.begin();
           assert(hc.xvectors.size()==dimLabels.size());
           for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
-              if (i->empty())
+              if (i->size()<2)
                 {
                   hc.xvectors.erase(i);
                   dimLabels.erase(d);
@@ -750,6 +837,7 @@ namespace minsky
         
         for (auto& xv: hc.xvectors)
           xv.imposeDimension();
+        ++minsky().progressState;
 
         if (log(tmpData.size())-hc.logNumElements()>=log(0.5)) 
           { // dense case
@@ -763,17 +851,19 @@ namespace minsky
             for (auto& i: vv.tensorInit)
               i=spec.missingValue;
             auto dims=vv.hypercube().dims();
+            ProgressUpdater pu(minsky().progressState,"Loading data",tmpData.size());
             for (auto& i: tmpData)
               {
                 size_t idx=0;
-                assert (hc.rank()==i.first.size());
+                assert (hc.rank()<=i.first.size());
                 assert(dimLabels.size()==hc.rank());
                 for (int j=hc.rank()-1; j>=0; --j)
                   {
                     assert(dimLabels[j].count(i.first[j]));
                     idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
                   }
-                vv.tensorInit[idx]=i.second;  
+                vv.tensorInit[idx]=i.second;
+                ++minsky().progressState;
               }
           }    
         else 
@@ -781,28 +871,39 @@ namespace minsky
             if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
               throw runtime_error("memory threshold exceeded");	  	  		
             auto dims=hc.dims();
+            ProgressUpdater pu(minsky().progressState,"Indexing and loading",2);
               
             map<size_t,double> indexValue; // intermediate stash to sort index vector
-            for (auto& i: tmpData)
-              {
-                size_t idx=0;
-                assert (dims.size()==i.first.size());
-                assert(dimLabels.size()==dims.size());
-                for (int j=dims.size()-1; j>=0; --j)
-                  {
-                    assert(dimLabels[j].count(i.first[j]));
-                    idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-                  }
-                if (!isnan(i.second))
-                  indexValue.emplace(idx, i.second);
-              }
+            {
+              ProgressUpdater pu(minsky().progressState,"Building index",tmpData.size());
+              for (auto& i: tmpData)
+                {
+                  size_t idx=0;
+                  assert (dims.size()==i.first.size());
+                  assert(dimLabels.size()==dims.size());
+                  for (int j=dims.size()-1; j>=0; --j)
+                    {
+                      assert(dimLabels[j].count(i.first[j]));
+                      idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                    }
+                  if (!isnan(i.second))
+                    indexValue.emplace(idx, i.second);
+                  ++minsky().progressState;
+                }
 
-            vv.tensorInit.index(indexValue);
-            vv.tensorInit.hypercube(hc);
-            size_t j=0;
-            for (auto& i: indexValue)
-              vv.tensorInit[j++]=i.second;
-            vv=vv.tensorInit;
+              vv.tensorInit.index(indexValue);
+              vv.tensorInit.hypercube(hc);
+            }
+            {
+              ProgressUpdater pu(minsky().progressState,"Loading data",indexValue.size());
+              size_t j=0;
+              for (auto& i: indexValue)
+                {
+                  vv.tensorInit[j++]=i.second;
+                  ++minsky().progressState;
+                }
+              vv=vv.tensorInit;
+            }
           }                 
 
       }
@@ -820,12 +921,12 @@ namespace minsky
       }
   }
   
-  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
     if (spec.separator==' ')
-      loadValueFromCSVFileT<SpaceSeparatorParser>(v,input,spec);
+      loadValueFromCSVFileT<SpaceSeparatorParser>(v,input,spec,fileSize);
     else
-      loadValueFromCSVFileT<Parser>(v,input,spec);
+      loadValueFromCSVFileT<Parser>(v,input,spec,fileSize);
   }
 }
 

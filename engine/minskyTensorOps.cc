@@ -505,8 +505,6 @@ namespace minsky
       hc.xvectors.insert(hc.xvectors.begin(), xv2.begin(), xv2.end());         
       hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end());           
       cachedResult.hypercube(std::move(hc));
-        
-      
     }      
   };
 
@@ -825,6 +823,13 @@ namespace minsky
       args.insert(args.end(), a2.begin(), a2.end());
       meldArgsIntoCommonHypercube(args);
       civita::Merge::setArguments(args,opArgs);
+
+      static const char distinctErrorMsg[]="Please use a distinct name for the synthetic dimension produced by this operation";
+      if (!hypercube().dimsAreDistinct())
+        {
+          if (state) state->throw_error(distinctErrorMsg);
+          else throw runtime_error(distinctErrorMsg);
+        }
       
       // relabel slices along new dimension with variable names if available
       int stream=0;
@@ -845,6 +850,25 @@ namespace minsky
 
     void setState(const OperationPtr& op) override {state=op;}
    };
+
+  template <> struct GeneralTensorOp<OperationType::slice>: public civita::PermuteAxis {
+  public:
+    void setArgument(const TensorPtr& arg, const Args& args) override
+    {
+      civita::PermuteAxis::setArgument(arg,args);
+      // now construct the permutation corresponding to the slice
+      int slice=args.val;
+      vector<size_t> permutation;
+      auto argSize=arg->hypercube().xvectors[axis()].size();
+      if (slice<0) // negative slices refer to the end (python style)
+        for (int i=slice; i<0; ++i)
+          permutation.push_back(argSize+i);
+      else
+        for (int i=0; i<slice; ++i)
+          permutation.push_back(i);
+      setPermutation(std::move(permutation));
+    }
+  };
 
   class SwitchTensor: public ITensor
   {

@@ -32,7 +32,16 @@ namespace minsky
 
     static void s_showText(CAPIRenderer* c, const char* s)
     {
+      double x,y;
+      cairo_get_current_point(cairo(c),&x,&y);
       pango(c).setText(s);
+      // paint a partially obscure white rectange to make the text pop
+      cairo_save(cairo(c));
+      cairo_rectangle(cairo(c),x,y,pango(c).width(),pango(c).height());
+      cairo_set_source_rgba(cairo(c),1,1,1,0.3);
+      cairo_fill(cairo(c));
+      cairo_restore(cairo(c));
+      cairo_move_to(cairo(c),x,y);
       pango(c).show();
     }
     static void s_setTextExtents(CAPIRenderer* c, const char* s)

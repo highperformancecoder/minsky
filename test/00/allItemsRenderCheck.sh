@@ -30,8 +30,11 @@ trap "fail" 1 2 3 15
 
 cat >input.tcl <<EOF
 minsky.defaultFont Sans
-minsky.setGodleyIconResource $here/gui-tk/icons/bank.svg
-minsky.setGroupIconResource $here/gui-tk/icons/group.svg
+minsky.setGodleyIconResource $here/gui-js/apps/minsky-electron/src/assets/godley.svg
+minsky.setGroupIconResource $here/gui-js/apps/minsky-electron/src/assets/group.svg
+minsky.setRavelIconResource $here/gui-js/apps/minsky-electron/src/assets/ravel-logo.svg
+minsky.setLockIconResource $here/gui-js/apps/minsky-electron/src/assets/locked.svg $here/gui-js/apps/minsky-electron/src/assets/unlocked.svg
+
 minsky.load $here/test/allItems.mky
 minsky.multipleEquities 1
 minsky.canvas.renderToSVG allItemsBare.svg

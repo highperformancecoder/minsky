@@ -82,7 +82,9 @@ namespace minsky
     // copy operations needed for clone, but not really used for now
     // define them as empty operations to prevent double frees if accidentally used
     void operator=(const Ravel&) {}
-    Ravel(const Ravel&): popup(*this) {}
+    Ravel(const Ravel& x): ItemT<Ravel, Operation<OperationType::ravel>>(x), popup(*this)  {
+      applyState(x.getState());
+    }
 
     const Ravel* ravelCast() const override {return this;}
     Ravel* ravelCast() override {return this;}

@@ -111,6 +111,9 @@ namespace minsky
     const Variables& flowVars() const {return m_flowVars;}
     const Variables& stockVars() const {return m_stockVars;}
 
+    /// summary of variables in this godley table
+    std::vector<Summary> summarise() const;
+    
     /// updates the variable lists with the Godley table
     void update();
     

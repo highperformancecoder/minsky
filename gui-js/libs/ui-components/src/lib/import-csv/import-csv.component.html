@@ -1,4 +1,4 @@
-<div class="main" [formGroup]="form">
+<div #fullDialog class="main" [formGroup]="form">
   <!-- HEADER START -->
   <div class="import-container">
     <span class="import">
@@ -13,18 +13,20 @@
 
   <div class="options-row">
     <span>
-      <label for="columnar">Columnar</label>
-      <input id="columnar" type="checkbox" formControlName="columnar" (change)="selectRowAndCol(dialogState.spec.nRowAxes,dialogState.spec.nColAxes)"/>
+      <label for="dontFail" title="Selecting this discards erroneous
+      data from being imported.">Don't fail on invalid data</label>
+      <input id="dontFail" type="checkbox" formControlName="dontFail"/>
     </span>
 
-    <span>
-      <label for="separator">Separator</label>
+     <span>
+      <label for="separator" title="CSV separator.">Separator</label>
       <input
         id="separator"
         type="text"
         formControlName="separator"
         [matAutocomplete]="autocompleteSeparator"
         class="form-control autocomplete"
+        (change)="onSeparatorChange()"
       />
       <mat-autocomplete
         [panelWidth]="'10rem'"
@@ -38,7 +40,8 @@
     </span>
 
     <span>
-      <label for="decimal-separator">Decimal Separator</label>
+      <label for="decimal-separator" title="Separator of units and
+      fraction part of numbers: '.' for UK/US data, '.' for European data.">Decimal Separator</label>
       <input
         id="decimal-separator"
         type="text"
@@ -53,7 +56,8 @@
     </span>
 
     <span>
-      <label for="escape">Escape</label>
+      <label for="escape" title="Character used to embed special
+      characetrs in strings, such as quotes.">Escape</label>
       <input
         id="escape"
         type="text"
@@ -67,7 +71,7 @@
     </span>
 
     <span>
-      <label for="quote">Quote</label>
+      <label for="quote" title="CSV quote character.">Quote</label>
       <input
         id="quote"
         type="text"
@@ -82,7 +86,9 @@
     </span>
 
     <span>
-      <label for="merge-delimiters">Merge Delimiters</label>
+      <label for="merge-delimiters" title="Consecutive separators
+      treated as a single separator. Mostly useful for space delimited
+      files.">Merge Delimiters</label>
       <input
         id="merge-delimiters"
         type="checkbox"
@@ -90,7 +96,8 @@
       />
     </span>
     <span>
-      <label for="missing-value">Missing Value</label>
+      <label for="missing-value" title="Value to substitute for
+      missing data.">Missing Value</label>
       <input
         id="missing-value"
         type="text"
@@ -105,7 +112,10 @@
     </span>
 
     <span>
-      <label for="duplicate-key-action">Duplicate Key Action</label>
+      <label for="duplicate-key-action"
+             title="What to do if multiple values exist for the same
+             data element."
+             >Duplicate Key Action</label>
 
       <select id="duplicate-key-action" formControlName="duplicateKeyAction">
             <option value="throwException">throwException</option>
@@ -118,7 +128,14 @@
     </span>
 
     <span>
-      <label for="horizontal-dimension">Horizontal Dimension</label>
+      <label for="counter" title="Counts elements instead of reading
+      data. Particularly useful if no numerical data in file.">Counter</label>
+      <input id="counter" type="checkbox" formControlName="counter"/>
+    </span>
+
+    <span>
+      <label for="horizontal-dimension"
+             title="Name of the collection of data columns.">Horizontal Dimension</label>
       <input
         id="horizontal-dimension"
         type="text"
@@ -127,7 +144,7 @@
     </span>
     <ng-container [formGroup]="horizontalDimension">
       <span>
-        <label for="type">Type</label>
+        <label for="type" title="Type of horizontal dimension.">Type</label>
         <select id="type" formControlName="type">
           <option value="string">string</option>
           <option value="value">value</option>
@@ -136,7 +153,8 @@
       </span>
 
       <span>
-        <label for="format">Format</label>
+        <label for="format" title="Format field for the horizontal
+        dimension. Mostly useful for time dimensions.">Format</label>
         <input
           id="units"
           type="text"
@@ -162,13 +180,31 @@
   <!-- Table START -->
   <div #importCsvCanvasContainer id="import-csv-canvas-container" class="canvas-container">
     <table *ngIf="parsedLines.length">
+
+      <tr>
+        <th>Name</th>
+        <td *ngFor="let col of csvCols; let i = index"
+          class="col-type-container" [class.selected]="selected[i]"
+          (mousedown)="typeMouseDown($event,i)"
+          (mousemove)="typeMouseMove($event,i)"
+          (mouseup)="typeMouseUp($event,'name',i)"
+            >
+          <input
+            *ngIf="colType[i]==='axis'||colType[i]==='data'"
+            type="text"
+            class="form-control"
+            [value]="dialogState.spec.dimensionNames[i]"
+            (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
+          >
+        </td>
+      </tr>
+
       <tr>
         <th>Dimension</th>
         <td #colTypeRow
           *ngFor="let col of csvCols; let i = index"
           class="col-type-container" [class.selected]="selected[i]"
         >
-
             <select
               (change)="setColType(i,$event.target.value)"
             >
@@ -229,43 +265,19 @@
         </td>
       </tr>
 
-      <tr>
-        <th>Name</th>
-        <td *ngFor="let col of csvCols; let i = index"
-            class="col-container" [class.selected]="selected[i]"
-            >
-          <input
-            *ngIf="colType[i]==='axis'"
-            type="text"
-            [matAutocomplete]="autocompleteName"
-            class="form-control"
-            [value]="dialogState.spec.dimensionNames[i]"
-            (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
-          />
-          <mat-autocomplete
-            id="name_{{ i }}"
-            [panelWidth]="'10rem'"
-            #autocompleteName="matAutocomplete"
-            (optionSelected)="dialogState.spec.dimensionNames[i] = $event.option.value"
-          >
-            <mat-option [value]="parsedLines[dialogState.spec.headerRow][i]"
-              >{{ parsedLines[dialogState.spec.headerRow][i] }}
-            </mat-option>
-          </mat-autocomplete>
-        </td>
-      </tr>
-
       <tr *ngFor="let row of parsedLines; let rowIndex = index">
         <th class="header" (click)="selectHeader(rowIndex)">
-          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow"
+          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow
+            && dialogState.spec.headerRow < dialogState.spec.dataRowOffset"
             >Header</ng-container
           >
         </th>
         <td class="table-cell"
-          *ngFor="let rowElement of row; let colIndex = index"
-          (mousedown)="typeMouseDown(colIndex)"
-          (mousemove)="typeMouseMove(colIndex)"
-          (mouseup)="typeMouseUp(rowIndex,colIndex)"
+            *ngFor="let rowElement of row; let colIndex = index"
+            (mousedown)="typeMouseDown($event,colIndex)"
+            (mousemove)="typeMouseMove($event,colIndex)"
+            (mouseup)="typeMouseUp($event,rowIndex,colIndex)"
+            (contextmenu)="contextMenu(rowIndex,colIndex)"
           [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
         >
           {{ rowElement }}

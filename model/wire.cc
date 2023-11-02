@@ -109,10 +109,10 @@ namespace minsky
   {
     if (attachedToDefiningVar()) return false;	  
     auto f=from(), t=to();
-    assert(f->item().group.lock() && t->item().group.lock());
+    auto fgroup=f->item().group.lock(), tgroup=t->item().group.lock();
     return f && t && 
-      (f->item().group.lock()->displayContents() ||
-       t->item().group.lock()->displayContents());
+      (!fgroup || fgroup->displayContents() ||
+       !tgroup || tgroup->displayContents());
   }
 
   void Wire::moveToPorts(const shared_ptr<Port>& from, const shared_ptr<Port>& to)
@@ -377,7 +377,7 @@ namespace
     return (to()->item().attachedToDefiningVar(visited));
   }    
    
-  void Wire::draw(cairo_t* cairo) const
+  void Wire::draw(cairo_t* cairo, bool reverseArrow) const
   {
     auto coords=this->coords();
     if (coords.size()<4 || !visible()) return;
@@ -387,8 +387,16 @@ namespace
       {
         cairo_move_to(cairo,coords[0],coords[1]);
         cairo_line_to(cairo, coords[2], coords[3]);
-        angle=atan2(coords[3]-coords[1], coords[2]-coords[0]);
-        lastx=coords[2]; lasty=coords[3];
+        if (reverseArrow)
+          {
+            angle=atan2(coords[3]-coords[1], coords[2]-coords[0])+M_PI;
+            lastx=coords[0]; lasty=coords[1];
+          }
+        else
+          {
+            angle=atan2(coords[3]-coords[1], coords[2]-coords[0]) + (reverseArrow? M_PI:0);
+            lastx=coords[2]; lasty=coords[3];
+          }
       }
     else
       {
@@ -443,12 +451,13 @@ namespace
     // draw arrow
     {
       CairoSave cs(cairo);
+      auto lw=cairo_get_line_width(cairo);
       cairo_translate(cairo, lastx, lasty);
       cairo_rotate(cairo,angle);
       cairo_move_to(cairo,0,0);
-      cairo_line_to(cairo,-5,-3); 
-      cairo_line_to(cairo,-3,0); 
-      cairo_line_to(cairo,-5,3);
+      cairo_line_to(cairo,-5*lw,-3*lw); 
+      cairo_line_to(cairo,-3*lw,0); 
+      cairo_line_to(cairo,-5*lw,3*lw);
       cairo_close_path(cairo);
       cairo_fill(cairo);
     }

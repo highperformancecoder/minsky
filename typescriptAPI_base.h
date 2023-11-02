@@ -108,6 +108,7 @@ namespace classdesc
       }
 
     std::replace(cppName.begin(), cppName.end(), ':', '_');
+    cppName.erase(std::remove(cppName.begin(), cppName.end(),' '), cppName.end());
     return cppName;
   }
 
@@ -326,8 +327,9 @@ namespace classdesc
   typename enable_if<is_map<B>, void>::T
   typescriptAPI(typescriptAPI_t& t,const std::string&)
   {
-    t[typescriptType<C>()].super="Map<"+typescriptType<typename B::key_type>()+","+
-      typescriptType<typename B::mapped_type>()+">";
+    if (typescriptType<C>().substr(0,4)!="Map<")
+      t[typescriptType<C>()].super="Map<"+typescriptType<typename B::key_type>()+","+
+        typescriptType<typename B::mapped_type>()+">";
   }
 
   template <class C, class B, class T>
@@ -350,7 +352,7 @@ namespace classdesc
   std::string construct(const std::string& container, const std::string name)
   {
     string tn=typescriptType<VT>();
-    return "new "+container+"(this.prefix()+'/"+name+"'"+
+    return "new "+container+"(this.$prefix()+'."+name+"'"+
       ((is_string<VT>::value || is_enum<VT>::value || is_arithmetic<VT>::value)?"":","+tn)+");";
   }
   

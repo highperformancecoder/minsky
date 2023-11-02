@@ -198,7 +198,7 @@ namespace minsky
     using Item::attachedToDefiningVar;
     /// formula defining this variable
     std::string definition() const;
-    
+
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
@@ -242,11 +242,11 @@ namespace minsky
     Variable(const Variable& x): ItemT<Variable<T>, VariableBase>(x) {this->addPorts();}
     Variable& operator=(const Variable& x) {
       VariableBase::operator=(x);
-      this->controller=nullptr; // copy is not controlled by same object
+      this->controller.reset(); // copy is not controlled by same object
       this->addPorts();
       return *this;
     }
-    Variable(Variable&& x): VariableBase(x) {this->addPorts();}
+    Variable(Variable&& x): ItemT<Variable<T>, VariableBase>(x) {this->addPorts();}
     Variable& operator=(Variable&& x) {
       VariableBase::operator=(x);
       this->addPorts();

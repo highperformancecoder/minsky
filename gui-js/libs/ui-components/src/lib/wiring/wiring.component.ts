@@ -31,7 +31,7 @@ export class WiringComponent implements OnInit, OnDestroy {
     private electronService: ElectronService,
     private windowUtilityService: WindowUtilityService,
     private zone: NgZone,
-    private changeDetectorRef: ChangeDetectorRef
+    public changeDetectorRef: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {

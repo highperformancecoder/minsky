@@ -36,11 +36,16 @@ namespace minsky
     ravel::Ravel inputRavel; ///< ravel for controlling input
     /// value used for populating sheet. Potentially a tensor expression representing ravel manipulation
     civita::TensorPtr value;
-    // size of ravel in screen coordinates
+    /// size of ravel in screen coordinates
     double ravelSize() const;
     /// @{ ravel coordinate from screen coordinate
     double ravelX(double xx) const;
     double ravelY(double yy) const;
+
+    /// offset for scrolling through higher ranked inputs
+    size_t scrollOffset=0, scrollMax=1;
+    size_t scrollDelta=0;
+    std::string sliceIndicator;
   public:
     Sheet();
 
@@ -63,7 +68,12 @@ namespace minsky
     ClickType::Type clickType(float x, float y) const override;
     std::vector<Point> corners() const override;
     bool contains(float x, float y) const override;
-  
+
+    bool scrollUp();
+    bool scrollDown();
+    bool onKeyPress(int keySym, const std::string& utf8, int state) override;
+    void setSliceIndicator();
+    
     void draw(cairo_t* cairo) const override;
     
     /// calculates the input value

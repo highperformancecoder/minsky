@@ -25,51 +25,380 @@
 
 #include <exception>
 #include <atomic>
+#include <future>
 
 using namespace Napi;
 using namespace std;
 using namespace classdesc;
 using namespace boost::posix_time;
 
+namespace
+{
+
+    // all NAPI calls involving an Env must be called on Javascript's
+    // thread. In order to pass something back to Javascript's thread,
+    // we need to use a ThreadSafeFunction
+    struct PromiseResolver
+    {
+      Promise::Deferred promise;
+      bool success;
+      string result;
+
+      void doResolve(); 
+      void resolve(const std::string& result) {
+        success=true;
+        this->result=result;
+        doResolve();
+      }
+      void reject(const std::string& error) {
+        success=false;
+        result=error;
+        doResolve();
+      }
+      
+      PromiseResolver(const Napi::Env& env):
+        promise(env)
+      {}
+    };
+
+  // function called back from Javascript eventually
+  void resolvePromise(Napi::Env env, Napi::Function, void*, PromiseResolver* promiseResolver)
+  {
+    if (!promiseResolver) return;
+    // Javascript needs the result returned as UTF-16.
+    auto result=String::New(env, utf_to_utf<char16_t>(promiseResolver->result));
+    if (promiseResolver->success)
+      promiseResolver->promise.Resolve(result);
+    else
+      promiseResolver->promise.Reject(result);
+    delete promiseResolver; // cleans up object allocated in Command::Command() below
+  }
+
+  TypedThreadSafeFunction<void,PromiseResolver,resolvePromise> tsPromiseResolver;
+  
+  void PromiseResolver::doResolve() {
+    tsPromiseResolver.BlockingCall(this);
+  }
+
+    struct Command
+    {
+      PromiseResolver* promiseResolver;
+      string command;
+      json_pack_t arguments;
+      Command(const Napi::Env& env, const string& command, const json_pack_t& arguments):
+        promiseResolver(new PromiseResolver(env)), // ownership passed to JS interpreter
+        command(command),
+        arguments(arguments) {}
+    };
+  
+}
+
 namespace minsky
 {
   namespace
   {
+    // ensure access to only one global Minsky object at a time,
+    // particular needed for jest tests, which run in parallel
+    mutex minskyCmdMutex; 
+
     struct AddOnMinsky: public RESTMinsky
     {
-      Env* env=nullptr;
-      FunctionReference messageCallback;
-      FunctionReference busyCursorCallback;
-      FunctionReference bookmarkRefreshCallback;
-
-      ~AddOnMinsky() {
-        // because this object is used as a static object, suppress
-        // the callback destructors to avoid freeing the references at
-        // shutdown time.
-        messageCallback.SuppressDestruct();
-        busyCursorCallback.SuppressDestruct();
-        bookmarkRefreshCallback.SuppressDestruct();
+      deque<unique_ptr<Command>> minskyCommands;
+      mutex cmdMutex;
+      atomic<bool> running{true};
+      std::thread thread;
+      
+      AddOnMinsky(): thread([this](){run();}) {
+        flags=0;
+        RESTProcess(registry,"minsky",static_cast<Minsky&>(*this));
       }
       
-      void message(const std::string& msg) override
-      {if (env) messageCallback({String::New(*env,msg),Array::New(*env)});}
-      bool checkMemAllocation(std::size_t bytes) const override {
-        bool r=true;
-        if (env && bytes>0.2*physicalMem())
-          {
-            auto buttons=Array::New(*env);
-            buttons[0U]=String::New(*env,"No");
-            buttons[1U]=String::New(*env,"Yes");
-            r=messageCallback({
-                String::New(*env,"Allocation will use more than 50% of available memory. Do you want to proceed?"),
-                  buttons}).As<Number>().Int32Value();
-          }
-        return r;
+      ~AddOnMinsky() {
+        running=false;
+        if (thread.joinable()) thread.join();
       }
-      void setBusyCursor() override {}
-      void clearBusyCursor() override {}
+
+      Value queueCommand(Env env, string command, const json_pack_t& arguments)
+      {
+        // TODO use string::endsWith when we change our C++ standard
+        auto syncPos=command.rfind(".$sync");
+        bool sync=syncPos!=string::npos && syncPos==command.size()-6;
+        if (sync)
+          {
+            command.erase(syncPos);
+            // Javascript needs the result returned as UTF-16.
+            return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
+          }
+#ifdef _WIN32
+        // renderFrame needs to be called synchronously, otherwise inexplicable hangs occur on Windows.
+        syncPos=command.rfind(".renderFrame");
+        if (syncPos!=string::npos && syncPos==command.size()-12)
+          return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
+#endif
+        lock_guard<mutex> lock(cmdMutex);
+        minskyCommands.emplace_back(new Command{env,command,arguments});
+        return minskyCommands.back()->promiseResolver->promise.Promise();
+      }
+
+      string doCommand(string command, const json_pack_t& arguments)
+      {
+        lock_guard<mutex> lock(minskyCmdMutex);
+        LocalMinsky lm(*this); // sets this to be the global minsky object
+
+        // if reset requested, postpone it
+        if (reset_flag())
+          resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
+
+        
+        // disable quoting wide characters in UTF-8 strings
+        auto result=write(registry.process(command, arguments),json5_parser::raw_utf8);
+        int nargs=1;
+        switch (arguments.type())
+          {
+          case RESTProcessType::array:
+            nargs=arguments.get_array().size();
+            break;
+          case RESTProcessType::null:
+            nargs=0;
+            break;
+          default:
+            break;
+          }
+        commandHook(command,nargs);
+        return result;
+      }
+
+      void drawNativeWindows()
+      {
+        lock_guard<mutex> lock(minskyCmdMutex);
+        for (auto i: nativeWindowsToRedraw)
+          try
+            {
+              LocalMinsky lm(*this); // sets this to be the global minsky object
+              i->draw();
+            }
+          catch (const std::exception& ex)
+            {
+              /* absorb and log any exceptions, cannot do anything anyway */
+              cerr << ex.what() << endl;
+              break;
+            }
+          catch (...) {break;}
+        nativeWindowsToRedraw.clear();
+      }
+
+      // arrange for native window drawing to happen on node's main thread, required for MacOSX.
+      atomic<bool> drawLaunched{false};
+      static void tsDrawNativeWindows(Napi::Env env, Napi::Function, AddOnMinsky* minsky, void*)
+      {minsky->macOSXDrawNativeWindows();}
+      
+      TypedThreadSafeFunction<AddOnMinsky,void,tsDrawNativeWindows> tsDrawNativeWindows_;
+
+      void macOSXDrawNativeWindows()
+      {
+        lock_guard<mutex> lock(minskyCmdMutex);
+        for (auto i: nativeWindowsToRedraw)
+          i->macOSXRedraw();
+        nativeWindowsToRedraw.clear();
+        drawLaunched=false;
+       }
+      
+      void macOSXLaunchDrawNativeWindows()
+      {
+        drawLaunched=true;
+        tsDrawNativeWindows_.BlockingCall(this);
+      }
+      
+      void run()
+      {
+#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
+        pthread_setname_np(pthread_self(),"minsky thread");
+#endif
+        while (running)
+          {
+            unique_ptr<Command> command;
+            {
+              lock_guard<mutex> lock(cmdMutex);
+              if (!minskyCommands.empty())
+                {
+                  command=std::move(minskyCommands.front());
+                  minskyCommands.pop_front();
+                }
+            }
+            
+            if (!command) // perform housekeeping
+              {
+                if (reset_flag() && resetAt<std::chrono::system_clock::now())
+                  try
+                    {
+                      lock_guard<mutex> lock(minskyCmdMutex);
+                      if (reset_flag()) // check again, in case another thread got there first
+                        {
+                          LocalMinsky lm(*this); // sets this to be the global minsky object
+                          reset();
+                        }
+                    }
+                  catch (...)
+                    {flags&=~reset_needed;}
+#ifdef MAC_OSX_TK
+                if (!drawLaunched && nativeWindowsToRedraw.size())
+                  macOSXLaunchDrawNativeWindows();
+#else
+                drawNativeWindows();
+#endif
+                this_thread::sleep_for(chrono::milliseconds(10));
+                continue;
+              }
+
+            try
+              {
+                command->promiseResolver->resolve(doCommand(command->command, command->arguments));
+              }
+            catch (const std::exception& ex)
+              {
+                command->promiseResolver->reject(ex.what());
+              }
+            catch (...)
+              {
+                command->promiseResolver->reject("Unknown exception");
+              }
+          } 
+      }
+
+      mutable string theMessage;
+      mutable vector<string> messageButtons;
+      mutable promise<unsigned> userResponse;
+      static void messageCallback(Napi::Env env, Napi::Function fn, void*, AddOnMinsky* addonMinsky)
+      {
+        auto buttons=Array::New(env);
+        for (unsigned i=0; i< addonMinsky->messageButtons.size(); ++i)
+          buttons[i]=String::New(env,addonMinsky->messageButtons[i]);
+        addonMinsky->userResponse.set_value(fn({String::New(env,addonMinsky->theMessage), buttons}).As<Number>().Int32Value());
+      }
+
+      bool messageCallbackSet=false;
+      TypedThreadSafeFunction<void,AddOnMinsky,messageCallback> tsMessageCallback;
+      Value setMessageCallback(const Napi::CallbackInfo& info)
+      {
+        Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        messageCallbackSet=true;
+        tsMessageCallback=TypedThreadSafeFunction<void,AddOnMinsky,messageCallback>::New
+          (env,info[0].As<Function>(), "message",0,2,nullptr);
+        
+        return env.Null();
+      }
+
+      
+      void message(const std::string& msg) override
+      {
+        if (!messageCallbackSet) return;
+        theMessage=msg;
+        messageButtons.clear(); // empty buttons imply a single OK button
+        userResponse={}; //reset the promise
+        tsMessageCallback.BlockingCall(const_cast<AddOnMinsky*>(this));
+      }
+
+      bool checkMemAllocation(std::size_t bytes) const override {
+        if (messageCallbackSet && bytes>0.2*physicalMem())
+          {
+            theMessage="Allocation will use more than 50% of available memory. Do you want to proceed?";
+            messageButtons={"No","Yes"};
+            userResponse={}; //reset the promise
+            tsMessageCallback.BlockingCall(const_cast<AddOnMinsky*>(this));
+            return userResponse.get_future().get();
+          }
+        return true;
+      }
+      
+      static void busyCursorCallback(Napi::Env env, Napi::Function fn, void*, bool* busy)
+      {
+        fn({Boolean::New(env,*busy)});
+      }
+      
+      bool busyCursorCallbackSet=false;
+      TypedThreadSafeFunction<void,bool,busyCursorCallback> tsBusyCursorCallback;
+      Value setBusyCursorCallback(const Napi::CallbackInfo& info)
+      {
+        Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        busyCursorCallbackSet=true;
+        tsBusyCursorCallback=TypedThreadSafeFunction<void,bool,busyCursorCallback>::New
+          (env,info[0].As<Function>(), "setBusyCursor",0,2,nullptr);
+        return env.Null();
+      }
+
+      bool busyCursor=false;
+      void doBusyCursor(bool bc)
+      {
+        if (!busyCursorCallbackSet) return;
+        busyCursor=bc;
+        tsBusyCursorCallback.BlockingCall(&busyCursor);
+      }
+      void setBusyCursor() override
+      {doBusyCursor(true);}
+      void clearBusyCursor() override
+      {doBusyCursor(false);}
+
+      static void progressCallback(Napi::Env env, Napi::Function fn, void*, AddOnMinsky* addon)
+      {
+        fn({String::New(env,addon->progressTitle), Number::New(env,addon->progressValue)});
+      }
+      
+      int progressValue=0;
+      string progressTitle;
+      void progress(const string& title, int x) override
+      {
+        if (!progressCallbackSet) return;
+        progressValue=x;
+        progressTitle=title;
+        tsProgressCallback.BlockingCall(this);
+      }
+      bool progressCallbackSet=false;
+      TypedThreadSafeFunction<void,AddOnMinsky,progressCallback> tsProgressCallback;
+      Value setProgressCallback(const Napi::CallbackInfo& info)
+      {
+        Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        progressCallbackSet=true;
+        tsProgressCallback=TypedThreadSafeFunction<void,AddOnMinsky,progressCallback>::New
+          (env,info[0].As<Function>(), "progress",0,2,nullptr);
+        return env.Null();
+      }
+      
+      static void bookmarkRefreshCallback(Napi::Env env, Napi::Function fn, void*, AddOnMinsky* addon)
+      {
+        fn({});
+      }
+      
       void bookmarkRefresh() override
-      {if (env) bookmarkRefreshCallback({});}
+      {
+        if (!bookmarkRefreshSet) return;
+        tsBookmarkRefreshCallback.BlockingCall(this);
+      }
+      bool bookmarkRefreshSet=false;
+      TypedThreadSafeFunction<void,AddOnMinsky,bookmarkRefreshCallback> tsBookmarkRefreshCallback;
+      Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info)
+      {
+        Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        bookmarkRefreshSet=true;
+        tsBookmarkRefreshCallback=TypedThreadSafeFunction<void,AddOnMinsky,bookmarkRefreshCallback>::New
+          (env,info[0].As<Function>(), "refreshBookmark",0,2,nullptr);
+        return env.Null();
+      }
     };
     
     Minsky* l_minsky=NULL;
@@ -77,7 +406,7 @@ namespace minsky
 
   Minsky& minsky()
   {
-    static AddOnMinsky s_minsky;
+    static Minsky s_minsky;
     if (l_minsky)
       return *l_minsky;
     return s_minsky;
@@ -90,178 +419,73 @@ namespace minsky
   void doOneEvent(bool idleTasksOnly) {}
 }
 
-
-minsky::AddOnMinsky& addOnMinsky=static_cast<minsky::AddOnMinsky&>(minsky::minsky());
-
-mutex redrawMutex;
-
-// delay process redrawing to throttle redrawing
-struct RedrawThread: public thread
+struct MinskyAddon: public Addon<MinskyAddon>
 {
-  RedrawThread() {thread::operator=(thread([this]{run();}));}
-  ~RedrawThread() {join();}
-  atomic<bool> running{true}; //< flag indicating thread is still running
-  void run() {
-#if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
-    pthread_setname_np(pthread_self(),"redraw thread");
-#endif
-    // sleep slightly to throttle requests on this service
-    this_thread::sleep_for(chrono::milliseconds(10));
+  minsky::AddOnMinsky addOnMinsky;
+  minsky::LocalMinsky lm{addOnMinsky};
 
-    lock_guard<mutex> lock(redrawMutex);
-
-    for (auto i: minsky::minsky().nativeWindowsToRedraw)
-      try
-        {
-          i->draw();
-        }
-      catch (const std::exception& ex)
-        {
-          /* absorb and log any exceptions, cannot do anything anyway */
-          cerr << ex.what() << endl;
-          break;
-        }
-      catch (...) {break;}
-    minsky::minsky().nativeWindowsToRedraw.clear();
-    running=false;
-  }
-};
-
-unique_ptr<RedrawThread> redrawThread(new RedrawThread);
-
-Value setMessageCallback(const Napi::CallbackInfo& info)
-{
-  Env env = info.Env();
-  if (info.Length()<1 || !info[0].IsFunction())
-    {
-      Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
-    }
-  addOnMinsky.messageCallback=Persistent(info[0].As<Function>());
-  return env.Null();
-}
-
-Value setBusyCursorCallback(const Napi::CallbackInfo& info)
-{
-  Env env = info.Env();
-  if (info.Length()<1 || !info[0].IsFunction())
-    {
-      Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
-    }
-  addOnMinsky.busyCursorCallback=Persistent(info[0].As<Function>());
-  return env.Null();
-}
-
-Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info)
-{
-  Env env = info.Env();
-  if (info.Length()<1 || !info[0].IsFunction())
-    {
-      Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
-    }
-  addOnMinsky.bookmarkRefreshCallback=Persistent(info[0].As<Function>());
-  return env.Null();
-}
-
-struct SetMinskyEnv
-{
-  SetMinskyEnv(Env& env) {addOnMinsky.env=&env;}
-  ~SetMinskyEnv() {addOnMinsky.env=nullptr;}
-};
-
-Value RESTCall(const Napi::CallbackInfo& info)
-{
-  Env env = info.Env();
-  if (info.Length() < 1)
+  MinskyAddon(Env env, Object exports)
   {
-    Napi::TypeError::New(env, "Needs to be call(endpoint[, arguments])").ThrowAsJavaScriptException();
-    return env.Null();
+    tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,resolvePromise>::
+      New(env,"TSResolver", 0, 2, nullptr);
+    addOnMinsky.tsDrawNativeWindows_=
+      TypedThreadSafeFunction<minsky::AddOnMinsky,void,minsky::AddOnMinsky::tsDrawNativeWindows>::
+      New(env,"TSDrawNativeWindows",0, 2,&addOnMinsky);
+    
+    DefineAddon(exports, {
+        InstanceMethod("call", &MinskyAddon::call),
+        InstanceMethod("setMessageCallback", &MinskyAddon::setMessageCallback),
+        InstanceMethod("setBusyCursorCallback", &MinskyAddon::setBusyCursorCallback),
+        InstanceMethod("setProgressCallback", &MinskyAddon::setProgressCallback),
+        InstanceMethod("setBookmarkRefreshCallback", &MinskyAddon::setBookmarkRefreshCallback),
+        InstanceMethod("cancelProgress", &MinskyAddon::cancelProgress)
+      });
   }
   
+
+  Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}
+  Value setBusyCursorCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBusyCursorCallback(info);}
+  Value setProgressCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setProgressCallback(info);}
+  Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBookmarkRefreshCallback(info);}
+  Value cancelProgress(const Napi::CallbackInfo& info) {*addOnMinsky.progressState.cancel=true; return info.Env().Null();}
+    
+
+  Value call(const Napi::CallbackInfo& info)
+  {
+    Env env = info.Env();
+    if (info.Length() < 1)
+      {
+        Napi::TypeError::New(env, "Needs to be call(endpoint[, arguments])").ThrowAsJavaScriptException();
+        return env.Null();
+      }
+    
 #if defined(_PTHREAD_H) && defined(__USE_GNU) && !defined(NDEBUG)
     pthread_setname_np(pthread_self(),"addon thread");
 #endif
 
-  try
-    {
-      json_pack_t arguments(json5_parser::mValue{});
-      if (info.Length()>1)
-        {
-          string jsonArguments=info[1].ToString();
-          if (!jsonArguments.empty())
-            read(jsonArguments, arguments);
-        }
-      string cmd=info[0].ToString();
-      Value response;
+    try
       {
-        bool redrawWasRunning=redrawThread->running;
-        lock_guard<mutex> lock(redrawMutex);
-        // add a small delay after obtaining the lock to ensure the pango cleanup routines are run. See ticket #1358. 
-        if (redrawWasRunning)
-          this_thread::sleep_for(chrono::milliseconds(5));
-        SetMinskyEnv minskyEnv(env);
-        // disable quoting wide characters in UTF-8 strings
-        auto result=write(addOnMinsky.registry.process(cmd, arguments),json5_parser::raw_utf8);
-        // Javascript needs the result returns as UTF-16.
-        response=String::New(env, utf_to_utf<char16_t>(result));
-        int nargs=1;
-        switch (arguments.type())
+        json_pack_t arguments(json5_parser::mValue{});
+        if (info.Length()>1)
           {
-          case json5_parser::array_type:
-            nargs=arguments.get_array().size();
-            break;
-          case json5_parser::null_type:
-            nargs=0;
-            break;
-          default:
-            break;
+            string jsonArguments=info[1].ToString();
+            if (!jsonArguments.empty())
+              read(jsonArguments, arguments);
           }
-        cmd.erase(0,1); // remove leading '/'
-        replace(cmd.begin(), cmd.end(), '/', '.');
-        minsky::minsky().commandHook(cmd,nargs);
+        return addOnMinsky.queueCommand(env,info[0].ToString(),arguments);
       }
-      if (!minsky::minsky().nativeWindowsToRedraw.empty())
-        {
-          if (redrawThread->running)
-            this_thread::yield(); // yield to the render thread
-          else if (minsky::minsky().running)
-            { // in-thread rendering whilst simulation is running
-              for (auto& i: minsky::minsky().nativeWindowsToRedraw)
-                try
-                  {
-                    i->draw();
-                  }
-                catch(...) {}
-              minsky::minsky().nativeWindowsToRedraw.clear();
-            }
-          else
-            {
-              redrawThread.reset(); // ensure old thread is joined
-              redrawThread.reset(new RedrawThread); // start a new render thread
-            }
-        }
-      return response;
-    }
-  catch (const std::exception& ex)
-    {
-      // throw C++ exception as Javascript exception
-      Napi::Error::New(env, ex.what()).ThrowAsJavaScriptException();
-      return env.Null();
-    }
-  catch (...)
-    {
-      Napi::Error::New(env, "unknown exception caught").ThrowAsJavaScriptException();
-      return env.Null();
-    }
-}
+    catch (const std::exception& ex)
+      {
+        // throw C++ exception as Javascript exception
+        Napi::Error::New(env, ex.what()).ThrowAsJavaScriptException();
+        return env.Null();
+      }
+    catch (...)
+      {
+        Napi::Error::New(env, "unknown exception caught").ThrowAsJavaScriptException();
+        return env.Null();
+      }
+  }
+};
 
-Object Init(Env env, Object exports) {
-  RESTProcess(addOnMinsky.registry,"/minsky",minsky::minsky());
-  env.AddCleanupHook([redraw=&redrawThread](){redraw->reset();}); // ensure redraw thread is stopped before exiting JS environment.
-  exports.Set(String::New(env, "call"), Function::New(env, RESTCall));
-  exports.Set(String::New(env, "setMessageCallback"), Function::New(env, setMessageCallback));
-  exports.Set(String::New(env, "setBusyCursorCallback"), Function::New(env, setBusyCursorCallback));
-  exports.Set(String::New(env, "setBookmarkRefreshCallback"), Function::New(env, setBookmarkRefreshCallback));
-  return exports;
-}
-
-NODE_API_MODULE(minskyRESTService, Init)
+NODE_API_ADDON(MinskyAddon);

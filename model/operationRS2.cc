@@ -68,5 +68,6 @@ DEFOP(index)
 DEFOP(gather)
 DEFOP(meld)
 DEFOP(merge)
+DEFOP(slice)
 DEFOP(numOps)
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::NamedOp);

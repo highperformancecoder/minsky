@@ -7,7 +7,7 @@ import {
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   rendererAppName,
   rendererAppURL,
-  RenderNativeWindow,
+//  RenderNativeWindow,
   Utility,
 } from '@minsky/shared';
 //import * as debug from 'debug';
@@ -26,7 +26,7 @@ export class WindowManager {
   static canvasHeight: number;
   static canvasWidth: number;
   static scaleFactor: number;
-  static currentTab: RenderNativeWindow=minsky.canvas;
+  static currentTab=minsky.canvas;
   
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();
@@ -57,20 +57,27 @@ export class WindowManager {
   }
 
   static renderFrame() {
-    this.currentTab?.renderFrame
-    ({
-      parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
-      offsetLeft: this.leftOffset,
-      offsetTop: this.electronTopOffset,
-      childWidth: this.canvasWidth,
-      childHeight: this.canvasHeight,
-      scalingFactor: this.scaleFactor
-    });
+    try
+    {
+      this.currentTab?.renderFrame(
+                                       {
+                                         parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
+                                         offsetLeft: this.leftOffset,
+                                         offsetTop: this.electronTopOffset,
+                                         childWidth: this.canvasWidth,
+                                         childHeight: this.canvasHeight,
+                                         scalingFactor: this.scaleFactor
+                                       });
+    }
+    catch (err) {
+      // absorb exceptions, which will mostly be due to bad windows
+      console.log(err);
+    }
   }
     
-  static setCurrentTab(tab: RenderNativeWindow) {
+  static async setCurrentTab(tab/*: RenderNativeWindow*/) {
     if (this.currentTab!==tab) {
-      this.currentTab?.disable();
+      await this.currentTab?.disable();
       this.currentTab=tab;
       this.renderFrame();
     }

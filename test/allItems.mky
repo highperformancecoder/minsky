@@ -1,36 +1,36 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.1.0-rc.7</minskyVersion>
+  <minskyVersion>3.2.0-alpha.10</minskyVersion>
   <wires>
    <Wire>
     <id>78</id>
-    <from>56</from>
-    <to>54</to>
+    <from>57</from>
+    <to>55</to>
    </Wire>
    <Wire>
     <id>79</id>
-    <from>60</from>
-    <to>58</to>
+    <from>61</from>
+    <to>59</to>
    </Wire>
    <Wire>
     <id>80</id>
-    <from>62</from>
-    <to>66</to>
+    <from>63</from>
+    <to>67</to>
    </Wire>
    <Wire>
     <id>81</id>
-    <from>65</from>
-    <to>70</to>
+    <from>66</from>
+    <to>71</to>
    </Wire>
    <Wire>
     <id>82</id>
-    <from>69</from>
-    <to>73</to>
+    <from>70</from>
+    <to>74</to>
    </Wire>
    <Wire>
     <id>83</id>
-    <from>75</from>
-    <to>67</to>
+    <from>76</from>
+    <to>68</to>
    </Wire>
   </wires>
   <items>
@@ -51,7 +51,7 @@
     <bookmark>false</bookmark>
    </Item>
    <Item>
-    <id>4</id>
+    <id>1</id>
     <type>IntOp</type>
     <x>290</x>
     <y>48.0001</y>
@@ -62,16 +62,16 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>1</int>
      <int>2</int>
      <int>3</int>
+     <int>4</int>
     </ports>
     <bookmark>false</bookmark>
-    <intVar>18</intVar>
+    <intVar>17</intVar>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>8</id>
+    <id>5</id>
     <type>Operation:add</type>
     <x>455</x>
     <y>0</y>
@@ -82,15 +82,15 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>5</int>
      <int>6</int>
      <int>7</int>
+     <int>8</int>
     </ports>
     <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>10</id>
+    <id>9</id>
     <type>Variable:stock</type>
     <x>1.0659</x>
     <y>215.773</y>
@@ -101,7 +101,7 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>9</int>
+     <int>10</int>
     </ports>
     <bookmark>false</bookmark>
     <name>stock1</name>
@@ -140,7 +140,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>13</id>
+    <id>11</id>
     <type>Variable:flow</type>
     <x>-45.6945</x>
     <y>57.6</y>
@@ -151,8 +151,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>11</int>
      <int>12</int>
+     <int>13</int>
     </ports>
     <bookmark>false</bookmark>
     <name>flow1</name>
@@ -191,7 +191,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>16</id>
+    <id>14</id>
     <type>Variable:flow</type>
     <x>262</x>
     <y>178</y>
@@ -202,8 +202,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>14</int>
      <int>15</int>
+     <int>16</int>
     </ports>
     <bookmark>false</bookmark>
     <name>aaa</name>
@@ -242,7 +242,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>18</id>
+    <id>17</id>
     <type>Variable:integral</type>
     <x>337</x>
     <y>48.0001</y>
@@ -253,8 +253,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>1</int>
-     <int>17</int>
+     <int>2</int>
+     <int>18</int>
     </ports>
     <bookmark>false</bookmark>
     <name>int1</name>
@@ -293,7 +293,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>41</id>
+    <id>19</id>
     <type>PlotWidget</type>
     <x>610.999</x>
     <y>125</y>
@@ -304,7 +304,6 @@
     <width>150</width>
     <height>150</height>
     <ports>
-     <int>19</int>
      <int>20</int>
      <int>21</int>
      <int>22</int>
@@ -326,6 +325,7 @@
      <int>38</int>
      <int>39</int>
      <int>40</int>
+     <int>41</int>
     </ports>
     <bookmark>false</bookmark>
     <logx>false</logx>
@@ -426,7 +426,7 @@
     </palette>
    </Item>
    <Item>
-    <id>46</id>
+    <id>42</id>
     <type>SwitchIcon</type>
     <x>468</x>
     <y>179</y>
@@ -437,10 +437,10 @@
     <width>17.6</width>
     <height>17.6</height>
     <ports>
-     <int>42</int>
      <int>43</int>
      <int>44</int>
      <int>45</int>
+     <int>46</int>
     </ports>
     <bookmark>false</bookmark>
    </Item>
@@ -456,8 +456,8 @@
     <width>177.298</width>
     <height>186</height>
     <ports>
-     <int>12</int>
-     <int>9</int>
+     <int>13</int>
+     <int>10</int>
     </ports>
     <bookmark>false</bookmark>
     <name>title</name>
@@ -588,7 +588,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>53</id>
+    <id>52</id>
     <type>Variable:flow</type>
     <x>429.352</x>
     <y>294.425</y>
@@ -599,7 +599,7 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>52</int>
+     <int>53</int>
      <int>49</int>
     </ports>
     <bookmark>false</bookmark>
@@ -638,7 +638,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>55</id>
+    <id>54</id>
     <type>Sheet</type>
     <x>980.5</x>
     <y>125.5</y>
@@ -649,13 +649,13 @@
     <width>357</width>
     <height>173</height>
     <ports>
-     <int>54</int>
+     <int>55</int>
     </ports>
     <bookmark>false</bookmark>
     <showSlice>head</showSlice>
    </Item>
    <Item>
-    <id>57</id>
+    <id>56</id>
     <type>Variable:parameter</type>
     <x>752</x>
     <y>101</y>
@@ -666,7 +666,7 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>56</int>
+     <int>57</int>
     </ports>
     <bookmark>false</bookmark>
     <name>iota</name>
@@ -705,7 +705,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>59</id>
+    <id>58</id>
     <type>Sheet</type>
     <x>1108</x>
     <y>340</y>
@@ -716,13 +716,13 @@
     <width>100</width>
     <height>100</height>
     <ports>
-     <int>58</int>
+     <int>59</int>
     </ports>
     <bookmark>false</bookmark>
     <showSlice>head</showSlice>
    </Item>
    <Item>
-    <id>61</id>
+    <id>60</id>
     <type>Variable:parameter</type>
     <x>946</x>
     <y>338</y>
@@ -733,7 +733,7 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>60</int>
+     <int>61</int>
     </ports>
     <bookmark>false</bookmark>
     <name>scalar</name>
@@ -772,7 +772,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>64</id>
+    <id>62</id>
     <type>Variable:flow</type>
     <x>-41</x>
     <y>0</y>
@@ -783,8 +783,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>62</int>
      <int>63</int>
+     <int>64</int>
     </ports>
     <bookmark>false</bookmark>
     <name>i1</name>
@@ -823,7 +823,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>68</id>
+    <id>65</id>
     <type>Operation:add</type>
     <x>-21.2554</x>
     <y>1.30011</y>
@@ -834,15 +834,15 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>65</int>
      <int>66</int>
      <int>67</int>
+     <int>68</int>
     </ports>
     <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>71</id>
+    <id>69</id>
     <type>Operation:exp</type>
     <x>18.7446</x>
     <y>1.30011</y>
@@ -853,14 +853,14 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>69</int>
      <int>70</int>
+     <int>71</int>
     </ports>
     <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>74</id>
+    <id>72</id>
     <type>Variable:flow</type>
     <x>36</x>
     <y>0</y>
@@ -871,8 +871,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>72</int>
      <int>73</int>
+     <int>74</int>
     </ports>
     <bookmark>false</bookmark>
     <name>out</name>
@@ -911,7 +911,7 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>77</id>
+    <id>75</id>
     <type>Variable:flow</type>
     <x>-41</x>
     <y>-24</y>
@@ -922,8 +922,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>75</int>
      <int>76</int>
+     <int>77</int>
     </ports>
     <bookmark>false</bookmark>
     <name>i2</name>
@@ -978,19 +978,19 @@
     </ports>
     <bookmark>false</bookmark>
     <items>
-     <int>64</int>
-     <int>68</int>
-     <int>71</int>
-     <int>74</int>
-     <int>77</int>
+     <int>62</int>
+     <int>65</int>
+     <int>69</int>
+     <int>72</int>
+     <int>75</int>
     </items>
     <displayPlot>-1</displayPlot>
     <inVariables>
-     <int>64</int>
-     <int>77</int>
+     <int>62</int>
+     <int>75</int>
     </inVariables>
     <outVariables>
-     <int>74</int>
+     <int>72</int>
     </outVariables>
    </Group>
   </groups>

@@ -148,7 +148,7 @@ namespace minsky
       {
         itemFocus->onMouseUp(x,y);
         itemFocus.reset(); // prevent spurious mousemove events being processed
-        minsky().reset();
+        minsky().requestReset();
       }
     if (fromPort.get())
       {
@@ -161,7 +161,7 @@ namespace minsky
                 to->item().tooltip=v->name();
             
             fromPort.reset();
-            minsky().reset(); 
+            minsky().requestReset(); 
           } else {
             fromPort.reset();
           }
@@ -261,7 +261,7 @@ namespace minsky
                     // adjusting the slider whilst paused. See ticket #812
                     minsky().pushHistory();
                     if (minsky().reset_flag())
-                      minsky().reset();
+                      minsky().requestReset();
                     minsky().evalEquations();
                     requestRedraw();
                   }
@@ -369,6 +369,8 @@ namespace minsky
                                                 return false;
                                               });
           }
+        if (minsky().reset_flag())
+          minsky().requestReset(); // postpone reset whilst mousing
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
@@ -554,7 +556,7 @@ namespace minsky
     if (item)
     {
       model->deleteItem(*item);
-      minsky().reset();
+      minsky().requestReset();
     }
   }
   
@@ -564,7 +566,7 @@ namespace minsky
     {
       model->removeWire(*wire);
       wire.reset();
-      minsky().reset();
+      minsky().requestReset();
     }
   }
   
@@ -620,13 +622,6 @@ namespace minsky
        }
   }
 
-  namespace
-  {
-    // return true if scope g refers to the global model group
-    bool isGlobal(const GroupPtr& g)
-    {return !g || g==cminsky().model;}
-  }
-  
   void Canvas::renameAllInstances(const string newName)
   {
     auto var=item->variableCast();
@@ -637,60 +632,7 @@ namespace minsky
       {
         // cache name and valueId for later use as var gets invalidated in the recursiveDo
         auto valueId=var->valueId();
-        auto varScope=scope(var->group.lock(), valueId);
-        string fromName=var->rawName();
-        // unqualified versions of the names
-        string uqFromName=fromName.substr(fromName[0]==':'? 1: 0);
-        string uqNewName = newName.substr(newName[0]==':'? 1: 0);
-        set<GodleyIcon*> godleysToUpdate;
-#ifndef NDEBUG
-        auto numItems=model->numItems();
-#endif
-        model->recursiveDo
-          (&GroupItems::items, [&](Items&,Items::iterator i)
-           {
-             if (auto v=(*i)->variableCast())
-               if (v->valueId()==valueId)
-                 {			 
-                   if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
-                     {
-                       if (varScope==g->group.lock() ||
-                           (!varScope && g->group.lock()==cminsky().model)) // fix local variables
-                         g->table.rename(uqFromName, uqNewName);
-                       
-                       // scope of an external ref in the Godley Table
-                       auto externalVarScope=scope(g->group.lock(), ':'+uqNewName);
-                       // if we didn't find it, perhaps the outerscope variable hasn't been changed
-                       if (!externalVarScope)
-                         externalVarScope=scope(g->group.lock(), ':'+uqFromName);
-
-                       if (varScope==externalVarScope ||  (isGlobal(varScope) && isGlobal(externalVarScope)))
-                         // fix external variable references
-                         g->table.rename(':'+uqFromName, ':'+uqNewName);
-                       // GodleyIcon::update invalidates the iterator, so postpone update
-                       godleysToUpdate.insert(g);
-                     }
-                   else
-                     {
-                       if (varScope==v->group.lock() ||
-                           (!newName.empty() && newName[0]==':') )
-                         v->name(newName);
-                       else
-                         v->name(":"+newName);
-                       if (auto vv=v->vValue()) {
-                        v->retype(vv->type()); // ensure correct type. Note this invalidates v.
-                       }
-                     }
-                 }
-             return false;
-           });
-        assert(model->numItems()==numItems);
-        for (auto g: godleysToUpdate)
-          {
-            g->update();
-            assert(model->numItems()==numItems);
-          }
-      minsky().reset();   // Updates model after variables rename. For ticket 1109.    
+        model->renameAllInstances(valueId, newName);
       }
    }
   
@@ -1033,7 +975,19 @@ namespace minsky
     // ensure screen refresh time is less than a third
     minsky().maxWaitMS=(t>0.03)? 3000*t: 100.0;
   }
-  
+
+  void Canvas::applyDefaultPlotOptions() {
+      if (auto p=item->plotWidgetCast()) {
+        // stash titles to restore later
+        string title(p->title), xlabel(p->xlabel()),
+          ylabel(p->ylabel()), y1label(p->y1label());
+        defaultPlotOptions.applyPlotOptions(*p);
+        p->title=title, p->xlabel(xlabel),
+          p->ylabel(ylabel), p->y1label(y1label);
+      }
+    }
+
+
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EventInterface);

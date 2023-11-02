@@ -27,6 +27,7 @@
 #include "clipboard.h"
 #include "dimension.h"
 #include "evalOp.h"
+#include "equationDisplay.h"
 #include "equations.h"
 #include "fontDisplay.h"
 #include "godleyIcon.h"
@@ -37,15 +38,16 @@
 #include "canvas.h"
 #include "lock.h"
 #include "operation.h"
+#include "pannableTab.h"
 #include "panopticon.h"
-#include "parameterTab.h"
+#include "phillipsDiagram.h"
 #include "plotTab.h"
 #include "plotWidget.h"
+#include "progress.h"
 #include "ravelWrap.h"
 #include "rungeKutta.h"
 #include "saver.h"
 #include "stringKeyMap.h"
-#include "variableTab.h"
 #include "variablePane.h"
 #include "version.h"
 
@@ -53,6 +55,7 @@
 #include <string>
 #include <set>
 #include <deque>
+#include <cstdio>
 
 #include <ecolab.h>
 #include <xml_pack_base.h>
@@ -70,23 +73,6 @@ namespace minsky
   
   class SaveThread;
   
-  // handle the display of rendered equations on the screen
-  class EquationDisplay: public RenderNativeWindow
-  {
-    Minsky& m;
-    double m_width=0, m_height=0;
-    bool redraw(int x0, int y0, int width, int height) override;
-    CLASSDESC_ACCESS(EquationDisplay);
-  public:
-    float offsx=0, offsy=0; // pan controls
-    double width() const {return m_width;}
-    double height() const {return m_height;}
-    EquationDisplay(Minsky& m): m(m) {}
-    EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
-    EquationDisplay(const EquationDisplay&)=default;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
-  };
-
   // a place to put working variables of the Minsky class that needn't
   // be serialised.
   struct MinskyExclude
@@ -96,6 +82,12 @@ namespace minsky
 
     enum StateFlags {is_edited=1, reset_needed=2, fullEqnDisplay_needed=4};
     int flags=reset_needed;
+
+    std::chrono::time_point<std::chrono::system_clock> resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
+    std::chrono::milliseconds resetDuration;
+
+    Progress progressState;
+    int busyCursorStack=0;
     
     std::vector<int> flagStack;
 
@@ -151,12 +143,15 @@ namespace minsky
     
     /// balance two Godley columns
     void balanceColumns(const GodleyIcon& srcGodley, int srcCol, GodleyIcon& destGodley, int destCol) const;
+
+    /// remove the definition network from \a wire, up to, but not including attached variables.
+    void removeItems(Wire& wire);
+
   public:
     PannableTab<EquationDisplay> equationDisplay;
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
-    ParameterTab parameterTab;
-    VariableTab variableTab;
+    PhillipsDiagram phillipsDiagram;
     PlotTab plotTab;
     GodleyTab godleyTab;
     
@@ -176,6 +171,7 @@ namespace minsky
       canvas.requestRedraw();
       canvas.model.updateTimestamp();
     }
+    void requestReset();
 
     /// @{ push and pop state of the flags
     void pushFlags() {flagStack.push_back(flags);}
@@ -196,6 +192,9 @@ namespace minsky
     VariableValues variableValues;
     Dimensions dimensions;
     Conversions conversions;
+    /// stash the maximum absolute value obtained by a dimensioned quantity
+    std::map<Units, double> maxValue;
+    std::map<Units, double> maxFlowValue; // max flow values along wires
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
     void populateMissingDimensionsFromVariable(const VariableValue&);
@@ -421,6 +420,9 @@ namespace minsky
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
+    /// set progress bar, out of 100, labelling the progress bar with \a title
+    virtual void progress(const std::string& title,int) {}
+
     /// refresh the bookmark menu after changes
     virtual void bookmarkRefresh() {}
     
@@ -505,6 +507,12 @@ namespace minsky
     {return checkMemAllocation(std::numeric_limits<size_t>::max());}
 
     VariablePane variablePane;
+
+    /// Used to implement a pause until return pressed for attaching debugger purposes
+    char getc() const {return std::getc(stdin);}
+
+    /// add/replace a definition for a flow variable given by \a valueId
+    void setDefinition(const std::string& valueId, const std::string& definition);
   };
 
   /// global minsky object

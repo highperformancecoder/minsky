@@ -182,7 +182,7 @@ export class GodleyMenuManager {
         },
         {
           label: 'Zoom Out',
-          accelerator: 'CmdOrCtrl + Minus',
+          accelerator: 'CmdOrCtrl + -',
           click: async () => {window.webContents?.send(events.ZOOM, 1.0/1.1);}
         },
         {
@@ -265,7 +265,7 @@ export class GodleyMenuManager {
 
   /// handle mouse down events in a Godley view
   static async mouseDown(window: GodleyTableWindow, x: number, y: number) {
-    var clickType=window.clickTypeZoomed(x,y);
+    var clickType=await window.clickTypeZoomed(x,y);
     if (clickType==="importStock")
     {
       const c = window.colXZoomed(x);
@@ -274,7 +274,7 @@ export class GodleyMenuManager {
   }
 
   static async importStock(window: GodleyTableWindow, c, event?: IpcMainInvokeEvent) {
-    var importOptions=window.matchingTableColumnsByCol(c);
+    var importOptions=await window.matchingTableColumnsByCol(c);
       var menu=new Menu();
       for (var v in importOptions) 
         menu.append(new MenuItem({
