@@ -41,7 +41,29 @@ namespace minsky
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
 
-  class VariableValue: public VariableType, public civita::ITensorVal
+  struct VariableValueData: public civita::ITensorVal
+  {
+    /// the initial value of this variable
+    std::string init;
+    /// when init is a tensor of values, this overrides the init string
+    TensorVal tensorInit;
+
+    /// dimension units of this value
+    Units units;
+    bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
+    void setUnits(const std::string& x) {units=Units(x);}
+
+    bool sliderVisible=false; // determined at reset time
+    bool godleyOverridden=false;
+    std::string name; // name of this variable
+    classdesc::Exclude<std::weak_ptr<Group>> m_scope;
+
+    /// for importing CSV files
+    CSVDialog csvDialog;
+    
+  };
+  
+  class VariableValue: public VariableType, public VariableValueData
   {
     CLASSDESC_ACCESS(VariableValue);
   private:
@@ -49,7 +71,6 @@ namespace minsky
     int m_idx=-1; /// index into value vector
     double& valRef(); 
     const double& valRef() const;
-    std::vector<unsigned> m_dims;
     
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -73,21 +94,6 @@ namespace minsky
     }
 
     VariableType::Type type() const {return m_type;}
-
-    /// the initial value of this variable
-    std::string init;
-    /// when init is a tensor of values, this overrides the init string
-    TensorVal tensorInit;
-
-    /// dimension units of this value
-    Units units;
-    bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
-    void setUnits(const std::string& x) {units=Units(x);}
-
-    bool sliderVisible=false; // determined at reset time
-    bool godleyOverridden;
-    std::string name; // name of this variable
-    classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
@@ -141,14 +147,18 @@ namespace minsky
     using ITensorVal::hypercube;
                                                                            
     VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
-      m_type(type), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
-
-    VariableValue(VariableType::Type type, const VariableValue& vv):  VariableValue(vv) {
-      m_type=type;
-      m_idx=-1;
+      m_type(type)
+    {
+      this->init=init;
+      this->name=utf_to_utf<char>(name);
+      m_scope=scope(group,name);
     }
 
-    //VariableValue(const VariableValue&)=delete;
+    VariableValue(VariableType::Type type, const VariableValue& vv):  VariableValueData(vv) {
+      m_type=type;
+    }
+
+    VariableValue(const VariableValue&)=delete;
     void operator=(const VariableValue&)=delete;
     
     //~VariableValue() {if (!name.empty() && m_idx>=0) std::cout<<"disposing of "<<name<<" @ "<<m_idx<<std::endl;}
@@ -162,9 +172,6 @@ namespace minsky
 
     std::string valueId() const {return valueIdFromScope(m_scope.lock(),name);}
 
-    /// for importing CSV files
-    CSVDialog csvDialog;
-    
     void exportAsCSV(const std::string& filename, const std::string& comment="") const;
 
     Summary summary() const;

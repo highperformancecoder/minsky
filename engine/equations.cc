@@ -394,7 +394,7 @@ namespace MathDAG
                 for (size_t i=0; i<arguments.size(); ++i)
                   if (arguments[i].empty())
                     {
-                      argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
+                      argIdx[i].push_back(VariableValuePtr(VariableValue::tempFlow));
                       argIdx[i].back()->allocValue();
                     }
                 ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0], *argIdx[1][0])); 
@@ -1024,7 +1024,7 @@ namespace MathDAG
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
-          integrals.back().setInput(*iInput->rhs->addEvalOps(equations));
+          integrals.back().setInput(iInput->rhs->addEvalOps(equations));
       }
     assert(minsky.variableValues.validEntries());
   }

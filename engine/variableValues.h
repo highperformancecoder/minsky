@@ -39,8 +39,7 @@ namespace minsky
     VariableValuePtr(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()):
       std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,name,init))
     {get()->m_scope=scope(group,name);}
-    template <class... A>
-    VariableValuePtr(A... a): std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(std::forward<A>(a)...)) {}
+    VariableValuePtr(VariableType::Type type, const VariableValue& vv): std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,vv)) {}
   };
 
   struct VariableValues: public ConstMap<std::string, VariableValuePtr>

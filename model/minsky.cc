@@ -130,9 +130,9 @@ namespace minsky
     equations.clear();
     integrals.clear();
     for (auto& i: variableValues)
-      if (i.second.use_count()>1)
-        cout<<"multiple refs to: "<<i.second->name<<endl;
+      assert(i.second.use_count()==1);
     variableValues.clear();
+    variablePane.update();
     maxValue.clear();
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
