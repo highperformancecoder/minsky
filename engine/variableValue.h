@@ -161,8 +161,6 @@ namespace minsky
     VariableValue(const VariableValue&)=delete;
     void operator=(const VariableValue&)=delete;
     
-    //~VariableValue() {if (!name.empty() && m_idx>=0) std::cout<<"disposing of "<<name<<" @ "<<m_idx<<std::endl;}
-    
     using ITensorVal::operator=;
     VariableValue& operator=(TensorVal const&);
     VariableValue& operator=(const ITensor& x) override;

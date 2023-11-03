@@ -129,8 +129,6 @@ namespace minsky
     canvas.openGroupInCanvas(model);
     equations.clear();
     integrals.clear();
-    for (auto& i: variableValues)
-      assert(i.second.use_count()==1);
     variableValues.clear();
     variablePane.update();
     maxValue.clear();
@@ -1042,6 +1040,8 @@ namespace minsky
                 "Once you save this file, you may not be able to open this file"
                 " in older versions of Minsky.");
     }
+
+    LocalMinsky lm(*this); // populateMinsky resets the local minsky pointer, so restore it here
     
     // try balancing all Godley tables
     try

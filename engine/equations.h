@@ -125,7 +125,7 @@ namespace MathDAG
     // SystemOfEquations via a templated method.
     virtual std::shared_ptr<Node> derivative(SystemOfEquations&) const=0;
     /// reference to where this node's value is stored
-    VariableValuePtr result;//, tmpResult{VariableValue::tempFlow};
+    VariableValuePtr result;
   };
 
   typedef std::shared_ptr<Node> NodePtr;

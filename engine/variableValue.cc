@@ -110,7 +110,6 @@ namespace minsky
       case parameter:
         m_idx=ValueVector::flowVars.size();
         ValueVector::flowVars.resize(ValueVector::flowVars.size()+size());
-        //cout<<"allocating "<<name<<" @ "<<m_idx<<endl;
         break;
       case stock:
       case integral:
