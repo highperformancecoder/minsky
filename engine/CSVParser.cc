@@ -739,7 +739,8 @@ namespace minsky
                   for (auto c: *field)
                     if (c==spec.decSeparator)
                       s+='.';
-                    else if (s.empty() && !isdigit(c))
+                    else if ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
+                             ((s=="-"||s=="+") && !isdigit(c)))
                       continue; // skip non-numeric prefix
                     else if (!isspace(c) && c!='.' && c!=',')
                       s+=c;                    

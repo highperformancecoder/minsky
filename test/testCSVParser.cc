@@ -204,9 +204,9 @@ SUITE(CSVParser)
       string input="A comment\n"
         ";;foobar\n" // horizontal dim name
         "foo;bar;A;B;C\n"
-        "A;A;1.2;1.3;1.4\n"
-        "A;B;1;2;3\n"
-        "B;A;3;2;1\n";
+        "A;A;1.2;1.3;-1.4\n"
+        "A;B;1;2;£3\n"
+        "B;A;£-3.1;.2;-£5\n";
 
       istringstream is(input);
       
@@ -236,7 +236,7 @@ SUITE(CSVParser)
       CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
       CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
       CHECK_EQUAL(12, v.tensorInit.size());
-      CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
+      CHECK_ARRAY_CLOSE(vector<double>({1.2,-3.1,1,-1,1.3,.2,2,-1,-1.4,-5,3,-1}),
                         v.tensorInit, 12, 1e-4);
     }
   
