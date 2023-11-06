@@ -307,7 +307,7 @@ export class KeyBindingsManager {
   private static async deleteKey(payload: MinskyProcessPayload) {
     const { mouseX, mouseY } = payload;
 
-    if (!minsky.canvas.selection.empty()) {
+    if (!await minsky.canvas.selection.empty()) {
       minsky.cut();
       return;
     }
