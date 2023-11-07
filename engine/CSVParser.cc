@@ -219,8 +219,17 @@ namespace
         charsProcd+=2;
         return r;
       }
-    // strip any leading non-numerical characters ([^0-9.,])
-    auto n=s.find_first_of("0123456789,.");
+    if (s.empty()) return nan(""); // treat empty cell as a missing value
+    // first try to read the cell as a number
+    try {
+      double r=stod(s,&charsProcd);
+      bool success=charsProcd==s.size();
+      if (success)
+        return r;
+    }
+    catch (...) {}
+    // if not, then strip any leading non-numerical characters ([^0-9.,+-])
+    auto n=s.find_first_of("0123456789,.+-");
     return stod(s.substr(n),&charsProcd);
   }
 
@@ -243,7 +252,7 @@ namespace
         {
           if (!v[i].empty())
             {
-              size_t c;
+              size_t c=0;
               auto s=stripWSAndDecimalSep(v[i]);
               quotedStoD(s,c);
               if (c!=s.size())
@@ -270,7 +279,7 @@ namespace minsky
 {
   bool isNumerical(const string& s)
   {
-    size_t charsProcd;
+    size_t charsProcd=0;
     string stripped=stripWSAndDecimalSep(s);
     try
       {
@@ -328,7 +337,6 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     string buf;
     size_t row=0;
     size_t firstEmpty=numeric_limits<size_t>::max();
-    dimensionCols.clear();
 
     m_nRowAxes=0;
     for (; getline(input, buf) && row<CSVDialog::numInitialLines; ++row)
@@ -378,8 +386,11 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     if (firstEmpty==m_nRowAxes) ++m_nRowAxes; // allow for possible colAxes header line
     headerRow=nRowAxes()>0? nRowAxes()-1: 0;
     size_t i=0;
+    dimensionCols.clear();
     for (; i<nColAxes(); ++i) dimensionCols.insert(i);
+    dataCols.clear();
     for (; i<nCols; ++i) dataCols.insert(i);
+    return;
 }
 
 void DataSpec::guessRemainder(std::istream& input, char sep)
@@ -455,7 +466,7 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
     try
       {
         // only select value type if the datafield is a pure double
-        size_t c;
+        size_t c=0;
         string s=stripWSAndDecimalSep(data[col]);
         quotedStoD(s, c);
         if (c!=s.size()) throw 0; // try parsing as time
@@ -659,11 +670,17 @@ namespace minsky
             // legacy situation where all data columns are to the right
             if (spec.dataCols.empty())
               for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
+                {
+                  col=i;
                   horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                }
             else
               // explicitly specified data columns
               for (auto i: spec.dataCols)
-                horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                {
+                  col=i;
+                  horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                }
             hc.xvectors.emplace_back(spec.horizontalDimName);
             hc.xvectors.back().dimension=spec.horizontalDimension;
             set<typename Key::value_type> uniqueLabels;
@@ -918,7 +935,10 @@ namespace minsky
       }
     catch (const std::exception& ex)
       {
-        throw std::runtime_error(string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col));
+        auto msg=string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col);
+        if (col<spec.dimensionNames.size())
+          msg+=" ("+spec.dimensionNames[col]+")";
+        throw std::runtime_error(msg);
       }
   }
   
