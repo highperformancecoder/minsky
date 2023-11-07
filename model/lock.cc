@@ -135,6 +135,13 @@ namespace minsky
     return m_ports[1]->units(check);
   }
 
+  void Lock::applyLockedStateToRavel() const
+  {
+    if (auto ravel=ravelInput())
+      ravel->applyState(lockedState);
+  }
+
+
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Lock);

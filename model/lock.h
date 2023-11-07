@@ -44,6 +44,7 @@ namespace minsky
     Units units(bool) const override;
     /// Ravel this is connected to. nullptr if not connected to a Ravel
     Ravel* ravelInput() const;
+    void applyLockedStateToRavel() const;
   };
 }
 

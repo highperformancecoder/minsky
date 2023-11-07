@@ -894,7 +894,12 @@ export class ContextMenuManager {
       new MenuItem({
         label: ravel.locked()? 'Unlock': 'Lock',
         click: async () => {ravel.toggleLocked();}
-      })
+      }),
+      new MenuItem({
+        label: 'Apply state to Ravel',
+        click: async () => {ravel.applyLockedStateToRavel();}
+      }),
+      
     ];
   }
 
