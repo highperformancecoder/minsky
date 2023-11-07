@@ -223,8 +223,7 @@ namespace
     // first try to read the cell as a number
     try {
       double r=stod(s,&charsProcd);
-      bool success=charsProcd==s.size();
-      if (success)
+      if (charsProcd==s.size())
         return r;
     }
     catch (...) {}

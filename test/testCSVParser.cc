@@ -574,9 +574,10 @@ SUITE(CSVParser)
       CHECK(isNumerical("nan"));
       CHECK(isNumerical("inf"));
       CHECK(isNumerical("inf"));
-      // I have no idea why these are failing!!
-      //      CHECK(isNumerical("$100"));
-      //      CHECK(isNumerical("£100"));
+      // leading nonumerical strings are considered non-numerical, but
+      // will be parsed as numbers anyway if in data column
+      CHECK(!isNumerical("$100"));
+      CHECK(!isNumerical("£100"));
       CHECK(!isNumerical("hello"));
     }
 }
