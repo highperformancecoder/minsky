@@ -182,7 +182,7 @@ SUITE(CSVParser)
       }
 
       spec.quote='\'';
-      spec.dataRowOffset=0;
+      spec.setDataArea(0,4);
       loadFile();
       classifyColumns();
       CHECK_EQUAL(4,spec.numCols);
