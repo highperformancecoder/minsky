@@ -99,6 +99,7 @@ SUITE(CSVParser)
       CHECK_EQUAL(2,nColAxes());
       CHECK_EQUAL(0,headerRow);
       CHECK((set<unsigned>{0,1}==dimensionCols));
+      CHECK((set<unsigned>{2}==dataCols));
     }
     
   TEST_FIXTURE(DataSpec,reportFromCSV)
