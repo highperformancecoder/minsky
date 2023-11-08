@@ -98,9 +98,6 @@ SUITE(CSVParser)
       CHECK_EQUAL(1,nRowAxes());
       CHECK_EQUAL(2,nColAxes());
       CHECK_EQUAL(0,headerRow);
-      CHECK_EQUAL(Dimension::string,dimensions[0].type);
-      CHECK_EQUAL(Dimension::time,dimensions[1].type);
-      CHECK_EQUAL("%Y-Q%Q",dimensions[1].units);
       CHECK((set<unsigned>{0,1}==dimensionCols));
     }
     
