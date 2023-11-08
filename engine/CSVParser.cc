@@ -435,65 +435,6 @@ void DataSpec::guessFromStream(std::istream& input)
     else
       guessRemainder(inputCopy,' ');
   }
-
-  if (dimensionNames.empty())
-  {
-    //fill in guessed dimension names
-    istringstream inputCopy(streamBuf.str());
-    guessDimensionsFromStream(inputCopy);
-  }
-}
-
-void DataSpec::guessDimensionsFromStream(std::istream& i)
-{
-  if (separator==' ')
-    guessDimensionsFromStream(i,SpaceSeparatorParser(escape,quote));
-  else
-    guessDimensionsFromStream(i,Parser(escape,separator,quote));
-}
-    
-template <class T>
-void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
-{
-  string buf;
-  size_t row=0;
-  for (; row<=headerRow; ++row) getline(input, buf);
-  boost::tokenizer<T> tok(buf.begin(),buf.end(), tf);
-  dimensionNames.assign(tok.begin(), tok.end());
-  for (;row<=nRowAxes(); ++row) getline(input, buf);
-  vector<string> data(tok.begin(),tok.end());
-  for (size_t col=0; col<data.size() && col<nColAxes(); ++col)
-    try
-      {
-        // only select value type if the datafield is a pure double
-        size_t c=0;
-        string s=stripWSAndDecimalSep(data[col]);
-        quotedStoD(s, c);
-        if (c!=s.size()) throw 0; // try parsing as time
-        dimensions.emplace_back(Dimension::value,"");
-      }
-    catch (...)
-      {
-        try
-          {
-            Dimension dim(Dimension::time,"%Y-Q%Q");
-            anyVal(dim, data[col]);
-            dimensions.push_back(dim);
-          }
-        catch (...)
-          {
-            try
-              {
-                Dimension dim(Dimension::time,"");
-                anyVal(dim, data[col]);
-                dimensions.push_back(dim);
-              }
-            catch (...)
-              {
-                dimensions.emplace_back(Dimension::string,"");
-              }
-          }
-      }
 }
 
  void DataSpec::populateFromRavelMetadata(const std::string& metadata, size_t row)
@@ -875,10 +816,13 @@ namespace minsky
                 size_t idx=0;
                 assert (hc.rank()<=i.first.size());
                 assert(dimLabels.size()==hc.rank());
-                for (int j=hc.rank()-1; j>=0; --j)
+                for (int j=hc.rank()-1, k=i.first.size(); j>=0; --j, --k)
                   {
-                    assert(dimLabels[j].count(i.first[j]));
-                    idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                    auto dimLabel=dimLabels[j].find(i.first[k]);
+                    while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
+                      dimLabel=dimLabels[j].find(i.first[--k]);
+                    assert(dimLabel!=dimLabels[j].end());
+                    idx = (idx*dims[j]) + dimLabel->second;
                   }
                 vv.tensorInit[idx]=i.second;
                 ++minsky().progressState;
@@ -897,12 +841,15 @@ namespace minsky
               for (auto& i: tmpData)
                 {
                   size_t idx=0;
-                  assert (dims.size()==i.first.size());
+                  assert (dims.size()<=i.first.size());
                   assert(dimLabels.size()==dims.size());
-                  for (int j=dims.size()-1; j>=0; --j)
+                  for (int j=dims.size()-1, k=i.first.size()-1; j>=0; --j)
                     {
-                      assert(dimLabels[j].count(i.first[j]));
-                      idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                      auto dimLabel=dimLabels[j].find(i.first[k]);
+                      while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
+                        dimLabel=dimLabels[j].find(i.first[--k]);
+                      assert(dimLabel!=dimLabels[j].end());
+                      idx = (idx*dims[j]) + dimLabel->second;
                     }
                   if (!isnan(i.second))
                     indexValue.emplace(idx, i.second);

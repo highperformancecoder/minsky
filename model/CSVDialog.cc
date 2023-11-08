@@ -223,6 +223,7 @@ void CSVDialog::guessSpecAndLoadFile()
   string fname = url.find("://")==string::npos? url: loadWebFile(url);
   spec.guessFromFile(fname);
   loadFileFromName(fname);
+  populateHeaders();
   classifyColumns();
 }
 
@@ -440,14 +441,14 @@ std::vector<std::vector<std::string>> CSVDialog::parseLines()
 void CSVDialog::populateHeaders()
 {
   auto parsedLines=parseLines();
-  if (spec.headerRow>parsedLines.size()) return;
+  if (spec.headerRow>=parsedLines.size()) return;
   spec.dimensionNames=parsedLines[spec.headerRow];
 }
 
 void CSVDialog::populateHeader(size_t col)
 {
   auto parsedLines=parseLines();
-  if (spec.headerRow>parsedLines.size()) return;
+  if (spec.headerRow>=parsedLines.size()) return;
   auto& headers=parsedLines[spec.headerRow];
   if (col<headers.size())
     spec.dimensionNames[col]=headers[col];
