@@ -815,7 +815,7 @@ namespace minsky
                 size_t idx=0;
                 assert (hc.rank()<=i.first.size());
                 assert(dimLabels.size()==hc.rank());
-                for (int j=hc.rank()-1, k=i.first.size(); j>=0; --j, --k)
+                for (int j=hc.rank()-1, k=i.first.size()-1; j>=0 && k>=0; --j, --k)
                   {
                     auto dimLabel=dimLabels[j].find(i.first[k]);
                     while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
