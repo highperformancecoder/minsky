@@ -187,19 +187,21 @@ restService.setBookmarkRefreshCallback(()=>{
 export function sanityCheck()
 {
   if (backendSync("minsky.minskyVersion")!==version)
-    dialog.showMessageBoxSync({
+    setTimeout(()=>{dialog.showMessageBoxSync({
       message: "Mismatch of front end and back end versions",
       type: 'warning',
-    });
+    });},1000);
 
   if (backendSync("minsky.ravelExpired")) {
-    const button=dialog.showMessageBoxSync({
-      message: "Your Ravel license has expired",
-      type: 'warning',
-      buttons: ["OK","Upgrade"],
-    });
-    if (button==1)
-      shell.openExternal("https://ravelation.hpcoders.com.au");
+    setTimeout(()=>{
+      const button=dialog.showMessageBoxSync({
+        message: "Your Ravel license has expired",
+        type: 'warning',
+        buttons: ["OK","Upgrade"],
+      });
+      if (button==1)
+        shell.openExternal("https://ravelation.hpcoders.com.au");
+    },1000);
   }
 }
 
