@@ -22,6 +22,9 @@ export class ElectronService {
       CppClass.backend=async (...args)=>{
         return await this.ipcRenderer.invoke(events.BACKEND, ...args);
       }
+      CppClass.backendSync=async (...args)=>{
+        return await this.ipcRenderer.invoke(events.BACKEND_SYNC, ...args);
+      }
     }
     else
       this.on = (...args)=>{};

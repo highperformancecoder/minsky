@@ -43,6 +43,10 @@ ipcMain.handle(events.BACKEND, async (event, ...args: any[])=>{
   return await CppClass.backend(...args);
 });
 
+ipcMain.handle(events.BACKEND_SYNC, async (event, ...args: any[])=>{
+  return CppClass.backendSync(...args);
+});
+
 ipcMain.handle(events.LOG, (event, msg:string)=>{console.log(msg);});
 
 ipcMain.handle('cancel-progress',()=>{restService.cancelProgress();});
