@@ -17,34 +17,30 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CSVDialog.h"                                                           
-#include "group.h"                                                               
+#include "CSVDialog.h"
+#include "group.h"
 #include "selection.h"
 #include "lasso.h"
 #include <pango.h>
 
 #include "CSVDialog.rcd"
-#include "minsky_epilogue.h"                                                     
+#include "minsky_epilogue.h"
 #include "zStream.h"
 #include "dimension.h"
-                                                                                 
-#include <boost/asio/ssl/error.hpp>                                              
-#include <boost/asio/ssl/stream.hpp>                                             
-#include <boost/asio.hpp>                                                        
-#include <boost/beast/core.hpp>                                                  
-#include <boost/beast/http.hpp>                                                  
-#include <boost/beast/version.hpp>  
-                                                                                        
-#include <boost/filesystem.hpp>                                                  
-                                                                                 
-#include "certify/include/boost/certify/extensions.hpp"                          
-#include "certify/include/boost/certify/https_verification.hpp"                  
-                                                                                 
+#include <boost/asio/ssl/error.hpp>
+#include <boost/asio/ssl/stream.hpp>
+#include <boost/asio.hpp>
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/version.hpp>
+#include <boost/filesystem.hpp>
+#include "certify/include/boost/certify/extensions.hpp"
+#include "certify/include/boost/certify/https_verification.hpp"
 #include <cstdlib>
 #include <chrono>
-#include <iostream>                                                              
-#include <string>                                                                
-#include <stdexcept>                                                                                                                         
+#include <iostream>
+#include <string>
+#include <stdexcept>
 #include <sstream>      
 #include <regex>    
 
@@ -227,6 +223,7 @@ void CSVDialog::guessSpecAndLoadFile()
   string fname = url.find("://")==string::npos? url: loadWebFile(url);
   spec.guessFromFile(fname);
   loadFileFromName(fname);
+  populateHeaders();
   classifyColumns();
 }
 
@@ -444,14 +441,14 @@ std::vector<std::vector<std::string>> CSVDialog::parseLines()
 void CSVDialog::populateHeaders()
 {
   auto parsedLines=parseLines();
-  if (spec.headerRow>parsedLines.size()) return;
+  if (spec.headerRow>=parsedLines.size()) return;
   spec.dimensionNames=parsedLines[spec.headerRow];
 }
 
 void CSVDialog::populateHeader(size_t col)
 {
   auto parsedLines=parseLines();
-  if (spec.headerRow>parsedLines.size()) return;
+  if (spec.headerRow>=parsedLines.size()) return;
   auto& headers=parsedLines[spec.headerRow];
   if (col<headers.size())
     spec.dimensionNames[col]=headers[col];
@@ -466,7 +463,7 @@ void CSVDialog::classifyColumns()
   for (auto col=0; col<spec.numCols; ++col)
     {
       bool entryFound=false, timeFound=true, numberFound=true;
-      for (size_t row=spec.dataRowOffset; row<parsedLines.size(); ++row)
+      for (size_t row=spec.nRowAxes(); row<parsedLines.size(); ++row)
         if (col<parsedLines[row].size() && !parsedLines[row][col].empty())
           {
             entryFound=true;
@@ -493,6 +490,8 @@ void CSVDialog::classifyColumns()
               spec.dimensions[col].units.clear();
             }
         }
+      else if (col>=spec.nColAxes())
+        spec.dataCols.insert(col);
     }
 }
 

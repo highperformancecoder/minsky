@@ -485,7 +485,7 @@ void Sheet::draw(cairo_t* cairo) const
                 cairo_line_to(cairo,x,0.5*m_height);
                 cairo_stroke(cairo);
               }
-              for (size_t i=adjustRowAndFinish.startRow; i<value->size(); ++i)
+              for (size_t i=adjustRowAndFinish.startRow; i<dims[0]; ++i)
                 {
                   if (adjustRowAndFinish(i,y)) break;
                   cairo_move_to(cairo,x,y);

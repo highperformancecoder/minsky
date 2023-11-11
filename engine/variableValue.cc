@@ -83,7 +83,8 @@ namespace minsky
     index(x.index());
     hypercube(x.hypercube());
     assert(idxInRange());
-    memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
+    if (x.size())
+      memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
     return *this;
   }
 

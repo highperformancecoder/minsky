@@ -274,7 +274,6 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       // emulate old behaviour, if no datacols specified, all columns to the right of dataColOffset are data
       for (var ii = this.dialogState.dataColOffset as number; ii < this.colType.length; ++ii)
         this.colType[ii] = ColType.data;
-    this.electronService.log(JSON5.stringify(this.colType));
   }
 
   async parseLines() {
