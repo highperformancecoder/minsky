@@ -571,11 +571,13 @@ namespace minsky
         }
     scalePlot();
 
+    
     if (newXticks.size()==1) // nothing to disambiguate
       xticks=std::move(newXticks.front());
     else
       {
         xticks.clear();
+        bool maxRangeAssigned=false;
         // now work out which xticks we'll use See Ravel #173
         for (auto& i: newXticks)
           if (i.empty())
@@ -583,10 +585,23 @@ namespace minsky
               xticks.clear();
               break; // value axes trump all
             }
-        // else select an xticks range that covers most of [minx,maxx]
-          else if (i.back().first>0.7*(maxx-minx)+minx && i.front().first<0.3*(maxx-minx)+minx)
+          else if (xticks.empty())
             xticks=std::move(i);
+          else
+            {// expand range of tick labels by each pen's tick labels in turn
+              auto j=i.begin();
+              for (; j!=i.end(); ++j)
+                if (j->first>=xticks.front().first)
+                  break;
+              xticks.insert(xticks.begin(), i.begin(), j);
+              j=i.end();
+              for (; j!=i.begin(); --j)
+                if ((j-1)->first<=xticks.back().first)
+                  break;
+              xticks.insert(xticks.end(), j, i.end());
+            }
       }
+
   }
 
   

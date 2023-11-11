@@ -4,6 +4,7 @@
 *.exe
 *.xcd
 *.rcd
+*.tcd
 *~
 *.aux
 *.dvi

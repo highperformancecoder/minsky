@@ -98,10 +98,8 @@ SUITE(CSVParser)
       CHECK_EQUAL(1,nRowAxes());
       CHECK_EQUAL(2,nColAxes());
       CHECK_EQUAL(0,headerRow);
-      CHECK_EQUAL(Dimension::string,dimensions[0].type);
-      CHECK_EQUAL(Dimension::time,dimensions[1].type);
-      CHECK_EQUAL("%Y-Q%Q",dimensions[1].units);
       CHECK((set<unsigned>{0,1}==dimensionCols));
+      CHECK((set<unsigned>{2}==dataCols));
     }
     
   TEST_FIXTURE(DataSpec,reportFromCSV)
@@ -182,7 +180,7 @@ SUITE(CSVParser)
       }
 
       spec.quote='\'';
-      spec.dataRowOffset=0;
+      spec.setDataArea(0,4);
       loadFile();
       classifyColumns();
       CHECK_EQUAL(4,spec.numCols);
@@ -563,4 +561,21 @@ SUITE(CSVParser)
       CHECK_EQUAL("'fo&'o','b&'ar'",testEscapeDoubledQuotes("'fo''o','b''ar'"));
     }
   
+  TEST(isNumerical)
+    {
+      CHECK(isNumerical(""));
+      CHECK(isNumerical("1.2"));
+      CHECK(isNumerical("'1.2'"));
+      CHECK(isNumerical("-1.2"));
+      CHECK(isNumerical("1e2"));
+      CHECK(isNumerical("NaN"));
+      CHECK(isNumerical("nan"));
+      CHECK(isNumerical("inf"));
+      CHECK(isNumerical("inf"));
+      // leading nonumerical strings are considered non-numerical, but
+      // will be parsed as numbers anyway if in data column
+      CHECK(!isNumerical("$100"));
+      CHECK(!isNumerical("£100"));
+      CHECK(!isNumerical("hello"));
+    }
 }

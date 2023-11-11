@@ -795,7 +795,8 @@ namespace MathDAG
 
   VariableValuePtr LockDAG::addEvalOps(EvalOpVector& ev, const VariableValuePtr& r)
   {
-    if (!result)
+    assert(result);
+    if (result->type()==VariableType::undefined)
       {
         if (r && r->isFlowVar())
           result=r;

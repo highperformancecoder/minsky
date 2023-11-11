@@ -88,11 +88,6 @@ namespace minsky
     template <class T>
     void givenTFguessRemainder(std::istream&, const T& tf);
 
-    template <class T>
-    void guessDimensionsFromStream(std::istream&, const T& tf);
-
-    void guessDimensionsFromStream(std::istream&);
-        
     /// figure out the tokenizer function and call givenTFguessRemainder
     void guessRemainder(std::istream&, char separator);
   };
