@@ -370,7 +370,7 @@ namespace minsky
                                               });
           }
         if (minsky().reset_flag())
-          minsky().requestReset(); // postpone reset whilst mousing
+          minsky().resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500); // postpone reset whilst mousing
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 

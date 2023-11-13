@@ -87,7 +87,7 @@ namespace minsky
       return type()==tempFlow || type()==undefined;}
     /// returns true if variable's data is allocated on the flowVariables vector
     bool isFlowVar() const {
-      return m_type!=stock && m_type!=integral;
+      return m_type!=stock && m_type!=integral && m_type!=undefined;
     }
     bool isZero() const {
       return m_type==constant && (init.empty() || init=="0");
