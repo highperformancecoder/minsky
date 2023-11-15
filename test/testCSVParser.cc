@@ -241,15 +241,15 @@ SUITE(CSVParser)
    TEST_FIXTURE(DataSpec,embeddedNewline)
     {
       string input="A comment\n"
-        ";;foobar\n" // horizontal dim name
-        "foo;bar;A;B;C\n"
-        "A;'A\nB';1.2;1.3;1.4\n"
-        "A;B;1;'2\n.0';3\n"
-        "B;AB;3;2;1\n";
+        ",,foobar\n" // horizontal dim name
+        "foo,bar,A,B,C\n"
+        "A,'A\nB',1.2,1.3,'1,000'\n"
+        "A,B,1,'2\n.0',3\n"
+        "B,AB,3,2,1\n";
 
       istringstream is(input);
       
-      separator=';';
+      separator=',';
       quote='\'';
       setDataArea(3,2);
       numCols=5;
@@ -276,7 +276,7 @@ SUITE(CSVParser)
       CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
       CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
       CHECK_EQUAL(12, v.tensorInit.size());
-      CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
+      CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1000,1,3,-1}),
                         v.tensorInit, 12, 1e-4);
     }
  

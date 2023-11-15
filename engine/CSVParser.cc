@@ -540,15 +540,9 @@ namespace minsky
     chomp(line);
     while (r)
       {
-        // count the number of quote characters after last separator. If odd, then line is not terminated correctly
-        auto n=line.rfind(spec.separator);
-        if (n==string::npos)
-          n=0;
-        else
-          ++n;
         int quoteCount=0;
-        for (; n<line.size(); ++n)
-          if (line[n]==spec.quote)
+        for (auto i: line)
+          if (i==spec.quote)
             ++quoteCount;
         if (quoteCount%2==0) break; // data line correctly terminated
         string buf;
