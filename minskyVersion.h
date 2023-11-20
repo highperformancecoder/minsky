@@ -1,1 +1,1 @@
-#define MINSKY_VERSION "3.2.0-alpha.21"
+#define MINSKY_VERSION "3.2.0-alpha.22"
