@@ -876,17 +876,19 @@ namespace minsky
     GeneralTensorOp<OperationType::moment>(): civita::ReductionOp
     ([this](double& x,double y,std::size_t) {
       ++count;
-      x+=pow(x-mean, exponent);
+      x+=pow(y-mean, exponent);
     },0) {}
     void setArgument(const TensorPtr& arg, const ITensor::Args& args) override {
       civita::ReductionOp::setArgument(arg,args);
+      average.setArgument(arg,args);
       exponent=args.val;
     }
     double operator[](size_t i) const override
     {
       count=0;
       mean=average[i];
-      return civita::ReductionOp::operator[](i)/count;
+      auto sum=civita::ReductionOp::operator[](i);
+      return sum/count;
     }
   };
 

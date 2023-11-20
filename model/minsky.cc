@@ -1321,6 +1321,7 @@ namespace minsky
         command!="minsky.setGroupIconResource" &&
         command!="minsky.setLockIconResource" &&
         command!="minsky.setRavelIconResource" &&
+        command!="minsky.histogramResource.setResource" &&
         command!="minsky.setAutoSaveFile" &&
         command!="minsky.step" &&
         command!="minsky.running" &&
