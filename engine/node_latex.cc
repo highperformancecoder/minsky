@@ -374,6 +374,116 @@ namespace MathDAG
   }
 
   template <>
+  ostream& OperationDAG<OperationType::covariance>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      return o<<"{\\mathrm cov}\\left("<<arguments[0][0]->latex()<<
+        ","<<arguments[1][0]<<"\\right)";
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::rho>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      return o<<"\\rho\\left("<<arguments[0][0]->latex()<<
+        ","<<arguments[1][0]<<"\\right)";
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::size>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        size_t dim=numeric_limits<size_t>::max();
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          if (auto vv=arguments[0][0]->result)
+            {
+              for (auto& i: vv->hypercube().xvectors)
+                if (i.name==op->axis)
+                  {
+                    dim=&i-&vv->hypercube().xvectors.front();
+                    break;
+                  }
+              if (dim<vv->rank())
+                return o<<"\\dim\\left("<<arguments[0][0]->latex()<<","<<dim<<"\\right)";
+            }
+        return o<<"\\prod_i(\\dim("<<arguments[0][0]->latex()<<",i))";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::shape>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"shape("<<arguments[0][0]->latex()<<")";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::mean>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"\\left\\langle"<<arguments[0][0]->latex()<<"\\right\\rangle";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::median>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"{\\mathrm median}\\left("<<arguments[0][0]->latex()<<"\\right)";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::stdDev>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"\\sigma("<<arguments[0][0]->latex()<<")";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::moment>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        double exponent=1;
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          exponent=op->arg;
+        return o<<"\\left\\langle\\Delta\\left("<<arguments[0][0]->latex()<<"\\right)^"<<exponent<<"\\right\\rangle";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::histogram>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        size_t nBins=1;
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          nBins=op->arg;
+        return o<<"{\\mathrm histogram}\\left("<<arguments[0][0]->latex()<<","<<nBins<<"\\right)";
+      }
+    return o<<"0";
+  }
+
+  
+  template <>
   ostream& OperationDAG<OperationType::time>::latex(ostream& o) const
   {
     return o<<" t ";

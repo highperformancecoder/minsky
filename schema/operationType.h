@@ -39,7 +39,7 @@ namespace minsky
                and_, or_,
                // single wire binops
                log, pow, polygamma, 
-               lt, le, eq, 
+               lt, le, eq,
                userFunction,
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
@@ -50,12 +50,14 @@ namespace minsky
                // scans
                runningSum, runningProduct, difference,
                // other tensor ops
-               innerProduct, outerProduct, index, gather, meld, merge, slice,
+               innerProduct, outerProduct, index, gather, meld, merge, slice, size, shape, 
+               // statistics
+               mean, median, stdDev, moment, histogram, covariance, rho,
                numOps // last operation, for iteration purposes
     };
     /// return the symbolic name of \a type
     static std::string typeName(int type);
-    enum Group {general, constop, binop, function, reduction, scan, tensor};
+    enum Group {general, constop, binop, function, reduction, scan, tensor, statistics};
     static Group classify(Type t);
   };
 

@@ -210,7 +210,7 @@ namespace MathDAG
       return false; // cycle detected, break
     switch (OperationType::classify(type()))
       {
-      case reduction: case scan: case tensor:
+      case reduction: case scan: case tensor: case statistics:
         return true;
       case general: case binop: case constop: case function:
         for (auto& i: arguments)

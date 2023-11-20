@@ -738,7 +738,7 @@ namespace minsky
                           }
                         },0) {}
   };
-  
+
   template <>
   struct GeneralTensorOp<OperationType::infIndex>: public civita::ReductionOp
   {
@@ -752,6 +752,155 @@ namespace minsky
                         },0) {}
   };
 
+  template <>
+  struct GeneralTensorOp<OperationType::size>: public civita::ITensor
+  {
+    TensorPtr arg;
+    size_t dimension=numeric_limits<size_t>::max();
+    void setArgument(const TensorPtr& a,const ITensor::Args& args) override
+    {
+      arg=a;
+      if (a)
+        {
+          for (size_t i=0; i<arg->rank(); ++i)
+          if (arg->hypercube().xvectors[i].name==args.dimension)
+            {
+              dimension=i;
+              break;
+            }
+        }
+      else
+        dimension=numeric_limits<size_t>::max();
+    }
+    double operator[](std::size_t) const override 
+    {return dimension<arg->rank()? arg->hypercube().xvectors[dimension].size(): arg->size();}
+    civita::ITensor::Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  template <>
+  struct GeneralTensorOp<OperationType::shape>: public civita::ITensor
+  {
+    TensorPtr arg;
+    int dimension=-1;
+    void setArgument(const TensorPtr& a,const ITensor::Args& args) override
+    {
+      arg=a;
+      if (a) 
+        hypercube({arg->rank()});
+      else
+        hypercube({});
+    }
+    double operator[](std::size_t i) const override
+    {return arg? arg->hypercube().xvectors[i].size(): nan("");}
+    civita::ITensor::Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  template <> struct GeneralTensorOp<OperationType::covariance>: public civita::BinOp
+  {
+    mutable double sumXY, sumX, sumY;
+    mutable size_t count;
+    GeneralTensorOp<OperationType::covariance>():
+      civita::BinOp([this](double x, double y) {
+        sumXY+=x*y;
+        sumX+=x;
+        sumY+=y;
+        count++;
+        return 0; // return value will be discarded
+      }) {}
+
+    double operator[](size_t i) const override
+    {
+      sumXY=sumX=sumY=0;
+      count=0;
+      civita::BinOp::operator[](i);
+      double invCount=1.0/count;
+      return (sumXY-sumX*sumY*invCount)*invCount;
+    }
+    Timestamp timestamp() const override
+    {return max(arg1->timestamp(), arg2->timestamp());}
+  };
+  
+  template <> struct GeneralTensorOp<OperationType::rho>: public civita::BinOp
+  {
+    mutable double sumXY, sumX, sumY, sumXsq, sumYsq;
+    mutable size_t count;
+    GeneralTensorOp<OperationType::covariance>():
+      civita::BinOp([this](double x, double y) {
+        sumXY+=x*y;
+        sumX+=x;
+        sumY+=y;
+        sumXsq+=x*x;
+        sumYsq+=y*y;
+        count++;
+        return 0; // return value will be discarded
+      }) {}
+
+    double operator[](size_t i) const override
+    {
+      sumXY=sumX=sumY=sumXsq=sumYsq=0;
+      count=0;
+      civita::BinOp::operator[](i);
+      double invCount=1.0/count;
+      return  (sumXY-sumX*sumY*invCount)/
+        (invCount*(sumXsq-sumX*sumX*invCount)*(sumYsq-sumY*sumY*invCount));
+    }
+    Timestamp timestamp() const override
+    {return max(arg1->timestamp(), arg2->timestamp());}
+  };
+
+  template <> struct GeneralTensorOp<OperationType::mean>: public civita::Average {};
+  template <> struct GeneralTensorOp<OperationType::stdDev>: public civita::StdDeviation {};
+  
+  template <> struct GeneralTensorOp<OperationType::median>: public civita::ReductionOp
+  {
+    mutable vector<double> values;
+    GeneralTensorOp<OperationType::median>():
+      civita::ReductionOp([this](double&,double y,std::size_t) {values.push_back(y);},0) {}
+    double operator[](size_t i) const override
+    {
+      values.clear();
+      civita::ReductionOp::operator[](i);
+      if (values.empty()) return nan("");
+      sort(values.begin(),values.end());
+      size_t halfIndex=values.size()/2;
+      return (values.size()&1)? values[halfIndex]: 0.5*(values[halfIndex-1]+values[halfIndex]);
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::moment>: public civita::ReductionOp
+  {
+    double exponent;
+    mutable double mean;
+    mutable size_t count;
+    civita::Average average;
+    GeneralTensorOp<OperationType::moment>(): civita::ReductionOp
+    ([this](double& x,double y,std::size_t) {
+      ++count;
+      x+=pow(x-mean, exponent);
+    },0) {}
+    void setArgument(const TensorPtr& arg, const ITensor::Args& args) override {
+      civita::ReductionOp::setArgument(arg,args);
+      exponent=args.val;
+    }
+    double operator[](size_t i) const override
+    {
+      count=0;
+      mean=average[i];
+      return civita::ReductionOp::operator[](i)/count;
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::histogram>: public civita::DimensionedArgCachedOp
+  {
+    size_t nbins;
+    void computeTensor() const override
+    {
+      // TODO implement this.
+      throw runtime_error("Histogram not implemented");
+    }
+  };
+
+    
   namespace {
       // arrange for arguments to be expanded over a common hypercube
     void meldArgsIntoCommonHypercube(vector<TensorPtr>& args) {
