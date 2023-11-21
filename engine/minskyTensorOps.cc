@@ -824,7 +824,7 @@ namespace minsky
   {
     mutable double sumXY, sumX, sumY, sumXsq, sumYsq;
     mutable size_t count;
-    GeneralTensorOp<OperationType::covariance>():
+    GeneralTensorOp<OperationType::rho>():
       civita::BinOp([this](double x, double y) {
         sumXY+=x*y;
         sumX+=x;
