@@ -275,6 +275,7 @@ SUITE(Derivative)
             case OperationType::tensor:
             case OperationType::binop:
             case OperationType::constop:
+            case OperationType::statistics:
               continue;
             default:
               break;

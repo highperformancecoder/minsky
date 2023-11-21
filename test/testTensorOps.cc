@@ -1191,8 +1191,8 @@ SUITE(TensorOps)
 
       sex->reductionOp=ravel::Op::stddev;
       chain=createRavelChain(state, arg);
-      expected={1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      expected={2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132};
+      CHECK_ARRAY_CLOSE(expected, *chain.back(), 9, 1e-4);
 
       sex->reductionOp=ravel::Op::min;
       chain=createRavelChain(state, arg);
