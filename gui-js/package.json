@@ -1,6 +1,6 @@
 {
   "name": "minsky",
-  "version":"3.2.0-alpha.22",
+  "version":"3.2.0-alpha.23",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "build": {
