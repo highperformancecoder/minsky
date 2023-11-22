@@ -795,59 +795,143 @@ namespace minsky
     civita::ITensor::Timestamp timestamp() const override {return arg->timestamp();}
   };
 
-  template <> struct GeneralTensorOp<OperationType::covariance>: public civita::BinOp
+  struct Correlation: public civita::ITensor
   {
-    mutable double sumXY, sumX, sumY;
-    mutable size_t count;
-    GeneralTensorOp<OperationType::covariance>():
-      civita::BinOp([this](double x, double y) {
-        sumXY+=x*y;
-        sumX+=x;
-        sumY+=y;
-        count++;
-        return 0; // return value will be discarded
-      }) {}
-
-    double operator[](size_t i) const override
+    int dimension1, dimension2;
+    TensorPtr arg1, arg2;
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const ITensor::Args& args) override
     {
-      sumXY=sumX=sumY=0;
-      count=0;
-      civita::BinOp::operator[](i);
-      double invCount=1.0/count;
-      return (sumXY-sumX*sumY*invCount)*invCount;
+      arg1=a1? a1: a2;
+      arg2=a2? a2: a1;
+      if (!arg1 || !arg2) return;
+
+      Hypercube hc;
+      set<string> dimNames; // for ensuring dimension names are unique
+      switch (arg1->rank())
+        {
+        case 0:
+          throw runtime_error("covariance or ρ needs at least rank 1 arguments");
+        case 1:
+          dimension1=0;
+          break;
+        default:
+          dimension1=-1;
+          for (auto& xv:arg1->hypercube().xvectors)
+            if (xv.name==args.dimension)
+              dimension1=&xv-&arg1->hypercube().xvectors[0];
+            else
+              {
+                hc.xvectors.push_back(xv);
+                dimNames.insert(xv.name);
+              }
+          break;
+        }
+      
+      switch (arg2->rank())
+        {
+        case 0:
+          throw runtime_error("covariance or ρ needs at least rank 1 arguments");
+        case 1:
+          dimension2=0;
+          break;
+        default:
+          dimension2=-1;
+          for (auto& xv:arg2->hypercube().xvectors)
+            if (xv.name==args.dimension)
+              dimension2=&xv-&arg2->hypercube().xvectors[0];
+            else
+              {
+                hc.xvectors.push_back(xv);
+                if (!dimNames.insert(xv.name).second)
+                  hc.xvectors.back().name+="'"; // ensure dimension names are unique
+              }
+          break;
+        }
+
+      if (dimension1<0 || dimension2<0)
+        throw runtime_error("dimension "+args.dimension+" not found");
+      if (arg1->hypercube().xvectors[dimension1].size() != arg2->hypercube().xvectors[dimension2].size())
+        throw runtime_error("arguments not conformant");
+
+      hypercube(hc);
+        
+    }
+
+    template <class F> void performSum(F f, size_t idx) const
+    {
+      auto splitted=hypercube().splitIndex(idx);
+      auto splitIndexIterator=splitted.begin();
+
+      auto computeIndexAndStride=[&](size_t& lineal, size_t& stride, size_t dimension, const vector<unsigned>& dims) {
+        lineal=0; stride=1;
+        for (size_t i=0, s=1; i<dims.size(); ++i, s*=dims[i])
+          if (i!=dimension)
+            {
+              lineal=*splitIndexIterator++ * s;
+              stride=s*dims[i];
+            }
+      };
+
+      size_t arg1Lineal, arg1Stride, arg2Lineal, arg2Stride;
+      computeIndexAndStride(arg1Lineal, arg1Stride, dimension1, arg1->hypercube().dims());
+      computeIndexAndStride(arg2Lineal, arg2Stride, dimension2, arg2->hypercube().dims());
+      
+      for (size_t i=0; i<arg1->hypercube().xvectors[dimension1].size(); ++i)
+        {
+          auto x=arg1->atHCIndex(arg1Lineal+i*arg1Stride);
+          auto y=arg2->atHCIndex(arg2Lineal+i*arg2Stride);
+          if (isfinite(x) && isfinite(y)) f(x,y);
+        }
+
     }
     Timestamp timestamp() const override
     {return max(arg1->timestamp(), arg2->timestamp());}
   };
-  
-  template <> struct GeneralTensorOp<OperationType::rho>: public civita::BinOp
+
+  template <> struct GeneralTensorOp<OperationType::covariance>: public Correlation
   {
-    mutable double sumXY, sumX, sumY, sumXsq, sumYsq;
-    mutable size_t count;
-    GeneralTensorOp<OperationType::rho>():
-      civita::BinOp([this](double x, double y) {
+    double operator[](size_t i) const override
+    {
+      if (!arg1 || !arg2) return nan("");
+      double sumXY=0, sumX=0, sumY=0;
+      size_t count=0;
+      auto f=[&](double x, double y)
+      {
+        sumXY+=x*y;
+        sumX+=x;
+        sumY+=y;
+        count++;
+      };
+      performSum(f,i);
+      return (sumXY-sumX*sumY/count)/(count-1);
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::rho>: public Correlation
+  {
+    double operator[](size_t i) const override
+    {
+      if (!arg1 || !arg2) return nan("");
+      double sumXY=0, sumX=0, sumY=0, sumXsq=0, sumYsq=0;
+      size_t count=0;
+      auto f=[&](double x, double y)
+      {
         sumXY+=x*y;
         sumX+=x;
         sumY+=y;
         sumXsq+=x*x;
         sumYsq+=y*y;
         count++;
-        return 0; // return value will be discarded
-      }) {}
-
-    double operator[](size_t i) const override
-    {
-      sumXY=sumX=sumY=sumXsq=sumYsq=0;
-      count=0;
-      civita::BinOp::operator[](i);
+      };
+      performSum(f,i);
       double invCount=1.0/count;
       return  (sumXY-sumX*sumY*invCount)/
-        (invCount*(sumXsq-sumX*sumX*invCount)*(sumYsq-sumY*sumY*invCount));
+        sqrt((sumXsq-sumX*sumX*invCount)*(sumYsq-sumY*sumY*invCount));
     }
-    Timestamp timestamp() const override
-    {return max(arg1->timestamp(), arg2->timestamp());}
   };
-
+        
+  
   template <> struct GeneralTensorOp<OperationType::mean>: public civita::Average {};
   template <> struct GeneralTensorOp<OperationType::stdDev>: public civita::StdDeviation {};
   
