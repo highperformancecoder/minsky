@@ -2426,11 +2426,13 @@ export class VariablePaneCell extends CppClass {
 
 export class VariableValue extends CppClass {
   csvDialog: CSVDialog;
+  rhs: civita__ITensor;
   tensorInit: civita__TensorVal;
   units: Units;
   constructor(prefix: string){
     super(prefix);
     this.csvDialog=new CSVDialog(this.$prefix()+'.csvDialog');
+    this.rhs=new civita__ITensor(this.$prefix()+'.rhs');
     this.tensorInit=new civita__TensorVal(this.$prefix()+'.tensorInit');
     this.units=new Units(this.$prefix()+'.units');
   }

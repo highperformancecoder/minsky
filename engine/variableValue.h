@@ -47,7 +47,9 @@ namespace minsky
     std::string init;
     /// when init is a tensor of values, this overrides the init string
     TensorVal tensorInit;
-
+    /// when the RHS is attached to a tensor expression, this is a reference to it
+    TensorPtr rhs;
+    
     /// dimension units of this value
     Units units;
     bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
@@ -118,10 +120,9 @@ namespace minsky
     double& operator[](std::size_t i) override;
 
     const Index& index(Index&& i) override {
-      assert(idx()==-1||idxInRange());
       std::size_t prevNumElems = size();
       m_index=i;
-      if (idx()==-1 || (prevNumElems<size()))    
+      if (idx()==-1 || !idxInRange() || (prevNumElems<size()))    
         allocValue();
       assert(idxInRange());
       return m_index;
@@ -139,6 +140,11 @@ namespace minsky
     }
 
     bool idxInRange() const;
+
+    const Hypercube& hypercube() const override {
+      if (rhs) return rhs->hypercube();
+      return m_hypercube;
+    }
     
     const Hypercube& hypercube(const Hypercube& hc) override
     {hypercube_(hc); return m_hypercube;}

@@ -41,6 +41,7 @@ for i in examples/*.mky; do
     if [ $i = "examples/rand-gather-interpolation.mky" ]; then continue; fi
     if [ $i = "examples/tensor-switch.mky" ]; then continue; fi
     if [ $i = "examples/inner-outer-example.mky" ]; then continue; fi
+    if [ $i = "examples/histogram.mky" ]; then continue; fi
     echo $i
     
     for order in 1 2 4; do

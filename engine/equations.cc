@@ -94,7 +94,7 @@ namespace MathDAG
             TensorPtr rhs=tensorOpFactory.create(state,TensorsFromPort(ec));
             if (!rhs) return false;
             result->index(rhs->index());
-            result->hypercube(rhs->hypercube());
+            result->rhs=rhs;
             ev.emplace_back(EvalOpPtr(new TensorEval(result, ec, rhs)));
             return true;
           }
