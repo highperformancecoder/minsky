@@ -366,7 +366,7 @@ namespace minsky
 
     bool sameSlice(size_t i, size_t j) const
     {
-      return rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
+      return cachedResult.rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
     }
     
     void computeTensor() const override
@@ -382,9 +382,9 @@ namespace minsky
             }
         }
       else if (delta>=0)
-        for (size_t i=0; i<size(); ++i)
+        for (size_t i=0; i<cachedResult.size(); ++i)
           {
-            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
             auto t=ai+delta;
             if (sameSlice(t, ai))
               cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(ai);
@@ -394,7 +394,7 @@ namespace minsky
       else // with -ve delta, origin of result is shifted
         for (size_t i=0; i<size(); ++i)
           {
-            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
             auto t=ai-delta;
             if (sameSlice(t,ai))
               cachedResult[i]=arg->atHCIndex(ai)-arg->atHCIndex(t);
@@ -865,7 +865,7 @@ namespace minsky
 
       auto computeIndexAndStride=[&](size_t& lineal, size_t& stride, size_t dimension, const vector<unsigned>& dims) {
         lineal=0; stride=1;
-        for (size_t i=0, s=1; i<dims.size(); ++i, s*=dims[i])
+        for (size_t i=0, s=1; i<dims.size(); s*=dims[i], ++i)
           if (i!=dimension)
             {
               lineal=*splitIndexIterator++ * s;
@@ -978,11 +978,78 @@ namespace minsky
 
   template <> struct GeneralTensorOp<OperationType::histogram>: public civita::DimensionedArgCachedOp
   {
-    size_t nbins;
+    void setArgument(const TensorPtr& a, const ITensor::Args& args) override
+    {
+      civita::DimensionedArgCachedOp::setArgument(a,args);
+      Hypercube hc;
+      if (a && a->rank()>0 && argVal>=1)
+        {
+          // fake the hypercube for now, recomputed in computeTensor
+          if (dimension>a->rank()) // result is a vector
+            hc.dims({unsigned(argVal)});
+          else // rewrite the named dimension
+            {
+              hc=a->hypercube();
+              auto& xv=hc.xvectors[dimension];
+              xv.clear();
+              for (size_t i=0; i<argVal; ++i)
+                xv.push_back(i);
+            }
+        }
+      cachedResult.hypercube(std::move(hc));
+    }
+
     void computeTensor() const override
     {
-      // TODO implement this.
-      throw runtime_error("Histogram not implemented");
+      // first compute max/min over the whole dataset
+      double min=numeric_limits<double>::max(), max=-numeric_limits<double>::max();
+      for (size_t i=0; i<arg->size(); ++i)
+        {
+          min=std::min((*arg)[i],min);
+          max=std::max((*arg)[i],max);
+        }
+      max*=1.01; // ensure that actual maximum value is mapped to a bin.
+      
+      auto binSize=(max-min)/argVal;
+      if (arg->rank()==0 || binSize==0)
+        {
+          cachedResult.hypercube({});
+          cachedResult[0]=1;
+          return;
+        }
+      
+      // adjust the hypercube
+      auto hc=arg->hypercube();
+      auto dim=dimension;
+      if (dimension>=hc.rank()) // global histogram over all dimensions
+        {
+          hc.xvectors.resize(1);
+          dim=0;
+        }
+
+      auto& xv=hc.xvectors[dim];
+      xv.name="histogram";
+      xv.dimension=Dimension(Dimension::value,"");
+      xv.clear();
+      for (double x=min+0.5*binSize; x<max; x+=binSize)
+        xv.push_back(x);
+      cachedResult.hypercube(std::move(hc));
+      for (size_t i=0; i<cachedResult.size(); ++i) cachedResult[i]=0;
+
+      auto iBinSize=1/binSize;
+      if (cachedResult.rank()>1) // histogram along a particular dimension
+        for (size_t i=0; i<arg->size(); ++i)
+          {
+            auto splitted=arg->hypercube().splitIndex(i);
+            splitted[dim]=((*arg)[i]-min)*iBinSize;
+            cachedResult[cachedResult.hypercube().linealIndex(splitted)]+=1;
+          }
+      else  // histogram over the lot
+        for (size_t i=0; i<arg->size(); ++i)
+          {
+            auto index=((*arg)[i]-min)*iBinSize;
+            cachedResult[index]+=1;
+          }
     }
   };
 
