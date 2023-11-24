@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Wires</TITLE>
-<META NAME="description" CONTENT="Wires">
+<TITLE>Switch</TITLE>
+<META NAME="description" CONTENT="Switch">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,7 +15,7 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node117.html">
-<LINK REL="previous" HREF="node108.html">
+<LINK REL="previous" HREF="node88.html">
 <LINK REL="up" HREF="node47.html">
 <LINK REL="next" HREF="node117.html">
 </HEAD>
@@ -23,52 +23,75 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1547"
+<A NAME="tex2html1569"
   HREF="node117.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1545"
+<A NAME="tex2html1567"
   HREF="node47.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1539"
+<A NAME="tex2html1561"
   HREF="node115.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1548"
-  HREF="node117.html">Tensor values</A>
-<B> Up:</B> <A NAME="tex2html1546"
+<B> Next:</B> <A NAME="tex2html1570"
+  HREF="node117.html">Variables</A>
+<B> Up:</B> <A NAME="tex2html1568"
   HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1540"
-  HREF="node115.html">Variable Browser</A>
+<B> Previous:</B> <A NAME="tex2html1562"
+  HREF="node115.html">Correlation coefficient</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00450000000000000000">
-Wires</A>
+<H1><A NAME="SECTION00430000000000000000"></A><A NAME="SwitchIcon"></A>
+<BR>
+Switch
 </H1>
 
 <P>
-Wire represent the flow of values from one operation to the next. To
-add a wire to the canvas, click on the output port of an operation or
-variable (right hand side of the icon in its initial unrotated
-orientation), and then drag it towards an input port (on the left hand
-side of an unrotated icon). You can't connect an operator to itself
-(that would be a loop, which is not allowed, unless passing through an
-integral), nor can an input port have more than one wire attached,
-with the exception of <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img44.png"
- ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img234.png"
- ALT="$\times/\div$"></SPAN>, where the multiple
-wires are summed or multiplied, respectively, and similarly max/min.
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
+ -->
+<IMG
+ WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img66.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
+   A switch block (also known as a case
+block, or select in the Fortran world) is a way of selecting from a
+range of alternatives according to the value of the input, effectively
+defining a piecewise function.
 
 <P>
-Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
-a handle is dragged out of a straight line with its neighbours, new
-handles appear on either side. Handles can be removed by
-double-clicking on them.
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
+ -->
+<IMG
+ WIDTH="542" HEIGHT="249" ALIGN="BOTTOM" BORDER="0"
+ SRC="img232.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}"> <EM>    An example switch block with 3 cases</EM>
+
+</DIV>
+
+<P>
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1, or
+false and true, a two case switch statement will naturally appear
+&ldquo;upside down&rdquo; to how you might think of an if statement. In other
+words, it looks like:
+
+<P>
+<IMG
+ WIDTH="163" HEIGHT="66" ALIGN="MIDDLE" BORDER="0"
+ SRC="img233.png"
+ ALT="$\textstyle \parbox{\textwidth}{
+{\tt if not }{\em condition} {\tt then}\\
+\ldots
+{\tt else}\\
+\ldots }$">
+<P>
+You can add or remove cases through the context menu.
 
 <P>
 <BR><HR>

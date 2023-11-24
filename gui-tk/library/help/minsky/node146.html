@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>General Purpose Functions</TITLE>
+<META NAME="description" CONTENT="General Purpose Functions">
+<META NAME="keywords" CONTENT="minsky">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="minsky.css">
+
+<LINK REL="next" HREF="node147.html">
+<LINK REL="previous" HREF="node145.html">
+<LINK REL="up" HREF="node142.html">
+<LINK REL="next" HREF="node147.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html1890"
+  HREF="node147.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1888"
+  HREF="node142.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1882"
+  HREF="node145.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1891"
+  HREF="node147.html">Trigonometry Functions</A>
+<B> Up:</B> <A NAME="tex2html1889"
+  HREF="node142.html">Built-in operations &amp; functions</A>
+<B> Previous:</B> <A NAME="tex2html1883"
+  HREF="node145.html">Boolean Operations</A>
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00554000000000000000">
+General Purpose Functions</A>
+</H2>
+
+<P>
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="CENTER">FUNCTION</TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>DEFINITION</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>abs</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Absolute value of x.  (eg: <code>abs(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>avg</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Average of all the inputs. (eg: <code>avg(x,y,z,w,u,v) == (x + y + z + w + u + v) / 6</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>ceil</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Smallest integer that is greater than or equal to x.</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>clamp</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Clamp x in range between r0 and r1, where r0 &lt; r1. (eg:
+<code>clamp(r0,x,r1)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>equal</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Equality test between x and y using normalised epsilon</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>erf</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Error function of x.  (eg: <code>erf(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>erfc</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Complimentary error function of x.  (eg: <code>erfc(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>exp</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img265.png"
+ ALT="$e^x$"></SPAN> (eg: <code>exp(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>expm1</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="35" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img266.png"
+ ALT="$e^{x-1}$"></SPAN> where <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN> is very small. (eg: <code>expm1(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>floor</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Largest integer that is less than or equal to x. (eg: <code>floor(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>frac</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Fractional portion of x.  (eg: <code>frac(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>hypot</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><!-- MATH
+ $\sqrt{x^2+y^2}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="71" HEIGHT="38" ALIGN="MIDDLE" BORDER="0"
+ SRC="img267.png"
+ ALT="$\sqrt{x^2+y^2}$"></SPAN> (eg: <code>hypot(x,y) = sqrt(x*x + y*y)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>iclamp</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Inverse-clamp x outside of the range r0 and r1. Where
+r0 &lt; r1. If x is within the range it will snap to the closest
+bound. (eg: <code>iclamp(r0,x,r1)</code>
+<!-- MATH
+ \begin{math}
+=\left\{\begin{array}{ccc}
+r0 & \mathrm{if} & x\le r0\\
+x & \mathrm{if} & r0\le x \le r1\\
+r1 & \mathrm{if} & x\ge r1\\
+\end{array}\right.
+\end{math}
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="193" HEIGHT="73" ALIGN="MIDDLE" BORDER="0"
+ SRC="img268.png"
+ ALT="$=\left\{\begin{array}{ccc}
+r0 &amp; \mathrm{if} &amp; x\le r0\\
+x &amp; \mathrm{if} &amp; r0\le x \le r1\\
+r1 &amp; \mathrm{if} &amp; x\ge r1\\
+\end{array}\right.$"></SPAN>
+)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>inrange</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>In-range returns 'true' when <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN> is within the range <SPAN CLASS="MATH"><IMG
+ WIDTH="48" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img269.png"
+ ALT="$[r_0,r_1]$"></SPAN>. Where <SPAN CLASS="MATH"><IMG
+ WIDTH="54" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img270.png"
+ ALT="$r_0 &lt; r_1$"></SPAN>.  (eg: <code>inrange(r0,x,r1)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>log</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Natural logarithm <SPAN CLASS="MATH"><IMG
+ WIDTH="29" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img271.png"
+ ALT="$\ln x$"></SPAN>.  (eg: <code>log(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>log10</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="49" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img272.png"
+ ALT="$\log_{10}x$"></SPAN>.  (eg: <code>log10(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>log1p</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="66" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img273.png"
+ ALT="$\ln (1+x)$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN> is very small. (eg: <code>log1p(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>log2</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="43" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img274.png"
+ ALT="$\log_2x$"></SPAN>.  (eg: <code>log2(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>logn</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="45" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img275.png"
+ ALT="$\log_nx$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img188.png"
+ ALT="$n$"></SPAN> is a positive integer. (eg: <code>logn(x,8)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>max</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Largest value of all the inputs. (eg: <code>max(x,y,z,w,u,v)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>min</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Smallest value of all the inputs. (eg: <code>min(x,y,z,w,u)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>mul</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Product of all the inputs. (eg: <code>mul(x,y,z,w,u,v,t) == (x * y * z * w * u * v * t)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>ncdf</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Normal cumulative distribution function.  (eg: <code>ncdf(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>nequal</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Not-equal test between <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img61.png"
+ ALT="$y$"></SPAN> using normalised epsilon</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>pow</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.png"
+ ALT="$x^y$"></SPAN>.  (eg: <code>pow(x,y) == x ^ y</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>root</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="29" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img276.png"
+ ALT="$\sqrt[n]{x}$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img188.png"
+ ALT="$n$"></SPAN> is a positive integer. (eg: <code>root(x,3) == x^(1/3)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>round</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Round <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN> to the nearest integer.  (eg: <code>round(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>roundn</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Round <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN> to <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img188.png"
+ ALT="$n$"></SPAN> decimal places  (eg: <code>roundn(x,3)</code>)
+ where <SPAN CLASS="MATH"><IMG
+ WIDTH="42" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img277.png"
+ ALT="$n &gt; 0$"></SPAN> is an integer. (eg: <code>roundn(1.2345678,4) == 1.2346</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>sgn</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Sign of <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
+ WIDTH="24" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img278.png"
+ ALT="$-1$"></SPAN> where <SPAN CLASS="MATH"><IMG
+ WIDTH="42" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img279.png"
+ ALT="$x &lt; 0$"></SPAN>, +1 where <SPAN CLASS="MATH"><IMG
+ WIDTH="42" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img280.png"
+ ALT="$x &gt; 0$"></SPAN>, else zero.
+ (eg: <code>sgn(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>sqrt</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
+ WIDTH="26" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img281.png"
+ ALT="$\sqrt{x}$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="54" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img282.png"
+ ALT="$x &gt;= 0$"></SPAN>.  (eg: <code>sqrt(x)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>sum</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Sum of all the inputs. (eg: <code>sum(x,y,z,w,u,v,t) == (x + y + z + w + u + v + t)</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>swap</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>&lt;=&gt;</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Swap the values of the variables x and y and return the current value of y.  (eg: <code>swap(x,y)</code> or <code>x &lt;=&gt; y</code>)</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><code>trunc</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Integer portion of x.  (eg: <code>trunc(x)</code>)</TD>
+</TR>
+</TABLE>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1890"
+  HREF="node147.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1888"
+  HREF="node142.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1882"
+  HREF="node145.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1891"
+  HREF="node147.html">Trigonometry Functions</A>
+<B> Up:</B> <A NAME="tex2html1889"
+  HREF="node142.html">Built-in operations &amp; functions</A>
+<B> Previous:</B> <A NAME="tex2html1883"
+  HREF="node145.html">Boolean Operations</A></DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

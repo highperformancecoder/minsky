@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>String Processing</TITLE>
-<META NAME="description" CONTENT="String Processing">
+<TITLE>Capabilities</TITLE>
+<META NAME="description" CONTENT="Capabilities">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,194 +16,114 @@
 
 <LINK REL="next" HREF="node140.html">
 <LINK REL="previous" HREF="node138.html">
-<LINK REL="up" HREF="node133.html">
+<LINK REL="up" HREF="node137.html">
 <LINK REL="next" HREF="node140.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1793"
+<A NAME="tex2html1813"
   HREF="node140.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1791"
-  HREF="node133.html">
+<A NAME="tex2html1811"
+  HREF="node137.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1785"
+<A NAME="tex2html1805"
   HREF="node138.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1794"
-  HREF="node140.html">Control Structures</A>
-<B> Up:</B> <A NAME="tex2html1792"
-  HREF="node133.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1786"
-  HREF="node138.html">Trigonometry Functions</A>
+<B> Next:</B> <A NAME="tex2html1814"
+  HREF="node140.html">Example expressions</A>
+<B> Up:</B> <A NAME="tex2html1812"
+  HREF="node137.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1806"
+  HREF="node138.html">Introduction</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00556000000000000000">
-String Processing</A>
-</H2>
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">FUNCTION</TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>DEFINITION</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>=</code> , <code>==</code>, <code>!=</code>, <code>&lt;&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&lt;</code> , <code>&gt;</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>All common equality/inequality operators are applicable to strings and are applied in a case sensitive manner. In the following example x, y and z are of type string. (eg: <code>not((x &lt;= 'AbC') and ('1x2y3z' &lt;&gt; y)) or (z == x)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>in</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img58.png"
- ALT="$x$"></SPAN> is a substring of <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img59.png"
- ALT="$y$"></SPAN>. (eg: <code>x in y</code> or <code>'abc' in 'abcdefgh'</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>like</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if the string x matches the pattern y.  Available wildcard characters are `*' and `?' denoting  zero or more and zero or one matches respectively.   (eg: <code>x like y</code> or <code>'abcdefgh' like 'a?d*h'</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>ilike</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if the string x matches the pattern y in a case insensitive manner. Available wildcard characters are '*' and '?' denoting zero or more and zero or one  matches respectively. (eg: <code>x ilike y</code> or <code>'a1B2c3D4e5F6g7H' ilike 'a?d*h'</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>[r0:r1]</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>The closed interval <SPAN CLASS="MATH"><IMG
- WIDTH="51" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img273.png"
- ALT="$[r0,r1]$"></SPAN> of the specified string.
-eg: Given a string x with a value of 'abcdefgh' then:
-
-<OL>
-<LI><code>x[1:4] == 'bcde'</code>
-</LI>
-<LI><code>x[ :5] == x[:10 / 2] == 'abcdef'</code>
-</LI>
-<LI><code>x[2 + 1: ] == x[3:] =='defgh'</code>
-</LI>
-<LI><code>x[ : ] == x[:] == 'abcdefgh'</code>
-</LI>
-<LI><code>x[4/2:3+2] == x[2:5] == 'cdef'</code>
-</LI>
-</OL>
- Note: Both r0 and r1 are assumed to be integers, where r0 &lt;= r1. They
- may also be the result of an expression, in the event they have
- fractional components truncation will be performed. (eg: <!-- MATH
- $1.67
-                \rightarrow 1$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="65" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img274.png"
- ALT="$1.67
-\rightarrow 1$"></SPAN>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>:=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Assign the value of x to y. Where y is a mutable string  or
- string range and x is either a string or a string  range. eg:
- 
-<OL>
-<LI><code>y := x</code>
-</LI>
-<LI><code>y := 'abc'</code>
-</LI>
-<LI><code>y := x[:i + j]</code>
-</LI>
-<LI><code>y := '0123456789'[2:7]</code>
-</LI>
-<LI><code>y := '0123456789'[2i + 1:7]</code>
-</LI>
-<LI><code>y := (x := '0123456789'[2:7])</code>
-</LI>
-<LI><code>y[i:j] := x</code>
-</LI>
-<LI><code>y[i:j] := (x + 'abcdefg'[8 / 4:5])[m:n]</code>
-</LI>
-</OL>
+<H1><A NAME="SECTION00520000000000000000">
+Capabilities</A>
+</H1>
+The  ExprTk expression  evaluator supports  the following  fundamental
+arithmetic operations, functions and processes:
 
 <P>
-Note: For options 7 and 8 the shorter of the two ranges 
-will denote the number characters that are to be copied.</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>+</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Concatenation of x and y. Where x and y are strings or  
- string ranges. eg
- 
-<OL>
-<LI><code>x + y</code>
-</LI>
-<LI><code>x + 'abc'</code>
-</LI>
-<LI><code>x + y[:i + j]</code>
-</LI>
-<LI><code>x[i:j] + y[2:3] + '0123456789'[2:7]</code>
-</LI>
-<LI><code>'abc' + x + y</code>
-</LI>
-<LI><code>'abc' + '1234567'</code>
-</LI>
-<LI><code>(x + 'a1B2c3D4' + y)[i:2j]</code>
-</LI>
-</OL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>+=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Append to x the value of y. Where x is a mutable string 
-and y is either a string or a string range. eg:
-
-<OL>
-<LI><code>x += y</code>                  
-</LI>
-<LI><code>x += 'abc'</code>              
-</LI>
-<LI><code>x += y[:i + j] + 'abc'</code>
-</LI>
-<LI><code>x += '0123456789'[2:7]</code>
-</LI>
-</OL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>&lt;=&gt;</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Swap the values of x and y. Where x and y are mutable   
-            strings.  (eg: <code>x &lt;=&gt; y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>[]</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>The string size operator returns the size of the string 
- being actioned. eg:
-
-<OL>
-<LI><code>'abc'[] == 3</code>
-</LI>
-<LI><code>var max_str_length := max(s0[],s1[],s2[],s3[]</code>
-</LI>
-<LI><code>('abc' + 'xyz')[] == 6</code>
-</LI>
-<LI><code>(('abc' + 'xyz')[1:4])[] == 4</code>
-</LI>
-</OL></TD>
-</TR>
-</TABLE>
+<DL>
+<DT><STRONG>Types:</STRONG></DT>
+<DD>Scalar, Vector, String
 
 <P>
+</DD>
+<DT><STRONG>Basic operators:</STRONG></DT>
+<DD><code>+, -, *, /, %, ^</code>
 
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1793"
-  HREF="node140.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1791"
-  HREF="node133.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1785"
-  HREF="node138.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1794"
-  HREF="node140.html">Control Structures</A>
-<B> Up:</B> <A NAME="tex2html1792"
-  HREF="node133.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1786"
-  HREF="node138.html">Trigonometry Functions</A></DIV>
-<!--End of Navigation Panel-->
+<P>
+</DD>
+<DT><STRONG>Assignment:</STRONG></DT>
+<DD><code>:=, +=, -=, *=, /=, %=</code>
+
+<P>
+</DD>
+<DT><STRONG>Equalities &amp; Inequalities:</STRONG></DT>
+<DD><code>=, ==, &lt;&gt;, !=, &lt;, &lt;=, &gt;, &gt;=</code>
+
+<P>
+</DD>
+<DT><STRONG>Logic operators:</STRONG></DT>
+<DD>and, mand, mor, nand, nor, not, or, shl, shr,
+                       xnor, xor, true, false
+
+<P>
+</DD>
+<DT><STRONG>Functions:</STRONG></DT>
+<DD>abs, avg, ceil, clamp, equal, erf, erfc,  exp,
+                       expm1, floor, frac,  log, log10, log1p,  log2,
+                       logn,  max,  min,  mul,  ncdf,  nequal,  root,
+                       round, roundn, sgn, sqrt, sum, swap, trunc
+
+<P>
+</DD>
+<DT><STRONG>Trigonometry:</STRONG></DT>
+<DD>acos, acosh, asin, asinh, atan, atanh,  atan2,
+                       cos,  cosh, cot,  csc, sec,  sin, sinc,  sinh,
+                       tan, tanh, hypot, rad2deg, deg2grad,  deg2rad,
+                       grad2deg
+
+<P>
+</DD>
+<DT><STRONG>Control structures:</STRONG></DT>
+<DD>if-then-else, ternary conditional, switch-case,
+                       return-statement
+
+<P>
+</DD>
+<DT><STRONG>Loop statements:</STRONG></DT>
+<DD>while, for, repeat-until, break, continue
+
+<P>
+</DD>
+<DT><STRONG>String processing:</STRONG></DT>
+<DD>in, like, ilike, concatenation
+
+<P>
+</DD>
+<DT><STRONG>Optimisations:</STRONG></DT>
+<DD>constant-folding, simple strength reduction and
+                       dead code elimination
+
+<P>
+</DD>
+<DT><STRONG>Calculus:</STRONG></DT>
+<DD>numerical integration and differentiation
+
+<P>
+</DD>
+</DL>
+
+<P>
+<BR><HR>
 
 </BODY>
 </HTML>
