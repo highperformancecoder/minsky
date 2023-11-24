@@ -429,7 +429,120 @@ example $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
 If the slice argument is negative, then it refers to the number of
 elements from the end of that axis. For example $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
   -3)=\{x_{n-3},x_{n-2},x_{n-1}\}$.
+
+\subsection{Size}\label{Operation:size}
+
+Size refers to the number of elements along a named dimension given by
+the operation axisargument - eg a $3\times2$ rank 2 tensor with named
+axes ``0'' and ``1'', size(``1'')==2.
+
+If the axis argument is left blank, the size returns the total number
+of elements present in the tensor. This may be less than the product
+of axis sizes if the data is sparse.
+
+\subsection{Shape}\label{Operation:shape}
+
+Returns a vector of axis sizes. Coupling this operation with a
+\hyperref{gather}{gather (\S}{)}{Operation:gather} operation
+and variable would allow you interactively select axis size.
+
+\subsection{Mean}\label{Operation:mean}
+
+Returns the mean (or average) along a named dimension of all
+elements present. If the dimension is not named, then the mean is
+over all elements present in the tensor. Note that missing elements
+are not counted.
+
+\subsection{Median}\label{Operation:median}
+
+Returns the median  along a named dimension of all
+elements present. If the dimension is not named, then the median is
+over all elements present in the tensor. 
+
+\subsection{Standard Deviation}\label{Operation:stdDev}
+
+Returns the standard deviation along a named dimension of all
+elements present. If the dimension is not named, then the standard
+deviation is over all elements present in the tensor. Note that
+missing elements are not counted.
+
+\begin{displaymath}
+  \sigma = \frac1{N-1}\sum_i^N (x_i-\langle x\rangle)^2
+\end{displaymath}
+
+\subsection{$k$-th moment}\label{Operation:moment}
   
+Returns the $k$-th moment about the mean along a named dimension of
+all elements present. $k$ is specified by the numerical argument of
+the operation, which defaults to 1 (hence the result will be 0 in that
+case). If the dimension is not named, then the $k$-th moment is over
+all elements present in the tensor. Note that missing elements are not
+counted.
+
+\begin{displaymath}
+  \langle\Delta x^k\rangle = \frac1N\sum_i(x_i-\langle x\rangle)^k
+\end{displaymath}
+
+Also
+\begin{displaymath}
+  \sigma^2 = \frac{N}{N-1}\langle\Delta x^2\rangle
+\end{displaymath}
+
+
+\subsection{Histogram}\label{Operation:histogram}
+
+Computes the histogram along a named dimension of all
+elements present. If the dimension is not named, then the histogram
+is over all elements present in the tensor. The number of bins is
+specified by the numeric argument to the operation.
+
+\begin{center}
+  \resizebox{\textwidth}{!}{\includegraphics{images/histogram.eps}} {\em
+    An example usage of the histogram operation}
+\end{center}
+
+\subsection{Covariance}\label{Operation:covariance}
+
+Computes the covariance of two tensors along named dimension. If the
+inputs are of rank $N$ and $M$ respectively, the output will be a
+$(N-1)\times(M-1)$ rank tensor, where the $(i,j)$ element is the
+covariance of the $i$-th slice of the first argument along the named
+dimension, and the $j$-th slice along the named dimension. As such, it
+is conformant with the definition of {\tt cov} function in Octave, but
+not with the equivalently named function in Matlab:
+\begin{quote}
+     Compatibility Note:: Octave always treats rows of X and Y as
+     multivariate random variables.  For two inputs, however, MATLAB
+     treats X and Y as two univariate distributions regardless of their
+     shapes, and will calculate ‘cov ([X(:), Y(:)])’ whenever the number
+     of elements in X and Y are equal.  This will result in a 2x2
+     matrix.  Code relying on MATLAB’s definition will need to be
+     changed when running in Octave.
+   \end{quote}
+
+If only a single argument $x$ is supplied to the covariance, then the
+result is equivalent to cov$(x,x)$, ie each slice is covaried with
+each other slice.
+   
+   The formula for covariance between stochastic variables $x$ and $y$
+   is
+   \begin{displaymath}
+     \mathrm{cov}(x,y)=\frac1{N-1}\sum_i(x_i-\langle
+     x\rangle)(y_i-\langle y\rangle)
+   \end{displaymath}
+
+   \subsection{Correlation coefficient $\rho$}\label{Operation:rho}
+
+   See
+   \hyperref{covariance}{covariance (\S}{)}{Operation:covariance}
+   for the interpretation of tensor valued arguments. The correlation
+   coefficient is defined as
+
+   \begin{displaymath}
+     \rho(x,y)=\frac{\mathrm{cov(x,y)}}{\sigma(x)\sigma(y)}
+   \end{displaymath}
+   
+
 \section{Switch}\label{SwitchIcon}
 
 \buttonIcon{switchIcon.eps} A switch block (also known as a case
