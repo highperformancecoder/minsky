@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { SharedModule } from '@minsky/shared';
 import { CliInputComponent } from './cli-input/cli-input.component';
 import { EditDescriptionComponent } from './edit-description/edit-description.component';
 import { EditHandleDescriptionComponent } from './edit-handle-description/edit-handle-description.component';
@@ -29,6 +28,8 @@ import { WiringComponent } from './wiring/wiring.component';
 import { PickSlicesComponent } from './pick-slices/pick-slices.component';
 import { LockHandlesComponent } from './lock-handles/lock-handles.component';
 import { LatexDirective } from './directives/latex.directive';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from './material/material.module';
 
 @NgModule({
   declarations: [
@@ -61,8 +62,11 @@ import { LatexDirective } from './directives/latex.directive';
     ImportCsvComponent,
     LatexDirective
   ],
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, MaterialModule, FormsModule, ReactiveFormsModule],
   exports: [
+    MaterialModule, 
+    FormsModule,
+    ReactiveFormsModule,
     PageNotFoundComponent,
     HeaderComponent,
     ToolbarComponent,

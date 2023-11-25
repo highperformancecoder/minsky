@@ -61,7 +61,7 @@ export class CommandsManager {
       : classTypeRes;
 
     if (!classType) {
-      return;
+      return undefined;
     }
     return ClassType[classType];
   }

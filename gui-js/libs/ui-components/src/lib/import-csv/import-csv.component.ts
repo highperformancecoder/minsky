@@ -98,8 +98,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   public get horizontalDimName(): AbstractControl {
     return this.form.get('horizontalDimName');
   }
-  public get horizontalDimension(): AbstractControl {
-    return this.form.get('horizontalDimension');
+  public get horizontalDimension() {
+    return this.form.get('horizontalDimension') as FormGroup<any>;
   }
   public get type(): AbstractControl {
     return this.horizontalDimension.get('type');
@@ -327,6 +327,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       case 'axis': return "blue";
       case "ignore": return "red";
       }
+    return 'black';
   }
 
   setColTypeImpl(column: number, type: ColType) {

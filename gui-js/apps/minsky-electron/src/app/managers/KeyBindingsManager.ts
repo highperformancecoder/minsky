@@ -257,6 +257,8 @@ export class KeyBindingsManager {
 
     case 'F1':
       CommandsManager.help(payload.mouseX, payload.mouseY);
+      executed = false;
+      break;
     default:
       executed = false;
       break;
@@ -264,7 +266,7 @@ export class KeyBindingsManager {
 
     if (payload.ctrl) {
       // avoiding conflict with shortCuts (electron accelerators)
-      return;
+      return false;
     }
 
     return executed;

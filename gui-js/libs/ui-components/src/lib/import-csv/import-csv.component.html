@@ -194,7 +194,7 @@
             type="text"
             class="form-control"
             [value]="dialogState.spec.dimensionNames[i]"
-            (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
+            (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
           >
         </td>
       </tr>
@@ -206,7 +206,7 @@
           class="col-type-container" [class.selected]="selected[i]"
         >
             <select
-              (change)="setColType(i,$event.target.value)"
+              (change)="setColType(i,$event.target['value'])"
             >
               <option value="axis" style="color:blue">axis</option>
               <option value="data">data</option>
@@ -224,7 +224,7 @@
           <ng-container *ngIf="colType[i]==='axis'">
             <select
               [value]="dialogState.spec.dimensions[i]?.type "
-              (change)="dialogState.spec.dimensions[i].type = $event.target.value"
+              (change)="dialogState.spec.dimensions[i].type = $event.target['value']"
             >
               <option value="string">string</option>
               <option value="value">value</option>
@@ -245,7 +245,7 @@
             [value]="dialogState.spec.dimensions[i]?.units"
             [matAutocomplete]="autocompleteFormat"
             class="form-control"
-            (change)="dialogState.spec.dimensions[i].units = $event.target.value"
+            (change)="dialogState.spec.dimensions[i].units = $event.target['value']"
           />
           <mat-autocomplete
             id="format_{{ i }}"

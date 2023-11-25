@@ -56,7 +56,7 @@
           <div class="small-button add-button" (click)="onRowAdd(-1)"><span class="material-icons">add</span></div>
         </div>
         <div class="data-cell wide">Initial Conditions</div>
-        <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell" id="dataCell1_{{j+1}}" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass" (contextmenu)="contextMenu(1, j+1)">
+        <div *ngFor="let columnVariable of columnVariables; let j = index" class="data-cell" id="dataCell1_{{j+1}}" [class.firstOfClass]="columnVariable.firstOfClass" [class.lastOfClass]="columnVariable.lastOfClass" (contextmenu)="contextMenu(1, j+1, undefined)">
           <input type="text" [(ngModel)]="cellValues[1][j+1]" (click)="$event.stopPropagation()" (focus)="onCellFocus(1, j+1, $event, false)" (keydown)="inputKeyup($event)" (blur)="delayedFinishEditing()"/>
         </div>
         <div class="data-cell firstOfClass ale-cell">

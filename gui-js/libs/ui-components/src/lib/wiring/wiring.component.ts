@@ -28,7 +28,7 @@ export class WiringComponent implements OnInit, OnDestroy {
   wiringTab = MainRenderingTabs.canvas;
   constructor(
     public cmService: CommunicationService,
-    private electronService: ElectronService,
+    public electronService: ElectronService,
     private windowUtilityService: WindowUtilityService,
     private zone: NgZone,
     public changeDetectorRef: ChangeDetectorRef
@@ -165,6 +165,14 @@ export class WiringComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  getKey(operation) {
+    return operation.key;
+  }
+
+  getValue(operation) {
+    return operation.value;
   }
   
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method

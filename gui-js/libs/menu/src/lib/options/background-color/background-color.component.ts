@@ -11,7 +11,7 @@ export class BackgroundColorComponent {
   public disabled = false;
   public color: ThemePalette = 'primary';
   public touchUi = false;
-  colorCtr: AbstractControl = new FormControl('#c1c1c1', [Validators.required]);
+  colorCtr = new FormControl('#c1c1c1', [Validators.required]);
 
   public options = [
     { value: true, label: 'True' },
