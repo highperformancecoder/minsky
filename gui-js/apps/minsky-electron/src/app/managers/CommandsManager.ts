@@ -603,9 +603,9 @@ export class CommandsManager {
     const type=await v.type();
     const local=await v.local();
     WindowManager.createPopupWindowWithRouting({
-      width: 500,
-      height: 650,
-      title: `Edit ${name} || ''}`,
+      width: 400,
+      height: 500,
+      title: `Edit ${name || ''}`,
       url: `#/headless/menu/insert/create-variable?type=${type}&name=${encodeURIComponent(name)||''}&isEditMode=true&local=${local}`,
     });
   }
@@ -615,11 +615,12 @@ export class CommandsManager {
     let width = 500;
     switch (classType) {
       case ClassType.Group:
-        height = 240;
+        width = 400;
+        height = 130;
         break;
       case ClassType.Operation:
-        height = 250;
-        width = 350;
+        height = 200;
+        width = 300;
         break;
       case ClassType.UserFunction:
         height = 250;

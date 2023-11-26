@@ -590,12 +590,12 @@ export class ContextMenuManager {
     let op=new OperationBase(minsky.canvas.item);
 
     let portValues;
-    op.portValues().
+    await op.portValues().
       then((x)=>{portValues=x;}).
       catch((x)=>{portValues = 'unknown';});
 
     let menuItems = [
-      new MenuItem({ label: `Port values ${portValues}}` }),
+      new MenuItem({ label: `Port values ${portValues}` }),
       new MenuItem({
         label: 'Edit',
         click: async () => {
