@@ -126,12 +126,12 @@ body {
     }
   }
 
-  .mat-menu-item {
+  .mat-mdc-menu-item {
     height: 2rem;
     padding: 0 10px;
   }
 
-  ::ng-deep .mat-menu-panel {
+  ::ng-deep .mat-mdc-menu-panel {
     min-width: 50px !important;
 
     // horizontal
@@ -140,7 +140,7 @@ body {
   }
 
   // horizontal
-  ::ng-deep .mat-menu-content {
+  ::ng-deep .mat-mdc-menu-content {
     display: flex !important;
   }
 }
