@@ -39,6 +39,7 @@ export class DimensionsComponent implements OnInit {
   ngOnInit() {
     (async () => {
       if (this.electronService.isElectron) {
+        this.electronService.minsky.populateMissingDimensions();
         const dimensions = (await this.electronService.minsky.dimensions.$properties()) as Record<string, Second>;
 
         for (const [key, args] of Object.entries(dimensions)) {

@@ -17,6 +17,7 @@ export const events = {
   ADD_RECENT_FILE: 'add-recent-file',
   APP_LAYOUT_CHANGED: 'app-layout-changed',
   BACKEND: 'backend',
+  BACKEND_SYNC: 'backend-sync',
   CHANGE_MAIN_TAB: 'change-main-tab',
   CLOSE_WINDOW: 'close-window',
   CONTEXT_MENU: 'context-menu',

@@ -28,6 +28,7 @@
 #include <cairo/cairo-svg.h>
 
 #include "itemT.rcd"
+#include "plotOptions.rcd"
 #include "plot.rcd"
 #include "plot.xcd"
 #include "tensorInterface.rcd"
@@ -85,7 +86,7 @@ namespace minsky
   
   void PlotWidget::draw(cairo_t* cairo) const
   {
-    double z=zoomFactor();
+    double z=Item::zoomFactor();
     double w=iWidth()*z, h=iHeight()*z;
 
     // if any titling, draw an extra bounding box (ticket #285)
@@ -222,26 +223,26 @@ namespace minsky
   {
     // set any scale overrides
     setMinMax();
-    if (xminVar.idx()>-1)
+    if (xminVar && xminVar->idx()>-1)
       {
-        if (xIsSecsSinceEpoch && xminVar.units==Units("year"))
-          minx=yearToPTime(xminVar.value());
+        if (xIsSecsSinceEpoch && xminVar->units==Units("year"))
+          minx=yearToPTime(xminVar->value());
         else
-          minx=xminVar.value();
+          minx=xminVar->value();
       }
 
-    if (xmaxVar.idx()>-1)
+    if (xmaxVar && xmaxVar->idx()>-1)
       {
-        if (xIsSecsSinceEpoch && xmaxVar.units==Units("year"))
-          maxx=yearToPTime(xmaxVar.value());
+        if (xIsSecsSinceEpoch && xmaxVar->units==Units("year"))
+          maxx=yearToPTime(xmaxVar->value());
         else
-          maxx=xmaxVar.value();
+          maxx=xmaxVar->value();
       }
 
-    if (yminVar.idx()>-1) {miny=yminVar.value();}
-    if (ymaxVar.idx()>-1) {maxy=ymaxVar.value();}
-    if (y1minVar.idx()>-1) {miny1=y1minVar.value();}
-    if (y1maxVar.idx()>-1) {maxy1=y1maxVar.value();}
+    if (yminVar && yminVar->idx()>-1) {miny=yminVar->value();}
+    if (ymaxVar && ymaxVar->idx()>-1) {maxy=ymaxVar->value();}
+    if (y1minVar && y1minVar->idx()>-1) {miny1=y1minVar->value();}
+    if (y1maxVar && y1maxVar->idx()>-1) {maxy1=y1maxVar->value();}
     autoscale=false;
 
     if (!justDataChanged)
@@ -256,7 +257,7 @@ namespace minsky
     clickX=x;
     clickY=y;
     ct=clickType(x,y);
-    double z=zoomFactor();
+    double z=Item::zoomFactor();
     double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
     if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
@@ -267,7 +268,7 @@ namespace minsky
   
   void PlotWidget::mouseMove(float x,float y)
   {
-    double z=zoomFactor();
+    double z=Item::zoomFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     double dx=x-this->x(), dy=y-this->y();
     double gw=iWidth()*z-2*portSpace;
@@ -327,7 +328,7 @@ namespace minsky
 
   void PlotWidget::resize(const LassoBox& x)
   {
-    float invZ=1/zoomFactor();
+    float invZ=1/Item::zoomFactor();
     iWidth(abs(x.x1-x.x0)*invZ);
     iHeight(abs(x.y1-x.y0)*invZ);
     Item::moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
@@ -338,7 +339,7 @@ namespace minsky
   ClickType::Type PlotWidget::clickType(float x, float y) const
   {
     // firstly, check whether a port has been selected
-    double z=zoomFactor();  
+    double z=Item::zoomFactor();  
     for (auto& p: m_ports)
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*z)
@@ -570,11 +571,13 @@ namespace minsky
         }
     scalePlot();
 
+    
     if (newXticks.size()==1) // nothing to disambiguate
       xticks=std::move(newXticks.front());
     else
       {
         xticks.clear();
+        bool maxRangeAssigned=false;
         // now work out which xticks we'll use See Ravel #173
         for (auto& i: newXticks)
           if (i.empty())
@@ -582,10 +585,23 @@ namespace minsky
               xticks.clear();
               break; // value axes trump all
             }
-        // else select an xticks range that covers most of [minx,maxx]
-          else if (i.back().first>0.7*(maxx-minx)+minx && i.front().first<0.3*(maxx-minx)+minx)
+          else if (xticks.empty())
             xticks=std::move(i);
+          else
+            {// expand range of tick labels by each pen's tick labels in turn
+              auto j=i.begin();
+              for (; j!=i.end(); ++j)
+                if (j->first>=xticks.front().first)
+                  break;
+              xticks.insert(xticks.begin(), i.begin(), j);
+              j=i.end();
+              for (; j!=i.begin(); --j)
+                if ((j-1)->first<=xticks.back().first)
+                  break;
+              xticks.insert(xticks.end(), j, i.end());
+            }
       }
+
   }
 
   
@@ -595,12 +611,12 @@ namespace minsky
     if (port<nBoundsPorts)
       switch (port)
         {
-        case 0: xminVar=*var; return;
-        case 1: xmaxVar=*var; return;
-        case 2: yminVar=*var; return;
-        case 3: ymaxVar=*var; return;
-        case 4: y1minVar=*var; return;
-        case 5: y1maxVar=*var; return;
+        case 0: xminVar=var; return;
+        case 1: xmaxVar=var; return;
+        case 2: yminVar=var; return;
+        case 3: ymaxVar=var; return;
+        case 4: y1minVar=var; return;
+        case 5: y1maxVar=var; return;
         }
     unsigned pen=port-nBoundsPorts;
     if (pen<2*numLines)
@@ -615,6 +631,7 @@ namespace minsky
         xvars.resize(pen-2*numLines+1);
         xvars[pen-2*numLines]=var;
       }
+    justDataChanged=false;
     scalePlot();
   }
 
@@ -622,7 +639,7 @@ namespace minsky
   {
     xvars.clear();
     yvars.clear();
-    xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();
+    xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=nullptr;
   }
 
 }

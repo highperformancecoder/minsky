@@ -453,6 +453,18 @@ export class ContextMenuManager {
         },
       }),
       new MenuItem({
+        label: 'Set options as default',
+        click: async () => {
+          minsky.canvas.setDefaultPlotOptions();
+        },
+      }),
+      new MenuItem({
+        label: 'Apply default options',
+        click: async () => {
+          minsky.canvas.applyDefaultPlotOptions();
+        },
+      }),
+      new MenuItem({
         label: 'Pen Styles',
         click: () => {
           WindowManager.createPopupWindowWithRouting({
@@ -882,7 +894,12 @@ export class ContextMenuManager {
       new MenuItem({
         label: ravel.locked()? 'Unlock': 'Lock',
         click: async () => {ravel.toggleLocked();}
-      })
+      }),
+      new MenuItem({
+        label: 'Apply state to Ravel',
+        click: async () => {ravel.applyLockedStateToRavel();}
+      }),
+      
     ];
   }
 

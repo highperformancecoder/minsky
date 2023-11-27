@@ -157,8 +157,8 @@ namespace minsky
     EvalOpPtr(OperationType::Type op,
               const ItemPtr& state,
               VariableValue& to,
-              const VariableValue& from1=VariableValue(), 
-              const VariableValue& from2=VariableValue());
+              const VariableValue& from1={}, 
+              const VariableValue& from2={});
   };
 
   struct EvalOpVector: public vector<EvalOpPtr>

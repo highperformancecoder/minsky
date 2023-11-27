@@ -75,18 +75,17 @@ ifneq ($(MAKECMDGOALS),clean)
     ifeq ($(OS),Darwin)
       NODE_HEADER=/usr/local/include/node
     else
-      NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
       ifdef MXE
-        NODE_HEADER=/usr/include/node$(NODE_VERSION)
         NODE_API+=node-api.o
-      else
-        ifeq ($(OS),CYGWIN)
-          NODE_API+=node-api.o
-        endif
-        NODE_HEADER=$(call search,include/node$(NODE_VERSION))
-        ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs
-          NODE_HEADER=$(call search,include/node)
-        endif
+      endif
+      ifeq ($(OS),CYGWIN)
+        NODE_API+=node-api.o
+      endif
+      NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
+      nsearch=$(firstword $(foreach dir,$(DIRS) /usr,$(wildcard $(dir)/$(1))))
+      NODE_HEADER=$(call nsearch,include/node$(NODE_VERSION))
+      ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs, also if node version doesn't match, create a link in your include search path (eg ~/usr/include/node
+        NODE_HEADER=$(call nsearch,include/node)
       endif
     endif
     # if we haven't found an installed version of the Node SDK, then
@@ -122,8 +121,8 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o panopticon.o phillipsDiagram.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
-ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o \
+MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o panopticon.o phillipsDiagram.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
+ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
@@ -237,11 +236,14 @@ EXE=.exe
 DL=dll
 FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
 # DLLS that need to be copied into the binary directory
-MXE_DLLS=libboost_filesystem-mt-x64 libboost_thread-mt-x64 libbz2 libcairo-2 libcroco-0 libcrypto-3-x64 libexpat-1 \
-libffi-7 libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
-libgobject-2 libgsl-25 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 \
-libpangoft2-1 libpangowin32-1 libpcre-1 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 libstdc++-6 \
-libtermcap libwinpthread-1 libxml2-2 tcl86 zlib1
+MXE_DLLS=libboost_filesystem-mt-x64 libboost_thread-mt-x64 \
+libbrotlidec libbrotlicommon libbz2 libcairo-2 libcroco-0 libcrypto-3-x64 \
+libexpat-1 libffi libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 \
+libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
+libgobject-2 libgsl-25 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
+libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 libpangoft2-1 libpangowin32-1 \
+libpcre-1 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 \
+libstdc++-6 libtermcap libwinpthread-1 libxml2-2 tcl86 zlib1
 BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
 $(warning $(BINDIR))
 DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))

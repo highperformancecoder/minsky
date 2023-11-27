@@ -370,7 +370,7 @@ namespace minsky
                                               });
           }
         if (minsky().reset_flag())
-          minsky().requestReset(); // postpone reset whilst mousing
+          minsky().resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500); // postpone reset whilst mousing
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
@@ -748,6 +748,11 @@ namespace minsky
               }
           }
         model->zoom(model->x(),model->y(),zoomFactor);
+        this->item.reset();
+        itemFocus.reset();
+        wire.reset();
+        selection.clear();
+        fromPort.reset();
         requestRedraw();
       }
   }
@@ -975,7 +980,19 @@ namespace minsky
     // ensure screen refresh time is less than a third
     minsky().maxWaitMS=(t>0.03)? 3000*t: 100.0;
   }
-  
+
+  void Canvas::applyDefaultPlotOptions() {
+      if (auto p=item->plotWidgetCast()) {
+        // stash titles to restore later
+        string title(p->title), xlabel(p->xlabel()),
+          ylabel(p->ylabel()), y1label(p->y1label());
+        defaultPlotOptions.applyPlotOptions(*p);
+        p->title=title, p->xlabel(xlabel),
+          p->ylabel(ylabel), p->y1label(y1label);
+      }
+    }
+
+
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EventInterface);

@@ -7,3 +7,4 @@ export * from './lib/functions/functions';
 export * from './lib/interfaces/ActiveWindow';
 export * from './lib/interfaces/Interfaces';
 export * from './lib/utility';
+export * from './lib/zoomable';

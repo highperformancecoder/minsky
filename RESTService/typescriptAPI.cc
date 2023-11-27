@@ -17,6 +17,7 @@
 #include "dataOp.tcd"
 #include "dimension.tcd"
 #include "engNotation.tcd"
+#include "equationDisplay.tcd"
 #include "evalGodley.tcd"
 #include "eventInterface.tcd"
 #include "fontDisplay.tcd"
@@ -44,6 +45,7 @@
 #include "panopticon.tcd"
 #include "phillipsDiagram.tcd"
 #include "plot.tcd"
+#include "plotOptions.tcd"
 #include "plotTab.tcd"
 #include "plotWidget.tcd"
 #include "polyRESTProcessBase.tcd"
@@ -95,6 +97,10 @@ namespace classdesc_access
   
   template <>
   struct access_typescriptAPI<std::vector<civita::any>>:
+    public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
+  
+  template <class T>
+  struct access_typescriptAPI<minsky::Optional<T>>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
 }
 
@@ -248,6 +254,7 @@ int main()
   api.addClass<DataSpecSchema>();
   api.addClass<ecolab::Plot::LineStyle>();
   api.addClass<EngNotation>();
+  api.addClass<EventInterface>();
   api.addClass<GroupItems>();
   api.addClass<HandleLockInfo>();
   api.addClass<PannableTab<EquationDisplay>>();

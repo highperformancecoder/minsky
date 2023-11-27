@@ -32,16 +32,14 @@ namespace minsky
     VariableValuePtr stock;
     VariableValue& input() {assert(m_input->size()==stock->size()); return *m_input;}
     IntOp* operation; //< reference to the internal operation object
-//    Integral(const VariableValue& input=VariableValue()):
-//      stock(VariableBase::integral), operation(NULL)
-//    {
-//      setInput(input);
-//    }
     void setInput(const VariableValuePtr& input) {
       m_input=input;
-      // redimension stock to that of the input
-      stock->index(m_input->index());
-      stock->hypercube(m_input->hypercube());
+      if (stock)
+        {
+          // redimension stock to that of the input
+          stock->index(m_input->index());
+          stock->hypercube(m_input->hypercube());
+        }
     }
   };
 

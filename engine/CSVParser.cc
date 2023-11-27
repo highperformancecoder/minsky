@@ -219,8 +219,16 @@ namespace
         charsProcd+=2;
         return r;
       }
-    // strip any leading non-numerical characters ([^0-9.,])
-    auto n=s.find_first_of("0123456789,.");
+    if (s.empty()) return nan(""); // treat empty cell as a missing value
+    // first try to read the cell as a number
+    try {
+      double r=stod(s,&charsProcd);
+      if (charsProcd==s.size())
+        return r;
+    }
+    catch (...) {}
+    // if not, then strip any leading non-numerical characters ([^0-9.,+-])
+    auto n=s.find_first_of("0123456789,.+-");
     return stod(s.substr(n),&charsProcd);
   }
 
@@ -243,7 +251,7 @@ namespace
         {
           if (!v[i].empty())
             {
-              size_t c;
+              size_t c=0;
               auto s=stripWSAndDecimalSep(v[i]);
               quotedStoD(s,c);
               if (c!=s.size())
@@ -270,7 +278,7 @@ namespace minsky
 {
   bool isNumerical(const string& s)
   {
-    size_t charsProcd;
+    size_t charsProcd=0;
     string stripped=stripWSAndDecimalSep(s);
     try
       {
@@ -328,7 +336,6 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     string buf;
     size_t row=0;
     size_t firstEmpty=numeric_limits<size_t>::max();
-    dimensionCols.clear();
 
     m_nRowAxes=0;
     for (; getline(input, buf) && row<CSVDialog::numInitialLines; ++row)
@@ -378,8 +385,11 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     if (firstEmpty==m_nRowAxes) ++m_nRowAxes; // allow for possible colAxes header line
     headerRow=nRowAxes()>0? nRowAxes()-1: 0;
     size_t i=0;
+    dimensionCols.clear();
     for (; i<nColAxes(); ++i) dimensionCols.insert(i);
+    dataCols.clear();
     for (; i<nCols; ++i) dataCols.insert(i);
+    return;
 }
 
 void DataSpec::guessRemainder(std::istream& input, char sep)
@@ -424,65 +434,6 @@ void DataSpec::guessFromStream(std::istream& input)
     else
       guessRemainder(inputCopy,' ');
   }
-
-  if (dimensionNames.empty())
-  {
-    //fill in guessed dimension names
-    istringstream inputCopy(streamBuf.str());
-    guessDimensionsFromStream(inputCopy);
-  }
-}
-
-void DataSpec::guessDimensionsFromStream(std::istream& i)
-{
-  if (separator==' ')
-    guessDimensionsFromStream(i,SpaceSeparatorParser(escape,quote));
-  else
-    guessDimensionsFromStream(i,Parser(escape,separator,quote));
-}
-    
-template <class T>
-void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
-{
-  string buf;
-  size_t row=0;
-  for (; row<=headerRow; ++row) getline(input, buf);
-  boost::tokenizer<T> tok(buf.begin(),buf.end(), tf);
-  dimensionNames.assign(tok.begin(), tok.end());
-  for (;row<=nRowAxes(); ++row) getline(input, buf);
-  vector<string> data(tok.begin(),tok.end());
-  for (size_t col=0; col<data.size() && col<nColAxes(); ++col)
-    try
-      {
-        // only select value type if the datafield is a pure double
-        size_t c;
-        string s=stripWSAndDecimalSep(data[col]);
-        quotedStoD(s, c);
-        if (c!=s.size()) throw 0; // try parsing as time
-        dimensions.emplace_back(Dimension::value,"");
-      }
-    catch (...)
-      {
-        try
-          {
-            Dimension dim(Dimension::time,"%Y-Q%Q");
-            anyVal(dim, data[col]);
-            dimensions.push_back(dim);
-          }
-        catch (...)
-          {
-            try
-              {
-                Dimension dim(Dimension::time,"");
-                anyVal(dim, data[col]);
-                dimensions.push_back(dim);
-              }
-            catch (...)
-              {
-                dimensions.emplace_back(Dimension::string,"");
-              }
-          }
-      }
 }
 
  void DataSpec::populateFromRavelMetadata(const std::string& metadata, size_t row)
@@ -589,15 +540,9 @@ namespace minsky
     chomp(line);
     while (r)
       {
-        // count the number of quote characters after last separator. If odd, then line is not terminated correctly
-        auto n=line.rfind(spec.separator);
-        if (n==string::npos)
-          n=0;
-        else
-          ++n;
         int quoteCount=0;
-        for (; n<line.size(); ++n)
-          if (line[n]==spec.quote)
+        for (auto i: line)
+          if (i==spec.quote)
             ++quoteCount;
         if (quoteCount%2==0) break; // data line correctly terminated
         string buf;
@@ -659,11 +604,17 @@ namespace minsky
             // legacy situation where all data columns are to the right
             if (spec.dataCols.empty())
               for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
+                {
+                  col=i;
                   horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                }
             else
               // explicitly specified data columns
               for (auto i: spec.dataCols)
-                horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                {
+                  col=i;
+                  horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                }
             hc.xvectors.emplace_back(spec.horizontalDimName);
             hc.xvectors.back().dimension=spec.horizontalDimension;
             set<typename Key::value_type> uniqueLabels;
@@ -739,7 +690,8 @@ namespace minsky
                   for (auto c: *field)
                     if (c==spec.decSeparator)
                       s+='.';
-                    else if (s.empty() && !isdigit(c))
+                    else if ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
+                             ((s=="-"||s=="+") && !isdigit(c)))
                       continue; // skip non-numeric prefix
                     else if (!isspace(c) && c!='.' && c!=',')
                       s+=c;                    
@@ -857,10 +809,13 @@ namespace minsky
                 size_t idx=0;
                 assert (hc.rank()<=i.first.size());
                 assert(dimLabels.size()==hc.rank());
-                for (int j=hc.rank()-1; j>=0; --j)
+                for (int j=hc.rank()-1, k=i.first.size()-1; j>=0 && k>=0; --j, --k)
                   {
-                    assert(dimLabels[j].count(i.first[j]));
-                    idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                    auto dimLabel=dimLabels[j].find(i.first[k]);
+                    while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
+                      dimLabel=dimLabels[j].find(i.first[--k]);
+                    assert(dimLabel!=dimLabels[j].end());
+                    idx = (idx*dims[j]) + dimLabel->second;
                   }
                 vv.tensorInit[idx]=i.second;
                 ++minsky().progressState;
@@ -879,12 +834,15 @@ namespace minsky
               for (auto& i: tmpData)
                 {
                   size_t idx=0;
-                  assert (dims.size()==i.first.size());
+                  assert (dims.size()<=i.first.size());
                   assert(dimLabels.size()==dims.size());
-                  for (int j=dims.size()-1; j>=0; --j)
+                  for (int j=dims.size()-1, k=i.first.size()-1; j>=0 && k>=0; --j, --k)
                     {
-                      assert(dimLabels[j].count(i.first[j]));
-                      idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                      auto dimLabel=dimLabels[j].find(i.first[k]);
+                      while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
+                        dimLabel=dimLabels[j].find(i.first[--k]);
+                      assert(dimLabel!=dimLabels[j].end());
+                      idx = (idx*dims[j]) + dimLabel->second;
                     }
                   if (!isnan(i.second))
                     indexValue.emplace(idx, i.second);
@@ -917,7 +875,10 @@ namespace minsky
       }
     catch (const std::exception& ex)
       {
-        throw std::runtime_error(string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col));
+        auto msg=string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col);
+        if (col<spec.dimensionNames.size())
+          msg+=" ("+spec.dimensionNames[col]+")";
+        throw std::runtime_error(msg);
       }
   }
   

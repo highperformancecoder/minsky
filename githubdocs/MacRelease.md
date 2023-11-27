@@ -7,7 +7,7 @@
 NB unfortunately, the XCode command line tools package is out of date, so you will need to install the full multigigabyte XCode package, even though we only need the command line tools.
 - download ports installer for your version of MacOSX
 - Now install port prerequisistes for Minsky. 
-  - port install cairo pango gsl librsvg boost cmake pkgconfig tk
+  - port install cairo pango gsl librsvg boost cmake pkgconfig tk n npm7
   - Minksy 3.x does not use Tk, so the X11 version suffices. For 2.x or earlier, tcl/tk needs to be installed from source code if using Aqua. See below. 
   - json_spirit needs to be installed from source code, but is not needed for Minsky 3.x
 - Currently, Mac builds are done on a High Sierra virtual machine, and the binary packages for High Sierra are used, so that is the mininum OS version for the MacOSX Minsky release. 
@@ -23,7 +23,7 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
 
 # compile TCL/Tk from source code
 
-This step is no longer needed for Minsky 3.x, but left for historical interest for building ealier versions of Minsky.
+This step should no longer be needed for Minsky 3.x, but is currently, because the current EcoLab library requires it.
 
 Because we need to use an internal function with tk when compiling Minsky for Aqua, we have to staticly link to the library. 
 
@@ -37,9 +37,23 @@ Because we need to use an internal function with tk when compiling Minsky for Aq
 - ./configure --prefix=$HOME/usr --disable-shared --enable-aqua
 - make -j install
 
+# compile libclipboard from source code
+
+- git clone git@github.com:jtanx/libclipboard.git
+- cd libclipboard
+- cmake .
+- make -j
+- sudo make install
+
+# install node, and its dependencies
+
+At the time of writing, Minsky requires Node 14, and npm 7:
+- sudo n install 14
+- sudo npm install -g npm@7
+- cd gui-js; npm install
   
 # compile Minsky
 By default, Minsky builds in Aqua mode. This may cause build errors if the prerequisites are built for X11. To disable Aqua, specify MAC_OSX_TK= on the make command line.
-  - make MAC_OSX_TK=1 mac-dist
+  - make MAC_OSX_TK=1 -j mac-dist
   
 This builds the minskyRESTService.node, and rewrites the dynamic library references, signs the executables, produces a dmg file in dist/executables and submits the binary package to Apple for notarisation. This must be run on the Macintosh console, as it makes use of code signing, which has to be run on the console, not over an ssh connection. Notarisation takes 5-10 minutes, and if approved, should be stapled to the .dmg file. The Make step prints out the command to run the stapler.

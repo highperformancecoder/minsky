@@ -53,9 +53,6 @@ export class CommandsManager {
       return classTypeRes;
     }
 
-    console.log(typeof classTypeRes);
-    console.log(classTypeRes);
-    
     const classType = classTypeRes.includes(':')
       ? classTypeRes.split(':')[0]
       : classTypeRes;
@@ -186,6 +183,7 @@ export class CommandsManager {
 
   static async editGodleyTitle(godley: GodleyIcon): Promise<void> {
     let title = await godley.table.title();
+    let godleyId = await godley.id();
 
     if (Functions.isEmptyObject(title)) {
       title = '';
@@ -194,7 +192,7 @@ export class CommandsManager {
     minsky.nameCurrentItem(await minsky.canvas.item?.id()); // name current item
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
-      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godley.id()}`,
+      url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godleyId}`,
       useContentSize: true,
       height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
       width: 400,
@@ -739,7 +737,7 @@ export class CommandsManager {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
       CommandsManager.addItemToNamedItems(itemInfo);
       let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
-      var title=godley.table.title();
+      var title=await godley.table.title();
 
       const window = await this.initializePopupWindow({
         customTitle: `Godley Table : ${title}`,
@@ -1035,7 +1033,6 @@ export class CommandsManager {
     if(Object.keys(allLockHandles).length === 0) {
       minsky.canvas.lockRavelsInSelection();
       allLockHandles = await ravel.lockGroup.allLockHandles();
-      console.log(typeof allLockHandles,allLockHandles.length);
       if(Object.keys(allLockHandles).length === 0) return;
     }
 

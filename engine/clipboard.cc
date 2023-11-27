@@ -18,10 +18,11 @@
 */
 
 #include "clipboard.h"
-#include "libclipboard.h"
 
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include "libclipboard.h"
 #endif
 
 using namespace std;

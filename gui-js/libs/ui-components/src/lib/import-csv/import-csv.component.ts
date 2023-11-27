@@ -8,35 +8,35 @@ import {
   importCSVvariableName,
   VariableBase,
   VariableValue,
+  Zoomable,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import * as JSON5 from 'json5';
 
 enum ColType {
-  axis="axis",
-  data="data",
-  ignore="ignore"
+  axis = "axis",
+  data = "data",
+  ignore = "ignore"
 };
 
 function separatorToChar(sep: string): string {
-  switch(sep) {
-  case 'space': return ' ';
-  case 'tab': return '\t';
-  default: return sep;
+  switch (sep) {
+    case 'space': return ' ';
+    case 'tab': return '\t';
+    default: return sep;
   }
 }
 
 function separatorFromChar(sep: string): string {
-  switch(sep) {
-  case ' ': return 'space';
-  case '\t': return 'tab';
-  default: return sep;
+  switch (sep) {
+    case ' ': return 'space';
+    case '\t': return 'tab';
+    default: return sep;
   }
 }
 
-class Dimension
-{
+class Dimension {
   type: string;
   units: string;
 };
@@ -47,7 +47,7 @@ class Dimension
   templateUrl: './import-csv.component.html',
   styleUrls: ['./import-csv.component.scss'],
 })
-export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewInit, OnDestroy {
   form: FormGroup;
 
   itemId: string;
@@ -60,10 +60,12 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   csvCols: any[];
   colType: Array<ColType> = [];
   selected: boolean[]; ///< per column whether column is selected
-  mouseDown=-1;       ///< record of column of previous mouseDown
+  mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
+  @ViewChild('fullDialog') fullDialog: ElementRef<HTMLElement>;
+
 
   public get url(): AbstractControl {
     return this.form.get('url');
@@ -108,11 +110,20 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.horizontalDimension.get('units');
   }
 
+  zoom(ratio: number) {
+    this.zoomFactor *= ratio;
+    let style=this.fullDialog.nativeElement.style;
+    style.setProperty('zoom', `${Math.round(this.zoomFactor * 100)}%`);
+    style.setProperty('width', `${Math.round(100/this.zoomFactor)}vw`);
+    style.setProperty('height', `${Math.round(100/this.zoomFactor)}vh`);
+  }
+
   constructor(
     private electronService: ElectronService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {
+    super();
     this.route.queryParams.subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
@@ -139,7 +150,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
     });
 
-    this.electronService.on(events.CSV_IMPORT_REFRESH, async e=>{
+    this.electronService.on(events.CSV_IMPORT_REFRESH, async e => {
       await this.getCSVDialogSpec();
       this.updateColumnTypes();
       this.updateForm();
@@ -154,45 +165,44 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
         await this.parseLines();
       }
     });
+    document.onkeydown = this.onKeyDown;
   }
 
   ngAfterViewInit() {
     (async () => {
       this.valueId = await this.getValueId();
       this.variableValuesSubCommand = this.electronService.minsky.variableValues.elem(this.valueId).second;
-      
-      
+
+
       await this.getCSVDialogSpec();
       this.updateForm();
       this.load();
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
     })();
   }
-  ngAfterViewChecked() 	{
+  ngAfterViewChecked() {
     // set state of dimension controls to reflect dialogState
-    if (this.inputCsvCanvasContainer)
-    {
-      var table=this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
+    if (this.inputCsvCanvasContainer) {
+      var table = this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
       if (!table) return;
-      for (var i=0; i<this.colType.length; ++i)
-        {
-            var colType=table.rows[1].cells[i+1]?.children[0] as HTMLInputElement;
-            if (colType)
-                colType.value=this.colType[i];
-            if (this.colType[i]===ColType.axis)
-            {
-              var type=table.rows[2].cells[i+1]?.children[0] as HTMLSelectElement;
-              var dimension=this.dialogState.spec.dimensions[i];
-              if (!dimension) dimension={type: "string", units: ""};
-              type.value=dimension.type;
-            }
+      for (var i = 0; i < this.colType.length; ++i) {
+        var colType = table.rows[1].cells[i + 1]?.children[0] as HTMLInputElement;
+        if (colType)
+          colType.value = this.colType[i];
+        if (this.colType[i] === ColType.axis) {
+          var type = table.rows[2].cells[i + 1]?.children[0] as HTMLSelectElement;
+          var dimension = this.dialogState.spec.dimensions[i];
+          if (!dimension) dimension = { type: "string", units: "" };
+          type.value = dimension.type;
         }
+      }
     }
   }
-  
+
+
   updateForm() {
     this.url.setValue(this.dialogState.url);
-    
+
     this.dontFail.setValue(this.dialogState.spec.dontFail);
     this.counter.setValue(this.dialogState.spec.counter);
     this.decSeparator.setValue(this.dialogState.spec.decSeparator);
@@ -205,7 +215,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.separator.setValue(separatorFromChar(this.dialogState.spec.separator));
     this.horizontalDimension.setValue({
       type: this.dialogState.spec.horizontalDimension.type,
-      units:this.dialogState.spec.horizontalDimension.units
+      units: this.dialogState.spec.horizontalDimension.units
     });
   }
 
@@ -221,9 +231,9 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       ],
     });
 
-    if (!filePath) {return;}
+    if (!filePath) { return; }
     this.url.setValue(filePath);
-    this.dialogState.url=filePath;
+    this.dialogState.url = filePath;
   }
 
   async load() {
@@ -249,31 +259,28 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
 
   updateColumnTypes() {
     this.colType = new Array(this.parsedLines[this.dialogState.spec.headerRow]?.length).fill("ignore");
-    for (var i in this.dialogState.spec.dimensionCols as Array<number>)
-    {
-      var col=this.dialogState.spec.dimensionCols[i];
-      if (col<this.colType.length)
-        this.colType[col]=ColType.axis;
+    for (var i in this.dialogState.spec.dimensionCols as Array<number>) {
+      var col = this.dialogState.spec.dimensionCols[i];
+      if (col < this.colType.length)
+        this.colType[col] = ColType.axis;
     }
     if (this.dialogState.spec.dataCols)
-      for (var i in this.dialogState.spec.dataCols as Array<number>)
-    {
-      var col=this.dialogState.spec.dataCols[i];
-      if (col<this.colType.length)
-        this.colType[col]=ColType.data;
-    }
+      for (var i in this.dialogState.spec.dataCols as Array<number>) {
+        var col = this.dialogState.spec.dataCols[i];
+        if (col < this.colType.length)
+          this.colType[col] = ColType.data;
+      }
     else
       // emulate old behaviour, if no datacols specified, all columns to the right of dataColOffset are data
-      for (var ii=this.dialogState.dataColOffset as number; ii<this.colType.length; ++ii)
-        this.colType[ii]=ColType.data;
-    this.electronService.log(JSON5.stringify(this.colType));
+      for (var ii = this.dialogState.dataColOffset as number; ii < this.colType.length; ++ii)
+        this.colType[ii] = ColType.data;
   }
-  
+
   async parseLines() {
     this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines() as string[][];
     await this.getCSVDialogSpec();
-    
-    let header=this.dialogState.spec.headerRow;
+
+    let header = this.dialogState.spec.headerRow;
     this.csvCols = new Array(this.parsedLines[header]?.length);
     this.selected = new Array(this.parsedLines[header]?.length).fill(false);
     this.updateColumnTypes();
@@ -284,67 +291,67 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     this.variableValuesSubCommand.csvDialog.spec.$properties(this.dialogState.spec);
     this.parseLines();
   }
-    
+
   async selectHeader(index: number) {
     this.dialogState.spec.headerRow = index;
     // explicitly selecting a header, make sure dataRowOffset is greater
-    if (this.dialogState.spec.dataRowOffset<=index)
-      this.dialogState.spec.dataRowOffset=index+1;
+    if (this.dialogState.spec.dataRowOffset <= index)
+      this.dialogState.spec.dataRowOffset = index + 1;
   }
 
   async selectRowAndCol(rowIndex: number, colIndex: number) {
     this.dialogState.spec.dataRowOffset = rowIndex;
-    if (this.dialogState.spec.headerRow>=rowIndex)
-      this.dialogState.spec.headerRow=rowIndex-1;
+    if (this.dialogState.spec.headerRow >= rowIndex)
+      this.dialogState.spec.headerRow = rowIndex - 1;
 
-    
+
     this.dialogState.spec.dataColOffset = colIndex;
 
     if (!this.parsedLines.length) return;
-    for (let i = 0; i<this.parsedLines[0].length; i++)
-      if (i<colIndex) {
-        if (this.colType[i]==ColType.data)
-          this.colType[i]=ColType.ignore;
-      } else 
-        this.colType[i]=ColType.data;
+    for (let i = 0; i < this.parsedLines[0].length; i++)
+      if (i < colIndex) {
+        if (this.colType[i] == ColType.data)
+          this.colType[i] = ColType.ignore;
+      } else
+        this.colType[i] = ColType.data;
     this.ngAfterViewChecked();
   }
 
   getColorForCell(rowIndex: number, colIndex: number) {
-    if (colIndex>=this.colType.length) return "red";
+    if (colIndex >= this.colType.length) return "red";
 
     if (this.dialogState.spec.headerRow === rowIndex && this.dialogState.spec.headerRow < this.dialogState.spec.dataRowOffset)  // header row
-        switch (this.colType[colIndex]) {
+      switch (this.colType[colIndex]) {
         case 'data': return "blue";
         case 'axis': return "green";
         case "ignore": return "red";
-        }
+      }
     else if (this.dialogState.spec.dataRowOffset >= 0 && this.dialogState.spec.dataRowOffset > rowIndex)
       return "red"; // ignore commentary at beginning of file
     else
       switch (this.colType[colIndex]) {
-      case 'data': return "black";
-      case 'axis': return "blue";
-      case "ignore": return "red";
+        case 'data': return "black";
+        case 'axis': return "blue";
+        case "ignore": return "red";
       }
     return 'black';
   }
 
   setColTypeImpl(column: number, type: ColType) {
-    this.colType[column]=type;
+    this.colType[column] = type;
     if (!this.dialogState.spec.dimensionNames[column])
-      this.dialogState.dimensionNames[column]=this.parsedLines[this.dialogState.spec.headerRow][column];
+      this.dialogState.dimensionNames[column] = this.parsedLines[this.dialogState.spec.headerRow][column];
     if (!this.dialogState.spec.dimensions[column])
-      this.dialogState.spec.dimensions[column]={type:"string",units:""} as Dimension;
+      this.dialogState.spec.dimensions[column] = { type: "string", units: "" } as Dimension;
   }
-  
+
   setColType(column: number, type: ColType) {
-    if (this.selected.every((x)=>!x)) { // nothing selected
+    if (this.selected.every((x) => !x)) { // nothing selected
       this.setColTypeImpl(column, type);
       return;
     }
-      
-    for (let i=0; i<this.selected.length; ++i)
+
+    for (let i = 0; i < this.selected.length; ++i)
       if (this.selected[i]) {
         this.setColTypeImpl(i, type);
       }
@@ -353,81 +360,81 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   typeMouseDown(event: any, col: number) {
-    if (event?.button===0)
-      this.mouseDown=col;
+    if (event?.button === 0)
+      this.mouseDown = col;
   }
 
   typeMouseMove(event: any, col: number) {
-    if (event?.button===0 && this.mouseDown>=0 && col!==this.mouseDown) {
-      if (col<this.mouseDown) [col,this.mouseDown]=[this.mouseDown,col];
-      for (let i=0; i<this.selected.length; ++i)
-        this.selected[i]=i>=this.mouseDown && i<=col;
+    if (event?.button === 0 && this.mouseDown >= 0 && col !== this.mouseDown) {
+      if (col < this.mouseDown) [col, this.mouseDown] = [this.mouseDown, col];
+      for (let i = 0; i < this.selected.length; ++i)
+        this.selected[i] = i >= this.mouseDown && i <= col;
     }
   }
-  
+
   typeMouseUp(event: any, row: any, col: number) {
-    if (event?.button===0) {
-      this.typeMouseMove(event,col);
-      if (col===this.mouseDown)  // deselect all if ending on same column
-        if (this.selected.every((x)=>!x)) {
+    if (event?.button === 0) {
+      this.typeMouseMove(event, col);
+      if (col === this.mouseDown)  // deselect all if ending on same column
+        if (this.selected.every((x) => !x)) {
           // hide selectRowAndColumn behind a modifier key to prevent accidental settings.
-          if (Number.isInteger(row) && (event.shiftKey||event.ctrlKey||event.altKey))
+          if (Number.isInteger(row) && (event.shiftKey || event.ctrlKey || event.altKey))
             this.selectRowAndCol(row, col);
           else
-            this.dialogState.spec.dimensionNames[col]=this.parsedLines[this.dialogState.spec.headerRow][col]
+            this.dialogState.spec.dimensionNames[col] = this.parsedLines[this.dialogState.spec.headerRow][col]
         }
-      else
-        this.selected.fill(false);
+        else
+          this.selected.fill(false);
       this.cdr.detectChanges();
-      this.mouseDown=-1;
+      this.mouseDown = -1;
     }
   }
 
   updateSpecFromForm() {
-    var spec=this.dialogState.spec;
-    spec.dontFail=this.dontFail.value;
-    spec.counter=this.counter.value;
-    spec.decSeparator=this.decSeparator.value;
-    spec.duplicateKeyAction=this.duplicateKeyAction.value;
-    spec.escape=this.escape.value;
-    spec.horizontalDimName=this.horizontalDimName.value;
-    spec.mergeDelimiters=this.mergeDelimiters.value;
-    spec.missingValue=this.missingValue.value;
-    spec.quote=this.quote.value;
+    var spec = this.dialogState.spec;
+    spec.dontFail = this.dontFail.value;
+    spec.counter = this.counter.value;
+    spec.decSeparator = this.decSeparator.value;
+    spec.duplicateKeyAction = this.duplicateKeyAction.value;
+    spec.escape = this.escape.value;
+    spec.horizontalDimName = this.horizontalDimName.value;
+    spec.mergeDelimiters = this.mergeDelimiters.value;
+    spec.missingValue = this.missingValue.value;
+    spec.quote = this.quote.value;
     switch (this.separator.value) {
-    case 'tab':
-      spec.separator='\t';
-      break;
-    case 'space':
-      spec.separator=' ';
-      break;
-    default:
-      spec.separator=this.separator.value;
-      break;
+      case 'tab':
+        spec.separator = '\t';
+        break;
+      case 'space':
+        spec.separator = ' ';
+        break;
+      default:
+        spec.separator = this.separator.value;
+        break;
     }
-    spec.horizontalDimension=this.horizontalDimension.value;
+    spec.horizontalDimension = this.horizontalDimension.value;
 
-    this.dialogState.spec.dimensionCols=[];
-    this.dialogState.spec.dataCols=[];
-    for (let i=0; i<this.colType.length; ++i) 
+    this.dialogState.spec.dimensionCols = [];
+    this.dialogState.spec.dataCols = [];
+    for (let i = 0; i < this.colType.length; ++i)
       switch (this.colType[i]) {
-      case ColType.axis: 
-        this.dialogState.spec.dimensionCols.push(i);
-        break;
-      case ColType.data:
-        this.dialogState.spec.dataCols.push(i);
-        break;
-    }
+        case ColType.axis:
+          this.dialogState.spec.dimensionCols.push(i);
+          break;
+        case ColType.data:
+          this.dialogState.spec.dataCols.push(i);
+          break;
+      }
   }
-  
+
   async handleSubmit() {
     this.updateSpecFromForm();
-    
-    let v=new VariableBase(this.electronService.minsky.canvas.item);
-    // returns an error message on error
-    const res = await v.importFromCSV(this.url.value,this.dialogState.spec) as unknown as string;
 
-    if (typeof res==='string') {
+    let v = new VariableBase(this.electronService.minsky.canvas.item);
+    // returns an error message on error
+    const res = await v.importFromCSV(this.url.value, this.dialogState.spec) as unknown as string;
+
+    if (typeof res === 'string') {
       const positiveResponseText = 'Yes';
       const negativeResponseText = 'No';
 
@@ -470,7 +477,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
       .toLowerCase()
       .split('.csv')[0];
 
-     const filePath = await this.electronService.saveFileDialog({
+    const filePath = await this.electronService.saveFileDialog({
       defaultPath: `${filePathWithoutExt}-error-report.csv`,
       title: 'Save report',
       properties: ['showOverwriteConfirmation', 'createDirectory'],
@@ -478,7 +485,7 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     if (!filePath) return;
 
-    await this.variableValuesSubCommand.csvDialog.reportFromFile(this.url.value,filePath);
+    await this.variableValuesSubCommand.csvDialog.reportFromFile(this.url.value, filePath);
     return;
   }
 
@@ -494,8 +501,8 @@ export class ImportCsvComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  closeWindow() {this.electronService.closeWindow();}
+  closeWindow() { this.electronService.closeWindow(); }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 }

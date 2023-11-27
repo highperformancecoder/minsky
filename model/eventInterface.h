@@ -38,6 +38,7 @@ namespace minsky
     virtual void moveTo(float x, float y) {}
     /// current centre coordinates
     virtual std::vector<float> position() const {return {0,0};}
+    virtual double zoomFactor() const {return 1;}
 
     struct KeyPressArgs
     {

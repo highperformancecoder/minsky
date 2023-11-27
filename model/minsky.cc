@@ -86,29 +86,6 @@ namespace
 
 namespace minsky
 {
-  bool EquationDisplay::redraw(int x0, int y0, int width, int height)
-  {
-    if (surface.get()) {
-      BusyCursor busy(m);
-      MathDAG::SystemOfEquations system(m);
-      cairo_rectangle(surface->cairo(),0,0,width,height);
-      cairo_clip(surface->cairo());
-      cairo_move_to(surface->cairo(),offsx,offsy);
-      system.renderEquations(*surface,height);
-      if (m.flags & Minsky::fullEqnDisplay_needed)
-        {
-          ecolab::cairo::Surface surf
-            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-          system.renderEquations(surf,std::numeric_limits<double>::max());
-          m_width=surf.width();
-          m_height=surf.height();
-          m.flags &= ~Minsky::fullEqnDisplay_needed;
-        }
-      return true;
-    }
-    return surface.get();
-  }
-
   bool Minsky::multipleEquities(const bool& m) {
     m_multipleEquities=m;
     canvas.requestRedraw();
@@ -153,9 +130,11 @@ namespace minsky
     equations.clear();
     integrals.clear();
     variableValues.clear();
+    variablePane.update();
     maxValue.clear();
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
+    userFunctions.clear();
     UserFunction::nextId=0;
     
     flowVars.clear();
@@ -451,30 +430,6 @@ namespace minsky
     ++progressState;
     assert(variableValues.validEntries());
     system.updatePortVariableValue(equations);
-    ++progressState;
-   
-    // attach the plots
-    model->recursiveDo
-      (&Group::items,
-       [&](Items& m, Items::iterator it)
-       {
-         if (auto p=(*it)->plotWidgetCast())
-           {
-             p->disconnectAllVars();// clear any old associations
-             p->clearPenAttributes();
-             p->autoScale();
-             for (size_t i=0; i<p->portsSize(); ++i)
-               {
-                 auto pp=p->ports(i).lock();
-                 if (!pp->wires().empty())
-                   if (auto vv=pp->getVariableValue())
-                     if (vv->idx()>=0)
-                       p->connectVar(vv, i);
-               }
-           }
-         
-         return false;
-       });
   }
 
   void Minsky::dimensionalAnalysis() const
@@ -531,6 +486,9 @@ namespace minsky
 
   
   void Minsky::populateMissingDimensions() {
+    // populate from variable value table first, then override by ravels
+    for (auto& v: variableValues)
+      populateMissingDimensionsFromVariable(*v.second);
     model->recursiveDo
       (&Group::items,[&](Items& m, Items::iterator it)
       {
@@ -924,20 +882,12 @@ namespace minsky
     evalEquations();
     ++progressState;
 
+    // populate ravel hypercubes first, before reattaching plots.
     model->recursiveDo
       (&Group::items,
        [&](Items& m, Items::iterator i)
        {
-         if (auto p=(*i)->plotWidgetCast())
-           {
-             p->clear();
-             if (running)
-               p->updateIcon(t);
-             else
-               p->addConstantCurves();
-             p->requestRedraw();
-           }
-         else if (auto r=dynamic_cast<Ravel*>(i->get()))
+         if (auto r=dynamic_cast<Ravel*>(i->get()))
            {
              if (r->ports(1).lock()->numWires()>0)
                if (auto vv=r->ports(1).lock()->getVariableValue())
@@ -948,6 +898,34 @@ namespace minsky
              if (auto vv=v->vValue())
                vv->sliderVisible = v->enableSlider &&
                  (v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId())));
+           }
+         return false;
+       });
+
+    // attach the plots
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto p=(*i)->plotWidgetCast())
+           {
+             p->disconnectAllVars();// clear any old associations
+             p->clearPenAttributes();
+             p->autoScale();
+             for (size_t i=0; i<p->portsSize(); ++i)
+               {
+                 auto pp=p->ports(i).lock();
+                 if (!pp->wires().empty())
+                   if (auto vv=pp->getVariableValue())
+                     if (vv->idx()>=0)
+                       p->connectVar(vv, i);
+               }
+             p->clear();
+             if (running)
+               p->updateIcon(t);
+             else
+               p->addConstantCurves();
+             p->requestRedraw();
            }
          return false;
        });
@@ -1044,7 +1022,8 @@ namespace minsky
 
   void Minsky::load(const std::string& filename) 
   {
-    clearAllMaps();
+    running=false;
+    clearAllMaps(true);
 
     ifstream inf(filename);
     if (!inf)
@@ -1061,6 +1040,8 @@ namespace minsky
                 "Once you save this file, you may not be able to open this file"
                 " in older versions of Minsky.");
     }
+
+    LocalMinsky lm(*this); // populateMinsky resets the local minsky pointer, so restore it here
     
     // try balancing all Godley tables
     try
@@ -1236,8 +1217,14 @@ namespace minsky
     
     canvas.itemIndicator=canvas.item.get();
     if (canvas.item)
-      canvas.model->moveTo(100-canvas.item->x()+canvas.model->x(),
-                         100-canvas.item->y()+canvas.model->y());
+      {
+        auto physX=canvas.item->x();
+        auto physY=canvas.item->y();
+        if (physX<100 || physX>canvas.frameArgs().childWidth-100 ||
+            physY<100 || physY>canvas.frameArgs().childHeight-100)
+          canvas.model->moveTo(0.5*canvas.frameArgs().childWidth-physX+canvas.model->x(),
+                               0.5*canvas.frameArgs().childHeight-physY+canvas.model->y());
+      }
     //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
     if (!RKThreadRunning) canvas.requestRedraw();
   }

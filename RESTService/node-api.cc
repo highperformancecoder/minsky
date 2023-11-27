@@ -53,6 +53,8 @@ extern "C"
                                 napi_callback cb, void* data, napi_value* result),
          (env,utf8name,length,cb,data,result));
 
+  NAPIFN(napi_create_object, (napi_env env, napi_value* result), (env,result));
+
   NAPIFN(napi_add_finalizer, (napi_env env, napi_value js_object, void* native_object,
                               napi_finalize finalize_cb, void* finalize_hint, napi_ref* result),
          (env,js_object,native_object,finalize_cb,finalize_hint,result));
@@ -198,6 +200,12 @@ extern "C"
           napi_threadsafe_function_call_mode is_blocking),
          (func,data,is_blocking));
   NAPIFN(napi_add_env_cleanup_hook, (napi_env env, void (*fun)(void* arg), void* arg), (env,fun,arg));
+  
+  NAPIFN(napi_has_property, (napi_env env, napi_value object, napi_value key, bool* result),
+         (env, object, key, result));
+  
+  NAPIFN(napi_get_property,(napi_env env, napi_value object, napi_value key, napi_value* result),
+         (env, object, key, result));
 }
 
 

@@ -186,16 +186,13 @@ restService.setBookmarkRefreshCallback(()=>{
 
 export function sanityCheck()
 {
-  setTimeout(async()=>{
-  if (await backend("minsky.minskyVersion")!==version)
-    setTimeout(()=>{
-      dialog.showMessageBoxSync({
-        message: "Mismatch of front end and back end versions",
-        type: 'warning',
-      });
-    },1000);
+  if (backendSync("minsky.minskyVersion")!==version)
+    setTimeout(()=>{dialog.showMessageBoxSync({
+      message: "Mismatch of front end and back end versions",
+      type: 'warning',
+    });},1000);
 
-  if (await backend("minsky.ravelExpired"))
+  if (backendSync("minsky.ravelExpired")) {
     setTimeout(()=>{
       const button=dialog.showMessageBoxSync({
         message: "Your Ravel license has expired",
@@ -204,9 +201,8 @@ export function sanityCheck()
       });
       if (button==1)
         shell.openExternal("https://ravelation.hpcoders.com.au");
-  },1000);
-  
-}, 1);
+    },1000);
+  }
 }
 
 // load icon resources needed for GUI
@@ -217,8 +213,8 @@ export function loadResources()
         ? __dirname+'/assets'
         : process.resourcesPath+'/assets';
 
-  backend('minsky.setGodleyIconResource',assetsDir+'/godley.svg');
-  backend('minsky.setGroupIconResource',assetsDir+'/group.svg');
-  backend('minsky.setRavelIconResource',assetsDir+'/ravel-logo.svg');
-  backend('minsky.setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
+  backendSync('minsky.setGodleyIconResource',assetsDir+'/godley.svg');
+  backendSync('minsky.setGroupIconResource',assetsDir+'/group.svg');
+  backendSync('minsky.setRavelIconResource',assetsDir+'/ravel-logo.svg');
+  backendSync('minsky.setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
 }
