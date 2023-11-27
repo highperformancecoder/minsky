@@ -10,7 +10,7 @@ import { CppClass, unExposedTerminalCommands } from '@minsky/shared';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 @AutoUnsubscribe()
 @Component({

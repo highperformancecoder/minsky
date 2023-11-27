@@ -24,7 +24,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import { ScaleHandler } from '../scale-handler/scale-handler.class';
 
 @AutoUnsubscribe()

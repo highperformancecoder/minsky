@@ -9,7 +9,7 @@ import {
   Utility,
 } from '@minsky/shared';
 import { BrowserWindow, dialog, screen } from 'electron';
-import * as log from 'electron-log';
+import log from 'electron-log';
 import { isAbsolute, join } from 'path';
 import { format } from 'url';
 import { ApplicationMenuManager } from './managers/ApplicationMenuManager';

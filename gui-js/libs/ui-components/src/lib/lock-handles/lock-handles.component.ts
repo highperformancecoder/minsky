@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {Ravel} from '@minsky/shared';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 @Component({
   selector: 'minsky-lock-handles',

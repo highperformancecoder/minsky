@@ -1,5 +1,5 @@
 import { promises as fsPromises } from 'fs';
-import * as path from 'path';
+import path from 'path';
 
 abstract class HelpFilesManager {
   private static topicNodeMap: Record<string, string> = {};

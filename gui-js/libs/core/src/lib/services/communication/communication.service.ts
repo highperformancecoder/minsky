@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 import { WindowUtilityService } from '../WindowUtility/window-utility.service';
 import { DialogComponent } from './../../component/dialog/dialog.component';
 import { ElectronService } from './../electron/electron.service';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 export class Message {
   id: string;

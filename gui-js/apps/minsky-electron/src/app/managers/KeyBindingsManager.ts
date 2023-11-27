@@ -3,7 +3,7 @@ import {
   ZOOM_OUT_FACTOR,
   minsky, RenderNativeWindow,
 } from '@minsky/shared';
-import * as utf8 from 'utf8';
+import utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
 

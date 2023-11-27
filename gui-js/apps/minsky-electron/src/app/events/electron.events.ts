@@ -18,7 +18,7 @@ import {
   ImportStockPayload,
   GodleyIcon,
 } from '@minsky/shared';
-//import * as debug from 'debug';
+//import debug from 'debug';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';

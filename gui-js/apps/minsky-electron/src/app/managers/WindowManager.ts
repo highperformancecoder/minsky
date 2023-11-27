@@ -10,10 +10,10 @@ import {
 //  RenderNativeWindow,
   Utility,
 } from '@minsky/shared';
-//import * as debug from 'debug';
+//import debug from 'debug';
 import { BrowserWindow, dialog, Menu, screen } from 'electron';
-import * as log from 'electron-log';
-import * as os from 'os';
+import log from 'electron-log';
+import os from 'os';
 import { join } from 'path';
 import { format } from 'url';
 

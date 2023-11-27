@@ -8,8 +8,8 @@ import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
 import { BookmarkManager } from './BookmarkManager';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
-import * as log from 'electron-log';
-import * as JSON5 from 'json5';
+import log from 'electron-log';
+import JSON5 from 'json5';
 
 export class ContextMenuManager {
   private static x: number = null;

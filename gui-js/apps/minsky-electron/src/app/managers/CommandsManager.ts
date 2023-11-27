@@ -12,7 +12,7 @@ import {
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import { join } from 'path';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';

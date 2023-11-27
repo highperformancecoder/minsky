@@ -5,10 +5,10 @@ import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
 import { BookmarkManager } from './managers/BookmarkManager';
 import { dialog, shell } from 'electron';
-import * as ProgressBar from 'electron-progressbar';
-import * as JSON5 from 'json5';
-import * as elog from 'electron-log';
-import * as path from 'path';
+import ProgressBar from 'electron-progressbar';
+import JSON5 from 'json5';
+import elog from 'electron-log';
+import path from 'path';
 
 const log=elog? elog: console;
 if (!Utility.isDevelopmentMode()) { //clobber logging in production
