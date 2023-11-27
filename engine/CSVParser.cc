@@ -184,7 +184,7 @@ namespace
     Any()=default;
     Any(const any& x): any(x), hash(x.hash()) {}
     bool operator<(const Any& x) const {return static_cast<const any&>(*this)<x;}
-    bool operator==(const Any& x) const {return static_cast<const any&>(*this)==x;}
+    bool operator==(const Any& x) const {return static_cast<const any&>(*this)==static_cast<const any&>(x);}
     size_t hash;
   };
 
