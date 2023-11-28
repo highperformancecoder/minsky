@@ -55,11 +55,6 @@
 #include <algorithm>
 #include <boost/filesystem.hpp>
 
-using namespace std;
-using namespace minsky;
-using namespace classdesc;
-using namespace boost::posix_time;
-
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -71,21 +66,24 @@ using namespace boost::posix_time;
 #include <sys/sysinfo.h>
 #endif
 
-namespace
-{
-  /// list the possible string values of an enum (for TCL)
-  template <class E> vector<string> enumVals()
-  {
-    vector<string> r;
-    for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
-      r.push_back(enum_keysData<E>::keysData[i].name);
-    return r;
-  }
+using namespace classdesc;
+using namespace boost::posix_time;
 
-}
 
 namespace minsky
 {
+  namespace
+  {
+    /// list the possible string values of an enum (for TCL)
+    template <class E> vector<string> enumVals()
+    {
+      vector<string> r;
+      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
+        r.push_back(enum_keysData<E>::keysData[i].name);
+      return r;
+    }
+}
+
   bool Minsky::multipleEquities(const bool& m) {
     m_multipleEquities=m;
     canvas.requestRedraw();
@@ -1106,7 +1104,7 @@ namespace minsky
       {
         if (!portsVisited.insert(p).second)
           { //traverse finished, check for cycle along branch
-            if (::find(stack.begin(), stack.end(), p) != stack.end())
+            if (std::find(stack.begin(), stack.end(), p) != stack.end())
               {
                 cminsky().displayErrorItem(p->item());
                 return true;
@@ -1768,7 +1766,7 @@ namespace classdesc
   {t.add(d, new RESTProcessAssociativeContainer<minsky::VariableValues>(a));}
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(Minsky);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Minsky);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);
