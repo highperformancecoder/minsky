@@ -4,23 +4,6 @@
 
 - Use the mxe-for-minsky branch of [my MXE fork](https://github.com/highperformancecoder/mxe/tree/mxe-for-minsky). 
 
-- You also need to patch plugins/tcl.tk/tk.mk to be built statically, as the shared build blows up the Windows linker.
-  ```diff
-  @@ -22,10 +22,10 @@ define $(PKG)_BUILD
-     cd '$(SOURCE_DIR)/win' && autoreconf -fi
-     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/win/configure' \
-         $(MXE_CONFIGURE_OPTS) \
-  -        --enable-threads \
-  +        --enable-threads --disable-shared \
-         --with-tcl='$(PREFIX)/$(TARGET)/lib' \
-         $(if $(findstring x86_64,$(TARGET)), --enable-64bit) \
-  -        CFLAGS='-D__MINGW_EXCPT_DEFINE_PSDK'
-  +        CFLAGS='-D__MINGW_EXCPT_DEFINE_PSDK -DSTATIC_BUILD=1'
-     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' LIBS='-lmincore -lnetapi32 -lz -ltclstub86 -limm32 -lcomctl32 -luuid -lole32 -lgdi32 -lcomdlg32'
-     $(MAKE) -C '$(BUILD_DIR)' -j 1 install
-  endef
-  ```
-
 - `make MXE_TARGETS=x86_64-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/tcl.tk boost cairo tcl tk gsl pango librsvg openssl readline ncurses`
 - For Minsky 2.20 or less, `MXE_TARGETS=i686-w64-mingw32.static`
 
