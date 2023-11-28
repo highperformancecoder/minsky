@@ -2,7 +2,7 @@
 
 - The Windows distributable is built using the MXE cross-compiler environment on Linux. 
 
-- Use the [latest tag of MXE](https://github.com/mxe/mxe/tags). (build-2022-04-09 at time of writing)
+- Use the mxe-for-minsky branch of [my MXE fork](https://github.com/highperformancecoder/mxe/tree/mxe-for-minsky). (build-2022-04-09 at time of writing)
 
 - You also need to patch plugins/tcl.tk/tk.mk to be built statically, as the shared build blows up the Windows linker.
   ```diff
