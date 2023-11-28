@@ -43,6 +43,9 @@ namespace minsky
 
   struct VariableValueData: public civita::ITensorVal
   {
+    using ITensorVal::operator=;
+    VariableValueData& operator=(const VariableValueData&)=default;
+    
     /// the initial value of this variable
     std::string init;
     /// when init is a tensor of values, this overrides the init string

@@ -938,8 +938,7 @@ namespace minsky
   template <> struct GeneralTensorOp<OperationType::median>: public civita::ReductionOp
   {
     mutable vector<double> values;
-    GeneralTensorOp<OperationType::median>():
-      civita::ReductionOp([this](double&,double y,std::size_t) {values.push_back(y);},0) {}
+    GeneralTensorOp(): civita::ReductionOp([this](double&,double y,std::size_t) {values.push_back(y);},0) {}
     double operator[](size_t i) const override
     {
       values.clear();
@@ -957,7 +956,7 @@ namespace minsky
     mutable double mean;
     mutable size_t count;
     civita::Average average;
-    GeneralTensorOp<OperationType::moment>(): civita::ReductionOp
+    GeneralTensorOp(): civita::ReductionOp
     ([this](double& x,double y,std::size_t) {
       ++count;
       x+=pow(y-mean, exponent);
