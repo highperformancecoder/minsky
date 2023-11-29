@@ -1342,6 +1342,7 @@ export class Minsky extends CppClass {
   flowVars: Sequence<number>;
   fontSampler: FontDisplay;
   godleyTab: GodleyTab;
+  histogramResource: SVGRenderer;
   logVarList: Container<string>;
   maxFlowValue: Map<Units,number>;
   maxValue: Map<Units,number>;
@@ -1364,6 +1365,7 @@ export class Minsky extends CppClass {
     this.flowVars=new Sequence<number>(this.$prefix()+'.flowVars');
     this.fontSampler=new FontDisplay(this.$prefix()+'.fontSampler');
     this.godleyTab=new GodleyTab(this.$prefix()+'.godleyTab');
+    this.histogramResource=new SVGRenderer(this.$prefix()+'.histogramResource');
     this.logVarList=new Container<string>(this.$prefix()+'.logVarList');
     this.maxFlowValue=new Map<Units,number>(this.$prefix()+'.maxFlowValue');
     this.maxValue=new Map<Units,number>(this.$prefix()+'.maxValue');
@@ -2424,11 +2426,13 @@ export class VariablePaneCell extends CppClass {
 
 export class VariableValue extends CppClass {
   csvDialog: CSVDialog;
+  rhs: civita__ITensor;
   tensorInit: civita__TensorVal;
   units: Units;
   constructor(prefix: string){
     super(prefix);
     this.csvDialog=new CSVDialog(this.$prefix()+'.csvDialog');
+    this.rhs=new civita__ITensor(this.$prefix()+'.rhs');
     this.tensorInit=new civita__TensorVal(this.$prefix()+'.tensorInit');
     this.units=new Units(this.$prefix()+'.units');
   }

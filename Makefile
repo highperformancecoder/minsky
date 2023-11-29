@@ -51,7 +51,7 @@ endif
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc CPLUSPLUS=$(CPLUSPLUS) GCOV=$(GCOV)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include" CPLUSPLUS=$(CPLUSPLUS) GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
 build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)) 
 $(warning $(build_RavelCAPI))

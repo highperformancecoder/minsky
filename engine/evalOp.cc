@@ -633,6 +633,7 @@ namespace minsky
       case reduction:
       case scan:
       case tensor:
+      case statistics:
         return nullptr; //TODO should we be here?
       }
     assert(false); //shouldn't be here

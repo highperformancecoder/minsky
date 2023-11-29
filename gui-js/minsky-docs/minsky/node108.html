@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Variables</TITLE>
-<META NAME="description" CONTENT="Variables">
+<TITLE>Shape</TITLE>
+<META NAME="description" CONTENT="Shape">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,127 +14,47 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node116.html">
+<LINK REL="next" HREF="node109.html">
 <LINK REL="previous" HREF="node107.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node88.html">
 <LINK REL="next" HREF="node109.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1462"
+<A NAME="tex2html1491"
   HREF="node109.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1460"
-  HREF="node47.html">
+<A NAME="tex2html1489"
+  HREF="node88.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1454"
+<A NAME="tex2html1483"
   HREF="node107.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1463"
-  HREF="node109.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1461"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1455"
-  HREF="node107.html">Switch</A>
+<B> Next:</B> <A NAME="tex2html1492"
+  HREF="node109.html">Mean</A>
+<B> Up:</B> <A NAME="tex2html1490"
+  HREF="node88.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1484"
+  HREF="node107.html">Size</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00440000000000000000"></A><A NAME="Variables"></A><A NAME="Variable:constant"></A><A NAME="VarConstant"></A><A NAME="Variable:parameter"></A><A NAME="Variable:flow"></A><A NAME="Variable:integral"></A><A NAME="Variable:stock"></A>
+<H2><A NAME="SECTION004220000000000000000"></A><A NAME="Operation:shape"></A>
 <BR>
-Variables
-</H1>
+Shape
+</H2>
 
 <P>
-Variables represent values in a calculation, and come in a number of
-varieties:
-<DL>
-<DT><STRONG>Constants</STRONG></DT>
-<DD>represent an explicit numerical value, and do not
-  have a name. Their graphical representation shows the actual value
-  of the constant.
-</DD>
-<DT><STRONG>Parameters</STRONG></DT>
-<DD>are named constants. All instances of a given name
-  represent the same value, as with all other named variables, so
-  changing the value of one parameter, either through its edit menu,
-  or through a slider, will affect all the others of that
-  name. Parameters may be <A HREF="#CSV_____import">imported from a CSV file</A>, which is one way of inserting a tensor into the
-  simulation.
-</DD>
-<DT><STRONG>Flow variables</STRONG></DT>
-<DD>have an input port that defines how the value is
-  to be calculated. Only one flow variable of a given name can have
-  its input port connected, as they all refer to the same quantity. If
-  no input ports are connected, then flow variables act just like
-  parameters.
-</DD>
-<DT><STRONG>Integral variables</STRONG></DT>
-<DD>represent the result of integrating its
-  input over time by means of the differential equation solver. The
-  integrand is represented by the input to an integral operator that
-  is attached to the integral variable.
-</DD>
-<DT><STRONG>Stock variables</STRONG></DT>
-<DD>are the columns of Godley tables, and represent
-  the integral over time of the sum of the flow variables making up
-  the column.
-</DD>
-</DL>
-
-<P>
-Variables may be converted between types in the variable edit menu,
-available from the context menu, subject to certain rules. For
-example, a variable whose input is wired anywhere on the canvas cannot
-be changed from &ldquo;flow&rdquo;. Stock variables need to be defined in a
-Godley table, and so on.
+Returns a vector of axis sizes. Coupling this operation with a
+<A HREF="node101.html#Operation:gather">gather</A> operation
+and variable would allow you interactively select axis size.
 
 <P>
 <BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html1464"
-  HREF="node109.html">Variable names</A>
-<LI><A NAME="tex2html1465"
-  HREF="node110.html">Initial conditions</A>
-<LI><A NAME="tex2html1466"
-  HREF="node111.html">Tensor valued initial
-  conditions</A>
-<LI><A NAME="tex2html1467"
-  HREF="node112.html">Sliders</A>
-<LI><A NAME="tex2html1468"
-  HREF="node113.html">Importing a parameter from a CSV file</A>
-<LI><A NAME="tex2html1469"
-  HREF="node114.html">Duplicate keys</A>
-<LI><A NAME="tex2html1470"
-  HREF="node115.html">Variable Browser</A>
-</UL>
-<!--End of Table of Child-Links-->
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1462"
-  HREF="node109.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1460"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1454"
-  HREF="node107.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1463"
-  HREF="node109.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1461"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1455"
-  HREF="node107.html">Switch</A></DIV>
-<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

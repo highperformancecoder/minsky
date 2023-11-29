@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Dimensional Analysis</TITLE>
-<META NAME="description" CONTENT="Dimensional Analysis">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,7 +15,7 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node126.html">
-<LINK REL="previous" HREF="node124.html">
+<LINK REL="previous" HREF="node117.html">
 <LINK REL="up" HREF="node47.html">
 <LINK REL="next" HREF="node126.html">
 </HEAD>
@@ -23,122 +23,55 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1637"
+<A NAME="tex2html1664"
   HREF="node126.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1635"
+<A NAME="tex2html1662"
   HREF="node47.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1629"
+<A NAME="tex2html1656"
   HREF="node124.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1638"
-  HREF="node126.html">Bookmarks</A>
-<B> Up:</B> <A NAME="tex2html1636"
+<B> Next:</B> <A NAME="tex2html1665"
+  HREF="node126.html">Tensor values</A>
+<B> Up:</B> <A NAME="tex2html1663"
   HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1630"
-  HREF="node124.html">Canvas background and keyboard</A>
+<B> Previous:</B> <A NAME="tex2html1657"
+  HREF="node124.html">Variable Browser</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004140000000000000000">
-Dimensional Analysis</A>
+<H1><A NAME="SECTION00450000000000000000">
+Wires</A>
 </H1>
 
 <P>
-Dimensional analysis is the idea of attaching units of measurement (eg
-metre or second) to the quantities being computed. It provides an
-additional constraint that the system must satisfy, reducing the
-chance of wiring errors. Two different units being added together will
-throw up an error - you cannot add 2 metres to 3 kilograms. But it
-should be possible add 2 metres to 3 feet, and get the correct
-answer. You may need to explicitly add a multiply operation to convert
-from one unit to another, for example, dividing the 3 feet by 3.281
-before adding it to the 2 metres, providing a total of 2.914 meters.
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire attached,
+with the exception of <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img46.png"
+ ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img248.png"
+ ALT="$\times/\div$"></SPAN>, where the multiple
+wires are summed or multiplied, respectively, and similarly max/min.
 
 <P>
-<SPAN  CLASS="textbf">Using Dimensional Analysis in Minsky</SPAN>
+Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
-To attach units to quantities in Minsky, you use the units field of
-the variable/parameters/constants edit dialog box. Each word typed in
-this box describes a separate unit. &ldquo;^&rdquo; followed by an integer is
-used to represent a power. Finally, a single &ldquo;/&rdquo; indicates that the
-following units are on the denominator, dividing the first set of
-units by the second. So to represent the unit of acceleration, you can
-equivalently type all of the following:
-
-<P>
-
-<UL>
-<LI><code>m/s^2</code>
-</LI>
-<LI><code>m/s s</code>
-</LI>
-<LI><code>m/s^-2</code>
-</LI>
-</UL>
-
-<P>
-Or spelling it out in full:
-
-<P>
-
-<UL>
-<LI><code>metre/second^2</code>
-</LI>
-<LI><code>metre second^-2</code>
-</LI>
-<LI><code>metre / second second</code>
-</LI>
-</UL>
-
-<P>
-Note that metre and m are distinctly different units in Minsky.
-
-<P>
-Note - setting the time dimension is done in the
-<A HREF="node13.html#RungeKutta">simulation menu</A>
-
-<P>
-Consider the network introduced in the <A HREF="node2.html#intro:new">New to System
-  Dynamics</A> section of the Minsky
-manual. For GDP, one could enter $/year for the units. Labor
-Productivity should be expressed in terms of $ per person year. If
-the system does not accept $/person year, you can enter this as
-<code>$ person^-1 year^-1</code>.  Finally, Population has units of
-person. Press reset, and the Workers variable automatically has units
-of person, and EmpRate is dimensionless.
-
-<P>
-All function objects require dimensionless inputs. You can use
-dimensional analysis to prevent incorrectly feeding a degree
-measurement into a sin, by requiring them to be multiplied by a
-radiansPerDegree parameter.
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1637"
-  HREF="node126.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1635"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1629"
-  HREF="node124.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1638"
-  HREF="node126.html">Bookmarks</A>
-<B> Up:</B> <A NAME="tex2html1636"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1630"
-  HREF="node124.html">Canvas background and keyboard</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

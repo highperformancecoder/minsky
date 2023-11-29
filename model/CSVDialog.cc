@@ -460,7 +460,7 @@ void CSVDialog::classifyColumns()
   spec.dimensionCols.clear();
   spec.dataCols.clear();
   spec.dimensions.resize(spec.numCols);
-  for (auto col=0; col<spec.numCols; ++col)
+  for (size_t col=0; col<spec.numCols; ++col)
     {
       bool entryFound=false, timeFound=true, numberFound=true;
       for (size_t row=spec.nRowAxes(); row<parsedLines.size(); ++row)

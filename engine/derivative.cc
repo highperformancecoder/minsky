@@ -644,9 +644,11 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative<>               \
   (const OperationDAG<OperationType::op>& expr)         \
   {                                                     \
-    throw error("vector derivatives not implemented");  \
+    throw error("Vector derivatives not implemented");  \
   }                                                     
 
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(covariance)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(rho)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(sum)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(product)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(infimum)
@@ -655,6 +657,13 @@ namespace MathDAG
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(supIndex)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(any)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(all)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(size)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(shape)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(mean)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(median)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(stdDev)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(moment)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(histogram)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(runningSum)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(runningProduct)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(difference)

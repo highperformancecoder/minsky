@@ -112,6 +112,7 @@ SUITE(Units)
     void TestOp::impl() {
     // not sure what tensor ops should do yet
     if (OperationType::classify(op)==OperationType::tensor) return;
+    if (OperationType::classify(op)==OperationType::statistics) return;
     init(op);
     // most single arg functions are dimensionless, and args must match for two args
     if (OperationTypeInfo::numArguments<op>()>0 && op!=OperationType::percent)

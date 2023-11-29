@@ -567,6 +567,35 @@ namespace minsky
         return {};
       case binop:
         return unitsBinOpCase(check);
+      case statistics:
+        switch (type())
+          {
+          case mean: case median: case stdDev:
+            return m_ports[1]->units(check);
+          case moment:
+            {
+              auto argUnits=m_ports[1]->units(check);
+              for (auto& i: argUnits)
+                i.second*=arg;
+              return argUnits;
+            }
+          case histogram:
+            return {};
+          case covariance:
+            {
+              auto argUnits=m_ports[1]->units(check);
+              for (auto& i: m_ports[2]->units(check))
+                {
+                  argUnits.emplace(i.first,1); // ensure base unit is present
+                  argUnits[i.first]*=i.second;
+                }
+              return argUnits;
+            }
+          case rho:
+            return {};
+          default:
+            throw_error("Statistics operation does not have units() defined");
+          }
       default:
         if (check)
           throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
@@ -871,6 +900,22 @@ namespace minsky
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"¬");
   }
+  
+  template <> void Operation<OperationType::covariance>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf*.7,sf); 
+    cairo_move_to(cairo,-16,3);
+    cairo_show_text(cairo,"<ΔxΔy>");
+  }
+  
+  template <> void Operation<OperationType::rho>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 
+    cairo_move_to(cairo,-3,3);
+    cairo_show_text(cairo,"ρ");
+  }
 
   template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
   {
@@ -1149,6 +1194,74 @@ namespace minsky
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"all");
   }
+
+  
+  
+   template <> void Operation<OperationType::size>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"nᵢ");
+  }
+
+  template <> void Operation<OperationType::shape>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"{nᵢ}");
+  }
+
+  template <> void Operation<OperationType::mean>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-8,3);
+    cairo_show_text(cairo,"<x>");
+  }
+
+  template <> void Operation<OperationType::median>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-3,3);
+    cairo_show_text(cairo,"x");
+    cairo_move_to(cairo,-4,-1);
+    cairo_show_text(cairo,"~");
+ }
+
+  template <> void Operation<OperationType::stdDev>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-3,3);
+    cairo_show_text(cairo,"σ");
+  }
+
+  template <> void Operation<OperationType::moment>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf*.85,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-12,3);
+    cairo_show_text(cairo,"<Δxᵏ>");
+  }
+
+  template <> void Operation<OperationType::histogram>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_translate(cairo,-sf*iWidth(), -sf*iHeight());
+    cairo_scale(cairo,2*sf*iWidth()/cminsky().histogramResource.width(),2*sf*iHeight()/cminsky().histogramResource.height());
+    cminsky().histogramResource.render(cairo);
+  }
+
+  
 
   template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
   {

@@ -630,7 +630,7 @@ namespace MathDAG
       {
         if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
           {  
-	        RecordingSurface base;
+            RecordingSurface base;
             arguments[1][0]->render(base);
             cairo_rel_move_to(surf.cairo(), 0, -0.5*base.height());
             parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});   			  
@@ -976,6 +976,136 @@ namespace MathDAG
       }
   }
 
+  template <>
+  void OperationDAG<OperationType::covariance>::render(Surface& surf) const 
+  {
+      if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&	  
+          arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+        {
+          print(surf.cairo(),"cov",Anchor::nw);
+          parenthesise(surf, [&](Surface& surf){
+            arguments[0][0]->render(surf);
+            print(surf.cairo(),",",Anchor::nw);
+            arguments[0][1]->render(surf);
+          });
+        }
+      else
+        print(surf.cairo(),"0",Anchor::nw);
+  }
+  
+  template <>
+  void OperationDAG<OperationType::rho>::render(Surface& surf) const 
+  {
+      if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&	  
+          arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+        {
+          print(surf.cairo(),"ρ",Anchor::nw);
+          parenthesise(surf, [&](Surface& surf){
+            arguments[0][0]->render(surf);
+            print(surf.cairo(),",",Anchor::nw);
+            arguments[0][1]->render(surf);
+          });
+        }
+      else
+        print(surf.cairo(),"0",Anchor::nw);
+  }      
+
+  template <>
+  void OperationDAG<OperationType::size>::render(Surface& surf) const 
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        print(surf.cairo(),"dim",Anchor::nw);
+        parenthesise(surf, [&](Surface& surf){
+          arguments[0][0]->render(surf);
+          print(surf.cairo(),",i",Anchor::nw); // TODO - can we extract the actual argument here?
+        });
+      }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
+  }      
+
+  template <>
+  void OperationDAG<OperationType::shape>::render(Surface& surf) const 
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        print(surf.cairo(),"shape",Anchor::nw);
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+      }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
+  }
+
+  template <>
+  void OperationDAG<OperationType::mean>::render(Surface& surf) const 
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);}, "<",">");
+      }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
+  }
+  
+  template <>
+  void OperationDAG<OperationType::median>::render(Surface& surf) const 
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        print(surf.cairo(),"median",Anchor::nw);
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+      }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
+  }      
+
+  template <>
+  void OperationDAG<OperationType::stdDev>::render(Surface& surf) const 
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        print(surf.cairo(),"σ",Anchor::nw);
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+      }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
+  }      
+
+  template <>
+  void OperationDAG<OperationType::moment>::render(Surface& surf) const 
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){
+          print(surf.cairo(),"Δ",Anchor::nw);
+          parenthesise(surf,[&](Surface& surf){arguments[0][0]->render(surf);});
+          
+          RecordingSurface base;
+          arguments[0][0]->render(base);
+          cairo_rel_move_to(surf.cairo(), 0, -0.5*base.height());
+          print(surf.cairo(),"k",Anchor::nw); // TODO can we extract the actual exponent here?
+          cairo_rel_move_to(surf.cairo(), 0, 0.5*base.height());
+        },"<",">");
+      }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
+  }      
+
+  template <>
+  void OperationDAG<OperationType::histogram>::render(Surface& surf) const 
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        print(surf.cairo(),"histogram",Anchor::nw);
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+      }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
+  }      
+
+    
+  
   template <>
   void OperationDAG<OperationType::innerProduct>::render(Surface& surf) const
   {
