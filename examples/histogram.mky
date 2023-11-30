@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.23</minskyVersion>
+  <minskyVersion>3.2.0-alpha.26</minskyVersion>
   <wires>
    <Wire>
     <id>30</id>
@@ -42,6 +42,7 @@
      <max>1</max>
      <step>0.0002</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
@@ -87,6 +88,7 @@
      <int>4</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>10</arg>
    </Item>
    <Item>
@@ -223,6 +225,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -321,6 +324,7 @@
      <int>29</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
   </items>

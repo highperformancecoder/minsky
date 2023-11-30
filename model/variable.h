@@ -40,7 +40,10 @@
 #include <accessor.h>
 #include <cairo/cairo.h>
 
-namespace ecolab {class Pango;}
+namespace ecolab {
+  class Pango;
+  class Plot;
+}
 
 namespace minsky
 {
@@ -90,8 +93,11 @@ namespace minsky
     mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
     mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedMantissa;
     mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedExponent;
-    mutable double cachedValue;
+    mutable double cachedValue, cachedTime;
 
+    /// miniature plot feature
+    classdesc::Exclude<std::shared_ptr<ecolab::Plot>> miniPlot;
+    
   protected:
     void addPorts();
     
@@ -228,6 +234,10 @@ namespace minsky
     /// clean up popup window structures on window close
     void destroyFrame() override;
 
+    bool miniPlotEnabled() const {return bool(miniPlot);}
+    bool miniPlotEnabled(bool);
+    void resetMiniPlot();
+    
   };
 
   template <minsky::VariableType::Type T>

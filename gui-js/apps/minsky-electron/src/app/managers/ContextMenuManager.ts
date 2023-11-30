@@ -916,6 +916,7 @@ export class ContextMenuManager {
     }
 
     let v=new VariableBase(minsky.canvas.item);
+    let miniPlot=await v.miniPlotEnabled();
     
     const menuItems = [
       dims && dims.length
@@ -962,6 +963,12 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Add integral',
         click: () => {minsky.addIntegral();}
+      }),
+      new MenuItem({
+        label: 'Mini Plot',
+        type: 'checkbox',
+        checked: miniPlot,
+        click: () => {v.miniPlotEnabled(!miniPlot);}
       }),
     ];
 
