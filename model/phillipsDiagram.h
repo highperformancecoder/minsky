@@ -76,6 +76,7 @@ namespace minsky
   {
     bool redraw(int, int, int width, int height) override;
     CLASSDESC_ACCESS(PhillipsDiagram);
+    PhillipsStock* stockBeingMoved=nullptr; // weak reference
   public:
     std::map<std::string, PhillipsStock> stocks;
     std::map<std::pair<std::string,std::string>, PhillipsFlow> flows;
@@ -83,6 +84,12 @@ namespace minsky
     /// populate phillips diagram from Godley tables in model
     void init() override;
     void updateMaxValues();
+
+    void mouseDown(float x, float y) override;
+    void mouseUp(float x, float y) override;
+    void mouseMove(float x, float y) override;
+    void moveTo(float x, float y) override;
+
   };
 }
 

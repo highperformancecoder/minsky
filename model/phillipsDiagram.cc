@@ -162,6 +162,30 @@ namespace minsky
 
   void PhillipsDiagram::updateMaxValues()
   {}
+
+  void PhillipsDiagram::mouseDown(float x, float y)
+  {
+    for (auto& i: stocks)
+      if (i.second.contains(x,y))
+        stockBeingMoved=&i.second;
+  }
+  
+  void PhillipsDiagram::mouseUp(float x, float y)
+  {stockBeingMoved=nullptr;}
+  
+  void PhillipsDiagram::mouseMove(float x, float y)
+  {
+    if (stockBeingMoved)
+      {
+        stockBeingMoved->moveTo(x,y);
+        requestRedraw();
+      }
+  }
+  
+  void PhillipsDiagram::moveTo(float x, float y)
+  {
+  }
+
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsDiagram);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsFlow);
