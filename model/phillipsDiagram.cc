@@ -94,13 +94,21 @@ namespace minsky
 
   void PhillipsDiagram::init()
   {
-    stocks.clear();
-    flows.clear();
+    decltype(stocks) newStocks;
+    decltype(flows) newFlows;
     cminsky().model->recursiveDo
-      (&GroupItems::items, [this](const Items&,Items::const_iterator i) {
+      (&GroupItems::items, [&](const Items&,Items::const_iterator i) {
         if (auto g=dynamic_cast<GodleyIcon*>(i->get())) {
           for (auto& v: g->stockVars())
-            stocks.emplace(v->valueId(), static_cast<Variable<VariableType::stock>&>(*v));
+            {
+              auto newStock=newStocks.emplace(v->valueId(), static_cast<Variable<VariableType::stock>&>(*v)).first;
+              auto oldStock=stocks.find(v->valueId());
+              if (oldStock!=stocks.end())
+                {
+                  newStock->second.moveTo(oldStock->second.x(), oldStock->second.y());
+                  newStock->second.rotation(oldStock->second.rotation());
+                }
+            }
           for (unsigned r=1; r<g->table.rows(); ++r) {
             if (g->table.initialConditionRow(r)) continue;
             std::map<std::string, std::vector<FlowCoef>> sources, destinations; 
@@ -120,19 +128,23 @@ namespace minsky
               for (auto& s: i.second)
                 for (auto& d: destinations[i.first])
                   {
-                    auto& source=stocks[g->valueId(s.name)];
-                    auto& dest=stocks[g->valueId(d.name)];
+                    auto& source=newStocks[g->valueId(s.name)];
+                    auto& dest=newStocks[g->valueId(d.name)];
                     auto key=make_pair(s.name,d.name);
                     bool swapped=false;
                     if (s.name<d.name)// canonicalise flow by inserting in reverse direction
                       {
-                        auto flow=flows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
-                        flow->second.addTerm(-s.coef*d.coef, i.first); 
+                        auto flow=newFlows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
+                        flow->second.addTerm(-s.coef*d.coef, i.first);
+                        if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
+                          flow->second.coords(oldFlow->second.coords());
                       }
                     else
                       {
-                        auto flow=flows.emplace(make_pair(d.name,s.name), PhillipsFlow(dest.ports(0), source.ports(1))).first;
+                        auto flow=newFlows.emplace(make_pair(d.name,s.name), PhillipsFlow(dest.ports(0), source.ports(1))).first;
                         flow->second.addTerm(s.coef*d.coef, i.first); 
+                        if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
+                          flow->second.coords(oldFlow->second.coords());
                       }
                   }
           }
@@ -140,24 +152,30 @@ namespace minsky
         return false;
       });
 
-        // now layout the diagram
-    double angle=0, delta=2*M_PI/stocks.size();
+    // now layout the diagram
+    if (newStocks.empty()) return;
 
-    if (stocks.empty()) return;
+    double angle=0, delta=2*M_PI/newStocks.size();
 
-    auto h=stocks.begin()->second.height();
-    auto maxW=stocks.begin()->second.width();
-    for (auto& i: stocks) maxW=max(maxW,i.second.width());
+
+    auto h=newStocks.begin()->second.height();
+    auto maxW=newStocks.begin()->second.width();
+    for (auto& i: newStocks) maxW=max(maxW,i.second.width());
     // calculate radius to ensure vars do not overlap
     auto r=h/delta + 0.5*maxW;
     
-    for (auto& i: stocks)
+    for (auto& i: newStocks)
       {
-        i.second.moveTo(r*(cos(angle)+1)+maxW+50,r*(sin(angle)+1)+maxW+50);
-        i.second.rotation(angle*180.0/M_PI);
+        if (!stocks.count(i.first))
+          {
+            i.second.moveTo(r*(cos(angle)+1)+maxW+50,r*(sin(angle)+1)+maxW+50);
+            i.second.rotation(angle*180.0/M_PI);
+          }
         angle+=delta;
       }
 
+    flows.swap(newFlows);
+    stocks.swap(newStocks);
   }
 
   void PhillipsDiagram::updateMaxValues()
