@@ -146,7 +146,7 @@
     "@typescript-eslint/parser": "4.3.0",
     "cypress": "^6.0.1",
     "dotenv": "8.2.0",
-    "electron": "^21.2.3",
+    "electron": "^22.3.25",
     "eslint": "7.18.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
