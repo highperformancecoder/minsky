@@ -167,11 +167,26 @@ namespace minsky
   {
     for (auto& i: stocks)
       if (i.second.contains(x,y))
-        stockBeingMoved=&i.second;
+        {
+          stockBeingMoved=&i.second;
+          return;
+        }
+
+    for (auto& i: flows)
+      if (i.second.near(x,y))
+        {
+          flowBeingEdited=&i.second;
+          i.second.mouseFocus=true;
+          handleSelected=i.second.nearestHandle(x,y);
+          return;
+        }
   }
   
   void PhillipsDiagram::mouseUp(float x, float y)
-  {stockBeingMoved=nullptr;}
+  {
+    stockBeingMoved=nullptr;
+    flowBeingEdited=nullptr;
+  }
   
   void PhillipsDiagram::mouseMove(float x, float y)
   {
@@ -179,6 +194,22 @@ namespace minsky
       {
         stockBeingMoved->moveTo(x,y);
         requestRedraw();
+        return;
+      }
+    if (flowBeingEdited)
+      {
+        flowBeingEdited->editHandle(handleSelected,x,y);
+        requestRedraw();
+        return;
+      }
+    for (auto& i: flows)
+      {
+        bool mf=i.second.near(x,y);
+        if (mf!=i.second.mouseFocus)
+        {
+          i.second.mouseFocus=mf;
+          requestRedraw();
+        }
       }
   }
   

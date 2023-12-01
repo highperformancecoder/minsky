@@ -77,6 +77,8 @@ namespace minsky
     bool redraw(int, int, int width, int height) override;
     CLASSDESC_ACCESS(PhillipsDiagram);
     PhillipsStock* stockBeingMoved=nullptr; // weak reference
+    PhillipsFlow* flowBeingEdited=nullptr;
+    int handleSelected=0;
   public:
     std::map<std::string, PhillipsStock> stocks;
     std::map<std::pair<std::string,std::string>, PhillipsFlow> flows;
