@@ -132,7 +132,7 @@ namespace minsky
                     auto& dest=newStocks[g->valueId(d.name)];
                     auto key=make_pair(s.name,d.name);
                     bool swapped=false;
-                    if (s.name<d.name)// canonicalise flow by inserting in reverse direction
+                    if (s.coef*d.coef<0)
                       {
                         auto flow=newFlows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
                         flow->second.addTerm(-s.coef*d.coef, i.first);
@@ -153,7 +153,12 @@ namespace minsky
       });
 
     // now layout the diagram
-    if (newStocks.empty()) return;
+    if (newStocks.empty())
+      {
+        stocks.clear();
+        flows.clear();
+        return;
+      }
 
     double angle=0, delta=2*M_PI/newStocks.size();
 
