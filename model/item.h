@@ -134,13 +134,16 @@ namespace minsky
     virtual void removeControlledItems(GroupItems&) const {}
     /// remove all controlled items their owning group
     void removeControlledItems() const;
+    
+    double m_rotation=0; ///< rotation of icon, in degrees
+    /// rotate item based on vector from \a orig to \a mouse
+    void rotate(const Point& mouse, const Point& orig);
   };
 
   class Item: public NoteBase, public ecolab::TCLAccessor<Item,double>,
               public classdesc::PolyRESTProcessBase,
               public classdesc::Exclude<ItemExclude>
   {
-    double m_rotation=0; ///< rotation of icon, in degrees
 
   protected:
     // these need to be protected, not private to allow the setting of these in constructors.
@@ -157,6 +160,7 @@ namespace minsky
     } memoisedRotator;
 
     static void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle);
+    
 
   public:
 
@@ -202,7 +206,7 @@ namespace minsky
 
     double rotation() const {return m_rotation;}
     double rotation(const double& r) {return m_rotation=r;}
-    
+
     float iWidth() const {return m_width;}
     float iWidth(const float& w) {
       m_width=w;

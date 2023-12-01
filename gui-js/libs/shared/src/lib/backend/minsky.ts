@@ -457,6 +457,8 @@ export class Canvas extends CppClass {
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async rotateItem(a1: number,a2: number): Promise<void> {return this.$callMethod('rotateItem',a1,a2);}
+  async rotatingItem(...args: boolean[]): Promise<boolean> {return this.$callMethod('rotatingItem',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
   async select(a1: LassoBox): Promise<void> {return this.$callMethod('select',a1);}
   async selectAllVariables(): Promise<void> {return this.$callMethod('selectAllVariables');}

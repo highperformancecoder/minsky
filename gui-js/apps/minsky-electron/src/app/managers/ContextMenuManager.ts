@@ -419,13 +419,19 @@ export class ContextMenuManager {
     menuItems = [
       ...menuItems,
       new MenuItem({
+        label: `Rotate ${itemInfo.classType}`,
+        click:  () => {
+          minsky.canvas.rotateItem(this.x, this.y);
+        }
+      }),
+      new MenuItem({
         label: `Delete ${itemInfo.classType}`,
-        click: async () => {
-          await CommandsManager.deleteCurrentItemHavingId(itemInfo.id);
+        click: () => {
+          CommandsManager.deleteCurrentItemHavingId(itemInfo.id);
         },
       }),
     ];
-
+    
     return menuItems;
   }
 
