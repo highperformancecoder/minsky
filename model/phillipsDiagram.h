@@ -76,8 +76,10 @@ namespace minsky
   {
     bool redraw(int, int, int width, int height) override;
     CLASSDESC_ACCESS(PhillipsDiagram);
-    PhillipsStock* stockBeingMoved=nullptr; // weak reference
-    PhillipsFlow* flowBeingEdited=nullptr;
+    PhillipsStock* stockBeingMoved=nullptr;   // weak reference
+    PhillipsStock* stockBeingRotated=nullptr; // weak reference
+    Exclude<Point> rotateOrigin;
+    PhillipsFlow* flowBeingEdited=nullptr;    // weak reference
     int handleSelected=0;
   public:
     std::map<std::string, PhillipsStock> stocks;
@@ -91,7 +93,7 @@ namespace minsky
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;
     void moveTo(float x, float y) override;
-
+    void startRotatingItem(float x, float y);
   };
 }
 

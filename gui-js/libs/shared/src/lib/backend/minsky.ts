@@ -1602,6 +1602,7 @@ export class PhillipsDiagram extends CppClass {
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
+  async startRotatingItem(a1: number,a2: number): Promise<void> {return this.$callMethod('startRotatingItem',a1,a2);}
   async updateMaxValues(): Promise<void> {return this.$callMethod('updateMaxValues');}
   async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}

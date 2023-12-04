@@ -188,6 +188,7 @@ namespace minsky
 
   void PhillipsDiagram::mouseDown(float x, float y)
   {
+    if (stockBeingRotated) return;
     for (auto& i: stocks)
       if (i.second.contains(x,y))
         {
@@ -208,11 +209,18 @@ namespace minsky
   void PhillipsDiagram::mouseUp(float x, float y)
   {
     stockBeingMoved=nullptr;
+    stockBeingRotated=nullptr;
     flowBeingEdited=nullptr;
   }
   
   void PhillipsDiagram::mouseMove(float x, float y)
   {
+    if (stockBeingRotated)
+      {
+        stockBeingRotated->rotate(Point{x,y}, rotateOrigin);
+        requestRedraw();
+        return;
+      }
     if (stockBeingMoved)
       {
         stockBeingMoved->moveTo(x,y);
@@ -239,7 +247,19 @@ namespace minsky
   void PhillipsDiagram::moveTo(float x, float y)
   {
   }
+  
+  void PhillipsDiagram::startRotatingItem(float x, float y)
+  {
+      for (auto& i: stocks)
+        if (i.second.contains(x,y))
+          {
+            stockBeingRotated=&i.second;
+            rotateOrigin=Point(x,y);
+            return;
+          }
+  }
 
+  
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsDiagram);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsFlow);
