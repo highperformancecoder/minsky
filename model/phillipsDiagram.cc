@@ -111,22 +111,23 @@ namespace minsky
             }
           for (unsigned r=1; r<g->table.rows(); ++r) {
             if (g->table.initialConditionRow(r)) continue;
-            std::map<std::string, std::vector<FlowCoef>> sources, destinations; 
+            map<string, vector<pair<FlowCoef, string>>> sources, destinations; 
             for (size_t c=1; c<g->table.cols(); c++)
               {
                 FlowCoef fc(g->table.cell(r,c));
                 if (fc.coef)
                   {
+                    auto payload=make_pair(FlowCoef(fc.coef,g->table.cell(0,c)),g->table.cell(r,0));
                     if ((fc.coef>0 && !g->table.signConventionReversed(c))
 		        || (fc.coef<0 && g->table.signConventionReversed(c)))
-                      sources[fc.name].emplace_back(fc.coef,g->table.cell(0,c));
+                      sources[fc.name].emplace_back(payload);
                     else 
-                      destinations[fc.name].emplace_back(fc.coef,g->table.cell(0,c));
+                      destinations[fc.name].emplace_back(payload);
                   }
               }
             for (auto& i: sources)
-              for (auto& s: i.second)
-                for (auto& d: destinations[i.first])
+              for (auto& [s,sd]: i.second)
+                for (auto& [d,description]: destinations[i.first])
                   {
                     auto& source=newStocks[g->valueId(s.name)];
                     auto& dest=newStocks[g->valueId(d.name)];
@@ -136,6 +137,7 @@ namespace minsky
                       {
                         auto flow=newFlows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
                         flow->second.addTerm(-s.coef*d.coef, i.first);
+                        flow->second.tooltip=(!flow->second.tooltip.empty()?";":"")+description;
                         if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
                           flow->second.coords(oldFlow->second.coords());
                       }
@@ -255,6 +257,7 @@ namespace minsky
           {
             stockBeingRotated=&i.second;
             rotateOrigin=Point(x,y);
+            requestRedraw();
             return;
           }
   }
