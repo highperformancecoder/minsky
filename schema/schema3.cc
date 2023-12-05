@@ -122,17 +122,17 @@ namespace schema3
   }
   
   // map of object to ID, that allocates a new ID on objects not seen before
-  struct IdMap: public map<void*,int>
+  struct IdMap: public map<const void*,int>
   {
     int nextId=0;
     set<minsky::RavelLockGroup*> lockGroups;
-    int at(void* o) {
+    int at(const void* o) {
       auto i=find(o);
       if (i==end())
         return emplace(o,nextId++).first->second;
       return i->second;
     }
-    int operator[](void* o) {return at(o);}
+    int operator[](const void* o) {return at(o);}
     vector<int> at(const minsky::Item& item) {
       vector<int> r;
       for (size_t i=0; i<item.portsSize(); ++i)
@@ -141,13 +141,13 @@ namespace schema3
     }
   
     template <class T>
-    bool emplaceIf(vector<Item>& items, minsky::Item* i)
+    bool emplaceIf(vector<Item>& items, const minsky::Item* i)
     {
-      auto* j=dynamic_cast<T*>(i);
+      auto* j=dynamic_cast<const T*>(i);
       if (j)
         {
           items.emplace_back(at(i), *j, at(*j));
-          if (auto* g=dynamic_cast<minsky::GodleyIcon*>(i))
+          if (auto* g=dynamic_cast<const minsky::GodleyIcon*>(i))
             {
               // insert port references from flow/stock vars
               items.back().ports.clear();
@@ -156,21 +156,21 @@ namespace schema3
               for (const auto& v: g->stockVars())
                 items.back().ports.push_back(at(v->ports(0).lock().get()));
             }
-          if (auto* d=dynamic_cast<minsky::DataOp*>(i))
+          if (auto* d=dynamic_cast<const minsky::DataOp*>(i))
             {
               items.back().dataOpData=d->data;
               items.back().name=d->description();
             }
-          if (auto* s=dynamic_cast<minsky::Sheet*>(i))
+          if (auto* s=dynamic_cast<const minsky::Sheet*>(i))
             {
               items.back().showSlice=s->showSlice;
             }
-          if (auto* d=dynamic_cast<minsky::UserFunction*>(i))
+          if (auto* d=dynamic_cast<const minsky::UserFunction*>(i))
             {
               items.back().expression=d->expression;
               items.back().name=d->description();
             }
-          if (auto* r=dynamic_cast<minsky::Ravel*>(i))
+          if (auto* r=dynamic_cast<const minsky::Ravel*>(i))
             {
               if (r->lockGroup)
                 lockGroups.insert(r->lockGroup.get());
@@ -182,7 +182,7 @@ namespace schema3
                   items.back().editorMode=r->editorMode;
                 }
             }
-          if (auto* l=dynamic_cast<minsky::Lock*>(i))
+          if (auto* l=dynamic_cast<const minsky::Lock*>(i))
             if (l->locked())
               items.back().ravelState=l->lockedState;
         }
@@ -355,6 +355,8 @@ namespace schema3
                     return false;
                   });
 
+    
+    
     // process lock groups
     for (auto lg: itemMap.lockGroups)
       {
@@ -370,7 +372,24 @@ namespace schema3
       }
   }
       
-  void Minsky::populateMinsky(minsky::Minsky& m) const
+  PhillipsDiagram::PhillipsDiagram(const minsky::PhillipsDiagram& pd)
+  {
+    IdMap itemMap;
+    for (auto& [key,stock]: pd.stocks)
+      itemMap.emplaceIf<minsky::VariableBase>(stocks, &stock);
+
+    for (auto& [key,flow]: pd.flows)
+      {
+        flows.emplace_back(itemMap[&flow], flow);
+        assert(itemMap.count(flow.from().get()) && itemMap.count(flow.to().get()));
+        flows.back().from=itemMap[flow.from().get()];
+        flows.back().to=itemMap[flow.to().get()];
+        for (auto& term: flow.terms)
+          flows.back().terms.emplace_back(term.first, Item(-1,term.second,{}));
+      }
+  }
+
+void Minsky::populateMinsky(minsky::Minsky& m) const
   {
     minsky::LocalMinsky lm(m);
     m.model->clear();
@@ -384,6 +403,9 @@ namespace schema3
     m.fileVersion=minskyVersion;
     
     static_cast<minsky::Simulation&>(m)=rungeKutta;
+
+    //m.phillipsDiagram.flows(phillipsDiagram.flows);
+    //m.phillipsDiagram.stocks(phillipsDiagram.stocks);
   }
 
   void populateNote(minsky::NoteBase& x, const Note& y)

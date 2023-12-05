@@ -34,13 +34,13 @@ namespace minsky
 
   class PhillipsFlow: public Wire
   {
-    std::vector<std::pair<double, FlowVar>> terms;
     CLASSDESC_ACCESS(PhillipsFlow);
   public:
     PhillipsFlow()=default;
     PhillipsFlow(const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to):
       Wire(from,to) {}
     static std::map<Units, double> maxFlow;
+    classdesc::Exclude<std::vector<std::pair<double, FlowVar>>> terms;
 
     Units units() const {
       if (terms.empty()) return {};
