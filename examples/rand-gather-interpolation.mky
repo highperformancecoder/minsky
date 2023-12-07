@@ -1,40 +1,40 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.34.0</minskyVersion>
+  <minskyVersion>3.2.0-alpha.26</minskyVersion>
   <wires>
    <Wire>
     <id>31</id>
-    <from>0</from>
-    <to>26</to>
-   </Wire>
-   <Wire>
-    <id>32</id>
-    <from>29</from>
+    <from>1</from>
     <to>27</to>
    </Wire>
    <Wire>
+    <id>32</id>
+    <from>30</from>
+    <to>28</to>
+   </Wire>
+   <Wire>
     <id>33</id>
-    <from>25</from>
-    <to>8</to>
+    <from>26</from>
+    <to>9</to>
    </Wire>
   </wires>
   <items>
    <Item>
-    <id>1</id>
+    <name>rand</name>
+    <id>0</id>
     <type>Variable:parameter</type>
     <x>185.636</x>
     <y>18.4546</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>0</int>
+     <int>1</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>rand</name>
     <init>rand(100)</init>
     <slider>
      <stepRel>false</stepRel>
@@ -42,73 +42,16 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
     <tensorData>
 <![CDATA[GhQHPI8&0k*!UB=;W(.R.%k%:6W?`4r8+WE:Fs<n#~iXH;Q7:%#u_4SQoZ08)+p~"1!PP7#Z26UMW>-fiY9l~Dc[*f~n"8%bDKQe0QJIDHbTNM4jQ-$kO["SgANu%~GjI\4mp4rGLLu,R/4(6V_GrsVZVP.kXSKEGHpqkmYtLT<Xa6Mkr,We7-*Yg26T1,7%>QK[Y&1EDOJ/P8@aZU;[Q/eSA1,c3PR^`~^@msjtEa8>hBRN=-@3";(`KR:$Fd*dLOfSCU9pg/ddS~"eFW.Gk,q.dZ\J3;.nMGi0&(!>G%;nq@2+s:d'p-[Q,FFB(#%WSbj8uXD*N\SPC=,\U1o9N>56cWHuD[0#l[LrSiJ>e`/DO>)cQ&8L^q,:%*VuWi'08[n"NR(@Nm-2Ia4G9[Uda\+&LKo=ci$mf[qV*=bT,nG2r;-YM59_5ae^Sl=LUN9MtP'PE_7TF&<p,`cEAD#$!4CIL743P9HIrT\.aD[L?Q'TnBiNXW@LXD5Z$fr(9[2H\m[jbc&Or"?`m+&/fc[DK1lYAjDQ(T,_Grul7+K)(G+3r`p~LejI_cF^M+a%fFA*EW.h2LVE_b0P<gl)Ch^MbLN<~5i)938~2W(1!KqGI&:tLZ/OiqF7tA7TGCsfSd\h`F0Q,qN-"oIF!&/%LlXeK23_=d'E,XTF3nWpouQ$`i8V7LtZC\%?<E&enU8`TBu#5QnbaY_Y4gn>iNE^M-D"uB9\Ce^;C;of<jQ)[iV8Qm8(pRYP5jQo&*M,SIL8hcg"!<>&h2A)Wg.2&afE203?ir`K9!,-m(8=eVTWrh<R@@o"$n;T:Nspm.Q0r*k_iJT@MNjLDe(e#oP*+o\b7IVEB$-"(l[o54dt.DT(tt''hAbJS4\:KX&oP&O3~Ki7J)M>lHA/1NA!Mj-u6!q_L=m&Ek&O=B190)pSV&SK>R1HCJ-_kn`@7Wb;,QFQ-+tdQ:H4"k("W-*K`1+ZZ2I3Q:RK^<afD:Yg.~?ZM\.Bh(67"'~~fq>E56/f?ZiP@k7amVLeZ;8YP!njaZVQ.fX;T00V>a,J73\YiAQ)j%VC1p:n@0B,1BQdm$ZnFE($g!^jMpV/Gs>b-X/B*J5q_`=*i5Zsm6;3iX~PZ>jEA~)^X1@,>,,+&ah$~tgR$^hBV$^D*Z$^M,N'j)ri<+)~@;LtYG9*LUg//;8:Z;bA6aAS.s,"k@jMC~KF.^E#aWPh\kV%QEIQ:`~n==URT@~@:DM5;t#AX:IiQ!#TC<+`,R;OO@:94aD=/6,fPYZ,&1_GZ)a$;2,".P+S%Wj5T8WQJ,(V(,,<QDuK9=fSc,AZ<[INMROd23qu.eQAiV<+DoI;N7LWQ5Wk?@&\^R#*p00C1+#lV$<5(L8FnMkY*b`]]>    </tensorData>
    </Item>
    <Item>
-    <id>24</id>
-    <type>PlotWidget</type>
-    <x>648.705</x>
-    <y>169.159</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>447</width>
-    <height>291</height>
-    <ports>
-     <int>2</int>
-     <int>3</int>
-     <int>4</int>
-     <int>5</int>
-     <int>6</int>
-     <int>7</int>
-     <int>8</int>
-     <int>9</int>
-     <int>10</int>
-     <int>11</int>
-     <int>12</int>
-     <int>13</int>
-     <int>14</int>
-     <int>15</int>
-     <int>16</int>
-     <int>17</int>
-     <int>18</int>
-     <int>19</int>
-     <int>20</int>
-     <int>21</int>
-     <int>22</int>
-     <int>23</int>
-    </ports>
-    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
     <plotTabDisplay>true</plotTabDisplay>
+    <grid>true</grid>
+    <subgrid>false</subgrid>
     <plotType>line</plotType>
     <nxTicks>10</nxTicks>
     <nyTicks>10</nyTicks>
@@ -201,39 +144,156 @@
       <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
+    <id>2</id>
+    <type>PlotWidget</type>
+    <x>648.705</x>
+    <y>169.159</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>447</width>
+    <height>291</height>
+    <ports>
+     <int>3</int>
+     <int>4</int>
+     <int>5</int>
+     <int>6</int>
+     <int>7</int>
+     <int>8</int>
+     <int>9</int>
+     <int>10</int>
+     <int>11</int>
+     <int>12</int>
+     <int>13</int>
+     <int>14</int>
+     <int>15</int>
+     <int>16</int>
+     <int>17</int>
+     <int>18</int>
+     <int>19</int>
+     <int>20</int>
+     <int>21</int>
+     <int>22</int>
+     <int>23</int>
+     <int>24</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
-    <id>28</id>
+    <id>25</id>
     <type>Operation:gather</type>
     <x>316.091</x>
     <y>73.9091</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>25</int>
      <int>26</int>
      <int>27</int>
+     <int>28</int>
     </ports>
     <bookmark>false</bookmark>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>30</id>
+    <id>29</id>
     <type>Operation:time</type>
     <x>184.455</x>
     <y>96.3637</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>29</int>
+     <int>30</int>
     </ports>
     <bookmark>false</bookmark>
     <arg>1</arg>
@@ -260,7 +320,20 @@
   <bookmarks>
   </bookmarks>
   <dimensions>
+   <pair>
+    <first>0</first>
+    <second>
+     <type>string</type>
+     <units></units>
+    </second>
+   </pair>
   </dimensions>
   <conversions>
   </conversions>
+  <phillipsDiagram>
+   <stocks>
+   </stocks>
+   <flows>
+   </flows>
+  </phillipsDiagram>
  </Minsky>
