@@ -159,6 +159,7 @@ namespace minsky
       {
         stocks.clear();
         flows.clear();
+        minsky().pushHistory();
         return;
       }
 
@@ -183,6 +184,7 @@ namespace minsky
 
     flows.swap(newFlows);
     stocks.swap(newStocks);
+    minsky().pushHistory();
   }
 
   void PhillipsDiagram::updateMaxValues()
@@ -210,6 +212,7 @@ namespace minsky
   
   void PhillipsDiagram::mouseUp(float x, float y)
   {
+    minsky().pushHistory();
     stockBeingMoved=nullptr;
     stockBeingRotated=nullptr;
     flowBeingEdited=nullptr;

@@ -228,6 +228,8 @@ namespace schema3
     std::vector<PhillipsFlow> flows;
     PhillipsDiagram()=default;
     PhillipsDiagram(const minsky::PhillipsDiagram&);
+    /// populate a Phillips Diagram from this
+    void populatePhillipsDiagram(minsky::PhillipsDiagram&) const;
   };
 
   struct Minsky
@@ -278,6 +280,7 @@ namespace schema3
     /// consistent way into the free id space of the global minsky
     /// object
     void populateGroup(minsky::Group& g) const;
+
   };
 
 

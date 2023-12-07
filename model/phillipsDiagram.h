@@ -60,7 +60,7 @@ namespace minsky
   class PhillipsStock: public StockVar
   {
   public:
-    PhillipsStock()=default;
+    PhillipsStock() {addPorts();}
     PhillipsStock(const StockVar& x): StockVar(x) {
       group.reset();
       addPorts();
@@ -87,6 +87,10 @@ namespace minsky
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// populate phillips diagram from Godley tables in model
     void init() override;
+    void clear() {
+      stocks.clear();
+      flows.clear();
+    }
     void updateMaxValues();
 
     void mouseDown(float x, float y) override;

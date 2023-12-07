@@ -1575,6 +1575,7 @@ export class PhillipsDiagram extends CppClass {
     this.stocks=new Map<string,PhillipsStock>(this.$prefix()+'.stocks',PhillipsStock);
     this.wire=new Wire(this.$prefix()+'.wire');
   }
+  async clear(): Promise<void> {return this.$callMethod('clear');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}

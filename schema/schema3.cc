@@ -404,8 +404,7 @@ void Minsky::populateMinsky(minsky::Minsky& m) const
     
     static_cast<minsky::Simulation&>(m)=rungeKutta;
 
-    //m.phillipsDiagram.flows(phillipsDiagram.flows);
-    //m.phillipsDiagram.stocks(phillipsDiagram.stocks);
+    phillipsDiagram.populatePhillipsDiagram(m.phillipsDiagram);
   }
 
   void populateNote(minsky::NoteBase& x, const Note& y)
@@ -752,6 +751,36 @@ void Minsky::populateMinsky(minsky::Minsky& m) const
                   }
               }
           }
+      }
+  }
+
+  void PhillipsDiagram::populatePhillipsDiagram(minsky::PhillipsDiagram& pd) const
+  {
+    static MinskyItemFactory itemFactory;
+    map<int, weak_ptr<minsky::Port>> portMap;
+    for (auto& i: stocks)
+      {
+        minsky::PhillipsStock stock;
+        populateItem(stock, i);
+        auto& item=pd.stocks[stock.valueId()]=stock;
+        for (size_t j=0; j<std::min(i.ports.size(), stock.numPorts()); ++j)
+          portMap[i.ports[j]]=item.ports(j);
+      }
+    
+    for (auto& i: flows)
+      {
+        assert(portMap[i.from].lock() && portMap[i.to].lock());
+        minsky::PhillipsFlow flow(portMap[i.from],portMap[i.to]);
+        populateWire(flow, i);
+        for (auto& j: i.terms)
+          {
+            flow.terms.emplace_back(j.first, minsky::FlowVar{});
+            populateItem(flow.terms.back().second, j.second);
+          }
+        auto fromId=flow.from()->item().variableCast()->valueId();
+        auto toId=flow.to()->item().variableCast()->valueId();
+        auto success=pd.flows.emplace(make_pair(fromId, toId), flow).second;
+        assert(success);
       }
   }
   
