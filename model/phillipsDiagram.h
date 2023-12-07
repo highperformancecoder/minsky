@@ -81,6 +81,7 @@ namespace minsky
     Exclude<Point> rotateOrigin;
     PhillipsFlow* flowBeingEdited=nullptr;    // weak reference
     int handleSelected=0;
+    float x=0,y=0; ///< position for panning
   public:
     std::map<std::string, PhillipsStock> stocks;
     std::map<std::pair<std::string,std::string>, PhillipsFlow> flows;
@@ -96,7 +97,8 @@ namespace minsky
     void mouseDown(float x, float y) override;
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;
-    void moveTo(float x, float y) override;
+    void moveTo(float x, float y) override {this->x=x; this->y=y; requestRedraw();}
+    std::vector<float> position() const override {return {x,y};}
     void startRotatingItem(float x, float y);
   };
 }

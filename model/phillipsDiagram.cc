@@ -80,11 +80,13 @@ namespace minsky
   {
     if  (!surface.get()) return false;
     auto cairo=surface->cairo();
+    CairoSave cs(cairo);
+    cairo_translate(cairo,x,y);
     for (auto& i: stocks)
       {
         CairoSave cs(cairo);
         cairo_identity_matrix(cairo);
-        cairo_translate(cairo,i.second.x(), i.second.y());
+        cairo_translate(cairo,i.second.x()+x, i.second.y()+y);
         i.second.draw(cairo);
       }
     for (auto& i: flows)
@@ -247,10 +249,6 @@ namespace minsky
           requestRedraw();
         }
       }
-  }
-  
-  void PhillipsDiagram::moveTo(float x, float y)
-  {
   }
   
   void PhillipsDiagram::startRotatingItem(float x, float y)
