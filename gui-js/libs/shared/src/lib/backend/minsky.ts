@@ -215,6 +215,7 @@ export class VariableBase extends Item {
   async makeConsistentWithValue(): Promise<void> {return this.$callMethod('makeConsistentWithValue');}
   async mantissa(a1: EngNotation,a2: number): Promise<string> {return this.$callMethod('mantissa',a1,a2);}
   async maxSliderSteps(): Promise<number> {return this.$callMethod('maxSliderSteps');}
+  async miniPlotEnabled(...args: any[]): Promise<boolean> {return this.$callMethod('miniPlotEnabled',...args);}
   async mouseFocus(...args: boolean[]): Promise<boolean> {return this.$callMethod('mouseFocus',...args);}
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
   async name(...args: any[]): Promise<string> {return this.$callMethod('name',...args);}
@@ -233,6 +234,7 @@ export class VariableBase extends Item {
   async ports(a1: number): Promise<object> {return this.$callMethod('ports',a1);}
   async portsSize(): Promise<number> {return this.$callMethod('portsSize');}
   async rawName(): Promise<string> {return this.$callMethod('rawName');}
+  async resetMiniPlot(): Promise<void> {return this.$callMethod('resetMiniPlot');}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
   async resizeHandleCoords(): Promise<object> {return this.$callMethod('resizeHandleCoords');}
   async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}

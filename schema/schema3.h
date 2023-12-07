@@ -108,6 +108,7 @@ namespace schema3
     Optional<std::string> init;
     Optional<std::string> units;
     Optional<Slider> slider;
+    bool miniPlot=false; // miniature plots on variables
     Optional<int> intVar;
     Optional<std::string> url; //file or url of CSV import data
     Optional<minsky::DataSpecSchema> csvDataSpec; //CSV import data
@@ -140,7 +141,7 @@ namespace schema3
     // minsky object importers
     Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      init(v.init()) {
+      init(v.init()), miniPlot(v.miniPlotEnabled()) {
       name=v.rawName();
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));

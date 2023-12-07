@@ -1,26 +1,26 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.34.0</minskyVersion>
+  <minskyVersion>3.2.0-alpha.26</minskyVersion>
   <wires>
   </wires>
   <items>
    <Item>
-    <id>2</id>
+    <name>:\sqrt[3]2</name>
+    <id>0</id>
     <type>Variable:flow</type>
     <x>0</x>
     <y>0</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>0</int>
      <int>1</int>
+     <int>2</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\sqrt[3]2</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -28,15 +28,18 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
+     <numCols>0</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
      <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
+     <counter>false</counter>
+     <dontFail>false</dontFail>
      <missingValue>NaN</missingValue>
      <headerRow>0</headerRow>
      <horizontalDimName>?</horizontalDimName>
@@ -47,6 +50,8 @@
      <duplicateKeyAction>throwException</duplicateKeyAction>
      <dimensionCols>
      </dimensionCols>
+     <dataCols>
+     </dataCols>
      <dimensions>
      </dimensions>
      <dimensionNames>
@@ -54,22 +59,22 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>5</id>
+    <name>:\int_0^\infty&#32;e^{-x^2/2}</name>
+    <id>3</id>
     <type>Variable:flow</type>
     <x>9.0001</x>
     <y>53.0002</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>3</int>
      <int>4</int>
+     <int>5</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\int_0^\infty&#32;e^{-x^2/2}</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -77,15 +82,18 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
+     <numCols>0</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
      <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
+     <counter>false</counter>
+     <dontFail>false</dontFail>
      <missingValue>NaN</missingValue>
      <headerRow>0</headerRow>
      <horizontalDimName>?</horizontalDimName>
@@ -96,6 +104,8 @@
      <duplicateKeyAction>throwException</duplicateKeyAction>
      <dimensionCols>
      </dimensionCols>
+     <dataCols>
+     </dataCols>
      <dimensions>
      </dimensions>
      <dimensionNames>
@@ -103,22 +113,22 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>8</id>
+    <name>:\aleph_0</name>
+    <id>6</id>
     <type>Variable:flow</type>
     <x>105</x>
     <y>2.0002</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>6</int>
      <int>7</int>
+     <int>8</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\aleph_0</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -126,15 +136,18 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
+     <numCols>0</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
      <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
+     <counter>false</counter>
+     <dontFail>false</dontFail>
      <missingValue>NaN</missingValue>
      <headerRow>0</headerRow>
      <horizontalDimName>?</horizontalDimName>
@@ -145,6 +158,8 @@
      <duplicateKeyAction>throwException</duplicateKeyAction>
      <dimensionCols>
      </dimensionCols>
+     <dataCols>
+     </dataCols>
      <dimensions>
      </dimensions>
      <dimensionNames>
@@ -152,22 +167,22 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>11</id>
+    <name>:\partial&#32;f(x)/\partial&#32;x|_0</name>
+    <id>9</id>
     <type>Variable:flow</type>
     <x>126</x>
     <y>75.0002</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>9</int>
      <int>10</int>
+     <int>11</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\partial&#32;f(x)/\partial&#32;x|_0</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -175,15 +190,18 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
+     <numCols>0</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
      <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
+     <counter>false</counter>
+     <dontFail>false</dontFail>
      <missingValue>NaN</missingValue>
      <headerRow>0</headerRow>
      <horizontalDimName>?</horizontalDimName>
@@ -194,6 +212,8 @@
      <duplicateKeyAction>throwException</duplicateKeyAction>
      <dimensionCols>
      </dimensionCols>
+     <dataCols>
+     </dataCols>
      <dimensions>
      </dimensions>
      <dimensionNames>
@@ -201,22 +221,22 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>14</id>
+    <name>:\tau_\mathrm{RD}</name>
+    <id>12</id>
     <type>Variable:flow</type>
     <x>21.0001</x>
     <y>141</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>12</int>
      <int>13</int>
+     <int>14</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\tau_\mathrm{RD}</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -224,15 +244,18 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
+     <numCols>0</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
      <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
+     <counter>false</counter>
+     <dontFail>false</dontFail>
      <missingValue>NaN</missingValue>
      <headerRow>0</headerRow>
      <horizontalDimName>?</horizontalDimName>
@@ -243,6 +266,8 @@
      <duplicateKeyAction>throwException</duplicateKeyAction>
      <dimensionCols>
      </dimensionCols>
+     <dataCols>
+     </dataCols>
      <dimensions>
      </dimensions>
      <dimensionNames>
@@ -250,22 +275,22 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>17</id>
+    <name>:\mathrm{universit\&quot;at}</name>
+    <id>15</id>
     <type>Variable:flow</type>
     <x>140.001</x>
     <y>162.001</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>15</int>
      <int>16</int>
+     <int>17</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\mathrm{universit\&quot;at}</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -273,15 +298,18 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
+     <numCols>0</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
      <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
+     <counter>false</counter>
+     <dontFail>false</dontFail>
      <missingValue>NaN</missingValue>
      <headerRow>0</headerRow>
      <horizontalDimName>?</horizontalDimName>
@@ -292,6 +320,8 @@
      <duplicateKeyAction>throwException</duplicateKeyAction>
      <dimensionCols>
      </dimensionCols>
+     <dataCols>
+     </dataCols>
      <dimensions>
      </dimensions>
      <dimensionNames>
@@ -299,22 +329,22 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>20</id>
+    <name>:\mathrm{fran\c{c}ais</name>
+    <id>18</id>
     <type>Variable:flow</type>
     <x>111</x>
     <y>218.001</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>18</int>
      <int>19</int>
+     <int>20</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\mathrm{fran\c{c}ais</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -322,15 +352,18 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
+     <numCols>0</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
      <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
+     <counter>false</counter>
+     <dontFail>false</dontFail>
      <missingValue>NaN</missingValue>
      <headerRow>0</headerRow>
      <horizontalDimName>?</horizontalDimName>
@@ -341,6 +374,8 @@
      <duplicateKeyAction>throwException</duplicateKeyAction>
      <dimensionCols>
      </dimensionCols>
+     <dataCols>
+     </dataCols>
      <dimensions>
      </dimensions>
      <dimensionNames>
@@ -348,22 +383,22 @@
     </csvDataSpec>
    </Item>
    <Item>
-    <id>23</id>
+    <name>:\mathrm{universit\&quot;{a}t}</name>
+    <id>21</id>
     <type>Variable:flow</type>
     <x>265.001</x>
     <y>155.001</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>21</int>
      <int>22</int>
+     <int>23</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\mathrm{universit\&quot;{a}t}</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -371,15 +406,18 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <csvDataSpec>
      <dataRowOffset>0</dataRowOffset>
      <dataColOffset>0</dataColOffset>
+     <numCols>0</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
      <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
+     <counter>false</counter>
+     <dontFail>false</dontFail>
      <missingValue>NaN</missingValue>
      <headerRow>0</headerRow>
      <horizontalDimName>?</horizontalDimName>
@@ -390,6 +428,8 @@
      <duplicateKeyAction>throwException</duplicateKeyAction>
      <dimensionCols>
      </dimensionCols>
+     <dataCols>
+     </dataCols>
      <dimensions>
      </dimensions>
      <dimensionNames>
