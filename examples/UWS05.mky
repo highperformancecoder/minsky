@@ -95,7 +95,7 @@
      <float>30</float>
      <float>99</float>
      <float>147.398</float>
-     <float>4.12324</float>
+     <float>4.12322</float>
      <float>217.5</float>
      <float>283.375</float>
     </coords>
@@ -108,7 +108,7 @@
      <float>35</float>
      <float>150</float>
      <float>149.081</float>
-     <float>90.059</float>
+     <float>90.0591</float>
      <float>217.5</float>
      <float>324.625</float>
     </coords>
@@ -315,8 +315,8 @@
     <slider>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
+     <max>1000</max>
+     <step>0.1001</step>
     </slider>
    </Item>
    <Item>
@@ -364,7 +364,7 @@
     <slider>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>500</max>
      <step>0.1</step>
     </slider>
    </Item>

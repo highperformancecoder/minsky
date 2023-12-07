@@ -865,8 +865,8 @@
     <coords>
      <float>942.07</float>
      <float>634.207</float>
-     <float>847.867</float>
-     <float>368.89</float>
+     <float>847.868</float>
+     <float>368.891</float>
      <float>929.685</float>
      <float>615.082</float>
     </coords>
@@ -888,8 +888,8 @@
     <coords>
      <float>935.741</float>
      <float>643.627</float>
-     <float>867.059</float>
-     <float>442.261</float>
+     <float>867.057</float>
+     <float>442.254</float>
      <float>912.58</float>
      <float>639.738</float>
     </coords>
@@ -961,8 +961,8 @@
     <coords>
      <float>840.916</float>
      <float>244.922</float>
-     <float>785.844</float>
-     <float>195.997</float>
+     <float>785.843</float>
+     <float>195.996</float>
      <float>852.367</float>
      <float>219.371</float>
     </coords>
@@ -979,8 +979,8 @@
     <coords>
      <float>837.498</float>
      <float>248.02</float>
-     <float>811.513</float>
-     <float>221.508</float>
+     <float>811.512</float>
+     <float>221.507</float>
      <float>852.367</float>
      <float>239.771</float>
     </coords>
@@ -992,7 +992,7 @@
     <coords>
      <float>837.498</float>
      <float>248.02</float>
-     <float>803.816</float>
+     <float>803.815</float>
      <float>213.654</float>
      <float>863.262</float>
      <float>250.076</float>

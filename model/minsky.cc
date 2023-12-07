@@ -897,6 +897,7 @@ namespace minsky
              if (auto vv=v->vValue())
                vv->sliderVisible = v->enableSlider &&
                  (v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId())));
+             v->resetMiniPlot();
            }
          return false;
        });

@@ -480,6 +480,7 @@ void Minsky::populateMinsky(minsky::Minsky& m) const
             x1->sliderMax=y.slider->max;
             x1->sliderStep=y.slider->step;
           }
+        x1->miniPlotEnabled(y.miniPlot);
         // variableValue attributes populated later once variable is homed in its group
       }
     if (auto* x1=dynamic_cast<minsky::OperationBase*>(&x))

@@ -615,6 +615,25 @@ std::string VariableBase::definition() const
   return o.str();	  
 }
 
+bool VariableBase::miniPlotEnabled(bool enabled)
+{
+  if (enabled)
+    {
+      miniPlot=make_shared<ecolab::Plot>();
+      miniPlot->plotType=ecolab::Plot::PlotType::bar;
+    }
+  else
+    miniPlot=nullptr;
+  return enabled;
+}
+
+void VariableBase::resetMiniPlot()
+{
+  if (miniPlotEnabled())
+    miniPlot->clear();
+}
+
+
 void VariableBase::draw(cairo_t *cairo) const
 {	
     double angle=rotation() * M_PI / 180.0;
@@ -651,6 +670,18 @@ void VariableBase::draw(cairo_t *cairo) const
       }
 
       auto vv=vValue();
+      if (miniPlot && vv->size()==1)
+        {
+          if (cachedTime!=cminsky().t)
+            {
+              cachedTime=cminsky().t;
+              miniPlot->addPt(0,cachedTime,vv->value());
+              miniPlot->setMinMax();
+            }
+          CairoSave cs(cairo);
+          cairo_translate(cairo,-w,-h);
+          miniPlot->draw(cairo,2*w,2*h);
+        }
   
       // For feature 47
       if (type()!=constant && !ioVar() && vv && vv->size()==1)
