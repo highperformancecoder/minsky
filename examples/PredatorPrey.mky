@@ -151,6 +151,7 @@
      <int>3</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>43</intVar>
     <arg>1</arg>
    </Item>
@@ -171,6 +172,7 @@
      <int>7</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>45</intVar>
     <arg>1</arg>
    </Item>
@@ -191,6 +193,7 @@
      <int>11</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -210,6 +213,7 @@
      <int>15</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -229,6 +233,7 @@
      <int>19</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -248,6 +253,7 @@
      <int>23</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -267,6 +273,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -286,6 +293,7 @@
      <int>31</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -305,6 +313,7 @@
      <int>35</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -324,6 +333,7 @@
      <int>39</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -350,6 +360,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Predator</name>
@@ -375,6 +386,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Prey</name>
@@ -400,6 +412,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Prey</name>
@@ -425,6 +438,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Predator&#32;Death&#32;Rate</name>
@@ -450,6 +464,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Prey&#32;Death&#32;Rate</name>
@@ -475,6 +490,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Prey</name>
@@ -500,6 +516,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Prey&#32;Birth&#32;Rate</name>
@@ -525,6 +542,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Predator</name>
@@ -550,6 +568,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Predator&#32;Deaths</name>
@@ -575,6 +594,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Prey&#32;Deaths</name>
@@ -600,6 +620,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Prey</name>
@@ -625,6 +646,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Predator</name>
@@ -650,6 +672,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Predator&#32;Births</name>
@@ -675,6 +698,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Prey&#32;Births</name>
@@ -700,6 +724,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Prey&#32;Deaths</name>
@@ -725,6 +750,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Predator&#32;Births</name>
@@ -750,6 +776,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Predator&#32;Deaths</name>
@@ -775,6 +802,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Prey&#32;Births</name>
@@ -800,6 +828,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Predator</name>
@@ -825,6 +854,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:.001</name>
@@ -849,6 +879,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:.0008</name>
@@ -873,6 +904,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -1008,6 +1040,7 @@
      <int>124</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>

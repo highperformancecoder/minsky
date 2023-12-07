@@ -28,6 +28,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\int_0^\infty&#32;e^{-x^2/2}</name>
@@ -53,6 +54,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\aleph_0</name>
@@ -78,6 +80,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\partial&#32;f(x)/\partial&#32;x|_0</name>
@@ -103,6 +106,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_\mathrm{RD}</name>
@@ -128,6 +132,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\mathrm{universit\&quot;at}</name>
@@ -153,6 +158,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\mathrm{fran\c{c}ais</name>
@@ -178,6 +184,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\mathrm{universit\&quot;{a}t}</name>
@@ -203,6 +210,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
   </items>
   <groups>

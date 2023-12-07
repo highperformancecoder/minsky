@@ -67,6 +67,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -202,6 +203,7 @@
      <int>24</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -300,6 +302,7 @@
      <int>26</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -319,6 +322,7 @@
      <int>30</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -337,6 +341,7 @@
      <int>33</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -355,6 +360,7 @@
      <int>36</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -374,6 +380,7 @@
      <int>40</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>41</intVar>
     <arg>1</arg>
    </Item>
@@ -400,6 +407,7 @@
      <max>2.73591</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -535,6 +543,7 @@
      <int>65</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>

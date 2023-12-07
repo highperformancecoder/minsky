@@ -434,6 +434,7 @@
     <ports>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>1</id>
@@ -452,6 +453,7 @@
      <int>4</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -471,6 +473,7 @@
      <int>8</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -490,6 +493,7 @@
      <int>12</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -509,6 +513,7 @@
      <int>16</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -528,6 +533,7 @@
      <int>20</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -547,6 +553,7 @@
      <int>24</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -566,6 +573,7 @@
      <int>28</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -585,6 +593,7 @@
      <int>32</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -604,6 +613,7 @@
      <int>36</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -623,6 +633,7 @@
      <int>40</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -642,6 +653,7 @@
      <int>44</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -661,6 +673,7 @@
      <int>48</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -680,6 +693,7 @@
      <int>52</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -699,6 +713,7 @@
      <int>56</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -718,6 +733,7 @@
      <int>60</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -737,6 +753,7 @@
      <int>64</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -756,6 +773,7 @@
      <int>68</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -775,6 +793,7 @@
      <int>72</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -794,6 +813,7 @@
      <int>76</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -813,6 +833,7 @@
      <int>80</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -832,6 +853,7 @@
      <int>84</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -857,6 +879,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Buy_C</name>
@@ -882,6 +905,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Inv_B</name>
@@ -907,6 +931,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_W</name>
@@ -932,6 +957,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_B</name>
@@ -957,6 +983,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_W</name>
@@ -982,6 +1009,7 @@
      <max>375</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_B</name>
@@ -1007,6 +1035,7 @@
      <max>2.5</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_I</name>
@@ -1032,6 +1061,7 @@
      <max>4</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_B</name>
@@ -1057,6 +1087,7 @@
      <max>1.25</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_C</name>
@@ -1082,6 +1113,7 @@
      <max>30</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_C</name>
@@ -1107,6 +1139,7 @@
      <max>120</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_I</name>
@@ -1132,6 +1165,7 @@
      <max>22.2222</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Lend</name>
@@ -1157,6 +1191,7 @@
      <max>8.57143</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Fee</name>
@@ -1182,6 +1217,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Repay</name>
@@ -1207,6 +1243,7 @@
      <max>1.11111</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:int</name>
@@ -1232,6 +1269,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_B</name>
@@ -1257,6 +1295,7 @@
      <max>2.5</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_I</name>
@@ -1282,6 +1321,7 @@
      <max>4</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_W</name>
@@ -1307,6 +1347,7 @@
      <max>375</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Fee</name>
@@ -1332,6 +1373,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_C</name>
@@ -1357,6 +1399,7 @@
      <max>30</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Lend</name>
@@ -1382,6 +1425,7 @@
      <max>8.57143</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Repay</name>
@@ -1407,6 +1451,7 @@
      <max>1.11111</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_C</name>
@@ -1432,6 +1477,7 @@
      <max>120</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:int</name>
@@ -1457,6 +1503,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:D</name>
@@ -1481,6 +1528,7 @@
      <max>10</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_{NW}</name>
@@ -1505,6 +1553,7 @@
      <max>70</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_I</name>
@@ -1530,6 +1579,7 @@
      <max>4</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_B</name>
@@ -1555,6 +1605,7 @@
      <max>1.25</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_C</name>
@@ -1580,6 +1631,7 @@
      <max>30</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Lend</name>
@@ -1605,6 +1657,7 @@
      <max>8.57143</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Repay</name>
@@ -1630,6 +1683,7 @@
      <max>1.11111</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_I</name>
@@ -1655,6 +1709,7 @@
      <max>22.2222</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:int</name>
@@ -1680,6 +1735,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_{NW}</name>
@@ -1704,6 +1760,7 @@
      <max>10</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_W</name>
@@ -1729,6 +1786,7 @@
      <max>375</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_C</name>
@@ -1754,6 +1812,7 @@
      <max>120</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_I</name>
@@ -1779,6 +1838,7 @@
      <max>22.2222</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_{NW}</name>
@@ -1803,6 +1863,7 @@
      <max>15</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Lend</name>
@@ -1828,6 +1889,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Repay</name>
@@ -1853,6 +1915,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:int</name>
@@ -1878,6 +1941,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Fee</name>
@@ -1903,6 +1967,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_C</name>
@@ -1928,6 +1993,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_I</name>
@@ -1953,6 +2019,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_I</name>
@@ -1978,6 +2045,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_C</name>
@@ -2003,6 +2071,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_W</name>
@@ -2028,6 +2097,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_B</name>
@@ -2053,6 +2123,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_B</name>
@@ -2078,6 +2149,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_D</name>
@@ -2102,6 +2174,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_L</name>
@@ -2126,6 +2199,7 @@
      <max>7</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:D</name>
@@ -2150,6 +2224,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_R</name>
@@ -2174,6 +2249,7 @@
      <max>9</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:D</name>
@@ -2198,6 +2274,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:r_L</name>
@@ -2222,6 +2299,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:b_f</name>
@@ -2246,6 +2324,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:int</name>
@@ -2271,6 +2350,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_D</name>
@@ -2295,6 +2375,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_{WC}</name>
@@ -2319,6 +2400,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_D</name>
@@ -2343,6 +2425,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_{WI}</name>
@@ -2367,6 +2450,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_D</name>
@@ -2391,6 +2475,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_D</name>
@@ -2415,6 +2500,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_D</name>
@@ -2439,6 +2525,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:B_E</name>
@@ -2463,6 +2550,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:B_E</name>
@@ -2487,6 +2575,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_{CI}</name>
@@ -2511,6 +2600,7 @@
      <max>5</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_{IC}</name>
@@ -2535,6 +2625,7 @@
      <max>2</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_{CW}</name>
@@ -2559,6 +2650,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_{CB}</name>
@@ -2583,6 +2675,7 @@
      <max>2</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_{IB}</name>
@@ -2607,6 +2700,7 @@
      <max>4</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_D</name>
@@ -2631,6 +2725,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_D</name>
@@ -2655,6 +2750,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_D</name>
@@ -2679,6 +2775,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:B_E</name>
@@ -2703,6 +2800,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_C</name>
@@ -2728,6 +2826,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_I</name>
@@ -2753,6 +2852,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W</name>
@@ -2778,6 +2878,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_W</name>
@@ -2803,6 +2904,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_B</name>
@@ -2828,6 +2930,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_I</name>
@@ -2853,6 +2956,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C</name>
@@ -2878,6 +2982,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_C</name>
@@ -2903,6 +3008,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_B</name>
@@ -2928,6 +3034,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I</name>
@@ -2953,6 +3060,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Y</name>
@@ -2978,6 +3086,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_D</name>
@@ -3002,6 +3111,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_D</name>
@@ -3026,6 +3136,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_D</name>
@@ -3050,6 +3161,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:B_E</name>
@@ -3074,6 +3186,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:M</name>
@@ -3099,6 +3212,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:M</name>
@@ -3124,6 +3238,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Y</name>
@@ -3149,6 +3264,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:M</name>
@@ -3174,6 +3290,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:V</name>
@@ -3199,6 +3316,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_L</name>
@@ -3223,6 +3341,7 @@
      <max>30</max>
      <step>1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_R</name>
@@ -3247,6 +3366,7 @@
      <max>30</max>
      <step>1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:D</name>
@@ -3271,6 +3391,7 @@
      <max>10</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:D</name>
@@ -3295,6 +3416,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:M</name>
@@ -3320,6 +3442,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Y</name>
@@ -3345,6 +3468,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:D</name>
@@ -3369,6 +3493,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:d_r</name>
@@ -3394,6 +3519,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\Pi_C</name>
@@ -3419,6 +3545,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Fee</name>
@@ -3444,6 +3571,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_C</name>
@@ -3469,6 +3597,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:int</name>
@@ -3494,6 +3623,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Fee</name>
@@ -3519,6 +3649,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C</name>
@@ -3544,6 +3675,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I</name>
@@ -3569,6 +3701,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_I</name>
@@ -3594,6 +3727,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:int</name>
@@ -3619,6 +3753,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\Pi_I</name>
@@ -3644,6 +3779,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\Pi</name>
@@ -3669,6 +3805,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Fee</name>
@@ -3694,6 +3831,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_D</name>
@@ -3718,6 +3856,7 @@
      <max>60</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_D</name>
@@ -3742,6 +3881,7 @@
      <max>20</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_D</name>
@@ -3766,6 +3906,7 @@
      <max>15</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:B_E</name>
@@ -3790,6 +3931,7 @@
      <max>5</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:C_D</name>
@@ -3814,6 +3956,7 @@
      <max>60</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_D</name>
@@ -3838,6 +3981,7 @@
      <max>20</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_D</name>
@@ -3862,6 +4006,7 @@
      <max>15</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>Money&#32;and&#32;Bank&#32;Accounts</name>
@@ -4000,6 +4145,7 @@
      <int>430</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4220,6 +4366,7 @@
      <int>453</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4440,6 +4587,7 @@
      <int>476</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4660,6 +4808,7 @@
      <int>499</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4880,6 +5029,7 @@
      <int>522</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -5100,6 +5250,7 @@
      <int>545</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -5213,6 +5364,7 @@
      <int>401</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -5357,6 +5509,7 @@
      <int>162</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -5471,6 +5624,7 @@
      <int>185</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -5556,6 +5710,7 @@
      <int>196</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>

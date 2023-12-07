@@ -36,6 +36,7 @@
      <int>2</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <dataOpData>
      <pair>
       <first>1</first>
@@ -75,6 +76,7 @@
      <int>4</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -101,6 +103,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -236,6 +239,7 @@
      <int>30</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>

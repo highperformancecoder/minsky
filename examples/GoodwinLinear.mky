@@ -189,6 +189,7 @@
      <int>3</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -208,6 +209,7 @@
      <int>7</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -227,6 +229,7 @@
      <int>11</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -246,6 +249,7 @@
      <int>15</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -265,6 +269,7 @@
      <int>19</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>58</intVar>
     <arg>1</arg>
    </Item>
@@ -285,6 +290,7 @@
      <int>23</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -304,6 +310,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -323,6 +330,7 @@
      <int>31</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>56</intVar>
     <arg>1</arg>
    </Item>
@@ -350,6 +358,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:L</name>
@@ -375,6 +384,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:N</name>
@@ -400,6 +410,7 @@
      <max>110</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:emprate</name>
@@ -425,6 +436,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:L</name>
@@ -450,6 +462,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:WageBill</name>
@@ -475,6 +488,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Profit</name>
@@ -500,6 +514,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Investment</name>
@@ -525,6 +540,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>K</name>
@@ -550,6 +566,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>WageRate</name>
@@ -575,6 +592,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:v</name>
@@ -599,6 +617,7 @@
      <max>3</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:NAIRU</name>
@@ -623,6 +642,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:PhillipsSlope</name>
@@ -647,6 +667,7 @@
      <max>10</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -782,6 +803,7 @@
      <int>88</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>

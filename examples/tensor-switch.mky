@@ -89,6 +89,7 @@
      <int>5</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>a</name>
@@ -113,6 +114,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>b</name>
@@ -137,6 +139,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <tensorData>
 <![CDATA[GhQY=J,mu[C<trm~Bi1n>V%_fFPhQI#Hp_FJ).Hg-oR\H_<.`q/qMRHLCA(S6^9G~U<s0=$jaWUV)_qHH3RaWiu=`_NR7I?BRCIA*rsHs*'s]]>    </tensorData>
    </Item>
@@ -163,6 +166,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>12</id>
@@ -179,6 +183,7 @@
      <int>13</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -315,6 +320,7 @@
      <int>36</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -421,6 +427,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>39</id>
@@ -437,6 +444,7 @@
      <int>40</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -456,6 +464,7 @@
      <int>44</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -478,6 +487,7 @@
      <int>50</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>a</name>
@@ -502,6 +512,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>b</name>
@@ -526,6 +537,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <tensorData>
 <![CDATA[GhQY=J,mu[C<trm~Bi1n>V%_fFPhQI#Hp_FJ).Hg-oR\H_<.`q/qMRHLCA(S6^9G~U<s0=$jaWUV)_qHH3RaWiu=`_NR7I?BRCIA*rsHs*'s]]>    </tensorData>
    </Item>
@@ -552,6 +564,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <detailedText>Tensor&#32;switch&#32;with&#32;scalar&#32;selector</detailedText>
@@ -568,6 +581,7 @@
     <ports>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <detailedText>Tensor&#32;switch&#32;with&#32;tensor&#32;selector</detailedText>
@@ -584,6 +598,7 @@
     <ports>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -719,6 +734,7 @@
      <int>81</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -818,6 +834,7 @@
      <int>84</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
   </items>

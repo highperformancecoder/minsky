@@ -174,6 +174,7 @@
      <int>3</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -193,6 +194,7 @@
      <int>7</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>45</intVar>
     <arg>1</arg>
    </Item>
@@ -213,6 +215,7 @@
      <int>11</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -232,6 +235,7 @@
      <int>15</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -251,6 +255,7 @@
      <int>19</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -270,6 +275,7 @@
      <int>23</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -289,6 +295,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -308,6 +315,7 @@
      <int>31</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -327,6 +335,7 @@
      <int>35</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -353,6 +362,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I(t)&#32;-&#32;Investment&#32;at&#32;time&#32;t</name>
@@ -378,6 +388,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:L(t)&#32;-&#32;Labor&#32;at&#32;time&#32;t</name>
@@ -403,6 +414,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
@@ -428,6 +440,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
@@ -453,6 +466,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
@@ -478,6 +492,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:A(t)&#32;-&#32;Technology&#32;at&#32;time&#32;t</name>
@@ -503,6 +518,7 @@
      <max>2</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:s&#32;-&#32;Savings&#32;Rate</name>
@@ -527,6 +543,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:d&#32;-&#32;Depreciation&#32;Rate</name>
@@ -551,6 +568,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Beta</name>
@@ -575,6 +593,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:1</name>
@@ -599,6 +618,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Beta</name>
@@ -623,6 +643,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -758,6 +779,7 @@
      <int>88</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -975,6 +997,7 @@
      <int>111</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>

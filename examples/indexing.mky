@@ -129,6 +129,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>2</id>
@@ -145,6 +146,7 @@
      <int>3</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -163,6 +165,7 @@
      <int>6</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -188,6 +191,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>x2</name>
@@ -212,6 +216,7 @@
      <max>4</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>x3</name>
@@ -236,6 +241,7 @@
      <max>3.51824e+13</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>x4</name>
@@ -260,6 +266,7 @@
      <max>3.51824e+13</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>19</id>
@@ -277,6 +284,7 @@
      <int>21</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -295,6 +303,7 @@
      <int>24</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -313,6 +322,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -331,6 +341,7 @@
      <int>30</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <axis>1</axis>
     <arg>1</arg>
    </Item>
@@ -349,6 +360,7 @@
      <int>32</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -368,6 +380,7 @@
      <int>36</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <axis>1</axis>
     <arg>1</arg>
    </Item>
@@ -386,6 +399,7 @@
      <int>38</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
   </items>

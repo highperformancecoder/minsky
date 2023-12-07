@@ -96,6 +96,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <tensorData>
 <![CDATA[GhQY?5R&=sTaV0*)CEa\6_&^Y&WJDO68FiI8om73"$H`?JFO)rpdSqE@l1n+)W)6gD[,;*!5aF#gA]]>    </tensorData>
    </Item>
@@ -121,6 +122,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <tensorData>
 <![CDATA[GhQY>5R&2<&6~'+M`AL_(t%O[-7!HP0^V~j:sT+M@!lH@^+#9W!8oC4"o]]>    </tensorData>
    </Item>
@@ -139,6 +141,7 @@
      <int>5</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -156,6 +159,7 @@
      <int>7</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -180,6 +184,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <tensorData>
 <![CDATA[GhQY?5R&=sTaV0*)CEa\6_&^Y&WJDO68FiI8om73"$H`?JFO)rpdSqE@l1n+)W)6gD[,;*!5aF#gA]]>    </tensorData>
    </Item>
@@ -205,6 +210,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <tensorData>
 <![CDATA[GhQY>5R&2<&6~'+M`AL_(t%O[-7!HP0^V~j:sT+M@!lH@^+#9W!8oC4"o]]>    </tensorData>
    </Item>
@@ -225,6 +231,7 @@
      <int>15</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -242,6 +249,7 @@
      <int>17</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -266,6 +274,7 @@
      <max>3.02677e-316</max>
      <step>3.02668e-316</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x3.csv</url>
     <csvDataSpec>
      <dataRowOffset>1</dataRowOffset>
@@ -326,6 +335,7 @@
      <int>21</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -350,6 +360,7 @@
      <max>NaN</max>
      <step>1.35884e-309</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x4.csv</url>
     <csvDataSpec>
      <dataRowOffset>1</dataRowOffset>
@@ -410,6 +421,7 @@
      <int>25</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -434,6 +446,7 @@
      <max>3.02677e-316</max>
      <step>3.02668e-316</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x3.csv</url>
     <csvDataSpec>
      <dataRowOffset>1</dataRowOffset>
@@ -501,6 +514,7 @@
      <max>NaN</max>
      <step>1.35884e-309</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x4.csv</url>
     <csvDataSpec>
      <dataRowOffset>1</dataRowOffset>
@@ -563,6 +577,7 @@
      <int>33</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -582,6 +597,7 @@
      <int>37</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <axis>sex</axis>
     <arg>1</arg>
    </Item>
@@ -607,6 +623,7 @@
      <max>0</max>
      <step>5.43231e-312</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>40</id>
@@ -623,6 +640,7 @@
      <int>41</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -642,6 +660,7 @@
      <int>44</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>45</id>
@@ -660,6 +679,7 @@
      <int>47</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>42</intVar>
     <arg>1</arg>
    </Item>
@@ -678,6 +698,7 @@
     <ports>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>int2</name>
@@ -696,6 +717,7 @@
      <int>51</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>52</id>
@@ -714,6 +736,7 @@
      <int>54</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>49</intVar>
     <arg>1</arg>
    </Item>

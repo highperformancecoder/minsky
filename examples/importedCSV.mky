@@ -41,6 +41,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <tensorData>
 <![CDATA[GhV1g5R&=s+gcb%KU.2;$rC+18h3/@%O`n0V3PHR)47'R,F#>r[Y>YodK%9@KJAEnN(O`U!<<+S"p+]]>    </tensorData>
    </Item>
@@ -66,6 +67,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <tensorData>
 <![CDATA[GhQY>5R&=sTaV/3`SnVVJ-oDO1^B7WK$oTS\cQ"h1Rb*?N+!!%(r7&S,jGI3ShpQ>]]>    </tensorData>
    </Item>
@@ -84,6 +86,7 @@
      <int>5</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -101,6 +104,7 @@
      <int>7</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
    <Item>
@@ -126,6 +130,7 @@
      <max>0</max>
      <step>0</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>10</id>
@@ -142,6 +147,7 @@
      <int>11</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
   </items>

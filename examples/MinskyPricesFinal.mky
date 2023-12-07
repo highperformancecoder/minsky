@@ -600,12 +600,12 @@
     <from>558</from>
     <to>554</to>
     <coords>
-     <float>614.475</float>
-     <float>270.223</float>
-     <float>626.545</float>
-     <float>234.929</float>
-     <float>628.31</float>
-     <float>266.807</float>
+     <float>634.673</float>
+     <float>259.54</float>
+     <float>658.791</float>
+     <float>189.017</float>
+     <float>607.421</float>
+     <float>267.795</float>
     </coords>
    </Wire>
    <Wire>
@@ -678,12 +678,12 @@
     <from>601</from>
     <to>594</to>
     <coords>
-     <float>943.809</float>
-     <float>610.967</float>
-     <float>851.718</float>
-     <float>314.094</float>
-     <float>931.424</float>
-     <float>591.842</float>
+     <float>932.885</float>
+     <float>610.887</float>
+     <float>868.518</float>
+     <float>403.387</float>
+     <float>935.727</float>
+     <float>595.217</float>
     </coords>
    </Wire>
    <Wire>
@@ -701,12 +701,12 @@
     <from>603</from>
     <to>599</to>
     <coords>
-     <float>937.48</float>
-     <float>620.387</float>
-     <float>870.122</float>
-     <float>394.877</float>
-     <float>914.319</float>
-     <float>616.498</float>
+     <float>927.516</float>
+     <float>616.661</float>
+     <float>919.601</float>
+     <float>590.163</float>
+     <float>925.243</float>
+     <float>618.225</float>
     </coords>
    </Wire>
    <Wire>
@@ -774,12 +774,12 @@
     <from>646</from>
     <to>639</to>
     <coords>
-     <float>878.416</float>
-     <float>53.2633</float>
-     <float>845.336</float>
-     <float>29.0706</float>
-     <float>889.867</float>
-     <float>27.7115</float>
+     <float>891.41</float>
+     <float>47.9041</float>
+     <float>864.042</float>
+     <float>27.8889</float>
+     <float>872.706</float>
+     <float>34.2376</float>
     </coords>
    </Wire>
    <Wire>
@@ -792,12 +792,12 @@
     <from>648</from>
     <to>640</to>
     <coords>
-     <float>874.998</float>
-     <float>56.3614</float>
-     <float>860.367</float>
-     <float>42.6591</float>
-     <float>889.867</float>
-     <float>48.1115</float>
+     <float>893.619</float>
+     <float>48.6037</float>
+     <float>874.891</float>
+     <float>31.0641</float>
+     <float>872.706</float>
+     <float>54.6376</float>
     </coords>
    </Wire>
    <Wire>
@@ -805,12 +805,12 @@
     <from>648</from>
     <to>644</to>
     <coords>
-     <float>874.998</float>
-     <float>56.3614</float>
-     <float>856.036</float>
-     <float>38.6002</float>
-     <float>900.762</float>
-     <float>58.4169</float>
+     <float>893.619</float>
+     <float>48.6037</float>
+     <float>878.756</float>
+     <float>34.6818</float>
+     <float>875.166</float>
+     <float>56.9646</float>
     </coords>
    </Wire>
    <Wire>
@@ -852,6 +852,7 @@
      <int>3</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>185</intVar>
     <arg>1</arg>
    </Item>
@@ -872,6 +873,7 @@
      <int>7</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -891,6 +893,7 @@
      <int>11</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -910,6 +913,7 @@
      <int>15</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>196</intVar>
     <arg>1</arg>
    </Item>
@@ -930,6 +934,7 @@
      <int>19</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -949,6 +954,7 @@
      <int>23</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -968,6 +974,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>201</intVar>
     <arg>1</arg>
    </Item>
@@ -988,6 +995,7 @@
      <int>31</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1007,6 +1015,7 @@
      <int>35</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1026,6 +1035,7 @@
      <int>39</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1045,6 +1055,7 @@
      <int>43</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1064,6 +1075,7 @@
      <int>47</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1083,6 +1095,7 @@
      <int>51</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1102,6 +1115,7 @@
      <int>55</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1121,6 +1135,7 @@
      <int>59</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1140,6 +1155,7 @@
      <int>63</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1159,6 +1175,7 @@
      <int>67</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>258</intVar>
     <arg>1</arg>
    </Item>
@@ -1179,6 +1196,7 @@
      <int>71</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1198,6 +1216,7 @@
      <int>75</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1217,6 +1236,7 @@
      <int>79</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1236,6 +1256,7 @@
      <int>83</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1255,6 +1276,7 @@
      <int>87</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1274,6 +1296,7 @@
      <int>91</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1293,6 +1316,7 @@
      <int>95</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1312,6 +1336,7 @@
      <int>99</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>280</intVar>
     <arg>1</arg>
    </Item>
@@ -1332,6 +1357,7 @@
      <int>103</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1351,6 +1377,7 @@
      <int>107</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1370,6 +1397,7 @@
      <int>111</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1389,6 +1417,7 @@
      <int>115</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1408,6 +1437,7 @@
      <int>119</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1427,6 +1457,7 @@
      <int>123</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1446,6 +1477,7 @@
      <int>127</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1465,6 +1497,7 @@
      <int>131</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1484,6 +1517,7 @@
      <int>135</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1503,6 +1537,7 @@
      <int>139</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1522,6 +1557,7 @@
      <int>143</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1541,6 +1577,7 @@
      <int>147</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1560,6 +1597,7 @@
      <int>151</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1579,6 +1617,7 @@
      <int>155</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -1605,6 +1644,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:IntL</name>
@@ -1630,6 +1670,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:IntDF</name>
@@ -1655,6 +1696,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Wages</name>
@@ -1680,6 +1722,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:ConsB</name>
@@ -1705,6 +1748,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:ConsW</name>
@@ -1730,6 +1774,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Repay</name>
@@ -1755,6 +1800,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:LF</name>
@@ -1779,6 +1825,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:DF</name>
@@ -1803,6 +1850,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:DW</name>
@@ -1827,6 +1875,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:EB</name>
@@ -1851,6 +1900,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>a</name>
@@ -1876,6 +1926,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>a</name>
@@ -1901,6 +1952,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Y_R</name>
@@ -1926,6 +1978,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:L</name>
@@ -1951,6 +2004,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>N</name>
@@ -1976,6 +2030,7 @@
      <max>120</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>N</name>
@@ -2001,6 +2056,7 @@
      <max>120</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>W</name>
@@ -2026,6 +2082,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>W</name>
@@ -2051,6 +2108,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Invest</name>
@@ -2076,6 +2134,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:IntL</name>
@@ -2101,6 +2160,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:IntDF</name>
@@ -2126,6 +2186,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:IntDW</name>
@@ -2151,6 +2212,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:IntDW</name>
@@ -2176,6 +2238,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:ConsW</name>
@@ -2201,6 +2264,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:ConsB</name>
@@ -2226,6 +2290,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Repay</name>
@@ -2251,6 +2316,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:L</name>
@@ -2276,6 +2342,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Wages</name>
@@ -2301,6 +2368,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:LF</name>
@@ -2325,6 +2393,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:IntL</name>
@@ -2350,6 +2419,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:DF</name>
@@ -2374,6 +2444,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:DW</name>
@@ -2398,6 +2469,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:EB</name>
@@ -2422,6 +2494,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:DW</name>
@@ -2446,6 +2519,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:IntDF</name>
@@ -2471,6 +2545,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Y</name>
@@ -2496,6 +2571,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\Pi</name>
@@ -2521,6 +2597,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>K_R</name>
@@ -2546,6 +2623,7 @@
      <max>300</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>K_R</name>
@@ -2571,6 +2649,7 @@
      <max>300</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:K</name>
@@ -2596,6 +2675,7 @@
      <max>300</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Y</name>
@@ -2621,6 +2701,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:LF</name>
@@ -2645,6 +2726,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:P_K</name>
@@ -2670,6 +2752,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_R</name>
@@ -2695,6 +2778,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\lambda</name>
@@ -2720,6 +2804,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>P</name>
@@ -2745,6 +2830,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>P</name>
@@ -2770,6 +2856,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>W</name>
@@ -2795,6 +2882,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>a</name>
@@ -2820,6 +2908,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:P_K</name>
@@ -2845,6 +2934,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:P_K</name>
@@ -2870,6 +2960,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:K</name>
@@ -2895,6 +2986,7 @@
      <max>300</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\pi_r</name>
@@ -2920,6 +3012,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>P</name>
@@ -2945,6 +3038,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Y</name>
@@ -2970,6 +3064,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Wages</name>
@@ -2995,6 +3090,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\omega</name>
@@ -3020,6 +3116,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\omega</name>
@@ -3045,6 +3142,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\omega</name>
@@ -3070,6 +3168,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>P</name>
@@ -3095,6 +3194,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:inf_r</name>
@@ -3120,6 +3220,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:inf_r</name>
@@ -3145,6 +3246,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:inf_r</name>
@@ -3170,6 +3272,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:LF</name>
@@ -3194,6 +3297,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:Y</name>
@@ -3219,6 +3323,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:d_r</name>
@@ -3244,6 +3349,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:inf_r</name>
@@ -3269,6 +3375,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\lambda</name>
@@ -3294,6 +3401,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\d\lambda</name>
@@ -3319,6 +3427,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>I_{fn}</name>
@@ -3344,6 +3453,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\alpha</name>
@@ -3368,6 +3478,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\beta</name>
@@ -3392,6 +3503,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:r_L</name>
@@ -3416,6 +3528,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:r_D</name>
@@ -3440,6 +3553,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:r_D</name>
@@ -3464,6 +3578,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_\mathrm{CB}</name>
@@ -3488,6 +3603,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_\mathrm{CW}</name>
@@ -3512,6 +3628,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:v</name>
@@ -3536,6 +3653,7 @@
      <max>3</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\delta</name>
@@ -3560,6 +3678,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_P</name>
@@ -3584,6 +3703,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:1-s</name>
@@ -3608,6 +3728,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\lambda_w</name>
@@ -3632,6 +3753,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:v</name>
@@ -3656,6 +3778,7 @@
      <max>3</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\alpha</name>
@@ -3680,6 +3803,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\beta</name>
@@ -3704,6 +3828,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\delta</name>
@@ -3728,6 +3853,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -3863,6 +3989,7 @@
      <int>407</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4080,6 +4207,7 @@
      <int>430</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4297,6 +4425,7 @@
      <int>453</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4514,6 +4643,7 @@
      <int>476</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4731,6 +4861,7 @@
      <int>499</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -4948,6 +5079,7 @@
      <int>522</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -5057,6 +5189,7 @@
      <int>184</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -5157,6 +5290,7 @@
      <int>527</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5176,6 +5310,7 @@
      <int>531</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5195,6 +5330,7 @@
      <int>535</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5214,6 +5350,7 @@
      <int>539</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5232,6 +5369,7 @@
      <int>542</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5251,6 +5389,7 @@
      <int>546</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5270,6 +5409,7 @@
      <int>550</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5289,6 +5429,7 @@
      <int>554</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5314,6 +5455,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:m_w</name>
@@ -5338,6 +5480,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:s_w</name>
@@ -5362,6 +5505,7 @@
      <max>2</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:x_w</name>
@@ -5386,6 +5530,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\lambda</name>
@@ -5411,6 +5556,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:W_{fn}</name>
@@ -5436,6 +5582,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>569</id>
@@ -5454,6 +5601,7 @@
      <int>572</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5473,6 +5621,7 @@
      <int>576</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5492,6 +5641,7 @@
      <int>580</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5511,6 +5661,7 @@
      <int>584</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5529,6 +5680,7 @@
      <int>587</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5548,6 +5700,7 @@
      <int>591</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5567,6 +5720,7 @@
      <int>595</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5586,6 +5740,7 @@
      <int>599</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5611,6 +5766,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:m_i</name>
@@ -5635,6 +5791,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:s_i</name>
@@ -5659,6 +5816,7 @@
      <max>2</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:x_i</name>
@@ -5683,6 +5841,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\pi_r</name>
@@ -5708,6 +5867,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:I_{fn}</name>
@@ -5733,6 +5893,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>614</id>
@@ -5751,6 +5912,7 @@
      <int>617</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5770,6 +5932,7 @@
      <int>621</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5789,6 +5952,7 @@
      <int>625</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5808,6 +5972,7 @@
      <int>629</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5826,6 +5991,7 @@
      <int>632</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5845,6 +6011,7 @@
      <int>636</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5864,6 +6031,7 @@
      <int>640</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5883,6 +6051,7 @@
      <int>644</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -5908,6 +6077,7 @@
      <max>10</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:m_r</name>
@@ -5932,6 +6102,7 @@
      <max>3</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:s_r</name>
@@ -5956,6 +6127,7 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:x_r</name>
@@ -5980,6 +6152,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\tau_R</name>
@@ -6005,6 +6178,7 @@
      <max>7.56007</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:\pi_r</name>
@@ -6030,6 +6204,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
   </items>
   <groups>
@@ -6047,6 +6222,7 @@
     <ports>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <items>
      <int>524</int>
      <int>528</int>
@@ -6085,6 +6261,7 @@
     <ports>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <items>
      <int>569</int>
      <int>573</int>
@@ -6123,6 +6300,7 @@
     <ports>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <items>
      <int>614</int>
      <int>618</int>

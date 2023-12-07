@@ -44,6 +44,7 @@
      <int>1</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -180,6 +181,7 @@
      <int>24</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -281,6 +283,7 @@
      <int>28</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <expression>foo(x)</expression>
     <arg>1</arg>
    </Item>
@@ -301,6 +304,7 @@
      <int>31</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <detailedText>This&#32;is&#32;here&#32;just&#32;to&#32;enable&#32;compareWithOctave&#32;to&#32;work</detailedText>
@@ -321,6 +325,7 @@
      <int>34</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>29</intVar>
     <arg>1</arg>
    </Item>
@@ -347,6 +352,7 @@
      <max>52.81</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>2</name>
@@ -371,6 +377,7 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>41</id>
@@ -388,6 +395,7 @@
      <int>43</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
   </items>
@@ -407,6 +415,7 @@
     <ports>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <items>
      <int>35</int>
      <int>38</int>

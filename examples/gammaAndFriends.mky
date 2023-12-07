@@ -75,6 +75,7 @@
      <int>2</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -211,6 +212,7 @@
      <int>25</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -309,6 +311,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -328,6 +331,7 @@
      <int>31</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -352,6 +356,7 @@
      <max>3.46589e-316</max>
      <step>3.46587e-320</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>34</id>
@@ -370,6 +375,7 @@
      <int>37</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -394,6 +400,7 @@
      <max>1</max>
      <step>0.0001</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>int1</name>
@@ -412,6 +419,7 @@
      <int>42</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>43</id>
@@ -430,6 +438,7 @@
      <int>45</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>40</intVar>
     <arg>1</arg>
    </Item>
@@ -450,6 +459,7 @@
      <int>48</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>49</id>
@@ -468,6 +478,7 @@
      <int>51</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>46</intVar>
     <arg>1</arg>
    </Item>
@@ -488,6 +499,7 @@
      <int>54</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>55</id>
@@ -506,6 +518,7 @@
      <int>57</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>52</intVar>
     <arg>1</arg>
    </Item>

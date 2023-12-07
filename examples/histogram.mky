@@ -42,6 +42,7 @@
      <max>1</max>
      <step>0.0002</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>2</id>
@@ -59,6 +60,7 @@
      <int>4</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>10</arg>
    </Item>
    <Item>
@@ -195,6 +197,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -293,6 +296,7 @@
      <int>29</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
    </Item>
   </items>

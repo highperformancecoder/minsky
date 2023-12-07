@@ -127,6 +127,7 @@
      <max>10000</max>
      <step>1000</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>2</id>
@@ -143,6 +144,7 @@
      <int>3</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -162,6 +164,7 @@
      <int>7</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -181,6 +184,7 @@
      <int>11</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -205,6 +209,7 @@
      <max>1</max>
      <step>0.0001</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>14</id>
@@ -222,6 +227,7 @@
      <int>16</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -240,6 +246,7 @@
      <int>19</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>-1</arg>
    </Item>
    <Item>
@@ -258,6 +265,7 @@
      <int>22</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>-1</arg>
    </Item>
    <Item>
@@ -276,6 +284,7 @@
      <int>25</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -412,6 +421,7 @@
      <int>48</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -518,6 +528,7 @@
      <max>1</max>
      <step>0.0001</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>\Pi</name>
@@ -542,6 +553,7 @@
      <max>0</max>
      <step>0</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>\Delta</name>
@@ -566,6 +578,7 @@
      <max>0</max>
      <step>7.09133e-317</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>int1</name>
@@ -584,6 +597,7 @@
      <int>60</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>61</id>
@@ -602,6 +616,7 @@
      <int>63</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>58</intVar>
     <arg>1</arg>
    </Item>
@@ -622,6 +637,7 @@
      <int>66</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>67</id>
@@ -640,6 +656,7 @@
      <int>69</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>64</intVar>
     <arg>1</arg>
    </Item>
@@ -660,6 +677,7 @@
      <int>72</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <id>73</id>
@@ -678,6 +696,7 @@
      <int>75</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <intVar>70</intVar>
     <arg>1</arg>
    </Item>
@@ -697,6 +716,7 @@
      <int>78</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -715,6 +735,7 @@
      <int>81</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -733,6 +754,7 @@
      <int>84</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
   </items>

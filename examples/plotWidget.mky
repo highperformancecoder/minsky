@@ -213,6 +213,7 @@
      <int>22</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -311,6 +312,7 @@
      <int>24</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -329,6 +331,7 @@
      <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -347,6 +350,7 @@
      <int>30</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
@@ -372,6 +376,7 @@
      <max>1</max>
      <step>0.0002</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <name>:cos</name>
@@ -396,6 +401,7 @@
      <max>1</max>
      <step>0.0002</step>
     </slider>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
     <logx>false</logx>
@@ -531,6 +537,7 @@
      <int>59</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
@@ -636,6 +643,7 @@
      <max>1</max>
      <step>0.0002</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <url>/home/rks/github/minsky/xxx.csv</url>
     <csvDataSpec>
      <dataRowOffset>1</dataRowOffset>
@@ -703,6 +711,7 @@
      <max>1</max>
      <step>0.0002</step>
     </slider>
+    <miniPlot>false</miniPlot>
     <url>/home/rks/github/minsky/xxx.csv</url>
     <csvDataSpec>
      <dataRowOffset>1</dataRowOffset>
@@ -882,6 +891,7 @@
      <int>86</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <palette>
      <LineStyle>
       <colour>
