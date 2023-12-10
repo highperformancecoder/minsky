@@ -45,7 +45,7 @@ else
 HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
 ifeq ($(HAVE_CLANG),1)
 CPLUSPLUS=clang++
-LINK=clang++
+LINK=clang++ -flto
 $(warning clang selected)
 endif
 endif
@@ -405,7 +405,7 @@ else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
 else
-	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
 endif
 
