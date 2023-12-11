@@ -132,6 +132,7 @@ namespace minsky
     maxValue.clear();
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
+    phillipsDiagram.clear();
     userFunctions.clear();
     UserFunction::nextId=0;
     
@@ -1298,7 +1299,6 @@ namespace minsky
         command!="minsky.canvas.recentre" &&
         command!="minsky.canvas.focusFollowsMouse" &&
         command!="minsky.canvas.displayDelayedTooltip" &&
-        command!="minsky.canvas.requestRedraw" &&
         command!="minsky.model.moveTo" &&
         command!="minsky.canvas.moveTo" &&
         command!="minsky.canvas.model.moveTo" &&
@@ -1330,9 +1330,11 @@ namespace minsky
         command!="minsky.reverse" &&
         command!="minsky.redrawAllGodleyTables" &&
         command.find("minsky.panopticon")==string::npos &&
+        command.find("minsky.phillipsDiagram")==string::npos &&
         command.find("minsky.equationDisplay")==string::npos && 
         command.find("minsky.setGodleyDisplayValue")==string::npos && 
         command.find(".renderFrame")==string::npos && 
+        command.find(".requestRedraw")==string::npos && 
         command.find(".backgroundColour")==string::npos && 
         command.find(".get")==string::npos && 
         command.find(".@elem")==string::npos && 
@@ -1379,6 +1381,7 @@ namespace minsky
         model->clear();
         m.populateGroup(*model);
         model->setZoom(m.zoomFactor);
+        m.phillipsDiagram.populatePhillipsDiagram(phillipsDiagram);
         
         // restore tensorInit data
         for (auto& v: variableValues)

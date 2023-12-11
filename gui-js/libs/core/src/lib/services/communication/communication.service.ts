@@ -262,7 +262,7 @@ export class CommunicationService {
 
   private simulate() {
     setTimeout(async () => {
-      if (await this.electronService.minsky.running()) {
+      if (!this.showPlayButton$.value) {
         const [t, deltaT] = await this.electronService.minsky.step();
         this.updateSimulationTime(t, deltaT);
         this.simulate();
@@ -271,7 +271,7 @@ export class CommunicationService {
   }
 
   private async pauseSimulation() {
-    await this.electronService.minsky.running(false);
+    this.electronService.minsky.$callMethodSync('running',false);
   }
 
   private async stopSimulation() {

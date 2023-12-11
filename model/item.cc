@@ -82,6 +82,13 @@ namespace minsky
     cminsky().displayErrorItem(*this);
     throw runtime_error(msg);
   }
+
+  void ItemExclude::rotate(const Point& mouse, const Point& orig)
+  {
+    constexpr double degrees=180.0/M_PI;
+    m_rotation=atan2(mouse.y()-orig.y(),mouse.x()-orig.x())*degrees;
+  }
+
   
   float Item::x() const 
   {

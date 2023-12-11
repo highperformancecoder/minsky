@@ -31,6 +31,8 @@ export class ContextMenuManager {
           this.initContextMenuForWiring(mainWindow);
         else if (currentTab.$equal(minsky.plotTab))
           this.initContextMenuForPlotTab(mainWindow);
+        else if (currentTab.$equal(minsky.phillipsDiagram))
+          this.initContextMenuForPhillipsDiagram(mainWindow);
       }
       break;
       case "godley":
@@ -58,7 +60,7 @@ export class ContextMenuManager {
     if (await minsky.plotTab.getItemAt(this.x,this.y)) {
       const menuItems = [
         new MenuItem({
-          label: `Remove plot from tab`,
+          label: 'Remove plot from tab',
           click: async () => {
             minsky.plotTab.togglePlotDisplay();
             minsky.plotTab.requestRedraw();
@@ -70,6 +72,19 @@ export class ContextMenuManager {
 
       return;
     }
+  }
+  
+  private static async initContextMenuForPhillipsDiagram(mainWindow: BrowserWindow) {
+      const menuItems = [
+        new MenuItem({
+          label: 'Rotate',
+          click: async () => {
+            minsky.phillipsDiagram.startRotatingItem(this.x,this.y);
+          },
+        }),
+      ];
+
+      ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
   }
 
   private static async initContextMenuForWiring(mainWindow: BrowserWindow) {
@@ -419,13 +434,19 @@ export class ContextMenuManager {
     menuItems = [
       ...menuItems,
       new MenuItem({
+        label: `Rotate ${itemInfo.classType}`,
+        click:  () => {
+          minsky.canvas.rotateItem(this.x, this.y);
+        }
+      }),
+      new MenuItem({
         label: `Delete ${itemInfo.classType}`,
-        click: async () => {
-          await CommandsManager.deleteCurrentItemHavingId(itemInfo.id);
+        click: () => {
+          CommandsManager.deleteCurrentItemHavingId(itemInfo.id);
         },
       }),
     ];
-
+    
     return menuItems;
   }
 

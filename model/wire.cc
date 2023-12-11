@@ -509,6 +509,8 @@ namespace
         cairo_set_source_rgb(cairo,1,1,1);
         cairo_fill_preserve(cairo);
         cairo_set_source_rgb(cairo,0,0,0);
+        cairo_set_line_width(cairo,1);
+        cairo_set_dash(cairo,nullptr,0,0);
         pango.show();
         cairo_stroke(cairo);
       }

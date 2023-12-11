@@ -80,11 +80,13 @@ namespace minsky
   {
     if  (!surface.get()) return false;
     auto cairo=surface->cairo();
+    CairoSave cs(cairo);
+    cairo_translate(cairo,x,y);
     for (auto& i: stocks)
       {
         CairoSave cs(cairo);
         cairo_identity_matrix(cairo);
-        cairo_translate(cairo,i.second.x(), i.second.y());
+        cairo_translate(cairo,i.second.x()+x, i.second.y()+y);
         i.second.draw(cairo);
       }
     for (auto& i: flows)
@@ -94,45 +96,59 @@ namespace minsky
 
   void PhillipsDiagram::init()
   {
-    stocks.clear();
-    flows.clear();
+    decltype(stocks) newStocks;
+    decltype(flows) newFlows;
     cminsky().model->recursiveDo
-      (&GroupItems::items, [this](const Items&,Items::const_iterator i) {
+      (&GroupItems::items, [&](const Items&,Items::const_iterator i) {
         if (auto g=dynamic_cast<GodleyIcon*>(i->get())) {
           for (auto& v: g->stockVars())
-            stocks.emplace(v->valueId(), static_cast<Variable<VariableType::stock>&>(*v));
+            {
+              auto newStock=newStocks.emplace(v->valueId(), static_cast<Variable<VariableType::stock>&>(*v)).first;
+              auto oldStock=stocks.find(v->valueId());
+              if (oldStock!=stocks.end())
+                {
+                  newStock->second.moveTo(oldStock->second.x(), oldStock->second.y());
+                  newStock->second.rotation(oldStock->second.rotation());
+                }
+            }
           for (unsigned r=1; r<g->table.rows(); ++r) {
             if (g->table.initialConditionRow(r)) continue;
-            std::map<std::string, std::vector<FlowCoef>> sources, destinations; 
+            map<string, vector<pair<FlowCoef, string>>> sources, destinations; 
             for (size_t c=1; c<g->table.cols(); c++)
               {
                 FlowCoef fc(g->table.cell(r,c));
                 if (fc.coef)
                   {
+                    auto payload=make_pair(FlowCoef(fc.coef,g->table.cell(0,c)),g->table.cell(r,0));
                     if ((fc.coef>0 && !g->table.signConventionReversed(c))
 		        || (fc.coef<0 && g->table.signConventionReversed(c)))
-                      sources[fc.name].emplace_back(fc.coef,g->table.cell(0,c));
+                      sources[fc.name].emplace_back(payload);
                     else 
-                      destinations[fc.name].emplace_back(fc.coef,g->table.cell(0,c));
+                      destinations[fc.name].emplace_back(payload);
                   }
               }
             for (auto& i: sources)
-              for (auto& s: i.second)
-                for (auto& d: destinations[i.first])
+              for (auto& [s,sd]: i.second)
+                for (auto& [d,description]: destinations[i.first])
                   {
-                    auto& source=stocks[g->valueId(s.name)];
-                    auto& dest=stocks[g->valueId(d.name)];
+                    auto& source=newStocks[g->valueId(s.name)];
+                    auto& dest=newStocks[g->valueId(d.name)];
                     auto key=make_pair(s.name,d.name);
                     bool swapped=false;
-                    if (s.name<d.name)// canonicalise flow by inserting in reverse direction
+                    if (s.coef*d.coef<0)
                       {
-                        auto flow=flows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
-                        flow->second.addTerm(-s.coef*d.coef, i.first); 
+                        auto flow=newFlows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
+                        flow->second.addTerm(-s.coef*d.coef, i.first);
+                        flow->second.tooltip=(!flow->second.tooltip.empty()?";":"")+description;
+                        if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
+                          flow->second.coords(oldFlow->second.coords());
                       }
                     else
                       {
-                        auto flow=flows.emplace(make_pair(d.name,s.name), PhillipsFlow(dest.ports(0), source.ports(1))).first;
+                        auto flow=newFlows.emplace(make_pair(d.name,s.name), PhillipsFlow(dest.ports(0), source.ports(1))).first;
                         flow->second.addTerm(s.coef*d.coef, i.first); 
+                        if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
+                          flow->second.coords(oldFlow->second.coords());
                       }
                   }
           }
@@ -140,28 +156,114 @@ namespace minsky
         return false;
       });
 
-        // now layout the diagram
-    double angle=0, delta=2*M_PI/stocks.size();
+    // now layout the diagram
+    if (newStocks.empty())
+      {
+        stocks.clear();
+        flows.clear();
+        minsky().pushHistory();
+        return;
+      }
 
-    if (stocks.empty()) return;
+    double angle=0, delta=2*M_PI/newStocks.size();
 
-    auto h=stocks.begin()->second.height();
-    auto maxW=stocks.begin()->second.width();
-    for (auto& i: stocks) maxW=max(maxW,i.second.width());
+
+    auto h=newStocks.begin()->second.height();
+    auto maxW=newStocks.begin()->second.width();
+    for (auto& i: newStocks) maxW=max(maxW,i.second.width());
     // calculate radius to ensure vars do not overlap
     auto r=h/delta + 0.5*maxW;
     
-    for (auto& i: stocks)
+    for (auto& i: newStocks)
       {
-        i.second.moveTo(r*(cos(angle)+1)+maxW+50,r*(sin(angle)+1)+maxW+50);
-        i.second.rotation(angle*180.0/M_PI);
+        if (!stocks.count(i.first))
+          {
+            i.second.moveTo(r*(cos(angle)+1)+maxW+50,r*(sin(angle)+1)+maxW+50);
+            i.second.rotation(angle*180.0/M_PI);
+          }
         angle+=delta;
       }
 
+    flows.swap(newFlows);
+    stocks.swap(newStocks);
+    minsky().pushHistory();
   }
 
   void PhillipsDiagram::updateMaxValues()
   {}
+
+  void PhillipsDiagram::mouseDown(float x, float y)
+  {
+    if (stockBeingRotated) return;
+    for (auto& i: stocks)
+      if (i.second.contains(x,y))
+        {
+          stockBeingMoved=&i.second;
+          return;
+        }
+
+    for (auto& i: flows)
+      if (i.second.near(x,y))
+        {
+          flowBeingEdited=&i.second;
+          i.second.mouseFocus=true;
+          handleSelected=i.second.nearestHandle(x,y);
+          return;
+        }
+  }
+  
+  void PhillipsDiagram::mouseUp(float x, float y)
+  {
+    minsky().pushHistory();
+    stockBeingMoved=nullptr;
+    stockBeingRotated=nullptr;
+    flowBeingEdited=nullptr;
+  }
+  
+  void PhillipsDiagram::mouseMove(float x, float y)
+  {
+    if (stockBeingRotated)
+      {
+        stockBeingRotated->rotate(Point{x,y}, rotateOrigin);
+        requestRedraw();
+        return;
+      }
+    if (stockBeingMoved)
+      {
+        stockBeingMoved->moveTo(x,y);
+        requestRedraw();
+        return;
+      }
+    if (flowBeingEdited)
+      {
+        flowBeingEdited->editHandle(handleSelected,x,y);
+        requestRedraw();
+        return;
+      }
+    for (auto& i: flows)
+      {
+        bool mf=i.second.near(x,y);
+        if (mf!=i.second.mouseFocus)
+        {
+          i.second.mouseFocus=mf;
+          requestRedraw();
+        }
+      }
+  }
+  
+  void PhillipsDiagram::startRotatingItem(float x, float y)
+  {
+      for (auto& i: stocks)
+        if (i.second.contains(x,y))
+          {
+            stockBeingRotated=&i.second;
+            rotateOrigin=Point(x,y);
+            requestRedraw();
+            return;
+          }
+  }
+
+  
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsDiagram);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsFlow);

@@ -148,7 +148,8 @@ namespace schema3
       if (auto vv=v.vValue())
         {
           units=vv->units.str();
-          csvDataSpec=vv->csvDialog.spec.toSchema();
+          if (!vv->csvDialog.url.empty())
+            csvDataSpec=vv->csvDialog.spec.toSchema();
           url=vv->csvDialog.url;
         }
     }
@@ -215,6 +216,22 @@ namespace schema3
       Item(g), items(g.items), inVariables(g.inVariables), outVariables(g.outVariables) {}
   };
 
+  struct PhillipsFlow: public Wire
+  {
+    PhillipsFlow()=default;
+    PhillipsFlow(int id, const minsky::Wire& w): Wire(id, w) {}
+    vector<pair<double, Item>> terms;
+  };
+  
+  struct PhillipsDiagram
+  {
+    std::vector<Item> stocks;
+    std::vector<PhillipsFlow> flows;
+    PhillipsDiagram()=default;
+    PhillipsDiagram(const minsky::PhillipsDiagram&);
+    /// populate a Phillips Diagram from this
+    void populatePhillipsDiagram(minsky::PhillipsDiagram&) const;
+  };
 
   struct Minsky
   {
@@ -230,6 +247,7 @@ namespace schema3
     vector<minsky::Bookmark> bookmarks;
     minsky::Dimensions dimensions;
     minsky::ConversionsMap conversions;
+    PhillipsDiagram phillipsDiagram;
     
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g, bool packTensorData=true);
@@ -241,6 +259,7 @@ namespace schema3
       bookmarks.insert(bookmarks.end(), m.model->bookmarks.begin(), m.model->bookmarks.end());
       dimensions=m.dimensions;
       conversions=m.conversions;
+      phillipsDiagram=PhillipsDiagram(m.phillipsDiagram);
     }
 
     /// populate schema from XML data
@@ -262,6 +281,7 @@ namespace schema3
     /// consistent way into the free id space of the global minsky
     /// object
     void populateGroup(minsky::Group& g) const;
+
   };
 
 

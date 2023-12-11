@@ -34,13 +34,13 @@ namespace minsky
 
   class PhillipsFlow: public Wire
   {
-    std::vector<std::pair<double, FlowVar>> terms;
     CLASSDESC_ACCESS(PhillipsFlow);
   public:
     PhillipsFlow()=default;
     PhillipsFlow(const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to):
       Wire(from,to) {}
     static std::map<Units, double> maxFlow;
+    classdesc::Exclude<std::vector<std::pair<double, FlowVar>>> terms;
 
     Units units() const {
       if (terms.empty()) return {};
@@ -60,7 +60,7 @@ namespace minsky
   class PhillipsStock: public StockVar
   {
   public:
-    PhillipsStock()=default;
+    PhillipsStock() {addPorts();}
     PhillipsStock(const StockVar& x): StockVar(x) {
       group.reset();
       addPorts();
@@ -76,13 +76,30 @@ namespace minsky
   {
     bool redraw(int, int, int width, int height) override;
     CLASSDESC_ACCESS(PhillipsDiagram);
+    PhillipsStock* stockBeingMoved=nullptr;   // weak reference
+    PhillipsStock* stockBeingRotated=nullptr; // weak reference
+    Exclude<Point> rotateOrigin;
+    PhillipsFlow* flowBeingEdited=nullptr;    // weak reference
+    int handleSelected=0;
+    float x=0,y=0; ///< position for panning
   public:
     std::map<std::string, PhillipsStock> stocks;
     std::map<std::pair<std::string,std::string>, PhillipsFlow> flows;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// populate phillips diagram from Godley tables in model
     void init() override;
+    void clear() {
+      stocks.clear();
+      flows.clear();
+    }
     void updateMaxValues();
+
+    void mouseDown(float x, float y) override;
+    void mouseUp(float x, float y) override;
+    void mouseMove(float x, float y) override;
+    void moveTo(float x, float y) override {this->x=x; this->y=y; requestRedraw();}
+    std::vector<float> position() const override {return {x,y};}
+    void startRotatingItem(float x, float y);
   };
 }
 
