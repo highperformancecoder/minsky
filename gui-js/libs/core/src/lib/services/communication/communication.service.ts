@@ -469,10 +469,8 @@ export class CommunicationService {
     this.awaitingZoom = false;
 
     // schedule resetScroll when zooming stops
-    if (!this.resetScrollWhenIdle)
-      this.resetScrollWhenIdle = setTimeout(() => { var self = this; self.resetScroll(); self.resetScrollWhenIdle = null; }, 100);
-    else
-      this.resetScrollWhenIdle.refresh();
+    if (this.resetScrollWhenIdle) clearTimeout(this.resetScrollWhenIdle);
+    this.resetScrollWhenIdle = setTimeout(() => { var self = this; self.resetScroll(); self.resetScrollWhenIdle = null; }, 100);
   };
 
   async handleKeyUp(event: KeyboardEvent) {

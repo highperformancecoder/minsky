@@ -5,6 +5,7 @@ export class CppClass
   public static backend : (...args)=>any; // pass command to destination: see backend-init and electron.service
   public static backendSync : (...args)=>any; // pass command to destination: see backend-init and electron.service
   public static record=(cmd: string)=>{}; // recording support: see RecordingsManager
+  public static logMessage : (message:string)=>void;
   protected m_prefix: string;
   constructor(prefix: string) {this.m_prefix=prefix;}
 

@@ -39,6 +39,10 @@ export default class ElectronEvents {
   }
 }
 
+ipcMain.handle(events.LOG_MESSAGE, async (event, message: string)=>{
+  return await CppClass.logMessage(message);
+});
+
 ipcMain.handle(events.BACKEND, async (event, ...args: any[])=>{
   return await CppClass.backend(...args);
 });
@@ -218,7 +222,11 @@ ipcMain.handle(
     const { mouseX, mouseY } = payload;
 
     const itemInfo = await CommandsManager.getItemInfo(mouseX, mouseY);
-    CommandsManager.importCSV(itemInfo, true);
+    if(itemInfo) {
+      CommandsManager.importCSV(itemInfo, true);
+    } else {
+      console.error('No itemInfo ' + JSON5.stringify(payload));
+    }
     return;
   }
 );

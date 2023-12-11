@@ -79,7 +79,7 @@ export class ContextMenuManager {
       const isWireVisible = await minsky.canvas.wire.visible();
       const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
 
-        if (isWirePresent && isWireVisible && (itemInfo?.classType!=ClassType.Group||itemInfo?.displayContents)) {
+      if (isWirePresent && isWireVisible && (itemInfo?.classType != ClassType.Group || itemInfo?.displayContents)) {
         ContextMenuManager.buildAndDisplayContextMenu(
           ContextMenuManager.wireContextMenu(),
           mainWindow

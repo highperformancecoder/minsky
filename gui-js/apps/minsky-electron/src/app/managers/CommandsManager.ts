@@ -63,15 +63,26 @@ export class CommandsManager {
     return ClassType[classType];
   }
 
-  static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
+  static isFalseResult(result) {
+    return !result || typeof result === 'object' && (Object.keys(result).length === 0);
+  }
 
-    if (!minsky.canvas.getItemAt(x, y)) {
+  static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
+    if (this.isFalseResult(await minsky.canvas.getItemAt(x, y))) {
       return null;
     }
 
     const classType = (await this.getCurrentItemClassType()) as ClassType;
     const id = await minsky.canvas.item.id();
-    const displayContents=classType==="Group"? await new Group(minsky.canvas.item).displayContents(): false;
+
+    if(this.isFalseResult(id)) {
+      return null;
+    }
+
+    let displayContents = false;
+    if(classType === 'Group') {
+      displayContents = await new Group(minsky.canvas.item).displayContents();
+    }
 
     const itemInfo: CanvasItem = { classType, id, displayContents };
     return itemInfo;
@@ -670,6 +681,10 @@ export class CommandsManager {
   }
 
   static async addItemToNamedItems(itemInfo: CanvasItem) {
+    const idString = itemInfo.id.toString();
+    if(idString.includes('object')) {
+      throw new Error(`Invalid ID value on itemInfo ${JSON5.stringify(itemInfo)}`);
+    }
     // Pushing the current item to namedItems map
     minsky.nameCurrentItem(itemInfo.id.toString());
   }
@@ -884,7 +899,7 @@ export class CommandsManager {
         url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1300,
-        minWidth: 700,
+        minWidth: 650,
         modal: false,
       });
 

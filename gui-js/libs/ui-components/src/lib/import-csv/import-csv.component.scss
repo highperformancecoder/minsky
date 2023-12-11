@@ -15,13 +15,16 @@
     justify-content: center;
     align-items: center;
 
-    .import {
-      .url {
-        width: 35rem;
-      }
+    .url {
+      flex: 0 1 500px;
     }
 
-    * {
+    span {
+      margin: 5px 10px;
+    }
+
+    button {
+      flex: 0 0 80px;
       margin: 5px 10px;
     }
   }
