@@ -39,15 +39,16 @@ endif
 ifndef MXE
 ifdef GCC
 CPLUSPLUS=g++
-LINK=g++
 else
 # default to clang if present
 HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
 ifeq ($(HAVE_CLANG),1)
 CPLUSPLUS=clang++
-LINK=clang++ -flto
 $(warning clang selected)
+else
+CPLUSPLUS=g++
 endif
+LINK=$(CPLUSPLUS)
 endif
 endif
 
