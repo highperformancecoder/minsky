@@ -72,9 +72,18 @@ export class CommandsManager {
       return null;
     }
 
+    return await this.getCurrentItemInfo();
+  }
+
+  static async getFocusItemInfo(): Promise<CanvasItem> {
+    await minsky.canvas.setItemFromItemFocus();
+    return await this.getCurrentItemInfo();
+  }
+
+  static async getCurrentItemInfo() {
     const classType = (await this.getCurrentItemClassType()) as ClassType;
     const id = await minsky.canvas.item.id();
-
+    
     if(this.isFalseResult(id)) {
       return null;
     }
@@ -85,7 +94,7 @@ export class CommandsManager {
     }
 
     const itemInfo: CanvasItem = { classType, id, displayContents };
-    return itemInfo;
+    return itemInfo;  
   }
 
   static async selectVar(x: number, y: number): Promise<boolean> {

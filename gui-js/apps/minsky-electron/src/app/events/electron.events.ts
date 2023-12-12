@@ -219,9 +219,7 @@ ipcMain.handle(events.NEW_SYSTEM, async () => {
 ipcMain.handle(
   events.IMPORT_CSV,
   async (event, payload: MinskyProcessPayload) => {
-    const { mouseX, mouseY } = payload;
-
-    const itemInfo = await CommandsManager.getItemInfo(mouseX, mouseY);
+    const itemInfo = await CommandsManager.getFocusItemInfo();
     if(itemInfo) {
       CommandsManager.importCSV(itemInfo, true);
     } else {
