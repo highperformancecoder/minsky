@@ -1383,6 +1383,7 @@ export class Minsky extends CppClass {
     this.variablePane=new VariablePane(this.$prefix()+'.variablePane');
     this.variableValues=new VariableValues(this.$prefix()+'.variableValues');
   }
+  async addCanvasItemToPublicationTab(a1: number): Promise<void> {return this.$callMethod('addCanvasItemToPublicationTab',a1);}
   async addIntegral(): Promise<void> {return this.$callMethod('addIntegral');}
   async addNewPublicationTab(a1: string): Promise<void> {return this.$callMethod('addNewPublicationTab',a1);}
   async allGodleyFlowVars(): Promise<string[]> {return this.$callMethod('allGodleyFlowVars');}

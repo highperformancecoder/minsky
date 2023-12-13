@@ -419,6 +419,10 @@ export class ContextMenuManager {
     menuItems = [
       ...menuItems,
       new MenuItem({
+        label: 'Add item to a publication tab',
+        submenu: await ContextMenuManager.pubTabMenu(),
+      }),
+      new MenuItem({
         label: `Delete ${itemInfo.classType}`,
         click: async () => {
           await CommandsManager.deleteCurrentItemHavingId(itemInfo.id);
@@ -429,6 +433,19 @@ export class ContextMenuManager {
     return menuItems;
   }
 
+  private static async pubTabMenu() {
+    let pubTabs=await minsky.publicationTabs.$properties();
+    let menu=[];
+    for (let i=0; i<pubTabs.length; ++i) {
+      let j=i;
+      menu.push({
+        label: pubTabs[i].name,
+        click: ()=>{minsky.addCanvasItemToPublicationTab(j);}
+      });
+    }
+    return menu;
+  }
+  
   private static async buildContextMenuForPlotWidget(
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {

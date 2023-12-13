@@ -158,6 +158,10 @@ namespace minsky
     std::vector<PubTab> publicationTabs;
 
     void addNewPublicationTab(const std::string& name) {publicationTabs.emplace_back(name);}
+    void addCanvasItemToPublicationTab(size_t i) {
+      if (canvas.item && i<publicationTabs.size())
+        publicationTabs[i].items.emplace_back(canvas.item);
+    }
     
     // Allow multiple equity columns.
     bool multipleEquities() const {return m_multipleEquities;}
