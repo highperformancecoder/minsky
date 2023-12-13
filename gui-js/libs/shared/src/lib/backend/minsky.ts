@@ -459,6 +459,8 @@ export class Canvas extends CppClass {
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async rotateItem(a1: number,a2: number): Promise<void> {return this.$callMethod('rotateItem',a1,a2);}
+  async rotatingItem(...args: boolean[]): Promise<boolean> {return this.$callMethod('rotatingItem',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
   async select(a1: LassoBox): Promise<void> {return this.$callMethod('select',a1);}
   async selectAllVariables(): Promise<void> {return this.$callMethod('selectAllVariables');}
@@ -1579,6 +1581,7 @@ export class PhillipsDiagram extends CppClass {
     this.stocks=new Map<string,PhillipsStock>(this.$prefix()+'.stocks',PhillipsStock);
     this.wire=new Wire(this.$prefix()+'.wire');
   }
+  async clear(): Promise<void> {return this.$callMethod('clear');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
@@ -1606,6 +1609,7 @@ export class PhillipsDiagram extends CppClass {
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
+  async startRotatingItem(a1: number,a2: number): Promise<void> {return this.$callMethod('startRotatingItem',a1,a2);}
   async updateMaxValues(): Promise<void> {return this.$callMethod('updateMaxValues');}
   async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}

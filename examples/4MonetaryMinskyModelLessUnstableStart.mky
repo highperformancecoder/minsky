@@ -2027,34 +2027,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:BPL</name>
@@ -2080,34 +2052,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FL</name>
@@ -2133,34 +2077,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FD</name>
@@ -2186,34 +2102,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:WD</name>
@@ -2239,34 +2127,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:N</name>
@@ -2292,34 +2152,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:a</name>
@@ -2345,34 +2177,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Kr</name>
@@ -2398,34 +2202,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:PC</name>
@@ -2451,34 +2227,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:W</name>
@@ -2504,34 +2252,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\lambda</name>
@@ -2557,34 +2277,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:I</name>
@@ -2611,34 +2303,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:J</name>
@@ -2665,34 +2329,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:B</name>
@@ -2719,34 +2355,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:A</name>
@@ -2773,34 +2381,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:C</name>
@@ -2827,34 +2407,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:D</name>
@@ -2881,34 +2433,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:E</name>
@@ -2935,34 +2459,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:F</name>
@@ -2989,34 +2485,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:G</name>
@@ -3043,34 +2511,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:H</name>
@@ -3097,34 +2537,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_N</name>
@@ -3151,34 +2563,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_a</name>
@@ -3205,34 +2589,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_{Kr}</name>
@@ -3259,34 +2615,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_{PC}</name>
@@ -3313,34 +2641,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_W</name>
@@ -3367,34 +2667,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_\lambda</name>
@@ -3421,34 +2693,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:W</name>
@@ -3474,34 +2718,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:a</name>
@@ -3527,34 +2743,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Ph(\lambda)</name>
@@ -3581,34 +2769,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\lambda</name>
@@ -3634,34 +2794,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\alpha</name>
@@ -3688,34 +2820,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\alpha</name>
@@ -3742,34 +2846,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\beta</name>
@@ -3796,34 +2872,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:g</name>
@@ -3850,34 +2898,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:g-(\alpha+\beta)</name>
@@ -3904,34 +2924,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:g-(\alpha+\beta)</name>
@@ -3958,34 +2950,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:PC</name>
@@ -4011,34 +2975,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:W</name>
@@ -4064,34 +3000,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:a</name>
@@ -4117,34 +3025,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:WD</name>
@@ -4170,34 +3050,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FL</name>
@@ -4223,34 +3075,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FD</name>
@@ -4276,34 +3100,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FL</name>
@@ -4329,34 +3125,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:BC</name>
@@ -4382,34 +3150,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:g</name>
@@ -4436,34 +3176,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\pi_r</name>
@@ -4490,34 +3202,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:v</name>
@@ -4544,34 +3228,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Yr</name>
@@ -4598,34 +3254,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:v</name>
@@ -4652,34 +3280,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Kr</name>
@@ -4705,34 +3305,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:L</name>
@@ -4759,34 +3331,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:a</name>
@@ -4812,34 +3356,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:PC</name>
@@ -4865,34 +3381,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Yr</name>
@@ -4919,34 +3407,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:W</name>
@@ -4972,34 +3432,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:L</name>
@@ -5026,34 +3458,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:rL</name>
@@ -5080,34 +3484,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FL</name>
@@ -5133,34 +3509,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:rD</name>
@@ -5187,34 +3535,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FD</name>
@@ -5240,34 +3560,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:PC</name>
@@ -5293,34 +3585,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Yr</name>
@@ -5347,34 +3611,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Inv(\pi_r)</name>
@@ -5401,34 +3637,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:v</name>
@@ -5455,34 +3663,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\delta</name>
@@ -5509,34 +3689,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:g</name>
@@ -5563,34 +3715,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:rD</name>
@@ -5617,34 +3741,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Yr</name>
@@ -5671,34 +3767,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Inv(\pi_r)</name>
@@ -5725,34 +3793,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:rL</name>
@@ -5779,34 +3819,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\tau_{RL}(\pi_r)</name>
@@ -5833,34 +3845,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\tau_{LC}(\pi_r)</name>
@@ -5887,34 +3871,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\tau_{RL}(\pi_r)</name>
@@ -5941,34 +3897,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\tau_{LC}(\pi_r)</name>
@@ -5995,34 +3923,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:BC</name>
@@ -6048,34 +3948,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:BPL</name>
@@ -6101,34 +3973,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FL</name>
@@ -6154,34 +3998,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:FD</name>
@@ -6207,34 +4023,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:WD</name>
@@ -6260,34 +4048,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:N</name>
@@ -6313,34 +4073,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:a</name>
@@ -6366,34 +4098,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:Kr</name>
@@ -6419,34 +4123,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:PC</name>
@@ -6472,34 +4148,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:W</name>
@@ -6525,34 +4173,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:A</name>
@@ -6579,34 +4199,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:B</name>
@@ -6633,34 +4225,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:C</name>
@@ -6687,34 +4251,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:D</name>
@@ -6741,34 +4277,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:E</name>
@@ -6795,34 +4303,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:F</name>
@@ -6849,34 +4329,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:G</name>
@@ -6903,34 +4355,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:H</name>
@@ -6957,34 +4381,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:I</name>
@@ -7011,34 +4407,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:J</name>
@@ -7065,34 +4433,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_W</name>
@@ -7119,34 +4459,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_a</name>
@@ -7173,34 +4485,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_N</name>
@@ -7227,34 +4511,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_{Kr}</name>
@@ -7281,40 +4537,12 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_{PC}</name>
     <id>498</id>
     <type>Variable:flow</type>
-    <x>610.655</x>
+    <x>610.654</x>
     <y>789.677</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
@@ -7335,34 +4563,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:ode_\lambda</name>
@@ -7389,34 +4589,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\lambda</name>
@@ -7442,34 +4614,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\beta_0</name>
@@ -7495,34 +4639,6 @@
      <step>0.002</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\tau_B</name>
@@ -7548,34 +4664,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\tau_W</name>
@@ -7601,34 +4689,6 @@
      <step>0.00384615</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:-\tau_{Pc}</name>
@@ -7654,34 +4714,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:\omega</name>
@@ -7707,34 +4739,6 @@
      <step>0.01</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:1-s</name>
@@ -7760,34 +4764,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:xval</name>
@@ -7813,34 +4789,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:yval</name>
@@ -7866,34 +4814,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:sval</name>
@@ -7919,34 +4839,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:min</name>
@@ -7972,34 +4864,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:0.04</name>
@@ -8025,34 +4889,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:50</name>
@@ -8078,34 +4914,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:0.04</name>
@@ -8131,34 +4939,6 @@
      <step>0.004</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:0.03</name>
@@ -8184,34 +4964,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:14.285744</name>
@@ -8237,34 +4989,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:-33.33333333</name>
@@ -8290,34 +5014,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:1.5</name>
@@ -8343,34 +5039,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:7</name>
@@ -8396,34 +5064,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:3</name>
@@ -8449,34 +5089,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <name>:0.5</name>
@@ -8502,34 +5114,6 @@
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <numCols>0</numCols>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <counter>false</counter>
-     <dontFail>false</dontFail>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dataCols>
-     </dataCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
    </Item>
    <Item>
     <logx>false</logx>
@@ -9392,4 +5976,10 @@
   </dimensions>
   <conversions>
   </conversions>
+  <phillipsDiagram>
+   <stocks>
+   </stocks>
+   <flows>
+   </flows>
+  </phillipsDiagram>
  </Minsky>
