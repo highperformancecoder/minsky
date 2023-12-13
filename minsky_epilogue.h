@@ -213,6 +213,12 @@ namespace classdesc_access
   };
 }
 
+#ifdef CIVITA_XVECTOR_H
+#include "xvector.xcd"
+#endif
+
+#include <ecolab_epilogue.h>
+
 /*(json_pack_t&,const std::string&,type&); \*/
 #define CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(type)                   \
   namespace classdesc_access                                            \
@@ -222,11 +228,5 @@ namespace classdesc_access
     template void access_RESTProcess<type>::operator()(classdesc::RESTProcess_t&,const std::string&,type&); \
     template void access_RESTProcess<type>::operator()(classdesc::RESTProcess_t&,const std::string&,const type&); \
   }
-
-#ifdef CIVITA_XVECTOR_H
-#include "xvector.xcd"
-#endif
-
-#include <ecolab_epilogue.h>
 
 #endif

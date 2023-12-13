@@ -40,6 +40,7 @@ export const events = {
   LOG: 'log',
   LOG_SIMULATION: 'log-simulation',
   NEW_SYSTEM: 'new-system',
+  NEW_PUB_TAB: 'new-pub-tab',
   OPEN_FILE_DIALOG: 'open-file-dialog',
   RECORD: 'record',
   RECORDING_REPLAY: 'recording-replay',

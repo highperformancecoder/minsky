@@ -44,6 +44,7 @@
 #include "plotTab.h"
 #include "plotWidget.h"
 #include "progress.h"
+#include "pubTab.h"
 #include "ravelWrap.h"
 #include "rungeKutta.h"
 #include "saver.h"
@@ -154,6 +155,9 @@ namespace minsky
     PhillipsDiagram phillipsDiagram;
     PlotTab plotTab;
     GodleyTab godleyTab;
+    std::vector<PubTab> publicationTabs;
+
+    void addNewPublicationTab(const std::string& name) {publicationTabs.emplace_back(name);}
     
     // Allow multiple equity columns.
     bool multipleEquities() const {return m_multipleEquities;}
@@ -233,6 +237,7 @@ namespace minsky
       model->iHeight(std::numeric_limits<float>::max());
       model->iWidth(std::numeric_limits<float>::max());
       model->self=model;
+      publicationTabs.emplace_back("Publication");
     }
     ~Minsky();
     

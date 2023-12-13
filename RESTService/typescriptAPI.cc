@@ -51,6 +51,7 @@
 #include "polyRESTProcessBase.tcd"
 #include "port.h"
 #include "port.tcd"
+#include "pubTab.tcd"
 #include "ravelState.tcd"
 #include "renderNativeWindow.tcd"
 #include "ravelWrap.tcd"
@@ -259,6 +260,8 @@ int main()
   api.addClass<HandleLockInfo>();
   api.addClass<PannableTab<EquationDisplay>>();
   api.addClass<Port>();
+  api.addClass<PubItem>();
+  api.addClass<PubTab>();
   api.addClass<ravel::HandleState>();
   api.addClass<ravel::RavelState>();
   api.addClass<RenderNativeWindow>();

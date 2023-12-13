@@ -121,7 +121,7 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o panopticon.o phillipsDiagram.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
+MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o panopticon.o phillipsDiagram.o plotTab.o plotWidget.o port.o pubTab.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
 ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o

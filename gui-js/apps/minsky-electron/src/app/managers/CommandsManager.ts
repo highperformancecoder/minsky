@@ -990,6 +990,18 @@ export class CommandsManager {
   static async saveHandleDescription(payload: HandleDescriptionPayload) {
     (new Ravel(payload.command)).setHandleDescription(payload.handleIndex, payload.description);
   }
+
+  static async newPubTab() {
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `New Publication Tab`,
+      url: `#/headless/new-pub-tab`,
+      height: 90,
+      width: 300,
+    });
+    return new Promise((resolve)=>{
+      window.once('closed',()=>resolve(0));
+    });
+  }
   
   static async editHandleDimension(ravel: Ravel, handleIndex: number) {
     const type = await ravel.dimensionType();

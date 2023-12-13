@@ -44,7 +44,7 @@ export class CommunicationService {
     y: number;
   };
 
-  currentTab = MainRenderingTabs.canvas;
+  currentTab = MainRenderingTabs.canvas as string;
   showPlayButton$ = new BehaviorSubject<boolean>(true);
   t = '0';
   deltaT = '0';

@@ -22,13 +22,15 @@
         <button (click)="changeTab(MainRenderingTabs.phillips)" class="phillips" mat-raised-button>
           Phillips diagram
         </button>
-        <button (click)="changeTab(MainRenderingTabs.plot)" class="plot" mat-raised-button>
-          Plots
+         <div *ngFor="let tab of publicationTabs; let i=index">
+          <button (click)="changeTab('minsky.publicationTabs.@elem.'+i)" class="pubTab" mat-raised-button>
+            {{tab}}
+          </button>
+         </div>
+        <button (click)="addPubTab()" class="phillips" mat-raised-button>
+          +
         </button>
-        <button (click)="changeTab(MainRenderingTabs.godley)" class="godley" mat-raised-button>
-          Godleys
-        </button>
-
+          
         <span class="spacer"></span>
 
         <button class="variables minsky-service" mat-raised-button (click)="startTerminal()">
