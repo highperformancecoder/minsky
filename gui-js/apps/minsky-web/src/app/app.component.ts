@@ -83,7 +83,7 @@ export class AppComponent implements OnInit, DoCheck {
   async addPubTab() {
     await this.electronService.invoke(events.NEW_PUB_TAB);
     await this.ngOnInit();
-    this.changeTab('minsky.publicationTabs.@elem.'+(this.publicationTabs.length-1));
+    this.changeTab('minsky.canvas');
   }
   
   // close modals with ESC

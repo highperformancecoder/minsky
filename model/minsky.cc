@@ -977,6 +977,8 @@ namespace minsky
         godleyTab.requestRedraw();
         plotTab.requestRedraw();
         phillipsDiagram.requestRedraw();
+        for (auto& pub: publicationTabs)
+          pub.requestRedraw();
         lastRedraw=microsec_clock::local_time();
       }
 
