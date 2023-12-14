@@ -13,7 +13,6 @@ export class AppComponent implements OnInit, DoCheck {
   htmlTabs = ['itemTab/summary'];
 
   loading = true;
-//  MainRenderingTabs = MainRenderingTabs;
   publicationTabs = [];
   private windowUtilityService: WindowUtilityService;
   private resizeTimeout;

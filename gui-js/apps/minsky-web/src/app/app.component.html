@@ -10,16 +10,16 @@
     <minsky-header></minsky-header>
     <div class="tabs-section">
       <div class="tabs example-button-row">
-        <button (click)="changeTab(MainRenderingTabs.canvas)" class="wiring" mat-raised-button>
+        <button (click)="changeTab('minsky.canvas')" class="wiring" mat-raised-button>
           Wiring
         </button>
-        <button (click)="changeTab(MainRenderingTabs.equations)" class="equations" mat-raised-button>
+        <button (click)="changeTab('minsky.equationDisplay')" class="equations" mat-raised-button>
           Equations
         </button>
-        <button (click)="changeTab(MainRenderingTabs.summary)" class="summary" mat-raised-button>
+        <button (click)="changeTab('itemTab/summary')" class="summary" mat-raised-button>
           Summary
         </button>
-        <button (click)="changeTab(MainRenderingTabs.phillips)" class="phillips" mat-raised-button>
+        <button (click)="changeTab('minsky.phillipsDiagram')" class="phillips" mat-raised-button>
           Phillips diagram
         </button>
          <div *ngFor="let tab of publicationTabs; let i=index">
