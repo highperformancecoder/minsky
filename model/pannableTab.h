@@ -21,7 +21,7 @@
 #ifndef PANNABLE_TAB_H
 #define PANNABLE_TAB_H
 #include "classdesc_access.h"
-#include <utility>
+#include <vector>
 
 namespace minsky
 {

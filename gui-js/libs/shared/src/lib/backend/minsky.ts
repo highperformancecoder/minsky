@@ -1942,6 +1942,9 @@ export class PubTab extends CppClass {
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
   async name(...args: string[]): Promise<string> {return this.$callMethod('name',...args);}
+  async offsx(...args: number[]): Promise<number> {return this.$callMethod('offsx',...args);}
+  async offsy(...args: number[]): Promise<number> {return this.$callMethod('offsy',...args);}
+  async panning(...args: boolean[]): Promise<boolean> {return this.$callMethod('panning',...args);}
   async position(): Promise<number[]> {return this.$callMethod('position');}
   async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
   async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
