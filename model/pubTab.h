@@ -38,6 +38,7 @@ namespace minsky
   struct PubTabBase: public RenderNativeWindow
   {
     float offsx=0, offsy=0;
+    float m_zoomFactor=1;
     bool panning=false;
   };
   
@@ -45,7 +46,6 @@ namespace minsky
   {
     bool redraw(int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(PubTab);
-    float m_zoomFactor=1;
     PubItem* item=nullptr; // weak reference for moving items
   public:
     PubTab()=default;
@@ -57,8 +57,6 @@ namespace minsky
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;
-    void zoom(double x, double y, double z) override;
-    double zoomFactor() const override;
   };
 }
 

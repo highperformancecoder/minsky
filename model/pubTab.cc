@@ -36,6 +36,7 @@ namespace minsky
     auto cairo=surface->cairo();
     CairoSave cs(cairo);
     cairo_translate(cairo, offsx, offsy);
+    cairo_scale(cairo, m_zoomFactor, m_zoomFactor);
     for (auto& i: items)
       {
         CairoSave cs(cairo);
@@ -83,8 +84,6 @@ namespace minsky
         requestRedraw();
       }
   }
-  void PubTab::zoom(double x, double y, double z) {}
-  double PubTab::zoomFactor() const {return m_zoomFactor;}
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubTab);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubItem);
