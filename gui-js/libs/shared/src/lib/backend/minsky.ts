@@ -1927,6 +1927,7 @@ export class PubTab extends CppClass {
     this.items=new Sequence<PubItem>(this.$prefix()+'.items',PubItem);
     this.wire=new Wire(this.$prefix()+'.wire');
   }
+  async addNote(a1: string,a2: number,a3: number): Promise<void> {return this.$callMethod('addNote',a1,a2,a3);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}

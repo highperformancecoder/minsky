@@ -10,6 +10,7 @@ import {
   importCSVvariableName,
   MainRenderingTabs,
   MinskyProcessPayload,
+  PubTab,
   ReplayRecordingStatus,
   TypeValueName,
   ZOOM_IN_FACTOR,
@@ -591,41 +592,50 @@ export class CommunicationService {
   }
 
   async handleTextInputSubmit(multipleKeyString: string) {
-    if (this.electronService.isElectron && multipleKeyString) {
-      if (multipleKeyString.charAt(0) === '#') {
-        const note = multipleKeyString.slice(1);
-        this.electronService.minsky.canvas.addNote(note);
-        return;
+    switch (this.currentTab) {
+    case 'minsky.canvas':
+      if (this.electronService.isElectron && multipleKeyString) {
+        if (multipleKeyString.charAt(0) === '#') {
+          const note = multipleKeyString.slice(1);
+          this.electronService.minsky.canvas.addNote(note);
+          return;
+        }
+
+        if (multipleKeyString === '-') {
+          this.addOperation('subtract');
+          return;
+        }
+
+        if (!isNaN(Number(multipleKeyString))) {
+          this.showCreateVariablePopup('Create Constant', {
+            type: 'constant',
+            value: multipleKeyString,
+          });
+          return;
+        }
+
+        const operations = await this.electronService.minsky.availableOperations();
+        const operation = multipleKeyString.toLowerCase();
+        
+        if (operations.includes(operation)) {
+          this.addOperation(operation);
+          return;
+        }
+        
+        const popupTitle = 'Specify Variable Name';
+        const params: TypeValueName = {
+          type: 'flow',
+          name: multipleKeyString,
+        };
+
+        this.showCreateVariablePopup(popupTitle, params);
       }
-
-      if (multipleKeyString === '-') {
-        this.addOperation('subtract');
-        return;
-      }
-
-      if (!isNaN(Number(multipleKeyString))) {
-        this.showCreateVariablePopup('Create Constant', {
-          type: 'constant',
-          value: multipleKeyString,
-        });
-        return;
-      }
-
-      const operations = await this.electronService.minsky.availableOperations();
-      const operation = multipleKeyString.toLowerCase();
-
-      if (operations.includes(operation)) {
-        this.addOperation(operation);
-        return;
-      }
-
-      const popupTitle = 'Specify Variable Name';
-      const params: TypeValueName = {
-        type: 'flow',
-        name: multipleKeyString,
-      };
-
-      this.showCreateVariablePopup(popupTitle, params);
+      return;
+    case 'minsky.equationDisplay':
+    case 'minsky.phillipsDiagram':
+      return; // do nothing
+    default: // pub tabs
+      new PubTab(this.currentTab).addNote(multipleKeyString, this.mouseX, this.mouseY);
       return;
     }
   }

@@ -53,6 +53,13 @@ namespace minsky
     PubTab(const std::string& name): name(name) {}
     std::string name; ///< name of this publication tab
     std::vector<PubItem> items; ///< list of wrapped items and annotations
+    void addNote(const std::string& note, float x, float y) {
+        items.emplace_back(std::make_shared<Item>());
+        items.back().itemRef->detailedText=note;
+        items.back().x=x-offsx;
+        items.back().y=y-offsy;
+        requestRedraw();
+    }
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}
     void mouseUp(float x, float y) override;
