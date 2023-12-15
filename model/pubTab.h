@@ -47,6 +47,7 @@ namespace minsky
     bool redraw(int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(PubTab);
     PubItem* item=nullptr; // weak reference for moving items
+    PubItem* m_getItemAt(float x, float y);
   public:
     PubTab()=default;
     PubTab(const char* name): name(name) {}
@@ -63,6 +64,7 @@ namespace minsky
     /// remove this from the global minsky object
     /// calling this method will invalidate any references to this, and potentially call its destructor
     void removeSelf();
+    bool getItemAt(float x, float y) override {return m_getItemAt(x-offsx,y-offsy);}
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}
     void mouseUp(float x, float y) override;

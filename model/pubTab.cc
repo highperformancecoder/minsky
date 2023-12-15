@@ -61,12 +61,18 @@ namespace minsky
     return !items.empty();
   }
 
+  PubItem* PubTab::m_getItemAt(float x, float y) 
+  {
+    for (auto& i: items)
+      if (i.itemRef->contains(x-i.x+i.itemRef->x(), y-i.y+i.itemRef->y()))
+        return &i;
+    return nullptr;
+  }
+
   void PubTab::mouseDown(float x, float y)
   {
     x-=offsx; y-=offsy;
-    for (auto& i: items)
-      if (i.itemRef->contains(x-i.x+i.itemRef->x(), y-i.y+i.itemRef->y()))
-        item=&i;
+    item=m_getItemAt(x,y);
   }
   void PubTab::mouseUp(float x, float y)
   {
@@ -88,12 +94,17 @@ namespace minsky
         PannableTab<PubTabBase>::mouseMove(x,y);
         return;
       }
+    for (auto& i: items) i.itemRef->mouseFocus=false;
     if (item)
       {
         item->x=x;
         item->y=y;
-        requestRedraw();
       }
+    else
+      // indicate mouse focus
+      if (auto i=m_getItemAt(x,y))
+        i->itemRef->mouseFocus=true;
+    requestRedraw();
   }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubTab);
