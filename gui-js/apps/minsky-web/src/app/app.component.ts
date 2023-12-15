@@ -73,12 +73,19 @@ export class AppComponent implements OnInit, DoCheck {
   }
 
   async ngOnInit() {
+    this.updatePubTabs();
+    this.electronService.on(events.CHANGE_MAIN_TAB, ()=>this.changeTab('minsky.canvas'));
+    this.electronService.on(events.PUB_TAB_REMOVED, ()=>this.updatePubTabs());
+  }
+
+  async updatePubTabs() {
     let pubTabs=await this.electronService.minsky.publicationTabs.$properties();
     this.publicationTabs=[];
     for (let i=0; i<pubTabs.length; ++i)
       this.publicationTabs.push(pubTabs[i].name);
+    this.cdRef.detectChanges();
   }
-
+  
   async addPubTab() {
     await this.electronService.invoke(events.NEW_PUB_TAB);
     await this.ngOnInit();
@@ -133,10 +140,6 @@ export class AppComponent implements OnInit, DoCheck {
       this.router.navigate(['wiring']);
 
       if (this.electronService.isElectron) {
-        if(!this.htmlTabs.includes(this.cmService.currentTab)) {
-          await new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
-        }
-        
         this.cmService.currentTab = tab;
         
         setTimeout(async ()=> {

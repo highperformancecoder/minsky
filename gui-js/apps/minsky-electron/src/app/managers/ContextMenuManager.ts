@@ -1,8 +1,7 @@
 import {
-  CanvasItem,
-  ClassType,
-  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, Sheet, SwitchIcon,
-  VariableBase, VariableValue, Functions, events
+  Canvas,CanvasItem,ClassType,
+  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, PubTab,
+  Ravel, RenderNativeWindow, Sheet, SwitchIcon,VariableBase, VariableValue, Functions, events
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
 import { BookmarkManager } from './BookmarkManager';
@@ -29,10 +28,10 @@ export class ContextMenuManager {
         const currentTab = WindowManager.currentTab;
         if (currentTab.$equal(minsky.canvas))
           this.initContextMenuForWiring(mainWindow);
-        else if (currentTab.$equal(minsky.plotTab))
-          this.initContextMenuForPlotTab(mainWindow);
         else if (currentTab.$equal(minsky.phillipsDiagram))
           this.initContextMenuForPhillipsDiagram(mainWindow);
+        else
+          this.initContextMenuForPublication(event, mainWindow,currentTab);
       }
       break;
       case "godley":
@@ -56,22 +55,24 @@ export class ContextMenuManager {
     }
   }
 
-  private static async initContextMenuForPlotTab(mainWindow: BrowserWindow) {
-    if (await minsky.plotTab.getItemAt(this.x,this.y)) {
-      const menuItems = [
-        new MenuItem({
-          label: 'Remove plot from tab',
-          click: async () => {
-            minsky.plotTab.togglePlotDisplay();
-            minsky.plotTab.requestRedraw();
-          },
-        }),
-      ];
+  private static async initContextMenuForPublication(event: IpcMainEvent, mainWindow: BrowserWindow, currentTab: RenderNativeWindow) {
+    let pubTab=new PubTab(currentTab);
+    const menuItems = [
+      new MenuItem({
+        label: 'Remove publication tab',
+        click: async () => {
+          event.sender.send(events.CHANGE_MAIN_TAB);
+          setTimeout(async ()=>{
+            await pubTab.removeSelf();
+            event.sender.send(events.PUB_TAB_REMOVED);
+          },100); // allow enough time for renderer to switch to canvas tabs before removing this tab
+        }
+      }),
+    ];
 
       ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
 
       return;
-    }
   }
   
   private static async initContextMenuForPhillipsDiagram(mainWindow: BrowserWindow) {
@@ -257,10 +258,6 @@ export class ContextMenuManager {
         },
       }),
 
-      new MenuItem({
-        label: 'Show all plots on tab',
-        click: () => {minsky.canvas.showPlotsOnTab();},
-      }),
       new MenuItem({
         label: 'Bookmark here',
         click: async () => {
@@ -471,7 +468,6 @@ export class ContextMenuManager {
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
     const plot=new PlotWidget(minsky.canvas.item);
-    const displayPlotOnTabChecked = await plot.plotTabDisplay();
 
     const menuItems = [
       new MenuItem({
@@ -512,12 +508,6 @@ export class ContextMenuManager {
             width: 350,
           });
         },
-      }),
-      new MenuItem({
-        label: 'Display plot on tab',
-        type: 'checkbox',
-        checked: displayPlotOnTabChecked,
-        click: async () => {plot.togglePlotTabDisplay();}
       }),
       new MenuItem({
         label: 'Export as CSV',

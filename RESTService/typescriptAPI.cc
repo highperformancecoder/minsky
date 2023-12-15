@@ -258,13 +258,10 @@ int main()
   api.addClass<EventInterface>();
   api.addClass<GroupItems>();
   api.addClass<HandleLockInfo>();
-  api.addClass<PannableTab<EquationDisplay>>();
   api.addClass<Port>();
   api.addClass<PubItem>();
-  api.addClass<PubTab>();
   api.addClass<ravel::HandleState>();
   api.addClass<ravel::RavelState>();
-  api.addClass<RenderNativeWindow>();
   api.addClass<Units>();
   api.addClass<VariablePaneCell>();
   api.addClass<VariableValue>();
@@ -287,6 +284,14 @@ int main()
   api.addSubclass<VariableBase,Item>();
   api.addSubclass<UserFunction,Item>();
 
+  // RenderNativeWindow subclasses
+  api.addSubclass<RenderNativeWindow, EventInterface>();
+  api.addSubclass<Canvas,RenderNativeWindow>();
+  api.addSubclass<PannableTab<EquationDisplay>,RenderNativeWindow>();
+  api.addSubclass<PhillipsDiagram,RenderNativeWindow>();
+  api.addSubclass<PubTab,RenderNativeWindow>();
+
+  
   // to prevent Group recursively calling itself on construction
   api["Group"].properties.erase("parent");
   
@@ -310,7 +315,7 @@ int main()
   cout<<endl;
   
   // these need to be declared in a specific order
-  vector<string> exportFirst{"Item","OperationBase","VariableBase"};
+  vector<string> exportFirst{"EventInterface","Item","OperationBase","RenderNativeWindow","VariableBase"};
   for (auto& i: exportFirst) exportClass(i,api[i]);
 
   cout << "class minsky__Variable<T> extends VariableBase {}\n";

@@ -60,6 +60,9 @@ namespace minsky
         items.back().y=y-offsy;
         requestRedraw();
     }
+    /// remove this from the global minsky object
+    /// calling this method will invalidate any references to this, and potentially call its destructor
+    void removeSelf();
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}
     void mouseUp(float x, float y) override;

@@ -18,6 +18,7 @@
 */
 
 #include "lasso.h"
+#include "minsky.h"
 #include "pubTab.h"
 #include "pubTab.xcd"
 #include "pubTab.rcd"
@@ -28,6 +29,16 @@ using namespace ecolab::cairo;
 
 namespace minsky
 {
+  void PubTab::removeSelf()
+  {
+    auto& publicationTabs=minsky::minsky().publicationTabs;
+    for (auto i=publicationTabs.begin(); i!=publicationTabs.end(); ++i)
+      if (this==&*i) {
+        publicationTabs.erase(i);
+        return;
+      }
+  }
+
   bool PubTab::redraw(int x0, int y0, int width, int height)
   {
     if (!surface.get()) {
