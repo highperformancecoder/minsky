@@ -194,6 +194,7 @@ namespace minsky
       auto hz=resizeHandleSize(); // extend by resize handle size (which is also portRadius)
       return left()-hz<=xx && right()+hz>=xx && top()-hz<=yy && bottom()+hz>=yy; 
     }
+    bool contains(const Point& p) const {return contains(p.x(),p.y());}
     void updateBoundingBox() override {bb.update(*this);}
     
     /// mark item on canvas, then throw

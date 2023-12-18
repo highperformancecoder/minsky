@@ -58,7 +58,7 @@ export class Item extends CppClass {
   async clone(): Promise<Item> {return this.$callMethod('clone');}
   async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
   async closestOutPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestOutPort',a1,a2);}
-  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
+  async contains(...args: any[]): Promise<boolean> {return this.$callMethod('contains',...args);}
   async corners(): Promise<object[]> {return this.$callMethod('corners');}
   async deleteAttachedWires(): Promise<void> {return this.$callMethod('deleteAttachedWires');}
   async deleteCallback(...args: string[]): Promise<string> {return this.$callMethod('deleteCallback',...args);}
@@ -215,7 +215,7 @@ export class VariableBase extends Item {
   async clone(): Promise<Item> {return this.$callMethod('clone');}
   async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
   async closestOutPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestOutPort',a1,a2);}
-  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
+  async contains(...args: any[]): Promise<boolean> {return this.$callMethod('contains',...args);}
   async corners(): Promise<object[]> {return this.$callMethod('corners');}
   async create(a1: string): Promise<VariableBase> {return this.$callMethod('create',a1);}
   async defined(): Promise<boolean> {return this.$callMethod('defined');}
@@ -1145,7 +1145,7 @@ export class Group extends Item {
   async closestOutPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestOutPort',a1,a2);}
   async computeDisplayZoom(): Promise<number> {return this.$callMethod('computeDisplayZoom');}
   async computeRelZoom(): Promise<void> {return this.$callMethod('computeRelZoom');}
-  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
+  async contains(...args: any[]): Promise<boolean> {return this.$callMethod('contains',...args);}
   async copy(): Promise<object> {return this.$callMethod('copy');}
   async copyUnowned(): Promise<object> {return this.$callMethod('copyUnowned');}
   async corners(): Promise<object[]> {return this.$callMethod('corners');}
@@ -1950,8 +1950,10 @@ export class PubItem extends CppClass {
     super(prefix);
     this.itemRef=new Item(this.$prefix()+'.itemRef');
   }
+  async itemCoords(a1: number,a2: number): Promise<object> {return this.$callMethod('itemCoords',a1,a2);}
   async x(...args: number[]): Promise<number> {return this.$callMethod('x',...args);}
   async y(...args: number[]): Promise<number> {return this.$callMethod('y',...args);}
+  async zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('zoomFactor',...args);}
 }
 
 export class PubTab extends RenderNativeWindow {

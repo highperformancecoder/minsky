@@ -33,6 +33,9 @@ namespace minsky
     PubItem(const ItemPtr& item): itemRef(item) {}
     ItemPtr itemRef;
     float x=100,y=100;
+    float zoomFactor=1;
+    /// given (x,y) in PubTab, returns coordinates within item
+    Point itemCoords(float x, float y) const;
   };
 
   struct PubTabBase: public RenderNativeWindow
@@ -48,6 +51,8 @@ namespace minsky
     CLASSDESC_ACCESS(PubTab);
     PubItem* item=nullptr; // weak reference for moving items
     PubItem* m_getItemAt(float x, float y);
+    bool resizing=false;
+    LassoBox lasso;
   public:
     PubTab()=default;
     PubTab(const char* name): name(name) {}

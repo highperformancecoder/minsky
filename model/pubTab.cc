@@ -29,6 +29,13 @@ using namespace ecolab::cairo;
 
 namespace minsky
 {
+  Point PubItem::itemCoords(float x, float y) const
+  {
+    if (!itemRef) return {0,0};
+    float scale=itemRef->zoomFactor()/zoomFactor;
+    return {scale*(x-this->x)+itemRef->x(), scale*(y-this->y)+itemRef->y()};
+  }
+
   void PubTab::removeSelf()
   {
     auto& publicationTabs=minsky::minsky().publicationTabs;
@@ -52,20 +59,27 @@ namespace minsky
       {
         CairoSave cs(cairo);
         cairo_translate(cairo, i.x, i.y);
+        cairo_scale(cairo, i.zoomFactor, i.zoomFactor);
         try
           {
             i.itemRef->draw(cairo);
           }
         catch (...) {}
       }
-    return !items.empty();
+    if (resizing)
+      {
+        cairo_rectangle(cairo,std::min(lasso.x0,lasso.x1), std::min(lasso.y0,lasso.y1),
+                        abs(lasso.x0-lasso.x1), abs(lasso.y0-lasso.y1));
+        cairo_stroke(cairo);
+      }
+    return !items.empty() || resizing;
   }
 
   PubItem* PubTab::m_getItemAt(float x, float y) 
   {
     for (auto& i: items)
-      if (i.itemRef->contains(x-i.x+i.itemRef->x(), y-i.y+i.itemRef->y()))
-        return &i;
+      if (i.itemRef->contains(i.itemCoords(x,y)))
+          return &i;
     return nullptr;
   }
 
@@ -73,7 +87,19 @@ namespace minsky
   {
     x-=offsx; y-=offsy;
     item=m_getItemAt(x,y);
+    if (item)
+      if (auto p=item->itemCoords(x,y);
+          item->itemRef->clickType(p.x(),p.y())==ClickType::onResize)
+        {
+          resizing=true;
+          auto scale=item->zoomFactor/item->itemRef->zoomFactor();
+          lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
+          lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
+          lasso.x1=x;
+          lasso.y1=y;
+        }
   }
+  
   void PubTab::mouseUp(float x, float y)
   {
     if (panning)
@@ -83,7 +109,16 @@ namespace minsky
         return;
       }
     mouseMove(x,y);
+    if (item && resizing)
+      {
+        item->zoomFactor=std::min(
+                                  abs(lasso.x1-lasso.x0)/item->itemRef->width(),
+                                  abs(lasso.y1-lasso.y0)/item->itemRef->height());
+        item->x=0.5*(lasso.x0+lasso.x1);
+        item->y=0.5*(lasso.y0+lasso.y1);
+      }
     item=nullptr;
+    resizing=false;
   }
   
   void PubTab::mouseMove(float x, float y)
@@ -97,8 +132,16 @@ namespace minsky
     for (auto& i: items) i.itemRef->mouseFocus=false;
     if (item)
       {
-        item->x=x;
-        item->y=y;
+        if (resizing)
+          {
+            lasso.x1=x;
+            lasso.y1=y;
+          }
+        else
+          {
+            item->x=x;
+            item->y=y;
+          }
       }
     else
       // indicate mouse focus
