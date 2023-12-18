@@ -1951,6 +1951,7 @@ export class PubItem extends CppClass {
     this.itemRef=new Item(this.$prefix()+'.itemRef');
   }
   async itemCoords(a1: number,a2: number): Promise<object> {return this.$callMethod('itemCoords',a1,a2);}
+  async rotation(...args: number[]): Promise<number> {return this.$callMethod('rotation',...args);}
   async x(...args: number[]): Promise<number> {return this.$callMethod('x',...args);}
   async y(...args: number[]): Promise<number> {return this.$callMethod('y',...args);}
   async zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('zoomFactor',...args);}
@@ -1980,6 +1981,7 @@ export class PubTab extends RenderNativeWindow {
   async position(): Promise<number[]> {return this.$callMethod('position');}
   async removeItemAt(a1: number,a2: number): Promise<void> {return this.$callMethod('removeItemAt',a1,a2);}
   async removeSelf(): Promise<void> {return this.$callMethod('removeSelf');}
+  async rotateItemAt(a1: number,a2: number): Promise<void> {return this.$callMethod('rotateItemAt',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }

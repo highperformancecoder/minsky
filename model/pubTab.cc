@@ -58,7 +58,16 @@ namespace minsky
             }
   }
 
-  
+  void PubTab::rotateItemAt(float x, float y)
+  {
+    item=m_getItemAt(x-offsx,y-offsy);
+    if (item) {
+      rx=x;
+      ry=y;
+      rotating=true;
+    }
+  }
+ 
   bool PubTab::redraw(int x0, int y0, int width, int height)
   {
     if (!surface.get()) {
@@ -73,6 +82,7 @@ namespace minsky
         CairoSave cs(cairo);
         cairo_translate(cairo, i.x, i.y);
         cairo_scale(cairo, i.zoomFactor, i.zoomFactor);
+        cairo_rotate(cairo,(M_PI/180)*i.rotation-i.itemRef->rotation());
         try
           {
             i.itemRef->draw(cairo);
@@ -132,6 +142,7 @@ namespace minsky
       }
     item=nullptr;
     resizing=false;
+    rotating=false;
   }
   
   void PubTab::mouseMove(float x, float y)
@@ -145,7 +156,11 @@ namespace minsky
     for (auto& i: items) i.itemRef->mouseFocus=false;
     if (item)
       {
-        if (resizing)
+        if (rotating)
+          {
+            item->rotation=(180/M_PI)*atan2(x-rx, y-ry);
+          }
+        else if (resizing)
           {
             lasso.x1=x;
             lasso.y1=y;

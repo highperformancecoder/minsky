@@ -65,6 +65,13 @@ export class ContextMenuManager {
         enabled: false,
       }),
       new MenuItem({
+        label: 'Rotate item',
+        click: () => {
+          pubTab.rotateItemAt(this.x,this.y);
+        },
+        enabled: await pubTab.getItemAt(this.x,this.y),
+      }),
+      new MenuItem({
         label: 'Remove item',
         click: () => {
           pubTab.removeItemAt(this.x,this.y);

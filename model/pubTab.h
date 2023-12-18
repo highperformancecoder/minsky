@@ -34,6 +34,7 @@ namespace minsky
     ItemPtr itemRef;
     float x=100,y=100;
     float zoomFactor=1;
+    double rotation=0;
     /// given (x,y) in PubTab, returns coordinates within item
     Point itemCoords(float x, float y) const;
   };
@@ -51,7 +52,8 @@ namespace minsky
     CLASSDESC_ACCESS(PubTab);
     PubItem* item=nullptr; // weak reference for moving items
     PubItem* m_getItemAt(float x, float y);
-    bool resizing=false;
+    bool resizing=false, rotating=false;
+    float rx=0, ry=0; ///< reference position for rotating
     LassoBox lasso;
   public:
     PubTab()=default;
@@ -70,6 +72,7 @@ namespace minsky
     /// calling this method will invalidate any references to this, and potentially call its destructor
     void removeSelf();
     void removeItemAt(float x, float y);
+    void rotateItemAt(float x, float y);
     bool getItemAt(float x, float y) override {return m_getItemAt(x-offsx,y-offsy);}
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}
