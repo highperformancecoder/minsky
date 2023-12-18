@@ -69,6 +69,7 @@ namespace minsky
     /// remove this from the global minsky object
     /// calling this method will invalidate any references to this, and potentially call its destructor
     void removeSelf();
+    void removeItemAt(float x, float y);
     bool getItemAt(float x, float y) override {return m_getItemAt(x-offsx,y-offsy);}
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}

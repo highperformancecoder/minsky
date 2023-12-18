@@ -46,6 +46,19 @@ namespace minsky
       }
   }
 
+  void PubTab::removeItemAt(float x, float y)
+  {
+    if (auto item=m_getItemAt(x-offsx,y-offsy))
+        for (auto i=items.begin(); i!=items.end(); ++i)
+          if (&*i==item)
+            {
+              items.erase(i);
+              requestRedraw();
+              return;
+            }
+  }
+
+  
   bool PubTab::redraw(int x0, int y0, int width, int height)
   {
     if (!surface.get()) {

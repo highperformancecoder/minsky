@@ -59,6 +59,20 @@ export class ContextMenuManager {
     let pubTab=new PubTab(currentTab);
     const menuItems = [
       new MenuItem({
+        label: 'Add note: please just type note directly for now',
+        click: ()=>{
+        },
+        enabled: false,
+      }),
+      new MenuItem({
+        label: 'Remove item',
+        click: () => {
+          pubTab.removeItemAt(this.x,this.y);
+        },
+        enabled: await pubTab.getItemAt(this.x,this.y),
+      }),
+      new MenuItem({type: 'separator'}),
+      new MenuItem({
         label: 'Remove publication tab',
         click: async () => {
           event.sender.send(events.CHANGE_MAIN_TAB);

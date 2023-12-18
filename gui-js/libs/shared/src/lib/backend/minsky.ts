@@ -1978,6 +1978,7 @@ export class PubTab extends RenderNativeWindow {
   async offsy(...args: number[]): Promise<number> {return this.$callMethod('offsy',...args);}
   async panning(...args: boolean[]): Promise<boolean> {return this.$callMethod('panning',...args);}
   async position(): Promise<number[]> {return this.$callMethod('position');}
+  async removeItemAt(a1: number,a2: number): Promise<void> {return this.$callMethod('removeItemAt',a1,a2);}
   async removeSelf(): Promise<void> {return this.$callMethod('removeSelf');}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
