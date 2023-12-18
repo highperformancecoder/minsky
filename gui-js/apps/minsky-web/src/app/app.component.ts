@@ -46,6 +46,7 @@ export class AppComponent implements OnInit, DoCheck {
   async ngDoCheck() {
     if(this.loading && this.router.url !== '/') {
       this.loading = false;
+      this.updatePubTabs();
       this.cdRef.detectChanges();
 
       // When the event DOMContentLoaded occurs, it is safe to access the DOM
@@ -73,7 +74,6 @@ export class AppComponent implements OnInit, DoCheck {
   }
 
   async ngOnInit() {
-    this.updatePubTabs();
     this.electronService.on(events.CHANGE_MAIN_TAB, ()=>this.changeTab('minsky.canvas'));
     this.electronService.on(events.PUB_TAB_REMOVED, ()=>this.updatePubTabs());
   }
@@ -88,7 +88,7 @@ export class AppComponent implements OnInit, DoCheck {
   
   async addPubTab() {
     await this.electronService.invoke(events.NEW_PUB_TAB);
-    await this.ngOnInit();
+    this.updatePubTabs();
     this.changeTab('minsky.canvas');
   }
   

@@ -61,13 +61,7 @@ namespace minsky
     PubTab(const std::string& name): name(name) {}
     std::string name; ///< name of this publication tab
     std::vector<PubItem> items; ///< list of wrapped items and annotations
-    void addNote(const std::string& note, float x, float y) {
-        items.emplace_back(std::make_shared<Item>());
-        items.back().itemRef->detailedText=note;
-        items.back().x=x-offsx;
-        items.back().y=y-offsy;
-        requestRedraw();
-    }
+    void addNote(const std::string& note, float x, float y);
     /// remove this from the global minsky object
     /// calling this method will invalidate any references to this, and potentially call its destructor
     void removeSelf();

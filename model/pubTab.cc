@@ -36,12 +36,24 @@ namespace minsky
     return {scale*(x-this->x)+itemRef->x(), scale*(y-this->y)+itemRef->y()};
   }
 
+  void PubTab::addNote(const std::string& note, float x, float y)
+  {
+    items.emplace_back(std::make_shared<Item>());
+    items.back().itemRef->detailedText=note;
+    items.back().x=x-offsx;
+    items.back().y=y-offsy;
+    minsky().pushHistory();
+    requestRedraw();
+  }
+
+  
   void PubTab::removeSelf()
   {
     auto& publicationTabs=minsky::minsky().publicationTabs;
     for (auto i=publicationTabs.begin(); i!=publicationTabs.end(); ++i)
       if (this==&*i) {
         publicationTabs.erase(i);
+        minsky().pushHistory();
         return;
       }
   }
@@ -53,6 +65,7 @@ namespace minsky
           if (&*i==item)
             {
               items.erase(i);
+              minsky().pushHistory();
               requestRedraw();
               return;
             }
@@ -140,6 +153,7 @@ namespace minsky
         item->x=0.5*(lasso.x0+lasso.x1);
         item->y=0.5*(lasso.y0+lasso.y1);
       }
+    minsky().pushHistory();
     item=nullptr;
     resizing=false;
     rotating=false;

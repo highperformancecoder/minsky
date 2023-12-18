@@ -411,8 +411,8 @@ export class CommandsManager {
         window.context.close();
       }
     });
-    minsky.undo(changes);
-    await CommandsManager.requestRedraw();
+    await minsky.undo(changes);
+    CommandsManager.requestRedraw();
   }
   
   static async createNewSystem() {
@@ -427,6 +427,7 @@ export class CommandsManager {
       }
     });
 
+    WindowManager.getMainWindow()?.webContents?.send(events.CHANGE_MAIN_TAB);
     WindowManager.getMainWindow().setTitle('New System');
     this.currentMinskyModelFilePath="";
     
@@ -437,8 +438,8 @@ export class CommandsManager {
     minsky.model.setZoom(1);
     minsky.canvas.recentre();
     minsky.popFlags();
-    minsky.doPushHistory(true);
-    return;
+    await minsky.doPushHistory(true);
+    WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, maybe added
   }
 
   static async saveGroupAsFile(): Promise<void> {
@@ -545,6 +546,7 @@ export class CommandsManager {
     setTimeout(()=>{minsky.canvas.recentre();},100);
 
     WindowManager.getMainWindow().setTitle(filePath);
+    WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, may have been added
   }
 
   static async help(x: number, y: number) {

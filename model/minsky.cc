@@ -133,6 +133,8 @@ namespace minsky
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
     phillipsDiagram.clear();
+    publicationTabs.clear();
+    publicationTabs.emplace_back("Publication");
     userFunctions.clear();
     UserFunction::nextId=0;
     
@@ -1384,6 +1386,8 @@ namespace minsky
         m.populateGroup(*model);
         model->setZoom(m.zoomFactor);
         m.phillipsDiagram.populatePhillipsDiagram(phillipsDiagram);
+        m.populatePublicationTabs(publicationTabs);
+        for (auto& p: publicationTabs) p.requestRedraw();
         
         // restore tensorInit data
         for (auto& v: variableValues)
