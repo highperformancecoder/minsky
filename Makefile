@@ -39,24 +39,29 @@ endif
 ifndef MXE
 ifdef GCC
 CPLUSPLUS=g++
-LINK=g++
 else
 # default to clang if present
 HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
 ifeq ($(HAVE_CLANG),1)
 CPLUSPLUS=clang++
-LINK=clang++
 $(warning clang selected)
+else
+CPLUSPLUS=g++
 endif
+LINK=$(CPLUSPLUS)
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include" CPLUSPLUS=$(CPLUSPLUS) GCOV=$(GCOV)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)) 
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1) 
 $(warning $(build_RavelCAPI))
 endif
 
+ifdef FLTO
+# for some distros with older clang compilers. Passing this through
+CPLUSPLUS+=-flto
+endif
 
 ifdef DISTCC
 CPLUSPLUS=distcc
@@ -405,7 +410,7 @@ else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
 else
-	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
 endif
 
