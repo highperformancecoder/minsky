@@ -412,7 +412,6 @@ export class CommandsManager {
       }
     });
     await minsky.undo(changes);
-    CommandsManager.requestRedraw();
   }
   
   static async createNewSystem() {

@@ -31,7 +31,6 @@
 #include "equations.h"
 #include "fontDisplay.h"
 #include "godleyIcon.h"
-#include "godleyTab.h"
 #include "intrusiveMap.h"
 #include "latexMarkup.h"
 #include "variableValues.h"
@@ -39,9 +38,7 @@
 #include "lock.h"
 #include "operation.h"
 #include "pannableTab.h"
-#include "panopticon.h"
 #include "phillipsDiagram.h"
-#include "plotTab.h"
 #include "plotWidget.h"
 #include "progress.h"
 #include "pubTab.h"
@@ -150,11 +147,8 @@ namespace minsky
 
   public:
     PannableTab<EquationDisplay> equationDisplay;
-    Panopticon panopticon{canvas};
     FontDisplay fontSampler;
     PhillipsDiagram phillipsDiagram;
-    PlotTab plotTab;
-    GodleyTab godleyTab;
     std::vector<PubTab> publicationTabs;
 
     void addNewPublicationTab(const std::string& name) {publicationTabs.emplace_back(name);}
@@ -180,7 +174,9 @@ namespace minsky
       canvas.model.updateTimestamp();
     }
     void requestReset();
-
+    /// requests a redraw of the curren active tab
+    void requestRedraw();
+    
     /// @{ push and pop state of the flags
     void pushFlags() {flagStack.push_back(flags);}
     void popFlags() {

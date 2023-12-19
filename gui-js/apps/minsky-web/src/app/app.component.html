@@ -23,7 +23,7 @@
           Phillips diagram
         </button>
          <div *ngFor="let tab of publicationTabs; let i=index">
-          <button (click)="changeTab('minsky.publicationTabs.@elem.'+i)" class="pubTab" mat-raised-button>
+          <button (click)="changeTab('minsky.publicationTabs.@elemNoThrow.'+i)" class="pubTab" mat-raised-button>
             {{tab}}
           </button>
          </div>
