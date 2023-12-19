@@ -405,13 +405,13 @@ export class CommandsManager {
     return true;
   }
 
-  static async undo(changes: number) {
+  static undo(changes: number) {
     WindowManager.activeWindows.forEach((window) => {
       if (!window.isMainWindow && window.context.title!=='Variables') {
         window.context.close();
       }
     });
-    await minsky.undo(changes);
+    minsky.undo(changes);
   }
   
   static async createNewSystem() {
