@@ -412,7 +412,8 @@ export class CommandsManager {
       }
     });
     minsky.undo(changes);
-    WindowManager.renderFrame(); // required because undo rewrites all the pubtabs
+    if (WindowManager.currentTab?.$prefix().includes("publicationTabs"))
+      WindowManager.renderFrame(); // required because undo rewrites all the pubtabs
   }
   
   static async createNewSystem() {
