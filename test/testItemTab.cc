@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "minsky.h"
+#include "itemTab.h"
 #include <cairo_base.h> 
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>

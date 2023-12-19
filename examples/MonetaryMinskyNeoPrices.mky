@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.26</minskyVersion>
+  <minskyVersion>3.2.0-alpha.33</minskyVersion>
   <wires>
    <Wire>
     <id>827</id>
@@ -740,12 +740,12 @@
     <from>697</from>
     <to>703</to>
     <coords>
-     <float>596.766</float>
-     <float>305.013</float>
-     <float>586.565</float>
-     <float>288.326</float>
-     <float>575.825</float>
-     <float>314.289</float>
+     <float>594.162</float>
+     <float>310.276</float>
+     <float>587.456</float>
+     <float>299.304</float>
+     <float>579.573</float>
+     <float>314.006</float>
     </coords>
    </Wire>
    <Wire>
@@ -863,12 +863,12 @@
     <from>769</from>
     <to>762</to>
     <coords>
-     <float>920.222</float>
-     <float>634.047</float>
-     <float>830.053</float>
-     <float>380.087</float>
-     <float>938.29</float>
-     <float>621.831</float>
+     <float>942.07</float>
+     <float>634.207</float>
+     <float>847.872</float>
+     <float>368.898</float>
+     <float>929.685</float>
+     <float>615.082</float>
     </coords>
    </Wire>
    <Wire>
@@ -886,12 +886,12 @@
     <from>771</from>
     <to>767</to>
     <coords>
-     <float>915.813</float>
-     <float>636.174</float>
-     <float>857.631</float>
-     <float>465.592</float>
-     <float>934.428</float>
-     <float>643.192</float>
+     <float>935.741</float>
+     <float>643.627</float>
+     <float>867.054</float>
+     <float>442.245</float>
+     <float>912.58</float>
+     <float>639.738</float>
     </coords>
    </Wire>
    <Wire>
@@ -959,12 +959,12 @@
     <from>814</from>
     <to>807</to>
     <coords>
-     <float>853.91</float>
-     <float>239.563</float>
-     <float>808.346</float>
-     <float>199.084</float>
-     <float>835.206</float>
-     <float>225.897</float>
+     <float>840.916</float>
+     <float>244.922</float>
+     <float>785.84</float>
+     <float>195.993</float>
+     <float>852.367</float>
+     <float>219.371</float>
     </coords>
    </Wire>
    <Wire>
@@ -977,12 +977,12 @@
     <from>816</from>
     <to>808</to>
     <coords>
-     <float>856.119</float>
-     <float>240.263</float>
-     <float>822.855</float>
-     <float>206.324</float>
-     <float>835.206</float>
-     <float>246.297</float>
+     <float>837.498</float>
+     <float>248.02</float>
+     <float>811.51</float>
+     <float>221.506</float>
+     <float>852.367</float>
+     <float>239.771</float>
     </coords>
    </Wire>
    <Wire>
@@ -990,12 +990,12 @@
     <from>816</from>
     <to>812</to>
     <coords>
-     <float>856.119</float>
-     <float>240.263</float>
-     <float>829.717</float>
-     <float>213.325</float>
-     <float>837.666</float>
-     <float>248.624</float>
+     <float>837.498</float>
+     <float>248.02</float>
+     <float>803.814</float>
+     <float>213.652</float>
+     <float>863.262</float>
+     <float>250.076</float>
     </coords>
    </Wire>
    <Wire>
@@ -7857,4 +7857,6 @@
    <flows>
    </flows>
   </phillipsDiagram>
+  <publicationTabs>
+  </publicationTabs>
  </Minsky>

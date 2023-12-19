@@ -986,26 +986,6 @@ addTab wiring "Wiring" minsky.canvas
 addTab equations "Equations" minsky.equationDisplay
 pack .equations.canvas -fill both -expand 1
 
-addTab plts "Plots" minsky.plotTab
-pack .plts.canvas -fill both -expand 1
-
-bind .plts.canvas <<contextMenu>> "tabContext %x %y %X %Y"  
-menu .plts.context -tearoff 0   
-
-bind .plts.canvas <ButtonPress-1> {wrapHoverMouseTab plotTab mouseDown %x %y}
-bind .plts.canvas <ButtonRelease-1> {wrapHoverMouseTab plotTab mouseUp %x %y}
-bind .plts.canvas <Motion> {.plts.canvas configure -cursor {}; wrapHoverMouseTab plotTab mouseMove %x %y}
-bind .plts.canvas <Leave> {after cancel hoverMouseTab plotTab}
-
-
-addTab gdlys "Godleys" minsky.godleyTab
-pack .gdlys.canvas -fill both -expand 1
-
-bind .gdlys.canvas <ButtonPress-1> {wrapHoverMouseTab godleyTab mouseDown %x %y}
-bind .gdlys.canvas <ButtonRelease-1> {wrapHoverMouseTab godleyTab mouseUp %x %y}
-bind .gdlys.canvas <Motion> {.gdlys.canvas configure -cursor {}; wrapHoverMouseTab godleyTab mouseMove %x %y}
-bind .gdlys.canvas <Leave> {after cancel hoverMouseTab godleyTab}
-
 .tabs select 0
 
 proc hoverMouseTab {tabId} {
@@ -1054,18 +1034,6 @@ source $minskyHome/ravel.tcl
 source $minskyHome/variablePane.tcl
 
 pack .wiring.canvas -fill both -expand 1
-
-image create cairoSurface panopticon -surface minsky.panopticon
-label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
-#place .wiring.panopticon -relx 1 -rely 0 -anchor ne
-minsky.panopticon.width $canvasWidth
-minsky.panopticon.height $canvasHeight
-bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
-bind .equations.canvas <Configure> {setScrollBars}
-bind .plts.canvas <Configure> {setScrollBars}
-bind .gdlys.canvas <Configure> {setScrollBars}
-
-set helpTopics(.wiring.panopticon) Panopticon
 
 proc setScrollBars {} {
     switch [lindex [.tabs tabs] [.tabs index current]] {
@@ -1120,7 +1088,6 @@ proc panCanvas {offsx offsy} {
         .wiring {
             minsky.canvas.model.moveTo $offsx $offsy
             canvas.requestRedraw
-            if $preferences(panopticon) {panopticon.requestRedraw}
         }
         .equations {
             equationDisplay.offsx $offsx
@@ -1254,19 +1221,6 @@ bind .equations.canvas <Button-1> {
 }
 bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
-# plots pan mode
-bind .plts.canvas <Shift-Button-1> {
-    set panOffsX [expr %x-[plotTab.offsx]]
-    set panOffsY [expr %y-[plotTab.offsy]]
-}
-bind .plts.canvas <Shift-B1-Motion> {.plts.canvas configure -cursor $panIcon; panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
-
-# godleys pan mode
-bind .gdlys.canvas <Shift-Button-1> {
-    set panOffsX [expr %x-[godleyTab.offsx]]
-    set panOffsY [expr %y-[godleyTab.offsy]]
-}
-bind .gdlys.canvas <Shift-B1-Motion> {.gdlys.canvas configure -cursor $panIcon; panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew
@@ -1649,11 +1603,6 @@ proc setPreferenceParms {} {
     defaultFont $preferences(defaultFont)
     multipleEquities $preferences(multipleEquities)
     setGodleyDisplay
-    if {$preferences(panopticon)} {
-        place .wiring.panopticon -relx 1 -rely 0 -anchor ne
-    } else {
-        place forget .wiring.panopticon
-    }
     canvas.focusFollowsMouse $preferences(focusFollowsMouse)
     if {$preferences(focusFollowsMouse)} {
         tk_focusFollowsMouse

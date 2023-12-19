@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.26</minskyVersion>
+  <minskyVersion>3.2.0-alpha.33</minskyVersion>
   <wires>
    <Wire>
     <id>39</id>
@@ -62,9 +62,9 @@
     <coords>
      <float>147</float>
      <float>208</float>
-     <float>194.925</float>
-     <float>370.746</float>
-     <float>240.2</float>
+     <float>195</float>
+     <float>371</float>
+     <float>241</float>
      <float>406</float>
     </coords>
    </Wire>
@@ -80,10 +80,10 @@
     <coords>
      <float>147</float>
      <float>208</float>
-     <float>160.942</float>
-     <float>432.061</float>
-     <float>301.2</float>
-     <float>512.8</float>
+     <float>161</float>
+     <float>433</float>
+     <float>302</float>
+     <float>514</float>
     </coords>
    </Wire>
    <Wire>
@@ -91,12 +91,12 @@
     <from>29</from>
     <to>36</to>
     <coords>
-     <float>262.2</float>
+     <float>261</float>
      <float>406</float>
-     <float>229.223</float>
-     <float>537.91</float>
-     <float>301.2</float>
-     <float>533.2</float>
+     <float>228.157</float>
+     <float>537.373</float>
+     <float>302</float>
+     <float>532</float>
     </coords>
    </Wire>
    <Wire>
@@ -454,4 +454,6 @@
    <flows>
    </flows>
   </phillipsDiagram>
+  <publicationTabs>
+  </publicationTabs>
  </Minsky>
