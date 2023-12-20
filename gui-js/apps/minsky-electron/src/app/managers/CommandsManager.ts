@@ -428,7 +428,6 @@ export class CommandsManager {
       }
     });
 
-    WindowManager.getMainWindow()?.webContents?.send(events.CHANGE_MAIN_TAB);
     WindowManager.getMainWindow().setTitle('New System');
     this.currentMinskyModelFilePath="";
     
