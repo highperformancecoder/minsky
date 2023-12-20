@@ -31,7 +31,6 @@
 #include "equations.h"
 #include "fontDisplay.h"
 #include "godleyIcon.h"
-#include "godleyTab.h"
 #include "intrusiveMap.h"
 #include "latexMarkup.h"
 #include "variableValues.h"
@@ -39,11 +38,10 @@
 #include "lock.h"
 #include "operation.h"
 #include "pannableTab.h"
-#include "panopticon.h"
 #include "phillipsDiagram.h"
-#include "plotTab.h"
 #include "plotWidget.h"
 #include "progress.h"
+#include "pubTab.h"
 #include "ravelWrap.h"
 #include "rungeKutta.h"
 #include "saver.h"
@@ -149,11 +147,15 @@ namespace minsky
 
   public:
     PannableTab<EquationDisplay> equationDisplay;
-    Panopticon panopticon{canvas};
     FontDisplay fontSampler;
     PhillipsDiagram phillipsDiagram;
-    PlotTab plotTab;
-    GodleyTab godleyTab;
+    std::vector<PubTab> publicationTabs;
+
+    void addNewPublicationTab(const std::string& name) {publicationTabs.emplace_back(name);}
+    void addCanvasItemToPublicationTab(size_t i) {
+      if (canvas.item && i<publicationTabs.size())
+        publicationTabs[i].items.emplace_back(canvas.item);
+    }
     
     // Allow multiple equity columns.
     bool multipleEquities() const {return m_multipleEquities;}
@@ -172,7 +174,9 @@ namespace minsky
       canvas.model.updateTimestamp();
     }
     void requestReset();
-
+    /// requests a redraw of the curren active tab
+    void requestRedraw();
+    
     /// @{ push and pop state of the flags
     void pushFlags() {flagStack.push_back(flags);}
     void popFlags() {
@@ -233,6 +237,7 @@ namespace minsky
       model->iHeight(std::numeric_limits<float>::max());
       model->iWidth(std::numeric_limits<float>::max());
       model->self=model;
+      publicationTabs.emplace_back("Publication");
     }
     ~Minsky();
     

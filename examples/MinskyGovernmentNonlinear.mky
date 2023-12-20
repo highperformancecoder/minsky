@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.26</minskyVersion>
+  <minskyVersion>3.2.0-alpha.33</minskyVersion>
   <wires>
    <Wire>
     <id>411</id>
@@ -217,7 +217,7 @@
      <float>795.897</float>
      <float>420.513</float>
      <float>847.537</float>
-     <float>498.455</float>
+     <float>498.456</float>
      <float>1031.83</float>
      <float>487.5</float>
     </coords>
@@ -3815,4 +3815,6 @@
    <flows>
    </flows>
   </phillipsDiagram>
+  <publicationTabs>
+  </publicationTabs>
  </Minsky>

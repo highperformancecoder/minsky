@@ -22,7 +22,6 @@
 #include "eventInterface.tcd"
 #include "fontDisplay.tcd"
 #include "godleyIcon.tcd"
-#include "godleyTab.tcd"
 #include "godleyTable.tcd"
 #include "godleyTableWindow.tcd"
 #include "grid.tcd"
@@ -33,6 +32,7 @@
 #include "intOp.tcd"
 #include "item.tcd"
 #include "itemT.tcd"
+#include "itemTab.h"
 #include "itemTab.tcd"
 #include "lasso.tcd"
 #include "lock.tcd"
@@ -42,15 +42,14 @@
 #include "operationType.tcd"
 #include "pango.tcd"
 #include "pannableTab.tcd"
-#include "panopticon.tcd"
 #include "phillipsDiagram.tcd"
 #include "plot.tcd"
 #include "plotOptions.tcd"
-#include "plotTab.tcd"
 #include "plotWidget.tcd"
 #include "polyRESTProcessBase.tcd"
 #include "port.h"
 #include "port.tcd"
+#include "pubTab.tcd"
 #include "ravelState.tcd"
 #include "renderNativeWindow.tcd"
 #include "ravelWrap.tcd"
@@ -257,11 +256,10 @@ int main()
   api.addClass<EventInterface>();
   api.addClass<GroupItems>();
   api.addClass<HandleLockInfo>();
-  api.addClass<PannableTab<EquationDisplay>>();
   api.addClass<Port>();
+  api.addClass<PubItem>();
   api.addClass<ravel::HandleState>();
   api.addClass<ravel::RavelState>();
-  api.addClass<RenderNativeWindow>();
   api.addClass<Units>();
   api.addClass<VariablePaneCell>();
   api.addClass<VariableValue>();
@@ -284,6 +282,14 @@ int main()
   api.addSubclass<VariableBase,Item>();
   api.addSubclass<UserFunction,Item>();
 
+  // RenderNativeWindow subclasses
+  api.addSubclass<RenderNativeWindow, EventInterface>();
+  api.addSubclass<Canvas,RenderNativeWindow>();
+  api.addSubclass<PannableTab<EquationDisplay>,RenderNativeWindow>();
+  api.addSubclass<PhillipsDiagram,RenderNativeWindow>();
+  api.addSubclass<PubTab,RenderNativeWindow>();
+
+  
   // to prevent Group recursively calling itself on construction
   api["Group"].properties.erase("parent");
   
@@ -307,7 +313,7 @@ int main()
   cout<<endl;
   
   // these need to be declared in a specific order
-  vector<string> exportFirst{"Item","OperationBase","VariableBase"};
+  vector<string> exportFirst{"EventInterface","Item","OperationBase","RenderNativeWindow","VariableBase"};
   for (auto& i: exportFirst) exportClass(i,api[i]);
 
   cout << "class minsky__Variable<T> extends VariableBase {}\n";

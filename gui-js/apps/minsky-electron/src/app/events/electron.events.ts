@@ -114,6 +114,10 @@ ipcMain.on(events.UPDATE_BOOKMARK_LIST, async (event) => {
   await BookmarkManager.updateBookmarkList();
 });
 
+ipcMain.handle(events.NEW_PUB_TAB, async (event) => {
+  return await CommandsManager.newPubTab();
+});
+
 ipcMain.on(
   events.INIT_MENU_FOR_GODLEY_VIEW,
   async (

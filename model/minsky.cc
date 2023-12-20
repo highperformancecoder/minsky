@@ -133,6 +133,8 @@ namespace minsky
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
     phillipsDiagram.clear();
+    publicationTabs.clear();
+    publicationTabs.emplace_back("Publication");
     userFunctions.clear();
     UserFunction::nextId=0;
     
@@ -483,6 +485,15 @@ namespace minsky
     resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
   }
 
+  void Minsky::requestRedraw()
+  {
+    // requestRedraw on all tabs - only the active one will actually do anything
+    canvas.requestRedraw();
+    equationDisplay.requestRedraw();
+    phillipsDiagram.requestRedraw();
+    for (auto& pub: publicationTabs)
+      pub.requestRedraw();
+  }
   
   void Minsky::populateMissingDimensions() {
     // populate from variable value table first, then override by ravels
@@ -938,10 +949,7 @@ namespace minsky
     //  flags |= reset_needed; // enforce another reset at simulation start
     running=false;
 
-    canvas.requestRedraw();
-    godleyTab.requestRedraw();
-    plotTab.requestRedraw();
-    phillipsDiagram.requestRedraw();
+    requestRedraw();
     
     // update maxValues
     PhillipsFlow::maxFlow.clear();
@@ -974,10 +982,7 @@ namespace minsky
     time_duration maxWait=milliseconds(maxWaitMS);
     if ((microsec_clock::local_time()-(ptime&)lastRedraw) > maxWait)
       {
-        canvas.requestRedraw();
-        godleyTab.requestRedraw();
-        plotTab.requestRedraw();
-        phillipsDiagram.requestRedraw();
+        requestRedraw();
         lastRedraw=microsec_clock::local_time();
       }
 
@@ -1062,8 +1067,7 @@ namespace minsky
         populateMissingDimensions();
       }
     catch (...) {}
-    canvas.requestRedraw();
-    panopticon.requestRedraw();
+    requestRedraw();
     canvas.recentre();
     canvas.requestRedraw();
     canvas.moveTo(0,0); // force placement of ports
@@ -1329,7 +1333,6 @@ namespace minsky
         command!="minsky.load" &&
         command!="minsky.reverse" &&
         command!="minsky.redrawAllGodleyTables" &&
-        command.find("minsky.panopticon")==string::npos &&
         command.find("minsky.phillipsDiagram")==string::npos &&
         command.find("minsky.equationDisplay")==string::npos && 
         command.find("minsky.setGodleyDisplayValue")==string::npos && 
@@ -1382,6 +1385,8 @@ namespace minsky
         m.populateGroup(*model);
         model->setZoom(m.zoomFactor);
         m.phillipsDiagram.populatePhillipsDiagram(phillipsDiagram);
+        m.populatePublicationTabs(publicationTabs);
+        requestRedraw();
         
         // restore tensorInit data
         for (auto& v: variableValues)

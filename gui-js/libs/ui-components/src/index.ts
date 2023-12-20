@@ -17,6 +17,7 @@ export * from './lib/variable-pane/variable-pane.component';
 export * from './lib/header/header.component';
 export * from './lib/import-csv/import-csv.component';
 export * from './lib/input-modal/input-modal.component';
+export * from './lib/new-pub-tab/new-pub-tab.component';
 export * from './lib/page-not-found/page-not-found.component';
 export * from './lib/summary/summary.component';
 export * from './lib/plot-widget-options/plot-widget-options.component';

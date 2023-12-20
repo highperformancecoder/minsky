@@ -405,14 +405,15 @@ export class CommandsManager {
     return true;
   }
 
-  static async undo(changes: number) {
+  static undo(changes: number) {
     WindowManager.activeWindows.forEach((window) => {
       if (!window.isMainWindow && window.context.title!=='Variables') {
         window.context.close();
       }
     });
     minsky.undo(changes);
-    await CommandsManager.requestRedraw();
+    if (WindowManager.currentTab?.$prefix().includes("publicationTabs"))
+      WindowManager.renderFrame(); // required because undo rewrites all the pubtabs
   }
   
   static async createNewSystem() {
@@ -427,6 +428,7 @@ export class CommandsManager {
       }
     });
 
+    WindowManager.getMainWindow()?.webContents?.send(events.CHANGE_MAIN_TAB);
     WindowManager.getMainWindow().setTitle('New System');
     this.currentMinskyModelFilePath="";
     
@@ -437,8 +439,8 @@ export class CommandsManager {
     minsky.model.setZoom(1);
     minsky.canvas.recentre();
     minsky.popFlags();
-    minsky.doPushHistory(true);
-    return;
+    await minsky.doPushHistory(true);
+    WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, maybe added
   }
 
   static async saveGroupAsFile(): Promise<void> {
@@ -545,6 +547,7 @@ export class CommandsManager {
     setTimeout(()=>{minsky.canvas.recentre();},100);
 
     WindowManager.getMainWindow().setTitle(filePath);
+    WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, may have been added
   }
 
   static async help(x: number, y: number) {
@@ -989,6 +992,18 @@ export class CommandsManager {
 
   static async saveHandleDescription(payload: HandleDescriptionPayload) {
     (new Ravel(payload.command)).setHandleDescription(payload.handleIndex, payload.description);
+  }
+
+  static async newPubTab() {
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `New Publication Tab`,
+      url: `#/headless/new-pub-tab`,
+      height: 90,
+      width: 300,
+    });
+    return new Promise((resolve)=>{
+      window.once('closed',()=>resolve(0));
+    });
   }
   
   static async editHandleDimension(ravel: Ravel, handleIndex: number) {

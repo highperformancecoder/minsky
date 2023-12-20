@@ -219,7 +219,7 @@ namespace minsky
     Items itemVector;
     void pushDefiningVarsToTab();
     void showDefiningVarsOnCanvas();    
-    
+
     /// push all plots on the canvas to the plot tab
     void showPlotsOnTab();    
 

@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.26</minskyVersion>
+  <minskyVersion>3.2.0-alpha.33</minskyVersion>
   <wires>
    <Wire>
     <id>31</id>
@@ -354,4 +354,6 @@
    <flows>
    </flows>
   </phillipsDiagram>
+  <publicationTabs>
+  </publicationTabs>
  </Minsky>

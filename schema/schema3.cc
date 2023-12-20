@@ -33,6 +33,7 @@ namespace classdesc_access
 
 namespace schema3
 {
+  
   // binary serialisation used to serialise the tensorInit field of
   // variableValues into the minsky schema, fixed off here, rather
   // than classdesc generated to ensure backward compatibility
@@ -280,10 +281,23 @@ namespace schema3
         }
   }
 
+  struct MinskyImpl
+  {
+    IdMap itemMap;                            // for serialisation
+    map<int, minsky::ItemPtr> reverseItemMap; // for deserialisation
+  };
+
+  void Minsky::makeImpl()
+  {
+    impl=make_shared<MinskyImpl>();
+  }
+  
+  Minsky::~Minsky()=default; // required because of Pimpl pattern
 
   Minsky::Minsky(const minsky::Group& g, bool packTensorData)
   {
-    IdMap itemMap;
+    makeImpl();
+    auto& itemMap=impl->itemMap;
 
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
         itemMap.emplaceIf<minsky::Ravel>(items, i->get()) ||
@@ -389,7 +403,49 @@ namespace schema3
       }
   }
 
-void Minsky::populateMinsky(minsky::Minsky& m) const
+  void Minsky::populateSchemaPublicationTabs(const std::vector<minsky::PubTab>& pubTabs)
+  {
+    assert(impl.get());
+    auto& itemMap=impl->itemMap;
+    publicationTabs.clear();
+    if (pubTabs.size()==1 && pubTabs.front().items.empty()) return; // don't bother adding a single empty pub tab
+    for (auto& i: pubTabs)
+      {
+        publicationTabs.emplace_back();
+        publicationTabs.back().name=i.name;
+        for (auto& j: i.items)
+          publicationTabs.back().items.emplace_back(itemMap[j.itemRef.get()], j);
+      }
+  }
+
+  void Minsky::populatePublicationTabs(std::vector<minsky::PubTab>& pubTabs) const
+  {
+    assert(impl.get());
+    auto& itemMap=impl->reverseItemMap;
+
+    pubTabs.clear();
+    for (auto& pub: publicationTabs)
+      {
+        pubTabs.emplace_back(pub.name);
+        pubTabs.back().offsx=pub.x;
+        pubTabs.back().offsy=pub.y;
+        pubTabs.back().m_zoomFactor=pub.zoomFactor;
+           
+        for (auto& item: pub.items)
+          if (itemMap[item.item])
+            {
+              pubTabs.back().items.emplace_back(itemMap[item.item]);
+              auto& newItem=pubTabs.back().items.back();
+              newItem.x=item.x;
+              newItem.y=item.y;
+              newItem.zoomFactor=item.zoomFactor;
+              newItem.rotation=item.rotation;
+            }
+      }
+    if (pubTabs.empty()) pubTabs.emplace_back("Publication");
+  }
+  
+  void Minsky::populateMinsky(minsky::Minsky& m) const
   {
     minsky::LocalMinsky lm(m);
     m.model->clear();
@@ -405,6 +461,7 @@ void Minsky::populateMinsky(minsky::Minsky& m) const
     static_cast<minsky::Simulation&>(m)=rungeKutta;
 
     phillipsDiagram.populatePhillipsDiagram(m.phillipsDiagram);
+    populatePublicationTabs(m.publicationTabs);
   }
 
   void populateNote(minsky::NoteBase& x, const Note& y)
@@ -552,7 +609,8 @@ void Minsky::populateMinsky(minsky::Minsky& m) const
   };
   
   void Minsky::populateGroup(minsky::Group& g) const {
-    map<int, minsky::ItemPtr> itemMap;
+    assert(impl.get());
+    auto& itemMap=impl->reverseItemMap;
     map<int, weak_ptr<minsky::Port>> portMap;
     map<int, schema3::Item> schema3VarMap;
     MinskyItemFactory factory;

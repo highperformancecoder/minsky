@@ -17,6 +17,7 @@ import { GodleyWidgetViewComponent } from './godley-widget-view/godley-widget-vi
 import { HeaderComponent } from './header/header.component';
 import { ImportCsvComponent } from './import-csv/import-csv.component';
 import { InputModalComponent } from './input-modal/input-modal.component';
+import { NewPubTabComponent } from './new-pub-tab/new-pub-tab.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { SummaryComponent } from './summary/summary.component';
 import { PlotWidgetOptionsComponent } from './plot-widget-options/plot-widget-options.component';
@@ -59,7 +60,8 @@ import { LatexDirective } from './directives/latex.directive';
     GodleyWidgetViewComponent,
     PlotWidgetOptionsComponent,
     ImportCsvComponent,
-    LatexDirective
+    LatexDirective,
+    NewPubTabComponent,
   ],
   imports: [CommonModule, SharedModule],
   exports: [
@@ -88,6 +90,7 @@ import { LatexDirective } from './directives/latex.directive';
     GodleyWidgetViewComponent,
     PlotWidgetOptionsComponent,
     ImportCsvComponent,
+    NewPubTabComponent,
   ],
 })
 export class UiComponentsModule {}
