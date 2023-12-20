@@ -40,7 +40,7 @@ namespace minsky
 
     /// initialise object from an SVG file
     void setResource(const std::string& resource);
-    void render(cairo_t*);
+    void render(cairo_t*) const;
     double width() const {return m_width;}
     double height() const {return m_height;}
   };

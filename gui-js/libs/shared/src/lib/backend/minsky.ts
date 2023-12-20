@@ -18,6 +18,27 @@ class classdesc__TCL_obj_t {}
 class ecolab__cairo__Surface {}
 class ecolab__Pango {}
 
+export class EventInterface extends CppClass {
+  item: Item;
+  wire: Wire;
+  constructor(prefix: string){
+    super(prefix);
+    this.item=new Item(this.$prefix()+'.item');
+    this.wire=new Wire(this.$prefix()+'.wire');
+  }
+  async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
+  async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
+  async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
+  async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
+  async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
+  async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
+  async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
+  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
+  async position(): Promise<number[]> {return this.$callMethod('position');}
+  async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
+  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
+}
+
 export class Item extends CppClass {
   bb: BoundingBox;
   constructor(prefix: string){
@@ -37,7 +58,7 @@ export class Item extends CppClass {
   async clone(): Promise<Item> {return this.$callMethod('clone');}
   async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
   async closestOutPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestOutPort',a1,a2);}
-  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
+  async contains(...args: any[]): Promise<boolean> {return this.$callMethod('contains',...args);}
   async corners(): Promise<object[]> {return this.$callMethod('corners');}
   async deleteAttachedWires(): Promise<void> {return this.$callMethod('deleteAttachedWires');}
   async deleteCallback(...args: string[]): Promise<string> {return this.$callMethod('deleteCallback',...args);}
@@ -139,6 +160,36 @@ export class OperationBase extends Item {
   async value(): Promise<number> {return this.$callMethod('value');}
 }
 
+export class RenderNativeWindow extends EventInterface {
+  backgroundColour: ecolab__cairo__Colour;
+  constructor(prefix: string|EventInterface){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super(prefix.$prefix())
+    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+  }
+  async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
+  async disable(): Promise<void> {return this.$callMethod('disable');}
+  async draw(): Promise<void> {return this.$callMethod('draw');}
+  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
+  async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
+  async init(): Promise<void> {return this.$callMethod('init');}
+  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
+  async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
+  async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
+  async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
+  async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
+  async renderToPNG(a1: string): Promise<void> {return this.$callMethod('renderToPNG',a1);}
+  async renderToPS(a1: string): Promise<void> {return this.$callMethod('renderToPS',a1);}
+  async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
+  async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
+  async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
+  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
+  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
+}
+
 export class VariableBase extends Item {
   bb: BoundingBox;
   constructor(prefix: string|Item){
@@ -164,7 +215,7 @@ export class VariableBase extends Item {
   async clone(): Promise<Item> {return this.$callMethod('clone');}
   async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
   async closestOutPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestOutPort',a1,a2);}
-  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
+  async contains(...args: any[]): Promise<boolean> {return this.$callMethod('contains',...args);}
   async corners(): Promise<object[]> {return this.$callMethod('corners');}
   async create(a1: string): Promise<VariableBase> {return this.$callMethod('create',a1);}
   async defined(): Promise<boolean> {return this.$callMethod('defined');}
@@ -215,6 +266,7 @@ export class VariableBase extends Item {
   async makeConsistentWithValue(): Promise<void> {return this.$callMethod('makeConsistentWithValue');}
   async mantissa(a1: EngNotation,a2: number): Promise<string> {return this.$callMethod('mantissa',a1,a2);}
   async maxSliderSteps(): Promise<number> {return this.$callMethod('maxSliderSteps');}
+  async miniPlotEnabled(...args: any[]): Promise<boolean> {return this.$callMethod('miniPlotEnabled',...args);}
   async mouseFocus(...args: boolean[]): Promise<boolean> {return this.$callMethod('mouseFocus',...args);}
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
   async name(...args: any[]): Promise<string> {return this.$callMethod('name',...args);}
@@ -233,6 +285,7 @@ export class VariableBase extends Item {
   async ports(a1: number): Promise<object> {return this.$callMethod('ports',a1);}
   async portsSize(): Promise<number> {return this.$callMethod('portsSize');}
   async rawName(): Promise<string> {return this.$callMethod('rawName');}
+  async resetMiniPlot(): Promise<void> {return this.$callMethod('resetMiniPlot');}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
   async resizeHandleCoords(): Promise<object> {return this.$callMethod('resizeHandleCoords');}
   async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}
@@ -365,7 +418,7 @@ export class CSVDialog extends CppClass {
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
 
-export class Canvas extends CppClass {
+export class Canvas extends RenderNativeWindow {
   backgroundColour: ecolab__cairo__Colour;
   item: Item;
   itemFocus: Item;
@@ -376,8 +429,11 @@ export class Canvas extends CppClass {
   updateRegion: LassoBox;
   wire: Wire;
   wireFocus: Wire;
-  constructor(prefix: string){
-    super(prefix);
+  constructor(prefix: string|RenderNativeWindow){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super(prefix.$prefix())
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
     this.item=new Item(this.$prefix()+'.item');
     this.itemFocus=new Item(this.$prefix()+'.itemFocus');
@@ -457,6 +513,8 @@ export class Canvas extends CppClass {
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async rotateItem(a1: number,a2: number): Promise<void> {return this.$callMethod('rotateItem',a1,a2);}
+  async rotatingItem(...args: boolean[]): Promise<boolean> {return this.$callMethod('rotatingItem',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
   async select(a1: LassoBox): Promise<void> {return this.$callMethod('select',a1);}
   async selectAllVariables(): Promise<void> {return this.$callMethod('selectAllVariables');}
@@ -573,12 +631,15 @@ export class EngNotation extends CppClass {
   async sciExp(...args: number[]): Promise<number> {return this.$callMethod('sciExp',...args);}
 }
 
-export class EquationDisplay extends CppClass {
+export class EquationDisplay extends RenderNativeWindow {
   backgroundColour: ecolab__cairo__Colour;
   item: Item;
   wire: Wire;
-  constructor(prefix: string){
-    super(prefix);
+  constructor(prefix: string|RenderNativeWindow){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super(prefix.$prefix())
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
     this.item=new Item(this.$prefix()+'.item');
     this.wire=new Wire(this.$prefix()+'.wire');
@@ -594,6 +655,7 @@ export class EquationDisplay extends CppClass {
   async height(): Promise<number> {return this.$callMethod('height');}
   async init(): Promise<void> {return this.$callMethod('init');}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
+  async m_zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('m_zoomFactor',...args);}
   async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
@@ -625,27 +687,6 @@ export class EvalGodley extends CppClass {
   }
   async compatibility(...args: boolean[]): Promise<boolean> {return this.$callMethod('compatibility',...args);}
   async eval(a1: number,a2: number): Promise<void> {return this.$callMethod('eval',a1,a2);}
-}
-
-export class EventInterface extends CppClass {
-  item: Item;
-  wire: Wire;
-  constructor(prefix: string){
-    super(prefix);
-    this.item=new Item(this.$prefix()+'.item');
-    this.wire=new Wire(this.$prefix()+'.wire');
-  }
-  async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
-  async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
-  async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
-  async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
-  async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
-  async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
-  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
-  async position(): Promise<number[]> {return this.$callMethod('position');}
-  async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
-  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
 
 export class FontDisplay extends CppClass {
@@ -743,85 +784,6 @@ export class GodleyIcon extends Item {
   async update(): Promise<void> {return this.$callMethod('update');}
   async valueId(a1: string): Promise<string> {return this.$callMethod('valueId',a1);}
   async variableDisplay(...args: boolean[]): Promise<boolean> {return this.$callMethod('variableDisplay',...args);}
-}
-
-export class GodleyTab extends CppClass {
-  backgroundColour: ecolab__cairo__Colour;
-  bottomRowMargin: Sequence<number>;
-  item: Item;
-  itemFocus: Item;
-  itemVector: Sequence<Item>;
-  rightColMargin: Sequence<number>;
-  varAttrib: Sequence<string>;
-  wire: Wire;
-  constructor(prefix: string){
-    super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'.bottomRowMargin');
-    this.item=new Item(this.$prefix()+'.item');
-    this.itemFocus=new Item(this.$prefix()+'.itemFocus');
-    this.itemVector=new Sequence<Item>(this.$prefix()+'.itemVector',Item);
-    this.rightColMargin=new Sequence<number>(this.$prefix()+'.rightColMargin');
-    this.varAttrib=new Sequence<string>(this.$prefix()+'.varAttrib');
-    this.wire=new Wire(this.$prefix()+'.wire');
-  }
-  async cell(a1: number,a2: number): Promise<ecolab__Pango> {return this.$callMethod('cell',a1,a2);}
-  async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
-  async colX(a1: number): Promise<number> {return this.$callMethod('colX',a1);}
-  async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
-  async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
-  async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
-  async draw(...args: any[]): Promise<void> {return this.$callMethod('draw',...args);}
-  async evenHeight(): Promise<boolean> {return this.$callMethod('evenHeight');}
-  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
-  async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
-  async getVarName(a1: number): Promise<string> {return this.$callMethod('getVarName',a1);}
-  async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
-  async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
-  async height(): Promise<number> {return this.$callMethod('height');}
-  async init(): Promise<void> {return this.$callMethod('init');}
-  async itemAt(a1: number,a2: number): Promise<object> {return this.$callMethod('itemAt',a1,a2);}
-  async itemSelector(a1: Item): Promise<boolean> {return this.$callMethod('itemSelector',a1);}
-  async justification(a1: number): Promise<string> {return this.$callMethod('justification',a1);}
-  async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async m_height(...args: number[]): Promise<number> {return this.$callMethod('m_height',...args);}
-  async m_width(...args: number[]): Promise<number> {return this.$callMethod('m_width',...args);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
-  async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
-  async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
-  async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
-  async moveCursorTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveCursorTo',a1,a2);}
-  async moveItemTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveItemTo',a1,a2);}
-  async moveOffsX(...args: number[]): Promise<number> {return this.$callMethod('moveOffsX',...args);}
-  async moveOffsY(...args: number[]): Promise<number> {return this.$callMethod('moveOffsY',...args);}
-  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
-  async numCols(): Promise<number> {return this.$callMethod('numCols');}
-  async numRows(): Promise<number> {return this.$callMethod('numRows');}
-  async offsx(...args: number[]): Promise<number> {return this.$callMethod('offsx',...args);}
-  async offsy(...args: number[]): Promise<number> {return this.$callMethod('offsy',...args);}
-  async populateItemVector(): Promise<void> {return this.$callMethod('populateItemVector');}
-  async position(): Promise<number[]> {return this.$callMethod('position');}
-  async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
-  async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
-  async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
-  async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
-  async renderToPNG(a1: string): Promise<void> {return this.$callMethod('renderToPNG',a1);}
-  async renderToPS(a1: string): Promise<void> {return this.$callMethod('renderToPS',a1);}
-  async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
-  async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
-  async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
-  async rowY(a1: number): Promise<number> {return this.$callMethod('rowY',a1);}
-  async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async toggleVarDisplay(a1: number): Promise<void> {return this.$callMethod('toggleVarDisplay',a1);}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
-  async width(): Promise<number> {return this.$callMethod('width');}
-  async xItem(...args: number[]): Promise<number> {return this.$callMethod('xItem',...args);}
-  async xoffs(...args: number[]): Promise<number> {return this.$callMethod('xoffs',...args);}
-  async yItem(...args: number[]): Promise<number> {return this.$callMethod('yItem',...args);}
-  async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
-  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
 
 export class GodleyTable extends CppClass {
@@ -1105,7 +1067,7 @@ export class Group extends Item {
   async closestOutPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestOutPort',a1,a2);}
   async computeDisplayZoom(): Promise<number> {return this.$callMethod('computeDisplayZoom');}
   async computeRelZoom(): Promise<void> {return this.$callMethod('computeRelZoom');}
-  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
+  async contains(...args: any[]): Promise<boolean> {return this.$callMethod('contains',...args);}
   async copy(): Promise<object> {return this.$callMethod('copy');}
   async copyUnowned(): Promise<object> {return this.$callMethod('copyUnowned');}
   async corners(): Promise<object[]> {return this.$callMethod('corners');}
@@ -1342,15 +1304,14 @@ export class Minsky extends CppClass {
   evalGodley: EvalGodley;
   flowVars: Sequence<number>;
   fontSampler: FontDisplay;
-  godleyTab: GodleyTab;
+  histogramResource: SVGRenderer;
   logVarList: Container<string>;
   maxFlowValue: Map<Units,number>;
   maxValue: Map<Units,number>;
   model: Group;
   namedItems: Map<string,Item>;
-  panopticon: Panopticon;
   phillipsDiagram: PhillipsDiagram;
-  plotTab: PlotTab;
+  publicationTabs: Sequence<PubTab>;
   stockVars: Sequence<number>;
   variableInstanceList: VariableInstanceList;
   variablePane: VariablePane;
@@ -1364,21 +1325,22 @@ export class Minsky extends CppClass {
     this.evalGodley=new EvalGodley(this.$prefix()+'.evalGodley');
     this.flowVars=new Sequence<number>(this.$prefix()+'.flowVars');
     this.fontSampler=new FontDisplay(this.$prefix()+'.fontSampler');
-    this.godleyTab=new GodleyTab(this.$prefix()+'.godleyTab');
+    this.histogramResource=new SVGRenderer(this.$prefix()+'.histogramResource');
     this.logVarList=new Container<string>(this.$prefix()+'.logVarList');
     this.maxFlowValue=new Map<Units,number>(this.$prefix()+'.maxFlowValue');
     this.maxValue=new Map<Units,number>(this.$prefix()+'.maxValue');
     this.model=new Group(this.$prefix()+'.model');
     this.namedItems=new Map<string,Item>(this.$prefix()+'.namedItems',Item);
-    this.panopticon=new Panopticon(this.$prefix()+'.panopticon');
     this.phillipsDiagram=new PhillipsDiagram(this.$prefix()+'.phillipsDiagram');
-    this.plotTab=new PlotTab(this.$prefix()+'.plotTab');
+    this.publicationTabs=new Sequence<PubTab>(this.$prefix()+'.publicationTabs',PubTab);
     this.stockVars=new Sequence<number>(this.$prefix()+'.stockVars');
     this.variableInstanceList=new VariableInstanceList(this.$prefix()+'.variableInstanceList');
     this.variablePane=new VariablePane(this.$prefix()+'.variablePane');
     this.variableValues=new VariableValues(this.$prefix()+'.variableValues');
   }
+  async addCanvasItemToPublicationTab(a1: number): Promise<void> {return this.$callMethod('addCanvasItemToPublicationTab',a1);}
   async addIntegral(): Promise<void> {return this.$callMethod('addIntegral');}
+  async addNewPublicationTab(a1: string): Promise<void> {return this.$callMethod('addNewPublicationTab',a1);}
   async allGodleyFlowVars(): Promise<string[]> {return this.$callMethod('allGodleyFlowVars');}
   async assetClasses(): Promise<string[]> {return this.$callMethod('assetClasses');}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
@@ -1473,6 +1435,7 @@ export class Minsky extends CppClass {
   async renderCanvasToPS(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPS',a1);}
   async renderCanvasToSVG(a1: string): Promise<void> {return this.$callMethod('renderCanvasToSVG',a1);}
   async renderEquationsToImage(a1: string): Promise<void> {return this.$callMethod('renderEquationsToImage',a1);}
+  async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async requestReset(): Promise<void> {return this.$callMethod('requestReset');}
   async reset(): Promise<void> {return this.$callMethod('reset');}
   async resetIfFlagged(): Promise<boolean> {return this.$callMethod('resetIfFlagged');}
@@ -1510,68 +1473,24 @@ export class Minsky extends CppClass {
   async variableTypes(): Promise<string[]> {return this.$callMethod('variableTypes');}
 }
 
-export class Panopticon extends CppClass {
-  backgroundColour: ecolab__cairo__Colour;
-  item: Item;
-  wire: Wire;
-  constructor(prefix: string){
-    super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
-    this.item=new Item(this.$prefix()+'.item');
-    this.wire=new Wire(this.$prefix()+'.wire');
-  }
-  async cheight(...args: number[]): Promise<number> {return this.$callMethod('cheight',...args);}
-  async cleft(...args: number[]): Promise<number> {return this.$callMethod('cleft',...args);}
-  async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
-  async ctop(...args: number[]): Promise<number> {return this.$callMethod('ctop',...args);}
-  async cwidth(...args: number[]): Promise<number> {return this.$callMethod('cwidth',...args);}
-  async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
-  async draw(): Promise<void> {return this.$callMethod('draw');}
-  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
-  async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
-  async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
-  async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
-  async height(...args: number[]): Promise<number> {return this.$callMethod('height',...args);}
-  async init(): Promise<void> {return this.$callMethod('init');}
-  async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
-  async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
-  async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
-  async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
-  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
-  async position(): Promise<number[]> {return this.$callMethod('position');}
-  async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
-  async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
-  async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
-  async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
-  async renderToPNG(a1: string): Promise<void> {return this.$callMethod('renderToPNG',a1);}
-  async renderToPS(a1: string): Promise<void> {return this.$callMethod('renderToPS',a1);}
-  async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
-  async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
-  async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
-  async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
-  async width(...args: number[]): Promise<number> {return this.$callMethod('width',...args);}
-  async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
-  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
-}
-
-export class PhillipsDiagram extends CppClass {
+export class PhillipsDiagram extends RenderNativeWindow {
   backgroundColour: ecolab__cairo__Colour;
   flows: Map<Pair<string,string>,PhillipsFlow>;
   item: Item;
   stocks: Map<string,PhillipsStock>;
   wire: Wire;
-  constructor(prefix: string){
-    super(prefix);
+  constructor(prefix: string|RenderNativeWindow){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super(prefix.$prefix())
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
     this.flows=new Map<Pair<string,string>,PhillipsFlow>(this.$prefix()+'.flows',PhillipsFlow);
     this.item=new Item(this.$prefix()+'.item');
     this.stocks=new Map<string,PhillipsStock>(this.$prefix()+'.stocks',PhillipsStock);
     this.wire=new Wire(this.$prefix()+'.wire');
   }
+  async clear(): Promise<void> {return this.$callMethod('clear');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disable(): Promise<void> {return this.$callMethod('disable');}
@@ -1599,6 +1518,7 @@ export class PhillipsDiagram extends CppClass {
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
+  async startRotatingItem(a1: number,a2: number): Promise<void> {return this.$callMethod('startRotatingItem',a1,a2);}
   async updateMaxValues(): Promise<void> {return this.$callMethod('updateMaxValues');}
   async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
@@ -1656,86 +1576,6 @@ export class PhillipsStock extends Item {
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async numPorts(): Promise<number> {return this.$callMethod('numPorts');}
   async type(): Promise<string> {return this.$callMethod('type');}
-}
-
-export class PlotTab extends CppClass {
-  backgroundColour: ecolab__cairo__Colour;
-  bottomRowMargin: Sequence<number>;
-  item: Item;
-  itemFocus: Item;
-  itemVector: Sequence<Item>;
-  rightColMargin: Sequence<number>;
-  varAttrib: Sequence<string>;
-  wire: Wire;
-  constructor(prefix: string){
-    super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'.bottomRowMargin');
-    this.item=new Item(this.$prefix()+'.item');
-    this.itemFocus=new Item(this.$prefix()+'.itemFocus');
-    this.itemVector=new Sequence<Item>(this.$prefix()+'.itemVector',Item);
-    this.rightColMargin=new Sequence<number>(this.$prefix()+'.rightColMargin');
-    this.varAttrib=new Sequence<string>(this.$prefix()+'.varAttrib');
-    this.wire=new Wire(this.$prefix()+'.wire');
-  }
-  async cell(a1: number,a2: number): Promise<ecolab__Pango> {return this.$callMethod('cell',a1,a2);}
-  async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
-  async colX(a1: number): Promise<number> {return this.$callMethod('colX',a1);}
-  async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
-  async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
-  async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
-  async draw(...args: any[]): Promise<void> {return this.$callMethod('draw',...args);}
-  async evenHeight(): Promise<boolean> {return this.$callMethod('evenHeight');}
-  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
-  async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
-  async getVarName(a1: number): Promise<string> {return this.$callMethod('getVarName',a1);}
-  async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
-  async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
-  async height(): Promise<number> {return this.$callMethod('height');}
-  async init(): Promise<void> {return this.$callMethod('init');}
-  async itemAt(a1: number,a2: number): Promise<object> {return this.$callMethod('itemAt',a1,a2);}
-  async itemSelector(a1: Item): Promise<boolean> {return this.$callMethod('itemSelector',a1);}
-  async justification(a1: number): Promise<string> {return this.$callMethod('justification',a1);}
-  async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async m_height(...args: number[]): Promise<number> {return this.$callMethod('m_height',...args);}
-  async m_width(...args: number[]): Promise<number> {return this.$callMethod('m_width',...args);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
-  async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
-  async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
-  async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
-  async moveCursorTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveCursorTo',a1,a2);}
-  async moveItemTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveItemTo',a1,a2);}
-  async moveOffsX(...args: number[]): Promise<number> {return this.$callMethod('moveOffsX',...args);}
-  async moveOffsY(...args: number[]): Promise<number> {return this.$callMethod('moveOffsY',...args);}
-  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
-  async numCols(): Promise<number> {return this.$callMethod('numCols');}
-  async numRows(): Promise<number> {return this.$callMethod('numRows');}
-  async offsx(...args: number[]): Promise<number> {return this.$callMethod('offsx',...args);}
-  async offsy(...args: number[]): Promise<number> {return this.$callMethod('offsy',...args);}
-  async populateItemVector(): Promise<void> {return this.$callMethod('populateItemVector');}
-  async position(): Promise<number[]> {return this.$callMethod('position');}
-  async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
-  async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
-  async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
-  async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
-  async renderToPNG(a1: string): Promise<void> {return this.$callMethod('renderToPNG',a1);}
-  async renderToPS(a1: string): Promise<void> {return this.$callMethod('renderToPS',a1);}
-  async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
-  async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
-  async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
-  async rowY(a1: number): Promise<number> {return this.$callMethod('rowY',a1);}
-  async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async togglePlotDisplay(): Promise<void> {return this.$callMethod('togglePlotDisplay');}
-  async toggleVarDisplay(a1: number): Promise<void> {return this.$callMethod('toggleVarDisplay',a1);}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
-  async width(): Promise<number> {return this.$callMethod('width');}
-  async xItem(...args: number[]): Promise<number> {return this.$callMethod('xItem',...args);}
-  async xoffs(...args: number[]): Promise<number> {return this.$callMethod('xoffs',...args);}
-  async yItem(...args: number[]): Promise<number> {return this.$callMethod('yItem',...args);}
-  async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
-  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
 
 export class PlotWidget extends Item {
@@ -1893,6 +1733,48 @@ export class Port extends CppClass {
   async y(): Promise<number> {return this.$callMethod('y');}
 }
 
+export class PubItem extends CppClass {
+  itemRef: Item;
+  constructor(prefix: string){
+    super(prefix);
+    this.itemRef=new Item(this.$prefix()+'.itemRef');
+  }
+  async itemCoords(a1: number,a2: number): Promise<object> {return this.$callMethod('itemCoords',a1,a2);}
+  async rotation(...args: number[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async x(...args: number[]): Promise<number> {return this.$callMethod('x',...args);}
+  async y(...args: number[]): Promise<number> {return this.$callMethod('y',...args);}
+  async zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('zoomFactor',...args);}
+}
+
+export class PubTab extends RenderNativeWindow {
+  items: Sequence<PubItem>;
+  constructor(prefix: string|RenderNativeWindow){
+    if (typeof prefix==='string')
+      super(prefix)
+    else
+      super(prefix.$prefix())
+    this.items=new Sequence<PubItem>(this.$prefix()+'.items',PubItem);
+  }
+  async addNote(a1: string,a2: number,a3: number): Promise<void> {return this.$callMethod('addNote',a1,a2,a3);}
+  async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
+  async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
+  async m_zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('m_zoomFactor',...args);}
+  async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
+  async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
+  async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
+  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
+  async name(...args: string[]): Promise<string> {return this.$callMethod('name',...args);}
+  async offsx(...args: number[]): Promise<number> {return this.$callMethod('offsx',...args);}
+  async offsy(...args: number[]): Promise<number> {return this.$callMethod('offsy',...args);}
+  async panning(...args: boolean[]): Promise<boolean> {return this.$callMethod('panning',...args);}
+  async position(): Promise<number[]> {return this.$callMethod('position');}
+  async removeItemAt(a1: number,a2: number): Promise<void> {return this.$callMethod('removeItemAt',a1,a2);}
+  async removeSelf(): Promise<void> {return this.$callMethod('removeSelf');}
+  async rotateItemAt(a1: number,a2: number): Promise<void> {return this.$callMethod('rotateItemAt',a1,a2);}
+  async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
+  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
+}
+
 export class Ravel extends Item {
   axisDimensions: Map<string,civita__Dimension>;
   lockGroup: RavelLockGroup;
@@ -2026,48 +1908,6 @@ export class RavelPopup extends CppClass {
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
 
-export class RenderNativeWindow extends CppClass {
-  backgroundColour: ecolab__cairo__Colour;
-  item: Item;
-  wire: Wire;
-  constructor(prefix: string){
-    super(prefix);
-    this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
-    this.item=new Item(this.$prefix()+'.item');
-    this.wire=new Wire(this.$prefix()+'.wire');
-  }
-  async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
-  async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
-  async draw(): Promise<void> {return this.$callMethod('draw');}
-  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
-  async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
-  async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
-  async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
-  async init(): Promise<void> {return this.$callMethod('init');}
-  async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
-  async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
-  async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
-  async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
-  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
-  async position(): Promise<number[]> {return this.$callMethod('position');}
-  async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
-  async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
-  async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
-  async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
-  async renderToPNG(a1: string): Promise<void> {return this.$callMethod('renderToPNG',a1);}
-  async renderToPS(a1: string): Promise<void> {return this.$callMethod('renderToPS',a1);}
-  async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
-  async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
-  async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
-  async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
-  async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
-  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
-}
-
 export class SVGRenderer extends CppClass {
   constructor(prefix: string){
     super(prefix);
@@ -2113,7 +1953,7 @@ export class Selection extends CppClass {
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async arguments(): Promise<string> {return this.$callMethod('arguments');}
-  async attachedToDefiningVar(...args: Container<Item>[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
+  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
@@ -2239,7 +2079,7 @@ export class Selection extends CppClass {
   async toggleItemMembership(a1: Item): Promise<void> {return this.$callMethod('toggleItemMembership',a1);}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async top(): Promise<number> {return this.$callMethod('top');}
-  async uniqueItems(...args: Container<void>[]): Promise<boolean> {return this.$callMethod('uniqueItems',...args);}
+  async uniqueItems(...args: any[]): Promise<boolean> {return this.$callMethod('uniqueItems',...args);}
   async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
   async updateBoundingBox(): Promise<void> {return this.$callMethod('updateBoundingBox');}
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
@@ -2425,11 +2265,13 @@ export class VariablePaneCell extends CppClass {
 
 export class VariableValue extends CppClass {
   csvDialog: CSVDialog;
+  rhs: civita__ITensor;
   tensorInit: civita__TensorVal;
   units: Units;
   constructor(prefix: string){
     super(prefix);
     this.csvDialog=new CSVDialog(this.$prefix()+'.csvDialog');
+    this.rhs=new civita__ITensor(this.$prefix()+'.rhs');
     this.tensorInit=new civita__TensorVal(this.$prefix()+'.tensorInit');
     this.units=new Units(this.$prefix()+'.units');
   }

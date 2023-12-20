@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>User defined functions</TITLE>
-<META NAME="description" CONTENT="User defined functions">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,83 +14,139 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node47.html">
-<LINK REL="up" HREF="minsky.html">
+<LINK REL="next" HREF="node129.html">
+<LINK REL="previous" HREF="node127.html">
+<LINK REL="up" HREF="node47.html">
 <LINK REL="next" HREF="node129.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1663"
+<A NAME="tex2html1694"
   HREF="node129.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1661"
-  HREF="minsky.html">
+<A NAME="tex2html1692"
+  HREF="node47.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1657"
+<A NAME="tex2html1686"
   HREF="node127.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1664"
-  HREF="node129.html">Introduction</A>
-<B> Up:</B> <A NAME="tex2html1662"
-  HREF="minsky.html">Minsky Simulation Engine</A>
-<B> Previous:</B> <A NAME="tex2html1658"
-  HREF="node127.html">Ravel</A>
+<B> Next:</B> <A NAME="tex2html1695"
+  HREF="node129.html">Sheet Widget</A>
+<B> Up:</B> <A NAME="tex2html1693"
+  HREF="node47.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1687"
+  HREF="node127.html">Groups</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00500000000000000000"></A><A NAME="ExprTk"></A>
+<H1><A NAME="SECTION00480000000000000000"></A>
+<A NAME="PlotWidget"></A>
 <BR>
-User defined functions
+Plot widget
 </H1>
 
 <P>
-<EM>Much of this chapter is exerpted from <A NAME="tex2html30"
-  HREF="https://github.com/ArashPartow/exprtk/blob/master/readme.txt">exprtk's
-read.txt
-file</A></EM>
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
 
 <P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="241" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
+ SRC="img259.png"
+ ALT="\includegraphics{images/plotWidget.eps}">
 
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html1665"
-  HREF="node129.html">Introduction</A>
-<LI><A NAME="tex2html1666"
-  HREF="node130.html">Capabilities</A>
-<LI><A NAME="tex2html1667"
-  HREF="node131.html">Example expressions</A>
-<LI><A NAME="tex2html1668"
-  HREF="node132.html">Copyright notice</A>
-<LI><A NAME="tex2html1669"
-  HREF="node133.html">Built-in operations &amp; functions</A>
-<UL>
-<LI><A NAME="tex2html1670"
-  HREF="node134.html">Arithmetic &amp; Assignment Operators</A>
-<LI><A NAME="tex2html1671"
-  HREF="node135.html">Equalities &amp; Inequalities</A>
-<LI><A NAME="tex2html1672"
-  HREF="node136.html">Boolean Operations</A>
-<LI><A NAME="tex2html1673"
-  HREF="node137.html">General Purpose Functions</A>
-<LI><A NAME="tex2html1674"
-  HREF="node138.html">Trigonometry Functions</A>
-<LI><A NAME="tex2html1675"
-  HREF="node139.html">String Processing</A>
-<LI><A NAME="tex2html1676"
-  HREF="node140.html">Control Structures</A>
-</UL>
+</DIV>
+
+<P>
+<DL>
+<DT><STRONG>left hand edge</STRONG></DT>
+<DD>Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
+</DD>
+<DT><STRONG>right hand edge</STRONG></DT>
+<DD>Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
+</DD>
+<DT><STRONG>bottom edge</STRONG></DT>
+<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN>-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="529" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
+ SRC="img260.png"
+ ALT="\includegraphics{images/plotLissajous.eps}">
+
+</DIV>
+
+<P>
+If only one bottom port is connected, then that controls all pens
+simultaneously, and if no ports are connected, then the simulation
+time is used to provide the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN> coordinates
+</DD>
+<DT><STRONG>corners</STRONG></DT>
+<DD>Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img61.png"
+ ALT="$y$"></SPAN> and right
+  hand <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img61.png"
+ ALT="$y$"></SPAN> axes. If left unwired, the scales are determined
+  automatically from the data. This can be used, for example, to
+  implement a sliding window graph
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="480" HEIGHT="424" ALIGN="BOTTOM" BORDER="0"
+ SRC="img261.png"
+ ALT="\includegraphics{images/plotSlidingWindow.eps}">
+
+</DIV>
+</DD>
+</DL>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1694"
+  HREF="node129.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1692"
+  HREF="node47.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1686"
+  HREF="node127.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<LI><A NAME="tex2html1677"
-  HREF="node141.html">Fundamental types</A>
-</UL>
-<!--End of Table of Child-Links-->
-<BR><HR>
+<B> Next:</B> <A NAME="tex2html1695"
+  HREF="node129.html">Sheet Widget</A>
+<B> Up:</B> <A NAME="tex2html1693"
+  HREF="node47.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1687"
+  HREF="node127.html">Groups</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

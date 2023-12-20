@@ -94,7 +94,7 @@ namespace MathDAG
             TensorPtr rhs=tensorOpFactory.create(state,TensorsFromPort(ec));
             if (!rhs) return false;
             result->index(rhs->index());
-            result->hypercube(rhs->hypercube());
+            result->rhs=rhs;
             ev.emplace_back(EvalOpPtr(new TensorEval(result, ec, rhs)));
             return true;
           }
@@ -210,7 +210,7 @@ namespace MathDAG
       return false; // cycle detected, break
     switch (OperationType::classify(type()))
       {
-      case reduction: case scan: case tensor:
+      case reduction: case scan: case tensor: case statistics:
         return true;
       case general: case binop: case constop: case function:
         for (auto& i: arguments)

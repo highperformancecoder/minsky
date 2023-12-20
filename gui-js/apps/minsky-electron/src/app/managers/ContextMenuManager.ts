@@ -1,8 +1,7 @@
 import {
-  CanvasItem,
-  ClassType,
-  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, Ravel, Sheet, SwitchIcon,
-  VariableBase, VariableValue, Functions, events
+  Canvas,CanvasItem,ClassType,
+  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, PubTab,
+  Ravel, RenderNativeWindow, Sheet, SwitchIcon,VariableBase, VariableValue, Functions, events
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
 import { BookmarkManager } from './BookmarkManager';
@@ -29,8 +28,10 @@ export class ContextMenuManager {
         const currentTab = WindowManager.currentTab;
         if (currentTab.$equal(minsky.canvas))
           this.initContextMenuForWiring(mainWindow);
-        else if (currentTab.$equal(minsky.plotTab))
-          this.initContextMenuForPlotTab(mainWindow);
+        else if (currentTab.$equal(minsky.phillipsDiagram))
+          this.initContextMenuForPhillipsDiagram(mainWindow);
+        else
+          this.initContextMenuForPublication(event, mainWindow,currentTab);
       }
       break;
       case "godley":
@@ -54,22 +55,58 @@ export class ContextMenuManager {
     }
   }
 
-  private static async initContextMenuForPlotTab(mainWindow: BrowserWindow) {
-    if (await minsky.plotTab.getItemAt(this.x,this.y)) {
+  private static async initContextMenuForPublication(event: IpcMainEvent, mainWindow: BrowserWindow, currentTab: RenderNativeWindow) {
+    let pubTab=new PubTab(currentTab);
+    const menuItems = [
+      new MenuItem({
+        label: 'Add note: please just type note directly for now',
+        click: ()=>{
+        },
+        enabled: false,
+      }),
+      new MenuItem({
+        label: 'Rotate item',
+        click: () => {
+          pubTab.rotateItemAt(this.x,this.y);
+        },
+        enabled: await pubTab.getItemAt(this.x,this.y),
+      }),
+      new MenuItem({
+        label: 'Remove item',
+        click: () => {
+          pubTab.removeItemAt(this.x,this.y);
+        },
+        enabled: await pubTab.getItemAt(this.x,this.y),
+      }),
+      new MenuItem({type: 'separator'}),
+      new MenuItem({
+        label: 'Remove publication tab',
+        click: async () => {
+          event.sender.send(events.CHANGE_MAIN_TAB);
+          setTimeout(async ()=>{
+            await pubTab.removeSelf();
+            event.sender.send(events.PUB_TAB_REMOVED);
+          },100); // allow enough time for renderer to switch to canvas tabs before removing this tab
+        }
+      }),
+    ];
+
+      ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
+
+      return;
+  }
+  
+  private static async initContextMenuForPhillipsDiagram(mainWindow: BrowserWindow) {
       const menuItems = [
         new MenuItem({
-          label: `Remove plot from tab`,
+          label: 'Rotate',
           click: async () => {
-            minsky.plotTab.togglePlotDisplay();
-            minsky.plotTab.requestRedraw();
+            minsky.phillipsDiagram.startRotatingItem(this.x,this.y);
           },
         }),
       ];
 
       ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
-
-      return;
-    }
   }
 
   private static async initContextMenuForWiring(mainWindow: BrowserWindow) {
@@ -243,10 +280,6 @@ export class ContextMenuManager {
       }),
 
       new MenuItem({
-        label: 'Show all plots on tab',
-        click: () => {minsky.canvas.showPlotsOnTab();},
-      }),
-      new MenuItem({
         label: 'Bookmark here',
         click: async () => {
           await CommandsManager.bookmarkAt(this.x, this.y);
@@ -419,21 +452,43 @@ export class ContextMenuManager {
     menuItems = [
       ...menuItems,
       new MenuItem({
+        label: `Rotate ${itemInfo.classType}`,
+        click:  () => {
+          minsky.canvas.rotateItem(this.x, this.y);
+        }
+      }),
+      new MenuItem({
+        label: 'Add item to a publication tab',
+        submenu: await ContextMenuManager.pubTabMenu(),
+      }),
+      new MenuItem({
         label: `Delete ${itemInfo.classType}`,
-        click: async () => {
-          await CommandsManager.deleteCurrentItemHavingId(itemInfo.id);
+        click: () => {
+          CommandsManager.deleteCurrentItemHavingId(itemInfo.id);
         },
       }),
     ];
-
+    
     return menuItems;
   }
 
+  private static async pubTabMenu() {
+    let pubTabs=await minsky.publicationTabs.$properties();
+    let menu=[];
+    for (let i=0; i<pubTabs.length; ++i) {
+      let j=i;
+      menu.push({
+        label: pubTabs[i].name,
+        click: ()=>{minsky.addCanvasItemToPublicationTab(j);}
+      });
+    }
+    return menu;
+  }
+  
   private static async buildContextMenuForPlotWidget(
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
     const plot=new PlotWidget(minsky.canvas.item);
-    const displayPlotOnTabChecked = await plot.plotTabDisplay();
 
     const menuItems = [
       new MenuItem({
@@ -474,12 +529,6 @@ export class ContextMenuManager {
             width: 350,
           });
         },
-      }),
-      new MenuItem({
-        label: 'Display plot on tab',
-        type: 'checkbox',
-        checked: displayPlotOnTabChecked,
-        click: async () => {plot.togglePlotTabDisplay();}
       }),
       new MenuItem({
         label: 'Export as CSV',
@@ -916,6 +965,7 @@ export class ContextMenuManager {
     }
 
     let v=new VariableBase(minsky.canvas.item);
+    let miniPlot=await v.miniPlotEnabled();
     
     const menuItems = [
       dims && dims.length
@@ -962,6 +1012,12 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Add integral',
         click: () => {minsky.addIntegral();}
+      }),
+      new MenuItem({
+        label: 'Mini Plot',
+        type: 'checkbox',
+        checked: miniPlot,
+        click: () => {v.miniPlotEnabled(!miniPlot);}
       }),
     ];
 

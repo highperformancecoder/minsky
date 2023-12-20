@@ -31,13 +31,14 @@ namespace minsky
 
   OperationType::Group OperationType::classify(Type t)
   {
-	  if (t<euler) return general;
-	  if (t<add) return constop; 
-      if (t<copy) return binop;     
-      if (t<sum) return function;
-      if (t<runningSum) return reduction;
-      if (t<innerProduct) return scan;
-      return tensor;
+    if (t<euler) return general;
+    if (t<add) return constop; 
+    if (t<copy) return binop;     
+    if (t<sum) return function;
+    if (t<runningSum) return reduction;
+    if (t<innerProduct) return scan;
+    if (t<mean) return tensor;
+    return statistics;
   }
 
   
@@ -64,6 +65,8 @@ namespace minsky
     template <> int numArguments<OperationType::max>() {return 2;}
     template <> int numArguments<OperationType::and_>() {return 2;}
     template <> int numArguments<OperationType::or_>() {return 2;}
+    template <> int numArguments<OperationType::covariance>() {return 2;}
+    template <> int numArguments<OperationType::rho>() {return 2;}
     template <> int numArguments<OperationType::userFunction>() {return 2;}
     template <> int numArguments<OperationType::not_>() {return 1;}
     template <> int numArguments<OperationType::time>() {return 0;}    
@@ -94,6 +97,14 @@ namespace minsky
     template <> int numArguments<OperationType::supremum>() {return 1;}
     template <> int numArguments<OperationType::infIndex>() {return 1;}
     template <> int numArguments<OperationType::supIndex>() {return 1;}
+    template <> int numArguments<OperationType::size>() {return 1;}
+    template <> int numArguments<OperationType::shape>() {return 1;}
+    template <> int numArguments<OperationType::mean>() {return 1;}
+    template <> int numArguments<OperationType::median>() {return 1;}
+    template <> int numArguments<OperationType::stdDev>() {return 1;}
+    template <> int numArguments<OperationType::moment>() {return 1;}
+    template <> int numArguments<OperationType::histogram>() {return 1;}
+    
     template <> int numArguments<OperationType::any>() {return 1;}
     template <> int numArguments<OperationType::all>() {return 1;}
     template <> int numArguments<OperationType::runningSum>() {return 1;}

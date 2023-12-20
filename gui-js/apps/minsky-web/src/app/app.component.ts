@@ -1,7 +1,7 @@
-import { Component, HostListener, DoCheck, ChangeDetectorRef } from '@angular/core';
+import { Component, HostListener, DoCheck, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
-import { events, MainRenderingTabs, RenderNativeWindow } from '@minsky/shared';
+import { events, RenderNativeWindow } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -9,19 +9,19 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements DoCheck {
-  htmlTabs = [MainRenderingTabs.summary];
+export class AppComponent implements OnInit, DoCheck {
+  htmlTabs = ['itemTab/summary'];
 
   loading = true;
-    MainRenderingTabs = MainRenderingTabs;
-    private windowUtilityService: WindowUtilityService;
-    private resizeTimeout;
+  publicationTabs = [];
+  private windowUtilityService: WindowUtilityService;
+  private resizeTimeout;
   constructor(
     private electronService: ElectronService,
     private cmService: CommunicationService,
     private translate: TranslateService,
     private cdRef: ChangeDetectorRef,
-    public router: Router
+    public router: Router,
   ) {
     this.windowUtilityService=new WindowUtilityService(electronService);
     this.translate.setDefaultLang('en');
@@ -43,9 +43,10 @@ export class AppComponent implements DoCheck {
     }
   }
 
-  ngDoCheck() {
+  async ngDoCheck() {
     if(this.loading && this.router.url !== '/') {
       this.loading = false;
+      this.updatePubTabs();
       this.cdRef.detectChanges();
 
       // When the event DOMContentLoaded occurs, it is safe to access the DOM
@@ -72,6 +73,25 @@ export class AppComponent implements DoCheck {
     }  
   }
 
+  async ngOnInit() {
+    this.electronService.on(events.CHANGE_MAIN_TAB, ()=>this.changeTab('minsky.canvas'));
+    this.electronService.on(events.PUB_TAB_REMOVED, ()=>this.updatePubTabs());
+  }
+
+  async updatePubTabs() {
+    let pubTabs=await this.electronService.minsky.publicationTabs.$properties();
+    this.publicationTabs=[];
+    for (let i=0; i<pubTabs.length; ++i)
+      this.publicationTabs.push(pubTabs[i].name);
+    this.cdRef.detectChanges();
+  }
+  
+  async addPubTab() {
+    await this.electronService.invoke(events.NEW_PUB_TAB);
+    this.updatePubTabs();
+    this.changeTab('minsky.canvas');
+  }
+  
   // close modals with ESC
   private async handleEscKey(event: KeyboardEvent) {
     (document.activeElement as HTMLElement).blur();
@@ -107,7 +127,7 @@ export class AppComponent implements DoCheck {
       });
   }
 
-  async changeTab(tab: MainRenderingTabs) {
+  async changeTab(tab: string) {
     if(this.htmlTabs.includes(tab)) {
       if(!this.htmlTabs.includes(this.cmService.currentTab)) {
         new RenderNativeWindow(this.cmService.currentTab).$callMethodSync("disable");
@@ -119,14 +139,9 @@ export class AppComponent implements DoCheck {
     } else {
       this.router.navigate(['wiring']);
 
-      
       if (this.electronService.isElectron) {
-        if(!this.htmlTabs.includes(this.cmService.currentTab)) {
-          await new RenderNativeWindow(this.cmService.currentTab).requestRedraw();
-        }
-    
         this.cmService.currentTab = tab;
-
+        
         setTimeout(async ()=> {
           await this.windowUtilityService.reInitialize();
           var container=this.windowUtilityService.getMinskyContainerElement();

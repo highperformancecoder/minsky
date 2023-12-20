@@ -109,6 +109,12 @@ namespace minsky
     Exclude<shared_ptr<Port>> fromPort; ///< from port when creating a new wire
     double termX,termY; ///< terminal of wire when extending
     float moveOffsX, moveOffsY;
+    bool rotatingItem=false; ///< set true when rotating an item
+    Exclude<Point> rotateOrigin; ///< starting mouse position when rotating
+    void rotateItem(float x, float y) {
+      rotateOrigin=Point(x,y);
+      rotatingItem=true;
+    }
     ClickType::Type clickType;
     /// for drawing error indicators on the canvas
     bool itemIndicator=false;
@@ -213,7 +219,7 @@ namespace minsky
     Items itemVector;
     void pushDefiningVarsToTab();
     void showDefiningVarsOnCanvas();    
-    
+
     /// push all plots on the canvas to the plot tab
     void showPlotsOnTab();    
 

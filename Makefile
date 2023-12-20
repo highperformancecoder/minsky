@@ -39,24 +39,29 @@ endif
 ifndef MXE
 ifdef GCC
 CPLUSPLUS=g++
-LINK=g++
 else
 # default to clang if present
 HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
 ifeq ($(HAVE_CLANG),1)
 CPLUSPLUS=clang++
-LINK=clang++
 $(warning clang selected)
+else
+CPLUSPLUS=g++
 endif
+LINK=$(CPLUSPLUS)
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc CPLUSPLUS=$(CPLUSPLUS) GCOV=$(GCOV)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)) 
+build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1) 
 $(warning $(build_RavelCAPI))
 endif
 
+ifdef FLTO
+# for some distros with older clang compilers. Passing this through
+CPLUSPLUS+=-flto
+endif
 
 ifdef DISTCC
 CPLUSPLUS=distcc
@@ -121,7 +126,7 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o godleyTab.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o panopticon.o phillipsDiagram.o plotTab.o plotWidget.o port.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
+MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o grid.o group.o item.o itemTab.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o phillipsDiagram.o plotWidget.o port.o pubTab.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
 ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
@@ -174,7 +179,7 @@ FLAGS+=-Werror
 endif
 endif
 
-FLAGS+=-std=c++14 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
+FLAGS+=-std=c++20 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
 
 ifeq ($(CPLUSPLUS),clang++)
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option
@@ -405,7 +410,7 @@ else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
 else
-	$(LINK) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
 endif
 

@@ -31,5 +31,6 @@ TD.eqno			{ }	/* equation-number cells */
 DIV.center		{   }
 DIV.navigation		{   }
 PRE.preform		{   }
+DIV.quote		{   }
 SPAN.arabic		{   }
 SPAN.textbf		{ font-weight: bold  }

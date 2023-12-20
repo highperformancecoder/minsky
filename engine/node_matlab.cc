@@ -317,6 +317,120 @@ namespace MathDAG
     return o;
   }
 
+  // note strictly speaking, corr and corrcoef in Matlab only match
+  // the Minsky definitions for vectors. In Matlab, an NxM and NxL
+  // matrix produces a MxL output. In Minsky, the two arguments must
+  // be conformant.
+  template <>
+  ostream& OperationDAG<OperationType::covariance>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      return o<<"corr("<<arguments[0][0]->matlab()<<"," <<
+            arguments[1][0]->matlab()<<")";
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::rho>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      return o<<"corrcoef("<<arguments[0][0]->matlab()<<"," <<
+        arguments[1][0]->matlab()<<")";
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::size>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        size_t dim=numeric_limits<size_t>::max();
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          if (auto vv=arguments[0][0]->result)
+            {
+              for (auto& i: vv->hypercube().xvectors)
+                if (i.name==op->axis)
+                  {
+                    dim=&i-&vv->hypercube().xvectors.front();
+                    break;
+                  }
+              if (dim<vv->rank())
+                return o<<"size("<<arguments[0][0]->matlab()<<","<<dim<<")";
+            }
+        return o<<"prod(size("<<arguments[0][0]->matlab()<<"))";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::shape>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"size("<<arguments[0][0]->matlab()<<")";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::mean>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"mean("<<arguments[0][0]->matlab()<<")";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::median>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"median("<<arguments[0][0]->matlab()<<")";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::stdDev>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"std("<<arguments[0][0]->matlab()<<")";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::moment>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        double exponent=1;
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          exponent=op->arg;
+        return o<<"moment("<<arguments[0][0]->matlab()<<","<<exponent<<")";
+      }
+    return o<<"0";
+  }
+
+  // note - matlab doesn't have a histogram function by default
+  template <>
+  ostream& OperationDAG<OperationType::histogram>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        size_t nBins=1;
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          nBins=op->arg;
+        return o<<"histogram("<<arguments[0][0]->matlab()<<","<<nBins<<")";
+      }
+    return o<<"0";
+  }
+
   template <>
   ostream& OperationDAG<OperationType::time>::matlab(ostream& o) const
   {

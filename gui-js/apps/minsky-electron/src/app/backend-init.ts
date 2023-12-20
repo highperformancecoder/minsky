@@ -218,4 +218,5 @@ export function loadResources()
   backendSync('minsky.setGroupIconResource',assetsDir+'/group.svg');
   backendSync('minsky.setRavelIconResource',assetsDir+'/ravel-logo.svg');
   backendSync('minsky.setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
+  backendSync('minsky.histogramResource.setResource',assetsDir+'/histogram.svg');
 }

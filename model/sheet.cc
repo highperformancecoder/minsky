@@ -246,7 +246,7 @@ namespace
           break;
         case ShowSlice::tail:
           numRows=height/rowHeight-1;
-          tailStartRow=startRow=size-numRows;
+          tailStartRow=startRow=size>numRows? size-numRows: 0;
           break;
         }
     }

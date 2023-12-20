@@ -21,7 +21,7 @@
 #ifndef PANNABLE_TAB_H
 #define PANNABLE_TAB_H
 #include "classdesc_access.h"
-#include <utility>
+#include <vector>
 
 namespace minsky
 {
@@ -65,6 +65,14 @@ namespace minsky
     {
       return {Base::offsx, Base::offsy};
     }
+    void zoom(double x, double y, double z) override {
+      Base::offsx=x+(Base::offsx-x)*z;
+      Base::offsy=y+(Base::offsy-y)*z;
+      Base::m_zoomFactor*=z;
+      Base::requestRedraw();
+    }
+
+    double zoomFactor() const override {return Base::m_zoomFactor;}
   };
 }
 

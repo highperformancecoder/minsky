@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Example expressions</TITLE>
-<META NAME="description" CONTENT="Example expressions">
+<TITLE>Godley Tables</TITLE>
+<META NAME="description" CONTENT="Godley Tables">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,86 +16,111 @@
 
 <LINK REL="next" HREF="node132.html">
 <LINK REL="previous" HREF="node130.html">
-<LINK REL="up" HREF="node128.html">
+<LINK REL="up" HREF="node47.html">
 <LINK REL="next" HREF="node132.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1706"
+<A NAME="tex2html1724"
   HREF="node132.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1704"
-  HREF="node128.html">
+<A NAME="tex2html1722"
+  HREF="node47.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1698"
+<A NAME="tex2html1716"
   HREF="node130.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1707"
-  HREF="node132.html">Copyright notice</A>
-<B> Up:</B> <A NAME="tex2html1705"
-  HREF="node128.html">User defined functions</A>
-<B> Previous:</B> <A NAME="tex2html1699"
-  HREF="node130.html">Capabilities</A>
+<B> Next:</B> <A NAME="tex2html1725"
+  HREF="node132.html">Context Menu</A>
+<B> Up:</B> <A NAME="tex2html1723"
+  HREF="node47.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1717"
+  HREF="node130.html">Note Widget</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00530000000000000000">
-Example expressions</A>
+<H1><A NAME="SECTION004110000000000000000"></A><A NAME="godley"></A><A NAME="GodleyIcon"></A>
+<BR>
+Godley Tables
 </H1>
-The following is  a short listing  of infix format  based mathematical
-expressions that can be parsed and evaluated using the ExprTk library.
+
+<P>
+Godley tables describes sets of financial flows from the point of view
+of a particular economic agent, such as a bank. The columns of the
+table represent accounts (possibly aggregated), which are treated as
+integration variables by the system. Accounts may be assets,
+liabilities or equities. Assets may appear as liabilities in another
+agent's Godley table, and vice versa, with the sense of the financial
+flows treated oppositely (a credit flow increasing the asset of one
+entity will appear as a debit flow, increasing the value of a
+liability). Transfers between accounts should satisfy the <EM>  accounting equation</EM><A NAME="2730"></A>
+(Assets-Liabilities-Equities = 0). So if the transfer is between an
+asset and a liability, then it should appear with the same sign (both
+positive or both negative), otherwise between two accounts of the same
+type, or between a liability and an equity, the terms should have
+opposite signs.
+
+<P>
+Instead of signed flows, one can optionally use CR and DR prefixes, as
+specified in the options panel. Each row of the table should have have
+one CR entry, and one DR entry. The row sum column should be zero if
+it is done correctly.
+
+<P>
+The first row specifies the stock variables, after which follow the
+flow rows. Usually, the row marked &ldquo;Initial Conditions&rdquo; comes next,
+but may be placed in any position. These specify the initial
+conditions of the stock variables, and may refer to a multiple of
+another variable, just like the <A HREF="node119.html#var:init">initial condition
+  field</A>, or just be a numerical value.
+
+<P>
+Finally come the flows. The first column is a simple textual label
+(the phrase &ldquo;Initial Conditions&rdquo;, regardless of capitalisation, is a
+reserved phrase for setting stock variable initial conditions)
+identifying the flow. The flows themselves are written as a numerical
+multiplier times a flow variable. For example, if you wanted to
+transfer an amount between the asset and liability column, you might
+write &ldquo;Amount" in both columns, which would satisfy the equation
+A-L-E=0.  It would also be possible to write &ldquo;2Amount" in the asset
+column, along with &ldquo;Amount" in both the Liability and Equity
+columns. This would still satisfy A-L-E=0.
+
+<P>
+The Godley table also shows the value of the entered variable,
+displayed within the table.  For example, if you set &ldquo;Amount" to
+equal the value of system time, on opening the Godley table, wherever
+you entered &ldquo;Amount" in the table the cell would show &ldquo;Amount =
+0.00" if the system time was set to 0.00. This provides a helpful tool
+for displaying the value of the variable at that point in the
+simulation.  This feature can be enabled or disabled in the
+preferences panel.
 
 <P>
 
-<UL>
-<LI><code>sqrt(1 - (3 / x^2))</code>
-</LI>
-<LI><code>clamp(-1, sin(2 * pi * x) + cos(y / 2 * pi), +1)</code>
-</LI>
-<LI><code>sin(2.34e-3 * x)</code>
-</LI>
-<LI><code>if(((x[2] + 2) == 3) and ((y + 5) &lt;= 9),1 + w, 2 / z)</code>
-</LI>
-<LI><code>inrange(-2,m,+2) == if(({-2 &lt;= m} and [m &lt;= +2]),1,0)</code>
-</LI>
-<LI><code>({1/1}*[1/2]+(1/3))-{1/4}^[1/5]+(1/6)-({1/7}+[1/8]*(1/9))</code>
-</LI>
-<LI><code>a * exp(2.2 / 3.3 * t) + c</code>
-</LI>
-<LI><code>z := x + sin(2.567 * pi / y)</code>
-</LI>
-<LI><code>u := 2.123 * {pi * z} / (w := x + cos(y / pi))</code>
-</LI>
-<LI><code>2x + 3y + 4z + 5w == 2 * x + 3 * y + 4 * z + 5 * w</code>
-</LI>
-<LI><code>3(x + y) / 2.9 + 1.234e+12 == 3 * (x + y) / 2.9 + 1.234e+12</code>
-</LI>
-<LI><code>(x + y)3.3 + 1 / 4.5 == [x + y] * 3.3 + 1 / 4.5</code>
-</LI>
-<LI><code>(x + y[i])z + 1.1 / 2.7 == (x + y[i]) * z + 1.1 / 2.7</code>
-</LI>
-<LI><code>(sin(x / pi) cos(2y) + 1) == (sin(x / pi) * cos(2 * y) + 1)</code>
-</LI>
-<LI><code>75x^17 + 25.1x^5 - 35x^4 - 15.2x^3 + 40x^2 - 15.3x + 1</code>
-</LI>
-<LI><code>(avg(x,y) &lt;= x + y ? x - y : x * y) + 2.345 * pi / x</code>
-</LI>
-<LI><code>while (x &lt;= 100) { x -= 1; }</code>
-</LI>
-<LI><code>x &lt;= 'abc123' and (y in 'AString') or ('1x2y3z' != z)</code>
-</LI>
-<LI><code>((x + 'abc') like '*123*') or ('a123b' ilike y)</code>
-</LI>
-<LI><code>sgn(+1.2^3.4z / -5.6y) &lt;= {-7.8^9 / -10.11x }</code>
-</LI>
-</UL>
-
-<P>
-<BR><HR>
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1724"
+  HREF="node132.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1722"
+  HREF="node47.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1716"
+  HREF="node130.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1725"
+  HREF="node132.html">Context Menu</A>
+<B> Up:</B> <A NAME="tex2html1723"
+  HREF="node47.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1717"
+  HREF="node130.html">Note Widget</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

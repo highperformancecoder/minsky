@@ -366,7 +366,7 @@ namespace minsky
 
     bool sameSlice(size_t i, size_t j) const
     {
-      return rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
+      return cachedResult.rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
     }
     
     void computeTensor() const override
@@ -382,9 +382,9 @@ namespace minsky
             }
         }
       else if (delta>=0)
-        for (size_t i=0; i<size(); ++i)
+        for (size_t i=0; i<cachedResult.size(); ++i)
           {
-            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
             auto t=ai+delta;
             if (sameSlice(t, ai))
               cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(ai);
@@ -394,7 +394,7 @@ namespace minsky
       else // with -ve delta, origin of result is shifted
         for (size_t i=0; i<size(); ++i)
           {
-            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
             auto t=ai-delta;
             if (sameSlice(t,ai))
               cachedResult[i]=arg->atHCIndex(ai)-arg->atHCIndex(t);
@@ -738,7 +738,7 @@ namespace minsky
                           }
                         },0) {}
   };
-  
+
   template <>
   struct GeneralTensorOp<OperationType::infIndex>: public civita::ReductionOp
   {
@@ -752,6 +752,307 @@ namespace minsky
                         },0) {}
   };
 
+  template <>
+  struct GeneralTensorOp<OperationType::size>: public civita::ITensor
+  {
+    TensorPtr arg;
+    size_t dimension=numeric_limits<size_t>::max();
+    void setArgument(const TensorPtr& a,const ITensor::Args& args) override
+    {
+      arg=a;
+      if (a)
+        {
+          for (size_t i=0; i<arg->rank(); ++i)
+          if (arg->hypercube().xvectors[i].name==args.dimension)
+            {
+              dimension=i;
+              break;
+            }
+        }
+      else
+        dimension=numeric_limits<size_t>::max();
+    }
+    double operator[](std::size_t) const override 
+    {return dimension<arg->rank()? arg->hypercube().xvectors[dimension].size(): arg->size();}
+    civita::ITensor::Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  template <>
+  struct GeneralTensorOp<OperationType::shape>: public civita::ITensor
+  {
+    TensorPtr arg;
+    int dimension=-1;
+    void setArgument(const TensorPtr& a,const ITensor::Args& args) override
+    {
+      arg=a;
+      if (a) 
+        hypercube({arg->rank()});
+      else
+        hypercube({});
+    }
+    double operator[](std::size_t i) const override
+    {return arg? arg->hypercube().xvectors[i].size(): nan("");}
+    civita::ITensor::Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  struct Correlation: public civita::ITensor
+  {
+    int dimension1, dimension2;
+    TensorPtr arg1, arg2;
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const ITensor::Args& args) override
+    {
+      arg1=a1? a1: a2;
+      arg2=a2? a2: a1;
+      if (!arg1 || !arg2) return;
+
+      Hypercube hc;
+      set<string> dimNames; // for ensuring dimension names are unique
+      switch (arg1->rank())
+        {
+        case 0:
+          throw runtime_error("covariance or ρ needs at least rank 1 arguments");
+        case 1:
+          dimension1=0;
+          break;
+        default:
+          dimension1=-1;
+          for (auto& xv:arg1->hypercube().xvectors)
+            if (xv.name==args.dimension)
+              dimension1=&xv-&arg1->hypercube().xvectors[0];
+            else
+              {
+                hc.xvectors.push_back(xv);
+                dimNames.insert(xv.name);
+              }
+          break;
+        }
+      
+      switch (arg2->rank())
+        {
+        case 0:
+          throw runtime_error("covariance or ρ needs at least rank 1 arguments");
+        case 1:
+          dimension2=0;
+          break;
+        default:
+          dimension2=-1;
+          for (auto& xv:arg2->hypercube().xvectors)
+            if (xv.name==args.dimension)
+              dimension2=&xv-&arg2->hypercube().xvectors[0];
+            else
+              {
+                hc.xvectors.push_back(xv);
+                if (!dimNames.insert(xv.name).second)
+                  hc.xvectors.back().name+="'"; // ensure dimension names are unique
+              }
+          break;
+        }
+
+      if (dimension1<0 || dimension2<0)
+        throw runtime_error("dimension "+args.dimension+" not found");
+      if (arg1->hypercube().xvectors[dimension1].size() != arg2->hypercube().xvectors[dimension2].size())
+        throw runtime_error("arguments not conformant");
+
+      hypercube(hc);
+        
+    }
+
+    template <class F> void performSum(F f, size_t idx) const
+    {
+      auto splitted=hypercube().splitIndex(idx);
+      auto splitIndexIterator=splitted.begin();
+
+      auto computeIndexAndStride=[&](size_t& lineal, size_t& stride, size_t dimension, const vector<unsigned>& dims) {
+        lineal=0; stride=1;
+        for (size_t i=0, s=1; i<dims.size(); s*=dims[i], ++i)
+          if (i!=dimension)
+            {
+              lineal=*splitIndexIterator++ * s;
+              stride=s*dims[i];
+            }
+      };
+
+      size_t arg1Lineal, arg1Stride, arg2Lineal, arg2Stride;
+      computeIndexAndStride(arg1Lineal, arg1Stride, dimension1, arg1->hypercube().dims());
+      computeIndexAndStride(arg2Lineal, arg2Stride, dimension2, arg2->hypercube().dims());
+      
+      for (size_t i=0; i<arg1->hypercube().xvectors[dimension1].size(); ++i)
+        {
+          auto x=arg1->atHCIndex(arg1Lineal+i*arg1Stride);
+          auto y=arg2->atHCIndex(arg2Lineal+i*arg2Stride);
+          if (isfinite(x) && isfinite(y)) f(x,y);
+        }
+
+    }
+    Timestamp timestamp() const override
+    {return max(arg1->timestamp(), arg2->timestamp());}
+  };
+
+  template <> struct GeneralTensorOp<OperationType::covariance>: public Correlation
+  {
+    double operator[](size_t i) const override
+    {
+      if (!arg1 || !arg2) return nan("");
+      double sumXY=0, sumX=0, sumY=0;
+      size_t count=0;
+      auto f=[&](double x, double y)
+      {
+        sumXY+=x*y;
+        sumX+=x;
+        sumY+=y;
+        count++;
+      };
+      performSum(f,i);
+      return (sumXY-sumX*sumY/count)/(count-1);
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::rho>: public Correlation
+  {
+    double operator[](size_t i) const override
+    {
+      if (!arg1 || !arg2) return nan("");
+      double sumXY=0, sumX=0, sumY=0, sumXsq=0, sumYsq=0;
+      size_t count=0;
+      auto f=[&](double x, double y)
+      {
+        sumXY+=x*y;
+        sumX+=x;
+        sumY+=y;
+        sumXsq+=x*x;
+        sumYsq+=y*y;
+        count++;
+      };
+      performSum(f,i);
+      double invCount=1.0/count;
+      return  (sumXY-sumX*sumY*invCount)/
+        sqrt((sumXsq-sumX*sumX*invCount)*(sumYsq-sumY*sumY*invCount));
+    }
+  };
+        
+  
+  template <> struct GeneralTensorOp<OperationType::mean>: public civita::Average {};
+  template <> struct GeneralTensorOp<OperationType::stdDev>: public civita::StdDeviation {};
+  
+  template <> struct GeneralTensorOp<OperationType::median>: public civita::ReductionOp
+  {
+    mutable vector<double> values;
+    GeneralTensorOp(): civita::ReductionOp([this](double&,double y,std::size_t) {values.push_back(y);},0) {}
+    double operator[](size_t i) const override
+    {
+      values.clear();
+      civita::ReductionOp::operator[](i);
+      if (values.empty()) return nan("");
+      sort(values.begin(),values.end());
+      size_t halfIndex=values.size()/2;
+      return (values.size()&1)? values[halfIndex]: 0.5*(values[halfIndex-1]+values[halfIndex]);
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::moment>: public civita::ReductionOp
+  {
+    double exponent;
+    mutable double mean;
+    mutable size_t count;
+    civita::Average average;
+    GeneralTensorOp(): civita::ReductionOp
+    ([this](double& x,double y,std::size_t) {
+      ++count;
+      x+=pow(y-mean, exponent);
+    },0) {}
+    void setArgument(const TensorPtr& arg, const ITensor::Args& args) override {
+      civita::ReductionOp::setArgument(arg,args);
+      average.setArgument(arg,args);
+      exponent=args.val;
+    }
+    double operator[](size_t i) const override
+    {
+      count=0;
+      mean=average[i];
+      auto sum=civita::ReductionOp::operator[](i);
+      return sum/count;
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::histogram>: public civita::DimensionedArgCachedOp
+  {
+    void setArgument(const TensorPtr& a, const ITensor::Args& args) override
+    {
+      civita::DimensionedArgCachedOp::setArgument(a,args);
+      Hypercube hc;
+      if (a && a->rank()>0 && argVal>=1)
+        {
+          // fake the hypercube for now, recomputed in computeTensor
+          if (dimension>a->rank()) // result is a vector
+            hc.dims({unsigned(argVal)});
+          else // rewrite the named dimension
+            {
+              hc=a->hypercube();
+              auto& xv=hc.xvectors[dimension];
+              xv.clear();
+              for (size_t i=0; i<argVal; ++i)
+                xv.push_back(i);
+            }
+        }
+      cachedResult.hypercube(std::move(hc));
+    }
+
+    void computeTensor() const override
+    {
+      // first compute max/min over the whole dataset
+      double min=numeric_limits<double>::max(), max=-numeric_limits<double>::max();
+      for (size_t i=0; i<arg->size(); ++i)
+        {
+          min=std::min((*arg)[i],min);
+          max=std::max((*arg)[i],max);
+        }
+      max*=1.01; // ensure that actual maximum value is mapped to a bin.
+      
+      auto binSize=(max-min)/argVal;
+      if (arg->rank()==0 || binSize==0)
+        {
+          cachedResult.hypercube({});
+          cachedResult[0]=1;
+          return;
+        }
+      
+      // adjust the hypercube
+      auto hc=arg->hypercube();
+      auto dim=dimension;
+      if (dimension>=hc.rank()) // global histogram over all dimensions
+        {
+          hc.xvectors.resize(1);
+          dim=0;
+        }
+
+      auto& xv=hc.xvectors[dim];
+      xv.name="histogram";
+      xv.dimension=Dimension(Dimension::value,"");
+      xv.clear();
+      for (double x=min+0.5*binSize; x<max; x+=binSize)
+        xv.push_back(x);
+      cachedResult.hypercube(std::move(hc));
+      for (size_t i=0; i<cachedResult.size(); ++i) cachedResult[i]=0;
+
+      auto iBinSize=1/binSize;
+      if (cachedResult.rank()>1) // histogram along a particular dimension
+        for (size_t i=0; i<arg->size(); ++i)
+          {
+            auto splitted=arg->hypercube().splitIndex(i);
+            splitted[dim]=((*arg)[i]-min)*iBinSize;
+            cachedResult[cachedResult.hypercube().linealIndex(splitted)]+=1;
+          }
+      else  // histogram over the lot
+        for (size_t i=0; i<arg->size(); ++i)
+          {
+            auto index=((*arg)[i]-min)*iBinSize;
+            cachedResult[index]+=1;
+          }
+    }
+  };
+
+    
   namespace {
       // arrange for arguments to be expanded over a common hypercube
     void meldArgsIntoCommonHypercube(vector<TensorPtr>& args) {

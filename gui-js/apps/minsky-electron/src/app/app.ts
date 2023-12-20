@@ -160,16 +160,6 @@ export default class App {
       WindowManager.activeWindows.delete(App.mainWindow.id); // Is this needed?
     });
 
-    // TODO: test it on Russell's machine
-    // TODO: do the same thing for child windows (godley,plot)
-    App.mainWindow.on('focus', async () => {
-      await CommandsManager.requestRedraw();
-    });
-
-    // App.mainWindow.on('blur', async () => {
-    //   await CommandsManager.requestRedraw();
-    // });
-
     App.mainWindow.on('closed', () => {
       // Dereference the window object, usually you would store windows
       // in an array if your app supports multi windows, this is the time

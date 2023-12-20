@@ -163,7 +163,7 @@ namespace minsky
 #ifdef WIN32
     DEVICE_SCALE_FACTOR scaleFactor;
     GetScaleFactorForMonitor(MonitorFromPoint(POINT{0,0}, MONITOR_DEFAULTTOPRIMARY), &scaleFactor);
-    return scaleFactor/100.0;
+    return int(scaleFactor)/100.0;
 #else
     return 1;
 #endif

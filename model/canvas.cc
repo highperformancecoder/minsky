@@ -189,6 +189,7 @@ namespace minsky
 
     
     itemIndicator=false;
+    rotatingItem=false;
     itemFocus.reset();
     wireFocus.reset();
   }
@@ -242,6 +243,13 @@ namespace minsky
   void Canvas::mouseMove(float x, float y)
     try
       {
+        if (rotatingItem && item)
+          {
+            item->rotate(Point{x,y},rotateOrigin);
+            requestRedraw();
+            return;
+          }
+        
         if (itemFocus)
           {
             switch (clickType)

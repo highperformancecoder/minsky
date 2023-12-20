@@ -33,6 +33,7 @@ namespace classdesc_access
 
 namespace schema3
 {
+  
   // binary serialisation used to serialise the tensorInit field of
   // variableValues into the minsky schema, fixed off here, rather
   // than classdesc generated to ensure backward compatibility
@@ -122,17 +123,17 @@ namespace schema3
   }
   
   // map of object to ID, that allocates a new ID on objects not seen before
-  struct IdMap: public map<void*,int>
+  struct IdMap: public map<const void*,int>
   {
     int nextId=0;
     set<minsky::RavelLockGroup*> lockGroups;
-    int at(void* o) {
+    int at(const void* o) {
       auto i=find(o);
       if (i==end())
         return emplace(o,nextId++).first->second;
       return i->second;
     }
-    int operator[](void* o) {return at(o);}
+    int operator[](const void* o) {return at(o);}
     vector<int> at(const minsky::Item& item) {
       vector<int> r;
       for (size_t i=0; i<item.portsSize(); ++i)
@@ -141,13 +142,13 @@ namespace schema3
     }
   
     template <class T>
-    bool emplaceIf(vector<Item>& items, minsky::Item* i)
+    bool emplaceIf(vector<Item>& items, const minsky::Item* i)
     {
-      auto* j=dynamic_cast<T*>(i);
+      auto* j=dynamic_cast<const T*>(i);
       if (j)
         {
           items.emplace_back(at(i), *j, at(*j));
-          if (auto* g=dynamic_cast<minsky::GodleyIcon*>(i))
+          if (auto* g=dynamic_cast<const minsky::GodleyIcon*>(i))
             {
               // insert port references from flow/stock vars
               items.back().ports.clear();
@@ -156,21 +157,21 @@ namespace schema3
               for (const auto& v: g->stockVars())
                 items.back().ports.push_back(at(v->ports(0).lock().get()));
             }
-          if (auto* d=dynamic_cast<minsky::DataOp*>(i))
+          if (auto* d=dynamic_cast<const minsky::DataOp*>(i))
             {
               items.back().dataOpData=d->data;
               items.back().name=d->description();
             }
-          if (auto* s=dynamic_cast<minsky::Sheet*>(i))
+          if (auto* s=dynamic_cast<const minsky::Sheet*>(i))
             {
               items.back().showSlice=s->showSlice;
             }
-          if (auto* d=dynamic_cast<minsky::UserFunction*>(i))
+          if (auto* d=dynamic_cast<const minsky::UserFunction*>(i))
             {
               items.back().expression=d->expression;
               items.back().name=d->description();
             }
-          if (auto* r=dynamic_cast<minsky::Ravel*>(i))
+          if (auto* r=dynamic_cast<const minsky::Ravel*>(i))
             {
               if (r->lockGroup)
                 lockGroups.insert(r->lockGroup.get());
@@ -182,7 +183,7 @@ namespace schema3
                   items.back().editorMode=r->editorMode;
                 }
             }
-          if (auto* l=dynamic_cast<minsky::Lock*>(i))
+          if (auto* l=dynamic_cast<const minsky::Lock*>(i))
             if (l->locked())
               items.back().ravelState=l->lockedState;
         }
@@ -280,10 +281,23 @@ namespace schema3
         }
   }
 
+  struct MinskyImpl
+  {
+    IdMap itemMap;                            // for serialisation
+    map<int, minsky::ItemPtr> reverseItemMap; // for deserialisation
+  };
+
+  void Minsky::makeImpl()
+  {
+    impl=make_shared<MinskyImpl>();
+  }
+  
+  Minsky::~Minsky()=default; // required because of Pimpl pattern
 
   Minsky::Minsky(const minsky::Group& g, bool packTensorData)
   {
-    IdMap itemMap;
+    makeImpl();
+    auto& itemMap=impl->itemMap;
 
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
         itemMap.emplaceIf<minsky::Ravel>(items, i->get()) ||
@@ -355,6 +369,8 @@ namespace schema3
                     return false;
                   });
 
+    
+    
     // process lock groups
     for (auto lg: itemMap.lockGroups)
       {
@@ -370,6 +386,65 @@ namespace schema3
       }
   }
       
+  PhillipsDiagram::PhillipsDiagram(const minsky::PhillipsDiagram& pd)
+  {
+    IdMap itemMap;
+    for (auto& [key,stock]: pd.stocks)
+      itemMap.emplaceIf<minsky::VariableBase>(stocks, &stock);
+
+    for (auto& [key,flow]: pd.flows)
+      {
+        flows.emplace_back(itemMap[&flow], flow);
+        assert(itemMap.count(flow.from().get()) && itemMap.count(flow.to().get()));
+        flows.back().from=itemMap[flow.from().get()];
+        flows.back().to=itemMap[flow.to().get()];
+        for (auto& term: flow.terms)
+          flows.back().terms.emplace_back(term.first, Item(-1,term.second,{}));
+      }
+  }
+
+  void Minsky::populateSchemaPublicationTabs(const std::vector<minsky::PubTab>& pubTabs)
+  {
+    assert(impl.get());
+    auto& itemMap=impl->itemMap;
+    publicationTabs.clear();
+    if (pubTabs.size()==1 && pubTabs.front().items.empty()) return; // don't bother adding a single empty pub tab
+    for (auto& i: pubTabs)
+      {
+        publicationTabs.emplace_back();
+        publicationTabs.back().name=i.name;
+        for (auto& j: i.items)
+          publicationTabs.back().items.emplace_back(itemMap[j.itemRef.get()], j);
+      }
+  }
+
+  void Minsky::populatePublicationTabs(std::vector<minsky::PubTab>& pubTabs) const
+  {
+    assert(impl.get());
+    auto& itemMap=impl->reverseItemMap;
+
+    pubTabs.clear();
+    for (auto& pub: publicationTabs)
+      {
+        pubTabs.emplace_back(pub.name);
+        pubTabs.back().offsx=pub.x;
+        pubTabs.back().offsy=pub.y;
+        pubTabs.back().m_zoomFactor=pub.zoomFactor;
+           
+        for (auto& item: pub.items)
+          if (itemMap[item.item])
+            {
+              pubTabs.back().items.emplace_back(itemMap[item.item]);
+              auto& newItem=pubTabs.back().items.back();
+              newItem.x=item.x;
+              newItem.y=item.y;
+              newItem.zoomFactor=item.zoomFactor;
+              newItem.rotation=item.rotation;
+            }
+      }
+    if (pubTabs.empty()) pubTabs.emplace_back("Publication");
+  }
+  
   void Minsky::populateMinsky(minsky::Minsky& m) const
   {
     minsky::LocalMinsky lm(m);
@@ -384,6 +459,9 @@ namespace schema3
     m.fileVersion=minskyVersion;
     
     static_cast<minsky::Simulation&>(m)=rungeKutta;
+
+    phillipsDiagram.populatePhillipsDiagram(m.phillipsDiagram);
+    populatePublicationTabs(m.publicationTabs);
   }
 
   void populateNote(minsky::NoteBase& x, const Note& y)
@@ -459,6 +537,7 @@ namespace schema3
             x1->sliderMax=y.slider->max;
             x1->sliderStep=y.slider->step;
           }
+        x1->miniPlotEnabled(y.miniPlot);
         // variableValue attributes populated later once variable is homed in its group
       }
     if (auto* x1=dynamic_cast<minsky::OperationBase*>(&x))
@@ -530,7 +609,8 @@ namespace schema3
   };
   
   void Minsky::populateGroup(minsky::Group& g) const {
-    map<int, minsky::ItemPtr> itemMap;
+    assert(impl.get());
+    auto& itemMap=impl->reverseItemMap;
     map<int, weak_ptr<minsky::Port>> portMap;
     map<int, schema3::Item> schema3VarMap;
     MinskyItemFactory factory;
@@ -730,6 +810,36 @@ namespace schema3
                   }
               }
           }
+      }
+  }
+
+  void PhillipsDiagram::populatePhillipsDiagram(minsky::PhillipsDiagram& pd) const
+  {
+    static MinskyItemFactory itemFactory;
+    map<int, weak_ptr<minsky::Port>> portMap;
+    for (auto& i: stocks)
+      {
+        minsky::PhillipsStock stock;
+        populateItem(stock, i);
+        auto& item=pd.stocks[stock.valueId()]=stock;
+        for (size_t j=0; j<std::min(i.ports.size(), stock.numPorts()); ++j)
+          portMap[i.ports[j]]=item.ports(j);
+      }
+    
+    for (auto& i: flows)
+      {
+        assert(portMap[i.from].lock() && portMap[i.to].lock());
+        minsky::PhillipsFlow flow(portMap[i.from],portMap[i.to]);
+        populateWire(flow, i);
+        for (auto& j: i.terms)
+          {
+            flow.terms.emplace_back(j.first, minsky::FlowVar{});
+            populateItem(flow.terms.back().second, j.second);
+          }
+        auto fromId=flow.from()->item().variableCast()->valueId();
+        auto toId=flow.to()->item().variableCast()->valueId();
+        auto success=pd.flows.emplace(make_pair(fromId, toId), flow).second;
+        assert(success);
       }
   }
   

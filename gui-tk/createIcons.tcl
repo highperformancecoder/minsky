@@ -2,6 +2,8 @@ source library/init.tcl
 use_namespace minsky
 GUI
 
+minsky.histogramResource.setResource icons/histogram.svg
+
 # create gif icons for the Macintosh, see ticket #187
 set ops [availableOperations]
 lappend ops "switch"

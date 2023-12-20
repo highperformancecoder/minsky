@@ -55,11 +55,6 @@
 #include <algorithm>
 #include <boost/filesystem.hpp>
 
-using namespace std;
-using namespace minsky;
-using namespace classdesc;
-using namespace boost::posix_time;
-
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -71,21 +66,24 @@ using namespace boost::posix_time;
 #include <sys/sysinfo.h>
 #endif
 
-namespace
-{
-  /// list the possible string values of an enum (for TCL)
-  template <class E> vector<string> enumVals()
-  {
-    vector<string> r;
-    for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
-      r.push_back(enum_keysData<E>::keysData[i].name);
-    return r;
-  }
+using namespace classdesc;
+using namespace boost::posix_time;
 
-}
 
 namespace minsky
 {
+  namespace
+  {
+    /// list the possible string values of an enum (for TCL)
+    template <class E> vector<string> enumVals()
+    {
+      vector<string> r;
+      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
+        r.push_back(enum_keysData<E>::keysData[i].name);
+      return r;
+    }
+}
+
   bool Minsky::multipleEquities(const bool& m) {
     m_multipleEquities=m;
     canvas.requestRedraw();
@@ -134,6 +132,9 @@ namespace minsky
     maxValue.clear();
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
+    phillipsDiagram.clear();
+    publicationTabs.clear();
+    publicationTabs.emplace_back("Publication");
     userFunctions.clear();
     UserFunction::nextId=0;
     
@@ -484,6 +485,15 @@ namespace minsky
     resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
   }
 
+  void Minsky::requestRedraw()
+  {
+    // requestRedraw on all tabs - only the active one will actually do anything
+    canvas.requestRedraw();
+    equationDisplay.requestRedraw();
+    phillipsDiagram.requestRedraw();
+    for (auto& pub: publicationTabs)
+      pub.requestRedraw();
+  }
   
   void Minsky::populateMissingDimensions() {
     // populate from variable value table first, then override by ravels
@@ -898,6 +908,7 @@ namespace minsky
              if (auto vv=v->vValue())
                vv->sliderVisible = v->enableSlider &&
                  (v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId())));
+             v->resetMiniPlot();
            }
          return false;
        });
@@ -938,10 +949,7 @@ namespace minsky
     //  flags |= reset_needed; // enforce another reset at simulation start
     running=false;
 
-    canvas.requestRedraw();
-    godleyTab.requestRedraw();
-    plotTab.requestRedraw();
-    phillipsDiagram.requestRedraw();
+    requestRedraw();
     
     // update maxValues
     PhillipsFlow::maxFlow.clear();
@@ -974,10 +982,7 @@ namespace minsky
     time_duration maxWait=milliseconds(maxWaitMS);
     if ((microsec_clock::local_time()-(ptime&)lastRedraw) > maxWait)
       {
-        canvas.requestRedraw();
-        godleyTab.requestRedraw();
-        plotTab.requestRedraw();
-        phillipsDiagram.requestRedraw();
+        requestRedraw();
         lastRedraw=microsec_clock::local_time();
       }
 
@@ -1062,8 +1067,7 @@ namespace minsky
         populateMissingDimensions();
       }
     catch (...) {}
-    canvas.requestRedraw();
-    panopticon.requestRedraw();
+    requestRedraw();
     canvas.recentre();
     canvas.requestRedraw();
     canvas.moveTo(0,0); // force placement of ports
@@ -1106,7 +1110,7 @@ namespace minsky
       {
         if (!portsVisited.insert(p).second)
           { //traverse finished, check for cycle along branch
-            if (::find(stack.begin(), stack.end(), p) != stack.end())
+            if (std::find(stack.begin(), stack.end(), p) != stack.end())
               {
                 cminsky().displayErrorItem(p->item());
                 return true;
@@ -1299,7 +1303,6 @@ namespace minsky
         command!="minsky.canvas.recentre" &&
         command!="minsky.canvas.focusFollowsMouse" &&
         command!="minsky.canvas.displayDelayedTooltip" &&
-        command!="minsky.canvas.requestRedraw" &&
         command!="minsky.model.moveTo" &&
         command!="minsky.canvas.moveTo" &&
         command!="minsky.canvas.model.moveTo" &&
@@ -1321,6 +1324,7 @@ namespace minsky
         command!="minsky.setGroupIconResource" &&
         command!="minsky.setLockIconResource" &&
         command!="minsky.setRavelIconResource" &&
+        command!="minsky.histogramResource.setResource" &&
         command!="minsky.setAutoSaveFile" &&
         command!="minsky.step" &&
         command!="minsky.running" &&
@@ -1329,10 +1333,11 @@ namespace minsky
         command!="minsky.load" &&
         command!="minsky.reverse" &&
         command!="minsky.redrawAllGodleyTables" &&
-        command.find("minsky.panopticon")==string::npos &&
+        command.find("minsky.phillipsDiagram")==string::npos &&
         command.find("minsky.equationDisplay")==string::npos && 
         command.find("minsky.setGodleyDisplayValue")==string::npos && 
         command.find(".renderFrame")==string::npos && 
+        command.find(".requestRedraw")==string::npos && 
         command.find(".backgroundColour")==string::npos && 
         command.find(".get")==string::npos && 
         command.find(".@elem")==string::npos && 
@@ -1379,6 +1384,9 @@ namespace minsky
         model->clear();
         m.populateGroup(*model);
         model->setZoom(m.zoomFactor);
+        m.phillipsDiagram.populatePhillipsDiagram(phillipsDiagram);
+        m.populatePublicationTabs(publicationTabs);
+        requestRedraw();
         
         // restore tensorInit data
         for (auto& v: variableValues)
@@ -1767,7 +1775,7 @@ namespace classdesc
   {t.add(d, new RESTProcessAssociativeContainer<minsky::VariableValues>(a));}
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(Minsky);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Minsky);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);

@@ -30,14 +30,6 @@
 
 namespace minsky
 {
-  void EquationDisplay::zoom(double x, double y, double z)
-  {
-    offsx=x+(offsx-x)*z;
-    offsy=y+(offsy-y)*z;
-    m_zoomFactor*=z;
-    requestRedraw();
-  }
-  
   bool EquationDisplay::redraw(int x0, int y0, int width, int height)
   {
     if (surface.get()) {

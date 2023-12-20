@@ -31,8 +31,11 @@ namespace minsky
       virtual void mouseMove(float x, float y)=0;
       virtual void moveTo(float x, float y)=0;
       virtual std::vector<float> position() const=0;
+      virtual void zoom(double x, double y, double z)=0;
+      virtual double zoomFactor() const=0;
       void requestRedraw() {}
       float offsx=0, offsy=0;
+      double m_zoomFactor=1;
     };
 
     using PannableTabFixture=PannableTab<Base>;

@@ -29,15 +29,13 @@ namespace minsky
   class EquationDisplay: public RenderNativeWindow
   {
     Minsky& m;
-    double m_width=0, m_height=0, m_zoomFactor=1;
+    double m_width=0, m_height=0;
     bool redraw(int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(EquationDisplay);
   public:
-    float offsx=0, offsy=0; // pan controls
+    float offsx=0, offsy=0, m_zoomFactor=1 ; // pan & zooming controls
     double width() const {return m_width;}
     double height() const {return m_height;}
-    void zoom(double, double, double z) override;
-    double zoomFactor() const override {return m_zoomFactor;}
     EquationDisplay(Minsky& m): m(m) {}
     EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
     EquationDisplay(const EquationDisplay&)=default;

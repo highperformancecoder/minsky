@@ -108,6 +108,7 @@ namespace schema3
     Optional<std::string> init;
     Optional<std::string> units;
     Optional<Slider> slider;
+    bool miniPlot=false; // miniature plots on variables
     Optional<int> intVar;
     Optional<std::string> url; //file or url of CSV import data
     Optional<minsky::DataSpecSchema> csvDataSpec; //CSV import data
@@ -140,14 +141,15 @@ namespace schema3
     // minsky object importers
     Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      init(v.init()) {
+      init(v.init()), miniPlot(v.miniPlotEnabled()) {
       name=v.rawName();
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
         {
           units=vv->units.str();
-          csvDataSpec=vv->csvDialog.spec.toSchema();
+          if (!vv->csvDialog.url.empty())
+            csvDataSpec=vv->csvDialog.spec.toSchema();
           url=vv->csvDialog.url;
         }
     }
@@ -214,9 +216,47 @@ namespace schema3
       Item(g), items(g.items), inVariables(g.inVariables), outVariables(g.outVariables) {}
   };
 
-
-  struct Minsky
+  struct PhillipsFlow: public Wire
   {
+    PhillipsFlow()=default;
+    PhillipsFlow(int id, const minsky::Wire& w): Wire(id, w) {}
+    vector<pair<double, Item>> terms;
+  };
+  
+  struct PhillipsDiagram
+  {
+    std::vector<Item> stocks;
+    std::vector<PhillipsFlow> flows;
+    PhillipsDiagram()=default;
+    PhillipsDiagram(const minsky::PhillipsDiagram&);
+    /// populate a Phillips Diagram from this
+    void populatePhillipsDiagram(minsky::PhillipsDiagram&) const;
+  };
+
+  struct PublicationItem
+  {
+    int item=-1;
+    float x=100,y=100;
+    float zoomFactor=1;
+    double rotation=0;
+    PublicationItem()=default;
+    PublicationItem(int id, const minsky::PubItem& p): item(id), x(p.x), y(p.y), zoomFactor(p.zoomFactor), rotation(p.rotation) {}
+  };
+  
+  struct PublicationTab
+  {
+    std::string name;
+    std::vector<PublicationItem> items;
+    float x=100,y=100,zoomFactor=1;
+  };
+
+  struct MinskyImpl; ///< working structure, not serialised
+  
+  class Minsky
+  {
+    classdesc::Exclude<std::shared_ptr<MinskyImpl>> impl;
+    CLASSDESC_ACCESS(Minsky);
+  public:
     static const int version=3;
     int schemaVersion=Minsky::version;
     std::string minskyVersion="unknown";
@@ -229,8 +269,12 @@ namespace schema3
     vector<minsky::Bookmark> bookmarks;
     minsky::Dimensions dimensions;
     minsky::ConversionsMap conversions;
+    PhillipsDiagram phillipsDiagram;
+    std::vector<PublicationTab> publicationTabs;
+
     
-    Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
+    Minsky(): schemaVersion(0) {makeImpl();} // schemaVersion defined on read in
+    ~Minsky();
     Minsky(const minsky::Group& g, bool packTensorData=true);
     Minsky(const minsky::Minsky& m, bool packTensorData=true):
       Minsky(*m.model,packTensorData) {
@@ -240,11 +284,15 @@ namespace schema3
       bookmarks.insert(bookmarks.end(), m.model->bookmarks.begin(), m.model->bookmarks.end());
       dimensions=m.dimensions;
       conversions=m.conversions;
+      phillipsDiagram=PhillipsDiagram(m.phillipsDiagram);
+      populateSchemaPublicationTabs(m.publicationTabs);
     }
 
+    void makeImpl(); // creates the impl.
+    
     /// populate schema from XML data
     Minsky(classdesc::xml_unpack_t& data): schemaVersion(0)
-    {minsky::loadSchema<schema2::Minsky>(*this,data,"Minsky");}
+    {makeImpl(); minsky::loadSchema<schema2::Minsky>(*this,data,"Minsky");}
     
     Minsky(const schema2::Minsky& m):
       schemaVersion(m.schemaVersion),
@@ -252,8 +300,11 @@ namespace schema3
       items(m.items.begin(), m.items.end()),
       groups(m.groups.begin(), m.groups.end()), rungeKutta(m.rungeKutta),
       zoomFactor(m.zoomFactor), bookmarks(m.bookmarks), dimensions(m.dimensions),
-      conversions(m.conversions) {}
-    
+      conversions(m.conversions) {makeImpl();}
+
+    void populateSchemaPublicationTabs(const std::vector<minsky::PubTab>&);
+    void populatePublicationTabs(std::vector<minsky::PubTab>&) const;
+   
     /// create a Minsky model from this
     void populateMinsky(minsky::Minsky&) const;
     
@@ -261,6 +312,7 @@ namespace schema3
     /// consistent way into the free id space of the global minsky
     /// object
     void populateGroup(minsky::Group& g) const;
+
   };
 
 

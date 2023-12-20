@@ -7,7 +7,7 @@ import {
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   rendererAppName,
   rendererAppURL,
-//  RenderNativeWindow,
+  RenderNativeWindow,
   Utility,
 } from '@minsky/shared';
 //import debug from 'debug';
@@ -26,7 +26,7 @@ export class WindowManager {
   static canvasHeight: number;
   static canvasWidth: number;
   static scaleFactor: number;
-  static currentTab=minsky.canvas;
+  static currentTab=minsky.canvas as RenderNativeWindow;
   
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();

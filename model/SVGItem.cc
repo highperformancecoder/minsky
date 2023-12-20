@@ -79,7 +79,7 @@ namespace minsky
       /*rsvg_handle_free*/ g_object_unref(svg);
   }
 
-  void SVGRenderer::render(cairo_t* cairo)
+  void SVGRenderer::render(cairo_t* cairo) const
   {
     if (svg)
       rsvg_handle_render_cairo(svg,cairo);

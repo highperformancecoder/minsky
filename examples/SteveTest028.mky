@@ -1,313 +1,321 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.34.0</minskyVersion>
+  <minskyVersion>3.2.0-alpha.33</minskyVersion>
   <wires>
    <Wire>
     <id>128</id>
-    <from>34</from>
-    <to>1</to>
-   </Wire>
-   <Wire>
-    <id>129</id>
-    <from>90</from>
+    <from>35</from>
     <to>2</to>
    </Wire>
    <Wire>
+    <id>129</id>
+    <from>91</from>
+    <to>3</to>
+   </Wire>
+   <Wire>
     <id>130</id>
-    <from>0</from>
-    <to>43</to>
+    <from>1</from>
+    <to>44</to>
    </Wire>
    <Wire>
     <id>131</id>
-    <from>92</from>
-    <to>5</to>
-   </Wire>
-   <Wire>
-    <id>132</id>
-    <from>38</from>
+    <from>93</from>
     <to>6</to>
    </Wire>
    <Wire>
+    <id>132</id>
+    <from>39</from>
+    <to>7</to>
+   </Wire>
+   <Wire>
     <id>133</id>
-    <from>38</from>
-    <to>29</to>
-   </Wire>
-   <Wire>
-    <id>134</id>
-    <from>28</from>
-    <to>58</to>
-   </Wire>
-   <Wire>
-    <id>135</id>
-    <from>102</from>
+    <from>39</from>
     <to>30</to>
    </Wire>
    <Wire>
-    <id>136</id>
-    <from>98</from>
-    <to>13</to>
+    <id>134</id>
+    <from>29</from>
+    <to>59</to>
    </Wire>
    <Wire>
-    <id>137</id>
-    <from>96</from>
+    <id>135</id>
+    <from>103</from>
+    <to>31</to>
+   </Wire>
+   <Wire>
+    <id>136</id>
+    <from>99</from>
     <to>14</to>
    </Wire>
    <Wire>
-    <id>138</id>
-    <from>12</from>
-    <to>17</to>
+    <id>137</id>
+    <from>97</from>
+    <to>15</to>
    </Wire>
    <Wire>
-    <id>139</id>
-    <from>36</from>
+    <id>138</id>
+    <from>13</from>
     <to>18</to>
    </Wire>
    <Wire>
-    <id>140</id>
-    <from>16</from>
-    <to>9</to>
+    <id>139</id>
+    <from>37</from>
+    <to>19</to>
    </Wire>
    <Wire>
-    <id>141</id>
-    <from>94</from>
+    <id>140</id>
+    <from>17</from>
     <to>10</to>
    </Wire>
    <Wire>
+    <id>141</id>
+    <from>95</from>
+    <to>11</to>
+   </Wire>
+   <Wire>
     <id>142</id>
-    <from>8</from>
-    <to>49</to>
+    <from>9</from>
+    <to>50</to>
    </Wire>
    <Wire>
     <id>143</id>
-    <from>40</from>
-    <to>21</to>
-   </Wire>
-   <Wire>
-    <id>144</id>
-    <from>88</from>
+    <from>41</from>
     <to>22</to>
    </Wire>
    <Wire>
+    <id>144</id>
+    <from>89</from>
+    <to>23</to>
+   </Wire>
+   <Wire>
     <id>145</id>
-    <from>20</from>
-    <to>52</to>
+    <from>21</from>
+    <to>53</to>
    </Wire>
    <Wire>
     <id>146</id>
-    <from>24</from>
-    <to>55</to>
+    <from>25</from>
+    <to>56</to>
    </Wire>
    <Wire>
     <id>147</id>
-    <from>32</from>
-    <to>25</to>
-   </Wire>
-   <Wire>
-    <id>148</id>
-    <from>100</from>
+    <from>33</from>
     <to>26</to>
    </Wire>
    <Wire>
+    <id>148</id>
+    <from>101</from>
+    <to>27</to>
+   </Wire>
+   <Wire>
     <id>149</id>
-    <from>34</from>
-    <to>110</to>
+    <from>35</from>
+    <to>111</to>
     <coords>
      <float>36.5</float>
      <float>33</float>
-     <float>54.959</float>
-     <float>0.939705</float>
-     <float>251</float>
-     <float>72.75</float>
+     <float>54.2518</float>
+     <float>2.16803</float>
+     <float>243.5</float>
+     <float>67.125</float>
     </coords>
    </Wire>
    <Wire>
     <id>150</id>
-    <from>38</from>
-    <to>111</to>
+    <from>39</from>
+    <to>112</to>
    </Wire>
    <Wire>
     <id>151</id>
-    <from>36</from>
-    <to>112</to>
+    <from>37</from>
+    <to>113</to>
     <coords>
      <float>37.5</float>
      <float>164</float>
-     <float>123.206</float>
-     <float>239.538</float>
-     <float>251</float>
-     <float>147.75</float>
+     <float>120.157</float>
+     <float>236.851</float>
+     <float>243.5</float>
+     <float>149.625</float>
     </coords>
    </Wire>
   </wires>
   <items>
    <Item>
-    <id>3</id>
+    <id>0</id>
     <type>Operation:divide</type>
     <x>61</x>
     <y>47</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>0</int>
      <int>1</int>
      <int>2</int>
+     <int>3</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>7</id>
+    <id>4</id>
     <type>Operation:multiply</type>
     <x>70</x>
     <y>93</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>4</int>
      <int>5</int>
      <int>6</int>
+     <int>7</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>11</id>
+    <id>8</id>
     <type>Operation:divide</type>
     <x>77</x>
     <y>163</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>8</int>
      <int>9</int>
      <int>10</int>
+     <int>11</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>15</id>
+    <id>12</id>
     <type>Operation:subtract</type>
     <x>23</x>
     <y>132</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>12</int>
      <int>13</int>
      <int>14</int>
+     <int>15</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>19</id>
+    <id>16</id>
     <type>Operation:multiply</type>
     <x>50</x>
     <y>144</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>16</int>
      <int>17</int>
      <int>18</int>
+     <int>19</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>23</id>
+    <id>20</id>
     <type>Operation:divide</type>
     <x>73</x>
     <y>230</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>20</int>
      <int>21</int>
      <int>22</int>
+     <int>23</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>27</id>
+    <id>24</id>
     <type>Operation:divide</type>
     <x>77</x>
     <y>284</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>24</int>
      <int>25</int>
      <int>26</int>
+     <int>27</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>31</id>
+    <id>28</id>
     <type>Operation:divide</type>
     <x>124</x>
     <y>129</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>28</int>
      <int>29</int>
      <int>30</int>
+     <int>31</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>33</id>
+    <name>:BS</name>
+    <id>32</id>
     <type>Variable:stock</type>
     <x>48</x>
     <y>274</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>32</int>
+     <int>33</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:BS</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -315,47 +323,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>35</id>
+    <name>:BV</name>
+    <id>34</id>
     <type>Variable:stock</type>
     <x>15</x>
     <y>33</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>34</int>
+     <int>35</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:BV</name>
     <init>100</init>
     <slider>
      <stepRel>false</stepRel>
@@ -363,47 +348,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>37</id>
+    <name>:FD</name>
+    <id>36</id>
     <type>Variable:stock</type>
     <x>16</x>
     <y>164</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>36</int>
+     <int>37</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:FD</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -411,47 +373,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>39</id>
+    <name>:FL</name>
+    <id>38</id>
     <type>Variable:stock</type>
     <x>40</x>
     <y>112</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>38</int>
+     <int>39</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:FL</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -459,47 +398,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>41</id>
+    <name>:WD</name>
+    <id>40</id>
     <type>Variable:stock</type>
     <x>39</x>
     <y>214</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>40</int>
+     <int>41</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:WD</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -507,48 +423,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>44</id>
+    <name>:A</name>
+    <id>42</id>
     <type>Variable:flow</type>
     <x>91</x>
     <y>48</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>42</int>
      <int>43</int>
+     <int>44</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:A</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -556,48 +449,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>47</id>
+    <name>:B</name>
+    <id>45</id>
     <type>Variable:flow</type>
     <x>107</x>
     <y>95</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>45</int>
      <int>46</int>
+     <int>47</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:B</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -605,48 +475,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>50</id>
+    <name>:C</name>
+    <id>48</id>
     <type>Variable:flow</type>
     <x>107</x>
     <y>160</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>48</int>
      <int>49</int>
+     <int>50</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:C</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -654,48 +501,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>53</id>
+    <name>:D</name>
+    <id>51</id>
     <type>Variable:flow</type>
     <x>104</x>
     <y>229</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>51</int>
      <int>52</int>
+     <int>53</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:D</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -703,48 +527,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>56</id>
+    <name>:E</name>
+    <id>54</id>
     <type>Variable:flow</type>
     <x>102</x>
     <y>284</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>54</int>
      <int>55</int>
+     <int>56</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:E</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -752,48 +553,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>59</id>
+    <name>:F</name>
+    <id>57</id>
     <type>Variable:flow</type>
     <x>160</x>
     <y>133</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>57</int>
      <int>58</int>
+     <int>59</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:F</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -801,47 +579,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>61</id>
+    <name>:BV</name>
+    <id>60</id>
     <type>Variable:stock</type>
     <x>424.55</x>
-    <y>261.8</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <y>261.527</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>60</int>
+     <int>61</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:BV</name>
     <init>100</init>
     <slider>
      <stepRel>false</stepRel>
@@ -849,47 +604,24 @@
      <max>100</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>63</id>
-    <type>Variable:stock</type>
-    <x>454.55</x>
-    <y>260.8</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>90</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>62</int>
-    </ports>
-    <bookmark>false</bookmark>
     <name>:FL</name>
+    <id>62</id>
+    <type>Variable:stock</type>
+    <x>453.641</x>
+    <y>260.618</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
+    <ports>
+     <int>63</int>
+    </ports>
+    <bookmark>false</bookmark>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -897,47 +629,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>65</id>
-    <type>Variable:stock</type>
-    <x>484.55</x>
-    <y>261.8</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>90</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>64</int>
-    </ports>
-    <bookmark>false</bookmark>
     <name>:FD</name>
+    <id>64</id>
+    <type>Variable:stock</type>
+    <x>482.732</x>
+    <y>261.527</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
+    <ports>
+     <int>65</int>
+    </ports>
+    <bookmark>false</bookmark>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -945,95 +654,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>67</id>
-    <type>Variable:stock</type>
-    <x>514.55</x>
-    <y>263.8</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>90</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>66</int>
-    </ports>
-    <bookmark>false</bookmark>
     <name>:WD</name>
-    <init>0</init>
-    <slider>
-     <stepRel>false</stepRel>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
-    </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
-   </Item>
-   <Item>
-    <id>69</id>
+    <id>66</id>
     <type>Variable:stock</type>
-    <x>544.55</x>
-    <y>261.8</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <x>511.823</x>
+    <y>264.255</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>68</int>
+     <int>67</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:BS</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1041,48 +679,50 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>72</id>
+    <name>:BS</name>
+    <id>68</id>
+    <type>Variable:stock</type>
+    <x>540.914</x>
+    <y>261.527</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>90</rotation>
+    <width>0</width>
+    <height>0</height>
+    <ports>
+     <int>69</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <init>0</init>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+    <miniPlot>false</miniPlot>
+   </Item>
+   <Item>
+    <name>:A</name>
+    <id>70</id>
     <type>Variable:flow</type>
-    <x>389.5</x>
+    <x>389.591</x>
     <y>49.26</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>70</int>
      <int>71</int>
+     <int>72</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:A</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1090,48 +730,25 @@
      <max>200</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>75</id>
-    <type>Variable:flow</type>
-    <x>389.5</x>
-    <y>79.26</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>73</int>
-     <int>74</int>
-    </ports>
-    <bookmark>false</bookmark>
     <name>:B</name>
+    <id>73</id>
+    <type>Variable:flow</type>
+    <x>389.591</x>
+    <y>78.3509</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
+    <ports>
+     <int>74</int>
+     <int>75</int>
+    </ports>
+    <bookmark>false</bookmark>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1139,48 +756,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>78</id>
-    <type>Variable:flow</type>
-    <x>389.5</x>
-    <y>109.26</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>76</int>
-     <int>77</int>
-    </ports>
-    <bookmark>false</bookmark>
     <name>:C</name>
+    <id>76</id>
+    <type>Variable:flow</type>
+    <x>389.591</x>
+    <y>107.442</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
+    <ports>
+     <int>77</int>
+     <int>78</int>
+    </ports>
+    <bookmark>false</bookmark>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1188,48 +782,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>81</id>
-    <type>Variable:flow</type>
-    <x>389.5</x>
-    <y>139.26</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>79</int>
-     <int>80</int>
-    </ports>
-    <bookmark>false</bookmark>
     <name>:D</name>
+    <id>79</id>
+    <type>Variable:flow</type>
+    <x>389.591</x>
+    <y>136.533</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
+    <ports>
+     <int>80</int>
+     <int>81</int>
+    </ports>
+    <bookmark>false</bookmark>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1237,97 +808,25 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>84</id>
-    <type>Variable:flow</type>
-    <x>390.5</x>
-    <y>169.26</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>0</width>
-    <height>0</height>
-    <ports>
-     <int>82</int>
-     <int>83</int>
-    </ports>
-    <bookmark>false</bookmark>
     <name>:E</name>
-    <init>0</init>
-    <slider>
-     <stepRel>false</stepRel>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
-    </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
-   </Item>
-   <Item>
-    <id>87</id>
+    <id>82</id>
     <type>Variable:flow</type>
     <x>390.5</x>
-    <y>199.26</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <y>165.624</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>85</int>
-     <int>86</int>
+     <int>83</int>
+     <int>84</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:F</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1335,47 +834,50 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>89</id>
+    <name>:F</name>
+    <id>85</id>
+    <type>Variable:flow</type>
+    <x>390.5</x>
+    <y>194.715</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>0</width>
+    <height>0</height>
+    <ports>
+     <int>86</int>
+     <int>87</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <init>0</init>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+    <miniPlot>false</miniPlot>
+   </Item>
+   <Item>
+    <name>:\tau_W</name>
+    <id>88</id>
     <type>Variable:parameter</type>
     <x>40</x>
     <y>241</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>88</int>
+     <int>89</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\tau_W</name>
     <init>0.1</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1383,47 +885,24 @@
      <max>1</max>
      <step>0.01</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>91</id>
+    <name>:\tau_V</name>
+    <id>90</id>
     <type>Variable:parameter</type>
     <x>19</x>
     <y>57</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>90</int>
+     <int>91</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\tau_V</name>
     <init>0.5</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1431,47 +910,24 @@
      <max>5</max>
      <step>0.05</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>93</id>
+    <name>:rL</name>
+    <id>92</id>
     <type>Variable:parameter</type>
     <x>28</x>
     <y>79</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>92</int>
+     <int>93</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:rL</name>
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1479,47 +935,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>95</id>
+    <name>:\tau_S</name>
+    <id>94</id>
     <type>Variable:parameter</type>
     <x>18</x>
     <y>192</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>94</int>
+     <int>95</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\tau_S</name>
     <init>0.25</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1527,47 +960,24 @@
      <max>2.5</max>
      <step>0.025</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>97</id>
+    <name>:s</name>
+    <id>96</id>
     <type>Variable:parameter</type>
     <x>0</x>
     <y>146</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>96</int>
+     <int>97</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:s</name>
     <init>0.3</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1575,47 +985,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>99</id>
+    <name>:1</name>
+    <id>98</id>
     <type>Variable:parameter</type>
     <x>0</x>
     <y>118</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>98</int>
+     <int>99</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:1</name>
     <init>1</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1623,47 +1010,24 @@
      <max>1</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>101</id>
+    <name>:\tau_B</name>
+    <id>100</id>
     <type>Variable:parameter</type>
     <x>49</x>
     <y>303</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>100</int>
+     <int>101</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\tau_B</name>
     <init>1</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1671,47 +1035,24 @@
      <max>10</max>
      <step>0.1</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>103</id>
+    <name>:\tau_L</name>
+    <id>102</id>
     <type>Variable:parameter</type>
     <x>82</x>
     <y>133</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
     <height>0</height>
     <ports>
-     <int>102</int>
+     <int>103</int>
     </ports>
     <bookmark>false</bookmark>
-    <name>:\tau_L</name>
     <init>7</init>
     <slider>
      <stepRel>false</stepRel>
@@ -1719,71 +1060,15 @@
      <max>70</max>
      <step>0.7</step>
     </slider>
-    <csvDataSpec>
-     <dataRowOffset>0</dataRowOffset>
-     <dataColOffset>0</dataColOffset>
-     <separator>,</separator>
-     <quote>&quot;</quote>
-     <escape>\</escape>
-     <decSeparator>.</decSeparator>
-     <mergeDelimiters>false</mergeDelimiters>
-     <columnar>false</columnar>
-     <missingValue>NaN</missingValue>
-     <headerRow>0</headerRow>
-     <horizontalDimName>?</horizontalDimName>
-     <horizontalDimension>
-      <type>string</type>
-      <units></units>
-     </horizontalDimension>
-     <duplicateKeyAction>throwException</duplicateKeyAction>
-     <dimensionCols>
-     </dimensionCols>
-     <dimensions>
-     </dimensions>
-     <dimensionNames>
-     </dimensionNames>
-    </csvDataSpec>
+    <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <id>126</id>
-    <type>PlotWidget</type>
-    <x>326</x>
-    <y>129</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>150</width>
-    <height>150</height>
-    <ports>
-     <int>104</int>
-     <int>105</int>
-     <int>106</int>
-     <int>107</int>
-     <int>108</int>
-     <int>109</int>
-     <int>110</int>
-     <int>111</int>
-     <int>112</int>
-     <int>113</int>
-     <int>114</int>
-     <int>115</int>
-     <int>116</int>
-     <int>117</int>
-     <int>118</int>
-     <int>119</int>
-     <int>120</int>
-     <int>121</int>
-     <int>122</int>
-     <int>123</int>
-     <int>124</int>
-     <int>125</int>
-    </ports>
-    <bookmark>false</bookmark>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
     <plotTabDisplay>true</plotTabDisplay>
+    <grid>true</grid>
+    <subgrid>false</subgrid>
     <plotType>line</plotType>
     <nxTicks>10</nxTicks>
     <nyTicks>10</nyTicks>
@@ -1876,32 +1161,151 @@
       <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
+    <id>104</id>
+    <type>PlotWidget</type>
+    <x>326</x>
+    <y>129</y>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>150</width>
+    <height>150</height>
+    <ports>
+     <int>105</int>
+     <int>106</int>
+     <int>107</int>
+     <int>108</int>
+     <int>109</int>
+     <int>110</int>
+     <int>111</int>
+     <int>112</int>
+     <int>113</int>
+     <int>114</int>
+     <int>115</int>
+     <int>116</int>
+     <int>117</int>
+     <int>118</int>
+     <int>119</int>
+     <int>120</int>
+     <int>121</int>
+     <int>122</int>
+     <int>123</int>
+     <int>124</int>
+     <int>125</int>
+     <int>126</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>127</id>
     <type>GodleyIcon</type>
     <x>513</x>
     <y>119</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
+    <itemTabX>0</itemTabX>
+    <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>243</width>
     <height>291.6</height>
     <ports>
-     <int>71</int>
-     <int>74</int>
-     <int>77</int>
-     <int>80</int>
-     <int>83</int>
-     <int>86</int>
-     <int>60</int>
-     <int>62</int>
-     <int>64</int>
-     <int>66</int>
-     <int>68</int>
+     <int>72</int>
+     <int>75</int>
+     <int>78</int>
+     <int>81</int>
+     <int>84</int>
+     <int>87</int>
+     <int>61</int>
+     <int>63</int>
+     <int>65</int>
+     <int>67</int>
+     <int>69</int>
     </ports>
     <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -2053,4 +1457,12 @@
   </dimensions>
   <conversions>
   </conversions>
+  <phillipsDiagram>
+   <stocks>
+   </stocks>
+   <flows>
+   </flows>
+  </phillipsDiagram>
+  <publicationTabs>
+  </publicationTabs>
  </Minsky>
