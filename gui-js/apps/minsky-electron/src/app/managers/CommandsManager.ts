@@ -996,7 +996,19 @@ export class CommandsManager {
   static async newPubTab() {
     const window=WindowManager.createPopupWindowWithRouting({
       title: `New Publication Tab`,
-      url: `#/headless/new-pub-tab`,
+      url: `#/headless/new-pub-tab?type=new&command=`,
+      height: 90,
+      width: 300,
+    });
+    return new Promise((resolve)=>{
+      window.once('closed',()=>resolve(0));
+    });
+  }
+  
+  static async renamePubTab(command: string) {
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `Rename Publication Tab`,
+      url: `#/headless/new-pub-tab?type=rename&command=${command}`,
       height: 90,
       width: 300,
     });

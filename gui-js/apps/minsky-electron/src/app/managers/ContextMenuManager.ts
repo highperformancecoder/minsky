@@ -34,6 +34,9 @@ export class ContextMenuManager {
           this.initContextMenuForPublication(event, mainWindow,currentTab);
       }
       break;
+      case 'publication-button':
+      this.initContextMenuForPublicationTabButton(event,command);
+      break;
       case "godley":
       this.initContextMenuForGodleyPopup(command,x,y);
       break;
@@ -78,8 +81,24 @@ export class ContextMenuManager {
         },
         enabled: await pubTab.getItemAt(this.x,this.y),
       }),
-      new MenuItem({type: 'separator'}),
+    ];
+
+      ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
+
+      return;
+  }
+  
+  private static async initContextMenuForPublicationTabButton(event: IpcMainEvent, command: string) {
+    let pubTab=new PubTab(command);
+    const menuItems = [
       new MenuItem({
+        label: 'Rename publication tab',
+        click:  async () => {
+          await CommandsManager.renamePubTab(command);
+          event.sender.send(events.PUB_TAB_REMOVED);
+        }
+      }),
+       new MenuItem({
         label: 'Remove publication tab',
         click: async () => {
           event.sender.send(events.CHANGE_MAIN_TAB);
@@ -91,9 +110,9 @@ export class ContextMenuManager {
       }),
     ];
 
-      ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
+    ContextMenuManager.buildAndDisplayContextMenu(menuItems, WindowManager.getMainWindow());
 
-      return;
+    return;
   }
   
   private static async initContextMenuForPhillipsDiagram(mainWindow: BrowserWindow) {
