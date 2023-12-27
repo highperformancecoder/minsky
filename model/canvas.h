@@ -245,6 +245,9 @@ namespace minsky
     /// create a copy of item, and leave it focused
     void copyItem();
 
+    /// zooms canvas to fit available window
+    void zoomToFit();
+    
     /// reinitialises canvas to the group located in item
     void openGroupInCanvas(const ItemPtr& item);
 

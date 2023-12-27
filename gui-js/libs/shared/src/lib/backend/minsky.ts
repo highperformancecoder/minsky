@@ -532,6 +532,7 @@ export class Canvas extends RenderNativeWindow {
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
   async zoomToDisplay(): Promise<void> {return this.$callMethod('zoomToDisplay');}
+  async zoomToFit(): Promise<void> {return this.$callMethod('zoomToFit');}
 }
 
 export class DataOp extends Item {

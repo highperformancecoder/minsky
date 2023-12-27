@@ -728,6 +728,41 @@ namespace minsky
       }
   }
 
+  void Canvas::zoomToFit()
+  {
+    double x0,x1,y0,y1;
+    model->contentBounds(x0,y0,x1,y1);
+    float inOffset=0, outOffset=0;
+    double fm=std::fmod(model->rotation(),360);
+    bool notFlipped=((fm>-90 && fm<90) || fm>270 || fm<-270);
+    int flip=notFlipped? 1: -1;
+                                                         
+    // we need to move the io variables
+    for (auto& v: model->inVariables)
+      inOffset=std::max(inOffset, v->width());
+    for (auto& v: model->outVariables)
+      outOffset=std::max(outOffset, v->width());
+        
+    float zoomFactor=std::min(frameArgs().childWidth/(x1-x0+inOffset+outOffset),
+                              frameArgs().childHeight/(y1-y0));
+        
+    model->zoom(model->x(),model->y(),zoomFactor);
+
+        
+    model->contentBounds(x0,y0,x1,y1);
+    double ioOffset=notFlipped? x0: x1;
+                                                          
+    // we need to move the io variables
+    for (auto& v: model->inVariables)
+      v->moveTo(ioOffset-flip*v->width(),v->y());
+    ioOffset=notFlipped? x1: x0;                                               
+    for (auto& v: model->outVariables)
+      v->moveTo(ioOffset+flip*v->width(),v->y());
+       
+    recentre();
+    requestRedraw();
+  }
+  
   void Canvas::openGroupInCanvas(const ItemPtr& item)
   {
     if (auto g=dynamic_pointer_cast<Group>(item))
@@ -735,27 +770,9 @@ namespace minsky
         if (auto parent=model->group.lock())
           model->setZoom(parent->zoomFactor());
         model=g;
+        zoomToFit();
+
         minsky().bookmarkRefresh();
-        float zoomFactor=1.1*model->displayZoom;
-        if (!model->displayContents())
-          {
-            // we need to move the io variables
-            for (auto& v: model->inVariables)
-              {
-                float x=v->x(), y=v->y();
-                zoom(x,model->x(),zoomFactor);
-                zoom(y,model->y(),zoomFactor);
-                v->moveTo(x,y);
-              }
-            for (auto& v: model->outVariables)
-              {
-                float x=v->x(), y=v->y();
-                zoom(x,model->x(),zoomFactor);
-                zoom(y,model->y(),zoomFactor);
-                v->moveTo(x,y);
-              }
-          }
-        model->zoom(model->x(),model->y(),zoomFactor);
         this->item.reset();
         itemFocus.reset();
         wire.reset();

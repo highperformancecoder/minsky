@@ -271,10 +271,11 @@ export class WindowManager {
   }
 
   static showMouseCoordinateWindow({ mouseX, mouseY }) {
-    dialog.showMessageBox(WindowManager.getMainWindow(), {
+    dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
       message: `MouseX: ${mouseX}, MouseY: ${mouseY}`,
       title: 'Mouse Coordinates',
       type: 'info',
+      buttons: ['OK'],
     });
   }
 }
