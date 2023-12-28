@@ -2,7 +2,7 @@ let glob=require('glob');
 exports.default = async function(context) {
   let p=context.packager;
   // if libravel is present in dynamic_libraries, this is a ravel build.
-  glob(p.info.projectDir+"/dynamic_libraries/libravel.*",function(er,files)
+  glob.glob(p.info.projectDir+"/dynamic_libraries/libravel.*",function(er,files)
        {
          if (files.length>0)
          {
