@@ -738,7 +738,7 @@ namespace minsky
     float inOffset=0, outOffset=0;
     double fm=std::fmod(model->rotation(),360);
     bool notFlipped=((fm>-90 && fm<90) || fm>270 || fm<-270);
-    int flip=notFlipped? 1: -1;
+    float flip=notFlipped? 1: -1;
                                                          
     // we need to move the io variables
     for (auto& v: model->inVariables)
@@ -753,7 +753,7 @@ namespace minsky
 
         
     model->contentBounds(x0,y0,x1,y1);
-    double ioOffset=notFlipped? x0: x1;
+    float ioOffset=notFlipped? x0: x1;
                                                           
     // we need to move the io variables
     for (auto& v: model->inVariables)
