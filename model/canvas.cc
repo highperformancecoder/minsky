@@ -424,7 +424,7 @@ namespace minsky
       minsky().copy();
   }
 
-  int Canvas::ravelsSelected()
+  int Canvas::ravelsSelected() const
   {
     int ravelsSelected = 0;
     for (auto& i: selection.items) {
@@ -730,6 +730,9 @@ namespace minsky
 
   void Canvas::zoomToFit()
   {
+    // recompute all bounding boxes - why is this needed?
+    for (auto& i: model->items) i->updateBoundingBox();
+    
     double x0,x1,y0,y1;
     model->contentBounds(x0,y0,x1,y1);
     float inOffset=0, outOffset=0;

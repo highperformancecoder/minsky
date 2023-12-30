@@ -164,7 +164,7 @@ namespace minsky
     /// select all items in a given region
     void select(const LassoBox&);
 
-    int ravelsSelected();
+    int ravelsSelected() const; ///< number of ravels in selection
     
     /// sets itemFocus, and resets mouse offset for placement
     void setItemFocus(const ItemPtr& x) {

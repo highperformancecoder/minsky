@@ -732,7 +732,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Open in canvas',
         click: async () => {
-          minsky.openGroupInCanvas();
+          await minsky.openGroupInCanvas();
           BookmarkManager.updateBookmarkList();
         }
       }),
