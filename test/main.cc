@@ -53,8 +53,6 @@ namespace
 
 int main(int argc, const char** argv)
 {
-//  // for some reason, the default default font causes problems, so pick a font on Linux
-//  ecolab::Pango::defaultFamily="Adobe New Century Schoolbook";
   if (argc>1)
     {
       bool listTests=false;
