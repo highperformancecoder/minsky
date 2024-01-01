@@ -730,6 +730,7 @@ namespace minsky
 
   void Canvas::zoomToFit()
   {
+    if (frameArgs().parentWindowId.empty()) return; // no window to fit to, so do nothing
     // recompute all bounding boxes - why is this needed?
     for (auto& i: model->items) i->updateBoundingBox();
     
