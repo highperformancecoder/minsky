@@ -106,7 +106,7 @@
     "loader-utils": "^3.2.1",
     "lodash-es": "^4.17.21",
     "material-design-icons": "^3.0.1",
-    "mathjax-full": "^3.2.2",
+    "mathjax": "^3.2.2",
     "moment": "^2.29.4",
     "ngx-auto-unsubscribe": "^3.0.1",
     "ngx-color-picker": "^15.0.0",

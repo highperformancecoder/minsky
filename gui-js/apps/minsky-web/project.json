@@ -7,13 +7,14 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:application",
+      "executor": "@angular-devkit/build-angular:browser-esbuild",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "allowedCommonJsDependencies": ["debug", "css-element-queries"],
         "outputPath": "dist/apps/minsky-web",
         "index": "apps/minsky-web/src/index.html",
-        "browser": "apps/minsky-web/src/main.ts",
-        "polyfills": ["zone.js"],
+        "main": "apps/minsky-web/src/main.ts",
+        "polyfills": "apps/minsky-web/src/polyfills.ts",
         "tsConfig": "apps/minsky-web/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -21,7 +22,13 @@
           "apps/minsky-web/src/assets"
         ],
         "styles": ["apps/minsky-web/src/styles.scss"],
-        "scripts": []
+        "scripts": ["node_modules/mathjax/es5/tex-svg.js"],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
       },
       "configurations": {
         "production": {
@@ -33,11 +40,17 @@
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
             }
           ],
-          "outputHashing": "all"
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true
         },
         "development": {
           "optimization": false,
@@ -86,7 +99,7 @@
       "executor": "@nx/web:file-server",
       "options": {
         "buildTarget": "minsky-web:build",
-        "staticFilePath": "dist/apps/minsky-web/browser"
+        "staticFilePath": "dist/apps/minsky-web"
       }
     }
   }

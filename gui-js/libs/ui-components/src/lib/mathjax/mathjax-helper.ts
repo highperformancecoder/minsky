@@ -12,7 +12,7 @@ const mathjax_document = mathjax.document('', {
   InputJax: new TeX({ packages: AllPackages }),
   OutputJax: new SVG({ fontCache: 'local' })
 })
-
+//
 const default_mathjax_options = {
   em: 16,
   ex: 8,
