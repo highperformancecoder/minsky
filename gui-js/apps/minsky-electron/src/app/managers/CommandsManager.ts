@@ -993,15 +993,27 @@ export class CommandsManager {
     (new Ravel(payload.command)).setHandleDescription(payload.handleIndex, payload.description);
   }
 
-  static async newPubTab() {
+  static newPubTab(): Promise<void> {
     const window=WindowManager.createPopupWindowWithRouting({
       title: `New Publication Tab`,
-      url: `#/headless/new-pub-tab`,
+      url: `#/headless/new-pub-tab?type=new&command=`,
       height: 90,
       width: 300,
     });
     return new Promise((resolve)=>{
-      window.once('closed',()=>resolve(0));
+      window.once('closed',()=>resolve(null));
+    });
+  }
+  
+  static renamePubTab(command: string): Promise<void> {
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `Rename Publication Tab`,
+      url: `#/headless/new-pub-tab?type=rename&command=${command}`,
+      height: 90,
+      width: 300,
+    });
+    return new Promise((resolve)=>{
+      window.once('closed',()=>resolve(null));
     });
   }
   
