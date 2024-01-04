@@ -325,9 +325,6 @@ namespace MathDAG
         else
           {
             result=VariableValuePtr(VariableType::tempFlow);
-            if (state)
-              if (auto p=state->ports(0).lock())
-                p->setVariableValue(result);
             result->allocValue();
           }
         if (tensorEval() && addTensorOp(result, *this, ev))
