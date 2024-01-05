@@ -8,9 +8,8 @@ import {
 } from '@angular/core';
 import { CommunicationService } from '@minsky/core';
 import { HeaderEvent } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subject, takeUntil } from 'rxjs';
 
-@AutoUnsubscribe()
 @Component({
   selector: 'minsky-toolbar',
   templateUrl: './toolbar.component.html',
@@ -18,6 +17,8 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 })
 export class ToolbarComponent implements OnInit, OnDestroy {
   private static availableOperationsMap = null;
+
+  destroy$ = new Subject<{}>();
 
   @Output() toolbarEvent = new EventEmitter<HeaderEvent>();
 
@@ -31,7 +32,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   showPlayButton = false;
 
   ngOnInit(): void {
-    this.communicationService.showPlayButton$.subscribe((showPlayButton) => {
+    this.communicationService.showPlayButton$.pipe(takeUntil(this.destroy$)).subscribe((showPlayButton) => {
       this.showPlayButton = showPlayButton;
       this.changeDetectorRef.detectChanges();
     });
@@ -109,6 +110,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   //   TextInputUtilities.hide();
   // }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

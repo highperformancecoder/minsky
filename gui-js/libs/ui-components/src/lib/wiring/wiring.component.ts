@@ -11,11 +11,9 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import { events, MainRenderingTabs, minsky } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 
-@AutoUnsubscribe()
 @Component({
   selector: 'minsky-wiring',
   templateUrl: './wiring.component.html',
@@ -26,6 +24,9 @@ export class WiringComponent implements OnInit, OnDestroy {
   canvasContainerHeight: string;
   availableOperationsMapping: any; //Record<string, string[]>;
   wiringTab = MainRenderingTabs.canvas;
+
+  destroy$ = new Subject<{}>();
+
   constructor(
     public cmService: CommunicationService,
     public electronService: ElectronService,
@@ -133,7 +134,7 @@ export class WiringComponent implements OnInit, OnDestroy {
           'mousemove'
         ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
-        this.mouseMove$.subscribe(async (event: MouseEvent) => {
+        this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
             await this.cmService.mouseEvents('CANVAS_EVENT', event);
         });
 
@@ -174,7 +175,9 @@ export class WiringComponent implements OnInit, OnDestroy {
   getValue(operation) {
     return operation.value;
   }
-  
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

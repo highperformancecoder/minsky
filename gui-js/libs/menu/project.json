@@ -1,24 +1,24 @@
 {
-    "name": "menu",
-    "$schema": "../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "libs/menu/src",
-    "prefix": "minsky",
-    "tags": [],
-    "projectType": "library",
-    "targets": {
-      "test": {
-        "executor": "@nx/jest:jest",
-        "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-        "options": {
-          "jestConfig": "libs/menu/jest.config.ts"
-        }
-      },
-      "lint": {
-        "executor": "@nx/eslint:lint",
-        "outputs": ["{options.outputFile}"],
-        "options": {
-          "lintFilePatterns": ["libs/menu/**/*.ts", "libs/menu/**/*.html"]
-        }
+  "name": "menu",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/menu/src",
+  "prefix": "minsky",
+  "tags": [],
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/menu/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/menu/**/*.ts", "libs/menu/**/*.html"]
       }
     }
   }
+}

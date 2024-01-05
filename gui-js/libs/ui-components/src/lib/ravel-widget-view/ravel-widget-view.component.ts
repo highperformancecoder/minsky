@@ -2,12 +2,10 @@ import { Component, OnDestroy, ElementRef, AfterViewInit, ViewChild,} from '@ang
 import { ActivatedRoute } from '@angular/router';
 import {   CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
 import { events, Ravel, Functions } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 import { MessageBoxSyncOptions } from 'electron/renderer';
 
-@AutoUnsubscribe()
 @Component({
   selector: 'minsky-ravel-widget-view',
   templateUrl: './ravel-widget-view.component.html',
@@ -17,6 +15,8 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
   @ViewChild('ravelCanvasWrapper') ravelCanvasWrapper: ElementRef;
   itemId: string;
   systemWindowId: string;
+
+  destroy$ = new Subject<{}>();
 
   leftOffset = 0;
   topOffset = 0;
@@ -33,7 +33,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private windowUtilityService: WindowUtilityService
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
     });
@@ -97,7 +97,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
       'mousemove'
     ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
-    this.mouseMove$.subscribe(async (event: MouseEvent) => {
+    this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
       if (event.buttons==0)
         this.namedItem.popup.mouseOver(event.x,event.y+this.yoffs);
       else
@@ -136,7 +136,9 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
       });
     };
   }
-  
-   // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

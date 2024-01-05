@@ -1,10 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { events } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { takeUntil } from 'rxjs';
 
-@AutoUnsubscribe()
 @Component({
   selector: 'minsky-log-simulation',
   templateUrl: './log-simulation.component.html',
@@ -15,6 +15,8 @@ export class LogSimulationComponent implements OnDestroy {
     all: new FormControl(false),
     keys: new FormArray([]),
   });
+
+  destroy$ = new Subject<{}>();
 
   public get keysControl(): FormArray {
     return this.form.get('keys') as FormArray;
@@ -43,7 +45,7 @@ export class LogSimulationComponent implements OnDestroy {
       }
     })();
 
-    this.allControl.valueChanges.subscribe((v) => {
+    this.allControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((v) => {
       if (v) {
         this.keysControl.controls.forEach((control) => {
           control.get('isSelected').setValue(true);
@@ -73,6 +75,8 @@ export class LogSimulationComponent implements OnDestroy {
     this.closeWindow();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

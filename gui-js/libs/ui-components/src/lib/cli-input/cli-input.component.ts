@@ -7,12 +7,10 @@ import {
 } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { CppClass, unExposedTerminalCommands } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import JSON5 from 'json5';
 
-@AutoUnsubscribe()
 @Component({
   selector: 'minsky-cli-input',
   templateUrl: './cli-input.component.html',

@@ -29,4 +29,3 @@ export * from './lib/ui-components.module';
 export * from './lib/wiring/wiring.component';
 export * from './lib/directives/latex.directive';
 export * from './lib/material/material.module';
-export * from './lib/mathjax/mathjax-helper';

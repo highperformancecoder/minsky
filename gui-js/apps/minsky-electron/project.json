@@ -60,10 +60,10 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/minsky-electron/jest.config.js",
+        "jestConfig": "apps/minsky-electron/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/minsky-electron"]
+      "outputs": ["{workspaceRoot}/coverage/apps/minsky-electron"]
     },
     "compodoc": {
       "executor": "@twittwer/compodoc:compodoc",
