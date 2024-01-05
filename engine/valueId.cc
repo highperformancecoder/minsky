@@ -59,7 +59,7 @@ namespace minsky
     return utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
   }
 
-  string valueId(size_t scope, const string& name)
+  string valueIdCanonical(size_t scope, const string& name)
   {
     auto tmp=":"+name;
     if (scope==0) return tmp;
@@ -68,7 +68,7 @@ namespace minsky
 
   string valueId(const string& name)
   {
-    return valueId(scope(name), canonicalName(name));
+    return valueIdCanonical(scope(name), canonicalName(name));
   }
 
   string valueId(const GroupPtr& ref, const string& name) 
@@ -121,8 +121,8 @@ namespace minsky
   string valueIdFromScope(const GroupPtr& scope, const std::string& name)
   {
     if (name.empty() || !scope || !scope->group.lock())
-      return valueId(0,name); // retain previous global var id
-    return valueId(size_t(scope.get()), name);
+      return valueIdCanonical(0,name); // retain previous global var id
+    return valueIdCanonical(size_t(scope.get()), name);
 }
   
   std::string uqName(const std::string& name)

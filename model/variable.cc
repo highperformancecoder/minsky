@@ -271,7 +271,12 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
           first->second->m_scope=minsky::scope(group.lock(),name());
       // Ensure variable names are updated correctly everywhere they appear. 
       else
-        minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv)).first->second->name=nm;
+        {
+          auto iter=minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv)).first->second;
+          iter->name=nm;
+          iter->m_scope=minsky::scope(group.lock(),nm);
+        }
+          
     }
 }
 
