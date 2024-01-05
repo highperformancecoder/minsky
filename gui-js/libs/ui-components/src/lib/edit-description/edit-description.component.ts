@@ -1,13 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { events, Item, Wire } from '@minsky/shared';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'minsky-edit-description',
-  templateUrl: './edit-description.component.html',
-  styleUrls: ['./edit-description.component.scss'],
+    selector: 'minsky-edit-description',
+    templateUrl: './edit-description.component.html',
+    styleUrls: ['./edit-description.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class EditDescriptionComponent implements OnInit {
   tooltip = '';

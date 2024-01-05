@@ -1,20 +1,33 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { CppClass, unExposedTerminalCommands } from '@minsky/shared';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import JSON5 from 'json5';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor, AsyncPipe } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'minsky-cli-input',
-  templateUrl: './cli-input.component.html',
-  styleUrls: ['./cli-input.component.scss'],
+    selector: 'minsky-cli-input',
+    templateUrl: './cli-input.component.html',
+    styleUrls: ['./cli-input.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        NgFor,
+        MatOptionModule,
+        MatButtonModule,
+        AsyncPipe,
+    ],
 })
 export class CliInputComponent implements OnInit, OnDestroy {
   commands: Array<string>;

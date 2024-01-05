@@ -2,8 +2,9 @@ import { Directive, ElementRef, Input, OnChanges } from '@angular/core';
  
 declare var MathJax; 
  
-@Directive({ 
-  selector: '[latex]' 
+@Directive({
+    selector: '[latex]',
+    standalone: true
 }) 
 export class LatexDirective implements OnChanges { 
     @Input() 

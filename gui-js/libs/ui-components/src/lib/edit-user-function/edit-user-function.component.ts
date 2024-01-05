@@ -1,13 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { ClassType, UserFunction } from '@minsky/shared';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'minsky-edit-user-function',
-  templateUrl: './edit-user-function.component.html',
-  styleUrls: ['./edit-user-function.component.scss'],
+    selector: 'minsky-edit-user-function',
+    templateUrl: './edit-user-function.component.html',
+    styleUrls: ['./edit-user-function.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class EditUserFunctionComponent implements OnInit {
   form: FormGroup;

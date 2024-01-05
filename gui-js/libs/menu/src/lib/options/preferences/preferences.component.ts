@@ -1,12 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { events } from '@minsky/shared';
+import { MatButtonModule } from '@angular/material/button';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'minsky-preferences',
-  templateUrl: './preferences.component.html',
-  styleUrls: ['./preferences.component.scss'],
+    selector: 'minsky-preferences',
+    templateUrl: './preferences.component.html',
+    styleUrls: ['./preferences.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgFor,
+        MatButtonModule,
+    ],
 })
 export class PreferencesComponent implements OnInit {
   form: FormGroup;

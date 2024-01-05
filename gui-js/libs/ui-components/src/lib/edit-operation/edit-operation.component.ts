@@ -1,13 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { ClassType, OperationBase } from '@minsky/shared';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
-  selector: 'minsky-edit-operation',
-  templateUrl: './edit-operation.component.html',
-  styleUrls: ['./edit-operation.component.scss'],
+    selector: 'minsky-edit-operation',
+    templateUrl: './edit-operation.component.html',
+    styleUrls: ['./edit-operation.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        NgFor,
+        MatOptionModule,
+        MatButtonModule,
+    ],
 })
 export class EditOperationComponent implements OnInit {
   form: FormGroup;

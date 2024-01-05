@@ -7,11 +7,15 @@ import {
   ReplayRecordingStatus,
 } from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'minsky-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+    selector: 'minsky-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: true,
+    imports: [NgClass, ToolbarComponent],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   headerEvent = 'HEADER_EVENT';

@@ -6,7 +6,6 @@ import { LogSimulationComponent } from './log-simulation/log-simulation.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AboutComponent, LogSimulationComponent],
-  imports: [CommonModule, FileRoutingModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FileRoutingModule, FormsModule, ReactiveFormsModule, AboutComponent, LogSimulationComponent],
 })
 export class FileModule {}

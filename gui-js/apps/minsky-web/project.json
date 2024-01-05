@@ -23,7 +23,6 @@
         ],
         "styles": ["apps/minsky-web/src/styles.scss"],
         "scripts": ["node_modules/mathjax/es5/tex-svg.js"],
-        "vendorChunk": true,
         "extractLicenses": false,
         "buildOptimizer": false,
         "sourceMap": true,

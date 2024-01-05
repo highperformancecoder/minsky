@@ -1,11 +1,20 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormControl, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ThemePalette } from '@angular/material/core';
 import { CommunicationService, ElectronService } from '@minsky/core';
+import { MatButtonModule } from '@angular/material/button';
+import { ColorPickerModule } from 'ngx-color-picker';
 @Component({
-  selector: 'minsky-background-color',
-  templateUrl: './background-color.component.html',
-  styleUrls: ['./background-color.component.scss'],
+    selector: 'minsky-background-color',
+    templateUrl: './background-color.component.html',
+    styleUrls: ['./background-color.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ColorPickerModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class BackgroundColorComponent {
   public disabled = false;

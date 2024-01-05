@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { dateTimeFormats } from '@minsky/shared';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NgFor, NgIf } from '@angular/common';
 
 interface Second {
   type: string;
@@ -14,9 +18,19 @@ interface Dimension {
   units: Second;
 }
 @Component({
-  selector: 'minsky-dimensions',
-  templateUrl: './dimensions.component.html',
-  styleUrls: ['./dimensions.component.scss'],
+    selector: 'minsky-dimensions',
+    templateUrl: './dimensions.component.html',
+    styleUrls: ['./dimensions.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgFor,
+        NgIf,
+        MatAutocompleteModule,
+        MatOptionModule,
+        MatButtonModule,
+    ],
 })
 export class DimensionsComponent implements OnInit {
   form: FormGroup;

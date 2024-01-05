@@ -25,7 +25,7 @@ export * from './lib/plot-widget-view/plot-widget-view.component';
 export * from './lib/ravel-widget-view/ravel-widget-view.component';
 export * from './lib/rename-all-instances/rename-all-instances.component';
 export * from './lib/toolbar/toolbar.component';
-export * from './lib/ui-components.module';
+
 export * from './lib/wiring/wiring.component';
 export * from './lib/directives/latex.directive';
-export * from './lib/material/material.module';
+

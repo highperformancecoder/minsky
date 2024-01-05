@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ChangeDetectorRef, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {
@@ -12,6 +12,10 @@ import {
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import { Subject, takeUntil } from 'rxjs';
+import { NgIf, NgFor, NgStyle } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 
 enum ColType {
   axis = "axis",
@@ -41,9 +45,20 @@ class Dimension {
 };
 
 @Component({
-  selector: 'minsky-import-csv',
-  templateUrl: './import-csv.component.html',
-  styleUrls: ['./import-csv.component.scss'],
+    selector: 'minsky-import-csv',
+    templateUrl: './import-csv.component.html',
+    styleUrls: ['./import-csv.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatAutocompleteModule,
+        MatOptionModule,
+        NgIf,
+        NgFor,
+        NgStyle,
+    ],
 })
 export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewInit, OnDestroy {
   form: FormGroup;

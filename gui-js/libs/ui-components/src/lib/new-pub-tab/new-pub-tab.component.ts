@@ -1,12 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'minsky-new-pub-tab',
-  templateUrl: './new-pub-tab.component.html',
-  styleUrls: ['./new-pub-tab.component.scss', '../generic-form.scss'],
+    selector: 'minsky-new-pub-tab',
+    templateUrl: './new-pub-tab.component.html',
+    styleUrls: ['./new-pub-tab.component.scss', '../generic-form.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class NewPubTabComponent implements OnInit {
   command: string;

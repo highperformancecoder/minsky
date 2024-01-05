@@ -26,11 +26,21 @@ import { sampleTime } from 'rxjs/operators';
 import JSON5 from 'json5';
 import { ScaleHandler } from '../scale-handler/scale-handler.class';
 import { Subject, takeUntil } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { LatexDirective } from '../directives/latex.directive';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'minsky-godley-widget-view',
-  templateUrl: './godley-widget-view.component.html',
-  styleUrls: ['./godley-widget-view.component.scss'],
+    selector: 'minsky-godley-widget-view',
+    templateUrl: './godley-widget-view.component.html',
+    styleUrls: ['./godley-widget-view.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        NgFor,
+        LatexDirective,
+        FormsModule,
+    ],
 })
 export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild('godleyCanvasElemWrapper') godleyCanvasElemWrapper: ElementRef;

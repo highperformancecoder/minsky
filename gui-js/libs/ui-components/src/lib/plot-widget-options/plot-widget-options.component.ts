@@ -1,14 +1,21 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'minsky-plot-widget-options',
-  templateUrl: './plot-widget-options.component.html',
-  styleUrls: ['./plot-widget-options.component.scss'],
+    selector: 'minsky-plot-widget-options',
+    templateUrl: './plot-widget-options.component.html',
+    styleUrls: ['./plot-widget-options.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   form: FormGroup;

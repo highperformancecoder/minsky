@@ -1,13 +1,26 @@
 import { Component, HostListener, DoCheck, ChangeDetectorRef, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
 import { events, RenderNativeWindow } from '@minsky/shared';
 import { TranslateService } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { HeaderComponent } from '../../../../libs/ui-components/src/lib/header/header.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'minsky-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'minsky-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        RouterOutlet,
+        HeaderComponent,
+        MatButtonModule,
+        NgFor,
+    ],
 })
 export class AppComponent implements OnInit, DoCheck {
   htmlTabs = ['itemTab/summary'];

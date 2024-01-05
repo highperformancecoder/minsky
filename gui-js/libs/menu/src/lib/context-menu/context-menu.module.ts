@@ -6,13 +6,13 @@ import { PenStylesComponent } from './pen-styles/pen-styles.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [PenStylesComponent],
-  imports: [
-    CommonModule,
-    ContextMenuRoutingModule,
-    ColorPickerModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
+    imports: [
+        CommonModule,
+        ContextMenuRoutingModule,
+        ColorPickerModule,
+        FormsModule,
+        ReactiveFormsModule,
+        PenStylesComponent
+    ],
 })
 export class ContextMenuModule {}

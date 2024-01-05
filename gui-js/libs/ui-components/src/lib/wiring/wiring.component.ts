@@ -13,11 +13,22 @@ import {
 import { events, MainRenderingTabs, minsky } from '@minsky/shared';
 import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
+import { AvailableOperationsComponent } from './available-operations/available-operations.component';
+import { VariableComponent } from './variable/variable.component';
+import { NgIf, NgFor, KeyValuePipe } from '@angular/common';
 
 @Component({
-  selector: 'minsky-wiring',
-  templateUrl: './wiring.component.html',
-  styleUrls: ['./wiring.component.scss'],
+    selector: 'minsky-wiring',
+    templateUrl: './wiring.component.html',
+    styleUrls: ['./wiring.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        VariableComponent,
+        NgFor,
+        AvailableOperationsComponent,
+        KeyValuePipe,
+    ],
 })
 export class WiringComponent implements OnInit, OnDestroy {
   mouseMove$: Observable<MouseEvent>;

@@ -1,13 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { ClassType, Group } from '@minsky/shared';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'minsky-edit-group',
-  templateUrl: './edit-group.component.html',
-  styleUrls: ['./edit-group.component.scss'],
+    selector: 'minsky-edit-group',
+    templateUrl: './edit-group.component.html',
+    styleUrls: ['./edit-group.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class EditGroupComponent implements OnInit {
   form: FormGroup;

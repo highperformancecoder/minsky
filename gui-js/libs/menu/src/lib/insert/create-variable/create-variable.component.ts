@@ -1,10 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs'; 
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -13,11 +8,20 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import { VariableBase } from '@minsky/shared';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'minsky-create-variable',
-  templateUrl: './create-variable.component.html',
-  styleUrls: ['./create-variable.component.scss'],
+    selector: 'minsky-create-variable',
+    templateUrl: './create-variable.component.html',
+    styleUrls: ['./create-variable.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        MatButtonModule,
+    ],
 })
 export class CreateVariableComponent implements OnInit, OnDestroy {
   variableType: string;

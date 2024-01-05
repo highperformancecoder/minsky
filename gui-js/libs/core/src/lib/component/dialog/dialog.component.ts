@@ -6,13 +6,24 @@ import {
   NgZone,
   ViewChild,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'minsky-dialog',
-  templateUrl: './dialog.component.html',
-  styleUrls: ['./dialog.component.scss'],
+    selector: 'minsky-dialog',
+    templateUrl: './dialog.component.html',
+    styleUrls: ['./dialog.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class DialogComponent implements AfterViewInit {
   @ViewChild('inputElement') inputElement: ElementRef;

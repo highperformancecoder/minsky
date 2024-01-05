@@ -5,9 +5,10 @@ import { PlotWidget } from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'minsky-plot-widget-view',
-  templateUrl: './plot-widget-view.component.html',
-  styleUrls: ['./plot-widget-view.component.scss'],
+    selector: 'minsky-plot-widget-view',
+    templateUrl: './plot-widget-view.component.html',
+    styleUrls: ['./plot-widget-view.component.scss'],
+    standalone: true,
 })
 export class PlotWidgetViewComponent implements OnInit, OnDestroy {
   itemId: string;

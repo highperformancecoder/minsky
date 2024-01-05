@@ -11,9 +11,10 @@ import { HeaderEvent } from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'minsky-toolbar',
-  templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss'],
+    selector: 'minsky-toolbar',
+    templateUrl: './toolbar.component.html',
+    styleUrls: ['./toolbar.component.scss'],
+    standalone: true,
 })
 export class ToolbarComponent implements OnInit, OnDestroy {
   private static availableOperationsMap = null;
