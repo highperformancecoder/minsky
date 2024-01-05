@@ -121,8 +121,8 @@ namespace minsky
   string valueIdFromScope(const GroupPtr& scope, const std::string& name)
   {
     if (name.empty() || !scope || !scope->group.lock())
-      return valueId(0,utf_to_utf<char>(name)); // retain previous global var id
-    return valueId(size_t(scope.get()), utf_to_utf<char>(name));
+      return valueId(0,name); // retain previous global var id
+    return valueId(size_t(scope.get()), name);
 }
   
   std::string uqName(const std::string& name)

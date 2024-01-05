@@ -31,7 +31,7 @@ namespace minsky
   bool isValueId(const std::string& name);
 
   /// construct a valueId \@ name should be canonicalised
-  std::string valueId(size_t scope, const std::string& name);
+  std::string valueIdCanonical(size_t scope, const std::string& name);
   /// construct a valueId from fully qualified name \@ name should not be canonicalised
   std::string valueId(const std::string& name);
 
