@@ -439,6 +439,7 @@ export class CommandsManager {
     minsky.canvas.recentre();
     minsky.popFlags();
     await minsky.doPushHistory(true);
+    WindowManager.getMainWindow()?.webContents?.send(events.CHANGE_MAIN_TAB); // not necesarily removed, maybe added
     WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, maybe added
   }
 
