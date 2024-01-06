@@ -1,5 +1,5 @@
 import {
-  Canvas,CanvasItem,ClassType,
+  CanvasItem,ClassType,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, PubTab,
   Ravel, RenderNativeWindow, Sheet, SwitchIcon,VariableBase, VariableValue, Functions, events
 } from '@minsky/shared';
@@ -1140,7 +1140,7 @@ export class ContextMenuManager {
       }));
       
       var importMenu=new Menu();
-      var importables=godley.popup.matchingTableColumnsByCol(c);
+      var importables=await godley.popup.matchingTableColumnsByCol(c);
       for (var i in importables)
         importMenu.append(new MenuItem({
           label: importables[i],

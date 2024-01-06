@@ -16,7 +16,6 @@ class classdesc__pack_t {}
 class classdesc__RESTProcess_t {}
 class classdesc__TCL_obj_t {}
 class ecolab__cairo__Surface {}
-class ecolab__Pango {}
 
 export class EventInterface extends CppClass {
   item: Item;

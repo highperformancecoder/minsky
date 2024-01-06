@@ -916,9 +916,9 @@ namespace minsky
     // attach the plots
     model->recursiveDo
       (&Group::items,
-       [&](Items& m, Items::iterator i)
+       [&](Items& m, Items::iterator it)
        {
-         if (auto p=(*i)->plotWidgetCast())
+         if (auto p=(*it)->plotWidgetCast())
            {
              p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();

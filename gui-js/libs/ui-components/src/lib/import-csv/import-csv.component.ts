@@ -12,7 +12,6 @@ import {
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import * as JSON5 from 'json5';
 
 enum ColType {
   axis = "axis",
