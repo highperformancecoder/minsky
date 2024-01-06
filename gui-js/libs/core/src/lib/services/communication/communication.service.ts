@@ -448,6 +448,11 @@ export class CommunicationService {
     this.electronService.invoke(events.IMPORT_CSV, payload);
   }
 
+  resetScrollTimeout = () => {
+    this.resetScroll();
+    this.resetScrollWhenIdle = null;
+  };
+
   onMouseWheelZoom = async (event: WheelEvent) => {
     event.preventDefault();
     const { deltaY } = event;
@@ -471,7 +476,7 @@ export class CommunicationService {
 
     // schedule resetScroll when zooming stops
     if (this.resetScrollWhenIdle) clearTimeout(this.resetScrollWhenIdle);
-    this.resetScrollWhenIdle = setTimeout(() => { var self = this; self.resetScroll(); self.resetScrollWhenIdle = null; }, 100);
+    this.resetScrollWhenIdle = setTimeout(this.resetScrollTimeout, 100);
   };
 
   async handleKeyUp(event: KeyboardEvent) {

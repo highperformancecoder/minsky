@@ -18,7 +18,6 @@ import {
   ImportStockPayload,
   GodleyIcon,
 } from '@minsky/shared';
-//import debug from 'debug';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
@@ -223,13 +222,9 @@ ipcMain.handle(events.NEW_SYSTEM, async () => {
 
 ipcMain.handle(
   events.IMPORT_CSV,
-  async (event, payload: MinskyProcessPayload) => {
+  async (event) => {
     const itemInfo = await CommandsManager.getFocusItemInfo();
-    if(itemInfo) {
-      CommandsManager.importCSV(itemInfo, true);
-    } else {
-      console.error('No itemInfo ' + JSON5.stringify(payload));
-    }
+    CommandsManager.importCSV(itemInfo, true);
     return;
   }
 );

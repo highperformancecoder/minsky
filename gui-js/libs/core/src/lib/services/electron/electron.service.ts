@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { events, CurrentWindowDetails, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';
-import JSON5 from 'json5';
 
 @Injectable({
   providedIn: 'root',
@@ -32,10 +31,6 @@ export class ElectronService {
     }
     else
       this.on = (...args)=>{};
-  }
-
-  logFilter(c: string) {
-    return !["mouseMove$", "requestRedraw$"].some(lf => c.match(lf));
   }
 
   send(channel: string,...args) {return this.ipcRenderer.send(channel,...args);}
