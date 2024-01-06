@@ -10,6 +10,7 @@ import { MessageBoxSyncOptions } from 'electron/renderer';
   selector: 'minsky-ravel-widget-view',
   templateUrl: './ravel-widget-view.component.html',
   styleUrls: ['./ravel-widget-view.component.scss'],
+  standalone: true
 })
 export class RavelViewComponent implements AfterViewInit, OnDestroy {
   @ViewChild('ravelCanvasWrapper') ravelCanvasWrapper: ElementRef;
@@ -40,6 +41,8 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    if(!this.electronService.isElectron) return;
+
     this.namedItem=new Ravel(this.electronService.minsky.namedItems.elem(this.itemId).second);
     this.render();
     this.initEvents();

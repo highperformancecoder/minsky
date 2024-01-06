@@ -22,6 +22,7 @@ import { sampleTime } from 'rxjs/operators';
   selector: 'minsky-variable-pane',
   templateUrl: './variable-pane.component.html',
   styleUrls: ['./variable-pane.component.scss'],
+  standalone: true
 })
 export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   @ViewChild('variablePaneWrapper') variablePaneWrapper: ElementRef;
@@ -43,8 +44,6 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   mouseY = 0;
 
   constructor(
-    private communicationService: CommunicationService,
-    private windowUtilityService: WindowUtilityService,
     private electronService: ElectronService,
     private route: ActivatedRoute
   ) {

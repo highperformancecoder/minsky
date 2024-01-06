@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { EditHandleDimensionComponent } from './edit-handle-dimension.component';
 
 describe('EditHandleDimensionComponent', () => {
@@ -8,7 +8,7 @@ describe('EditHandleDimensionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditHandleDimensionComponent],
+      imports: [EditHandleDimensionComponent, RouterTestingModule],
     }).compileComponents();
   });
 

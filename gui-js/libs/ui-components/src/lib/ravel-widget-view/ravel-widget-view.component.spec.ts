@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RavelViewComponent } from './ravel-widget-view.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RavelViewComponent', () => {
   let component: RavelViewComponent;
@@ -8,7 +9,7 @@ describe('RavelViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RavelViewComponent],
+      imports: [RavelViewComponent, RouterTestingModule],
     }).compileComponents();
   });
 

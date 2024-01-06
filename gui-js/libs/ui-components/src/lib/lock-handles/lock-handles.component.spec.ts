@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LockHandlesComponent } from './lock-handles.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('LockHandlesComponent', () => {
   let component: LockHandlesComponent;
@@ -8,7 +9,7 @@ describe('LockHandlesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LockHandlesComponent],
+      imports: [LockHandlesComponent, RouterTestingModule],
     }).compileComponents();
   });
 

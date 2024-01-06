@@ -7,7 +7,7 @@ describe('FindAllInstancesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FindAllInstancesComponent],
+      imports: [FindAllInstancesComponent],
     }).compileComponents();
   });
 

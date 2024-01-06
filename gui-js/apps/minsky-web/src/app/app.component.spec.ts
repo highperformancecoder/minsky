@@ -8,9 +8,8 @@ describe('AppComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [AppComponent],
         providers: [{ provide: MatDialog, useValue: {} }, { provide: MatDialogRef, useValue: {} }],
-        imports: [RouterTestingModule, TranslateModule.forRoot()],
+        imports: [RouterTestingModule, TranslateModule.forRoot(), AppComponent],
       }).compileComponents();
     })
   );

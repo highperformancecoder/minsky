@@ -8,7 +8,7 @@ describe('WiringComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [WiringComponent],
+        imports: [WiringComponent],
       }).compileComponents();
     })
   );
