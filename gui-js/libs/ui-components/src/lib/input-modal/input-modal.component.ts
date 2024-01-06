@@ -8,13 +8,20 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WindowUtilityService } from '@minsky/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'minsky-input-modal',
-  templateUrl: './input-modal.component.html',
-  styleUrls: ['./input-modal.component.scss'],
+    selector: 'minsky-input-modal',
+    templateUrl: './input-modal.component.html',
+    styleUrls: ['./input-modal.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class InputModalComponent implements OnInit, AfterViewInit {
   @Input() input: string;

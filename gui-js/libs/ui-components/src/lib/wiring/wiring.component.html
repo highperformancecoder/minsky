@@ -37,8 +37,8 @@
       </button>
       <ng-container *ngFor="let operation of availableOperationsMapping | keyvalue">
         <minsky-available-operations
-          [title]="operation.key"
-          [operations]="operation.value"
+          [title]="getKey(operation)"
+          [operations]="getValue(operation)"
           ></minsky-available-operations>
       </ng-container>
       <button class="tab toolButton"  classType="SwitchIcon" (click)="electronService.minsky.canvas.addSwitch()">

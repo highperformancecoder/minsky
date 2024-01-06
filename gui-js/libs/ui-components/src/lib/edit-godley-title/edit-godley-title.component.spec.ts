@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { EditGodleyTitleComponent } from './edit-godley-title.component';
 
 describe('EditGodleyTitleComponent', () => {
@@ -8,7 +8,7 @@ describe('EditGodleyTitleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditGodleyTitleComponent],
+      imports: [EditGodleyTitleComponent, RouterTestingModule],
     }).compileComponents();
   });
 

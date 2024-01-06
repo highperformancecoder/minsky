@@ -2,17 +2,19 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subject, takeUntil } from 'rxjs';
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-plot-widget-view',
-  templateUrl: './plot-widget-view.component.html',
-  styleUrls: ['./plot-widget-view.component.scss'],
+    selector: 'minsky-plot-widget-view',
+    templateUrl: './plot-widget-view.component.html',
+    styleUrls: ['./plot-widget-view.component.scss'],
+    standalone: true,
 })
 export class PlotWidgetViewComponent implements OnInit, OnDestroy {
   itemId: string;
   systemWindowId: string;
+
+  destroy$ = new Subject<{}>();
 
   leftOffset = 0;
   topOffset = 0;
@@ -24,7 +26,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private windowUtilityService: WindowUtilityService
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
     });
@@ -67,6 +69,8 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

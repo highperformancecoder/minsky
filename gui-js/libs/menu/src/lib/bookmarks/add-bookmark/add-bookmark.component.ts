@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { events, } from '@minsky/shared';
 
 @Component({
-  selector: 'minsky-add-bookmark',
-  templateUrl: './add-bookmark.component.html',
-  styleUrls: ['./add-bookmark.component.scss'],
+    selector: 'minsky-add-bookmark',
+    templateUrl: './add-bookmark.component.html',
+    styleUrls: ['./add-bookmark.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule],
 })
 export class AddBookmarkComponent {
   bookmarkName: FormControl;

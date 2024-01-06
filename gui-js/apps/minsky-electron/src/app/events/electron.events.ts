@@ -18,7 +18,6 @@ import {
   ImportStockPayload,
   GodleyIcon,
 } from '@minsky/shared';
-//import * as debug from 'debug';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
@@ -30,6 +29,7 @@ import { RecordingManager } from '../managers/RecordingManager';
 import { StoreManager, MinskyPreferences } from '../managers/StoreManager';
 import { WindowManager } from '../managers/WindowManager';
 import {restService} from '../backend-init';
+import JSON5 from 'json5';
 
 //const logUpdateEvent = debug('minsky:electron_update_event');
 
@@ -38,6 +38,10 @@ export default class ElectronEvents {
     return ipcMain;
   }
 }
+
+ipcMain.handle(events.LOG_MESSAGE, async (event, message: string)=>{
+  return await CppClass.logMessage(message);
+});
 
 ipcMain.handle(events.BACKEND, async (event, ...args: any[])=>{
   return await CppClass.backend(...args);
@@ -218,10 +222,8 @@ ipcMain.handle(events.NEW_SYSTEM, async () => {
 
 ipcMain.handle(
   events.IMPORT_CSV,
-  async (event, payload: MinskyProcessPayload) => {
-    const { mouseX, mouseY } = payload;
-
-    const itemInfo = await CommandsManager.getItemInfo(mouseX, mouseY);
+  async (event) => {
+    const itemInfo = await CommandsManager.getFocusItemInfo();
     CommandsManager.importCSV(itemInfo, true);
     return;
   }

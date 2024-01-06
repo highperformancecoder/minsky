@@ -3,9 +3,10 @@ import { ElectronService } from '@minsky/core';
 import { version } from '@minsky/shared';
 
 @Component({
-  selector: 'minsky-about',
-  templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss'],
+    selector: 'minsky-about',
+    templateUrl: './about.component.html',
+    styleUrls: ['./about.component.scss'],
+    standalone: true,
 })
 export class AboutComponent implements OnInit {
   angularVersion = VERSION.full;

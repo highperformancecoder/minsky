@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { EditGroupComponent } from './edit-group.component';
 
 describe('EditGroupComponent', () => {
@@ -8,7 +8,7 @@ describe('EditGroupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditGroupComponent],
+      imports: [EditGroupComponent, RouterTestingModule],
     }).compileComponents();
   });
 

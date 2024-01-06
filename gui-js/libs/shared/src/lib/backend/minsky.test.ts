@@ -6,8 +6,8 @@ import {
    PlotWidget,
   VariableBase,
  } from './index';
-import * as fs from 'fs';
-import * as JSON5 from 'json5';
+import fs from 'fs';
+import JSON5 from 'json5';
 
 let cwd=process.cwd();
 if (cwd.endsWith('shared'))

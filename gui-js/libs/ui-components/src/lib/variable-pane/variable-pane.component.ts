@@ -15,15 +15,14 @@ import {
   events,
   VariablePane,
 } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 
-@AutoUnsubscribe()
 @Component({
   selector: 'minsky-variable-pane',
   templateUrl: './variable-pane.component.html',
   styleUrls: ['./variable-pane.component.scss'],
+  standalone: true
 })
 export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   @ViewChild('variablePaneWrapper') variablePaneWrapper: ElementRef;
@@ -39,16 +38,16 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   mouseMove$: Observable<MouseEvent>;
   variablePane: VariablePane;
   
+  destroy$ = new Subject<{}>();
+
   mouseX = 0;
   mouseY = 0;
 
   constructor(
-    private communicationService: CommunicationService,
-    private windowUtilityService: WindowUtilityService,
     private electronService: ElectronService,
     private route: ActivatedRoute
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
     });
@@ -106,7 +105,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
 
     // vertical offset to allow room for the filter buttons
     const offset=-15;
-    this.mouseMove$.subscribe((event: MouseEvent) => {
+    this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe((event: MouseEvent) => {
       const { clientX, clientY } = event;
       this.mouseX = clientX;
       this.mouseY = clientY;
@@ -154,6 +153,8 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     this.variablePane.updateWithHeight(this.height);
   }
     
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

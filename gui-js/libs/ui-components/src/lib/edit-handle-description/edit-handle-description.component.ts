@@ -1,12 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'minsky-edit-handle-description',
-  templateUrl: './edit-handle-description.component.html',
-  styleUrls: ['./edit-handle-description.component.scss', '../generic-form.scss'],
+    selector: 'minsky-edit-handle-description',
+    templateUrl: './edit-handle-description.component.html',
+    styleUrls: ['./edit-handle-description.component.scss', '../generic-form.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class EditHandleDescriptionComponent implements OnInit {
   command: string;

@@ -12,7 +12,7 @@ import {
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import { join } from 'path';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
@@ -58,23 +58,43 @@ export class CommandsManager {
       : classTypeRes;
 
     if (!classType) {
-      return;
+      return undefined;
     }
     return ClassType[classType];
   }
 
-  static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
+  static isFalseResult(result) {
+    return !result || typeof result === 'object' && (Object.keys(result).length === 0);
+  }
 
-    if (!minsky.canvas.getItemAt(x, y)) {
+  static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
+    if (this.isFalseResult(await minsky.canvas.getItemAt(x, y))) {
       return null;
     }
 
+    return await this.getCurrentItemInfo();
+  }
+
+  static async getFocusItemInfo(): Promise<CanvasItem> {
+    await minsky.canvas.setItemFromItemFocus();
+    return await this.getCurrentItemInfo();
+  }
+
+  static async getCurrentItemInfo() {
     const classType = (await this.getCurrentItemClassType()) as ClassType;
     const id = await minsky.canvas.item.id();
-    const displayContents=classType==="Group"? await new Group(minsky.canvas.item).displayContents(): false;
+    
+    if(this.isFalseResult(id)) {
+      return null;
+    }
+
+    let displayContents = false;
+    if(classType === 'Group') {
+      displayContents = await new Group(minsky.canvas.item).displayContents();
+    }
 
     const itemInfo: CanvasItem = { classType, id, displayContents };
-    return itemInfo;
+    return itemInfo;  
   }
 
   static async selectVar(x: number, y: number): Promise<boolean> {
@@ -604,9 +624,9 @@ export class CommandsManager {
     const type=await v.type();
     const local=await v.local();
     WindowManager.createPopupWindowWithRouting({
-      width: 500,
-      height: 650,
-      title: `Edit ${name} || ''}`,
+      width: 400,
+      height: 500,
+      title: `Edit ${name || ''}`,
       url: `#/headless/menu/insert/create-variable?type=${type}&name=${encodeURIComponent(name)||''}&isEditMode=true&local=${local}`,
     });
   }
@@ -616,11 +636,12 @@ export class CommandsManager {
     let width = 500;
     switch (classType) {
       case ClassType.Group:
-        height = 240;
+        width = 400;
+        height = 130;
         break;
       case ClassType.Operation:
-        height = 250;
-        width = 350;
+        height = 200;
+        width = 300;
         break;
       case ClassType.UserFunction:
         height = 250;
@@ -672,6 +693,10 @@ export class CommandsManager {
   }
 
   static async addItemToNamedItems(itemInfo: CanvasItem) {
+    const idString = itemInfo.id.toString();
+    if(idString.includes('object')) {
+      throw new Error(`Invalid ID value on itemInfo ${JSON5.stringify(itemInfo)}`);
+    }
     // Pushing the current item to namedItems map
     minsky.nameCurrentItem(itemInfo.id.toString());
   }
@@ -886,7 +911,7 @@ export class CommandsManager {
         url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1300,
-        minWidth: 700,
+        minWidth: 650,
         modal: false,
       });
 

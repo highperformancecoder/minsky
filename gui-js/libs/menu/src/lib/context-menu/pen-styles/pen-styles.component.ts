@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { NgFor, NgIf } from '@angular/common';
 
 enum DashStyles {
   SOLID = 'solid',
@@ -24,9 +26,17 @@ interface Palette {
 }
 
 @Component({
-  selector: 'minsky-pen-styles',
-  templateUrl: './pen-styles.component.html',
-  styleUrls: ['./pen-styles.component.scss'],
+    selector: 'minsky-pen-styles',
+    templateUrl: './pen-styles.component.html',
+    styleUrls: ['./pen-styles.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgFor,
+        NgIf,
+        ColorPickerModule,
+    ],
 })
 export class PenStylesComponent implements OnInit {
   form: FormGroup;

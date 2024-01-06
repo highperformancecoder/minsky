@@ -2,24 +2,28 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
 import { GodleyIcon } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subject, takeUntil } from 'rxjs';
+import { InputModalComponent } from '../input-modal/input-modal.component';
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-edit-godley-title',
-  templateUrl: './edit-godley-title.component.html',
-  styleUrls: ['./edit-godley-title.component.scss'],
+    selector: 'minsky-edit-godley-title',
+    templateUrl: './edit-godley-title.component.html',
+    styleUrls: ['./edit-godley-title.component.scss'],
+    standalone: true,
+    imports: [InputModalComponent],
 })
 export class EditGodleyTitleComponent implements OnDestroy {
   title: string;
   itemId: string;
+
+  destroy$ = new Subject<{}>();
   
   constructor(
     private route: ActivatedRoute,
     private electronService: ElectronService,
     private windowUtilityService: WindowUtilityService
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.title = params.title;
       this.itemId = params.itemId;
     });
@@ -38,6 +42,8 @@ export class EditGodleyTitleComponent implements OnDestroy {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

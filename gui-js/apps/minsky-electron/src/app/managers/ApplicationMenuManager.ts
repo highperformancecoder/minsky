@@ -305,8 +305,9 @@ export class ApplicationMenuManager {
           label: 'Dimensions',
           click() {
             WindowManager.createPopupWindowWithRouting({
-              width: 700,
+              width: 500,
               height: 500,
+              minWidth: 500,
               title: 'Dimensions',
               url: `#/headless/menu/edit/dimensions`,
             });

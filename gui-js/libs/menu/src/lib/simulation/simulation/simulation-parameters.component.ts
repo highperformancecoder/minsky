@@ -1,12 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommunicationService, ElectronService } from '@minsky/core';
+import { MatButtonModule } from '@angular/material/button';
 //import { commandsMapping } from '@minsky/shared';
 
 @Component({
-  selector: 'minsky-simulation-parameters',
-  templateUrl: './simulation-parameters.component.html',
-  styleUrls: ['./simulation-parameters.component.scss'],
+    selector: 'minsky-simulation-parameters',
+    templateUrl: './simulation-parameters.component.html',
+    styleUrls: ['./simulation-parameters.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class SimulationParametersComponent implements OnInit {
   form: FormGroup;

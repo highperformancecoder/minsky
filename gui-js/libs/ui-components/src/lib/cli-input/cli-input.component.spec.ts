@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CliInputComponent } from './cli-input.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CliInputComponent', () => {
   let component: CliInputComponent;
@@ -8,7 +9,7 @@ describe('CliInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CliInputComponent],
+      imports: [CliInputComponent, NoopAnimationsModule],
     }).compileComponents();
   });
 

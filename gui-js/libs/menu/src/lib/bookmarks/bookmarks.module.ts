@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { SharedModule } from '@minsky/shared';
 import { AddBookmarkComponent } from './add-bookmark/add-bookmark.component';
 import { BookmarksRoutingModule } from './bookmarks-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AddBookmarkComponent],
-  imports: [CommonModule, BookmarksRoutingModule, SharedModule],
+    imports: [CommonModule, BookmarksRoutingModule, FormsModule, ReactiveFormsModule, AddBookmarkComponent],
 })
 export class BookmarksModule {}

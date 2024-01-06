@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { CommunicationService, ElectronService } from '@minsky/core';
 import { events } from '@minsky/shared';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
-  selector: 'minsky-variable',
-  templateUrl: './variable.component.html',
-  styleUrls: ['./variable.component.scss'],
+    selector: 'minsky-variable',
+    templateUrl: './variable.component.html',
+    styleUrls: ['./variable.component.scss'],
+    standalone: true,
+    imports: [MatMenuModule],
 })
 export class VariableComponent {
   constructor(

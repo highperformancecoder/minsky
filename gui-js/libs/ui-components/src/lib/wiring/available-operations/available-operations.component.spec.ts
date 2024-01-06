@@ -7,7 +7,7 @@ describe('AvailableOperationsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AvailableOperationsComponent],
+      imports: [AvailableOperationsComponent],
     }).compileComponents();
   });
 

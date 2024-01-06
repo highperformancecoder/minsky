@@ -6,7 +6,7 @@ import {
 } from '@minsky/shared';
 import { dialog, MessageBoxSyncOptions } from 'electron/main';
 import { createWriteStream, readFileSync, WriteStream } from 'fs';
-import * as JSONStream from 'JSONStream';
+import JSONStream from 'JSONStream';
 import { WindowManager } from './WindowManager';
 
 CppClass.record=(cmd: string)=>{
