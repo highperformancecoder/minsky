@@ -642,21 +642,19 @@ void VariableBase::resetMiniPlot()
 
 void VariableBase::draw(cairo_t *cairo) const
 {	
-    double angle=rotation() * M_PI / 180.0;
-    double fm=std::fmod(rotation(),360);
-    float z=zoomFactor();
+  auto [angle,flipped]=rotationAsRadians();
+  float z=zoomFactor();
 
-    if (!cachedNameRender || cairo!=cachedNameRender->cairoContext())
-      {
-        cachedNameRender=std::make_shared<RenderVariable>(*this,cairo);
-        cachedNameRender->setFontSize(12.0);
-      }
+  if (!cachedNameRender || cairo!=cachedNameRender->cairoContext())
+    {
+      cachedNameRender=std::make_shared<RenderVariable>(*this,cairo);
+      cachedNameRender->setFontSize(12.0);
+    }
     
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
-    bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-    Rotate r(rotation() + (notflipped? 0: 180),0,0);
-    cachedNameRender->angle=angle+(notflipped? 0: M_PI);
+  Rotate r(rotation() + (flipped? 180:0),0,0);
+  cachedNameRender->angle=angle+(flipped? M_PI:0);
 
     // parameters of icon in userspace (unscaled) coordinates
     double w=std::max(cachedNameRender->width(), 0.5f*iWidth()); 
@@ -726,7 +724,7 @@ void VariableBase::draw(cairo_t *cairo) const
                   cachedMantissa->setMarkup("???");
                 cachedExponent->setMarkup(expMultiplier(val.engExp));
               }
-            cachedMantissa->angle=angle+(notflipped? 0: M_PI);
+            cachedMantissa->angle=angle+(flipped? M_PI:0);
             
             cairo_move_to(cairo,r.x(w-cachedMantissa->width()-2,-h-hoffs+2),
                           r.y(w-cachedMantissa->width()-2,-h-hoffs+2));
@@ -770,7 +768,7 @@ void VariableBase::draw(cairo_t *cairo) const
             cairo_set_source_rgb(cairo,0,0,0);
             try
               {
-                cairo_arc(cairo,(notflipped?1.0:-1.0)*cachedNameRender->handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+                cairo_arc(cairo,(flipped?-1.0:1.0)*cachedNameRender->handlePos(), (flipped? h: -h), sliderHandleRadius, 0, 2*M_PI);
               }
             catch (const error&) {} // handlePos() may throw.
             cairo_fill(cairo);

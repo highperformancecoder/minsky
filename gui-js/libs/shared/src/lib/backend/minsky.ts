@@ -108,6 +108,7 @@ export class Item extends CppClass {
   async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}
   async right(): Promise<number> {return this.$callMethod('right');}
   async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async rotationAsRadians(): Promise<object> {return this.$callMethod('rotationAsRadians');}
   async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
@@ -292,6 +293,7 @@ export class VariableBase extends Item {
   async retype(a1: string): Promise<void> {return this.$callMethod('retype',a1);}
   async right(): Promise<number> {return this.$callMethod('right');}
   async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async rotationAsRadians(): Promise<object> {return this.$callMethod('rotationAsRadians');}
   async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
@@ -1163,6 +1165,7 @@ export class Group extends Item {
   async right(): Promise<number> {return this.$callMethod('right');}
   async rotFactor(): Promise<number> {return this.$callMethod('rotFactor');}
   async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async rotationAsRadians(): Promise<object> {return this.$callMethod('rotationAsRadians');}
   async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
@@ -2067,6 +2070,7 @@ export class Selection extends CppClass {
   async right(): Promise<number> {return this.$callMethod('right');}
   async rotFactor(): Promise<number> {return this.$callMethod('rotFactor');}
   async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async rotationAsRadians(): Promise<object> {return this.$callMethod('rotationAsRadians');}
   async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
