@@ -960,12 +960,12 @@ export class ContextMenuManager {
     let ravel=new Lock(minsky.canvas.item);
     return [
       new MenuItem({
-        label: ravel.locked()? 'Unlock': 'Lock',
-        click: async () => {ravel.toggleLocked();}
+        label: (await ravel.locked())? 'Unlock': 'Lock',
+        click: () => {ravel.toggleLocked();}
       }),
       new MenuItem({
         label: 'Apply state to Ravel',
-        click: async () => {ravel.applyLockedStateToRavel();}
+        click: () => {ravel.applyLockedStateToRavel();}
       }),
       
     ];
@@ -1040,7 +1040,7 @@ export class ContextMenuManager {
       }),
     ];
 
-    if (v.defined()) {
+    if (await v.defined()) {
       menuItems.push(
         new MenuItem({
           label: 'Hide variable definition',
@@ -1207,11 +1207,11 @@ export class ContextMenuManager {
     
     if (r!=1 || c!=0)
     {
-      var clip=minsky.clipboardEmpty();
+      var clip=await minsky.clipboardEmpty();
       menu.append(new MenuItem({
         label: "Paste",
         enabled: !clip,
-        click: async ()=> {
+        click: ()=> {
           godley.popup.paste();
           refreshFunction();
         }
