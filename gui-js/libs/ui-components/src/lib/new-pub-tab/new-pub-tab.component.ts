@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
+import { PubTab } from '@minsky/shared';
 
 @Component({
   selector: 'minsky-new-pub-tab',
@@ -9,8 +10,8 @@ import { ElectronService } from '@minsky/core';
   styleUrls: ['./new-pub-tab.component.scss', '../generic-form.scss'],
 })
 export class NewPubTabComponent implements OnInit {
-  command: string;
-  handleIndex: number;
+  pubTab: PubTab;
+  type: string;
 
   editDescriptionForm: FormGroup;
   constructor(
@@ -18,19 +19,30 @@ export class NewPubTabComponent implements OnInit {
     private electronService: ElectronService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      this.command=params['command'];
-      this.handleIndex = +params['handleIndex'];
-      this.editDescriptionForm = new FormGroup({
-        description: new FormControl(params['description']),
-      });
+      this.pubTab=new PubTab(params['command']);
+      this.type=params['type'];
     });
+    this.editDescriptionForm = new FormGroup({
+      description: new FormControl(''),
+    });
+    if (this.type==='rename')
+      this.editDescriptionForm.get('description').setValue(await this.pubTab.name());
   }
 
   async handleSave() {
     if (this.electronService.isElectron) {
-      await this.electronService.minsky.addNewPublicationTab(this.editDescriptionForm.get('description').value);
+      let name=this.editDescriptionForm.get('description').value;
+      this.electronService.log(`type=${this.type}`);
+      switch (this.type) {
+        case 'new':
+        await this.electronService.minsky.addNewPublicationTab(name);
+        break;
+        case 'rename':
+        await this.pubTab.name(name);
+        break;
+      }
     }
     this.closeWindow();
   }

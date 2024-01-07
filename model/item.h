@@ -208,6 +208,9 @@ namespace minsky
     double rotation() const {return m_rotation;}
     double rotation(const double& r) {return m_rotation=r;}
 
+    /// return the rotation as radians, and whether rotation should have additional straight angle added for text that stays upright.
+    std::pair<double,bool> rotationAsRadians() const;
+    
     float iWidth() const {return m_width;}
     float iWidth(const float& w) {
       m_width=w;
@@ -278,17 +281,6 @@ namespace minsky
 
     /// whether this item is visible on the canvas. 
     virtual bool visible() const;
-
-    /// whether this item is visible if the group is expanded to display items.
-    virtual bool visibleWithinGroup() const;
-    
-    
-    /// whether this item is attached to a defining variable that is hidden
-    virtual bool attachedToDefiningVar(std::set<const Item*>& visited) const;
-    bool attachedToDefiningVar() const {
-      std::set<const Item*> visited;
-      return attachedToDefiningVar(visited);
-    }
 
     void moveTo(float x, float y);
 

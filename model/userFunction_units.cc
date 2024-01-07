@@ -68,7 +68,7 @@ namespace minsky
     for (auto& i: externalIds)
       {
         if (find(argNames.begin(), argNames.end(), i)!=argNames.end()) continue; // skip arguments
-        auto id=valueIdFromScope(group.lock(),i);
+        auto id=valueIdFromScope(group.lock(),canonicalName(i));
         auto v=minsky().variableValues.find(id);
         if (v!=minsky().variableValues.end())
           {

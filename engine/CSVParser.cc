@@ -809,13 +809,15 @@ namespace minsky
                 size_t idx=0;
                 assert (hc.rank()<=i.first.size());
                 assert(dimLabels.size()==hc.rank());
-                for (int j=hc.rank()-1, k=i.first.size()-1; j>=0 && k>=0; --j, --k)
+                int j=hc.rank()-1, k=i.first.size()-1; 
+                while (j>=0 && k>=0)
                   {
                     auto dimLabel=dimLabels[j].find(i.first[k]);
                     while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
                       dimLabel=dimLabels[j].find(i.first[--k]);
                     assert(dimLabel!=dimLabels[j].end());
                     idx = (idx*dims[j]) + dimLabel->second;
+                    --j; --k;
                   }
                 vv.tensorInit[idx]=i.second;
                 ++minsky().progressState;
@@ -836,13 +838,16 @@ namespace minsky
                   size_t idx=0;
                   assert (dims.size()<=i.first.size());
                   assert(dimLabels.size()==dims.size());
-                  for (int j=dims.size()-1, k=i.first.size()-1; j>=0 && k>=0; --j, --k)
+                  int j=dims.size()-1, k=i.first.size()-1;
+                  while (j>=0 && k>=0) // changed from for loop to while loop at CodeQL's insistence
                     {
                       auto dimLabel=dimLabels[j].find(i.first[k]);
                       while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
                         dimLabel=dimLabels[j].find(i.first[--k]);
                       assert(dimLabel!=dimLabels[j].end());
                       idx = (idx*dims[j]) + dimLabel->second;
+                      --j;
+                      --k;
                     }
                   if (!isnan(i.second))
                     indexValue.emplace(idx, i.second);

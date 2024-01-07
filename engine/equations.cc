@@ -274,15 +274,15 @@ namespace MathDAG
               i++;
           if (!argIdx.empty() && i<argIdx[0].size())
             {
-              ev.push_back(EvalOpPtr(OperationType::copy, state, *r, *argIdx[0][i]));
+              ev.push_back(EvalOpPtr(OperationType::copy, state, r, *argIdx[0][i]));
               for (++i; i<argIdx[0].size(); ++i)
                 if (accum!=OperationType::add || !argIdx[0][i]->isZero())
-                  ev.push_back(EvalOpPtr(accum, state, *r, *r, *argIdx[0][i]));
+                  ev.push_back(EvalOpPtr(accum, state, r, *r, *argIdx[0][i]));
             }
           else
             {
               //TODO: could be cleaned up if we don't need to support constant operators
-              ev.push_back(EvalOpPtr(OperationType::constant, state, *r));
+              ev.push_back(EvalOpPtr(OperationType::constant, state, r));
               dynamic_cast<ConstantEvalOp&>(*ev.back()).value=groupIdentity;
             }
         }
@@ -291,12 +291,12 @@ namespace MathDAG
         {
           if (argIdx[1].size()==1)
             // eliminate redundant copy operation when only one wire
-            ev.push_back(EvalOpPtr(op, state, *r, *r, *argIdx[1][0]));
+            ev.push_back(EvalOpPtr(op, state, r, *r, *argIdx[1][0]));
           else if (argIdx[1].size()>1)
             {
               // multiple wires to second input port
-              VariableValue tmp(VariableType::tempFlow);
-              tmp.hypercube(r->hypercube());
+              VariableValuePtr tmp(VariableType::tempFlow);
+              tmp->hypercube(r->hypercube());
               size_t i=0;
               if (accum==OperationType::add)
                 while (i<argIdx[1].size() && argIdx[1][i]->isZero()) i++;
@@ -305,8 +305,8 @@ namespace MathDAG
                   ev.push_back(EvalOpPtr(OperationType::copy, state, tmp, *argIdx[1][i]));
                   for (++i; i<argIdx[1].size(); ++i)
                     if (accum!=OperationType::add || !argIdx[1][i]->isZero())
-                      ev.push_back(EvalOpPtr(accum, state, tmp, tmp, *argIdx[1][i]));
-                  ev.push_back(EvalOpPtr(op, state, *r, *r, tmp));
+                      ev.push_back(EvalOpPtr(accum, state, tmp, *tmp, *argIdx[1][i]));
+                  ev.push_back(EvalOpPtr(op, state, r, *r, *tmp));
                 }
             }
         }
@@ -388,7 +388,7 @@ namespace MathDAG
                       else if (arguments.size()>1 && !argIdx[1].empty())
                         argIdx[0][0]->units=argIdx[1][0]->units;
                     }
-                ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0], *argIdx[1][0])); 
+                ev.push_back(EvalOpPtr(type(), state, result, *argIdx[0][0], *argIdx[1][0])); 
                 break;
               case userFunction:
                 for (size_t i=0; i<arguments.size(); ++i)
@@ -397,11 +397,11 @@ namespace MathDAG
                       argIdx[i].push_back(VariableValuePtr(VariableValue::tempFlow));
                       argIdx[i].back()->allocValue();
                     }
-                ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0], *argIdx[1][0])); 
+                ev.push_back(EvalOpPtr(type(), state, result, *argIdx[0][0], *argIdx[1][0])); 
                 break;
               case data:
                 if (!argIdx.empty() && argIdx[0].size()==1)
-                  ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0])); 
+                  ev.push_back(EvalOpPtr(type(), state, result, *argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
                 break;            
@@ -423,13 +423,13 @@ namespace MathDAG
                       switch (arguments.size())
                         {
                         case 0:
-                          ev.push_back(EvalOpPtr(type(), state, *result));
+                          ev.push_back(EvalOpPtr(type(), state, result));
                           break;
                         case 1:
-                          ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0]));
+                          ev.push_back(EvalOpPtr(type(), state, result, *argIdx[0][0]));
                           break;
                         case 2:
-                          ev.push_back(EvalOpPtr(type(), state, *result, *argIdx[0][0], *argIdx[1][0]));
+                          ev.push_back(EvalOpPtr(type(), state, result, *argIdx[0][0], *argIdx[1][0]));
                           break;
                         default:
                           throw error("Too many arguments");

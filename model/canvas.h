@@ -215,14 +215,6 @@ namespace minsky
     void lockRavelsInSelection();
     void unlockRavelsInSelection();
     
-    /// hide or reveal the defining variables and attached items within a selection on the canvas
-    Items itemVector;
-    void pushDefiningVarsToTab();
-    void showDefiningVarsOnCanvas();    
-
-    /// push all plots on the canvas to the plot tab
-    void showPlotsOnTab();    
-
     /// delete item referenced by item
     void deleteItem();
     /// delete wire referenced by wire
