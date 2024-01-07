@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlotWidgetOptionsComponent } from './plot-widget-options.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('PlotWidgetOptionsComponent', () => {
   let component: PlotWidgetOptionsComponent;
@@ -8,7 +9,7 @@ describe('PlotWidgetOptionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PlotWidgetOptionsComponent],
+      imports: [PlotWidgetOptionsComponent, RouterTestingModule],
     }).compileComponents();
   });
 

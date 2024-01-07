@@ -1,5 +1,5 @@
 import { defaultBackgroundColor } from '@minsky/shared';
-import * as Store from 'electron-store';
+import Store from 'electron-store';
 
 interface MinskyPreferences {
   godleyTableShowValues: boolean;

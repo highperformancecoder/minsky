@@ -8,7 +8,7 @@ describe('EditGodleyCurrencyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditGodleyCurrencyComponent],
+      imports: [EditGodleyCurrencyComponent],
     }).compileComponents();
   });
 

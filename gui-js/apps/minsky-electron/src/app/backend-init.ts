@@ -5,10 +5,10 @@ import {CppClass, events, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
 import { BookmarkManager } from './managers/BookmarkManager';
 import { dialog, shell } from 'electron';
-import * as ProgressBar from 'electron-progressbar';
-import * as JSON5 from 'json5';
-import * as elog from 'electron-log';
-import * as path from 'path';
+import ProgressBar from 'electron-progressbar';
+import JSON5 from 'json5';
+import elog from 'electron-log';
+import path from 'path';
 
 const log=elog? elog: console;
 if (!Utility.isDevelopmentMode()) { //clobber logging in production
@@ -30,10 +30,7 @@ try {
 
 /** returns true if RESTService call is logged in development mode */
 function logFilter(c: string) {
-  const logFilter=["mouseMove$", "requestRedraw$"];
-  for (var i in logFilter)
-    if (c.match(logFilter[i])) return false;
-  return true;
+  return !["mouseMove$", "requestRedraw$"].some(lf => c.match(lf));
 }
 
 /** core function to call into C++ object heirarachy */
@@ -57,11 +54,11 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
 
     let response=await restService.call(command, arg);
     if (logFilter(command))
-      log.info('Rest API: ',command,arg,"=>",response);
+      log.info('Async Rest API: ',command,arg,"=>",response);
     return JSON5.parse(response);
   } catch (error) {
     if (typeof(error)!=="string") error=error?.message;
-    log.error('Rest API: ',command,arg,'=>Exception caught: ' + error);
+    log.error('Async Rest API: ',command,arg,'=>Exception caught: ' + error);
     if (!dialog) throw error; // rethrow to force error in jest environment
       if (error && command !== 'minsky.canvas.item.importFromCSV')
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
@@ -91,14 +88,18 @@ export function backendSync(command: string, ...args: any[]) {
 
     let response=restService.call(command+".$sync", arg);
     if (logFilter(command))
-      log.info('Rest API: ',command,arg,"=>",response);
+      log.info('Sync Rest API: ',command,arg,"=>",response);
     return JSON5.parse(response);
 }
 
+export function logMessage(message: string) {
+  log.info(message);
+}
 
 
 CppClass.backend=backend;
 CppClass.backendSync=backendSync;
+CppClass.logMessage=logMessage;
 
 const cancelButtonStyle=`
    border:0;

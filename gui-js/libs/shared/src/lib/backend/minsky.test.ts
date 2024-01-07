@@ -5,7 +5,7 @@ import {
    PlotWidget,
   VariableBase,
  } from './index';
-import * as fs from 'fs';
+import fs from 'fs';
 
 let cwd=process.cwd();
 if (cwd.endsWith('shared'))

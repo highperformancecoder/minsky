@@ -297,6 +297,8 @@ namespace minsky
     }
 
     void applyDefaultPlotOptions();
+
+    void setItemFromItemFocus();
   };
 }
 

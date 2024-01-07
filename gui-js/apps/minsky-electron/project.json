@@ -1,0 +1,82 @@
+{
+  "name": "minsky-electron",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/minsky-electron/src",
+  "projectType": "application",
+  "prefix": "minsky-electron",
+  "generators": {},
+  "targets": {
+    "build": {
+      "executor": "nx-electron:build",
+      "options": {
+        "outputPath": "dist/apps/minsky-electron",
+        "main": "apps/minsky-electron/src/main.ts",
+        "tsConfig": "apps/minsky-electron/tsconfig.app.json",
+        "assets": ["apps/minsky-electron/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/minsky-electron/src/environments/environment.ts",
+              "with": "apps/minsky-electron/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx-electron:execute",
+      "options": {
+        "buildTarget": "minsky-electron:build"
+      }
+    },
+    "package": {
+      "executor": "nx-electron:package",
+      "options": {
+        "name": "minsky-electron",
+        "frontendProject": "minsky-web",
+        "outputPath": "dist/packages",
+        "prepackageOnly": true
+      }
+    },
+    "make": {
+      "executor": "nx-electron:make",
+      "options": {
+        "name": "minsky-electron",
+        "frontendProject": "minsky-web",
+        "outputPath": "dist/executables"
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/minsky-electron/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "apps/minsky-electron/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "outputs": ["{workspaceRoot}/coverage/apps/minsky-electron"]
+    },
+    "compodoc": {
+      "executor": "@twittwer/compodoc:compodoc",
+      "options": {
+        "tsConfig": "apps/minsky-electron/tsconfig.compodoc.json",
+        "outputPath": "dist/compodoc/minsky-electron",
+        "workspaceDocs": true
+      },
+      "configurations": {
+        "json": {
+          "exportFormat": "json"
+        }
+      }
+    }
+  }
+}

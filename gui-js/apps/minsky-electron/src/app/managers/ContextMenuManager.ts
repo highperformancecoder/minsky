@@ -7,8 +7,8 @@ import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
 import { BookmarkManager } from './BookmarkManager';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
-import * as log from 'electron-log';
-import * as JSON5 from 'json5';
+import log from 'electron-log';
+import JSON5 from 'json5';
 
 export class ContextMenuManager {
   private static x: number = null;
@@ -135,7 +135,7 @@ export class ContextMenuManager {
       const isWireVisible = await minsky.canvas.wire.visible();
       const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
 
-        if (isWirePresent && isWireVisible && (itemInfo?.classType!=ClassType.Group||itemInfo?.displayContents)) {
+      if (isWirePresent && isWireVisible && (itemInfo?.classType != ClassType.Group || itemInfo?.displayContents)) {
         ContextMenuManager.buildAndDisplayContextMenu(
           ContextMenuManager.wireContextMenu(),
           mainWindow
@@ -670,12 +670,12 @@ export class ContextMenuManager {
     let op=new OperationBase(minsky.canvas.item);
 
     let portValues;
-    op.portValues().
+    await op.portValues().
       then((x)=>{portValues=x;}).
       catch((x)=>{portValues = 'unknown';});
 
     let menuItems = [
-      new MenuItem({ label: `Port values ${portValues}}` }),
+      new MenuItem({ label: `Port values ${portValues}` }),
       new MenuItem({
         label: 'Edit',
         click: async () => {

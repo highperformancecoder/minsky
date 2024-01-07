@@ -20,7 +20,7 @@ import { BehaviorSubject } from 'rxjs';
 import { WindowUtilityService } from '../WindowUtility/window-utility.service';
 import { DialogComponent } from './../../component/dialog/dialog.component';
 import { ElectronService } from './../electron/electron.service';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 export class Message {
   id: string;
@@ -451,6 +451,11 @@ export class CommunicationService {
     this.electronService.invoke(events.IMPORT_CSV, payload);
   }
 
+  resetScrollTimeout = () => {
+    this.resetScroll();
+    this.resetScrollWhenIdle = null;
+  };
+
   onMouseWheelZoom = async (event: WheelEvent) => {
     event.preventDefault();
     const { deltaY } = event;
@@ -473,10 +478,8 @@ export class CommunicationService {
     this.awaitingZoom = false;
 
     // schedule resetScroll when zooming stops
-    if (!this.resetScrollWhenIdle)
-      this.resetScrollWhenIdle = setTimeout(() => { var self = this; self.resetScroll(); self.resetScrollWhenIdle = null; }, 100);
-    else
-      this.resetScrollWhenIdle.refresh();
+    if (this.resetScrollWhenIdle) clearTimeout(this.resetScrollWhenIdle);
+    this.resetScrollWhenIdle = setTimeout(this.resetScrollTimeout, 100);
   };
 
   async handleKeyUp(event: KeyboardEvent) {

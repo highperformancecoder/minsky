@@ -1000,7 +1000,10 @@ namespace minsky
       }
     }
 
-
+  void Canvas::setItemFromItemFocus()
+  {
+    item = itemFocus;
+  }
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EventInterface);

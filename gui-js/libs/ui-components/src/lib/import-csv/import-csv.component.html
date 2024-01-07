@@ -1,179 +1,181 @@
 <div #fullDialog class="main" [formGroup]="form">
   <!-- HEADER START -->
   <div class="import-container">
-    <span class="import">
-      <button mat-raised-button type="button" (click)="selectFile()">
-        File
-      </button>
-      or URL
-      <input class="url" type="text" formControlName="url" />
-      <button mat-raised-button type="button" (click)="load()">Load</button>
-    </span>
+    <button mat-raised-button type="button" (click)="selectFile()">
+      File
+    </button>
+    <span>or URL</span>
+    <input class="url" type="text" formControlName="url" />
+    <button mat-raised-button type="button" (click)="load()">Load</button>
   </div>
 
   <div class="options-row">
-    <span>
-      <label for="dontFail" title="Selecting this discards erroneous
-      data from being imported.">Don't fail on invalid data</label>
-      <input id="dontFail" type="checkbox" formControlName="dontFail"/>
-    </span>
-
-     <span>
-      <label for="separator" title="CSV separator.">Separator</label>
-      <input
-        id="separator"
-        type="text"
-        formControlName="separator"
-        [matAutocomplete]="autocompleteSeparator"
-        class="form-control autocomplete"
-        (change)="onSeparatorChange()"
-      />
-      <mat-autocomplete
-        [panelWidth]="'10rem'"
-        #autocompleteSeparator="matAutocomplete"
-      >
-        <mat-option value=",">,</mat-option>
-        <mat-option value=";">;</mat-option>
-        <mat-option value="tab">tab</mat-option>
-        <mat-option value="space">space</mat-option>
-      </mat-autocomplete>
-    </span>
-
-    <span>
-      <label for="decimal-separator" title="Separator of units and
-      fraction part of numbers: '.' for UK/US data, '.' for European data.">Decimal Separator</label>
-      <input
-        id="decimal-separator"
-        type="text"
-        formControlName="decSeparator"
-        [matAutocomplete]="decSeparator"
-        class="form-control autocomplete"
-      />
-      <mat-autocomplete [panelWidth]="'10rem'" #decSeparator="matAutocomplete">
-        <mat-option value=".">.</mat-option>
-        <mat-option value=",">,</mat-option>
-      </mat-autocomplete>
-    </span>
-
-    <span>
-      <label for="escape" title="Character used to embed special
-      characetrs in strings, such as quotes.">Escape</label>
-      <input
-        id="escape"
-        type="text"
-        formControlName="escape"
-        [matAutocomplete]="escape"
-        class="form-control autocomplete"
-      />
-      <mat-autocomplete [panelWidth]="'10rem'" #escape="matAutocomplete">
-        <mat-option value="\">\</mat-option>
-      </mat-autocomplete>
-    </span>
-
-    <span>
-      <label for="quote" title="CSV quote character.">Quote</label>
-      <input
-        id="quote"
-        type="text"
-        formControlName="quote"
-        [matAutocomplete]="quote"
-        class="form-control autocomplete"
-      />
-      <mat-autocomplete [panelWidth]="'10rem'" #quote="matAutocomplete">
-        <mat-option value="'">'</mat-option>
-        <mat-option value='"'>"</mat-option>
-      </mat-autocomplete>
-    </span>
-
-    <span>
-      <label for="merge-delimiters" title="Consecutive separators
-      treated as a single separator. Mostly useful for space delimited
-      files.">Merge Delimiters</label>
-      <input
-        id="merge-delimiters"
-        type="checkbox"
-        formControlName="mergeDelimiters"
-      />
-    </span>
-    <span>
-      <label for="missing-value" title="Value to substitute for
-      missing data.">Missing Value</label>
-      <input
-        id="missing-value"
-        type="text"
-        formControlName="missingValue"
-        [matAutocomplete]="missingValue"
-        class="form-control autocomplete"
-      />
-      <mat-autocomplete [panelWidth]="'10rem'" #missingValue="matAutocomplete">
-        <mat-option value="NaN">NaN</mat-option>
-        <mat-option value="0">0</mat-option>
-      </mat-autocomplete>
-    </span>
-
-    <span>
-      <label for="duplicate-key-action"
-             title="What to do if multiple values exist for the same
-             data element."
-             >Duplicate Key Action</label>
-
-      <select id="duplicate-key-action" formControlName="duplicateKeyAction">
-            <option value="throwException">throwException</option>
-            <option value="sum">sum</option>
-            <option value="product">product</option>
-            <option value="min">min</option>
-            <option value="max">max</option>
-            <option value="av">av</option>
-      </select>
-    </span>
-
-    <span>
-      <label for="counter" title="Counts elements instead of reading
-      data. Particularly useful if no numerical data in file.">Counter</label>
-      <input id="counter" type="checkbox" formControlName="counter"/>
-    </span>
-
-    <span>
-      <label for="horizontal-dimension"
-             title="Name of the collection of data columns.">Horizontal Dimension</label>
-      <input
-        id="horizontal-dimension"
-        type="text"
-        formControlName="horizontalDimName"
-      />
-    </span>
-    <ng-container [formGroup]="horizontalDimension">
+    <span class="inputs-group">
       <span>
-        <label for="type" title="Type of horizontal dimension.">Type</label>
-        <select id="type" formControlName="type">
-          <option value="string">string</option>
-          <option value="value">value</option>
-          <option value="time">time</option>
+        <label for="dontFail" title="Selecting this discards erroneous
+        data from being imported.">Don't fail on invalid data</label>
+        <input id="dontFail" type="checkbox" formControlName="dontFail"/>
+      </span>
+
+      <span>
+        <label for="separator" title="CSV separator.">Separator</label>
+        <input
+          id="separator"
+          type="text"
+          formControlName="separator"
+          [matAutocomplete]="autocompleteSeparator"
+          class="form-control autocomplete"
+          (change)="onSeparatorChange()"
+        />
+        <mat-autocomplete
+          [panelWidth]="'10rem'"
+          #autocompleteSeparator="matAutocomplete"
+        >
+          <mat-option value=",">,</mat-option>
+          <mat-option value=";">;</mat-option>
+          <mat-option value="tab">tab</mat-option>
+          <mat-option value="space">space</mat-option>
+        </mat-autocomplete>
+      </span>
+
+      <span>
+        <label for="decimal-separator" title="Separator of units and
+        fraction part of numbers: '.' for UK/US data, '.' for European data.">Decimal Separator</label>
+        <input
+          id="decimal-separator"
+          type="text"
+          formControlName="decSeparator"
+          [matAutocomplete]="decSeparator"
+          class="form-control autocomplete"
+        />
+        <mat-autocomplete [panelWidth]="'10rem'" #decSeparator="matAutocomplete">
+          <mat-option value=".">.</mat-option>
+          <mat-option value=",">,</mat-option>
+        </mat-autocomplete>
+      </span>
+
+      <span>
+        <label for="escape" title="Character used to embed special
+        characetrs in strings, such as quotes.">Escape</label>
+        <input
+          id="escape"
+          type="text"
+          formControlName="escape"
+          [matAutocomplete]="escape"
+          class="form-control autocomplete"
+        />
+        <mat-autocomplete [panelWidth]="'10rem'" #escape="matAutocomplete">
+          <mat-option value="\">\</mat-option>
+        </mat-autocomplete>
+      </span>
+
+      <span>
+        <label for="quote" title="CSV quote character.">Quote</label>
+        <input
+          id="quote"
+          type="text"
+          formControlName="quote"
+          [matAutocomplete]="quote"
+          class="form-control autocomplete"
+        />
+        <mat-autocomplete [panelWidth]="'10rem'" #quote="matAutocomplete">
+          <mat-option value="'">'</mat-option>
+          <mat-option value='"'>"</mat-option>
+        </mat-autocomplete>
+      </span>
+
+      <span>
+        <label for="merge-delimiters" title="Consecutive separators
+        treated as a single separator. Mostly useful for space delimited
+        files.">Merge Delimiters</label>
+        <input
+          id="merge-delimiters"
+          type="checkbox"
+          formControlName="mergeDelimiters"
+        />
+      </span>
+    </span>
+    <span class="inputs-group">
+      <span>
+        <label for="missing-value" title="Value to substitute for
+        missing data.">Missing Value</label>
+        <input
+          id="missing-value"
+          type="text"
+          formControlName="missingValue"
+          [matAutocomplete]="missingValue"
+          class="form-control autocomplete"
+        />
+        <mat-autocomplete [panelWidth]="'10rem'" #missingValue="matAutocomplete">
+          <mat-option value="NaN">NaN</mat-option>
+          <mat-option value="0">0</mat-option>
+        </mat-autocomplete>
+      </span>
+
+      <span>
+        <label for="duplicate-key-action"
+              title="What to do if multiple values exist for the same
+              data element."
+              >Duplicate Key Action</label>
+
+        <select id="duplicate-key-action" formControlName="duplicateKeyAction">
+              <option value="throwException">throwException</option>
+              <option value="sum">sum</option>
+              <option value="product">product</option>
+              <option value="min">min</option>
+              <option value="max">max</option>
+              <option value="av">av</option>
         </select>
       </span>
 
       <span>
-        <label for="format" title="Format field for the horizontal
-        dimension. Mostly useful for time dimensions.">Format</label>
-        <input
-          id="units"
-          type="text"
-          formControlName="units"
-          [matAutocomplete]="auto"
-          class="form-control autocomplete"
-        />
-        <mat-autocomplete [panelWidth]="'10rem'" #auto="matAutocomplete">
-          <ng-container *ngIf="type.value === 'time'">
-            <mat-option
-              *ngFor="let tfs of timeFormatStrings"
-              [value]="tfs.value"
-            >
-              {{ tfs.label }}
-            </mat-option>
-          </ng-container>
-        </mat-autocomplete>
+        <label for="counter" title="Counts elements instead of reading
+        data. Particularly useful if no numerical data in file.">Counter</label>
+        <input id="counter" type="checkbox" formControlName="counter"/>
       </span>
-    </ng-container>
+
+      <span>
+        <label for="horizontal-dimension"
+              title="Name of the collection of data columns.">Horizontal Dimension</label>
+        <input
+          id="horizontal-dimension"
+          type="text"
+          formControlName="horizontalDimName"
+        />
+      </span>
+      <ng-container [formGroup]="horizontalDimension">
+        <span>
+          <label for="type" title="Type of horizontal dimension.">Type</label>
+          <select id="type" formControlName="type">
+            <option value="string">string</option>
+            <option value="value">value</option>
+            <option value="time">time</option>
+          </select>
+        </span>
+
+        <span>
+          <label for="format" title="Format field for the horizontal
+          dimension. Mostly useful for time dimensions.">Format</label>
+          <input
+            id="units"
+            type="text"
+            formControlName="units"
+            [matAutocomplete]="auto"
+            class="form-control autocomplete"
+          />
+          <mat-autocomplete [panelWidth]="'10rem'" #auto="matAutocomplete">
+            <ng-container *ngIf="type.value === 'time'">
+              <mat-option
+                *ngFor="let tfs of timeFormatStrings"
+                [value]="tfs.value"
+              >
+                {{ tfs.label }}
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+        </span>
+      </ng-container>
+      </span>
   </div>
   <!-- HEADER END -->
 
@@ -194,7 +196,7 @@
             type="text"
             class="form-control"
             [value]="dialogState.spec.dimensionNames[i]"
-            (change)="dialogState.spec.dimensionNames[i] = $event.target.value"
+            (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
           >
         </td>
       </tr>
@@ -206,7 +208,7 @@
           class="col-type-container" [class.selected]="selected[i]"
         >
             <select
-              (change)="setColType(i,$event.target.value)"
+              (change)="setColType(i,$event.target['value'])"
             >
               <option value="axis" style="color:blue">axis</option>
               <option value="data">data</option>
@@ -224,7 +226,7 @@
           <ng-container *ngIf="colType[i]==='axis'">
             <select
               [value]="dialogState.spec.dimensions[i]?.type "
-              (change)="dialogState.spec.dimensions[i].type = $event.target.value"
+              (change)="dialogState.spec.dimensions[i].type = $event.target['value']"
             >
               <option value="string">string</option>
               <option value="value">value</option>
@@ -245,7 +247,7 @@
             [value]="dialogState.spec.dimensions[i]?.units"
             [matAutocomplete]="autocompleteFormat"
             class="form-control"
-            (change)="dialogState.spec.dimensions[i].units = $event.target.value"
+            (change)="dialogState.spec.dimensions[i].units = $event.target['value']"
           />
           <mat-autocomplete
             id="format_{{ i }}"

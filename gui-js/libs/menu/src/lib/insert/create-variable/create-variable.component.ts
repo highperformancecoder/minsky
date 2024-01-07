@@ -1,10 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs'; 
 import { ActivatedRoute } from '@angular/router';
 import {
   CommunicationService,
@@ -12,13 +8,20 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import { VariableBase } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-create-variable',
-  templateUrl: './create-variable.component.html',
-  styleUrls: ['./create-variable.component.scss'],
+    selector: 'minsky-create-variable',
+    templateUrl: './create-variable.component.html',
+    styleUrls: ['./create-variable.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        MatButtonModule,
+    ],
 })
 export class CreateVariableComponent implements OnInit, OnDestroy {
   variableType: string;
@@ -26,6 +29,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   _value: string;
   _local: boolean;
   isEditMode = false;
+
+  destroy$ = new Subject<{}>();
 
   form: FormGroup;
 
@@ -85,7 +90,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private windowUtilityService: WindowUtilityService
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.variableType = params.type;
       this._name = params?.name || '';
       this._local = params?.local==='true' || false;
@@ -113,7 +118,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
       ? this.variableName.disable()
       : this.variableName.enable();
 
-    this.type.valueChanges.subscribe((type) => {
+    this.type.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((type) => {
       type === 'constant'
         ? this.variableName.disable()
         : this.variableName.enable();
@@ -200,6 +205,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

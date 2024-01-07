@@ -522,6 +522,7 @@ export class Canvas extends RenderNativeWindow {
   async selectVar(a1: number,a2: number): Promise<boolean> {return this.$callMethod('selectVar',a1,a2);}
   async setDefaultPlotOptions(): Promise<void> {return this.$callMethod('setDefaultPlotOptions');}
   async setItemFocus(a1: Item): Promise<void> {return this.$callMethod('setItemFocus',a1);}
+  async setItemFromItemFocus(): Promise<void> {return this.$callMethod('setItemFromItemFocus');}
   async showDefiningVarsOnCanvas(): Promise<void> {return this.$callMethod('showDefiningVarsOnCanvas');}
   async showPlotsOnTab(): Promise<void> {return this.$callMethod('showPlotsOnTab');}
   async surface(): Promise<ecolab__cairo__Surface> {return this.$callMethod('surface');}
