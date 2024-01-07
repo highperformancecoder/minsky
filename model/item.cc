@@ -237,14 +237,10 @@ namespace minsky
  
   bool Item::visible() const 
   {
-    if (attachedToDefiningVar()) return false;   
     auto g=group.lock();
     return (!g || g->displayContents());
   }
 
-  bool Item::visibleWithinGroup() const 
-  {return !attachedToDefiningVar();}
-  
   void Item::moveTo(float x, float y)
   {
     if (auto g=group.lock())
@@ -353,15 +349,6 @@ namespace minsky
     drawResizeHandle(cairo,p.x()-x(),p.y()-y(),resizeHandleSize(),0);
     cairo_stroke(cairo);
   }
-  
-  bool Item::attachedToDefiningVar(std::set<const Item*>& visited) const
-  {
-    if (!visited.insert(this).second) return false; // break network cycles
-    if ((variableCast() || operationCast()) && !m_ports.empty())  
-      for (auto w: m_ports[0]->wires())
-        if (w->attachedToDefiningVar(visited)) return true;
-    return false;
-  }    
   
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const

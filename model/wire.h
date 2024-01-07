@@ -68,11 +68,6 @@ namespace minsky
     /// stash all the internal cairo coordinates along a wire 
     void storeCairoCoords(cairo_t* cairo) const;
     
-    bool attachedToDefiningVar(std::set<const Item*>& visited) const;         
-    bool attachedToDefiningVar() const {
-      std::set<const Item*> visited;
-      return attachedToDefiningVar(visited);
-    }
     /// draw this item into a cairo context
     void draw(cairo_t* cairo, bool reverseArrow=false) const;
     
