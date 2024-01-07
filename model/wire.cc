@@ -107,7 +107,6 @@ namespace minsky
 
   bool Wire::visible() const
   {
-    if (attachedToDefiningVar()) return false;	  
     auto f=from(), t=to();
     auto fgroup=f->item().group.lock(), tgroup=t->item().group.lock();
     return f && t && 
@@ -371,12 +370,6 @@ namespace
     cairo_path_destroy (path);              
   }
   
-  bool Wire::attachedToDefiningVar(std::set<const Item*>& visited) const
-  {
-    assert(to());             
-    return (to()->item().attachedToDefiningVar(visited));
-  }    
-   
   void Wire::draw(cairo_t* cairo, bool reverseArrow) const
   {
     auto coords=this->coords();

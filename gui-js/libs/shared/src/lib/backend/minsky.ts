@@ -47,7 +47,6 @@ export class Item extends CppClass {
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
   async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
   async bottom(): Promise<number> {return this.$callMethod('bottom');}
@@ -119,7 +118,6 @@ export class Item extends CppClass {
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
   async value(): Promise<number> {return this.$callMethod('value');}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
   async width(): Promise<number> {return this.$callMethod('width');}
   async x(): Promise<number> {return this.$callMethod('x');}
   async y(): Promise<number> {return this.$callMethod('y');}
@@ -204,7 +202,6 @@ export class VariableBase extends Item {
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
-  async attachedToDefiningVar(...args: Container<Item>[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
   async bottom(): Promise<number> {return this.$callMethod('bottom');}
@@ -323,7 +320,6 @@ export class VariableBase extends Item {
   async variableCast(): Promise<VariableBase> {return this.$callMethod('variableCast');}
   async varsPassed(...args: number[]): Promise<number> {return this.$callMethod('varsPassed',...args);}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
   async width(): Promise<number> {return this.$callMethod('width');}
   async x(): Promise<number> {return this.$callMethod('x');}
   async y(): Promise<number> {return this.$callMethod('y');}
@@ -1043,7 +1039,6 @@ export class Group extends Item {
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async arguments(): Promise<string> {return this.$callMethod('arguments');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
@@ -1175,7 +1170,6 @@ export class Group extends Item {
   async updateTimestamp(): Promise<void> {return this.$callMethod('updateTimestamp');}
   async value(): Promise<number> {return this.$callMethod('value');}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
   async width(): Promise<number> {return this.$callMethod('width');}
   async x(): Promise<number> {return this.$callMethod('x');}
   async y(): Promise<number> {return this.$callMethod('y');}
@@ -1241,7 +1235,6 @@ export class IntOp extends Item {
       super(prefix.$prefix())
     this.intVar=new VariableBase(this.$prefix()+'.intVar');
   }
-  async attachedToDefiningVar(a1: Container<Item>): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',a1);}
   async coupled(): Promise<boolean> {return this.$callMethod('coupled');}
   async description(...args: string[]): Promise<string> {return this.$callMethod('description',...args);}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
@@ -1529,7 +1522,6 @@ export class PhillipsFlow extends Item {
   }
   async addTerm(a1: number,a2: string): Promise<void> {return this.$callMethod('addTerm',a1,a2);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
-  async attachedToDefiningVar(...args: Container<Item>[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async coords(...args: any[]): Promise<number[]> {return this.$callMethod('coords',...args);}
   async deleteHandle(a1: number,a2: number): Promise<void> {return this.$callMethod('deleteHandle',a1,a2);}
@@ -1944,7 +1936,6 @@ export class Selection extends CppClass {
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async arguments(): Promise<string> {return this.$callMethod('arguments');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
@@ -2077,7 +2068,6 @@ export class Selection extends CppClass {
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
   async value(): Promise<number> {return this.$callMethod('value');}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
   async width(): Promise<number> {return this.$callMethod('width');}
   async x(): Promise<number> {return this.$callMethod('x');}
   async y(): Promise<number> {return this.$callMethod('y');}
@@ -2324,7 +2314,6 @@ export class Wire extends CppClass {
     super(prefix);
   }
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async coords(...args: any[]): Promise<number[]> {return this.$callMethod('coords',...args);}
   async deleteHandle(a1: number,a2: number): Promise<void> {return this.$callMethod('deleteHandle',a1,a2);}
