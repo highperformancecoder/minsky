@@ -204,7 +204,7 @@ export class VariableBase extends Item {
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
+  async attachedToDefiningVar(...args: Container<Item>[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
   async bottom(): Promise<number> {return this.$callMethod('bottom');}
@@ -308,7 +308,6 @@ export class VariableBase extends Item {
   async temp(): Promise<boolean> {return this.$callMethod('temp');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
   async toggleLocal(): Promise<void> {return this.$callMethod('toggleLocal');}
-  async toggleVarTabDisplay(): Promise<void> {return this.$callMethod('toggleVarTabDisplay');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async top(): Promise<number> {return this.$callMethod('top');}
   async type(): Promise<string> {return this.$callMethod('type');}
@@ -321,7 +320,6 @@ export class VariableBase extends Item {
   async value(...args: any[]): Promise<number> {return this.$callMethod('value',...args);}
   async valueId(): Promise<string> {return this.$callMethod('valueId');}
   async valueIdInCurrentScope(a1: string): Promise<string> {return this.$callMethod('valueIdInCurrentScope',a1);}
-  async varTabDisplay(...args: boolean[]): Promise<boolean> {return this.$callMethod('varTabDisplay',...args);}
   async variableCast(): Promise<VariableBase> {return this.$callMethod('variableCast');}
   async varsPassed(...args: number[]): Promise<number> {return this.$callMethod('varsPassed',...args);}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
@@ -423,7 +421,6 @@ export class Canvas extends RenderNativeWindow {
   backgroundColour: ecolab__cairo__Colour;
   item: Item;
   itemFocus: Item;
-  itemVector: Sequence<Item>;
   lasso: LassoBox;
   model: Group;
   selection: Selection;
@@ -438,7 +435,6 @@ export class Canvas extends RenderNativeWindow {
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
     this.item=new Item(this.$prefix()+'.item');
     this.itemFocus=new Item(this.$prefix()+'.itemFocus');
-    this.itemVector=new Sequence<Item>(this.$prefix()+'.itemVector',Item);
     this.lasso=new LassoBox(this.$prefix()+'.lasso');
     this.model=new Group(this.$prefix()+'.model');
     this.selection=new Selection(this.$prefix()+'.selection');
@@ -494,7 +490,6 @@ export class Canvas extends RenderNativeWindow {
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
   async openGroupInCanvas(a1: Item): Promise<void> {return this.$callMethod('openGroupInCanvas',a1);}
   async position(): Promise<number[]> {return this.$callMethod('position');}
-  async pushDefiningVarsToTab(): Promise<void> {return this.$callMethod('pushDefiningVarsToTab');}
   async ravelsSelected(): Promise<number> {return this.$callMethod('ravelsSelected');}
   async recentre(): Promise<void> {return this.$callMethod('recentre');}
   async redraw(): Promise<boolean> {return this.$callMethod('redraw');}
@@ -522,8 +517,6 @@ export class Canvas extends RenderNativeWindow {
   async selectVar(a1: number,a2: number): Promise<boolean> {return this.$callMethod('selectVar',a1,a2);}
   async setDefaultPlotOptions(): Promise<void> {return this.$callMethod('setDefaultPlotOptions');}
   async setItemFocus(a1: Item): Promise<void> {return this.$callMethod('setItemFocus',a1);}
-  async showDefiningVarsOnCanvas(): Promise<void> {return this.$callMethod('showDefiningVarsOnCanvas');}
-  async showPlotsOnTab(): Promise<void> {return this.$callMethod('showPlotsOnTab');}
   async surface(): Promise<ecolab__cairo__Surface> {return this.$callMethod('surface');}
   async termX(...args: number[]): Promise<number> {return this.$callMethod('termX',...args);}
   async termY(...args: number[]): Promise<number> {return this.$callMethod('termY',...args);}
@@ -1459,7 +1452,6 @@ export class Minsky extends CppClass {
   async setGroupIconResource(a1: string): Promise<void> {return this.$callMethod('setGroupIconResource',a1);}
   async setLockIconResource(a1: string,a2: string): Promise<void> {return this.$callMethod('setLockIconResource',a1,a2);}
   async setRavelIconResource(a1: string): Promise<void> {return this.$callMethod('setRavelIconResource',a1);}
-  async showVariableDefinitionOnCanvas(a1: string): Promise<void> {return this.$callMethod('showVariableDefinitionOnCanvas',a1);}
   async simulationDelay(...args: number[]): Promise<number> {return this.$callMethod('simulationDelay',...args);}
   async srand(a1: number): Promise<void> {return this.$callMethod('srand',a1);}
   async step(): Promise<number[]> {return this.$callMethod('step');}
@@ -1678,7 +1670,6 @@ export class PlotWidget extends Item {
   async pack(a1: classdesc__pack_t): Promise<void> {return this.$callMethod('pack',a1);}
   async percent(...args: boolean[]): Promise<boolean> {return this.$callMethod('percent',...args);}
   async plot(a1: object): Promise<void> {return this.$callMethod('plot',a1);}
-  async plotTabDisplay(...args: boolean[]): Promise<boolean> {return this.$callMethod('plotTabDisplay',...args);}
   async plotType(...args: string[]): Promise<string> {return this.$callMethod('plotType',...args);}
   async plotWidgetCast(): Promise<PlotWidget> {return this.$callMethod('plotWidgetCast');}
   async position(): Promise<number[]> {return this.$callMethod('position');}
@@ -1700,7 +1691,6 @@ export class PlotWidget extends Item {
   async setMinMax(): Promise<void> {return this.$callMethod('setMinMax');}
   async subgrid(...args: boolean[]): Promise<boolean> {return this.$callMethod('subgrid',...args);}
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
-  async togglePlotTabDisplay(): Promise<void> {return this.$callMethod('togglePlotTabDisplay');}
   async unpack(a1: classdesc__pack_t): Promise<void> {return this.$callMethod('unpack',a1);}
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
   async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}

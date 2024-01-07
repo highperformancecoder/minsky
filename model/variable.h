@@ -198,10 +198,6 @@ namespace minsky
     virtual VariableBase* clone() const override=0;
     bool isStock() const {return type()==stock || type()==integral;}
 
-    bool varTabDisplay=false;
-    void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
-    bool attachedToDefiningVar(std::set<const Item*>&) const override {return varTabDisplay;} // <-- does this definition make any sense??
-    using Item::attachedToDefiningVar;
     /// formula defining this variable
     std::string definition() const;
 
