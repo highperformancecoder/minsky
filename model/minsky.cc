@@ -410,14 +410,14 @@ namespace minsky
       (&Group::items,
        [this](const Items&, Items::const_iterator it){
          if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
-           userFunctions[valueIdFromScope((*it)->group.lock(), f->name())]=f;
+           userFunctions[valueIdFromScope((*it)->group.lock(), canonicalName(f->name()))]=f;
          return false;
        });
     ++progressState;
     model->recursiveDo
       (&Group::groups,
        [this](const Groups&, Groups::const_iterator it){
-         userFunctions[valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
+         userFunctions[valueIdFromScope((*it)->group.lock(), canonicalName((*it)->name()))]=*it;
          return false;
        });
     ++progressState;
@@ -916,9 +916,9 @@ namespace minsky
     // attach the plots
     model->recursiveDo
       (&Group::items,
-       [&](Items& m, Items::iterator i)
+       [&](Items& m, Items::iterator it)
        {
-         if (auto p=(*i)->plotWidgetCast())
+         if (auto p=(*it)->plotWidgetCast())
            {
              p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();

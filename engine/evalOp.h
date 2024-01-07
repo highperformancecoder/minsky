@@ -106,6 +106,7 @@ namespace minsky
   /// Legacy EvalOp base interface
   struct ScalarEvalOp: public EvalOpBase
   {
+    std::shared_ptr<VariableValue> result; ///< lifetime management of the resultant variableValue
     /// number of arguments to this operation
     virtual int numArgs() const =0;
 
@@ -154,9 +155,10 @@ namespace minsky
     EvalOpPtr(EvalOpBase* e): classdesc::shared_ptr<EvalOpBase>(e) {}
     EvalOpPtr(OperationType::Type op):
       classdesc::shared_ptr<EvalOpBase>(ScalarEvalOp::create(op,nullptr)) {}
+    /// \a to cannot be null
     EvalOpPtr(OperationType::Type op,
               const ItemPtr& state,
-              VariableValue& to,
+              const std::shared_ptr<VariableValue>& to,
               const VariableValue& from1={}, 
               const VariableValue& from2={});
   };

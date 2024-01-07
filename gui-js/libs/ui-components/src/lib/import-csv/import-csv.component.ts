@@ -416,17 +416,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     spec.mergeDelimiters = this.mergeDelimiters.value;
     spec.missingValue = this.missingValue.value;
     spec.quote = this.quote.value;
-    switch (this.separator.value) {
-      case 'tab':
-        spec.separator = '\t';
-        break;
-      case 'space':
-        spec.separator = ' ';
-        break;
-      default:
-        spec.separator = this.separator.value;
-        break;
-    }
+    spec.separator=separatorToChar(this.separator.value);
     spec.horizontalDimension = this.horizontalDimension.value;
 
     this.dialogState.spec.dimensionCols = [];

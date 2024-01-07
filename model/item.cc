@@ -83,6 +83,15 @@ namespace minsky
     throw runtime_error(msg);
   }
 
+  std::pair<double,bool> Item::rotationAsRadians() const
+  {
+    double fm=std::fmod(rotation(),360);
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    return {rotation() * M_PI / 180.0, abs(fm)>90 && abs(fm)<270};
+  }
+
+  
   void ItemExclude::rotate(const Point& mouse, const Point& orig)
   {
     constexpr double degrees=180.0/M_PI;
@@ -357,11 +366,12 @@ namespace minsky
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
   {
-    Rotate r(rotation(),0,0);
+    auto [angle,flipped]=rotationAsRadians();
+    Rotate r(rotation()+(flipped? 180:0),0,0);
     //cairo_scale(cairo,scaleFactor(),scaleFactor());   // would like to see this work like operator icon contents, but width() and height() point to nothing at this stage.
     Pango pango(cairo);
     float w, h, z=zoomFactor();
-    pango.angle=rotation() * M_PI / 180.0; 
+    pango.angle=angle+(flipped? M_PI: 0);
     pango.setFontSize(12.0*scaleFactor()*z);
     pango.setMarkup(latexToPango(detailedText));         
     // parameters of icon in userspace (unscaled) coordinates

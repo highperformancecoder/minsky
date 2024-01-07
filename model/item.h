@@ -208,6 +208,9 @@ namespace minsky
     double rotation() const {return m_rotation;}
     double rotation(const double& r) {return m_rotation=r;}
 
+    /// return the rotation as radians, and whether rotation should have additional straight angle added for text that stays upright.
+    std::pair<double,bool> rotationAsRadians() const;
+    
     float iWidth() const {return m_width;}
     float iWidth(const float& w) {
       m_width=w;

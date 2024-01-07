@@ -104,6 +104,16 @@ export class AppComponent implements OnInit, DoCheck {
     this.updatePubTabs();
     this.changeTab('minsky.canvas');
   }
+
+  pubTabContext(event,command) {
+    this.electronService.send(events.CONTEXT_MENU,
+                                    {
+                                      x: event.clientX,
+                                      y: event.clientY,
+                                      type: "publication-button",
+                                      command: command,
+                                    });
+  }
   
   // close modals with ESC
   private async handleEscKey(event: KeyboardEvent) {

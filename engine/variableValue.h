@@ -177,7 +177,7 @@ namespace minsky
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
 
-    std::string valueId() const {return valueIdFromScope(m_scope.lock(),name);}
+    std::string valueId() const {return valueIdFromScope(m_scope.lock(),canonicalName(name));}
 
     void exportAsCSV(const std::string& filename, const std::string& comment="") const;
 

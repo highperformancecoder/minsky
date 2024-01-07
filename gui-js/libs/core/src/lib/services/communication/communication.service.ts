@@ -361,11 +361,14 @@ export class CommunicationService {
 
     if (this.electronService.isElectron) {
 
-      if (type === 'mousedown' && message.altKey) {
-        this.electronService.send(
-          events.DISPLAY_MOUSE_COORDINATES,
-          { mouseX: this.mouseX, mouseY: this.mouseY }
-        );
+      if (message.altKey)
+      {
+        if (type === 'mouseup') {
+          this.electronService.send(
+            events.DISPLAY_MOUSE_COORDINATES,
+            { mouseX: this.mouseX, mouseY: this.mouseY }
+          );
+        }
         return;
       }
 

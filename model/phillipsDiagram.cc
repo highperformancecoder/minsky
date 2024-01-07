@@ -99,8 +99,8 @@ namespace minsky
     decltype(stocks) newStocks;
     decltype(flows) newFlows;
     cminsky().model->recursiveDo
-      (&GroupItems::items, [&](const Items&,Items::const_iterator i) {
-        if (auto g=dynamic_cast<GodleyIcon*>(i->get())) {
+      (&GroupItems::items, [&](const Items&,Items::const_iterator it) {
+        if (auto g=dynamic_cast<GodleyIcon*>(it->get())) {
           for (auto& v: g->stockVars())
             {
               auto newStock=newStocks.emplace(v->valueId(), static_cast<Variable<VariableType::stock>&>(*v)).first;

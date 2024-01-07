@@ -641,9 +641,12 @@ namespace minsky
   }
 
   EvalOpPtr::EvalOpPtr(OperationType::Type op, const ItemPtr& state,
-                       VariableValue& to, const VariableValue& from1, const VariableValue& from2)
+                       const std::shared_ptr<VariableValue>& to,
+                       const VariableValue& from1, const VariableValue& from2)
   {
+    assert(to);
     auto t=ScalarEvalOp::create(op,state);
+    t->result=to;
     reset(t);
     assert(t->numArgs()==0 || (from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0)));
 
@@ -655,8 +658,8 @@ namespace minsky
     if (t->numArgs()>1)
       t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
 
-    if (to.idx()==-1) to.allocValue();
-    t->out=to.idx();
+    if (to->idx()==-1) to->allocValue();
+    t->out=to->idx();
     t->flow1=from1.isFlowVar();
     t->flow2=from2.isFlowVar();
 

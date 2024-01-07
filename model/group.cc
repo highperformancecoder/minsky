@@ -934,7 +934,7 @@ namespace minsky
 
   void Group::draw(cairo_t* cairo) const
   {
-    double angle=rotation() * M_PI / 180.0;
+    auto [angle,flipped]=rotationAsRadians();
 
     // determine how big the group icon should be to allow
     // sufficient space around the side for the edge variables
@@ -943,6 +943,9 @@ namespace minsky
     float z=zoomFactor();
 
     unsigned width=z*this->iWidth(), height=z*this->iHeight();
+    cairo::CairoSave cs(cairo);
+    cairo_rotate(cairo,angle);
+
     // In docker environments, something invisible gets drawn outside
     // the horizontal dimensions, stuffing up the bb.width()
     // calculation, and then causing the groupResize test to
@@ -951,8 +954,6 @@ namespace minsky
     cairo_clip(cairo);
 
     // draw default group icon
-    cairo::CairoSave cs(cairo);
-    cairo_rotate(cairo,angle);
 
     // display I/O region in grey
     drawIORegion(cairo);
@@ -979,8 +980,7 @@ namespace minsky
           if (displayPlot)
             {
               cairo::CairoSave cs(cairo);
-              double fm=std::fmod(rotation(),360);
-              if (!((fm>-90 && fm<90) || fm>270 || fm<-270))
+              if (flipped)
                 {
                   cairo_translate(cairo,width,height);
                   cairo_rotate(cairo,M_PI);  // rotate plot to keep it right way up.
@@ -1023,11 +1023,10 @@ namespace minsky
         cairo_text_extents(cairo,title.c_str(),&bbox);       
         double w=0.5*bbox.width+2; 
         double h=0.5*bbox.height+5;
-        double fm=std::fmod(rotation(),360);
 
         // if rotation is in 1st or 3rd quadrant, rotate as
         // normal, otherwise flip the text so it reads L->R
-        if (abs(fm)>90 && abs(fm)<270)
+        if (flipped)
           cairo_rotate(cairo, M_PI);
 
         // prepare a background for the text, partially obscuring graphic

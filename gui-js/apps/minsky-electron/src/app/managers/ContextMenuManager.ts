@@ -1,5 +1,5 @@
 import {
-  Canvas,CanvasItem,ClassType,
+  CanvasItem,ClassType,
   minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, PubTab,
   Ravel, RenderNativeWindow, Sheet, SwitchIcon,VariableBase, VariableValue, Functions, events
 } from '@minsky/shared';
@@ -33,6 +33,9 @@ export class ContextMenuManager {
         else
           this.initContextMenuForPublication(event, mainWindow,currentTab);
       }
+      break;
+      case 'publication-button':
+      this.initContextMenuForPublicationTabButton(event,command);
       break;
       case "godley":
       this.initContextMenuForGodleyPopup(command,x,y);
@@ -78,8 +81,24 @@ export class ContextMenuManager {
         },
         enabled: await pubTab.getItemAt(this.x,this.y),
       }),
-      new MenuItem({type: 'separator'}),
+    ];
+
+      ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
+
+      return;
+  }
+  
+  private static async initContextMenuForPublicationTabButton(event: IpcMainEvent, command: string) {
+    let pubTab=new PubTab(command);
+    const menuItems = [
       new MenuItem({
+        label: 'Rename publication tab',
+        click:  async () => {
+          await CommandsManager.renamePubTab(command);
+          event.sender.send(events.PUB_TAB_REMOVED);
+        }
+      }),
+       new MenuItem({
         label: 'Remove publication tab',
         click: async () => {
           event.sender.send(events.CHANGE_MAIN_TAB);
@@ -91,9 +110,9 @@ export class ContextMenuManager {
       }),
     ];
 
-      ContextMenuManager.buildAndDisplayContextMenu(menuItems, mainWindow);
+    ContextMenuManager.buildAndDisplayContextMenu(menuItems, WindowManager.getMainWindow());
 
-      return;
+    return;
   }
   
   private static async initContextMenuForPhillipsDiagram(mainWindow: BrowserWindow) {
@@ -941,12 +960,12 @@ export class ContextMenuManager {
     let ravel=new Lock(minsky.canvas.item);
     return [
       new MenuItem({
-        label: ravel.locked()? 'Unlock': 'Lock',
-        click: async () => {ravel.toggleLocked();}
+        label: (await ravel.locked())? 'Unlock': 'Lock',
+        click: () => {ravel.toggleLocked();}
       }),
       new MenuItem({
         label: 'Apply state to Ravel',
-        click: async () => {ravel.applyLockedStateToRavel();}
+        click: () => {ravel.applyLockedStateToRavel();}
       }),
       
     ];
@@ -1021,7 +1040,7 @@ export class ContextMenuManager {
       }),
     ];
 
-    if (v.defined()) {
+    if (await v.defined()) {
       menuItems.push(
         new MenuItem({
           label: 'Hide variable definition',
@@ -1121,7 +1140,7 @@ export class ContextMenuManager {
       }));
       
       var importMenu=new Menu();
-      var importables=godley.popup.matchingTableColumnsByCol(c);
+      var importables=await godley.popup.matchingTableColumnsByCol(c);
       for (var i in importables)
         importMenu.append(new MenuItem({
           label: importables[i],
@@ -1188,11 +1207,11 @@ export class ContextMenuManager {
     
     if (r!=1 || c!=0)
     {
-      var clip=minsky.clipboardEmpty();
+      var clip=await minsky.clipboardEmpty();
       menu.append(new MenuItem({
         label: "Paste",
         enabled: !clip,
-        click: async ()=> {
+        click: ()=> {
           godley.popup.paste();
           refreshFunction();
         }
@@ -1225,7 +1244,7 @@ export class ContextMenuManager {
       submenu: flowMenu,
     }));
 
-    if (godley.table._assetClass()[c]==="equity")
+    if ((await godley.table._assetClass())[c]==="equity")
       menu.append(new MenuItem({
         label: 'Balance equity',
         click: ()=>{

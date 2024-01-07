@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
 import { ScaleHandler } from '../scale-handler/scale-handler.class';
 import { FormsModule } from '@angular/forms';
 import { LatexDirective } from '../directives/latex.directive';
