@@ -511,54 +511,6 @@ namespace minsky
         r->leaveLockGroup();
   }
   
-  void Canvas::pushDefiningVarsToTab()
-  {
-    for (auto& i: selection.items)
-      {
-        auto v=i->variableCast();
-        if (v && v->defined() && !v->varTabDisplay) {
-          itemVector.push_back(i);
-          v->toggleVarTabDisplay();	  
-        }
-      }
-    requestRedraw();
-  }
-  
-  void Canvas::showDefiningVarsOnCanvas()
-  {
-    for (auto& i: itemVector)
-      {
-        auto v=(*i).variableCast();
-        if (v && v->defined() && v->varTabDisplay)
-          v->toggleVarTabDisplay();	  
-      }
-    // ensure individual hidden defining vars can be made visible once more. for ticket 145.
-    if (itemVector.empty())
-	{
-        model->recursiveDo
-          (&GroupItems::items, [&](const Items&,Items::const_iterator i)
-           {
-             if (auto v=(*i)->variableCast())
-               if (v->defined() && v->varTabDisplay)
-				 v->toggleVarTabDisplay();	 
-             return false;
-           });
-	}      
-    itemVector.clear();
-    requestRedraw();
-  }
-  
-  void Canvas::showPlotsOnTab()
-  {
-     model->recursiveDo
-       (&GroupItems::items, [&](const Items&,Items::const_iterator i)
-        {
-          if (auto p=(*i)->plotWidgetCast())
-            if (!p->plotTabDisplay) p->togglePlotTabDisplay();	 
-          return false;
-        });
-  }    
-  
   void Canvas::deleteItem()
   {
     if (item)

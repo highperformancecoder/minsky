@@ -39,13 +39,6 @@ namespace minsky
     return r;
   }
   
-  bool IntOp::attachedToDefiningVar(std::set<const minsky::Item*>& visited) const
-  {
-    visited.insert(this);
-    if (coupled()) return intVar->attachedToDefiningVar(visited);
-    return Item::attachedToDefiningVar(visited);
-  }    
- 
   void IntOp::draw(cairo_t* cairo) const
   { 	  
       // if rotation is in 1st or 3rd quadrant, rotate as

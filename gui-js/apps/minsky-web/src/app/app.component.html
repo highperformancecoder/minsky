@@ -23,11 +23,13 @@
           Phillips diagram
         </button>
          <div *ngFor="let tab of publicationTabs; let i=index">
-          <button (click)="changeTab('minsky.publicationTabs.@elemNoThrow.'+i)" class="pubTab" mat-raised-button>
+          <button (click)="changeTab('minsky.publicationTabs.@elemNoThrow.'+i)"                  (contextmenu)="pubTabContext($event,'minsky.publicationTabs.@elemNoThrow.'+i)"
+                  class="pubTab" mat-raised-button>
             {{tab}}
           </button>
          </div>
-        <button (click)="addPubTab()" class="phillips" title="Add new publication tab" mat-raised-button>
+         <button (click)="addPubTab()"
+                 class="phillips" title="Add new publication tab" mat-raised-button>
           +
         </button>
           

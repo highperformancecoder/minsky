@@ -32,6 +32,7 @@ namespace minsky
   public:
     Lock();
     Lock(const Lock& x): ItemT<Lock>(x) {addPorts();}
+    Lock& operator=(const Lock& x)=default;
     void addPorts();
     ravel::RavelState lockedState;
 

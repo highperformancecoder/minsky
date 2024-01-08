@@ -32,8 +32,6 @@
 #include "intOp.tcd"
 #include "item.tcd"
 #include "itemT.tcd"
-#include "itemTab.h"
-#include "itemTab.tcd"
 #include "lasso.tcd"
 #include "lock.tcd"
 #include "noteBase.tcd"
@@ -309,7 +307,6 @@ int main()
   cout << "class classdesc__RESTProcess_t {}\n";
   cout << "class classdesc__TCL_obj_t {}\n";
   cout << "class ecolab__cairo__Surface {}\n";
-  cout << "class ecolab__Pango {}\n";
   cout<<endl;
   
   // these need to be declared in a specific order
