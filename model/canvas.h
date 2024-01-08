@@ -164,7 +164,7 @@ namespace minsky
     /// select all items in a given region
     void select(const LassoBox&);
 
-    int ravelsSelected();
+    int ravelsSelected() const; ///< number of ravels in selection
     
     /// sets itemFocus, and resets mouse offset for placement
     void setItemFocus(const ItemPtr& x) {
@@ -237,6 +237,9 @@ namespace minsky
     /// create a copy of item, and leave it focused
     void copyItem();
 
+    /// zooms canvas to fit available window
+    void zoomToFit();
+    
     /// reinitialises canvas to the group located in item
     void openGroupInCanvas(const ItemPtr& item);
 
