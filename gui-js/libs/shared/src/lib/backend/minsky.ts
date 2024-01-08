@@ -16,7 +16,6 @@ class classdesc__pack_t {}
 class classdesc__RESTProcess_t {}
 class classdesc__TCL_obj_t {}
 class ecolab__cairo__Surface {}
-class ecolab__Pango {}
 
 export class EventInterface extends CppClass {
   item: Item;
@@ -48,7 +47,6 @@ export class Item extends CppClass {
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
   async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
   async bottom(): Promise<number> {return this.$callMethod('bottom');}
@@ -108,6 +106,7 @@ export class Item extends CppClass {
   async resizeHandleSize(): Promise<number> {return this.$callMethod('resizeHandleSize');}
   async right(): Promise<number> {return this.$callMethod('right');}
   async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async rotationAsRadians(): Promise<object> {return this.$callMethod('rotationAsRadians');}
   async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
@@ -119,7 +118,6 @@ export class Item extends CppClass {
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
   async value(): Promise<number> {return this.$callMethod('value');}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
   async width(): Promise<number> {return this.$callMethod('width');}
   async x(): Promise<number> {return this.$callMethod('x');}
   async y(): Promise<number> {return this.$callMethod('y');}
@@ -204,7 +202,6 @@ export class VariableBase extends Item {
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
   async bottom(): Promise<number> {return this.$callMethod('bottom');}
@@ -292,6 +289,7 @@ export class VariableBase extends Item {
   async retype(a1: string): Promise<void> {return this.$callMethod('retype',a1);}
   async right(): Promise<number> {return this.$callMethod('right');}
   async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async rotationAsRadians(): Promise<object> {return this.$callMethod('rotationAsRadians');}
   async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
@@ -307,7 +305,6 @@ export class VariableBase extends Item {
   async temp(): Promise<boolean> {return this.$callMethod('temp');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
   async toggleLocal(): Promise<void> {return this.$callMethod('toggleLocal');}
-  async toggleVarTabDisplay(): Promise<void> {return this.$callMethod('toggleVarTabDisplay');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async top(): Promise<number> {return this.$callMethod('top');}
   async type(): Promise<string> {return this.$callMethod('type');}
@@ -320,11 +317,9 @@ export class VariableBase extends Item {
   async value(...args: any[]): Promise<number> {return this.$callMethod('value',...args);}
   async valueId(): Promise<string> {return this.$callMethod('valueId');}
   async valueIdInCurrentScope(a1: string): Promise<string> {return this.$callMethod('valueIdInCurrentScope',a1);}
-  async varTabDisplay(...args: boolean[]): Promise<boolean> {return this.$callMethod('varTabDisplay',...args);}
   async variableCast(): Promise<VariableBase> {return this.$callMethod('variableCast');}
   async varsPassed(...args: number[]): Promise<number> {return this.$callMethod('varsPassed',...args);}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
   async width(): Promise<number> {return this.$callMethod('width');}
   async x(): Promise<number> {return this.$callMethod('x');}
   async y(): Promise<number> {return this.$callMethod('y');}
@@ -422,7 +417,6 @@ export class Canvas extends RenderNativeWindow {
   backgroundColour: ecolab__cairo__Colour;
   item: Item;
   itemFocus: Item;
-  itemVector: Sequence<Item>;
   lasso: LassoBox;
   model: Group;
   selection: Selection;
@@ -437,7 +431,6 @@ export class Canvas extends RenderNativeWindow {
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
     this.item=new Item(this.$prefix()+'.item');
     this.itemFocus=new Item(this.$prefix()+'.itemFocus');
-    this.itemVector=new Sequence<Item>(this.$prefix()+'.itemVector',Item);
     this.lasso=new LassoBox(this.$prefix()+'.lasso');
     this.model=new Group(this.$prefix()+'.model');
     this.selection=new Selection(this.$prefix()+'.selection');
@@ -493,7 +486,6 @@ export class Canvas extends RenderNativeWindow {
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
   async openGroupInCanvas(a1: Item): Promise<void> {return this.$callMethod('openGroupInCanvas',a1);}
   async position(): Promise<number[]> {return this.$callMethod('position');}
-  async pushDefiningVarsToTab(): Promise<void> {return this.$callMethod('pushDefiningVarsToTab');}
   async ravelsSelected(): Promise<number> {return this.$callMethod('ravelsSelected');}
   async recentre(): Promise<void> {return this.$callMethod('recentre');}
   async redraw(): Promise<boolean> {return this.$callMethod('redraw');}
@@ -521,8 +513,6 @@ export class Canvas extends RenderNativeWindow {
   async selectVar(a1: number,a2: number): Promise<boolean> {return this.$callMethod('selectVar',a1,a2);}
   async setDefaultPlotOptions(): Promise<void> {return this.$callMethod('setDefaultPlotOptions');}
   async setItemFocus(a1: Item): Promise<void> {return this.$callMethod('setItemFocus',a1);}
-  async showDefiningVarsOnCanvas(): Promise<void> {return this.$callMethod('showDefiningVarsOnCanvas');}
-  async showPlotsOnTab(): Promise<void> {return this.$callMethod('showPlotsOnTab');}
   async surface(): Promise<ecolab__cairo__Surface> {return this.$callMethod('surface');}
   async termX(...args: number[]): Promise<number> {return this.$callMethod('termX',...args);}
   async termY(...args: number[]): Promise<number> {return this.$callMethod('termY',...args);}
@@ -532,6 +522,7 @@ export class Canvas extends RenderNativeWindow {
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
   async zoomToDisplay(): Promise<void> {return this.$callMethod('zoomToDisplay');}
+  async zoomToFit(): Promise<void> {return this.$callMethod('zoomToFit');}
 }
 
 export class DataOp extends Item {
@@ -1049,7 +1040,6 @@ export class Group extends Item {
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async arguments(): Promise<string> {return this.$callMethod('arguments');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
@@ -1163,6 +1153,7 @@ export class Group extends Item {
   async right(): Promise<number> {return this.$callMethod('right');}
   async rotFactor(): Promise<number> {return this.$callMethod('rotFactor');}
   async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async rotationAsRadians(): Promise<object> {return this.$callMethod('rotationAsRadians');}
   async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
@@ -1180,7 +1171,6 @@ export class Group extends Item {
   async updateTimestamp(): Promise<void> {return this.$callMethod('updateTimestamp');}
   async value(): Promise<number> {return this.$callMethod('value');}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
   async width(): Promise<number> {return this.$callMethod('width');}
   async x(): Promise<number> {return this.$callMethod('x');}
   async y(): Promise<number> {return this.$callMethod('y');}
@@ -1246,7 +1236,6 @@ export class IntOp extends Item {
       super(prefix.$prefix())
     this.intVar=new VariableBase(this.$prefix()+'.intVar');
   }
-  async attachedToDefiningVar(a1: Container<Item>): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',a1);}
   async coupled(): Promise<boolean> {return this.$callMethod('coupled');}
   async description(...args: string[]): Promise<string> {return this.$callMethod('description',...args);}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
@@ -1457,7 +1446,6 @@ export class Minsky extends CppClass {
   async setGroupIconResource(a1: string): Promise<void> {return this.$callMethod('setGroupIconResource',a1);}
   async setLockIconResource(a1: string,a2: string): Promise<void> {return this.$callMethod('setLockIconResource',a1,a2);}
   async setRavelIconResource(a1: string): Promise<void> {return this.$callMethod('setRavelIconResource',a1);}
-  async showVariableDefinitionOnCanvas(a1: string): Promise<void> {return this.$callMethod('showVariableDefinitionOnCanvas',a1);}
   async simulationDelay(...args: number[]): Promise<number> {return this.$callMethod('simulationDelay',...args);}
   async srand(a1: number): Promise<void> {return this.$callMethod('srand',a1);}
   async step(): Promise<number[]> {return this.$callMethod('step');}
@@ -1535,7 +1523,6 @@ export class PhillipsFlow extends Item {
   }
   async addTerm(a1: number,a2: string): Promise<void> {return this.$callMethod('addTerm',a1,a2);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
-  async attachedToDefiningVar(...args: Container<Item>[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async coords(...args: any[]): Promise<number[]> {return this.$callMethod('coords',...args);}
   async deleteHandle(a1: number,a2: number): Promise<void> {return this.$callMethod('deleteHandle',a1,a2);}
@@ -1676,7 +1663,6 @@ export class PlotWidget extends Item {
   async pack(a1: classdesc__pack_t): Promise<void> {return this.$callMethod('pack',a1);}
   async percent(...args: boolean[]): Promise<boolean> {return this.$callMethod('percent',...args);}
   async plot(a1: object): Promise<void> {return this.$callMethod('plot',a1);}
-  async plotTabDisplay(...args: boolean[]): Promise<boolean> {return this.$callMethod('plotTabDisplay',...args);}
   async plotType(...args: string[]): Promise<string> {return this.$callMethod('plotType',...args);}
   async plotWidgetCast(): Promise<PlotWidget> {return this.$callMethod('plotWidgetCast');}
   async position(): Promise<number[]> {return this.$callMethod('position');}
@@ -1698,7 +1684,6 @@ export class PlotWidget extends Item {
   async setMinMax(): Promise<void> {return this.$callMethod('setMinMax');}
   async subgrid(...args: boolean[]): Promise<boolean> {return this.$callMethod('subgrid',...args);}
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
-  async togglePlotTabDisplay(): Promise<void> {return this.$callMethod('togglePlotTabDisplay');}
   async unpack(a1: classdesc__pack_t): Promise<void> {return this.$callMethod('unpack',a1);}
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
   async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
@@ -1952,7 +1937,6 @@ export class Selection extends CppClass {
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async arguments(): Promise<string> {return this.$callMethod('arguments');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
@@ -2067,6 +2051,7 @@ export class Selection extends CppClass {
   async right(): Promise<number> {return this.$callMethod('right');}
   async rotFactor(): Promise<number> {return this.$callMethod('rotFactor');}
   async rotation(...args: any[]): Promise<number> {return this.$callMethod('rotation',...args);}
+  async rotationAsRadians(): Promise<object> {return this.$callMethod('rotationAsRadians');}
   async scaleFactor(...args: any[]): Promise<number> {return this.$callMethod('scaleFactor',...args);}
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
@@ -2084,7 +2069,6 @@ export class Selection extends CppClass {
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
   async value(): Promise<number> {return this.$callMethod('value');}
   async visible(): Promise<boolean> {return this.$callMethod('visible');}
-  async visibleWithinGroup(): Promise<boolean> {return this.$callMethod('visibleWithinGroup');}
   async width(): Promise<number> {return this.$callMethod('width');}
   async x(): Promise<number> {return this.$callMethod('x');}
   async y(): Promise<number> {return this.$callMethod('y');}
@@ -2331,7 +2315,6 @@ export class Wire extends CppClass {
     super(prefix);
   }
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
-  async attachedToDefiningVar(...args: any[]): Promise<boolean> {return this.$callMethod('attachedToDefiningVar',...args);}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async coords(...args: any[]): Promise<number[]> {return this.$callMethod('coords',...args);}
   async deleteHandle(a1: number,a2: number): Promise<void> {return this.$callMethod('deleteHandle',a1,a2);}

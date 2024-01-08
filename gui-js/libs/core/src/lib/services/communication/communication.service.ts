@@ -186,8 +186,8 @@ export class CommunicationService {
             await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
             this.resetScroll();
             break;
-          case 'ZOOM_TO_FIT':
-            await this.zoomToFit(canvasWidth, canvasHeight);
+        case 'ZOOM_TO_FIT':
+            await this.zoomToFit();
             this.resetScroll();
             break;
           case 'SIMULATION_SPEED':
@@ -320,21 +320,9 @@ export class CommunicationService {
     }
   }
 
-  private async zoomToFit(canvasWidth: number, canvasHeight: number) {
+  private async zoomToFit() {
     if (this.currentTab !== MainRenderingTabs.canvas) return;
-    let minsky = this.electronService.minsky;
-    const cBounds = await minsky.canvas.model.cBounds();
-
-    const zoomFactorX = canvasWidth / (cBounds[2] - cBounds[0]);
-    const zoomFactorY = canvasHeight / (cBounds[3] - cBounds[1]);
-
-    const zoomFactor = Math.min(zoomFactorX, zoomFactorY);
-    const x = 0.5 * (cBounds[2] + cBounds[0]);
-    const y = 0.5 * (cBounds[3] + cBounds[1]);
-
-    minsky.canvas.zoom(x, y, zoomFactor);
-    minsky.canvas.recentre();
-    minsky.canvas.requestRedraw();
+    return this.electronService.minsky.canvas.zoomToFit();
   }
 
   public async mouseEvents(event, message: MouseEvent) {

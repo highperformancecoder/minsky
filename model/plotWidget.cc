@@ -577,7 +577,6 @@ namespace minsky
     else
       {
         xticks.clear();
-        bool maxRangeAssigned=false;
         // now work out which xticks we'll use See Ravel #173
         for (auto& i: newXticks)
           if (i.empty())

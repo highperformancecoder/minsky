@@ -424,7 +424,7 @@ namespace minsky
       minsky().copy();
   }
 
-  int Canvas::ravelsSelected()
+  int Canvas::ravelsSelected() const
   {
     int ravelsSelected = 0;
     for (auto& i: selection.items) {
@@ -510,54 +510,6 @@ namespace minsky
       if (auto r=dynamic_cast<Ravel*>(i.get()))
         r->leaveLockGroup();
   }
-  
-  void Canvas::pushDefiningVarsToTab()
-  {
-    for (auto& i: selection.items)
-      {
-        auto v=i->variableCast();
-        if (v && v->defined() && !v->varTabDisplay) {
-          itemVector.push_back(i);
-          v->toggleVarTabDisplay();	  
-        }
-      }
-    requestRedraw();
-  }
-  
-  void Canvas::showDefiningVarsOnCanvas()
-  {
-    for (auto& i: itemVector)
-      {
-        auto v=(*i).variableCast();
-        if (v && v->defined() && v->varTabDisplay)
-          v->toggleVarTabDisplay();	  
-      }
-    // ensure individual hidden defining vars can be made visible once more. for ticket 145.
-    if (itemVector.empty())
-	{
-        model->recursiveDo
-          (&GroupItems::items, [&](const Items&,Items::const_iterator i)
-           {
-             if (auto v=(*i)->variableCast())
-               if (v->defined() && v->varTabDisplay)
-				 v->toggleVarTabDisplay();	 
-             return false;
-           });
-	}      
-    itemVector.clear();
-    requestRedraw();
-  }
-  
-  void Canvas::showPlotsOnTab()
-  {
-     model->recursiveDo
-       (&GroupItems::items, [&](const Items&,Items::const_iterator i)
-        {
-          if (auto p=(*i)->plotWidgetCast())
-            if (!p->plotTabDisplay) p->togglePlotTabDisplay();	 
-          return false;
-        });
-  }    
   
   void Canvas::deleteItem()
   {
@@ -728,6 +680,45 @@ namespace minsky
       }
   }
 
+  void Canvas::zoomToFit()
+  {
+    if (frameArgs().parentWindowId.empty()) return; // no window to fit to, so do nothing
+    // recompute all bounding boxes - why is this needed?
+    for (auto& i: model->items) i->updateBoundingBox();
+    
+    double x0,x1,y0,y1;
+    model->contentBounds(x0,y0,x1,y1);
+    float inOffset=0, outOffset=0;
+    double fm=std::fmod(model->rotation(),360);
+    bool notFlipped=((fm>-90 && fm<90) || fm>270 || fm<-270);
+    float flip=notFlipped? 1: -1;
+                                                         
+    // we need to move the io variables
+    for (auto& v: model->inVariables)
+      inOffset=std::max(inOffset, v->width());
+    for (auto& v: model->outVariables)
+      outOffset=std::max(outOffset, v->width());
+        
+    float zoomFactor=std::min(frameArgs().childWidth/(x1-x0+inOffset+outOffset),
+                              frameArgs().childHeight/(y1-y0));
+        
+    model->zoom(model->x(),model->y(),zoomFactor);
+
+        
+    model->contentBounds(x0,y0,x1,y1);
+    float ioOffset=notFlipped? x0: x1;
+                                                          
+    // we need to move the io variables
+    for (auto& v: model->inVariables)
+      v->moveTo(ioOffset-flip*v->width(),v->y());
+    ioOffset=notFlipped? x1: x0;                                               
+    for (auto& v: model->outVariables)
+      v->moveTo(ioOffset+flip*v->width(),v->y());
+       
+    recentre();
+    requestRedraw();
+  }
+  
   void Canvas::openGroupInCanvas(const ItemPtr& item)
   {
     if (auto g=dynamic_pointer_cast<Group>(item))
@@ -735,27 +726,9 @@ namespace minsky
         if (auto parent=model->group.lock())
           model->setZoom(parent->zoomFactor());
         model=g;
+        zoomToFit();
+
         minsky().bookmarkRefresh();
-        float zoomFactor=1.1*model->displayZoom;
-        if (!model->displayContents())
-          {
-            // we need to move the io variables
-            for (auto& v: model->inVariables)
-              {
-                float x=v->x(), y=v->y();
-                zoom(x,model->x(),zoomFactor);
-                zoom(y,model->y(),zoomFactor);
-                v->moveTo(x,y);
-              }
-            for (auto& v: model->outVariables)
-              {
-                float x=v->x(), y=v->y();
-                zoom(x,model->x(),zoomFactor);
-                zoom(y,model->y(),zoomFactor);
-                v->moveTo(x,y);
-              }
-          }
-        model->zoom(model->x(),model->y(),zoomFactor);
         this->item.reset();
         itemFocus.reset();
         wire.reset();

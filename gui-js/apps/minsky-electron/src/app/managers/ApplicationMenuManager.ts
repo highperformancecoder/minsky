@@ -190,7 +190,7 @@ export class ApplicationMenuManager {
         {
           label: 'Dimensional Analysis',
           click: async () => {
-            const res = minsky.dimensionalAnalysis();
+            const res = await minsky.dimensionalAnalysis();
 
             // empty object is returned if no error
             if (typeof res=="object") {
@@ -605,7 +605,7 @@ export class ApplicationMenuManager {
     };
   }
   static async buildMenuForInsertOperations() {
-    const availableOperationsMapping = minsky.availableOperationsMapping();
+    const availableOperationsMapping = await minsky.availableOperationsMapping();
     let insertOperationsMenu: MenuItem[] = [];
     let menuNames={
       "constop": "Fundamental Constants",

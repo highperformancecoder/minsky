@@ -410,14 +410,14 @@ namespace minsky
       (&Group::items,
        [this](const Items&, Items::const_iterator it){
          if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
-           userFunctions[valueIdFromScope((*it)->group.lock(), f->name())]=f;
+           userFunctions[valueIdFromScope((*it)->group.lock(), canonicalName(f->name()))]=f;
          return false;
        });
     ++progressState;
     model->recursiveDo
       (&Group::groups,
        [this](const Groups&, Groups::const_iterator it){
-         userFunctions[valueIdFromScope((*it)->group.lock(), (*it)->name())]=*it;
+         userFunctions[valueIdFromScope((*it)->group.lock(), canonicalName((*it)->name()))]=*it;
          return false;
        });
     ++progressState;
@@ -916,9 +916,9 @@ namespace minsky
     // attach the plots
     model->recursiveDo
       (&Group::items,
-       [&](Items& m, Items::iterator i)
+       [&](Items& m, Items::iterator it)
        {
-         if (auto p=(*i)->plotWidgetCast())
+         if (auto p=(*it)->plotWidgetCast())
            {
              p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();
@@ -1047,18 +1047,23 @@ namespace minsky
     }
 
     LocalMinsky lm(*this); // populateMinsky resets the local minsky pointer, so restore it here
+    flags=fullEqnDisplay_needed;
     
     // try balancing all Godley tables
     try
       {
         model->recursiveDo(&Group::items, 
-                           [&](Items&,Items::iterator i) {
-                             if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+                           [this](Items&,Items::iterator i) {
+                             try
                                {
-                                 for (unsigned j=1; j<g->table.cols(); ++j)
-                                   balanceDuplicateColumns(*g,j);
+                                 if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+                                   {
+                                     for (unsigned j=1; j<g->table.cols(); ++j)
+                                       balanceDuplicateColumns(*g,j);
+                                   }
+                                 (*i)->adjustBookmark();
                                }
-                             (*i)->adjustBookmark();
+                             catch (...) {}
                              return false;
                            });
 
@@ -1066,12 +1071,18 @@ namespace minsky
         reset();
         populateMissingDimensions();
       }
-    catch (...) {}
+    catch (...) {flags|=reset_needed;}
     requestRedraw();
     canvas.recentre();
     canvas.requestRedraw();
     canvas.moveTo(0,0); // force placement of ports
-    flags=reset_needed|fullEqnDisplay_needed;
+    // sometimes we need to recalculate the bounding boxes
+    model->recursiveDo(&Group::items,
+                       [](Items&,Items::iterator i) {
+                         (*i)->updateBoundingBox();
+                         return false;
+                       });
+
     pushHistory();
   }
 
@@ -1296,46 +1307,54 @@ namespace minsky
 
   bool Minsky::commandHook(const std::string& command, unsigned nargs)
   {
-    if (doPushHistory &&
-        command!="minsky.availableOperations" &&
-        command!="minsky.canvas.select" &&
-        command!="minsky.canvas.scaleFactor" &&
-        command!="minsky.canvas.recentre" &&
-        command!="minsky.canvas.focusFollowsMouse" &&
-        command!="minsky.canvas.displayDelayedTooltip" &&
-        command!="minsky.model.moveTo" &&
-        command!="minsky.canvas.moveTo" &&
-        command!="minsky.canvas.model.moveTo" &&
-        command!="minsky.canvas.model.zoom" &&
-        command!="minsky.canvas.position" &&
-        /* ensure we record mouse movements, but filter from history */
-        command!="minsky.canvas.mouseDown"&&
-        command!="minsky.canvas.mouseMove" && 
-        command!="minsky.clearAll" &&
-        command!="minsky.doPushHistory" &&
-        command!="minsky.fontScale" &&
-        command!="minsky.model.zoom" &&
-        command!="minsky.newGlobalGroupTCL" &&
-        command!="minsky.popFlags" &&
-        command!="minsky.pushFlags" &&
-        command!="minsky.select" &&
-        command!="minsky.selectVar" &&
-        command!="minsky.setGodleyIconResource" &&
-        command!="minsky.setGroupIconResource" &&
-        command!="minsky.setLockIconResource" &&
-        command!="minsky.setRavelIconResource" &&
-        command!="minsky.histogramResource.setResource" &&
-        command!="minsky.setAutoSaveFile" &&
-        command!="minsky.step" &&
-        command!="minsky.running" &&
-        command!="minsky.multipleEquities" &&
-        command!="minsky.undo" &&
-        command!="minsky.load" &&
-        command!="minsky.reverse" &&
-        command!="minsky.redrawAllGodleyTables" &&
+    static set<string> constableCommands={ // commands that should not trigger the edit flag
+      "minsky.availableOperations",
+      "minsky.canvas.select",
+      "minsky.canvas.scaleFactor",
+      "minsky.canvas.recentre",
+      "minsky.canvas.focusFollowsMouse",
+      "minsky.canvas.displayDelayedTooltip",
+      "minsky.model.moveTo",
+      "minsky.canvas.moveTo",
+      "minsky.canvas.model.moveTo",
+      "minsky.canvas.model.zoom",
+      "minsky.canvas.position",
+      "minsky.canvas.selectVar",
+      /* we record mouse movements, but filter from history */
+      "minsky.canvas.mouseDown",
+      "minsky.canvas.mouseMove",
+      "minsky.canvas.zoom",
+      "minsky.canvas.zoomToFit",
+      "minsky.clearAll",
+      "minsky.doPushHistory",
+      "minsky.fontScale",
+      "minsky.model.zoom"
+      "minsky.newGlobalGroupTCL",
+      "minsky.openGroupInCanvas",
+      "minsky.openModelInCanvas",
+      "minsky.popFlags",
+      "minsky.pushFlags",
+      "minsky.select",
+      "minsky.selectVar",
+      "minsky.setGodleyDisplayValue",
+      "minsky.setGodleyIconResource",
+      "minsky.setGroupIconResource",
+      "minsky.setLockIconResource",
+      "minsky.setRavelIconResource",
+      "minsky.histogramResource.setResource",
+      "minsky.setAutoSaveFile",
+      "minsky.step",
+      "minsky.running",
+      "minsky.multipleEquities",
+      "minsky.undo",
+      "minsky.load",
+      "minsky.reverse",
+      "minsky.redrawAllGodleyTables"
+    };
+    if (doPushHistory && constableCommands.count(command)==0 &&
         command.find("minsky.phillipsDiagram")==string::npos &&
         command.find("minsky.equationDisplay")==string::npos && 
-        command.find("minsky.setGodleyDisplayValue")==string::npos && 
+        command.find("minsky.publicationTabs")==string::npos && 
         command.find(".renderFrame")==string::npos && 
         command.find(".requestRedraw")==string::npos && 
         command.find(".backgroundColour")==string::npos && 

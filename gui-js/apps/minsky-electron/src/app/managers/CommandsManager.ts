@@ -65,7 +65,7 @@ export class CommandsManager {
 
   static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
 
-    if (!minsky.canvas.getItemAt(x, y)) {
+    if (!await minsky.canvas.getItemAt(x, y)) {
       return null;
     }
 
@@ -304,7 +304,7 @@ export class CommandsManager {
 
   static async findDefinition(): Promise<void> {
     
-    const findVariableDefinition = minsky.canvas.findVariableDefinition();
+    const findVariableDefinition = await minsky.canvas.findVariableDefinition();
 
     if (findVariableDefinition) {
       const itemX = await minsky.model.x();
@@ -439,6 +439,7 @@ export class CommandsManager {
     minsky.canvas.recentre();
     minsky.popFlags();
     await minsky.doPushHistory(true);
+    WindowManager.getMainWindow()?.webContents?.send(events.CHANGE_MAIN_TAB); // not necesarily removed, maybe added
     WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, maybe added
   }
 
@@ -553,7 +554,7 @@ export class CommandsManager {
     let classType = (await this.getItemClassType(x, y, true)) as string;
 
     if (Functions.isEmptyObject(classType)) {
-      classType = minsky.canvas.getWireAt(x,y) ? 'Wires' : 'DesignCanvas';
+      classType = (await minsky.canvas.getWireAt(x,y)) ? 'Wires' : 'DesignCanvas';
     }
 
     if (!classType) {

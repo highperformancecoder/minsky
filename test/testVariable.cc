@@ -41,7 +41,7 @@ SUITE(Variable)
       CHECK_EQUAL("foo", uqName("foo"));
 
       CHECK_EQUAL(":foo",minsky::valueId(0,"foo"));
-      CHECK_EQUAL("1:foo",minsky::valueId(1,"foo"));
+      CHECK_EQUAL("1:foo",minsky::valueIdCanonical(1,"foo"));
       CHECK_EQUAL(":foo",minsky::valueId(":foo"));
       CHECK_THROW(minsky::valueId("foo"), ecolab::error);
 
