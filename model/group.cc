@@ -786,7 +786,7 @@ namespace minsky
     y1=-numeric_limits<float>::max();
 
     for (auto& i: items)
-      if (!i->ioVar() && i->visibleWithinGroup())
+      if (!i->ioVar())
         {
           if (i->left()<x0) x0=i->left();
           if (i->right()>x1) x1=i->right();

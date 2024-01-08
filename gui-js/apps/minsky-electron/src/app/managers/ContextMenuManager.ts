@@ -43,9 +43,6 @@ export class ContextMenuManager {
       case "html-godley":
       this.initContextMenuForGodleyHTMLPopup(event, command,x,y);
       break;
-      case "html-summary":
-      this.initContextMenuForSummaryTab(command);
-      break;
       case "ravel":
       this.initContextMenuForRavelPopup(command,x,y);
       break;
@@ -282,19 +279,6 @@ export class ContextMenuManager {
         label: 'Paste selection',
         click: () => {
           CommandsManager.pasteAt(this.x, this.y);
-        },
-      }),
-      new MenuItem({
-        label: 'Hide defining groups of selected variables',
-        click: async () => {minsky.canvas.pushDefiningVarsToTab();
-          await CommandsManager.requestRedraw();
-        },
-      }),
-      new MenuItem({
-        label: 'Show all defining groups on canvas',
-        click: async () => {
-          minsky.canvas.showDefiningVarsOnCanvas();
-          await CommandsManager.requestRedraw();
         },
       }),
 
@@ -1040,15 +1024,6 @@ export class ContextMenuManager {
       }),
     ];
 
-    if (await v.defined()) {
-      menuItems.push(
-        new MenuItem({
-          label: 'Hide variable definition',
-          click: () => {v.toggleVarTabDisplay();}
-        })
-      );
-    }
-
     menuItems.push(
       new MenuItem({
         label: 'Flip',
@@ -1100,16 +1075,6 @@ export class ContextMenuManager {
     this.initContextMenuForGodley(godley, r, c, clickType, () => {});
   }
 
-  private static async initContextMenuForSummaryTab(valueId: string)
-  {
-    var menu=new Menu();
-    menu.append(new MenuItem({
-      label: "Show variable on canvas",
-      click: async ()=> {await minsky.showVariableDefinitionOnCanvas(valueId);},
-    }));
-    menu.popup();
-  }
-  
   private static async initContextMenuForGodley(godley: GodleyIcon, r: number, c: number, clickType: string, refreshFunction: () => void)
   {
     var menu=new Menu();

@@ -130,9 +130,6 @@ namespace minsky
     void requestRedraw(); ///< redraw plot using current data to all open windows
     void redrawWithBounds() override {redraw(0,0,500,500);}    
     
-    bool plotTabDisplay=true; // ensure plots persisted on plot tab, but can optionally be made hidden. for ticket 1298
-    void togglePlotTabDisplay() {plotTabDisplay=!plotTabDisplay;}     
-    
     /// add this as a display plot to its group
     void makeDisplayPlot();
           

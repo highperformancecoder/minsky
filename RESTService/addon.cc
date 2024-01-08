@@ -107,6 +107,7 @@ namespace minsky
       mutex cmdMutex;
       atomic<bool> running{true};
       std::thread thread;
+      bool inputBufferExceeded=false;
       
       AddOnMinsky(): thread([this](){run();}) {
         flags=0;
@@ -135,6 +136,14 @@ namespace minsky
         if (syncPos!=string::npos && syncPos==command.size()-12)
           return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
 #endif
+        if (minskyCommands.size()>10)
+          {
+            if (!inputBufferExceeded) setBusyCursor();
+            inputBufferExceeded=true;
+            return env.Null();
+          }
+        if (inputBufferExceeded) clearBusyCursor(); // single shot clear of busy curser
+        inputBufferExceeded=false;
         lock_guard<mutex> lock(cmdMutex);
         minskyCommands.emplace_back(new Command{env,command,arguments});
         return minskyCommands.back()->promiseResolver->promise.Promise();
@@ -236,6 +245,12 @@ namespace minsky
                         {
                           LocalMinsky lm(*this); // sets this to be the global minsky object
                           reset();
+                        }
+                      if (inputBufferExceeded && minskyCommands.empty())
+                        {
+                          // clears busy cursor when no commands are being received or processed
+                          clearBusyCursor();
+                          inputBufferExceeded=false;
                         }
                     }
                   catch (...)

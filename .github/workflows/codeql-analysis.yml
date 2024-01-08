@@ -62,7 +62,7 @@ jobs:
         sudo add-apt-repository -y \
           'deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_${{ matrix.ubuntu_ver }}/ /'
         sudo apt install -y --no-install-recommends \
-          g++ tcl-dev tk-dev libcairo2-dev zlib1g-dev libreadline-dev libgsl0-dev libblas-dev libpango1.0-dev exuberant-ctags libdb-dev libncurses5-dev librsvg2-dev json-spirit boost-python3-dev libssl-dev libclipboard
+          g++ tcl-dev tk-dev libcairo2-dev zlib1g-dev libreadline-dev libgsl0-dev libblas-dev libpango1.0-dev exuberant-ctags libdb-dev libncurses5-dev librsvg2-dev boost-python3-dev libssl-dev libclipboard
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)

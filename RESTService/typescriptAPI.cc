@@ -32,8 +32,6 @@
 #include "intOp.tcd"
 #include "item.tcd"
 #include "itemT.tcd"
-#include "itemTab.h"
-#include "itemTab.tcd"
 #include "lasso.tcd"
 #include "lock.tcd"
 #include "noteBase.tcd"

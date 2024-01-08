@@ -282,17 +282,6 @@ namespace minsky
     /// whether this item is visible on the canvas. 
     virtual bool visible() const;
 
-    /// whether this item is visible if the group is expanded to display items.
-    virtual bool visibleWithinGroup() const;
-    
-    
-    /// whether this item is attached to a defining variable that is hidden
-    virtual bool attachedToDefiningVar(std::set<const Item*>& visited) const;
-    bool attachedToDefiningVar() const {
-      std::set<const Item*> visited;
-      return attachedToDefiningVar(visited);
-    }
-
     void moveTo(float x, float y);
 
     /// draw this item into a cairo context

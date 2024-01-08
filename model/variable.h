@@ -117,7 +117,6 @@ namespace minsky
     /// reference to a controlling item - eg GodleyIcon, IntOp or a Group if an IOVar.
     classdesc::Exclude<std::weak_ptr<Item>> controller;
     bool visible() const override;
-    bool visibleWithinGroup() const override;
 
     const VariableBase* variableCast() const override {return this;}
     VariableBase* variableCast() override {return this;}
@@ -198,10 +197,6 @@ namespace minsky
     virtual VariableBase* clone() const override=0;
     bool isStock() const {return type()==stock || type()==integral;}
 
-    bool varTabDisplay=false;
-    void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
-    bool attachedToDefiningVar(std::set<const Item*>&) const override {return varTabDisplay;} // <-- does this definition make any sense??
-    using Item::attachedToDefiningVar;
     /// formula defining this variable
     std::string definition() const;
 
