@@ -1002,6 +1002,7 @@ export class CommandsManager {
     WindowManager.getMainWindow().setTitle(filePath);
     this.currentMinskyModelFilePath=filePath;
     minsky.save(filePath);
+    ipcMain.emit(events.ADD_RECENT_FILE, null, filePath);
   }
   
   static async editHandleDescription(ravel: Ravel, handleIndex: number) {
