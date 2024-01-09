@@ -77,6 +77,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   selected: boolean[]; ///< per column whether column is selected
   mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
+  existingDimensionNames: string[];
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
   @ViewChild('fullDialog') fullDialog: ElementRef<HTMLElement>;
@@ -181,6 +182,10 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       }
     });
     document.onkeydown = this.onKeyDown;
+
+    this.electronService.minsky.dimensions.$properties().then(dims => {
+      this.existingDimensionNames = Object.entries(dims).map(d => d[0]);
+    });
   }
 
   ngAfterViewInit() {
@@ -195,7 +200,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
     })();
   }
-  ngAfterViewChecked() {
+
+  afterViewChecked() {
     // set state of dimension controls to reflect dialogState
     if (this.inputCsvCanvasContainer) {
       var table = this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
@@ -329,7 +335,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
           this.colType[i] = ColType.ignore;
       } else
         this.colType[i] = ColType.data;
-    this.ngAfterViewChecked();
+    this.afterViewChecked();
   }
 
   getColorForCell(rowIndex: number, colIndex: number) {

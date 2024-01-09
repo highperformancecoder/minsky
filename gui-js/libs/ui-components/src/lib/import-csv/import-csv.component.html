@@ -141,7 +141,14 @@
           id="horizontal-dimension"
           type="text"
           formControlName="horizontalDimName"
+          [matAutocomplete]="existingDimensions"
         />
+        <mat-autocomplete
+          [panelWidth]="'10rem'"
+          #existingDimensions="matAutocomplete"
+        >
+          <mat-option *ngFor="let dimensionName of existingDimensionNames" [value]="dimensionName">{{dimensionName}}</mat-option>
+        </mat-autocomplete>
       </span>
       <ng-container [formGroup]="horizontalDimension">
         <span>
