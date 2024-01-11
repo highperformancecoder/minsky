@@ -29,6 +29,24 @@ using namespace ecolab::cairo;
 
 namespace minsky
 {
+  namespace {
+    struct EnsureEditorMode
+    {
+      PubItem& item;
+      bool editorModeToggled;
+      EnsureEditorMode(PubItem& item): item(item), editorModeToggled(item.editorMode!=item.itemRef->editorMode())
+      {
+        if (editorModeToggled)
+          item.itemRef->toggleEditorMode();
+      }
+      ~EnsureEditorMode()
+      {
+        if (editorModeToggled)
+          item.itemRef->toggleEditorMode();
+     }
+    };
+  }
+
   Point PubItem::itemCoords(float x, float y) const
   {
     if (!itemRef) return {0,0};
@@ -98,6 +116,7 @@ namespace minsky
         cairo_rotate(cairo,(M_PI/180)*i.rotation-i.itemRef->rotation());
         try
           {
+            EnsureEditorMode ensureEditorMode(i);
             i.itemRef->draw(cairo);
           }
         catch (...) {}
@@ -124,16 +143,19 @@ namespace minsky
     x-=offsx; y-=offsy;
     item=m_getItemAt(x,y);
     if (item)
-      if (auto p=item->itemCoords(x,y);
-          item->itemRef->clickType(p.x(),p.y())==ClickType::onResize)
-        {
-          resizing=true;
-          auto scale=item->zoomFactor/item->itemRef->zoomFactor();
-          lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
-          lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
-          lasso.x1=x;
-          lasso.y1=y;
-        }
+      {
+        EnsureEditorMode editorMode(*item);
+        if (auto p=item->itemCoords(x,y);
+            item->itemRef->clickType(p.x(),p.y())==ClickType::onResize)
+          {
+            resizing=true;
+            auto scale=item->zoomFactor/item->itemRef->zoomFactor();
+            lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
+            lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
+            lasso.x1=x;
+            lasso.y1=y;
+          }
+      }
   }
   
   void PubTab::mouseUp(float x, float y)
@@ -147,6 +169,7 @@ namespace minsky
     mouseMove(x,y);
     if (item && resizing)
       {
+        EnsureEditorMode editorMode(*item);
         item->zoomFactor=std::min(
                                   abs(lasso.x1-lasso.x0)/item->itemRef->width(),
                                   abs(lasso.y1-lasso.y0)/item->itemRef->height());

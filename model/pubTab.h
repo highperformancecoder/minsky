@@ -30,11 +30,13 @@ namespace minsky
   {
   public:
     PubItem()=default;
-    PubItem(const ItemPtr& item): itemRef(item) {}
+    PubItem(const ItemPtr& item):
+      itemRef(item), editorMode(item? item->editorMode(): false) {}
     ItemPtr itemRef;
     float x=100,y=100;
     float zoomFactor=1;
     double rotation=0;
+    bool editorMode=false;
     /// given (x,y) in PubTab, returns coordinates within item
     Point itemCoords(float x, float y) const;
   };
@@ -67,6 +69,10 @@ namespace minsky
     void removeSelf();
     void removeItemAt(float x, float y);
     void rotateItemAt(float x, float y);
+    void toggleEditorModeAt(float x, float y) {
+      if (auto i=m_getItemAt(x-offsx,y-offsy))
+        i->editorMode=!i->editorMode;
+    }
     bool getItemAt(float x, float y) override {return m_getItemAt(x-offsx,y-offsy);}
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}
