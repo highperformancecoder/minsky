@@ -180,7 +180,7 @@ namespace schema3
                 {
                   items.back().ravelState=s;
                   items.back().dimensions=r->axisDimensions;
-                  items.back().editorMode=r->editorMode;
+                  items.back().editorMode=r->editorMode();
                 }
             }
           if (auto* l=dynamic_cast<const minsky::Lock*>(i))
@@ -514,7 +514,7 @@ namespace schema3
         
         if (y.dimensions)
           x1->axisDimensions=*y.dimensions;
-        if (y.editorMode && *y.editorMode!=x1->editorMode)
+        if (y.editorMode && *y.editorMode!=x1->editorMode())
           x1->toggleEditorMode();
       }
     if (auto* x1=dynamic_cast<minsky::Lock*>(&x))
