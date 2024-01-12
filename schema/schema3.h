@@ -271,7 +271,7 @@ namespace schema3
     minsky::ConversionsMap conversions;
     PhillipsDiagram phillipsDiagram;
     std::vector<PublicationTab> publicationTabs;
-
+    std::vector<Item> publicationItems;
     
     Minsky(): schemaVersion(0) {makeImpl();} // schemaVersion defined on read in
     ~Minsky();
