@@ -128,19 +128,13 @@ namespace minsky
       {
         auto p=item->itemCoords(x,y);
         clickType=item->itemRef->clickType(p.x(),p.y());
-        switch (clickType)
+        if (clickType==ClickType::onResize)
           {
-          case ClickType::onResize:
-            {
-              auto scale=item->zoomFactor/item->itemRef->zoomFactor();
-              lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
-              lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
-              lasso.x1=x;
-              lasso.y1=y;
-            }
-            break;
-          default:
-            break;
+            auto scale=item->zoomFactor/item->itemRef->zoomFactor();
+            lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
+            lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
+            lasso.x1=x;
+            lasso.y1=y;
           }
       }
   }
