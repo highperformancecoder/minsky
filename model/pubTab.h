@@ -35,7 +35,7 @@ namespace minsky
       if (item) editorMode=item->editorMode();
     }
     PubItem(const ItemPtr& item, const schema3::PublicationItem& state):
-      itemRef(item), schema3::PublicationItem(state) {}
+      schema3::PublicationItem(state), itemRef(item)  {}
     ItemPtr itemRef;
     /// given (x,y) in PubTab, returns coordinates within item. Nb: must be wrapped by EnsureEditorMode 
     Point itemCoords(float x, float y) const;
