@@ -427,20 +427,12 @@ namespace schema3
     for (auto& pub: publicationTabs)
       {
         pubTabs.emplace_back(pub.name);
-        pubTabs.back().offsx=pub.x;
         pubTabs.back().offsy=pub.y;
         pubTabs.back().m_zoomFactor=pub.zoomFactor;
            
         for (auto& item: pub.items)
           if (itemMap[item.item])
-            {
-              pubTabs.back().items.emplace_back(itemMap[item.item]);
-              auto& newItem=pubTabs.back().items.back();
-              newItem.x=item.x;
-              newItem.y=item.y;
-              newItem.zoomFactor=item.zoomFactor;
-              newItem.rotation=item.rotation;
-            }
+            pubTabs.back().items.emplace_back(itemMap[item.item], item);
       }
     if (pubTabs.empty()) pubTabs.emplace_back("Publication");
   }

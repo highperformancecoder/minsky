@@ -20,6 +20,7 @@
 #include "lasso.h"
 #include "minsky.h"
 #include "pubTab.h"
+#include "publication.rcd"
 #include "pubTab.xcd"
 #include "pubTab.rcd"
 #include "pannableTab.rcd"
@@ -226,5 +227,6 @@ namespace minsky
     requestRedraw();
   }
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(schema3::PublicationItem);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubTab);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubItem);

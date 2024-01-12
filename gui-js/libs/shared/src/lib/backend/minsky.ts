@@ -1730,6 +1730,7 @@ export class PubItem extends CppClass {
     this.itemRef=new Item(this.$prefix()+'.itemRef');
   }
   async editorMode(...args: boolean[]): Promise<boolean> {return this.$callMethod('editorMode',...args);}
+  async item(...args: number[]): Promise<number> {return this.$callMethod('item',...args);}
   async itemCoords(a1: number,a2: number): Promise<object> {return this.$callMethod('itemCoords',a1,a2);}
   async rotation(...args: number[]): Promise<number> {return this.$callMethod('rotation',...args);}
   async x(...args: number[]): Promise<number> {return this.$callMethod('x',...args);}

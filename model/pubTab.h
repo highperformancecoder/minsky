@@ -22,23 +22,22 @@
 
 #include "item.h"
 #include "pannableTab.h"
+#include "publication.h"
 #include "renderNativeWindow.h"
 
 namespace minsky
 {
-  class PubItem
+  class PubItem: public schema3::PublicationItem
   {
   public:
     PubItem()=default;
-    PubItem(const ItemPtr& item):
-      itemRef(item), editorMode(item? item->editorMode(): false) {}
+    PubItem(const ItemPtr& item): itemRef(item) {
+      if (item) editorMode=item->editorMode();
+    }
+    PubItem(const ItemPtr& item, const schema3::PublicationItem& state):
+      itemRef(item), schema3::PublicationItem(state) {}
     ItemPtr itemRef;
-    float x=100,y=100;
-    float zoomFactor=1;
-    float zoomX=1, zoomY=1;
-    double rotation=0;
-    bool editorMode=false;
-    /// given (x,y) in PubTab, returns coordinates within item. Note must be wrapped by EnsureEditorMode 
+    /// given (x,y) in PubTab, returns coordinates within item. Nb: must be wrapped by EnsureEditorMode 
     Point itemCoords(float x, float y) const;
   };
 
