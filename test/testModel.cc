@@ -108,7 +108,7 @@ SUITE(Group)
   TEST_FIXTURE(TestFixture, accessibleVars)
     {
       vector<string> globalAccessibleVars{"c"};
-      vector<string> group0AccessibleVars{"1",":c","a","b"};
+      vector<string> group0AccessibleVars{":c","a","b","output1"};
       group0->makeSubroutine();
       CHECK_EQUAL(globalAccessibleVars.size(), model->accessibleVars().size());
       CHECK_ARRAY_EQUAL(globalAccessibleVars, model->accessibleVars(), globalAccessibleVars.size());
