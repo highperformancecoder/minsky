@@ -35,9 +35,10 @@ namespace minsky
     ItemPtr itemRef;
     float x=100,y=100;
     float zoomFactor=1;
+    float zoomX=1, zoomY=1;
     double rotation=0;
     bool editorMode=false;
-    /// given (x,y) in PubTab, returns coordinates within item
+    /// given (x,y) in PubTab, returns coordinates within item. Note must be wrapped by EnsureEditorMode 
     Point itemCoords(float x, float y) const;
   };
 
