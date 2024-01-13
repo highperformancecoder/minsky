@@ -54,7 +54,8 @@ namespace minsky
     CLASSDESC_ACCESS(PubTab);
     PubItem* item=nullptr; // weak reference for moving items
     PubItem* m_getItemAt(float x, float y);
-    bool resizing=false, rotating=false;
+    bool rotating=false;
+    ClickType::Type clickType=ClickType::outside;
     float rx=0, ry=0; ///< reference position for rotating
     LassoBox lasso;
   public:
