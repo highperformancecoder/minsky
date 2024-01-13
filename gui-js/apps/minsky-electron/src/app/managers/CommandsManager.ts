@@ -741,9 +741,12 @@ export class CommandsManager {
 
           break;
 
-        case ClassType.Group:
+      case ClassType.Group:
+        if (await CommandsManager.selectVar(mouseX,mouseY))
+          await CommandsManager.editVar();
+        else
           await CommandsManager.editItem(ClassType.Group);
-          break;
+        break;
 
         case ClassType.Item:
           await CommandsManager.postNote('item');

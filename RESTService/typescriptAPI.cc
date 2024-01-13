@@ -47,6 +47,7 @@
 #include "polyRESTProcessBase.tcd"
 #include "port.h"
 #include "port.tcd"
+#include "publication.tcd"
 #include "pubTab.tcd"
 #include "ravelState.tcd"
 #include "renderNativeWindow.tcd"

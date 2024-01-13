@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.33</minskyVersion>
+  <minskyVersion>3.2.0-beta.2</minskyVersion>
   <wires>
    <Wire>
     <id>550</id>
@@ -861,7 +861,7 @@
     <id>85</id>
     <type>Variable:stock</type>
     <x>555.33</x>
-    <y>414.312</y>
+    <y>413.766</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -989,8 +989,8 @@
     <name>:C_W</name>
     <id>99</id>
     <type>Variable:flow</type>
-    <x>513.377</x>
-    <y>222.287</y>
+    <x>512.922</x>
+    <y>230.287</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1015,8 +1015,8 @@
     <name>:C_B</name>
     <id>102</id>
     <type>Variable:flow</type>
-    <x>514.286</x>
-    <y>253.196</y>
+    <x>513.922</x>
+    <y>262.287</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1041,8 +1041,8 @@
     <name>:C_I</name>
     <id>105</id>
     <type>Variable:flow</type>
-    <x>516.104</x>
-    <y>160.468</y>
+    <x>515.922</x>
+    <y>166.287</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1067,8 +1067,8 @@
     <name>:I_B</name>
     <id>108</id>
     <type>Variable:flow</type>
-    <x>517.013</x>
-    <y>284.105</y>
+    <x>516.922</x>
+    <y>294.287</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1093,8 +1093,8 @@
     <name>:I_C</name>
     <id>111</id>
     <type>Variable:flow</type>
-    <x>517.013</x>
-    <y>191.377</y>
+    <x>516.922</x>
+    <y>198.287</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1119,8 +1119,8 @@
     <name>:W_C</name>
     <id>114</id>
     <type>Variable:flow</type>
-    <x>511.558</x>
-    <y>98.6502</y>
+    <x>511.922</x>
+    <y>102.287</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1145,8 +1145,8 @@
     <name>:W_I</name>
     <id>117</id>
     <type>Variable:flow</type>
-    <x>514.286</x>
-    <y>129.559</y>
+    <x>513.922</x>
+    <y>134.287</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1171,7 +1171,7 @@
     <name>:Lend</name>
     <id>120</id>
     <type>Variable:flow</type>
-    <x>505.195</x>
+    <x>504.922</x>
     <y>-17.7134</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
@@ -1197,8 +1197,8 @@
     <name>:Fee</name>
     <id>123</id>
     <type>Variable:flow</type>
-    <x>510.649</x>
-    <y>69.5593</y>
+    <x>509.922</x>
+    <y>72.2866</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1223,8 +1223,8 @@
     <name>:Repay</name>
     <id>126</id>
     <type>Variable:flow</type>
-    <x>501.558</x>
-    <y>11.3775</y>
+    <x>500.922</x>
+    <y>12.2866</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1249,8 +1249,8 @@
     <name>:int</name>
     <id>129</id>
     <type>Variable:flow</type>
-    <x>513.377</x>
-    <y>40.4684</y>
+    <x>512.922</x>
+    <y>42.2866</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1275,8 +1275,8 @@
     <name>:C_B</name>
     <id>132</id>
     <type>Variable:flow</type>
-    <x>875.675</x>
-    <y>175.776</y>
+    <x>875.311</x>
+    <y>180.503</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1301,8 +1301,8 @@
     <name>:C_I</name>
     <id>135</id>
     <type>Variable:flow</type>
-    <x>877.493</x>
-    <y>206.685</y>
+    <x>877.311</x>
+    <y>212.503</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1327,8 +1327,8 @@
     <name>:C_W</name>
     <id>138</id>
     <type>Variable:flow</type>
-    <x>874.765</x>
-    <y>237.594</y>
+    <x>874.311</x>
+    <y>244.503</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1353,8 +1353,8 @@
     <name>:Fee</name>
     <id>141</id>
     <type>Variable:flow</type>
-    <x>872.038</x>
-    <y>115.776</y>
+    <x>871.311</x>
+    <y>118.503</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1379,8 +1379,8 @@
     <name>:I_C</name>
     <id>144</id>
     <type>Variable:flow</type>
-    <x>878.402</x>
-    <y>268.503</y>
+    <x>878.311</x>
+    <y>276.503</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1405,7 +1405,7 @@
     <name>:Lend</name>
     <id>147</id>
     <type>Variable:flow</type>
-    <x>866.584</x>
+    <x>866.311</x>
     <y>28.5033</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
@@ -1431,8 +1431,8 @@
     <name>:Repay</name>
     <id>150</id>
     <type>Variable:flow</type>
-    <x>862.947</x>
-    <y>57.5942</y>
+    <x>862.311</x>
+    <y>58.5033</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1457,8 +1457,8 @@
     <name>:W_C</name>
     <id>153</id>
     <type>Variable:flow</type>
-    <x>872.947</x>
-    <y>144.867</y>
+    <x>873.311</x>
+    <y>148.503</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1483,8 +1483,8 @@
     <name>:int</name>
     <id>156</id>
     <type>Variable:flow</type>
-    <x>874.765</x>
-    <y>86.6851</y>
+    <x>874.311</x>
+    <y>88.5033</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1509,8 +1509,8 @@
     <name>:D</name>
     <id>159</id>
     <type>Variable:stock</type>
-    <x>941.889</x>
-    <y>359.559</y>
+    <x>942.98</x>
+    <y>359.378</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1534,8 +1534,8 @@
     <name>:C_{NW}</name>
     <id>161</id>
     <type>Variable:stock</type>
-    <x>970.98</x>
-    <y>367.741</y>
+    <x>972.98</x>
+    <y>367.378</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1559,8 +1559,8 @@
     <name>:C_I</name>
     <id>163</id>
     <type>Variable:flow</type>
-    <x>584.493</x>
-    <y>394.582</y>
+    <x>584.311</x>
+    <y>398.401</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1585,8 +1585,8 @@
     <name>:I_B</name>
     <id>166</id>
     <type>Variable:flow</type>
-    <x>585.402</x>
-    <y>425.491</y>
+    <x>585.311</x>
+    <y>430.401</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1611,8 +1611,8 @@
     <name>:I_C</name>
     <id>169</id>
     <type>Variable:flow</type>
-    <x>585.402</x>
-    <y>456.401</y>
+    <x>585.311</x>
+    <y>462.401</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1637,7 +1637,7 @@
     <name>:Lend</name>
     <id>172</id>
     <type>Variable:flow</type>
-    <x>573.584</x>
+    <x>573.311</x>
     <y>276.401</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
@@ -1663,8 +1663,8 @@
     <name>:Repay</name>
     <id>175</id>
     <type>Variable:flow</type>
-    <x>569.947</x>
-    <y>305.491</y>
+    <x>569.311</x>
+    <y>306.401</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1689,8 +1689,8 @@
     <name>:W_I</name>
     <id>178</id>
     <type>Variable:flow</type>
-    <x>582.675</x>
-    <y>363.673</y>
+    <x>582.311</x>
+    <y>366.401</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1715,8 +1715,8 @@
     <name>:int</name>
     <id>181</id>
     <type>Variable:flow</type>
-    <x>581.765</x>
-    <y>334.582</y>
+    <x>581.311</x>
+    <y>336.401</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1741,8 +1741,8 @@
     <name>:I_{NW}</name>
     <id>184</id>
     <type>Variable:stock</type>
-    <x>677.98</x>
-    <y>544.018</y>
+    <x>679.98</x>
+    <y>543.382</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1766,8 +1766,8 @@
     <name>:C_W</name>
     <id>186</id>
     <type>Variable:flow</type>
-    <x>847.955</x>
-    <y>363.697</y>
+    <x>847.5</x>
+    <y>365.879</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1792,7 +1792,7 @@
     <name>:W_C</name>
     <id>189</id>
     <type>Variable:flow</type>
-    <x>846.136</x>
+    <x>846.5</x>
     <y>301.879</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
@@ -1818,8 +1818,8 @@
     <name>:W_I</name>
     <id>192</id>
     <type>Variable:flow</type>
-    <x>848.864</x>
-    <y>332.788</y>
+    <x>848.5</x>
+    <y>333.879</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1844,8 +1844,8 @@
     <name>:W_{NW}</name>
     <id>195</id>
     <type>Variable:stock</type>
-    <x>913.359</x>
-    <y>441.969</y>
+    <x>914.45</x>
+    <y>441.787</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3372,8 +3372,8 @@
     <name>:D</name>
     <id>343</id>
     <type>Variable:stock</type>
-    <x>648.889</x>
-    <y>538.564</y>
+    <x>649.98</x>
+    <y>538.382</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3837,8 +3837,8 @@
     <name>:C_D</name>
     <id>394</id>
     <type>Variable:stock</type>
-    <x>584.421</x>
-    <y>391.585</y>
+    <x>585.33</x>
+    <y>391.767</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3862,8 +3862,8 @@
     <name>:I_D</name>
     <id>396</id>
     <type>Variable:stock</type>
-    <x>615.33</x>
-    <y>388.857</y>
+    <x>617.33</x>
+    <y>388.766</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3887,8 +3887,8 @@
     <name>:W_D</name>
     <id>398</id>
     <type>Variable:stock</type>
-    <x>646.239</x>
-    <y>393.403</y>
+    <x>649.33</x>
+    <y>393.766</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3912,8 +3912,8 @@
     <name>:B_E</name>
     <id>400</id>
     <type>Variable:stock</type>
-    <x>677.148</x>
-    <y>391.585</y>
+    <x>681.33</x>
+    <y>390.767</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3938,7 +3938,7 @@
     <id>402</id>
     <type>Variable:stock</type>
     <x>910.98</x>
-    <y>363.196</y>
+    <y>363.377</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3963,7 +3963,7 @@
     <id>404</id>
     <type>Variable:stock</type>
     <x>617.98</x>
-    <y>539.473</y>
+    <y>539.382</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3988,7 +3988,7 @@
     <id>406</id>
     <type>Variable:stock</type>
     <x>882.45</x>
-    <y>437.424</y>
+    <y>437.788</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -4013,7 +4013,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -4234,7 +4233,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -4455,7 +4453,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -4676,7 +4673,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -4897,7 +4893,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -5118,7 +5113,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -5786,4 +5780,6 @@
   </phillipsDiagram>
   <publicationTabs>
   </publicationTabs>
+  <publicationItems>
+  </publicationItems>
  </Minsky>

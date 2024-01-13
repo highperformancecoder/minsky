@@ -72,6 +72,13 @@ export class ContextMenuManager {
         enabled: await pubTab.getItemAt(this.x,this.y),
       }),
       new MenuItem({
+        label: 'Toggle editor mode',
+        click: () => {
+          pubTab.toggleEditorModeAt(this.x,this.y);
+        },
+        enabled: await pubTab.getItemAt(this.x,this.y),
+      }),
+      new MenuItem({
         label: 'Remove item',
         click: () => {
           pubTab.removeItemAt(this.x,this.y);

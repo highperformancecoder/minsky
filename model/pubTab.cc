@@ -19,7 +19,9 @@
 
 #include "lasso.h"
 #include "minsky.h"
+#include "cairoItems.h"
 #include "pubTab.h"
+#include "publication.rcd"
 #include "pubTab.xcd"
 #include "pubTab.rcd"
 #include "pannableTab.rcd"
@@ -29,6 +31,33 @@ using namespace ecolab::cairo;
 
 namespace minsky
 {
+  namespace {
+    struct EnsureEditorMode
+    {
+      PubItem& item;
+      bool editorModeToggled;
+      LassoBox origBox;
+      float origIWidth, origIHeight;
+      EnsureEditorMode(PubItem& item):
+        item(item), editorModeToggled(item.editorMode!=item.itemRef->editorMode()),
+        origIWidth(item.itemRef? item.itemRef->iWidth(): 0),
+        origIHeight(item.itemRef? item.itemRef->iHeight(): 0)
+      {
+        if (editorModeToggled)
+          item.itemRef->toggleEditorMode();
+        item.itemRef->iWidth(item.zoomX*origIWidth);
+        item.itemRef->iHeight(item.zoomY*origIHeight);
+      }
+      ~EnsureEditorMode()
+      {
+        if (editorModeToggled)
+          item.itemRef->toggleEditorMode();
+        item.itemRef->iWidth(origIWidth);
+        item.itemRef->iHeight(origIHeight);
+     }
+    };
+  }
+
   Point PubItem::itemCoords(float x, float y) const
   {
     if (!itemRef) return {0,0};
@@ -90,6 +119,7 @@ namespace minsky
     CairoSave cs(cairo);
     cairo_translate(cairo, offsx, offsy);
     cairo_scale(cairo, m_zoomFactor, m_zoomFactor);
+    cairo_set_line_width(cairo, 1);
     for (auto& i: items)
       {
         CairoSave cs(cairo);
@@ -98,24 +128,28 @@ namespace minsky
         cairo_rotate(cairo,(M_PI/180)*i.rotation-i.itemRef->rotation());
         try
           {
+            EnsureEditorMode ensureEditorMode(i);
             i.itemRef->draw(cairo);
           }
         catch (...) {}
       }
-    if (resizing)
+    if (clickType==ClickType::onResize)
       {
         cairo_rectangle(cairo,std::min(lasso.x0,lasso.x1), std::min(lasso.y0,lasso.y1),
                         abs(lasso.x0-lasso.x1), abs(lasso.y0-lasso.y1));
         cairo_stroke(cairo);
       }
-    return !items.empty() || resizing;
+    return !items.empty() || clickType!=ClickType::outside;
   }
 
   PubItem* PubTab::m_getItemAt(float x, float y) 
   {
     for (auto& i: items)
-      if (i.itemRef->contains(i.itemCoords(x,y)))
+      {
+        EnsureEditorMode e(i);
+        if (i.itemRef->contains(i.itemCoords(x,y)))
           return &i;
+      }
     return nullptr;
   }
 
@@ -124,16 +158,19 @@ namespace minsky
     x-=offsx; y-=offsy;
     item=m_getItemAt(x,y);
     if (item)
-      if (auto p=item->itemCoords(x,y);
-          item->itemRef->clickType(p.x(),p.y())==ClickType::onResize)
-        {
-          resizing=true;
-          auto scale=item->zoomFactor/item->itemRef->zoomFactor();
-          lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
-          lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
-          lasso.x1=x;
-          lasso.y1=y;
-        }
+      {
+        EnsureEditorMode e(*item);
+        auto p=item->itemCoords(x,y);
+        clickType=item->itemRef->clickType(p.x(),p.y());
+        if (clickType==ClickType::onResize)
+          {
+            auto scale=item->zoomFactor/item->itemRef->zoomFactor();
+            lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
+            lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
+            lasso.x1=x;
+            lasso.y1=y;
+          }
+      }
   }
   
   void PubTab::mouseUp(float x, float y)
@@ -145,17 +182,16 @@ namespace minsky
         return;
       }
     mouseMove(x,y);
-    if (item && resizing)
+    if (item && clickType==ClickType::onResize)
       {
-        item->zoomFactor=std::min(
-                                  abs(lasso.x1-lasso.x0)/item->itemRef->width(),
-                                  abs(lasso.y1-lasso.y0)/item->itemRef->height());
+        item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width()*item->zoomFactor);
+        item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height()*item->zoomFactor);
         item->x=0.5*(lasso.x0+lasso.x1);
         item->y=0.5*(lasso.y0+lasso.y1);
       }
     minsky().pushHistory();
     item=nullptr;
-    resizing=false;
+    clickType=ClickType::outside;
     rotating=false;
   }
   
@@ -174,16 +210,27 @@ namespace minsky
           {
             item->rotation=(180/M_PI)*atan2(x-rx, y-ry);
           }
-        else if (resizing)
-          {
-            lasso.x1=x;
-            lasso.y1=y;
-          }
         else
-          {
-            item->x=x;
-            item->y=y;
-          }
+          switch (clickType)
+            {
+            case ClickType::onResize:
+              lasso.x1=x;
+              lasso.y1=y;
+              break;
+            case ClickType::onSlider:
+              if (auto v=item->itemRef->variableCast())
+                {
+                  RenderVariable rv(*v);
+                  double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
+                  double sliderPos=(x-item->x)* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
+                  double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
+                  v->sliderSet(sliderHatch);
+                }
+              break;
+            default:
+              item->x=x;
+              item->y=y;
+            }
       }
     else
       // indicate mouse focus
@@ -192,5 +239,6 @@ namespace minsky
     requestRedraw();
   }
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(schema3::PublicationItem);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubTab);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubItem);

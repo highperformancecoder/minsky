@@ -68,12 +68,12 @@ namespace minsky
       }
     if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
       return; // early return if at least 1 ravel already present
-    editorMode=true; // first ravel is in editor mode
+    m_editorMode=true; // first ravel is in editor mode
   }
 
   void Ravel::draw(cairo_t* cairo) const
   {
-    double  z=zoomFactor(), r=editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
+    double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
     m_ports[0]->moveTo(x()+1.1*r, y());
     m_ports[1]->moveTo(x()-1.1*r, y());
     if (mouseFocus)
@@ -81,7 +81,7 @@ namespace minsky
         drawPorts(cairo);
         displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
         // Resize handles always visible on mousefocus. For ticket 92.
-        if (editorMode) drawResizeHandles(cairo);
+        if (m_editorMode) drawResizeHandles(cairo);
       }
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
@@ -105,7 +105,7 @@ namespace minsky
       cairo::CairoSave cs(cairo);
       cairo_rectangle(cairo,-r,-r,2*r,2*r);
       cairo_clip(cairo);
-      if (editorMode)
+      if (m_editorMode)
         {
           cairo_scale(cairo,z,z);
           CairoRenderer cr(cairo);
@@ -130,7 +130,7 @@ namespace minsky
 
   bool Ravel::inItem(float xx, float yy) const
   {
-    if (editorMode)
+    if (m_editorMode)
       {
         float r=1.1*zoomFactor()*wrappedRavel.radius();
         return std::abs(xx-x())<=r && std::abs(yy-y())<=r;
