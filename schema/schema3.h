@@ -233,23 +233,6 @@ namespace schema3
     void populatePhillipsDiagram(minsky::PhillipsDiagram&) const;
   };
 
-  struct PublicationItem
-  {
-    int item=-1;
-    float x=100,y=100;
-    float zoomFactor=1;
-    double rotation=0;
-    PublicationItem()=default;
-    PublicationItem(int id, const minsky::PubItem& p): item(id), x(p.x), y(p.y), zoomFactor(p.zoomFactor), rotation(p.rotation) {}
-  };
-  
-  struct PublicationTab
-  {
-    std::string name;
-    std::vector<PublicationItem> items;
-    float x=100,y=100,zoomFactor=1;
-  };
-
   struct MinskyImpl; ///< working structure, not serialised
   
   class Minsky

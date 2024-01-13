@@ -65,8 +65,8 @@ namespace minsky
     ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
-    bool editorMode() const {return m_editorMode;}
-    void toggleEditorMode();
+    bool editorMode() const override {return m_editorMode;}
+    void toggleEditorMode() override;
 
     /// enable/disable drawing buttons in table on canvas display
     bool buttonDisplay() const;

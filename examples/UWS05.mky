@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.33</minskyVersion>
+  <minskyVersion>3.2.0-beta.2</minskyVersion>
   <wires>
    <Wire>
     <id>127</id>
@@ -94,10 +94,10 @@
     <coords>
      <float>30</float>
      <float>99</float>
-     <float>147.398</float>
-     <float>4.12322</float>
-     <float>217.5</float>
-     <float>283.375</float>
+     <float>150.385</float>
+     <float>1.7092</float>
+     <float>225</float>
+     <float>285.25</float>
     </coords>
    </Wire>
    <Wire>
@@ -107,10 +107,10 @@
     <coords>
      <float>35</float>
      <float>150</float>
-     <float>149.081</float>
-     <float>90.0591</float>
-     <float>217.5</float>
-     <float>324.625</float>
+     <float>150.981</float>
+     <float>89.061</float>
+     <float>225</float>
+     <float>322.75</float>
     </coords>
    </Wire>
    <Wire>
@@ -120,10 +120,10 @@
     <coords>
      <float>34</float>
      <float>205</float>
-     <float>155.617</float>
-     <float>139.813</float>
-     <float>217.5</float>
-     <float>365.875</float>
+     <float>156.665</float>
+     <float>139.251</float>
+     <float>225</float>
+     <float>360.25</float>
     </coords>
    </Wire>
   </wires>
@@ -488,7 +488,7 @@
     <id>45</id>
     <type>Variable:stock</type>
     <x>386.55</x>
-    <y>243.636</y>
+    <y>243</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -512,8 +512,8 @@
     <name>:Loans</name>
     <id>47</id>
     <type>Variable:stock</type>
-    <x>415.641</x>
-    <y>244.545</y>
+    <x>416.55</x>
+    <y>244</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -537,8 +537,8 @@
     <name>:Safe</name>
     <id>49</id>
     <type>Variable:stock</type>
-    <x>444.732</x>
-    <y>238.182</y>
+    <x>446.55</x>
+    <y>238</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -562,8 +562,8 @@
     <name>:Vault</name>
     <id>51</id>
     <type>Variable:stock</type>
-    <x>473.823</x>
-    <y>241.818</y>
+    <x>476.55</x>
+    <y>241</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -587,8 +587,8 @@
     <name>:Workers</name>
     <id>53</id>
     <type>Variable:stock</type>
-    <x>502.914</x>
-    <y>251.818</y>
+    <x>506.55</x>
+    <y>252</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -612,7 +612,7 @@
     <name>:A</name>
     <id>55</id>
     <type>Variable:flow</type>
-    <x>351.591</x>
+    <x>351.5</x>
     <y>52.05</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
@@ -638,8 +638,8 @@
     <name>:B</name>
     <id>58</id>
     <type>Variable:flow</type>
-    <x>351.591</x>
-    <y>81.1409</y>
+    <x>351.5</x>
+    <y>82.05</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -664,8 +664,8 @@
     <name>:C</name>
     <id>61</id>
     <type>Variable:flow</type>
-    <x>351.591</x>
-    <y>110.232</y>
+    <x>351.5</x>
+    <y>112.05</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -690,8 +690,8 @@
     <name>:D</name>
     <id>64</id>
     <type>Variable:flow</type>
-    <x>351.591</x>
-    <y>139.323</y>
+    <x>351.5</x>
+    <y>142.05</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -717,7 +717,7 @@
     <id>67</id>
     <type>Variable:flow</type>
     <x>352.5</x>
-    <y>168.414</y>
+    <y>172.05</y>
     <itemTabX>0</itemTabX>
     <itemTabY>0</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -867,7 +867,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -1085,7 +1084,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -1463,4 +1461,6 @@
   </phillipsDiagram>
   <publicationTabs>
   </publicationTabs>
+  <publicationItems>
+  </publicationItems>
  </Minsky>
