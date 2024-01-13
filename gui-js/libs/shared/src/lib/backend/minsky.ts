@@ -70,6 +70,7 @@ export class Item extends CppClass {
   async drawResizeHandles(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
   async drawSelected(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawSelected',a1);}
   async dummyDraw(): Promise<void> {return this.$callMethod('dummyDraw');}
+  async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
   async flip(): Promise<void> {return this.$callMethod('flip');}
   async height(): Promise<number> {return this.$callMethod('height');}
@@ -111,6 +112,7 @@ export class Item extends CppClass {
   async select(a1: number,a2: number): Promise<object> {return this.$callMethod('select',a1,a2);}
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
+  async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async top(): Promise<number> {return this.$callMethod('top');}
   async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
@@ -231,6 +233,7 @@ export class VariableBase extends Item {
   async drawResizeHandles(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
   async drawSelected(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawSelected',a1);}
   async dummyDraw(): Promise<void> {return this.$callMethod('dummyDraw');}
+  async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async enableSlider(...args: boolean[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
   async engExp(): Promise<object> {return this.$callMethod('engExp');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
@@ -304,6 +307,7 @@ export class VariableBase extends Item {
   async sliderVisible(): Promise<boolean> {return this.$callMethod('sliderVisible');}
   async temp(): Promise<boolean> {return this.$callMethod('temp');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
+  async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async toggleLocal(): Promise<void> {return this.$callMethod('toggleLocal');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async top(): Promise<number> {return this.$callMethod('top');}
@@ -1082,6 +1086,7 @@ export class Group extends Item {
   async drawSelected(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawSelected',a1);}
   async dummyDraw(): Promise<void> {return this.$callMethod('dummyDraw');}
   async edgeScale(): Promise<number> {return this.$callMethod('edgeScale');}
+  async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async empty(): Promise<boolean> {return this.$callMethod('empty');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
   async findGroup(a1: Group): Promise<object> {return this.$callMethod('findGroup',a1);}
@@ -1162,6 +1167,7 @@ export class Group extends Item {
   async summariseGodleys(): Promise<object[]> {return this.$callMethod('summariseGodleys');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
+  async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async top(): Promise<number> {return this.$callMethod('top');}
   async uniqueItems(...args: any[]): Promise<boolean> {return this.$callMethod('uniqueItems',...args);}
@@ -1723,11 +1729,15 @@ export class PubItem extends CppClass {
     super(prefix);
     this.itemRef=new Item(this.$prefix()+'.itemRef');
   }
+  async editorMode(...args: boolean[]): Promise<boolean> {return this.$callMethod('editorMode',...args);}
+  async item(...args: number[]): Promise<number> {return this.$callMethod('item',...args);}
   async itemCoords(a1: number,a2: number): Promise<object> {return this.$callMethod('itemCoords',a1,a2);}
   async rotation(...args: number[]): Promise<number> {return this.$callMethod('rotation',...args);}
   async x(...args: number[]): Promise<number> {return this.$callMethod('x',...args);}
   async y(...args: number[]): Promise<number> {return this.$callMethod('y',...args);}
   async zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('zoomFactor',...args);}
+  async zoomX(...args: number[]): Promise<number> {return this.$callMethod('zoomX',...args);}
+  async zoomY(...args: number[]): Promise<number> {return this.$callMethod('zoomY',...args);}
 }
 
 export class PubTab extends RenderNativeWindow {
@@ -1755,6 +1765,7 @@ export class PubTab extends RenderNativeWindow {
   async removeItemAt(a1: number,a2: number): Promise<void> {return this.$callMethod('removeItemAt',a1,a2);}
   async removeSelf(): Promise<void> {return this.$callMethod('removeSelf');}
   async rotateItemAt(a1: number,a2: number): Promise<void> {return this.$callMethod('rotateItemAt',a1,a2);}
+  async toggleEditorModeAt(a1: number,a2: number): Promise<void> {return this.$callMethod('toggleEditorModeAt',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
@@ -1786,7 +1797,7 @@ export class Ravel extends Item {
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
   async displayFilterCaliper(): Promise<boolean> {return this.$callMethod('displayFilterCaliper');}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
-  async editorMode(...args: boolean[]): Promise<boolean> {return this.$callMethod('editorMode',...args);}
+  async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async exportAsCSV(a1: string): Promise<void> {return this.$callMethod('exportAsCSV',a1);}
   async getState(): Promise<object> {return this.$callMethod('getState');}
   async handleDescription(a1: number): Promise<string> {return this.$callMethod('handleDescription',a1);}
@@ -1979,6 +1990,7 @@ export class Selection extends CppClass {
   async drawSelected(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawSelected',a1);}
   async dummyDraw(): Promise<void> {return this.$callMethod('dummyDraw');}
   async edgeScale(): Promise<number> {return this.$callMethod('edgeScale');}
+  async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async empty(): Promise<boolean> {return this.$callMethod('empty');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
   async ensureGroupInserted(a1: Group): Promise<void> {return this.$callMethod('ensureGroupInserted',a1);}
@@ -2060,6 +2072,7 @@ export class Selection extends CppClass {
   async summariseGodleys(): Promise<object[]> {return this.$callMethod('summariseGodleys');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
+  async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async toggleItemMembership(a1: Item): Promise<void> {return this.$callMethod('toggleItemMembership',a1);}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async top(): Promise<number> {return this.$callMethod('top');}

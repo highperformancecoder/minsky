@@ -334,6 +334,11 @@ namespace minsky
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
     virtual void disableDelayedTooltip() {}
+
+    /// some items have an editor mode attribute
+    virtual bool editorMode() const {return false;}
+    virtual void toggleEditorMode() {}
+    
     /// compute the dimensional units
     /// @param check - if true, then perform consistency checks
     /// @throw if check=true and dimensions inconsistent

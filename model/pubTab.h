@@ -22,20 +22,22 @@
 
 #include "item.h"
 #include "pannableTab.h"
+#include "publication.h"
 #include "renderNativeWindow.h"
 
 namespace minsky
 {
-  class PubItem
+  class PubItem: public schema3::PublicationItem
   {
   public:
     PubItem()=default;
-    PubItem(const ItemPtr& item): itemRef(item) {}
+    PubItem(const ItemPtr& item): itemRef(item) {
+      if (item) editorMode=item->editorMode();
+    }
+    PubItem(const ItemPtr& item, const schema3::PublicationItem& state):
+      schema3::PublicationItem(state), itemRef(item)  {}
     ItemPtr itemRef;
-    float x=100,y=100;
-    float zoomFactor=1;
-    double rotation=0;
-    /// given (x,y) in PubTab, returns coordinates within item
+    /// given (x,y) in PubTab, returns coordinates within item. Nb: must be wrapped by EnsureEditorMode 
     Point itemCoords(float x, float y) const;
   };
 
@@ -68,6 +70,10 @@ namespace minsky
     void removeSelf();
     void removeItemAt(float x, float y);
     void rotateItemAt(float x, float y);
+    void toggleEditorModeAt(float x, float y) {
+      if (auto i=m_getItemAt(x-offsx,y-offsy))
+        i->editorMode=!i->editorMode;
+    }
     bool getItemAt(float x, float y) override {return m_getItemAt(x-offsx,y-offsy);}
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}

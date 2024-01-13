@@ -21,6 +21,7 @@
 #include "minsky.h"
 #include "cairoItems.h"
 #include "pubTab.h"
+#include "publication.rcd"
 #include "pubTab.xcd"
 #include "pubTab.rcd"
 #include "pannableTab.rcd"
@@ -30,6 +31,33 @@ using namespace ecolab::cairo;
 
 namespace minsky
 {
+  namespace {
+    struct EnsureEditorMode
+    {
+      PubItem& item;
+      bool editorModeToggled;
+      LassoBox origBox;
+      float origIWidth, origIHeight;
+      EnsureEditorMode(PubItem& item):
+        item(item), editorModeToggled(item.editorMode!=item.itemRef->editorMode()),
+        origIWidth(item.itemRef? item.itemRef->iWidth(): 0),
+        origIHeight(item.itemRef? item.itemRef->iHeight(): 0)
+      {
+        if (editorModeToggled)
+          item.itemRef->toggleEditorMode();
+        item.itemRef->iWidth(item.zoomX*origIWidth);
+        item.itemRef->iHeight(item.zoomY*origIHeight);
+      }
+      ~EnsureEditorMode()
+      {
+        if (editorModeToggled)
+          item.itemRef->toggleEditorMode();
+        item.itemRef->iWidth(origIWidth);
+        item.itemRef->iHeight(origIHeight);
+     }
+    };
+  }
+
   Point PubItem::itemCoords(float x, float y) const
   {
     if (!itemRef) return {0,0};
@@ -91,6 +119,7 @@ namespace minsky
     CairoSave cs(cairo);
     cairo_translate(cairo, offsx, offsy);
     cairo_scale(cairo, m_zoomFactor, m_zoomFactor);
+    cairo_set_line_width(cairo, 1);
     for (auto& i: items)
       {
         CairoSave cs(cairo);
@@ -99,6 +128,7 @@ namespace minsky
         cairo_rotate(cairo,(M_PI/180)*i.rotation-i.itemRef->rotation());
         try
           {
+            EnsureEditorMode ensureEditorMode(i);
             i.itemRef->draw(cairo);
           }
         catch (...) {}
@@ -115,8 +145,11 @@ namespace minsky
   PubItem* PubTab::m_getItemAt(float x, float y) 
   {
     for (auto& i: items)
-      if (i.itemRef->contains(i.itemCoords(x,y)))
+      {
+        EnsureEditorMode e(i);
+        if (i.itemRef->contains(i.itemCoords(x,y)))
           return &i;
+      }
     return nullptr;
   }
 
@@ -126,6 +159,7 @@ namespace minsky
     item=m_getItemAt(x,y);
     if (item)
       {
+        EnsureEditorMode e(*item);
         auto p=item->itemCoords(x,y);
         clickType=item->itemRef->clickType(p.x(),p.y());
         if (clickType==ClickType::onResize)
@@ -150,9 +184,8 @@ namespace minsky
     mouseMove(x,y);
     if (item && clickType==ClickType::onResize)
       {
-        item->zoomFactor=std::min(
-                                  abs(lasso.x1-lasso.x0)/item->itemRef->width(),
-                                  abs(lasso.y1-lasso.y0)/item->itemRef->height());
+        item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width()*item->zoomFactor);
+        item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height()*item->zoomFactor);
         item->x=0.5*(lasso.x0+lasso.x1);
         item->y=0.5*(lasso.y0+lasso.y1);
       }
@@ -206,5 +239,6 @@ namespace minsky
     requestRedraw();
   }
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(schema3::PublicationItem);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubTab);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubItem);
