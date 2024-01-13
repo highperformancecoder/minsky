@@ -1,4 +1,4 @@
-/*
+ /*
   @copyright Steve Keen 2017
   @author Russell Standish
   This file is part of Minsky.
@@ -283,7 +283,7 @@ namespace schema3
 
   struct MinskyImpl
   {
-    IdMap itemMap;                            // for serialisation
+    IdMap itemMap, pubItemMap;                            // for serialisation
     map<int, minsky::ItemPtr> reverseItemMap; // for deserialisation
   };
 
@@ -414,29 +414,15 @@ namespace schema3
         publicationTabs.emplace_back();
         publicationTabs.back().name=i.name;
         for (auto& j: i.items)
-          publicationTabs.back().items.emplace_back(itemMap[j.itemRef.get()], j);
+          {
+            // add locally added notes on publication tab to items list in schema
+            if (!itemMap.count(j.itemRef.get()))
+              itemMap.emplaceIf<minsky::Item>(publicationItems,j.itemRef.get());
+            publicationTabs.back().items.emplace_back(itemMap[j.itemRef.get()], j);
+          }
       }
   }
 
-  void Minsky::populatePublicationTabs(std::vector<minsky::PubTab>& pubTabs) const
-  {
-    assert(impl.get());
-    auto& itemMap=impl->reverseItemMap;
-
-    pubTabs.clear();
-    for (auto& pub: publicationTabs)
-      {
-        pubTabs.emplace_back(pub.name);
-        pubTabs.back().offsy=pub.y;
-        pubTabs.back().m_zoomFactor=pub.zoomFactor;
-           
-        for (auto& item: pub.items)
-          if (itemMap[item.item])
-            pubTabs.back().items.emplace_back(itemMap[item.item], item);
-      }
-    if (pubTabs.empty()) pubTabs.emplace_back("Publication");
-  }
-  
   void Minsky::populateMinsky(minsky::Minsky& m) const
   {
     minsky::LocalMinsky lm(m);
@@ -599,6 +585,32 @@ namespace schema3
   {
     LockGroupFactory(): shared_ptr<minsky::RavelLockGroup>(new minsky::RavelLockGroup) {}
   };
+  
+  void Minsky::populatePublicationTabs(std::vector<minsky::PubTab>& pubTabs) const
+  {
+    assert(impl.get());
+    auto& itemMap=impl->reverseItemMap;
+
+    // add in publication tab only items
+    MinskyItemFactory factory;
+    for (auto& i: publicationItems)
+      if (auto newItem=itemMap[i.id]=minsky::ItemPtr(factory.create(i.type)))
+        populateItem(*newItem,i);
+    
+    pubTabs.clear();
+    for (auto& pub: publicationTabs)
+      {
+        pubTabs.emplace_back(pub.name);
+        pubTabs.back().offsx=pub.x;
+        pubTabs.back().offsy=pub.y;
+        pubTabs.back().m_zoomFactor=pub.zoomFactor;
+           
+        for (auto& item: pub.items)
+          if (itemMap.count(item.item))
+            pubTabs.back().items.emplace_back(itemMap[item.item], item);
+      }
+    if (pubTabs.empty()) pubTabs.emplace_back("Publication");
+  }
   
   void Minsky::populateGroup(minsky::Group& g) const {
     assert(impl.get());
