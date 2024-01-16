@@ -61,6 +61,9 @@ namespace minsky
     using HandleState=ravel::HandleState;
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
+
+    /// indicate whether icon is in editor mode or icon mode
+    bool m_editorMode=false;
     //std::string m_filename;
     std::string explanation; // explanation of Ravel bits displayed as tooltip
     ravel::HandleSort::Order previousOrder=ravel::HandleSort::staticForward;
@@ -202,8 +205,8 @@ namespace minsky
     Units units(bool) const override;
     
     /// indicate whether icon is in editor mode or icon mode
-    bool editorMode=false;
-    void toggleEditorMode() {editorMode=!editorMode;updateBoundingBox();}
+    bool editorMode() const override {return m_editorMode;}
+    void toggleEditorMode() override {m_editorMode=!m_editorMode;updateBoundingBox();}
 
     };
 

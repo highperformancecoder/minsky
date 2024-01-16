@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.33</minskyVersion>
+  <minskyVersion>3.2.0-beta.2</minskyVersion>
   <wires>
    <Wire>
     <id>87</id>
@@ -27,10 +27,10 @@
     <coords>
      <float>267</float>
      <float>365</float>
-     <float>316.985</float>
-     <float>358.52</float>
-     <float>360.833</float>
-     <float>337.5</float>
+     <float>321</float>
+     <float>358</float>
+     <float>366.667</float>
+     <float>330</float>
     </coords>
    </Wire>
    <Wire>
@@ -40,10 +40,10 @@
     <coords>
      <float>261</float>
      <float>186</float>
-     <float>325.062</float>
-     <float>390.39</float>
-     <float>379.167</float>
-     <float>337.5</float>
+     <float>324</float>
+     <float>387</float>
+     <float>383.333</float>
+     <float>330</float>
     </coords>
    </Wire>
    <Wire>
@@ -82,7 +82,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>automatic</plotType>
@@ -407,7 +406,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>automatic</plotType>
@@ -761,7 +759,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>automatic</plotType>
@@ -1029,4 +1026,6 @@
   </phillipsDiagram>
   <publicationTabs>
   </publicationTabs>
+  <publicationItems>
+  </publicationItems>
  </Minsky>

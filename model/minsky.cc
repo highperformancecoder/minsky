@@ -217,19 +217,23 @@ namespace minsky
   void Minsky::paste()
     try
       {
+        map<string,string> existingParms; 
+        // preserve initial conditions.
+        for (auto& [valueId,vv]: variableValues)
+          existingParms.emplace(valueId,vv->init);
+
         istringstream is(clipboard.getClipboard());
         xml_unpack_t unpacker(is); 
         schema3::Minsky m(unpacker);
         GroupPtr g(new Group);
         g->self=g;
         m.populateGroup(*g);
-        // stash values of parameters in copied group, as they are reset for some unknown reason later on. for ticket 1258
-        map<string,string> existingParms; 
-        for (auto& i: g->items) {
-          auto v=i->variableCast(); 
-          if (v && v->type()==VariableType::parameter) 
+        
+        // stash values of parameters in the copied group, for ticket 1258
+        for (auto& i: g->items) 
+          if (auto v=i->variableCast(); v && v->type()==VariableType::parameter)
             existingParms.emplace(v->valueId(),v->init());
-        }
+        
         // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
         canvas.selection.clear();
         // The following is only necessary if one pastes into an existing model. For ticket 1258   
@@ -284,18 +288,14 @@ namespace minsky
         canvas.model->moveContents(*g); 
 
         // leave newly ungrouped items in selection
-        for (auto& i: copyOfItems) {
+        for (auto& i: copyOfItems) 
           canvas.selection.ensureItemInserted(i);
-          // ensure that initial values of pasted parameters are correct. for ticket 1258
-          if (auto v=i->variableCast())
-            if (v->type()==VariableType::parameter && !existingParms.empty()) 
-              {
-                auto it=existingParms.find(v->valueId());
-                if (it!=existingParms.end()) v->init(it->second);
-              }
-        }
-	
-        if (!existingParms.empty()) existingParms.clear();
+
+        // ensure that initial values of pasted parameters are correct. for ticket 1258
+        for (auto& p: existingParms)
+          if (auto vv=variableValues.find(p.first); vv!=variableValues.end())
+            vv->second->init=p.second;
+        existingParms.clear();
 	
         // Attach mouse focus only to first visible item in selection. For ticket 1098.      
         for (auto& i: canvas.selection.items)

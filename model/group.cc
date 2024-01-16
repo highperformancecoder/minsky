@@ -516,10 +516,10 @@ namespace minsky
        }
   }
 
-  VariablePtr Group::addIOVar()
+  VariablePtr Group::addIOVar(const char* prefix)
   {
     VariablePtr v(VariableType::flow,
-                  uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
+                  uqName(cminsky().variableValues.newName(to_string(size_t(this))+":"+prefix)));
     addItem(v,true);
     createdIOvariables.push_back(v);
     v->rotation(rotation());

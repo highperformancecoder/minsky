@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-alpha.33</minskyVersion>
+  <minskyVersion>3.2.0-beta.2</minskyVersion>
   <wires>
    <Wire>
     <id>89</id>
@@ -149,10 +149,10 @@
     <coords>
      <float>543.86</float>
      <float>254.1</float>
-     <float>678.938</float>
-     <float>223.802</float>
-     <float>806.85</float>
-     <float>314.435</float>
+     <float>683.24</float>
+     <float>222.837</float>
+     <float>814.35</float>
+     <float>320.06</float>
     </coords>
    </Wire>
    <Wire>
@@ -162,12 +162,12 @@
     <coords>
      <float>300.24</float>
      <float>151.25</float>
-     <float>700.727</float>
-     <float>-16.1777</float>
-     <float>692.69</float>
-     <float>448.601</float>
-     <float>806.85</float>
-     <float>355.685</float>
+     <float>706.341</float>
+     <float>-18.5246</float>
+     <float>698.191</float>
+     <float>452.769</float>
+     <float>814.35</float>
+     <float>357.56</float>
     </coords>
    </Wire>
   </wires>
@@ -673,7 +673,6 @@
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
-    <plotTabDisplay>true</plotTabDisplay>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
@@ -920,4 +919,6 @@
   </phillipsDiagram>
   <publicationTabs>
   </publicationTabs>
+  <publicationItems>
+  </publicationItems>
  </Minsky>
