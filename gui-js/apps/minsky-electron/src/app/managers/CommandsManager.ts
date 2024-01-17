@@ -606,7 +606,7 @@ export class CommandsManager {
     WindowManager.createPopupWindowWithRouting({
       width: 500,
       height: 650,
-      title: `Edit ${name} || ''}`,
+      title: `Edit ${name || ''}`,
       url: `#/headless/menu/insert/create-variable?type=${type}&name=${encodeURIComponent(name)||''}&isEditMode=true&local=${local}`,
     });
   }
