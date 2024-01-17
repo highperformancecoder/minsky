@@ -1030,7 +1030,7 @@ SUITE(GodleyIcon)
       table.resize(3,2);
       table.cell(2,1)="flow1";
       table.cell(0,1)="stock1";
-      variableDisplay=true;
+      toggleVariableDisplay();
       update();
       // TODO - shouldn't be needed, but there is some font problem causing bottomMargin to be calculated incorrectly
       
@@ -1716,6 +1716,25 @@ SUITE(GodleyTableWindow)
       
      }
 
-     
+     TEST_FIXTURE(TestFixture, saveAsGroup)
+     {
+       group0->inVariables.push_back(a);
+       group0->makeSubroutine();
+       save("foo.mky");
+       CHECK(group0->inVariables.size());
+       CHECK(group0->outVariables.size());
+       saveGroupAsFile(*group0,"group0.mky");
+       insertGroupFromFile("group0.mky");
+       Group& newGroup=dynamic_cast<Group&>(*canvas.itemFocus);
+       // check I/O variables
+       CHECK_EQUAL(group0->inVariables.size(),newGroup.inVariables.size());
+       CHECK_EQUAL(group0->outVariables.size(),newGroup.outVariables.size());
+       for (int i=0; i<group0->inVariables.size(); ++i)
+         CHECK_EQUAL(group0->inVariables[i]->name(), newGroup.inVariables[i]->name());
+       for (int i=0; i<group0->outVariables.size(); ++i)
+         CHECK_EQUAL(group0->outVariables[i]->name(), newGroup.outVariables[i]->name());
+       // check items
+       CHECK_EQUAL(group0->items.size(), newGroup.items.size());
+     }
      
 }
