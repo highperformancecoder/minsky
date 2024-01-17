@@ -1030,7 +1030,7 @@ SUITE(GodleyIcon)
       table.resize(3,2);
       table.cell(2,1)="flow1";
       table.cell(0,1)="stock1";
-      variableDisplay=true;
+      toggleVariableDisplay();
       update();
       // TODO - shouldn't be needed, but there is some font problem causing bottomMargin to be calculated incorrectly
       
