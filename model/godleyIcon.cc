@@ -151,18 +151,24 @@ namespace minsky
         g->deleteItem(*v);   
   }
 
+  void GodleyIcon::toggleVariableDisplay()
+  {
+    m_variableDisplay=!m_variableDisplay;
+    update();
+  }
+  
   void GodleyIcon::toggleEditorMode()
   {
     if (m_editorMode)
       {
-        variableDisplay=true;
+        m_variableDisplay=true;
       }
     else
       if (auto g=group.lock())
         if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
           {
             editor.disableButtons();
-            variableDisplay=false;
+            m_variableDisplay=false;
           }
     m_editorMode=!m_editorMode;
     updateBoundingBox();
@@ -327,7 +333,7 @@ namespace minsky
           }
 
 
-    if (variableDisplay)
+    if (m_variableDisplay)
       {
         // determine height of variables part of icon
         float stockH=0, flowH=0;
@@ -359,7 +365,7 @@ namespace minsky
                         }
                   }
                 // in falling through to here, we've failed to create and wire a variable copy
-                variableDisplay=true;
+                m_variableDisplay=true;
                 throw_error("Cowardly refusing to hide a wired variable");
               }
         
@@ -378,7 +384,7 @@ namespace minsky
                         }
                   }
                 // in falling through to here, we've failed to create and wire a variable copy
-                variableDisplay=true;
+                m_variableDisplay=true;
                 throw_error("Cowardly refusing to hide a wired variable");
               }
       }
@@ -397,7 +403,7 @@ namespace minsky
       {
         // right justification if displayed, left otherwisw
         v->rotation(0);
-        v->moveTo(x+v->x() - (variableDisplay? v->right(): v->left()), y);
+        v->moveTo(x+v->x() - (m_variableDisplay? v->right(): v->left()), y);
         y+=v->height();
       }
     x= this->x() + 0.55*leftMargin()-0.45*iWidth()*z;
@@ -407,14 +413,14 @@ namespace minsky
       {
         // top justification at bottom of icon if displayed, bottom justified otherwise
         v->rotation(90);
-        v->moveTo(x, y + v->y() - (variableDisplay? v->top(): v->bottom()));
+        v->moveTo(x, y + v->y() - (m_variableDisplay? v->top(): v->bottom()));
         x+=v->width();
       }
   }
 
   ItemPtr GodleyIcon::select(float x, float y) const
   {
-	if (variableDisplay)           // Disable selection of stock and flow vars when they are hidden. for tickets 1217 and 1220.
+	if (m_variableDisplay)           // Disable selection of stock and flow vars when they are hidden. for tickets 1217 and 1220.
 	{   
        for (const auto& v: m_flowVars)
          if (v->contains(x,y)) 
@@ -485,7 +491,7 @@ namespace minsky
       
           
 
-    if (variableDisplay)
+    if (m_variableDisplay)
       {
         // render the variables
         DrawVars drawVars(cairo,x(),y());

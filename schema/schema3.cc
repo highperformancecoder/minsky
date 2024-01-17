@@ -538,7 +538,8 @@ namespace schema3
         if (y.name) x1->table.title=*y.name;
         if (y.editorMode && *y.editorMode!=x1->editorMode())
           x1->toggleEditorMode();
-        if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
+        if (y.variableDisplay && *y.variableDisplay!=x1->variableDisplay())
+          x1->toggleVariableDisplay();
         if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
           x1->toggleButtons();
         if (y.currency) x1->currency=*y.currency;

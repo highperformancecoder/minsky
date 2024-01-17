@@ -136,7 +136,7 @@ namespace minsky
         if (syncPos!=string::npos && syncPos==command.size()-12)
           return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
 #endif
-        if (minskyCommands.size()>10)
+        if (minskyCommands.size()>20)
           {
             if (!inputBufferExceeded) setBusyCursor();
             inputBufferExceeded=true;

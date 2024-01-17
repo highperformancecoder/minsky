@@ -56,7 +56,6 @@ using namespace ecolab;
 
 namespace minsky
 {
-
   namespace
   {
 #ifdef USE_WIN32_SURFACE
@@ -101,10 +100,10 @@ namespace minsky
     SelectObject(hdcMem, hOld);
     DeleteObject(hbmMem);
     DeleteDC(hdcMem);
-    DestroyWindow(childWindowId);
+    SetWindowLongPtrA(childWindowId, GWLP_USERDATA, 0);
+    PostMessageA(childWindowId,WM_CLOSE,0,0);
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
-    //eventThread.reset(); //shut thread down before destroying window
     XFreeGC(display, graphicsContext);
     XDestroyWindow(display, childWindowId);
     XDestroyWindow(display, bufferWindowId);
@@ -160,10 +159,10 @@ namespace minsky
 #ifdef USE_WIN32_SURFACE
   LRESULT CALLBACK windowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   {
-    WindowInformation* winfo=reinterpret_cast<WindowInformation*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
     switch (msg)
       {
       case WM_PAINT:
+        if (WindowInformation* winfo=reinterpret_cast<WindowInformation*>(GetWindowLongPtr(hwnd, GWLP_USERDATA)))
         {
           RECT r;
           if (GetUpdateRect(hwnd,&r,false))
@@ -243,7 +242,7 @@ namespace minsky
         // adjust everything by the monitor scale factor
         DEVICE_SCALE_FACTOR scaleFactor;
         GetScaleFactorForMonitor(MonitorFromWindow(parentWindowId, MONITOR_DEFAULTTONEAREST), &scaleFactor);
-        sf=scaleFactor/100.0;
+        sf=int(scaleFactor)/100.0;
       }
     if (sf>0)
       {
