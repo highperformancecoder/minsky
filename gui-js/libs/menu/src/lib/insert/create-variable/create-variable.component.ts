@@ -103,9 +103,9 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
       shortDescription: new FormControl(''),
       detailedDescription: new FormControl(''),
       enableSlider: new FormControl(true),
-      sliderBoundsMax: new FormControl(null),
-      sliderBoundsMin: new FormControl(null),
-      sliderStepSize: new FormControl(null),
+      sliderBoundsMax: new FormControl(1),
+      sliderBoundsMin: new FormControl(-1),
+      sliderStepSize: new FormControl(0.1),
       sliderStepRel: new FormControl(false),
     });
 
@@ -181,6 +181,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     item.enableSlider(this.enableSlider.value);
     if (typeof this.sliderBoundsMax.value=='number') item.sliderMax(this.sliderBoundsMax.value);
     if (typeof this.sliderBoundsMin.value=='number') item.sliderMin(this.sliderBoundsMin.value);
+    this.electronService.log(typeof this.sliderStepSize.value);
     if (typeof this.sliderStepSize.value=='number') item.sliderStep(this.sliderStepSize.value);
     item.sliderStepRel(this.sliderStepRel.value);
     this.closeWindow();
