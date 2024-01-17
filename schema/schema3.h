@@ -160,7 +160,7 @@ namespace schema3
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
       data(g.table.getData()), assetClasses(g.table._assetClass()),
       editorMode(g.editorMode()), buttonDisplay(g.buttonDisplay()),
-      variableDisplay(g.variableDisplay), currency(g.currency)
+      variableDisplay(g.variableDisplay()), currency(g.currency)
     {name=g.table.title;}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),

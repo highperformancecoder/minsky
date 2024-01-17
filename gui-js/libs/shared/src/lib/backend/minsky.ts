@@ -777,7 +777,7 @@ export class GodleyIcon extends Item {
   async toggleVariableDisplay(): Promise<void> {return this.$callMethod('toggleVariableDisplay');}
   async update(): Promise<void> {return this.$callMethod('update');}
   async valueId(a1: string): Promise<string> {return this.$callMethod('valueId',a1);}
-  async variableDisplay(...args: boolean[]): Promise<boolean> {return this.$callMethod('variableDisplay',...args);}
+  async variableDisplay(): Promise<boolean> {return this.$callMethod('variableDisplay');}
 }
 
 export class GodleyTable extends CppClass {
