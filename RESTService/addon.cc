@@ -246,12 +246,6 @@ namespace minsky
                           LocalMinsky lm(*this); // sets this to be the global minsky object
                           reset();
                         }
-                      if (inputBufferExceeded && minskyCommands.empty())
-                        {
-                          // clears busy cursor when no commands are being received or processed
-                          clearBusyCursor();
-                          inputBufferExceeded=false;
-                        }
                     }
                   catch (...)
                     {flags&=~reset_needed;}
@@ -261,6 +255,12 @@ namespace minsky
 #else
                 drawNativeWindows();
 #endif
+                if (inputBufferExceeded && minskyCommands.empty())
+                  {
+                    // clears busy cursor when no commands are being received or processed
+                    clearBusyCursor();
+                    inputBufferExceeded=false;
+                  }
                 this_thread::sleep_for(chrono::milliseconds(10));
                 continue;
               }
