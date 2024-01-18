@@ -75,9 +75,15 @@ namespace minsky
       if (textFlipped) cairo_rotate(cairo, M_PI);
       double sf = scaleFactor();  
       cairo_scale(cairo,sf,sf);		  
-      cairo_move_to(cairo,-7,4.5);
+      cairo_move_to(cairo,-7,3.5);
       cairo_show_text(cairo,"\xE2\x88\xAB");
-      cairo_show_text(cairo,"dt"); 
+      cairo_show_text(cairo,"dt");
+      // label the initial condition port
+      cairo_scale(cairo,0.5,0.5);
+      cairo_move_to(cairo,-19,19);
+      cairo_show_text(cairo,"0");
+      cairo_move_to(cairo,-19,-15);
+      cairo_show_text(cairo,"f");
       cairo_restore(cairo);
         
       int intVarWidth=0;
