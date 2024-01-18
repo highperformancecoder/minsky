@@ -76,6 +76,11 @@ namespace minsky
     {
       setPrivates(g.table, data, assetClass);
     }
+
+    static void setVariableDisplay(minsky::GodleyIcon& g, bool variableDisplay)
+    {
+      g.m_variableDisplay=variableDisplay;
+    }
     
     static void setStockAndFlow(minsky::GodleyIcon& g,
                          const minsky::GodleyIcon::Variables& flowVars,
