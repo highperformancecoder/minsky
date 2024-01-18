@@ -257,7 +257,7 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) const
+void VariableBase::ensureValueExists(VariableValue* vv, const std::string&/* nm*/) const
 {	
   string valueId=this->valueId();
   // disallow blank names
@@ -267,14 +267,14 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
       assert(isValueId(valueId));
       // Ensure value of variable is preserved after rename. 	      
       if (vv==nullptr)
-        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"")).
-          first->second->m_scope=minsky::scope(group.lock(),name());
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), m_name,"")).
+          first->second->m_scope=minsky::scope(group.lock(),m_name);
       // Ensure variable names are updated correctly everywhere they appear. 
       else
         {
           auto iter=minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv)).first->second;
-          iter->name=nm;
-          iter->m_scope=minsky::scope(group.lock(),nm);
+          iter->name=m_name;
+          iter->m_scope=minsky::scope(group.lock(),m_name);
         }
           
     }

@@ -245,6 +245,7 @@ namespace schema3
     std::string minskyVersion="unknown";
     vector<Wire> wires;
     vector<Item> items;
+    Optional<vector<int>> inVariables, outVariables;
     vector<Group> groups;
     vector<LockGroup> lockGroups;
     minsky::Simulation rungeKutta;

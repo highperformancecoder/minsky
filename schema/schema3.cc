@@ -315,6 +315,15 @@ namespace schema3
 
         return false;
       });
+
+    // add any I/O variables
+    vector<int> inVars, outVars;
+    for (auto& i: g.inVariables)
+      inVars.push_back(itemMap[i.get()]);
+    for (auto& i: g.outVariables)
+      outVars.push_back(itemMap[i.get()]);
+    inVariables=inVars;
+    outVariables=outVars;
     
     // search for and link up integrals to their variables, and Godley table ports
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
@@ -538,8 +547,8 @@ namespace schema3
         if (y.name) x1->table.title=*y.name;
         if (y.editorMode && *y.editorMode!=x1->editorMode())
           x1->toggleEditorMode();
-        if (y.variableDisplay && *y.variableDisplay!=x1->variableDisplay())
-          x1->toggleVariableDisplay();
+        if (y.variableDisplay)
+          SchemaHelper::setVariableDisplay(*x1, *y.variableDisplay);
         if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
           x1->toggleButtons();
         if (y.currency) x1->currency=*y.currency;
@@ -630,6 +639,14 @@ namespace schema3
           if (newItem->variableCast())
             schema3VarMap[i.id]=i;
         }
+
+    if (inVariables)
+      for (auto i: *inVariables)
+        g.inVariables.push_back(itemMap[i]);
+    if (outVariables)
+      for (auto i: *outVariables)
+        g.outVariables.push_back(itemMap[i]);
+
     // second loop over items to wire up integrals, and populate Godley table variables
     for (const auto& i: items)
       {
