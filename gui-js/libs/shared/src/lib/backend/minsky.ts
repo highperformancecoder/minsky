@@ -170,7 +170,6 @@ export class RenderNativeWindow extends EventInterface {
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
   }
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
@@ -373,7 +372,6 @@ export class CSVDialog extends CppClass {
   async columnOver(a1: number): Promise<number> {return this.$callMethod('columnOver',a1);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async flashNameRow(...args: boolean[]): Promise<boolean> {return this.$callMethod('flashNameRow',...args);}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
@@ -464,7 +462,6 @@ export class Canvas extends RenderNativeWindow {
   async deleteItem(): Promise<void> {return this.$callMethod('deleteItem');}
   async deleteWire(): Promise<void> {return this.$callMethod('deleteWire');}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async findVariableDefinition(): Promise<boolean> {return this.$callMethod('findVariableDefinition');}
@@ -640,7 +637,6 @@ export class EquationDisplay extends RenderNativeWindow {
   }
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
@@ -695,7 +691,6 @@ export class FontDisplay extends CppClass {
   }
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
@@ -931,7 +926,6 @@ export class GodleyTableWindow extends CppClass {
   async deleteStockVar(a1: number): Promise<void> {return this.$callMethod('deleteStockVar',a1);}
   async deleteStockVarByCol(a1: number): Promise<void> {return this.$callMethod('deleteStockVarByCol',a1);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async disableButtons(): Promise<void> {return this.$callMethod('disableButtons');}
   async draw(...args: any[]): Promise<void> {return this.$callMethod('draw',...args);}
   async drawButtons(...args: boolean[]): Promise<boolean> {return this.$callMethod('drawButtons',...args);}
@@ -1486,7 +1480,6 @@ export class PhillipsDiagram extends RenderNativeWindow {
   async clear(): Promise<void> {return this.$callMethod('clear');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
@@ -1619,7 +1612,6 @@ export class PlotWidget extends Item {
   async connectVar(a1: VariableValue,a2: number): Promise<void> {return this.$callMethod('connectVar',a1,a2);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async disconnectAllVars(): Promise<void> {return this.$callMethod('disconnectAllVars');}
   async displayFontSize(...args: number[]): Promise<number> {return this.$callMethod('displayFontSize',...args);}
   async displayNTicks(...args: number[]): Promise<number> {return this.$callMethod('displayNTicks',...args);}
@@ -1871,7 +1863,6 @@ export class RavelPopup extends CppClass {
   }
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
@@ -2202,7 +2193,6 @@ export class VariablePane extends CppClass {
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async deselect(a1: string): Promise<void> {return this.$callMethod('deselect',a1);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async disable(): Promise<void> {return this.$callMethod('disable');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async evenHeight(): Promise<boolean> {return this.$callMethod('evenHeight');}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
