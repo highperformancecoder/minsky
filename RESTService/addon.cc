@@ -27,7 +27,7 @@
 #include <atomic>
 #include <future>
 
-#ifdef WIN32_
+#ifdef _WIN32
 #include <time.h>
 #else
 #include <sys/times.h>
@@ -111,7 +111,7 @@ namespace
       started = true;
       counts++;
           
-#ifdef WIN32_
+#ifdef _WIN32
       start_e=clock();
 #else
       struct tms tbuf;
@@ -126,7 +126,7 @@ namespace
       if (!started) return;
       started = false;
 
-#ifdef WIN32_
+#ifdef _WIN32
       static const double seconds=1.0/CLOCKS_PER_SEC;
       elapsed+=(clock()-start_e)*seconds;
 #else
