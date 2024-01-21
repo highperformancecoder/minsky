@@ -61,7 +61,7 @@ namespace minsky
   Point PubItem::itemCoords(float x, float y) const
   {
     if (!itemRef) return {0,0};
-    float scale=itemRef->zoomFactor()/zoomFactor;
+    float scale=itemRef->zoomFactor();
     return {scale*(x-this->x)+itemRef->x(), scale*(y-this->y)+itemRef->y()};
   }
 
@@ -124,7 +124,6 @@ namespace minsky
       {
         CairoSave cs(cairo);
         cairo_translate(cairo, i.x, i.y);
-        cairo_scale(cairo, i.zoomFactor, i.zoomFactor);
         cairo_rotate(cairo,(M_PI/180)*i.rotation-i.itemRef->rotation());
         try
           {
@@ -152,10 +151,17 @@ namespace minsky
       }
     return nullptr;
   }
+  
+  void PubTab::zoomTranslate(float& x, float& y)
+  {
+    x-=offsx; y-=offsy;
+    auto scale=1f/m_zoomFactor;
+    x*=scale; y*=scale;
+  }
 
   void PubTab::mouseDown(float x, float y)
   {
-    x-=offsx; y-=offsy;
+    zoomTranslate(x,y);
     item=m_getItemAt(x,y);
     if (item)
       {
@@ -164,7 +170,7 @@ namespace minsky
         clickType=item->itemRef->clickType(p.x(),p.y());
         if (clickType==ClickType::onResize)
           {
-            auto scale=item->zoomFactor/item->itemRef->zoomFactor();
+            auto scale=item->itemRef->zoomFactor();
             lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
             lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
             lasso.x1=x;
@@ -184,8 +190,8 @@ namespace minsky
     mouseMove(x,y);
     if (item && clickType==ClickType::onResize)
       {
-        item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width()*item->zoomFactor);
-        item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height()*item->zoomFactor);
+        item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width());
+        item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height());
         item->x=0.5*(lasso.x0+lasso.x1);
         item->y=0.5*(lasso.y0+lasso.y1);
       }
@@ -197,7 +203,7 @@ namespace minsky
   
   void PubTab::mouseMove(float x, float y)
   {
-    x-=offsx; y-=offsy;
+    zoomTranslate(x,y);
     if (panning)
       {
         PannableTab<PubTabBase>::mouseMove(x,y);
@@ -223,7 +229,7 @@ namespace minsky
                   RenderVariable rv(*v);
                   double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
                   double sliderPos=(x-item->x)* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
-                  double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
+                  double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value.
                   v->sliderSet(sliderHatch);
                 }
               break;

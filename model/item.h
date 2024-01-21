@@ -166,8 +166,6 @@ namespace minsky
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    float itemTabX=0, itemTabY=0; ///< position on itemTab
-    bool itemTabInitialised=false;
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is ovcaler resize handles
     bool onBorder=false; ///< true to indicate mouse hovering over border
