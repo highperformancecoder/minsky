@@ -61,7 +61,7 @@ namespace minsky
   Point PubItem::itemCoords(float x, float y) const
   {
     if (!itemRef) return {0,0};
-    float scale=itemRef->zoomFactor()/zoomFactor;
+    float scale=itemRef->zoomFactor();
     return {scale*(x-this->x)+itemRef->x(), scale*(y-this->y)+itemRef->y()};
   }
 
@@ -124,7 +124,6 @@ namespace minsky
       {
         CairoSave cs(cairo);
         cairo_translate(cairo, i.x, i.y);
-        cairo_scale(cairo, i.zoomFactor, i.zoomFactor);
         cairo_rotate(cairo,(M_PI/180)*i.rotation-i.itemRef->rotation());
         try
           {
@@ -155,6 +154,7 @@ namespace minsky
 
   void PubTab::mouseDown(float x, float y)
   {
+    x/=m_zoomFactor; y/=m_zoomFactor;
     x-=offsx; y-=offsy;
     item=m_getItemAt(x,y);
     if (item)
@@ -164,7 +164,7 @@ namespace minsky
         clickType=item->itemRef->clickType(p.x(),p.y());
         if (clickType==ClickType::onResize)
           {
-            auto scale=item->zoomFactor/item->itemRef->zoomFactor();
+            auto scale=item->itemRef->zoomFactor();
             lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
             lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
             lasso.x1=x;
@@ -184,8 +184,8 @@ namespace minsky
     mouseMove(x,y);
     if (item && clickType==ClickType::onResize)
       {
-        item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width()*item->zoomFactor);
-        item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height()*item->zoomFactor);
+        item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width());
+        item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height());
         item->x=0.5*(lasso.x0+lasso.x1);
         item->y=0.5*(lasso.y0+lasso.y1);
       }

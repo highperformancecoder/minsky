@@ -1726,7 +1726,6 @@ export class PubItem extends CppClass {
   async rotation(...args: number[]): Promise<number> {return this.$callMethod('rotation',...args);}
   async x(...args: number[]): Promise<number> {return this.$callMethod('x',...args);}
   async y(...args: number[]): Promise<number> {return this.$callMethod('y',...args);}
-  async zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('zoomFactor',...args);}
   async zoomX(...args: number[]): Promise<number> {return this.$callMethod('zoomX',...args);}
   async zoomY(...args: number[]): Promise<number> {return this.$callMethod('zoomY',...args);}
 }
