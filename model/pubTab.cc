@@ -151,11 +151,17 @@ namespace minsky
       }
     return nullptr;
   }
+  
+  void PubTab::zoomTranslate(float& x, float& y)
+  {
+    x-=offsx; y-=offsy;
+    auto scale=1f/m_zoomFactor;
+    x*=scale; y*=scale;
+  }
 
   void PubTab::mouseDown(float x, float y)
   {
-    x/=m_zoomFactor; y/=m_zoomFactor;
-    x-=offsx; y-=offsy;
+    zoomTranslate(x,y);
     item=m_getItemAt(x,y);
     if (item)
       {
@@ -197,7 +203,7 @@ namespace minsky
   
   void PubTab::mouseMove(float x, float y)
   {
-    x-=offsx; y-=offsy;
+    zoomTranslate(x,y);
     if (panning)
       {
         PannableTab<PubTabBase>::mouseMove(x,y);
@@ -223,7 +229,7 @@ namespace minsky
                   RenderVariable rv(*v);
                   double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
                   double sliderPos=(x-item->x)* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
-                  double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
+                  double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value.
                   v->sliderSet(sliderHatch);
                 }
               break;
