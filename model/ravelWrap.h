@@ -195,7 +195,7 @@ namespace minsky
     /// @}
     
     /// get the current state of the Ravel
-    ravel::RavelState getState() const {return wrappedRavel.getRavelState();}
+    ravel::RavelState getState() const {return wrappedRavel? wrappedRavel.getRavelState(): initState;}
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
     /// @param preservePositions if true, do not rotate handles
     void applyState(const ravel::RavelState& state);

@@ -69,11 +69,6 @@ namespace minsky
     };
   } // namespace
 
-  void RenderNativeWindow::disable()
-  {
-    winInfoPtr.reset();
-  }
-  
   RenderNativeWindow::~RenderNativeWindow()
   {
     minsky().nativeWindowsToRedraw.erase(this);

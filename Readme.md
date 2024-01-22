@@ -63,6 +63,8 @@ Regular jest CLI arguments can be provided. You will need to install the jest pa
 
 Unfortunately gperftools do not work with the JS frontend. Indeed, most of the time minsky will crash under profiling. For now, profiling requires the use of the old Tk version of minsky.
 
+However, if you build the C++ source (actually only addon.cc necessary) with the TIMERS=1 make flag, this enables profiling of the backend commands, which is printed as a summary table on application exit.
+
 ## Roadmap
 
 - See [planned features](https://sourceforge.net/p/minsky/features/)

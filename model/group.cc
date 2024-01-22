@@ -795,13 +795,22 @@ namespace minsky
         }  		
 			  
     for (auto& i: groups)
-      if (i->visible())
-      {
-        if (i->left()<x0) x0=i->left();
-        if (i->right()>x1) x1=i->right();
-        if (i->top()<y0) y0=i->top();
-        if (i->bottom()>y1) y1=i->bottom();
-      }
+      if (i->displayContents())
+        {
+          double left, top, right, bottom;
+          i->contentBounds(left,top,right,bottom);
+          if (left<x0) x0=left;
+          if (right>x1) x1=right;
+          if (top<y0) y0=top;
+          if (bottom>y1) y1=bottom;
+        }
+      else
+        {
+          if (i->left()<x0) x0=i->left();
+          if (i->right()>x1) x1=i->right();
+          if (i->top()<y0) y0=i->top();
+          if (i->bottom()>y1) y1=i->bottom();
+        }
    
     // if there are no contents, result is not finite. In this case,
     // set the content bounds to a 10x10 sized box around the centroid of the I/O variables.

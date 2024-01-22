@@ -27,6 +27,12 @@
 #include <atomic>
 #include <future>
 
+#ifdef _WIN32
+#include <time.h>
+#else
+#include <sys/times.h>
+#endif
+
 using namespace Napi;
 using namespace std;
 using namespace classdesc;
@@ -90,7 +96,88 @@ namespace
         command(command),
         arguments(arguments) {}
     };
-  
+
+  struct Times
+  {
+    unsigned long counts;
+    double elapsed, user, system;
+    clock_t start_e, start_u, start_s;
+    bool started;
+    Times(): counts(0), elapsed(0), user(0), system(0), started(false) {}
+
+    void start()
+    {
+      if (started) return;
+      started = true;
+      counts++;
+          
+#ifdef _WIN32
+      start_e=clock();
+#else
+      struct tms tbuf;
+      start_e = times(&tbuf);
+      start_u = tbuf.tms_utime;
+      start_s = tbuf.tms_stime;
+#endif
+    }
+    
+    void stop()
+    {
+      if (!started) return;
+      started = false;
+
+#ifdef _WIN32
+      static const double seconds=1.0/CLOCKS_PER_SEC;
+      elapsed+=(clock()-start_e)*seconds;
+#else
+#ifdef __linux__
+      static const double seconds=1.0/sysconf(_SC_CLK_TCK);
+#else
+      static const double seconds=1.0/CLK_TCK;
+#endif
+      struct tms tbuf;
+      elapsed += (times(&tbuf)-start_e)*seconds;
+      user += (tbuf.tms_utime-start_u)*seconds;
+      system += (tbuf.tms_stime-start_s)*seconds;
+#endif
+    }
+  };
+
+#ifdef TIMERS
+  class Timer
+  {
+    Times& timer;
+  public:
+    Timer(Times& timer): timer(timer) {timer.start();}
+    ~Timer() {timer.stop();}
+  };
+
+  class Timers: public map<string, Times>
+  {
+    Times overall;
+  public:
+    Timers() {overall.start();}
+    ~Timers() {
+      overall.stop();
+      vector<pair<string,Times>> times(begin(),end());
+      sort(times.begin(),times.end(),[](auto& i, auto& j){return i.second.elapsed>j.second.elapsed;});
+      cout<<setw(40)<<"Times"<<setw(10)<<"Elapsed"<<setw(10)<<"User"<<setw(10)<<"System"<<endl;
+      cout<<setw(40)<<"Overall"<<setw(10)<<overall.elapsed<<setw(10)<<overall.user<<setw(10)<<overall.system<<endl;
+      for (auto& [command,timer]: times)
+        cout<<setw(40)<<command<<setw(10)<<timer.elapsed<<setw(10)<<timer.user<<setw(10)<<timer.system<<endl;
+    }
+  };
+#else // dummiable
+  struct Timer
+  {
+    Timer(int) {}
+  };
+  struct Timers
+  {
+    int operator[](const string&) {return 0;}
+  };
+#endif
+ 
 }
 
 namespace minsky
@@ -103,6 +190,7 @@ namespace minsky
 
     struct AddOnMinsky: public RESTMinsky
     {
+      Timers timers;
       deque<unique_ptr<Command>> minskyCommands;
       mutex cmdMutex;
       atomic<bool> running{true};
@@ -152,6 +240,7 @@ namespace minsky
       string doCommand(string command, const json_pack_t& arguments)
       {
         lock_guard<mutex> lock(minskyCmdMutex);
+        Timer timer(timers[command]);
         LocalMinsky lm(*this); // sets this to be the global minsky object
 
         // if reset requested, postpone it
@@ -180,6 +269,7 @@ namespace minsky
       void drawNativeWindows()
       {
         lock_guard<mutex> lock(minskyCmdMutex);
+        Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
           try
             {
@@ -206,6 +296,7 @@ namespace minsky
       void macOSXDrawNativeWindows()
       {
         lock_guard<mutex> lock(minskyCmdMutex);
+        Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
           i->macOSXRedraw();
         nativeWindowsToRedraw.clear();
@@ -244,6 +335,7 @@ namespace minsky
                       if (reset_flag()) // check again, in case another thread got there first
                         {
                           LocalMinsky lm(*this); // sets this to be the global minsky object
+                          Timer timer(timers["minsky.reset"]);
                           reset();
                         }
                     }
@@ -265,16 +357,21 @@ namespace minsky
                 continue;
               }
 
+            if (!running) return;
             try
               {
-                command->promiseResolver->resolve(doCommand(command->command, command->arguments));
+                auto result=doCommand(command->command, command->arguments);
+                if (!running) return; // prevent crashes on shutdown
+                command->promiseResolver->resolve(result);
               }
             catch (const std::exception& ex)
               {
+                if (!running) return; // prevent crashes on shutdown
                 command->promiseResolver->reject(ex.what());
               }
             catch (...)
               {
+                if (!running) return; // prevent crashes on shutdown
                 command->promiseResolver->reject("Unknown exception");
               }
           } 

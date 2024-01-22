@@ -650,7 +650,7 @@ void VariableBase::draw(cairo_t *cairo) const
       }
 
       auto vv=vValue();
-      if (miniPlot && vv->size()==1)
+      if (miniPlot && vv && vv->size()==1)
         {
           if (cachedTime!=cminsky().t)
             {
@@ -664,7 +664,7 @@ void VariableBase::draw(cairo_t *cairo) const
         }
   
       // For feature 47
-      if (type()!=constant && !ioVar() && vv && vv->size()==1)
+      if (type()!=constant && !ioVar() && vv && vv->size()==1 && vv->idxInRange())
         try
           {
             if (!cachedMantissa || cachedMantissa->cairoContext()!=cairo)

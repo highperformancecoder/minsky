@@ -54,6 +54,7 @@ namespace minsky
     CLASSDESC_ACCESS(PubTab);
     PubItem* item=nullptr; // weak reference for moving items
     PubItem* m_getItemAt(float x, float y);
+    void zoomTranslate(float& x, float& y);
     bool rotating=false;
     ClickType::Type clickType=ClickType::outside;
     float rx=0, ry=0; ///< reference position for rotating
@@ -71,10 +72,14 @@ namespace minsky
     void removeItemAt(float x, float y);
     void rotateItemAt(float x, float y);
     void toggleEditorModeAt(float x, float y) {
-      if (auto i=m_getItemAt(x-offsx,y-offsy))
+      zoomTranslate(x,y);
+      if (auto i=m_getItemAt(x,y))
         i->editorMode=!i->editorMode;
     }
-    bool getItemAt(float x, float y) override {return m_getItemAt(x-offsx,y-offsy);}
+    bool getItemAt(float x, float y) override {
+      zoomTranslate(x,y);
+      return m_getItemAt(x,y);
+    }
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}
     void mouseUp(float x, float y) override;

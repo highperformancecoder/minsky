@@ -252,6 +252,8 @@ namespace minsky
     virtual bool onResizeHandle(float x, float y) const;
     /// @return true if item internally responds to the mouse, and (x,y) is within editable area
     virtual bool inItem(float x, float y) const {return false;}
+    /// returns true if (x,y) is on the icon
+    virtual bool onItem(float x, float y) const;
     /// respond to mouse down events
     virtual void onMouseDown(float x, float y) {}
     /// respond to mouse up events
