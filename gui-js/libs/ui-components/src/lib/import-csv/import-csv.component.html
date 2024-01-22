@@ -210,6 +210,7 @@
           [panelWidth]="'10rem'"
           #existingDimensionsName="matAutocomplete"
           >
+          <mat-option [value]="parsedLines[dialogState.spec.headerRow][i]">{{parsedLines[dialogState.spec.headerRow][i]}}</mat-option>
           <mat-option *ngFor="let dimensionName of existingDimensionNames" [value]="dimensionName">{{dimensionName}}</mat-option>
         </mat-autocomplete>
         </td>
