@@ -155,7 +155,7 @@ namespace minsky
   void PubTab::zoomTranslate(float& x, float& y)
   {
     x-=offsx; y-=offsy;
-    auto scale=1f/m_zoomFactor;
+    auto scale=1.f/m_zoomFactor;
     x*=scale; y*=scale;
   }
 
