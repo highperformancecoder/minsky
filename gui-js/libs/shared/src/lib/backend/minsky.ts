@@ -80,9 +80,6 @@ export class Item extends CppClass {
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async ioVar(): Promise<boolean> {return this.$callMethod('ioVar');}
   async itemPtrFromThis(): Promise<object> {return this.$callMethod('itemPtrFromThis');}
-  async itemTabInitialised(...args: boolean[]): Promise<boolean> {return this.$callMethod('itemTabInitialised',...args);}
-  async itemTabX(...args: number[]): Promise<number> {return this.$callMethod('itemTabX',...args);}
-  async itemTabY(...args: number[]): Promise<number> {return this.$callMethod('itemTabY',...args);}
   async json_pack(a1: classdesc__json_pack_t): Promise<void> {return this.$callMethod('json_pack',a1);}
   async left(): Promise<number> {return this.$callMethod('left');}
   async m_sf(...args: number[]): Promise<number> {return this.$callMethod('m_sf',...args);}
@@ -91,6 +88,7 @@ export class Item extends CppClass {
   async mouseFocus(...args: boolean[]): Promise<boolean> {return this.$callMethod('mouseFocus',...args);}
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
   async onBorder(...args: boolean[]): Promise<boolean> {return this.$callMethod('onBorder',...args);}
+  async onItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onItem',a1,a2);}
   async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}
   async onMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseDown',a1,a2);}
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
@@ -252,9 +250,6 @@ export class VariableBase extends Item {
   async ioVar(): Promise<boolean> {return this.$callMethod('ioVar');}
   async isStock(): Promise<boolean> {return this.$callMethod('isStock');}
   async itemPtrFromThis(): Promise<object> {return this.$callMethod('itemPtrFromThis');}
-  async itemTabInitialised(...args: boolean[]): Promise<boolean> {return this.$callMethod('itemTabInitialised',...args);}
-  async itemTabX(...args: number[]): Promise<number> {return this.$callMethod('itemTabX',...args);}
-  async itemTabY(...args: number[]): Promise<number> {return this.$callMethod('itemTabY',...args);}
   async json_pack(a1: classdesc__json_pack_t): Promise<void> {return this.$callMethod('json_pack',a1);}
   async left(): Promise<number> {return this.$callMethod('left');}
   async lhs(): Promise<boolean> {return this.$callMethod('lhs');}
@@ -271,6 +266,7 @@ export class VariableBase extends Item {
   async name(...args: any[]): Promise<string> {return this.$callMethod('name',...args);}
   async numPorts(): Promise<number> {return this.$callMethod('numPorts');}
   async onBorder(...args: boolean[]): Promise<boolean> {return this.$callMethod('onBorder',...args);}
+  async onItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onItem',a1,a2);}
   async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}
   async onMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseDown',a1,a2);}
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
@@ -1101,9 +1097,6 @@ export class Group extends Item {
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async ioVar(): Promise<boolean> {return this.$callMethod('ioVar');}
   async itemPtrFromThis(): Promise<object> {return this.$callMethod('itemPtrFromThis');}
-  async itemTabInitialised(...args: boolean[]): Promise<boolean> {return this.$callMethod('itemTabInitialised',...args);}
-  async itemTabX(...args: number[]): Promise<number> {return this.$callMethod('itemTabX',...args);}
-  async itemTabY(...args: number[]): Promise<number> {return this.$callMethod('itemTabY',...args);}
   async json_pack(a1: classdesc__json_pack_t): Promise<void> {return this.$callMethod('json_pack',a1);}
   async left(): Promise<number> {return this.$callMethod('left');}
   async level(): Promise<number> {return this.$callMethod('level');}
@@ -1124,6 +1117,7 @@ export class Group extends Item {
   async numItems(): Promise<number> {return this.$callMethod('numItems');}
   async numWires(): Promise<number> {return this.$callMethod('numWires');}
   async onBorder(...args: boolean[]): Promise<boolean> {return this.$callMethod('onBorder',...args);}
+  async onItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onItem',a1,a2);}
   async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}
   async onMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseDown',a1,a2);}
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
@@ -1727,7 +1721,6 @@ export class PubItem extends CppClass {
   async rotation(...args: number[]): Promise<number> {return this.$callMethod('rotation',...args);}
   async x(...args: number[]): Promise<number> {return this.$callMethod('x',...args);}
   async y(...args: number[]): Promise<number> {return this.$callMethod('y',...args);}
-  async zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('zoomFactor',...args);}
   async zoomX(...args: number[]): Promise<number> {return this.$callMethod('zoomX',...args);}
   async zoomY(...args: number[]): Promise<number> {return this.$callMethod('zoomY',...args);}
 }
@@ -2006,9 +1999,6 @@ export class Selection extends CppClass {
   async insertItem(a1: Item): Promise<void> {return this.$callMethod('insertItem',a1);}
   async ioVar(): Promise<boolean> {return this.$callMethod('ioVar');}
   async itemPtrFromThis(): Promise<object> {return this.$callMethod('itemPtrFromThis');}
-  async itemTabInitialised(...args: boolean[]): Promise<boolean> {return this.$callMethod('itemTabInitialised',...args);}
-  async itemTabX(...args: number[]): Promise<number> {return this.$callMethod('itemTabX',...args);}
-  async itemTabY(...args: number[]): Promise<number> {return this.$callMethod('itemTabY',...args);}
   async json_pack(a1: classdesc__json_pack_t): Promise<void> {return this.$callMethod('json_pack',a1);}
   async left(): Promise<number> {return this.$callMethod('left');}
   async level(): Promise<number> {return this.$callMethod('level');}
@@ -2029,6 +2019,7 @@ export class Selection extends CppClass {
   async numItems(): Promise<number> {return this.$callMethod('numItems');}
   async numWires(): Promise<number> {return this.$callMethod('numWires');}
   async onBorder(...args: boolean[]): Promise<boolean> {return this.$callMethod('onBorder',...args);}
+  async onItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onItem',a1,a2);}
   async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}
   async onMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseDown',a1,a2);}
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}

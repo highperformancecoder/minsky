@@ -234,6 +234,13 @@ namespace minsky
     return near(x,y,p.x(),p.y(),resizeHandleSize());
   }
 
+  bool Item::onItem(float x, float y) const
+  {
+    Rotate r(-rotation(),this->x(),this->y());
+    return bb.contains(
+                       (r.x(x,y)-this->x())/zoomFactor(),
+                       (r.y(x,y)-this->y())/zoomFactor());
+  }
  
   bool Item::visible() const 
   {
@@ -273,12 +280,7 @@ namespace minsky
 
     if (onResizeHandle(x,y)) return ClickType::onResize;         
     if (inItem(x,y)) return ClickType::inItem;
-    
-    ecolab::cairo::Surface dummySurf
-      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
-    draw(dummySurf.cairo());
-    if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
-      return ClickType::onItem;               
+    if (onItem(x,y)) return ClickType::onItem;               
     return ClickType::outside;
   }
 
@@ -355,7 +357,6 @@ namespace minsky
   {
     auto [angle,flipped]=rotationAsRadians();
     Rotate r(rotation()+(flipped? 180:0),0,0);
-    //cairo_scale(cairo,scaleFactor(),scaleFactor());   // would like to see this work like operator icon contents, but width() and height() point to nothing at this stage.
     Pango pango(cairo);
     float w, h, z=zoomFactor();
     pango.angle=angle+(flipped? M_PI: 0);

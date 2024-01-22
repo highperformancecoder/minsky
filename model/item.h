@@ -166,8 +166,6 @@ namespace minsky
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    float itemTabX=0, itemTabY=0; ///< position on itemTab
-    bool itemTabInitialised=false;
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is ovcaler resize handles
     bool onBorder=false; ///< true to indicate mouse hovering over border
@@ -254,6 +252,8 @@ namespace minsky
     virtual bool onResizeHandle(float x, float y) const;
     /// @return true if item internally responds to the mouse, and (x,y) is within editable area
     virtual bool inItem(float x, float y) const {return false;}
+    /// returns true if (x,y) is on the icon
+    virtual bool onItem(float x, float y) const;
     /// respond to mouse down events
     virtual void onMouseDown(float x, float y) {}
     /// respond to mouse up events
