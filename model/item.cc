@@ -357,7 +357,6 @@ namespace minsky
   {
     auto [angle,flipped]=rotationAsRadians();
     Rotate r(rotation()+(flipped? 180:0),0,0);
-    //cairo_scale(cairo,scaleFactor(),scaleFactor());   // would like to see this work like operator icon contents, but width() and height() point to nothing at this stage.
     Pango pango(cairo);
     float w, h, z=zoomFactor();
     pango.angle=angle+(flipped? M_PI: 0);
