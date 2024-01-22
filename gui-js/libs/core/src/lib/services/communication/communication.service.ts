@@ -200,9 +200,8 @@ export class CommunicationService {
 
             break;
           case 'PAUSE':
-            this.currentReplayJSON.length
-              ? this.pauseReplay()
-              : await this.pauseSimulation();
+          if (this.currentReplayJSON.length)
+            this.pauseReplay();
             break;
           case 'RESET':
             this.showPlayButton$.next(true);
@@ -271,10 +270,6 @@ export class CommunicationService {
     }, this.delay);
   }
 
-  private async pauseSimulation() {
-    this.electronService.minsky.$callMethodSync('running',false);
-  }
-
   private async stopSimulation() {
     await this.electronService.minsky.running(false);
 
@@ -287,14 +282,14 @@ export class CommunicationService {
   }
 
   private updateSimulationTime(t: number, deltaT: number) {
+    if (Number(this.t) >= this.runUntilTime) {
+      this.showPlayButton$.next(true);
+    }
 
     this.t = t.toFixed(2);
 
     this.deltaT = deltaT.toFixed(2);
 
-    if (Number(this.t) >= this.runUntilTime) {
-      this.pauseSimulation();
-    }
   }
 
   private async resetZoom(centerX: number, centerY: number) {

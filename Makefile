@@ -226,6 +226,9 @@ ifdef CPUPROFILE
 OPT+=-g
 LIBS+=-lprofiler
 endif
+ifdef TIMERS
+FLAGS+=-DTIMERS
+endif
 
 TESTS=
 ifdef AEGIS

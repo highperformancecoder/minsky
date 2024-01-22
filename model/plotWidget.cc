@@ -249,7 +249,7 @@ namespace minsky
       // label pens
       for (size_t i=0; i<yvars.size(); ++i)
         if (yvars[i] && !yvars[i]->name.empty())
-          labelPen(i, latexToPango(yvars[i]->name));
+          labelPen(i, latexToPango(uqName(yvars[i]->name)));
   }
 
   void PlotWidget::mouseDown(float x,float y)

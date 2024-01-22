@@ -76,7 +76,7 @@ export class WindowManager {
     
   static async setCurrentTab(tab/*: RenderNativeWindow*/) {
     if (this.currentTab!==tab) {
-      await this.currentTab?.disable();
+      await this.currentTab?.destroyFrame();
       this.currentTab=tab;
       this.renderFrame();
     }

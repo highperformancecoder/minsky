@@ -32,7 +32,6 @@ namespace minsky
   {
   public:
     static ecolab::cairo::Colour backgroundColour;
-    void disable();
 
     struct RenderFrameArgs
     {

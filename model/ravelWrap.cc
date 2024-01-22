@@ -191,6 +191,7 @@ namespace minsky
   
   void Ravel::populateHypercube(const Hypercube& hc)
   {
+    if (!wrappedRavel) return;
     auto state=initState.empty()? getState(): initState;
     bool redistribute=!initState.empty();
     initState.clear();
@@ -498,6 +499,10 @@ namespace minsky
 
   void Ravel::applyState(const ravel::RavelState& state)
  {
+   if (!wrappedRavel) {
+     initState=state;
+     return;
+   }
    auto r=wrappedRavel.radius();
    wrappedRavel.setRavelState(state);
    if (state.radius!=r) // only need to update bounding box if radius changes
