@@ -103,19 +103,20 @@ namespace minsky
     double yoffs=0; // offset to allow for title
     if (!title.empty())
       {
-        double fx=0, fy=titleHeight*iHeight()*z;
-        cairo_user_to_device_distance(cairo,&fx,&fy);
+        CairoSave cs(cairo);
+        double fx=0, fy=titleHeight*iHeight();
         
         Pango pango(cairo);
         pango.setFontSize(fabs(fy));
         pango.setMarkup(latexToPango(title));   
         cairo_set_source_rgb(cairo,0,0,0);
-        cairo_move_to(cairo,0.5*(w-pango.width()), 0);
+        cairo_move_to(cairo,0.5*(w-z*pango.width()), 0);
+        cairo_scale(cairo,z,z);
         pango.show();
 
         // allow some room for the title
-        yoffs=1.2*pango.height();
-        h-=1.2*pango.height();
+        yoffs=1.2*pango.height()*z;
+        h-=yoffs;
       }
 
     // draw bounding box ports
@@ -164,6 +165,8 @@ namespace minsky
     cairo_set_line_width(cairo,1);
     double gw=w-2*portSpace, gh=h-portSpace;;
     if (!title.empty()) gh=h-portSpace-titleHeight;  // take into account room for the title
+    gw/=z; gh/=z; // undo zoomFactor for Plot::draw, and scale
+    cairo_scale(cairo,z,z);
     //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
     auto& pt=const_cast<Plot*>(static_cast<const Plot*>(this))->plotType;
     switch (plotType)
