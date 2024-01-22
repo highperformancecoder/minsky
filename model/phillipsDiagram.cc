@@ -137,7 +137,9 @@ namespace minsky
                     bool swapped=false;
                     if (s.coef*d.coef<0)
                       {
-                        auto flow=newFlows.emplace(make_pair(s.name,d.name), PhillipsFlow(source.ports(0), dest.ports(1))).first;
+                        auto flow=newFlows.emplace(
+                                                   make_pair(g->valueId(s.name),g->valueId(d.name)),
+                                                   PhillipsFlow(source.ports(0), dest.ports(1))).first;
                         flow->second.addTerm(-s.coef*d.coef, i.first);
                         flow->second.tooltip=(!flow->second.tooltip.empty()?";":"")+description;
                         if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())

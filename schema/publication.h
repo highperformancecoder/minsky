@@ -27,7 +27,6 @@ namespace schema3
   {
     int item=-1;
     float x=100,y=100;
-    float zoomFactor=1;
     float zoomX=1, zoomY=1;
     double rotation=0;
     bool editorMode=false;
