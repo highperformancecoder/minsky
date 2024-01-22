@@ -37,7 +37,7 @@ namespace minsky
     // output port, selector port and n case ports
     for (unsigned i=m_ports.size(); i<n+2; ++i)
       m_ports.emplace_back(make_shared<InputPort>(*this));
-    float width=8*zoomFactor()*numCases();
+    float width=8*numCases();
     if (width>iWidth()) iWidth(width);
     if (width>iHeight()) iHeight(width);
   }
