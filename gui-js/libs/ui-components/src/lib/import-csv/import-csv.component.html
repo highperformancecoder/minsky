@@ -204,7 +204,14 @@
             class="form-control"
             [value]="dialogState.spec.dimensionNames[i]"
             (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
+            [matAutocomplete]="existingDimensionsName">
+          
+          <mat-autocomplete
+          [panelWidth]="'10rem'"
+          #existingDimensionsName="matAutocomplete"
           >
+          <mat-option *ngFor="let dimensionName of existingDimensionNames" [value]="dimensionName">{{dimensionName}}</mat-option>
+        </mat-autocomplete>
         </td>
       </tr>
 

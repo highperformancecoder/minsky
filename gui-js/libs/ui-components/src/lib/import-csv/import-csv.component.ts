@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ChangeDetectorRef, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, AfterViewChecked, Component, ChangeDetectorRef, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -60,7 +60,7 @@ class Dimension {
         NgStyle,
     ],
 })
-export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewInit, OnDestroy {
+export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   form: FormGroup;
 
   destroy$ = new Subject<{}>();
@@ -175,7 +175,6 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   ngOnInit() {
-    // ??
     this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async (_form) => {
       if (this.url === _form.url) {
         await this.parseLines();
@@ -184,7 +183,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     document.onkeydown = this.onKeyDown;
 
     this.electronService.minsky.dimensions.$properties().then(dims => {
-      this.existingDimensionNames = Object.entries(dims).map(d => d[0]);
+      this.existingDimensionNames = Object.keys(dims);
     });
   }
 
@@ -201,7 +200,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     })();
   }
 
-  afterViewChecked() {
+  ngAfterViewChecked() {
     // set state of dimension controls to reflect dialogState
     if (this.inputCsvCanvasContainer) {
       var table = this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
@@ -335,7 +334,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
           this.colType[i] = ColType.ignore;
       } else
         this.colType[i] = ColType.data;
-    this.afterViewChecked();
+    this.ngAfterViewChecked();
   }
 
   getColorForCell(rowIndex: number, colIndex: number) {
