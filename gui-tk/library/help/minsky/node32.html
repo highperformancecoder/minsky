@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Inserting a model component</TITLE>
-<META NAME="description" CONTENT="Inserting a model component">
+<TITLE>Creating an equation</TITLE>
+<META NAME="description" CONTENT="Creating an equation">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,91 +16,102 @@
 
 <LINK REL="next" HREF="node33.html">
 <LINK REL="previous" HREF="node31.html">
-<LINK REL="up" HREF="node30.html">
+<LINK REL="up" HREF="node29.html">
 <LINK REL="next" HREF="node33.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html575"
+<A NAME="tex2html573"
   HREF="node33.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html573"
-  HREF="node30.html">
+<A NAME="tex2html571"
+  HREF="node29.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html567"
+<A NAME="tex2html565"
   HREF="node31.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html576"
-  HREF="node33.html">Creating an equation</A>
-<B> Up:</B> <A NAME="tex2html574"
-  HREF="node30.html">Working with Minsky</A>
-<B> Previous:</B> <A NAME="tex2html568"
-  HREF="node31.html">Components in Minsky</A>
+<B> Next:</B> <A NAME="tex2html574"
+  HREF="node33.html">Wiring components together</A>
+<B> Up:</B> <A NAME="tex2html572"
+  HREF="node29.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html566"
+  HREF="node31.html">Inserting a model component</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00242000000000000000">
-Inserting a model component</A>
+<H2><A NAME="SECTION00243000000000000000">
+Creating an equation</A>
 </H2>
 
 <P>
-There are five ways to insert a component of a model onto the Canvas:
+Equations are entered in Minsky graphically. Mathematical operations
+like addition, multiplication and subtraction are performed by wiring
+the inputs up to the relevant mathematical block. The output of the
+block is then the result of the equation. 
 
-<OL>
-<LI>Click on the desired Icon on the Icon Palette, drag the block
-onto the Canvas and release the mouse where you want to insert it 
+<P>
+For example, a simple equation like
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+100/3 = 33.3
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="88" HEIGHT="29" BORDER="0"
+ SRC="img90.png"
+ ALT="\begin{displaymath}
+100/3 = 33.3
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem130.png"
+ ALT="796"> :
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem18.png"
- ALT="789">
+ WIDTH="551" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
+ SRC="img91.png"
+ ALT="\includegraphics{images/NewItem129.eps}">
 
 </DIV>
 
 <P>
-</LI>
-<LI>Choose Insert from the menu and select the desired block there
+If you click on the equation tab, you will see that it is:
 
 <P>
-<DIV ALIGN="CENTER">
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}
+ -->
+
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem159.png"
- ALT="537">
-  
+ WIDTH="99" HEIGHT="39" BORDER="0"
+ SRC="img92.png"
+ ALT="\begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}">
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
-</LI>
-<LI>Right-click on an existing block and choose copy. Then place the
-copy where you want it on the palette. 
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem161.png"
- ALT="540">
-
-</DIV>
-
-<P>
-</LI>
-<LI>Variables can be inserted by typing the variable name on the
-  canvas, and constants enetered by typing the numerical
-  value. Similarly, operations can be inserted by typing the operator
-  name (eg <code>sin</code>, or <code>*</code>). Notes can be inserted by starting
-  the note with a <code>#</code> character.
-
-<P>
-</LI>
-<LI>Variables can also be picked from the <A HREF="node124.html#VariableBrowser">Variable
-    Browser</A> and placed on the canvas.
-</LI>
-</OL>
+Very complex equations--including dynamic elements like integral
+blocks and Godley Tables--are designed by wiring up lots of
+components, with the output of one being the input of the next. See
+the tutorial for examples.
 
 <P>
 <BR><HR>

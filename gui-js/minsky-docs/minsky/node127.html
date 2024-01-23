@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Groups</TITLE>
-<META NAME="description" CONTENT="Groups">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,126 +16,136 @@
 
 <LINK REL="next" HREF="node128.html">
 <LINK REL="previous" HREF="node126.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node128.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1684"
+<A NAME="tex2html1682"
   HREF="node128.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1682"
-  HREF="node47.html">
+<A NAME="tex2html1680"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1676"
+<A NAME="tex2html1674"
   HREF="node126.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1685"
-  HREF="node128.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html1683"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1677"
-  HREF="node126.html">Tensor values</A>
+<B> Next:</B> <A NAME="tex2html1683"
+  HREF="node128.html">Sheet Widget</A>
+<B> Up:</B> <A NAME="tex2html1681"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1675"
+  HREF="node126.html">Groups</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00470000000000000000"></A><A NAME="Group"></A>
+<H1><A NAME="SECTION00480000000000000000"></A>
+<A NAME="PlotWidget"></A>
 <BR>
-Groups
+Plot widget
 </H1>
 
 <P>
-Grouping gives the capability to create reusable modules, or
-subroutines that can dramatically simplify more complicated
-systems. Groups may be created in the following ways:
-
-<UL>
-<LI>by lassoing a number of items to select them, then selecting
-  &ldquo;group&rdquo; from the canvas context menu, or the edit menu.
-</LI>
-<LI>by pasting the selection. You may &ldquo;ungroup&rdquo; the group from the
-  context menu if you don't desire the result of the paste to be a
-  group.
-</LI>
-<LI>by copying another group
-</LI>
-<LI>by inserting a Minsky file as a group
-</LI>
-</UL>
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
 
 <P>
-Zooming in on a group allows you see and edit its contents. Groups may
-be nested heirarchically, which gives an excellent way of zooming in
-to see the detail of a model, or zooming out to get an overview of
-it. The group context menu item &ldquo;Zoom to display&rdquo; zooms the canvas
-in just enough for the group's contents to be visible.
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="241" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
+ SRC="img260.png"
+ ALT="\includegraphics{images/plotWidget.eps}">
+
+</DIV>
 
 <P>
-You may also select &ldquo;Open in canvas&rdquo; from the context menu. This
-replaces the current canvas contents with the contents of the group,
-allowing you to edit the contents of the group directly without the
-distractions of the rest of the model. Select &ldquo;Open master group&rdquo; to
-return to the top level group occupying the canvas.
+<DL>
+<DT><STRONG>left hand edge</STRONG></DT>
+<DD>Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
+</DD>
+<DT><STRONG>right hand edge</STRONG></DT>
+<DD>Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
+</DD>
+<DT><STRONG>bottom edge</STRONG></DT>
+<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN>-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
 
 <P>
-Around the edges of a group are input or output variables, which allow
-one to parameterise the group. One can drag a variable and dock it in
-the I/O area to create a new input or output for the group.
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="529" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
+ SRC="img261.png"
+ ALT="\includegraphics{images/plotLissajous.eps}">
+
+</DIV>
 
 <P>
-When creating a group, or dragging a variable or operation into or out
-of a group, if a wire ends up crossing the group boundary, a new
-temporary variable is added as an I/O variable. You may then edit the
-I/O variable name to be something more meaningful to your model.
+If only one bottom port is connected, then that controls all pens
+simultaneously, and if no ports are connected, then the simulation
+time is used to provide the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN> coordinates
+</DD>
+<DT><STRONG>corners</STRONG></DT>
+<DD>Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img61.png"
+ ALT="$y$"></SPAN> and right
+  hand <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img61.png"
+ ALT="$y$"></SPAN> axes. If left unwired, the scales are determined
+  automatically from the data. This can be used, for example, to
+  implement a sliding window graph
 
 <P>
-Variable names within groups can be locally scoped to that group. That
-means that a variable of the same name outside the group refers to a
-different entity completely. By default, grouped variables refer to
-entities outside the group scope, but may be marked local by means of
-context menu option. One can also convert all variables in a group to
-be local by means of the &ldquo;Make subroutine&rdquo; context menu entry.
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="480" HEIGHT="424" ALIGN="BOTTOM" BORDER="0"
+ SRC="img262.png"
+ ALT="\includegraphics{images/plotSlidingWindow.eps}">
 
-<P>
-Nonlocal variables refers to a local variable within an outer scope,
-going all the way to global scope if no such variable exists. In this
-way, two groups can share a variable reference to a variable, and you
-can limit the scope of the shared variable by placing a local variable
-of the same name in an outer group that both groups are contain
-within.
-
-<P>
-A group can also be exported to a file from the context menu.  This
-allows you to build up a library of building blocks. There is a github
-project &ldquo;minsky-models&rdquo; allowing people to publish their building
-blocks and models for others to use. In the future, we hope to
-integrate Minsky with this github repository, allowing even more
-seamless sharing of models.
+</DIV>
+</DD>
+</DL>
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html1684"
+<A NAME="tex2html1682"
   HREF="node128.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1682"
-  HREF="node47.html">
+<A NAME="tex2html1680"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1676"
+<A NAME="tex2html1674"
   HREF="node126.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1685"
-  HREF="node128.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html1683"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1677"
-  HREF="node126.html">Tensor values</A></DIV>
+<B> Next:</B> <A NAME="tex2html1683"
+  HREF="node128.html">Sheet Widget</A>
+<B> Up:</B> <A NAME="tex2html1681"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1675"
+  HREF="node126.html">Groups</A></DIV>
 <!--End of Navigation Panel-->
 
 </BODY>

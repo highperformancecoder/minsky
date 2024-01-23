@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>User defined functions</TITLE>
-<META NAME="description" CONTENT="User defined functions">
+<TITLE>Introduction</TITLE>
+<META NAME="description" CONTENT="Introduction">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,82 +14,65 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node47.html">
-<LINK REL="up" HREF="minsky.html">
+<LINK REL="next" HREF="node138.html">
+<LINK REL="previous" HREF="node136.html">
+<LINK REL="up" HREF="node136.html">
 <LINK REL="next" HREF="node138.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1780"
+<A NAME="tex2html1791"
   HREF="node138.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1778"
-  HREF="minsky.html">
+<A NAME="tex2html1789"
+  HREF="node136.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1774"
+<A NAME="tex2html1783"
   HREF="node136.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1781"
-  HREF="node138.html">Introduction</A>
-<B> Up:</B> <A NAME="tex2html1779"
-  HREF="minsky.html">Minsky Simulation Engine</A>
-<B> Previous:</B> <A NAME="tex2html1775"
-  HREF="node136.html">Ravel</A>
+<B> Next:</B> <A NAME="tex2html1792"
+  HREF="node138.html">Capabilities</A>
+<B> Up:</B> <A NAME="tex2html1790"
+  HREF="node136.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1784"
+  HREF="node136.html">User defined functions</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00500000000000000000"></A><A NAME="ExprTk"></A>
-<BR>
-User defined functions
+<H1><A NAME="SECTION00510000000000000000">
+Introduction</A>
 </H1>
+The <A NAME="tex2html32"
+  HREF="https://www.partow.net/programming/exprtk/index.html">C++ Mathematical Expression  Toolkit Library (ExprTk)</A>
+is  a simple
+to  use,   easy  to   integrate  and   extremely  efficient   run-time
+mathematical  expression parsing  and evaluation  engine. The  parsing
+engine  supports numerous  forms  of  functional and  logic processing
+semantics and is easily extensible.
 
 <P>
-<EM>Much of this chapter is exerpted from <A NAME="tex2html30"
-  HREF="https://github.com/ArashPartow/exprtk/blob/master/readme.txt">exprtk's
-read.txt
-file</A></EM>
+With Minsky's user defined functions, expressions can refer to Minsky
+variables accessible from the current scope (ie local Minsky variables
+will hide global variables), and also parameters declared as part of
+the function name. One can also call other user defined functions,
+which is the only way a user defined function with more than 2
+parameters can be used. For 0-2 parameters, user defined functions can
+be wired into a Minsky computation.
 
 <P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+ExprTk identifiers (such as variable names and function names) consist
+of alphanumeric characters plus '_' and '.'. They must start with a
+letter. Minsky is reserving the underscore and full stop to act as an
+escape sequence, in order to refer to the full range of possible
+Minsky variable identifiers, including all unicode characters. This
+section will be updated once that feature is in place -- for now,
+please avoid using those characters in identifiers.
 
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html1782"
-  HREF="node138.html">Introduction</A>
-<LI><A NAME="tex2html1783"
-  HREF="node139.html">Capabilities</A>
-<LI><A NAME="tex2html1784"
-  HREF="node140.html">Example expressions</A>
-<LI><A NAME="tex2html1785"
-  HREF="node141.html">Copyright notice</A>
-<LI><A NAME="tex2html1786"
-  HREF="node142.html">Built-in operations &amp; functions</A>
-<UL>
-<LI><A NAME="tex2html1787"
-  HREF="node143.html">Arithmetic &amp; Assignment Operators</A>
-<LI><A NAME="tex2html1788"
-  HREF="node144.html">Equalities &amp; Inequalities</A>
-<LI><A NAME="tex2html1789"
-  HREF="node145.html">Boolean Operations</A>
-<LI><A NAME="tex2html1790"
-  HREF="node146.html">General Purpose Functions</A>
-<LI><A NAME="tex2html1791"
-  HREF="node147.html">Trigonometry Functions</A>
-<LI><A NAME="tex2html1792"
-  HREF="node148.html">String Processing</A>
-<LI><A NAME="tex2html1793"
-  HREF="node149.html">Control Structures</A>
-</UL>
-<BR>
-<LI><A NAME="tex2html1794"
-  HREF="node150.html">Fundamental types</A>
-</UL>
-<!--End of Table of Child-Links-->
+<P>
 <BR><HR>
 
 </BODY>

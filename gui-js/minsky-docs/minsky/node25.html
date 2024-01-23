@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Parameters tab</TITLE>
-<META NAME="description" CONTENT="Parameters tab">
+<TITLE>Summary Tab</TITLE>
+<META NAME="description" CONTENT="Summary Tab">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -23,34 +23,46 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html497"
+<A NAME="tex2html495"
   HREF="node26.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html495"
+<A NAME="tex2html493"
   HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html489"
+<A NAME="tex2html487"
   HREF="node24.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html498"
-  HREF="node26.html">Variables tab</A>
-<B> Up:</B> <A NAME="tex2html496"
+<B> Next:</B> <A NAME="tex2html496"
+  HREF="node26.html">Phillips diagram tab</A>
+<B> Up:</B> <A NAME="tex2html494"
   HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html490"
+<B> Previous:</B> <A NAME="tex2html488"
   HREF="node24.html">Equations tab</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION002312000000000000000"></A><A NAME="tabs:Parameters"></A>
+<H2><A NAME="SECTION002312000000000000000"></A><A NAME="tabs:Summary"></A>
 <BR>
-Parameters tab
+Summary Tab
 </H2>
 
 <P>
-This displays the properties of all parameters defined in the model,
-in one place.
+This tab provides a summary table of all variables in the system, in a
+heirarchical fashion that can be navigated by expanding or hiding
+sections by toggling the caret. Each variable shows its name, it
+definition, dimensions (for tensor-valued variables), initial
+expression, units and current value.
+
+<P>
+Most of these fields are editable, and usually do the obvious
+thing. Changing a variable's name will do a <EM>replace all
+  instances</EM> operation to update all variables of the same
+name. Changing a variable's definition will replace the wiring graph
+leading into the variable by a <A HREF="node69.html#UserFunction">user defined function</A> containing your
+edited string. At some future point, functionality will be added to
+convert a user defined function into a wiring graph.
 
 <P>
 <BR><HR>

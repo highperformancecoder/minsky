@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Copying Godley Table input &amp; outputs</TITLE>
-<META NAME="description" CONTENT="Copying Godley Table input &amp; outputs">
+<TITLE>Using &ldquo;Time Constants&rdquo;</TITLE>
+<META NAME="description" CONTENT="Using &ldquo;Time Constants&rdquo;">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,88 +16,80 @@
 
 <LINK REL="next" HREF="node41.html">
 <LINK REL="previous" HREF="node39.html">
-<LINK REL="up" HREF="node35.html">
+<LINK REL="up" HREF="node34.html">
 <LINK REL="next" HREF="node41.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html660"
+<A NAME="tex2html658"
   HREF="node41.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html658"
-  HREF="node35.html">
+<A NAME="tex2html656"
+  HREF="node34.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html652"
+<A NAME="tex2html650"
   HREF="node39.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html661"
-  HREF="node41.html">Using &ldquo;Time Constants&rdquo;</A>
-<B> Up:</B> <A NAME="tex2html659"
-  HREF="node35.html">Creating a banking model</A>
-<B> Previous:</B> <A NAME="tex2html653"
-  HREF="node39.html">Defining flows</A>
+<B> Next:</B> <A NAME="tex2html659"
+  HREF="node41.html">Multiple banks</A>
+<B> Up:</B> <A NAME="tex2html657"
+  HREF="node34.html">Creating a banking model</A>
+<B> Previous:</B> <A NAME="tex2html651"
+  HREF="node39.html">Copying Godley Table input</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00245500000000000000">
-Copying Godley Table input &amp; outputs</A>
+<H3><A NAME="SECTION00245600000000000000"></A>
+<A NAME="time-constants"></A>
+<BR>
+Using &ldquo;Time Constants&rdquo;
 </H3>
 
 <P>
-Right-click on the inputs and outputs of a Godley Table and choose
-&ldquo;copy&rdquo; from the drop-down menu:
+The value of 0.1 means that the amount of money in the Patient account
+falls by one tenth every year (and therefore tapers towards zero). An
+equivalent way to express this is that the &ldquo;time constant&rdquo; for
+lending is the inverse of 1/10, or ten years. The next model uses a
+variable called <SPAN CLASS="MATH"><IMG
+ WIDTH="41" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img111.png"
+ ALT="$\tau_{Lend}$"></SPAN>, and gives it a value of 10: 
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem153.png"
- ALT="649">
+ WIDTH="332" HEIGHT="120" ALIGN="BOTTOM" BORDER="0"
+ SRC="img112.png"
+ ALT="\includegraphics{images/NewItem158.eps}">
 
 </DIV>
 
 <P>
-Place the copied flows and accounts and place them away from the
-table. Then wire up your definition there:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="339" HEIGHT="104" ALIGN="BOTTOM" BORDER="0"
- SRC="img109.png"
- ALT="\includegraphics{images/NewItem154.eps}">
-
-</DIV>
-
-<P>
-This now results in a much neater model. The same process can be used
-to tidy up graphs as well:
+As the simulation shows, the two models have precisely the same result
+numerically:
 
 <P>
 <DIV ALIGN="CENTER">
 <!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem155.eps}}$
+ $\resizebox{!}{0.9\textheight}{\includegraphics{images/NewItem157.eps}}$
  -->
 <IMG
- WIDTH="555" HEIGHT="471" ALIGN="BOTTOM" BORDER="0"
- SRC="img110.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem155.eps}}">
+ WIDTH="573" HEIGHT="899" ALIGN="BOTTOM" BORDER="0"
+ SRC="img113.png"
+ ALT="\resizebox{!}{0.9\textheight}{\includegraphics{images/NewItem157.eps}}">
 </DIV>
 
 <P>
-A more complex model would have many more flows, and these in turn
-would depend on other entities in the model, and be time-varying
-rather than using a constant &ldquo;lendrate&rdquo; as in this example--see the
-Tutorial on a <A HREF="node45.html#tut:basicBankModel">Basic Banking Model</A> for an
-example. This example uses the engineering concept of a
-<A HREF="node41.html#time-constants">&ldquo;time constant&rdquo;</A>, which is explained in the
-next section. Please note that right-clicking godley table variables and
-selecting "copy flow variables" creates a new group, which, when clicked and
-selecting "open in canvas", changes the canvas to show just that group. The normal
-canvas can be brought back by right-clicking and selecting "open master group".
+The advantage of the time constant approach is that it is defined in
+terms of the time that a process takes. A time constant of 10 says
+that, if this rate of lending was sustained (rather than declining as
+the account falls), then in <B><EM>precisely</EM></B> 10 years, the Patient account
+would be empty. The advantages of this formulation will be more
+obvious in the <A HREF="node42.html#tutorial">tutorial</A>.
 
 <P>
 <BR><HR>

@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Variables</TITLE>
-<META NAME="description" CONTENT="Variables">
+<TITLE>Variable names</TITLE>
+<META NAME="description" CONTENT="Variable names">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,127 +14,52 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node125.html">
+<LINK REL="next" HREF="node118.html">
 <LINK REL="previous" HREF="node116.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node116.html">
 <LINK REL="next" HREF="node118.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1579"
+<A NAME="tex2html1584"
   HREF="node118.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1577"
-  HREF="node47.html">
+<A NAME="tex2html1582"
+  HREF="node116.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1571"
+<A NAME="tex2html1576"
   HREF="node116.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1580"
-  HREF="node118.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1578"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1572"
-  HREF="node116.html">Switch</A>
+<B> Next:</B> <A NAME="tex2html1585"
+  HREF="node118.html">Initial conditions</A>
+<B> Up:</B> <A NAME="tex2html1583"
+  HREF="node116.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html1577"
+  HREF="node116.html">Variables</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00440000000000000000"></A><A NAME="Variables"></A><A NAME="Variable:constant"></A><A NAME="VarConstant"></A><A NAME="Variable:parameter"></A><A NAME="Variable:flow"></A><A NAME="Variable:integral"></A><A NAME="Variable:stock"></A>
-<BR>
-Variables
-</H1>
+<H2><A NAME="SECTION00441000000000000000">
+Variable names</A>
+</H2>
 
 <P>
-Variables represent values in a calculation, and come in a number of
-varieties:
-<DL>
-<DT><STRONG>Constants</STRONG></DT>
-<DD>represent an explicit numerical value, and do not
-  have a name. Their graphical representation shows the actual value
-  of the constant.
-</DD>
-<DT><STRONG>Parameters</STRONG></DT>
-<DD>are named constants. All instances of a given name
-  represent the same value, as with all other named variables, so
-  changing the value of one parameter, either through its edit menu,
-  or through a slider, will affect all the others of that
-  name. Parameters may be <A HREF="#CSV_____import">imported from a CSV file</A>, which is one way of inserting a tensor into the
-  simulation.
-</DD>
-<DT><STRONG>Flow variables</STRONG></DT>
-<DD>have an input port that defines how the value is
-  to be calculated. Only one flow variable of a given name can have
-  its input port connected, as they all refer to the same quantity. If
-  no input ports are connected, then flow variables act just like
-  parameters.
-</DD>
-<DT><STRONG>Integral variables</STRONG></DT>
-<DD>represent the result of integrating its
-  input over time by means of the differential equation solver. The
-  integrand is represented by the input to an integral operator that
-  is attached to the integral variable.
-</DD>
-<DT><STRONG>Stock variables</STRONG></DT>
-<DD>are the columns of Godley tables, and represent
-  the integral over time of the sum of the flow variables making up
-  the column.
-</DD>
-</DL>
-
-<P>
-Variables may be converted between types in the variable edit menu,
-available from the context menu, subject to certain rules. For
-example, a variable whose input is wired anywhere on the canvas cannot
-be changed from &ldquo;flow&rdquo;. Stock variables need to be defined in a
-Godley table, and so on.
+Variable names uniquely identify variables. Multiple icons on the
+canvas may have the same name -- they all refer to the same
+variable. Variable names have scope, which is either local (no initial
+`:'), belonging to an outer <A HREF="node126.html#Group">group</A> (indicated by a
+leading `:' on the inner group variable, and the outer group variable
+having no such leading `:'), or completely global otherwise. You may
+select a variable name from a drop down list in the &ldquo;name&rdquo; combo
+box, which makes for an easier way of selecting exactly which variable
+you want.
 
 <P>
 <BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html1581"
-  HREF="node118.html">Variable names</A>
-<LI><A NAME="tex2html1582"
-  HREF="node119.html">Initial conditions</A>
-<LI><A NAME="tex2html1583"
-  HREF="node120.html">Tensor valued initial
-  conditions</A>
-<LI><A NAME="tex2html1584"
-  HREF="node121.html">Sliders</A>
-<LI><A NAME="tex2html1585"
-  HREF="node122.html">Importing a parameter from a CSV file</A>
-<LI><A NAME="tex2html1586"
-  HREF="node123.html">Duplicate keys</A>
-<LI><A NAME="tex2html1587"
-  HREF="node124.html">Variable Browser</A>
-</UL>
-<!--End of Table of Child-Links-->
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1579"
-  HREF="node118.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1577"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1571"
-  HREF="node116.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1580"
-  HREF="node118.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1578"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1572"
-  HREF="node116.html">Switch</A></DIV>
-<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

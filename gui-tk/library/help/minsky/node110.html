@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Median</TITLE>
-<META NAME="description" CONTENT="Median">
+<TITLE>Standard Deviation</TITLE>
+<META NAME="description" CONTENT="Standard Deviation">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,42 +16,62 @@
 
 <LINK REL="next" HREF="node111.html">
 <LINK REL="previous" HREF="node109.html">
-<LINK REL="up" HREF="node88.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node111.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1511"
+<A NAME="tex2html1509"
   HREF="node111.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1509"
-  HREF="node88.html">
+<A NAME="tex2html1507"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1503"
+<A NAME="tex2html1501"
   HREF="node109.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1512"
-  HREF="node111.html">Standard Deviation</A>
-<B> Up:</B> <A NAME="tex2html1510"
-  HREF="node88.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1504"
-  HREF="node109.html">Mean</A>
+<B> Next:</B> <A NAME="tex2html1510"
+  HREF="node111.html">-th moment</A>
+<B> Up:</B> <A NAME="tex2html1508"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1502"
+  HREF="node109.html">Median</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004222000000000000000"></A><A NAME="Operation:median"></A>
+<H2><A NAME="SECTION004223000000000000000"></A><A NAME="Operation:stdDev"></A>
 <BR>
-Median
+Standard Deviation
 </H2>
 
 <P>
-Returns the median  along a named dimension of all
-elements present. If the dimension is not named, then the median is
-over all elements present in the tensor. 
+Returns the standard deviation along a named dimension of all
+elements present. If the dimension is not named, then the standard
+deviation is over all elements present in the tensor. Note that
+missing elements are not counted.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\sigma = \frac1{N-1}\sum_i^N (x_i-\langle x\rangle)^2
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="176" HEIGHT="56" BORDER="0"
+ SRC="img222.png"
+ ALT="\begin{displaymath}
+\sigma = \frac1{N-1}\sum_i^N (x_i-\langle x\rangle)^2
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
 <BR><HR>
