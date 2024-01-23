@@ -414,7 +414,7 @@ simulation time $t$, and the current (adaptive) difference between
 iterations $\Delta t$.
 
 \subsection{Wiring and Equations Tabs}
-\label{WiringEquationsTab}
+\label{WiringEquationsTab}\label{tabs:wiring}
 
 \htmladdimg{WiringEquationsTab.png}
 
@@ -699,6 +699,21 @@ leading into the variable by a \hyperref{user defined function}{user
   defined function (\S}{)}{UserFunction} containing your
 edited string. At some future point, functionality will be added to
 convert a user defined function into a wiring graph.
+
+\subsection{Phillips diagram tab}\label{tabs:Phillips}
+
+This tab implement's Minsky's take on a \htmladdnormallink{Phillips
+  diagram showing the stocks and flows in a monetary
+  economy}{https://en.wikipedia.org/wiki/Phillips_Machine}. The
+Phillips tab shows all the information contained in the Godley tables
+of the model - if there aren't any, this tab will be blank.
+
+Initially, all the stocks will be arranged around a circle, with the
+flows shown as connecting arrows showing the current direction of the
+flow. You can move and rotate the stocks, and bend the flows to make a
+pleasing layout. The stocks will be coloured as though filled with a
+fluid like Bill Phillip's original analogue computer, and dynamically
+updated as the simulation proceeds.
 
 \subsection{Publication tab}\label{tabs:Publication}
 
