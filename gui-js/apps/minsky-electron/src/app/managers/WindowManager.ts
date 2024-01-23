@@ -181,6 +181,7 @@ export class WindowManager {
       minHeight: minHeight || Math.min(height, 200),
       title,
       resizable: true,
+      useContentSize: true,
       minimizable: false,
       show: false,
       parent: null /* modal ? mainWindow : null */, // Having a parent hides control on MacOS
