@@ -88,20 +88,17 @@
   }
 }
 
-.autocomplete {
-  width: 11.125rem;
-}
-
-::ng-deep .mat-mdc-option-text {
-  font-size: 0.7rem !important;
+::ng-deep .mat-mdc-autocomplete-panel {
+  width: 9rem !important;
 }
 
 ::ng-deep .mat-mdc-option {
-  height: 18px !important;
-}
+  min-height: 0.9rem !important;
+  height: 0.9rem !important;
 
-::ng-deep .cdk-overlay-pane {
-  height: 4.5rem !important;
+  span.mdc-list-item__primary-text {
+    font-size: 0.8rem !important;
+  }
 }
 
 table {
