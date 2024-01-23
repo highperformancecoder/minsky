@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Creating a banking model</TITLE>
-<META NAME="description" CONTENT="Creating a banking model">
+<TITLE>Wiring components together</TITLE>
+<META NAME="description" CONTENT="Wiring components together">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,62 +14,81 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node34.html">
 <LINK REL="previous" HREF="node32.html">
-<LINK REL="up" HREF="node28.html">
+<LINK REL="up" HREF="node29.html">
 <LINK REL="next" HREF="node34.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html577"
+<A NAME="tex2html583"
   HREF="node34.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html575"
-  HREF="node28.html">
+<A NAME="tex2html581"
+  HREF="node29.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html571"
+<A NAME="tex2html575"
   HREF="node32.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html578"
-  HREF="node34.html">Creating a bank</A>
-<B> Up:</B> <A NAME="tex2html576"
-  HREF="node28.html">Working with Minsky</A>
-<B> Previous:</B> <A NAME="tex2html572"
-  HREF="node32.html">Wiring components together</A>
+<B> Next:</B> <A NAME="tex2html584"
+  HREF="node34.html">Creating a banking model</A>
+<B> Up:</B> <A NAME="tex2html582"
+  HREF="node29.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html576"
+  HREF="node32.html">Creating an equation</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00245000000000000000"></A>
-<A NAME="creatingBankingModel"></A>
-<BR>
-Creating a banking model
+<H2><A NAME="SECTION00244000000000000000">
+Wiring components together</A>
 </H2>
 
 <P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+A model is constructed by wiring one component to another in a way
+that defines an equation. Wires are drawn from the output port of one
+block to the input port of another. Ports are circles on the blocks to
+which wires can be attached, which can be seen when hovering the
+pointer over the block. Variables have an input and an output
+port; constants and parameters only have an output port. A
+mathematical operator has as many input ports as are needed to define
+the operation.
 
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html579"
-  HREF="node34.html">Creating a bank</A>
-<LI><A NAME="tex2html580"
-  HREF="node35.html">Entering accounts</A>
-<LI><A NAME="tex2html581"
-  HREF="node36.html">Entering flows between accounts</A>
-<LI><A NAME="tex2html582"
-  HREF="node37.html">Defining flows</A>
-<LI><A NAME="tex2html583"
-  HREF="node38.html">Copying Godley Table input &amp; outputs</A>
-<LI><A NAME="tex2html584"
-  HREF="node39.html">Using &ldquo;Time Constants&rdquo;</A>
-<LI><A NAME="tex2html585"
-  HREF="node40.html">Multiple banks</A>
-</UL>
-<!--End of Table of Child-Links-->
+<P>
+To construct an equation, such as Fred - Wilma = Barney:
+
+<P>
+Click the mouse near the output port of one block and drag the
+cursor to the input port of another while holding the mouse button
+down. An arrow extends out from the output port. Release the mouse
+button near the required input port of the operator. A connection will
+be made.
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="221" HEIGHT="141" ALIGN="BOTTOM" BORDER="0"
+ SRC="img93.png"
+ ALT="\includegraphics{images/NewItem181.eps}"> 
+
+</DIV>
+
+<P>
+The equation is completed by wiring up the other components in the same way.
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="354" HEIGHT="141" ALIGN="BOTTOM" BORDER="0"
+ SRC="img94.png"
+ ALT="\includegraphics{images/NewItem182.eps}"> 
+
+</DIV>
+
+<P>
 <BR><HR>
 
 </BODY>

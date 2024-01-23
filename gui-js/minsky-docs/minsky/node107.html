@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Mean</TITLE>
-<META NAME="description" CONTENT="Mean">
+<TITLE>Shape</TITLE>
+<META NAME="description" CONTENT="Shape">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,43 +16,42 @@
 
 <LINK REL="next" HREF="node108.html">
 <LINK REL="previous" HREF="node106.html">
-<LINK REL="up" HREF="node86.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node108.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1475"
+<A NAME="tex2html1479"
   HREF="node108.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1473"
-  HREF="node86.html">
+<A NAME="tex2html1477"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1467"
+<A NAME="tex2html1471"
   HREF="node106.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1476"
-  HREF="node108.html">Median</A>
-<B> Up:</B> <A NAME="tex2html1474"
-  HREF="node86.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1468"
-  HREF="node106.html">Shape</A>
+<B> Next:</B> <A NAME="tex2html1480"
+  HREF="node108.html">Mean</A>
+<B> Up:</B> <A NAME="tex2html1478"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1472"
+  HREF="node106.html">Size</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004221000000000000000"></A><A NAME="Operation:mean"></A>
+<H2><A NAME="SECTION004220000000000000000"></A><A NAME="Operation:shape"></A>
 <BR>
-Mean
+Shape
 </H2>
 
 <P>
-Returns the mean (or average) along a named dimension of all
-elements present. If the dimension is not named, then the mean is
-over all elements present in the tensor. Note that missing elements
-are not counted.
+Returns a vector of axis sizes. Coupling this operation with a
+<A HREF="node100.html#Operation:gather">gather</A> operation
+and variable would allow you interactively select axis size.
 
 <P>
 <BR><HR>

@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Histogram</TITLE>
-<META NAME="description" CONTENT="Histogram">
+<TITLE>-th moment</TITLE>
+<META NAME="description" CONTENT="-th moment">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,58 +16,96 @@
 
 <LINK REL="next" HREF="node112.html">
 <LINK REL="previous" HREF="node110.html">
-<LINK REL="up" HREF="node86.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node112.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1515"
+<A NAME="tex2html1519"
   HREF="node112.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1513"
-  HREF="node86.html">
+<A NAME="tex2html1517"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1507"
+<A NAME="tex2html1511"
   HREF="node110.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1516"
-  HREF="node112.html">Covariance</A>
-<B> Up:</B> <A NAME="tex2html1514"
-  HREF="node86.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1508"
-  HREF="node110.html">-th moment</A>
+<B> Next:</B> <A NAME="tex2html1520"
+  HREF="node112.html">Histogram</A>
+<B> Up:</B> <A NAME="tex2html1518"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1512"
+  HREF="node110.html">Standard Deviation</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004225000000000000000"></A><A NAME="Operation:histogram"></A>
+<H2><A NAME="SECTION004224000000000000000"></A><A NAME="Operation:moment"></A>
 <BR>
-Histogram
+<SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment
 </H2>
 
 <P>
-Computes the histogram along a named dimension of all
-elements present. If the dimension is not named, then the histogram
-is over all elements present in the tensor. The number of bins is
-specified by the numeric argument to the operation.
+Returns the <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment about the mean along a named dimension of
+all elements present. <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN> is specified by the numerical argument of
+the operation, which defaults to 1 (hence the result will be 0 in that
+case). If the dimension is not named, then the <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment is over
+all elements present in the tensor. Note that missing elements are not
+counted.
 
 <P>
-<DIV ALIGN="CENTER">
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/histogram.eps}}$
+ \begin{displaymath}
+\langle\Delta x^k\rangle = \frac1N\sum_i(x_i-\langle x\rangle)^k
+\end{displaymath}
  -->
-<IMG
- WIDTH="556" HEIGHT="484" ALIGN="BOTTOM" BORDER="0"
- SRC="img225.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/histogram.eps}}">
-</DIV>
-<P>
-<DIV ALIGN="CENTER"><EM>An example usage of the histogram operation</EM>
 
+<IMG
+ WIDTH="182" HEIGHT="48" BORDER="0"
+ SRC="img223.png"
+ ALT="\begin{displaymath}
+\langle\Delta x^k\rangle = \frac1N\sum_i(x_i-\langle x\rangle)^k
+\end{displaymath}">
 </DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+Also
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\sigma^2 = \frac{N}{N-1}\langle\Delta x^2\rangle
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="124" HEIGHT="41" BORDER="0"
+ SRC="img224.png"
+ ALT="\begin{displaymath}
+\sigma^2 = \frac{N}{N-1}\langle\Delta x^2\rangle
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
 <BR><HR>

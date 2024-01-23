@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Fundamental types</TITLE>
+<META NAME="description" CONTENT="Fundamental types">
+<META NAME="keywords" CONTENT="minsky">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="minsky.css">
+
+<LINK REL="previous" HREF="node141.html">
+<LINK REL="up" HREF="node136.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next_g.png"> 
+<A NAME="tex2html1912"
+  HREF="node136.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1908"
+  HREF="node148.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Up:</B> <A NAME="tex2html1913"
+  HREF="node136.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1909"
+  HREF="node148.html">Control Structures</A>
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00560000000000000000">
+Fundamental types</A>
+</H1>
+ExprTk supports three fundamental types which can be used freely in
+expressions. The types are as follows:
+
+<P>
+<DL>
+<DT><STRONG>Scalar Type</STRONG></DT>
+<DD>The scalar type  is a singular  numeric value. The  underlying type is
+that used  to specialise  the ExprTk  components (float,  double, long
+double, MPFR et al).
+
+<P>
+</DD>
+<DT><STRONG>Vector Type</STRONG></DT>
+<DD>The vector type is a fixed size sequence of contiguous scalar  values.
+A  vector  can be  indexed  resulting in  a  scalar value.  Operations
+between a vector and scalar will result in a vector with a size  equal
+to that  of the  original vector,  whereas operations  between vectors
+will result in a  vector of size equal  to that of the  smaller of the
+two. In both mentioned cases, the operations will occur element-wise.
+
+<P>
+</DD>
+<DT><STRONG>String Type</STRONG></DT>
+<DD>The string type is a variable length sequence of 8-bit chars.  Strings
+can be  assigned and  concatenated to  one another,  they can  also be
+manipulated via sub-ranges using the range definition syntax.  Strings
+however can not interact with scalar or vector types.
+
+<P>
+</DD>
+</DL>
+<BR><HR>
+
+</BODY>
+</HTML>
