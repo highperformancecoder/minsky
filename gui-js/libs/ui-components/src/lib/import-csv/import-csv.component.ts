@@ -78,6 +78,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
   existingDimensionNames: string[];
+  selectableDimensionNames: string[][];
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
   @ViewChild('fullDialog') fullDialog: ElementRef<HTMLElement>;
@@ -303,6 +304,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     let header = this.dialogState.spec.headerRow;
     this.csvCols = new Array(this.parsedLines[header]?.length);
     this.selected = new Array(this.parsedLines[header]?.length).fill(false);
+    this.selectableDimensionNames = this.parsedLines[this.dialogState.spec.headerRow].map(header => this.getSelectableNameDimensions(header));
     this.updateColumnTypes();
   }
 
@@ -509,6 +511,14 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       type: 'csv-import',
       command: this.variableValuesSubCommand.$prefix(),
     });
+  }
+
+  // creates list of selectable name dimensions, adding header value to existing dimensions if necessary
+  // should not be called from HTML template because this will create a massive number of arrays that have to be garbage-collected
+  getSelectableNameDimensions(headerValue: string) {
+    const selectableDimensions = this.existingDimensionNames.slice();
+    if(!selectableDimensions.includes(headerValue)) selectableDimensions.push(headerValue);
+    return selectableDimensions;
   }
 
   closeWindow() { this.electronService.closeWindow(); }
