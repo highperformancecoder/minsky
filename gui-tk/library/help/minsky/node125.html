@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Wires</TITLE>
-<META NAME="description" CONTENT="Wires">
+<TITLE>Groups</TITLE>
+<META NAME="description" CONTENT="Groups">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,63 +15,128 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node126.html">
-<LINK REL="previous" HREF="node117.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="previous" HREF="node124.html">
+<LINK REL="up" HREF="node45.html">
 <LINK REL="next" HREF="node126.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1664"
+<A NAME="tex2html1658"
   HREF="node126.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1662"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1656"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1650"
   HREF="node124.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1665"
-  HREF="node126.html">Tensor values</A>
-<B> Up:</B> <A NAME="tex2html1663"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1657"
-  HREF="node124.html">Variable Browser</A>
+<B> Next:</B> <A NAME="tex2html1659"
+  HREF="node126.html">Plot widget</A>
+<B> Up:</B> <A NAME="tex2html1657"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1651"
+  HREF="node124.html">Tensor values</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00450000000000000000">
-Wires</A>
+<H1><A NAME="SECTION00470000000000000000"></A><A NAME="Group"></A>
+<BR>
+Groups
 </H1>
 
 <P>
-Wire represent the flow of values from one operation to the next. To
-add a wire to the canvas, click on the output port of an operation or
-variable (right hand side of the icon in its initial unrotated
-orientation), and then drag it towards an input port (on the left hand
-side of an unrotated icon). You can't connect an operator to itself
-(that would be a loop, which is not allowed, unless passing through an
-integral), nor can an input port have more than one wire attached,
-with the exception of <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img46.png"
- ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img248.png"
- ALT="$\times/\div$"></SPAN>, where the multiple
-wires are summed or multiplied, respectively, and similarly max/min.
+Grouping gives the capability to create reusable modules, or
+subroutines that can dramatically simplify more complicated
+systems. Groups may be created in the following ways:
+
+<UL>
+<LI>by lassoing a number of items to select them, then selecting
+  &ldquo;group&rdquo; from the canvas context menu, or the edit menu.
+</LI>
+<LI>by pasting the selection. You may &ldquo;ungroup&rdquo; the group from the
+  context menu if you don't desire the result of the paste to be a
+  group.
+</LI>
+<LI>by copying another group
+</LI>
+<LI>by inserting a Minsky file as a group
+</LI>
+</UL>
 
 <P>
-Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
-a handle is dragged out of a straight line with its neighbours, new
-handles appear on either side. Handles can be removed by
-double-clicking on them.
+Zooming in on a group allows you see and edit its contents. Groups may
+be nested heirarchically, which gives an excellent way of zooming in
+to see the detail of a model, or zooming out to get an overview of
+it. The group context menu item &ldquo;Zoom to display&rdquo; zooms the canvas
+in just enough for the group's contents to be visible.
 
 <P>
-<BR><HR>
+You may also select &ldquo;Open in canvas&rdquo; from the context menu. This
+replaces the current canvas contents with the contents of the group,
+allowing you to edit the contents of the group directly without the
+distractions of the rest of the model. Select &ldquo;Open master group&rdquo; to
+return to the top level group occupying the canvas.
+
+<P>
+Around the edges of a group are input or output variables, which allow
+one to parameterise the group. One can drag a variable and dock it in
+the I/O area to create a new input or output for the group.
+
+<P>
+When creating a group, or dragging a variable or operation into or out
+of a group, if a wire ends up crossing the group boundary, a new
+temporary variable is added as an I/O variable. You may then edit the
+I/O variable name to be something more meaningful to your model.
+
+<P>
+Variable names within groups can be locally scoped to that group. That
+means that a variable of the same name outside the group refers to a
+different entity completely. By default, grouped variables refer to
+entities outside the group scope, but may be marked local by means of
+context menu option. One can also convert all variables in a group to
+be local by means of the &ldquo;Make subroutine&rdquo; context menu entry.
+
+<P>
+Nonlocal variables refers to a local variable within an outer scope,
+going all the way to global scope if no such variable exists. In this
+way, two groups can share a variable reference to a variable, and you
+can limit the scope of the shared variable by placing a local variable
+of the same name in an outer group that both groups are contain
+within.
+
+<P>
+A group can also be exported to a file from the context menu.  This
+allows you to build up a library of building blocks. There is a github
+project &ldquo;minsky-models&rdquo; allowing people to publish their building
+blocks and models for others to use. In the future, we hope to
+integrate Minsky with this github repository, allowing even more
+seamless sharing of models.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1658"
+  HREF="node126.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1656"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1650"
+  HREF="node124.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1659"
+  HREF="node126.html">Plot widget</A>
+<B> Up:</B> <A NAME="tex2html1657"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1651"
+  HREF="node124.html">Tensor values</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

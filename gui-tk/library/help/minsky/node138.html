@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Introduction</TITLE>
-<META NAME="description" CONTENT="Introduction">
+<TITLE>Example expressions</TITLE>
+<META NAME="description" CONTENT="Example expressions">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,61 +16,83 @@
 
 <LINK REL="next" HREF="node139.html">
 <LINK REL="previous" HREF="node137.html">
-<LINK REL="up" HREF="node137.html">
+<LINK REL="up" HREF="node135.html">
 <LINK REL="next" HREF="node139.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1803"
+<A NAME="tex2html1797"
   HREF="node139.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1801"
-  HREF="node137.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1795"
+  HREF="node135.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1789"
   HREF="node137.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1804"
-  HREF="node139.html">Capabilities</A>
-<B> Up:</B> <A NAME="tex2html1802"
-  HREF="node137.html">User defined functions</A>
-<B> Previous:</B> <A NAME="tex2html1796"
-  HREF="node137.html">User defined functions</A>
+<B> Next:</B> <A NAME="tex2html1798"
+  HREF="node139.html">Copyright notice</A>
+<B> Up:</B> <A NAME="tex2html1796"
+  HREF="node135.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1790"
+  HREF="node137.html">Capabilities</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00510000000000000000">
-Introduction</A>
+<H1><A NAME="SECTION00530000000000000000">
+Example expressions</A>
 </H1>
-The <A NAME="tex2html31"
-  HREF="https://www.partow.net/programming/exprtk/index.html">C++ Mathematical Expression  Toolkit Library (ExprTk)</A>
-is  a simple
-to  use,   easy  to   integrate  and   extremely  efficient   run-time
-mathematical  expression parsing  and evaluation  engine. The  parsing
-engine  supports numerous  forms  of  functional and  logic processing
-semantics and is easily extensible.
+The following is  a short listing  of infix format  based mathematical
+expressions that can be parsed and evaluated using the ExprTk library.
 
 <P>
-With Minsky's user defined functions, expressions can refer to Minsky
-variables accessible from the current scope (ie local Minsky variables
-will hide global variables), and also parameters declared as part of
-the function name. One can also call other user defined functions,
-which is the only way a user defined function with more than 2
-parameters can be used. For 0-2 parameters, user defined functions can
-be wired into a Minsky computation.
 
-<P>
-ExprTk identifiers (such as variable names and function names) consist
-of alphanumeric characters plus '_' and '.'. They must start with a
-letter. Minsky is reserving the underscore and full stop to act as an
-escape sequence, in order to refer to the full range of possible
-Minsky variable identifiers, including all unicode characters. This
-section will be updated once that feature is in place -- for now,
-please avoid using those characters in identifiers.
+<UL>
+<LI><code>sqrt(1 - (3 / x^2))</code>
+</LI>
+<LI><code>clamp(-1, sin(2 * pi * x) + cos(y / 2 * pi), +1)</code>
+</LI>
+<LI><code>sin(2.34e-3 * x)</code>
+</LI>
+<LI><code>if(((x[2] + 2) == 3) and ((y + 5) &lt;= 9),1 + w, 2 / z)</code>
+</LI>
+<LI><code>inrange(-2,m,+2) == if(({-2 &lt;= m} and [m &lt;= +2]),1,0)</code>
+</LI>
+<LI><code>({1/1}*[1/2]+(1/3))-{1/4}^[1/5]+(1/6)-({1/7}+[1/8]*(1/9))</code>
+</LI>
+<LI><code>a * exp(2.2 / 3.3 * t) + c</code>
+</LI>
+<LI><code>z := x + sin(2.567 * pi / y)</code>
+</LI>
+<LI><code>u := 2.123 * {pi * z} / (w := x + cos(y / pi))</code>
+</LI>
+<LI><code>2x + 3y + 4z + 5w == 2 * x + 3 * y + 4 * z + 5 * w</code>
+</LI>
+<LI><code>3(x + y) / 2.9 + 1.234e+12 == 3 * (x + y) / 2.9 + 1.234e+12</code>
+</LI>
+<LI><code>(x + y)3.3 + 1 / 4.5 == [x + y] * 3.3 + 1 / 4.5</code>
+</LI>
+<LI><code>(x + y[i])z + 1.1 / 2.7 == (x + y[i]) * z + 1.1 / 2.7</code>
+</LI>
+<LI><code>(sin(x / pi) cos(2y) + 1) == (sin(x / pi) * cos(2 * y) + 1)</code>
+</LI>
+<LI><code>75x^17 + 25.1x^5 - 35x^4 - 15.2x^3 + 40x^2 - 15.3x + 1</code>
+</LI>
+<LI><code>(avg(x,y) &lt;= x + y ? x - y : x * y) + 2.345 * pi / x</code>
+</LI>
+<LI><code>while (x &lt;= 100) { x -= 1; }</code>
+</LI>
+<LI><code>x &lt;= 'abc123' and (y in 'AString') or ('1x2y3z' != z)</code>
+</LI>
+<LI><code>((x + 'abc') like '*123*') or ('a123b' ilike y)</code>
+</LI>
+<LI><code>sgn(+1.2^3.4z / -5.6y) &lt;= {-7.8^9 / -10.11x }</code>
+</LI>
+</UL>
 
 <P>
 <BR><HR>

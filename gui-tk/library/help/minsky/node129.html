@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Sheet Widget</TITLE>
-<META NAME="description" CONTENT="Sheet Widget">
+<TITLE>Godley Tables</TITLE>
+<META NAME="description" CONTENT="Godley Tables">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,61 +16,111 @@
 
 <LINK REL="next" HREF="node130.html">
 <LINK REL="previous" HREF="node128.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node45.html">
 <LINK REL="next" HREF="node130.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1704"
+<A NAME="tex2html1698"
   HREF="node130.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1702"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1696"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1690"
   HREF="node128.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1705"
-  HREF="node130.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html1703"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1697"
-  HREF="node128.html">Plot widget</A>
+<B> Next:</B> <A NAME="tex2html1699"
+  HREF="node130.html">Context Menu</A>
+<B> Up:</B> <A NAME="tex2html1697"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1691"
+  HREF="node128.html">Note Widget</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00490000000000000000"></A>
-<A NAME="Sheet"></A>
+<H1><A NAME="SECTION004110000000000000000"></A><A NAME="godley"></A><A NAME="GodleyIcon"></A>
 <BR>
-Sheet Widget
-</H1> The Sheet widget displays input data as a number, rather
-than as a 2D graph, as in the case of the plot widget.  To use the
-Sheet widget, simply wire a variable or other item on your canvas to
-the left-hand side of the sheet widget box. This will diplay the input
-data as a number. Note that only one wire can be connected to a sheet,
-as the sheet can only display a single input value.
+Godley Tables
+</H1>
 
 <P>
-The sheet widget can also display rank 0, 1 and rank 2 tensors. These
-ranks are single values, a string of values, or a 2D matrix of values,
-respectively.  For example, if you create a parameter, and set the
-initial condition to rand(3,5) (for reference, see section
-(&#167;<A HREF="node120.html#tensor-init">4.4.3</A>) ), you can wire that into a sheet.  The sheet
-will then diplay the data in a grid display within the widget box.
+Godley tables describes sets of financial flows from the point of view
+of a particular economic agent, such as a bank. The columns of the
+table represent accounts (possibly aggregated), which are treated as
+integration variables by the system. Accounts may be assets,
+liabilities or equities. Assets may appear as liabilities in another
+agent's Godley table, and vice versa, with the sense of the financial
+flows treated oppositely (a credit flow increasing the asset of one
+entity will appear as a debit flow, increasing the value of a
+liability). Transfers between accounts should satisfy the <EM>  accounting equation</EM><A NAME="2737"></A>
+(Assets-Liabilities-Equities = 0). So if the transfer is between an
+asset and a liability, then it should appear with the same sign (both
+positive or both negative), otherwise between two accounts of the same
+type, or between a liability and an equity, the terms should have
+opposite signs.
 
 <P>
-If you have Ravel<SUP><SMALL>TM</SMALL></SUP> installed, you will see a small
-<A HREF="node136.html#Ravel">Ravel</A> icon in the top left
-corner. Clicking this causes a ravel window to pop up, allowing you to
-manipulate the input data to the sheet, so as to change slices or
-rotate a multidimensional datacube.
+Instead of signed flows, one can optionally use CR and DR prefixes, as
+specified in the options panel. Each row of the table should have have
+one CR entry, and one DR entry. The row sum column should be zero if
+it is done correctly.
 
 <P>
-<BR><HR>
+The first row specifies the stock variables, after which follow the
+flow rows. Usually, the row marked &ldquo;Initial Conditions&rdquo; comes next,
+but may be placed in any position. These specify the initial
+conditions of the stock variables, and may refer to a multiple of
+another variable, just like the <A HREF="node117.html#var:init">initial condition
+  field</A>, or just be a numerical value.
+
+<P>
+Finally come the flows. The first column is a simple textual label
+(the phrase &ldquo;Initial Conditions&rdquo;, regardless of capitalisation, is a
+reserved phrase for setting stock variable initial conditions)
+identifying the flow. The flows themselves are written as a numerical
+multiplier times a flow variable. For example, if you wanted to
+transfer an amount between the asset and liability column, you might
+write &ldquo;Amount" in both columns, which would satisfy the equation
+A-L-E=0.  It would also be possible to write &ldquo;2Amount" in the asset
+column, along with &ldquo;Amount" in both the Liability and Equity
+columns. This would still satisfy A-L-E=0.
+
+<P>
+The Godley table also shows the value of the entered variable,
+displayed within the table.  For example, if you set &ldquo;Amount" to
+equal the value of system time, on opening the Godley table, wherever
+you entered &ldquo;Amount" in the table the cell would show &ldquo;Amount =
+0.00" if the system time was set to 0.00. This provides a helpful tool
+for displaying the value of the variable at that point in the
+simulation.  This feature can be enabled or disabled in the
+preferences panel.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1698"
+  HREF="node130.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1696"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1690"
+  HREF="node128.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1699"
+  HREF="node130.html">Context Menu</A>
+<B> Up:</B> <A NAME="tex2html1697"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1691"
+  HREF="node128.html">Note Widget</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

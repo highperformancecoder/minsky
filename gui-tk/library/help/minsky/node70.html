@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>User defined function</TITLE>
-<META NAME="description" CONTENT="User defined function">
+<TITLE>integrate </TITLE>
+<META NAME="description" CONTENT="integrate ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,59 +16,51 @@
 
 <LINK REL="next" HREF="node71.html">
 <LINK REL="previous" HREF="node69.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node71.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1086"
+<A NAME="tex2html1080"
   HREF="node71.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1084"
-  HREF="node48.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1078"
+  HREF="node46.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1072"
   HREF="node69.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1087"
-  HREF="node71.html">copy</A>
-<B> Up:</B> <A NAME="tex2html1085"
-  HREF="node48.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1079"
-  HREF="node69.html">differentiate</A>
+<B> Next:</B> <A NAME="tex2html1081"
+  HREF="node71.html">sqrt</A>
+<B> Up:</B> <A NAME="tex2html1079"
+  HREF="node46.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html1073"
+  HREF="node69.html">copy</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004122000000000000000"></A><A NAME="Operation:userFunction"></A><A NAME="UserFunction"></A>
+<H2><A NAME="SECTION004124000000000000000"></A><A NAME="IntOp"></A>
 <BR>
-User defined
-  function
-</H2>
-
-<P>
-A user defined function is a functioned defined by an algebraic
-expression. Support for this feature is courtesy of the wonderful
-<A NAME="tex2html7"
-  HREF="http://www.partow.net/programming/exprtk/index.html">exprtk</A>
-library developed by Arash Partow.
-
-<P>
-A user defined function has a <EM>name</EM>, <EM>parameters</EM> and an <EM>  expression</EM>. Example expressions are things like <code>x+y</code> or
-<code>sin(x)</code>. More details of the sorts of expressions possible can
-be found in the <A HREF="node137.html#ExprTk">User Defined Functions</A> section of
-the manual.
-
-<P>
-The parameters are specified as part of the name, so a user defined
-function adding x and y would be called <code>useradd(a,y)</code> and the
-sin example might be called <code>mysin(x)</code>. Functions with up to two
-arguments can be wired on the canvas. User defined functions can call
-other user defined functions, so specifiying more than 2 parameters
-can be a useful thing to do.
+integrate <SPAN CLASS="MATH"><IMG
+ WIDTH="31" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img15.png"
+ ALT="$\int dt$"></SPAN>
+</H2>  Creates an integration (or stock)
+variable. Editable attributes include the variable's name and its
+initial value at <SPAN CLASS="MATH"><IMG
+ WIDTH="39" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img190.png"
+ ALT="$t=0$"></SPAN>. The function to be integrated needs to be
+connected to the top port, labelled `<SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img191.png"
+ ALT="$f$"></SPAN>'. The bottom port, labelled `0', can optionally be connected
+to a constant, parameter or variable, which is used to specify the
+initial value of the integral.
 
 <P>
 <BR><HR>

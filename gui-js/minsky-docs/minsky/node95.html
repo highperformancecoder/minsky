@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>infindex</TITLE>
-<META NAME="description" CONTENT="infindex">
+<TITLE>running sum </TITLE>
+<META NAME="description" CONTENT="running sum ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,38 +16,105 @@
 
 <LINK REL="next" HREF="node96.html">
 <LINK REL="previous" HREF="node94.html">
-<LINK REL="up" HREF="node88.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node96.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1361"
+<A NAME="tex2html1355"
   HREF="node96.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1359"
-  HREF="node88.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1353"
+  HREF="node86.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1347"
   HREF="node94.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1362"
-  HREF="node96.html">supindex</A>
-<B> Up:</B> <A NAME="tex2html1360"
-  HREF="node88.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1354"
-  HREF="node94.html">all</A>
+<B> Next:</B> <A NAME="tex2html1356"
+  HREF="node96.html">running product</A>
+<B> Up:</B> <A NAME="tex2html1354"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1348"
+  HREF="node94.html">supindex</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00427000000000000000"></A><A NAME="Operation:infIndex"></A>
+<H2><A NAME="SECTION00429000000000000000"></A><A NAME="Operation:runningSum"></A>
 <BR>
-infindex
-</H2> Return the index of
-the least value along a given axis.
+running sum <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img21.png"
+ ALT="$\sum +$"></SPAN>
+</H2> Computes
+the running sum of the input tensor along a given axis. For example,
+take this rank 2 tensor:
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\left(
+    \begin{array}{cccc}
+      1& 2& 3& 4 \\
+      5& 4& 3& 2 \\
+      8& 7& 6& 5
+    \end{array}
+  \right)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="116" HEIGHT="64" BORDER="0"
+ SRC="img198.png"
+ ALT="\begin{displaymath}
+\left(
+\begin{array}{cccc}
+1&amp; 2&amp; 3&amp; 4 \\
+5&amp; 4&amp; 3&amp; 2 \\
+8&amp; 7&amp; 6&amp; 5
+\end{array} \right)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+The running sum of this tensor, along the horizontal dimension, is:
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\left(
+    \begin{array}{cccc}
+      1& 3& 6& 10 \\
+      5& 9& 12& 14 \\
+      8& 15& 21& 26
+    \end{array}
+  \right)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="140" HEIGHT="64" BORDER="0"
+ SRC="img199.png"
+ ALT="\begin{displaymath}
+\left(
+\begin{array}{cccc}
+1&amp; 3&amp; 6&amp; 10 \\
+5&amp; 9&amp; 12&amp; 14 \\
+8&amp; 15&amp; 21&amp; 26
+\end{array} \right)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
 <BR><HR>

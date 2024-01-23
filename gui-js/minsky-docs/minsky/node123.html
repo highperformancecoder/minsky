@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Duplicate keys</TITLE>
-<META NAME="description" CONTENT="Duplicate keys">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,52 +15,60 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node124.html">
-<LINK REL="previous" HREF="node122.html">
-<LINK REL="up" HREF="node117.html">
+<LINK REL="previous" HREF="node115.html">
+<LINK REL="up" HREF="node45.html">
 <LINK REL="next" HREF="node124.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1646"
+<A NAME="tex2html1638"
   HREF="node124.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1644"
-  HREF="node117.html">
+<A NAME="tex2html1636"
+  HREF="node45.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1638"
+<A NAME="tex2html1630"
   HREF="node122.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1647"
-  HREF="node124.html">Variable Browser</A>
-<B> Up:</B> <A NAME="tex2html1645"
-  HREF="node117.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1639"
-  HREF="node122.html">Importing a parameter from</A>
+<B> Next:</B> <A NAME="tex2html1639"
+  HREF="node124.html">Tensor values</A>
+<B> Up:</B> <A NAME="tex2html1637"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1631"
+  HREF="node122.html">Variable Browser</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00446000000000000000">
-Duplicate keys</A>
-</H2>
+<H1><A NAME="SECTION00450000000000000000">
+Wires</A>
+</H1>
 
 <P>
-In a hypercube, data is indexed by a list of indices, collectively
-known as a key. The indices may be strings, integers or date/time
-values. If more than one value exists in the CSV file for a given key,
-Minsky throws a &ldquo;Duplicate key&rdquo; exception. This exception gives you
-the option of writing a report, which is basically a sorted version of
-the original CSV file, with the errors listed at the beginning. You
-can open this report in a spreadsheet to see if data needs to be
-corrected or removed.
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire attached,
+with the exception of <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img46.png"
+ ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img249.png"
+ ALT="$\times/\div$"></SPAN>, where the multiple
+wires are summed or multiplied, respectively, and similarly max/min.
 
 <P>
-In the case where the data is correct, but there are still duplicate
-keys, such as the example in the previous section, the duplicate keys
-may be aggregated over by setting the &ldquo;Duplicate Key action&rdquo; option.
+Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
 <BR><HR>

@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Godley Tables</TITLE>
-<META NAME="description" CONTENT="Godley Tables">
+<TITLE>Canvas background and keyboard shortcuts</TITLE>
+<META NAME="description" CONTENT="Canvas background and keyboard shortcuts">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,111 +16,106 @@
 
 <LINK REL="next" HREF="node132.html">
 <LINK REL="previous" HREF="node130.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node45.html">
 <LINK REL="next" HREF="node132.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1724"
+<A NAME="tex2html1718"
   HREF="node132.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1722"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1716"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1710"
   HREF="node130.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1725"
-  HREF="node132.html">Context Menu</A>
-<B> Up:</B> <A NAME="tex2html1723"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1717"
-  HREF="node130.html">Note Widget</A>
+<B> Next:</B> <A NAME="tex2html1719"
+  HREF="node132.html">Dimensional Analysis</A>
+<B> Up:</B> <A NAME="tex2html1717"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1711"
+  HREF="node130.html">Context Menu</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004110000000000000000"></A><A NAME="godley"></A><A NAME="GodleyIcon"></A>
-<BR>
-Godley Tables
+<H1><A NAME="SECTION004130000000000000000">
+Canvas background and keyboard shortcuts</A>
 </H1>
 
 <P>
-Godley tables describes sets of financial flows from the point of view
-of a particular economic agent, such as a bank. The columns of the
-table represent accounts (possibly aggregated), which are treated as
-integration variables by the system. Accounts may be assets,
-liabilities or equities. Assets may appear as liabilities in another
-agent's Godley table, and vice versa, with the sense of the financial
-flows treated oppositely (a credit flow increasing the asset of one
-entity will appear as a debit flow, increasing the value of a
-liability). Transfers between accounts should satisfy the <EM>  accounting equation</EM><A NAME="2730"></A>
-(Assets-Liabilities-Equities = 0). So if the transfer is between an
-asset and a liability, then it should appear with the same sign (both
-positive or both negative), otherwise between two accounts of the same
-type, or between a liability and an equity, the terms should have
-opposite signs.
+The canvas is not simply an inert place for the canvas items to
+exist. There is also a background context menu, giving access to the
+edit menu functionality such as cut/copy/paste, and also keyboard
+entry.
 
 <P>
-Instead of signed flows, one can optionally use CR and DR prefixes, as
-specified in the options panel. Each row of the table should have have
-one CR entry, and one DR entry. The row sum column should be zero if
-it is done correctly.
+Special keys:
+<TABLE CELLPADDING=3>
+<TR><TD ALIGN="RIGHT">F1</TD>
+<TD ALIGN="LEFT">context sensitive help</TD>
+</TR>
+<TR><TD ALIGN="RIGHT">Shift</TD>
+<TD ALIGN="LEFT">enter panning mode</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><!-- MATH
+ $\leftarrow,\rightarrow,\uparrow,\downarrow$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="73" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img265.png"
+ ALT="$\leftarrow,\rightarrow,\uparrow,\downarrow$"></SPAN></TD>
+<TD ALIGN="LEFT">adjust sliders, adjust Ravel slicers</TD>
+</TR>
+</TABLE>  
 
 <P>
-The first row specifies the stock variables, after which follow the
-flow rows. Usually, the row marked &ldquo;Initial Conditions&rdquo; comes next,
-but may be placed in any position. These specify the initial
-conditions of the stock variables, and may refer to a multiple of
-another variable, just like the <A HREF="node119.html#var:init">initial condition
-  field</A>, or just be a numerical value.
+The following keystrokes insert an operation
 
 <P>
-Finally come the flows. The first column is a simple textual label
-(the phrase &ldquo;Initial Conditions&rdquo;, regardless of capitalisation, is a
-reserved phrase for setting stock variable initial conditions)
-identifying the flow. The flows themselves are written as a numerical
-multiplier times a flow variable. For example, if you wanted to
-transfer an amount between the asset and liability column, you might
-write &ldquo;Amount" in both columns, which would satisfy the equation
-A-L-E=0.  It would also be possible to write &ldquo;2Amount" in the asset
-column, along with &ldquo;Amount" in both the Liability and Equity
-columns. This would still satisfy A-L-E=0.
+<TABLE CELLPADDING=3>
+<TR><TD ALIGN="RIGHT"><code>+</code></TD>
+<TD ALIGN="LEFT">add</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>-</code></TD>
+<TD ALIGN="LEFT">subtract</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>*</code></TD>
+<TD ALIGN="LEFT">multiply</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code></code>/</TD>
+<TD ALIGN="LEFT">divide</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>^</code></TD>
+<TD ALIGN="LEFT">pow</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>%</code></TD>
+<TD ALIGN="LEFT">percent operator</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>&amp;</code></TD>
+<TD ALIGN="LEFT">integral</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>=</code></TD>
+<TD ALIGN="LEFT">Godley table</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>@</code></TD>
+<TD ALIGN="LEFT">plot</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>#</code></TD>
+<TD ALIGN="LEFT">start a text comment, finish with return</TD>
+</TR>
+</TABLE>
 
 <P>
-The Godley table also shows the value of the entered variable,
-displayed within the table.  For example, if you set &ldquo;Amount" to
-equal the value of system time, on opening the Godley table, wherever
-you entered &ldquo;Amount" in the table the cell would show &ldquo;Amount =
-0.00" if the system time was set to 0.00. This provides a helpful tool
-for displaying the value of the variable at that point in the
-simulation.  This feature can be enabled or disabled in the
-preferences panel.
+Typing any other character, then return will insert an operation (if
+the name matches), or otherwise a variable with that name.
 
 <P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1724"
-  HREF="node132.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1722"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1716"
-  HREF="node130.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1725"
-  HREF="node132.html">Context Menu</A>
-<B> Up:</B> <A NAME="tex2html1723"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1717"
-  HREF="node130.html">Note Widget</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

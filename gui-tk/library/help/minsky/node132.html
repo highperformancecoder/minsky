@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Context Menu</TITLE>
-<META NAME="description" CONTENT="Context Menu">
+<TITLE>Dimensional Analysis</TITLE>
+<META NAME="description" CONTENT="Dimensional Analysis">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,252 +16,128 @@
 
 <LINK REL="next" HREF="node133.html">
 <LINK REL="previous" HREF="node131.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node45.html">
 <LINK REL="next" HREF="node133.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1734"
+<A NAME="tex2html1728"
   HREF="node133.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1732"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1726"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1720"
   HREF="node131.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1735"
-  HREF="node133.html">Canvas background and keyboard</A>
-<B> Up:</B> <A NAME="tex2html1733"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1727"
-  HREF="node131.html">Godley Tables</A>
+<B> Next:</B> <A NAME="tex2html1729"
+  HREF="node133.html">Bookmarks</A>
+<B> Up:</B> <A NAME="tex2html1727"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1721"
+  HREF="node131.html">Canvas background and keyboard</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004120000000000000000">
-Context Menu</A>
+<H1><A NAME="SECTION004140000000000000000">
+Dimensional Analysis</A>
 </H1>
 
 <P>
-All canvas items have a context menu, which allow a variety of
-operations to be applied to the canvas item. Common context menu items
-are explained here:
-<DL>
-<DT><STRONG>Help</STRONG></DT>
-<DD>bring up context specific help for the item
-</DD>
-<DT><STRONG>Description</STRONG></DT>
-<DD>Attach an annotation to the item. This is only
-  visible by selecting the description item from the context menu,
-  although whatever is set as the &ldquo;Short Description&rdquo; will also
-  appear as a tooltip whenever the mouse hovers over the item.
-</DD>
-<DT><STRONG>Port values</STRONG></DT>
-<DD>When running a simulation, you can drill down into
-  the actual values at the input and output ports of the variable or
-  operation, which is a useful aid for debugging models.
-</DD>
-<DT><STRONG>Edit</STRONG></DT>
-<DD>set or query various attributes of an item. This function
-  can also be accessed by double clicking on the item. (Plot widgets
-  behave slightly differently).
-</DD>
-<DT><STRONG>Copy</STRONG></DT>
-<DD>Creates a copy of an item, retaining the same attributes
-  of the original. This is very useful for creating copies of the same
-  variable to reduce the amount of overlapping wiring (aka &ldquo;rats
-  nest") in a model.
-</DD>
-<DT><STRONG>Flip</STRONG></DT>
-<DD>actually rotates an object through <SPAN CLASS="MATH"><IMG
- WIDTH="35" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
- SRC="img262.png"
- ALT="$180^\circ$"></SPAN>. You can
-  specify aribtrary rotations of objects through the edit menu.
-</DD>
-<DT><STRONG>Delete</STRONG></DT>
-<DD>delete the object.
-</DD>
-</DL>
+Dimensional analysis is the idea of attaching units of measurement (eg
+metre or second) to the quantities being computed. It provides an
+additional constraint that the system must satisfy, reducing the
+chance of wiring errors. Two different units being added together will
+throw up an error - you cannot add 2 metres to 3 kilograms. But it
+should be possible add 2 metres to 3 feet, and get the correct
+answer. You may need to explicitly add a multiply operation to convert
+from one unit to another, for example, dividing the 3 feet by 3.281
+before adding it to the 2 metres, providing a total of 2.914 meters.
 
 <P>
-Item specific context menu items:
-<DL>
-<DT><STRONG>variables, parameters and constants</STRONG></DT>
-<DD>
-  <DL>
-<DT><STRONG>Local</STRONG></DT>
-<DD>Make the variable's scope local to its
-    <A HREF="node127.html#Group">group</A>
-  
-</DD>
-<DT><STRONG>Find definition</STRONG></DT>
-<DD>Place a red circle on the variable that
-    defines its value.
-  
-</DD>
-<DT><STRONG>Select all instances</STRONG></DT>
-<DD>Select all instances of this variable
-  
-</DD>
-<DT><STRONG>Rename all instance</STRONG></DT>
-<DD>Do a global search and replace of this
-    variable name with a new name.
-  
-</DD>
-<DT><STRONG>Hide variable definition</STRONG></DT>
-<DD>Hides the current variable's defining
-    variable, and associated calculation network, to tidy up the
-    model. All variables are listed in the <A HREF="node26.html#tabs:Variables">Variable's
-      tab</A>. Variables may be
-    unhidden by selecting &ldquo;Show variable on canvas&rdquo; on the variable's tab.
-  
-</DD>
-<DT><STRONG>Export as CSV</STRONG></DT>
-<DD>Export the current variable's value as a CSV
-    file. Obviously only really useful when the variable contains a
-    <A HREF="node126.html#tensors">tensor</A>
-  
-</DD>
-<DT><STRONG>Add integral</STRONG></DT>
-<DD>attach an integration operation, and convert the
-    variable into an integral type
-  
-</DD>
-</DL>
-</DD>
-<DT><STRONG>integrals</STRONG></DT>
-<DD>
-  <DL>
-<DT><STRONG>Copy Var</STRONG></DT>
-<DD>copy just the integration variable, not the
-    integration operation
-  
-</DD>
-<DT><STRONG>Toggle Var Binding</STRONG></DT>
-<DD>Normally, integrals are tightly bound to
-    their variables. By toggling the binding, the integral icon can
-    then be moved independently of the variable it is bound to.
-  
-</DD>
-</DL>
-</DD>
-<DT><STRONG>Godley tables</STRONG></DT>
-<DD>
-  <DL>
-<DT><STRONG>Open Godley Table</STRONG></DT>
-<DD>opens a spreadsheet to allow financial
-    flows defining the Godley table to be entered or modified.
-  
-</DD>
-<DT><STRONG>Resize Godley Table</STRONG></DT>
-<DD>allows the icon to be resized.
-  
-</DD>
-<DT><STRONG>Edit/Copy var</STRONG></DT>
-<DD>allows individual stock and flow variables to
-    be copied or edited.
-  
-</DD>
-<DT><STRONG>Export to file</STRONG></DT>
-<DD>export table contents as either CSV data, or
-    as a LaTeX table, for import into other software.
-  
-</DD>
-</DL>
+<SPAN  CLASS="textbf">Using Dimensional Analysis in Minsky</SPAN>
 
 <P>
-</DD>
-<DT><STRONG>Groups</STRONG></DT>
-<DD>
-  <DL>
-<DT><STRONG>Zoom to Display</STRONG></DT>
-<DD>Zoom the canvas sufficiently to see the
-    contents of the group.
-  
-</DD>
-<DT><STRONG>Resize</STRONG></DT>
-<DD>Resize the group icon on the canvas.
-  
-</DD>
-<DT><STRONG>Save group as</STRONG></DT>
-<DD>Save the group in it's own Minsky file.
-  
-</DD>
-<DT><STRONG>Flip contents</STRONG></DT>
-<DD>Rotate each item within the group by
-    180<SPAN CLASS="MATH"><IMG
- WIDTH="11" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
- SRC="img263.png"
- ALT="$^\circ$"></SPAN>
-  
-</DD>
-<DT><STRONG>Ungroup</STRONG></DT>
-<DD>Ungroup the group, leaving it's contents as icons on
-    the canvas.
-  
-</DD>
-<DT><STRONG>contentBounds</STRONG></DT>
-<DD>Draws a box on the canvas indicating the
-    smallest bounding box containing the group items.
-  
-</DD>
-</DL>
+To attach units to quantities in Minsky, you use the units field of
+the variable/parameters/constants edit dialog box. Each word typed in
+this box describes a separate unit. &ldquo;^&rdquo; followed by an integer is
+used to represent a power. Finally, a single &ldquo;/&rdquo; indicates that the
+following units are on the denominator, dividing the first set of
+units by the second. So to represent the unit of acceleration, you can
+equivalently type all of the following:
 
 <P>
-</DD>
-<DT><STRONG>Plot Widgets</STRONG></DT>
-<DD>
-  <DL>
-<DT><STRONG>Expand</STRONG></DT>
-<DD>By double-clicking, or selecting &ldquo;Expand&rdquo; from the
-    context menu, a popup window is created of the plot, which can be
-    used examine the plotting in more detail.
+
+<UL>
+<LI><code>m/s^2</code>
+</LI>
+<LI><code>m/s s</code>
+</LI>
+<LI><code>m/s^-2</code>
+</LI>
+</UL>
 
 <P>
-</DD>
-<DT><STRONG>Resize</STRONG></DT>
-<DD>Allows you to resize the plot icon on the canvas
-  
-</DD>
-<DT><STRONG>Options</STRONG></DT>
-<DD>Customize the plot by adding a title, axes labels and
-    control the number of axis ticks and grid lines on the detailed
-    plot. You can also add a legend, which is populated from the names
-    of variables attached to the plot.
-  
-</DD>
-</DL>
+Or spelling it out in full:
 
 <P>
-</DD>
-</DL>
+
+<UL>
+<LI><code>metre/second^2</code>
+</LI>
+<LI><code>metre second^-2</code>
+</LI>
+<LI><code>metre / second second</code>
+</LI>
+</UL>
+
+<P>
+Note that metre and m are distinctly different units in Minsky.
+
+<P>
+Note - setting the time dimension is done in the
+<A HREF="node13.html#RungeKutta">simulation menu</A>
+
+<P>
+Consider the network introduced in the <A HREF="node2.html#intro:new">New to System
+  Dynamics</A> section of the Minsky
+manual. For GDP, one could enter $/year for the units. Labor
+Productivity should be expressed in terms of $ per person year. If
+the system does not accept $/person year, you can enter this as
+<code>$ person^-1 year^-1</code>.  Finally, Population has units of
+person. Press reset, and the Workers variable automatically has units
+of person, and EmpRate is dimensionless.
+
+<P>
+All function objects require dimensionless inputs. You can use
+dimensional analysis to prevent incorrectly feeding a degree
+measurement into a sin, by requiring them to be multiplied by a
+radiansPerDegree parameter.
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html1734"
+<A NAME="tex2html1728"
   HREF="node133.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1732"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1726"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1720"
   HREF="node131.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1735"
-  HREF="node133.html">Canvas background and keyboard</A>
-<B> Up:</B> <A NAME="tex2html1733"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1727"
-  HREF="node131.html">Godley Tables</A></DIV>
+<B> Next:</B> <A NAME="tex2html1729"
+  HREF="node133.html">Bookmarks</A>
+<B> Up:</B> <A NAME="tex2html1727"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1721"
+  HREF="node131.html">Canvas background and keyboard</A></DIV>
 <!--End of Navigation Panel-->
 
 </BODY>

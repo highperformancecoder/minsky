@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>time </TITLE>
-<META NAME="description" CONTENT="time ">
+<TITLE>Factorial !</TITLE>
+<META NAME="description" CONTENT="Factorial !">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,41 +16,74 @@
 
 <LINK REL="next" HREF="node66.html">
 <LINK REL="previous" HREF="node64.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node66.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1036"
+<A NAME="tex2html1030"
   HREF="node66.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1034"
-  HREF="node48.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1028"
+  HREF="node46.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1022"
   HREF="node64.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1037"
-  HREF="node66.html">Gamma</A>
-<B> Up:</B> <A NAME="tex2html1035"
-  HREF="node48.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1029"
-  HREF="node64.html">not</A>
+<B> Next:</B> <A NAME="tex2html1031"
+  HREF="node66.html">Polygamma</A>
+<B> Up:</B> <A NAME="tex2html1029"
+  HREF="node46.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html1023"
+  HREF="node64.html">Gamma</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004117000000000000000"></A><A NAME="Operation:time"></A>
+<H2><A NAME="SECTION004119000000000000000"></A><A NAME="Operation:fact"></A>
 <BR>
-time <SPAN CLASS="MATH"><IMG
- WIDTH="10" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img11.png"
- ALT="$t$"></SPAN>
-</H2>  Returns the current value
-of system time.
+Factorial !
+</H2> Returns the factorial
+of its argument:
+<P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{eqnarray*}
+0!&=&1\\
+  n! &=& \prod_{i=1}^n i\\
+\end{eqnarray*}
+ -->
+<IMG
+ WIDTH="87" HEIGHT="84" BORDER="0"
+ SRC="img186.png"
+ ALT="\begin{eqnarray*}
+0!&amp;=&amp;1\\
+n! &amp;=&amp; \prod_{i=1}^n i\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+<BR CLEAR="ALL"><P></P>
+Note:
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+n!=\Gamma(n+1)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="93" HEIGHT="29" BORDER="0"
+ SRC="img187.png"
+ ALT="\begin{displaymath}
+n!=\Gamma(n+1)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+which is how it is implemented in Minsky.
 
 <P>
 <BR><HR>

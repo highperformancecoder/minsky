@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Groups</TITLE>
-<META NAME="description" CONTENT="Groups">
+<TITLE>Sheet Widget</TITLE>
+<META NAME="description" CONTENT="Sheet Widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,127 +16,61 @@
 
 <LINK REL="next" HREF="node128.html">
 <LINK REL="previous" HREF="node126.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node45.html">
 <LINK REL="next" HREF="node128.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1684"
+<A NAME="tex2html1678"
   HREF="node128.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1682"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1676"
+  HREF="node45.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1670"
   HREF="node126.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1685"
-  HREF="node128.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html1683"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1677"
-  HREF="node126.html">Tensor values</A>
+<B> Next:</B> <A NAME="tex2html1679"
+  HREF="node128.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html1677"
+  HREF="node45.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1671"
+  HREF="node126.html">Plot widget</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00470000000000000000"></A><A NAME="Group"></A>
+<H1><A NAME="SECTION00490000000000000000"></A>
+<A NAME="Sheet"></A>
 <BR>
-Groups
-</H1>
+Sheet Widget
+</H1> The Sheet widget displays input data as a number, rather
+than as a 2D graph, as in the case of the plot widget.  To use the
+Sheet widget, simply wire a variable or other item on your canvas to
+the left-hand side of the sheet widget box. This will diplay the input
+data as a number. Note that only one wire can be connected to a sheet,
+as the sheet can only display a single input value.
 
 <P>
-Grouping gives the capability to create reusable modules, or
-subroutines that can dramatically simplify more complicated
-systems. Groups may be created in the following ways:
-
-<UL>
-<LI>by lassoing a number of items to select them, then selecting
-  &ldquo;group&rdquo; from the canvas context menu, or the edit menu.
-</LI>
-<LI>by pasting the selection. You may &ldquo;ungroup&rdquo; the group from the
-  context menu if you don't desire the result of the paste to be a
-  group.
-</LI>
-<LI>by copying another group
-</LI>
-<LI>by inserting a Minsky file as a group
-</LI>
-</UL>
+The sheet widget can also display rank 0, 1 and rank 2 tensors. These
+ranks are single values, a string of values, or a 2D matrix of values,
+respectively.  For example, if you create a parameter, and set the
+initial condition to rand(3,5) (for reference, see section
+(&#167;<A HREF="node118.html#tensor-init">4.4.3</A>) ), you can wire that into a sheet.  The sheet
+will then diplay the data in a grid display within the widget box.
 
 <P>
-Zooming in on a group allows you see and edit its contents. Groups may
-be nested heirarchically, which gives an excellent way of zooming in
-to see the detail of a model, or zooming out to get an overview of
-it. The group context menu item &ldquo;Zoom to display&rdquo; zooms the canvas
-in just enough for the group's contents to be visible.
+If you have Ravel<SUP><SMALL>TM</SMALL></SUP> installed, you will see a small
+<A HREF="node134.html#Ravel">Ravel</A> icon in the top left
+corner. Clicking this causes a ravel window to pop up, allowing you to
+manipulate the input data to the sheet, so as to change slices or
+rotate a multidimensional datacube.
 
 <P>
-You may also select &ldquo;Open in canvas&rdquo; from the context menu. This
-replaces the current canvas contents with the contents of the group,
-allowing you to edit the contents of the group directly without the
-distractions of the rest of the model. Select &ldquo;Open master group&rdquo; to
-return to the top level group occupying the canvas.
-
-<P>
-Around the edges of a group are input or output variables, which allow
-one to parameterise the group. One can drag a variable and dock it in
-the I/O area to create a new input or output for the group.
-
-<P>
-When creating a group, or dragging a variable or operation into or out
-of a group, if a wire ends up crossing the group boundary, a new
-temporary variable is added as an I/O variable. You may then edit the
-I/O variable name to be something more meaningful to your model.
-
-<P>
-Variable names within groups can be locally scoped to that group. That
-means that a variable of the same name outside the group refers to a
-different entity completely. By default, grouped variables refer to
-entities outside the group scope, but may be marked local by means of
-context menu option. One can also convert all variables in a group to
-be local by means of the &ldquo;Make subroutine&rdquo; context menu entry.
-
-<P>
-Nonlocal variables refers to a local variable within an outer scope,
-going all the way to global scope if no such variable exists. In this
-way, two groups can share a variable reference to a variable, and you
-can limit the scope of the shared variable by placing a local variable
-of the same name in an outer group that both groups are contain
-within.
-
-<P>
-A group can also be exported to a file from the context menu.  This
-allows you to build up a library of building blocks. There is a github
-project &ldquo;minsky-models&rdquo; allowing people to publish their building
-blocks and models for others to use. In the future, we hope to
-integrate Minsky with this github repository, allowing even more
-seamless sharing of models.
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1684"
-  HREF="node128.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1682"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1676"
-  HREF="node126.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1685"
-  HREF="node128.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html1683"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1677"
-  HREF="node126.html">Tensor values</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

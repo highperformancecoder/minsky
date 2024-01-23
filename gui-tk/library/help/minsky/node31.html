@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Components in Minsky</TITLE>
-<META NAME="description" CONTENT="Components in Minsky">
+<TITLE>Creating an equation</TITLE>
+<META NAME="description" CONTENT="Creating an equation">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,60 +16,102 @@
 
 <LINK REL="next" HREF="node32.html">
 <LINK REL="previous" HREF="node30.html">
-<LINK REL="up" HREF="node30.html">
+<LINK REL="up" HREF="node28.html">
 <LINK REL="next" HREF="node32.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html565"
+<A NAME="tex2html559"
   HREF="node32.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html563"
-  HREF="node30.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html557"
+  HREF="node28.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html551"
   HREF="node30.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html566"
-  HREF="node32.html">Inserting a model component</A>
-<B> Up:</B> <A NAME="tex2html564"
-  HREF="node30.html">Working with Minsky</A>
-<B> Previous:</B> <A NAME="tex2html558"
-  HREF="node30.html">Working with Minsky</A>
+<B> Next:</B> <A NAME="tex2html560"
+  HREF="node32.html">Wiring components together</A>
+<B> Up:</B> <A NAME="tex2html558"
+  HREF="node28.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html552"
+  HREF="node30.html">Inserting a model component</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00241000000000000000">
-Components in Minsky</A>
+<H2><A NAME="SECTION00243000000000000000">
+Creating an equation</A>
 </H2>
 
 <P>
-There are a number of types of components in Minsky
+Equations are entered in Minsky graphically. Mathematical operations
+like addition, multiplication and subtraction are performed by wiring
+the inputs up to the relevant mathematical block. The output of the
+block is then the result of the equation. 
 
-<OL>
-<LI>Mathematical operators such as plus (+), minus (-)
-</LI>
-<LI>Constants (or parameters, which are named constants) which are
-given a value by the user 
-</LI>
-<LI>Variables whose values are calculated by the program during a simulation and depend on the values of constants and other variables; and
-</LI>
-<LI>Godley Tables, which define both financial accounts and the
-flows between them. In the language of stock and flow modelling, the
-columns of a Godley table are the stocks, which are computed by
-integrating over a linear combination of flow variables.
-</LI>
-<LI>Integrals -- represent a variable computed by integrating a
-function forward in time.
-</LI>
-<LI>Groups, which allow components to be grouped into modules that
-can be used to construct more complex models.
-</LI>
-</OL>
+<P>
+For example, a simple equation like
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+100/3 = 33.3
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="88" HEIGHT="29" BORDER="0"
+ SRC="img90.png"
+ ALT="\begin{displaymath}
+100/3 = 33.3
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem130.png"
+ ALT="791"> :
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="551" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
+ SRC="img91.png"
+ ALT="\includegraphics{images/NewItem129.eps}">
+
+</DIV>
+
+<P>
+If you click on the equation tab, you will see that it is:
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="99" HEIGHT="39" BORDER="0"
+ SRC="img92.png"
+ ALT="\begin{displaymath}
+\mathrm{Answer}=\frac{100}{3}
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+Very complex equations--including dynamic elements like integral
+blocks and Godley Tables--are designed by wiring up lots of
+components, with the output of one being the input of the next. See
+the tutorial for examples.
 
 <P>
 <BR><HR>

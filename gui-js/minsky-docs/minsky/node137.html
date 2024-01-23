@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>User defined functions</TITLE>
-<META NAME="description" CONTENT="User defined functions">
+<TITLE>Capabilities</TITLE>
+<META NAME="description" CONTENT="Capabilities">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,82 +14,115 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node47.html">
-<LINK REL="up" HREF="minsky.html">
+<LINK REL="next" HREF="node138.html">
+<LINK REL="previous" HREF="node136.html">
+<LINK REL="up" HREF="node135.html">
 <LINK REL="next" HREF="node138.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1780"
+<A NAME="tex2html1787"
   HREF="node138.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1778"
-  HREF="minsky.html">
+<A NAME="tex2html1785"
+  HREF="node135.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1774"
+<A NAME="tex2html1779"
   HREF="node136.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1781"
-  HREF="node138.html">Introduction</A>
-<B> Up:</B> <A NAME="tex2html1779"
-  HREF="minsky.html">Minsky Simulation Engine</A>
-<B> Previous:</B> <A NAME="tex2html1775"
-  HREF="node136.html">Ravel</A>
+<B> Next:</B> <A NAME="tex2html1788"
+  HREF="node138.html">Example expressions</A>
+<B> Up:</B> <A NAME="tex2html1786"
+  HREF="node135.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1780"
+  HREF="node136.html">Introduction</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00500000000000000000"></A><A NAME="ExprTk"></A>
-<BR>
-User defined functions
+<H1><A NAME="SECTION00520000000000000000">
+Capabilities</A>
 </H1>
+The  ExprTk expression  evaluator supports  the following  fundamental
+arithmetic operations, functions and processes:
 
 <P>
-<EM>Much of this chapter is exerpted from <A NAME="tex2html30"
-  HREF="https://github.com/ArashPartow/exprtk/blob/master/readme.txt">exprtk's
-read.txt
-file</A></EM>
+<DL>
+<DT><STRONG>Types:</STRONG></DT>
+<DD>Scalar, Vector, String
 
 <P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+</DD>
+<DT><STRONG>Basic operators:</STRONG></DT>
+<DD><code>+, -, *, /, %, ^</code>
 
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html1782"
-  HREF="node138.html">Introduction</A>
-<LI><A NAME="tex2html1783"
-  HREF="node139.html">Capabilities</A>
-<LI><A NAME="tex2html1784"
-  HREF="node140.html">Example expressions</A>
-<LI><A NAME="tex2html1785"
-  HREF="node141.html">Copyright notice</A>
-<LI><A NAME="tex2html1786"
-  HREF="node142.html">Built-in operations &amp; functions</A>
-<UL>
-<LI><A NAME="tex2html1787"
-  HREF="node143.html">Arithmetic &amp; Assignment Operators</A>
-<LI><A NAME="tex2html1788"
-  HREF="node144.html">Equalities &amp; Inequalities</A>
-<LI><A NAME="tex2html1789"
-  HREF="node145.html">Boolean Operations</A>
-<LI><A NAME="tex2html1790"
-  HREF="node146.html">General Purpose Functions</A>
-<LI><A NAME="tex2html1791"
-  HREF="node147.html">Trigonometry Functions</A>
-<LI><A NAME="tex2html1792"
-  HREF="node148.html">String Processing</A>
-<LI><A NAME="tex2html1793"
-  HREF="node149.html">Control Structures</A>
-</UL>
-<BR>
-<LI><A NAME="tex2html1794"
-  HREF="node150.html">Fundamental types</A>
-</UL>
-<!--End of Table of Child-Links-->
+<P>
+</DD>
+<DT><STRONG>Assignment:</STRONG></DT>
+<DD><code>:=, +=, -=, *=, /=, %=</code>
+
+<P>
+</DD>
+<DT><STRONG>Equalities &amp; Inequalities:</STRONG></DT>
+<DD><code>=, ==, &lt;&gt;, !=, &lt;, &lt;=, &gt;, &gt;=</code>
+
+<P>
+</DD>
+<DT><STRONG>Logic operators:</STRONG></DT>
+<DD>and, mand, mor, nand, nor, not, or, shl, shr,
+                       xnor, xor, true, false
+
+<P>
+</DD>
+<DT><STRONG>Functions:</STRONG></DT>
+<DD>abs, avg, ceil, clamp, equal, erf, erfc,  exp,
+                       expm1, floor, frac,  log, log10, log1p,  log2,
+                       logn,  max,  min,  mul,  ncdf,  nequal,  root,
+                       round, roundn, sgn, sqrt, sum, swap, trunc
+
+<P>
+</DD>
+<DT><STRONG>Trigonometry:</STRONG></DT>
+<DD>acos, acosh, asin, asinh, atan, atanh,  atan2,
+                       cos,  cosh, cot,  csc, sec,  sin, sinc,  sinh,
+                       tan, tanh, hypot, rad2deg, deg2grad,  deg2rad,
+                       grad2deg
+
+<P>
+</DD>
+<DT><STRONG>Control structures:</STRONG></DT>
+<DD>if-then-else, ternary conditional, switch-case,
+                       return-statement
+
+<P>
+</DD>
+<DT><STRONG>Loop statements:</STRONG></DT>
+<DD>while, for, repeat-until, break, continue
+
+<P>
+</DD>
+<DT><STRONG>String processing:</STRONG></DT>
+<DD>in, like, ilike, concatenation
+
+<P>
+</DD>
+<DT><STRONG>Optimisations:</STRONG></DT>
+<DD>constant-folding, simple strength reduction and
+                       dead code elimination
+
+<P>
+</DD>
+<DT><STRONG>Calculus:</STRONG></DT>
+<DD>numerical integration and differentiation
+
+<P>
+</DD>
+</DL>
+
+<P>
 <BR><HR>
 
 </BODY>

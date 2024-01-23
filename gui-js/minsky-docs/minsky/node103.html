@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>outer product </TITLE>
-<META NAME="description" CONTENT="outer product ">
+<TITLE>Merge</TITLE>
+<META NAME="description" CONTENT="Merge">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,73 +16,49 @@
 
 <LINK REL="next" HREF="node104.html">
 <LINK REL="previous" HREF="node102.html">
-<LINK REL="up" HREF="node88.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node104.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1441"
+<A NAME="tex2html1435"
   HREF="node104.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1439"
-  HREF="node88.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1433"
+  HREF="node86.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1427"
   HREF="node102.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1442"
-  HREF="node104.html">Meld</A>
-<B> Up:</B> <A NAME="tex2html1440"
-  HREF="node88.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1434"
-  HREF="node102.html">inner product</A>
+<B> Next:</B> <A NAME="tex2html1436"
+  HREF="node104.html">Slice</A>
+<B> Up:</B> <A NAME="tex2html1434"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1428"
+  HREF="node102.html">Meld</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004215000000000000000"></A><A NAME="Operation:outerProduct"></A>
+<H2><A NAME="SECTION004217000000000000000"></A><A NAME="Operation:merge"></A>
 <BR>
-outer product <SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img25.png"
- ALT="$\otimes $"></SPAN>
+Merge
 </H2>
-Computes
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
-  x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
-\end{displaymath}
- -->
 
-<IMG
- WIDTH="280" HEIGHT="31" BORDER="0"
- SRC="img210.png"
- ALT="\begin{displaymath}
-z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
-x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-where <SPAN CLASS="MATH"><IMG
- WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img208.png"
- ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img209.png"
- ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG
+<P>
+The merge operation takes <SPAN CLASS="MATH"><IMG
  WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img60.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img61.png"
- ALT="$y$"></SPAN> respectively.
+ SRC="img188.png"
+ ALT="$n$"></SPAN> tensors, finds the union hypercube (ie
+the hypercube that contains all the input tensor hypercubes) and
+spreads the tensors as necessary to make them conformant. Finally,
+the resultant tensor has an additional string dimensioned axis, each
+element of which is one of the input tensors. This dimension should be
+named using the operation edit dialog. It is an error for a hypercube
+to contain more than one axis with the same name.
 
 <P>
 <BR><HR>

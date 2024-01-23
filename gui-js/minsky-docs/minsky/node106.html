@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Slice</TITLE>
-<META NAME="description" CONTENT="Slice">
+<TITLE>Shape</TITLE>
+<META NAME="description" CONTENT="Shape">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,63 +16,42 @@
 
 <LINK REL="next" HREF="node107.html">
 <LINK REL="previous" HREF="node105.html">
-<LINK REL="up" HREF="node88.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node107.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1471"
+<A NAME="tex2html1465"
   HREF="node107.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1469"
-  HREF="node88.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html1463"
+  HREF="node86.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1457"
   HREF="node105.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1472"
-  HREF="node107.html">Size</A>
-<B> Up:</B> <A NAME="tex2html1470"
-  HREF="node88.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1464"
-  HREF="node105.html">Merge</A>
+<B> Next:</B> <A NAME="tex2html1466"
+  HREF="node107.html">Mean</A>
+<B> Up:</B> <A NAME="tex2html1464"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1458"
+  HREF="node105.html">Size</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004218000000000000000"></A><A NAME="Operation:slice"></A>
+<H2><A NAME="SECTION004220000000000000000"></A><A NAME="Operation:shape"></A>
 <BR>
-Slice
+Shape
 </H2>
 
 <P>
-Slice will cut off a tensor along a given axis by the argument, as
-configured in the operation edit dialog. For
-example <!-- MATH
- $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
-  3)=\{x_1,x_2,x_3\}$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="262" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img218.png"
- ALT="$\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
-3)=\{x_1,x_2,x_3\}$"></SPAN>. If the tensor is rank one (ie a vector), it is
-  not necessary to specify the axis.
-
-<P>
-If the slice argument is negative, then it refers to the number of
-elements from the end of that axis. For example <!-- MATH
- $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
-  -3)=\{x_{n-3},x_{n-2},x_{n-1}\}$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="328" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img219.png"
- ALT="$\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
--3)=\{x_{n-3},x_{n-2},x_{n-1}\}$"></SPAN>.
+Returns a vector of axis sizes. Coupling this operation with a
+<A HREF="node99.html#Operation:gather">gather</A> operation
+and variable would allow you interactively select axis size.
 
 <P>
 <BR><HR>
