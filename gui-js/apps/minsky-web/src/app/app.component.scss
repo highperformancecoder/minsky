@@ -32,7 +32,7 @@
   .tabs {
     display: flex;
     border-bottom: 1px solid $toolbar-box;
-    flex-wrap: wrap;
+    flex-wrap: no-wrap;
     .tab {
       border-left: 2px solid $toolbar-border;
       background-color: $toolbar-bg;
