@@ -589,13 +589,13 @@ export class CommandsManager {
     const fileName = HelpFilesManager.getHelpFileForType(classType);
 
     const path = !Utility.isPackaged()
-      ? `${join(__dirname, '../../../', `minsky-docs/minsky/${fileName}`)}`
-      : `${join(process.resourcesPath, `minsky-docs/minsky/${fileName}`)}`;
+      ? `${join(__dirname, '../../../', `minsky-docs/${fileName}`)}`
+      : `${join(process.resourcesPath, `minsky-docs/${fileName}`)}`;
 
     WindowManager.createMenuPopUpAndLoadFile({
       title: `Help: ${classType}`,
       height: 600,
-      width: 800,
+      width: 1000,
       modal: true,
       url: path,
     });
