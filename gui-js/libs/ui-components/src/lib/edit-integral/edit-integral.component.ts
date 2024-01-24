@@ -81,6 +81,7 @@ export class EditIntegralComponent implements OnInit {
       this.intOp.intVar.init(this.initialValue.value);
       this.intOp.intVar.setUnits(this.units.value);
       this.intOp.intVar.sliderStepRel(this.relative.value);
+      this.electronService.minsky.requestRedraw();
     }
 
     this.closeWindow();

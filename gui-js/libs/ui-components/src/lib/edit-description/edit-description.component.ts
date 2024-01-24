@@ -60,6 +60,7 @@ export class EditDescriptionComponent implements OnInit {
       item.detailedText(this.editDescriptionForm.get('detailedText').value);
       item.adjustBookmark();
       item.updateBoundingBox();
+      this.electronService.minsky.requestRedraw();
       this.electronService.send(events.UPDATE_BOOKMARK_LIST);
     }
     this.closeWindow();
