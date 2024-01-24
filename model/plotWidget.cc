@@ -104,7 +104,7 @@ namespace minsky
     if (!title.empty())
       {
         CairoSave cs(cairo);
-        double fx=0, fy=titleHeight*iHeight();
+        double fy=titleHeight*iHeight();
         
         Pango pango(cairo);
         pango.setFontSize(fabs(fy));

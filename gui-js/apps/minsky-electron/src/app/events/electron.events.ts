@@ -29,7 +29,6 @@ import { RecordingManager } from '../managers/RecordingManager';
 import { StoreManager, MinskyPreferences } from '../managers/StoreManager';
 import { WindowManager } from '../managers/WindowManager';
 import {restService} from '../backend-init';
-import JSON5 from 'json5';
 
 //const logUpdateEvent = debug('minsky:electron_update_event');
 
