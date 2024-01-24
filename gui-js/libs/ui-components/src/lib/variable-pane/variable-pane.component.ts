@@ -7,9 +7,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
-  CommunicationService,
   ElectronService,
-  WindowUtilityService,
 } from '@minsky/core';
 import {
   events,

@@ -195,7 +195,7 @@ export class CommandsManager {
   private static openRenameInstancesDialog(name: string) {
     WindowManager.createPopupWindowWithRouting({
       title: `Rename ${name}`,
-      url: `#/headless/rename-all-instances?name=${encodeURIComponent(name?.slice(1, 1)) || ''}`,
+      url: `#/headless/rename-all-instances?name=${encodeURIComponent(name) || ''}`,
       height: 100,
       width: 400,
     });

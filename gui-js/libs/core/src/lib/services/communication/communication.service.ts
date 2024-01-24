@@ -200,8 +200,8 @@ export class CommunicationService {
 
             break;
           case 'PAUSE':
-          if (this.currentReplayJSON.length)
-            this.pauseReplay();
+            if (this.currentReplayJSON.length)
+              this.pauseReplay();
             break;
           case 'RESET':
             this.showPlayButton$.next(true);
