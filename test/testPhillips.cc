@@ -137,6 +137,8 @@ SUITE(Phillips)
         auto& flow=phillipsDiagram.flows.begin()->second;
         auto coords=flow.coords();
         float x=0.5*(coords[0]+coords[2]), y=0.5*(coords[1]+coords[3]);
+        phillipsDiagram.mouseMove(x,y);
+        CHECK(flow.mouseFocus);
         phillipsDiagram.mouseDown(x,y);
         x+=20; y-=20;
         phillipsDiagram.mouseUp(x,y);
