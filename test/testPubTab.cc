@@ -52,4 +52,92 @@ SUITE(PubTab)
         CHECK_EQUAL(100,items[0].y);
       }
 
+    TEST_FIXTURE(PubTab,removeItem)
+      {
+        addNote("hello",100,100);
+        CHECK_EQUAL(1,items.size());
+        removeItemAt(100,100);
+        CHECK_EQUAL(0,items.size());
+      }
+
+      TEST_FIXTURE(PubTab,rotateItemAt)
+      {
+        addNote("hello",100,100);
+        CHECK_EQUAL(1,items.size());
+        rotateItemAt(100,100);
+        mouseUp(150,150);
+        CHECK_CLOSE(45,items[0].rotation,0.1);
+      }
+      
+      TEST_FIXTURE(PubTab,toggleEditorModeAt)
+      {
+        addNote("hello",100,100);
+        CHECK_EQUAL(1,items.size());
+        toggleEditorModeAt(100,100);
+        CHECK(items[0].editorMode);
+      }
+
+      TEST_FIXTURE(PubTab,zoomPan)
+      {
+        addNote("hello",100,100);
+        CHECK_EQUAL(1,items.size());
+        moveTo(100,100);
+        zoom(100,100,2);
+        CHECK(!getItemAt(100,100));
+        CHECK(getItemAt(300,300));
+        CHECK_EQUAL(2,zoomFactor());
+        vector expected{100,100};
+        CHECK_ARRAY_EQUAL(expected,position(),2);
+      }
+
+      TEST_FIXTURE(PubTab,mousePan)
+        {
+          addNote("hello",100,100);
+          CHECK_EQUAL(1,items.size());
+          controlMouseDown(0,0);
+          mouseUp(100,100);
+          CHECK(!getItemAt(100,100));
+          CHECK(getItemAt(200,200));
+        }
+
+      TEST_FIXTURE(PubTab,moveItem)
+        {
+          addNote("hello",100,100);
+          CHECK_EQUAL(1,items.size());
+          mouseDown(100,100);
+          mouseUp(200,150);
+          CHECK_EQUAL(200,items[0].x);
+          CHECK_EQUAL(150,items[0].y);
+        }
+      TEST_FIXTURE(PubTab,resizeItem)
+        {
+          addNote("hello",100,100);
+          CHECK_EQUAL(1,items.size());
+          auto w=0.5*items[0].itemRef->width();
+          auto h=0.5*items[0].itemRef->height();
+          auto x=items[0].x;
+          auto y=items[0].y;
+          mouseDown(x+w,y+h);
+          mouseUp(x+2*w,y+3*h);
+          CHECK_CLOSE(1.5,items[0].zoomX,0.1);
+          CHECK_CLOSE(2,items[0].zoomY,0.1);
+        }
+      TEST_FIXTURE(PubTab,mouseFocus)
+        {
+          addNote("hello",100,100);
+          CHECK_EQUAL(1,items.size());
+          mouseMove(100,100);
+          CHECK(items[0].itemRef->mouseFocus);
+        }
+       TEST_FIXTURE(PubTab,moveSlider)
+         {
+           VariablePtr var(VariableBase::parameter, "foobar");
+           items.emplace_back(var);
+           var->initSliderBounds();
+           auto x=var->x()+items[0].x, y=var->y()+items[0].y-0.5f*var->height();
+           CHECK(var->clickType(x-items[0].x,y-items[0].y)==ClickType::onSlider);
+           mouseDown(x,y);
+           mouseUp(x+0.5*var->width(),y);
+           CHECK_CLOSE(var->sliderMax,var->value(),0.1);
+         }
 }
