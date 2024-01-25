@@ -62,13 +62,16 @@ SUITE(Phillips)
       auto newX=phillipsStock.x(), newY=phillipsStock.y();
       newCoords=flow.coords();
       
-      // now check this change can be persisted
       save("1FreePhillipsMutated");
       phillipsDiagram.renderToSVG("1FreePhillipsMutated.svg");
+      
       clearAllMaps(); // nb phillipsStock & flow above are now invalidated
       CHECK(phillipsDiagram.stocks.empty());
       CHECK(phillipsDiagram.flows.empty());
+      
+      // now check this change can be persisted
       load("1FreePhillipsMutated");
+      phillipsDiagram.init();
       phillipsDiagram.renderToSVG("1FreePhillipsMutatedLoaded.svg");
       CHECK(!phillipsDiagram.stocks.empty());
       CHECK(!phillipsDiagram.flows.empty());
@@ -80,4 +83,16 @@ SUITE(Phillips)
       CHECK_ARRAY_CLOSE(newCoords, newFlow.coords(), newCoords.size(),0.1); 
 
     }
+
+    TEST_FIXTURE(TestFixture,emptyModelClears)
+    {
+      load("1Free.mky");
+      phillipsDiagram.init();
+      CHECK(!phillipsDiagram.stocks.empty());
+      CHECK(!phillipsDiagram.flows.empty());
+      model->items.clear();
+      phillipsDiagram.init();
+      CHECK(phillipsDiagram.stocks.empty());
+      CHECK(phillipsDiagram.flows.empty());
+    }      
 }
