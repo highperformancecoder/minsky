@@ -94,5 +94,56 @@ SUITE(Phillips)
       phillipsDiagram.init();
       CHECK(phillipsDiagram.stocks.empty());
       CHECK(phillipsDiagram.flows.empty());
-    }      
+    }
+
+    TEST_FIXTURE(TestFixture,panning)
+      {
+        phillipsDiagram.moveTo(100,100);
+        vector expected{100,100};
+        CHECK_ARRAY_EQUAL(expected,phillipsDiagram.position(),2);
+      }
+
+    
+    TEST_FIXTURE(TestFixture,movingItem)
+      {
+        load("1Free.mky");
+        phillipsDiagram.init();
+        auto& phillipsStock=phillipsDiagram.stocks.begin()->second;
+        float x=100, y=100;
+        CHECK(abs(phillipsStock.x()-x)>1 && abs(phillipsStock.y()-y)>1);
+        phillipsDiagram.mouseDown(phillipsStock.x(),phillipsStock.y());
+        phillipsDiagram.mouseUp(x,y);
+        CHECK_CLOSE(x,phillipsStock.x(),0.1);
+        CHECK_CLOSE(y,phillipsStock.y(),0.1);
+      }
+
+      TEST_FIXTURE(TestFixture,rotateItem)
+      {
+        load("1Free.mky");
+        phillipsDiagram.init();
+        auto& phillipsStock=phillipsDiagram.stocks.begin()->second;
+        float x=phillipsStock.x()+100, y=phillipsStock.y()+100;
+        CHECK_EQUAL(0,phillipsStock.rotation());
+        phillipsDiagram.startRotatingItem(phillipsStock.x(),phillipsStock.y());
+        phillipsDiagram.mouseUp(x,y);
+        CHECK_CLOSE(45,phillipsStock.rotation(),0.1);
+      }
+      
+      TEST_FIXTURE(TestFixture,bendFlow)
+      {
+        load("1Free.mky");
+        phillipsDiagram.init();
+        phillipsDiagram.renderToSVG("1FreePhillips.svg");
+        auto& flow=phillipsDiagram.flows.begin()->second;
+        auto coords=flow.coords();
+        float x=0.5*(coords[0]+coords[2]), y=0.5*(coords[1]+coords[3]);
+        phillipsDiagram.mouseDown(x,y);
+        x+=20; y-=20;
+        phillipsDiagram.mouseUp(x,y);
+        CHECK_EQUAL(6,flow.coords().size());
+        vector expected{coords[0],coords[1],x,y,coords[2],coords[3]};
+        CHECK_ARRAY_CLOSE(expected, flow.coords(),flow.coords().size(), 0.1);
+      }
+
+      
 }

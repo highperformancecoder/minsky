@@ -201,6 +201,7 @@ namespace minsky
   
   void PhillipsDiagram::mouseUp(float x, float y)
   {
+    mouseMove(x,y);
     minsky().pushHistory();
     stockBeingMoved=nullptr;
     stockBeingRotated=nullptr;
