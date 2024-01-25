@@ -179,9 +179,6 @@ namespace minsky
     minsky().pushHistory();
   }
 
-  void PhillipsDiagram::updateMaxValues()
-  {}
-
   void PhillipsDiagram::mouseDown(float x, float y)
   {
     if (stockBeingRotated) return;
