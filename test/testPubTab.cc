@@ -140,4 +140,26 @@ SUITE(PubTab)
            mouseUp(x+0.5*var->width(),y);
            CHECK_CLOSE(var->sliderMax,var->value(),0.1);
          }
+       TEST_FIXTURE(MinskyFixture,redraw)
+         {
+           setGodleyIconResource("bank.svg");
+           load("1Free.mky");
+           // send the Godley table to the pub tab
+           for (auto& i: model->items)
+             if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+               {
+                 publicationTabs[0].items.emplace_back(i);
+                 break;
+               }
+           if (publicationTabs[0].items[0].itemRef->editorMode())
+             publicationTabs[0].items[0].itemRef->toggleEditorMode();
+           publicationTabs[0].renderToSVG("1FreePubNeither.svg");
+           publicationTabs[0].items[0].editorMode=true;
+           publicationTabs[0].renderToSVG("1FreeWiringNotPubEditor.svg");
+           publicationTabs[0].items[0].itemRef->toggleEditorMode();
+           publicationTabs[0].renderToSVG("1FreeWiringEditorPubEditor.svg");
+           publicationTabs[0].items[0].editorMode=false;
+           publicationTabs[0].renderToSVG("1FreeWiringEditorPubNot.svg");
+         }
+
 }
