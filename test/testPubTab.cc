@@ -162,4 +162,22 @@ SUITE(PubTab)
            publicationTabs[0].renderToSVG("1FreeWiringEditorPubNot.svg");
          }
 
+       TEST_FIXTURE(MinskyFixture,addNewTab)
+         {
+           CHECK_EQUAL(1,publicationTabs.size());
+           addNewPublicationTab("foo");
+           CHECK_EQUAL(2,publicationTabs.size());
+           CHECK_EQUAL("foo",publicationTabs.back().name);
+         }
+       TEST_FIXTURE(MinskyFixture,addItem)
+         {
+           canvas.addOperation(OperationType::time);
+           canvas.mouseUp(100,100);
+           canvas.item=model->items[0];
+           addCanvasItemToPublicationTab(0);
+           CHECK_EQUAL(1,publicationTabs.size());
+           CHECK_EQUAL(1,publicationTabs[0].items.size());
+           CHECK_EQUAL("Operation:time",publicationTabs[0].items[0].itemRef->classType());
+         }
+
 }
