@@ -54,10 +54,7 @@ namespace minsky
     CLASSDESC_ACCESS(VariablePane);
     bool redraw(int, int, int width, int height) override;
   public:
-    //double offsx=0, offsy=0;
-    //    float moveOffsX, moveOffsY;
     bool shift=false; ///< true if shift pressed
-    //bool mousePressed=false; ///< true if mouse button pressed
     std::set<Type> selection;
     VariablePane() {selection={parameter, flow, integral, stock};}
     void select(VariableType::Type x) {selection.insert(x);}
@@ -75,9 +72,6 @@ namespace minsky
       if (shift) return PannableTab<VariablePaneBase>::mouseDown(x,y);
       cell(rowY(y-offsy),colX(x-offsx)).emplace();
     }
-    //    void mouseUp(float,float) override;
-//    void mouseMove(float,float) override;
-//    void zoom(double,double,double) override;
   };
 }
 #include "variablePane.cd"
