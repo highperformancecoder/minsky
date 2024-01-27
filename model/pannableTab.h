@@ -25,6 +25,12 @@
 
 namespace minsky
 {
+  struct PannableTabBase
+  {
+    float offsx=0, offsy=0;
+    double m_zoomFactor=1;
+  };
+
   /// Mixin implementing common panning functionality in tabs
   template <class Base>
   class PannableTab: public Base

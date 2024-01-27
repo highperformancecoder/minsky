@@ -20,6 +20,8 @@
 #include "minsky.h"
 #include "variablePane.h"
 #include "cairoItems.h"
+#include "pannableTab.rcd"
+#include "pannableTab.xcd"
 #include "variableValue.h"
 #include "variablePane.rcd"
 #include "variablePane.xcd"
@@ -115,34 +117,35 @@ namespace minsky
       }
   }
 
-  void VariablePane::mouseDown(float x, float y)
-  {
-    if (shift)
-      {
-        moveOffsX=x-offsx;
-        moveOffsY=y-offsy;
-        mousePressed=true;
-      }
-    else
-      cell(rowY(y-offsy),colX(x-offsx)).emplace();
-  }
-  void VariablePane::mouseUp(float x,float y)
-  {
-    mouseMove(x,y);
-    mousePressed=false;
-  }
-  void VariablePane::mouseMove(float x,float y)
-  {
-    if (!mousePressed) return;
-    offsx=x-moveOffsX;
-    offsy=y-moveOffsY;
-    surface->requestRedraw(); // TODO, plain requestRedraw doesn't work for Tk here...
-  }
-  void VariablePane::zoom(double,double,double)
-  {
-  }
+//  void VariablePane::mouseDown(float x, float y)
+//  {
+//    if (shift)
+//      {
+//        moveOffsX=x-offsx;
+//        moveOffsY=y-offsy;
+//        mousePressed=true;
+//      }
+//    else
+//      cell(rowY(y-offsy),colX(x-offsx)).emplace();
+//  }
+//  void VariablePane::mouseUp(float x,float y)
+//  {
+//    mouseMove(x,y);
+//    mousePressed=false;
+//  }
+//  void VariablePane::mouseMove(float x,float y)
+//  {
+//    if (!mousePressed) return;
+//    offsx=x-moveOffsX;
+//    offsy=y-moveOffsY;
+//    surface->requestRedraw(); // TODO, plain requestRedraw doesn't work for Tk here...
+//  }
+//  void VariablePane::zoom(double,double,double)
+//  {
+//  }
 
   
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneBase);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePane);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneCell);
