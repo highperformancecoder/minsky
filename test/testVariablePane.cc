@@ -48,4 +48,17 @@ SUITE(VariablePane)
       variablePane.update();
       variablePane.renderToSVG("1FreeNoStock.svg");
     }
+  
+  TEST_FIXTURE(MinskyFixture,emplace)
+    {
+      load("1Free.mky");
+      variablePane.updateWithHeight(100);
+      CHECK_EQUAL("Variable:undefined", variablePane.cell(variablePane.numRows()-1,variablePane.numCols()-1).variable().classType());
+      CHECK(variablePane.cell(0,0).width()>0);
+      variablePane.cell(0,0).emplace();
+      CHECK(canvas.itemFocus);
+      auto v=canvas.itemFocus->variableCast();
+      CHECK(v);
+      CHECK_EQUAL(variablePane.cell(0,0).variable().classType(), canvas.itemFocus->classType());
+    }
 }

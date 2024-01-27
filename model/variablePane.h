@@ -43,6 +43,7 @@ namespace minsky
     double width() const {return m_width+2;}
     double height() const {return m_height+4;}
     void emplace() const;
+    const VariableBase& variable() const;
   };
  
   class VariablePaneBase: public PannableTabBase, public RenderNativeWindow {};

@@ -61,6 +61,12 @@ namespace minsky
       minsky().canvas.addVariable(var->rawName(), var->type());
   }
 
+  const VariableBase& VariablePaneCell::variable() const
+  {
+    if (var) return *var;
+    static Variable<VariableType::undefined> undefined;
+    return undefined;
+  }
   
   VariablePaneCell& VariablePane::cell(unsigned row, unsigned col)
   {
