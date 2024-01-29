@@ -793,6 +793,8 @@ void VariablePtr::makeConsistentWithValue()
 int VarConstant::nextId=0;
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePtr);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableBase);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::undefined>);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::constant>);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::parameter>);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Variable<minsky::VariableType::flow>);

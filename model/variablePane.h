@@ -22,6 +22,7 @@
 #include "cairo.h"
 #include "classdesc_access.h"
 #include "grid.h"
+#include "pannableTab.h"
 #include "variable.h"
 #include "renderNativeWindow.h"
 #include <vector>
@@ -42,19 +43,19 @@ namespace minsky
     double width() const {return m_width+2;}
     double height() const {return m_height+4;}
     void emplace() const;
+    const VariableBase& variable() const;
   };
-  
-  class VariablePane: public Grid<VariablePaneCell>, public RenderNativeWindow, public VariableType
+ 
+  class VariablePaneBase: public PannableTabBase, public RenderNativeWindow {};
+
+  class VariablePane: public Grid<VariablePaneCell>, public PannableTab<VariablePaneBase>, public VariableType
   {
     unsigned m_numRows=0, m_numCols=0;
     classdesc::Exclude<std::vector<VariablePaneCell>> vars;
     CLASSDESC_ACCESS(VariablePane);
     bool redraw(int, int, int width, int height) override;
   public:
-    double offsx=0, offsy=0;
-    float moveOffsX, moveOffsY;
     bool shift=false; ///< true if shift pressed
-    bool mousePressed=false; ///< true if mouse button pressed
     std::set<Type> selection;
     VariablePane() {selection={parameter, flow, integral, stock};}
     void select(VariableType::Type x) {selection.insert(x);}
@@ -68,10 +69,10 @@ namespace minsky
     unsigned numCols() const override {return m_numCols;}
     bool evenHeight() const override {return false;}
     void moveCursorTo(double,double) override;
-    void mouseDown(float,float) override;
-    void mouseUp(float,float) override;
-    void mouseMove(float,float) override;
-    void zoom(double,double,double) override;
+    void mouseDown(float x,float y) override {
+      if (shift) return PannableTab<VariablePaneBase>::mouseDown(x,y);
+      cell(rowY(y-offsy),colX(x-offsx)).emplace();
+    }
   };
 }
 #include "variablePane.cd"

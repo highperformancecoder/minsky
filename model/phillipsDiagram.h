@@ -92,7 +92,6 @@ namespace minsky
       stocks.clear();
       flows.clear();
     }
-    void updateMaxValues();
 
     void mouseDown(float x, float y) override;
     void mouseUp(float x, float y) override;

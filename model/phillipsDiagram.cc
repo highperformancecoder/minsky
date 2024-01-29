@@ -131,27 +131,15 @@ namespace minsky
               for (auto& [s,sd]: i.second)
                 for (auto& [d,description]: destinations[i.first])
                   {
-                    auto& source=newStocks[g->valueId(s.name)];
-                    auto& dest=newStocks[g->valueId(d.name)];
-                    auto key=make_pair(s.name,d.name);
-                    bool swapped=false;
-                    if (s.coef*d.coef<0)
-                      {
-                        auto flow=newFlows.emplace(
-                                                   make_pair(g->valueId(s.name),g->valueId(d.name)),
-                                                   PhillipsFlow(source.ports(0), dest.ports(1))).first;
-                        flow->second.addTerm(-s.coef*d.coef, i.first);
-                        flow->second.tooltip=(!flow->second.tooltip.empty()?";":"")+description;
-                        if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
-                          flow->second.coords(oldFlow->second.coords());
-                      }
-                    else
-                      {
-                        auto flow=newFlows.emplace(make_pair(d.name,s.name), PhillipsFlow(dest.ports(0), source.ports(1))).first;
-                        flow->second.addTerm(s.coef*d.coef, i.first); 
-                        if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
-                          flow->second.coords(oldFlow->second.coords());
-                      }
+                    auto ss=s, dd=d;
+                    if (s.coef*d.coef<0) swap(ss,dd);
+                    auto& source=newStocks[g->valueId(ss.name)];
+                    auto& dest=newStocks[g->valueId(dd.name)];
+                    auto flow=newFlows.emplace(make_pair(g->valueId(dd.name),g->valueId(ss.name)), PhillipsFlow(dest.ports(0), source.ports(1))).first;
+                    flow->second.addTerm(abs(s.coef*d.coef), i.first);
+                    flow->second.tooltip=(!flow->second.tooltip.empty()?";":"")+description;
+                    if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
+                      flow->second.coords(oldFlow->second.coords());
                   }
           }
         }
@@ -191,9 +179,6 @@ namespace minsky
     minsky().pushHistory();
   }
 
-  void PhillipsDiagram::updateMaxValues()
-  {}
-
   void PhillipsDiagram::mouseDown(float x, float y)
   {
     if (stockBeingRotated) return;
@@ -216,6 +201,7 @@ namespace minsky
   
   void PhillipsDiagram::mouseUp(float x, float y)
   {
+    mouseMove(x,y);
     minsky().pushHistory();
     stockBeingMoved=nullptr;
     stockBeingRotated=nullptr;
