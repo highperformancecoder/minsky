@@ -2235,6 +2235,7 @@ export class VariablePaneCell extends CppClass {
   async height(): Promise<number> {return this.$callMethod('height');}
   async reset(a1: minsky__dummy): Promise<void> {return this.$callMethod('reset',a1);}
   async show(): Promise<void> {return this.$callMethod('show');}
+  async variable(): Promise<VariableBase> {return this.$callMethod('variable');}
   async width(): Promise<number> {return this.$callMethod('width');}
 }
 
