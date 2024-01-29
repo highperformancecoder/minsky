@@ -23,7 +23,7 @@ import { sampleTime } from 'rxjs/operators';
   standalone: true
 })
 export class VariablePaneComponent implements OnDestroy, AfterViewInit {
-  @ViewChild('variablePaneWrapper') variablePaneWrapper: ElementRef;
+  @ViewChild('variablePane') variablePaneWrapper: ElementRef;
 
   itemId: number;
   systemWindowId: BigInt;
