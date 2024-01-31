@@ -632,6 +632,7 @@ namespace minsky
 
   void Canvas::renameItem(const std::string& newName)
   {
+    if (!item) return;
     if (auto var=item->variableCast())
       {
         var->name(newName);
