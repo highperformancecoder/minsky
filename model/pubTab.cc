@@ -36,6 +36,7 @@ namespace minsky
     {
       PubItem& item;
       bool editorModeToggled;
+      bool variableDisplay=false, buttonDisplay=false;
       LassoBox origBox;
       float origIWidth, origIHeight;
       EnsureEditorMode(PubItem& item):
@@ -43,8 +44,16 @@ namespace minsky
         origIWidth(item.itemRef? item.itemRef->iWidth(): 0),
         origIHeight(item.itemRef? item.itemRef->iHeight(): 0)
       {
+        if (auto g=item.itemRef->godleyIconCast())
+          {
+            if ((variableDisplay=g->variableDisplay()))
+              g->toggleVariableDisplay();
+            buttonDisplay=g->editor.drawButtons;
+            g->editor.disableButtons();
+          }
         if (editorModeToggled)
           item.itemRef->toggleEditorMode();
+          
         item.itemRef->iWidth(item.zoomX*origIWidth);
         item.itemRef->iHeight(item.zoomY*origIHeight);
       }
@@ -52,6 +61,13 @@ namespace minsky
       {
         if (editorModeToggled)
           item.itemRef->toggleEditorMode();
+        if (auto g=item.itemRef->godleyIconCast())
+          {
+            if (variableDisplay)
+              g->toggleVariableDisplay();
+            if (buttonDisplay)
+              g->editor.enableButtons();
+          }
         item.itemRef->iWidth(origIWidth);
         item.itemRef->iHeight(origIHeight);
      }
