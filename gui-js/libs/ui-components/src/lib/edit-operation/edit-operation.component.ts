@@ -76,6 +76,7 @@ export class EditOperationComponent implements OnInit {
       this.op.rotation(this.rotation.value);
       this.op.axis(this.axis.value);
       this.op.arg(this.argument.value);
+      this.electronService.minsky.requestRedraw();
     }
 
     this.closeWindow();
