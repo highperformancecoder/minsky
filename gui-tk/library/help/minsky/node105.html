@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Merge</TITLE>
-<META NAME="description" CONTENT="Merge">
+<TITLE>Slice</TITLE>
+<META NAME="description" CONTENT="Slice">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,49 +16,63 @@
 
 <LINK REL="next" HREF="node106.html">
 <LINK REL="previous" HREF="node104.html">
-<LINK REL="up" HREF="node88.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node106.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1461"
+<A NAME="tex2html1459"
   HREF="node106.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1459"
-  HREF="node88.html">
+<A NAME="tex2html1457"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1453"
+<A NAME="tex2html1451"
   HREF="node104.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1462"
-  HREF="node106.html">Slice</A>
-<B> Up:</B> <A NAME="tex2html1460"
-  HREF="node88.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1454"
-  HREF="node104.html">Meld</A>
+<B> Next:</B> <A NAME="tex2html1460"
+  HREF="node106.html">Size</A>
+<B> Up:</B> <A NAME="tex2html1458"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1452"
+  HREF="node104.html">Merge</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004217000000000000000"></A><A NAME="Operation:merge"></A>
+<H2><A NAME="SECTION004218000000000000000"></A><A NAME="Operation:slice"></A>
 <BR>
-Merge
+Slice
 </H2>
 
 <P>
-The merge operation takes <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img188.png"
- ALT="$n$"></SPAN> tensors, finds the union hypercube (ie
-the hypercube that contains all the input tensor hypercubes) and
-spreads the tensors as necessary to make them conformant. Finally,
-the resultant tensor has an additional string dimensioned axis, each
-element of which is one of the input tensors. This dimension should be
-named using the operation edit dialog. It is an error for a hypercube
-to contain more than one axis with the same name.
+Slice will cut off a tensor along a given axis by the argument, as
+configured in the operation edit dialog. For
+example <!-- MATH
+ $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+  3)=\{x_1,x_2,x_3\}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="262" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img219.png"
+ ALT="$\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+3)=\{x_1,x_2,x_3\}$"></SPAN>. If the tensor is rank one (ie a vector), it is
+  not necessary to specify the axis.
+
+<P>
+If the slice argument is negative, then it refers to the number of
+elements from the end of that axis. For example <!-- MATH
+ $\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+  -3)=\{x_{n-3},x_{n-2},x_{n-1}\}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="328" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img220.png"
+ ALT="$\mathrm{slice}(\{x_1,x_2,\ldots x_n\},
+-3)=\{x_{n-3},x_{n-2},x_{n-1}\}$"></SPAN>.
 
 <P>
 <BR><HR>

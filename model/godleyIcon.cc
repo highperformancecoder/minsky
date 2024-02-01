@@ -84,11 +84,6 @@ namespace minsky
           if (w>width) width=w;
         }
     }
-
-//    inline bool isDotOrDigit(char x)
-//    {return x=='.' || isdigit(x);}
-
-
   }
 
   bool GodleyIcon::inItem(float xx, float yy) const
@@ -159,17 +154,6 @@ namespace minsky
   
   void GodleyIcon::toggleEditorMode()
   {
-    if (m_editorMode)
-      {
-        m_variableDisplay=true;
-      }
-    else
-      if (auto g=group.lock())
-        if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
-          {
-            editor.disableButtons();
-            m_variableDisplay=false;
-          }
     m_editorMode=!m_editorMode;
     updateBoundingBox();
   }
@@ -332,7 +316,6 @@ namespace minsky
 
           }
 
-
     if (m_variableDisplay)
       {
         // determine height of variables part of icon
@@ -432,6 +415,18 @@ namespace minsky
     return ItemPtr();
   }
 
+  bool GodleyIcon::wiresAttached() const
+  {
+    bool r=false;
+    for (auto& v: m_flowVars)
+      if (auto p=v->ports(1).lock())
+        r|=p->wires().size();
+    for (auto& v: m_stockVars)
+      if (auto p=v->ports(0).lock())
+        r|=p->wires().size();
+    return r;
+  }
+
   
   void GodleyIcon::draw(cairo_t* cairo) const
   {
@@ -491,7 +486,7 @@ namespace minsky
       
           
 
-    if (m_variableDisplay)
+    if (m_variableDisplay && (!m_editorMode || wiresAttached()))
       {
         // render the variables
         DrawVars drawVars(cairo,x(),y());

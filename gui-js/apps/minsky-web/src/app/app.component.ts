@@ -153,7 +153,7 @@ export class AppComponent implements OnInit, DoCheck {
   async changeTab(tab: string) {
     if(this.htmlTabs.includes(tab)) {
       if(!this.htmlTabs.includes(this.cmService.currentTab)) {
-        new RenderNativeWindow(this.cmService.currentTab).$callMethodSync("disable");
+        new RenderNativeWindow(this.cmService.currentTab).$callMethodSync("destroyFrame");
       }
   
       this.cmService.currentTab = tab;

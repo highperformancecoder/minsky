@@ -48,7 +48,7 @@ abstract class HelpFilesManager {
       const contents = buffer.toString();
       const matches = contents.matchAll(/<A[ \t]+NAME="([^"]*)"/g);
       for (const match of matches) {
-        this.topicNodeMap[match[1]] = path.basename(fName);
+        this.topicNodeMap[match[1]] = `minsky/${path.basename(fName)}`;
       }
     }
   }

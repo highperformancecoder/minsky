@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Covariance</TITLE>
-<META NAME="description" CONTENT="Covariance">
+<TITLE>Correlation coefficient </TITLE>
+<META NAME="description" CONTENT="Correlation coefficient ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,115 +14,62 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node115.html">
 <LINK REL="previous" HREF="node113.html">
-<LINK REL="up" HREF="node88.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node115.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1551"
+<A NAME="tex2html1547"
   HREF="node115.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1549"
-  HREF="node88.html">
+<A NAME="tex2html1545"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1543"
+<A NAME="tex2html1541"
   HREF="node113.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1552"
-  HREF="node115.html">Correlation coefficient</A>
-<B> Up:</B> <A NAME="tex2html1550"
-  HREF="node88.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1544"
-  HREF="node113.html">Histogram</A>
+<B> Next:</B> <A NAME="tex2html1548"
+  HREF="node115.html">Switch</A>
+<B> Up:</B> <A NAME="tex2html1546"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1542"
+  HREF="node113.html">Covariance</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004226000000000000000"></A><A NAME="Operation:covariance"></A>
+<H2><A NAME="SECTION004227000000000000000"></A><A NAME="Operation:rho"></A>
 <BR>
-Covariance
+Correlation coefficient <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img27.png"
+ ALT="$\rho $"></SPAN>
 </H2>
 
 <P>
-Computes the covariance of two tensors along named dimension. If the
-inputs are of rank <SPAN CLASS="MATH"><IMG
- WIDTH="18" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img119.png"
- ALT="$N$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="21" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img225.png"
- ALT="$M$"></SPAN> respectively, the output will be a
-<!-- MATH
- $(N-1)\times(M-1)$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="134" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img226.png"
- ALT="$(N-1)\times(M-1)$"></SPAN> rank tensor, where the <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img227.png"
- ALT="$(i,j)$"></SPAN> element is the
-covariance of the <SPAN CLASS="MATH"><IMG
- WIDTH="9" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img228.png"
- ALT="$i$"></SPAN>-th slice of the first argument along the named
-dimension, and the <SPAN CLASS="MATH"><IMG
- WIDTH="11" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img205.png"
- ALT="$j$"></SPAN>-th slice along the named dimension. As such, it
-is conformant with the definition of <TT>cov</TT> function in Octave, but
-not with the equivalently named function in Matlab:
-<BLOCKQUOTE>
-Compatibility Note:: Octave always treats rows of X and Y as
-     multivariate random variables.  For two inputs, however, MATLAB
-     treats X and Y as two univariate distributions regardless of their
-     shapes, and will calculate ‘cov ([X(:), Y(:)])’ whenever the number
-     of elements in X and Y are equal.  This will result in a 2x2
-     matrix.  Code relying on MATLAB’s definition will need to be
-     changed when running in Octave.
-   
-</BLOCKQUOTE>
+See
+   <A HREF="node113.html#Operation:covariance">covariance</A>
+   for the interpretation of tensor valued arguments. The correlation
+   coefficient is defined as
 
 <P>
-If only a single argument <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img60.png"
- ALT="$x$"></SPAN> is supplied to the covariance, then the
-result is equivalent to cov<SPAN CLASS="MATH"><IMG
- WIDTH="41" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img229.png"
- ALT="$(x,x)$"></SPAN>, ie each slice is covaried with
-each other slice.
-
-<P>
-The formula for covariance between stochastic variables <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img60.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img61.png"
- ALT="$y$"></SPAN>
-   is
-   <BR><P></P>
+<BR><P></P>
 <DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
-\mathrm{cov}(x,y)=\frac1{N-1}\sum_i(x_i-\langle
-     x\rangle)(y_i-\langle y\rangle)
+\rho(x,y)=\frac{\mathrm{cov(x,y)}}{\sigma(x)\sigma(y)}
 \end{displaymath}
  -->
 
 <IMG
- WIDTH="285" HEIGHT="48" BORDER="0"
- SRC="img230.png"
+ WIDTH="130" HEIGHT="44" BORDER="0"
+ SRC="img232.png"
  ALT="\begin{displaymath}
-\mathrm{cov}(x,y)=\frac1{N-1}\sum_i(x_i-\langle
-x\rangle)(y_i-\langle y\rangle)
+\rho(x,y)=\frac{\mathrm{cov(x,y)}}{\sigma(x)\sigma(y)}
 \end{displaymath}">
 </DIV>
 <BR CLEAR="ALL">

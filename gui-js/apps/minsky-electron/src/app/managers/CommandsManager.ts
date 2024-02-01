@@ -195,7 +195,7 @@ export class CommandsManager {
   private static openRenameInstancesDialog(name: string) {
     WindowManager.createPopupWindowWithRouting({
       title: `Rename ${name}`,
-      url: `#/headless/rename-all-instances?name=${encodeURIComponent(name?.slice(1, 1)) || ''}`,
+      url: `#/headless/rename-all-instances?name=${encodeURIComponent(name) || ''}`,
       height: 100,
       width: 400,
     });
@@ -589,13 +589,13 @@ export class CommandsManager {
     const fileName = HelpFilesManager.getHelpFileForType(classType);
 
     const path = !Utility.isPackaged()
-      ? `${join(__dirname, '../../../', `minsky-docs/minsky/${fileName}`)}`
-      : `${join(process.resourcesPath, `minsky-docs/minsky/${fileName}`)}`;
+      ? `${join(__dirname, '../../../', `minsky-docs/${fileName}`)}`
+      : `${join(process.resourcesPath, `minsky-docs/${fileName}`)}`;
 
     WindowManager.createMenuPopUpAndLoadFile({
       title: `Help: ${classType}`,
       height: 600,
-      width: 800,
+      width: 1000,
       modal: true,
       url: path,
     });
@@ -884,26 +884,7 @@ export class CommandsManager {
       return;
     }
 
-    const logVarList = await minsky.logVarList.properties();
-
-    if (logVarList && logVarList.length) {
-      const itemsNotInSelectedItems = logVarList.filter(
-        (l) => !selectedItems.includes(l)
-      );
-
-      for (const i of itemsNotInSelectedItems) {
-        minsky.logVarList.erase(i);
-      }
-    }
-
-    const itemsNotInLogVarList = selectedItems.filter(
-      (i) => !logVarList.includes(i)
-    );
-
-    for (const i of itemsNotInLogVarList) {
-      minsky.logVarList.insert(i);
-    }
-
+    minsky.logVarList.properties(selectedItems);
     minsky.openLogFile(filePath);
   }
 

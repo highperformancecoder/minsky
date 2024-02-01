@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Wires</TITLE>
-<META NAME="description" CONTENT="Wires">
+<TITLE>Tensor values</TITLE>
+<META NAME="description" CONTENT="Tensor values">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,63 +15,211 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node126.html">
-<LINK REL="previous" HREF="node117.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="previous" HREF="node124.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node126.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1664"
+<A NAME="tex2html1662"
   HREF="node126.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1662"
-  HREF="node47.html">
+<A NAME="tex2html1660"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1656"
+<A NAME="tex2html1654"
   HREF="node124.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1665"
-  HREF="node126.html">Tensor values</A>
-<B> Up:</B> <A NAME="tex2html1663"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1657"
-  HREF="node124.html">Variable Browser</A>
+<B> Next:</B> <A NAME="tex2html1663"
+  HREF="node126.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html1661"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1655"
+  HREF="node124.html">Wires</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00450000000000000000">
-Wires</A>
+<H1><A NAME="SECTION00460000000000000000"></A><A NAME="tensors"></A><A NAME="2705"></A>
+<BR>
+Tensor values
 </H1>
 
 <P>
-Wire represent the flow of values from one operation to the next. To
-add a wire to the canvas, click on the output port of an operation or
-variable (right hand side of the icon in its initial unrotated
-orientation), and then drag it towards an input port (on the left hand
-side of an unrotated icon). You can't connect an operator to itself
-(that would be a loop, which is not allowed, unless passing through an
-integral), nor can an input port have more than one wire attached,
-with the exception of <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img46.png"
- ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img248.png"
- ALT="$\times/\div$"></SPAN>, where the multiple
-wires are summed or multiplied, respectively, and similarly max/min.
+Variables may have tensor values, or sets of data. Different tensors
+are sorted by rank. For example, a tensor of rank 0 may appear as a
+single number, let's refer to it as <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN>. A tensor of rank 1 may appear
+as a sequence of numbers, let's say <SPAN CLASS="MATH"><IMG
+ WIDTH="52" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img250.png"
+ ALT="$(x x x x)$"></SPAN>. Rank 2 means a tensor
+appears as a 2D sequence of numbers, for example:
 
 <P>
-Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
-a handle is dragged out of a straight line with its neighbours, new
-handles appear on either side. Handles can be removed by
-double-clicking on them.
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\left(
+    \begin{array}{ccc}
+      x& x& x\\
+      x& x& x\\
+      x& x& x
+    \end{array}
+  \right)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="95" HEIGHT="64" BORDER="0"
+ SRC="img251.png"
+ ALT="\begin{displaymath}
+\left(
+\begin{array}{ccc}
+x&amp; x&amp; x\\
+x&amp; x&amp; x\\
+x&amp; x&amp; x
+\end{array} \right)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
-<BR><HR>
+A tensor of rank 3 will appear as a three-dimensional cube, rank 4 as
+a four-dimensional hypercube, and so on. Two ways of getting tensor
+values into Minsky are via tensor-valued initial conditions
+(&#167;<A HREF="node119.html#tensor-init">4.4.3</A>), or by importing a CSV file into a parameter
+(&#167;<A HREF="node121.html#CSV_import">4.4.5</A>). Scalar operations are extended to operating
+elementwise over tensors, and a number of operations exist for
+operating on tensors (&#167;<A HREF="#tensor_operations">4.2</A>).
+
+<P>
+When two or more tensors are combined with a binary operation (such as
+addition or multiplication), they must have the same rank. For
+example, two tensors of rank 2 can be multiplied together, but a
+tensor of rank 2 and a tensor of rank 3 cannot. They may have
+differing dimensions, which means the values within each tensor may
+not necessarily match up 1-to-1 exactly.  To understand what happens
+when a given dimension is mismatched requires understanding the
+concept of an x-vector<A NAME="2714"></A><A NAME="x-vector"></A>.
+
+<P>
+When Minsky is given tensor values, it sorts the values within each
+tensor by corresponding dimensions. For example, a rank 2 tensor would
+have its values sorted into two sets of data. This data can be in the
+form of numbers, dates (time values), or strings. Minsky will then
+look at cross-sections of the datasets in order to process the values
+within. When the dimensions of two tensors match up, for example two
+rank 2 tensors, the corresponding cross-sections of both tensors
+should also match up. When they don't, a weighted interpolation of the
+corresponding values is taken. This involves using an x-vector.
+
+<P>
+An x-vector is a vector of real values, strings or date/time values.
+If no x-vector is explicitly provided, then implicitly it consists of
+the the values <!-- MATH
+ $(0,\ldots,n_i-1)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="102" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img252.png"
+ ALT="$(0,\ldots,n_i-1)$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img253.png"
+ ALT="$n_i$"></SPAN> is the dimension size
+of axis <SPAN CLASS="MATH"><IMG
+ WIDTH="9" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img229.png"
+ ALT="$i$"></SPAN> of the tensor.
+
+<P>
+For example, if the first tensor consists of three elements
+<!-- MATH
+ $(x_0, x_1, x_2)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img254.png"
+ ALT="$(x_0, x_1, x_2)$"></SPAN> and the second consist of a number of different
+elements that roughly correspond to the same three elements, these can
+be added together.  The x-vector starts with the first tensor's value
+of <SPAN CLASS="MATH"><IMG
+ WIDTH="32" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img255.png"
+ ALT="$(x_0)$"></SPAN> and looks for a matching value in the second tensor. If it
+can't find a direct match, it will search for nearby values which
+roughly correspond. It can then take those values and interpolate the
+corresponding value based on where in the tensor it appears. This is
+weighted, so say there are four values nearby, the program will
+average those out and find where a value in the middle of those four
+values would appear, and what that hypothetical value would be. To
+take another example:
+
+<P>
+Suppose the first tensor was a vector <SPAN CLASS="MATH"><IMG
+ WIDTH="56" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img256.png"
+ ALT="$(x_0,x_1)$"></SPAN> and had an x-vector
+(1,3) and the second tensor <SPAN CLASS="MATH"><IMG
+ WIDTH="75" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img257.png"
+ ALT="$(y_0,y_1,y_2)$"></SPAN> had an x-vector (0,2,3),
+then the resulting tensor will be <!-- MATH
+ $(x_0+0.5(y_0+y_1), x_1+y_2)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="191" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img258.png"
+ ALT="$(x_0+0.5(y_0+y_1), x_1+y_2)$"></SPAN>. If
+the x-vector were date/time data, then the tensor values will be
+interpolated according to the actual time values. If the first
+tensor's x-vector value lies outside the second tensor's x-vector,
+then it doesn't result in a value being included in the output. The
+resultant x-vector's range of values is the intersection of input
+tensors' x-vector ranges.
+
+<P>
+If both tensor had string x-vectors, then the resultant tensor will
+only have values where both input tensors have the same string value
+in their x-vectors. In the above case, where the x-vectors were
+('1','3') and ('0','2','3') the resulting tensor will be the scalar
+<SPAN CLASS="MATH"><IMG
+ WIDTH="54" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img259.png"
+ ALT="$x_1+y_2$"></SPAN>.
+
+<P>
+It goes without saying that the type of the x-vector for each axis
+must also match.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1662"
+  HREF="node126.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1660"
+  HREF="node46.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1654"
+  HREF="node124.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1663"
+  HREF="node126.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html1661"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1655"
+  HREF="node124.html">Wires</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>
