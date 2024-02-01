@@ -260,6 +260,18 @@ namespace minsky
         i->itemRef->mouseFocus=true;
     requestRedraw();
   }
+
+  bool PubTab::keyPress(const KeyPressArgs& args)
+  {
+    float x=args.x, y=args.y;
+    zoomTranslate(x,y);
+    if (auto item=m_getItemAt(x,y))
+      {
+        EnsureEditorMode em(*item);
+        return item->itemRef->onKeyPress(args.keySym,args.utf8,args.state);
+      }
+    return false;
+  }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(schema3::PublicationItem);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubTab);
