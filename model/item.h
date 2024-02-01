@@ -51,6 +51,7 @@ namespace minsky
   class OperationBase;
   class SwitchIcon;
   class PlotWidget;
+  class GodleyIcon;
   class Ravel;
 
   class Item;
@@ -122,7 +123,11 @@ namespace minsky
     virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
     virtual PlotWidget* plotWidgetCast() {return nullptr;}
     /// @}            
-    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    /// @{ a more efficient replacement for dynamic_cast<GodleyIcon*>(this)
+    virtual const GodleyIcon* godleyIconCast() const {return nullptr;}
+    virtual GodleyIcon* godleyIconCast() {return nullptr;}
+    /// @}            
+    /// @{ a more efficient replacement for dynamic_cast<Ravel*>(this)
     virtual const Ravel* ravelCast() const {return nullptr;}
     virtual Ravel* ravelCast() {return nullptr;}
     /// @}            
