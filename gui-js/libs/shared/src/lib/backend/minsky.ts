@@ -744,6 +744,7 @@ export class GodleyIcon extends Item {
   async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async flowSignature(a1: number): Promise<object> {return this.$callMethod('flowSignature',a1);}
   async flowVars(): Promise<Sequence<VariableBase>> {return this.$callMethod('flowVars');}
+  async godleyIconCast(): Promise<GodleyIcon> {return this.$callMethod('godleyIconCast');}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async insertControlled(a1: Selection): Promise<void> {return this.$callMethod('insertControlled',a1);}
   async leftMargin(): Promise<number> {return this.$callMethod('leftMargin');}
@@ -770,6 +771,7 @@ export class GodleyIcon extends Item {
   async update(): Promise<void> {return this.$callMethod('update');}
   async valueId(a1: string): Promise<string> {return this.$callMethod('valueId',a1);}
   async variableDisplay(): Promise<boolean> {return this.$callMethod('variableDisplay');}
+  async wiresAttached(): Promise<boolean> {return this.$callMethod('wiresAttached');}
 }
 
 export class GodleyTable extends CppClass {
@@ -2235,6 +2237,7 @@ export class VariablePaneCell extends CppClass {
   async height(): Promise<number> {return this.$callMethod('height');}
   async reset(a1: minsky__dummy): Promise<void> {return this.$callMethod('reset',a1);}
   async show(): Promise<void> {return this.$callMethod('show');}
+  async variable(): Promise<VariableBase> {return this.$callMethod('variable');}
   async width(): Promise<number> {return this.$callMethod('width');}
 }
 

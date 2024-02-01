@@ -41,7 +41,6 @@ export class NewPubTabComponent implements OnInit {
   async handleSave() {
     if (this.electronService.isElectron) {
       let name=this.editDescriptionForm.get('description').value;
-      this.electronService.log(`type=${this.type}`);
       switch (this.type) {
         case 'new':
         await this.electronService.minsky.addNewPublicationTab(name);

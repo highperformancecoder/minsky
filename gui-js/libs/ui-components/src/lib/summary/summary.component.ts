@@ -100,7 +100,6 @@ export class SummaryComponent implements OnInit {
     for (let i=0; i<nestedElements.length; ++i) 
     {
       nestedElements[i].addEventListener("click",()=>this.toggleCaret({target:nestedElements[i]}));
-      this.electronService.log(`${nestedElements[i].classList}`);
     }
   }
   

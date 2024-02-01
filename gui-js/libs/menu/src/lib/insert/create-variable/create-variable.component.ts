@@ -175,8 +175,6 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   }
 
   async saveVariableParams(item: VariableBase) {
-    item.name(this._name);
-    item.retype(this.type.value);
     item.setUnits(this.units.value || '');
     item.init(this.value.value);
     item.initSliderBounds(); // ensure slider bounds starts with a reasonable value
@@ -186,9 +184,10 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     item.enableSlider(this.enableSlider.value);
     if (typeof this.sliderBoundsMax.value=='number') item.sliderMax(this.sliderBoundsMax.value);
     if (typeof this.sliderBoundsMin.value=='number') item.sliderMin(this.sliderBoundsMin.value);
-    this.electronService.log(typeof this.sliderStepSize.value);
     if (typeof this.sliderStepSize.value=='number') item.sliderStep(this.sliderStepSize.value);
     item.sliderStepRel(this.sliderStepRel.value);
+    item.retype(this.type.value);
+    this.electronService.minsky.canvas.renameItem(this._name);
     this.closeWindow();
   }
 

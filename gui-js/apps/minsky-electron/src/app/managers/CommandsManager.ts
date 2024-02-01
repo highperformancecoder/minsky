@@ -884,26 +884,7 @@ export class CommandsManager {
       return;
     }
 
-    const logVarList = await minsky.logVarList.properties();
-
-    if (logVarList && logVarList.length) {
-      const itemsNotInSelectedItems = logVarList.filter(
-        (l) => !selectedItems.includes(l)
-      );
-
-      for (const i of itemsNotInSelectedItems) {
-        minsky.logVarList.erase(i);
-      }
-    }
-
-    const itemsNotInLogVarList = selectedItems.filter(
-      (i) => !logVarList.includes(i)
-    );
-
-    for (const i of itemsNotInLogVarList) {
-      minsky.logVarList.insert(i);
-    }
-
+    minsky.logVarList.properties(selectedItems);
     minsky.openLogFile(filePath);
   }
 

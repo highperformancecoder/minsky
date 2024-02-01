@@ -61,7 +61,7 @@ namespace minsky
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     
-    GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets();}
+    GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets(); editor.disableButtons();}
     GodleyIcon(const GodleyIcon&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 
@@ -160,6 +160,12 @@ namespace minsky
 
     /// clean up popup window structures on window close
     void destroyFrame() override {popup.destroyFrame();}
+
+    /// return true if any wires are attached to the variables
+    bool wiresAttached() const;
+
+    const GodleyIcon* godleyIconCast() const override {return this;}
+    GodleyIcon* godleyIconCast() override {return this;}
 
   private:
     void updateVars(Variables& vars, 
