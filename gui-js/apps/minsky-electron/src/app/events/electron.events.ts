@@ -109,8 +109,8 @@ ipcMain.on(
   }
 );
 
-ipcMain.on(events.CHANGE_MAIN_TAB, async (event, payload: ChangeTabPayload) => {
-  await WindowManager.setCurrentTab(new RenderNativeWindow(payload.newTab));
+ipcMain.handle(events.CHANGE_MAIN_TAB, async (event, payload: ChangeTabPayload) => {
+  return await WindowManager.setCurrentTab(new RenderNativeWindow(payload.newTab));
 });
 
 ipcMain.on(events.UPDATE_BOOKMARK_LIST, async (event) => {

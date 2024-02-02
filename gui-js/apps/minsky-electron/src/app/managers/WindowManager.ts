@@ -55,10 +55,10 @@ export class WindowManager {
     }
   }
 
-  static renderFrame() {
+  static async renderFrame() {
     try
     {
-      this.currentTab?.renderFrame(
+      return this.currentTab?.renderFrame(
                                        {
                                          parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
                                          offsetLeft: this.leftOffset,
@@ -78,7 +78,7 @@ export class WindowManager {
     if (this.currentTab!==tab) {
       await this.currentTab?.destroyFrame();
       this.currentTab=tab;
-      this.renderFrame();
+      return this.renderFrame();
     }
   }
   

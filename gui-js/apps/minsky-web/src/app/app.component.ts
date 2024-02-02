@@ -165,12 +165,12 @@ export class AppComponent implements OnInit, DoCheck {
         
         setTimeout(async ()=> {
           await this.windowUtilityService.reInitialize();
+          const payload = { newTab: tab };
+          await this.electronService.invoke(events.CHANGE_MAIN_TAB, payload);
           var container=this.windowUtilityService.getMinskyContainerElement();
           const scrollableArea=this.windowUtilityService.getScrollableArea();
           container.scrollTop=scrollableArea.height / 2;
           container.scrollLeft=scrollableArea.width / 2;
-          const payload = { newTab: tab };
-          await this.electronService.send(events.CHANGE_MAIN_TAB, payload);
           this.cmService.resetScroll();
         }, 1);
       }
