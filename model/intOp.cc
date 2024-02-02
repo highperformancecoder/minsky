@@ -26,8 +26,6 @@
 
 namespace minsky
 {
-  // necessary for Classdesc reflection!
-  constexpr float IntOp::intVarOffset;
   IntOpAccessor::IntOpAccessor(): ecolab::TCLAccessor<IntOp, std::string>
     ("description",(Getter)&IntOp::description,(Setter)&IntOp::description) {}
   

@@ -462,7 +462,7 @@ void Sheet::draw(cairo_t* cairo) const
             case 2: dataHeight-=2*(rowHeight+3); break;
             default: dataHeight-=3*(rowHeight+3); break;
             }
-          ElisionRowChecker adjustRowAndFinish(showSlice,dataHeight,rowHeight,dims[0]);
+          const ElisionRowChecker adjustRowAndFinish(showSlice,dataHeight,rowHeight,dims[0]);
               
           // draw in label column
           auto& xv=value->hypercube().xvectors[0];

@@ -114,12 +114,6 @@ namespace
 
 namespace minsky
 {
-
-  // necessary for Classdesc reflection!
-  constexpr float OperationBase::l;
-  constexpr float OperationBase::h;
-  constexpr float OperationBase::r;
-
   namespace
   {
     struct SumInputPort: public MultiWireInputPort
