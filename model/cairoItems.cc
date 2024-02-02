@@ -88,9 +88,9 @@ void RenderVariable::draw()
 
 bool RenderVariable::inImage(float x, float y)
 {
-  float dx=x-var.x(), dy=y-var.y();
-  float rx=dx*cos(var.rotation()*M_PI/180)-dy*sin(var.rotation()*M_PI/180);
-  float ry=dy*cos(var.rotation()*M_PI/180)+dx*sin(var.rotation()*M_PI/180);
+  const float dx=x-var.x(), dy=y-var.y();
+  const float rx=dx*cos(var.rotation()*M_PI/180)-dy*sin(var.rotation()*M_PI/180);
+  const float ry=dy*cos(var.rotation()*M_PI/180)+dx*sin(var.rotation()*M_PI/180);
   return rx>=-w && rx<=w && ry>=-h && ry <= h;
 }
 
@@ -104,7 +104,7 @@ double RenderVariable::handlePos() const
 void minsky::drawTriangle
 (cairo_t* cairo, double x, double y, const cairo::Colour& col, double angle)
 {
-  CairoSave cs(cairo);
+  const CairoSave cs(cairo);
   cairo_new_path(cairo);
   cairo_set_source_rgba(cairo,col.r,col.g,col.b,col.a);
   cairo_translate(cairo,x,y);

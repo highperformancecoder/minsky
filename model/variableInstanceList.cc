@@ -18,7 +18,6 @@
 */
 
 #include "minsky.h"
-#include "variableInstanceList.h"
 #include "group.h"
 #include "selection.h"
 #include "variableInstanceList.h"

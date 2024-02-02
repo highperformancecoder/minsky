@@ -209,12 +209,10 @@ namespace minsky
 
       Value queueCommand(Env env, string command, const json_pack_t& arguments)
       {
-        // TODO use string::endsWith when we change our C++ standard
-        auto syncPos=command.rfind(".$sync");
-        bool sync=syncPos!=string::npos && syncPos==command.size()-6;
-        if (sync)
+        static const std::string sync=".$sync";
+        if (command.ends_with(sync))
           {
-            command.erase(syncPos);
+            command.erase(command.size()-sync.length());
             // Javascript needs the result returned as UTF-16.
             return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
           }
@@ -232,16 +230,16 @@ namespace minsky
           }
         if (inputBufferExceeded) clearBusyCursor(); // single shot clear of busy curser
         inputBufferExceeded=false;
-        lock_guard<mutex> lock(cmdMutex);
+        const lock_guard<mutex> lock(cmdMutex);
         minskyCommands.emplace_back(new Command{env,command,arguments});
         return minskyCommands.back()->promiseResolver->promise.Promise();
       }
 
-      string doCommand(string command, const json_pack_t& arguments)
+      string doCommand(const string& command, const json_pack_t& arguments)
       {
-        lock_guard<mutex> lock(minskyCmdMutex);
-        Timer timer(timers[command]);
-        LocalMinsky lm(*this); // sets this to be the global minsky object
+        const lock_guard<mutex> lock(minskyCmdMutex);
+        const Timer timer(timers[command]);
+        const LocalMinsky lm(*this); // sets this to be the global minsky object
 
         // if reset requested, postpone it
         if (reset_flag())
@@ -268,12 +266,12 @@ namespace minsky
 
       void drawNativeWindows()
       {
-        lock_guard<mutex> lock(minskyCmdMutex);
-        Timer timer(timers["draw"]);
+        const lock_guard<mutex> lock(minskyCmdMutex);
+        const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
           try
             {
-              LocalMinsky lm(*this); // sets this to be the global minsky object
+              const LocalMinsky lm(*this); // sets this to be the global minsky object
               i->draw();
             }
           catch (const std::exception& ex)
@@ -295,8 +293,8 @@ namespace minsky
 
       void macOSXDrawNativeWindows()
       {
-        lock_guard<mutex> lock(minskyCmdMutex);
-        Timer timer(timers["draw"]);
+        const lock_guard<mutex> lock(minskyCmdMutex);
+        const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
           i->macOSXRedraw();
         nativeWindowsToRedraw.clear();
@@ -318,7 +316,7 @@ namespace minsky
           {
             unique_ptr<Command> command;
             {
-              lock_guard<mutex> lock(cmdMutex);
+              const lock_guard<mutex> lock(cmdMutex);
               if (!minskyCommands.empty())
                 {
                   command=std::move(minskyCommands.front());
@@ -331,11 +329,11 @@ namespace minsky
                 if (reset_flag() && resetAt<std::chrono::system_clock::now())
                   try
                     {
-                      lock_guard<mutex> lock(minskyCmdMutex);
+                      const lock_guard<mutex> lock(minskyCmdMutex);
                       if (reset_flag()) // check again, in case another thread got there first
                         {
-                          LocalMinsky lm(*this); // sets this to be the global minsky object
-                          Timer timer(timers["minsky.reset"]);
+                          const LocalMinsky lm(*this); // sets this to be the global minsky object
+                          const Timer timer(timers["minsky.reset"]);
                           reset();
                         }
                     }
@@ -392,7 +390,7 @@ namespace minsky
       TypedThreadSafeFunction<void,AddOnMinsky,messageCallback> tsMessageCallback;
       Value setMessageCallback(const Napi::CallbackInfo& info)
       {
-        Env env = info.Env();
+        const Env env = info.Env();
         if (info.Length()<1 || !info[0].IsFunction())
           {
             Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
@@ -425,7 +423,8 @@ namespace minsky
           }
         return true;
       }
-      
+
+      // signature of last param must be non-const
       static void busyCursorCallback(Napi::Env env, Napi::Function fn, void*, bool* busy)
       {
         fn({Boolean::New(env,*busy)});
@@ -435,7 +434,7 @@ namespace minsky
       TypedThreadSafeFunction<void,bool,busyCursorCallback> tsBusyCursorCallback;
       Value setBusyCursorCallback(const Napi::CallbackInfo& info)
       {
-        Env env = info.Env();
+        const Env env = info.Env();
         if (info.Length()<1 || !info[0].IsFunction())
           {
             Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
@@ -476,7 +475,7 @@ namespace minsky
       TypedThreadSafeFunction<void,AddOnMinsky,progressCallback> tsProgressCallback;
       Value setProgressCallback(const Napi::CallbackInfo& info)
       {
-        Env env = info.Env();
+        const Env env = info.Env();
         if (info.Length()<1 || !info[0].IsFunction())
           {
             Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
@@ -501,7 +500,7 @@ namespace minsky
       TypedThreadSafeFunction<void,AddOnMinsky,bookmarkRefreshCallback> tsBookmarkRefreshCallback;
       Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info)
       {
-        Env env = info.Env();
+        const Env env = info.Env();
         if (info.Length()<1 || !info[0].IsFunction())
           {
             Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
@@ -564,7 +563,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
 
   Value call(const Napi::CallbackInfo& info)
   {
-    Env env = info.Env();
+    const Env env = info.Env();
     if (info.Length() < 1)
       {
         Napi::TypeError::New(env, "Needs to be call(endpoint[, arguments])").ThrowAsJavaScriptException();
@@ -580,7 +579,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
         json_pack_t arguments(json5_parser::mValue{});
         if (info.Length()>1)
           {
-            string jsonArguments=info[1].ToString();
+            const string jsonArguments=info[1].ToString();
             if (!jsonArguments.empty())
               read(jsonArguments, arguments);
           }

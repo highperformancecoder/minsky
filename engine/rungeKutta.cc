@@ -216,7 +216,7 @@ namespace minsky
   void RungeKutta::evalJacobian(Matrix& jac, double t, const double sv[])
   {
     EvalOpBase::t=reverse? -t: t;
-    double reverseFactor=reverse? -1: 1;
+    const double reverseFactor=reverse? -1: 1;
     // firstly evaluate the flow variables. Initialise to flowVars so
     // that no input vars are correctly initialised
     vector<double> flow=flowVars;
@@ -248,7 +248,7 @@ namespace minsky
   void RungeKutta::evalEquations(double result[], double t, const double vars[])
   {
     EvalOpBase::t=reverse? -t: t;
-    double reverseFactor=reverse? -1: 1;
+    const double reverseFactor=reverse? -1: 1;
     // firstly evaluate the flow variables. Initialise to flowVars so
     // that no input vars are correctly initialised
     vector<double> flow(flowVars);
