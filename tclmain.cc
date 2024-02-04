@@ -80,7 +80,7 @@ void printTimersAtEnd()
 
 int main(int argc, char* argv[])
 {
-  Timer timer("main");
+  const Timer timer("main");
   //  atexit(printTimersAtEnd);
 
 #ifdef _WIN32
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 #endif
     // one possible reason is that it failed to locate the TCL library, we we set tcl_library and try again
     {
-      path exeDir=path(Tcl_GetNameOfExecutable()).parent_path();
+      const path exeDir=path(Tcl_GetNameOfExecutable()).parent_path();
       tclvar tcl_library("tcl_library", (exeDir/"library"/"tcl").string().c_str());
       tclvar tk_library("tk_library", (exeDir/"library"/"tk").string().c_str());
       if ((r=Tcl_Init(interp()))!=TCL_OK)
@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
       fprintf(stderr,"Minsky library not found!\n");
       return 1;
     }
-  tclvar minskyHome("minskyHome",minskydir.string().c_str());
+  const tclvar minskyHome("minskyHome",minskydir.string().c_str());
 
   srand(time(nullptr));
 
@@ -253,7 +253,7 @@ namespace TCLcmd
 
     NEWCMD(trap,2)     /* trap argv[2] to excute argv[1] */
     {
-      int signo = (isdigit(argv[1][0]))? atoi(argv[1]):
+      const int signo = (isdigit(argv[1][0]))? atoi(argv[1]):
 	signum[const_cast<char*>(argv[1])];
       sigcmd[signo]=argv[2];
       signal(signo,sighand);

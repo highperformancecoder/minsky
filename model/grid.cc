@@ -43,7 +43,7 @@ namespace minsky
     bottomRowMargin.clear();
     if (evenHeight())
       {
-        double rowHeight=cell(0,0).height();
+        const double rowHeight=cell(0,0).height();
         for (unsigned i=0; i<numRows(); ++i)
           bottomRowMargin.push_back((i+1)*rowHeight);
       }

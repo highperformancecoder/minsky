@@ -38,7 +38,7 @@ namespace minsky
     if (name.substr(name.length()-2)==":_") return false;
     
     static char constantPrefix[]="constant:";
-    static unsigned prefixLen=strlen(constantPrefix);
+    static const unsigned prefixLen=strlen(constantPrefix);
     auto nameCStr=name.c_str();
     char* endp=nullptr;
     strtoull(nameCStr,&endp,10);
@@ -79,7 +79,7 @@ namespace minsky
     auto nm=utf_to_utf<char>(name);
     auto nameCStr=nm.c_str();
     char* endp=nullptr;
-    size_t r=strtoull(nameCStr,&endp,10);
+    const size_t r=strtoull(nameCStr,&endp,10);
     if (endp && *endp==':')
       return r;
     throw error("scope requested for local variable");
@@ -127,7 +127,7 @@ namespace minsky
   
   std::string uqName(const std::string& name)
   {
-    string::size_type p=name.rfind(':');
+    const string::size_type p=name.rfind(':');
     if (p==string::npos)
       return utf_to_utf<char>(name);
     return utf_to_utf<char>(name).substr(p+1);
