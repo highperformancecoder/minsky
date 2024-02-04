@@ -32,10 +32,10 @@ namespace schema0
       set<string> ids;
       void insert(const string& name) {ids.insert(name);}
       bool operator()(const VariableManager::value_type& v) const {
-        return ids.count(v.second.name);
+        return ids.contains(v.second.name);
       }
       bool operator()(const VariableManager::VariableValues::value_type& l) const {
-        return ids.count(l.first);
+        return ids.contains(l.first);
       }
     };
   }
@@ -59,20 +59,20 @@ namespace schema0
          v!=variables.end(); ++v)
       // an orphaned variable is an integral variable not attached to an integral and without
       if (v->second.m_type==minsky::VariableType::integral && 
-          intNames.count(v->second.name)==0)
+          intNames.contains(v->second.name)==0)
         isOrphan.insert(v->second.name);
 
     for (VariableManager::iterator i=variables.begin();
          i!=variables.end();)
       {
-        VariableManager::iterator j=i++;
+        const VariableManager::iterator j=i++;
         if (isOrphan(*j)) variables.erase(j);
       }
 
     for (VariableManager::VariableValues::iterator i=variables.values.begin();
          i!=variables.values.end();)
       {
-        VariableManager::VariableValues::iterator j=i++;
+        const VariableManager::VariableValues::iterator j=i++;
         if (isOrphan(*j)) variables.values.erase(j);
       }
 

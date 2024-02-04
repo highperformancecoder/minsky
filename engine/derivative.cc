@@ -40,7 +40,7 @@ namespace MathDAG
   {
     int order=0; // current derivative order
     string varName=x; // base variable name
-    regex singleDeriv(R"(d(.*)/dt)"),
+    const regex singleDeriv(R"(d(.*)/dt)"),
       higherOrderDeriv(R"(d\^\{(\d*)\}(.*)/dt\^\{(\d*)\})");
     smatch m;
     if (regex_match(x,m,singleDeriv))
@@ -67,7 +67,7 @@ namespace MathDAG
   template <>
   NodePtr SystemOfEquations::chainRule(const Expr& x, const Expr& deriv)
   {
-    NodePtr dx=x->derivative(*this);
+    const NodePtr dx=x->derivative(*this);
     // perform some constant optimisation
     if (dx==zero) 
       return zero;
@@ -79,13 +79,13 @@ namespace MathDAG
   template <>
   NodePtr SystemOfEquations::derivative(const VariableDAG& expr)
   {
-    string name=differentiateName(expr.name);
+    const string name=differentiateName(expr.name);
     // ensure variable value exists, even if only temporary
-    VariablePtr tmp(VariableType::tempFlow, name);
+    const VariablePtr tmp(VariableType::tempFlow, name);
     VariableDAGPtr r(dynamic_pointer_cast<VariableDAG>(makeDAG(tmp->valueId(),tmp->name(),tmp->type())));
     if (expr.rhs)
       {
-        if (processingDerivative.count(expr.name))
+        if (processingDerivative.contains(expr.name))
           throw error("definition loop detected in processing derivative of %s",expr.name.c_str());
         processingDerivative.insert(expr.name);
         r->rhs=expr.rhs->derivative(*this);
@@ -160,7 +160,7 @@ namespace MathDAG
     // unfold arguments into a single list
     vector<WeakNodePtr> args;
     for (size_t i=0; i<expr.arguments.size(); ++i)
-      for (WeakNodePtr n: expr.arguments[i])
+      for (const WeakNodePtr n: expr.arguments[i])
         args.push_back(n);
 
     // remember multiplies are n-ary, not binary. eg
@@ -171,7 +171,7 @@ namespace MathDAG
 
     for (size_t i=0; i<args.size(); ++i)
       {
-        CachedOp<OperationType::multiply> p(expressionCache);
+        const CachedOp<OperationType::multiply> p(expressionCache);
         r->arguments[0].push_back(p);
         assert(!p->arguments.empty());
         for (size_t j=0; j<args.size(); ++j)
@@ -194,7 +194,7 @@ namespace MathDAG
     // standard binary quotient rule. u=numerator, v=denominator
     // d(u/v) = (vdu-udv)/v^2
 
-    CachedOp<OperationType::multiply> u1(expressionCache), v1(expressionCache);
+    const CachedOp<OperationType::multiply> u1(expressionCache), v1(expressionCache);
 
     assert(expr.arguments.size()==2);
     assert(!u1->arguments.empty() && !v1->arguments.empty());
@@ -209,8 +209,8 @@ namespace MathDAG
     u1->arguments[0]=expr.arguments[0];
     v1->arguments[0]=expr.arguments[1];
     
-    Expr u(expressionCache,u1), v(expressionCache,v1);
-    Expr du(expressionCache, u->derivative(*this)), dv(expressionCache, v->derivative(*this));
+    const Expr u(expressionCache,u1), v(expressionCache,v1);
+    const Expr du(expressionCache, u->derivative(*this)), dv(expressionCache, v->derivative(*this));
     
     NodePtr r = (v*du-u*dv)/(v*v); 
     assert(expressionCache.reverseLookup(*r));
@@ -224,10 +224,10 @@ namespace MathDAG
     assert(expr.arguments.size()==2);
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
+    const Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
     if (expr.arguments[1].empty())
       return x->derivative(*this)/x;
-    Expr b(expressionCache, expressionCache.reverseLookup(*expr.arguments[1][0]));
+    const Expr b(expressionCache, expressionCache.reverseLookup(*expr.arguments[1][0]));
     return (log(x)/log(b))->derivative(*this);
   }
 
@@ -242,12 +242,12 @@ namespace MathDAG
       return zero;
     if (expr.arguments[1].empty())
       {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        Expr dx(expressionCache, x->derivative(*this));
+        const Expr x(expressionCache, expr.arguments[0][0]);
+        const Expr dx(expressionCache, x->derivative(*this));
         return dx * x;
       }
-    Expr x(expressionCache, expr.arguments[0][0]);
-    Expr y(expressionCache,  expr.arguments[1][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr y(expressionCache,  expr.arguments[1][0]);
     return exp(y * log(x))->derivative(*this);
   }
 
@@ -320,9 +320,9 @@ namespace MathDAG
         return tmp->arguments[0][0]->derivative(*this);
       default:
         {
-          Expr x(expressionCache,tmp->arguments[0].back());
+          const Expr x(expressionCache,tmp->arguments[0].back());
           tmp->arguments[0].pop_back();
-          Expr y(expressionCache,NodePtr(tmp));
+          const Expr y(expressionCache,NodePtr(tmp));
           return (x<=y)*x->derivative(*this) +
             (1-(x<=y))*y->derivative(*this);
         }
@@ -350,9 +350,9 @@ namespace MathDAG
         return tmp->arguments[0][0]->derivative(*this);
       default:
         {
-          Expr x(expressionCache,tmp->arguments[0].back());
+          const Expr x(expressionCache,tmp->arguments[0].back());
           tmp->arguments[0].pop_back();
-          Expr y(expressionCache,NodePtr(tmp));
+          const Expr y(expressionCache,NodePtr(tmp));
           return (x<=y)*y->derivative(*this) +
             (1-(x<=y))*x->derivative(*this);
         }
@@ -407,7 +407,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return (100*x)->derivative(*this);
   }
   
@@ -454,7 +454,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, 0.5/sqrt(x));
   }
  
@@ -464,8 +464,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
-    Expr expx(expressionCache, expressionCache.reverseLookup(expr));
+    const Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr expx(expressionCache, expressionCache.reverseLookup(expr));
     return chainRule(x, exp(x));
   }
  
@@ -475,7 +475,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, 1/x);
   }
 
@@ -485,7 +485,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x,cos(x));
   }
 
@@ -495,7 +495,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x,-1*sin(x));
   }
 
@@ -506,8 +506,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
-    Expr secx=1/cos(x);
+    const Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr secx=1/cos(x);
     return chainRule(x,secx * secx);
   }
 
@@ -517,7 +517,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, 1/sqrt(1-x*x));
   }
 
@@ -527,7 +527,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, -1/sqrt(1-x*x));
   }
 
@@ -537,7 +537,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, 1/(1+x*x));
   }
 
@@ -547,7 +547,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, cosh(x));
   }
 
@@ -557,7 +557,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, sinh(x));
   }
 
@@ -567,8 +567,8 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
-    Expr sech=1/cosh(x);
+    const Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr sech=1/cosh(x);
     return chainRule(x, sech*sech);
   }
 
@@ -578,7 +578,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, (one-2*(x<=zero)));
   }
 
@@ -607,7 +607,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x,polygamma(x,Expr(expressionCache,zero))*Gamma(x)); 
   }                                                                                         
 
@@ -618,7 +618,7 @@ namespace MathDAG
       assert(expr.arguments.size()==2);
       if (expr.arguments[0].empty())
         return zero;
-      Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
+      const Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
       if (expr.arguments[1].empty())
         return chainRule(x,polygamma(x,Expr(expressionCache, one)));
       return chainRule(x,polygamma(x,1+Expr(expressionCache, expr.arguments[1][0])));
@@ -630,7 +630,7 @@ namespace MathDAG
   {
     if (expr.arguments[0].empty())
       return zero;
-    Expr x(expressionCache, expr.arguments[0][0]);
+    const Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x,polygamma(1+x,Expr(expressionCache,zero))*Gamma(1+x));
   }    
   

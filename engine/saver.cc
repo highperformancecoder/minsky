@@ -40,7 +40,7 @@ namespace minsky
   void Saver::save(const schema3::Minsky& m)
   {
     os.open(fileName);
-    OnExit closeOnExit([&](){os.close();});
+    const OnExit closeOnExit([&](){os.close();});
 
     try
       {

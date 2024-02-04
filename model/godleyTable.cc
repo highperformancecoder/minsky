@@ -37,7 +37,7 @@ bool GodleyTable::initialConditionRow(unsigned row) const
 {
   if (row>=rows()) return false;
   const string& label=cell(row,0);
-  static size_t initialConditionsSz=strlen(initialConditions);
+  static const size_t initialConditionsSz=strlen(initialConditions);
   size_t i, j;
   // trim any leading whitespaces
   for (i=0; isspace(label[i]); ++i);
@@ -148,7 +148,7 @@ vector<string> GodleyTable::getColumnVariables() const
   vector<string> vars;
   for (size_t c=1; c<cols(); ++c)
     {
-      string var=trimWS(cell(0,c));
+      const string var=trimWS(cell(0,c));
       if (!var.empty())
         {
           // disable duplicate column test on equity columns (feature #174)
@@ -168,7 +168,7 @@ vector<string> GodleyTable::getVariables() const
     if (!initialConditionRow(r))
       for (size_t c=1; c<cols(); ++c)
         {
-          FlowCoef fc(cell(r,c));
+          const FlowCoef fc(cell(r,c));
           if (!fc.name.empty() && uvars.insert(fc.name).second)
             vars.push_back(fc.name);
         }
@@ -199,7 +199,7 @@ bool GodleyTable::singleEquity() const {
 
 string GodleyTable::assetClass(TCL_args args)
 {
-  int col=args;
+  const int col=args;
   if (args.count) 
     {
       _assetClass
@@ -216,11 +216,10 @@ map<string,double> GodleyTable::rowSumAsMap(int row) const
   
   // accumulate the total for each variable
   map<string,double> sum;
-  set<string> colNamesSeen;
 
   for (size_t c=1; c<cols(); ++c)
     {
-      FlowCoef fc(cell(row,c));
+      const FlowCoef fc(cell(row,c));
       if (!fc.name.empty()||initialConditionRow(row))
         {
           // apply accounting relation to the initial condition row
@@ -322,7 +321,7 @@ void GodleyTable::exportToCSV(const string& filename) const
 
 void GodleyTable::orderAssetClasses()
 {
-  unsigned numRows=rows()>1? rows(): 1;
+  const unsigned numRows=rows()>1? rows(): 1;
   map<AssetClass,Data> tmpCols;
   for (unsigned c=1; c<cols(); ++c)
     if (_assetClass(c)==noAssetClass)

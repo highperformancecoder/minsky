@@ -39,7 +39,7 @@ namespace minsky
       data[x]=y; // TODO: throw if more than one equal value of x provided?
 
     // trim any leading directory
-    size_t p=fileName.rfind('/');
+    const size_t p=fileName.rfind('/');
     // '/' is guaranteed not to be in fileName, so we can use that as
     // a delimiter
     description("\\verb/"+
@@ -49,7 +49,7 @@ namespace minsky
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
   {
     data.clear();
-    double dx=(xmax-xmin)/numSamples;
+    const double dx=(xmax-xmin)/numSamples;
     for (double x=xmin; x<xmax; x+=dx) //NOLINT
       data[x]=double(rand())/RAND_MAX;
   }
@@ -59,7 +59,7 @@ namespace minsky
     // not terribly sensible, but need to return something
     if (data.empty()) return 0;
 
-    map<double, double>::const_iterator v=data.lower_bound(x);
+    const map<double, double>::const_iterator v=data.lower_bound(x);
     if (v==data.end())
       return data.rbegin()->second;
     if (v==data.begin())
@@ -77,7 +77,7 @@ namespace minsky
 
   double DataOp::deriv(double x) const
   {
-    map<double, double>::const_iterator v=data.lower_bound(x);
+    const map<double, double>::const_iterator v=data.lower_bound(x);
     if (v==data.end() || v==data.begin())
       return 0;
     map<double, double>::const_iterator v1=v, v2=v; 

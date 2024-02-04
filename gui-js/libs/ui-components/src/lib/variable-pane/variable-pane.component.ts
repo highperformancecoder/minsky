@@ -23,7 +23,7 @@ import { sampleTime } from 'rxjs/operators';
   standalone: true
 })
 export class VariablePaneComponent implements OnDestroy, AfterViewInit {
-  @ViewChild('variablePaneWrapper') variablePaneWrapper: ElementRef;
+  @ViewChild('variablePane') variablePaneWrapper: ElementRef;
 
   itemId: number;
   systemWindowId: BigInt;
@@ -94,7 +94,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  initEvents() {
+  async initEvents() {
 
     this.mouseMove$ = fromEvent<MouseEvent>(
       this.variablePaneContainer,
@@ -126,6 +126,11 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
 //    this.variablePaneContainer.onwheel = this.onMouseWheelZoom;
     document.onkeydown = this.onKeyDown;
     document.onkeyup = this.onKeyUp;
+
+    // set initial value of form elements from C++
+    let selected=await this.variablePane.selection.properties();
+    for (let i of ['flow','parameter','stock','integral'])
+      document.forms["variablePane"]["variablePane::"+i].checked=selected.includes(i);
   }
 
   onKeyDown =  (event: KeyboardEvent) => {

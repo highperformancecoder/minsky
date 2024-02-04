@@ -32,14 +32,14 @@ namespace minsky
   
   void PhillipsFlow::draw(cairo_t* cairo)
   {
-    CairoSave cs(cairo);
-    double value=this->value();
+    const CairoSave cs(cairo);
+    const double value=this->value();
     double& maxV=maxFlow[units()];
     if (abs(value)>maxV) maxV=abs(value);
     double lineWidth=1;
     if (maxV>0)
       {
-        double lw=5*abs(value)/maxV;
+        const double lw=5*abs(value)/maxV;
         lineWidth=std::max(1.0, lw);
         static const double dashLength=3;
         if (lw<1)
@@ -57,7 +57,7 @@ namespace minsky
     auto maxV=maxStock[units()];
     if (maxV>0)
       {
-        CairoSave cs(cairo);
+        const CairoSave cs(cairo);
         auto w=width()*zoomFactor(); 
         auto h=height()*zoomFactor();
         auto f=value()/maxV;
@@ -80,11 +80,11 @@ namespace minsky
   {
     if  (!surface.get()) return false;
     auto cairo=surface->cairo();
-    CairoSave cs(cairo);
+    const CairoSave cs(cairo);
     cairo_translate(cairo,x,y);
     for (auto& i: stocks)
       {
-        CairoSave cs(cairo);
+        const CairoSave cs(cairo);
         cairo_identity_matrix(cairo);
         cairo_translate(cairo,i.second.x()+x, i.second.y()+y);
         i.second.draw(cairo);
@@ -116,7 +116,7 @@ namespace minsky
             map<string, vector<pair<FlowCoef, string>>> sources, destinations; 
             for (size_t c=1; c<g->table.cols(); c++)
               {
-                FlowCoef fc(g->table.cell(r,c));
+                const FlowCoef fc(g->table.cell(r,c));
                 if (fc.coef)
                   {
                     auto payload=make_pair(FlowCoef(fc.coef,g->table.cell(0,c)),g->table.cell(r,0));
@@ -166,7 +166,7 @@ namespace minsky
     
     for (auto& i: newStocks)
       {
-        if (!stocks.count(i.first))
+        if (!stocks.contains(i.first))
           {
             i.second.moveTo(r*(cos(angle)+1)+maxW+50,r*(sin(angle)+1)+maxW+50);
             i.second.rotation(angle*180.0/M_PI);
@@ -230,7 +230,7 @@ namespace minsky
       }
     for (auto& i: flows)
       {
-        bool mf=i.second.near(x,y);
+        const bool mf=i.second.near(x,y);
         if (mf!=i.second.mouseFocus)
         {
           i.second.mouseFocus=mf;
