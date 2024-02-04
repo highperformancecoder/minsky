@@ -97,6 +97,13 @@ namespace minsky
   {
     return int(clamp360(x+45)/90);
   }
+
+  /// returns if the \a angle (in degrees) is in the second or third quadrant
+  inline bool flipped(double rotation)
+  {
+    const double fm=std::fmod(rotation,360);
+    return std::abs(fm)>90 && std::abs(fm)<270;
+  }
 }
 
 #endif

@@ -76,6 +76,7 @@ export class AppComponent implements OnInit, DoCheck {
             break;
 
           case 'Enter':
+            event.preventDefault();
             this.handleEnterKey(event);
             break;
 
@@ -142,9 +143,6 @@ export class AppComponent implements OnInit, DoCheck {
       const buttons = Array.from(
           document.getElementsByClassName('submit')
       ) as HTMLElement[];
-      if (buttons.length > 0) {
-          event.preventDefault();
-      }
       buttons.forEach((b) => {
           b.click();
       });

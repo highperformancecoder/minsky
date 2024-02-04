@@ -68,6 +68,7 @@ export class EditUserFunctionComponent implements OnInit {
       this.udf.description(this.name.value);
       this.udf.rotation(this.rotation.value);
       this.udf.expression(this.expression.value);
+      this.electronService.minsky.requestRedraw();
     }
 
     this.closeWindow();

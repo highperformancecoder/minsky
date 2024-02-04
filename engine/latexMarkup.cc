@@ -705,7 +705,7 @@ namespace
   string utf8char(const char*& input)
   {
     string r;
-    char lead=*input;
+    const char lead=*input;
     if ((lead&0xC0)==0xC0) r+=*input++; // multibyte byte sequence
     if ((lead&0xE0)==0xE0) r+=*input++; // 3 or more
     if ((lead&0xF8)==0xF0) r+=*input++; // 4 bytes
@@ -798,8 +798,8 @@ namespace
 
     void processLaTeX(const char*& input)
     {
-      string token=parseLaTeXSym(++input);
-      map<string,string>::const_iterator repl=latexSymbols.find(token);
+      const string token=parseLaTeXSym(++input);
+      const map<string,string>::const_iterator repl=latexSymbols.find(token);
       if (repl!=latexSymbols.end())
         *this+=repl->second;
       else if (token=="mathit" || token=="mathcal")
@@ -814,7 +814,7 @@ namespace
         {
           if (*input=='[')
             {
-              string index=parseOpt(input);
+              const string index=parseOpt(input);
               *this+="<small><sup>"+index+"</sup></small>";
             }
           *this+=latexSymbols["surd"];
@@ -824,7 +824,7 @@ namespace
         {
           // next character is the delimiter
           *this+="<tt>";
-          char delim=*input++;
+          const char delim=*input++;
           for (; *input!='\0' && *input!=delim; ++input)
             *this+=minsky::defang(*input);
           *this+="</tt>";
