@@ -76,14 +76,14 @@ namespace minsky
           {
             if (*j=='^'||*j=='\0'||isspace(*j))
               {
-                string name(b,j); // stash end of unit name
+                const string name(b,j); // stash end of unit name
                 if (name.empty())
                   throw runtime_error("empty unit name: "+x);
                 while (isspace(*j)) ++j;
                 if (*j=='^')
                   {
                     auto k=j+1;
-                    int v=strtol(k,const_cast<char**>(&j),10);
+                    const int v=strtol(k,const_cast<char**>(&j),10);
                     if (j==k)
                       throw runtime_error("invalid exponent: "+x);
                     if (name!="1")

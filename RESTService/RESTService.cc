@@ -97,10 +97,10 @@ void processBuffer(const string& buffer)
 
 int main(int argc, const char* argv[])
 {
-  LocalMinsky lm(rminsky);
+  const LocalMinsky lm(rminsky);
   RESTProcess(rminsky.registry,"minsky",minsky::minsky());
 
-  bool batch=argc>1 && argv[1]==string("-batch");
+  const bool batch=argc>1 && argv[1]==string("-batch");
     
   
   char* c;
@@ -113,7 +113,7 @@ int main(int argc, const char* argv[])
   else // interactive, use readline
     while ((c=readline("cmd>"))!=nullptr)
       {
-        string buffer=c;
+        const string buffer=c;
         processBuffer(buffer);
         if (strlen(c)) add_history(c); 
         free(c);

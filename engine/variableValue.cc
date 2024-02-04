@@ -142,7 +142,7 @@ namespace minsky
         break;
       default: break;
       }
-    static double zero=0;
+    static const double zero=0;
     return zero;
   }
   
@@ -176,7 +176,7 @@ namespace minsky
     if (v.tensorInit.rank()>0)
       return v.tensorInit;
     
-    FlowCoef fc(v.init);
+    const FlowCoef fc(v.init);
     if (trimWS(fc.name).empty())
       return fc.coef;
 
@@ -184,7 +184,7 @@ namespace minsky
     auto p=fc.name.find('(');
     if (p!=string::npos)
       {
-        string fn=fc.name.substr(0,p);
+        const string fn=fc.name.substr(0,p);
         // unpack args
         const char* x=fc.name.c_str()+p+1;
         char* e;
@@ -236,10 +236,10 @@ namespace minsky
         
     // resolve name
     auto valueId=minsky::valueId(v.m_scope.lock(), fc.name);
-    if (visited.count(valueId))
+    if (visited.contains(valueId))
       throw error("circular definition of initial value for %s",
                   fc.name.c_str());
-    VariableValues::const_iterator vv=find(valueId);
+    const VariableValues::const_iterator vv=find(valueId);
     if (vv==end())
       throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), v.name.c_str());
 

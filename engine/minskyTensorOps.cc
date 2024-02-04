@@ -73,14 +73,14 @@ namespace minsky
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
       if (!deriv) throw DerivativeNotDefined();
-      if (double df=deriv->dFlow(ti,fi))
+      if (const double df=deriv->dFlow(ti,fi))
         return eo.d1((*arg)[ti])*df;
       return 0;
     }
     double dStock(size_t ti, size_t si) const override {
       auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
       if (!deriv) throw DerivativeNotDefined();
-      if (double ds=deriv->dStock(ti,si))
+      if (const double ds=deriv->dStock(ti,si))
         return eo.d1((*arg)[ti])*ds;
       return 0;
     }
@@ -110,7 +110,7 @@ namespace minsky
             std::vector<string> a1Order, common;
             Hypercube hcSpread1, hcSpread2;
             for (auto& i: a1->hypercube().xvectors)
-              if (a2Axes.count(i.name))
+              if (a2Axes.contains(i.name))
                 {
                   common.push_back(i.name);
                   a2Axes.erase(i.name);
@@ -121,7 +121,7 @@ namespace minsky
                   hcSpread2.xvectors.push_back(i);
                 }
             for (auto& xv: a2->hypercube().xvectors)
-              if (a2Axes.count(xv.name))
+              if (a2Axes.contains(xv.name))
                 hcSpread1.xvectors.push_back(xv);
 
             // append common dimensions to make up a1 final order
@@ -169,9 +169,9 @@ namespace minsky
       auto deriv2=dynamic_cast<DerivativeMixin*>(arg2.get());
       if (!deriv1 || !deriv2) throw DerivativeNotDefined();
       double r=0;
-      if (double df=deriv1->dFlow(ti,fi))
+      if (const double df=deriv1->dFlow(ti,fi))
         r += eo.d1((*arg1)[ti])*df;
-      if (double df=deriv2->dFlow(ti,fi))
+      if (const double df=deriv2->dFlow(ti,fi))
         r += eo.d2((*arg2)[ti])*df;
       return r;
     }
@@ -180,9 +180,9 @@ namespace minsky
       auto deriv2=dynamic_cast<DerivativeMixin*>(arg2.get());
       if (!deriv1 || !deriv2) throw DerivativeNotDefined();
       double r=0;
-      if (double ds=deriv1->dStock(ti,si))
+      if (const double ds=deriv1->dStock(ti,si))
         r += eo.d1((*arg1)[ti])*ds;
-      if (double ds=deriv2->dStock(ti,si))
+      if (const double ds=deriv2->dStock(ti,si))
         r += eo.d2((*arg2)[ti])*ds;
       return r;
     }
@@ -349,12 +349,13 @@ namespace minsky
       else
         outerStride=arg->hypercube().numElements();
       auto idx=arg->index();
-      set<size_t> idxSet(idx.begin(),idx.end()), newIdx;
+      const set<size_t> idxSet(idx.begin(),idx.end());
+      set<size_t> newIdx;
       for (auto& i: idx)
         {
           // strip of any indices outside the output range
           auto t=ssize_t(i)-delta;
-          if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.count(t) && sameSlice(t,i))
+          if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.contains(t) && sameSlice(t,i))
             {
               argIndices.push_back(t);
               newIdx.insert(hypercube().linealIndex(arg->hypercube().splitIndex(t)));
@@ -421,7 +422,7 @@ namespace minsky
         for (size_t i=1; i<arg2->rank(); i++)
           n*=arg2->hypercube().dims()[i];     
   	
-      size_t stride=arg2->rank()>0? arg2->hypercube().dims()[0]: 1;	 	 
+      const size_t stride=arg2->rank()>0? arg2->hypercube().dims()[0]: 1;	 	 
       double tmpSum;
       for (size_t i=0; i< m; i++)
         for (size_t j=0; j< n; j++)
@@ -460,7 +461,7 @@ namespace minsky
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {
       if (!arg1 || !arg2) return;
-      size_t m=arg1->size(), n=arg2->size();   
+      const size_t m=arg1->size(), n=arg2->size();   
       assert(cachedResult.size()==m*n);
 	
       for (size_t i=0; i< m; i++)
@@ -481,7 +482,7 @@ namespace minsky
       if (!arg1 || !arg2) return;
       
       set<size_t> newIdx;
-      size_t stride=arg1->hypercube().numElements();
+      const size_t stride=arg1->hypercube().numElements();
 
       vector<size_t> idx1(arg1->index().begin(), arg1->index().end()), idx2(arg2->index().begin(), arg2->index().end());
       if (!idx1.empty() || !idx2.empty())
@@ -548,7 +549,7 @@ namespace minsky
       double lv=arg1->atHCIndex(lesser*stride+offset), gv=arg1->atHCIndex(greater*stride+offset);
       for (; lesser>0 && isnan(lv); --lesser, lv=arg1->atHCIndex(lesser*stride+offset));
       for (; greater<maxIdx && isnan(gv); ++greater, gv=arg1->atHCIndex(greater*stride+offset));
-      double s=(idx-lesser)/(greater-lesser);
+      const double s=(idx-lesser)/(greater-lesser);
       // special cases to avoid unncessarily including nans/infs in the computation
       if (s==0) return lv;
       if (s==1) return gv;
@@ -567,7 +568,7 @@ namespace minsky
       double gv=arg1->atHCIndex((greater-xv.begin())*stride+offset);
       for (; i>xv.begin() && isnan(lv); --i, lv=arg1->atHCIndex((i-xv.begin())*stride+offset));
       for (; greater<xv.end()-1 && isnan(gv); ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
-      double s=diff(x,*i)/diff(*greater,*i);
+      const double s=diff(x,*i)/diff(*greater,*i);
       // special cases to avoid unncessarily including nans/infs in the computation
       if (s==0) return lv;
       if (s==1) return gv;
@@ -596,11 +597,11 @@ namespace minsky
         case Dimension::time:
           interpolate=[&](double x, size_t offset){
             // interpret as "year" in a common era date (Gregorian calendar)
-            int year=x;
-            int daysInYear=(date(year+1,Jan,1)-date(year,Jan,1)).days();
-            double dayInYearF=daysInYear*(x-year);
-            int dayInYear=dayInYearF;
-            ptime xtime(date(year,Jan,1)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
+            const int year=x;
+            const int daysInYear=(date(year+1,Jan,1)-date(year,Jan,1)).days();
+            const double dayInYearF=daysInYear*(x-year);
+            const int dayInYear=dayInYearF;
+            const ptime xtime(date(year,Jan,1)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
             return interpolateAny(xv, xtime, stride, offset);
           };
           break;
@@ -659,7 +660,7 @@ namespace minsky
       set<size_t> offsetSet;
       if (arg1->index().empty()) //dense case
         {
-          size_t numLower=dimension? arg1Dims[dimension-1]: 1;
+          const size_t numLower=dimension? arg1Dims[dimension-1]: 1;
           for (size_t i=0; i<upperStride; ++i)
             for (size_t j=0; j<numLower; ++j)
               offsetSet.insert(lowerStride*i*arg1Dims[dimension]+j);
@@ -674,7 +675,7 @@ namespace minsky
       offsets.clear(); offsets.insert(offsets.end(), offsetSet.begin(), offsetSet.end());
 
       // resulting hypercube is a tensor product of arg2 and the reduced arg1.
-      size_t arg2NumElements=arg2->hypercube().numElements();
+      const size_t arg2NumElements=arg2->hypercube().numElements();
       Hypercube hc=arg2->hypercube();
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin(), arg1->hypercube().xvectors.begin()+dimension);
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin()+dimension+1, arg1->hypercube().xvectors.end());
@@ -819,7 +820,7 @@ namespace minsky
           dimension1=-1;
           for (auto& xv:arg1->hypercube().xvectors)
             if (xv.name==args.dimension)
-              dimension1=&xv-&arg1->hypercube().xvectors[0];
+              dimension1=&xv-arg1->hypercube().xvectors.data();
             else
               {
                 hc.xvectors.push_back(xv);
@@ -839,7 +840,7 @@ namespace minsky
           dimension2=-1;
           for (auto& xv:arg2->hypercube().xvectors)
             if (xv.name==args.dimension)
-              dimension2=&xv-&arg2->hypercube().xvectors[0];
+              dimension2=&xv-arg2->hypercube().xvectors.data();
             else
               {
                 hc.xvectors.push_back(xv);
@@ -925,7 +926,7 @@ namespace minsky
         count++;
       };
       performSum(f,i);
-      double invCount=1.0/count;
+      const double invCount=1.0/count;
       return  (sumXY-sumX*sumY*invCount)/
         sqrt((sumXsq-sumX*sumX*invCount)*(sumYsq-sumY*sumY*invCount));
     }
@@ -945,7 +946,7 @@ namespace minsky
       civita::ReductionOp::operator[](i);
       if (values.empty()) return nan("");
       sort(values.begin(),values.end());
-      size_t halfIndex=values.size()/2;
+      const size_t halfIndex=values.size()/2;
       return (values.size()&1)? values[halfIndex]: 0.5*(values[halfIndex-1]+values[halfIndex]);
     }
   };
@@ -1061,7 +1062,7 @@ namespace minsky
         unionHypercube(hc, i->hypercube(), false);
 
       // list of final dimension names in order
-      vector<string> unionDims;
+      vector<string> unionDims; unionDims.reserve(hc.xvectors.size());
       for (auto& i: hc.xvectors) unionDims.push_back(i.name);
 
       // create tensor chains for each argument to permute it into the common hypercube
@@ -1072,7 +1073,7 @@ namespace minsky
           auto spread=make_shared<SpreadLast>();
           Hypercube spreadHC;
           for (auto& j: hc.xvectors)
-            if (!argDims.count(j.name))
+            if (!argDims.contains(j.name))
               spreadHC.xvectors.push_back(j);
           spread->setArgument(i,{});
           spread->setSpreadDimensions(spreadHC);
@@ -1158,7 +1159,7 @@ namespace minsky
     {
       civita::PermuteAxis::setArgument(arg,args);
       // now construct the permutation corresponding to the slice
-      int slice=args.val;
+      const int slice=args.val;
       vector<size_t> permutation;
       auto argSize=arg->hypercube().xvectors[axis()].size();
       if (slice<0) // negative slices refer to the end (python style)
@@ -1222,7 +1223,7 @@ namespace minsky
           else
             selector = (*args[0])[i];
         }
-      ssize_t idx = selector+1.5; // selector selects between args 1..n
+      const ssize_t idx = selector+1.5; // selector selects between args 1..n
       
       if (idx>0 && idx<int(args.size()))
         {
@@ -1381,7 +1382,7 @@ namespace minsky
   {
     result.index(src->index());
     result.hypercube(src->hypercube());
-    OperationPtr tmp(OperationType::copy);
+    const OperationPtr tmp(OperationType::copy);
     auto copy=dynamic_pointer_cast<ITensor>(tensorOpFactory.create(tmp));
     copy->setArgument(make_shared<ConstTensorVarVal>(src,result.ev));
     rhs=std::move(copy);
@@ -1393,7 +1394,7 @@ namespace minsky
     if (rhs)
       {
         assert(result.idx()>=0);
-        bool fvIsGlobalFlowVars=fv==ValueVector::flowVars.data();
+        const bool fvIsGlobalFlowVars=fv==ValueVector::flowVars.data();
         result.index(rhs->index());
         result.hypercube(rhs->hypercube());
         if (fvIsGlobalFlowVars) // hypercube operation may have resized flowVars, invalidating fv

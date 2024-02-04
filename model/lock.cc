@@ -76,11 +76,11 @@ namespace minsky
 
   void Lock::draw(cairo_t* cairo) const 
   {
-    float z=zoomFactor()*scaleFactor();
-    float w=iWidth()*z, h=iHeight()*z;
+    const float z=zoomFactor()*scaleFactor();
+    const float w=iWidth()*z, h=iHeight()*z;
 
     {
-      ecolab::cairo::CairoSave cs(cairo);
+      const ecolab::cairo::CairoSave cs(cairo);
       cairo_translate(cairo,-0.5*w,-0.5*h);
       SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
       cairo_scale(cairo, w/icon->width(), h/icon->height());

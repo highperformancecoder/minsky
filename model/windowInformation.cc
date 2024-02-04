@@ -85,7 +85,7 @@ namespace minsky
       SetWindowPos(winfo.childWindowId,HWND_TOP,winfo.offsetLeft,winfo.offsetTop,winfo.childWidth,winfo.childHeight,0);
 #elif defined(USE_X11)
       static mutex blitting;
-      lock_guard<mutex> lock(blitting);
+      const lock_guard<mutex> lock(blitting);
       XCopyArea(winfo.display, winfo.bufferWindowId, winfo.childWindowId, winfo.graphicsContext, x, y, width, height, x, y);
       XFlush(winfo.display);
       XRaiseWindow(winfo.display, winfo.childWindowId);
@@ -274,9 +274,9 @@ namespace minsky
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
     parentWindowId = parentWin;
-    static bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
+    static const bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
     display = XOpenDisplay(nullptr);
-    int err = XGetWindowAttributes(display, parentWin, &wAttr);
+    const int err = XGetWindowAttributes(display, parentWin, &wAttr);
     if (err > 1)
       throw runtime_error("Invalid window: " + to_string(parentWin));
 
