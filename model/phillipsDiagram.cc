@@ -182,6 +182,7 @@ namespace minsky
   void PhillipsDiagram::mouseDown(float x, float y)
   {
     if (stockBeingRotated) return;
+    x-=this->x; y-=this->y;
     for (auto& i: stocks)
       if (i.second.contains(x,y))
         {
@@ -210,6 +211,7 @@ namespace minsky
   
   void PhillipsDiagram::mouseMove(float x, float y)
   {
+    x-=this->x; y-=this->y;
     if (stockBeingRotated)
       {
         stockBeingRotated->rotate(Point{x,y}, rotateOrigin);
@@ -241,6 +243,7 @@ namespace minsky
   
   void PhillipsDiagram::startRotatingItem(float x, float y)
   {
+    x-=this->x; y-=this->y;
       for (auto& i: stocks)
         if (i.second.contains(x,y))
           {
