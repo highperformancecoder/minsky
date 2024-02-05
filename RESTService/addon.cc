@@ -218,8 +218,7 @@ namespace minsky
           }
 #ifdef _WIN32
         // renderFrame needs to be called synchronously, otherwise inexplicable hangs occur on Windows.
-        syncPos=command.rfind(".renderFrame");
-        if (syncPos!=string::npos && syncPos==command.size()-12)
+        if (command.ends_with(".renderFrame"))
           return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
 #endif
         if (minskyCommands.size()>20)
