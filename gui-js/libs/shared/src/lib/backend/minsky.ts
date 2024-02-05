@@ -1384,6 +1384,7 @@ export class Minsky extends CppClass {
   async listAllInstances(): Promise<void> {return this.$callMethod('listAllInstances');}
   async listFonts(): Promise<string[]> {return this.$callMethod('listFonts');}
   async load(a1: string): Promise<void> {return this.$callMethod('load',a1);}
+  async loggingEnabled(): Promise<boolean> {return this.$callMethod('loggingEnabled');}
   async makeVariablesConsistent(): Promise<void> {return this.$callMethod('makeVariablesConsistent');}
   async markEdited(): Promise<void> {return this.$callMethod('markEdited');}
   async matchingTableColumns(a1: GodleyIcon,a2: string): Promise<string[]> {return this.$callMethod('matchingTableColumns',a1,a2);}

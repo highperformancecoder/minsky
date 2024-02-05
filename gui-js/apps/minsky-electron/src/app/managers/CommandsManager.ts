@@ -866,8 +866,13 @@ export class CommandsManager {
     });
   }
 
+  static setLogSimulationCheckmark(checked: boolean) {
+    Menu.getApplicationMenu().getMenuItemById('logging-menu-item').checked=checked;
+  }
+  
   static async logSimulation(selectedItems: string[]) {
     if (!Array.isArray(selectedItems) || !selectedItems.length) {
+      this.setLogSimulationCheckmark(false);
       return;
     }
 
@@ -881,11 +886,13 @@ export class CommandsManager {
     const { canceled, filePath} = logSimulation;
 
     if (canceled || !filePath) {
+      this.setLogSimulationCheckmark(false);
       return;
     }
 
     minsky.logVarList.properties(selectedItems);
     minsky.openLogFile(filePath);
+    this.setLogSimulationCheckmark(true);
   }
 
   static async importCSV(itemInfo: CanvasItem, isInvokedUsingToolbar = false) {

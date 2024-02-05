@@ -287,7 +287,10 @@ namespace minsky
     void openLogFile(const string&);
     /// closes log file
     void closeLogFile() {outputDataFile.reset();}
+    /// set of variables (valueIds) to log
     std::set<string> logVarList;
+    /// returns true if logging is in operation
+    bool loggingEnabled() const {return outputDataFile.get();}
     
     /// construct the equations based on input data
     /// @throws ecolab::error if the data is inconsistent

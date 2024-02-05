@@ -19,7 +19,7 @@ import { RecordingManager } from './RecordingManager';
 //TODO:: Remove hardcoding of popup dimensions
 
 export class ApplicationMenuManager {
-  public static createMainApplicationMenu() {
+  public static async createMainApplicationMenu() {
     const scope = this;
     const menu = Menu.buildFromTemplate([
       scope.getFileMenu(),
@@ -206,13 +206,23 @@ export class ApplicationMenuManager {
         scope.getExportPlotMenu(),
         {
           label: 'Log simulation',
-          click() {
-            WindowManager.createPopupWindowWithRouting({
-              width: 250,
-              height: 600,
-              title: 'Log simulation',
-              url: `#/headless/menu/file/log-simulation`,
-            });
+          id: 'logging-menu-item', // allows setting and clearing checkmark
+          type: 'checkbox',
+          async click() {
+            if (!await minsky.loggingEnabled())
+            {
+              WindowManager.createPopupWindowWithRouting({
+                width: 250,
+                height: 600,
+                title: 'Log simulation',
+                url: `#/headless/menu/file/log-simulation`,
+              });
+            }
+            else
+            {
+              minsky.closeLogFile();
+              Menu.getApplicationMenu().getMenuItemById('logging-menu-item').checked=false;
+            }
           },
         },
         {
