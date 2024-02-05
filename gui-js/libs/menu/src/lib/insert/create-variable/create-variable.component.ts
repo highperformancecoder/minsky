@@ -174,7 +174,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     await this.createVariable();
   }
 
-  async saveVariableParams(item: VariableBase) {
+  saveVariableParams(item: VariableBase) {
     item.setUnits(this.units.value || '');
     item.init(this.value.value);
     item.initSliderBounds(); // ensure slider bounds starts with a reasonable value
@@ -186,15 +186,18 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     if (typeof this.sliderBoundsMin.value=='number') item.sliderMin(this.sliderBoundsMin.value);
     if (typeof this.sliderStepSize.value=='number') item.sliderStep(this.sliderStepSize.value);
     item.sliderStepRel(this.sliderStepRel.value);
-    item.retype(this.type.value);
-    this.electronService.minsky.canvas.renameItem(this._name);
     this.closeWindow();
   }
 
   
-  async editVariable() {this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.item));}
+  editVariable() {
+    let item=new VariableBase(this.electronService.minsky.canvas.item);
+    this.saveVariableParams(item);
+    item.retype(this.type.value);
+    this.electronService.minsky.canvas.renameItem(this._name);
+  }
 
-  async createVariable() {
+  createVariable() {
     this.electronService.minsky.canvas.addVariable(this._name,this.type.value);
     this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.itemFocus))
   }
