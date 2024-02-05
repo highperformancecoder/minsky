@@ -61,7 +61,7 @@ namespace minsky
         symbolTable.add_variable(argNames[i],args[i]);
       }
 
-    std::vector<std::string> externalIds=symbolNames();
+    const std::vector<std::string> externalIds=symbolNames();
     vector<ExprTkCallableFunction> externalFunctions;
     
     externalUnits.reserve(externalIds.size());

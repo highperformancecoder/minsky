@@ -35,7 +35,7 @@ namespace minsky
   VariablePaneCell::VariablePaneCell(const VariableValue& var):
     var(var.type(), var.name)
   {
-    ecolab::cairo::Surface surf
+    const ecolab::cairo::Surface surf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     cairo_move_to(surf.cairo(),0,0);
     RenderVariable rv(*this->var, surf.cairo());
@@ -49,7 +49,7 @@ namespace minsky
     if (!cachedCairo || !var || var->type()==VariableType::undefined) return;
     var->sliderBoundsSet=0; //TODO, this should be the case by default anyway
     RenderVariable rv(*var, cachedCairo);
-    ecolab::cairo::CairoSave cs(cachedCairo);
+    const ecolab::cairo::CairoSave cs(cachedCairo);
     cairo_translate(cachedCairo,0.5*m_width,0.5*m_height);
     rv.draw();
     cairo_reset_clip(cachedCairo);
@@ -64,7 +64,7 @@ namespace minsky
   const VariableBase& VariablePaneCell::variable() const
   {
     if (var) return *var;
-    static Variable<VariableType::undefined> undefined;
+    static const Variable<VariableType::undefined> undefined;
     return undefined;
   }
   
@@ -93,12 +93,12 @@ namespace minsky
     vars.clear();
     for (auto& v: cminsky().variableValues)
       {
-        if (v.first.empty() || selection.count(v.second->type())==0) continue; // ignore those filtered out
+        if (v.first.empty() || selection.contains(v.second->type())==0) continue; // ignore those filtered out
         vars.emplace_back(*v.second);
       }
 
     m_numCols=vars.size()/m_numRows+1;
-    unsigned gridSize=m_numRows*m_numCols;
+    const unsigned gridSize=m_numRows*m_numCols;
     while (vars.size()<gridSize) vars.emplace_back();
     if (surface.get()) surface->requestRedraw(); // TODO, plain requestRedraw doesn't work for Tk here...
   }

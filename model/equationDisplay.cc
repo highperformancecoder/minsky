@@ -33,8 +33,8 @@ namespace minsky
   bool EquationDisplay::redraw(int x0, int y0, int width, int height)
   {
     if (surface.get()) {
-      BusyCursor busy(m);
-      MathDAG::SystemOfEquations system(m);
+      const BusyCursor busy(m);
+      const MathDAG::SystemOfEquations system(m);
       cairo_rectangle(surface->cairo(),0,0,width,height);
       cairo_clip(surface->cairo());
       cairo_move_to(surface->cairo(),offsx,offsy);

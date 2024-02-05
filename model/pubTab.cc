@@ -77,7 +77,7 @@ namespace minsky
   Point PubItem::itemCoords(float x, float y) const
   {
     if (!itemRef) return {0,0};
-    float scale=itemRef->zoomFactor();
+    const float scale=itemRef->zoomFactor();
     return {scale*(x-this->x)+itemRef->x(), scale*(y-this->y)+itemRef->y()};
   }
 
@@ -132,18 +132,18 @@ namespace minsky
       return false;
     }
     auto cairo=surface->cairo();
-    CairoSave cs(cairo);
+    const CairoSave cs(cairo);
     cairo_translate(cairo, offsx, offsy);
     cairo_scale(cairo, m_zoomFactor, m_zoomFactor);
     cairo_set_line_width(cairo, 1);
     for (auto& i: items)
       {
-        CairoSave cs(cairo);
+        const CairoSave cs(cairo);
         cairo_translate(cairo, i.x, i.y);
         cairo_rotate(cairo,(M_PI/180)*i.rotation-i.itemRef->rotation());
         try
           {
-            EnsureEditorMode ensureEditorMode(i);
+            const EnsureEditorMode ensureEditorMode(i);
             i.itemRef->draw(cairo);
           }
         catch (...) {}
@@ -161,8 +161,8 @@ namespace minsky
   {
     for (auto& i: items)
       {
-        EnsureEditorMode e(i);
-        if (i.itemRef->contains(i.itemCoords(x,y)))
+        const EnsureEditorMode e(i);
+        if (i.itemRef && i.itemRef->contains(i.itemCoords(x,y)))
           return &i;
       }
     return nullptr;
@@ -181,7 +181,7 @@ namespace minsky
     item=m_getItemAt(x,y);
     if (item)
       {
-        EnsureEditorMode e(*item);
+        const EnsureEditorMode e(*item);
         auto p=item->itemCoords(x,y);
         clickType=item->itemRef->clickType(p.x(),p.y());
         if (clickType==ClickType::onResize)
@@ -242,10 +242,10 @@ namespace minsky
             case ClickType::onSlider:
               if (auto v=item->itemRef->variableCast())
                 {
-                  RenderVariable rv(*v);
-                  double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
-                  double sliderPos=(x-item->x)* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
-                  double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value.
+                  const RenderVariable rv(*v);
+                  const double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
+                  const double sliderPos=(x-item->x)* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
+                  const double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value.
                   v->sliderSet(sliderHatch);
                 }
               break;

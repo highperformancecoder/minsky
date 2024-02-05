@@ -15,7 +15,7 @@ void to_a85(const u8* data, int binlen, char* text, bool append_null) {
     if (append_null) {
         *(--text) = 0;
     }
-    int rem = binlen & 3;
+    const int rem = binlen & 3;
     if (rem) {
         u32 val = 0;
         for (int i = 4 - rem; i < 4; i++) {

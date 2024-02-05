@@ -86,7 +86,7 @@ namespace minsky
   
   void randomizeLayout(Group& g)
   {
-    double layoutSize=sqrt(3*totalArea(g));
+    const double layoutSize=sqrt(3*totalArea(g));
     default_random_engine gen;
     uniform_real_distribution<double> rng(0,1);
     for (auto& i: g.items)
@@ -100,7 +100,7 @@ namespace minsky
   void layoutGroup(Group& g)
   {
     if (g.items.size()+g.groups.size()<2) return;
-    double layoutSize=sqrt(10*totalArea(g)); //half width of square to emplace the items
+    const double layoutSize=sqrt(10*totalArea(g)); //half width of square to emplace the items
    
     Graph gg;
     map<Item*, decltype(gg.add_vertex())> vertexMap;
@@ -158,7 +158,7 @@ namespace minsky
     
     using PosMap=std::map<decltype(gg.add_vertex()), Topology::point_type>;
     PosMap positions;
-    boost::associative_property_map<PosMap> pm(positions);
+    const boost::associative_property_map<PosMap> pm(positions);
 
     for (auto& i: vertexMap)
       {
