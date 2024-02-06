@@ -105,6 +105,9 @@ export class WiringComponent implements OnInit, OnDestroy {
           minskyCanvasContainer.scrollTop=scrollableArea.width / 2;
           minskyCanvasContainer.scrollLeft=scrollableArea.height / 2;
         });
+        minskyCanvasContainer.addEventListener('RESET_SCROLL', async () => {
+          this.cmService.resetScroll();
+        });
         minskyCanvasContainer.onwheel = this.cmService.onMouseWheelZoom;
 
         document.body.onkeydown=async (event) => {
