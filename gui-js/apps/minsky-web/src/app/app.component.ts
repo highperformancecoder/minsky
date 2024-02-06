@@ -62,28 +62,35 @@ export class AppComponent implements OnInit, DoCheck {
       this.updatePubTabs();
       this.cdRef.detectChanges();
 
+      let handleKey=(event)=>{
+        switch (event.key) {
+        case 'Escape':
+          this.handleEscKey(event);
+          break;
+      
+        case 'Enter':
+          event.preventDefault();
+          this.handleEnterKey(event);
+          break;
+      
+        default:
+          break;
+        }
+      }
+      
       // When the event DOMContentLoaded occurs, it is safe to access the DOM
       document.addEventListener('DOMContentLoaded', async () => {
+        this.electronService.log('DOMContentLoaded');
         await this.cmService.setWindowSizeAndCanvasOffsets();
-      });
-
-      this.cmService.setBackgroundColor();
-
-      document.addEventListener('keydown', (event) => {
-        switch (event.key) {
-          case 'Escape':
-            this.handleEscKey(event);
-            break;
-
-          case 'Enter':
-            event.preventDefault();
-            this.handleEnterKey(event);
-            break;
-
-          default:
-            break;
+        // a bit kludgy, but this allows reverting back to default key handling when an HTML element with class defaultEscapeEnter is present. See edit-description component for an example.
+        if (document.getElementsByClassName('defaultEscapeEnter').length) {
+          document.removeEventListener('keydown', handleKey);
         }
       });
+
+      document.addEventListener('keydown', handleKey);
+      this.cmService.setBackgroundColor();
+
     }  
   }
 
