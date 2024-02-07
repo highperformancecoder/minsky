@@ -70,7 +70,7 @@ export class EditIntegralComponent implements OnInit {
     this.name.setValue(this.itemName);
     this.rotation.setValue(await this.intOp.rotation());
     this.initialValue.setValue(await this.intOp.intVar.init());
-    this.units.setValue(await this.intOp.intVar.units());
+    this.units.setValue(await this.intOp.intVar.unitsStr());
     this.relative.setValue(await this.intOp.intVar.sliderStepRel());
   }
 
