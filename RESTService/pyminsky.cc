@@ -28,13 +28,13 @@
 using namespace minsky;
 namespace
 {
-
   struct ModuleMinsky: public Minsky
   {
     RESTProcess_t registry;
     ModuleMinsky() {
       classdesc_access::access_RESTProcess<minsky::Minsky>()(registry,"minsky",static_cast<Minsky&>(*this));
       registry.add("minsky", new RESTProcessObject<minsky::Minsky>(*this));
+      
     }
   };
 
@@ -44,19 +44,8 @@ namespace
     return minsky;
   }
   
-  // JSON for now
-  PyObject* call(PyObject* self, PyObject* args)
+  PyObject* callMinsky(const string& command, const PythonBuffer& arguments)
   {
-    string command=PyUnicode_AsUTF8(PySequence_GetItem(args,0));
-    PythonBuffer arguments;
-    if (PySequence_Size(args)>1)
-      {
-        arguments=PythonBuffer(RESTProcessType::array);
-        for (size_t i=1; i<PySequence_Size(args); ++i)
-          arguments.push_back(PySequence_GetItem(args,i));
-      }
-    if (PyErr_Occurred())
-      PyErr_Print();
     try
       {
         cout<<"command="<<command<<endl;
@@ -78,6 +67,66 @@ namespace
       
   }
 
+  // JSON for now
+  PyObject* call(PyObject* self, PyObject* args)
+  {
+    string command=PyUnicode_AsUTF8(PySequence_GetItem(args,0));
+    PythonBuffer arguments;
+    if (PySequence_Size(args)>1)
+      {
+        arguments=PythonBuffer(RESTProcessType::array);
+        for (size_t i=1; i<PySequence_Size(args); ++i)
+          arguments.push_back(PySequence_GetItem(args,i));
+      }
+    if (PyErr_Occurred())
+      PyErr_Print();
+    return callMinsky(command, arguments);
+  }
+
+  struct CppWrapper: public PyObject
+  {
+    string command;
+    static CppWrapper* create(const string& command) {return new CppWrapper(command);}
+  private:
+    CppWrapper(const string& command); // private to force creation on heap
+  };
+
+struct CppWrapperType: public PyTypeObject
+  {
+    static PyObject* call(PyObject* self, PyObject* args, PyObject *kwargs)
+    {
+      auto cppWrapper=static_cast<CppWrapper*>(self);
+      PythonBuffer arguments;
+      if (PySequence_Size(args)>0)
+        {
+          arguments=PythonBuffer(RESTProcessType::array);
+          for (size_t i=0; i<PySequence_Size(args); ++i)
+            arguments.push_back(PySequence_GetItem(args,i));
+        }
+      if (PyErr_Occurred())
+        PyErr_Print();
+      return callMinsky(cppWrapper->command, arguments);
+    }
+
+    static void deleteCppWrapper(PyObject* x) {delete static_cast<CppWrapper*>(x);}
+    CppWrapperType()
+    {
+      memset(this,0,sizeof(PyTypeObject));
+      Py_INCREF(this);
+      tp_name="CppWrapperType";
+      tp_call=call;
+      tp_basicsize=sizeof(CppWrapper);
+      tp_dealloc=deleteCppWrapper;
+      PyType_Ready(this);
+    }
+  } cppWrapperType;
+
+  CppWrapper::CppWrapper(const string& command): command(command) {
+    memset(this,0,sizeof(PyObject));
+    ob_refcnt=1;
+    ob_type=&cppWrapperType;
+  }
+
   PyMethodDef moduleMethods[] = {
     {"call", call, METH_VARARGS, "Backend call"},
     {NULL, NULL, 0, NULL} 
@@ -94,6 +143,7 @@ namespace
     NULL, // Optional clear function
     NULL  // Optional module deallocation function
   };
+
 }
 
 namespace minsky
@@ -107,6 +157,11 @@ namespace minsky
 
 PyMODINIT_FUNC PyInit_pyminsky(void)
 {
-  return PyModule_Create(&pyminsky);
+  auto module=PyModule_Create(&pyminsky);
+  if (module)
+    {
+      PyModule_AddObject(module, "t", CppWrapper::create("minsky.t"));
+    }
+  return module;
 }
 

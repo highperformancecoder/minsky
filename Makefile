@@ -282,8 +282,9 @@ FLAGS+=$(shell $(PKG_CONFIG) --cflags librsvg-2.0)
 LIBS+=$(shell $(PKG_CONFIG) --libs librsvg-2.0)
 
 # Python dependencies here
-FLAGS+=$(shell $(PKG_CONFIG) --cflags python3)
-LIBS+=$(shell $(PKG_CONFIG) --libs python3)
+FLAGS+=$(shell $(PKG_CONFIG) --cflags python-3.11)
+#LIBS+=$(shell $(PKG_CONFIG) --libs python-3.11)
+LIBS+=-lpython3.11
 
 GUI_LIBS=
 # disable a deprecation warning that comes from Wt
