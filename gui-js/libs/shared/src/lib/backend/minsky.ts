@@ -1378,6 +1378,7 @@ export class Minsky extends CppClass {
   async initGodleys(): Promise<void> {return this.$callMethod('initGodleys');}
   async inputWired(a1: string): Promise<boolean> {return this.$callMethod('inputWired',a1);}
   async insertGroupFromFile(a1: string): Promise<void> {return this.$callMethod('insertGroupFromFile',a1);}
+  async itemFromNamedItem(a1: string): Promise<void> {return this.$callMethod('itemFromNamedItem',a1);}
   async lastT(...args: number[]): Promise<number> {return this.$callMethod('lastT',...args);}
   async latex(a1: string,a2: boolean): Promise<void> {return this.$callMethod('latex',a1,a2);}
   async latex2pango(a1: string): Promise<string> {return this.$callMethod('latex2pango',a1);}

@@ -146,7 +146,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     const sliderMin = Number((await item.sliderMin()).toPrecision(3));
     const sliderStep = Number((await item.sliderStep()).toPrecision(3));
     const sliderStepRel = await item.sliderStepRel();
-
+    this.electronService.minsky.nameCurrentItem('editVariable');
+    
     this.local.setValue(local);
     this.value.setValue(init);
     this.units.setValue(units);
@@ -191,10 +192,12 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
 
   
   editVariable() {
+    this.electronService.minsky.itemFromNamedItem('editVariable');
     let item=new VariableBase(this.electronService.minsky.canvas.item);
     this.saveVariableParams(item);
     item.retype(this.type.value);
     this.electronService.minsky.canvas.renameItem(this._name);
+    
   }
 
   createVariable() {
