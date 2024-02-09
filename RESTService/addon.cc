@@ -509,6 +509,31 @@ namespace minsky
           (env,info[0].As<Function>(), "refreshBookmark",0,2,nullptr);
         return env.Null();
       }
+    
+      static void resetScrollCallback(Napi::Env env, Napi::Function fn, void*, AddOnMinsky* addon)
+      {
+        fn({});
+      }
+  
+      void resetScroll() override
+      {
+        if (!resetScrollSet) return;
+        tsResetScrollCallback.BlockingCall(this);
+      }
+      bool resetScrollSet=false;
+      TypedThreadSafeFunction<void,AddOnMinsky,resetScrollCallback> tsResetScrollCallback;
+      Value setResetScrollCallback(const Napi::CallbackInfo& info)
+      {
+        const Env env = info.Env();
+        if (info.Length()<1 || !info[0].IsFunction())
+          {
+            Napi::Error::New(env, "Callback not provided").ThrowAsJavaScriptException();
+          }
+        resetScrollSet=true;
+        tsResetScrollCallback=TypedThreadSafeFunction<void,AddOnMinsky,resetScrollCallback>::New
+          (env,info[0].As<Function>(), "resetScroll",0,2,nullptr);
+        return env.Null();
+      }
     };
     
     Minsky* l_minsky=NULL;
@@ -548,6 +573,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
         InstanceMethod("setBusyCursorCallback", &MinskyAddon::setBusyCursorCallback),
         InstanceMethod("setProgressCallback", &MinskyAddon::setProgressCallback),
         InstanceMethod("setBookmarkRefreshCallback", &MinskyAddon::setBookmarkRefreshCallback),
+        InstanceMethod("setResetScrollCallback", &MinskyAddon::setResetScrollCallback),
         InstanceMethod("cancelProgress", &MinskyAddon::cancelProgress)
       });
   }
@@ -557,6 +583,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
   Value setBusyCursorCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBusyCursorCallback(info);}
   Value setProgressCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setProgressCallback(info);}
   Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBookmarkRefreshCallback(info);}
+  Value setResetScrollCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setResetScrollCallback(info);}
   Value cancelProgress(const Napi::CallbackInfo& info) {*addOnMinsky.progressState.cancel=true; return info.Env().Null();}
     
 

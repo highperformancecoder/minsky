@@ -58,7 +58,9 @@ namespace minsky
       {
         assert(bookmarks.size()==items.size());
         model.gotoBookmark_b(bookmarks[i]);
-        items[i]->selected=true;
+        minsky().canvas.selection.clear();
+        minsky().canvas.selection.ensureItemInserted(items[i]);
+        minsky().resetScroll();
       }
   }
 

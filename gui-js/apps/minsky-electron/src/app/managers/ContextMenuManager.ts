@@ -757,7 +757,6 @@ export class ContextMenuManager {
         click: async () => {
           minsky.canvas.zoomToDisplay();
           await CommandsManager.requestRedraw();
-          WindowManager.getMainWindow()?.webContents?.send(events.RESET_SCROLL);
         },
       }),
       new MenuItem({

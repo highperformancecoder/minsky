@@ -1426,6 +1426,7 @@ export class Minsky extends CppClass {
   async requestReset(): Promise<void> {return this.$callMethod('requestReset');}
   async reset(): Promise<void> {return this.$callMethod('reset');}
   async resetIfFlagged(): Promise<boolean> {return this.$callMethod('resetIfFlagged');}
+  async resetScroll(): Promise<void> {return this.$callMethod('resetScroll');}
   async reset_flag(): Promise<boolean> {return this.$callMethod('reset_flag');}
   async reverse(...args: boolean[]): Promise<boolean> {return this.$callMethod('reverse',...args);}
   async rkreset(): Promise<void> {return this.$callMethod('rkreset');}

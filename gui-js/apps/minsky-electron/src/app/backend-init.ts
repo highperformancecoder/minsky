@@ -182,6 +182,10 @@ restService.setBookmarkRefreshCallback(()=>{
   },100);
 });
 
+restService.setResetScrollCallback(()=>
+  WindowManager.getMainWindow()?.webContents?.send(events.RESET_SCROLL)
+);
+
 // Sanity checks before we get started
 
 export function sanityCheck()

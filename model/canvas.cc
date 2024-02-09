@@ -574,8 +574,7 @@ namespace minsky
              if (auto v=(*i)->variableCast())
                if (v->valueId()==var->valueId())
                  {
-                   selection.items.push_back(*i);
-                   v->selected=true;
+                   selection.ensureItemInserted(*i);
                  }
              return false;
            });
@@ -776,7 +775,10 @@ namespace minsky
   void Canvas::zoomToDisplay()
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
-      model->zoom(g->x(),g->y(),1.1/(g->relZoom*g->zoomFactor()));
+      {
+        model->zoom(g->x(),g->y(),1.1/(g->relZoom*g->zoomFactor()));
+        minsky().resetScroll();
+      }
   }
 
   bool Canvas::selectVar(float x, float y) 

@@ -358,6 +358,7 @@ export class CommandsManager {
       }
       minsky.canvas.itemIndicator(true);
       minsky.canvas.requestRedraw();
+      WindowManager.getMainWindow()?.webContents?.send(events.RESET_SCROLL);
     } else {
       dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
         type: 'info',

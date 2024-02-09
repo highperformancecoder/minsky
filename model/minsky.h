@@ -430,6 +430,9 @@ namespace minsky
     /// refresh the bookmark menu after changes
     virtual void bookmarkRefresh() {}
     
+    /// reset main window scroll bars after model has been panned
+    virtual void resetScroll() {}
+    
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
 
