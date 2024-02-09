@@ -552,26 +552,32 @@ export class ContextMenuManager {
           {
             label: 'SVG',
             click: async () => {
-              CommandsManager.exportItemAsImage(plot, 'svg', 'SVG');
+              CommandsManager.exportItemAsImageDialog(plot, 'svg', 'SVG');
             },
           },
           {
             label: 'PDF',
             click: async () => {
-              CommandsManager.exportItemAsImage(plot, 'pdf', 'PDF');
+              CommandsManager.exportItemAsImageDialog(plot, 'pdf', 'PDF');
             },
           },
           {
             label: 'PostScript',
             click: async () => {
-              CommandsManager.exportItemAsImage(plot, 'ps', 'PostScript');
+              CommandsManager.exportItemAsImageDialog(plot, 'ps', 'PostScript');
             },
           },
           {
             label: 'EMF',
             visible: Functions.isWindows(),
             click: async () => {
-              CommandsManager.exportItemAsImage(plot, 'emf', 'EMF');
+              CommandsManager.exportItemAsImageDialog(plot, 'emf', 'EMF');
+            },
+          },
+          {
+            label: 'Portale Network Graphics',
+            click: async () => {
+              CommandsManager.exportItemAsImageDialog(plot, 'png', 'Portale Network Graphics');
             },
           },
         ],
