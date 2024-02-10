@@ -760,9 +760,11 @@ SUITE(Canvas)
         auto integ=new IntOp;
         canvas.item=model->addItem(integ);
         integ->description("foo");
+        save("foo.mky");
         canvas.selectAllVariables();
-        CHECK_EQUAL(1,canvas.selection.items.size());
+        CHECK_EQUAL(2,canvas.selection.items.size());
         CHECK(canvas.selection.items[0]==integ->intVar);
+        CHECK(canvas.selection.items[1].get()==integ);
       }
     
     TEST_FIXTURE(TestFixture,renameAllInstances)
