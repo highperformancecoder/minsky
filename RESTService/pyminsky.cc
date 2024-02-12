@@ -44,28 +44,7 @@ namespace
     return minsky;
   }
   
-  PyObject* callMinsky(const string& command, const PythonBuffer& arguments)
-  {
-    try
-      {
-        cout<<"command="<<command<<endl;
-        auto result=moduleMinsky().registry.process(command, arguments).getPyObject();
-        if (PyErr_Occurred())
-          PyErr_Print();
-        return result;
-      }
-    catch (const std::exception& ex)
-      {
-        PyErr_SetString(PyExc_RuntimeError, ex.what());
-        return nullptr;
-      }
-    catch (...)
-      {
-        PyErr_SetString(PyExc_RuntimeError, "Unknown exception");
-        return nullptr;
-      }
-      
-  }
+  PyObject* callMinsky(const string& command, const PythonBuffer& arguments);
 
   // JSON for now
   PyObject* call(PyObject* self, PyObject* args)
@@ -87,8 +66,12 @@ namespace
   {
     string command;
     static CppWrapper* create(const string& command) {return new CppWrapper(command);}
+    map<string, PyObjectRef> methods;
+    CppWrapper(CppWrapper&&)=default;
   private:
     CppWrapper(const string& command); // private to force creation on heap
+    CppWrapper(const CppWrapper&)=delete;
+    void operator=(const CppWrapper&)=delete;
   };
 
 struct CppWrapperType: public PyTypeObject
@@ -109,6 +92,24 @@ struct CppWrapperType: public PyTypeObject
     }
 
     static void deleteCppWrapper(PyObject* x) {delete static_cast<CppWrapper*>(x);}
+
+    static PyObject* getAttro(PyObject* self, PyObject* attr)
+    {
+      auto cppWrapper=static_cast<CppWrapper*>(self);
+      auto i=cppWrapper->methods.find(PyUnicode_AsUTF8(attr));
+      if (i!=cppWrapper->methods.end())
+        return i->second;
+      PyErr_SetString(PyExc_AttributeError, "Method not found");
+      return nullptr;
+    }
+    
+    static int setAttro(PyObject* self, PyObject* name, PyObject* attr)
+    {
+      auto cppWrapper=static_cast<CppWrapper*>(self);
+      cppWrapper->methods.emplace(PyUnicode_AsUTF8(name),attr);
+      return 0;
+    }
+
     CppWrapperType()
     {
       memset(this,0,sizeof(PyTypeObject));
@@ -117,6 +118,8 @@ struct CppWrapperType: public PyTypeObject
       tp_call=call;
       tp_basicsize=sizeof(CppWrapper);
       tp_dealloc=deleteCppWrapper;
+      tp_getattro=getAttro;
+      tp_setattro=setAttro;
       PyType_Ready(this);
     }
   } cppWrapperType;
@@ -125,6 +128,52 @@ struct CppWrapperType: public PyTypeObject
     memset(this,0,sizeof(PyObject));
     ob_refcnt=1;
     ob_type=&cppWrapperType;
+  }
+
+  void attachMethods(PyObjectRef& pyObject, const std::string& command)
+  {
+    if (!pyObject) return;
+    auto methods=moduleMinsky().registry.process(command+".@list",{});
+    for (auto& i: methods.array())
+      {
+        string methodName(i.str());
+        if (Py_TYPE(pyObject)==&cppWrapperType)
+          {
+            auto& cppWrapper=static_cast<CppWrapper&>(*pyObject);
+            cppWrapper.methods.emplace(methodName.substr(1), CppWrapper::create(command+methodName));
+          }
+        else
+        //        int err=PyObject_SetAttrString(pyObject, methodName.substr(1).c_str(), CppWrapper::create(command+methodName));
+          int err=PyObject_SetAttrString(pyObject, methodName.substr(1).c_str(), PyUnicode_FromString(methodName.c_str()));
+        if (PyErr_Occurred())
+          PyErr_Print();
+      }
+  }
+  
+  PyObject* callMinsky(const string& command, const PythonBuffer& arguments)
+  {
+    try
+      {
+        cout<<"command="<<command<<endl;
+        auto result=moduleMinsky().registry.process(command, arguments);
+        auto pyResult=result.getPyObject(); // TODO use make_unique to ensure exception safety
+        if (result.type()==RESTProcessType::object)
+          attachMethods(pyResult, command);
+        if (PyErr_Occurred())
+          PyErr_Print();
+        return pyResult.release();
+      }
+    catch (const std::exception& ex)
+      {
+        PyErr_SetString(PyExc_RuntimeError, ex.what());
+        return nullptr;
+      }
+    catch (...)
+      {
+        PyErr_SetString(PyExc_RuntimeError, "Unknown exception");
+        return nullptr;
+      }
+      
   }
 
   PyMethodDef moduleMethods[] = {
@@ -161,6 +210,9 @@ PyMODINIT_FUNC PyInit_pyminsky(void)
   if (module)
     {
       PyModule_AddObject(module, "t", CppWrapper::create("minsky.t"));
+      PyObjectRef minsky=CppWrapper::create("minsky");
+      attachMethods(minsky,"minsky");
+      PyModule_AddObject(module, "minsky", minsky.release());
     }
   return module;
 }
