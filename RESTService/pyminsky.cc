@@ -128,6 +128,7 @@ struct CppWrapperType: public PyTypeObject
     memset(this,0,sizeof(PyObject));
     ob_refcnt=1;
     ob_type=&cppWrapperType;
+    methods.emplace("__dict__",cppWrapperType.tp_dict);
   }
 
   void attachMethods(PyObjectRef& pyObject, const std::string& command)
@@ -137,10 +138,12 @@ struct CppWrapperType: public PyTypeObject
     for (auto& i: methods.array())
       {
         string methodName(i.str());
+        auto uqMethodName=methodName.substr(1); // remove leading '.'
+        if (uqMethodName.find('.')!=string::npos) continue; // ignore recursive commands
         if (Py_TYPE(pyObject)==&cppWrapperType)
           {
             auto& cppWrapper=static_cast<CppWrapper&>(*pyObject);
-            cppWrapper.methods.emplace(methodName.substr(1), CppWrapper::create(command+methodName));
+            cppWrapper.methods.emplace(uqMethodName, CppWrapper::create(command+methodName));
           }
         else
         //        int err=PyObject_SetAttrString(pyObject, methodName.substr(1).c_str(), CppWrapper::create(command+methodName));
