@@ -1069,6 +1069,7 @@ namespace minsky
 
         // try resetting the system, but ignore any errors
         reset();
+        reset();
         populateMissingDimensions();
       }
     catch (...) {flags|=reset_needed;}

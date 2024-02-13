@@ -170,6 +170,53 @@ namespace minsky
     throw error("invalid access of variable value reference: %s",name.c_str());
   }
   
+  namespace
+  {
+    vector<unsigned> dimsOf(const std::string& expression)
+    {
+      // unpack args
+      const char* x=expression.c_str()+1;
+      char* e;
+      vector<unsigned> dims;
+      for (;;)
+        {
+          auto tmp=strtol(x,&e,10);
+          if (tmp>0 && e>x && *e)
+            {
+              x=e+1;
+              dims.push_back(tmp);
+            }
+          else
+            break;
+        }
+      return dims;
+    }
+  }
+  
+  size_t VariableValue::size() const
+  {
+    if (init.empty()) return ITensor::size();
+    const FlowCoef fc(init);
+    if (trimWS(fc.name).empty()) return 1;
+    // special generator functions
+    auto p=fc.name.find('(');
+    if (p!=string::npos)
+      {
+        size_t sz=1;
+        for (auto i: dimsOf(fc.name.substr(p))) sz*=i;
+        return sz;
+      }
+    // go one dereference, then give up
+    auto valueId=minsky::valueId(m_scope.lock(), fc.name);
+    auto vv=cminsky().variableValues.find(valueId);
+    if (vv==minsky().variableValues.end())
+      throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), name.c_str());
+    const FlowCoef refInit(vv->second->init);
+    if (refInit.name.empty()) return 1;
+    if (refInit.name.find('(')!=string::npos) return vv->second->size();
+    throw error("Initialisation string references variable %s which references another variable %s",fc.name.c_str(),refInit.name.c_str());
+  }
+  
   TensorVal VariableValues::initValue
   (const VariableValue& v, set<string>& visited) const
   {
@@ -185,21 +232,7 @@ namespace minsky
     if (p!=string::npos)
       {
         const string fn=fc.name.substr(0,p);
-        // unpack args
-        const char* x=fc.name.c_str()+p+1;
-        char* e;
-        vector<unsigned> dims;
-        for (;;)
-          {
-            auto tmp=strtol(x,&e,10);
-            if (tmp>0 && e>x && *e)
-              {
-                x=e+1;
-                dims.push_back(tmp);
-              }
-            else
-              break;
-          }
+        auto dims=dimsOf(fc.name.substr(p));
         TensorVal r(dims);
         r.allocVal();
 

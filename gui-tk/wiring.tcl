@@ -764,11 +764,6 @@ proc contextMenu {x y X Y} {
             if {![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
-            if {[$item.defined]} {
-                 global varTabDisplay
-                 set varTabDisplay [$item.varTabDisplay]            
-                .wiring.context add checkbutton -label "Display variable on tab" -command "$item.toggleVarTabDisplay" -variable varTabDisplay
-            }            
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"                     
             if {[$item.type]=="parameter"} {
                 .wiring.context add command -label "Import CSV" -command {CSVImportDialog}

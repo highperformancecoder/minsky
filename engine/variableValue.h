@@ -82,7 +82,7 @@ namespace minsky
 
     // values are always live
     ITensor::Timestamp timestamp() const override {return Timestamp::clock::now();}
-    
+
   public:
     /// variable has an input port
     bool lhs() const {
@@ -146,8 +146,11 @@ namespace minsky
 
     const Hypercube& hypercube() const override {
       if (rhs) return rhs->hypercube();
+      if (tensorInit.rank()>0) return tensorInit.hypercube();
       return m_hypercube;
     }
+
+    size_t size() const override;
     
     const Hypercube& hypercube(const Hypercube& hc) override
     {hypercube_(hc); return m_hypercube;}
