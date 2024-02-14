@@ -237,7 +237,6 @@ namespace minsky
 
   const std::string& VariableValue::init(const std::string& x)  {
     m_init=x;
-    const FlowCoef fc(x);
     hypercube(cminsky().variableValues.initValue(*this).hypercube());
     return m_init;
   }
