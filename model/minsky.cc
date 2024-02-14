@@ -220,7 +220,7 @@ namespace minsky
         map<string,string> existingParms; 
         // preserve initial conditions.
         for (auto& [valueId,vv]: variableValues)
-          existingParms.emplace(valueId,vv->init);
+          existingParms.emplace(valueId,vv->init());
 
         istringstream is(clipboard.getClipboard());
         xml_unpack_t unpacker(is); 
@@ -294,7 +294,7 @@ namespace minsky
         // ensure that initial values of pasted parameters are correct. for ticket 1258
         for (auto& p: existingParms)
           if (auto vv=variableValues.find(p.first); vv!=variableValues.end())
-            vv->second->init=p.second;
+            vv->second->init(p.second);
         existingParms.clear();
 	
         // Attach mouse focus only to first visible item in selection. For ticket 1098.      
@@ -381,7 +381,7 @@ namespace minsky
         variableValues.erase(v++);
       else
         ++v;
-    
+
     variableValues.reset();
   }
 
@@ -431,6 +431,8 @@ namespace minsky
     ++progressState;
     assert(variableValues.validEntries());
     system.updatePortVariableValue(equations);
+    // reset the variables to correctly allocate flow variables dependent on tensor-valued expressions
+    variableValues.reset();
   }
 
   void Minsky::dimensionalAnalysis() const
@@ -1069,7 +1071,6 @@ namespace minsky
 
         // try resetting the system, but ignore any errors
         reset();
-        reset();
         populateMissingDimensions();
       }
     catch (...) {flags|=reset_needed;}
@@ -1503,7 +1504,9 @@ namespace minsky
                              }
                          return false;
                        });
-    i->second=VariableValuePtr(type,i->second->name,i->second->init);
+    auto init=i->second->init();
+    i->second=VariableValuePtr(type,i->second->name);
+    i->second->init(init);
   }
 
   void Minsky::addIntegral()

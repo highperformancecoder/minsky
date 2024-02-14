@@ -46,8 +46,6 @@ namespace minsky
     using ITensorVal::operator=;
     VariableValueData& operator=(const VariableValueData&)=default;
     
-    /// the initial value of this variable
-    std::string init;
     /// when init is a tensor of values, this overrides the init string
     TensorVal tensorInit;
     /// when the RHS is attached to a tensor expression, this is a reference to it
@@ -83,6 +81,9 @@ namespace minsky
     // values are always live
     ITensor::Timestamp timestamp() const override {return Timestamp::clock::now();}
 
+  protected: // protected to allow creation of zero/one constants.
+    /// the initial value of this variable
+    std::string m_init;
   public:
     /// variable has an input port
     bool lhs() const {
@@ -95,7 +96,7 @@ namespace minsky
       return m_type!=stock && m_type!=integral && m_type!=undefined;
     }
     bool isZero() const {
-      return m_type==constant && (init.empty() || init=="0");
+      return m_type==constant && (init().empty() || init()=="0");
     }
 
     VariableType::Type type() const {return m_type;}
@@ -158,16 +159,16 @@ namespace minsky
     {hypercube_(hc); return m_hypercube;}
     using ITensorVal::hypercube;
                                                                            
-    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
+    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const GroupPtr& group=GroupPtr()): 
       m_type(type)
     {
-      this->init=init;
       this->name=utf_to_utf<char>(name);
       m_scope=scope(group,name);
     }
 
     VariableValue(VariableType::Type type, const VariableValue& vv):  VariableValueData(vv) {
       m_type=type;
+      init(vv.init());
     }
 
     VariableValue(const VariableValue&)=delete;
@@ -185,6 +186,9 @@ namespace minsky
     void exportAsCSV(const std::string& filename, const std::string& comment="") const;
 
     Summary summary() const;
+
+    const std::string& init() const {return m_init;}
+    const std::string& init(const std::string& x);
   };
 
   struct ValueVector

@@ -66,14 +66,14 @@ namespace MathDAG
             // set the initial value of the actual variableValue (if it exists)
             auto v=values.find(result->valueId());
             if (v!=values.end())
-              v->second->init=value;
+              v->second->init(value);
           }
         else
           {
             result=VariableValuePtr(VariableType::tempFlow);
             result->allocValue();
           }
-        result->init=value;
+        result->init(value);
         values.resetValue(*result);
       }
     if (r->type()!=VariableType::undefined && r->isFlowVar() && r!=result)
@@ -685,7 +685,7 @@ namespace MathDAG
 
     if (type==VariableType::constant)
       {
-        NodePtr r(new ConstantDAG(vv->init));
+        NodePtr r(new ConstantDAG(vv->init()));
         r->result=vv;
         expressionCache.insert(valueId, r);
         return r;
@@ -699,7 +699,7 @@ namespace MathDAG
     
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
-    r->init=vv->init;
+    r->init=vv->init();
     if (auto v=minsky.definingVar(valueId))
       if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports(1).lock()->wires().empty())
         r->rhs=getNodeFromWire(*v->ports(1).lock()->wires()[0]);

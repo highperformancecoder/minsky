@@ -295,21 +295,21 @@ namespace minsky
             if (start!=string::npos)
               {
                 const FlowCoef fc(table.cell(r,c).substr(start));                                      
-                v.init=fc.str();              
+                v.init(fc.str());              
                 // set initial value of stock var to init value of flow that is defined by a parameter or a constant. for ticket 1137
                 if (auto initVar=minsky().definingVar(minsky::valueId(group.lock(),fc.str())))
                   if (initVar->inputWired() && initVar->type()==VariableType::flow)
                     if (auto* lhsVar=initVar->ports(1).lock()->wires()[0]->from()->item().variableCast()) {
-                      FlowCoef fc1(lhsVar->vValue()->init);
+                      FlowCoef fc1(lhsVar->vValue()->init());
                       fc1.coef*=fc.coef;
-                      v.init=fc1.str();	
+                      v.init(fc1.str());	
                     }       
                 v.godleyOverridden=true;
               }
             else
               { 
                 // populate cell with current variable's initial value
-                const FlowCoef fc(v.init);   
+                const FlowCoef fc(v.init());   
                 table.cell(r,c)=fc.str();
                 v.godleyOverridden=true;
               }

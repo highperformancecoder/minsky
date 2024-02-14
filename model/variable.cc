@@ -265,7 +265,7 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string&/* nm*
       assert(isValueId(valueId));
       // Ensure value of variable is preserved after rename. 	      
       if (vv==nullptr)
-        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), m_name,"")).
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), m_name)).
           first->second->m_scope=minsky::scope(group.lock(),m_name);
       // Ensure variable names are updated correctly everywhere they appear. 
       else
@@ -294,9 +294,9 @@ string VariableBase::init() const
             if (auto vv=vValue())
               if (auto lhsVv=lhsVar->vValue())
                 // Since integral takes initial value from second port, the intVar should have the same intial value.
-                if (vv->init!=lhsVv->init) vv->init=lhsVv->init;
+                if (vv->init()!=lhsVv->init()) vv->init(lhsVv->init());
       }
-    return value->second->init;
+    return value->second->init();
   }
   return "0";
 }
@@ -307,7 +307,7 @@ string VariableBase::init(const string& x)
   if (isValueId(valueId()))
     {
       VariableValue& val=*minsky().variableValues[valueId()];
-      val.init=x;     
+      val.init(x);     
       // for constant types, we may as well set the current value. See ticket #433. Also ignore errors (for now), as they will reappear at reset time.
       try
         {

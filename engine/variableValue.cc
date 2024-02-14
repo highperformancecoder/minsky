@@ -66,6 +66,24 @@ namespace minsky
   std::vector<double> ValueVector::stockVars(1);
   std::vector<double> ValueVector::flowVars(1);
 
+  namespace {
+    // special scalar constants
+    struct SpecialConst: public VariableValue
+    {
+      SpecialConst(const string& name, const string& init):
+        VariableValue(VariableType::constant,name) {m_init=init;}
+    };
+  }
+  
+  VariableValuePtr& VariableValues::zero() {
+    static VariableValuePtr s_zero(make_shared<SpecialConst>("constant:zero","0"));
+    return s_zero;
+  }
+  VariableValuePtr& VariableValues::one() {
+    static VariableValuePtr s_one(make_shared<SpecialConst>("constant:one","1"));
+    return s_one;
+  }
+  
   bool VariableValue::idxInRange() const
   {return m_type==undefined || idx()+size()<=
       (isFlowVar()?ValueVector::flowVars.size(): ValueVector::stockVars.size());}
@@ -195,8 +213,8 @@ namespace minsky
   
   size_t VariableValue::size() const
   {
-    if (init.empty()) return ITensor::size();
-    const FlowCoef fc(init);
+    if (init().empty()) return ITensor::size();
+    const FlowCoef fc(init());
     if (trimWS(fc.name).empty()) return 1;
     // special generator functions
     auto p=fc.name.find('(');
@@ -211,11 +229,19 @@ namespace minsky
     auto vv=cminsky().variableValues.find(valueId);
     if (vv==minsky().variableValues.end())
       throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), name.c_str());
-    const FlowCoef refInit(vv->second->init);
+    const FlowCoef refInit(vv->second->init());
     if (refInit.name.empty()) return 1;
     if (refInit.name.find('(')!=string::npos) return vv->second->size();
     throw error("Initialisation string references variable %s which references another variable %s",fc.name.c_str(),refInit.name.c_str());
   }
+
+  const std::string& VariableValue::init(const std::string& x)  {
+    m_init=x;
+    const FlowCoef fc(x);
+    hypercube(cminsky().variableValues.initValue(*this).hypercube());
+    return m_init;
+  }
+
   
   TensorVal VariableValues::initValue
   (const VariableValue& v, set<string>& visited) const
@@ -223,7 +249,7 @@ namespace minsky
     if (v.tensorInit.rank()>0)
       return v.tensorInit;
     
-    const FlowCoef fc(v.init);
+    const FlowCoef fc(v.init());
     if (trimWS(fc.name).empty())
       return fc.coef;
 
@@ -446,7 +472,7 @@ namespace minsky
       type(),
       definition,
       udfDefinition,
-      init,
+      init(),
       value(),
       scopeName,
       godleyName,

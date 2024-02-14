@@ -2268,7 +2268,7 @@ export class VariableValue extends CppClass {
   async idxInRange(): Promise<boolean> {return this.$callMethod('idxInRange');}
   async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
   async index(...args: any[]): Promise<civita__Index> {return this.$callMethod('index',...args);}
-  async init(...args: string[]): Promise<string> {return this.$callMethod('init',...args);}
+  async init(...args: any[]): Promise<string> {return this.$callMethod('init',...args);}
   async isFlowVar(): Promise<boolean> {return this.$callMethod('isFlowVar');}
   async isZero(): Promise<boolean> {return this.$callMethod('isZero');}
   async lhs(): Promise<boolean> {return this.$callMethod('lhs');}
