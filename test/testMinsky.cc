@@ -206,7 +206,7 @@ SUITE(Minsky)
       godley.cell(2,2)="-:a";
       gi->update();
  
-      variableValues[":a"]->init="5";
+      variableValues[":a"]->init("5");
  
       garbageCollect();
       reset();
@@ -427,8 +427,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"]->init="0.1";
-      variableValues[":b"]->init="0.2";
+      variableValues[":a"]->init("0.1");
+      variableValues[":b"]->init("0.2");
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -459,8 +459,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"]->init="0.1";
-      variableValues[":b"]->init="0.2";
+      variableValues[":a"]->init("0.1");
+      variableValues[":b"]->init("0.2");
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -490,8 +490,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"]->init="0.1";
-      variableValues[":b"]->init="0.2";
+      variableValues[":a"]->init("0.1");
+      variableValues[":b"]->init("0.2");
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -521,8 +521,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"]->init="0.1";
-      variableValues[":b"]->init="0.2";
+      variableValues[":a"]->init("0.1");
+      variableValues[":b"]->init("0.2");
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
