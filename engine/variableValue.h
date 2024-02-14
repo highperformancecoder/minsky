@@ -151,7 +151,7 @@ namespace minsky
       return m_hypercube;
     }
 
-    size_t size() const override;
+    //size_t size() const override;
     
     const Hypercube& hypercube(const Hypercube& hc) override
     {hypercube_(hc); return m_hypercube;}

@@ -22,6 +22,19 @@
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 
+namespace
+{
+  struct TestFixture: public Minsky
+  {
+    LocalMinsky lm;
+    string savedMessage;
+    TestFixture(): lm(*this)
+    {
+    }
+    void message(const string& x) override {savedMessage=x;}
+  };
+}
+
 SUITE(Ticket1461)
 {
   TEST(clone)
@@ -32,17 +45,16 @@ SUITE(Ticket1461)
       CHECK_EQUAL("hello",clone->tooltip);
     }
 
-  TEST(copy)
+  TEST_FIXTURE(TestFixture, copy)
     {
-      auto& m=minsky::minsky();
-      m.canvas.addVariable("foo", VariableType::flow);
-      auto& var=*m.canvas.itemFocus->variableCast();
+      canvas.addVariable("foo", VariableType::flow);
+      auto& var=*canvas.itemFocus->variableCast();
       var.tooltip="hello";
       var.setUnits("m");
-      m.canvas.selection.insertItem(m.canvas.itemFocus);
-      m.copy();
-      m.paste();
-      auto& varCopy=*m.canvas.itemFocus->variableCast();
+      canvas.selection.insertItem(canvas.itemFocus);
+      copy();
+      paste();
+      auto& varCopy=*canvas.itemFocus->variableCast();
       CHECK(&var!=&varCopy);
       CHECK_EQUAL("hello",varCopy.tooltip);
       CHECK_EQUAL("m",varCopy.unitsStr());

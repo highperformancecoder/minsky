@@ -431,8 +431,6 @@ namespace minsky
     ++progressState;
     assert(variableValues.validEntries());
     system.updatePortVariableValue(equations);
-    // reset the variables to correctly allocate flow variables dependent on tensor-valued expressions
-    variableValues.reset();
   }
 
   void Minsky::dimensionalAnalysis() const
@@ -878,6 +876,7 @@ namespace minsky
     EvalOpBase::t=t=t0;
     lastT=t0;
     const ProgressUpdater pu(progressState,"Resetting",5);
+    constructEquations();
     constructEquations();
     ++progressState;
     // if no stock variables in system, add a dummy stock variable to

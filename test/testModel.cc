@@ -1061,6 +1061,10 @@ SUITE(GodleyIcon)
       table._assetClass(1,GodleyAssetClass::asset);
       table._assetClass(2,GodleyAssetClass::liability);
 
+      // for initial conditions below
+      model->addItem(VariablePtr(VariableType::parameter,"x"));
+      model->addItem(VariablePtr(VariableType::parameter,"y"));
+      
       VariablePtr v(VariableType::stock,"stock1");
       model->addItem(v);
       v->init("x");

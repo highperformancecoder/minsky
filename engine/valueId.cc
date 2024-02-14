@@ -37,16 +37,21 @@ namespace minsky
     //      regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
     if (name.substr(name.length()-2)==":_") return false;
     
-    static char constantPrefix[]="constant:";
-    static const unsigned prefixLen=strlen(constantPrefix);
+    static string constantPrefix="constant:", tempPrefix="temp:";
     auto nameCStr=name.c_str();
-    char* endp=nullptr;
-    strtoull(nameCStr,&endp,10);
-    if (*endp==':' || (name.length()>prefixLen && strncmp(constantPrefix,nameCStr,prefixLen)==0))
+    const char* endp=nullptr;
+    strtoull(nameCStr,&const_cast<char*&>(endp),10);
+    if (*endp==':' || name.starts_with(constantPrefix)||name.starts_with(tempPrefix))
       {
+        if (*endp!=':')
+          {
+            if (name[constantPrefix.length()-1]==':')
+              endp=nameCStr+constantPrefix.length()-1;
+            else
+              endp=nameCStr+tempPrefix.length()-1;
+          }
         // check unqualified name portion has no verboten characters
-        const char* uqName=*endp==':'? endp+1: nameCStr+prefixLen;
-        for (auto c=uqName; *c!='\0'; ++c)
+        for (auto c=endp+1; *c!='\0'; ++c)
           if (strchr(":\\ \f\n\r\t\v",*c))
             return false;
         return true;
@@ -76,6 +81,7 @@ namespace minsky
 
   size_t scope(const string& name) 
   {
+    if (name.starts_with("temp:")) return 0; // temporaries are "global"
     auto nm=utf_to_utf<char>(name);
     auto nameCStr=nm.c_str();
     char* endp=nullptr;
