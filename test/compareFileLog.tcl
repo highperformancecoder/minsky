@@ -50,7 +50,7 @@ for {set step 0} {$step<$nsteps} {incr step} {
     foreach name [variableValues.#keys] {
         if [regexp "^constant:" $name] continue
         getValue $name
-
+        if [minsky.value.temp] continue
         # local variables can have a rather arbitrary scope
         # name. Check against all other variables with same name but
         # different scope

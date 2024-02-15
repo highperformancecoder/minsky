@@ -904,7 +904,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
-            !i || i->type==VariableType::constant) continue;
+            !i || i->type==VariableType::constant || i->type==VariableType::tempFlow) continue;
         o << i->latex() << "&=&";
         if (i->rhs) 
           i->rhs->latex(o);
@@ -932,7 +932,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i)) continue;
-        if (!i || i->type==VariableType::constant) continue;
+        if (!i || i->type==VariableType::constant || i->type==VariableType::tempFlow) continue;
         o<<"\\begin{dmath*}\n";
         o << i->latex() << "=";
         if (i->rhs) 
