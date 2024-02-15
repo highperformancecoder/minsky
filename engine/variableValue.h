@@ -36,7 +36,7 @@ using namespace boost::locale::conv;
 namespace minsky
 {
   class VariableValue;
-  struct VariableValues;
+  class VariableValues;
   class Group;
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
