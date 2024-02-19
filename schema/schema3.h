@@ -88,13 +88,13 @@ namespace schema3
 
   struct Slider
   {
-    bool  stepRel=false;
+    bool  stepRel=false, visible=true;
     double min, max, step;
     Slider() {}
-    Slider(bool stepRel, double min, double max, double step):
-      stepRel(stepRel), min(min), max(max), step(step) {}
+    Slider(bool stepRel, bool visible, double min, double max, double step):
+      stepRel(stepRel), visible(visible), min(min), max(max), step(step) {}
     Slider(const schema2::Slider& s):
-      stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
+      stepRel(s.stepRel), visible(s.visible), max(s.max), step(s.step) {}
   };
 
   struct LockGroup
@@ -144,7 +144,7 @@ namespace schema3
       init(v.init()), miniPlot(v.miniPlotEnabled()) {
       name=v.rawName();
       if (v.sliderBoundsSet)
-        slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
+        slider.reset(new Slider(v.sliderStepRel,v.enableSlider,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
         {
           units=vv->units.str();
