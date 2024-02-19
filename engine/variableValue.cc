@@ -428,7 +428,7 @@ namespace minsky
       }
     of<<quoted("RavelHypercube=["+os.str()+"]")<<endl;
     for (const auto& i: hypercube().xvectors)
-      of<<"\""<<i.name<<"\",";
+      of<<CSVQuote(i.name,',')<<",";
     of<<"value$\n";
 
     auto idxv=index();

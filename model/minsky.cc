@@ -90,14 +90,14 @@ namespace minsky
     redrawAllGodleyTables();
     return m_multipleEquities;
   }
-  
+
   void Minsky::openLogFile(const string& name)
   {
     outputDataFile.reset(new ofstream(name));
     *outputDataFile<< "#time";
     for (auto& v: variableValues)
       if (logVarList.contains(v.first))
-        *outputDataFile<<" "<<v.second->name;
+        *outputDataFile<<" "<<CSVQuote(v.second->name,' ');
     *outputDataFile<<endl;
   }
 
