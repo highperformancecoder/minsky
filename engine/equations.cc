@@ -70,7 +70,7 @@ namespace MathDAG
           }
         else
           {
-            result=minsky::minsky().variableValues.addTempVar();
+            result=VariableValuePtr(VariableType::tempFlow);
             result->allocValue();
           }
         result->init(value);
@@ -155,7 +155,7 @@ namespace MathDAG
           result=r;
         else
           {
-            result=minsky::minsky().variableValues.addTempVar();
+            result=VariableValuePtr(VariableType::tempFlow);
             result->allocValue();
           }
         if (rhs)
@@ -295,7 +295,7 @@ namespace MathDAG
           else if (argIdx[1].size()>1)
             {
               // multiple wires to second input port
-              const VariableValuePtr tmp=minsky::minsky().variableValues.addTempVar();
+              const VariableValuePtr tmp(VariableType::tempFlow);
               tmp->hypercube(r->hypercube());
               size_t i=0;
               if (accum==OperationType::add)
@@ -324,7 +324,7 @@ namespace MathDAG
           result=r;
         else
           {
-            result=minsky::minsky().variableValues.addTempVar();
+            result=VariableValuePtr(VariableType::tempFlow);
             result->allocValue();
           }
         if (tensorEval() && addTensorOp(result, *this, ev))
@@ -340,7 +340,7 @@ namespace MathDAG
               argIdx[i].push_back(arguments[i][j]->addEvalOps(ev));
             else
               {
-                argIdx[i].push_back(minsky::minsky().variableValues.addTempVar());
+                argIdx[i].emplace_back(VariableType::tempFlow);
                 argIdx[i].back()->allocValue();
               }
 
@@ -380,7 +380,7 @@ namespace MathDAG
                 for (size_t i=0; i<arguments.size(); ++i)
                   if (arguments[i].empty())
                     {
-                      argIdx[i].push_back(minsky::minsky().variableValues.addTempVar());
+                      argIdx[i].emplace_back(VariableType::tempFlow);
                       argIdx[i].back()->allocValue();
                       // ensure units are compatible (as we're doing comparisons with zero)
                       if (i>0)
@@ -394,7 +394,7 @@ namespace MathDAG
                 for (size_t i=0; i<arguments.size(); ++i)
                   if (arguments[i].empty())
                     {
-                      argIdx[i].push_back(minsky::minsky().variableValues.addTempVar());
+                      argIdx[i].emplace_back(VariableType::tempFlow);
                       argIdx[i].back()->allocValue();
                     }
                 ev.push_back(EvalOpPtr(type(), state, result, *argIdx[0][0], *argIdx[1][0])); 
@@ -802,7 +802,7 @@ namespace MathDAG
           result=r;
         else
           {
-            result=minsky::minsky().variableValues.addTempVar();
+            result=VariableValuePtr(VariableType::tempFlow);
             result->allocValue();
           }
       }

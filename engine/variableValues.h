@@ -57,10 +57,6 @@ namespace minsky
       emplace("constant:zero", zero());
       emplace("constant:one", one());
     }
-    VariableValuePtr addTempVar()
-    {
-      auto name=newName(":temp");
-      return emplace(name,VariableValuePtr(VariableType::tempFlow,name)).first->second;}
     /// generate a new valueId not otherwise in the system
     std::string newName(const std::string& name) const;
     /// reset all variableValues to their initial conditions
