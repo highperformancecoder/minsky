@@ -41,8 +41,7 @@ namespace minsky
   { 	  
       // if rotation is in 1st or 3rd quadrant, rotate as
       // normal, otherwise flip the text so it reads L->R
-      const double angle=rotation() * M_PI / 180.0;
-      const bool textFlipped=flipped(rotation());
+    auto [angle,textFlipped]=rotationAsRadians();
       double coupledIntTranslation=0;
       const float z=zoomFactor();
     
@@ -55,34 +54,33 @@ namespace minsky
 
       if (coupled())
         {
+          cairo::CairoSave cs(cairo);
           auto& iv=*intVar;
           const RenderVariable rv(iv,cairo);
           // we need to add some translation if the variable is bound
-          cairo_rotate(cairo,rotation()*M_PI/180.0);
+          cairo_rotate(cairo,angle);
           coupledIntTranslation=-0.5*(intVarOffset+2*rv.width()+2+r)*z;
           if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
-          cairo_rotate(cairo,-rotation()*M_PI/180.0);
         }
     
-      cairo_save(cairo);
-      cairo_rotate(cairo, angle); 
 
+      {
+        cairo::CairoSave cs(cairo);
+        cairo_rotate(cairo, angle); 
+        cairo_scale(cairo,z,z);
+        if (textFlipped) cairo_rotate(cairo, M_PI);
+        const double sf = scaleFactor();  
+        cairo_scale(cairo,sf,sf);		  
+        cairo_move_to(cairo,-7,3.5);
+        cairo_show_text(cairo,"∫dt");
+      }
+      DrawBinOp d(cairo, zoomFactor());
+      d.drawPort([&](){d.drawSymbol("0");}, l,h,rotation()); 
+      d.drawPort([&](){d.drawSymbol("f");}, l,-h,rotation()); 
+      
       cairo_save(cairo); 
-      cairo_scale(cairo,z,z);
-      if (textFlipped) cairo_rotate(cairo, M_PI);
-      const double sf = scaleFactor();  
-      cairo_scale(cairo,sf,sf);		  
-      cairo_move_to(cairo,-7,3.5);
-      cairo_show_text(cairo,"\xE2\x88\xAB");
-      cairo_show_text(cairo,"dt");
-      // label the initial condition port
-      cairo_scale(cairo,0.5,0.5);
-      cairo_move_to(cairo,-19,19);
-      cairo_show_text(cairo,"0");
-      cairo_move_to(cairo,-19,-15);
-      cairo_show_text(cairo,"f");
-      cairo_restore(cairo);
-        
+      cairo_rotate(cairo, angle); 
+       
       int intVarWidth=0;
     
    
