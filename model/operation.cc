@@ -1237,15 +1237,13 @@ namespace minsky
   template <> void Operation<OperationType::gather>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"x[i]");
-    cairo_set_font_size(cairo,5);
-    cairo_move_to(cairo, l+1, -h+6);
-    cairo_show_text(cairo,"x");
-    cairo_move_to(cairo, l+1, h-3);
-    cairo_show_text(cairo,"i");
+    DrawBinOp drawBinOp(cairo);
+    drawBinOp.drawPort([&](){drawBinOp.drawSymbol("x");},l,-h,rotation());
+    drawBinOp.drawPort([&](){drawBinOp.drawSymbol("i");},l,h,rotation());
   }
 
   template <> void Operation<OperationType::meld>::iconDraw(cairo_t* cairo) const
