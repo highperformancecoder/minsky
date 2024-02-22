@@ -77,15 +77,28 @@ namespace
 
 struct CppWrapperType: public PyTypeObject
   {
+    // container commands that take a key as as an argument
+    static bool containerSpecialCommand(const std::string& command)
+    {
+      static set<string> specialCommands{".@elem",".@elemNoThrow"};
+      auto n=command.rfind('.');
+      return n!=string::npos && specialCommands.count(command.substr(n));
+    }
+    
     static PyObject* call(PyObject* self, PyObject* args, PyObject *kwargs)
     {
       auto cppWrapper=static_cast<CppWrapper*>(self);
       PythonBuffer arguments(RESTProcessType::array);
-      for (size_t i=0; i<PySequence_Size(args); ++i)
-        arguments.push_back(PySequence_GetItem(args,i));
+      auto command=cppWrapper->command;
+      if (containerSpecialCommand(command) && PySequence_Size(args))
+        // handle special commands which embed the argument in the path string
+        command+='.'+write(PythonBuffer(PySequence_GetItem(args,0)).get<json_pack_t>());
+      else
+        for (size_t i=0; i<PySequence_Size(args); ++i)
+          arguments.push_back(PySequence_GetItem(args,i));
       if (PyErr_Occurred())
         PyErr_Print();
-      return callMinsky(cppWrapper->command, arguments);
+      return callMinsky(command, arguments);
     }
 
     static void deleteCppWrapper(PyObject* x) {delete static_cast<CppWrapper*>(x);}
