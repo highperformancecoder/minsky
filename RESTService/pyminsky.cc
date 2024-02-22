@@ -142,6 +142,8 @@ struct CppWrapperType: public PyTypeObject
           {
             string methodName(i.get_str());
             auto uqMethodName=methodName.substr(1); // remove leading '.'
+            // make special commands representable in python
+            replace(uqMethodName.begin(),uqMethodName.end(),'@','_');
             if (uqMethodName.find('.')!=string::npos) continue; // ignore recursive commands
             PyObjectRef method{CppWrapper::create(command+methodName)};
             attachMethods(method, command+methodName);

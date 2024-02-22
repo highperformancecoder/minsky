@@ -52,9 +52,10 @@ namespace classdesc
           }
         case json5_parser::array_type:
           {
-            auto pyObject=PyList_New(j.get_array().size());
-            for (auto& i: j.get_array())
-              PyList_SetItem(pyObject, PyList_Size(pyObject), newPyObjectJson(i));
+            auto arr=j.get_array();
+            auto pyObject=PyList_New(arr.size());
+            for (size_t i=0; i<arr.size(); ++i)
+              PyList_SetItem(pyObject, i, newPyObjectJson(arr[i]));
             return pyObject;
           }
         case json5_parser::str_type:
