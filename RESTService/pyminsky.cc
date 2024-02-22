@@ -17,7 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define REST_PROCESS_BUFFER classdesc::PythonBuffer
+// TODO figure out how to switch buffer types... For now, use JSON
+//#define REST_PROCESS_BUFFER classdesc::PythonBuffer
 #include "pythonBuffer.h"
 
 #include "minskyRS.h"
@@ -65,8 +66,8 @@ namespace
   struct CppWrapper: public PyObject
   {
     string command;
-    static CppWrapper* create(const string& command) {return new CppWrapper(command);}
     map<string, PyObjectRef> methods;
+    static CppWrapper* create(const string& command) {return new CppWrapper(command);}
     CppWrapper(CppWrapper&&)=default;
   private:
     CppWrapper(const string& command); // private to force creation on heap
@@ -79,13 +80,9 @@ struct CppWrapperType: public PyTypeObject
     static PyObject* call(PyObject* self, PyObject* args, PyObject *kwargs)
     {
       auto cppWrapper=static_cast<CppWrapper*>(self);
-      PythonBuffer arguments;
-      if (PySequence_Size(args)>0)
-        {
-          arguments=PythonBuffer(RESTProcessType::array);
-          for (size_t i=0; i<PySequence_Size(args); ++i)
-            arguments.push_back(PySequence_GetItem(args,i));
-        }
+      PythonBuffer arguments(RESTProcessType::array);
+      for (size_t i=0; i<PySequence_Size(args); ++i)
+        arguments.push_back(PySequence_GetItem(args,i));
       if (PyErr_Occurred())
         PyErr_Print();
       return callMinsky(cppWrapper->command, arguments);
@@ -98,7 +95,10 @@ struct CppWrapperType: public PyTypeObject
       auto cppWrapper=static_cast<CppWrapper*>(self);
       auto i=cppWrapper->methods.find(PyUnicode_AsUTF8(attr));
       if (i!=cppWrapper->methods.end())
-        return i->second;
+        {
+          Py_INCREF(i->second);
+          return i->second;
+        }
       PyErr_SetString(PyExc_AttributeError, "Method not found");
       return nullptr;
     }
@@ -134,23 +134,26 @@ struct CppWrapperType: public PyTypeObject
   void attachMethods(PyObjectRef& pyObject, const std::string& command)
   {
     if (!pyObject) return;
-    auto methods=moduleMinsky().registry.process(command+".@list",{});
-    for (auto& i: methods.array())
+    try
       {
-        string methodName(i.str());
-        auto uqMethodName=methodName.substr(1); // remove leading '.'
-        if (uqMethodName.find('.')!=string::npos) continue; // ignore recursive commands
-        if (Py_TYPE(pyObject)==&cppWrapperType)
+        auto methods=moduleMinsky().registry.process(command+".@list",{});
+        if (methods.type()!=RESTProcessType::array) return;
+        for (auto& i: methods.array())
           {
-            auto& cppWrapper=static_cast<CppWrapper&>(*pyObject);
-            cppWrapper.methods.emplace(uqMethodName, CppWrapper::create(command+methodName));
+            string methodName(i.get_str());
+            auto uqMethodName=methodName.substr(1); // remove leading '.'
+            if (uqMethodName.find('.')!=string::npos) continue; // ignore recursive commands
+            PyObjectRef method{CppWrapper::create(command+methodName)};
+            attachMethods(method, command+methodName);
+            PyObject_SetAttrString(pyObject, uqMethodName.c_str(), method.release());
           }
-        else
-        //        int err=PyObject_SetAttrString(pyObject, methodName.substr(1).c_str(), CppWrapper::create(command+methodName));
-          int err=PyObject_SetAttrString(pyObject, methodName.substr(1).c_str(), PyUnicode_FromString(methodName.c_str()));
-        if (PyErr_Occurred())
-          PyErr_Print();
       }
+    catch (...) {return;}
+    PyObject_SetAttrString(pyObject, "_list", CppWrapper::create(command+".@list"));
+    PyObject_SetAttrString(pyObject, "_type", CppWrapper::create(command+".@type"));
+    PyObject_SetAttrString(pyObject, "_signature", CppWrapper::create(command+".@signature"));
+    if (PyErr_Occurred())
+      PyErr_Print();
   }
   
   PyObject* callMinsky(const string& command, const PythonBuffer& arguments)
@@ -158,8 +161,8 @@ struct CppWrapperType: public PyTypeObject
     try
       {
         cout<<"command="<<command<<endl;
-        auto result=moduleMinsky().registry.process(command, arguments);
-        auto pyResult=result.getPyObject(); // TODO use make_unique to ensure exception safety
+        PythonBuffer result(moduleMinsky().registry.process(command, arguments.get<json_pack_t>()));
+        auto pyResult=result.getPyObject(); 
         if (result.type()==RESTProcessType::object)
           attachMethods(pyResult, command);
         if (PyErr_Occurred())

@@ -141,7 +141,7 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o
 
 
 ifneq ($(GUI_TK),1)
@@ -282,9 +282,8 @@ FLAGS+=$(shell $(PKG_CONFIG) --cflags librsvg-2.0)
 LIBS+=$(shell $(PKG_CONFIG) --libs librsvg-2.0)
 
 # Python dependencies here
-FLAGS+=$(shell $(PKG_CONFIG) --cflags python-3.11)
-#LIBS+=$(shell $(PKG_CONFIG) --libs python-3.11)
-LIBS+=-lpython3.11
+FLAGS+=$(shell $(PKG_CONFIG) --cflags python3)
+LIBS+=$(shell $(PKG_CONFIG) --libs python3)
 
 GUI_LIBS=
 # disable a deprecation warning that comes from Wt
