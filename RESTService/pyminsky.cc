@@ -182,6 +182,7 @@ struct CppWrapperType: public PyTypeObject
           attachMethods(pyResult, command);
         if (PyErr_Occurred())
           PyErr_Print();
+        cout<<"returning "<<result.str()<<" ref cnt "<<Py_REFCNT(pyResult)<<endl;
         return pyResult.release();
       }
     catch (const std::exception& ex)
