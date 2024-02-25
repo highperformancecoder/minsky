@@ -136,6 +136,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   async updateFormValues() {
     let item=new VariableBase(this.electronService.minsky.canvas.item);
     const local = await item.local();
+    // check there is an item of the right type
+    if (typeof local==='object') this.closeWindow();
     const init = await item.init();
     const units = await item.unitsStr();
     const rotation = await item.rotation();

@@ -184,7 +184,7 @@ export class WindowManager {
       useContentSize: true,
       minimizable: false,
       show: false,
-      parent: null /* modal ? mainWindow : null */, // Having a parent hides control on MacOS
+      parent: modal ? this.getMainWindow() : null,
       modal,
       backgroundColor,
       alwaysOnTop,
