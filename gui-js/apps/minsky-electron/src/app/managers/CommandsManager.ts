@@ -997,7 +997,7 @@ export class CommandsManager {
 
   static async save() {
     if (this.currentMinskyModelFilePath) {
-      minsky.save(this.currentMinskyModelFilePath);
+      await minsky.save(this.currentMinskyModelFilePath);
     }
     else
       await this.saveAs();
