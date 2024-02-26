@@ -1121,10 +1121,12 @@ export class CommandsManager {
       godleyTableShowValues,
       godleyTableOutputStyle,
       font,
+      numBackups,
     } = StoreManager.store.get('preferences');
     minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
     minsky.multipleEquities(enableMultipleEquityColumns);
     minsky.defaultFont(font);
+    minsky.numBackups(numBackups);
     RecentFilesManager.updateNumberOfRecentFilesToDisplay();
   }
   
