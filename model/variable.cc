@@ -96,17 +96,15 @@ std::vector<std::string> VariableBase::accessibleVars() const
 
 ClickType::Type VariableBase::clickType(float xx, float yy) const
 {
-  double fm=std::fmod(rotation(),360);
-  bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-  Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
-  RenderVariable rv(*this);
-  double z=zoomFactor();
+  const Rotate r(rotation()+(flipped(rotation())? 180: 0),0,0); // rotate into variable's frame of reference
+  const RenderVariable rv(*this);
+  const double z=zoomFactor();
   try
     {
-      double hpx=z*rv.handlePos();
+      const double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
       if (rv.height()<0.5*iHeight()) hpy=-z*0.5*iHeight(); 
-      double dx=xx-x(), dy=yy-y();         
+      const double dx=xx-x(), dy=yy-y();         
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
     }
@@ -267,7 +265,7 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string&/* nm*
       assert(isValueId(valueId));
       // Ensure value of variable is preserved after rename. 	      
       if (vv==nullptr)
-        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), m_name,"")).
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), m_name)).
           first->second->m_scope=minsky::scope(group.lock(),m_name);
       // Ensure variable names are updated correctly everywhere they appear. 
       else
@@ -296,9 +294,9 @@ string VariableBase::init() const
             if (auto vv=vValue())
               if (auto lhsVv=lhsVar->vValue())
                 // Since integral takes initial value from second port, the intVar should have the same intial value.
-                if (vv->init!=lhsVv->init) vv->init=lhsVv->init;
+                if (vv->init()!=lhsVv->init()) vv->init(lhsVv->init());
       }
-    return value->second->init;
+    return value->second->init();
   }
   return "0";
 }
@@ -309,7 +307,7 @@ string VariableBase::init(const string& x)
   if (isValueId(valueId()))
     {
       VariableValue& val=*minsky().variableValues[valueId()];
-      val.init=x;     
+      val.init(x);     
       // for constant types, we may as well set the current value. See ticket #433. Also ignore errors (for now), as they will reappear at reset time.
       try
         {
@@ -361,8 +359,8 @@ Units VariableBase::units(bool check) const
       if (vv->unitsCached) return vv->units;
 
       
-      IncrDecrCounter ucIdc(unitsCtr);
-      IncrDecrCounter vpIdc(varsPassed);
+      const IncrDecrCounter ucIdc(unitsCtr);
+      const IncrDecrCounter vpIdc(varsPassed);
       // use a unique ptr here to only increment counter inside a stockVar
       unique_ptr<IncrDecrCounter> svp;
 
@@ -387,7 +385,7 @@ Units VariableBase::units(bool check) const
 
               if (check && controller.lock())
                 {
-                  FlowCoef fc(init());
+                  const FlowCoef fc(init());
                   if (!fc.name.empty())
                     {
                       // extract the valueid corresponding to the initialisation variable
@@ -477,7 +475,7 @@ namespace minsky
 
 void VariablePtr::retype(VariableBase::Type type) 
 {
-  VariablePtr tmp(*this);
+  const VariablePtr tmp(*this);
   if (tmp && tmp->type()!=type)
     {
       reset(VariableBase::create(type));
@@ -619,7 +617,7 @@ void VariableBase::resetMiniPlot()
 void VariableBase::draw(cairo_t *cairo) const
 {	
   auto [angle,flipped]=rotationAsRadians();
-  float z=zoomFactor();
+  const float z=zoomFactor();
 
   if (!cachedNameRender || cairo!=cachedNameRender->cairoContext())
     {
@@ -629,21 +627,21 @@ void VariableBase::draw(cairo_t *cairo) const
     
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
-  Rotate r(rotation() + (flipped? 180:0),0,0);
+  const Rotate r(rotation() + (flipped? 180:0),0,0);
   cachedNameRender->angle=angle+(flipped? M_PI:0);
 
     // parameters of icon in userspace (unscaled) coordinates
-    double w=std::max(cachedNameRender->width(), 0.5f*iWidth()); 
-    double h=std::max(cachedNameRender->height(), 0.5f*iHeight());
-    double hoffs=cachedNameRender->top();
+    const double w=std::max(cachedNameRender->width(), 0.5f*iWidth()); 
+    const double h=std::max(cachedNameRender->height(), 0.5f*iHeight());
+    const double hoffs=cachedNameRender->top();
   
     unique_ptr<cairo::Path> clipPath;
     {
-      CairoSave cs(cairo);
+      const CairoSave cs(cairo);
       cairo_scale(cairo, z,z);
       cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2));
       {
-        CairoSave cs(cairo);
+        const CairoSave cs(cairo);
         if (local())
           cairo_set_source_rgb(cairo,0,0,1);
         cachedNameRender->show();
@@ -658,7 +656,7 @@ void VariableBase::draw(cairo_t *cairo) const
               miniPlot->addPt(0,cachedTime,vv->value());
               miniPlot->setMinMax();
             }
-          CairoSave cs(cairo);
+          const CairoSave cs(cairo);
           cairo_translate(cairo,-w,-h);
           miniPlot->draw(cairo,2*w,2*h);
         }
@@ -715,7 +713,7 @@ void VariableBase::draw(cairo_t *cairo) const
         catch (...) {} // ignore errors in obtaining values
 
       {
-        cairo::CairoSave cs(cairo);
+        const cairo::CairoSave cs(cairo);
         cairo_rotate(cairo, angle);
         // constants and parameters should be rendered in blue, all others in red
         switch (type())
@@ -740,7 +738,7 @@ void VariableBase::draw(cairo_t *cairo) const
         if (sliderVisible())
           {
             // draw slider
-            CairoSave cs(cairo);
+            const CairoSave cs(cairo);
             cairo_set_source_rgb(cairo,0,0,0);
             try
               {
@@ -751,8 +749,8 @@ void VariableBase::draw(cairo_t *cairo) const
           }
       }// undo rotation
 
-      double x0=z*w, y0=0, x1=-z*w+2, y1=0;
-      double sa=sin(angle), ca=cos(angle);
+      const double x0=z*w, y0=0, x1=-z*w+2, y1=0;
+      const double sa=sin(angle), ca=cos(angle);
       if (!m_ports.empty())
         m_ports[0]->moveTo(x()+(x0*ca-y0*sa), 
                            y()+(y0*ca+x0*sa));
@@ -764,7 +762,7 @@ void VariableBase::draw(cairo_t *cairo) const
     auto g=group.lock();
     if (mouseFocus || (ioVar() && g && g->mouseFocus))
       {
-        cairo::CairoSave cs(cairo);
+        const cairo::CairoSave cs(cairo);
         drawPorts(cairo);
         displayTooltip(cairo,tooltip);
         if (onResizeHandles) drawResizeHandles(cairo);
@@ -779,7 +777,7 @@ void VariableBase::draw(cairo_t *cairo) const
 
 void VariableBase::resize(const LassoBox& b)
 {
-  float invZ=1/zoomFactor();
+  const float invZ=1/zoomFactor();
   moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));  
   iWidth(abs(b.x1-b.x0)*invZ);
   iHeight(abs(b.y1-b.y0)*invZ);   

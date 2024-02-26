@@ -33,24 +33,29 @@ namespace minsky
 {
   class Group;
   typedef std::shared_ptr<Group> GroupPtr;
-  /// a shared_ptr that default constructs a default target
+  /// a shared_ptr that default constructs a default target, and is always valid
   struct VariableValuePtr: public std::shared_ptr<VariableValue>
   {
-    VariableValuePtr(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()):
-      std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,name,init))
+    VariableValuePtr(VariableType::Type type=VariableType::undefined, const std::string& name="", const GroupPtr& group=GroupPtr()):
+      std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,name))
     {get()->m_scope=scope(group,name);}
     VariableValuePtr(VariableType::Type type, const VariableValue& vv): std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,vv)) {}
+    VariableValuePtr(const std::shared_ptr<VariableValue>& x): std::shared_ptr<VariableValue>(x) {assert(x);}
   };
 
-  struct VariableValues: public ConstMap<std::string, VariableValuePtr>
+  class VariableValues: public ConstMap<std::string, VariableValuePtr>
   {
+    static VariableValuePtr& zero();
+    static VariableValuePtr& one();
+    CLASSDESC_ACCESS(VariableValues);
+  public:
     VariableValues() {clear();}
     void clear() {
       ConstMap<std::string, mapped_type>::clear();
       // add special values for zero and one, used for the derivative
       // operator in SystemOfEquations
-      emplace("constant:zero", VariableValuePtr(VariableType::constant,"constant:zero","0"));
-      emplace("constant:one", VariableValuePtr(VariableType::constant,"constant:one","1"));
+      emplace("constant:zero", zero());
+      emplace("constant:one", one());
     }
     /// generate a new valueId not otherwise in the system
     std::string newName(const std::string& name) const;

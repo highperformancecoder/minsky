@@ -26,8 +26,6 @@
 
 namespace minsky
 {
-  // necessary for Classdesc reflection!
-  constexpr float IntOp::intVarOffset;
   IntOpAccessor::IntOpAccessor(): ecolab::TCLAccessor<IntOp, std::string>
     ("description",(Getter)&IntOp::description,(Setter)&IntOp::description) {}
   
@@ -43,11 +41,9 @@ namespace minsky
   { 	  
       // if rotation is in 1st or 3rd quadrant, rotate as
       // normal, otherwise flip the text so it reads L->R
-      double angle=rotation() * M_PI / 180.0;
-      double fm=std::fmod(rotation(),360);
-      bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
+    auto [angle,textFlipped]=rotationAsRadians();
       double coupledIntTranslation=0;
-      float z=zoomFactor();
+      const float z=zoomFactor();
     
       float l=OperationBase::l*z, r=OperationBase::r*z, 
         h=OperationBase::h*z;
@@ -58,34 +54,33 @@ namespace minsky
 
       if (coupled())
         {
+          cairo::CairoSave cs(cairo);
           auto& iv=*intVar;
-          RenderVariable rv(iv,cairo);
+          const RenderVariable rv(iv,cairo);
           // we need to add some translation if the variable is bound
-          cairo_rotate(cairo,rotation()*M_PI/180.0);
+          cairo_rotate(cairo,angle);
           coupledIntTranslation=-0.5*(intVarOffset+2*rv.width()+2+r)*z;
           if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
-          cairo_rotate(cairo,-rotation()*M_PI/180.0);
         }
     
-      cairo_save(cairo);
-      cairo_rotate(cairo, angle); 
 
+      {
+        cairo::CairoSave cs(cairo);
+        cairo_rotate(cairo, angle); 
+        cairo_scale(cairo,z,z);
+        if (textFlipped) cairo_rotate(cairo, M_PI);
+        const double sf = scaleFactor();  
+        cairo_scale(cairo,sf,sf);		  
+        cairo_move_to(cairo,-7,3.5);
+        cairo_show_text(cairo,"∫dt");
+      }
+      DrawBinOp d(cairo, zoomFactor());
+      d.drawPort([&](){d.drawSymbol("0");}, l,h,rotation()); 
+      d.drawPort([&](){d.drawSymbol("f");}, l,-h,rotation()); 
+      
       cairo_save(cairo); 
-      cairo_scale(cairo,z,z);
-      if (textFlipped) cairo_rotate(cairo, M_PI);
-      double sf = scaleFactor();  
-      cairo_scale(cairo,sf,sf);		  
-      cairo_move_to(cairo,-7,3.5);
-      cairo_show_text(cairo,"\xE2\x88\xAB");
-      cairo_show_text(cairo,"dt");
-      // label the initial condition port
-      cairo_scale(cairo,0.5,0.5);
-      cairo_move_to(cairo,-19,19);
-      cairo_show_text(cairo,"0");
-      cairo_move_to(cairo,-19,-15);
-      cairo_show_text(cairo,"f");
-      cairo_restore(cairo);
-        
+      cairo_rotate(cairo, angle); 
+       
       int intVarWidth=0;
     
    
@@ -100,7 +95,7 @@ namespace minsky
     
       if (coupled())
         {
-          float ivo=intVarOffset*z;
+          const float ivo=intVarOffset*z;
           cairo_new_path(cairo);
           cairo_move_to(cairo,r,0);
           cairo_line_to(cairo,r+ivo,0);
@@ -113,7 +108,7 @@ namespace minsky
           intVarWidth=rv.width()*z;
           if (rv.width()<intVar->iWidth()) intVarWidth=0.5*intVar->iWidth()*z;
           // set the port location...
-          Rotate rot(rotation(), x(), y());
+          const Rotate rot(rotation(), x(), y());
           auto ivp=rot(x()+r+ivo+intVarWidth, y());
           intVar->moveTo(ivp.x(), ivp.y());
          
@@ -188,7 +183,7 @@ namespace minsky
   
   void IntOp::resize(const LassoBox& b)
   {
-    float invZ=1.0/zoomFactor();
+    const float invZ=1.0/zoomFactor();
     this->moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
     // Ensure int op height and var height similar to make gripping resize handle easier. for ticket 1203.
@@ -243,7 +238,7 @@ namespace minsky
     // variable, so generate a new name that doesn't currently
     // exist
 
-    string vid=minsky::valueId(group.lock(),desc);
+    const string vid=minsky::valueId(group.lock(),desc);
     auto i=minsky().variableValues.find(vid);      
     if (i!=minsky().variableValues.end()) 
       {
@@ -296,7 +291,7 @@ namespace minsky
     assert(m_ports.size()==3);
     if (m_coupled) 
       {
-        WirePtr newWire(new Wire(m_ports[0], intVar->ports(1)));
+        const WirePtr newWire(new Wire(m_ports[0], intVar->ports(1)));
         if (auto g=group.lock())
           g->addWire(newWire);
         else

@@ -66,14 +66,14 @@ namespace MathDAG
             // set the initial value of the actual variableValue (if it exists)
             auto v=values.find(result->valueId());
             if (v!=values.end())
-              v->second->init=value;
+              v->second->init(value);
           }
         else
           {
             result=VariableValuePtr(VariableType::tempFlow);
             result->allocValue();
           }
-        result->init=value;
+        result->init(value);
         values.resetValue(*result);
       }
     if (r->type()!=VariableType::undefined && r->isFlowVar() && r!=result)
@@ -91,7 +91,7 @@ namespace MathDAG
         try
           {
             auto ec=make_shared<EvalCommon>();
-            TensorPtr rhs=tensorOpFactory.create(state,TensorsFromPort(ec));
+            const TensorPtr rhs=tensorOpFactory.create(state,TensorsFromPort(ec));
             if (!rhs) return false;
             result->index(rhs->index());
             result->rhs=rhs;
@@ -295,7 +295,7 @@ namespace MathDAG
           else if (argIdx[1].size()>1)
             {
               // multiple wires to second input port
-              VariableValuePtr tmp(VariableType::tempFlow);
+              const VariableValuePtr tmp(VariableType::tempFlow);
               tmp->hypercube(r->hypercube());
               size_t i=0;
               if (accum==OperationType::add)
@@ -340,7 +340,7 @@ namespace MathDAG
               argIdx[i].push_back(arguments[i][j]->addEvalOps(ev));
             else
               {
-                argIdx[i].push_back(VariableValuePtr(VariableValue::tempFlow));
+                argIdx[i].emplace_back(VariableType::tempFlow);
                 argIdx[i].back()->allocValue();
               }
 
@@ -380,7 +380,7 @@ namespace MathDAG
                 for (size_t i=0; i<arguments.size(); ++i)
                   if (arguments[i].empty())
                     {
-                      argIdx[i].push_back(VariableValuePtr(VariableValue::tempFlow));
+                      argIdx[i].emplace_back(VariableType::tempFlow);
                       argIdx[i].back()->allocValue();
                       // ensure units are compatible (as we're doing comparisons with zero)
                       if (i>0)
@@ -394,7 +394,7 @@ namespace MathDAG
                 for (size_t i=0; i<arguments.size(); ++i)
                   if (arguments[i].empty())
                     {
-                      argIdx[i].push_back(VariableValuePtr(VariableValue::tempFlow));
+                      argIdx[i].emplace_back(VariableType::tempFlow);
                       argIdx[i].back()->allocValue();
                     }
                 ev.push_back(EvalOpPtr(type(), state, result, *argIdx[0][0], *argIdx[1][0])); 
@@ -492,7 +492,7 @@ namespace MathDAG
            }
          else if (IntOp* i=dynamic_cast<IntOp*>(it->get()))
            {
-             if (VariablePtr iv=i->intVar)
+             if (const VariablePtr iv=i->intVar)
                {
                  // .get() OK here because object lifetime controlled by
                  // expressionCache
@@ -503,7 +503,7 @@ namespace MathDAG
                    {
                      // with integrals, we need to create a distinct variable to
                      // prevent infinite recursion of order() in the case of graph cycles
-                     VariableDAGPtr input(new IntegralInputVariableDAG);
+                     const VariableDAGPtr input(new IntegralInputVariableDAG);
                      input->name=iv->name();
                      variables.push_back(input.get());
                      // manage object's lifetime with expressionCache
@@ -571,7 +571,7 @@ namespace MathDAG
         if (auto i=dynamic_cast<Variable<VariableType::stock>*>(it->get()))
           if (!expressionCache.getIntegralInput(i->valueId()))
             {
-              VariableDAGPtr input(new IntegralInputVariableDAG);
+              const VariableDAGPtr input(new IntegralInputVariableDAG);
               input->name=i->name();
               variables.push_back(input.get());
               // manage object's lifetime with expressionCache
@@ -656,7 +656,7 @@ namespace MathDAG
       {
         // now start with the variables, and work our way back to how they
         // are defined
-        VariableDefOrder variableDefOrder(expressionCache.size()+m.variableValues.size());
+        const VariableDefOrder variableDefOrder(expressionCache.size()+m.variableValues.size());
         set<VariableDAG*,VariableDefOrder> variableSet(variableDefOrder);
         group.recursiveDo
           (&Group::items,
@@ -685,7 +685,7 @@ namespace MathDAG
 
     if (type==VariableType::constant)
       {
-        NodePtr r(new ConstantDAG(vv->init));
+        NodePtr r(new ConstantDAG(vv->init()));
         r->result=vv;
         expressionCache.insert(valueId, r);
         return r;
@@ -693,13 +693,13 @@ namespace MathDAG
 
     // ensure name is unique
     string nm=name;
-    for (unsigned i=0; varNames.count(nm); ++i)
+    for (unsigned i=0; varNames.contains(nm); ++i)
       nm=name+"_"+to_string(i);
     varNames.insert(nm);
     
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
-    r->init=vv->init;
+    r->init=vv->init();
     if (auto v=minsky.definingVar(valueId))
       if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports(1).lock()->wires().empty())
         r->rhs=getNodeFromWire(*v->ports(1).lock()->wires()[0]);
@@ -775,7 +775,7 @@ namespace MathDAG
       }
 
     assert(wires.size()==sw.numCases()+1);
-    Expr input(expressionCache, getNodeFromWire(*wires[0]));
+    const Expr input(expressionCache, getNodeFromWire(*wires[0]));
 
     auto r=make_shared<OperationDAG<OperationType::add>>();
     r->state=minsky.model->findItem(sw);
@@ -888,7 +888,7 @@ namespace MathDAG
   {
     ostringstream o;
          
-    VariableDAGPtr input=expressionCache.getIntegralInput(v.valueId());    
+    const VariableDAGPtr input=expressionCache.getIntegralInput(v.valueId());    
     if (input && input->rhs) input->rhs->latex(o);    
     
     return o;
@@ -904,7 +904,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
-            !i || i->type==VariableType::constant) continue;
+            !i || i->type==VariableType::constant || i->type==VariableType::tempFlow) continue;
         o << i->latex() << "&=&";
         if (i->rhs) 
           i->rhs->latex(o);
@@ -918,7 +918,7 @@ namespace MathDAG
         o << mathrm(i->name)<<"(0)&=&"<<latexInit(i->init)<<"\\\\\n";
         o << "\\frac{ d " << mathrm(i->name) << 
           "}{dt} &=&";
-        VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
+        const VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
         if (input && input->rhs)
           input->rhs->latex(o);
         o << "\\\\\n";
@@ -932,7 +932,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i)) continue;
-        if (!i || i->type==VariableType::constant) continue;
+        if (!i || i->type==VariableType::constant || i->type==VariableType::tempFlow) continue;
         o<<"\\begin{dmath*}\n";
         o << i->latex() << "=";
         if (i->rhs) 
@@ -948,7 +948,7 @@ namespace MathDAG
         o << mathrm(i->name)<<"(0)="<<latexInit(i->init)<<"\n\\end{dmath*}\n";
         o << "\\begin{dmath*}\n\\frac{ d " << mathrm(i->name) << 
           "}{dt} =";
-        VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
+        const VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
         if (input && input->rhs)
           input->rhs->latex(o);
         o << "\\end{dmath*}\n";
@@ -986,7 +986,7 @@ namespace MathDAG
     for (const VariableDAG* i: integrationVariables)
       {
         o << "f("<<j++<<")=";
-        VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
+        const VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
         if (input && input->rhs)
           input->rhs->matlab(o);
         else
@@ -1017,13 +1017,13 @@ namespace MathDAG
 
     for (const VariableDAG* i: integrationVariables)
       {
-        string vid=i->valueId;
+        const string vid=i->valueId;
         integrals.push_back(Integral());
         assert(isValueId(vid));
         assert(minsky.variableValues.count(vid));
         integrals.back().stock=minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
-        VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
+        const VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
           integrals.back().setInput(iInput->rhs->addEvalOps(equations));
       }
@@ -1077,19 +1077,19 @@ namespace MathDAG
           continue; // ignore empty Godley columns
         // resolve scope
         colName=valueId(gi.group.lock(), colName);
-        if (processedColumns.count(colName)) continue; //skip shared columns
+        if (processedColumns.contains(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
         gd.name=trimWS(godley.cell(0,c));
         gd.arguments.resize(2);
-        vector<WeakNodePtr>& arguments=gd.arguments[0];
+        const vector<WeakNodePtr>& arguments=gd.arguments[0];
         for (size_t r=1; r<godley.rows(); ++r)
           {
             if (godley.initialConditionRow(r)) continue;
-            FlowCoef fc(godley.cell(r,c));
+            const FlowCoef fc(godley.cell(r,c));
             if (fc.name.empty()) continue;
 
-            VariablePtr v(VariableType::flow, fc.name);
+            const VariablePtr v(VariableType::flow, fc.name);
             v->group=gi.group;
 
             if (abs(fc.coef)==1)

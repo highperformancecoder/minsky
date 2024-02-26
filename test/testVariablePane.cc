@@ -38,7 +38,12 @@ SUITE(VariablePane)
     {
       load("1Free.mky");
       variablePane.updateWithHeight(100);
-      CHECK(variableValues.size()<=variablePane.numRows()*variablePane.numCols());
+      // count the number of non-temporary variables
+      size_t nonTempCount=0;
+      for (auto& [valueId, v]: variableValues)
+        if (v->type()!=VariableType::tempFlow)
+          nonTempCount++;
+      CHECK(nonTempCount<=variablePane.numRows()*variablePane.numCols());
       variablePane.renderToSVG("1FreeAllVariableTab.svg");
       variablePane.deselect(VariableType::parameter);
       variablePane.deselect(VariableType::stock);

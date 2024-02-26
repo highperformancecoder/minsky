@@ -66,7 +66,7 @@ namespace minsky
 
   bool SharedColumnCheck::updateColDefs(const string& col, const FlowCoef& fc)
   {
-    bool alreadySeen=sharedCol.count(col);
+    const bool alreadySeen=sharedCol.contains(col);
     if (alreadySeen)
       colDef[col][fc.name]-=fc.coef;
     else

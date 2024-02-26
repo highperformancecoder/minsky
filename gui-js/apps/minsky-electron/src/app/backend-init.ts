@@ -175,13 +175,16 @@ restService.setProgressCallback(function (title: string, val: number) {
 var bookmarkRefreshTimer;
 restService.setBookmarkRefreshCallback(()=>{
   if (bookmarkRefreshTimer)
-    bookmarkRefreshTimer.refresh(); // coalesce repeated calls to refreshBookmarkList
-  else
-    bookmarkRefreshTimer=setTimeout(()=>{
-      bookmarkRefreshTimer=null;
-      BookmarkManager.updateBookmarkList();
-    },10);
+    clearTimeout(bookmarkRefreshTimer); // coalesce repeated calls to refreshBookmarkList
+  bookmarkRefreshTimer=setTimeout(()=>{
+    bookmarkRefreshTimer=null;
+    BookmarkManager.updateBookmarkList();
+  },100);
 });
+
+restService.setResetScrollCallback(()=>
+  WindowManager.getMainWindow()?.webContents?.send(events.RESET_SCROLL)
+);
 
 // Sanity checks before we get started
 

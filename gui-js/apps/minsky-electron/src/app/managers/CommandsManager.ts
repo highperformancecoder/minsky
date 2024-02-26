@@ -110,7 +110,7 @@ export class CommandsManager {
     minsky.canvas.defaultRotation((await minsky.canvas.defaultRotation()+180)%360);
   }
 
-  static async exportItemAsImage(
+  static async exportItemAsImageDialog(
     item: any,
     extension: string,
     name: string
@@ -119,15 +119,24 @@ export class CommandsManager {
       title: 'Export item as...',
       defaultPath: `export.${extension}`,
       properties: ['showOverwriteConfirmation', 'createDirectory'],
-      filters: [{ extensions: [extension], name }],
+      filters: [
+        {name, extensions: [extension]},
+        {name: 'All files', extensions: ['*']}
+      ],
     });
 
     const { canceled, filePath} = exportImage;
-
     if (canceled || !filePath) {
       return;
     }
+    this.exportItemAsImage(item,extension,filePath)
+  }
 
+  static exportItemAsImage(
+    item: any,
+    extension: string,
+    filePath: string
+  ) {
     switch (extension?.toLowerCase()) {
     case 'svg':
       item.renderToSVG(filePath);
@@ -137,14 +146,22 @@ export class CommandsManager {
       item.renderToPDF(filePath);
       break;
 
-    case 'ps':
+    case 'ps': case 'eps':
       item.renderToPS(filePath);
       break;
 
     case 'emf':
-      item.renderToEMF(filePath);
+      if (Functions.isWindows())
+        item.renderToEMF(filePath);
+      else
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: 'EMF only supported on MS Windows',
+          type: 'error',
+        });
       break;
-      
+    case 'png':
+      item.renderToPNG(filePath);
+      break;
     default:
       break;
     }
@@ -341,6 +358,7 @@ export class CommandsManager {
       }
       minsky.canvas.itemIndicator(true);
       minsky.canvas.requestRedraw();
+      WindowManager.getMainWindow()?.webContents?.send(events.RESET_SCROLL);
     } else {
       dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
         type: 'info',
@@ -364,12 +382,16 @@ export class CommandsManager {
   }
 
   static async getFilePathFromExportCanvasDialog(
-    type: string
+    type: string, label: string
   ): Promise<string> {
     const exportCanvasDialog = await dialog.showSaveDialog({
       title: 'Export canvas',
       defaultPath: `canvas.${type}`,
       properties: ['showOverwriteConfirmation', 'createDirectory'],
+      filters: [
+        {name: label, extensions: [type]},
+        {name: 'All files', extensions: ['*']}
+      ],
     });
 
     let { canceled, filePath } = exportCanvasDialog;
@@ -378,7 +400,7 @@ export class CommandsManager {
     }
     
     // add extension if not already provided
-    if (!filePath.toLowerCase().endsWith(type))
+    if (!filePath.includes('.'))
       filePath+=`.${type}`;
 
     return filePath;
@@ -866,8 +888,13 @@ export class CommandsManager {
     });
   }
 
+  static setLogSimulationCheckmark(checked: boolean) {
+    Menu.getApplicationMenu().getMenuItemById('logging-menu-item').checked=checked;
+  }
+  
   static async logSimulation(selectedItems: string[]) {
     if (!Array.isArray(selectedItems) || !selectedItems.length) {
+      this.setLogSimulationCheckmark(false);
       return;
     }
 
@@ -881,11 +908,13 @@ export class CommandsManager {
     const { canceled, filePath} = logSimulation;
 
     if (canceled || !filePath) {
+      this.setLogSimulationCheckmark(false);
       return;
     }
 
     minsky.logVarList.properties(selectedItems);
     minsky.openLogFile(filePath);
+    this.setLogSimulationCheckmark(true);
   }
 
   static async importCSV(itemInfo: CanvasItem, isInvokedUsingToolbar = false) {
@@ -968,7 +997,7 @@ export class CommandsManager {
 
   static async save() {
     if (this.currentMinskyModelFilePath) {
-      minsky.save(this.currentMinskyModelFilePath);
+      await minsky.save(this.currentMinskyModelFilePath);
     }
     else
       await this.saveAs();
@@ -1092,10 +1121,12 @@ export class CommandsManager {
       godleyTableShowValues,
       godleyTableOutputStyle,
       font,
+      numBackups,
     } = StoreManager.store.get('preferences');
     minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
     minsky.multipleEquities(enableMultipleEquityColumns);
     minsky.defaultFont(font);
+    minsky.numBackups(numBackups);
     RecentFilesManager.updateNumberOfRecentFilesToDisplay();
   }
   

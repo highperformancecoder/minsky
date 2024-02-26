@@ -136,6 +136,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   async updateFormValues() {
     let item=new VariableBase(this.electronService.minsky.canvas.item);
     const local = await item.local();
+    // check there is an item of the right type
+    if (typeof local==='object') this.closeWindow();
     const init = await item.init();
     const units = await item.unitsStr();
     const rotation = await item.rotation();
@@ -146,7 +148,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     const sliderMin = Number((await item.sliderMin()).toPrecision(3));
     const sliderStep = Number((await item.sliderStep()).toPrecision(3));
     const sliderStepRel = await item.sliderStepRel();
-
+    this.electronService.minsky.nameCurrentItem('editVariable');
+    
     this.local.setValue(local);
     this.value.setValue(init);
     this.units.setValue(units);
@@ -174,7 +177,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     await this.createVariable();
   }
 
-  async saveVariableParams(item: VariableBase) {
+  saveVariableParams(item: VariableBase) {
     item.setUnits(this.units.value || '');
     item.init(this.value.value);
     item.initSliderBounds(); // ensure slider bounds starts with a reasonable value
@@ -186,15 +189,20 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     if (typeof this.sliderBoundsMin.value=='number') item.sliderMin(this.sliderBoundsMin.value);
     if (typeof this.sliderStepSize.value=='number') item.sliderStep(this.sliderStepSize.value);
     item.sliderStepRel(this.sliderStepRel.value);
-    item.retype(this.type.value);
-    this.electronService.minsky.canvas.renameItem(this._name);
     this.closeWindow();
   }
 
   
-  async editVariable() {this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.item));}
+  editVariable() {
+    this.electronService.minsky.itemFromNamedItem('editVariable');
+    let item=new VariableBase(this.electronService.minsky.canvas.item);
+    this.saveVariableParams(item);
+    item.retype(this.type.value);
+    this.electronService.minsky.canvas.renameItem(this._name);
+    
+  }
 
-  async createVariable() {
+  createVariable() {
     this.electronService.minsky.canvas.addVariable(this._name,this.type.value);
     this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.itemFocus))
   }

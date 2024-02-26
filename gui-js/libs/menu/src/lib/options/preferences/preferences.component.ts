@@ -30,6 +30,7 @@ export class PreferencesComponent implements OnInit {
       wrapLongEquationsInLatexExport: new FormControl(null),
       // focusFollowsMouse: new FormControl(null),
       font: new FormControl(null),
+      numBackups: new FormControl(null),
     });
   }
   async ngOnInit() {

@@ -48,6 +48,7 @@ export const events = {
   RECORDING_STATUS_CHANGED: 'recording-status-changed',
   REPLAY_RECORDING: 'replay-recording',
   RESET_ZOOM: 'reset-zoom',
+  RESET_SCROLL: 'reset-scroll',
   SAVE_FILE_DIALOG: 'save-file-dialog',
   SAVE_HANDLE_DESCRIPTION: 'save-handle-description',
   SAVE_HANDLE_DIMENSION: 'save-handle-dimension',

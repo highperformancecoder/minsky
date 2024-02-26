@@ -74,7 +74,7 @@ namespace MathDAG
   {
     if (init.empty()) return "0";
     VariableValue v;
-    v.init=init;
+    v.init(init);
     auto t=cminsky().variableValues.initValue(v);
     string r;
     switch (t.rank())
@@ -156,7 +156,7 @@ namespace MathDAG
       {
         checkArg(1,0);
         o<<"-";
-        ParenIf p(o, (arguments[1].size()>1 || 
+        const ParenIf p(o, (arguments[1].size()>1 || 
                       BODMASlevel() == arguments[1][0]->BODMASlevel()));
         for (size_t i=0; i<arguments[1].size(); ++i)
           {
@@ -175,7 +175,7 @@ namespace MathDAG
       {
         checkArg(0,i);
         if (i>0) o<<"\\times ";
-        ParenIf p(o, arguments[0][i]->BODMASlevel()>BODMASlevel());
+        const ParenIf p(o, arguments[0][i]->BODMASlevel()>BODMASlevel());
         o<<arguments[0][i]->latex();
       }
     if (arguments.size()>1 && !arguments[0].empty() && !arguments[1].empty()) o<<"\\times ";
@@ -183,7 +183,7 @@ namespace MathDAG
       {
         checkArg(1,i);
         if (i>0) o<<"\\times ";
-        ParenIf p(o, arguments[1][i]->BODMASlevel()>BODMASlevel());
+        const ParenIf p(o, arguments[1][i]->BODMASlevel()>BODMASlevel());
         o<<arguments[1][i]->latex();
       }
     return o;
@@ -199,7 +199,7 @@ namespace MathDAG
       {
         checkArg(0,i);
         if (i>0) o<<"\\times ";
-        ParenIf p(o, i>0 && arguments[0][i]->BODMASlevel()>BODMASlevel());
+        const ParenIf p(o, i>0 && arguments[0][i]->BODMASlevel()>BODMASlevel());
         o<<arguments[0][i]->latex();
       }
     if (arguments.size()>1) 
@@ -210,7 +210,7 @@ namespace MathDAG
           {
             checkArg(1,i);
             if (i>0) o<<"\\times ";
-            ParenIf p(o, i>0 && arguments[1][i]->BODMASlevel()>BODMASlevel());
+            const ParenIf p(o, i>0 && arguments[1][i]->BODMASlevel()>BODMASlevel());
             o<<arguments[1][i]->latex();
           }
         o<<"}";
@@ -231,7 +231,7 @@ namespace MathDAG
   {
     checkArg(0,0); checkArg(1,0);
     {
-      ParenIf p(o, arguments[0][0]->BODMASlevel()>BODMASlevel());
+      const ParenIf p(o, arguments[0][0]->BODMASlevel()>BODMASlevel());
       o<<arguments[0][0]->latex();
     }
     return o<<"^{"<<arguments[1][0]->latex()<<"}";
@@ -248,7 +248,7 @@ namespace MathDAG
         else
           o<<"-";
         {
-          ParenIf p(o, arguments[0][0]->BODMASlevel()>1);
+          const ParenIf p(o, arguments[0][0]->BODMASlevel()>1);
           o<<arguments[0][0]->latex();
         }
         o<<"\\right)";
@@ -269,7 +269,7 @@ namespace MathDAG
         {
           o<<"\\delta\\left("<<arguments[0][0]->latex()<<"-";
           {
-            ParenIf p(o, arguments[1][0]->BODMASlevel()>BODMASlevel());
+            const ParenIf p(o, arguments[1][0]->BODMASlevel()>BODMASlevel());
             o<<arguments[1][0]->latex();
           }
           o <<"\\right)";

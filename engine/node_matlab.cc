@@ -46,7 +46,7 @@ namespace MathDAG
   {
     if (init.empty()) return "0";
     VariableValue v;
-    v.init=init;
+    v.init(init);
     auto t=cminsky().variableValues.initValue(v);
     string r;
     switch (t.rank())

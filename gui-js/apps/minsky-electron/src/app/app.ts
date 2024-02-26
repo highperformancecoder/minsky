@@ -64,7 +64,7 @@ export default class App {
   }
 
   private static async initMenu() {
-    const menu = ApplicationMenuManager.createMainApplicationMenu();
+    const menu = await ApplicationMenuManager.createMainApplicationMenu();
     WindowManager.storeWindowMenu(App.mainWindow, menu);
     RecentFilesManager.initRecentFiles();
 

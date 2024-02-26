@@ -66,8 +66,8 @@ double Sheet::ravelY(double yy) const
 
 bool Sheet::onResizeHandle(float xx, float yy) const
 {
-  float dx=xx-x(), dy=yy-y();
-  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();
+  const float dx=xx-x(), dy=yy-y();
+  const float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();
   return fabs(dx)>=w-resizeHandleSize() && fabs(dx)<=w+resizeHandleSize() &&
     fabs(dy)>=h-resizeHandleSize() && fabs(dy)<=h+resizeHandleSize() &&
     (!inputRavel || dx>0 || dy>0);
@@ -77,7 +77,7 @@ bool Sheet::onResizeHandle(float xx, float yy) const
 void Sheet::drawResizeHandles(cairo_t* cairo) const
 {
   auto sf=resizeHandleSize();
-  float w=0.5f*m_width*zoomFactor(), h=0.5f*m_height*zoomFactor();
+  const float w=0.5f*m_width*zoomFactor(), h=0.5f*m_height*zoomFactor();
   if (!showRavel)
     drawResizeHandle(cairo,-w,-h,sf,0);
   drawResizeHandle(cairo,w,-h,sf,0.5*M_PI);
@@ -89,23 +89,23 @@ void Sheet::drawResizeHandles(cairo_t* cairo) const
 
 bool Sheet::onRavelButton(float xx, float yy) const
 {
-  float dx=xx-x(), dy=yy-y();
-  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor(), b=border*zoomFactor();
+  const float dx=xx-x(), dy=yy-y();
+  const float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor(), b=border*zoomFactor();
   return inputRavel && dx>=-w && dx<=b-w && dy>=-h && dy<=b-h;
 }
 
 bool Sheet::inRavel(float xx, float yy) const
 {
   auto dx=xx-x(), dy=yy-y();
-  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();
-  return showRavel && inputRavel && !(dx>=w && dy>=h) &&
+  const float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();
+  return showRavel && inputRavel && (dx<w || dy<h) &&
     fabs(ravelX(xx))<1.1*inputRavel.radius() && fabs(ravelY(yy))<1.1*inputRavel.radius();
 }
 
 bool Sheet::inItem(float xx, float yy) const
 {
-  double z=zoomFactor();
-  double w=0.5*m_width*z, h=0.5*m_height*z, b=border*z;
+  const double z=zoomFactor();
+  const double w=0.5*m_width*z, h=0.5*m_height*z, b=border*z;
   return (abs(xx-x())<w-b && abs(yy-y())<h-b) || onRavelButton(xx,yy) || inRavel(xx,yy);
 }
 
@@ -127,7 +127,7 @@ bool Sheet::onMouseMotion(float x, float y)
 {
   if (inRavel(x,y))
     return inputRavel.onMouseMotion(ravelX(x), ravelY(y));
-  else if (inputRavel)
+  if (inputRavel)
     {
       inputRavel.onMouseLeave();
       return true;
@@ -139,7 +139,7 @@ bool Sheet::onMouseOver(float x, float y)
 {
   if (inRavel(x,y))
     return inputRavel.onMouseOver(ravelX(x), ravelY(y));
-  else if (inputRavel)
+  if (inputRavel)
     {
       inputRavel.onMouseLeave();
       return true;
@@ -154,8 +154,8 @@ ClickType::Type Sheet::clickType(float x, float y) const
 {
   if (onResizeHandle(x,y)) return ClickType::onResize;
   if (inItem(x,y)) return ClickType::inItem;                     
-  double dx=fabs(x-this->x()), dy=fabs(y-this->y());
-  double w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();  
+  const double dx=fabs(x-this->x()), dy=fabs(y-this->y());
+  const double w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();  
   if (dx < w && dy < h)
     return ClickType::onItem;
   return ClickType::outside;  
@@ -163,7 +163,7 @@ ClickType::Type Sheet::clickType(float x, float y) const
 
 std::vector<Point> Sheet::corners() const
 {
-  float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();  
+  const float w=0.5*m_width*zoomFactor(), h=0.5*m_height*zoomFactor();  
   return {{x()-w,y()-h},{x()+w,y()-h},{x()-w,y()+h},{x()+w,y()+h}};
 }
 
@@ -250,7 +250,7 @@ namespace
           break;
         }
     }
-    bool operator()(size_t& row, double& y) {
+    bool operator()(size_t& row, double& y) const {
       if (row==startRow+numRows && row<tailStartRow)
         {
           row=tailStartRow; // for middle elision
@@ -265,7 +265,7 @@ void Sheet::computeValue()
 {
   if (m_ports[0] && (value=m_ports[0]->getVariableValue()) && showRavel && inputRavel )
     {
-      bool wasEmpty=inputRavel.numHandles()==0;
+      const bool wasEmpty=inputRavel.numHandles()==0;
       inputRavel.populateFromHypercube(value->hypercube());
       for (size_t i=0; i<inputRavel.numHandles(); ++i)
         inputRavel.displayFilterCaliper(i,true);
@@ -296,7 +296,7 @@ void Sheet::computeValue()
     }
   if (value && value->rank()>2)
     {
-      size_t delta=value->hypercube().xvectors[0].size()*value->hypercube().xvectors[1].size();
+      const size_t delta=value->hypercube().xvectors[0].size()*value->hypercube().xvectors[1].size();
       if (delta!=scrollDelta)
         {
           scrollDelta=delta;
@@ -328,13 +328,13 @@ void Sheet::draw(cairo_t* cairo) const
     {
       if (showRavel)
         {
-          cairo::CairoSave cs(cairo);
+          const cairo::CairoSave cs(cairo);
           cairo_translate(cairo,-(0.5+ravelOffset)*m_width,-(0.5+ravelOffset)*m_height);
           double r=inputRavel.radius();
-          double scale=ravelSize()/r;
+          const double scale=ravelSize()/r;
           cairo_scale(cairo,scale,scale);
-          double cornerX=ravelOffset*m_width/scale;
-          double cornerY=ravelOffset*m_height/scale;
+          const double cornerX=ravelOffset*m_width/scale;
+          const double cornerY=ravelOffset*m_height/scale;
           // clip out the bottom right quadrant
           r*=1.1; // allow space for arrow heads
           cairo_move_to(cairo,cornerX,cornerY);
@@ -349,7 +349,7 @@ void Sheet::draw(cairo_t* cairo) const
           inputRavel.render(render);
         }
       // display ravel button
-      cairo::CairoSave cs(cairo);
+      const cairo::CairoSave cs(cairo);
       cairo_translate(cairo,-0.5*m_width,-0.5*m_height);
       cairo_scale(cairo,border/Ravel::svgRenderer.width(),border/Ravel::svgRenderer.height());
       Ravel::svgRenderer.render(cairo);
@@ -362,7 +362,7 @@ void Sheet::draw(cairo_t* cairo) const
   // draw border
   if (onBorder)
     { // shadow the border when mouse is over it
-      cairo::CairoSave cs(cairo);
+      const cairo::CairoSave cs(cairo);
       cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
       cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
       cairo_fill(cairo);
@@ -391,7 +391,7 @@ void Sheet::draw(cairo_t* cairo) const
           
           if (!value->hypercube().xvectors[0].name.empty())
             {
-              cairo::CairoSave cs(cairo);
+              const cairo::CairoSave cs(cairo);
               pango.setMarkup(value->hypercube().xvectors[0].name);
               x0+=pango.height();
               cairo_move_to(cairo,x0, -0.5*pango.width());
@@ -399,7 +399,7 @@ void Sheet::draw(cairo_t* cairo) const
               pango.show();
               pango.angle=0;
               { // draw vertical grid line
-                cairo::CairoSave cs(cairo);
+                const cairo::CairoSave cs(cairo);
                 cairo_set_source_rgba(cairo,0,0,0,0.5);
                 cairo_move_to(cairo,x0,-0.5*m_height);
                 cairo_line_to(cairo,x0,0.5*m_height);
@@ -408,7 +408,7 @@ void Sheet::draw(cairo_t* cairo) const
             }
 
           pango.setMarkup("9999");
-          double rowHeight=pango.height();
+          const double rowHeight=pango.height();
 
           double colWidth=0;
           double x=x0, y=y0;   // make sure row labels are aligned with corresponding values. for ticket 1281
@@ -426,7 +426,7 @@ void Sheet::draw(cairo_t* cairo) const
               if (value->hypercube().rank()>2) // allow room for slice indicator
                 {
                   y+=rowHeight;
-                  cairo::CairoSave cs(cairo);
+                  const cairo::CairoSave cs(cairo);
                   pango.setMarkup(sliceIndicator);
                   cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-pango.width()), y0);
                   y0+=pango.height();
@@ -434,7 +434,7 @@ void Sheet::draw(cairo_t* cairo) const
                 }
               if (!value->hypercube().xvectors[1].name.empty())
                 {
-                  cairo::CairoSave cs(cairo);
+                  const cairo::CairoSave cs(cairo);
                   pango.setMarkup(value->hypercube().xvectors[1].name);
                   cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-pango.width()), y0);
                   y0+=pango.height();
@@ -442,7 +442,7 @@ void Sheet::draw(cairo_t* cairo) const
                 }
               
               { // draw horizontal grid lines
-                cairo::CairoSave cs(cairo);
+                const cairo::CairoSave cs(cairo);
                 cairo_set_source_rgba(cairo,0,0,0,0.5);
                 cairo_move_to(cairo,-0.5*m_width,y0-2.5);
                 cairo_line_to(cairo,0.5*m_width,y0-2.5);
@@ -462,7 +462,7 @@ void Sheet::draw(cairo_t* cairo) const
             case 2: dataHeight-=2*(rowHeight+3); break;
             default: dataHeight-=3*(rowHeight+3); break;
             }
-          ElisionRowChecker adjustRowAndFinish(showSlice,dataHeight,rowHeight,dims[0]);
+          const ElisionRowChecker adjustRowAndFinish(showSlice,dataHeight,rowHeight,dims[0]);
               
           // draw in label column
           auto& xv=value->hypercube().xvectors[0];
@@ -479,7 +479,7 @@ void Sheet::draw(cairo_t* cairo) const
           if (value->hypercube().rank()==1)
             {
               { // draw vertical grid line
-                cairo::CairoSave cs(cairo);
+                const cairo::CairoSave cs(cairo);
                 cairo_set_source_rgba(cairo,0,0,0,0.5);
                 cairo_move_to(cairo,x,-0.5*m_height);
                 cairo_line_to(cairo,x,0.5*m_height);
@@ -509,7 +509,7 @@ void Sheet::draw(cairo_t* cairo) const
                   pango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
                   pango.show();
                   { // draw vertical grid line
-                    cairo::CairoSave cs(cairo);
+                    const cairo::CairoSave cs(cairo);
                     cairo_set_source_rgba(cairo,0,0,0,0.5);
                     cairo_move_to(cairo,x-2.5,y0);
                     cairo_line_to(cairo,x-2.5,0.5*m_height);
@@ -535,7 +535,7 @@ void Sheet::draw(cairo_t* cairo) const
             }
           // draw grid
           {
-            cairo::CairoSave cs(cairo);
+            const cairo::CairoSave cs(cairo);
             cairo_set_source_rgba(cairo,0,0,0,0.2);
             for (y=y0+0.8*rowHeight; y<0.5*m_height; y+=2*rowHeight)
               {

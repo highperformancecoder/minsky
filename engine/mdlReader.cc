@@ -168,7 +168,7 @@ namespace minsky
       smatch match;
       if (regex_match(definition,match,identifier))
         {
-          VariablePtr rhs(VariableBase::flow, definition);
+          const VariablePtr rhs(VariableBase::flow, definition);
           group.addItem(rhs);
           if (port)
             group.addWire(rhs->ports(0).lock(), port);
@@ -192,12 +192,12 @@ namespace minsky
     
     void defineLookupFunction(Group& group, const std::string& name, const std::string& data)
     {
-      regex lookupPairsPattern(R"((\[[^\]]*\],)?(\(.*\)))");
+      const regex lookupPairsPattern(R"((\[[^\]]*\],)?(\(.*\)))");
       smatch match; 
       map<double,double> xData;
       if (regex_match(data,match,lookupPairsPattern))
         {
-          regex extractHead(R"(\(([^,]*),([^)]*)\)(,(\(.*\)))*)");
+          const regex extractHead(R"(\(([^,]*),([^)]*)\)(,(\(.*\)))*)");
           // note match[3] is the trailing data, match[4] strips the leading ,
           for (auto d=match[2].str(); regex_match(d, match, extractHead); d=match[4])
             xData[stod(match[1])]=stod(match[2]);
@@ -216,13 +216,13 @@ namespace minsky
       f->self=f;
       f->title=name;
       group.addItem(f);
-      VariablePtr dataVar(VariableType::flow,"data");
+      const VariablePtr dataVar(VariableType::flow,"data");
       f->addItem(dataVar);
       dataVar->moveTo(f->x()-50,f->y()-20);
-      OperationPtr gather(OperationType::gather);
+      const OperationPtr gather(OperationType::gather);
       f->addItem(gather);
       gather->moveTo(f->x()+30,f->y()-10);
-      VariablePtr inVar(VariableType::flow,"in"), outVar(VariableType::flow,"out");
+      const VariablePtr inVar(VariableType::flow,"in"), outVar(VariableType::flow,"out");
       f->addItem(inVar);
       f->addItem(outVar);
       f->inVariables.push_back(inVar);
@@ -250,11 +250,11 @@ namespace minsky
   void readMdl(Group& group, Simulation& simParms, istream& mdlFile)
   {
     set<string> integrationVariables;
-    regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");
-    regex number(R"(\d*\.?\d+[Ee]?\d*)");
-    regex unitFieldPattern(R"(([^\[\]]*)(\[.*\])?)");
-    regex sliderSpecPattern(R"(\[([^,]*),?([^,]*),?([^,]*)\])");
-    regex lookupPattern(R"(([^(]*)\((.*)\))");
+    const regex integ(R"(\s*integ\s*\(([^,]*),([^,]*)\))");
+    const regex number(R"(\d*\.?\d+[Ee]?\d*)");
+    const regex unitFieldPattern(R"(([^\[\]]*)(\[.*\])?)");
+    const regex sliderSpecPattern(R"(\[([^,]*),?([^,]*),?([^,]*)\])");
+    const regex lookupPattern(R"(([^(]*)\((.*)\))");
     smatch match;
     functionsAdded.clear();
 
@@ -288,7 +288,7 @@ namespace minsky
         // macros?
         // read variable name
         string nameStr=readToken(mdlFile,'=',true /* append delimiter */);
-        string name=collapseWS(trimWS(c+nameStr.substr(0,nameStr.length()-1)));
+        const string name=collapseWS(trimWS(c+nameStr.substr(0,nameStr.length()-1)));
         if (name.substr(0,9)==R"(\\\---///)")
           break; // we don't parse the sketch information - not used in Minsky
         string definition;
@@ -305,12 +305,12 @@ namespace minsky
           }
         auto unitField=trimWS(readToken(mdlFile,'~'));
         regex_match(unitField,match,unitFieldPattern);
-        string units=trimWS(match[1]);
+        const string units=trimWS(match[1]);
         string sliderSpec;
         if (match.size()>1)
           sliderSpec=match[2];
         
-        string comments=trimWS(readToken(mdlFile,'|'));
+        const string comments=trimWS(readToken(mdlFile,'|'));
 
 
         if (currentMDLGroup==".Control")
@@ -357,7 +357,7 @@ namespace minsky
           }
         else if (regex_match(definition,match,number))
           {
-            VariablePtr v(VariableBase::parameter, name);
+            const VariablePtr v(VariableBase::parameter, name);
             group.addItem(v);
             v->init(definition);
             try  // absorb any errors in units - we have a chance to fix these later
@@ -387,7 +387,7 @@ namespace minsky
           }
         else
           {
-            VariablePtr v(VariableBase::flow, name);
+            const VariablePtr v(VariableBase::flow, name);
             group.addItem(v);
             addDefinitionToPort(group, v->ports(1).lock(), "Def: "+name, definition);
             try  // absorb any errors in units - we have a chance to fix these later

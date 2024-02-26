@@ -106,6 +106,7 @@ export class PenStylesComponent implements OnInit {
     });
 
     this.plot.palette.properties(palette);
+    this.electronService.minsky.requestRedraw();
     this.closeWindow();
   }
 

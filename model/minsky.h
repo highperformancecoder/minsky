@@ -287,7 +287,10 @@ namespace minsky
     void openLogFile(const string&);
     /// closes log file
     void closeLogFile() {outputDataFile.reset();}
+    /// set of variables (valueIds) to log
     std::set<string> logVarList;
+    /// returns true if logging is in operation
+    bool loggingEnabled() const {return outputDataFile.get();}
     
     /// construct the equations based on input data
     /// @throws ecolab::error if the data is inconsistent
@@ -308,6 +311,7 @@ namespace minsky
     void reset(); ///<resets the variables back to their initial values
     std::vector<double> step();  ///< step the equations (by n steps, default 1)
 
+    int numBackups=1; ///< number of previous versions of saved files to keep
     /// save to a file
     void save(const std::string& filename);
     /// load from a file
@@ -427,6 +431,9 @@ namespace minsky
     /// refresh the bookmark menu after changes
     virtual void bookmarkRefresh() {}
     
+    /// reset main window scroll bars after model has been panned
+    virtual void resetScroll() {}
+    
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
 
@@ -502,6 +509,7 @@ namespace minsky
 
     std::map<std::string,std::weak_ptr<Item>> namedItems;
     void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
+    void itemFromNamedItem(const std::string& name) {canvas.item=namedItems[name].lock();}
 
     /// trigger checkMem callback for testing purposes
     bool triggerCheckMemAllocationCallback() const

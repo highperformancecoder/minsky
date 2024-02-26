@@ -1378,12 +1378,14 @@ export class Minsky extends CppClass {
   async initGodleys(): Promise<void> {return this.$callMethod('initGodleys');}
   async inputWired(a1: string): Promise<boolean> {return this.$callMethod('inputWired',a1);}
   async insertGroupFromFile(a1: string): Promise<void> {return this.$callMethod('insertGroupFromFile',a1);}
+  async itemFromNamedItem(a1: string): Promise<void> {return this.$callMethod('itemFromNamedItem',a1);}
   async lastT(...args: number[]): Promise<number> {return this.$callMethod('lastT',...args);}
   async latex(a1: string,a2: boolean): Promise<void> {return this.$callMethod('latex',a1,a2);}
   async latex2pango(a1: string): Promise<string> {return this.$callMethod('latex2pango',a1);}
   async listAllInstances(): Promise<void> {return this.$callMethod('listAllInstances');}
   async listFonts(): Promise<string[]> {return this.$callMethod('listFonts');}
   async load(a1: string): Promise<void> {return this.$callMethod('load',a1);}
+  async loggingEnabled(): Promise<boolean> {return this.$callMethod('loggingEnabled');}
   async makeVariablesConsistent(): Promise<void> {return this.$callMethod('makeVariablesConsistent');}
   async markEdited(): Promise<void> {return this.$callMethod('markEdited');}
   async matchingTableColumns(a1: GodleyIcon,a2: string): Promise<string[]> {return this.$callMethod('matchingTableColumns',a1,a2);}
@@ -1395,6 +1397,7 @@ export class Minsky extends CppClass {
   async multipleEquities(...args: any[]): Promise<boolean> {return this.$callMethod('multipleEquities',...args);}
   async nSteps(...args: number[]): Promise<number> {return this.$callMethod('nSteps',...args);}
   async nameCurrentItem(a1: string): Promise<void> {return this.$callMethod('nameCurrentItem',a1);}
+  async numBackups(...args: number[]): Promise<number> {return this.$callMethod('numBackups',...args);}
   async numOpArgs(a1: string): Promise<number> {return this.$callMethod('numOpArgs',a1);}
   async openGroupInCanvas(): Promise<void> {return this.$callMethod('openGroupInCanvas');}
   async openLogFile(a1: string): Promise<void> {return this.$callMethod('openLogFile',a1);}
@@ -1424,6 +1427,7 @@ export class Minsky extends CppClass {
   async requestReset(): Promise<void> {return this.$callMethod('requestReset');}
   async reset(): Promise<void> {return this.$callMethod('reset');}
   async resetIfFlagged(): Promise<boolean> {return this.$callMethod('resetIfFlagged');}
+  async resetScroll(): Promise<void> {return this.$callMethod('resetScroll');}
   async reset_flag(): Promise<boolean> {return this.$callMethod('reset_flag');}
   async reverse(...args: boolean[]): Promise<boolean> {return this.$callMethod('reverse',...args);}
   async rkreset(): Promise<void> {return this.$callMethod('rkreset');}
@@ -1739,6 +1743,7 @@ export class PubTab extends RenderNativeWindow {
   async addNote(a1: string,a2: number,a3: number): Promise<void> {return this.$callMethod('addNote',a1,a2,a3);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
+  async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async m_zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('m_zoomFactor',...args);}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
@@ -2264,7 +2269,7 @@ export class VariableValue extends CppClass {
   async idxInRange(): Promise<boolean> {return this.$callMethod('idxInRange');}
   async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
   async index(...args: any[]): Promise<civita__Index> {return this.$callMethod('index',...args);}
-  async init(...args: string[]): Promise<string> {return this.$callMethod('init',...args);}
+  async init(...args: any[]): Promise<string> {return this.$callMethod('init',...args);}
   async isFlowVar(): Promise<boolean> {return this.$callMethod('isFlowVar');}
   async isZero(): Promise<boolean> {return this.$callMethod('isZero');}
   async lhs(): Promise<boolean> {return this.$callMethod('lhs');}

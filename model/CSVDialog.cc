@@ -116,7 +116,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
     }
   
   // Parse input URL. Also handles URLs of the type username:password@example.com/pathname#section. See https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
-  regex ex(R"((http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\??([^ #]*)#?([^ ]*)|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
+  const regex ex(R"((http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\??([^ #]*)#?([^ ]*)|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
   cmatch what;
   if (regex_match(url.c_str(), what, ex)) {
    // what[0] contains the whole string 	 
@@ -220,7 +220,7 @@ void CSVDialog::loadFile()
 void CSVDialog::guessSpecAndLoadFile()
 {
   spec=DataSpec();
-  string fname = url.find("://")==string::npos? url: loadWebFile(url);
+  const string fname = url.find("://")==string::npos? url: loadWebFile(url);
   spec.guessFromFile(fname);
   loadFileFromName(fname);
   populateHeaders();
@@ -253,7 +253,7 @@ vector<vector<string>> parseLines(const Parser& parser, const vector<string>& li
       r.emplace_back();
       try
         {
-          boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
+          const boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
           for (auto& t: tok)
             r.back().push_back(t);
         }
@@ -274,7 +274,7 @@ namespace
     CroppedPango(cairo_t* cairo, double width): Pango(cairo), cairo(cairo), w(width) {}
     void setxy(double xx, double yy) {x=xx; y=yy;}
     void show() {
-      CairoSave cs(cairo);
+      const CairoSave cs(cairo);
       cairo_rectangle(cairo,x,y,w,height());
       cairo_clip(cairo);
       cairo_move_to(cairo,x,y);
@@ -323,12 +323,12 @@ bool CSVDialog::redraw(int, int, int, int)
     {
       if (col<spec.nColAxes())
         {// dimension check boxes
-          CairoSave cs(cairo);
-          double cbsz=5;
+          const CairoSave cs(cairo);
+          const double cbsz=5;
           cairo_set_line_width(cairo,1);
           cairo_translate(cairo,x+0.5*colWidth,y+0.5*rowHeight);
           cairo_rectangle(cairo,-cbsz,-cbsz,2*cbsz,2*cbsz);
-          if (spec.dimensionCols.count(col))
+          if (spec.dimensionCols.contains(col))
             {
               cairo_move_to(cairo,-cbsz,-cbsz);
               cairo_line_to(cairo,cbsz,cbsz);
@@ -339,21 +339,21 @@ bool CSVDialog::redraw(int, int, int, int)
         }
       y+=rowHeight;
       // type
-      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes())
+      if (spec.dimensionCols.contains(col) && col<spec.dimensions.size() && col<spec.nColAxes())
         {
           pango.setText(classdesc::enumKey<Dimension::Type>(spec.dimensions[col].type));
           pango.setxy(x,y);
           pango.show();
         }
       y+=rowHeight;
-      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes())
+      if (spec.dimensionCols.contains(col) && col<spec.dimensions.size() && col<spec.nColAxes())
         {
           pango.setText(spec.dimensions[col].units);
           pango.setxy(x,y);
           pango.show();
         }
       y+=rowHeight;
-      if (spec.dimensionCols.count(col) && col<spec.dimensionNames.size() && col<spec.nColAxes())
+      if (spec.dimensionCols.contains(col) && col<spec.dimensionNames.size() && col<spec.nColAxes())
         {
           pango.setText(spec.dimensionNames[col]);
           pango.setxy(x,y);
@@ -365,7 +365,7 @@ bool CSVDialog::redraw(int, int, int, int)
           auto& line=parsedLines[row];
           if (col<line.size())
             {
-              CairoSave cs(cairo);
+              const CairoSave cs(cairo);
               pango.setText(line[col]);
               pango.setxy(x, y);
               if (row==spec.headerRow)
@@ -373,7 +373,7 @@ bool CSVDialog::redraw(int, int, int, int)
                   cairo_set_source_rgb(surface->cairo(),0,0.7,0);
                 else
                   cairo_set_source_rgb(surface->cairo(),0,0,1);
-              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.count(col)))
+              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.contains(col)))
                 cairo_set_source_rgb(surface->cairo(),1,0,0);
               else if (col<spec.nColAxes())
                 cairo_set_source_rgb(surface->cairo(),0,0,1);
@@ -384,7 +384,7 @@ bool CSVDialog::redraw(int, int, int, int)
           y+=rowHeight;
         }
       {
-        CairoSave cs(cairo);
+        const CairoSave cs(cairo);
         cairo_set_source_rgb(cairo,.5,.5,.5);
         cairo_move_to(cairo,x-2.5,0);
         cairo_rel_line_to(cairo,0,(parsedLines.size()+4)*rowHeight);
@@ -396,7 +396,7 @@ bool CSVDialog::redraw(int, int, int, int)
   m_tableWidth=(col-1)*(colWidth+5);
   for (size_t row=0; row<parsedLines.size()+5; ++row)
     {
-      CairoSave cs(cairo);
+      const CairoSave cs(cairo);
       cairo_set_source_rgb(cairo,.5,.5,.5);
       cairo_move_to(cairo,xoffs-2.5,row*rowHeight);
       cairo_rel_line_to(cairo,m_tableWidth,0);
@@ -469,7 +469,7 @@ void CSVDialog::classifyColumns()
             entryFound=true;
             if (numberFound && !isNumerical(parsedLines[row][col]))
               numberFound=false;
-            static AnyVal any(Dimension(Dimension::time,""));
+            static const AnyVal any(Dimension(Dimension::time,""));
             if (timeFound)
               try
                 {any(parsedLines[row][col]);}

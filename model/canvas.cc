@@ -128,7 +128,7 @@ namespace minsky
                            for (size_t pi=0; pi<(*i)->portsSize(); ++pi)
                              {
                                auto p=(*i)->ports(pi).lock();
-                               float d=sqr(p->x()-x)+sqr(p->y()-y);
+                               const float d=sqr(p->x()-x)+sqr(p->y()-y);
                                if (d<minD)
                                  {
                                    minD=d;
@@ -352,13 +352,13 @@ namespace minsky
             model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
                                                {
                                                  auto ct=(*i)->clickType(x,y);
-                                                 bool mf=ct!=ClickType::outside;
+                                                 const bool mf=ct!=ClickType::outside;
                                                  if (mf!=(*i)->mouseFocus)
                                                    {
                                                      (*i)->mouseFocus=mf;
                                                      requestRedraw();
                                                    }
-                                                 bool onResize = ct==ClickType::onResize;
+                                                 const bool onResize = ct==ClickType::onResize;
                                                  if (onResize!=(*i)->onResizeHandles)
                                                    {
                                                      (*i)->onResizeHandles=onResize;
@@ -368,7 +368,7 @@ namespace minsky
                                                });
             model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
                                               {
-                                                bool mf=(*i)->near(x,y);
+                                                const bool mf=(*i)->near(x,y);
                                                 if (mf!=(*i)->mouseFocus)
                                                   {
                                                     (*i)->mouseFocus=mf;
@@ -444,7 +444,7 @@ namespace minsky
     model->recursiveDo(&GroupItems::items,
                        [&](const Items&, Items::const_iterator i)
                        {
-                          float d=sqr((*i)->x()-x)+sqr((*i)->y()-y);
+                          const float d=sqr((*i)->x()-x)+sqr((*i)->y()-y);
                           if (d<minD && (*i)->visible() && (*i)->contains(x,y))
                             {
                               minD=d;
@@ -468,7 +468,7 @@ namespace minsky
 
   void Canvas::groupSelection()
   {
-    GroupPtr r=model->addGroup(new Group);
+    const GroupPtr r=model->addGroup(new Group);
     for (auto& i: selection.items)
       r->addItem(i);
     for (auto& i: selection.groups)
@@ -574,15 +574,14 @@ namespace minsky
              if (auto v=(*i)->variableCast())
                if (v->valueId()==var->valueId())
                  {
-                   selection.items.push_back(*i);
-                   v->selected=true;
+                   selection.ensureItemInserted(*i);
                  }
              return false;
            });
        }
   }
 
-  void Canvas::renameAllInstances(const string newName)
+  void Canvas::renameAllInstances(const string& newName)
   {
     auto var=item->variableCast();
     if (!var)
@@ -690,9 +689,8 @@ namespace minsky
     double x0,x1,y0,y1;
     model->contentBounds(x0,y0,x1,y1);
     float inOffset=0, outOffset=0;
-    double fm=std::fmod(model->rotation(),360);
-    bool notFlipped=((fm>-90 && fm<90) || fm>270 || fm<-270);
-    float flip=notFlipped? 1: -1;
+    const bool notFlipped=!flipped(model->rotation());
+    const float flip=notFlipped? 1: -1;
                                                          
     // we need to move the io variables
     for (auto& v: model->inVariables)
@@ -700,7 +698,7 @@ namespace minsky
     for (auto& v: model->outVariables)
       outOffset=std::max(outOffset, v->width());
         
-    float zoomFactor=std::min(frameArgs().childWidth/(x1-x0+inOffset+outOffset),
+    const float zoomFactor=std::min(frameArgs().childWidth/(x1-x0+inOffset+outOffset),
                               frameArgs().childHeight/(y1-y0));
         
     model->zoom(model->x(),model->y(),zoomFactor);
@@ -748,7 +746,7 @@ namespace minsky
 	  selection.clear();	
       for (auto& i: v)
         {
-          RenderVariable rv(*i);
+          const RenderVariable rv(*i);
           widths.push_back(rv.width());
           heights.push_back(rv.height());
           maxWidth=max(maxWidth, widths.back());
@@ -758,7 +756,7 @@ namespace minsky
       for (size_t i=0; i<v.size(); ++i)
         {
 		  // Stock and flow variables on Godley icons should not be copied as groups. For ticket 1039	
-          ItemPtr ni(v[i]->clone());
+          const ItemPtr ni(v[i]->clone());
           (ni->variableCast())->rotation(0);
           ni->moveTo(v[0]->x()+maxWidth-v[i]->zoomFactor()*widths[i],
                      y+heights[i]);
@@ -777,7 +775,10 @@ namespace minsky
   void Canvas::zoomToDisplay()
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
-      model->zoom(g->x(),g->y(),1.1/(g->relZoom*g->zoomFactor()));
+      {
+        model->zoom(g->x(),g->y(),1.1/(g->relZoom*g->zoomFactor()));
+        minsky().resetScroll();
+      }
   }
 
   bool Canvas::selectVar(float x, float y) 
@@ -862,7 +863,7 @@ namespace minsky
     }
     m_redrawRequested=false;
     auto cairo=surface()->cairo();
-    CairoSave cs(cairo);
+    const CairoSave cs(cairo);
     cairo_rectangle(cairo,updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
     cairo_clip(cairo);
     cairo_set_line_width(cairo, 1);
@@ -874,7 +875,7 @@ namespace minsky
          if (it.visible() && updateRegion.intersects(it))
            {
              didDrawSomething = true;
-             CairoSave cs(cairo);
+             const CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
@@ -890,7 +891,7 @@ namespace minsky
          if (it.visible() && updateRegion.intersects(it))
            {
              didDrawSomething = true;
-             CairoSave cs(cairo);
+             const CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
@@ -917,7 +918,7 @@ namespace minsky
         cairo_line_to(cairo,termX,termY);
         cairo_stroke(cairo);
         // draw arrow
-        CairoSave cs(cairo);
+        const CairoSave cs(cairo);
         cairo_translate(cairo, termX,termY);
         cairo_rotate(cairo,atan2(termY-fromPort->y(), termX-fromPort->x()));
         cairo_move_to(cairo,0,0);
@@ -937,7 +938,7 @@ namespace minsky
 
     if (itemIndicator && item) // draw a red circle to indicate an error or other marker
       {
-        CairoSave cs(surface()->cairo());
+        const CairoSave cs(surface()->cairo());
         cairo_set_source_rgb(surface()->cairo(),1,0,0);
         cairo_arc(surface()->cairo(),item->x(),item->y(),15,0,2*M_PI);
         cairo_stroke(surface()->cairo());
@@ -949,7 +950,7 @@ namespace minsky
 
   void Canvas::recentre()
   {
-    SurfacePtr tmp(surface());
+    const SurfacePtr tmp(surface());
     surface().reset(new Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
     redraw();
     model->moveTo(model->x()-surface()->left(), model->y()-surface()->top());
@@ -966,7 +967,7 @@ namespace minsky
   void Canvas::applyDefaultPlotOptions() {
       if (auto p=item->plotWidgetCast()) {
         // stash titles to restore later
-        string title(p->title), xlabel(p->xlabel()),
+        const string title(p->title), xlabel(p->xlabel()),
           ylabel(p->ylabel()), y1label(p->y1label());
         defaultPlotOptions.applyPlotOptions(*p);
         p->title=title, p->xlabel(xlabel),

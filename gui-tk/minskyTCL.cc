@@ -76,7 +76,7 @@ namespace minsky
   {
     assert( strcmp(argv[0]+strlen(argv[0])-strlen(".delete"),
                    ".delete")==0);
-    std::string s(argv[0]);
+    const std::string s(argv[0]);
     ecolab::TCL_obj_deregister(s.substr(0,s.length()-strlen(".delete")));
     delete (T*)cd;
     return TCL_OK; 
@@ -201,7 +201,7 @@ namespace minsky
 
   int MinskyTCL::numOpArgs(OperationType::Type o)
   {
-    OperationPtr op(o);
+    const OperationPtr op(o);
     return op->numPorts()-1;
   }
 

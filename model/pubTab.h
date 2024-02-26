@@ -84,6 +84,7 @@ namespace minsky
     void controlMouseDown(float x, float y) override {panning=true; PannableTab<PubTabBase>::mouseDown(x,y);}
     void mouseUp(float x, float y) override;
     void mouseMove(float x, float y) override;
+    bool keyPress(const EventInterface::KeyPressArgs&) override;
   };
 }
 

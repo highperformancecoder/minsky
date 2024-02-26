@@ -62,27 +62,34 @@ export class AppComponent implements OnInit, DoCheck {
       this.updatePubTabs();
       this.cdRef.detectChanges();
 
+      let handleKey=(event)=>{
+        switch (event.key) {
+        case 'Escape':
+          this.handleEscKey(event);
+          break;
+      
+        case 'Enter':
+          event.preventDefault();
+          this.handleEnterKey(event);
+          break;
+      
+        default:
+          break;
+        }
+      }
+      
       // When the event DOMContentLoaded occurs, it is safe to access the DOM
       document.addEventListener('DOMContentLoaded', async () => {
         await this.cmService.setWindowSizeAndCanvasOffsets();
-      });
-
-      this.cmService.setBackgroundColor();
-
-      document.addEventListener('keydown', (event) => {
-        switch (event.key) {
-          case 'Escape':
-            this.handleEscKey(event);
-            break;
-
-          case 'Enter':
-            this.handleEnterKey(event);
-            break;
-
-          default:
-            break;
+        // a bit kludgy, but this allows reverting back to default key handling when an HTML element with class defaultEscapeEnter is present. See edit-description component for an example.
+        if (document.getElementsByClassName('defaultEscapeEnter').length) {
+          document.removeEventListener('keydown', handleKey);
         }
       });
+
+      document.addEventListener('keydown', handleKey);
+      this.cmService.setBackgroundColor();
+
     }  
   }
 
@@ -142,9 +149,6 @@ export class AppComponent implements OnInit, DoCheck {
       const buttons = Array.from(
           document.getElementsByClassName('submit')
       ) as HTMLElement[];
-      if (buttons.length > 0) {
-          event.preventDefault();
-      }
       buttons.forEach((b) => {
           b.click();
       });
@@ -167,12 +171,12 @@ export class AppComponent implements OnInit, DoCheck {
         
         setTimeout(async ()=> {
           await this.windowUtilityService.reInitialize();
+          const payload = { newTab: tab };
+          await this.electronService.invoke(events.CHANGE_MAIN_TAB, payload);
           var container=this.windowUtilityService.getMinskyContainerElement();
           const scrollableArea=this.windowUtilityService.getScrollableArea();
           container.scrollTop=scrollableArea.height / 2;
           container.scrollLeft=scrollableArea.width / 2;
-          const payload = { newTab: tab };
-          await this.electronService.send(events.CHANGE_MAIN_TAB, payload);
           this.cmService.resetScroll();
         }, 1);
       }

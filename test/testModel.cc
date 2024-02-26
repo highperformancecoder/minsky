@@ -760,9 +760,11 @@ SUITE(Canvas)
         auto integ=new IntOp;
         canvas.item=model->addItem(integ);
         integ->description("foo");
+        save("foo.mky");
         canvas.selectAllVariables();
-        CHECK_EQUAL(1,canvas.selection.items.size());
+        CHECK_EQUAL(2,canvas.selection.items.size());
         CHECK(canvas.selection.items[0]==integ->intVar);
+        CHECK(canvas.selection.items[1].get()==integ);
       }
     
     TEST_FIXTURE(TestFixture,renameAllInstances)
@@ -1059,6 +1061,10 @@ SUITE(GodleyIcon)
       table._assetClass(1,GodleyAssetClass::asset);
       table._assetClass(2,GodleyAssetClass::liability);
 
+      // for initial conditions below
+      model->addItem(VariablePtr(VariableType::parameter,"x"));
+      model->addItem(VariablePtr(VariableType::parameter,"y"));
+      
       VariablePtr v(VariableType::stock,"stock1");
       model->addItem(v);
       v->init("x");

@@ -9,6 +9,7 @@ interface MinskyPreferences {
   wrapLongEquationsInLatexExport: boolean;
   font: string;
   // focusFollowsMouse: boolean;
+  numBackups: number;
 }
 
 interface MinskyStore {
@@ -31,6 +32,7 @@ class StoreManager {
         wrapLongEquationsInLatexExport: false,
         font: "",
         // focusFollowsMouse: false,
+        numBackups: 1,
       },
     },
   });

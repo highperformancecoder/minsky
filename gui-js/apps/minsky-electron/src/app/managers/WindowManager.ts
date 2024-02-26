@@ -55,10 +55,10 @@ export class WindowManager {
     }
   }
 
-  static renderFrame() {
+  static async renderFrame() {
     try
     {
-      this.currentTab?.renderFrame(
+      return this.currentTab?.renderFrame(
                                        {
                                          parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
                                          offsetLeft: this.leftOffset,
@@ -78,7 +78,7 @@ export class WindowManager {
     if (this.currentTab!==tab) {
       await this.currentTab?.destroyFrame();
       this.currentTab=tab;
-      this.renderFrame();
+      return this.renderFrame();
     }
   }
   
@@ -184,7 +184,7 @@ export class WindowManager {
       useContentSize: true,
       minimizable: false,
       show: false,
-      parent: null /* modal ? mainWindow : null */, // Having a parent hides control on MacOS
+      parent: modal ? this.getMainWindow() : null,
       modal,
       backgroundColor,
       alwaysOnTop,

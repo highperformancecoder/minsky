@@ -195,7 +195,7 @@ namespace schema3
   {
     inline bool matchesStart(const string& x, const string& y)
     {
-      size_t n=min(x.length(),y.length());
+      const size_t n=min(x.length(),y.length());
       return x.substr(0,n)==y.substr(0,n);
     }
   }
@@ -329,7 +329,7 @@ namespace schema3
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
         if (auto* integ=dynamic_cast<minsky::IntOp*>(i->get()))
           {
-            int id=itemMap[i->get()];
+            const int id=itemMap[i->get()];
             for (auto& j: items)
               if (j.id==id)
                 {
@@ -434,7 +434,7 @@ namespace schema3
 
   void Minsky::populateMinsky(minsky::Minsky& m) const
   {
-    minsky::LocalMinsky lm(m);
+    const minsky::LocalMinsky lm(m);
     m.model->clear();
     populateGroup(*m.model);
     m.canvas.model=m.model;
@@ -512,6 +512,7 @@ namespace schema3
           {
             x1->sliderBoundsSet=true;
             x1->sliderStepRel=y.slider->stepRel;
+            x1->enableSlider=y.slider->visible;
             x1->sliderMin=y.slider->min;
             x1->sliderMax=y.slider->max;
             x1->sliderStep=y.slider->step;
@@ -559,8 +560,7 @@ namespace schema3
       }
     if (auto* x1=dynamic_cast<minsky::SwitchIcon*>(&x))
       {
-        auto r=fmod(y.rotation,360);
-        x1->flipped=r>90 && r<270;
+        x1->flipped=minsky::flipped(y.rotation);
         if (y.ports.size()>=2)
           x1->setNumCases(y.ports.size()-2);
       }
@@ -594,7 +594,7 @@ namespace schema3
     auto& itemMap=impl->reverseItemMap;
 
     // add in publication tab only items
-    MinskyItemFactory factory;
+    const MinskyItemFactory factory;
     for (auto& i: publicationItems)
       if (auto newItem=itemMap[i.id]=minsky::ItemPtr(factory.create(i.type)))
         populateItem(*newItem,i);
@@ -608,7 +608,7 @@ namespace schema3
         pubTabs.back().m_zoomFactor=pub.zoomFactor;
            
         for (auto& item: pub.items)
-          if (itemMap.count(item.item))
+          if (itemMap.contains(item.item))
             pubTabs.back().items.emplace_back(itemMap[item.item], item);
       }
     if (pubTabs.empty()) pubTabs.emplace_back("Publication");
@@ -619,7 +619,7 @@ namespace schema3
     auto& itemMap=impl->reverseItemMap;
     map<int, weak_ptr<minsky::Port>> portMap;
     map<int, schema3::Item> schema3VarMap;
-    MinskyItemFactory factory;
+    const MinskyItemFactory factory;
     map<int,LockGroupFactory> lockGroups;
     
     for (const auto& i: items)
@@ -650,7 +650,7 @@ namespace schema3
               {
                 assert(integ->intVar);
                 assert(integ->intVar->type()==minsky::VariableType::integral);
-                if (itemMap.count(*i.intVar))
+                if (itemMap.contains(*i.intVar))
                   {
                     if (integ->coupled()) integ->toggleCoupled();
                     g.removeItem(*integ->intVar);
@@ -727,7 +727,7 @@ namespace schema3
       }
     
     for (const auto& w: wires)
-      if (portMap.count(w.to) && portMap.count(w.from))
+      if (portMap.contains(w.to) && portMap.contains(w.from))
         {
           populateWire
             (*g.addWire(new minsky::Wire(portMap[w.from],portMap[w.to])),w);
@@ -829,7 +829,7 @@ namespace schema3
 
   void PhillipsDiagram::populatePhillipsDiagram(minsky::PhillipsDiagram& pd) const
   {
-    static MinskyItemFactory itemFactory;
+    static const MinskyItemFactory itemFactory;
     map<int, weak_ptr<minsky::Port>> portMap;
     for (auto& i: stocks)
       {
