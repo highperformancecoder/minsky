@@ -1397,6 +1397,7 @@ export class Minsky extends CppClass {
   async multipleEquities(...args: any[]): Promise<boolean> {return this.$callMethod('multipleEquities',...args);}
   async nSteps(...args: number[]): Promise<number> {return this.$callMethod('nSteps',...args);}
   async nameCurrentItem(a1: string): Promise<void> {return this.$callMethod('nameCurrentItem',a1);}
+  async numBackups(...args: number[]): Promise<number> {return this.$callMethod('numBackups',...args);}
   async numOpArgs(a1: string): Promise<number> {return this.$callMethod('numOpArgs',a1);}
   async openGroupInCanvas(): Promise<void> {return this.$callMethod('openGroupInCanvas');}
   async openLogFile(a1: string): Promise<void> {return this.$callMethod('openLogFile',a1);}

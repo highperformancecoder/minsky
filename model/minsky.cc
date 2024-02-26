@@ -66,6 +66,8 @@
 #include <sys/sysinfo.h>
 #endif
 
+#include <stdio.h>
+
 using namespace classdesc;
 using namespace boost::posix_time;
 
@@ -1007,6 +1009,9 @@ namespace minsky
 
   void Minsky::save(const std::string& filename)
   {
+    // back up to temporary file name
+    rename(filename.c_str(), (filename+"~").c_str());
+    
     const schema3::Minsky m(*this);
     Saver saver(filename);
     saver.packer.prettyPrint=true;
@@ -1015,15 +1020,24 @@ namespace minsky
         saver.save(m);
       }
     catch (...) {
+      // rename backup in place
+      rename((filename+"~").c_str(), filename.c_str());
       // if exception is due to file error, provide a more useful message
       if (!saver.os)
-        throw runtime_error("cannot save to "+filename);
+          throw runtime_error("cannot save to "+filename);
       throw;
     }
     flags &= ~is_edited;
     fileVersion=minskyVersion;
     if (autoSaver)
       boost::filesystem::remove(autoSaver->fileName);
+    // rotate saved versions
+    for (int i=numBackups; i>1; --i)
+      rename((filename+";"+to_string(i-1)).c_str(), (filename+";"+to_string(i)).c_str());
+    if (numBackups>0)
+      rename((filename+"~").c_str(), (filename+";1").c_str());
+    else
+      ::remove((filename+"~").c_str());
   }
 
   void Minsky::load(const std::string& filename) 

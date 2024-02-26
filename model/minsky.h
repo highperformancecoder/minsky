@@ -311,6 +311,7 @@ namespace minsky
     void reset(); ///<resets the variables back to their initial values
     std::vector<double> step();  ///< step the equations (by n steps, default 1)
 
+    int numBackups=1; ///< number of previous versions of saved files to keep
     /// save to a file
     void save(const std::string& filename);
     /// load from a file
