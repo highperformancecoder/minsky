@@ -119,7 +119,14 @@ struct CppWrapperType: public PyTypeObject
     static int setAttro(PyObject* self, PyObject* name, PyObject* attr)
     {
       auto cppWrapper=static_cast<CppWrapper*>(self);
-      cppWrapper->methods.emplace(PyUnicode_AsUTF8(name),attr);
+      auto key=PyUnicode_AsUTF8(name);
+      if (attr)
+        {
+          cppWrapper->methods[key]=PyObjectRef(attr);
+          assert(Py_REFCNT(cppWrapper->methods[key]));
+        }
+      else
+        cppWrapper->methods.erase(key);
       return 0;
     }
 
@@ -142,6 +149,7 @@ struct CppWrapperType: public PyTypeObject
     ob_refcnt=1;
     ob_type=&cppWrapperType;
     methods.emplace("__dict__",cppWrapperType.tp_dict);
+    Py_XINCREF(cppWrapperType.tp_dict);
   }
 
   void attachMethods(PyObjectRef& pyObject, const std::string& command)
@@ -153,6 +161,7 @@ struct CppWrapperType: public PyTypeObject
         if (methods.type()!=RESTProcessType::array) return;
         for (auto& i: methods.array())
           {
+
             string methodName(i.get_str());
             auto uqMethodName=methodName.substr(1); // remove leading '.'
             // make special commands representable in python
@@ -162,11 +171,16 @@ struct CppWrapperType: public PyTypeObject
             attachMethods(method, command+methodName);
             PyObject_SetAttrString(pyObject, uqMethodName.c_str(), method.release());
           }
+        PyObject_SetAttrString(pyObject, "_list", newPyObject(methods));
+        PyObject_SetAttrString(pyObject, "_type", CppWrapper::create(command+".@type"));
+        PyObject_SetAttrString(pyObject, "_signature", CppWrapper::create(command+".@signature"));
       }
-    catch (...) {return;}
-    PyObject_SetAttrString(pyObject, "_list", CppWrapper::create(command+".@list"));
-    PyObject_SetAttrString(pyObject, "_type", CppWrapper::create(command+".@type"));
-    PyObject_SetAttrString(pyObject, "_signature", CppWrapper::create(command+".@signature"));
+    catch (const std::exception& ex) {
+      //PyErr_SetString(PyExc_AttributeError, ex.what());
+    }
+    catch (...) {
+      //PyErr_SetString(PyExc_AttributeError, "Unknown exception");
+    }
     if (PyErr_Occurred())
       PyErr_Print();
   }
@@ -177,9 +191,16 @@ struct CppWrapperType: public PyTypeObject
       {
         cout<<"command="<<command<<endl;
         PythonBuffer result(moduleMinsky().registry.process(command, arguments.get<json_pack_t>()));
-        auto pyResult=result.getPyObject(); 
+        auto pyResult=result.getPyObject();
         if (result.type()==RESTProcessType::object)
-          attachMethods(pyResult, command);
+          {
+            PyObjectRef r(CppWrapper::create(command));
+            //PyDict_Update(r,pyResult);
+            cout<<"props: "<<(size_t)(PyObject*)pyResult<<" refcnt:"<<Py_REFCNT(pyResult)<<endl;
+            PyObject_SetAttrString(r,"_properties",pyResult.release());
+            attachMethods(r, command);
+            return r.release();
+          }
         if (PyErr_Occurred())
           PyErr_Print();
         cout<<"returning "<<result.str()<<" ref cnt "<<Py_REFCNT(pyResult)<<endl;

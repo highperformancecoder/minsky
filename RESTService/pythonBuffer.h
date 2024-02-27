@@ -71,6 +71,8 @@ namespace classdesc
         }
   }
 
+  inline PyObject* newPyObject(const json_pack_t& j) {return newPyObjectJson(j);}
+
   /// sequences
   template <class T> inline typename enable_if<is_sequence<T>, PyObject*>::T
   newPyObject(const T& x) {
@@ -91,16 +93,19 @@ namespace classdesc
   newPyObject(const T& x) {
     json_pack_t tmp; // go via JSON serialisation for arbitrary objects
     tmp<<x;
-    return newPyObject(tmp);
+    return newPyObjectJson(tmp);
   }
   /// @}
 
   // container for handling PyObject lifetimes in an RAII fashion
   class PyObjectRef
   {
-    PyObject* ref;
+    PyObject* ref=nullptr;
   public:
-    PyObjectRef(PyObject* ref): ref(ref) {}
+    PyObjectRef()=default;
+    PyObjectRef(PyObject* ref): ref(ref) {
+      assert(!ref || Py_REFCNT(ref));
+    }
     ~PyObjectRef() {Py_XDECREF(ref);}
 //    PyObjectRef(const PyObjectRef& x): ref(x.ref) {Py_XINCREF(ref);}
 //    PyObjectRef& operator=(const PyObjectRef& x) {
@@ -111,8 +116,17 @@ namespace classdesc
 //    }
     PyObjectRef(const PyObjectRef& x)=delete;
     PyObjectRef& operator=(const PyObjectRef& x)=delete;
-    PyObjectRef(PyObjectRef&& x): ref(x.ref) {x.ref=nullptr;}
-    PyObjectRef& operator=(PyObjectRef&& x) {ref=x.ref; x.ref=nullptr; return *this;}
+    PyObjectRef(PyObjectRef&& x): ref(x.ref) {
+      x.ref=nullptr;
+      assert(!ref || Py_REFCNT(ref));
+    }
+    PyObjectRef& operator=(PyObjectRef&& x) {
+      Py_XDECREF(ref);
+      ref=x.ref;
+      assert(!ref || Py_REFCNT(ref));
+      x.ref=nullptr;
+      return *this;
+    }
     operator PyObject*() {return ref;}
     PyObject* release() {auto tmp=ref; ref=nullptr; return tmp;}
   };
@@ -142,7 +156,7 @@ namespace classdesc
     explicit PythonBuffer(PyObject* x) {
       if (x) {
         pyObject=x; Py_INCREF(x);
-      } else pyObject=PyDict_New();
+      } else pyObject=Py_None;
     }
     
     ~PythonBuffer() {Py_DECREF(pyObject);}
