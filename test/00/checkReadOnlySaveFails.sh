@@ -31,7 +31,7 @@ trap "fail" 1 2 3 15
 # test that save file throws an error if it can't
 cat >input.tcl <<EOF
 minsky.save writeable.mky
-if [catch {minsky.save readonly.mky}] {tcl_exit 0}
+if [catch {minsky.save /minsky-dummy/readonly.mky}] {tcl_exit 0}
 tcl_exit 1
 EOF
 
