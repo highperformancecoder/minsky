@@ -195,21 +195,17 @@ struct CppWrapperType: public PyTypeObject
   {
     try
       {
-        cout<<"command="<<command<<endl;
         PythonBuffer result(moduleMinsky().registry.process(command, arguments.get<json_pack_t>()));
         auto pyResult=result.getPyObject();
         if (result.type()==RESTProcessType::object)
           {
             PyObjectRef r(CppWrapper::create(command));
-            //PyDict_Update(r,pyResult);
-            cout<<"props: "<<(size_t)(PyObject*)pyResult<<" refcnt:"<<Py_REFCNT(pyResult)<<endl;
             PyObject_SetAttrString(r,"_properties",pyResult.release());
             attachMethods(r, command);
             return r.release();
           }
         if (PyErr_Occurred())
           PyErr_Print();
-        cout<<"returning "<<result.str()<<" ref cnt "<<Py_REFCNT(pyResult)<<endl;
         return pyResult.release();
       }
     catch (const std::exception& ex)

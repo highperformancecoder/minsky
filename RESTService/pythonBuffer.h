@@ -107,13 +107,6 @@ namespace classdesc
       assert(!ref || Py_REFCNT(ref));
     }
     ~PyObjectRef() {Py_XDECREF(ref);}
-//    PyObjectRef(const PyObjectRef& x): ref(x.ref) {Py_XINCREF(ref);}
-//    PyObjectRef& operator=(const PyObjectRef& x) {
-//      Py_XDECREF(ref);
-//      ref=x.ref;
-//      Py_XINCREF(ref);
-//      return *this;
-//    }
     PyObjectRef(const PyObjectRef& x)=delete;
     PyObjectRef& operator=(const PyObjectRef& x)=delete;
     PyObjectRef(PyObjectRef&& x): ref(x.ref) {
@@ -228,9 +221,6 @@ namespace classdesc
                     string keyStr=PyUnicode_AsUTF8(keyRef);
                     obj[keyStr]=PythonBuffer(PySequence_GetItem(keyValue,1)).get<json_pack_t>();
                   }
-                std::cout<<std::endl;
-                write(json_pack_t(obj),std::cout);
-                std::cout<<std::endl;
               }
             else
               {
