@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>running product </TITLE>
-<META NAME="description" CONTENT="running product ">
+<TITLE>difference </TITLE>
+<META NAME="description" CONTENT="difference ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,106 +16,43 @@
 
 <LINK REL="next" HREF="node99.html">
 <LINK REL="previous" HREF="node97.html">
-<LINK REL="up" HREF="node88.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node99.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1364"
+<A NAME="tex2html1389"
   HREF="node99.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1362"
-  HREF="node88.html">
+<A NAME="tex2html1387"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1356"
+<A NAME="tex2html1381"
   HREF="node97.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1365"
-  HREF="node99.html">difference</A>
-<B> Up:</B> <A NAME="tex2html1363"
-  HREF="node88.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1357"
-  HREF="node97.html">running sum</A>
+<B> Next:</B> <A NAME="tex2html1390"
+  HREF="node99.html">index</A>
+<B> Up:</B> <A NAME="tex2html1388"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1382"
+  HREF="node97.html">running product</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004210000000000000000"></A>
-<A NAME="Operation:runningProduct"></A>
+<H2><A NAME="SECTION004211000000000000000"></A><A NAME="Operation:difference"></A>
 <BR>
-running product <SPAN CLASS="MATH"><IMG
- WIDTH="34" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img22.png"
- ALT="$\prod +$"></SPAN>
-</H2> Computes the running product of the
-input tensor along a given axis. For example, take this rank 2 tensor:
-
-<P>
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-\left(
-    \begin{array}{cccc}
-      1& 2& 3& 4\\
-      5& 4& 3& 2\\
-      8& 7& 6& 5
-    \end{array}
-  \right)
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="116" HEIGHT="64" BORDER="0"
- SRC="img195.png"
- ALT="\begin{displaymath}
-\left(
-\begin{array}{cccc}
-1&amp; 2&amp; 3&amp; 4 \\
-5&amp; 4&amp; 3&amp; 2 \\
-8&amp; 7&amp; 6&amp; 5
-\end{array} \right)
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-
-<P>
-The running product of this tensor, along the horizontal dimension,
-is:
-
-<P>
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-\left(
-    \begin{array}{cccc}
-      1& 2& 6& 24\\
-      5& 20& 60& 120\\
-      8& 56& 336& 1680
-    \end{array}
-  \right)
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="163" HEIGHT="64" BORDER="0"
- SRC="img197.png"
- ALT="\begin{displaymath}
-\left(
-\begin{array}{cccc}
-1&amp; 2&amp; 6&amp; 24\\
-5&amp; 20&amp; 60&amp; 120\\
-8&amp; 56&amp; 336&amp; 1680
-\end{array} \right)
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
+difference <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img23.png"
+ ALT="$\Delta $"></SPAN>
+</H2>
+Computes the nearest neighbour difference along a given direction. The
+optional argument can be used to specify the number of neighbours to
+skip in computing the differences.
 
 <P>
 <BR><HR>

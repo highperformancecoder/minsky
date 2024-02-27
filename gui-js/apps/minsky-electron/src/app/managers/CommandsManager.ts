@@ -12,7 +12,7 @@ import {
 } from '@minsky/shared';
 import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import { join } from 'path';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
@@ -58,23 +58,43 @@ export class CommandsManager {
       : classTypeRes;
 
     if (!classType) {
-      return;
+      return undefined;
     }
     return ClassType[classType];
   }
 
-  static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
+  static isFalseResult(result) {
+    return !result || typeof result === 'object' && (Object.keys(result).length === 0);
+  }
 
-    if (!minsky.canvas.getItemAt(x, y)) {
+  static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
+    if (this.isFalseResult(await minsky.canvas.getItemAt(x, y))) {
       return null;
     }
 
+    return await this.getCurrentItemInfo();
+  }
+
+  static async getFocusItemInfo(): Promise<CanvasItem> {
+    await minsky.canvas.setItemFromItemFocus();
+    return await this.getCurrentItemInfo();
+  }
+
+  static async getCurrentItemInfo() {
     const classType = (await this.getCurrentItemClassType()) as ClassType;
     const id = await minsky.canvas.item.id();
-    const displayContents=classType==="Group"? await new Group(minsky.canvas.item).displayContents(): false;
+    
+    if(this.isFalseResult(id)) {
+      return null;
+    }
+
+    let displayContents = false;
+    if(classType === 'Group') {
+      displayContents = await new Group(minsky.canvas.item).displayContents();
+    }
 
     const itemInfo: CanvasItem = { classType, id, displayContents };
-    return itemInfo;
+    return itemInfo;  
   }
 
   static async selectVar(x: number, y: number): Promise<boolean> {
@@ -90,7 +110,7 @@ export class CommandsManager {
     minsky.canvas.defaultRotation((await minsky.canvas.defaultRotation()+180)%360);
   }
 
-  static async exportItemAsImage(
+  static async exportItemAsImageDialog(
     item: any,
     extension: string,
     name: string
@@ -99,15 +119,24 @@ export class CommandsManager {
       title: 'Export item as...',
       defaultPath: `export.${extension}`,
       properties: ['showOverwriteConfirmation', 'createDirectory'],
-      filters: [{ extensions: [extension], name }],
+      filters: [
+        {name, extensions: [extension]},
+        {name: 'All files', extensions: ['*']}
+      ],
     });
 
     const { canceled, filePath} = exportImage;
-
     if (canceled || !filePath) {
       return;
     }
+    this.exportItemAsImage(item,extension,filePath)
+  }
 
+  static exportItemAsImage(
+    item: any,
+    extension: string,
+    filePath: string
+  ) {
     switch (extension?.toLowerCase()) {
     case 'svg':
       item.renderToSVG(filePath);
@@ -117,14 +146,22 @@ export class CommandsManager {
       item.renderToPDF(filePath);
       break;
 
-    case 'ps':
+    case 'ps': case 'eps':
       item.renderToPS(filePath);
       break;
 
     case 'emf':
-      item.renderToEMF(filePath);
+      if (Functions.isWindows())
+        item.renderToEMF(filePath);
+      else
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: 'EMF only supported on MS Windows',
+          type: 'error',
+        });
       break;
-      
+    case 'png':
+      item.renderToPNG(filePath);
+      break;
     default:
       break;
     }
@@ -175,7 +212,7 @@ export class CommandsManager {
   private static openRenameInstancesDialog(name: string) {
     WindowManager.createPopupWindowWithRouting({
       title: `Rename ${name}`,
-      url: `#/headless/rename-all-instances?name=${encodeURIComponent(name?.slice(1, 1)) || ''}`,
+      url: `#/headless/rename-all-instances?name=${encodeURIComponent(name) || ''}`,
       height: 100,
       width: 400,
     });
@@ -304,7 +341,7 @@ export class CommandsManager {
 
   static async findDefinition(): Promise<void> {
     
-    const findVariableDefinition = minsky.canvas.findVariableDefinition();
+    const findVariableDefinition = await minsky.canvas.findVariableDefinition();
 
     if (findVariableDefinition) {
       const itemX = await minsky.model.x();
@@ -321,6 +358,7 @@ export class CommandsManager {
       }
       minsky.canvas.itemIndicator(true);
       minsky.canvas.requestRedraw();
+      WindowManager.getMainWindow()?.webContents?.send(events.RESET_SCROLL);
     } else {
       dialog.showMessageBoxSync(WindowManager.getMainWindow(), {
         type: 'info',
@@ -344,12 +382,16 @@ export class CommandsManager {
   }
 
   static async getFilePathFromExportCanvasDialog(
-    type: string
+    type: string, label: string
   ): Promise<string> {
     const exportCanvasDialog = await dialog.showSaveDialog({
       title: 'Export canvas',
       defaultPath: `canvas.${type}`,
       properties: ['showOverwriteConfirmation', 'createDirectory'],
+      filters: [
+        {name: label, extensions: [type]},
+        {name: 'All files', extensions: ['*']}
+      ],
     });
 
     let { canceled, filePath } = exportCanvasDialog;
@@ -358,7 +400,7 @@ export class CommandsManager {
     }
     
     // add extension if not already provided
-    if (!filePath.toLowerCase().endsWith(type))
+    if (!filePath.includes('.'))
       filePath+=`.${type}`;
 
     return filePath;
@@ -405,14 +447,15 @@ export class CommandsManager {
     return true;
   }
 
-  static async undo(changes: number) {
+  static undo(changes: number) {
     WindowManager.activeWindows.forEach((window) => {
       if (!window.isMainWindow && window.context.title!=='Variables') {
         window.context.close();
       }
     });
     minsky.undo(changes);
-    await CommandsManager.requestRedraw();
+    if (WindowManager.currentTab?.$prefix().includes("publicationTabs"))
+      WindowManager.renderFrame(); // required because undo rewrites all the pubtabs
   }
   
   static async createNewSystem() {
@@ -437,8 +480,9 @@ export class CommandsManager {
     minsky.model.setZoom(1);
     minsky.canvas.recentre();
     minsky.popFlags();
-    minsky.doPushHistory(true);
-    return;
+    await minsky.doPushHistory(true);
+    WindowManager.getMainWindow()?.webContents?.send(events.CHANGE_MAIN_TAB); // not necesarily removed, maybe added
+    WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, maybe added
   }
 
   static async saveGroupAsFile(): Promise<void> {
@@ -545,13 +589,14 @@ export class CommandsManager {
     setTimeout(()=>{minsky.canvas.recentre();},100);
 
     WindowManager.getMainWindow().setTitle(filePath);
+    WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, may have been added
   }
 
   static async help(x: number, y: number) {
     let classType = (await this.getItemClassType(x, y, true)) as string;
 
     if (Functions.isEmptyObject(classType)) {
-      classType = minsky.canvas.getWireAt(x,y) ? 'Wires' : 'DesignCanvas';
+      classType = (await minsky.canvas.getWireAt(x,y)) ? 'Wires' : 'DesignCanvas';
     }
 
     if (!classType) {
@@ -566,13 +611,13 @@ export class CommandsManager {
     const fileName = HelpFilesManager.getHelpFileForType(classType);
 
     const path = !Utility.isPackaged()
-      ? `${join(__dirname, '../../../', `minsky-docs/minsky/${fileName}`)}`
-      : `${join(process.resourcesPath, `minsky-docs/minsky/${fileName}`)}`;
+      ? `${join(__dirname, '../../../', `minsky-docs/${fileName}`)}`
+      : `${join(process.resourcesPath, `minsky-docs/${fileName}`)}`;
 
     WindowManager.createMenuPopUpAndLoadFile({
       title: `Help: ${classType}`,
       height: 600,
-      width: 800,
+      width: 1000,
       modal: true,
       url: path,
     });
@@ -601,9 +646,9 @@ export class CommandsManager {
     const type=await v.type();
     const local=await v.local();
     WindowManager.createPopupWindowWithRouting({
-      width: 500,
-      height: 650,
-      title: `Edit ${name} || ''}`,
+      width: 400,
+      height: 500,
+      title: `Edit ${name || ''}`,
       url: `#/headless/menu/insert/create-variable?type=${type}&name=${encodeURIComponent(name)||''}&isEditMode=true&local=${local}`,
     });
   }
@@ -613,11 +658,12 @@ export class CommandsManager {
     let width = 500;
     switch (classType) {
       case ClassType.Group:
-        height = 240;
+        width = 400;
+        height = 130;
         break;
       case ClassType.Operation:
-        height = 250;
-        width = 350;
+        height = 200;
+        width = 300;
         break;
       case ClassType.UserFunction:
         height = 250;
@@ -669,6 +715,10 @@ export class CommandsManager {
   }
 
   static async addItemToNamedItems(itemInfo: CanvasItem) {
+    const idString = itemInfo.id.toString();
+    if(idString.includes('object')) {
+      throw new Error(`Invalid ID value on itemInfo ${JSON5.stringify(itemInfo)}`);
+    }
     // Pushing the current item to namedItems map
     minsky.nameCurrentItem(itemInfo.id.toString());
   }
@@ -713,9 +763,12 @@ export class CommandsManager {
 
           break;
 
-        case ClassType.Group:
+      case ClassType.Group:
+        if (await CommandsManager.selectVar(mouseX,mouseY))
+          await CommandsManager.editVar();
+        else
           await CommandsManager.editItem(ClassType.Group);
-          break;
+        break;
 
         case ClassType.Item:
           await CommandsManager.postNote('item');
@@ -736,7 +789,7 @@ export class CommandsManager {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
       CommandsManager.addItemToNamedItems(itemInfo);
       let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
-      var title=godley.table.title();
+      var title=await godley.table.title();
 
       const window = await this.initializePopupWindow({
         customTitle: `Godley Table : ${title}`,
@@ -835,8 +888,13 @@ export class CommandsManager {
     });
   }
 
+  static setLogSimulationCheckmark(checked: boolean) {
+    Menu.getApplicationMenu().getMenuItemById('logging-menu-item').checked=checked;
+  }
+  
   static async logSimulation(selectedItems: string[]) {
     if (!Array.isArray(selectedItems) || !selectedItems.length) {
+      this.setLogSimulationCheckmark(false);
       return;
     }
 
@@ -850,30 +908,13 @@ export class CommandsManager {
     const { canceled, filePath} = logSimulation;
 
     if (canceled || !filePath) {
+      this.setLogSimulationCheckmark(false);
       return;
     }
 
-    const logVarList = await minsky.logVarList.properties();
-
-    if (logVarList && logVarList.length) {
-      const itemsNotInSelectedItems = logVarList.filter(
-        (l) => !selectedItems.includes(l)
-      );
-
-      for (const i of itemsNotInSelectedItems) {
-        minsky.logVarList.erase(i);
-      }
-    }
-
-    const itemsNotInLogVarList = selectedItems.filter(
-      (i) => !logVarList.includes(i)
-    );
-
-    for (const i of itemsNotInLogVarList) {
-      minsky.logVarList.insert(i);
-    }
-
+    minsky.logVarList.properties(selectedItems);
     minsky.openLogFile(filePath);
+    this.setLogSimulationCheckmark(true);
   }
 
   static async importCSV(itemInfo: CanvasItem, isInvokedUsingToolbar = false) {
@@ -883,7 +924,7 @@ export class CommandsManager {
         url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1300,
-        minWidth: 700,
+        minWidth: 650,
         modal: false,
       });
 
@@ -956,7 +997,7 @@ export class CommandsManager {
 
   static async save() {
     if (this.currentMinskyModelFilePath) {
-      minsky.save(this.currentMinskyModelFilePath);
+      await minsky.save(this.currentMinskyModelFilePath);
     }
     else
       await this.saveAs();
@@ -974,6 +1015,7 @@ export class CommandsManager {
     WindowManager.getMainWindow().setTitle(filePath);
     this.currentMinskyModelFilePath=filePath;
     minsky.save(filePath);
+    ipcMain.emit(events.ADD_RECENT_FILE, null, filePath);
   }
   
   static async editHandleDescription(ravel: Ravel, handleIndex: number) {
@@ -989,6 +1031,30 @@ export class CommandsManager {
 
   static async saveHandleDescription(payload: HandleDescriptionPayload) {
     (new Ravel(payload.command)).setHandleDescription(payload.handleIndex, payload.description);
+  }
+
+  static newPubTab(): Promise<void> {
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `New Publication Tab`,
+      url: `#/headless/new-pub-tab?type=new&command=`,
+      height: 90,
+      width: 300,
+    });
+    return new Promise((resolve)=>{
+      window.once('closed',()=>resolve(null));
+    });
+  }
+  
+  static renamePubTab(command: string): Promise<void> {
+    const window=WindowManager.createPopupWindowWithRouting({
+      title: `Rename Publication Tab`,
+      url: `#/headless/new-pub-tab?type=rename&command=${command}`,
+      height: 90,
+      width: 300,
+    });
+    return new Promise((resolve)=>{
+      window.once('closed',()=>resolve(null));
+    });
   }
   
   static async editHandleDimension(ravel: Ravel, handleIndex: number) {
@@ -1055,10 +1121,12 @@ export class CommandsManager {
       godleyTableShowValues,
       godleyTableOutputStyle,
       font,
+      numBackups,
     } = StoreManager.store.get('preferences');
     minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
     minsky.multipleEquities(enableMultipleEquityColumns);
     minsky.defaultFont(font);
+    minsky.numBackups(numBackups);
     RecentFilesManager.updateNumberOfRecentFilesToDisplay();
   }
   

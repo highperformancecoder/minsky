@@ -17,6 +17,7 @@ export * from './lib/variable-pane/variable-pane.component';
 export * from './lib/header/header.component';
 export * from './lib/import-csv/import-csv.component';
 export * from './lib/input-modal/input-modal.component';
+export * from './lib/new-pub-tab/new-pub-tab.component';
 export * from './lib/page-not-found/page-not-found.component';
 export * from './lib/summary/summary.component';
 export * from './lib/plot-widget-options/plot-widget-options.component';
@@ -24,6 +25,7 @@ export * from './lib/plot-widget-view/plot-widget-view.component';
 export * from './lib/ravel-widget-view/ravel-widget-view.component';
 export * from './lib/rename-all-instances/rename-all-instances.component';
 export * from './lib/toolbar/toolbar.component';
-export * from './lib/ui-components.module';
+
 export * from './lib/wiring/wiring.component';
 export * from './lib/directives/latex.directive';
+

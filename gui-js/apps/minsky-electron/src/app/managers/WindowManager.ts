@@ -7,13 +7,12 @@ import {
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
   rendererAppName,
   rendererAppURL,
-//  RenderNativeWindow,
+  RenderNativeWindow,
   Utility,
 } from '@minsky/shared';
-//import * as debug from 'debug';
 import { BrowserWindow, dialog, Menu, screen } from 'electron';
-import * as log from 'electron-log';
-import * as os from 'os';
+import log from 'electron-log';
+import os from 'os';
 import { join } from 'path';
 import { format } from 'url';
 
@@ -26,7 +25,7 @@ export class WindowManager {
   static canvasHeight: number;
   static canvasWidth: number;
   static scaleFactor: number;
-  static currentTab=minsky.canvas;
+  static currentTab=minsky.canvas as RenderNativeWindow;
   
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();
@@ -56,10 +55,10 @@ export class WindowManager {
     }
   }
 
-  static renderFrame() {
+  static async renderFrame() {
     try
     {
-      this.currentTab?.$callMethodSync('renderFrame',
+      return this.currentTab?.renderFrame(
                                        {
                                          parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
                                          offsetLeft: this.leftOffset,
@@ -77,9 +76,9 @@ export class WindowManager {
     
   static async setCurrentTab(tab/*: RenderNativeWindow*/) {
     if (this.currentTab!==tab) {
-      await this.currentTab?.disable();
+      await this.currentTab?.destroyFrame();
       this.currentTab=tab;
-      this.renderFrame();
+      return this.renderFrame();
     }
   }
   
@@ -182,9 +181,10 @@ export class WindowManager {
       minHeight: minHeight || Math.min(height, 200),
       title,
       resizable: true,
+      useContentSize: true,
       minimizable: false,
       show: false,
-      parent: null /* modal ? mainWindow : null */, // Having a parent hides control on MacOS
+      parent: modal ? this.getMainWindow() : null,
       modal,
       backgroundColor,
       alwaysOnTop,

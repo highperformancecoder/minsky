@@ -32,6 +32,7 @@ namespace minsky
   public:
     Lock();
     Lock(const Lock& x): ItemT<Lock>(x) {addPorts();}
+    Lock& operator=(const Lock& x)=default;
     void addPorts();
     ravel::RavelState lockedState;
 
@@ -44,6 +45,7 @@ namespace minsky
     Units units(bool) const override;
     /// Ravel this is connected to. nullptr if not connected to a Ravel
     Ravel* ravelInput() const;
+    void applyLockedStateToRavel() const;
   };
 }
 

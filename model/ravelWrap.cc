@@ -68,12 +68,12 @@ namespace minsky
       }
     if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
       return; // early return if at least 1 ravel already present
-    editorMode=true; // first ravel is in editor mode
+    m_editorMode=true; // first ravel is in editor mode
   }
 
   void Ravel::draw(cairo_t* cairo) const
   {
-    double  z=zoomFactor(), r=editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
+    const double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
     m_ports[0]->moveTo(x()+1.1*r, y());
     m_ports[1]->moveTo(x()-1.1*r, y());
     if (mouseFocus)
@@ -81,14 +81,14 @@ namespace minsky
         drawPorts(cairo);
         displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
         // Resize handles always visible on mousefocus. For ticket 92.
-        if (editorMode) drawResizeHandles(cairo);
+        if (m_editorMode) drawResizeHandles(cairo);
       }
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
     cairo_stroke_preserve(cairo);
     if (onBorder || lockGroup)
       { // shadow the border when mouse is over it
-        cairo::CairoSave cs(cairo);
+        const cairo::CairoSave cs(cairo);
         cairo::Colour c{1,1,1,0};
         if (lockGroup)
           c=palette[ lockGroup->colour() % paletteSz ];
@@ -102,10 +102,10 @@ namespace minsky
     cairo_clip(cairo);
 
     {
-      cairo::CairoSave cs(cairo);
+      const cairo::CairoSave cs(cairo);
       cairo_rectangle(cairo,-r,-r,2*r,2*r);
       cairo_clip(cairo);
-      if (editorMode)
+      if (m_editorMode)
         {
           cairo_scale(cairo,z,z);
           CairoRenderer cr(cairo);
@@ -130,37 +130,36 @@ namespace minsky
 
   bool Ravel::inItem(float xx, float yy) const
   {
-    if (editorMode)
+    if (m_editorMode)
       {
-        float r=1.1*zoomFactor()*wrappedRavel.radius();
+        const float r=1.1*zoomFactor()*wrappedRavel.radius();
         return std::abs(xx-x())<=r && std::abs(yy-y())<=r;
       }
-    else
-      return false;
+    return false;
   }
   
   void Ravel::onMouseDown(float xx, float yy)
   {
-    double invZ=1/zoomFactor();
+    const double invZ=1/zoomFactor();
     wrappedRavel.onMouseDown((xx-x())*invZ,(yy-y())*invZ);
   }
   
   void Ravel::onMouseUp(float xx, float yy)
   {
-    double invZ=1/zoomFactor();
+    const double invZ=1/zoomFactor();
     wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
     resortHandleIfDynamic();
     broadcastStateToLockGroup();
   }
   bool Ravel::onMouseMotion(float xx, float yy)
   {
-    double invZ=1/zoomFactor();
+    const double invZ=1/zoomFactor();
     return wrappedRavel.onMouseMotion((xx-x())*invZ,(yy-y())*invZ);
   }
   
   bool Ravel::onMouseOver(float xx, float yy)
   {
-    double invZ=1/zoomFactor();
+    const double invZ=1/zoomFactor();
     return wrappedRavel.onMouseOver((xx-x())*invZ,(yy-y())*invZ);
   }
 
@@ -191,8 +190,9 @@ namespace minsky
   
   void Ravel::populateHypercube(const Hypercube& hc)
   {
+    if (!wrappedRavel) return;
     auto state=initState.empty()? getState(): initState;
-    bool redistribute=!initState.empty();
+    const bool redistribute=!initState.empty();
     initState.clear();
     wrappedRavel.populateFromHypercube(hc);
     if (state.empty())
@@ -252,7 +252,7 @@ namespace minsky
   
   bool Ravel::displayFilterCaliper() const
   {
-    int h=wrappedRavel.selectedHandle();
+    const int h=wrappedRavel.selectedHandle();
     if (h>=0)
       {
         auto state=wrappedRavel.getHandleState(h);
@@ -263,7 +263,7 @@ namespace minsky
     
   bool Ravel::setDisplayFilterCaliper(bool x)
   {
-    int h=wrappedRavel.selectedHandle();
+    const int h=wrappedRavel.selectedHandle();
     if (h>=0)
       wrappedRavel.displayFilterCaliper(h,x);
     return x;
@@ -317,7 +317,7 @@ namespace minsky
   
   ravel::HandleSort::Order Ravel::sortOrder() const
   {
-    int h=wrappedRavel.selectedHandle();
+    const int h=wrappedRavel.selectedHandle();
     if (h>=0)
       {
         auto state=wrappedRavel.getHandleState(h);
@@ -336,7 +336,7 @@ namespace minsky
   {
     if (wrappedRavel.rank()==1)
       {
-        int outputHandleId=wrappedRavel.outputHandleIds()[0];
+        const int outputHandleId=wrappedRavel.outputHandleIds()[0];
         auto hs=wrappedRavel.getHandleState(outputHandleId);
         switch (hs.order)
           {
@@ -361,7 +361,7 @@ namespace minsky
   {
     if (handle>=0)
       {
-        Dimension dim=dimension(handle);
+        const Dimension dim=dimension(handle);
         wrappedRavel.orderLabels(handle,order);
       }
     return order;
@@ -444,7 +444,7 @@ namespace minsky
     auto descr=handleDescription(handleIndex);
     if (descr.empty()) return;
     auto i=cminsky().dimensions.find(descr);
-    Dimension d{type,units};
+    const Dimension d{type,units};
     if (i!=cminsky().dimensions.end())
       {
         if (type!=i->second.type)
@@ -470,7 +470,7 @@ namespace minsky
 
     // if no variable value attached, create one
     VariableValue v(VariableType::flow);
-    TensorsFromPort tp(make_shared<EvalCommon>());
+    const TensorsFromPort tp(make_shared<EvalCommon>());
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
     v=*tensorOpFactory.create(itemPtrFromThis(), tp);
     // TODO: add some comment lines, such as source of data
@@ -498,6 +498,10 @@ namespace minsky
 
   void Ravel::applyState(const ravel::RavelState& state)
  {
+   if (!wrappedRavel) {
+     initState=state;
+     return;
+   }
    auto r=wrappedRavel.radius();
    wrappedRavel.setRavelState(state);
    if (state.radius!=r) // only need to update bounding box if radius changes
@@ -711,7 +715,7 @@ namespace minsky
       {
         handleLockInfo.emplace_back();
         for (size_t i=0; i<m_ravels.size(); ++i)
-          handleLockInfo.back().handleNames.push_back(handleNames[i].count(h)? h: "");
+          handleLockInfo.back().handleNames.push_back(handleNames[i].contains(h)? h: "");
       }
   }
 
@@ -738,7 +742,7 @@ namespace minsky
         for (auto& hli: handleLockInfo)
           {
             assert(hli.handleNames.size()==m_ravels.size());
-            set<string> lockNames(hli.handleNames.begin(), hli.handleNames.end());
+            const set<string> lockNames(hli.handleNames.begin(), hli.handleNames.end());
             for (auto& l: lockNames)
               {
                 auto hn=handleNames.find(l);
@@ -780,7 +784,7 @@ namespace minsky
   {
     if (!surface.get()) return false;
     this->width=width; this->height=height;
-    ecolab::cairo::CairoSave cs(surface->cairo());
+    const ecolab::cairo::CairoSave cs(surface->cairo());
     cairo_translate(surface->cairo(),0.5*width,0.5*height);
     auto z=0.4*min(width,height)/ravel.wrappedRavel.radius();
     scale=1/z;

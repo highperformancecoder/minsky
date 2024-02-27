@@ -1,5 +1,4 @@
 {
-  "extends": "../../tsconfig.base.json",
   "files": [],
   "include": [],
   "references": [
@@ -12,5 +11,6 @@
     {
       "path": "./tsconfig.editor.json"
     }
-  ]
+  ],
+  "extends": "../../tsconfig.base.json"
 }

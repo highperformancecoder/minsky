@@ -74,7 +74,7 @@ namespace MathDAG
   {
     if (init.empty()) return "0";
     VariableValue v;
-    v.init=init;
+    v.init(init);
     auto t=cminsky().variableValues.initValue(v);
     string r;
     switch (t.rank())
@@ -156,7 +156,7 @@ namespace MathDAG
       {
         checkArg(1,0);
         o<<"-";
-        ParenIf p(o, (arguments[1].size()>1 || 
+        const ParenIf p(o, (arguments[1].size()>1 || 
                       BODMASlevel() == arguments[1][0]->BODMASlevel()));
         for (size_t i=0; i<arguments[1].size(); ++i)
           {
@@ -175,7 +175,7 @@ namespace MathDAG
       {
         checkArg(0,i);
         if (i>0) o<<"\\times ";
-        ParenIf p(o, arguments[0][i]->BODMASlevel()>BODMASlevel());
+        const ParenIf p(o, arguments[0][i]->BODMASlevel()>BODMASlevel());
         o<<arguments[0][i]->latex();
       }
     if (arguments.size()>1 && !arguments[0].empty() && !arguments[1].empty()) o<<"\\times ";
@@ -183,7 +183,7 @@ namespace MathDAG
       {
         checkArg(1,i);
         if (i>0) o<<"\\times ";
-        ParenIf p(o, arguments[1][i]->BODMASlevel()>BODMASlevel());
+        const ParenIf p(o, arguments[1][i]->BODMASlevel()>BODMASlevel());
         o<<arguments[1][i]->latex();
       }
     return o;
@@ -199,7 +199,7 @@ namespace MathDAG
       {
         checkArg(0,i);
         if (i>0) o<<"\\times ";
-        ParenIf p(o, i>0 && arguments[0][i]->BODMASlevel()>BODMASlevel());
+        const ParenIf p(o, i>0 && arguments[0][i]->BODMASlevel()>BODMASlevel());
         o<<arguments[0][i]->latex();
       }
     if (arguments.size()>1) 
@@ -210,7 +210,7 @@ namespace MathDAG
           {
             checkArg(1,i);
             if (i>0) o<<"\\times ";
-            ParenIf p(o, i>0 && arguments[1][i]->BODMASlevel()>BODMASlevel());
+            const ParenIf p(o, i>0 && arguments[1][i]->BODMASlevel()>BODMASlevel());
             o<<arguments[1][i]->latex();
           }
         o<<"}";
@@ -231,7 +231,7 @@ namespace MathDAG
   {
     checkArg(0,0); checkArg(1,0);
     {
-      ParenIf p(o, arguments[0][0]->BODMASlevel()>BODMASlevel());
+      const ParenIf p(o, arguments[0][0]->BODMASlevel()>BODMASlevel());
       o<<arguments[0][0]->latex();
     }
     return o<<"^{"<<arguments[1][0]->latex()<<"}";
@@ -248,7 +248,7 @@ namespace MathDAG
         else
           o<<"-";
         {
-          ParenIf p(o, arguments[0][0]->BODMASlevel()>1);
+          const ParenIf p(o, arguments[0][0]->BODMASlevel()>1);
           o<<arguments[0][0]->latex();
         }
         o<<"\\right)";
@@ -269,7 +269,7 @@ namespace MathDAG
         {
           o<<"\\delta\\left("<<arguments[0][0]->latex()<<"-";
           {
-            ParenIf p(o, arguments[1][0]->BODMASlevel()>BODMASlevel());
+            const ParenIf p(o, arguments[1][0]->BODMASlevel()>BODMASlevel());
             o<<arguments[1][0]->latex();
           }
           o <<"\\right)";
@@ -373,6 +373,116 @@ namespace MathDAG
     return o;
   }
 
+  template <>
+  ostream& OperationDAG<OperationType::covariance>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      return o<<"{\\mathrm cov}\\left("<<arguments[0][0]->latex()<<
+        ","<<arguments[1][0]<<"\\right)";
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::rho>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      return o<<"\\rho\\left("<<arguments[0][0]->latex()<<
+        ","<<arguments[1][0]<<"\\right)";
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::size>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        size_t dim=numeric_limits<size_t>::max();
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          if (auto vv=arguments[0][0]->result)
+            {
+              for (auto& i: vv->hypercube().xvectors)
+                if (i.name==op->axis)
+                  {
+                    dim=&i-&vv->hypercube().xvectors.front();
+                    break;
+                  }
+              if (dim<vv->rank())
+                return o<<"\\dim\\left("<<arguments[0][0]->latex()<<","<<dim<<"\\right)";
+            }
+        return o<<"\\prod_i(\\dim("<<arguments[0][0]->latex()<<",i))";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::shape>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"shape("<<arguments[0][0]->latex()<<")";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::mean>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"\\left\\langle"<<arguments[0][0]->latex()<<"\\right\\rangle";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::median>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"{\\mathrm median}\\left("<<arguments[0][0]->latex()<<"\\right)";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::stdDev>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        return o<<"\\sigma("<<arguments[0][0]->latex()<<")";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::moment>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        double exponent=1;
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          exponent=op->arg;
+        return o<<"\\left\\langle\\Delta\\left("<<arguments[0][0]->latex()<<"\\right)^"<<exponent<<"\\right\\rangle";
+      }
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::histogram>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        size_t nBins=1;
+        if (auto op=dynamic_cast<OperationBase*>(state.get()))
+          nBins=op->arg;
+        return o<<"{\\mathrm histogram}\\left("<<arguments[0][0]->latex()<<","<<nBins<<"\\right)";
+      }
+    return o<<"0";
+  }
+
+  
   template <>
   ostream& OperationDAG<OperationType::time>::latex(ostream& o) const
   {

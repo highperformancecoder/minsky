@@ -182,7 +182,7 @@ namespace minsky
     addTimeVariables(impl->symbols);
     for (auto& i: symbolNames())
       {
-        auto scopedName=valueIdFromScope(group.lock(),i);
+        auto scopedName=valueIdFromScope(group.lock(),canonicalName(i));
         auto v=minsky().variableValues.find(scopedName);
         if (v!=minsky().variableValues.end())
           {
@@ -231,7 +231,7 @@ namespace minsky
   string UserFunction::description(const string& nm)
   {
     NamedOp::description(nm);
-    static regex extractArgList(R"([^(]*\(([^)]*)\))");
+    static const regex extractArgList(R"([^(]*\(([^)]*)\))");
     smatch match;
     string argList;
     if (regex_match(nm,match,extractArgList))
@@ -248,7 +248,7 @@ namespace minsky
 
   string UserFunction::name() const
   {
-    static regex extractName(R"(([^(]*).*)");
+    static const regex extractName(R"(([^(]*).*)");
     smatch match;
     auto d=description();
     regex_match(d, match, extractName);

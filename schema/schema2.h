@@ -31,6 +31,7 @@ but any renamed attributes require bumping the schema number.
 #include "schema/schema1.h"
 #include "schemaHelper.h"
 #include "classdesc.h"
+#include "plotOptions.h"
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
 #include "simulation.h"
@@ -65,7 +66,7 @@ namespace schema2
   };
 
   // attribute common to all items
-  struct ItemBase: public Note
+  struct ItemBase: public minsky::PlotOptions<Note>
   {
     int id=-1;
     std::string type;
@@ -75,11 +76,11 @@ namespace schema2
     std::vector<int> ports;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
-      Note(it), id(id), type(it.classType()),
+      minsky::PlotOptions<Note>(Note(it)), id(id), type(it.classType()),
       x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor()), rotation(it.rotation()),
       ports(ports) {}
     ItemBase(const schema1::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type) {}
+      PlotOptions<Note>(it), id(it.id), type(type) {}
   };
 
   struct Slider
@@ -111,13 +112,6 @@ namespace schema2
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
     Optional<float> iconScale; // for handling legacy schemas
-    // Plot specific fields
-    Optional<bool> logx, logy, ypercent;
-    Optional<ecolab::Plot::PlotType> plotType;
-    Optional<std::string> xlabel, ylabel, y1label;
-    Optional<int> nxTicks, nyTicks;
-    Optional<double> xtickAngle, exp_threshold;
-    Optional<ecolab::Plot::Side> legend;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
@@ -145,9 +139,13 @@ namespace schema2
       name(it.name), init(it.init)  {ports=it.ports;}
     Item(const schema1::Godley& it);
     Item(const schema1::Plot& it):
-      ItemBase(it, "PlotWidget"),
-      name(it.title), logx(it.logx), logy(it.logy), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label)
+      ItemBase(it, "PlotWidget"), name(it.title)
     {
+      logx=it.logx;
+      logy=it.logy;
+      xlabel=it.xlabel;
+      ylabel=it.ylabel;
+      y1label=it.y1label;
       if (it.legend) legend=*it.legend;
       ports=it.ports;
     }

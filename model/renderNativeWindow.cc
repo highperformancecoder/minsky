@@ -69,11 +69,6 @@ namespace minsky
     };
   } // namespace
 
-  void RenderNativeWindow::disable()
-  {
-    winInfoPtr.reset();
-  }
-  
   RenderNativeWindow::~RenderNativeWindow()
   {
     minsky().nativeWindowsToRedraw.erase(this);
@@ -126,7 +121,7 @@ namespace minsky
     surfaceToDraw.swap(surface);
 
     cairo_reset_clip(surface->cairo());
-    ecolab::cairo::CairoSave cs(surface->cairo());
+    const ecolab::cairo::CairoSave cs(surface->cairo());
     cairo_set_source_rgba(surface->cairo(), backgroundColour.r,backgroundColour.g,backgroundColour.b,backgroundColour.a);
     cairo_rectangle(surface->cairo(), 0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
     cairo_fill(surface->cairo());
@@ -163,7 +158,7 @@ namespace minsky
 #ifdef WIN32
     DEVICE_SCALE_FACTOR scaleFactor;
     GetScaleFactorForMonitor(MonitorFromPoint(POINT{0,0}, MONITOR_DEFAULTTOPRIMARY), &scaleFactor);
-    return scaleFactor/100.0;
+    return int(scaleFactor)/100.0;
 #else
     return 1;
 #endif

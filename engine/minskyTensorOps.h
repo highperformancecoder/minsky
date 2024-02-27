@@ -30,7 +30,7 @@ namespace minsky
   {
     const char* what() const throw() {return "Falling back to scalar processing";}
   };
-
+  
   /// A place to store common data shared between TensorVarVals within a give calculation
   class EvalCommon
   {

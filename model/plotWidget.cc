@@ -28,6 +28,7 @@
 #include <cairo/cairo-svg.h>
 
 #include "itemT.rcd"
+#include "plotOptions.rcd"
 #include "plot.rcd"
 #include "plot.xcd"
 #include "tensorInterface.rcd"
@@ -85,8 +86,9 @@ namespace minsky
   
   void PlotWidget::draw(cairo_t* cairo) const
   {
-    double z=Item::zoomFactor();
-    double w=iWidth()*z, h=iHeight()*z;
+    const double z=Item::zoomFactor();
+    const double w=iWidth()*z;
+    double h=iHeight()*z;
 
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty())
@@ -102,30 +104,31 @@ namespace minsky
     double yoffs=0; // offset to allow for title
     if (!title.empty())
       {
-        double fx=0, fy=titleHeight*iHeight()*z;
-        cairo_user_to_device_distance(cairo,&fx,&fy);
+        const CairoSave cs(cairo);
+        const double fy=titleHeight*iHeight();
         
         Pango pango(cairo);
         pango.setFontSize(fabs(fy));
         pango.setMarkup(latexToPango(title));   
         cairo_set_source_rgb(cairo,0,0,0);
-        cairo_move_to(cairo,0.5*(w-pango.width()), 0);
+        cairo_move_to(cairo,0.5*(w-z*pango.width()), 0);
+        cairo_scale(cairo,z,z);
         pango.show();
 
         // allow some room for the title
-        yoffs=1.2*pango.height();
-        h-=1.2*pango.height();
+        yoffs=1.2*pango.height()*z;
+        h-=yoffs;
       }
 
     // draw bounding box ports
-    float x = -0.5*w, dx=w/(2*numLines+1); // x location of ports
-    float y=0.5*h, dy = h/(numLines);
+    const float x = -0.5*w, dx=w/(2*numLines+1); // x location of ports
+    const float y=0.5*h, dy = h/(numLines);
     
     size_t i=0;
     // draw bounds input ports
     for (; i<nBoundsPorts; ++i)
       {
-        float x=boundX[i]*w, y=boundY[i]*h;
+        const float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
           m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
@@ -135,7 +138,7 @@ namespace minsky
     // draw y data ports
     for (; i<numLines+nBoundsPorts; ++i)
       {
-        float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
+        const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
           m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
@@ -144,7 +147,7 @@ namespace minsky
     // draw RHS y data ports
     for (; i<2*numLines+nBoundsPorts; ++i)
       {
-        float y=0.5*(dy-h) + (i-numLines-nBoundsPorts)*dy, x=0.5*w;
+        const float y=0.5*(dy-h) + (i-numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
           m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
@@ -153,7 +156,7 @@ namespace minsky
     // draw x data ports
     for (; i<4*numLines+nBoundsPorts; ++i)
       {
-        float x=dx-0.5*w + (i-2*numLines-nBoundsPorts)*dx;
+        const float x=dx-0.5*w + (i-2*numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
           m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
@@ -163,6 +166,8 @@ namespace minsky
     cairo_set_line_width(cairo,1);
     double gw=w-2*portSpace, gh=h-portSpace;;
     if (!title.empty()) gh=h-portSpace-titleHeight;  // take into account room for the title
+    gw/=z; gh/=z; // undo zoomFactor for Plot::draw, and scale
+    cairo_scale(cairo,z,z);
     //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
     auto& pt=const_cast<Plot*>(static_cast<const Plot*>(this))->plotType;
     switch (plotType)
@@ -186,10 +191,10 @@ namespace minsky
             width+=legendOffset*gw;
 
             
-            double x=legendLeft*gw-0.5*(w-width)+portSpace;
+            const double x=legendLeft*gw-0.5*(w-width)+portSpace;
             double y=-legendTop*gh+0.5*(h+height)-portSpace;
             if (!title.empty()) y=-legendTop*gh+0.5*(h+height)-portSpace+titleHeight*h; // take into account room for the title
-            double arrowLength=6;
+            const double arrowLength=6;
             cairo_move_to(cairo,x-arrowLength,y);
             cairo_rel_line_to(cairo,2*arrowLength,0);
             cairo_move_to(cairo,x,y-arrowLength);
@@ -222,33 +227,33 @@ namespace minsky
   {
     // set any scale overrides
     setMinMax();
-    if (xminVar.idx()>-1)
+    if (xminVar && xminVar->idx()>-1)
       {
-        if (xIsSecsSinceEpoch && xminVar.units==Units("year"))
-          minx=yearToPTime(xminVar.value());
+        if (xIsSecsSinceEpoch && xminVar->units==Units("year"))
+          minx=yearToPTime(xminVar->value());
         else
-          minx=xminVar.value();
+          minx=xminVar->value();
       }
 
-    if (xmaxVar.idx()>-1)
+    if (xmaxVar && xmaxVar->idx()>-1)
       {
-        if (xIsSecsSinceEpoch && xmaxVar.units==Units("year"))
-          maxx=yearToPTime(xmaxVar.value());
+        if (xIsSecsSinceEpoch && xmaxVar->units==Units("year"))
+          maxx=yearToPTime(xmaxVar->value());
         else
-          maxx=xmaxVar.value();
+          maxx=xmaxVar->value();
       }
 
-    if (yminVar.idx()>-1) {miny=yminVar.value();}
-    if (ymaxVar.idx()>-1) {maxy=ymaxVar.value();}
-    if (y1minVar.idx()>-1) {miny1=y1minVar.value();}
-    if (y1maxVar.idx()>-1) {maxy1=y1maxVar.value();}
+    if (yminVar && yminVar->idx()>-1) {miny=yminVar->value();}
+    if (ymaxVar && ymaxVar->idx()>-1) {maxy=ymaxVar->value();}
+    if (y1minVar && y1minVar->idx()>-1) {miny1=y1minVar->value();}
+    if (y1maxVar && y1maxVar->idx()>-1) {maxy1=y1maxVar->value();}
     autoscale=false;
 
     if (!justDataChanged)
       // label pens
       for (size_t i=0; i<yvars.size(); ++i)
         if (yvars[i] && !yvars[i]->name.empty())
-          labelPen(i, latexToPango(yvars[i]->name));
+          labelPen(i, latexToPango(uqName(yvars[i]->name)));
   }
 
   void PlotWidget::mouseDown(float x,float y)
@@ -256,8 +261,8 @@ namespace minsky
     clickX=x;
     clickY=y;
     ct=clickType(x,y);
-    double z=Item::zoomFactor();
-    double gw=iWidth()*z-2*portSpace;
+    const double z=Item::zoomFactor();
+    const double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
     if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
     oldLegendLeft=legendLeft*gw+portSpace;
@@ -267,13 +272,13 @@ namespace minsky
   
   void PlotWidget::mouseMove(float x,float y)
   {
-    double z=Item::zoomFactor();
-    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
-    double dx=x-this->x(), dy=y-this->y();
-    double gw=iWidth()*z-2*portSpace;
+    const double z=Item::zoomFactor();
+    const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
+    const double dx=x-this->x(), dy=y-this->y();
+    const double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
     if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
-    double yoffs=this->y()-(legendTop-0.5)*iHeight()*z;
+    const double yoffs=this->y()-(legendTop-0.5)*iHeight()*z;
     switch (ct)
       {
       case ClickType::legendMove:
@@ -327,7 +332,7 @@ namespace minsky
 
   void PlotWidget::resize(const LassoBox& x)
   {
-    float invZ=1/Item::zoomFactor();
+    const float invZ=1/Item::zoomFactor();
     iWidth(abs(x.x1-x.x0)*invZ);
     iHeight(abs(x.y1-x.y0)*invZ);
     Item::moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
@@ -338,7 +343,7 @@ namespace minsky
   ClickType::Type PlotWidget::clickType(float x, float y) const
   {
     // firstly, check whether a port has been selected
-    double z=Item::zoomFactor();  
+    const double z=Item::zoomFactor();  
     for (auto& p: m_ports)
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*z)
@@ -347,8 +352,8 @@ namespace minsky
 
     double legendWidth, legendHeight;
     legendSize(legendWidth, legendHeight, iHeight()*z-portSpace);
-    double xx= x-this->x() - portSpace +(0.5-legendLeft)*iWidth()*z;
-    double yy= y-this->y() + (legendTop-0.5)*iHeight()*z;
+    const double xx= x-this->x() - portSpace +(0.5-legendLeft)*iWidth()*z;
+    const double yy= y-this->y() + (legendTop-0.5)*iHeight()*z;
     if (xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
@@ -359,8 +364,8 @@ namespace minsky
 
     if (onResizeHandle(x,y)) return ClickType::onResize;         
 	
-    double dx=x-this->x(), dy=y-this->y();
-    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
+    const double dx=x-this->x(), dy=y-this->y();
+    const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     return (abs(dx)<w && abs(dy)<h)?
       ClickType::onItem: ClickType::outside;
   }
@@ -414,11 +419,11 @@ namespace minsky
           }
     
     // throttle plot redraws
-    static time_duration maxWait=milliseconds(1000);
+    static const time_duration maxWait=milliseconds(1000);
     if ((microsec_clock::local_time()-(ptime&)lastAdd) >
         min((accumulatedBlitTime-(ptime&)lastAccumulatedBlitTime) * 2, maxWait))
       {
-        ptime timerStart=microsec_clock::local_time();
+        const ptime timerStart=microsec_clock::local_time();
         requestRedraw();
         lastAccumulatedBlitTime = accumulatedBlitTime;
         lastAdd=microsec_clock::local_time();
@@ -503,10 +508,10 @@ namespace minsky
                       break;
                     case Dimension::time:
                       {
-                        string format=xv.timeFormat();
+                        const string format=xv.timeFormat();
                         for (const auto& i: xv)
                           {
-                            double tv=(i.time-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
+                            const double tv=(i.time-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
                             newXticks.back().emplace_back(tv,str(i,format));
                             xdefault.push_back(tv);
                           }
@@ -570,6 +575,7 @@ namespace minsky
         }
     scalePlot();
 
+    
     if (newXticks.size()==1) // nothing to disambiguate
       xticks=std::move(newXticks.front());
     else
@@ -582,10 +588,23 @@ namespace minsky
               xticks.clear();
               break; // value axes trump all
             }
-        // else select an xticks range that covers most of [minx,maxx]
-          else if (i.back().first>0.7*(maxx-minx)+minx && i.front().first<0.3*(maxx-minx)+minx)
+          else if (xticks.empty())
             xticks=std::move(i);
+          else
+            {// expand range of tick labels by each pen's tick labels in turn
+              auto j=i.begin();
+              for (; j!=i.end(); ++j)
+                if (j->first>=xticks.front().first)
+                  break;
+              xticks.insert(xticks.begin(), i.begin(), j);
+              j=i.end();
+              for (; j!=i.begin(); --j)
+                if ((j-1)->first<=xticks.back().first)
+                  break;
+              xticks.insert(xticks.end(), j, i.end());
+            }
       }
+
   }
 
   
@@ -595,14 +614,14 @@ namespace minsky
     if (port<nBoundsPorts)
       switch (port)
         {
-        case 0: xminVar=*var; return;
-        case 1: xmaxVar=*var; return;
-        case 2: yminVar=*var; return;
-        case 3: ymaxVar=*var; return;
-        case 4: y1minVar=*var; return;
-        case 5: y1maxVar=*var; return;
+        case 0: xminVar=var; return;
+        case 1: xmaxVar=var; return;
+        case 2: yminVar=var; return;
+        case 3: ymaxVar=var; return;
+        case 4: y1minVar=var; return;
+        case 5: y1maxVar=var; return;
         }
-    unsigned pen=port-nBoundsPorts;
+    const unsigned pen=port-nBoundsPorts;
     if (pen<2*numLines)
       {
         yvars.resize(pen+1);
@@ -623,7 +642,7 @@ namespace minsky
   {
     xvars.clear();
     yvars.clear();
-    xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();
+    xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=nullptr;
   }
 
 }

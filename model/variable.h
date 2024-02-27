@@ -40,7 +40,10 @@
 #include <accessor.h>
 #include <cairo/cairo.h>
 
-namespace ecolab {class Pango;}
+namespace ecolab {
+  class Pango;
+  class Plot;
+}
 
 namespace minsky
 {
@@ -90,8 +93,11 @@ namespace minsky
     mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
     mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedMantissa;
     mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedExponent;
-    mutable double cachedValue;
+    mutable double cachedValue, cachedTime;
 
+    /// miniature plot feature
+    classdesc::Exclude<std::shared_ptr<ecolab::Plot>> miniPlot;
+    
   protected:
     void addPorts();
     
@@ -111,7 +117,6 @@ namespace minsky
     /// reference to a controlling item - eg GodleyIcon, IntOp or a Group if an IOVar.
     classdesc::Exclude<std::weak_ptr<Item>> controller;
     bool visible() const override;
-    bool visibleWithinGroup() const override;
 
     const VariableBase* variableCast() const override {return this;}
     VariableBase* variableCast() override {return this;}
@@ -192,10 +197,6 @@ namespace minsky
     virtual VariableBase* clone() const override=0;
     bool isStock() const {return type()==stock || type()==integral;}
 
-    bool varTabDisplay=false;
-    void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
-    bool attachedToDefiningVar(std::set<const Item*>&) const override {return varTabDisplay;} // <-- does this definition make any sense??
-    using Item::attachedToDefiningVar;
     /// formula defining this variable
     std::string definition() const;
 
@@ -228,6 +229,10 @@ namespace minsky
     /// clean up popup window structures on window close
     void destroyFrame() override;
 
+    bool miniPlotEnabled() const {return bool(miniPlot);}
+    bool miniPlotEnabled(bool);
+    void resetMiniPlot();
+    
   };
 
   template <minsky::VariableType::Type T>

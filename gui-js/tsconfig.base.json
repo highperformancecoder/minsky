@@ -5,17 +5,16 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
-    "esModuleInterop": false,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2022",
     "module": "esnext",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2017", "dom"],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "esModuleInterop": true,
+    "useDefineForClassFields": false,
     "baseUrl": ".",
     "paths": {
       "@minsky/menu": ["libs/menu/src/index.ts"],
@@ -25,5 +24,11 @@
       "@minsky/ui-components": ["libs/ui-components/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
 }

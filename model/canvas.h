@@ -23,6 +23,7 @@
 #include "group.h"
 #include "godleyIcon.h"
 #include "operation.h"
+#include "plotOptions.h"
 #include "plotWidget.h"
 #include "selection.h"
 #include "switchIcon.h"
@@ -59,6 +60,10 @@ namespace minsky
 
     /// flag indicating that a redraw is requested, but not yet redrawn
     bool m_redrawRequested=false;
+    
+    /// options to apply to a new plot widget
+    PlotOptions<> defaultPlotOptions;
+    
   public:
     typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
     struct Model: public GroupPtr
@@ -104,6 +109,12 @@ namespace minsky
     Exclude<shared_ptr<Port>> fromPort; ///< from port when creating a new wire
     double termX,termY; ///< terminal of wire when extending
     float moveOffsX, moveOffsY;
+    bool rotatingItem=false; ///< set true when rotating an item
+    Exclude<Point> rotateOrigin; ///< starting mouse position when rotating
+    void rotateItem(float x, float y) {
+      rotateOrigin=Point(x,y);
+      rotatingItem=true;
+    }
     ClickType::Type clickType;
     /// for drawing error indicators on the canvas
     bool itemIndicator=false;
@@ -153,7 +164,7 @@ namespace minsky
     /// select all items in a given region
     void select(const LassoBox&);
 
-    int ravelsSelected();
+    int ravelsSelected() const; ///< number of ravels in selection
     
     /// sets itemFocus, and resets mouse offset for placement
     void setItemFocus(const ItemPtr& x) {
@@ -185,7 +196,10 @@ namespace minsky
       setItemFocus(model->addItem(new Item));
       itemFocus->detailedText=text;
     }
-    void addPlot() {setItemFocus(model->addItem(new PlotWidget));}
+    void addPlot() {
+      setItemFocus(model->addItem(new PlotWidget));
+      defaultPlotOptions.applyPlotOptions(*itemFocus->plotWidgetCast());
+    }
     void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
     void addGroup() {setItemFocus(model->addItem(new Group));}
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
@@ -201,14 +215,6 @@ namespace minsky
     void lockRavelsInSelection();
     void unlockRavelsInSelection();
     
-    /// hide or reveal the defining variables and attached items within a selection on the canvas
-    Items itemVector;
-    void pushDefiningVarsToTab();
-    void showDefiningVarsOnCanvas();    
-    
-    /// push all plots on the canvas to the plot tab
-    void showPlotsOnTab();    
-
     /// delete item referenced by item
     void deleteItem();
     /// delete wire referenced by wire
@@ -221,7 +227,7 @@ namespace minsky
     /// select all variables referring to same variableValue as item
     void selectAllVariables();
     /// rename all instances of variable as item to \a newName
-    void renameAllInstances(const std::string newName);
+    void renameAllInstances(const std::string& newName);
     /// rename variable as item to \a newName
     void renameItem(const std::string& newName);
 
@@ -231,6 +237,9 @@ namespace minsky
     /// create a copy of item, and leave it focused
     void copyItem();
 
+    /// zooms canvas to fit available window
+    void zoomToFit();
+    
     /// reinitialises canvas to the group located in item
     void openGroupInCanvas(const ItemPtr& item);
 
@@ -276,6 +285,15 @@ namespace minsky
     /// request a redraw on the screen
     void requestRedraw() {m_redrawRequested=true; if (surface().get()) surface()->requestRedraw();}
     bool hasScrollBars() const override {return true;}
+
+    void setDefaultPlotOptions() {
+      if (auto p=item->plotWidgetCast())
+        defaultPlotOptions=*p;
+    }
+
+    void applyDefaultPlotOptions();
+
+    void setItemFromItemFocus();
   };
 }
 

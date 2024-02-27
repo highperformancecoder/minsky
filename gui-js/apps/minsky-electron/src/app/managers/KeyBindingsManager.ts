@@ -3,7 +3,7 @@ import {
   ZOOM_OUT_FACTOR,
   minsky, RenderNativeWindow,
 } from '@minsky/shared';
-import * as utf8 from 'utf8';
+import utf8 from 'utf8';
 import { CommandsManager } from './CommandsManager';
 import { WindowManager } from './WindowManager';
 
@@ -257,6 +257,8 @@ export class KeyBindingsManager {
 
     case 'F1':
       CommandsManager.help(payload.mouseX, payload.mouseY);
+      executed = false;
+      break;
     default:
       executed = false;
       break;
@@ -264,7 +266,7 @@ export class KeyBindingsManager {
 
     if (payload.ctrl) {
       // avoiding conflict with shortCuts (electron accelerators)
-      return;
+      return false;
     }
 
     return executed;
@@ -307,7 +309,7 @@ export class KeyBindingsManager {
   private static async deleteKey(payload: MinskyProcessPayload) {
     const { mouseX, mouseY } = payload;
 
-    if (!minsky.canvas.selection.empty()) {
+    if (!await minsky.canvas.selection.empty()) {
       minsky.cut();
       return;
     }

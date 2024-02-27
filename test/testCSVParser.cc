@@ -98,10 +98,8 @@ SUITE(CSVParser)
       CHECK_EQUAL(1,nRowAxes());
       CHECK_EQUAL(2,nColAxes());
       CHECK_EQUAL(0,headerRow);
-      CHECK_EQUAL(Dimension::string,dimensions[0].type);
-      CHECK_EQUAL(Dimension::time,dimensions[1].type);
-      CHECK_EQUAL("%Y-Q%Q",dimensions[1].units);
       CHECK((set<unsigned>{0,1}==dimensionCols));
+      CHECK((set<unsigned>{2}==dataCols));
     }
     
   TEST_FIXTURE(DataSpec,reportFromCSV)
@@ -182,7 +180,7 @@ SUITE(CSVParser)
       }
 
       spec.quote='\'';
-      spec.dataRowOffset=0;
+      spec.setDataArea(0,4);
       loadFile();
       classifyColumns();
       CHECK_EQUAL(4,spec.numCols);
@@ -204,9 +202,9 @@ SUITE(CSVParser)
       string input="A comment\n"
         ";;foobar\n" // horizontal dim name
         "foo;bar;A;B;C\n"
-        "A;A;1.2;1.3;1.4\n"
-        "A;B;1;2;3\n"
-        "B;A;3;2;1\n";
+        "A;A;1.2;1.3;-1.4\n"
+        "A;B;1;2;£3\n"
+        "B;A;£-3.1;.2;-£5\n";
 
       istringstream is(input);
       
@@ -236,22 +234,22 @@ SUITE(CSVParser)
       CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
       CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
       CHECK_EQUAL(12, v.tensorInit.size());
-      CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
+      CHECK_ARRAY_CLOSE(vector<double>({1.2,-3.1,1,-1,1.3,.2,2,-1,-1.4,-5,3,-1}),
                         v.tensorInit, 12, 1e-4);
     }
   
    TEST_FIXTURE(DataSpec,embeddedNewline)
     {
       string input="A comment\n"
-        ";;foobar\n" // horizontal dim name
-        "foo;bar;A;B;C\n"
-        "A;'A\nB';1.2;1.3;1.4\n"
-        "A;B;1;'2\n.0';3\n"
-        "B;AB;3;2;1\n";
+        ",,foobar\n" // horizontal dim name
+        "foo,bar,A,B,C\n"
+        "A,'A\nB',1.2,1.3,'1,000'\n"
+        "A,B,1,'2\n.0',3\n"
+        "B,AB,3,2,1\n";
 
       istringstream is(input);
       
-      separator=';';
+      separator=',';
       quote='\'';
       setDataArea(3,2);
       numCols=5;
@@ -278,7 +276,7 @@ SUITE(CSVParser)
       CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
       CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
       CHECK_EQUAL(12, v.tensorInit.size());
-      CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
+      CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1000,1,3,-1}),
                         v.tensorInit, 12, 1e-4);
     }
  
@@ -563,4 +561,21 @@ SUITE(CSVParser)
       CHECK_EQUAL("'fo&'o','b&'ar'",testEscapeDoubledQuotes("'fo''o','b''ar'"));
     }
   
+  TEST(isNumerical)
+    {
+      CHECK(isNumerical(""));
+      CHECK(isNumerical("1.2"));
+      CHECK(isNumerical("'1.2'"));
+      CHECK(isNumerical("-1.2"));
+      CHECK(isNumerical("1e2"));
+      CHECK(isNumerical("NaN"));
+      CHECK(isNumerical("nan"));
+      CHECK(isNumerical("inf"));
+      CHECK(isNumerical("inf"));
+      // leading nonumerical strings are considered non-numerical, but
+      // will be parsed as numbers anyway if in data column
+      CHECK(!isNumerical("$100"));
+      CHECK(!isNumerical("£100"));
+      CHECK(!isNumerical("hello"));
+    }
 }

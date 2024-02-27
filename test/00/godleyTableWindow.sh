@@ -26,6 +26,10 @@ pass()
     exit 0
 }
 
+# test disabled, as it is no longer relevant in Minsky 3.x
+# TODO: to be refactored for 3.x, or removed entirely
+pass
+
 trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source $here/test/assert.tcl

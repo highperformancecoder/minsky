@@ -11,24 +11,36 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import { events, MainRenderingTabs, minsky } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
+import { AvailableOperationsComponent } from './available-operations/available-operations.component';
+import { VariableComponent } from './variable/variable.component';
+import { NgIf, NgFor, KeyValuePipe } from '@angular/common';
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-wiring',
-  templateUrl: './wiring.component.html',
-  styleUrls: ['./wiring.component.scss'],
+    selector: 'minsky-wiring',
+    templateUrl: './wiring.component.html',
+    styleUrls: ['./wiring.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        VariableComponent,
+        NgFor,
+        AvailableOperationsComponent,
+        KeyValuePipe,
+    ],
 })
 export class WiringComponent implements OnInit, OnDestroy {
   mouseMove$: Observable<MouseEvent>;
   canvasContainerHeight: string;
   availableOperationsMapping: any; //Record<string, string[]>;
   wiringTab = MainRenderingTabs.canvas;
+
+  destroy$ = new Subject<{}>();
+
   constructor(
     public cmService: CommunicationService,
-    private electronService: ElectronService,
+    public electronService: ElectronService,
     private windowUtilityService: WindowUtilityService,
     private zone: NgZone,
     public changeDetectorRef: ChangeDetectorRef
@@ -93,6 +105,9 @@ export class WiringComponent implements OnInit, OnDestroy {
           minskyCanvasContainer.scrollTop=scrollableArea.width / 2;
           minskyCanvasContainer.scrollLeft=scrollableArea.height / 2;
         });
+        minskyCanvasContainer.addEventListener('RESET_SCROLL', async () => {
+          this.cmService.resetScroll();
+        });
         minskyCanvasContainer.onwheel = this.cmService.onMouseWheelZoom;
 
         document.body.onkeydown=async (event) => {
@@ -133,7 +148,7 @@ export class WiringComponent implements OnInit, OnDestroy {
           'mousemove'
         ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
-        this.mouseMove$.subscribe(async (event: MouseEvent) => {
+        this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
             await this.cmService.mouseEvents('CANVAS_EVENT', event);
         });
 
@@ -166,7 +181,17 @@ export class WiringComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+
+  getKey(operation) {
+    return operation.key;
+  }
+
+  getValue(operation) {
+    return operation.value;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

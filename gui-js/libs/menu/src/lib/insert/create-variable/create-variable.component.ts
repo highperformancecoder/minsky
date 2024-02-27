@@ -1,10 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs'; 
 import { ActivatedRoute } from '@angular/router';
 import {
   CommunicationService,
@@ -12,13 +8,20 @@ import {
   WindowUtilityService,
 } from '@minsky/core';
 import { VariableBase } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-create-variable',
-  templateUrl: './create-variable.component.html',
-  styleUrls: ['./create-variable.component.scss'],
+    selector: 'minsky-create-variable',
+    templateUrl: './create-variable.component.html',
+    styleUrls: ['./create-variable.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        MatButtonModule,
+    ],
 })
 export class CreateVariableComponent implements OnInit, OnDestroy {
   variableType: string;
@@ -26,6 +29,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   _value: string;
   _local: boolean;
   isEditMode = false;
+
+  destroy$ = new Subject<{}>();
 
   form: FormGroup;
 
@@ -85,7 +90,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private windowUtilityService: WindowUtilityService
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.variableType = params.type;
       this._name = params?.name || '';
       this._local = params?.local==='true' || false;
@@ -103,9 +108,9 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
       shortDescription: new FormControl(''),
       detailedDescription: new FormControl(''),
       enableSlider: new FormControl(true),
-      sliderBoundsMax: new FormControl(null),
-      sliderBoundsMin: new FormControl(null),
-      sliderStepSize: new FormControl(null),
+      sliderBoundsMax: new FormControl(1),
+      sliderBoundsMin: new FormControl(-1),
+      sliderStepSize: new FormControl(0.1),
       sliderStepRel: new FormControl(false),
     });
 
@@ -113,7 +118,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
       ? this.variableName.disable()
       : this.variableName.enable();
 
-    this.type.valueChanges.subscribe((type) => {
+    this.type.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((type) => {
       type === 'constant'
         ? this.variableName.disable()
         : this.variableName.enable();
@@ -131,6 +136,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   async updateFormValues() {
     let item=new VariableBase(this.electronService.minsky.canvas.item);
     const local = await item.local();
+    // check there is an item of the right type
+    if (typeof local==='object') this.closeWindow();
     const init = await item.init();
     const units = await item.unitsStr();
     const rotation = await item.rotation();
@@ -141,7 +148,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     const sliderMin = Number((await item.sliderMin()).toPrecision(3));
     const sliderStep = Number((await item.sliderStep()).toPrecision(3));
     const sliderStepRel = await item.sliderStepRel();
-
+    this.electronService.minsky.nameCurrentItem('editVariable');
+    
     this.local.setValue(local);
     this.value.setValue(init);
     this.units.setValue(units);
@@ -169,9 +177,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     await this.createVariable();
   }
 
-  async saveVariableParams(item: VariableBase) {
-    item.name(this._name);
-    item.retype(this.type.value);
+  saveVariableParams(item: VariableBase) {
     item.setUnits(this.units.value || '');
     item.init(this.value.value);
     item.initSliderBounds(); // ensure slider bounds starts with a reasonable value
@@ -187,9 +193,16 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   }
 
   
-  async editVariable() {this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.item));}
+  editVariable() {
+    this.electronService.minsky.itemFromNamedItem('editVariable');
+    let item=new VariableBase(this.electronService.minsky.canvas.item);
+    this.saveVariableParams(item);
+    item.retype(this.type.value);
+    this.electronService.minsky.canvas.renameItem(this._name);
+    
+  }
 
-  async createVariable() {
+  createVariable() {
     this.electronService.minsky.canvas.addVariable(this._name,this.type.value);
     this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.itemFocus))
   }
@@ -200,6 +213,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

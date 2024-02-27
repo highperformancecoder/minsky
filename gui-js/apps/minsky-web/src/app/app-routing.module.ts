@@ -13,6 +13,7 @@ import {
   FindAllInstancesComponent,
   GodleyWidgetViewComponent,
   ImportCsvComponent,
+  NewPubTabComponent,
   PageNotFoundComponent,
   SummaryComponent,
   PlotWidgetOptionsComponent,
@@ -82,6 +83,10 @@ const routes: Routes = [
     component: EditDescriptionComponent,
   },
   {
+    path: 'headless/new-pub-tab',
+    component: NewPubTabComponent,
+  },
+  {
     path: 'headless/edit-handle-description',
     component: EditHandleDescriptionComponent,
   },
@@ -138,8 +143,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: true,
-      relativeLinkResolution: 'legacy',
+      useHash: true
     }),
   ],
   exports: [RouterModule],

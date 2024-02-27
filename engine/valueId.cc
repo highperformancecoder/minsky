@@ -37,16 +37,21 @@ namespace minsky
     //      regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
     if (name.substr(name.length()-2)==":_") return false;
     
-    static char constantPrefix[]="constant:";
-    static unsigned prefixLen=strlen(constantPrefix);
+    static string constantPrefix="constant:", tempPrefix="temp:";
     auto nameCStr=name.c_str();
-    char* endp=nullptr;
-    strtoull(nameCStr,&endp,10);
-    if (*endp==':' || (name.length()>prefixLen && strncmp(constantPrefix,nameCStr,prefixLen)==0))
+    const char* endp=nullptr;
+    strtoull(nameCStr,&const_cast<char*&>(endp),10);
+    if (*endp==':' || name.starts_with(constantPrefix)||name.starts_with(tempPrefix))
       {
+        if (*endp!=':')
+          {
+            if (name[constantPrefix.length()-1]==':')
+              endp=nameCStr+constantPrefix.length()-1;
+            else
+              endp=nameCStr+tempPrefix.length()-1;
+          }
         // check unqualified name portion has no verboten characters
-        const char* uqName=*endp==':'? endp+1: nameCStr+prefixLen;
-        for (auto c=uqName; *c!='\0'; ++c)
+        for (auto c=endp+1; *c!='\0'; ++c)
           if (strchr(":\\ \f\n\r\t\v",*c))
             return false;
         return true;
@@ -59,7 +64,7 @@ namespace minsky
     return utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
   }
 
-  string valueId(size_t scope, const string& name)
+  string valueIdCanonical(size_t scope, const string& name)
   {
     auto tmp=":"+name;
     if (scope==0) return tmp;
@@ -68,7 +73,7 @@ namespace minsky
 
   string valueId(const string& name)
   {
-    return valueId(scope(name), canonicalName(name));
+    return valueIdCanonical(scope(name), canonicalName(name));
   }
 
   string valueId(const GroupPtr& ref, const string& name) 
@@ -76,10 +81,11 @@ namespace minsky
 
   size_t scope(const string& name) 
   {
+    if (name.starts_with("temp:")) return 0; // temporaries are "global"
     auto nm=utf_to_utf<char>(name);
     auto nameCStr=nm.c_str();
     char* endp=nullptr;
-    size_t r=strtoull(nameCStr,&endp,10);
+    const size_t r=strtoull(nameCStr,&endp,10);
     if (endp && *endp==':')
       return r;
     throw error("scope requested for local variable");
@@ -121,13 +127,13 @@ namespace minsky
   string valueIdFromScope(const GroupPtr& scope, const std::string& name)
   {
     if (name.empty() || !scope || !scope->group.lock())
-      return valueId(0,utf_to_utf<char>(name)); // retain previous global var id
-    return valueId(size_t(scope.get()), utf_to_utf<char>(name));
+      return valueIdCanonical(0,name); // retain previous global var id
+    return valueIdCanonical(size_t(scope.get()), name);
 }
   
   std::string uqName(const std::string& name)
   {
-    string::size_type p=name.rfind(':');
+    const string::size_type p=name.rfind(':');
     if (p==string::npos)
       return utf_to_utf<char>(name);
     return utf_to_utf<char>(name).substr(p+1);

@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Meld</TITLE>
-<META NAME="description" CONTENT="Meld">
+<TITLE>Merge</TITLE>
+<META NAME="description" CONTENT="Merge">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,93 +16,49 @@
 
 <LINK REL="next" HREF="node105.html">
 <LINK REL="previous" HREF="node103.html">
-<LINK REL="up" HREF="node88.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node105.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1424"
+<A NAME="tex2html1449"
   HREF="node105.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1422"
-  HREF="node88.html">
+<A NAME="tex2html1447"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1416"
+<A NAME="tex2html1441"
   HREF="node103.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1425"
-  HREF="node105.html">Merge</A>
-<B> Up:</B> <A NAME="tex2html1423"
-  HREF="node88.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1417"
-  HREF="node103.html">outer product</A>
+<B> Next:</B> <A NAME="tex2html1450"
+  HREF="node105.html">Slice</A>
+<B> Up:</B> <A NAME="tex2html1448"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1442"
+  HREF="node103.html">Meld</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004216000000000000000"></A><A NAME="Operation:meld"></A>
+<H2><A NAME="SECTION004217000000000000000"></A><A NAME="Operation:merge"></A>
 <BR>
-Meld
+Merge
 </H2>
 
 <P>
-The meld operation merges the hypercubes of its input tensors. The
-value at a given hypercube value is given by the value of the first
-tensor that has a value defined at that hypercube point. So ordering of
-input tensors does matter where the data is inconsistent between input
-tensors.
-
-<P>
-For example, consider the following inputs and x-vectors:
-
-<P>
-
-<OL>
-<LI><A NAME="ex1"></A> <!-- MATH
- $\{1.0, 2.0, 3.0\}$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="95" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img209.png"
- ALT="$\{1.0, 2.0, 3.0\}$"></SPAN> with x-vector <SPAN CLASS="MATH"><IMG
- WIDTH="58" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img210.png"
- ALT="$\{1,2,3\}$"></SPAN>, and
-</LI>
-<LI><A NAME="ex2"></A> <!-- MATH
- $\{0.0,1.5,4.0\}$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="95" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img211.png"
- ALT="$\{0.0,1.5,4.0\}$"></SPAN> with x-vector <SPAN CLASS="MATH"><IMG
- WIDTH="58" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img212.png"
- ALT="$\{0,2,4\}$"></SPAN>
-</LI>
-</OL>
-then the resultant output has x-vector <SPAN CLASS="MATH"><IMG
- WIDTH="88" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img213.png"
- ALT="$\{0,1,2,3,4\}$"></SPAN> and the values
-are <!-- MATH
- $\{0.0,1.0,2.0,3.0,4.0\}$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="150" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img214.png"
- ALT="$\{0.0,1.0,2.0,3.0,4.0\}$"></SPAN> if <A HREF="#ex1">1</A> is connected to port 1 and
-<A HREF="#ex2">2</A> connected to port 2. If they were connected the other way
-around, the the values would be <!-- MATH
- $\{0.0,1.0,1.5,3.0,4.0\}$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="150" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img215.png"
- ALT="$\{0.0,1.0,1.5,3.0,4.0\}$"></SPAN>.
+The merge operation takes <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img188.png"
+ ALT="$n$"></SPAN> tensors, finds the union hypercube (ie
+the hypercube that contains all the input tensor hypercubes) and
+spreads the tensors as necessary to make them conformant. Finally,
+the resultant tensor has an additional string dimensioned axis, each
+element of which is one of the input tensors. This dimension should be
+named using the operation edit dialog. It is an error for a hypercube
+to contain more than one axis with the same name.
 
 <P>
 <BR><HR>

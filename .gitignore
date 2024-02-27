@@ -4,6 +4,7 @@
 *.exe
 *.xcd
 *.rcd
+*.tcd
 *~
 *.aux
 *.dvi
@@ -27,4 +28,6 @@ node_modules/*
 gui-js/node_modules/*
 gui-js/documentation/*
 gui-js/dist/*
+gui-js/.nx/*
+gui-js/.angular/*
 doc/minsky/*

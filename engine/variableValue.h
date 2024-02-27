@@ -36,27 +36,54 @@ using namespace boost::locale::conv;
 namespace minsky
 {
   class VariableValue;
-  struct VariableValues;
+  class VariableValues;
   class Group;
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
 
-  class VariableValue: public VariableType, public civita::ITensorVal
+  struct VariableValueData: public civita::ITensorVal
+  {
+    using ITensorVal::operator=;
+    VariableValueData& operator=(const VariableValueData&)=default;
+    
+    /// when init is a tensor of values, this overrides the init string
+    TensorVal tensorInit;
+    /// when the RHS is attached to a tensor expression, this is a reference to it
+    TensorPtr rhs;
+    
+    /// dimension units of this value
+    Units units;
+    bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
+    void setUnits(const std::string& x) {units=Units(x);}
+
+    bool sliderVisible=false; // determined at reset time
+    bool godleyOverridden=false;
+    std::string name; // name of this variable
+    classdesc::Exclude<std::weak_ptr<Group>> m_scope;
+
+    /// for importing CSV files
+    CSVDialog csvDialog;
+    
+  };
+  
+  class VariableValue: public VariableType, public VariableValueData
   {
     CLASSDESC_ACCESS(VariableValue);
   private:
     Type m_type;
-    int m_idx; /// index into value vector
+    int m_idx=-1; /// index into value vector
     double& valRef(); 
     const double& valRef() const;
-    std::vector<unsigned> m_dims;
     
     friend class VariableManager;
     friend struct SchemaHelper;
 
     // values are always live
     ITensor::Timestamp timestamp() const override {return Timestamp::clock::now();}
-    
+
+  protected: // protected to allow creation of zero/one constants.
+    /// the initial value of this variable
+    std::string m_init;
   public:
     /// variable has an input port
     bool lhs() const {
@@ -66,28 +93,13 @@ namespace minsky
       return type()==tempFlow || type()==undefined;}
     /// returns true if variable's data is allocated on the flowVariables vector
     bool isFlowVar() const {
-      return m_type!=stock && m_type!=integral;
+      return m_type!=stock && m_type!=integral && m_type!=undefined;
     }
     bool isZero() const {
-      return m_type==constant && (init.empty() || init=="0");
+      return m_type==constant && (init().empty() || init()=="0");
     }
 
     VariableType::Type type() const {return m_type;}
-
-    /// the initial value of this variable
-    std::string init;
-    /// when init is a tensor of values, this overrides the init string
-    TensorVal tensorInit;
-
-    /// dimension units of this value
-    Units units;
-    bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
-    void setUnits(const std::string& x) {units=Units(x);}
-
-    bool sliderVisible=false; // determined at reset time
-    bool godleyOverridden;
-    std::string name; // name of this variable
-    classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
@@ -112,10 +124,9 @@ namespace minsky
     double& operator[](std::size_t i) override;
 
     const Index& index(Index&& i) override {
-      assert(idx()==-1||idxInRange());
       std::size_t prevNumElems = size();
       m_index=i;
-      if (idx()==-1 || (prevNumElems<size()))    
+      if (idx()==-1 || !idxInRange() || (prevNumElems<size()))    
         allocValue();
       assert(idxInRange());
       return m_index;
@@ -133,20 +144,33 @@ namespace minsky
     }
 
     bool idxInRange() const;
-    
+
+    const Hypercube& hypercube() const override {
+      if (rhs) return rhs->hypercube();
+      if (tensorInit.rank()>0) return tensorInit.hypercube();
+      return m_hypercube;
+    }
+
     const Hypercube& hypercube(const Hypercube& hc) override
     {hypercube_(hc); return m_hypercube;}
     const Hypercube& hypercube(Hypercube&& hc) override
     {hypercube_(hc); return m_hypercube;}
     using ITensorVal::hypercube;
                                                                            
-    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
-      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
-
-    VariableValue(VariableType::Type type, const VariableValue& vv):  VariableValue(vv) {
-      m_type=type;
-      m_idx=-1;
+    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const GroupPtr& group=GroupPtr()): 
+      m_type(type)
+    {
+      this->name=utf_to_utf<char>(name);
+      m_scope=scope(group,name);
     }
+
+    VariableValue(VariableType::Type type, const VariableValue& vv):  VariableValueData(vv) {
+      m_type=type;
+      init(vv.init());
+    }
+
+    VariableValue(const VariableValue&)=delete;
+    void operator=(const VariableValue&)=delete;
     
     using ITensorVal::operator=;
     VariableValue& operator=(TensorVal const&);
@@ -155,14 +179,14 @@ namespace minsky
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
 
-    std::string valueId() const {return valueIdFromScope(m_scope.lock(),name);}
+    std::string valueId() const {return valueIdFromScope(m_scope.lock(),canonicalName(name));}
 
-    /// for importing CSV files
-    CSVDialog csvDialog;
-    
     void exportAsCSV(const std::string& filename, const std::string& comment="") const;
 
     Summary summary() const;
+
+    const std::string& init() const {return m_init;}
+    const std::string& init(const std::string& x);
   };
 
   struct ValueVector

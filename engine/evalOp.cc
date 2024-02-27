@@ -104,8 +104,8 @@ namespace minsky
         {
           assert((flow1 && in1[0]<ValueVector::flowVars.size()) || 
                  (!flow1 && in1[0]<ValueVector::stockVars.size()));
-          double x1=flow1? fv[in1[0]]: sv[in1[0]];
-          double dx1=flow1? df[in1[0]]: ds[in1[0]];
+          const double x1=flow1? fv[in1[0]]: sv[in1[0]];
+          const double dx1=flow1? df[in1[0]]: ds[in1[0]];
           df[out] = dx1!=0? dx1 * d1(x1,0): 0;
           break;
         }
@@ -115,10 +115,10 @@ namespace minsky
                  (!flow1 && in1[0]<ValueVector::stockVars.size()));
           assert((flow2 && in2[0][0].idx<ValueVector::flowVars.size()) || 
                  (!flow2 && in2[0][0].idx<ValueVector::stockVars.size()));
-          double x1=flow1? fv[in1[0]]: sv[in1[0]];
-          double x2=flow2? fv[in2[0][0].idx]: sv[in2[0][0].idx];
-          double dx1=flow1? df[in1[0]]: ds[in1[0]];
-          double dx2=flow2? df[in2[0][0].idx]: ds[in2[0][0].idx];
+          const double x1=flow1? fv[in1[0]]: sv[in1[0]];
+          const double x2=flow2? fv[in2[0][0].idx]: sv[in2[0][0].idx];
+          const double dx1=flow1? df[in1[0]]: ds[in1[0]];
+          const double dx2=flow2? df[in2[0][0].idx]: ds[in2[0][0].idx];
           df[out] = (dx1!=0? dx1 * d1(x1,x2): 0) +
             (dx2!=0? dx2 * d2(x1,x2): 0);
           break;
@@ -633,6 +633,7 @@ namespace minsky
       case reduction:
       case scan:
       case tensor:
+      case statistics:
         return nullptr; //TODO should we be here?
       }
     assert(false); //shouldn't be here
@@ -640,9 +641,12 @@ namespace minsky
   }
 
   EvalOpPtr::EvalOpPtr(OperationType::Type op, const ItemPtr& state,
-                       VariableValue& to, const VariableValue& from1, const VariableValue& from2)
+                       const std::shared_ptr<VariableValue>& to,
+                       const VariableValue& from1, const VariableValue& from2)
   {
+    assert(to);
     auto t=ScalarEvalOp::create(op,state);
+    t->result=to;
     reset(t);
     assert(t->numArgs()==0 || (from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0)));
 
@@ -654,8 +658,8 @@ namespace minsky
     if (t->numArgs()>1)
       t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
 
-    if (to.idx()==-1) to.allocValue();
-    t->out=to.idx();
+    if (to->idx()==-1) to->allocValue();
+    t->out=to->idx();
     t->flow1=from1.isFlowVar();
     t->flow2=from2.isFlowVar();
 

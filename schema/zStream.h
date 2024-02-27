@@ -21,7 +21,6 @@
 #ifndef ZSTREAM_H
 #define ZSTREAM_H
 #include <zlib.h>
-using namespace std;
 
 namespace minsky
 {
@@ -38,7 +37,7 @@ namespace minsky
       zalloc=Z_NULL;
     }
     void throwError() const {
-      throw runtime_error(string("compression failure: ")+(msg? msg:""));
+      throw std::runtime_error(std::string("compression failure: ")+(msg? msg:""));
     }
   };
     
@@ -88,7 +87,7 @@ namespace minsky
       if (err!=Z_STREAM_END) throwError();
     }
     void throwError() {
-      throw runtime_error(string("compression failure: ")+(msg? msg:""));
+      throw std::runtime_error(std::string("compression failure: ")+(msg? msg:""));
     }
   };
   
@@ -123,7 +122,7 @@ namespace minsky
       if (err!=Z_STREAM_END) throwError();
     }
     void throwError() {
-      throw runtime_error(string("compression failure: ")+(msg? msg:""));
+      throw std::runtime_error(std::string("compression failure: ")+(msg? msg:""));
     }
   };  
 }

@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Plot widget</TITLE>
-<META NAME="description" CONTENT="Plot widget">
+<TITLE>Tensor valued initial conditions</TITLE>
+<META NAME="description" CONTENT="Tensor valued initial conditions">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,137 +16,102 @@
 
 <LINK REL="next" HREF="node120.html">
 <LINK REL="previous" HREF="node118.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node116.html">
 <LINK REL="next" HREF="node120.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1577"
+<A NAME="tex2html1604"
   HREF="node120.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1575"
-  HREF="node47.html">
+<A NAME="tex2html1602"
+  HREF="node116.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1569"
+<A NAME="tex2html1596"
   HREF="node118.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1578"
-  HREF="node120.html">Sheet Widget</A>
-<B> Up:</B> <A NAME="tex2html1576"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1570"
-  HREF="node118.html">Groups</A>
+<B> Next:</B> <A NAME="tex2html1605"
+  HREF="node120.html">Sliders</A>
+<B> Up:</B> <A NAME="tex2html1603"
+  HREF="node116.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html1597"
+  HREF="node118.html">Initial conditions</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00480000000000000000"></A>
-<A NAME="PlotWidget"></A>
+<H2><A NAME="SECTION00443000000000000000"></A><A NAME="tensor-init"></A><A NAME="2617"></A>
 <BR>
-Plot widget
-</H1>
+Tensor valued initial
+  conditions
+</H2>
 
 <P>
-A plot widget embeds a dynamic plot into the canvas. Around the
-outside of the plot are a number of input ports that can be wired.
+There is also a simple functional language, which allows for the
+generation of tensor-valued operations. These functions take the form
+<EM>func</EM><!-- MATH
+ $(n_1,n_2,\ldots,n_r)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="109" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img235.png"
+ ALT="$(n_1,n_2,\ldots,n_r)$"></SPAN> where <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img236.png"
+ ALT="$r$"></SPAN> is the desired rank, and
+<SPAN CLASS="MATH"><IMG
+ WIDTH="49" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img237.png"
+ ALT="$n_1,n_2,$"></SPAN> etc are the dimensions of the tensor. Available functions
+include:
 
 <P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="241" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
- SRC="img246.png"
- ALT="\includegraphics{images/plotWidget.eps}">
-
-</DIV>
-
-<P>
-<DL>
-<DT><STRONG>left hand edge</STRONG></DT>
-<DD>Up to 4 quantities can be plotted on the graph
-  simultaneously, with line colour given by the colour of the input
-  port
-</DD>
-<DT><STRONG>right hand edge</STRONG></DT>
-<DD>Another 4 quantities can be added to the
-  plot. These are shown on a different scale to the left hand inputs,
-  allowing very different magnitudes to be compared on the one plot.
-</DD>
-<DT><STRONG>bottom edge</STRONG></DT>
-<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img58.png"
- ALT="$x$"></SPAN>-coordinates of the
-  curves. The colours match up with the colour of the pen being
-  controlled.
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="529" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
- SRC="img247.png"
- ALT="\includegraphics{images/plotLissajous.eps}">
-
-</DIV>
-
-<P>
-If only one bottom port is connected, then that controls all pens
-simultaneously, and if no ports are connected, then the simulation
-time is used to provide the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img58.png"
- ALT="$x$"></SPAN> coordinates
-</DD>
-<DT><STRONG>corners</STRONG></DT>
-<DD>Corner ports control the scale. You can wire up
-  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img58.png"
- ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img59.png"
- ALT="$y$"></SPAN> and right
-  hand <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img59.png"
- ALT="$y$"></SPAN> axes. If left unwired, the scales are determined
-  automatically from the data. This can be used, for example, to
-  implement a sliding window graph
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="480" HEIGHT="424" ALIGN="BOTTOM" BORDER="0"
- SRC="img248.png"
- ALT="\includegraphics{images/plotSlidingWindow.eps}">
-
-</DIV>
-</DD>
-</DL>
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="RIGHT">name</TD>
+<TD ALIGN="LEFT">description</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>one</code></TD>
+<TD ALIGN="LEFT">the tensor is filled with `1'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>zero</code></TD>
+<TD ALIGN="LEFT">the tensor is filled with `0'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>iota</code></TD>
+<TD ALIGN="LEFT">the arithmetic sequence <!-- MATH
+ $(0,1,...\prod_in_i)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="100" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img238.png"
+ ALT="$(0,1,...\prod_in_i)$"></SPAN></TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>eye</code></TD>
+<TD ALIGN="LEFT">diagonal elements filled with `1', offdiagonal `0'</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>rand</code></TD>
+<TD ALIGN="LEFT">tensor filled with random numbers in the range <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img239.png"
+ ALT="$[0,1)$"></SPAN></TD>
+</TR>
+</TABLE>
+<A NAME="2622"></A><A NAME="2623"></A><A NAME="2624"></A><A NAME="2625"></A><A NAME="2626"></A>
 
 <P>
 
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1577"
-  HREF="node120.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1575"
-  HREF="node47.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1569"
-  HREF="node118.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1578"
-  HREF="node120.html">Sheet Widget</A>
-<B> Up:</B> <A NAME="tex2html1576"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1570"
-  HREF="node118.html">Groups</A></DIV>
-<!--End of Navigation Panel-->
+<UL>
+<LI><code>eye</code> is equivalent to <code>one</code> for vectors.
+</LI>
+<LI><code>rand</code> generates different random numbers each time the
+  simulation is reset, and uses the clib <code>rand()</code> function.
+</LI>
+</UL>
+
+<P>
+<BR><HR>
 
 </BODY>
 </HTML>

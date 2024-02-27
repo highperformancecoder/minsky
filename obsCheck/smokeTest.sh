@@ -9,10 +9,10 @@ fi
 rm *.log
 for i in Dockerfile-*[^~]; do
     case $i in
-        Dockerfile-debian) versions="10 11";;
-        Dockerfile-ubuntu) versions="18.04 20.04 22.04 23.04";;
-        Dockerfile-fedora) versions="36 37 38";;
-        Dockerfile-leap) versions="15.4 15.5";;
+        Dockerfile-debian) versions="10 11 12";;
+        Dockerfile-ubuntu) versions="20.04 22.04 23.04 23.10";;
+        Dockerfile-fedora) versions="37 38 39";;
+        Dockerfile-leap) versions="15.4 15.5 15.6";;
         *) versions=default;;
     esac
     for version in $versions; do

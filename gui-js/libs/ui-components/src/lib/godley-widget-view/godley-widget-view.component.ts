@@ -20,18 +20,27 @@ import {
   GodleyIcon,
   GodleyTableWindow
 } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import { ScaleHandler } from '../scale-handler/scale-handler.class';
+import { Subject, takeUntil } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { LatexDirective } from '../directives/latex.directive';
+import { NgIf, NgFor } from '@angular/common';
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-godley-widget-view',
-  templateUrl: './godley-widget-view.component.html',
-  styleUrls: ['./godley-widget-view.component.scss'],
+    selector: 'minsky-godley-widget-view',
+    templateUrl: './godley-widget-view.component.html',
+    styleUrls: ['./godley-widget-view.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        NgFor,
+        LatexDirective,
+        FormsModule,
+    ],
 })
 export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild('godleyCanvasElemWrapper') godleyCanvasElemWrapper: ElementRef;
@@ -41,6 +50,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   windowId: number;
   godleyIcon: GodleyIcon;
   namedItemSubCommand: GodleyTableWindow;
+
+  destroy$ = new Subject<{}>();
 
   leftOffset = 0;
   topOffset: number;
@@ -84,7 +95,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
     });
@@ -170,7 +181,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
       'mousemove'
     ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
-    this.mouseMove$.subscribe(async (event: MouseEvent) => {
+    this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
       this.namedItemSubCommand.mouseMove(event.x,event.y+this.yoffs);
     });
 
@@ -451,6 +462,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     document.body.style.setProperty('zoom', `${Math.round(this.zoomFactor*100)}%`);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

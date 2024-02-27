@@ -29,31 +29,23 @@ using namespace std;
 #include <readline/history.h>
 #endif
 
+using namespace minsky;
+RESTMinsky rminsky;
+
 namespace minsky
 {
-  namespace
-  {
-    Minsky* l_minsky=NULL;
-  }
-
   Minsky& minsky()
   {
-    static Minsky s_minsky;
-    if (l_minsky)
-      return *l_minsky;
-    return s_minsky;
+   return rminsky;
   }
 
-  LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
-  LocalMinsky::~LocalMinsky() {l_minsky=NULL;}
+  LocalMinsky::LocalMinsky(Minsky& minsky) {}
+  LocalMinsky::~LocalMinsky() {}
 
   // GUI callback needed only to solve linkage problems
   void doOneEvent(bool idleTasksOnly) {}
 }
 
-using namespace minsky;
-
-RESTMinsky rminsky;
 
 string toREST(string x)
 {
@@ -105,10 +97,10 @@ void processBuffer(const string& buffer)
 
 int main(int argc, const char* argv[])
 {
-  LocalMinsky lm(rminsky);
+  const LocalMinsky lm(rminsky);
   RESTProcess(rminsky.registry,"minsky",minsky::minsky());
 
-  bool batch=argc>1 && argv[1]==string("-batch");
+  const bool batch=argc>1 && argv[1]==string("-batch");
     
   
   char* c;
@@ -121,7 +113,7 @@ int main(int argc, const char* argv[])
   else // interactive, use readline
     while ((c=readline("cmd>"))!=nullptr)
       {
-        string buffer=c;
+        const string buffer=c;
         processBuffer(buffer);
         if (strlen(c)) add_history(c); 
         free(c);

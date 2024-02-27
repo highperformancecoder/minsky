@@ -1,13 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
 import { ScaleHandler } from '../scale-handler/scale-handler.class';
+import { FormsModule } from '@angular/forms';
+import { LatexDirective } from '../directives/latex.directive';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'minsky-parameters',
-  templateUrl: './summary.component.html',
-  styleUrls: ['./summary.component.scss'],
+    selector: 'minsky-parameters',
+    templateUrl: './summary.component.html',
+    styleUrls: ['./summary.component.scss'],
+    standalone: true,
+    imports: [
+        NgFor,
+        NgIf,
+        LatexDirective,
+        FormsModule,
+    ],
 })
 export class SummaryComponent implements OnInit {
   allVariables;
@@ -91,7 +100,6 @@ export class SummaryComponent implements OnInit {
     for (let i=0; i<nestedElements.length; ++i) 
     {
       nestedElements[i].addEventListener("click",()=>this.toggleCaret({target:nestedElements[i]}));
-      this.electronService.log(`${nestedElements[i].classList}`);
     }
   }
   

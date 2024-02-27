@@ -9,7 +9,7 @@ import {
   Utility,
 } from '@minsky/shared';
 import { BrowserWindow, dialog, screen } from 'electron';
-import * as log from 'electron-log';
+import log from 'electron-log';
 import { isAbsolute, join } from 'path';
 import { format } from 'url';
 import { ApplicationMenuManager } from './managers/ApplicationMenuManager';
@@ -64,7 +64,7 @@ export default class App {
   }
 
   private static async initMenu() {
-    const menu = ApplicationMenuManager.createMainApplicationMenu();
+    const menu = await ApplicationMenuManager.createMainApplicationMenu();
     WindowManager.storeWindowMenu(App.mainWindow, menu);
     RecentFilesManager.initRecentFiles();
 
@@ -160,16 +160,6 @@ export default class App {
       WindowManager.activeWindows.delete(App.mainWindow.id); // Is this needed?
     });
 
-    // TODO: test it on Russell's machine
-    // TODO: do the same thing for child windows (godley,plot)
-    App.mainWindow.on('focus', async () => {
-      await CommandsManager.requestRedraw();
-    });
-
-    // App.mainWindow.on('blur', async () => {
-    //   await CommandsManager.requestRedraw();
-    // });
-
     App.mainWindow.on('closed', () => {
       // Dereference the window object, usually you would store windows
       // in an array if your app supports multi windows, this is the time
@@ -237,14 +227,12 @@ export default class App {
     //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
     // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
     // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-    setTimeout(async () => {
-      let displayScale=await backend('minsky.canvas.scaleFactor');
-      App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
-      // invert the effect of display scaling on canvas fonts.
-      backend('minsky.fontScale', (1/displayScale));
-    });
-    setTimeout(async () => {loadResources();}, 100);
-    setTimeout(async () => {sanityCheck();}, 100);
+    let displayScale=backendSync('minsky.canvas.scaleFactor');
+    App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
+    // invert the effect of display scaling on canvas fonts.
+    backendSync('minsky.fontScale', (1/displayScale));
+    loadResources();
+    sanityCheck();
     
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data

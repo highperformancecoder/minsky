@@ -198,6 +198,7 @@ SUITE(TensorOps)
             }
       }
       
+
       evalOp<OperationType::runningSum>("1",2);
       {
         auto& toVal=*to->vValue();
@@ -1191,8 +1192,8 @@ SUITE(TensorOps)
 
       sex->reductionOp=ravel::Op::stddev;
       chain=createRavelChain(state, arg);
-      expected={1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      expected={2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132};
+      CHECK_ARRAY_CLOSE(expected, *chain.back(), 9, 1e-4);
 
       sex->reductionOp=ravel::Op::min;
       chain=createRavelChain(state, arg);
@@ -1518,5 +1519,133 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      CHECK_EQUAL(sizeof(fv)/sizeof(fv[0]),ev->fvSize());
    }
 
+ struct CorrelationFixture: public TestFixture
+ {
+   VariablePtr from1{VariableType::flow,"from1"};
+   VariableValue& from1Val=*from1->vValue();
+   CorrelationFixture() {
+     g->addItem(from1);
+     TensorVal x(vector<unsigned>{5,5}), y(vector<unsigned>{5,5});
+     //TensorVal x(vector<unsigned>{2,2}), y(vector<unsigned>{2,2});
+     x=std::vector<double>{
+       0.401195,0.984229,0.637603,0.457079,0.163259,
+       0.153241,0.761564,0.576274,0.799264,0.717473,
+       0.292201,0.491054,0.381334,0.712326,0.290808,
+       0.921837,0.071269,0.990526,0.048759,0.656821,
+       0.228753,0.756031,0.290251,0.346473,0.140935
+     };
+     y=std::vector<double>{
+       0.721763,0.961509,0.696964,0.547983,0.153318,
+       0.989830,0.431140,0.924805,0.072694,0.186429,
+       0.997384,0.774908,0.835645,0.865869,0.349889,
+       0.330321,0.353306,0.106463,0.593529,0.184363,
+       0.914338,0.619335,0.512865,0.607043,0.528224
+     };
+     fromVal=x; from1Val=y;
+   }
+ };
+ 
+ TEST_FIXTURE(CorrelationFixture,covariance)
+   {
+     // calculated on Octave cov(x,y)
+     vector<double> cov{
+       -8.3229e-02,   6.1468e-02,  -6.7649e-02,   7.3800e-02,  -2.3324e-02,
+       -2.7181e-02,   5.6054e-02,  -2.9875e-02,   2.0813e-02,  -5.6449e-02,
+       -8.7004e-02,   7.7607e-02,  -5.4858e-02,   9.5311e-02,  -1.2319e-02,
+       2.4160e-02,  -3.1403e-02,  -1.5013e-02,  -2.6450e-02,  -4.7382e-02,
+       -1.9252e-02,   4.4654e-03,  -3.3002e-02,  -6.5478e-04,  -2.4050e-02
+     };
+
+     OperationPtr covOp(OperationType::covariance);
+     covOp->axis="1";
+     g->addItem(covOp);
+     Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
+     Eval(*to, covOp)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(cov.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(cov, &toVal[0], toVal.size(), 1e-4);
+   }
+ 
+ TEST_FIXTURE(CorrelationFixture,rho)
+   {
+     // calculated on Octave (cov(x,y)./(std(x)'*std(y)))'
+     vector<double> rho{
+       -0.970729,   0.627315,  -0.888322,   0.877548,  -0.302967,
+       -0.357572,   0.645244,  -0.442479,   0.279151,  -0.827059,
+       -0.877474,   0.684865,  -0.622907,   0.980007,  -0.138368,
+       0.274212,  -0.311870,  -0.191840,  -0.306059,  -0.598950,
+       -0.397234,   0.080619,  -0.766631,  -0.013774,  -0.552663
+     };
+
+     OperationPtr rhoOp(OperationType::rho);
+     rhoOp->axis="1";
+     g->addItem(rhoOp);
+     Wire w1(from->ports(0),rhoOp->ports(1)), w2(from1->ports(0),rhoOp->ports(2)), w3(rhoOp->ports(0),to->ports(1));
+     Eval(*to, rhoOp)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(rho.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(rho, &toVal[0], toVal.size(), 1e-4);
+   }
+
+  TEST_FIXTURE(CorrelationFixture,selfCovariance)
+   {
+     // calculated on Octave cov(x)
+     vector<double> cov{
+   9.3537e-02,  -8.2565e-02,   7.1559e-02,  -7.6511e-02,   2.7879e-02,
+  -8.2565e-02,   1.2217e-01,  -5.4696e-02,   5.6276e-02,  -5.0898e-02,
+   7.1559e-02,  -5.4696e-02,   7.3793e-02,  -4.6796e-02,   4.6805e-02,
+  -7.6511e-02,   5.6276e-02,  -4.6796e-02,   8.9992e-02,   1.2587e-03,
+   2.7879e-02,  -5.0898e-02,   4.6805e-02,   1.2587e-03,   7.5410e-02
+     };
+
+     OperationPtr covOp(OperationType::covariance);
+     covOp->axis="1";
+     g->addItem(covOp);
+     Wire w1(from->ports(0),covOp->ports(1)), w3(covOp->ports(0),to->ports(1));
+     Eval(*to, covOp)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(cov.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(cov, &toVal[0], toVal.size(), 1e-4);
+   }
+
+ TEST_FIXTURE(CorrelationFixture,nonConformantCovariance)
+   {
+     from1Val.hypercube(vector<unsigned>{5,4});
+
+     OperationPtr covOp(OperationType::covariance);
+     covOp->axis="1";
+     g->addItem(covOp);
+     Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
+     CHECK_THROW(Eval(*to, covOp), std::exception);
+   }
+ 
+ TEST_FIXTURE(CorrelationFixture,dimensionNotFound)
+   {
+     OperationPtr covOp(OperationType::covariance);
+     covOp->axis="foo";
+     g->addItem(covOp);
+     Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
+     CHECK_THROW(Eval(*to, covOp), std::exception);
+   }
+ 
+ TEST_FIXTURE(CorrelationFixture,vectorCovariance)
+   {
+     fromVal.hypercube(vector<unsigned>{5});
+     from1Val.hypercube(vector<unsigned>{5});
+     // calculated on Octave cov(x,y)
+     vector<double> cov{0.081669};
+
+     OperationPtr covOp(OperationType::covariance);
+     g->addItem(covOp);
+     Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
+     Eval(*to, covOp)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(cov.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(cov, &toVal[0], toVal.size(), 1e-4);
+   }
 
 }

@@ -42,8 +42,8 @@ SUITE(UserFunction)
 
   TEST_FIXTURE(MinskyFixture, referenceMinskyVariables)
     {
-      variableValues.emplace(":foo", VariableValue{VariableType::flow});
-      variableValues.emplace(":bar", VariableValue{VariableType::flow});
+      variableValues.emplace(":foo", VariableType::flow);
+      variableValues.emplace(":bar", VariableType::flow);
       variableValues[":foo"]->allocValue()=3.0;
       variableValues[":bar"]->allocValue()=5.0;
       UserFunction f("test","foo+bar");
@@ -77,8 +77,8 @@ SUITE(UserFunction)
 
   TEST_FIXTURE(MinskyFixture, units)
     {
-      variableValues.emplace(":foo", VariableValue{VariableType::flow});
-      variableValues.emplace(":bar", VariableValue{VariableType::flow});
+      variableValues.emplace(":foo", VariableType::flow);
+      variableValues.emplace(":bar", VariableType::flow);
       variableValues[":foo"]->allocValue()=3.0;
       variableValues[":bar"]->allocValue()=5.0;
       variableValues[":foo"]->setUnits("m");

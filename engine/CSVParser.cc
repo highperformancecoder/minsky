@@ -59,15 +59,15 @@ namespace escapedListSeparator
     bool last_;
 
     bool is_escape(Char e) {
-      char_eq f(e);
+      const char_eq f(e);
       return std::find_if(escape_.begin(),escape_.end(),f)!=escape_.end();
     }
     bool is_c(Char e) {
-      char_eq f(e);
+      const char_eq f(e);
       return std::find_if(c_.begin(),c_.end(),f)!=c_.end();
     }
     bool is_quote(Char e) {
-      char_eq f(e);
+      const char_eq f(e);
       return std::find_if(quote_.begin(),quote_.end(),f)!=quote_.end();
     }
     template <typename iterator, typename Token>
@@ -184,7 +184,7 @@ namespace
     Any()=default;
     Any(const any& x): any(x), hash(x.hash()) {}
     bool operator<(const Any& x) const {return static_cast<const any&>(*this)<x;}
-    bool operator==(const Any& x) const {return static_cast<const any&>(*this)==x;}
+    bool operator==(const Any& x) const {return static_cast<const any&>(*this)==static_cast<const any&>(x);}
     size_t hash;
   };
 
@@ -215,12 +215,20 @@ namespace
     //strip possible quote characters
     if (!s.empty() && s[0]==s[s.size()-1] && !isalnum(s[0]))
       {
-        double r=quotedStoD(s.substr(1,s.size()-2),charsProcd);
+        const double r=quotedStoD(s.substr(1,s.size()-2),charsProcd);
         charsProcd+=2;
         return r;
       }
-    // strip any leading non-numerical characters ([^0-9.,])
-    auto n=s.find_first_of("0123456789,.");
+    if (s.empty()) return nan(""); // treat empty cell as a missing value
+    // first try to read the cell as a number
+    try {
+      const double r=stod(s,&charsProcd);
+      if (charsProcd==s.size())
+        return r;
+    }
+    catch (...) {}
+    // if not, then strip any leading non-numerical characters ([^0-9.,+-])
+    auto n=s.find_first_of("0123456789,.+-");
     return stod(s.substr(n),&charsProcd);
   }
 
@@ -243,7 +251,7 @@ namespace
         {
           if (!v[i].empty())
             {
-              size_t c;
+              size_t c=0;
               auto s=stripWSAndDecimalSep(v[i]);
               quotedStoD(s,c);
               if (c!=s.size())
@@ -270,8 +278,8 @@ namespace minsky
 {
   bool isNumerical(const string& s)
   {
-    size_t charsProcd;
-    string stripped=stripWSAndDecimalSep(s);
+    size_t charsProcd=0;
+    const string stripped=stripWSAndDecimalSep(s);
     try
       {
         quotedStoD(stripped, charsProcd);
@@ -328,14 +336,13 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     string buf;
     size_t row=0;
     size_t firstEmpty=numeric_limits<size_t>::max();
-    dimensionCols.clear();
 
     m_nRowAxes=0;
     for (; getline(input, buf) && row<CSVDialog::numInitialLines; ++row)
       {
         // remove trailing carriage returns
         if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
-        boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
+        const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
         vector<string> line(tok.begin(), tok.end());
         if (!line.empty())
           {
@@ -363,7 +370,7 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     double sum=0;
     for (unsigned long i=0; i<starts.size(); ++i) 
       sum+=starts[i];
-    double av=sum/(starts.size());
+    const double av=sum/(starts.size());
     for (; starts.size()>m_nRowAxes && (starts[m_nRowAxes]>av); 
          ++m_nRowAxes);
     // if nRowAxes exceeds numInitialLines, assume first row is a header row, and that that is all there is.
@@ -378,7 +385,9 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     if (firstEmpty==m_nRowAxes) ++m_nRowAxes; // allow for possible colAxes header line
     headerRow=nRowAxes()>0? nRowAxes()-1: 0;
     size_t i=0;
+    dimensionCols.clear();
     for (; i<nColAxes(); ++i) dimensionCols.insert(i);
+    dataCols.clear();
     for (; i<nCols; ++i) dataCols.insert(i);
 }
 
@@ -424,65 +433,6 @@ void DataSpec::guessFromStream(std::istream& input)
     else
       guessRemainder(inputCopy,' ');
   }
-
-  if (dimensionNames.empty())
-  {
-    //fill in guessed dimension names
-    istringstream inputCopy(streamBuf.str());
-    guessDimensionsFromStream(inputCopy);
-  }
-}
-
-void DataSpec::guessDimensionsFromStream(std::istream& i)
-{
-  if (separator==' ')
-    guessDimensionsFromStream(i,SpaceSeparatorParser(escape,quote));
-  else
-    guessDimensionsFromStream(i,Parser(escape,separator,quote));
-}
-    
-template <class T>
-void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
-{
-  string buf;
-  size_t row=0;
-  for (; row<=headerRow; ++row) getline(input, buf);
-  boost::tokenizer<T> tok(buf.begin(),buf.end(), tf);
-  dimensionNames.assign(tok.begin(), tok.end());
-  for (;row<=nRowAxes(); ++row) getline(input, buf);
-  vector<string> data(tok.begin(),tok.end());
-  for (size_t col=0; col<data.size() && col<nColAxes(); ++col)
-    try
-      {
-        // only select value type if the datafield is a pure double
-        size_t c;
-        string s=stripWSAndDecimalSep(data[col]);
-        quotedStoD(s, c);
-        if (c!=s.size()) throw 0; // try parsing as time
-        dimensions.emplace_back(Dimension::value,"");
-      }
-    catch (...)
-      {
-        try
-          {
-            Dimension dim(Dimension::time,"%Y-Q%Q");
-            anyVal(dim, data[col]);
-            dimensions.push_back(dim);
-          }
-        catch (...)
-          {
-            try
-              {
-                Dimension dim(Dimension::time,"");
-                anyVal(dim, data[col]);
-                dimensions.push_back(dim);
-              }
-            catch (...)
-              {
-                dimensions.emplace_back(Dimension::string,"");
-              }
-          }
-      }
 }
 
  void DataSpec::populateFromRavelMetadata(const std::string& metadata, size_t row)
@@ -523,16 +473,16 @@ namespace minsky
           }
         if (row>=spec.nRowAxes())
           {
-            boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
+            const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
             Key key;
             auto field=tok.begin();
             size_t i=0;
             for (; field!=tok.end(); ++i, ++field)
-              if (spec.dimensionCols.count(i))
+              if (spec.dimensionCols.contains(i))
                 key.push_back(*field);
 
             for (i=0, field=tok.begin(); field!=tok.end(); ++i, ++field)
-              if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.count(i))
+              if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.contains(i))
                 {
                   string x=*field;
                   if (!x.empty())
@@ -555,7 +505,7 @@ namespace minsky
                 duplicateLines.insert(*rec);
                 lines.erase(rec);
               }
-            if (duplicateLines.count(key))
+            if (duplicateLines.contains(key))
               duplicateLines.emplace(key, buf);
             else
               lines.emplace(key, buf);
@@ -589,15 +539,9 @@ namespace minsky
     chomp(line);
     while (r)
       {
-        // count the number of quote characters after last separator. If odd, then line is not terminated correctly
-        auto n=line.rfind(spec.separator);
-        if (n==string::npos)
-          n=0;
-        else
-          ++n;
         int quoteCount=0;
-        for (; n<line.size(); ++n)
-          if (line[n]==spec.quote)
+        for (auto i: line)
+          if (i==spec.quote)
             ++quoteCount;
         if (quoteCount%2==0) break; // data line correctly terminated
         string buf;
@@ -626,7 +570,7 @@ namespace minsky
   template <class P>
   void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
-    BusyCursor busy(minsky());
+    const BusyCursor busy(minsky());
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
     typedef vector<string> Key;
@@ -638,7 +582,7 @@ namespace minsky
     vector<typename Key::value_type> horizontalLabels;
     vector<AnyVal> anyVal;
 
-    ProgressUpdater pu(minsky().progressState, "Importing CSV",3);
+    const ProgressUpdater pu(minsky().progressState, "Importing CSV",3);
     for (auto i: spec.dimensionCols)
       {
         hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
@@ -659,11 +603,17 @@ namespace minsky
             // legacy situation where all data columns are to the right
             if (spec.dataCols.empty())
               for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
+                {
+                  col=i;
                   horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                }
             else
               // explicitly specified data columns
               for (auto i: spec.dataCols)
-                horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                {
+                  col=i;
+                  horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                }
             hc.xvectors.emplace_back(spec.horizontalDimName);
             hc.xvectors.back().dimension=spec.horizontalDimension;
             set<typename Key::value_type> uniqueLabels;
@@ -690,14 +640,14 @@ namespace minsky
                 throw runtime_error("exhausted memory");
             }
 #endif
-            boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
+            const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
             Key key;
             auto field=tok.begin();
             size_t dim=0, dataCols=0;
             col=0;
             for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
-              if (spec.dimensionCols.count(col))
+              if (spec.dimensionCols.contains(col))
                 {
                   // detect blank data lines (favourite Excel artifact)
                   if (spec.dimensions[dim].type!=Dimension::string && field->empty())
@@ -727,7 +677,7 @@ namespace minsky
 
             col=0;
             for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
-              if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.count(col)) 
+              if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col)) 
                 {                    
                   if (tabularFormat)
                     key.emplace_back(horizontalLabels[dataCols]);
@@ -739,7 +689,8 @@ namespace minsky
                   for (auto c: *field)
                     if (c==spec.decSeparator)
                       s+='.';
-                    else if (s.empty() && !isdigit(c))
+                    else if ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
+                             ((s=="-"||s=="+") && !isdigit(c)))
                       continue; // skip non-numeric prefix
                     else if (!isspace(c) && c!='.' && c!=',')
                       s+=c;                    
@@ -851,16 +802,21 @@ namespace minsky
             for (auto& i: vv.tensorInit)
               i=spec.missingValue;
             auto dims=vv.hypercube().dims();
-            ProgressUpdater pu(minsky().progressState,"Loading data",tmpData.size());
+            const ProgressUpdater pu(minsky().progressState,"Loading data",tmpData.size());
             for (auto& i: tmpData)
               {
                 size_t idx=0;
                 assert (hc.rank()<=i.first.size());
                 assert(dimLabels.size()==hc.rank());
-                for (int j=hc.rank()-1; j>=0; --j)
+                int j=hc.rank()-1, k=i.first.size()-1; 
+                while (j>=0 && k>=0)
                   {
-                    assert(dimLabels[j].count(i.first[j]));
-                    idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                    auto dimLabel=dimLabels[j].find(i.first[k]);
+                    while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
+                      dimLabel=dimLabels[j].find(i.first[--k]);
+                    assert(dimLabel!=dimLabels[j].end());
+                    idx = (idx*dims[j]) + dimLabel->second;
+                    --j; --k;
                   }
                 vv.tensorInit[idx]=i.second;
                 ++minsky().progressState;
@@ -871,20 +827,26 @@ namespace minsky
             if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
               throw runtime_error("memory threshold exceeded");	  	  		
             auto dims=hc.dims();
-            ProgressUpdater pu(minsky().progressState,"Indexing and loading",2);
+            const ProgressUpdater pu(minsky().progressState,"Indexing and loading",2);
               
             map<size_t,double> indexValue; // intermediate stash to sort index vector
             {
-              ProgressUpdater pu(minsky().progressState,"Building index",tmpData.size());
+              const ProgressUpdater pu(minsky().progressState,"Building index",tmpData.size());
               for (auto& i: tmpData)
                 {
                   size_t idx=0;
-                  assert (dims.size()==i.first.size());
+                  assert (dims.size()<=i.first.size());
                   assert(dimLabels.size()==dims.size());
-                  for (int j=dims.size()-1; j>=0; --j)
+                  int j=dims.size()-1, k=i.first.size()-1;
+                  while (j>=0 && k>=0) // changed from for loop to while loop at CodeQL's insistence
                     {
-                      assert(dimLabels[j].count(i.first[j]));
-                      idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                      auto dimLabel=dimLabels[j].find(i.first[k]);
+                      while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
+                        dimLabel=dimLabels[j].find(i.first[--k]);
+                      assert(dimLabel!=dimLabels[j].end());
+                      idx = (idx*dims[j]) + dimLabel->second;
+                      --j;
+                      --k;
                     }
                   if (!isnan(i.second))
                     indexValue.emplace(idx, i.second);
@@ -895,7 +857,7 @@ namespace minsky
               vv.tensorInit.hypercube(hc);
             }
             {
-              ProgressUpdater pu(minsky().progressState,"Loading data",indexValue.size());
+              const ProgressUpdater pu(minsky().progressState,"Loading data",indexValue.size());
               size_t j=0;
               for (auto& i: indexValue)
                 {
@@ -917,7 +879,10 @@ namespace minsky
       }
     catch (const std::exception& ex)
       {
-        throw std::runtime_error(string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col));
+        auto msg=string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col);
+        if (col<spec.dimensionNames.size())
+          msg+=" ("+spec.dimensionNames[col]+")";
+        throw std::runtime_error(msg);
       }
   }
   

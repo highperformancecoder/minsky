@@ -107,24 +107,6 @@ namespace minsky
       return canvas.item.get();
     }
     
-    bool getPlotTabItemAt(float x, float y)
-    {
-      // deregister any old definitions, as item is polymorphic
-      TCL_obj_deregister("minsky.plotTab.item");
-      plotTab.getItemAt(x,y);
-      registerRef(plotTab.item,"minsky.plotTab.item");
-      return plotTab.item.get();
-    }        
-    
-    bool getGodleyTabItemAt(float x, float y)
-    {
-      // deregister any old definitions, as item is polymorphic
-      TCL_obj_deregister("minsky.godleyTab.item");
-      godleyTab.getItemAt(x,y);
-      registerRef(godleyTab.item,"minsky.godleyTab.item");
-      return godleyTab.item.get();
-    }    
-
     // call item->retype, and update the canvas.item ptr with the new object
     void retypeItem(VariableType::Type type)
     {

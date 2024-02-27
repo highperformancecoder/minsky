@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Control Structures</TITLE>
-<META NAME="description" CONTENT="Control Structures">
+<TITLE>Copyright notice</TITLE>
+<META NAME="description" CONTENT="Copyright notice">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,290 +14,44 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node141.html">
 <LINK REL="previous" HREF="node139.html">
-<LINK REL="up" HREF="node133.html">
+<LINK REL="up" HREF="node136.html">
 <LINK REL="next" HREF="node141.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1801"
+<A NAME="tex2html1821"
   HREF="node141.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1799"
-  HREF="node133.html">
+<A NAME="tex2html1819"
+  HREF="node136.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1795"
+<A NAME="tex2html1813"
   HREF="node139.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1802"
-  HREF="node141.html">Fundamental types</A>
-<B> Up:</B> <A NAME="tex2html1800"
-  HREF="node133.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1796"
-  HREF="node139.html">String Processing</A>
+<B> Next:</B> <A NAME="tex2html1822"
+  HREF="node141.html">Built-in operations &amp; functions</A>
+<B> Up:</B> <A NAME="tex2html1820"
+  HREF="node136.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html1814"
+  HREF="node139.html">Example expressions</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00557000000000000000">
-Control Structures</A>
-</H2>
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">STRUCTURE</TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>DEFINITION</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>if</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>If x is true then return y else return z.eg:
-
-<OL>
-<LI><code>if (x, y, z)</code> 
-</LI>
-<LI><code>if ((x + 1) &gt; 2y, z + 1, w / v)</code>
-</LI>
-<LI><code>if (x &gt; y) z;</code>
-</LI>
-<LI><code>if (x &lt;= 2*y) { z + w };</code>
-</LI>
-</OL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>if-else</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>The if-else/else-if statement. Subject to the condition 
-branch the statement will return either the value of the consequent or
-the alternative branch. eg:
-
-<OL>
-<LI><code>if (x &gt; y) z; else w;</code>
-</LI>
-<LI><code>if (x &gt; y) z; else if (w != u) v;</code>
-</LI>
-<LI><code>if (x &lt; y) { z; w + 1; } else u;</code>
-</LI>
-<LI><PRE>
-if ((x != y) and (z &gt; w))
-{   
-  y := sin(x) / u;
-  z := w + 1;     
-}                  
-else if (x &gt; (z + 1))
-{                    
-  w := abs (x - y) + z;
-  u := (x + 1) &gt; 2y ? 2u : 3u;
-}
-</PRE>
-</LI>
-</OL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>switch</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>The first true case condition that is encountered will 
-determine the result of the switch. If none of the case
-conditions hold true, the default action is assumed as 
-the final return value. This is sometimes also known as
-a multi-way branch mechanism.                          
-eg:
-<PRE>
-switch                                                 
-{                                                      
-  case x &gt; (y + z) : 2 * x / abs(y - z);               
-  case x &lt; 3       : sin(x + y);                       
-  default          : 1 + x;                            
-}
-</PRE></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>while</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>The structure will repeatedly evaluate the internal     
-statement(s) 'while' the condition is true. The final  
-statement in the final iteration will be used as the   
-return value of the loop.                              
-eg:                                                    
-<PRE>
-while ((x -= 1) &gt; 0)                                   
-{                                                      
-  y := x + z;                                          
-  w := u + y;                                          
-}
-</PRE></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>repeat/until</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>The structure will repeatedly evaluate the internal
-statement(s) 'until' the condition is true. The final
-statement in the final iteration will be used as the 
-return value of the loop.                            
-eg:
-<PRE>
-repeat                                               
-  y := x + z;                                        
-  w := u + y;                                        
-until ((x += 1) &gt; 100)
-</PRE></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>for</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>The structure will repeatedly evaluate the internal    
-statement(s) while the condition is true. On each loop
-iteration, an 'incrementing' expression is evaluated. 
-The conditional is mandatory whereas the initialiser  
-and incrementing expressions are optional.            
-eg:                                                   
-<PRE>
-for (var x := 0; (x &lt; n) and (x != y); x += 1)        
-{                                                     
-  y := y + x / 2 - z;                                 
-  w := u + y;                                         
-}
-</PRE></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>break/break[]</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Break terminates the execution of the nearest enclosed 
-loop, allowing for the execution to continue on external
-to the loop. The default break statement will set the   
-return value of the loop to NaN, where as the return    
-based form will set the value to that of the break      
-expression.                                             
-eg:
-<PRE>
-while ((i += 1) &lt; 10)                                   
-{                                                       
-  if (i &lt; 5)                                            
-    j -= i + 2;                                         
-  else if (i % 2 == 0)                                  
-    break;                                              
-  else                                                  
-    break[2i + 3];                                      
-}
-</PRE></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>continue</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Continue results in the remaining portion of the nearest
-enclosing loop body to be skipped.
-eg:
-<PRE>
-for (var i := 0; i &lt; 10; i += 1)  
-{                                 
-  if (i &lt; 5)                      
-    continue;                     
-  j -= i + 2;                     
-}
-</PRE></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>return</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Return immediately from within the current expression.
-With the option of passing back a variable number of
-values (scalar, vector or string). eg:
-
-<OL>
-<LI><code>return [1]; </code>                                     
-</LI>
-<LI><code>return [x, 'abx'];</code>                              
-</LI>
-<LI><code>return [x, x + y,'abx'];</code>                         
-</LI>
-<LI><code>return [];</code>                                       
-</LI>
-<LI><PRE>
-if (x &lt; y)                                       
-    return [x, x - y, 'result-set1', 123.456];      
-   else                                             
-    return [y, x + y, 'result-set2'];
-</PRE>
-</LI>
-</OL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>?:</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Ternary conditional statement, similar to that of the
-above denoted if-statement.                     
-eg:
-
-<OL>
-<LI><code>x ? y : z</code>                                    
-</LI>
-<LI><code>x + 1 &gt; 2y ? z + 1 : (w / v)</code>                 
-</LI>
-<LI><code>min(x,y) &gt; z ? (x &lt; y + 1) ? x : y : (w * v)</code>
-</LI>
-</OL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>~</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Evaluate each sub-expression, then return as the result 
-the value of the last sub-expression. This is sometimes
-known as multiple sequence point evaluation.           
-eg:                                                    
-<PRE>
-~(i := x + 1, j := y / z, k := sin(w/u)) == (sin(w/u)))
-~{i := x + 1; j := y / z; k := sin(w/u)} == (sin(w/u)))
-</PRE></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>[*]</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Evaluate any consequent for which its case statement is 
-true. The return value will be either zero or the result
-of the last consequent to have been evaluated.          
-eg:
-<PRE>
-[*]                                                     
-{                                                       
-  case (x + 1) &gt; (y - 2)    : x := z / 2 + sin(y / pi); 
-  case (x + 2) &lt; abs(y + 3) : w / 4 + min(5y,9);        
-  case (x + 3) == (y * 4)   : y := abs(z / 6) + 7y;     
-}
-</PRE></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>[]</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>The vector size operator returns the size of the vector 
-being actioned.                         
-eg:
-
-<OL>
-<LI><code>v[]</code>                                 
-</LI>
-<LI><code>max_size := max(v0[],v1[],v2[],v3[])</code>
-</LI>
-</OL></TD>
-</TR>
-</TABLE>
-
+<H1><A NAME="SECTION00540000000000000000">
+Copyright notice</A>
+</H1>
+Free  use  of  the  C++  Mathematical  Expression  Toolkit  Library is
+permitted under the guidelines and in accordance with the most current
+version of the <A NAME="tex2html33"
+  HREF="http://www.opensource.org/licenses/MIT">MIT License</A>
 <P>
-Note: In  the  tables  above, the  symbols x, y, z, w, u  and v  where
-appropriate may represent any of one the following:
-
-<P>
-
-<OL>
-<LI>Literal numeric/string value
-</LI>
-<LI>A variable
-</LI>
-<LI>A vector element
-</LI>
-<LI>A vector
-</LI>
-<LI>A string
-</LI>
-<LI>An expression comprised of [1], [2] or [3] (eg: <code>2 + x /vec[3])</code> 
-</LI>
-</OL>
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1801"
-  HREF="node141.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1799"
-  HREF="node133.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1795"
-  HREF="node139.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1802"
-  HREF="node141.html">Fundamental types</A>
-<B> Up:</B> <A NAME="tex2html1800"
-  HREF="node133.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html1796"
-  HREF="node139.html">String Processing</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

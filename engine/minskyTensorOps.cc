@@ -73,14 +73,14 @@ namespace minsky
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
       if (!deriv) throw DerivativeNotDefined();
-      if (double df=deriv->dFlow(ti,fi))
+      if (const double df=deriv->dFlow(ti,fi))
         return eo.d1((*arg)[ti])*df;
       return 0;
     }
     double dStock(size_t ti, size_t si) const override {
       auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
       if (!deriv) throw DerivativeNotDefined();
-      if (double ds=deriv->dStock(ti,si))
+      if (const double ds=deriv->dStock(ti,si))
         return eo.d1((*arg)[ti])*ds;
       return 0;
     }
@@ -110,7 +110,7 @@ namespace minsky
             std::vector<string> a1Order, common;
             Hypercube hcSpread1, hcSpread2;
             for (auto& i: a1->hypercube().xvectors)
-              if (a2Axes.count(i.name))
+              if (a2Axes.contains(i.name))
                 {
                   common.push_back(i.name);
                   a2Axes.erase(i.name);
@@ -121,7 +121,7 @@ namespace minsky
                   hcSpread2.xvectors.push_back(i);
                 }
             for (auto& xv: a2->hypercube().xvectors)
-              if (a2Axes.count(xv.name))
+              if (a2Axes.contains(xv.name))
                 hcSpread1.xvectors.push_back(xv);
 
             // append common dimensions to make up a1 final order
@@ -169,9 +169,9 @@ namespace minsky
       auto deriv2=dynamic_cast<DerivativeMixin*>(arg2.get());
       if (!deriv1 || !deriv2) throw DerivativeNotDefined();
       double r=0;
-      if (double df=deriv1->dFlow(ti,fi))
+      if (const double df=deriv1->dFlow(ti,fi))
         r += eo.d1((*arg1)[ti])*df;
-      if (double df=deriv2->dFlow(ti,fi))
+      if (const double df=deriv2->dFlow(ti,fi))
         r += eo.d2((*arg2)[ti])*df;
       return r;
     }
@@ -180,9 +180,9 @@ namespace minsky
       auto deriv2=dynamic_cast<DerivativeMixin*>(arg2.get());
       if (!deriv1 || !deriv2) throw DerivativeNotDefined();
       double r=0;
-      if (double ds=deriv1->dStock(ti,si))
+      if (const double ds=deriv1->dStock(ti,si))
         r += eo.d1((*arg1)[ti])*ds;
-      if (double ds=deriv2->dStock(ti,si))
+      if (const double ds=deriv2->dStock(ti,si))
         r += eo.d2((*arg2)[ti])*ds;
       return r;
     }
@@ -349,12 +349,13 @@ namespace minsky
       else
         outerStride=arg->hypercube().numElements();
       auto idx=arg->index();
-      set<size_t> idxSet(idx.begin(),idx.end()), newIdx;
+      const set<size_t> idxSet(idx.begin(),idx.end());
+      set<size_t> newIdx;
       for (auto& i: idx)
         {
           // strip of any indices outside the output range
           auto t=ssize_t(i)-delta;
-          if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.count(t) && sameSlice(t,i))
+          if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.contains(t) && sameSlice(t,i))
             {
               argIndices.push_back(t);
               newIdx.insert(hypercube().linealIndex(arg->hypercube().splitIndex(t)));
@@ -366,7 +367,7 @@ namespace minsky
 
     bool sameSlice(size_t i, size_t j) const
     {
-      return rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
+      return cachedResult.rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
     }
     
     void computeTensor() const override
@@ -382,9 +383,9 @@ namespace minsky
             }
         }
       else if (delta>=0)
-        for (size_t i=0; i<size(); ++i)
+        for (size_t i=0; i<cachedResult.size(); ++i)
           {
-            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
             auto t=ai+delta;
             if (sameSlice(t, ai))
               cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(ai);
@@ -394,7 +395,7 @@ namespace minsky
       else // with -ve delta, origin of result is shifted
         for (size_t i=0; i<size(); ++i)
           {
-            auto ai=arg->hypercube().linealIndex(hypercube().splitIndex(i));
+            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
             auto t=ai-delta;
             if (sameSlice(t,ai))
               cachedResult[i]=arg->atHCIndex(ai)-arg->atHCIndex(t);
@@ -421,7 +422,7 @@ namespace minsky
         for (size_t i=1; i<arg2->rank(); i++)
           n*=arg2->hypercube().dims()[i];     
   	
-      size_t stride=arg2->rank()>0? arg2->hypercube().dims()[0]: 1;	 	 
+      const size_t stride=arg2->rank()>0? arg2->hypercube().dims()[0]: 1;	 	 
       double tmpSum;
       for (size_t i=0; i< m; i++)
         for (size_t j=0; j< n; j++)
@@ -460,7 +461,7 @@ namespace minsky
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {
       if (!arg1 || !arg2) return;
-      size_t m=arg1->size(), n=arg2->size();   
+      const size_t m=arg1->size(), n=arg2->size();   
       assert(cachedResult.size()==m*n);
 	
       for (size_t i=0; i< m; i++)
@@ -481,7 +482,7 @@ namespace minsky
       if (!arg1 || !arg2) return;
       
       set<size_t> newIdx;
-      size_t stride=arg1->hypercube().numElements();
+      const size_t stride=arg1->hypercube().numElements();
 
       vector<size_t> idx1(arg1->index().begin(), arg1->index().end()), idx2(arg2->index().begin(), arg2->index().end());
       if (!idx1.empty() || !idx2.empty())
@@ -548,7 +549,7 @@ namespace minsky
       double lv=arg1->atHCIndex(lesser*stride+offset), gv=arg1->atHCIndex(greater*stride+offset);
       for (; lesser>0 && isnan(lv); --lesser, lv=arg1->atHCIndex(lesser*stride+offset));
       for (; greater<maxIdx && isnan(gv); ++greater, gv=arg1->atHCIndex(greater*stride+offset));
-      double s=(idx-lesser)/(greater-lesser);
+      const double s=(idx-lesser)/(greater-lesser);
       // special cases to avoid unncessarily including nans/infs in the computation
       if (s==0) return lv;
       if (s==1) return gv;
@@ -567,7 +568,7 @@ namespace minsky
       double gv=arg1->atHCIndex((greater-xv.begin())*stride+offset);
       for (; i>xv.begin() && isnan(lv); --i, lv=arg1->atHCIndex((i-xv.begin())*stride+offset));
       for (; greater<xv.end()-1 && isnan(gv); ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
-      double s=diff(x,*i)/diff(*greater,*i);
+      const double s=diff(x,*i)/diff(*greater,*i);
       // special cases to avoid unncessarily including nans/infs in the computation
       if (s==0) return lv;
       if (s==1) return gv;
@@ -596,11 +597,11 @@ namespace minsky
         case Dimension::time:
           interpolate=[&](double x, size_t offset){
             // interpret as "year" in a common era date (Gregorian calendar)
-            int year=x;
-            int daysInYear=(date(year+1,Jan,1)-date(year,Jan,1)).days();
-            double dayInYearF=daysInYear*(x-year);
-            int dayInYear=dayInYearF;
-            ptime xtime(date(year,Jan,1)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
+            const int year=x;
+            const int daysInYear=(date(year+1,Jan,1)-date(year,Jan,1)).days();
+            const double dayInYearF=daysInYear*(x-year);
+            const int dayInYear=dayInYearF;
+            const ptime xtime(date(year,Jan,1)+date_duration(dayInYear), seconds(int(3600*24*(dayInYearF-dayInYear))));
             return interpolateAny(xv, xtime, stride, offset);
           };
           break;
@@ -659,7 +660,7 @@ namespace minsky
       set<size_t> offsetSet;
       if (arg1->index().empty()) //dense case
         {
-          size_t numLower=dimension? arg1Dims[dimension-1]: 1;
+          const size_t numLower=dimension? arg1Dims[dimension-1]: 1;
           for (size_t i=0; i<upperStride; ++i)
             for (size_t j=0; j<numLower; ++j)
               offsetSet.insert(lowerStride*i*arg1Dims[dimension]+j);
@@ -674,7 +675,7 @@ namespace minsky
       offsets.clear(); offsets.insert(offsets.end(), offsetSet.begin(), offsetSet.end());
 
       // resulting hypercube is a tensor product of arg2 and the reduced arg1.
-      size_t arg2NumElements=arg2->hypercube().numElements();
+      const size_t arg2NumElements=arg2->hypercube().numElements();
       Hypercube hc=arg2->hypercube();
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin(), arg1->hypercube().xvectors.begin()+dimension);
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin()+dimension+1, arg1->hypercube().xvectors.end());
@@ -738,7 +739,7 @@ namespace minsky
                           }
                         },0) {}
   };
-  
+
   template <>
   struct GeneralTensorOp<OperationType::infIndex>: public civita::ReductionOp
   {
@@ -752,6 +753,307 @@ namespace minsky
                         },0) {}
   };
 
+  template <>
+  struct GeneralTensorOp<OperationType::size>: public civita::ITensor
+  {
+    TensorPtr arg;
+    size_t dimension=numeric_limits<size_t>::max();
+    void setArgument(const TensorPtr& a,const ITensor::Args& args) override
+    {
+      arg=a;
+      if (a)
+        {
+          for (size_t i=0; i<arg->rank(); ++i)
+          if (arg->hypercube().xvectors[i].name==args.dimension)
+            {
+              dimension=i;
+              break;
+            }
+        }
+      else
+        dimension=numeric_limits<size_t>::max();
+    }
+    double operator[](std::size_t) const override 
+    {return dimension<arg->rank()? arg->hypercube().xvectors[dimension].size(): arg->size();}
+    civita::ITensor::Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  template <>
+  struct GeneralTensorOp<OperationType::shape>: public civita::ITensor
+  {
+    TensorPtr arg;
+    int dimension=-1;
+    void setArgument(const TensorPtr& a,const ITensor::Args& args) override
+    {
+      arg=a;
+      if (a) 
+        hypercube({arg->rank()});
+      else
+        hypercube({});
+    }
+    double operator[](std::size_t i) const override
+    {return arg? arg->hypercube().xvectors[i].size(): nan("");}
+    civita::ITensor::Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  struct Correlation: public civita::ITensor
+  {
+    int dimension1, dimension2;
+    TensorPtr arg1, arg2;
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2,
+                      const ITensor::Args& args) override
+    {
+      arg1=a1? a1: a2;
+      arg2=a2? a2: a1;
+      if (!arg1 || !arg2) return;
+
+      Hypercube hc;
+      set<string> dimNames; // for ensuring dimension names are unique
+      switch (arg1->rank())
+        {
+        case 0:
+          throw runtime_error("covariance or ρ needs at least rank 1 arguments");
+        case 1:
+          dimension1=0;
+          break;
+        default:
+          dimension1=-1;
+          for (auto& xv:arg1->hypercube().xvectors)
+            if (xv.name==args.dimension)
+              dimension1=&xv-arg1->hypercube().xvectors.data();
+            else
+              {
+                hc.xvectors.push_back(xv);
+                dimNames.insert(xv.name);
+              }
+          break;
+        }
+      
+      switch (arg2->rank())
+        {
+        case 0:
+          throw runtime_error("covariance or ρ needs at least rank 1 arguments");
+        case 1:
+          dimension2=0;
+          break;
+        default:
+          dimension2=-1;
+          for (auto& xv:arg2->hypercube().xvectors)
+            if (xv.name==args.dimension)
+              dimension2=&xv-arg2->hypercube().xvectors.data();
+            else
+              {
+                hc.xvectors.push_back(xv);
+                if (!dimNames.insert(xv.name).second)
+                  hc.xvectors.back().name+="'"; // ensure dimension names are unique
+              }
+          break;
+        }
+
+      if (dimension1<0 || dimension2<0)
+        throw runtime_error("dimension "+args.dimension+" not found");
+      if (arg1->hypercube().xvectors[dimension1].size() != arg2->hypercube().xvectors[dimension2].size())
+        throw runtime_error("arguments not conformant");
+
+      hypercube(hc);
+        
+    }
+
+    template <class F> void performSum(F f, size_t idx) const
+    {
+      auto splitted=hypercube().splitIndex(idx);
+      auto splitIndexIterator=splitted.begin();
+
+      auto computeIndexAndStride=[&](size_t& lineal, size_t& stride, size_t dimension, const vector<unsigned>& dims) {
+        lineal=0; stride=1;
+        for (size_t i=0, s=1; i<dims.size(); s*=dims[i], ++i)
+          if (i!=dimension)
+            {
+              lineal=*splitIndexIterator++ * s;
+              stride=s*dims[i];
+            }
+      };
+
+      size_t arg1Lineal, arg1Stride, arg2Lineal, arg2Stride;
+      computeIndexAndStride(arg1Lineal, arg1Stride, dimension1, arg1->hypercube().dims());
+      computeIndexAndStride(arg2Lineal, arg2Stride, dimension2, arg2->hypercube().dims());
+      
+      for (size_t i=0; i<arg1->hypercube().xvectors[dimension1].size(); ++i)
+        {
+          auto x=arg1->atHCIndex(arg1Lineal+i*arg1Stride);
+          auto y=arg2->atHCIndex(arg2Lineal+i*arg2Stride);
+          if (isfinite(x) && isfinite(y)) f(x,y);
+        }
+
+    }
+    Timestamp timestamp() const override
+    {return max(arg1->timestamp(), arg2->timestamp());}
+  };
+
+  template <> struct GeneralTensorOp<OperationType::covariance>: public Correlation
+  {
+    double operator[](size_t i) const override
+    {
+      if (!arg1 || !arg2) return nan("");
+      double sumXY=0, sumX=0, sumY=0;
+      size_t count=0;
+      auto f=[&](double x, double y)
+      {
+        sumXY+=x*y;
+        sumX+=x;
+        sumY+=y;
+        count++;
+      };
+      performSum(f,i);
+      return (sumXY-sumX*sumY/count)/(count-1);
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::rho>: public Correlation
+  {
+    double operator[](size_t i) const override
+    {
+      if (!arg1 || !arg2) return nan("");
+      double sumXY=0, sumX=0, sumY=0, sumXsq=0, sumYsq=0;
+      size_t count=0;
+      auto f=[&](double x, double y)
+      {
+        sumXY+=x*y;
+        sumX+=x;
+        sumY+=y;
+        sumXsq+=x*x;
+        sumYsq+=y*y;
+        count++;
+      };
+      performSum(f,i);
+      const double invCount=1.0/count;
+      return  (sumXY-sumX*sumY*invCount)/
+        sqrt((sumXsq-sumX*sumX*invCount)*(sumYsq-sumY*sumY*invCount));
+    }
+  };
+        
+  
+  template <> struct GeneralTensorOp<OperationType::mean>: public civita::Average {};
+  template <> struct GeneralTensorOp<OperationType::stdDev>: public civita::StdDeviation {};
+  
+  template <> struct GeneralTensorOp<OperationType::median>: public civita::ReductionOp
+  {
+    mutable vector<double> values;
+    GeneralTensorOp(): civita::ReductionOp([this](double&,double y,std::size_t) {values.push_back(y);},0) {}
+    double operator[](size_t i) const override
+    {
+      values.clear();
+      civita::ReductionOp::operator[](i);
+      if (values.empty()) return nan("");
+      sort(values.begin(),values.end());
+      const size_t halfIndex=values.size()/2;
+      return (values.size()&1)? values[halfIndex]: 0.5*(values[halfIndex-1]+values[halfIndex]);
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::moment>: public civita::ReductionOp
+  {
+    double exponent;
+    mutable double mean;
+    mutable size_t count;
+    civita::Average average;
+    GeneralTensorOp(): civita::ReductionOp
+    ([this](double& x,double y,std::size_t) {
+      ++count;
+      x+=pow(y-mean, exponent);
+    },0) {}
+    void setArgument(const TensorPtr& arg, const ITensor::Args& args) override {
+      civita::ReductionOp::setArgument(arg,args);
+      average.setArgument(arg,args);
+      exponent=args.val;
+    }
+    double operator[](size_t i) const override
+    {
+      count=0;
+      mean=average[i];
+      auto sum=civita::ReductionOp::operator[](i);
+      return sum/count;
+    }
+  };
+
+  template <> struct GeneralTensorOp<OperationType::histogram>: public civita::DimensionedArgCachedOp
+  {
+    void setArgument(const TensorPtr& a, const ITensor::Args& args) override
+    {
+      civita::DimensionedArgCachedOp::setArgument(a,args);
+      Hypercube hc;
+      if (a && a->rank()>0 && argVal>=1)
+        {
+          // fake the hypercube for now, recomputed in computeTensor
+          if (dimension>a->rank()) // result is a vector
+            hc.dims({unsigned(argVal)});
+          else // rewrite the named dimension
+            {
+              hc=a->hypercube();
+              auto& xv=hc.xvectors[dimension];
+              xv.clear();
+              for (size_t i=0; i<argVal; ++i)
+                xv.push_back(i);
+            }
+        }
+      cachedResult.hypercube(std::move(hc));
+    }
+
+    void computeTensor() const override
+    {
+      // first compute max/min over the whole dataset
+      double min=numeric_limits<double>::max(), max=-numeric_limits<double>::max();
+      for (size_t i=0; i<arg->size(); ++i)
+        {
+          min=std::min((*arg)[i],min);
+          max=std::max((*arg)[i],max);
+        }
+      max*=1.01; // ensure that actual maximum value is mapped to a bin.
+      
+      auto binSize=(max-min)/argVal;
+      if (arg->rank()==0 || binSize==0)
+        {
+          cachedResult.hypercube({});
+          cachedResult[0]=1;
+          return;
+        }
+      
+      // adjust the hypercube
+      auto hc=arg->hypercube();
+      auto dim=dimension;
+      if (dimension>=hc.rank()) // global histogram over all dimensions
+        {
+          hc.xvectors.resize(1);
+          dim=0;
+        }
+
+      auto& xv=hc.xvectors[dim];
+      xv.name="histogram";
+      xv.dimension=Dimension(Dimension::value,"");
+      xv.clear();
+      for (double x=min+0.5*binSize; x<max; x+=binSize)
+        xv.push_back(x);
+      cachedResult.hypercube(std::move(hc));
+      for (size_t i=0; i<cachedResult.size(); ++i) cachedResult[i]=0;
+
+      auto iBinSize=1/binSize;
+      if (cachedResult.rank()>1) // histogram along a particular dimension
+        for (size_t i=0; i<arg->size(); ++i)
+          {
+            auto splitted=arg->hypercube().splitIndex(i);
+            splitted[dim]=((*arg)[i]-min)*iBinSize;
+            cachedResult[cachedResult.hypercube().linealIndex(splitted)]+=1;
+          }
+      else  // histogram over the lot
+        for (size_t i=0; i<arg->size(); ++i)
+          {
+            auto index=((*arg)[i]-min)*iBinSize;
+            cachedResult[index]+=1;
+          }
+    }
+  };
+
+    
   namespace {
       // arrange for arguments to be expanded over a common hypercube
     void meldArgsIntoCommonHypercube(vector<TensorPtr>& args) {
@@ -760,7 +1062,7 @@ namespace minsky
         unionHypercube(hc, i->hypercube(), false);
 
       // list of final dimension names in order
-      vector<string> unionDims;
+      vector<string> unionDims; unionDims.reserve(hc.xvectors.size());
       for (auto& i: hc.xvectors) unionDims.push_back(i.name);
 
       // create tensor chains for each argument to permute it into the common hypercube
@@ -771,7 +1073,7 @@ namespace minsky
           auto spread=make_shared<SpreadLast>();
           Hypercube spreadHC;
           for (auto& j: hc.xvectors)
-            if (!argDims.count(j.name))
+            if (!argDims.contains(j.name))
               spreadHC.xvectors.push_back(j);
           spread->setArgument(i,{});
           spread->setSpreadDimensions(spreadHC);
@@ -857,7 +1159,7 @@ namespace minsky
     {
       civita::PermuteAxis::setArgument(arg,args);
       // now construct the permutation corresponding to the slice
-      int slice=args.val;
+      const int slice=args.val;
       vector<size_t> permutation;
       auto argSize=arg->hypercube().xvectors[axis()].size();
       if (slice<0) // negative slices refer to the end (python style)
@@ -921,7 +1223,7 @@ namespace minsky
           else
             selector = (*args[0])[i];
         }
-      ssize_t idx = selector+1.5; // selector selects between args 1..n
+      const ssize_t idx = selector+1.5; // selector selects between args 1..n
       
       if (idx>0 && idx<int(args.size()))
         {
@@ -1080,7 +1382,7 @@ namespace minsky
   {
     result.index(src->index());
     result.hypercube(src->hypercube());
-    OperationPtr tmp(OperationType::copy);
+    const OperationPtr tmp(OperationType::copy);
     auto copy=dynamic_pointer_cast<ITensor>(tensorOpFactory.create(tmp));
     copy->setArgument(make_shared<ConstTensorVarVal>(src,result.ev));
     rhs=std::move(copy);
@@ -1092,7 +1394,7 @@ namespace minsky
     if (rhs)
       {
         assert(result.idx()>=0);
-        bool fvIsGlobalFlowVars=fv==ValueVector::flowVars.data();
+        const bool fvIsGlobalFlowVars=fv==ValueVector::flowVars.data();
         result.index(rhs->index());
         result.hypercube(rhs->hypercube());
         if (fvIsGlobalFlowVars) // hypercube operation may have resized flowVars, invalidating fv

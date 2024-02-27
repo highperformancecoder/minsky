@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ChangeDetectorRef, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AfterViewInit, AfterViewChecked, Component, ChangeDetectorRef, OnDestroy, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {
@@ -11,8 +11,11 @@ import {
   Zoomable,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import * as JSON5 from 'json5';
+import { Subject, takeUntil } from 'rxjs';
+import { NgIf, NgFor, NgStyle } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 
 enum ColType {
   axis = "axis",
@@ -41,14 +44,26 @@ class Dimension {
   units: string;
 };
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-import-csv',
-  templateUrl: './import-csv.component.html',
-  styleUrls: ['./import-csv.component.scss'],
+    selector: 'minsky-import-csv',
+    templateUrl: './import-csv.component.html',
+    styleUrls: ['./import-csv.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatAutocompleteModule,
+        MatOptionModule,
+        NgIf,
+        NgFor,
+        NgStyle,
+    ],
 })
-export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewInit, OnDestroy {
+export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   form: FormGroup;
+
+  destroy$ = new Subject<{}>();
 
   itemId: string;
   systemWindowId: number;
@@ -62,6 +77,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   selected: boolean[]; ///< per column whether column is selected
   mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
+  existingDimensionNames: string[];
+  selectableDimensionNames: string[][];
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
   @ViewChild('fullDialog') fullDialog: ElementRef<HTMLElement>;
@@ -100,8 +117,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   public get horizontalDimName(): AbstractControl {
     return this.form.get('horizontalDimName');
   }
-  public get horizontalDimension(): AbstractControl {
-    return this.form.get('horizontalDimension');
+  public get horizontalDimension() {
+    return this.form.get('horizontalDimension') as FormGroup<any>;
   }
   public get type(): AbstractControl {
     return this.horizontalDimension.get('type');
@@ -124,7 +141,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     private cdr: ChangeDetectorRef
   ) {
     super();
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
       this.isInvokedUsingToolbar = params.isInvokedUsingToolbar;
@@ -159,13 +176,16 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   ngOnInit() {
-    // ??
-    this.form.valueChanges.subscribe(async (_form) => {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async (_form) => {
       if (this.url === _form.url) {
         await this.parseLines();
       }
     });
     document.onkeydown = this.onKeyDown;
+
+    this.electronService.minsky.dimensions.$properties().then(dims => {
+      this.existingDimensionNames = Object.keys(dims);
+    });
   }
 
   ngAfterViewInit() {
@@ -180,6 +200,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
     })();
   }
+
   ngAfterViewChecked() {
     // set state of dimension controls to reflect dialogState
     if (this.inputCsvCanvasContainer) {
@@ -274,7 +295,6 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       // emulate old behaviour, if no datacols specified, all columns to the right of dataColOffset are data
       for (var ii = this.dialogState.dataColOffset as number; ii < this.colType.length; ++ii)
         this.colType[ii] = ColType.data;
-    this.electronService.log(JSON5.stringify(this.colType));
   }
 
   async parseLines() {
@@ -284,6 +304,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     let header = this.dialogState.spec.headerRow;
     this.csvCols = new Array(this.parsedLines[header]?.length);
     this.selected = new Array(this.parsedLines[header]?.length).fill(false);
+    this.selectableDimensionNames = this.parsedLines[this.dialogState.spec.headerRow].map(header => this.getSelectableNameDimensions(header));
     this.updateColumnTypes();
   }
 
@@ -335,6 +356,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
         case 'axis': return "blue";
         case "ignore": return "red";
       }
+    return 'black';
   }
 
   setColTypeImpl(column: number, type: ColType) {
@@ -401,17 +423,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     spec.mergeDelimiters = this.mergeDelimiters.value;
     spec.missingValue = this.missingValue.value;
     spec.quote = this.quote.value;
-    switch (this.separator.value) {
-      case 'tab':
-        spec.separator = '\t';
-        break;
-      case 'space':
-        spec.separator = ' ';
-        break;
-      default:
-        spec.separator = this.separator.value;
-        break;
-    }
+    spec.separator=separatorToChar(this.separator.value);
     spec.horizontalDimension = this.horizontalDimension.value;
 
     this.dialogState.spec.dimensionCols = [];
@@ -501,8 +513,18 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     });
   }
 
+  // creates list of selectable name dimensions, adding header value to existing dimensions if necessary
+  // should not be called from HTML template because this will create a massive number of arrays that have to be garbage-collected
+  getSelectableNameDimensions(headerValue: string) {
+    const selectableDimensions = this.existingDimensionNames.slice();
+    if(!selectableDimensions.includes(headerValue)) selectableDimensions.push(headerValue);
+    return selectableDimensions;
+  }
+
   closeWindow() { this.electronService.closeWindow(); }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

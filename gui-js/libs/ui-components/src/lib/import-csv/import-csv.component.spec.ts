@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImportCsvComponent } from './import-csv.component';
+import { ElectronService } from '@minsky/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ChangeDetectorRef } from '@angular/core';
 
 describe('ImportCsvComponent', () => {
   let component: ImportCsvComponent;
@@ -8,7 +11,8 @@ describe('ImportCsvComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ImportCsvComponent],
+      providers: [ElectronService, ChangeDetectorRef],
+      imports: [ImportCsvComponent, RouterTestingModule],
     }).compileComponents();
   });
 

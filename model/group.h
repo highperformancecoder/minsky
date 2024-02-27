@@ -219,7 +219,7 @@ namespace minsky
   class Group: public ItemT<Group>, public GroupItems, public CallableFunction
   {
     bool m_displayContentsChanged=true;
-    VariablePtr addIOVar();
+    VariablePtr addIOVar(const char*);
   protected:
     /// returns the smallest group whose icon completely encloses the
     /// rectangle given by the argument. If no candidate group found,
@@ -290,8 +290,8 @@ namespace minsky
     /// check if item is a variable and located in an I/O region, and add it if it is
     void checkAddIORegion(const ItemPtr& x);
     
-    void addInputVar() {inVariables.push_back(addIOVar());}
-    void addOutputVar() {outVariables.push_back(addIOVar());}
+    void addInputVar() {inVariables.push_back(addIOVar("input"));}
+    void addOutputVar() {outVariables.push_back(addIOVar("output"));}
 
     /// remove item from group, and also all attached wires.
     void deleteItem(const Item&);

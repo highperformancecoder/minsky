@@ -1,19 +1,27 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subject, takeUntil } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-plot-widget-options',
-  templateUrl: './plot-widget-options.component.html',
-  styleUrls: ['./plot-widget-options.component.scss'],
+    selector: 'minsky-plot-widget-options',
+    templateUrl: './plot-widget-options.component.html',
+    styleUrls: ['./plot-widget-options.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   form: FormGroup;
   itemId: string;
+
+  destroy$ = new Subject<{}>();
 
   public get title(): AbstractControl {
     return this.form.get('title');
@@ -65,7 +73,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
     private electronService: ElectronService,
     private route: ActivatedRoute
   ) {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
     });
 
@@ -141,6 +149,8 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
 
   closeWindow() {this.electronService.closeWindow();}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>copy</TITLE>
-<META NAME="description" CONTENT="copy">
+<TITLE>integrate </TITLE>
+<META NAME="description" CONTENT="integrate ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,39 +16,61 @@
 
 <LINK REL="next" HREF="node72.html">
 <LINK REL="previous" HREF="node70.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="up" HREF="node47.html">
 <LINK REL="next" HREF="node72.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1078"
+<A NAME="tex2html1094"
   HREF="node72.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1076"
-  HREF="node48.html">
+<A NAME="tex2html1092"
+  HREF="node47.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1070"
+<A NAME="tex2html1086"
   HREF="node70.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1079"
-  HREF="node72.html">integrate</A>
-<B> Up:</B> <A NAME="tex2html1077"
-  HREF="node48.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1071"
-  HREF="node70.html">User defined function</A>
+<B> Next:</B> <A NAME="tex2html1095"
+  HREF="node72.html">sqrt</A>
+<B> Up:</B> <A NAME="tex2html1093"
+  HREF="node47.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html1087"
+  HREF="node70.html">copy</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004123000000000000000"></A><A NAME="Operation:copy"></A>
+<H2><A NAME="SECTION004124000000000000000"></A><A NAME="IntOp"></A>
 <BR>
-copy
-</H2> This just copies its input to its output,
-which is redundant on wiring diagrams, but is needed for internal
-purposes.
+integrate <SPAN CLASS="MATH"><IMG
+ WIDTH="31" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img15.png"
+ ALT="$\int dt$"></SPAN>
+</H2>  Creates an integration (or stock)
+variable. Editable attributes include the variable's name and its
+initial value at <SPAN CLASS="MATH"><IMG
+ WIDTH="39" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img190.png"
+ ALT="$t=0$"></SPAN>. The function to be integrated needs to be
+connected to the top port, labelled `<SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img191.png"
+ ALT="$f$"></SPAN>'. The bottom port, labelled `0', can optionally be connected
+to a constant, parameter or variable, which is used to specify the
+initial value of the integral.
+
+<P>
+Note that the units of the integral operator are given by the units of
+the input, multiplied by the <A HREF="node13.html#RungeKutta">time unit</A>, but the units of the <EM>integral's
+  variable</EM> are user specified. It is an error for these to be
+mismatched, and running <EM>dimensional analysis</EM> from the
+<A HREF="node9.html#File">File menu</A> will check for the
+  consistency of this. Note that the user specified units in the
+  integral variable can be used to dimension up the integral if the
+  integral variable is connected to the integral's input.
 
 <P>
 <BR><HR>

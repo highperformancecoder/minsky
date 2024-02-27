@@ -10,25 +10,33 @@
     <minsky-header></minsky-header>
     <div class="tabs-section">
       <div class="tabs example-button-row">
-        <button (click)="changeTab(MainRenderingTabs.canvas)" class="wiring" mat-raised-button>
+        <button (click)="changeTab('minsky.canvas')"
+                classType="tabs:Wiring" class="wiring toolButton" mat-raised-button>
           Wiring
         </button>
-        <button (click)="changeTab(MainRenderingTabs.equations)" class="equations" mat-raised-button>
+        <button (click)="changeTab('minsky.equationDisplay')"
+          classType="tabs:Equations" class="equations toolButton" mat-raised-button>
           Equations
         </button>
-        <button (click)="changeTab(MainRenderingTabs.summary)" class="summary" mat-raised-button>
+        <button (click)="changeTab('itemTab/summary')"
+          classType="tabs:Summary" class="summary toolButton" mat-raised-button>
           Summary
         </button>
-        <button (click)="changeTab(MainRenderingTabs.phillips)" class="phillips" mat-raised-button>
+        <button (click)="changeTab('minsky.phillipsDiagram')"
+          classType="tabs:Phillips" class="phillips toolButton" mat-raised-button>
           Phillips diagram
         </button>
-        <button (click)="changeTab(MainRenderingTabs.plot)" class="plot" mat-raised-button>
-          Plots
+         <div *ngFor="let tab of publicationTabs; let i=index">
+          <button (click)="changeTab('minsky.publicationTabs.@elemNoThrow.'+i)"                  (contextmenu)="pubTabContext($event,'minsky.publicationTabs.@elemNoThrow.'+i)"
+                  classType="tabs:Publication" class="pubTab toolButton" mat-raised-button>
+            {{tab}}
+          </button>
+         </div>
+         <button (click)="addPubTab()"
+                 classType="tabs:Publication" class="pubTab toolButton" title="Add new publication tab" mat-raised-button>
+          +
         </button>
-        <button (click)="changeTab(MainRenderingTabs.godley)" class="godley" mat-raised-button>
-          Godleys
-        </button>
-
+          
         <span class="spacer"></span>
 
         <button class="variables minsky-service" mat-raised-button (click)="startTerminal()">

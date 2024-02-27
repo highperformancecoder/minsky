@@ -19,7 +19,7 @@ import { RecordingManager } from './RecordingManager';
 //TODO:: Remove hardcoding of popup dimensions
 
 export class ApplicationMenuManager {
-  public static createMainApplicationMenu() {
+  public static async createMainApplicationMenu() {
     const scope = this;
     const menu = Menu.buildFromTemplate([
       scope.getFileMenu(),
@@ -40,7 +40,7 @@ export class ApplicationMenuManager {
           click() {
             WindowManager.createPopupWindowWithRouting({
               width: 420,
-              height: 500,
+              height: 600,
               title: '',
               url: `#/headless/menu/file/about`,
             });
@@ -190,7 +190,7 @@ export class ApplicationMenuManager {
         {
           label: 'Dimensional Analysis',
           click: async () => {
-            const res = minsky.dimensionalAnalysis();
+            const res = await minsky.dimensionalAnalysis();
 
             // empty object is returned if no error
             if (typeof res=="object") {
@@ -206,13 +206,23 @@ export class ApplicationMenuManager {
         scope.getExportPlotMenu(),
         {
           label: 'Log simulation',
-          click() {
-            WindowManager.createPopupWindowWithRouting({
-              width: 250,
-              height: 600,
-              title: 'Log simulation',
-              url: `#/headless/menu/file/log-simulation`,
-            });
+          id: 'logging-menu-item', // allows setting and clearing checkmark
+          type: 'checkbox',
+          async click() {
+            if (!await minsky.loggingEnabled())
+            {
+              WindowManager.createPopupWindowWithRouting({
+                width: 250,
+                height: 600,
+                title: 'Log simulation',
+                url: `#/headless/menu/file/log-simulation`,
+              });
+            }
+            else
+            {
+              minsky.closeLogFile();
+              Menu.getApplicationMenu().getMenuItemById('logging-menu-item').checked=false;
+            }
           },
         },
         {
@@ -305,8 +315,9 @@ export class ApplicationMenuManager {
           label: 'Dimensions',
           click() {
             WindowManager.createPopupWindowWithRouting({
-              width: 700,
+              width: 500,
               height: 500,
+              minWidth: 500,
               title: 'Dimensions',
               url: `#/headless/menu/edit/dimensions`,
             });
@@ -421,23 +432,19 @@ export class ApplicationMenuManager {
   }
 
   private static async exportCanvas(
-    extension: string,
+    extension: string, label: string,
     ...args: any[]
   ) {
-    var filePath = await CommandsManager.getFilePathFromExportCanvasDialog(extension);
+    var filePath = await CommandsManager.getFilePathFromExportCanvasDialog(extension,label);
     if (filePath) {
       switch (extension) {
       case 'svg':
-        WindowManager.currentTab.renderToSVG(filePath);
-        break;
       case 'pdf':
-        WindowManager.currentTab.renderToPDF(filePath);
-        break;
       case 'emf':
-        WindowManager.currentTab.renderToEMF(filePath);
-        break;
+      case 'ps':
       case 'eps':
-        WindowManager.currentTab.renderToPS(filePath);
+      case 'png':
+        CommandsManager.exportItemAsImage(WindowManager.currentTab,extension,filePath);
         break;
       case 'tex':
         minsky.latex(filePath,args[0]);
@@ -456,31 +463,35 @@ export class ApplicationMenuManager {
       submenu: [
         {
           label: 'SVG',
-          click: () => {scope.exportCanvas('svg');}
+          click: () => {scope.exportCanvas('svg','SVG');}
         },
         {
           label: 'PDF',
-          click: () => {scope.exportCanvas('pdf');}
+          click: () => {scope.exportCanvas('pdf','PDF');}
         },
         {
           label: 'EMF',
           visible: Functions.isWindows(),
-          click: () => {scope.exportCanvas('emf');}
+          click: () => {scope.exportCanvas('emf','EMF');}
         },
         {
           label: 'PostScript',
-          click: () => {scope.exportCanvas('eps');}
+          click: () => {scope.exportCanvas('eps','Postcsript');}
+        },
+        {
+          label: 'Portable Network Graphics',
+          click: () => {scope.exportCanvas('png','Portable Network Graphics');}
         },
         {
           label: 'LaTeX',
           click: () => {scope.exportCanvas(
-            'tex',
+            'tex','LaTeX',
             StoreManager.store.get('preferences').wrapLongEquationsInLatexExport,
           );},
         },
         {
           label: 'Matlab',
-          click: () => {scope.exportCanvas('m');}
+          click: () => {scope.exportCanvas('m','Matlab');}
         },
       ],
     };
@@ -605,7 +616,7 @@ export class ApplicationMenuManager {
     };
   }
   static async buildMenuForInsertOperations() {
-    const availableOperationsMapping = minsky.availableOperationsMapping();
+    const availableOperationsMapping = await minsky.availableOperationsMapping();
     let insertOperationsMenu: MenuItem[] = [];
     let menuNames={
       "constop": "Fundamental Constants",

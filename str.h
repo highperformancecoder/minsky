@@ -152,6 +152,20 @@ namespace minsky
     s.seekg(0); //rewind input stream
   }
 
+  /// quotes a string if it contains a separator character, and double quotes quotes
+  inline std::string CSVQuote(const std::string& x, char sep)
+  {
+    std::string r;
+    bool needsQuoting=false;
+    for (auto c: x)
+      {
+        r+=c;
+        if (c=='"') {r+='"'; needsQuoting=true;}
+        if (c==sep) needsQuoting=true;
+      }
+    if (needsQuoting) return "\""+r+"\"";
+    return r;
+  }
   
 }
 #endif

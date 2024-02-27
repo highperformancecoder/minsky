@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Sheet Widget</TITLE>
-<META NAME="description" CONTENT="Sheet Widget">
+<TITLE>Sliders</TITLE>
+<META NAME="description" CONTENT="Sliders">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,58 +16,49 @@
 
 <LINK REL="next" HREF="node121.html">
 <LINK REL="previous" HREF="node119.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node116.html">
 <LINK REL="next" HREF="node121.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1587"
+<A NAME="tex2html1614"
   HREF="node121.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1585"
-  HREF="node47.html">
+<A NAME="tex2html1612"
+  HREF="node116.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1579"
+<A NAME="tex2html1606"
   HREF="node119.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1588"
-  HREF="node121.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html1586"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1580"
-  HREF="node119.html">Plot widget</A>
+<B> Next:</B> <A NAME="tex2html1615"
+  HREF="node121.html">Importing a parameter from</A>
+<B> Up:</B> <A NAME="tex2html1613"
+  HREF="node116.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html1607"
+  HREF="node119.html">Tensor valued initial conditions</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00490000000000000000"></A>
-<A NAME="Sheet"></A>
-<BR>
-Sheet Widget
-</H1> The Sheet widget displays input data as a number, rather
-than as a 2D graph, as in the case of the plot widget.  To use the
-Sheet widget, simply wire a variable or other item on your canvas to
-the left-hand side of the sheet widget box. This will diplay the input
-data as a number. Note that only one wire can be connected to a sheet,
-as the sheet can only display a single input value.
+<H2><A NAME="SECTION00444000000000000000">
+Sliders</A>
+</H2>
 
 <P>
-The sheet widget can also display rank 0, 1 and rank 2 tensors. These
-ranks are single values, a string of values, or a 2D matrix of values,
-respectively.  For example, if you create a parameter, and set the
-initial condition to rand(3,5) (for reference, see section
-(&#167;<A HREF="node111.html#tensor-init">4.4.3</A>) ), you can wire that into a sheet.  The sheet
-will then diplay the data in a grid display within the widget box.
+From the context menu, one can select a slider to be attached to a
+variable, which is a GUI &ldquo;knob&rdquo; allowing one to control a variable's
+initial value, or the value of a parameter or constant. Adjusting the
+slider of an integral (or stock) variable while the system is running
+actually adjusts the present value of the variable. The sliders can
+also be adjusted using the keyboard arrow keys.
 
 <P>
-If you have Ravel<SUP><SMALL>TM</SMALL></SUP> installed, you will see a small
-<A HREF="node127.html#Ravel">Ravel</A> icon in the top left
-corner. Clicking this causes a ravel window to pop up, allowing you to
-manipulate the input data to the sheet, so as to change slices or
-rotate a multidimensional datacube.
+Slider parameters are specified in the edit menu: max, min and step
+size. A relative slider means that the step size is expressed as a
+fraction of max-min.
 
 <P>
 <BR><HR>

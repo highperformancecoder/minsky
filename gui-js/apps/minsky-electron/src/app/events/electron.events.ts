@@ -18,7 +18,6 @@ import {
   ImportStockPayload,
   GodleyIcon,
 } from '@minsky/shared';
-//import * as debug from 'debug';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
@@ -39,8 +38,16 @@ export default class ElectronEvents {
   }
 }
 
+ipcMain.handle(events.LOG_MESSAGE, async (event, message: string)=>{
+  return await CppClass.logMessage(message);
+});
+
 ipcMain.handle(events.BACKEND, async (event, ...args: any[])=>{
   return await CppClass.backend(...args);
+});
+
+ipcMain.handle(events.BACKEND_SYNC, async (event, ...args: any[])=>{
+  return CppClass.backendSync(...args);
 });
 
 ipcMain.handle(events.LOG, (event, msg:string)=>{console.log(msg);});
@@ -102,12 +109,16 @@ ipcMain.on(
   }
 );
 
-ipcMain.on(events.CHANGE_MAIN_TAB, async (event, payload: ChangeTabPayload) => {
-  await WindowManager.setCurrentTab(new RenderNativeWindow(payload.newTab));
+ipcMain.handle(events.CHANGE_MAIN_TAB, async (event, payload: ChangeTabPayload) => {
+  return await WindowManager.setCurrentTab(new RenderNativeWindow(payload.newTab));
 });
 
 ipcMain.on(events.UPDATE_BOOKMARK_LIST, async (event) => {
   await BookmarkManager.updateBookmarkList();
+});
+
+ipcMain.handle(events.NEW_PUB_TAB, async (event) => {
+  return await CommandsManager.newPubTab();
 });
 
 ipcMain.on(
@@ -210,10 +221,8 @@ ipcMain.handle(events.NEW_SYSTEM, async () => {
 
 ipcMain.handle(
   events.IMPORT_CSV,
-  async (event, payload: MinskyProcessPayload) => {
-    const { mouseX, mouseY } = payload;
-
-    const itemInfo = await CommandsManager.getItemInfo(mouseX, mouseY);
+  async (event) => {
+    const itemInfo = await CommandsManager.getFocusItemInfo();
     CommandsManager.importCSV(itemInfo, true);
     return;
   }

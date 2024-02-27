@@ -17,34 +17,30 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CSVDialog.h"                                                           
-#include "group.h"                                                               
+#include "CSVDialog.h"
+#include "group.h"
 #include "selection.h"
 #include "lasso.h"
 #include <pango.h>
 
 #include "CSVDialog.rcd"
-#include "minsky_epilogue.h"                                                     
+#include "minsky_epilogue.h"
 #include "zStream.h"
 #include "dimension.h"
-                                                                                 
-#include <boost/asio/ssl/error.hpp>                                              
-#include <boost/asio/ssl/stream.hpp>                                             
-#include <boost/asio.hpp>                                                        
-#include <boost/beast/core.hpp>                                                  
-#include <boost/beast/http.hpp>                                                  
-#include <boost/beast/version.hpp>  
-                                                                                        
-#include <boost/filesystem.hpp>                                                  
-                                                                                 
-#include "certify/include/boost/certify/extensions.hpp"                          
-#include "certify/include/boost/certify/https_verification.hpp"                  
-                                                                                 
+#include <boost/asio/ssl/error.hpp>
+#include <boost/asio/ssl/stream.hpp>
+#include <boost/asio.hpp>
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/version.hpp>
+#include <boost/filesystem.hpp>
+#include "certify/include/boost/certify/extensions.hpp"
+#include "certify/include/boost/certify/https_verification.hpp"
 #include <cstdlib>
 #include <chrono>
-#include <iostream>                                                              
-#include <string>                                                                
-#include <stdexcept>                                                                                                                         
+#include <iostream>
+#include <string>
+#include <stdexcept>
 #include <sstream>      
 #include <regex>    
 
@@ -120,7 +116,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
     }
   
   // Parse input URL. Also handles URLs of the type username:password@example.com/pathname#section. See https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
-  regex ex(R"((http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\??([^ #]*)#?([^ ]*)|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
+  const regex ex(R"((http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\??([^ #]*)#?([^ ]*)|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
   cmatch what;
   if (regex_match(url.c_str(), what, ex)) {
    // what[0] contains the whole string 	 
@@ -224,9 +220,10 @@ void CSVDialog::loadFile()
 void CSVDialog::guessSpecAndLoadFile()
 {
   spec=DataSpec();
-  string fname = url.find("://")==string::npos? url: loadWebFile(url);
+  const string fname = url.find("://")==string::npos? url: loadWebFile(url);
   spec.guessFromFile(fname);
   loadFileFromName(fname);
+  populateHeaders();
   classifyColumns();
 }
 
@@ -256,7 +253,7 @@ vector<vector<string>> parseLines(const Parser& parser, const vector<string>& li
       r.emplace_back();
       try
         {
-          boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
+          const boost::tokenizer<Parser> tok(line.begin(), line.end(), parser);
           for (auto& t: tok)
             r.back().push_back(t);
         }
@@ -277,7 +274,7 @@ namespace
     CroppedPango(cairo_t* cairo, double width): Pango(cairo), cairo(cairo), w(width) {}
     void setxy(double xx, double yy) {x=xx; y=yy;}
     void show() {
-      CairoSave cs(cairo);
+      const CairoSave cs(cairo);
       cairo_rectangle(cairo,x,y,w,height());
       cairo_clip(cairo);
       cairo_move_to(cairo,x,y);
@@ -326,12 +323,12 @@ bool CSVDialog::redraw(int, int, int, int)
     {
       if (col<spec.nColAxes())
         {// dimension check boxes
-          CairoSave cs(cairo);
-          double cbsz=5;
+          const CairoSave cs(cairo);
+          const double cbsz=5;
           cairo_set_line_width(cairo,1);
           cairo_translate(cairo,x+0.5*colWidth,y+0.5*rowHeight);
           cairo_rectangle(cairo,-cbsz,-cbsz,2*cbsz,2*cbsz);
-          if (spec.dimensionCols.count(col))
+          if (spec.dimensionCols.contains(col))
             {
               cairo_move_to(cairo,-cbsz,-cbsz);
               cairo_line_to(cairo,cbsz,cbsz);
@@ -342,21 +339,21 @@ bool CSVDialog::redraw(int, int, int, int)
         }
       y+=rowHeight;
       // type
-      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes())
+      if (spec.dimensionCols.contains(col) && col<spec.dimensions.size() && col<spec.nColAxes())
         {
           pango.setText(classdesc::enumKey<Dimension::Type>(spec.dimensions[col].type));
           pango.setxy(x,y);
           pango.show();
         }
       y+=rowHeight;
-      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes())
+      if (spec.dimensionCols.contains(col) && col<spec.dimensions.size() && col<spec.nColAxes())
         {
           pango.setText(spec.dimensions[col].units);
           pango.setxy(x,y);
           pango.show();
         }
       y+=rowHeight;
-      if (spec.dimensionCols.count(col) && col<spec.dimensionNames.size() && col<spec.nColAxes())
+      if (spec.dimensionCols.contains(col) && col<spec.dimensionNames.size() && col<spec.nColAxes())
         {
           pango.setText(spec.dimensionNames[col]);
           pango.setxy(x,y);
@@ -368,7 +365,7 @@ bool CSVDialog::redraw(int, int, int, int)
           auto& line=parsedLines[row];
           if (col<line.size())
             {
-              CairoSave cs(cairo);
+              const CairoSave cs(cairo);
               pango.setText(line[col]);
               pango.setxy(x, y);
               if (row==spec.headerRow)
@@ -376,7 +373,7 @@ bool CSVDialog::redraw(int, int, int, int)
                   cairo_set_source_rgb(surface->cairo(),0,0.7,0);
                 else
                   cairo_set_source_rgb(surface->cairo(),0,0,1);
-              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.count(col)))
+              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.contains(col)))
                 cairo_set_source_rgb(surface->cairo(),1,0,0);
               else if (col<spec.nColAxes())
                 cairo_set_source_rgb(surface->cairo(),0,0,1);
@@ -387,7 +384,7 @@ bool CSVDialog::redraw(int, int, int, int)
           y+=rowHeight;
         }
       {
-        CairoSave cs(cairo);
+        const CairoSave cs(cairo);
         cairo_set_source_rgb(cairo,.5,.5,.5);
         cairo_move_to(cairo,x-2.5,0);
         cairo_rel_line_to(cairo,0,(parsedLines.size()+4)*rowHeight);
@@ -399,7 +396,7 @@ bool CSVDialog::redraw(int, int, int, int)
   m_tableWidth=(col-1)*(colWidth+5);
   for (size_t row=0; row<parsedLines.size()+5; ++row)
     {
-      CairoSave cs(cairo);
+      const CairoSave cs(cairo);
       cairo_set_source_rgb(cairo,.5,.5,.5);
       cairo_move_to(cairo,xoffs-2.5,row*rowHeight);
       cairo_rel_line_to(cairo,m_tableWidth,0);
@@ -444,14 +441,14 @@ std::vector<std::vector<std::string>> CSVDialog::parseLines()
 void CSVDialog::populateHeaders()
 {
   auto parsedLines=parseLines();
-  if (spec.headerRow>parsedLines.size()) return;
+  if (spec.headerRow>=parsedLines.size()) return;
   spec.dimensionNames=parsedLines[spec.headerRow];
 }
 
 void CSVDialog::populateHeader(size_t col)
 {
   auto parsedLines=parseLines();
-  if (spec.headerRow>parsedLines.size()) return;
+  if (spec.headerRow>=parsedLines.size()) return;
   auto& headers=parsedLines[spec.headerRow];
   if (col<headers.size())
     spec.dimensionNames[col]=headers[col];
@@ -463,16 +460,16 @@ void CSVDialog::classifyColumns()
   spec.dimensionCols.clear();
   spec.dataCols.clear();
   spec.dimensions.resize(spec.numCols);
-  for (auto col=0; col<spec.numCols; ++col)
+  for (size_t col=0; col<spec.numCols; ++col)
     {
       bool entryFound=false, timeFound=true, numberFound=true;
-      for (size_t row=spec.dataRowOffset; row<parsedLines.size(); ++row)
+      for (size_t row=spec.nRowAxes(); row<parsedLines.size(); ++row)
         if (col<parsedLines[row].size() && !parsedLines[row][col].empty())
           {
             entryFound=true;
             if (numberFound && !isNumerical(parsedLines[row][col]))
               numberFound=false;
-            static AnyVal any(Dimension(Dimension::time,""));
+            static const AnyVal any(Dimension(Dimension::time,""));
             if (timeFound)
               try
                 {any(parsedLines[row][col]);}
@@ -493,6 +490,8 @@ void CSVDialog::classifyColumns()
               spec.dimensions[col].units.clear();
             }
         }
+      else if (col>=spec.nColAxes())
+        spec.dataCols.insert(col);
     }
 }
 

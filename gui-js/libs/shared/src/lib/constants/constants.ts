@@ -17,6 +17,7 @@ export const events = {
   ADD_RECENT_FILE: 'add-recent-file',
   APP_LAYOUT_CHANGED: 'app-layout-changed',
   BACKEND: 'backend',
+  BACKEND_SYNC: 'backend-sync',
   CHANGE_MAIN_TAB: 'change-main-tab',
   CLOSE_WINDOW: 'close-window',
   CONTEXT_MENU: 'context-menu',
@@ -39,12 +40,15 @@ export const events = {
   LOG: 'log',
   LOG_SIMULATION: 'log-simulation',
   NEW_SYSTEM: 'new-system',
+  NEW_PUB_TAB: 'new-pub-tab',
   OPEN_FILE_DIALOG: 'open-file-dialog',
+  PUB_TAB_REMOVED: 'pub-tab-removed',
   RECORD: 'record',
   RECORDING_REPLAY: 'recording-replay',
   RECORDING_STATUS_CHANGED: 'recording-status-changed',
   REPLAY_RECORDING: 'replay-recording',
   RESET_ZOOM: 'reset-zoom',
+  RESET_SCROLL: 'reset-scroll',
   SAVE_FILE_DIALOG: 'save-file-dialog',
   SAVE_HANDLE_DESCRIPTION: 'save-handle-description',
   SAVE_HANDLE_DIMENSION: 'save-handle-dimension',
@@ -54,6 +58,7 @@ export const events = {
   UPDATE_BOOKMARK_LIST: 'update-bookmark-list',
   UPDATE_PREFERENCES: 'update-preferences',
   ZOOM: 'zoom',
+  LOG_MESSAGE: 'log-message'
 };
 
 // add non exposed commands here to get intellisense on the terminal popup

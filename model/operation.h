@@ -115,6 +115,77 @@ namespace minsky
     /// @}
 
   };
+
+  /// helper class to draw port label symbols
+  struct DrawBinOp
+  {
+    cairo_t *cairo;
+    double zoomFactor;
+    DrawBinOp(cairo_t *cairo, double z=1): cairo(cairo), zoomFactor(z) {}
+
+    void drawPlus() const
+    {
+      cairo_move_to(cairo,0,-5);
+      cairo_line_to(cairo,0,5);
+      cairo_move_to(cairo,-5,0);
+      cairo_line_to(cairo,5,0);
+      cairo_stroke(cairo);
+    }
+
+    void drawMinus() const
+    {
+      cairo_move_to(cairo,-5,0);
+      cairo_line_to(cairo,5,0);
+      cairo_stroke(cairo);
+    }
+
+    void drawMultiply() const
+    {
+      cairo_move_to(cairo,-5,-5);
+      cairo_line_to(cairo,5,5);
+      cairo_move_to(cairo,-5,5);
+      cairo_line_to(cairo,5,-5);
+      cairo_stroke(cairo);
+    }
+
+    void drawDivide() const
+    {
+      cairo_move_to(cairo,-5,0);
+      cairo_line_to(cairo,5,0);
+      cairo_new_sub_path(cairo);
+      cairo_arc(cairo,0,3,1,0,2*M_PI);
+      cairo_new_sub_path(cairo);
+      cairo_arc(cairo,0,-3,1,0,2*M_PI);
+      cairo_stroke(cairo);
+    }
+
+    void drawSymbol(const char* s) const
+    {
+      cairo_scale(cairo,zoomFactor,zoomFactor);
+      cairo_move_to(cairo,-5,0);
+      cairo_show_text(cairo,s);
+    }
+  
+    // puts a small symbol to identify port
+    // x, y = position of symbol
+    template <class F>
+    void drawPort(F f, float x, float y, float rotation)  const
+    {
+      const ecolab::cairo::CairoSave cs(cairo);
+      
+      const double angle=rotation * M_PI / 180.0;
+      if (minsky::flipped(rotation))
+        y=-y;
+      cairo_rotate(cairo, angle);
+      
+      cairo_translate(cairo,0.7*x,0.6*y);
+      cairo_scale(cairo,0.5,0.5);
+      
+      // and counter-rotate
+      cairo_rotate(cairo, -angle);
+      f();
+    }
+  };
 }
 
 #include "operation.cd"

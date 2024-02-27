@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Canvas background and keyboard shortcuts</TITLE>
-<META NAME="description" CONTENT="Canvas background and keyboard shortcuts">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,104 +15,60 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node125.html">
-<LINK REL="previous" HREF="node123.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="previous" HREF="node116.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node125.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1627"
+<A NAME="tex2html1652"
   HREF="node125.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1625"
-  HREF="node47.html">
+<A NAME="tex2html1650"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1619"
+<A NAME="tex2html1644"
   HREF="node123.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1628"
-  HREF="node125.html">Dimensional Analysis</A>
-<B> Up:</B> <A NAME="tex2html1626"
-  HREF="node47.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1620"
-  HREF="node123.html">Context Menu</A>
+<B> Next:</B> <A NAME="tex2html1653"
+  HREF="node125.html">Tensor values</A>
+<B> Up:</B> <A NAME="tex2html1651"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1645"
+  HREF="node123.html">Variable Browser</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004130000000000000000">
-Canvas background and keyboard shortcuts</A>
+<H1><A NAME="SECTION00450000000000000000">
+Wires</A>
 </H1>
 
 <P>
-The canvas is not simply an inert place for the canvas items to
-exist. There is also a background context menu, giving access to the
-edit menu functionality such as cut/copy/paste, and also keyboard
-entry.
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire attached,
+with the exception of <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img46.png"
+ ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img249.png"
+ ALT="$\times/\div$"></SPAN>, where the multiple
+wires are summed or multiplied, respectively, and similarly max/min.
 
 <P>
-Special keys:
-<TABLE CELLPADDING=3>
-<TR><TD ALIGN="RIGHT">F1</TD>
-<TD ALIGN="LEFT">context sensitive help</TD>
-</TR>
-<TR><TD ALIGN="RIGHT">Shift</TD>
-<TD ALIGN="LEFT">enter panning mode</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><!-- MATH
- $\leftarrow,\rightarrow,\uparrow,\downarrow$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="73" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img251.png"
- ALT="$\leftarrow,\rightarrow,\uparrow,\downarrow$"></SPAN></TD>
-<TD ALIGN="LEFT">adjust sliders, adjust Ravel slicers</TD>
-</TR>
-</TABLE>  
-
-<P>
-The following keystrokes insert an operation
-
-<P>
-<TABLE CELLPADDING=3>
-<TR><TD ALIGN="RIGHT"><code>+</code></TD>
-<TD ALIGN="LEFT">add</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>-</code></TD>
-<TD ALIGN="LEFT">subtract</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>*</code></TD>
-<TD ALIGN="LEFT">multiply</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code></code>/</TD>
-<TD ALIGN="LEFT">divide</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>^</code></TD>
-<TD ALIGN="LEFT">pow</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>%</code></TD>
-<TD ALIGN="LEFT">percent operator</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>&amp;</code></TD>
-<TD ALIGN="LEFT">integral</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>=</code></TD>
-<TD ALIGN="LEFT">Godley table</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>@</code></TD>
-<TD ALIGN="LEFT">plot</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>#</code></TD>
-<TD ALIGN="LEFT">start a text comment, finish with return</TD>
-</TR>
-</TABLE>
-
-<P>
-Typing any other character, then return will insert an operation (if
-the name matches), or otherwise a variable with that name.
+Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
 <BR><HR>

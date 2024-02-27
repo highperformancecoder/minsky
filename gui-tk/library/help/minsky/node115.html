@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Variable Browser</TITLE>
-<META NAME="description" CONTENT="Variable Browser">
+<TITLE>Switch</TITLE>
+<META NAME="description" CONTENT="Switch">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,48 +14,84 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node114.html">
-<LINK REL="up" HREF="node108.html">
+<LINK REL="next" HREF="node116.html">
+<LINK REL="previous" HREF="node87.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node116.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1537"
+<A NAME="tex2html1557"
   HREF="node116.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1535"
-  HREF="node108.html">
+<A NAME="tex2html1555"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1531"
+<A NAME="tex2html1549"
   HREF="node114.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1538"
-  HREF="node116.html">Wires</A>
-<B> Up:</B> <A NAME="tex2html1536"
-  HREF="node108.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1532"
-  HREF="node114.html">Duplicate keys</A>
+<B> Next:</B> <A NAME="tex2html1558"
+  HREF="node116.html">Variables</A>
+<B> Up:</B> <A NAME="tex2html1556"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1550"
+  HREF="node114.html">Correlation coefficient</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00447000000000000000"></A><A NAME="VariableBrowser"></A>
+<H1><A NAME="SECTION00430000000000000000"></A><A NAME="SwitchIcon"></A>
 <BR>
-Variable Browser
-</H2>
+Switch
+</H1>
 
 <P>
-The <EM>variable browser</EM> is a popup window that shows all currently
-defined variables in the system. This is a convenience toolbar that
-allows one to select a variable for insertion into the design canvas,
-instead of having to type the new variable's name from scratch.
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
+ -->
+<IMG
+ WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img66.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
+   A switch block (also known as a case
+block, or select in the Fortran world) is a way of selecting from a
+range of alternatives according to the value of the input, effectively
+defining a piecewise function.
 
 <P>
-At the top of the variable browser are some filter checkboxes, that
-allow you filter the variables shown by variable type.
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
+ -->
+<IMG
+ WIDTH="542" HEIGHT="249" ALIGN="BOTTOM" BORDER="0"
+ SRC="img233.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}"> <EM>    An example switch block with 3 cases</EM>
+
+</DIV>
+
+<P>
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1, or
+false and true, a two case switch statement will naturally appear
+&ldquo;upside down&rdquo; to how you might think of an if statement. In other
+words, it looks like:
+
+<P>
+<IMG
+ WIDTH="163" HEIGHT="66" ALIGN="MIDDLE" BORDER="0"
+ SRC="img234.png"
+ ALT="$\textstyle \parbox{\textwidth}{
+{\tt if not }{\em condition} {\tt then}\\
+\ldots
+{\tt else}\\
+\ldots }$">
+<P>
+You can add or remove cases through the context menu.
 
 <P>
 <BR><HR>

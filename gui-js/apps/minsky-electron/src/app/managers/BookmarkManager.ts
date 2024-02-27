@@ -13,7 +13,6 @@ export class BookmarkManager {
       .getMenuItemById('main-bookmark')
       .submenu.getMenuItemById('delete-bookmark').submenu;
 
-    const disableAllBookmarksInListAndDelete = () => {
       mainSubmenu.items.forEach((bookmark) => {
         if (bookmark.id === 'minsky-bookmark') {
           bookmark.visible = false;
@@ -25,9 +24,7 @@ export class BookmarkManager {
           bookmark.visible = false;
         }
       });
-    };
 
-    const addNewBookmarks = () => {
       if (bookmarks.length) {
         bookmarks.forEach((bookmark, index) => {
           mainSubmenu.append(
@@ -58,13 +55,11 @@ export class BookmarkManager {
           );
         });
       }
-    };
-
-    disableAllBookmarksInListAndDelete();
-    addNewBookmarks();
   }
 
   static async updateBookmarkList() {
-    this.populateBookmarks(await minsky.canvas.model.bookmarkList());
+    let bookmarks=await minsky.canvas.model.bookmarkList();
+    if (bookmarks!==null) // TODO why is this sometime null?
+      this.populateBookmarks(bookmarks);
   }
 }

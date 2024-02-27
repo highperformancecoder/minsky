@@ -15,13 +15,16 @@
     justify-content: center;
     align-items: center;
 
-    .import {
-      .url {
-        width: 35rem;
-      }
+    .url {
+      flex: 0 1 500px;
     }
 
-    * {
+    span {
+      margin: 5px 10px;
+    }
+
+    button {
+      flex: 0 0 80px;
       margin: 5px 10px;
     }
   }
@@ -34,32 +37,39 @@
     justify-content: center;
     flex-wrap: wrap;
 
-    span {
-      margin: 0px 3px;
-      flex: 0 0 100px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    span.inputs-group {
+      flex: 0 0 636px;
 
-      label {
+      display: flex;
+      justify-content: center;
+
+      span {
+        margin: 0px 3px;
+        flex: 0 0 100px;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
         align-items: center;
-        text-align: center;
-        font-weight: bold;
-        font-size: 14px;
-        margin-bottom: 5px;
-        min-height: 35px;
-      }
 
-      * {
-        width: 100%;
-      }
+        label {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: center;
+          text-align: center;
+          font-weight: bold;
+          font-size: 14px;
+          margin-bottom: 5px;
+          min-height: 35px;
+        }
 
-      select {
-        cursor: pointer;
-        height: 21px;
+        * {
+          width: 100%;
+        }
+
+        select {
+          cursor: pointer;
+          height: 21px;
+        }
       }
     }
   }
@@ -78,20 +88,17 @@
   }
 }
 
-.autocomplete {
-  width: 11.125rem;
+::ng-deep .mat-mdc-autocomplete-panel {
+  width: 9rem !important;
 }
 
-::ng-deep .mat-option-text {
-  font-size: 0.7rem !important;
-}
+::ng-deep .mat-mdc-option {
+  min-height: 0.9rem !important;
+  height: 0.9rem !important;
 
-::ng-deep .mat-option {
-  height: 18px !important;
-}
-
-::ng-deep .cdk-overlay-pane {
-  height: 4.5rem !important;
+  span.mdc-list-item__primary-text {
+    font-size: 0.8rem !important;
+  }
 }
 
 table {

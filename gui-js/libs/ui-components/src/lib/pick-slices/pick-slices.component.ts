@@ -2,11 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { MessageBoxSyncOptions } from 'electron/renderer';
+import { MatButtonModule } from '@angular/material/button';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'minsky-pick-slices',
-  templateUrl: './pick-slices.component.html',
-  styleUrls: ['../generic-form.scss', './pick-slices.component.scss'],
+    selector: 'minsky-pick-slices',
+    templateUrl: './pick-slices.component.html',
+    styleUrls: ['../generic-form.scss', './pick-slices.component.scss'],
+    standalone: true,
+    imports: [NgFor, MatButtonModule],
 })
 export class PickSlicesComponent implements OnInit {
   sliceLabels: {label: string, selected: boolean, lastClicked: boolean}[] = [];

@@ -33,19 +33,19 @@ namespace minsky
 
   namespace
   {
-    Minsky* l_minsky=NULL;
+    vector<Minsky*> l_minsky;
   }
 
   Minsky& minsky()
   {
     static Minsky s_minsky;
-    if (l_minsky)
-      return *l_minsky;
-    return s_minsky;
+    if (l_minsky.empty())
+      return s_minsky;
+    return *l_minsky.back();
   }
 
-  LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
-  LocalMinsky::~LocalMinsky() {l_minsky=NULL;}
+  LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky.push_back(&minsky);}
+  LocalMinsky::~LocalMinsky() {l_minsky.pop_back();}
 
 }
 namespace ecolab {Tk_Window mainWin=0;}

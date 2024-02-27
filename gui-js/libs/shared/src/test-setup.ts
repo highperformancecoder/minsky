@@ -1,5 +1,5 @@
 import 'jest-preset-angular/setup-jest';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import {CppClass} from '@minsky/shared';
 
 const restService = require('bindings')('../../node-addons/minskyRESTService.node');

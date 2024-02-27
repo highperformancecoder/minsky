@@ -21,7 +21,7 @@
       border: 2px solid $toolbar-border;
     }
   }
-  .mat-button-base {
+  .mat-mdc-button-base {
     margin: 5px 5px 5px 0;
   }
 }
@@ -32,7 +32,7 @@
   .tabs {
     display: flex;
     border-bottom: 1px solid $toolbar-box;
-    flex-wrap: wrap;
+    flex-wrap: no-wrap;
     .tab {
       border-left: 2px solid $toolbar-border;
       background-color: $toolbar-bg;
@@ -61,8 +61,8 @@
   top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
-  ::ng-deep .mat-progress-spinner circle,
-  .mat-spinner circle {
+  ::ng-deep .mat-mdc-progress-spinner circle,
+  .mat-mdc-spinner circle {
     stroke: $primary-yellow;
   }
 }

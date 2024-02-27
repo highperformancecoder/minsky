@@ -6,18 +6,23 @@ import {
   RecordingStatus,
   ReplayRecordingStatus,
 } from '@minsky/shared';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subject, takeUntil } from 'rxjs';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
+import { NgClass } from '@angular/common';
 
-@AutoUnsubscribe()
 @Component({
-  selector: 'minsky-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+    selector: 'minsky-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: true,
+    imports: [NgClass, ToolbarComponent],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   headerEvent = 'HEADER_EVENT';
   isRecordingOn = false;
   isReplayRecordingOn = false;
+
+  destroy$ = new Subject<{}>();
 
   constructor(
     public commService: CommunicationService,
@@ -47,7 +52,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
       );
 
-      this.commService.ReplayRecordingStatus$.subscribe(
+      this.commService.ReplayRecordingStatus$.pipe(takeUntil(this.destroy$)).subscribe(
         (status: ReplayRecordingStatus) => {
           switch (status) {
             case ReplayRecordingStatus.ReplayStarted:
@@ -101,6 +106,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function,@angular-eslint/no-empty-lifecycle-method
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next(undefined);
+    this.destroy$.complete();
+  }
 }

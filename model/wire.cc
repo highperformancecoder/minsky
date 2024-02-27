@@ -51,7 +51,7 @@ namespace minsky
         {
           c.push_back(f->x());
           c.push_back(f->y());
-          float d=sqrt
+          const float d=sqrt
             (sqr(f->x()-t->x())+sqr(f->y()-t->y()));
 
           for (size_t i=0; m_coords.size()>1 && i<m_coords.size()-1; i+=2)
@@ -73,7 +73,7 @@ namespace minsky
       {
         assert(coords.size() % 2 == 0);
         
-        float d=1/sqrt
+        const float d=1/sqrt
           (sqr(coords[coords.size()-2]-coords[0])+sqr(coords[coords.size()-1]-coords[1]));
         m_coords.resize(coords.size()-4);
         for (size_t i=2; i<coords.size()-3; i+=2)
@@ -107,7 +107,6 @@ namespace minsky
 
   bool Wire::visible() const
   {
-    if (attachedToDefiningVar()) return false;	  
     auto f=from(), t=to();
     auto fgroup=f->item().group.lock(), tgroup=t->item().group.lock();
     return f && t && 
@@ -288,7 +287,7 @@ namespace
   
     assert(knots.size() > 2); 
     
-    size_t n = knots.size() - 1;
+    const size_t n = knots.size() - 1;
     
     vector<pair<float,float>> result(2*n); 
  
@@ -314,11 +313,11 @@ namespace
       for (size_t j = 0; j < n; j++) {
          if (i == j + 1)
          {
-			float targetScale = 1.0/(triDiag[i][i] - triDiag[i][j] * newTriDiag[i-1][j+1]); 
-            newTarget[i].first = (target[i].first-(newTarget[i-1].first*(triDiag[i][j])))*(targetScale);
-            newTarget[i].second = (target[i].second-(newTarget[i-1].second*(triDiag[i][j])))*(targetScale);
-		}
-    }
+           const float targetScale = 1.0/(triDiag[i][i] - triDiag[i][j] * newTriDiag[i-1][j+1]); 
+           newTarget[i].first = (target[i].first-(newTarget[i-1].first*(triDiag[i][j])))*(targetScale);
+           newTarget[i].second = (target[i].second-(newTarget[i-1].second*(triDiag[i][j])))*(targetScale);
+         }
+      }
  
     // backward sweep for control points c_i,0:
     result[n-1].first = newTarget[n-1].first;
@@ -371,12 +370,6 @@ namespace
     cairo_path_destroy (path);              
   }
   
-  bool Wire::attachedToDefiningVar(std::set<const Item*>& visited) const
-  {
-    assert(to());             
-    return (to()->item().attachedToDefiningVar(visited));
-  }    
-   
   void Wire::draw(cairo_t* cairo, bool reverseArrow) const
   {
     auto coords=this->coords();
@@ -419,10 +412,10 @@ namespace
         // For ticket 991/1092. Convert to coordinate pairs.
         vector<pair<float,float>> points = toCoordPair(coords);
        
-        int n = points.size()-1;         
+        const int n = points.size()-1;         
         
         // Initial vector of knots in the matrix equation Ac = k
-        vector<pair<float,float>> target = constructTargetVector(n, points);
+        const vector<pair<float,float>> target = constructTargetVector(n, points);
       
         vector<vector<float>> A(n,vector<float>(n));
         // Initial matrix A which relates control points c_i to knots k_i by matching first and second derivatives of cubic Bezier curves at common points (knots) between curves.
@@ -450,7 +443,7 @@ namespace
 
     // draw arrow
     {
-      CairoSave cs(cairo);
+      const CairoSave cs(cairo);
       auto lw=cairo_get_line_width(cairo);
       cairo_translate(cairo, lastx, lasty);
       cairo_rotate(cairo,angle);
@@ -465,22 +458,22 @@ namespace
     // draw handles
     if (mouseFocus)
       {
-          cairo::CairoSave cs(cairo);
+          const cairo::CairoSave cs(cairo);
           cairo_set_source_rgb(cairo,0,0,1);
           if (cairoCoords.empty() || coords.size()==4)
             {
-              double midx=0.5*(coords[0]+coords[2]);
-              double midy=0.5*(coords[1]+coords[3]);
+              const double midx=0.5*(coords[0]+coords[2]);
+              const double midy=0.5*(coords[1]+coords[3]);
               cairo_arc(cairo,midx,midy,1.5*handleRadius, 0, 2*M_PI);
               cairo_fill(cairo);
             } 
           else 
             {
-              size_t numSmallHandles=0.5*(coords.size()-4)+1, numCairoCoords=cairoCoords.size()-1;
+              const size_t numSmallHandles=0.5*(coords.size()-4)+1, numCairoCoords=cairoCoords.size()-1;
               for (size_t i=0; i<coords.size()-3; i+=2)
                 {
-                  double midx=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].first;
-                  double midy=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].second;
+                  const double midx=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].first;
+                  const double midy=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].second;
                   cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
                   if (i>0) // draw existing interior gripping handle            
                     cairo_arc(cairo,coords[i],coords[i+1],1.5*handleRadius, 0, 2*M_PI); 
@@ -490,8 +483,8 @@ namespace
       }
     if (mouseFocus && !tooltip.empty())
       {
-        cairo::CairoSave cs(cairo);
-        string toolTipText=latexToPango(tooltip);
+        const cairo::CairoSave cs(cairo);
+        const string toolTipText=latexToPango(tooltip);
         ecolab::Pango pango(cairo);
         pango.setMarkup(toolTipText);
         // place tooltip on centre dot if an odd number of control points, or halfway between otherwise
@@ -509,6 +502,8 @@ namespace
         cairo_set_source_rgb(cairo,1,1,1);
         cairo_fill_preserve(cairo);
         cairo_set_source_rgb(cairo,0,0,0);
+        cairo_set_line_width(cairo,1);
+        cairo_set_dash(cairo,nullptr,0,0);
         pango.show();
         cairo_stroke(cairo);
       }
@@ -552,7 +547,7 @@ namespace
         // integral to break the cycle
         if (unitsCtr>2)
           f->item().throw_error("wiring loop detected");
-        IncrDecrCounter idc(unitsCtr);
+        const IncrDecrCounter idc(unitsCtr);
         return f->item().units(check);
       }
     return {};
@@ -564,8 +559,8 @@ namespace
     // returns true if x,y lies close to the line segment (x0,y0)-(x1,y1)
     bool segNear(float x0, float y0, float x1, float y1, float x, float y)
     {
-      float d=sqrt(sqr(x1-x0)+sqr(y1-y0));
-      float d1=sqrt(sqr(x-x0)+sqr(y-y0)), d2=sqrt(sqr(x-x1)+sqr(y-y1));
+      const float d=sqrt(sqr(x1-x0)+sqr(y1-y0));
+      const float d1=sqrt(sqr(x-x0)+sqr(y-y0)), d2=sqrt(sqr(x-x1)+sqr(y-y1));
       return d1+d2<=d+5;
     }
     
@@ -590,7 +585,7 @@ namespace
     float closestD=d2(p[0].first,p[0].second,x,y);      
     for (size_t i=0; i<p.size(); i++)
       {
-        float d=d2(p[i].first,p[i].second,x,y);
+        const float d=d2(p[i].first,p[i].second,x,y);
         if (d<=closestD)
           {
             closestD=d;
@@ -612,7 +607,7 @@ namespace
     float closestD=d2(c[0],c[1],x,y);
     for (size_t i=2; i<c.size()-1; i+=2)
       {
-        float d=d2(c[i],c[i+1],x,y);	  
+        const float d=d2(c[i],c[i+1],x,y);	  
         if (d<=closestD)
           {
             closestD=d;
@@ -623,8 +618,8 @@ namespace
     // now work out if we need to insert a midpoint handle
     if (n>0)
       {
-        float mx=0.5*(c[n]+c[n-2]), my=0.5*(c[n+1]+c[n-1]);
-        float d=d2(mx,my,x,y);
+        const float mx=0.5*(c[n]+c[n-2]), my=0.5*(c[n+1]+c[n-1]);
+        const float d=d2(mx,my,x,y);
         if (n==c.size()-2 || d<closestD)
           {
             insertHandle((n>>1)-1, mx, my);
@@ -633,8 +628,8 @@ namespace
       }
     if (n<c.size()-3)
       {
-        float mx=0.5*(c[n+2]+c[n]), my=0.5*(c[n+3]+c[n+1]);
-        float d=d2(mx,my,x,y);
+        const float mx=0.5*(c[n+2]+c[n]), my=0.5*(c[n+3]+c[n+1]);
+        const float d=d2(mx,my,x,y);
         if (n==0 || d<closestD)
           {
             insertHandle(n>>1, mx, my);
@@ -663,7 +658,7 @@ namespace
     float closestD=d2(c[0],c[1],x,y);
     for (auto i=c.begin()+2; i<c.end()-1; i+=2)
       {
-        float d=d2(*i,*(i+1),x,y);
+        const float d=d2(*i,*(i+1),x,y);
         if (d<closestD)
           {
             closestD=d;

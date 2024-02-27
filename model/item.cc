@@ -46,14 +46,14 @@ namespace minsky
 
   void BoundingBox::update(const Item& x)
   {
-    ecolab::cairo::Surface surf
+    const ecolab::cairo::Surface surf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     auto savedMouseFocus=x.mouseFocus;
     x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
     x.onResizeHandles=false;
     try
       {
-        cairo::CairoSave cs(surf.cairo());
+        const cairo::CairoSave cs(surf.cairo());
         cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
         x.draw(surf.cairo());
       }
@@ -70,7 +70,7 @@ namespace minsky
     cairo_recording_surface_ink_extents(surf.surface(),
                                         &l,&t,&w,&h);
     // note (0,0) is relative to the (x,y) of icon.
-    double invZ=1/x.zoomFactor();
+    const double invZ=1/x.zoomFactor();
     m_left=l*invZ;
     m_right=(l+w)*invZ;
     m_top=t*invZ;
@@ -82,6 +82,21 @@ namespace minsky
     cminsky().displayErrorItem(*this);
     throw runtime_error(msg);
   }
+
+  std::pair<double,bool> Item::rotationAsRadians() const
+  {
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    return {rotation() * M_PI / 180.0, flipped(rotation())};
+  }
+
+  
+  void ItemExclude::rotate(const Point& mouse, const Point& orig)
+  {
+    constexpr double degrees=180.0/M_PI;
+    m_rotation=atan2(mouse.y()-orig.y(),mouse.x()-orig.x())*degrees;
+  }
+
   
   float Item::x() const 
   {
@@ -214,26 +229,29 @@ namespace minsky
 
   bool BottomRightResizerItem::onResizeHandle(float x, float y) const
   {
-    Point p=resizeHandleCoords();
+    const Point p=resizeHandleCoords();
     return near(x,y,p.x(),p.y(),resizeHandleSize());
   }
 
+  bool Item::onItem(float x, float y) const
+  {
+    const Rotate r(-rotation(),this->x(),this->y());
+    return bb.contains(
+                       (r.x(x,y)-this->x())/zoomFactor(),
+                       (r.y(x,y)-this->y())/zoomFactor());
+  }
  
   bool Item::visible() const 
   {
-    if (attachedToDefiningVar()) return false;   
     auto g=group.lock();
     return (!g || g->displayContents());
   }
 
-  bool Item::visibleWithinGroup() const 
-  {return !attachedToDefiningVar();}
-  
   void Item::moveTo(float x, float y)
   {
     if (auto g=group.lock())
       {
-        float invZ=1/zoomFactor();
+        const float invZ=1/zoomFactor();
         m_x=(x-g->x())*invZ;
         m_y=(y-g->y())*invZ;
       }
@@ -261,18 +279,13 @@ namespace minsky
 
     if (onResizeHandle(x,y)) return ClickType::onResize;         
     if (inItem(x,y)) return ClickType::inItem;
-    
-    ecolab::cairo::Surface dummySurf
-      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
-    draw(dummySurf.cairo());
-    if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
-      return ClickType::onItem;               
+    if (onItem(x,y)) return ClickType::onItem;               
     return ClickType::outside;
   }
 
   void Item::drawPorts(cairo_t* cairo) const
   {
-    CairoSave cs(cairo);
+    const CairoSave cs(cairo);
     cairo_new_path(cairo);
     for (auto& p: m_ports)
       {
@@ -287,14 +300,14 @@ namespace minsky
   void Item::drawSelected(cairo_t* cairo)
   {
     // implemented by filling the clip region with a transparent grey
-    CairoSave cs(cairo);
+    const CairoSave cs(cairo);
     cairo_set_source_rgba(cairo, 0.5,0.5,0.5,0.4);
     cairo_paint(cairo);
   }
 
     void Item::drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
     {
-      cairo::CairoSave cs(cairo);
+      const cairo::CairoSave cs(cairo);
       cairo_translate(cairo,x,y);
       cairo_rotate(cairo,angle);
       cairo_scale(cairo,sf,sf);
@@ -312,7 +325,7 @@ namespace minsky
   void Item::resize(const LassoBox& b)
   {
     // Set initial iWidth() and iHeight() to initial Pango determined values. This resize method is not very reliable. Probably a Pango issue. 
-    float w=iWidth(width()), h=iHeight(height()), invZ=1/zoomFactor();   
+    const float w=iWidth(width()), h=iHeight(height()), invZ=1/zoomFactor();   
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
     iWidth(abs(b.x1-b.x0)*invZ);
     iHeight(abs(b.y1-b.y0)*invZ);     
@@ -333,33 +346,24 @@ namespace minsky
 
   void BottomRightResizerItem::drawResizeHandles(cairo_t* cairo) const
   { 			  			
-    Point p=resizeHandleCoords();
+    const Point p=resizeHandleCoords();
     drawResizeHandle(cairo,p.x()-x(),p.y()-y(),resizeHandleSize(),0);
     cairo_stroke(cairo);
   }
   
-  bool Item::attachedToDefiningVar(std::set<const Item*>& visited) const
-  {
-    if (!visited.insert(this).second) return false; // break network cycles
-    if ((variableCast() || operationCast()) && !m_ports.empty())  
-      for (auto w: m_ports[0]->wires())
-        if (w->attachedToDefiningVar(visited)) return true;
-    return false;
-  }    
-  
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
   {
-    Rotate r(rotation(),0,0);
-    //cairo_scale(cairo,scaleFactor(),scaleFactor());   // would like to see this work like operator icon contents, but width() and height() point to nothing at this stage.
+    auto [angle,flipped]=rotationAsRadians();
+    const Rotate r(rotation()+(flipped? 180:0),0,0);
     Pango pango(cairo);
-    float w, h, z=zoomFactor();
-    pango.angle=rotation() * M_PI / 180.0; 
+    const float z=zoomFactor();
+    pango.angle=angle+(flipped? M_PI: 0);
     pango.setFontSize(12.0*scaleFactor()*z);
     pango.setMarkup(latexToPango(detailedText));         
     // parameters of icon in userspace (unscaled) coordinates
-    w=0.5*pango.width()+2*z; 
-    h=0.5*pango.height()+4*z;       
+    const float w=0.5*pango.width()+2*z; 
+    const float h=0.5*pango.height()+4*z;       
 
     cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
@@ -379,22 +383,22 @@ namespace minsky
 
   void Item::dummyDraw() const
   {
-    ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+    const ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     draw(s.cairo());
   }
 
   void Item::displayTooltip(cairo_t* cairo, const std::string& tooltip) const
   {
-    string unitstr=units().latexStr();
+    const string unitstr=units().latexStr();
     if (!tooltip.empty() || !unitstr.empty())
       {
-        cairo::CairoSave cs(cairo);
+        const cairo::CairoSave cs(cairo);
         Pango pango(cairo);
         string toolTipText=latexToPango(tooltip);
         if (!unitstr.empty())
           toolTipText+=" Units:"+latexToPango(unitstr);
         pango.setMarkup(toolTipText);
-        float z=zoomFactor();
+        const float z=zoomFactor();
         cairo_translate(cairo,z*(0.5*bb.width())+10,
                         z*(-0.5*bb.height())-20);
         cairo_rectangle(cairo,0,0,pango.width(),pango.height());

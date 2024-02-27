@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { GodleyWidgetViewComponent } from './godley-widget-view.component';
 
 describe('GodleyWidgetViewComponent', () => {
@@ -8,7 +8,7 @@ describe('GodleyWidgetViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GodleyWidgetViewComponent],
+      imports: [GodleyWidgetViewComponent, RouterTestingModule],
     }).compileComponents();
   });
 

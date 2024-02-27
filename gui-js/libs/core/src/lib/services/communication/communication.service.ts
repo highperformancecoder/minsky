@@ -10,6 +10,7 @@ import {
   importCSVvariableName,
   MainRenderingTabs,
   MinskyProcessPayload,
+  PubTab,
   ReplayRecordingStatus,
   TypeValueName,
   ZOOM_IN_FACTOR,
@@ -19,7 +20,7 @@ import { BehaviorSubject } from 'rxjs';
 import { WindowUtilityService } from '../WindowUtility/window-utility.service';
 import { DialogComponent } from './../../component/dialog/dialog.component';
 import { ElectronService } from './../electron/electron.service';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 export class Message {
   id: string;
@@ -44,8 +45,7 @@ export class CommunicationService {
     y: number;
   };
 
-  currentTab = MainRenderingTabs.canvas;
-  private isSimulationOn: boolean;
+  currentTab = MainRenderingTabs.canvas as string;
   showPlayButton$ = new BehaviorSubject<boolean>(true);
   t = '0';
   deltaT = '0';
@@ -79,7 +79,6 @@ export class CommunicationService {
     private windowUtilityService: WindowUtilityService,
     private dialog: MatDialog
   ) {
-    this.isSimulationOn = false;
     this.scrollPositionAtMouseDown = null;
     this.mousePositionAtMouseDown = null;
     this.initReplay();
@@ -187,8 +186,8 @@ export class CommunicationService {
             await this.resetZoom(canvasWidth / 2, canvasHeight / 2);
             this.resetScroll();
             break;
-          case 'ZOOM_TO_FIT':
-            await this.zoomToFit(canvasWidth, canvasHeight);
+        case 'ZOOM_TO_FIT':
+            await this.zoomToFit();
             this.resetScroll();
             break;
           case 'SIMULATION_SPEED':
@@ -201,9 +200,8 @@ export class CommunicationService {
 
             break;
           case 'PAUSE':
-            this.currentReplayJSON.length
-              ? this.pauseReplay()
-              : await this.pauseSimulation();
+            if (this.currentReplayJSON.length)
+              this.pauseReplay();
             break;
           case 'RESET':
             this.showPlayButton$.next(true);
@@ -252,21 +250,19 @@ export class CommunicationService {
   }
 
   private async initSimulation() {
-    this.isSimulationOn = true;
     await this.electronService.minsky.running(true);
     this.startSimulation();
   }
 
   private startSimulation() {
     this.syncRunUntilTime();
-    this.isSimulationOn = true;
     this.simulate();
     this.electronService.minsky.dimensionalAnalysis();
   }
 
   private simulate() {
     setTimeout(async () => {
-      if (this.isSimulationOn) {
+      if (!this.showPlayButton$.value) {
         const [t, deltaT] = await this.electronService.minsky.step();
         this.updateSimulationTime(t, deltaT);
         this.simulate();
@@ -274,13 +270,7 @@ export class CommunicationService {
     }, this.delay);
   }
 
-  private async pauseSimulation() {
-    this.isSimulationOn = false;
-    await this.electronService.minsky.running(false);
-  }
-
   private async stopSimulation() {
-    this.isSimulationOn = false;
     await this.electronService.minsky.running(false);
 
     this.electronService.minsky.reset();
@@ -292,14 +282,14 @@ export class CommunicationService {
   }
 
   private updateSimulationTime(t: number, deltaT: number) {
+    if (Number(this.t) >= this.runUntilTime) {
+      this.showPlayButton$.next(true);
+    }
 
     this.t = t.toFixed(2);
 
     this.deltaT = deltaT.toFixed(2);
 
-    if (Number(this.t) >= this.runUntilTime) {
-      this.pauseSimulation();
-    }
   }
 
   private async resetZoom(centerX: number, centerY: number) {
@@ -325,21 +315,9 @@ export class CommunicationService {
     }
   }
 
-  private async zoomToFit(canvasWidth: number, canvasHeight: number) {
+  private async zoomToFit() {
     if (this.currentTab !== MainRenderingTabs.canvas) return;
-    let minsky = this.electronService.minsky;
-    const cBounds = await minsky.canvas.model.cBounds();
-
-    const zoomFactorX = canvasWidth / (cBounds[2] - cBounds[0]);
-    const zoomFactorY = canvasHeight / (cBounds[3] - cBounds[1]);
-
-    const zoomFactor = Math.min(zoomFactorX, zoomFactorY);
-    const x = 0.5 * (cBounds[2] + cBounds[0]);
-    const y = 0.5 * (cBounds[3] + cBounds[1]);
-
-    minsky.canvas.zoom(x, y, zoomFactor);
-    minsky.canvas.recentre();
-    minsky.canvas.requestRedraw();
+    return this.electronService.minsky.canvas.zoomToFit();
   }
 
   public async mouseEvents(event, message: MouseEvent) {
@@ -366,11 +344,14 @@ export class CommunicationService {
 
     if (this.electronService.isElectron) {
 
-      if (type === 'mousedown' && message.altKey) {
-        this.electronService.send(
-          events.DISPLAY_MOUSE_COORDINATES,
-          { mouseX: this.mouseX, mouseY: this.mouseY }
-        );
+      if (message.altKey)
+      {
+        if (type === 'mouseup') {
+          this.electronService.send(
+            events.DISPLAY_MOUSE_COORDINATES,
+            { mouseX: this.mouseX, mouseY: this.mouseY }
+          );
+        }
         return;
       }
 
@@ -453,6 +434,11 @@ export class CommunicationService {
     this.electronService.invoke(events.IMPORT_CSV, payload);
   }
 
+  resetScrollTimeout = () => {
+    this.resetScroll();
+    this.resetScrollWhenIdle = null;
+  };
+
   onMouseWheelZoom = async (event: WheelEvent) => {
     event.preventDefault();
     const { deltaY } = event;
@@ -475,10 +461,8 @@ export class CommunicationService {
     this.awaitingZoom = false;
 
     // schedule resetScroll when zooming stops
-    if (!this.resetScrollWhenIdle)
-      this.resetScrollWhenIdle = setTimeout(() => { var self = this; self.resetScroll(); self.resetScrollWhenIdle = null; }, 100);
-    else
-      this.resetScrollWhenIdle.refresh();
+    if (this.resetScrollWhenIdle) clearTimeout(this.resetScrollWhenIdle);
+    this.resetScrollWhenIdle = setTimeout(this.resetScrollTimeout, 100);
   };
 
   async handleKeyUp(event: KeyboardEvent) {
@@ -597,41 +581,50 @@ export class CommunicationService {
   }
 
   async handleTextInputSubmit(multipleKeyString: string) {
-    if (this.electronService.isElectron && multipleKeyString) {
-      if (multipleKeyString.charAt(0) === '#') {
-        const note = multipleKeyString.slice(1);
-        this.electronService.minsky.canvas.addNote(note);
-        return;
+    switch (this.currentTab) {
+    case 'minsky.canvas':
+      if (this.electronService.isElectron && multipleKeyString) {
+        if (multipleKeyString.charAt(0) === '#') {
+          const note = multipleKeyString.slice(1);
+          this.electronService.minsky.canvas.addNote(note);
+          return;
+        }
+
+        if (multipleKeyString === '-') {
+          this.addOperation('subtract');
+          return;
+        }
+
+        if (!isNaN(Number(multipleKeyString))) {
+          this.showCreateVariablePopup('Create Constant', {
+            type: 'constant',
+            value: multipleKeyString,
+          });
+          return;
+        }
+
+        const operations = await this.electronService.minsky.availableOperations();
+        const operation = multipleKeyString.toLowerCase();
+        
+        if (operations.includes(operation)) {
+          this.addOperation(operation);
+          return;
+        }
+        
+        const popupTitle = 'Specify Variable Name';
+        const params: TypeValueName = {
+          type: 'flow',
+          name: multipleKeyString,
+        };
+
+        this.showCreateVariablePopup(popupTitle, params);
       }
-
-      if (multipleKeyString === '-') {
-        this.addOperation('subtract');
-        return;
-      }
-
-      if (!isNaN(Number(multipleKeyString))) {
-        this.showCreateVariablePopup('Create Constant', {
-          type: 'constant',
-          value: multipleKeyString,
-        });
-        return;
-      }
-
-      const operations = await this.electronService.minsky.availableOperations();
-      const operation = multipleKeyString.toLowerCase();
-
-      if (operations.includes(operation)) {
-        this.addOperation(operation);
-        return;
-      }
-
-      const popupTitle = 'Specify Variable Name';
-      const params: TypeValueName = {
-        type: 'flow',
-        name: multipleKeyString,
-      };
-
-      this.showCreateVariablePopup(popupTitle, params);
+      return;
+    case 'minsky.equationDisplay':
+    case 'minsky.phillipsDiagram':
+      return; // do nothing
+    default: // pub tabs
+      new PubTab(this.currentTab).addNote(multipleKeyString, this.mouseX, this.mouseY);
       return;
     }
   }

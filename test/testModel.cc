@@ -108,7 +108,7 @@ SUITE(Group)
   TEST_FIXTURE(TestFixture, accessibleVars)
     {
       vector<string> globalAccessibleVars{"c"};
-      vector<string> group0AccessibleVars{"1",":c","a","b"};
+      vector<string> group0AccessibleVars{":c","a","b","output1"};
       group0->makeSubroutine();
       CHECK_EQUAL(globalAccessibleVars.size(), model->accessibleVars().size());
       CHECK_ARRAY_EQUAL(globalAccessibleVars, model->accessibleVars(), globalAccessibleVars.size());
@@ -760,9 +760,11 @@ SUITE(Canvas)
         auto integ=new IntOp;
         canvas.item=model->addItem(integ);
         integ->description("foo");
+        save("foo.mky");
         canvas.selectAllVariables();
-        CHECK_EQUAL(1,canvas.selection.items.size());
+        CHECK_EQUAL(2,canvas.selection.items.size());
         CHECK(canvas.selection.items[0]==integ->intVar);
+        CHECK(canvas.selection.items[1].get()==integ);
       }
     
     TEST_FIXTURE(TestFixture,renameAllInstances)
@@ -1030,7 +1032,7 @@ SUITE(GodleyIcon)
       table.resize(3,2);
       table.cell(2,1)="flow1";
       table.cell(0,1)="stock1";
-      variableDisplay=true;
+      toggleVariableDisplay();
       update();
       // TODO - shouldn't be needed, but there is some font problem causing bottomMargin to be calculated incorrectly
       
@@ -1059,6 +1061,10 @@ SUITE(GodleyIcon)
       table._assetClass(1,GodleyAssetClass::asset);
       table._assetClass(2,GodleyAssetClass::liability);
 
+      // for initial conditions below
+      model->addItem(VariablePtr(VariableType::parameter,"x"));
+      model->addItem(VariablePtr(VariableType::parameter,"y"));
+      
       VariablePtr v(VariableType::stock,"stock1");
       model->addItem(v);
       v->init("x");
@@ -1716,6 +1722,25 @@ SUITE(GodleyTableWindow)
       
      }
 
-     
+     TEST_FIXTURE(TestFixture, saveAsGroup)
+     {
+       group0->inVariables.push_back(a);
+       group0->makeSubroutine();
+       save("foo.mky");
+       CHECK(group0->inVariables.size());
+       CHECK(group0->outVariables.size());
+       saveGroupAsFile(*group0,"group0.mky");
+       insertGroupFromFile("group0.mky");
+       Group& newGroup=dynamic_cast<Group&>(*canvas.itemFocus);
+       // check I/O variables
+       CHECK_EQUAL(group0->inVariables.size(),newGroup.inVariables.size());
+       CHECK_EQUAL(group0->outVariables.size(),newGroup.outVariables.size());
+       for (int i=0; i<group0->inVariables.size(); ++i)
+         CHECK_EQUAL(group0->inVariables[i]->name(), newGroup.inVariables[i]->name());
+       for (int i=0; i<group0->outVariables.size(); ++i)
+         CHECK_EQUAL(group0->outVariables[i]->name(), newGroup.outVariables[i]->name());
+       // check items
+       CHECK_EQUAL(group0->items.size(), newGroup.items.size());
+     }
      
 }

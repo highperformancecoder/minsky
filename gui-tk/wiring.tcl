@@ -764,11 +764,6 @@ proc contextMenu {x y X Y} {
             if {![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
-            if {[$item.defined]} {
-                 global varTabDisplay
-                 set varTabDisplay [$item.varTabDisplay]            
-                .wiring.context add checkbutton -label "Display variable on tab" -command "$item.toggleVarTabDisplay" -variable varTabDisplay
-            }            
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"                     
             if {[$item.type]=="parameter"} {
                 .wiring.context add command -label "Import CSV" -command {CSVImportDialog}
@@ -804,9 +799,6 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Make Group Plot" -command "$item.makeDisplayPlot"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
             .wiring.context add command -label "Pen Styles" -command "penStyles $item"
-             global plotTabDisplay
-             set plotTabDisplay [$item.plotTabDisplay]            
-            .wiring.context add checkbutton -label "Display plot on tab" -command "$item.togglePlotTabDisplay" -variable plotTabDisplay               
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             .wiring.context add command -label "Export resolution factor: [$item.resolutionScaleFactor]" -command "setExportResolutionFactor $item"
 

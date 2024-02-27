@@ -2,12 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {Ravel} from '@minsky/shared';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'minsky-lock-handles',
-  templateUrl: './lock-handles.component.html',
-  styleUrls: ['../generic-form.scss', './lock-handles.component.scss'],
+    selector: 'minsky-lock-handles',
+    templateUrl: './lock-handles.component.html',
+    styleUrls: ['../generic-form.scss', './lock-handles.component.scss'],
+    standalone: true,
+    imports: [
+        NgFor,
+        FormsModule,
+        MatButtonModule,
+    ],
 })
 export class LockHandlesComponent implements OnInit {
   handleLockInfo: any[];

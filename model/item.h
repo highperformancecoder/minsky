@@ -51,6 +51,7 @@ namespace minsky
   class OperationBase;
   class SwitchIcon;
   class PlotWidget;
+  class GodleyIcon;
   class Ravel;
 
   class Item;
@@ -122,7 +123,11 @@ namespace minsky
     virtual const PlotWidget* plotWidgetCast() const {return nullptr;}
     virtual PlotWidget* plotWidgetCast() {return nullptr;}
     /// @}            
-    /// @{ a more efficient replacement for dynamic_cast<PlotWidget*>(this)
+    /// @{ a more efficient replacement for dynamic_cast<GodleyIcon*>(this)
+    virtual const GodleyIcon* godleyIconCast() const {return nullptr;}
+    virtual GodleyIcon* godleyIconCast() {return nullptr;}
+    /// @}            
+    /// @{ a more efficient replacement for dynamic_cast<Ravel*>(this)
     virtual const Ravel* ravelCast() const {return nullptr;}
     virtual Ravel* ravelCast() {return nullptr;}
     /// @}            
@@ -134,13 +139,16 @@ namespace minsky
     virtual void removeControlledItems(GroupItems&) const {}
     /// remove all controlled items their owning group
     void removeControlledItems() const;
+    
+    double m_rotation=0; ///< rotation of icon, in degrees
+    /// rotate item based on vector from \a orig to \a mouse
+    void rotate(const Point& mouse, const Point& orig);
   };
 
   class Item: public NoteBase, public ecolab::TCLAccessor<Item,double>,
               public classdesc::PolyRESTProcessBase,
               public classdesc::Exclude<ItemExclude>
   {
-    double m_rotation=0; ///< rotation of icon, in degrees
 
   protected:
     // these need to be protected, not private to allow the setting of these in constructors.
@@ -157,13 +165,12 @@ namespace minsky
     } memoisedRotator;
 
     static void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle);
+    
 
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    float itemTabX=0, itemTabY=0; ///< position on itemTab
-    bool itemTabInitialised=false;
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is ovcaler resize handles
     bool onBorder=false; ///< true to indicate mouse hovering over border
@@ -190,6 +197,7 @@ namespace minsky
       auto hz=resizeHandleSize(); // extend by resize handle size (which is also portRadius)
       return left()-hz<=xx && right()+hz>=xx && top()-hz<=yy && bottom()+hz>=yy; 
     }
+    bool contains(const Point& p) const {return contains(p.x(),p.y());}
     void updateBoundingBox() override {bb.update(*this);}
     
     /// mark item on canvas, then throw
@@ -202,6 +210,9 @@ namespace minsky
 
     double rotation() const {return m_rotation;}
     double rotation(const double& r) {return m_rotation=r;}
+
+    /// return the rotation as radians, and whether rotation should have additional straight angle added for text that stays upright.
+    std::pair<double,bool> rotationAsRadians() const;
     
     float iWidth() const {return m_width;}
     float iWidth(const float& w) {
@@ -246,6 +257,8 @@ namespace minsky
     virtual bool onResizeHandle(float x, float y) const;
     /// @return true if item internally responds to the mouse, and (x,y) is within editable area
     virtual bool inItem(float x, float y) const {return false;}
+    /// returns true if (x,y) is on the icon
+    virtual bool onItem(float x, float y) const;
     /// respond to mouse down events
     virtual void onMouseDown(float x, float y) {}
     /// respond to mouse up events
@@ -273,17 +286,6 @@ namespace minsky
 
     /// whether this item is visible on the canvas. 
     virtual bool visible() const;
-
-    /// whether this item is visible if the group is expended to display items.
-    virtual bool visibleWithinGroup() const;
-    
-    
-    /// whether this item is attached to a defining variable that is hidden
-    virtual bool attachedToDefiningVar(std::set<const Item*>& visited) const;
-    bool attachedToDefiningVar() const {
-      std::set<const Item*> visited;
-      return attachedToDefiningVar(visited);
-    }
 
     void moveTo(float x, float y);
 
@@ -337,6 +339,11 @@ namespace minsky
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
     virtual void disableDelayedTooltip() {}
+
+    /// some items have an editor mode attribute
+    virtual bool editorMode() const {return false;}
+    virtual void toggleEditorMode() {}
+    
     /// compute the dimensional units
     /// @param check - if true, then perform consistency checks
     /// @throw if check=true and dimensions inconsistent
@@ -364,7 +371,7 @@ namespace minsky
     /// returns coordinates of the resizer handle
     virtual Point resizeHandleCoords() const;
   };
-  
+
 }
 
 #ifdef CLASSDESC

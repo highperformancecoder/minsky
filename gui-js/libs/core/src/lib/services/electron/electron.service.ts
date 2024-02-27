@@ -14,13 +14,21 @@ export class ElectronService {
   on: (channel: string, listener) => void;
   
   constructor() {
+    this.minsky=new Minsky("minsky");
+
     if (this.isElectron) {
       this.ipcRenderer = window['electron'].ipcRenderer;
       this.platform = window['electron'].platform;
       this.on = window['electron'].ipcRendererOn;
-      this.minsky=new Minsky("minsky");
+      
       CppClass.backend=async (...args)=>{
         return await this.ipcRenderer.invoke(events.BACKEND, ...args);
+      }
+      CppClass.backendSync=async (...args)=>{
+        return await this.ipcRenderer.invoke(events.BACKEND_SYNC, ...args);
+      }
+      CppClass.logMessage=async (message: string)=>{
+        return await this.ipcRenderer.invoke(events.LOG_MESSAGE, message);
       }
     }
     else

@@ -39,88 +39,8 @@
 using namespace ecolab;
 using ecolab::cairo::CairoSave;
 
-namespace
-{
-  struct DrawBinOp
-  {
-    cairo_t *cairo;
-    double zoomFactor;
-    DrawBinOp(cairo_t *cairo, double z=1): cairo(cairo), zoomFactor(z) {}
-
-    void drawPlus() const
-    {
-      cairo_move_to(cairo,0,-5);
-      cairo_line_to(cairo,0,5);
-      cairo_move_to(cairo,-5,0);
-      cairo_line_to(cairo,5,0);
-      cairo_stroke(cairo);
-    }
-
-    void drawMinus() const
-    {
-      cairo_move_to(cairo,-5,0);
-      cairo_line_to(cairo,5,0);
-      cairo_stroke(cairo);
-    }
-
-    void drawMultiply() const
-    {
-      cairo_move_to(cairo,-5,-5);
-      cairo_line_to(cairo,5,5);
-      cairo_move_to(cairo,-5,5);
-      cairo_line_to(cairo,5,-5);
-      cairo_stroke(cairo);
-    }
-
-    void drawDivide() const
-    {
-      cairo_move_to(cairo,-5,0);
-      cairo_line_to(cairo,5,0);
-      cairo_new_sub_path(cairo);
-      cairo_arc(cairo,0,3,1,0,2*M_PI);
-      cairo_new_sub_path(cairo);
-      cairo_arc(cairo,0,-3,1,0,2*M_PI);
-      cairo_stroke(cairo);
-    }
-
-    void drawSymbol(const char* s) const
-    {
-      cairo_scale(cairo,zoomFactor,zoomFactor);
-      cairo_move_to(cairo,-5,0);
-      cairo_show_text(cairo,s);
-    }
-
-    // puts a small symbol to identify port
-    // x, y = position of symbol
-    template <class F>
-    void drawPort(F f, float x, float y, float rotation)  const
-    {
-      CairoSave cs(cairo);
-      
-      double angle=rotation * M_PI / 180.0;
-      double fm=std::fmod(rotation,360);
-      if (!((fm>-90 && fm<90) || fm>270 || fm<-270))
-        y=-y;
-      cairo_rotate(cairo, angle);
-      
-      cairo_translate(cairo,0.7*x,0.6*y);
-      cairo_scale(cairo,0.5,0.5);
-      
-      // and counter-rotate
-      cairo_rotate(cairo, -angle);
-      f();
-    }
-  };
-}
-
 namespace minsky
 {
-
-  // necessary for Classdesc reflection!
-  constexpr float OperationBase::l;
-  constexpr float OperationBase::h;
-  constexpr float OperationBase::r;
-
   namespace
   {
     struct SumInputPort: public MultiWireInputPort
@@ -214,8 +134,8 @@ namespace minsky
   
   float OperationBase::scaleFactor() const
   {
-    float z=zoomFactor();
-    float l=OperationBase::l*z, r=OperationBase::r*z, 
+    const float z=zoomFactor();
+    const float l=OperationBase::l*z, r=OperationBase::r*z, 
       h=OperationBase::h*z;
     return std::max(1.0f,std::min(0.5f*iWidth()*z/std::max(l,r),0.5f*iHeight()*z/h));  
   }  
@@ -224,10 +144,9 @@ namespace minsky
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
-    double angle=rotation() * M_PI / 180.0;
-    double fm=std::fmod(rotation(),360);
-    bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
-    float z=zoomFactor();
+    const double angle=rotation() * M_PI / 180.0;
+    const bool textFlipped=flipped(rotation());
+    const float z=zoomFactor();
 
     auto& c=dynamic_cast<const NamedOp&>(*this);
           
@@ -235,7 +154,7 @@ namespace minsky
     pango.setFontSize(10.0*scaleFactor()*z);
     pango.setMarkup(latexToPango(c.description()));
     pango.angle=angle + (textFlipped? M_PI: 0);
-    Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
+    const Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
 
     // parameters of icon in userspace (unscaled) coordinates
     float w, h, hoffs;
@@ -244,7 +163,7 @@ namespace minsky
     hoffs=pango.top()/z;
     
     {
-      cairo::CairoSave cs(cairo);
+      const cairo::CairoSave cs(cairo);
       cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
       pango.show();
     }
@@ -267,7 +186,7 @@ namespace minsky
     // set the output ports coordinates
     // compute port coordinates relative to the icon's
     // point of reference
-    Rotate rr(rotation(),0,0);
+    const Rotate rr(rotation(),0,0);
 
     m_ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
     switch (numPorts())
@@ -297,7 +216,6 @@ namespace minsky
     clipPath.appendToCurrent(cairo);
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
-    return;
   }
   
   void OperationBase::setCachedText(cairo_t* cairo, const std::string& text, double size) const
@@ -313,13 +231,12 @@ namespace minsky
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
-    double angle=rotation() * M_PI / 180.0;
-    double fm=std::fmod(rotation(),360);
-    bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
-    float z=zoomFactor();
+    const double angle=rotation() * M_PI / 180.0;
+    const bool textFlipped=flipped(rotation());
+    const float z=zoomFactor();
 
     {
-      CairoSave cs(cairo);
+      const CairoSave cs(cairo);
       cairo_scale(cairo,z,z);
       iconDraw(cairo);
     }
@@ -356,7 +273,7 @@ namespace minsky
     if (textFlipped) swap(y1,y2);
     
     {
-      CairoSave cs(cairo);
+      const CairoSave cs(cairo);
       cairo_identity_matrix(cairo);
       cairo_translate(cairo, x(), y());
       cairo_rotate(cairo, angle);
@@ -403,7 +320,7 @@ namespace minsky
   
   void OperationBase::resize(const LassoBox& b)
   {
-    float invZ=1/zoomFactor();  
+    const float invZ=1/zoomFactor();  
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     iWidth(std::abs(b.x1-b.x0)*invZ);
     iHeight(std::abs(b.y1-b.y0)*invZ);
@@ -524,7 +441,7 @@ namespace minsky
               for (auto& i: tmp)
                 units[i.first]+=i.second;
             }
-          int f=(type()==multiply)? 1: -1; //indices are negated for division
+          const int f=(type()==multiply)? 1: -1; //indices are negated for division
           for (auto w: m_ports[2]->wires())
             {
               auto tmp=w->units(check);
@@ -567,6 +484,35 @@ namespace minsky
         return {};
       case binop:
         return unitsBinOpCase(check);
+      case statistics:
+        switch (type())
+          {
+          case mean: case median: case stdDev:
+            return m_ports[1]->units(check);
+          case moment:
+            {
+              auto argUnits=m_ports[1]->units(check);
+              for (auto& i: argUnits)
+                i.second*=arg;
+              return argUnits;
+            }
+          case histogram:
+            return {};
+          case covariance:
+            {
+              auto argUnits=m_ports[1]->units(check);
+              for (auto& i: m_ports[2]->units(check))
+                {
+                  argUnits.emplace(i.first,1); // ensure base unit is present
+                  argUnits[i.first]*=i.second;
+                }
+              return argUnits;
+            }
+          case rho:
+            return {};
+          default:
+            throw_error("Statistics operation does not have units() defined");
+          }
       default:
         if (check)
           throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
@@ -648,7 +594,7 @@ namespace minsky
 
   template <> void Operation<OperationType::data>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
+    const double sf = scaleFactor();  
     cairo_translate(cairo,-1,0);
     cairo_scale(cairo,1.5*sf,0.75*sf);
     cairo_arc(cairo,0,-3,3,0,2*M_PI);
@@ -664,7 +610,7 @@ namespace minsky
 
   template <> void Operation<OperationType::time>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
+    const double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);	  	  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"t");
@@ -672,7 +618,7 @@ namespace minsky
   
   template <> void Operation<OperationType::euler>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
+    const double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"e");
@@ -680,7 +626,7 @@ namespace minsky
   
   template <> void Operation<OperationType::pi>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
+    const double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"π");
@@ -688,7 +634,7 @@ namespace minsky
    
   template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
+    const double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"0");
@@ -696,7 +642,7 @@ namespace minsky
   
   template <> void Operation<OperationType::one>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
+    const double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"1");
@@ -704,7 +650,7 @@ namespace minsky
   
   template <> void Operation<OperationType::inf>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  	  
+    const double sf = scaleFactor();  	  
     cairo_move_to(cairo,-4,-10);
     setCachedText(cairo,"∞",9);
     cairo_scale(cairo,sf,sf);		  
@@ -713,7 +659,7 @@ namespace minsky
 
   template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
     setCachedText(cairo,"%",7);
     cairo_scale(cairo,sf,sf);		  
@@ -722,7 +668,7 @@ namespace minsky
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  	  	  
+    const double sf = scaleFactor();  	  	  
     cairo_move_to(cairo,-4,-5);
     setCachedText(cairo, "→",7);
     cairo_scale(cairo,sf,sf);		  
@@ -734,8 +680,8 @@ namespace minsky
   
   template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
   { 
-    CairoSave cs(cairo);
-    double sf = scaleFactor(); 	     
+    const CairoSave cs(cairo);
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-7,-1);
     cairo_set_font_size(cairo,8);
@@ -748,8 +694,8 @@ namespace minsky
 
   template <> void Operation<OperationType::sqrt>::iconDraw(cairo_t* cairo) const
   {	  
-    CairoSave cs(cairo);
-    double sf = scaleFactor(); 	     
+    const CairoSave cs(cairo);
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);   
     cairo_move_to(cairo,-7,6);
@@ -763,7 +709,7 @@ namespace minsky
 
   template <> void Operation<OperationType::exp>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	    
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"e");
@@ -774,7 +720,7 @@ namespace minsky
 
   template <> void Operation<OperationType::pow>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  	  
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"x");
@@ -793,7 +739,7 @@ namespace minsky
 
   template <> void Operation<OperationType::le>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"x≤y");
@@ -804,7 +750,7 @@ namespace minsky
 
   template <> void Operation<OperationType::lt>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"x<y");
@@ -815,7 +761,7 @@ namespace minsky
 
   template <> void Operation<OperationType::eq>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"x=y");
@@ -826,7 +772,7 @@ namespace minsky
 
   template <> void Operation<OperationType::min>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	   
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"min");
@@ -834,7 +780,7 @@ namespace minsky
 
   template <> void Operation<OperationType::max>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"max");
@@ -842,8 +788,8 @@ namespace minsky
 
   template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
   {	  
-    CairoSave cs(cairo);
-    double sf = scaleFactor(); 	     
+    const CairoSave cs(cairo);
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	   
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_move_to(cairo,-4,3);
@@ -854,8 +800,8 @@ namespace minsky
 
   template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
   {  
-    CairoSave cs(cairo);
-    double sf = scaleFactor(); 	     
+    const CairoSave cs(cairo);
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_move_to(cairo,-4,-3);
@@ -866,15 +812,31 @@ namespace minsky
 
   template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"¬");
   }
+  
+  template <> void Operation<OperationType::covariance>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf*.7,sf); 
+    cairo_move_to(cairo,-16,3);
+    cairo_show_text(cairo,"<ΔxΔy>");
+  }
+  
+  template <> void Operation<OperationType::rho>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 
+    cairo_move_to(cairo,-3,3);
+    cairo_show_text(cairo,"ρ");
+  }
 
   template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo," ln");
@@ -882,7 +844,7 @@ namespace minsky
 
   template <> void Operation<OperationType::log>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"log");
@@ -893,7 +855,7 @@ namespace minsky
 
   template <> void Operation<OperationType::sin>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -902,7 +864,7 @@ namespace minsky
 
   template <> void Operation<OperationType::cos>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -911,7 +873,7 @@ namespace minsky
 
   template <> void Operation<OperationType::tan>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -920,7 +882,7 @@ namespace minsky
 
   template <> void Operation<OperationType::asin>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
@@ -933,7 +895,7 @@ namespace minsky
 
   template <> void Operation<OperationType::acos>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
@@ -946,7 +908,7 @@ namespace minsky
 
   template <> void Operation<OperationType::atan>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
@@ -959,7 +921,7 @@ namespace minsky
 
   template <> void Operation<OperationType::sinh>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
@@ -968,7 +930,7 @@ namespace minsky
 
   template <> void Operation<OperationType::cosh>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
@@ -977,7 +939,7 @@ namespace minsky
 
   template <> void Operation<OperationType::tanh>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
@@ -986,7 +948,7 @@ namespace minsky
 
   template <> void Operation<OperationType::abs>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-6,3);
@@ -994,7 +956,7 @@ namespace minsky
   }
   template <> void Operation<OperationType::floor>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-7,-7);
     setCachedText(cairo, "⌊x⌋",7);
     cairo_scale(cairo,sf,sf);	  
@@ -1002,7 +964,7 @@ namespace minsky
   }
   template <> void Operation<OperationType::frac>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
@@ -1010,21 +972,21 @@ namespace minsky
   }
   template <> void Operation<OperationType::Gamma>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"Γ");
   }     
   template <> void Operation<OperationType::polygamma>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"ψ");
     cairo_rel_move_to(cairo,0,-3);
     cairo_set_font_size(cairo,7);
     // show order of polygamma function. 0 is default.
-    std::string order="("+to_string(static_cast<unsigned>(m_ports[2]->value()))+")";
+    const std::string order="("+to_string(static_cast<unsigned>(m_ports[2]->value()))+")";
     cairo_show_text(cairo,order.c_str());
     cairo_rel_move_to(cairo,0,-2);
     DrawBinOp d(cairo);
@@ -1033,14 +995,14 @@ namespace minsky
   }     
   template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-3,3);
     cairo_show_text(cairo,"!");
   }      
   template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 	  
     DrawBinOp d(cairo);
     d.drawPlus();
@@ -1050,7 +1012,7 @@ namespace minsky
 
   template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     DrawBinOp d(cairo);
     d.drawMinus();
@@ -1060,7 +1022,7 @@ namespace minsky
 
   template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     DrawBinOp d(cairo);
     d.drawMultiply();
@@ -1070,7 +1032,7 @@ namespace minsky
 
   template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     DrawBinOp d(cairo);
     d.drawDivide();
@@ -1080,7 +1042,7 @@ namespace minsky
 
   template <> void Operation<OperationType::sum>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
     setCachedText(cairo, "∑", 7);
     cairo_scale(cairo,sf,sf);		  
@@ -1089,7 +1051,7 @@ namespace minsky
 
   template <> void Operation<OperationType::product>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
     setCachedText(cairo, "∏",7);
     cairo_scale(cairo,sf,sf);		  
@@ -1098,7 +1060,7 @@ namespace minsky
 
   template <> void Operation<OperationType::infimum>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1107,7 +1069,7 @@ namespace minsky
 
   template <> void Operation<OperationType::supremum>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1116,7 +1078,7 @@ namespace minsky
   
   template <> void Operation<OperationType::infIndex>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1125,7 +1087,7 @@ namespace minsky
 
   template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1134,7 +1096,7 @@ namespace minsky
 
   template <> void Operation<OperationType::any>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1143,16 +1105,84 @@ namespace minsky
 
   template <> void Operation<OperationType::all>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"all");
   }
 
+  
+  
+   template <> void Operation<OperationType::size>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"nᵢ");
+  }
+
+  template <> void Operation<OperationType::shape>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"{nᵢ}");
+  }
+
+  template <> void Operation<OperationType::mean>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-8,3);
+    cairo_show_text(cairo,"<x>");
+  }
+
+  template <> void Operation<OperationType::median>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-3,3);
+    cairo_show_text(cairo,"x");
+    cairo_move_to(cairo,-4,-1);
+    cairo_show_text(cairo,"~");
+ }
+
+  template <> void Operation<OperationType::stdDev>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-3,3);
+    cairo_show_text(cairo,"σ");
+  }
+
+  template <> void Operation<OperationType::moment>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf*.85,sf);	  
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-12,3);
+    cairo_show_text(cairo,"<Δxᵏ>");
+  }
+
+  template <> void Operation<OperationType::histogram>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_translate(cairo,-sf*iWidth(), -sf*iHeight());
+    cairo_scale(cairo,2*sf*iWidth()/cminsky().histogramResource.width(),2*sf*iHeight()/cminsky().histogramResource.height());
+    cminsky().histogramResource.render(cairo);
+  }
+
+  
+
   template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-7,-7);
     setCachedText(cairo, "∑+",7);
     cairo_scale(cairo,sf,sf);	  
@@ -1161,7 +1191,7 @@ namespace minsky
 
   template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-6,-7);
     setCachedText(cairo, "∏×",7);
     cairo_scale(cairo,sf,sf);	  
@@ -1170,7 +1200,7 @@ namespace minsky
 
   template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
     setCachedText(cairo, "Δ",7);
     cairo_scale(cairo,sf,sf);	  
@@ -1179,7 +1209,7 @@ namespace minsky
 
   template <> void Operation<OperationType::innerProduct>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
     setCachedText(cairo, "·",14);
     cairo_scale(cairo,sf,sf);	  
@@ -1188,7 +1218,7 @@ namespace minsky
 
   template <> void Operation<OperationType::outerProduct>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
     setCachedText(cairo, "⊗",10);
     cairo_scale(cairo,sf,sf);	  
@@ -1197,7 +1227,7 @@ namespace minsky
 
   template <> void Operation<OperationType::index>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1206,21 +1236,19 @@ namespace minsky
 
   template <> void Operation<OperationType::gather>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"x[i]");
-    cairo_set_font_size(cairo,5);
-    cairo_move_to(cairo, l+1, -h+6);
-    cairo_show_text(cairo,"x");
-    cairo_move_to(cairo, l+1, h-3);
-    cairo_show_text(cairo,"i");
+    DrawBinOp drawBinOp(cairo);
+    drawBinOp.drawPort([&](){drawBinOp.drawSymbol("x");},l,-h,rotation());
+    drawBinOp.drawPort([&](){drawBinOp.drawSymbol("i");},l,h,rotation());
   }
 
   template <> void Operation<OperationType::meld>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
     setCachedText(cairo, "⭄",10);
     cairo_scale(cairo,sf,sf);  
@@ -1229,7 +1257,7 @@ namespace minsky
 
   template <> void Operation<OperationType::merge>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
     setCachedText(cairo, "⫤",10);
     cairo_scale(cairo,sf,sf);  
@@ -1238,7 +1266,7 @@ namespace minsky
 
   template <> void Operation<OperationType::slice>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor(); 	     
+    const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-10,-10);
     setCachedText(cairo, "[⋯|",10);
     cairo_scale(cairo,sf,sf);  

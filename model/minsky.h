@@ -31,7 +31,6 @@
 #include "equations.h"
 #include "fontDisplay.h"
 #include "godleyIcon.h"
-#include "godleyTab.h"
 #include "intrusiveMap.h"
 #include "latexMarkup.h"
 #include "variableValues.h"
@@ -39,11 +38,10 @@
 #include "lock.h"
 #include "operation.h"
 #include "pannableTab.h"
-#include "panopticon.h"
 #include "phillipsDiagram.h"
-#include "plotTab.h"
 #include "plotWidget.h"
 #include "progress.h"
+#include "pubTab.h"
 #include "ravelWrap.h"
 #include "rungeKutta.h"
 #include "saver.h"
@@ -149,11 +147,15 @@ namespace minsky
 
   public:
     PannableTab<EquationDisplay> equationDisplay;
-    Panopticon panopticon{canvas};
     FontDisplay fontSampler;
     PhillipsDiagram phillipsDiagram;
-    PlotTab plotTab;
-    GodleyTab godleyTab;
+    std::vector<PubTab> publicationTabs;
+
+    void addNewPublicationTab(const std::string& name) {publicationTabs.emplace_back(name);}
+    void addCanvasItemToPublicationTab(size_t i) {
+      if (canvas.item && i<publicationTabs.size())
+        publicationTabs[i].items.emplace_back(canvas.item);
+    }
     
     // Allow multiple equity columns.
     bool multipleEquities() const {return m_multipleEquities;}
@@ -172,7 +174,9 @@ namespace minsky
       canvas.model.updateTimestamp();
     }
     void requestReset();
-
+    /// requests a redraw of the curren active tab
+    void requestRedraw();
+    
     /// @{ push and pop state of the flags
     void pushFlags() {flagStack.push_back(flags);}
     void popFlags() {
@@ -210,6 +214,7 @@ namespace minsky
     }
     void setRavelIconResource(const string& s)
     {Ravel::svgRenderer.setResource(s);}
+    SVGRenderer histogramResource;
     
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
@@ -232,6 +237,7 @@ namespace minsky
       model->iHeight(std::numeric_limits<float>::max());
       model->iWidth(std::numeric_limits<float>::max());
       model->self=model;
+      publicationTabs.emplace_back("Publication");
     }
     ~Minsky();
     
@@ -267,11 +273,6 @@ namespace minsky
 
     void makeVariablesConsistent();
 
-    void showVariableDefinitionOnCanvas(const std::string& valueId) {
-      if (auto v=definingVar(valueId))
-        v->varTabDisplay=false;
-    }
-    
     void imposeDimensions();
 
     // runs over all ports and variables removing those not in use
@@ -286,7 +287,10 @@ namespace minsky
     void openLogFile(const string&);
     /// closes log file
     void closeLogFile() {outputDataFile.reset();}
+    /// set of variables (valueIds) to log
     std::set<string> logVarList;
+    /// returns true if logging is in operation
+    bool loggingEnabled() const {return outputDataFile.get();}
     
     /// construct the equations based on input data
     /// @throws ecolab::error if the data is inconsistent
@@ -307,6 +311,7 @@ namespace minsky
     void reset(); ///<resets the variables back to their initial values
     std::vector<double> step();  ///< step the equations (by n steps, default 1)
 
+    int numBackups=1; ///< number of previous versions of saved files to keep
     /// save to a file
     void save(const std::string& filename);
     /// load from a file
@@ -426,6 +431,9 @@ namespace minsky
     /// refresh the bookmark menu after changes
     virtual void bookmarkRefresh() {}
     
+    /// reset main window scroll bars after model has been panned
+    virtual void resetScroll() {}
+    
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
 
@@ -501,6 +509,7 @@ namespace minsky
 
     std::map<std::string,std::weak_ptr<Item>> namedItems;
     void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
+    void itemFromNamedItem(const std::string& name) {canvas.item=namedItems[name].lock();}
 
     /// trigger checkMem callback for testing purposes
     bool triggerCheckMemAllocationCallback() const

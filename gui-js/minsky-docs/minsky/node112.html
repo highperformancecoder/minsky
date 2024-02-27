@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Sliders</TITLE>
-<META NAME="description" CONTENT="Sliders">
+<TITLE>Histogram</TITLE>
+<META NAME="description" CONTENT="Histogram">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,49 +16,58 @@
 
 <LINK REL="next" HREF="node113.html">
 <LINK REL="previous" HREF="node111.html">
-<LINK REL="up" HREF="node108.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node113.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1509"
+<A NAME="tex2html1529"
   HREF="node113.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1507"
-  HREF="node108.html">
+<A NAME="tex2html1527"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1501"
+<A NAME="tex2html1521"
   HREF="node111.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1510"
-  HREF="node113.html">Importing a parameter from</A>
-<B> Up:</B> <A NAME="tex2html1508"
-  HREF="node108.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1502"
-  HREF="node111.html">Tensor valued initial conditions</A>
+<B> Next:</B> <A NAME="tex2html1530"
+  HREF="node113.html">Covariance</A>
+<B> Up:</B> <A NAME="tex2html1528"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1522"
+  HREF="node111.html">-th moment</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00444000000000000000">
-Sliders</A>
+<H2><A NAME="SECTION004225000000000000000"></A><A NAME="Operation:histogram"></A>
+<BR>
+Histogram
 </H2>
 
 <P>
-From the context menu, one can select a slider to be attached to a
-variable, which is a GUI &ldquo;knob&rdquo; allowing one to control a variable's
-initial value, or the value of a parameter or constant. Adjusting the
-slider of an integral (or stock) variable while the system is running
-actually adjusts the present value of the variable. The sliders can
-also be adjusted using the keyboard arrow keys.
+Computes the histogram along a named dimension of all
+elements present. If the dimension is not named, then the histogram
+is over all elements present in the tensor. The number of bins is
+specified by the numeric argument to the operation.
 
 <P>
-Slider parameters are specified in the edit menu: max, min and step
-size. A relative slider means that the step size is expressed as a
-fraction of max-min.
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/histogram.eps}}$
+ -->
+<IMG
+ WIDTH="556" HEIGHT="484" ALIGN="BOTTOM" BORDER="0"
+ SRC="img225.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/histogram.eps}}">
+</DIV>
+<P>
+<DIV ALIGN="CENTER"><EM>An example usage of the histogram operation</EM>
+
+</DIV>
 
 <P>
 <BR><HR>

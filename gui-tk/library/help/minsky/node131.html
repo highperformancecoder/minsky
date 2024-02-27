@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Example expressions</TITLE>
-<META NAME="description" CONTENT="Example expressions">
+<TITLE>Context Menu</TITLE>
+<META NAME="description" CONTENT="Context Menu">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,86 +16,245 @@
 
 <LINK REL="next" HREF="node132.html">
 <LINK REL="previous" HREF="node130.html">
-<LINK REL="up" HREF="node128.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node132.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1706"
+<A NAME="tex2html1722"
   HREF="node132.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1704"
-  HREF="node128.html">
+<A NAME="tex2html1720"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1698"
+<A NAME="tex2html1714"
   HREF="node130.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1707"
-  HREF="node132.html">Copyright notice</A>
-<B> Up:</B> <A NAME="tex2html1705"
-  HREF="node128.html">User defined functions</A>
-<B> Previous:</B> <A NAME="tex2html1699"
-  HREF="node130.html">Capabilities</A>
+<B> Next:</B> <A NAME="tex2html1723"
+  HREF="node132.html">Canvas background and keyboard</A>
+<B> Up:</B> <A NAME="tex2html1721"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1715"
+  HREF="node130.html">Godley Tables</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00530000000000000000">
-Example expressions</A>
+<H1><A NAME="SECTION004120000000000000000">
+Context Menu</A>
 </H1>
-The following is  a short listing  of infix format  based mathematical
-expressions that can be parsed and evaluated using the ExprTk library.
+
+<P>
+All canvas items have a context menu, which allow a variety of
+operations to be applied to the canvas item. Common context menu items
+are explained here:
+<DL>
+<DT><STRONG>Help</STRONG></DT>
+<DD>bring up context specific help for the item
+</DD>
+<DT><STRONG>Description</STRONG></DT>
+<DD>Attach an annotation to the item. This is only
+  visible by selecting the description item from the context menu,
+  although whatever is set as the &ldquo;Short Description&rdquo; will also
+  appear as a tooltip whenever the mouse hovers over the item.
+</DD>
+<DT><STRONG>Port values</STRONG></DT>
+<DD>When running a simulation, you can drill down into
+  the actual values at the input and output ports of the variable or
+  operation, which is a useful aid for debugging models.
+</DD>
+<DT><STRONG>Edit</STRONG></DT>
+<DD>set or query various attributes of an item. This function
+  can also be accessed by double clicking on the item. (Plot widgets
+  behave slightly differently).
+</DD>
+<DT><STRONG>Copy</STRONG></DT>
+<DD>Creates a copy of an item, retaining the same attributes
+  of the original. This is very useful for creating copies of the same
+  variable to reduce the amount of overlapping wiring (aka &ldquo;rats
+  nest") in a model.
+</DD>
+<DT><STRONG>Flip</STRONG></DT>
+<DD>actually rotates an object through <SPAN CLASS="MATH"><IMG
+ WIDTH="35" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img263.png"
+ ALT="$180^\circ$"></SPAN>. You can
+  specify aribtrary rotations of objects through the edit menu.
+</DD>
+<DT><STRONG>Delete</STRONG></DT>
+<DD>delete the object.
+</DD>
+</DL>
+
+<P>
+Item specific context menu items:
+<DL>
+<DT><STRONG>variables, parameters and constants</STRONG></DT>
+<DD>
+  <DL>
+<DT><STRONG>Local</STRONG></DT>
+<DD>Make the variable's scope local to its
+    <A HREF="node126.html#Group">group</A>
+  
+</DD>
+<DT><STRONG>Find definition</STRONG></DT>
+<DD>Place a red circle on the variable that
+    defines its value.
+  
+</DD>
+<DT><STRONG>Select all instances</STRONG></DT>
+<DD>Select all instances of this variable
+  
+</DD>
+<DT><STRONG>Rename all instance</STRONG></DT>
+<DD>Do a global search and replace of this
+    variable name with a new name.
+  
+</DD>
+<DT><STRONG>Export as CSV</STRONG></DT>
+<DD>Export the current variable's value as a CSV
+    file. Obviously only really useful when the variable contains a
+    <A HREF="node125.html#tensors">tensor</A>
+  
+</DD>
+<DT><STRONG>Add integral</STRONG></DT>
+<DD>attach an integration operation, and convert the
+    variable into an integral type
+  
+</DD>
+</DL>
+</DD>
+<DT><STRONG>integrals</STRONG></DT>
+<DD>
+  <DL>
+<DT><STRONG>Copy Var</STRONG></DT>
+<DD>copy just the integration variable, not the
+    integration operation
+  
+</DD>
+<DT><STRONG>Toggle Var Binding</STRONG></DT>
+<DD>Normally, integrals are tightly bound to
+    their variables. By toggling the binding, the integral icon can
+    then be moved independently of the variable it is bound to.
+  
+</DD>
+</DL>
+</DD>
+<DT><STRONG>Godley tables</STRONG></DT>
+<DD>
+  <DL>
+<DT><STRONG>Open Godley Table</STRONG></DT>
+<DD>opens a spreadsheet to allow financial
+    flows defining the Godley table to be entered or modified.
+  
+</DD>
+<DT><STRONG>Resize Godley Table</STRONG></DT>
+<DD>allows the icon to be resized.
+  
+</DD>
+<DT><STRONG>Edit/Copy var</STRONG></DT>
+<DD>allows individual stock and flow variables to
+    be copied or edited.
+  
+</DD>
+<DT><STRONG>Export to file</STRONG></DT>
+<DD>export table contents as either CSV data, or
+    as a LaTeX table, for import into other software.
+  
+</DD>
+</DL>
+
+<P>
+</DD>
+<DT><STRONG>Groups</STRONG></DT>
+<DD>
+  <DL>
+<DT><STRONG>Zoom to Display</STRONG></DT>
+<DD>Zoom the canvas sufficiently to see the
+    contents of the group.
+  
+</DD>
+<DT><STRONG>Resize</STRONG></DT>
+<DD>Resize the group icon on the canvas.
+  
+</DD>
+<DT><STRONG>Save group as</STRONG></DT>
+<DD>Save the group in it's own Minsky file.
+  
+</DD>
+<DT><STRONG>Flip contents</STRONG></DT>
+<DD>Rotate each item within the group by
+    180<SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img264.png"
+ ALT="$^\circ$"></SPAN>
+  
+</DD>
+<DT><STRONG>Ungroup</STRONG></DT>
+<DD>Ungroup the group, leaving it's contents as icons on
+    the canvas.
+  
+</DD>
+<DT><STRONG>contentBounds</STRONG></DT>
+<DD>Draws a box on the canvas indicating the
+    smallest bounding box containing the group items.
+  
+</DD>
+</DL>
+
+<P>
+</DD>
+<DT><STRONG>Plot Widgets</STRONG></DT>
+<DD>
+  <DL>
+<DT><STRONG>Expand</STRONG></DT>
+<DD>By double-clicking, or selecting &ldquo;Expand&rdquo; from the
+    context menu, a popup window is created of the plot, which can be
+    used examine the plotting in more detail.
+
+<P>
+</DD>
+<DT><STRONG>Resize</STRONG></DT>
+<DD>Allows you to resize the plot icon on the canvas
+  
+</DD>
+<DT><STRONG>Options</STRONG></DT>
+<DD>Customize the plot by adding a title, axes labels and
+    control the number of axis ticks and grid lines on the detailed
+    plot. You can also add a legend, which is populated from the names
+    of variables attached to the plot.
+  
+</DD>
+</DL>
+
+<P>
+</DD>
+</DL>
 
 <P>
 
-<UL>
-<LI><code>sqrt(1 - (3 / x^2))</code>
-</LI>
-<LI><code>clamp(-1, sin(2 * pi * x) + cos(y / 2 * pi), +1)</code>
-</LI>
-<LI><code>sin(2.34e-3 * x)</code>
-</LI>
-<LI><code>if(((x[2] + 2) == 3) and ((y + 5) &lt;= 9),1 + w, 2 / z)</code>
-</LI>
-<LI><code>inrange(-2,m,+2) == if(({-2 &lt;= m} and [m &lt;= +2]),1,0)</code>
-</LI>
-<LI><code>({1/1}*[1/2]+(1/3))-{1/4}^[1/5]+(1/6)-({1/7}+[1/8]*(1/9))</code>
-</LI>
-<LI><code>a * exp(2.2 / 3.3 * t) + c</code>
-</LI>
-<LI><code>z := x + sin(2.567 * pi / y)</code>
-</LI>
-<LI><code>u := 2.123 * {pi * z} / (w := x + cos(y / pi))</code>
-</LI>
-<LI><code>2x + 3y + 4z + 5w == 2 * x + 3 * y + 4 * z + 5 * w</code>
-</LI>
-<LI><code>3(x + y) / 2.9 + 1.234e+12 == 3 * (x + y) / 2.9 + 1.234e+12</code>
-</LI>
-<LI><code>(x + y)3.3 + 1 / 4.5 == [x + y] * 3.3 + 1 / 4.5</code>
-</LI>
-<LI><code>(x + y[i])z + 1.1 / 2.7 == (x + y[i]) * z + 1.1 / 2.7</code>
-</LI>
-<LI><code>(sin(x / pi) cos(2y) + 1) == (sin(x / pi) * cos(2 * y) + 1)</code>
-</LI>
-<LI><code>75x^17 + 25.1x^5 - 35x^4 - 15.2x^3 + 40x^2 - 15.3x + 1</code>
-</LI>
-<LI><code>(avg(x,y) &lt;= x + y ? x - y : x * y) + 2.345 * pi / x</code>
-</LI>
-<LI><code>while (x &lt;= 100) { x -= 1; }</code>
-</LI>
-<LI><code>x &lt;= 'abc123' and (y in 'AString') or ('1x2y3z' != z)</code>
-</LI>
-<LI><code>((x + 'abc') like '*123*') or ('a123b' ilike y)</code>
-</LI>
-<LI><code>sgn(+1.2^3.4z / -5.6y) &lt;= {-7.8^9 / -10.11x }</code>
-</LI>
-</UL>
-
-<P>
-<BR><HR>
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1722"
+  HREF="node132.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1720"
+  HREF="node46.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1714"
+  HREF="node130.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html1723"
+  HREF="node132.html">Canvas background and keyboard</A>
+<B> Up:</B> <A NAME="tex2html1721"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1715"
+  HREF="node130.html">Godley Tables</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

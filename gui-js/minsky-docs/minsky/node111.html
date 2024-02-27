@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Tensor valued initial conditions</TITLE>
-<META NAME="description" CONTENT="Tensor valued initial conditions">
+<TITLE>-th moment</TITLE>
+<META NAME="description" CONTENT="-th moment">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,99 +16,96 @@
 
 <LINK REL="next" HREF="node112.html">
 <LINK REL="previous" HREF="node110.html">
-<LINK REL="up" HREF="node108.html">
+<LINK REL="up" HREF="node87.html">
 <LINK REL="next" HREF="node112.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1499"
+<A NAME="tex2html1519"
   HREF="node112.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1497"
-  HREF="node108.html">
+<A NAME="tex2html1517"
+  HREF="node87.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1491"
+<A NAME="tex2html1511"
   HREF="node110.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1500"
-  HREF="node112.html">Sliders</A>
-<B> Up:</B> <A NAME="tex2html1498"
-  HREF="node108.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1492"
-  HREF="node110.html">Initial conditions</A>
+<B> Next:</B> <A NAME="tex2html1520"
+  HREF="node112.html">Histogram</A>
+<B> Up:</B> <A NAME="tex2html1518"
+  HREF="node87.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1512"
+  HREF="node110.html">Standard Deviation</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00443000000000000000"></A><A NAME="tensor-init"></A><A NAME="2548"></A>
+<H2><A NAME="SECTION004224000000000000000"></A><A NAME="Operation:moment"></A>
 <BR>
-Tensor valued initial
-  conditions
+<SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment
 </H2>
 
 <P>
-There is also a simple functional language, which allows for the
-generation of tensor-valued operations. These functions take the form
-<EM>func</EM><!-- MATH
- $(n_1,n_2,\ldots,n_r)$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="108" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img220.png"
- ALT="$(n_1,n_2,\ldots,n_r)$"></SPAN> where <SPAN CLASS="MATH"><IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img221.png"
- ALT="$r$"></SPAN> is the desired rank, and
-<SPAN CLASS="MATH"><IMG
- WIDTH="49" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img222.png"
- ALT="$n_1,n_2,$"></SPAN> etc are the dimensions of the tensor. Available functions
-include:
+Returns the <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment about the mean along a named dimension of
+all elements present. <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN> is specified by the numerical argument of
+the operation, which defaults to 1 (hence the result will be 0 in that
+case). If the dimension is not named, then the <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment is over
+all elements present in the tensor. Note that missing elements are not
+counted.
 
 <P>
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="RIGHT">name</TD>
-<TD ALIGN="LEFT">description</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>one</code></TD>
-<TD ALIGN="LEFT">the tensor is filled with `1'</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>zero</code></TD>
-<TD ALIGN="LEFT">the tensor is filled with `0'</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>iota</code></TD>
-<TD ALIGN="LEFT">the arithmetic sequence <!-- MATH
- $(0,1,...\prod_in_i)$
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\langle\Delta x^k\rangle = \frac1N\sum_i(x_i-\langle x\rangle)^k
+\end{displaymath}
  -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="100" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+
+<IMG
+ WIDTH="182" HEIGHT="48" BORDER="0"
  SRC="img223.png"
- ALT="$(0,1,...\prod_in_i)$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>eye</code></TD>
-<TD ALIGN="LEFT">diagonal elements filled with `1', offdiagonal `0'</TD>
-</TR>
-<TR><TD ALIGN="RIGHT"><code>rand</code></TD>
-<TD ALIGN="LEFT">tensor filled with random numbers in the range <SPAN CLASS="MATH"><IMG
- WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img224.png"
- ALT="$[0,1)$"></SPAN></TD>
-</TR>
-</TABLE>
-<A NAME="2553"></A><A NAME="2554"></A><A NAME="2555"></A><A NAME="2556"></A><A NAME="2557"></A>
+ ALT="\begin{displaymath}
+\langle\Delta x^k\rangle = \frac1N\sum_i(x_i-\langle x\rangle)^k
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
+Also
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\sigma^2 = \frac{N}{N-1}\langle\Delta x^2\rangle
+\end{displaymath}
+ -->
 
-<UL>
-<LI><code>eye</code> is equivalent to <code>one</code> for vectors.
-</LI>
-<LI><code>rand</code> generates different random numbers each time the
-  simulation is reset, and uses the clib <code>rand()</code> function.
-</LI>
-</UL>
+<IMG
+ WIDTH="124" HEIGHT="41" BORDER="0"
+ SRC="img224.png"
+ ALT="\begin{displaymath}
+\sigma^2 = \frac{N}{N-1}\langle\Delta x^2\rangle
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
 
 <P>
 <BR><HR>

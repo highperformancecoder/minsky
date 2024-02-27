@@ -56,7 +56,6 @@ using namespace ecolab;
 
 namespace minsky
 {
-
   namespace
   {
 #ifdef USE_WIN32_SURFACE
@@ -86,7 +85,7 @@ namespace minsky
       SetWindowPos(winfo.childWindowId,HWND_TOP,winfo.offsetLeft,winfo.offsetTop,winfo.childWidth,winfo.childHeight,0);
 #elif defined(USE_X11)
       static mutex blitting;
-      lock_guard<mutex> lock(blitting);
+      const lock_guard<mutex> lock(blitting);
       XCopyArea(winfo.display, winfo.bufferWindowId, winfo.childWindowId, winfo.graphicsContext, x, y, width, height, x, y);
       XFlush(winfo.display);
       XRaiseWindow(winfo.display, winfo.childWindowId);
@@ -101,10 +100,10 @@ namespace minsky
     SelectObject(hdcMem, hOld);
     DeleteObject(hbmMem);
     DeleteDC(hdcMem);
-    DestroyWindow(childWindowId);
+    SetWindowLongPtrA(childWindowId, GWLP_USERDATA, 0);
+    PostMessageA(childWindowId,WM_CLOSE,0,0);
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
-    //eventThread.reset(); //shut thread down before destroying window
     XFreeGC(display, graphicsContext);
     XDestroyWindow(display, childWindowId);
     XDestroyWindow(display, bufferWindowId);
@@ -160,10 +159,10 @@ namespace minsky
 #ifdef USE_WIN32_SURFACE
   LRESULT CALLBACK windowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   {
-    WindowInformation* winfo=reinterpret_cast<WindowInformation*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
     switch (msg)
       {
       case WM_PAINT:
+        if (WindowInformation* winfo=reinterpret_cast<WindowInformation*>(GetWindowLongPtr(hwnd, GWLP_USERDATA)))
         {
           RECT r;
           if (GetUpdateRect(hwnd,&r,false))
@@ -243,7 +242,7 @@ namespace minsky
         // adjust everything by the monitor scale factor
         DEVICE_SCALE_FACTOR scaleFactor;
         GetScaleFactorForMonitor(MonitorFromWindow(parentWindowId, MONITOR_DEFAULTTONEAREST), &scaleFactor);
-        sf=scaleFactor/100.0;
+        sf=int(scaleFactor)/100.0;
       }
     if (sf>0)
       {
@@ -275,9 +274,9 @@ namespace minsky
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
     parentWindowId = parentWin;
-    static bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
+    static const bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
     display = XOpenDisplay(nullptr);
-    int err = XGetWindowAttributes(display, parentWin, &wAttr);
+    const int err = XGetWindowAttributes(display, parentWin, &wAttr);
     if (err > 1)
       throw runtime_error("Invalid window: " + to_string(parentWin));
 

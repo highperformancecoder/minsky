@@ -55,7 +55,6 @@ namespace schema3
   using minsky::Optional;
   using minsky::HandleLockInfo;  //for Ravel lock groups
   
- 
   struct Note
   {
     Optional<std::string> detailedText, tooltip;
@@ -65,7 +64,7 @@ namespace schema3
   };
 
   // attribute common to all items
-  struct ItemBase: public Note
+  struct ItemBase: public minsky::PlotOptions<Note>
   {
     int id=-1;
     std::string type;
@@ -78,37 +77,24 @@ namespace schema3
     bool bookmark=false;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
-      Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), itemTabX(it.itemTabX), itemTabY(it.itemTabY), scaleFactor(it.m_sf),
+      minsky::PlotOptions<Note>(Note(it)), id(id), type(it.classType()),
+      x(it.m_x), y(it.m_y), scaleFactor(it.m_sf),
       rotation(it.rotation()), width(it.iWidth()), height(it.iHeight()), ports(ports), bookmark(it.bookmark) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type), x(it.x), y(it.y),
+      minsky::PlotOptions<Note>(it), id(it.id), type(type), x(it.x), y(it.y),
       rotation(it.rotation), width(it.width? *it.width: 0), height(it.height?*it.height:0),
       ports(it.ports) {}
   };
 
   struct Slider
   {
-    bool  stepRel=false;
+    bool  stepRel=false, visible=true;
     double min, max, step;
     Slider() {}
-    Slider(bool stepRel, double min, double max, double step):
-      stepRel(stepRel), min(min), max(max), step(step) {}
+    Slider(bool stepRel, bool visible, double min, double max, double step):
+      stepRel(stepRel), visible(visible), min(min), max(max), step(step) {}
     Slider(const schema2::Slider& s):
-      stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
-  };
-
-  struct LegendGeometry
-  {
-    double legendLeft=0.9, legendTop=0.95, legendFontSz=0.03;
-    LegendGeometry()=default;
-    LegendGeometry(const ecolab::Plot& plot):
-      legendLeft(plot.legendLeft), legendTop(plot.legendTop), legendFontSz(plot.legendFontSz) {}
-    void setLegendGeometry(ecolab::Plot& plot) const {
-      plot.legendLeft=legendLeft;
-      plot.legendTop=legendTop;
-      plot.legendFontSz=legendFontSz;
-    }
+      stepRel(s.stepRel), visible(s.visible), max(s.max), step(s.step) {}
   };
 
   struct LockGroup
@@ -119,10 +105,10 @@ namespace schema3
   
   struct Item: public ItemBase
   {
-    Optional<std::string> name; //name, description or title
     Optional<std::string> init;
     Optional<std::string> units;
     Optional<Slider> slider;
+    bool miniPlot=false; // miniature plots on variables
     Optional<int> intVar;
     Optional<std::string> url; //file or url of CSV import data
     Optional<minsky::DataSpecSchema> csvDataSpec; //CSV import data
@@ -141,14 +127,6 @@ namespace schema3
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
     Optional<bool> editorMode, buttonDisplay, variableDisplay;
     Optional<string> currency;
-    // Plot specific fields
-    Optional<bool> logx, logy, ypercent, plotTabDisplay;
-    Optional<minsky::PlotWidget::PlotType> plotType;
-    Optional<std::string> xlabel, ylabel, y1label;
-    Optional<int> nxTicks, nyTicks;
-    Optional<double> xtickAngle, exp_threshold;
-    Optional<ecolab::Plot::Side> legend;
-    Optional<LegendGeometry> legendGeometry;
     // sheet specific fields
     Optional<minsky::ShowSlice> showSlice;
     // group specific fields
@@ -163,13 +141,15 @@ namespace schema3
     // minsky object importers
     Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      name(v.rawName()), init(v.init()) {
+      init(v.init()), miniPlot(v.miniPlotEnabled()) {
+      name=v.rawName();
       if (v.sliderBoundsSet)
-        slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
+        slider.reset(new Slider(v.sliderStepRel,v.enableSlider,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
         {
           units=vv->units.str();
-          csvDataSpec=vv->csvDialog.spec.toSchema();
+          if (!vv->csvDialog.url.empty())
+            csvDataSpec=vv->csvDialog.spec.toSchema();
           url=vv->csvDialog.url;
         }
     }
@@ -178,43 +158,34 @@ namespace schema3
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      name(g.table.title), data(g.table.getData()),
-      assetClasses(g.table._assetClass()),
-      editorMode(g.editorMode()),
-      buttonDisplay(g.buttonDisplay()), variableDisplay(g.variableDisplay),
-      currency(g.currency) {}
+      data(g.table.getData()), assetClasses(g.table._assetClass()),
+      editorMode(g.editorMode()), buttonDisplay(g.buttonDisplay()),
+      variableDisplay(g.variableDisplay()), currency(g.currency)
+    {name=g.table.title;}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(p),ports), name(p.title),
-      logx(p.logx), logy(p.logy), ypercent(p.percent), plotTabDisplay(p.plotTabDisplay),
-      plotType(p.plotType),
-      xlabel(p.xlabel()), ylabel(p.ylabel()), y1label(p.y1label()),
-      nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
-      exp_threshold(p.exp_threshold), legendGeometry(LegendGeometry(p)), palette(p.palette)
+      ItemBase(id,static_cast<const minsky::Item&>(p),ports),
+       palette(p.palette)
     {
-      if (p.legend) legend=p.legendSide;
+      static_cast<PlotOptions&>(*this)=p;
     }
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      name(g.title), bookmarks(std::vector<minsky::Bookmark>(g.bookmarks.begin(), g.bookmarks.end())) {} 
+      bookmarks(std::vector<minsky::Bookmark>(g.bookmarks.begin(), g.bookmarks.end()))
+    {name=g.title;} 
 
     static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
     Item(const schema2::Item& it):
-      ItemBase(it,it.type), name(it.name), init(it.init),
-      units(it.units),
+      ItemBase(it,it.type), init(it.init), units(it.units),
       slider(it.slider), intVar(it.intVar), dataOpData(it.dataOpData), filename(it.filename),
       ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
       axis(it.axis), arg(it.arg), data(it.data), assetClasses(it.assetClasses),
-      logx(it.logx), logy(it.logy), ypercent(it.ypercent),
-      plotType(minsky::PlotWidget::PlotType(it.plotType? int(*it.plotType): 0)),
-      xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
-      nxTicks(it.nxTicks), nyTicks(it.nyTicks), xtickAngle(it.xtickAngle),
-      exp_threshold(it.exp_threshold), legend(it.legend), bookmarks(it.bookmarks),
-      tensorData(convertTensorDataFromSchema2(it.tensorData)), palette(it.palette)
-    {}
+      bookmarks(it.bookmarks), tensorData(convertTensorDataFromSchema2(it.tensorData)),
+      palette(it.palette)
+    {name=it.name;}
 
                  
   };
@@ -245,14 +216,36 @@ namespace schema3
       Item(g), items(g.items), inVariables(g.inVariables), outVariables(g.outVariables) {}
   };
 
-
-  struct Minsky
+  struct PhillipsFlow: public Wire
   {
+    PhillipsFlow()=default;
+    PhillipsFlow(int id, const minsky::Wire& w): Wire(id, w) {}
+    vector<pair<double, Item>> terms;
+  };
+  
+  struct PhillipsDiagram
+  {
+    std::vector<Item> stocks;
+    std::vector<PhillipsFlow> flows;
+    PhillipsDiagram()=default;
+    PhillipsDiagram(const minsky::PhillipsDiagram&);
+    /// populate a Phillips Diagram from this
+    void populatePhillipsDiagram(minsky::PhillipsDiagram&) const;
+  };
+
+  struct MinskyImpl; ///< working structure, not serialised
+  
+  class Minsky
+  {
+    classdesc::Exclude<std::shared_ptr<MinskyImpl>> impl;
+    CLASSDESC_ACCESS(Minsky);
+  public:
     static const int version=3;
     int schemaVersion=Minsky::version;
     std::string minskyVersion="unknown";
     vector<Wire> wires;
     vector<Item> items;
+    Optional<vector<int>> inVariables, outVariables;
     vector<Group> groups;
     vector<LockGroup> lockGroups;
     minsky::Simulation rungeKutta;
@@ -260,8 +253,12 @@ namespace schema3
     vector<minsky::Bookmark> bookmarks;
     minsky::Dimensions dimensions;
     minsky::ConversionsMap conversions;
+    PhillipsDiagram phillipsDiagram;
+    std::vector<PublicationTab> publicationTabs;
+    std::vector<Item> publicationItems;
     
-    Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
+    Minsky(): schemaVersion(0) {makeImpl();} // schemaVersion defined on read in
+    ~Minsky();
     Minsky(const minsky::Group& g, bool packTensorData=true);
     Minsky(const minsky::Minsky& m, bool packTensorData=true):
       Minsky(*m.model,packTensorData) {
@@ -271,11 +268,15 @@ namespace schema3
       bookmarks.insert(bookmarks.end(), m.model->bookmarks.begin(), m.model->bookmarks.end());
       dimensions=m.dimensions;
       conversions=m.conversions;
+      phillipsDiagram=PhillipsDiagram(m.phillipsDiagram);
+      populateSchemaPublicationTabs(m.publicationTabs);
     }
 
+    void makeImpl(); // creates the impl.
+    
     /// populate schema from XML data
     Minsky(classdesc::xml_unpack_t& data): schemaVersion(0)
-    {minsky::loadSchema<schema2::Minsky>(*this,data,"Minsky");}
+    {makeImpl(); minsky::loadSchema<schema2::Minsky>(*this,data,"Minsky");}
     
     Minsky(const schema2::Minsky& m):
       schemaVersion(m.schemaVersion),
@@ -283,8 +284,11 @@ namespace schema3
       items(m.items.begin(), m.items.end()),
       groups(m.groups.begin(), m.groups.end()), rungeKutta(m.rungeKutta),
       zoomFactor(m.zoomFactor), bookmarks(m.bookmarks), dimensions(m.dimensions),
-      conversions(m.conversions) {}
-    
+      conversions(m.conversions) {makeImpl();}
+
+    void populateSchemaPublicationTabs(const std::vector<minsky::PubTab>&);
+    void populatePublicationTabs(std::vector<minsky::PubTab>&) const;
+   
     /// create a Minsky model from this
     void populateMinsky(minsky::Minsky&) const;
     
@@ -292,6 +296,7 @@ namespace schema3
     /// consistent way into the free id space of the global minsky
     /// object
     void populateGroup(minsky::Group& g) const;
+
   };
 
 

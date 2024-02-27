@@ -5,31 +5,22 @@
 \pagecolor[gray]{1}
 \author{}
 
-% prevent having to place annoying mboxes
 %begin{latexonly}
 %\renewcommand{\htmladdimg}[1]{\resizebox{\textwidth}{!}{\includegraphics{images/#1}}}
 \renewcommand{\htmladdimg}[1]{\includegraphics{images/#1}}
-%end{latexonly}
-
-%begin{latexonly}
 \newcommand{\fwhtmladdimg}[1]{
   \noindent\resizebox{\textwidth}{!}{\htmladdimg{#1}}
 }
-%end{latexonly}
-\begin{htmlonly}
-\newcommand{\fwhtmladdimg}[1]{\htmladdimg{#1}}
-\end{htmlonly}
-
-%begin{latexonly}
 \newcommand{\smhtmladdimg}[1]{
   \resizebox{!}{3ex}{\htmladdimg{#1}}
 }
+% redefine \htmlref in LaTeX mode to quote the section number
+\renewcommand{\htmlref}[2]{#1 \S(\ref{#2})}
 %end{latexonly}
+
 \begin{htmlonly}
+\newcommand{\fwhtmladdimg}[1]{\htmladdimg{#1}}
 \newcommand{\smhtmladdimg}[1]{\htmladdimg{#1}}
-
-
-
 \end{htmlonly}
 
 \newcommand{\buttonIcon}[1]{

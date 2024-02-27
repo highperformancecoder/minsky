@@ -81,7 +81,7 @@ namespace schema2
     template <class V, class O>
     void addItem(V& vec, const O& item) {
       vec.emplace_back(item);
-      if (layout.count(item.id))
+      if (layout.contains(item.id))
         vec.back().addLayout(layout[item.id]);
     }
   };

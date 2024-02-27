@@ -1,13 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { ClassType, IntOp} from '@minsky/shared';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'minsky-edit-integral',
-  templateUrl: './edit-integral.component.html',
-  styleUrls: ['./edit-integral.component.scss'],
+    selector: 'minsky-edit-integral',
+    templateUrl: './edit-integral.component.html',
+    styleUrls: ['./edit-integral.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+    ],
 })
 export class EditIntegralComponent implements OnInit {
   form: FormGroup;
@@ -63,7 +70,7 @@ export class EditIntegralComponent implements OnInit {
     this.name.setValue(this.itemName);
     this.rotation.setValue(await this.intOp.rotation());
     this.initialValue.setValue(await this.intOp.intVar.init());
-    this.units.setValue(await this.intOp.intVar.units());
+    this.units.setValue(await this.intOp.intVar.unitsStr());
     this.relative.setValue(await this.intOp.intVar.sliderStepRel());
   }
 
@@ -74,6 +81,7 @@ export class EditIntegralComponent implements OnInit {
       this.intOp.intVar.init(this.initialValue.value);
       this.intOp.intVar.setUnits(this.units.value);
       this.intOp.intVar.sliderStepRel(this.relative.value);
+      this.electronService.minsky.requestRedraw();
     }
 
     this.closeWindow();

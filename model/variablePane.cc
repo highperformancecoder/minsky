@@ -20,6 +20,8 @@
 #include "minsky.h"
 #include "variablePane.h"
 #include "cairoItems.h"
+#include "pannableTab.rcd"
+#include "pannableTab.xcd"
 #include "variableValue.h"
 #include "variablePane.rcd"
 #include "variablePane.xcd"
@@ -33,7 +35,7 @@ namespace minsky
   VariablePaneCell::VariablePaneCell(const VariableValue& var):
     var(var.type(), var.name)
   {
-    ecolab::cairo::Surface surf
+    const ecolab::cairo::Surface surf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     cairo_move_to(surf.cairo(),0,0);
     RenderVariable rv(*this->var, surf.cairo());
@@ -47,7 +49,7 @@ namespace minsky
     if (!cachedCairo || !var || var->type()==VariableType::undefined) return;
     var->sliderBoundsSet=0; //TODO, this should be the case by default anyway
     RenderVariable rv(*var, cachedCairo);
-    ecolab::cairo::CairoSave cs(cachedCairo);
+    const ecolab::cairo::CairoSave cs(cachedCairo);
     cairo_translate(cachedCairo,0.5*m_width,0.5*m_height);
     rv.draw();
     cairo_reset_clip(cachedCairo);
@@ -59,6 +61,12 @@ namespace minsky
       minsky().canvas.addVariable(var->rawName(), var->type());
   }
 
+  const VariableBase& VariablePaneCell::variable() const
+  {
+    if (var) return *var;
+    static const Variable<VariableType::undefined> undefined;
+    return undefined;
+  }
   
   VariablePaneCell& VariablePane::cell(unsigned row, unsigned col)
   {
@@ -85,12 +93,12 @@ namespace minsky
     vars.clear();
     for (auto& v: cminsky().variableValues)
       {
-        if (v.first.empty() || selection.count(v.second->type())==0) continue; // ignore those filtered out
+        if (v.first.empty() || selection.contains(v.second->type())==0) continue; // ignore those filtered out
         vars.emplace_back(*v.second);
       }
 
     m_numCols=vars.size()/m_numRows+1;
-    unsigned gridSize=m_numRows*m_numCols;
+    const unsigned gridSize=m_numRows*m_numCols;
     while (vars.size()<gridSize) vars.emplace_back();
     if (surface.get()) surface->requestRedraw(); // TODO, plain requestRedraw doesn't work for Tk here...
   }
@@ -114,35 +122,7 @@ namespace minsky
         cairo_translate(surface->cairo(), x+offsx, y+offsy);
       }
   }
-
-  void VariablePane::mouseDown(float x, float y)
-  {
-    if (shift)
-      {
-        moveOffsX=x-offsx;
-        moveOffsY=y-offsy;
-        mousePressed=true;
-      }
-    else
-      cell(rowY(y-offsy),colX(x-offsx)).emplace();
-  }
-  void VariablePane::mouseUp(float x,float y)
-  {
-    mouseMove(x,y);
-    mousePressed=false;
-  }
-  void VariablePane::mouseMove(float x,float y)
-  {
-    if (!mousePressed) return;
-    offsx=x-moveOffsX;
-    offsy=y-moveOffsY;
-    surface->requestRedraw(); // TODO, plain requestRedraw doesn't work for Tk here...
-  }
-  void VariablePane::zoom(double,double,double)
-  {
-  }
-
-  
 }
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneBase);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePane);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneCell);

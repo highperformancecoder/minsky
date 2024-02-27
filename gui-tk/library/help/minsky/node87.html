@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>frac</TITLE>
-<META NAME="description" CONTENT="frac">
+<TITLE>Tensor operations</TITLE>
+<META NAME="description" CONTENT="Tensor operations">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,50 +14,136 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node86.html">
-<LINK REL="up" HREF="node48.html">
+<LINK REL="next" HREF="node115.html">
+<LINK REL="previous" HREF="node47.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node88.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1236"
+<A NAME="tex2html1252"
   HREF="node88.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1234"
-  HREF="node48.html">
+<A NAME="tex2html1250"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1230"
+<A NAME="tex2html1244"
   HREF="node86.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1237"
-  HREF="node88.html">Tensor operations</A>
-<B> Up:</B> <A NAME="tex2html1235"
-  HREF="node48.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1231"
-  HREF="node86.html">floor</A>
+<B> Next:</B> <A NAME="tex2html1253"
+  HREF="node88.html">sum</A>
+<B> Up:</B> <A NAME="tex2html1251"
+  HREF="node46.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1245"
+  HREF="node86.html">frac</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004139000000000000000"></A><A NAME="Operation:frac"></A>
+<H1><A NAME="SECTION00420000000000000000"></A><A NAME="tensor___operations"></A><A NAME="2436"></A>
 <BR>
-frac
-</H2> Fractional part of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img58.png"
- ALT="$x$"></SPAN>, ie
-<!-- MATH
- $x-\lfloor x\rfloor$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="55" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img194.png"
- ALT="$x-\lfloor x\rfloor$"></SPAN>.
+Tensor operations
+</H1>
 
 <P>
+In the following operations, an axis argument can be supplied in the
+operation edit dialog. The axis name is symbolic and available in a
+drop down box. If the axis name is not specified, then the operation
+will be applied as though the input was flattened (unrolled to a
+vector), and then the result reshaped to the original tensor.
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html1254"
+  HREF="node88.html">sum <SPAN CLASS="MATH"><IMG
+ WIDTH="21" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img19.png"
+ ALT="$\sum $"></SPAN></A>
+<LI><A NAME="tex2html1255"
+  HREF="node89.html">product <SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img20.png"
+ ALT="$\prod $"></SPAN></A>
+<LI><A NAME="tex2html1256"
+  HREF="node90.html">infimum</A>
+<LI><A NAME="tex2html1257"
+  HREF="node91.html">supremum</A>
+<LI><A NAME="tex2html1258"
+  HREF="node92.html">any</A>
+<LI><A NAME="tex2html1259"
+  HREF="node93.html">all</A>
+<LI><A NAME="tex2html1260"
+  HREF="node94.html">infindex</A>
+<LI><A NAME="tex2html1261"
+  HREF="node95.html">supindex</A>
+<LI><A NAME="tex2html1262"
+  HREF="node96.html">running sum <SPAN CLASS="MATH"><IMG
+ WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img21.png"
+ ALT="$\sum +$"></SPAN></A>
+<LI><A NAME="tex2html1263"
+  HREF="node97.html">running product <SPAN CLASS="MATH"><IMG
+ WIDTH="34" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img22.png"
+ ALT="$\prod +$"></SPAN></A>
+<LI><A NAME="tex2html1264"
+  HREF="node98.html">difference <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img23.png"
+ ALT="$\Delta $"></SPAN></A>
+<LI><A NAME="tex2html1265"
+  HREF="node99.html">index</A>
+<LI><A NAME="tex2html1266"
+  HREF="node100.html">gather</A>
+<LI><A NAME="tex2html1267"
+  HREF="node101.html">inner product <SPAN CLASS="MATH"><IMG
+ WIDTH="8" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img24.png"
+ ALT="$\cdot $"></SPAN></A>
+<LI><A NAME="tex2html1268"
+  HREF="node102.html">outer product <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img25.png"
+ ALT="$\otimes $"></SPAN></A>
+<LI><A NAME="tex2html1269"
+  HREF="node103.html">Meld</A>
+<LI><A NAME="tex2html1270"
+  HREF="node104.html">Merge</A>
+<LI><A NAME="tex2html1271"
+  HREF="node105.html">Slice</A>
+<LI><A NAME="tex2html1272"
+  HREF="node106.html">Size</A>
+<LI><A NAME="tex2html1273"
+  HREF="node107.html">Shape</A>
+<LI><A NAME="tex2html1274"
+  HREF="node108.html">Mean</A>
+<LI><A NAME="tex2html1275"
+  HREF="node109.html">Median</A>
+<LI><A NAME="tex2html1276"
+  HREF="node110.html">Standard Deviation</A>
+<LI><A NAME="tex2html1277"
+  HREF="node111.html"><SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment</A>
+<LI><A NAME="tex2html1278"
+  HREF="node112.html">Histogram</A>
+<LI><A NAME="tex2html1279"
+  HREF="node113.html">Covariance</A>
+<LI><A NAME="tex2html1280"
+  HREF="node114.html">Correlation coefficient <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img27.png"
+ ALT="$\rho $"></SPAN></A>
+</UL>
+<!--End of Table of Child-Links-->
 <BR><HR>
 
 </BODY>

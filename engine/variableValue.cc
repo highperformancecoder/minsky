@@ -66,6 +66,24 @@ namespace minsky
   std::vector<double> ValueVector::stockVars(1);
   std::vector<double> ValueVector::flowVars(1);
 
+  namespace {
+    // special scalar constants
+    struct SpecialConst: public VariableValue
+    {
+      SpecialConst(const string& name, const string& init):
+        VariableValue(VariableType::constant,name) {m_init=init;}
+    };
+  }
+  
+  VariableValuePtr& VariableValues::zero() {
+    static VariableValuePtr s_zero(make_shared<SpecialConst>("constant:zero","0"));
+    return s_zero;
+  }
+  VariableValuePtr& VariableValues::one() {
+    static VariableValuePtr s_one(make_shared<SpecialConst>("constant:one","1"));
+    return s_one;
+  }
+  
   bool VariableValue::idxInRange() const
   {return m_type==undefined || idx()+size()<=
       (isFlowVar()?ValueVector::flowVars.size(): ValueVector::stockVars.size());}
@@ -83,7 +101,8 @@ namespace minsky
     index(x.index());
     hypercube(x.hypercube());
     assert(idxInRange());
-    memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
+    if (x.size())
+      memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
     return *this;
   }
 
@@ -109,11 +128,13 @@ namespace minsky
       case constant:
       case parameter:
         m_idx=ValueVector::flowVars.size();
+        assert(size());
         ValueVector::flowVars.resize(ValueVector::flowVars.size()+size());
         break;
       case stock:
       case integral:
         m_idx=ValueVector::stockVars.size();
+        assert(size());
         ValueVector::stockVars.resize(ValueVector::stockVars.size()+size());
         break;
       default: break;
@@ -129,19 +150,19 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        //        assert(idxInRange());
+        assert(idxInRange());
          if (size_t(m_idx)<ValueVector::flowVars.size())
            return ValueVector::flowVars[m_idx];
          break;
       case stock:
       case integral:
-        //        assert(idxInRange());
+        assert(idxInRange());
         if (size_t(m_idx)<ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx];
         break;
       default: break;
       }
-    static double zero=0;
+    static const double zero=0;
     return zero;
   }
   
@@ -169,13 +190,23 @@ namespace minsky
     throw error("invalid access of variable value reference: %s",name.c_str());
   }
   
+  const std::string& VariableValue::init(const std::string& x)  {
+    m_init=x;
+    auto tensorInit=cminsky().variableValues.initValue(*this);
+    if (tensorInit.size()>size()) m_idx=-1; // force reallocation
+    index(tensorInit.index());
+    hypercube(tensorInit.hypercube());
+    return m_init;
+  }
+
+  
   TensorVal VariableValues::initValue
   (const VariableValue& v, set<string>& visited) const
   {
     if (v.tensorInit.rank()>0)
       return v.tensorInit;
     
-    FlowCoef fc(v.init);
+    const FlowCoef fc(v.init());
     if (trimWS(fc.name).empty())
       return fc.coef;
 
@@ -183,7 +214,7 @@ namespace minsky
     auto p=fc.name.find('(');
     if (p!=string::npos)
       {
-        string fn=fc.name.substr(0,p);
+        //        const string fn=fc.name.substr(0,p);
         // unpack args
         const char* x=fc.name.c_str()+p+1;
         char* e;
@@ -194,7 +225,7 @@ namespace minsky
             if (tmp>0 && e>x && *e)
               {
                 x=e+1;
-                dims.push_back(tmp);
+              dims.push_back(tmp);
               }
             else
               break;
@@ -202,17 +233,17 @@ namespace minsky
         TensorVal r(dims);
         r.allocVal();
 
-        if (fn=="iota")
+        if (fc.name.starts_with("iota"))
           for (size_t i=0; i<r.size(); ++i)
             r[i]=i;
-        else if (fn=="one")
+        else if (fc.name.starts_with("one"))
           for (size_t i=0; i<r.size(); ++i)
             r[i]=1;
-        else if (fn=="zero" || fn=="eye")
+        else if (fc.name.starts_with("zero") || fc.name.starts_with("eye"))
           {
             for (size_t i=0; i<r.size(); ++i)
               r[i]=0;
-            if (fn=="eye")
+            if (fc.name.starts_with("eye"))
               {
                 // diagonal elements set to 1
                 // find minimum dimension, and stride of diagonal elements
@@ -225,7 +256,7 @@ namespace minsky
                   r[stride*i]=1;
               }
           }
-        else if (fn=="rand")
+        else if (fc.name.starts_with("rand"))
           {
             for (size_t i=0; i<r.size(); ++i)
               r[i]=double(rand())/RAND_MAX;
@@ -235,10 +266,10 @@ namespace minsky
         
     // resolve name
     auto valueId=minsky::valueId(v.m_scope.lock(), fc.name);
-    if (visited.count(valueId))
+    if (visited.contains(valueId))
       throw error("circular definition of initial value for %s",
                   fc.name.c_str());
-    VariableValues::const_iterator vv=find(valueId);
+    const VariableValues::const_iterator vv=find(valueId);
     if (vv==end())
       throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), v.name.c_str());
 
@@ -252,7 +283,7 @@ namespace minsky
       // initialise variable only if its variable is not defined or it is a stock
       if (!v.isFlowVar() || !cminsky().definingVar(v.valueId()))
         {
-          if (v.tensorInit.size())
+          if (v.tensorInit.rank())
             {
               // ensure dimensions are correct
               auto hc=v.tensorInit.hypercube();
@@ -264,7 +295,7 @@ namespace minsky
                 }
               v.tensorInit.hypercube(hc);
             }
-          if (v.tensorInit.rank()>0)
+          if (v.tensorInit.rank())
             v=v.tensorInit;
           else
             v=initValue(v);
@@ -350,7 +381,7 @@ namespace minsky
       }
     of<<quoted("RavelHypercube=["+os.str()+"]")<<endl;
     for (const auto& i: hypercube().xvectors)
-      of<<"\""<<i.name<<"\",";
+      of<<CSVQuote(i.name,',')<<",";
     of<<"value$\n";
 
     auto idxv=index();
@@ -412,7 +443,7 @@ namespace minsky
       type(),
       definition,
       udfDefinition,
-      init,
+      init(),
       value(),
       scopeName,
       godleyName,

@@ -44,6 +44,7 @@ namespace minsky
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0;
     bool m_editorMode=false;
+    bool m_variableDisplay=false;
     CLASSDESC_ACCESS(GodleyIcon);
     friend struct SchemaHelper;
 
@@ -60,20 +61,20 @@ namespace minsky
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     
-    GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets();}
+    GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets(); editor.disableButtons();}
     GodleyIcon(const GodleyIcon&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
-    bool editorMode() const {return m_editorMode;}
-    void toggleEditorMode();
+    bool editorMode() const override {return m_editorMode;}
+    void toggleEditorMode() override;
 
     /// enable/disable drawing buttons in table on canvas display
     bool buttonDisplay() const;
     void toggleButtons(); 
 
-    bool variableDisplay=false;
-    void toggleVariableDisplay() {variableDisplay=!variableDisplay; update();}
+    bool variableDisplay() const {return m_variableDisplay;}
+    void toggleVariableDisplay();
 
     /// table data. Must be declared before editor
     GodleyTable table;
@@ -87,9 +88,9 @@ namespace minsky
     void scaleIcon(float w, float h);         
     
     /// left margin of bank icon with Godley icon
-    float leftMargin() const {return variableDisplay? flowMargin*scaleFactor()*zoomFactor(): 0;}
+    float leftMargin() const {return variableDisplay()? flowMargin*scaleFactor()*zoomFactor(): 0;}
     /// bottom margin of bank icon with Godley icon
-    float bottomMargin() const {return variableDisplay? stockMargin*scaleFactor()*zoomFactor(): 0;}
+    float bottomMargin() const {return variableDisplay()? stockMargin*scaleFactor()*zoomFactor(): 0;}
 
     void resize(const LassoBox&) override;
     void removeControlledItems(GroupItems&) const override;
@@ -159,6 +160,12 @@ namespace minsky
 
     /// clean up popup window structures on window close
     void destroyFrame() override {popup.destroyFrame();}
+
+    /// return true if any wires are attached to the variables
+    bool wiresAttached() const;
+
+    const GodleyIcon* godleyIconCast() const override {return this;}
+    GodleyIcon* godleyIconCast() override {return this;}
 
   private:
     void updateVars(Variables& vars, 
