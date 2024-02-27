@@ -297,6 +297,13 @@ GUI_LIBS=
 # disable a deprecation warning that comes from Wt
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
+# add the python module build here
+ifeq ($(OS),Linux)
+ifndef MXE
+EXES+=pyminsky.so
+endif
+endif
+
 ifndef AEGIS
 default: $(EXES) gui-js/libs/shared/src/lib/backend/minsky.ts
 	-$(CHMOD) a+x *.tcl *.sh *.pl
@@ -428,7 +435,7 @@ pyminsky.so: pyminsky.o libminsky.a
 	$(LINK) -shared -o $@ $^ libminsky.a $(LIBS)
 
 # used to find undefined symbols in pyminsky.so
-pyminsky-test: test/testmain.o pyminsky.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
+pyminsky-test: test/testmain.o pyminsky.o libminsky.a
 	$(LINK) -o $@ $^ $(LIBS) -lpthread -ltirpc
 
 RESTService/dummy-addon.node: dummy-addon.o $(NODE_API)
@@ -488,6 +495,7 @@ ifeq ($(OS), "Linux")
 ifndef MXE
 	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
 	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
+	cp -r pyminsky.so $(PREFIX)/lib64
 endif
 endif
 endif
