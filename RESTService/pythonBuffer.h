@@ -218,11 +218,30 @@ namespace classdesc
         case RESTProcessType::object:
           {
             json_pack_t::Object obj;
-            auto dir(PyObject_Dir(pyObject));
-            for (size_t i=0; i<PySequence_Size(dir); ++i)
+            if (PyMapping_Check(pyObject))
               {
-                auto key=PySequence_GetItem(pyObject, i);
-                obj[PyUnicode_AsUTF8(key)]=PyObject_GetAttr(pyObject, key);
+                PyObjectRef keyValues(PyMapping_Items(pyObject));
+                for (size_t i=0; i<PySequence_Size(keyValues); ++i)
+                  {
+                    PyObjectRef keyValue=PySequence_GetItem(keyValues, i);
+                    PyObjectRef keyRef(PyObject_Str(PySequence_GetItem(keyValue,0)));
+                    string keyStr=PyUnicode_AsUTF8(keyRef);
+                    obj[keyStr]=PythonBuffer(PySequence_GetItem(keyValue,1)).get<json_pack_t>();
+                  }
+                std::cout<<std::endl;
+                write(json_pack_t(obj),std::cout);
+                std::cout<<std::endl;
+              }
+            else
+              {
+                auto dir(PyObject_Dir(pyObject));
+                for (size_t i=0; i<PySequence_Size(dir); ++i)
+                  {
+                    auto key=PySequence_GetItem(pyObject, i);
+                    PyObjectRef keyRef(PyObject_Str(key));
+                    string keyStr=PyUnicode_AsUTF8(keyRef);
+                    obj[keyStr]=PythonBuffer(PyObject_GetAttr(pyObject, key)).get<json_pack_t>();
+                  }
               }
             return json_pack_t(obj);
           }
