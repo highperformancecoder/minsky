@@ -180,12 +180,7 @@ struct CppWrapperType: public PyTypeObject
         PyObject_SetAttrString(pyObject, "_type", CppWrapper::create(command+".@type"));
         PyObject_SetAttrString(pyObject, "_signature", CppWrapper::create(command+".@signature"));
       }
-    catch (const std::exception& ex) {
-      //PyErr_SetString(PyExc_AttributeError, ex.what());
-    }
-    catch (...) {
-      //PyErr_SetString(PyExc_AttributeError, "Unknown exception");
-    }
+    catch (...) { } // do not log, nor report errors back to python - there are too many
     if (PyErr_Occurred())
       PyErr_Print();
   }
