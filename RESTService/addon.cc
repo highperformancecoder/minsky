@@ -19,7 +19,6 @@
 
 /// @file An nodejs-embedded REST Service
 #include <napi.h>
-#include "minskyRS.h"
 #include "RESTMinsky.h"
 #include "minsky_epilogue.h"
 

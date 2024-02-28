@@ -21,7 +21,6 @@
 //#define REST_PROCESS_BUFFER classdesc::PythonBuffer
 #include "pythonBuffer.h"
 
-#include "minskyRS.h"
 #include "RESTMinsky.h"
 #include "minsky_epilogue.h"
 #include <Python.h>

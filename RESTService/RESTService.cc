@@ -17,7 +17,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "minskyRS.h"
 #include "RESTMinsky.h"
 #include "minsky_epilogue.h"
 

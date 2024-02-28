@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "minskyRS.h"
+#include "minsky.h"
 #include "RESTProcess_base.h"
 #include "minsky_epilogue.h"
 
@@ -31,9 +31,4 @@ namespace classdesc
   }
 }
 
-//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION_RP(minsky::NoteBase);
-//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION_RP(minsky::Item);
-//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION_RP(minsky::ClickType);
-//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION_RP(minsky::BottomRightResizerItem);
-//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION_RP(minsky::VariableType);
 
