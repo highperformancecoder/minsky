@@ -305,14 +305,13 @@ namespace minsky
   bool PlotWidget::onMouseOver(float x,float y)
   {
     const double z=Item::zoomFactor();
-    //    const double th=title.empty()? 0: 1.5*titleHeight*iHeight()*z;
     // coordinate system runs from bottom left to top right. Vertical coordinates must be flipped
     const double dx=x-this->x()+0.5*iWidth()*z-portSpace;
-    //    const double dy=y-this->y()-0.5*iHeight()*z+portSpace;
     const double dy=this->y()-y+0.5*iHeight()*z-portSpace;
     const double gw=iWidth()*z-2*portSpace;
     const double gh=iHeight()*z-portSpace-yoffs;
-    return Plot::mouseMove(dx/gw, dy/gh, 10.0/std::max(gw,gh),formatter);
+    const double loffx=lh(gw,gh)*!Plot::ylabel.empty(), loffy=lh(gw,gh)*!Plot::xlabel.empty();
+    return Plot::mouseMove((dx-loffx)/gw, (dy-loffy)/gh, 10.0/std::max(gw,gh),formatter);
   }
 
   
