@@ -154,6 +154,7 @@ namespace minsky
       ct=ClickType::outside;
     }
     bool onMouseOver(float,float) override;
+    void onMouseLeave() override {valueString="";}
     /// @}
 
     /// export the plotted data as a CSV file
