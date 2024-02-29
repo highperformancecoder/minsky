@@ -164,7 +164,6 @@ namespace minsky
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
     double gw=w-2*portSpace, gh=h-portSpace;
-    //if (!title.empty()) gh-=0.15*titleHeight*h;  // take into account room for the title
     gw/=z; gh/=z; // undo zoomFactor for Plot::draw, and scale
     cairo_scale(cairo,z,z);
     //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
@@ -453,7 +452,7 @@ namespace minsky
       {
         ostringstream r;
         r.precision(3);
-        r<<"("<<str(ptime(date(1970,1,1))+microseconds(static_cast<long long>(1E6*x)),format)
+        r<<"("<<str(ptime(date(1970,Jan,1))+microseconds(static_cast<long long>(1E6*x)),format)
          <<","<<y<<")";
         return r.str();
       }
@@ -543,7 +542,7 @@ namespace minsky
                         formatter=TimeFormatter(xv.dimension.units);
                         for (const auto& i: xv)
                           {
-                            const double tv=(i.time-ptime(date(1970,1,1))).total_microseconds()*1E-6;
+                            const double tv=(i.time-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
                             newXticks.back().emplace_back(tv,str(i,format));
                             xdefault.push_back(tv);
                           }
