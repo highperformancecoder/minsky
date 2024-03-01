@@ -170,12 +170,8 @@ namespace minsky
     cairo_scale(cairo,z,z);
     //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
     auto& pt=const_cast<Plot*>(static_cast<const Plot*>(this))->plotType;
-    switch (plotType)
-      {
-      case line: pt=Plot::line; break;
-      case bar:  pt=Plot::bar;  break;
-      default: break;
-      }
+    if (plotType!=automatic)
+      pt=static_cast<Plot::PlotType>(plotType);
 
     Plot::draw(cairo,gw,gh); 
     cs.restore();
