@@ -296,7 +296,12 @@ namespace minsky
 	    } else legendFontSz = oldLegendFontSz;
         break;
       default:
-        onMouseOver(x,y);
+        {
+          auto& f=frameArgs();
+          if (Plot::mouseMove((x-f.offsetLeft)/f.childWidth, (f.childHeight-f.offsetTop-y)/f.childHeight,
+                              10.0/std::max(f.childWidth,f.childHeight)))
+            requestRedraw();
+        }
         break;
       }
   }
