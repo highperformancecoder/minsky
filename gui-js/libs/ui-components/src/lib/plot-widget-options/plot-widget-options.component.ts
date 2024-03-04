@@ -38,13 +38,11 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   public get plotType(): AbstractControl {
     return this.form.get('plotType');
   }
-<<<<<<< HEAD
   public get barWidth(): AbstractControl {
     return this.form.get('barWidth');
-=======
+  }
   public get symbolEvery(): AbstractControl {
     return this.form.get('symbolEvery');
->>>>>>> develop
   }
   public get numberOfXTicks(): AbstractControl {
     return this.form.get('numberOfXTicks');
@@ -91,11 +89,8 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       yLabel: new FormControl(''),
       rhsYLabel: new FormControl(''),
       plotType: new FormControl('automatic'),
-<<<<<<< HEAD
       barWidth: new FormControl(100),
-=======
       symbolEvery: new FormControl(1),
->>>>>>> develop
       numberOfXTicks: new FormControl(null),
       numberOfYTicks: new FormControl(null),
       grid: new FormControl(false),
@@ -123,11 +118,8 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       this.yLabel.setValue(await plot.ylabel());
       this.rhsYLabel.setValue(await plot.y1label());
       this.plotType.setValue(await plot.plotType());
-<<<<<<< HEAD
       this.barWidth.setValue(100*(await plot.barWidth()));
-=======
       this.symbolEvery.setValue(await plot.symbolEvery());
->>>>>>> develop
       this.numberOfXTicks.setValue(await plot.nxTicks());
       this.numberOfYTicks.setValue(await plot.nyTicks());
       this.grid.setValue(await plot.grid());
@@ -148,11 +140,8 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       plot.ylabel(this.yLabel.value);
       plot.y1label(this.rhsYLabel.value);
       plot.plotType(this.plotType.value);
-<<<<<<< HEAD
       plot.barWidth(0.01*this.barWidth.value);
-=======
       plot.symbolEvery(this.symbolEvery.value);
->>>>>>> develop
       plot.nxTicks(this.numberOfXTicks.value);
       plot.nyTicks(this.numberOfYTicks.value);
       plot.grid(this.grid.value);
