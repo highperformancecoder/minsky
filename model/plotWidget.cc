@@ -250,10 +250,32 @@ namespace minsky
     autoscale=false;
 
     if (!justDataChanged)
-      // label pens
-      for (size_t i=0; i<yvars.size(); ++i)
-        if (yvars[i] && !yvars[i]->name.empty())
-          labelPen(i, latexToPango(uqName(yvars[i]->name)));
+      // label pens. In order or priority:
+      // 1. wire tooltip
+      // 2. from item tooltip
+      // 3. attached variable tooltip
+      // 4. attached variable name
+      for (auto pen=0; pen<2*numLines; ++pen)
+        {
+          auto portNo=pen+nBoundsPorts;
+          if (portNo<m_ports.size())
+            if (!m_ports[portNo]->wires().empty())
+              {
+                auto wire=m_ports[portNo]->wires().front();
+                if (!wire->tooltip.empty())
+                  {
+                    labelPen(pen, latexToPango(wire->tooltip));
+                    continue;
+                  }
+                if (auto from=wire->from(); !from->item().tooltip.empty())
+                  {
+                    labelPen(pen, latexToPango(from->item().tooltip));
+                    continue;
+                  }
+                if (pen<yvars.size() && yvars[pen] &&!yvars[pen]->name.empty())
+                  labelPen(pen, latexToPango(uqName(yvars[pen]->name)));
+              }
+        }
   }
 
   void PlotWidget::mouseDown(float x,float y)
