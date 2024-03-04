@@ -37,6 +37,9 @@
 #include "tensorVal.xcd"
 #include "plotWidget.rcd"
 #include "minsky_epilogue.h"
+
+#include <algorithm>
+#include <numeric>
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
@@ -373,7 +376,19 @@ namespace minsky
   static ptime epoch=microsec_clock::local_time(), accumulatedBlitTime=epoch;
 
   static const size_t maxNumTensorElementsToPlot=10;
+
+  double PlotWidget::barWidth() const
+  {
+    return accumulate(palette.begin(), palette.end(), 1.0,
+                           [](double acc, const LineStyle& ls) {return std::min(acc, ls.barWidth);});
+  }
   
+  double PlotWidget::barWidth(double w)
+  {
+    for (auto& ls: palette) ls.barWidth=w;
+    return w;
+  }
+    
   void PlotWidget::addPlotPt(double t)
   {
     size_t extraPen=2*numLines+1;

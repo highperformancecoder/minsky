@@ -38,6 +38,9 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   public get plotType(): AbstractControl {
     return this.form.get('plotType');
   }
+  public get barWidth(): AbstractControl {
+    return this.form.get('barWidth');
+  }
   public get numberOfXTicks(): AbstractControl {
     return this.form.get('numberOfXTicks');
   }
@@ -83,6 +86,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       yLabel: new FormControl(''),
       rhsYLabel: new FormControl(''),
       plotType: new FormControl('automatic'),
+      barWidth: new FormControl(100),
       numberOfXTicks: new FormControl(null),
       numberOfYTicks: new FormControl(null),
       grid: new FormControl(false),
@@ -110,6 +114,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       this.yLabel.setValue(await plot.ylabel());
       this.rhsYLabel.setValue(await plot.y1label());
       this.plotType.setValue(await plot.plotType());
+      this.barWidth.setValue(100*(await plot.barWidth()));
       this.numberOfXTicks.setValue(await plot.nxTicks());
       this.numberOfYTicks.setValue(await plot.nyTicks());
       this.grid.setValue(await plot.grid());
@@ -130,6 +135,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       plot.ylabel(this.yLabel.value);
       plot.y1label(this.rhsYLabel.value);
       plot.plotType(this.plotType.value);
+      plot.barWidth(0.01*this.barWidth.value);
       plot.nxTicks(this.numberOfXTicks.value);
       plot.nyTicks(this.numberOfYTicks.value);
       plot.grid(this.grid.value);
