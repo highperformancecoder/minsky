@@ -101,7 +101,6 @@ namespace minsky
     CairoSave cs(cairo);
     cairo_translate(cairo,-0.5*w,-0.5*h);
 
-    double yoffs=0; // offset to allow for title
     if (!title.empty())
       {
         const CairoSave cs(cairo);
@@ -116,7 +115,7 @@ namespace minsky
         pango.show();
 
         // allow some room for the title
-        yoffs=1.2*pango.height()*z;
+        yoffs=pango.height()*z;
         h-=yoffs;
       }
 
@@ -164,8 +163,7 @@ namespace minsky
 
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
-    double gw=w-2*portSpace, gh=h-portSpace;;
-    if (!title.empty()) gh=h-portSpace-titleHeight;  // take into account room for the title
+    double gw=w-2*portSpace, gh=h-portSpace;
     gw/=z; gh/=z; // undo zoomFactor for Plot::draw, and scale
     cairo_scale(cairo,z,z);
     //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
@@ -294,10 +292,29 @@ namespace minsky
 	    } else legendFontSz = oldLegendFontSz;
         break;
       default:
+        {
+          auto& f=frameArgs();
+          if (Plot::mouseMove((x-f.offsetLeft)/f.childWidth, (f.childHeight-f.offsetTop-y)/f.childHeight,
+                              10.0/std::max(f.childWidth,f.childHeight)))
+            requestRedraw();
+        }
         break;
       }
   }
 
+  bool PlotWidget::onMouseOver(float x,float y)
+  {
+    const double z=Item::zoomFactor();
+    // coordinate system runs from bottom left to top right. Vertical coordinates must be flipped
+    const double dx=x-this->x()+0.5*iWidth()*z-portSpace;
+    const double dy=this->y()-y+0.5*iHeight()*z-portSpace;
+    const double gw=iWidth()*z-2*portSpace;
+    const double gh=iHeight()*z-portSpace-yoffs;
+    const double loffx=lh(gw,gh)*!Plot::ylabel.empty(), loffy=lh(gw,gh)*!Plot::xlabel.empty();
+    return Plot::mouseMove((dx-loffx)/gw, (dy-loffy)/gh, 10.0/std::max(gw,gh),formatter);
+  }
+
+  
   extern Tk_Window mainWin;
 
   void PlotWidget::requestRedraw()
@@ -350,7 +367,7 @@ namespace minsky
     legendSize(legendWidth, legendHeight, iHeight()*z-portSpace);
     const double xx= x-this->x() - portSpace +(0.5-legendLeft)*iWidth()*z;
     const double yy= y-this->y() + (legendTop-0.5)*iHeight()*z;
-    if (xx>0 && xx<legendWidth)
+    if (legend && xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
           return ClickType::legendMove;
@@ -427,6 +444,22 @@ namespace minsky
       }
   }
 
+  namespace {
+    struct TimeFormatter
+    {
+      std::string format;
+      TimeFormatter(const std::string& format): format(format) {}
+      std::string operator()(double x,double y) const
+      {
+        ostringstream r;
+        r.precision(3);
+        r<<"("<<str(ptime(date(1970,Jan,1))+microseconds(static_cast<long long>(1E6*x)),format)
+         <<","<<y<<")";
+        return r.str();
+      }
+    };
+  }
+  
   void PlotWidget::addConstantCurves()
   {
     size_t extraPen=2*numLines;
@@ -447,6 +480,8 @@ namespace minsky
               }
           }
       }
+
+    formatter=defaultFormatter;
     
     for (size_t pen=0; pen<2*numLines; ++pen)
       if (pen<yvars.size() && yvars[pen])
@@ -505,6 +540,7 @@ namespace minsky
                     case Dimension::time:
                       {
                         const string format=xv.timeFormat();
+                        formatter=TimeFormatter(xv.dimension.units);
                         for (const auto& i: xv)
                           {
                             const double tv=(i.time-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;

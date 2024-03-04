@@ -66,6 +66,11 @@ namespace minsky
 
     // shadow labels, so we can interpret as LaTeX code rather than Pango markup
     std::string m_xlabel, m_ylabel, m_y1label;
+
+    /// extra offset for titles
+    mutable double yoffs=0;
+
+    Formatter formatter=defaultFormatter;
     
   public:
     using Item::x;
@@ -148,6 +153,8 @@ namespace minsky
       mouseMove(x,y);
       ct=ClickType::outside;
     }
+    bool onMouseOver(float,float) override;
+    void onMouseLeave() override {valueString="";}
     /// @}
 
     /// export the plotted data as a CSV file

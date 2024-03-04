@@ -313,6 +313,11 @@ namespace minsky
           }
         else
           {
+            auto setFlagAndRequestRedraw=[&](bool& flag, bool cond) {
+              if (flag==cond) return;
+              flag=cond;
+              requestRedraw();
+            };
             // set mouse focus to display ports etc.
             model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
                                               {
@@ -327,25 +332,13 @@ namespace minsky
                                                 else
                                                   {
                                                     auto ct=(*i)->clickType(x,y);
-                                                    if (ct==ClickType::inItem)
-                                                      {
-                                                        (*i)->mouseFocus=true;
-                                                        (*i)->onBorder = false;
-                                                        if ((*i)->onMouseOver(x,y))
-                                                          requestRedraw();
-                                                      }
-                                                    else
-                                                      {
-                                                        auto mf = ct!=ClickType::outside;
-                                                        if ((*i)->mouseFocus!=mf)
-                                                          {
-                                                            requestRedraw();
-                                                            (*i)->mouseFocus=mf;
-                                                          }
-                                                        (*i)->onResizeHandles=ct==ClickType::onResize;
-                                                        (*i)->onBorder = ct==ClickType::onItem;
+                                                    setFlagAndRequestRedraw((*i)->mouseFocus, ct!=ClickType::outside);
+                                                    setFlagAndRequestRedraw((*i)->onResizeHandles, ct==ClickType::onResize);
+                                                    setFlagAndRequestRedraw((*i)->onBorder, ct==ClickType::onItem);
+                                                    if (ct==ClickType::outside)
                                                         (*i)->onMouseLeave();
-                                                      }
+                                                    else if ((*i)->onMouseOver(x,y))
+                                                      requestRedraw();
                                                   }
                                                 return false;
                                               });
