@@ -1658,6 +1658,8 @@ export class PlotWidget extends Item {
   async nyTicks(...args: number[]): Promise<number> {return this.$callMethod('nyTicks',...args);}
   async offx(...args: number[]): Promise<number> {return this.$callMethod('offx',...args);}
   async offy(...args: number[]): Promise<number> {return this.$callMethod('offy',...args);}
+  async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
+  async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
   async pack(a1: classdesc__pack_t): Promise<void> {return this.$callMethod('pack',a1);}
   async percent(...args: boolean[]): Promise<boolean> {return this.$callMethod('percent',...args);}
   async plot(a1: object): Promise<void> {return this.$callMethod('plot',a1);}

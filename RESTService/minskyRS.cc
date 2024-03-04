@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "minskyRS.h"
+#include "minsky.h"
 #include "RESTProcess_base.h"
 #include "minsky_epilogue.h"
 
@@ -30,4 +30,5 @@ namespace classdesc
     t.add(d, new RESTProcessObject<minsky::Minsky>(m));
   }
 }
+
 

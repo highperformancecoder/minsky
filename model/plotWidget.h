@@ -66,6 +66,11 @@ namespace minsky
 
     // shadow labels, so we can interpret as LaTeX code rather than Pango markup
     std::string m_xlabel, m_ylabel, m_y1label;
+
+    /// extra offset for titles
+    mutable double yoffs=0;
+
+    Formatter formatter=defaultFormatter;
     
   public:
     using Item::x;
@@ -86,7 +91,7 @@ namespace minsky
     std::string title;
 
     /// automatic means choose line or bar depending on the x-vector type.
-    enum PlotType {line, bar, automatic};
+    enum PlotType {line, bar, scatter, line_scatter, automatic};
     PlotType plotType=automatic;
     
     PlotWidget();
@@ -148,6 +153,8 @@ namespace minsky
       mouseMove(x,y);
       ct=ClickType::outside;
     }
+    bool onMouseOver(float,float) override;
+    void onMouseLeave() override {valueString="";}
     /// @}
 
     /// export the plotted data as a CSV file
