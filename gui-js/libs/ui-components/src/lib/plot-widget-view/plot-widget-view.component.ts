@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
-import { Subject, takeUntil } from 'rxjs';
+import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
+import { sampleTime } from 'rxjs/operators';
 
 @Component({
     selector: 'minsky-plot-widget-view',
@@ -14,6 +15,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
   itemId: string;
   systemWindowId: string;
 
+  mouseMove$: Observable<MouseEvent>;
   destroy$ = new Subject<{}>();
 
   leftOffset = 0;
@@ -21,6 +23,8 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
   height: number;
   width: number;
 
+  plotWidget: PlotWidget;
+  
   constructor(
     private electronService: ElectronService,
     private route: ActivatedRoute,
@@ -29,11 +33,36 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
+      this.plotWidget=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second);
     });
   }
 
   ngOnInit() {
     setTimeout(()=>{this.render();},10);
+
+    const minskyCanvasElement = document.getElementById('plot-cairo-canvas') as HTMLElement;
+    this.mouseMove$ = fromEvent<MouseEvent>(
+      minskyCanvasElement,
+      'mousemove'
+    ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
+
+    this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
+      await this.plotWidget.mouseMove(event.x,event.y);
+    });
+    
+    minskyCanvasElement.addEventListener(
+      'mousedown',
+      async (event: MouseEvent) => {
+        await this.plotWidget.mouseDown(event.x,event.y);
+      }
+    );
+
+    minskyCanvasElement.addEventListener(
+      'mouseup',
+      async (event: MouseEvent) => {
+        await this.plotWidget.mouseUp(event.x,event.y);
+      }
+    );
   }
 
   async render() {
@@ -57,8 +86,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
       this.height &&
       this.width
     ) {
-      new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second)
-        .renderFrame({
+      this.plotWidget.renderFrame({
           parentWindowId: this.systemWindowId.toString(),
           offsetLeft: this.leftOffset,
           offsetTop: this.topOffset,
