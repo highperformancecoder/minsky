@@ -48,15 +48,12 @@ namespace minsky
 {
   namespace
   {
-    const size_t numLines = 4; // number of simultaneous variables to plot, on a side
-
-    const unsigned nBoundsPorts=6;
     // orientation of bounding box ports
-    const double orient[nBoundsPorts]={-0.4*M_PI, -0.6*M_PI, -0.2*M_PI, 0.2*M_PI, 1.2*M_PI, 0.8*M_PI};
+    const double orient[PlotWidget::nBoundsPorts]={-0.4*M_PI, -0.6*M_PI, -0.2*M_PI, 0.2*M_PI, 1.2*M_PI, 0.8*M_PI};
     // x coordinates of bounding box ports
-    const float boundX[nBoundsPorts]={-0.46,0.45,-0.49,-0.49, 0.48, 0.48};
+    const float boundX[PlotWidget::nBoundsPorts]={-0.46,0.45,-0.49,-0.49, 0.48, 0.48};
     // y coordinates of bounding box ports
-    const float boundY[nBoundsPorts]={0.49,0.49,0.47,-0.49, 0.47, -0.49};
+    const float boundY[PlotWidget::nBoundsPorts]={0.49,0.49,0.47,-0.49, 0.47, -0.49};
 
     // height of title, as a fraction of overall widget height
     const double titleHeight=0.07;
@@ -74,13 +71,14 @@ namespace minsky
     legendSide=boundingBox;
     addPorts();
     
-    yvars.resize(2*numLines);
-    xvars.resize(numLines);
+    yvars.resize(2*m_numLines);
+    xvars.resize(m_numLines);
   }
 
   void PlotWidget::addPorts()
   {
-    for (unsigned i=0; i<4*numLines+nBoundsPorts; ++i)
+    m_ports.clear();
+    for (unsigned i=0; i<4*m_numLines+nBoundsPorts; ++i)
       m_ports.emplace_back(make_shared<InputPort>(*this));
   }
   
@@ -120,8 +118,8 @@ namespace minsky
       }
 
     // draw bounding box ports
-    const float x = -0.5*w, dx=w/(2*numLines+1); // x location of ports
-    const float y=0.5*h, dy = h/(numLines);
+    const float x = -0.5*w, dx=w/(2*m_numLines+1); // x location of ports
+    const float y=0.5*h, dy = h/m_numLines;
     
     size_t i=0;
     // draw bounds input ports
@@ -135,7 +133,7 @@ namespace minsky
       }
         
     // draw y data ports
-    for (; i<numLines+nBoundsPorts; ++i)
+    for (; i<m_numLines+nBoundsPorts; ++i)
       {
         const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
@@ -144,21 +142,21 @@ namespace minsky
       }
     
     // draw RHS y data ports
-    for (; i<2*numLines+nBoundsPorts; ++i)
+    for (; i<2*m_numLines+nBoundsPorts; ++i)
       {
-        const float y=0.5*(dy-h) + (i-numLines-nBoundsPorts)*dy, x=0.5*w;
+        const float y=0.5*(dy-h) + (i-m_numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
           m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
       }
 
     // draw x data ports
-    for (; i<4*numLines+nBoundsPorts; ++i)
+    for (; i<4*m_numLines+nBoundsPorts; ++i)
       {
-        const float x=dx-0.5*w + (i-2*numLines-nBoundsPorts)*dx;
+        const float x=dx-0.5*w + (i-2*m_numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
           m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
     cairo_translate(cairo, portSpace, yoffs);
@@ -249,7 +247,7 @@ namespace minsky
       // 2. from item tooltip
       // 3. attached variable tooltip
       // 4. attached variable name
-      for (auto pen=0; pen<2*numLines; ++pen)
+      for (auto pen=0; pen<2*m_numLines; ++pen)
         {
           auto portNo=pen+nBoundsPorts;
           if (portNo<m_ports.size())
@@ -411,8 +409,8 @@ namespace minsky
   
   void PlotWidget::addPlotPt(double t)
   {
-    size_t extraPen=2*numLines+1;
-    for (size_t pen=0; pen<2*numLines; ++pen)
+    size_t extraPen=2*m_numLines+1;
+    for (size_t pen=0; pen<2*m_numLines; ++pen)
       if (pen<yvars.size() && yvars[pen])
         for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvars[pen]->size()); ++i)
           {
@@ -446,7 +444,7 @@ namespace minsky
             if (i>0)
               {
                 // ensure next pen is a different colour
-                if (extraPen%(2*numLines)==pen%(2*numLines))
+                if (extraPen%(2*m_numLines)==pen%(2*m_numLines))
                   extraPen++;
                 p+=extraPen++;
               }
@@ -484,7 +482,7 @@ namespace minsky
   
   void PlotWidget::addConstantCurves()
   {
-    size_t extraPen=2*numLines;
+    size_t extraPen=2*m_numLines;
 
     std::vector<std::vector<std::pair<double,std::string>>> newXticks;
     
@@ -505,7 +503,7 @@ namespace minsky
 
     formatter=defaultFormatter;
     
-    for (size_t pen=0; pen<2*numLines; ++pen)
+    for (size_t pen=0; pen<2*m_numLines; ++pen)
       if (pen<yvars.size() && yvars[pen])
         {
           auto& yv=yvars[pen];
@@ -621,7 +619,7 @@ namespace minsky
                       label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
                       stride*=d[i];
                     }
-                  if (pen>=numLines)
+                  if (pen>=m_numLines)
                     assignSide(startPen,Side::right);
                   labelPen(startPen,defang(label));
                 }
@@ -676,17 +674,17 @@ namespace minsky
         case 5: y1maxVar=var; return;
         }
     const unsigned pen=port-nBoundsPorts;
-    if (pen<2*numLines)
+    if (pen<2*m_numLines)
       {
         yvars.resize(pen+1);
         yvars[pen]=var;
-        if (pen>=numLines)
+        if (pen>=m_numLines)
           assignSide(pen,Side::right);
       }
-    else if (pen<4*numLines)
+    else if (pen<4*m_numLines)
       {
-        xvars.resize(pen-2*numLines+1);
-        xvars[pen-2*numLines]=var;
+        xvars.resize(pen-2*m_numLines+1);
+        xvars[pen-2*m_numLines]=var;
       }
     justDataChanged=false;
     scalePlot();

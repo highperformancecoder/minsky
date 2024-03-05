@@ -1654,6 +1654,8 @@ export class PlotWidget extends Item {
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
+  async nBoundsPorts(...args: number[]): Promise<number> {return this.$callMethod('nBoundsPorts',...args);}
+  async numLines(...args: any[]): Promise<number> {return this.$callMethod('numLines',...args);}
   async nxTicks(...args: number[]): Promise<number> {return this.$callMethod('nxTicks',...args);}
   async nyTicks(...args: number[]): Promise<number> {return this.$callMethod('nyTicks',...args);}
   async offx(...args: number[]): Promise<number> {return this.$callMethod('offx',...args);}

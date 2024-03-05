@@ -71,11 +71,15 @@ namespace minsky
     mutable double yoffs=0;
 
     Formatter formatter=defaultFormatter;
+    size_t m_numLines=1; ///< number of ports on the side
     
   public:
     using Item::x;
     using Item::y;
     using ecolab::CairoSurface::surface;
+
+    /// number of bounds (xmin/xmax, ymin/ymax, y1min/y1max) ports
+    static constexpr unsigned nBoundsPorts=6;
 
     /// variable port attached to (if any)
     std::vector<std::shared_ptr<VariableValue>> yvars;
@@ -87,7 +91,6 @@ namespace minsky
     unsigned displayNTicks{3};
     double displayFontSize{3};
 
-
     std::string title;
 
     /// automatic means choose line or bar depending on the x-vector type.
@@ -98,6 +101,11 @@ namespace minsky
     void addPorts();
     PlotWidget(const PlotWidget& x): PlotWidgetSuper(x) {addPorts();}
     PlotWidget(PlotWidget&& x): PlotWidgetSuper(x) {addPorts();}
+
+    /// @{ number of input ports along a side
+    size_t numLines() const {return m_numLines;}
+    size_t numLines(size_t n) {m_numLines=n; addPorts(); return n;}
+    /// @}
     
     // pick the Item width method, not ecolab::Plot's
     float width() const {return Item::width();}
