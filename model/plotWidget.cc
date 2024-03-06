@@ -249,7 +249,7 @@ namespace minsky
       // 2. from item tooltip
       // 3. attached variable tooltip
       // 4. attached variable name
-      for (auto pen=0; pen<2*numLines; ++pen)
+      for (size_t pen=0; pen<2*numLines; ++pen)
         {
           auto portNo=pen+nBoundsPorts;
           if (portNo<m_ports.size())

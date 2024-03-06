@@ -70,6 +70,7 @@ namespace minsky
     // special scalar constants
     struct SpecialConst: public VariableValue
     {
+      using ITensorVal::operator=;
       SpecialConst(const string& name, const string& init):
         VariableValue(VariableType::constant,name) {m_init=init;}
     };
