@@ -78,8 +78,13 @@ namespace minsky
   void PlotWidget::addPorts()
   {
     m_ports.clear();
-    for (unsigned i=0; i<4*m_numLines+nBoundsPorts; ++i)
+    unsigned i=0;
+    for (; i<nBoundsPorts; ++i) // bounds ports
+      m_ports.emplace_back(make_shared<InputPort>(*this));
+    for (; i<2*m_numLines+nBoundsPorts; ++i) // y data input ports
       m_ports.emplace_back(make_shared<MultiWireInputPort>(*this));
+    for (; i<4*m_numLines+nBoundsPorts; ++i) // x data input ports
+      m_ports.emplace_back(make_shared<InputPort>(*this));
   }
   
   void PlotWidget::draw(cairo_t* cairo) const
