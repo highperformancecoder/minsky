@@ -72,6 +72,9 @@ namespace minsky
 
     Formatter formatter=defaultFormatter;
     size_t m_numLines=1; ///< number of ports on the side
+
+    /// returns to starting pen number for input \a port
+    size_t startPen(size_t port) const;
     
   public:
     using Item::x;
@@ -82,7 +85,7 @@ namespace minsky
     static constexpr unsigned nBoundsPorts=6;
 
     /// variable port attached to (if any)
-    std::vector<std::shared_ptr<VariableValue>> yvars;
+    std::vector<std::vector<std::shared_ptr<VariableValue>>> yvars;
     std::vector<std::shared_ptr<VariableValue>> xvars;
 
     /// variable ports specifying plot size

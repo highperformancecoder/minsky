@@ -79,7 +79,7 @@ namespace minsky
   {
     m_ports.clear();
     for (unsigned i=0; i<4*m_numLines+nBoundsPorts; ++i)
-      m_ports.emplace_back(make_shared<InputPort>(*this));
+      m_ports.emplace_back(make_shared<MultiWireInputPort>(*this));
   }
   
   void PlotWidget::draw(cairo_t* cairo) const
@@ -242,32 +242,36 @@ namespace minsky
     autoscale=false;
 
     if (!justDataChanged)
-      // label pens. In order or priority:
-      // 1. wire tooltip
-      // 2. from item tooltip
-      // 3. attached variable tooltip
-      // 4. attached variable name
-      for (auto pen=0; pen<2*m_numLines; ++pen)
-        {
-          auto portNo=pen+nBoundsPorts;
-          if (portNo<m_ports.size())
-            if (!m_ports[portNo]->wires().empty())
-              {
-                auto wire=m_ports[portNo]->wires().front();
-                if (!wire->tooltip.empty())
-                  {
-                    labelPen(pen, latexToPango(wire->tooltip));
-                    continue;
-                  }
-                if (auto from=wire->from(); !from->item().tooltip.empty())
-                  {
-                    labelPen(pen, latexToPango(from->item().tooltip));
-                    continue;
-                  }
-                if (pen<yvars.size() && yvars[pen] &&!yvars[pen]->name.empty())
-                  labelPen(pen, latexToPango(uqName(yvars[pen]->name)));
-              }
-        }
+      {
+        // label pens. In order or priority:
+        // 1. wire tooltip
+        // 2. from item tooltip
+        // 3. attached variable tooltip
+        // 4. attached variable name
+        size_t pen=0;
+        assert(m_ports.size()>=2*m_numLines+nBoundsPorts);
+        for (auto portNo=nBoundsPorts; portNo<2*m_numLines+nBoundsPorts; ++portNo)
+          {
+            if (portNo<m_ports.size())
+              for (size_t i=0; i<m_ports[portNo]->wires().size(); ++i, ++pen)
+                {
+                  auto wire=m_ports[portNo]->wires()[i];
+                  if (!wire->tooltip.empty())
+                    {
+                      labelPen(pen, latexToPango(wire->tooltip));
+                      continue;
+                    }
+                  if (auto from=wire->from(); !from->item().tooltip.empty())
+                    {
+                      labelPen(pen, latexToPango(from->item().tooltip));
+                      continue;
+                    }
+                  if (portNo-nBoundsPorts<yvars.size() && i<yvars[portNo-nBoundsPorts].size())
+                    if (auto v=yvars[portNo-nBoundsPorts][i];  !v->name.empty())
+                      labelPen(pen, latexToPango(uqName(v->name)));
+                }
+          }
+      }
   }
 
   void PlotWidget::mouseDown(float x,float y)
@@ -409,46 +413,38 @@ namespace minsky
   
   void PlotWidget::addPlotPt(double t)
   {
-    size_t extraPen=2*m_numLines+1;
-    for (size_t pen=0; pen<2*m_numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen])
-        for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvars[pen]->size()); ++i)
+    size_t pen=0;
+    for (size_t port=0; port<yvars.size(); ++port)
+      for (auto& yvar: yvars[port])
+        for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvar->size()); ++i)
           {
             double x,y;
             switch (xvars.size())
               {
               case 0: // use t, when x variable not attached
                 x=t;
-                y=(*yvars[pen])[i];
+                y=(*yvar)[i];
                 break;
               case 1: // use the value of attached variable
                 assert(xvars[0] && xvars[0]->idx()>=0);  // xvars also vector of shared pointers and null derefencing error can likewise cause crash. for ticket 1248
                 if (xvars[0]->size()>1)
                   throw_error("Tensor valued x inputs not supported");
                 x=(*xvars[0])[0];
-                y=(*yvars[pen])[i];
+                y=(*yvar)[i];
                 break;
               default:
-                if (pen < xvars.size() && xvars[pen] && xvars[pen]->idx()>=0) // xvars also vector of shared pointers and null derefencing error can likewise cause crash. for ticket 1248
+                if (port < xvars.size() && xvars[port] && xvars[port]->idx()>=0) // xvars also vector of shared pointers and null derefencing error can likewise cause crash. for ticket 1248
                   {
-                    if (xvars[pen]->size()>1)
+                    if (xvars[port]->size()>1)
                       throw_error("Tensor valued x inputs not supported");
-                    x=(*xvars[pen])[0];
-                    y=(*yvars[pen])[i];
+                    x=(*xvars[port])[0];
+                    y=(*yvar)[i];
                   }
                 else
-                  throw_error("x input not wired for pen "+to_string(pen+1));
+                  throw_error("x input not wired for port "+to_string(port+1));
                 break;
               }
-            size_t p=pen;
-            if (i>0)
-              {
-                // ensure next pen is a different colour
-                if (extraPen%(2*m_numLines)==pen%(2*m_numLines))
-                  extraPen++;
-                p+=extraPen++;
-              }
-            addPt(p, x, y);
+            addPt(pen++, x, y);
           }
     
     // throttle plot redraws
@@ -488,25 +484,28 @@ namespace minsky
     
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
-    for (auto& i: yvars)
-      {
-        if (i && !i->hypercube().xvectors.empty())
-          {
-            const auto& xv=i->hypercube().xvectors[0];
-            if (xv.dimension.type==Dimension::time)
-              {
-                xIsSecsSinceEpoch=true;
-                break;
-              }
-          }
-      }
+    for (auto& yv: yvars)
+      for (auto& i: yv)
+        {
+          if (i && !i->hypercube().xvectors.empty())
+            {
+              const auto& xv=i->hypercube().xvectors[0];
+              if (xv.dimension.type==Dimension::time)
+                {
+                  xIsSecsSinceEpoch=true;
+                  break;
+                }
+            }
+        }
 
     formatter=defaultFormatter;
-    
-    for (size_t pen=0; pen<2*m_numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen])
+
+    size_t pen=0;
+    for (size_t port=0; port<yvars.size(); ++port)
+      for (size_t i=0; i<yvars[port].size(); ++i)
+        if (yvars[port][i])
         {
-          auto& yv=yvars[pen];
+          auto& yv=yvars[port][i];
           auto d=yv->hypercube().dims();
           if (d.empty())
             {
@@ -517,11 +516,11 @@ namespace minsky
           // work out a reference to the x data
           vector<double> xdefault;
           double* x;
-          if (pen<xvars.size() && xvars[pen])
+          if (port<xvars.size() && xvars[port])
             {
-              if (xvars[pen]->hypercube().xvectors[0].size()!=d[0])
+              if (xvars[port]->hypercube().xvectors[0].size()!=d[0])
                 throw error("x vector not same length as y vectors");
-              x=xvars[pen]->begin();
+              x=xvars[port]->begin();
             }
           else
             {
@@ -588,16 +587,16 @@ namespace minsky
               else
                 for (size_t j=0; j<idx.size(); ++j)
                   addPt(pen,x[idx[j]], (*yv)[j]);
+              pen++;
             }
           else
             {
               // higher rank y objects treated as multiple y vectors to plot
-              auto startPen=extraPen;
+              size_t startPen=pen;
               if (idx.empty())
                 for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
                   {
-                    setPen(extraPen, x, yv->begin()+j, d[0]);
-                    extraPen++;
+                    setPen(pen++, x, yv->begin()+j, d[0]);
                   }
               else // data is sparse
                 for (size_t j=0; j<idx.size(); ++j)
@@ -606,11 +605,11 @@ namespace minsky
                     if (size_t(div.quot)<maxNumTensorElementsToPlot)
                       {
                         addPt(startPen+div.quot, x[div.rem], (*yv)[j]);
-                        if (extraPen<=startPen+div.quot) extraPen=startPen+div.quot+1;
+                        if (pen<=startPen+div.quot) pen=startPen+div.quot+1; // track highest pen used
                       }
                   }
               // compute the pen labels
-              for (int j=0; startPen<extraPen; ++startPen, ++j)
+              for (int j=0; startPen<pen; ++startPen, ++j)
                 {
                   string label;
                   size_t stride=1;
@@ -625,6 +624,7 @@ namespace minsky
                 }
             }
         }
+    justDataChanged=true;
     scalePlot();
 
     
@@ -659,6 +659,15 @@ namespace minsky
 
   }
 
+
+  size_t PlotWidget::startPen(size_t port) const
+  {
+    size_t pen=0;
+    for (size_t p=0; p<std::min(port, yvars.size()); ++p)
+      pen+=yvars[p].size();
+    return pen;
+  }
+
   
   void PlotWidget::connectVar(const shared_ptr<VariableValue>& var, unsigned port)
   {
@@ -673,18 +682,18 @@ namespace minsky
         case 4: y1minVar=var; return;
         case 5: y1maxVar=var; return;
         }
-    const unsigned pen=port-nBoundsPorts;
-    if (pen<2*m_numLines)
+    if (port-nBoundsPorts<2*m_numLines)
       {
-        yvars.resize(pen+1);
-        yvars[pen]=var;
-        if (pen>=m_numLines)
-          assignSide(pen,Side::right);
+        yvars.resize(port-nBoundsPorts+1);
+        yvars[port-nBoundsPorts].push_back(var);
+        // assign Side::right to pens belonging to the RHS
+        if (port-nBoundsPorts>=m_numLines)
+          assignSide(startPen(port-nBoundsPorts+1)-1,Side::right);
       }
-    else if (pen<4*m_numLines)
+    else if (port-nBoundsPorts<4*m_numLines)
       {
-        xvars.resize(pen-2*m_numLines+1);
-        xvars[pen-2*m_numLines]=var;
+        xvars.resize(port-nBoundsPorts-2*m_numLines+1);
+        xvars[port-nBoundsPorts-2*m_numLines]=var;
       }
     justDataChanged=false;
     scalePlot();

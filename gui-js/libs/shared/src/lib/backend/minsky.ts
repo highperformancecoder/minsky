@@ -1575,7 +1575,7 @@ export class PlotWidget extends Item {
   y1minVar: VariableValue;
   ymaxVar: VariableValue;
   yminVar: VariableValue;
-  yvars: Sequence<VariableValue>;
+  yvars: Sequence<Sequence<VariableValue>>;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
@@ -1592,7 +1592,7 @@ export class PlotWidget extends Item {
     this.y1minVar=new VariableValue(this.$prefix()+'.y1minVar');
     this.ymaxVar=new VariableValue(this.$prefix()+'.ymaxVar');
     this.yminVar=new VariableValue(this.$prefix()+'.yminVar');
-    this.yvars=new Sequence<VariableValue>(this.$prefix()+'.yvars',VariableValue);
+    this.yvars=new Sequence<Sequence<VariableValue>>(this.$prefix()+'.yvars',Sequence<VariableValue>);
   }
   async AssignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('AssignSide',a1,a2);}
   async Image(...args: any[]): Promise<string> {return this.$callMethod('Image',...args);}
