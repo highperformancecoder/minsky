@@ -54,7 +54,7 @@ namespace
     if (PySequence_Size(args)>1)
       {
         arguments=PythonBuffer(RESTProcessType::array);
-        for (size_t i=1; i<PySequence_Size(args); ++i)
+        for (Py_ssize_t i=1; i<PySequence_Size(args); ++i)
           arguments.push_back(PySequence_GetItem(args,i));
       }
     if (PyErr_Occurred())
@@ -62,7 +62,13 @@ namespace
     return callMinsky(command, arguments);
   }
 
-  struct CppWrapper: public PyObject
+  /// C++ wrapper to default initialise the PyObject
+  struct CppPyObject: public PyObject
+  {
+    CppPyObject() {memset(this,0,sizeof(PyObject));}
+  };
+  
+  struct CppWrapper: public CppPyObject
   {
     string command;
     map<string, PyObjectRef> methods;
@@ -93,7 +99,7 @@ struct CppWrapperType: public PyTypeObject
         // handle special commands which embed the argument in the path string
         command+='.'+write(PythonBuffer(PySequence_GetItem(args,0)).get<json_pack_t>());
       else
-        for (size_t i=0; i<PySequence_Size(args); ++i)
+        for (Py_ssize_t i=0; i<PySequence_Size(args); ++i)
           arguments.push_back(PySequence_GetItem(args,i));
       if (PyErr_Occurred())
         PyErr_Print();
@@ -144,7 +150,6 @@ struct CppWrapperType: public PyTypeObject
   } cppWrapperType;
 
   CppWrapper::CppWrapper(const string& command): command(command) {
-    memset(this,0,sizeof(PyObject));
     ob_refcnt=1;
     ob_type=&cppWrapperType;
     methods.emplace("__dict__",cppWrapperType.tp_dict);

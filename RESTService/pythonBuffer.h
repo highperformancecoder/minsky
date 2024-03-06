@@ -69,6 +69,8 @@ namespace classdesc
         case json5_parser::null_type:
           return Py_None;
         }
+    assert(false); // silly compiler cannot figure out this is unreachable code
+    return Py_None;
   }
 
   inline PyObject* newPyObject(const json_pack_t& j) {return newPyObjectJson(j);}
@@ -162,7 +164,7 @@ namespace classdesc
     Array array() const {
       Array r;
       if (PySequence_Check(pyObject))
-        for (size_t i=0; i<PySequence_Size(pyObject); ++i)
+        for (Py_ssize_t i=0; i<PySequence_Size(pyObject); ++i)
           r.push_back(PythonBuffer(PySequence_GetItem(pyObject,i)));
       else
         r.push_back(*this);
@@ -214,7 +216,7 @@ namespace classdesc
             if (PyMapping_Check(pyObject))
               {
                 PyObjectRef keyValues(PyMapping_Items(pyObject));
-                for (size_t i=0; i<PySequence_Size(keyValues); ++i)
+                for (Py_ssize_t i=0; i<PySequence_Size(keyValues); ++i)
                   {
                     PyObjectRef keyValue=PySequence_GetItem(keyValues, i);
                     PyObjectRef keyRef(PyObject_Str(PySequence_GetItem(keyValue,0)));
@@ -225,7 +227,7 @@ namespace classdesc
             else
               {
                 auto dir(PyObject_Dir(pyObject));
-                for (size_t i=0; i<PySequence_Size(dir); ++i)
+                for (Py_ssize_t i=0; i<PySequence_Size(dir); ++i)
                   {
                     auto key=PySequence_GetItem(pyObject, i);
                     PyObjectRef keyRef(PyObject_Str(key));
@@ -236,6 +238,8 @@ namespace classdesc
             return json_pack_t(obj);
           }
         }
+      assert(false); // silly compiler cannot figure out this is unreachable code
+      return json_pack_t();
     }
     
     template <class T> void push_back(const T& x) {
