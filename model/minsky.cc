@@ -929,10 +929,11 @@ namespace minsky
              for (size_t i=0; i<p->portsSize(); ++i)
                {
                  auto pp=p->ports(i).lock();
-                 if (!pp->wires().empty())
-                   if (auto vv=pp->getVariableValue())
-                     if (vv->idx()>=0)
-                       p->connectVar(vv, i);
+                 for (auto wire: pp->wires())
+                   if (auto fromPort=wire->from())
+                     if (auto vv=wire->from()->getVariableValue())
+                       if (vv->idx()>=0)
+                         p->connectVar(vv, i);
                }
              p->clear();
              if (running)
