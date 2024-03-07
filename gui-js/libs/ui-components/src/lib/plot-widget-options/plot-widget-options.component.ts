@@ -34,6 +34,9 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   }
   public get rhsYLabel(): AbstractControl {
     return this.form.get('rhsYLabel');
+  }  
+  public get numLines(): AbstractControl {
+    return this.form.get('numLines');
   }
   public get plotType(): AbstractControl {
     return this.form.get('plotType');
@@ -88,6 +91,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       xLabel: new FormControl(''),
       yLabel: new FormControl(''),
       rhsYLabel: new FormControl(''),
+      numLines: new FormControl(1),
       plotType: new FormControl('automatic'),
       barWidth: new FormControl(100),
       symbolEvery: new FormControl(1),
@@ -117,6 +121,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       this.xLabel.setValue(await plot.xlabel());
       this.yLabel.setValue(await plot.ylabel());
       this.rhsYLabel.setValue(await plot.y1label());
+      this.numLines.setValue(await plot.numLines());
       this.plotType.setValue(await plot.plotType());
       this.barWidth.setValue(100*(await plot.barWidth()));
       this.symbolEvery.setValue(await plot.symbolEvery());
@@ -139,6 +144,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       plot.xlabel(this.xLabel.value);
       plot.ylabel(this.yLabel.value);
       plot.y1label(this.rhsYLabel.value);
+      plot.numLines(this.numLines.value);
       plot.plotType(this.plotType.value);
       plot.barWidth(0.01*this.barWidth.value);
       plot.symbolEvery(this.symbolEvery.value);
