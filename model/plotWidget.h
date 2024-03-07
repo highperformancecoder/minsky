@@ -133,7 +133,13 @@ namespace minsky
       ecolab::Plot::y1label=latexToPangoNonItalicised(x);
       return m_y1label=x;
     }
-   
+
+    /// @{ bar chart bar width control
+    // for now, set all bar width to the same value
+    double barWidth() const;
+    double barWidth(double w);
+    /// @}
+    
     void addPlotPt(double t); ///< add another plot point
     void updateIcon(double t) override {addPlotPt(t);}
     /// add vector/tensor curves to plot
