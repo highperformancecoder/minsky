@@ -1605,6 +1605,7 @@ export class PlotWidget extends Item {
   async assignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('assignSide',a1,a2);}
   async autoScale(): Promise<void> {return this.$callMethod('autoScale');}
   async autoscale(...args: boolean[]): Promise<boolean> {return this.$callMethod('autoscale',...args);}
+  async barWidth(...args: any[]): Promise<number> {return this.$callMethod('barWidth',...args);}
   async cairoSurface(): Promise<minsky__dummy> {return this.$callMethod('cairoSurface');}
   async clear(): Promise<void> {return this.$callMethod('clear');}
   async clearPenAttributes(): Promise<void> {return this.$callMethod('clearPenAttributes');}
@@ -2443,6 +2444,7 @@ export class ecolab__Plot__LineStyle extends CppClass {
     super(prefix);
     this.colour=new ecolab__cairo__Colour(this.$prefix()+'.colour');
   }
+  async barWidth(...args: number[]): Promise<number> {return this.$callMethod('barWidth',...args);}
   async dashPattern(): Promise<number[]> {return this.$callMethod('dashPattern');}
   async dashStyle(...args: string[]): Promise<string> {return this.$callMethod('dashStyle',...args);}
   async width(...args: number[]): Promise<number> {return this.$callMethod('width',...args);}
