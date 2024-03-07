@@ -35,7 +35,6 @@ namespace minsky
   /// components of Port excluded from reflection
   struct PortExclude
   {
-    enum Flags {noFlags=0, multiWire=1, inputPort=2};
     // const_cast hack required to work around classdesc::Exclude API
     PortExclude(const Item& item): m_item(const_cast<Item&>(item)) {}
     virtual ~PortExclude()=default;
@@ -47,7 +46,6 @@ namespace minsky
     GroupPtr group() const;
   protected:
     Item& m_item;
-    int flags{0};
     std::weak_ptr<VariableValue> variableValue; //refers to variable value representing this port
     std::vector<Wire*> m_wires;
   };
@@ -95,7 +93,7 @@ namespace minsky
     float x() const;
     float y() const;
     void moveTo(float x, float y);
-    Port(Item& item, int f=noFlags): classdesc::Exclude<PortExclude>(item) {flags=f;}
+    Port(Item& item): classdesc::Exclude<PortExclude>(item) {}
 
     // destruction of this port must also destroy all attached wires
     ~Port() {deleteWires();}

@@ -1575,7 +1575,7 @@ export class PlotWidget extends Item {
   y1minVar: VariableValue;
   ymaxVar: VariableValue;
   yminVar: VariableValue;
-  yvars: Sequence<VariableValue>;
+  yvars: Sequence<Sequence<VariableValue>>;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
@@ -1592,7 +1592,7 @@ export class PlotWidget extends Item {
     this.y1minVar=new VariableValue(this.$prefix()+'.y1minVar');
     this.ymaxVar=new VariableValue(this.$prefix()+'.ymaxVar');
     this.yminVar=new VariableValue(this.$prefix()+'.yminVar');
-    this.yvars=new Sequence<VariableValue>(this.$prefix()+'.yvars',VariableValue);
+    this.yvars=new Sequence<Sequence<VariableValue>>(this.$prefix()+'.yvars',Sequence<VariableValue>);
   }
   async AssignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('AssignSide',a1,a2);}
   async Image(...args: any[]): Promise<string> {return this.$callMethod('Image',...args);}
@@ -1655,6 +1655,8 @@ export class PlotWidget extends Item {
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
+  async nBoundsPorts(...args: number[]): Promise<number> {return this.$callMethod('nBoundsPorts',...args);}
+  async numLines(...args: any[]): Promise<number> {return this.$callMethod('numLines',...args);}
   async nxTicks(...args: number[]): Promise<number> {return this.$callMethod('nxTicks',...args);}
   async nyTicks(...args: number[]): Promise<number> {return this.$callMethod('nyTicks',...args);}
   async offx(...args: number[]): Promise<number> {return this.$callMethod('offx',...args);}

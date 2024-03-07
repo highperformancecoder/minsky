@@ -552,6 +552,8 @@ namespace schema3
         if (y.name) x1->title=*y.name;
         y.applyPlotOptions(*x1);
         if (y.palette) x1->palette=*y.palette;
+        if (y.ports.size()>x1->nBoundsPorts)
+          x1->numLines((y.ports.size()-x1->nBoundsPorts)/4);
       }
     if (auto* x1=dynamic_cast<minsky::Sheet*>(&x))
       {
