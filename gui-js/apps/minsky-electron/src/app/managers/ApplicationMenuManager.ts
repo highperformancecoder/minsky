@@ -43,6 +43,7 @@ export class ApplicationMenuManager {
               height: 600,
               title: '',
               url: `#/headless/menu/file/about`,
+              modal: false,
             });
             shell.beep();
           },
@@ -87,6 +88,7 @@ export class ApplicationMenuManager {
               height: 500,
               title: '',
               url: `#/headless/menu/file/about`,
+              modal: false,
             });
             shell.beep();
           },
