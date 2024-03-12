@@ -182,7 +182,7 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo,tooltip);
+        displayTooltip(cairo,tooltip());
         // draw legend tags for move/resize
         if (legend)
           {
@@ -264,14 +264,14 @@ namespace minsky
               for (size_t i=0; i<m_ports[portNo]->wires().size(); ++i, ++pen)
                 {
                   auto wire=m_ports[portNo]->wires()[i];
-                  if (!wire->tooltip.empty())
+                  if (!wire->tooltip().empty())
                     {
-                      labelPen(pen, latexToPango(wire->tooltip));
+                      labelPen(pen, latexToPango(wire->tooltip()));
                       continue;
                     }
-                  if (auto from=wire->from(); !from->item().tooltip.empty())
+                  if (auto from=wire->from(); !from->item().tooltip().empty())
                     {
-                      labelPen(pen, latexToPango(from->item().tooltip));
+                      labelPen(pen, latexToPango(from->item().tooltip()));
                       continue;
                     }
                   if (portNo-nBoundsPorts<yvars.size() && i<yvars[portNo-nBoundsPorts].size())

@@ -336,6 +336,36 @@ double VariableBase::value(const double& x)
   return x;
 }
 
+static string emptyString;
+
+const std::string& VariableBase::detailedText() const
+{
+  if (auto vv=vValue())
+    return vv->detailedText;
+  return emptyString  ;
+}
+
+const std::string& VariableBase::detailedText(const std::string& x)
+{
+    if (auto vv=vValue())
+    return vv->detailedText=x;
+  return emptyString  ;
+}
+
+const std::string& VariableBase::tooltip() const
+{
+  if (auto vv=vValue())
+    return vv->tooltip;
+  return emptyString  ;
+}
+
+const std::string& VariableBase::tooltip(const std::string& x)
+{
+    if (auto vv=vValue())
+    return vv->tooltip=x;
+  return emptyString  ;
+}
+
 int VariableBase::stockVarsPassed=0;
 int VariableBase::varsPassed=0;
 
@@ -764,7 +794,7 @@ void VariableBase::draw(cairo_t *cairo) const
       {
         const cairo::CairoSave cs(cairo);
         drawPorts(cairo);
-        displayTooltip(cairo,tooltip);
+        displayTooltip(cairo,tooltip());
         if (onResizeHandles) drawResizeHandles(cairo);
       }  
 

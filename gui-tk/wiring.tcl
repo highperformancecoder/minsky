@@ -358,8 +358,8 @@ proc addVariablePostModal {} {
     if {!$varExists} {
         getValue [canvas.itemFocus.valueId]
         canvas.itemFocus.rotation [set varInput(Rotation)]
-        canvas.itemFocus.tooltip [set "varInput(Short description)"]
-        canvas.itemFocus.detailedText [set "varInput(Detailed description)"]
+#        canvas.itemFocus.tooltip [set "varInput(Short description)"]
+#        canvas.itemFocus.detailedText [set "varInput(Detailed description)"]
         canvas.itemFocus.sliderMax  [set "varInput(Slider Bounds: Max)"]
         canvas.itemFocus.sliderMin  [set "varInput(Slider Bounds: Min)"]
         canvas.itemFocus.sliderStep  [set "varInput(Slider Step Size)"]
@@ -982,8 +982,8 @@ proc deiconifyEditVar {} {
             $item.init $editVarInput(Initial Value)
             $item.setUnits $editVarInput(Units)
             $item.rotation  $editVarInput(Rotation)
-            $item.tooltip  $editVarInput(Short description)
-            $item.detailedText  $editVarInput(Detailed description)
+#            $item.tooltip  $editVarInput(Short description)
+#            $item.detailedText  $editVarInput(Detailed description)
             $item.sliderMax  $editVarInput(Slider Bounds: Max)
             $item.sliderMin  $editVarInput(Slider Bounds: Min)
             $item.sliderStep  $editVarInput(Slider Step Size)
@@ -1213,8 +1213,8 @@ proc editVar {} {
     set "editVarInput(Slider Bounds: Min)" [$item.sliderMin]
     set "editVarInput(Slider Step Size)" [$item.sliderStep]
     set "editVarInput(relative)" [$item.sliderStepRel]
-    set "editVarInput(Short description)" [$item.tooltip]
-    set "editVarInput(Detailed description)" [$item.detailedText]
+#    set "editVarInput(Short description)" [$item.tooltip]
+#    set "editVarInput(Detailed description)" [$item.detailedText]
     if {[minsky.value.godleyOverridden] || [inputWired [$item.valueId]]} {
         $editVarInput(initial_focus_value) configure -state disabled  -foreground gray
         ::tk::TabToWindow $editVarInput(initial_focus_rotation)
@@ -1430,9 +1430,9 @@ set bookmarkCheck 0
 proc postNote {item} {
     deiconifyNote
     .wiring.note.tooltip.entry delete 0 end
-    .wiring.note.tooltip.entry insert 0 [minsky.canvas.$item.tooltip]
+#    .wiring.note.tooltip.entry insert 0 [minsky.canvas.$item.tooltip]
     .wiring.note.text delete 1.0 end
-    .wiring.note.text insert 1.0 [minsky.canvas.$item.detailedText]
+#    .wiring.note.text insert 1.0 [minsky.canvas.$item.detailedText]
     .wiring.note.buttons.ok configure -command "OKnote $item"
     global bookmarkCheck
     set bookmarkCheck [minsky.canvas.$item.bookmark]
@@ -1442,8 +1442,8 @@ proc postNote {item} {
 }
 
 proc OKnote {item} {
-    minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
-    minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
+#    minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
+#    minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
     global bookmarkCheck
     minsky.canvas.$item.bookmark $bookmarkCheck
     minsky.canvas.$item.adjustBookmark

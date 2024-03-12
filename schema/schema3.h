@@ -59,8 +59,8 @@ namespace schema3
   {
     Optional<std::string> detailedText, tooltip;
     Note() {}
-    template <class T>
-    Note(const T& x): detailedText(x.detailedText), tooltip(x.tooltip) {}
+    Note(const minsky::NoteBase& x): detailedText(x.detailedText()), tooltip(x.tooltip()) {}
+    Note(const schema2::Note& x): detailedText(x.detailedText), tooltip(x.tooltip) {}
   };
 
   // attribute common to all items

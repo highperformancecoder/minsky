@@ -114,7 +114,7 @@ namespace minsky
     if (mouseFocus)
       { 		  
         drawPorts(cairo);
-        displayTooltip(cairo,tooltip);
+        displayTooltip(cairo,tooltip());
         if (onResizeHandles) drawResizeHandles(cairo);
       }	       
 

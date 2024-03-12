@@ -194,7 +194,7 @@ namespace minsky
     }
     void addNote(const std::string& text) {
       setItemFocus(model->addItem(new Item));
-      itemFocus->detailedText=text;
+      itemFocus->detailedText(text);
     }
     void addPlot() {
       setItemFocus(model->addItem(new PlotWidget));

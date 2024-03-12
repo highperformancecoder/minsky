@@ -37,26 +37,28 @@ namespace
 
 SUITE(Ticket1461)
 {
-  TEST(clone)
+  TEST_FIXTURE(TestFixture, clone)
     {
-      Variable<VariableType::flow> var;
-      var.tooltip="hello";
-      auto clone=var.clone();
-      CHECK_EQUAL("hello",clone->tooltip);
+      canvas.addVariable("foo",VariableType::flow);
+      auto var=canvas.itemFocus->variableCast();
+      CHECK(var);
+      var->tooltip("hello");
+      auto clone=var->clone();
+      CHECK_EQUAL("hello",clone->tooltip());
     }
 
   TEST_FIXTURE(TestFixture, copy)
     {
       canvas.addVariable("foo", VariableType::flow);
       auto& var=*canvas.itemFocus->variableCast();
-      var.tooltip="hello";
+      var.tooltip("hello");
       var.setUnits("m");
       canvas.selection.insertItem(canvas.itemFocus);
       copy();
       paste();
       auto& varCopy=*canvas.itemFocus->variableCast();
       CHECK(&var!=&varCopy);
-      CHECK_EQUAL("hello",varCopy.tooltip);
+      CHECK_EQUAL("hello",varCopy.tooltip());
       CHECK_EQUAL("m",varCopy.unitsStr());
     }
 

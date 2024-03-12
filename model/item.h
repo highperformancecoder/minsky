@@ -248,7 +248,7 @@ namespace minsky
     float bottom() const;
 
     /// Id of bookmark associated with this
-    std::string bookmarkId() const {return tooltip.empty()? std::to_string(size_t(this)): tooltip;}
+    std::string bookmarkId() const {return tooltip().empty()? std::to_string(size_t(this)): tooltip();}
     void adjustBookmark() const override;
     
     /// resize handles should be at least a percentage if the icon size (#1025)

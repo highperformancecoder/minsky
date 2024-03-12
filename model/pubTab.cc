@@ -84,7 +84,7 @@ namespace minsky
   void PubTab::addNote(const std::string& note, float x, float y)
   {
     items.emplace_back(std::make_shared<Item>());
-    items.back().itemRef->detailedText=note;
+    items.back().itemRef->detailedText(note);
     items.back().x=x-offsx;
     items.back().y=y-offsy;
     minsky().pushHistory();

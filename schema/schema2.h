@@ -61,8 +61,8 @@ namespace schema2
   {
     Optional<std::string> detailedText, tooltip;
     Note() {}
-    template <class T>
-    Note(const T& x): detailedText(x.detailedText), tooltip(x.tooltip) {}
+    Note(const minsky::NoteBase& x): detailedText(x.detailedText()), tooltip(x.tooltip()) {}
+    Note(const schema1::Item& x): detailedText(x.detailedText), tooltip(x.tooltip) {}
   };
 
   // attribute common to all items
