@@ -93,6 +93,8 @@ namespace minsky
     /// number of ticks to show in canvas item
     unsigned displayNTicks{3};
     double displayFontSize{3};
+    /// vertical markers at a position given by a named variable/parameter 
+    std::vector<std::string> markers;
 
     std::string title;
 

@@ -1566,6 +1566,7 @@ export class PhillipsStock extends Item {
 export class PlotWidget extends Item {
   backgroundColour: ecolab__cairo__Colour;
   item: Item;
+  markers: Sequence<string>;
   palette: Sequence<ecolab__Plot__LineStyle>;
   wire: Wire;
   xmaxVar: VariableValue;
@@ -1583,6 +1584,7 @@ export class PlotWidget extends Item {
       super(prefix.$prefix())
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
     this.item=new Item(this.$prefix()+'.item');
+    this.markers=new Sequence<string>(this.$prefix()+'.markers');
     this.palette=new Sequence<ecolab__Plot__LineStyle>(this.$prefix()+'.palette',ecolab__Plot__LineStyle);
     this.wire=new Wire(this.$prefix()+'.wire');
     this.xmaxVar=new VariableValue(this.$prefix()+'.xmaxVar');

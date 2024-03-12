@@ -647,7 +647,22 @@ namespace minsky
     justDataChanged=true;
     scalePlot();
 
-    
+    // add vertical markers
+    if (finite(miny) && finite(maxy))
+      for (auto& m: markers)
+        {
+          auto vid=valueId(group.lock(), ':'+m);
+          if (auto v=cminsky().variableValues[vid])
+            {
+              addPt(pen,v->value(),miny);
+              addPt(pen,v->value(),maxy);
+              if (auto var=cminsky().definingVar(vid); var && !var->tooltip.empty())
+                labelPen(pen++,var->tooltip);
+              else
+                labelPen(pen++,m);
+            }
+        }
+        
     if (newXticks.size()==1) // nothing to disambiguate
       xticks=std::move(newXticks.front());
     else

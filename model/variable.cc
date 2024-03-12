@@ -439,7 +439,7 @@ Units VariableBase::units(bool check) const
             assert(m_ports[1]->wires()[0]->from());
             vv->units=m_ports[1]->wires()[0]->from()->item().units(check);
           }
-        else if (auto v=cminsky().definingVar(valueId()))
+        else if (auto v=cminsky().definingVar(valueId()); v.get()!=this)
           vv->units=v->units(check);
 
       vv->units.normalise();
