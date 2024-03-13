@@ -184,13 +184,25 @@ namespace minsky
         const EnsureEditorMode e(*item);
         auto p=item->itemCoords(x,y);
         clickType=item->itemRef->clickType(p.x(),p.y());
-        if (clickType==ClickType::onResize)
+        dx=dy=0;
+        switch (clickType)
           {
-            auto scale=item->itemRef->zoomFactor();
-            lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
-            lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
-            lasso.x1=x;
-            lasso.y1=y;
+          case ClickType::onResize:
+            {
+              auto scale=item->itemRef->zoomFactor();
+              lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
+              lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
+              lasso.x1=x;
+              lasso.y1=y;
+            }
+            break;
+          case ClickType::inItem:
+            item->itemRef->onMouseDown(p.x(),p.y());
+            break;
+          default:
+            dx=item->x-x;
+            dy=item->y-y;
+            break;
           }
       }
   }
@@ -204,13 +216,26 @@ namespace minsky
         return;
       }
     mouseMove(x,y);
-    if (item && clickType==ClickType::onResize)
-      {
-        item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width());
-        item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height());
-        item->x=0.5*(lasso.x0+lasso.x1);
-        item->y=0.5*(lasso.y0+lasso.y1);
-      }
+    if (item)
+      switch (clickType)
+        {
+        case ClickType::onResize:
+          item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width());
+          item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height());
+          item->x=0.5*(lasso.x0+lasso.x1);
+          item->y=0.5*(lasso.y0+lasso.y1);
+          break;
+        case ClickType::inItem:
+          {
+            zoomTranslate(x,y);
+            const EnsureEditorMode e(*item);
+            auto p=item->itemCoords(x,y);
+            item->itemRef->onMouseUp(p.x(),p.y());
+            minsky().requestReset();
+          }
+          break;
+        default: break;
+        }
     minsky().pushHistory();
     item=nullptr;
     clickType=ClickType::outside;
@@ -249,16 +274,32 @@ namespace minsky
                   v->sliderSet(sliderHatch);
                 }
               break;
+            case ClickType::inItem:
+              {
+                const EnsureEditorMode e(*item);
+                auto p=item->itemCoords(x,y);
+                item->itemRef->mouseFocus=true;
+                if (item->itemRef->onMouseMotion(p.x(),p.y()))
+                  requestRedraw();
+              }
+              break;
             default:
-              item->x=x;
-              item->y=y;
+              item->x=x+dx;
+              item->y=y+dy;
+              break;
             }
+        requestRedraw();
       }
     else
       // indicate mouse focus
       if (auto i=m_getItemAt(x,y))
-        i->itemRef->mouseFocus=true;
-    requestRedraw();
+        {
+          i->itemRef->mouseFocus=true;
+          const EnsureEditorMode e(*i);
+          auto p=i->itemCoords(x,y);
+          i->itemRef->onMouseOver(p.x(),p.y());
+          requestRedraw();
+        }
   }
 
   bool PubTab::keyPress(const KeyPressArgs& args)
@@ -268,7 +309,11 @@ namespace minsky
     if (auto item=m_getItemAt(x,y))
       {
         EnsureEditorMode em(*item);
-        return item->itemRef->onKeyPress(args.keySym,args.utf8,args.state);
+        if (item->itemRef->onKeyPress(args.keySym,args.utf8,args.state))
+          {
+            requestRedraw();
+            return true;
+          }
       }
     return false;
   }

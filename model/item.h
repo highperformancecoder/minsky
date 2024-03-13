@@ -272,6 +272,7 @@ namespace minsky
     /// respond to mouse leave events (when mouse leaves item)
     virtual void onMouseLeave() {}
     /// respond to key press events
+    /// @return true if it needs to be rerendered
     virtual bool onKeyPress(int keySym, const std::string& utf8, int state)
     {return false;}
 
