@@ -90,6 +90,8 @@ SUITE(Phillips)
       phillipsDiagram.init();
       CHECK(!phillipsDiagram.stocks.empty());
       CHECK(!phillipsDiagram.flows.empty());
+      // remove controlled items first to prevent foot-on-foot errors
+      for (auto& i: model->items) i->removeControlledItems();
       model->items.clear();
       phillipsDiagram.init();
       CHECK(phillipsDiagram.stocks.empty());
