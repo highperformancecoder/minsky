@@ -466,6 +466,30 @@ namespace minsky
               }
             addPt(pen++, x, y);
           }
+
+    // add markers
+    if (finite(miny) && finite(maxy))
+      {
+        for (auto& m: horizontalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              double x[]{minx,miny};
+              double y[]{v->value(),v->value()};
+              setPen(pen,x,y,2);
+              assignSide(pen,marker);
+              labelPen(pen++,v->tooltip);
+            }
+        for (auto& m: verticalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              double x[]{v->value(),v->value()};
+              double y[]{miny,maxy};
+              setPen(pen,x,y,2);
+              assignSide(pen,marker);
+              labelPen(pen++,v->tooltip);
+            }
+      }
+
     
     // throttle plot redraws
     static const time_duration maxWait=milliseconds(1000);
@@ -647,21 +671,26 @@ namespace minsky
     justDataChanged=true;
     scalePlot();
 
-    // add vertical markers
+    // add markers
     if (finite(miny) && finite(maxy))
-      for (auto& m: markers)
-        {
-          auto vid=valueId(group.lock(), ':'+m);
-          if (auto v=cminsky().variableValues[vid])
+      {
+        for (auto& m: horizontalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              addPt(pen,minx,v->value());
+              addPt(pen,maxx,v->value());
+              assignSide(pen,marker);
+              labelPen(pen++,v->tooltip);
+            }
+        for (auto& m: verticalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
               addPt(pen,v->value(),miny);
               addPt(pen,v->value(),maxy);
-              if (auto var=cminsky().definingVar(vid); var && !var->tooltip.empty())
-                labelPen(pen++,var->tooltip);
-              else
-                labelPen(pen++,m);
+              assignSide(pen,marker);
+              labelPen(pen++,v->tooltip);
             }
-        }
+      }
         
     if (newXticks.size()==1) // nothing to disambiguate
       xticks=std::move(newXticks.front());
