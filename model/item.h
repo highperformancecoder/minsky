@@ -137,7 +137,7 @@ namespace minsky
     virtual void insertControlled(Selection& selection) {}
     /// remove all controlled items from a group
     virtual void removeControlledItems(GroupItems&) const {}
-    /// remove all controlled items their owning group
+    /// remove all controlled items from their owning group
     void removeControlledItems() const;
     
     double m_rotation=0; ///< rotation of icon, in degrees
@@ -272,6 +272,7 @@ namespace minsky
     /// respond to mouse leave events (when mouse leaves item)
     virtual void onMouseLeave() {}
     /// respond to key press events
+    /// @return true if it needs to be rerendered
     virtual bool onKeyPress(int keySym, const std::string& utf8, int state)
     {return false;}
 
