@@ -57,7 +57,8 @@ namespace minsky
     void zoomTranslate(float& x, float& y);
     bool rotating=false;
     ClickType::Type clickType=ClickType::outside;
-    float rx=0, ry=0; ///< reference position for rotating
+    float dx,dy;      ///< relative offset between mouse and item origin when moving 
+    Exclude<Point> rotateOrigin; ///< reference position for rotating
     LassoBox lasso;
   public:
     PubTab()=default;
