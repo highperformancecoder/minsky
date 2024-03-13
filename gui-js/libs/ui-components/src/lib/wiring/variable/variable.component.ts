@@ -49,6 +49,7 @@ export class VariableComponent {
         width: 400,
         height: 450,
         alwaysOnTop: true,
+        modal: false,
       });
   }
 }

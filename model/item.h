@@ -137,7 +137,7 @@ namespace minsky
     virtual void insertControlled(Selection& selection) {}
     /// remove all controlled items from a group
     virtual void removeControlledItems(GroupItems&) const {}
-    /// remove all controlled items their owning group
+    /// remove all controlled items from their owning group
     void removeControlledItems() const;
     
     double m_rotation=0; ///< rotation of icon, in degrees

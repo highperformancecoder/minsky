@@ -36,6 +36,10 @@ ifdef AEGIS
 #EXES+=tcl-cov
 endif
 
+ifdef ASAN
+FLAGS+=-fsanitize=address -fno-omit-frame-pointer
+endif
+
 all: unittests $(EXES)
 
 unittests: $(UNITTESTOBJS) $(MINSKYOBJS)
