@@ -3,6 +3,9 @@
 # remove any backup files to prevent unintended hangs
 rm examples/*.mky# test/*.mky#
 
+# suppress leak detection in 3rd party libraries
+export LSAN_OPTIONS=suppressions=lsan_suppression
+
 t=0
 for i in test/00/*.sh; do
     echo -n "$i: "

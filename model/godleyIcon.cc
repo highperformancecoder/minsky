@@ -189,11 +189,19 @@ namespace minsky
   void GodleyIcon::removeControlledItems(GroupItems& g) const
   {
     for (auto& i: m_flowVars)
-      if (auto item=g.removeItem(*i))
-        item->deleteAttachedWires();
+      {
+        assert(i);
+        i->deleteAttachedWires();
+        auto item=g.removeItem(*i);
+        assert(item.use_count()!=1);
+      }
     for (auto& i: m_stockVars)
-      if (auto item=g.removeItem(*i))
-        item->deleteAttachedWires();
+      {
+        assert(i);
+        i->deleteAttachedWires();
+        auto item=g.removeItem(*i);
+        assert(item.use_count()!=1);
+      }
   }
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
