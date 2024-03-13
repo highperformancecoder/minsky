@@ -618,7 +618,7 @@ export class CommandsManager {
       title: `Help: ${classType}`,
       height: 600,
       width: 1000,
-      modal: true,
+      modal: false,
       url: path,
     });
   }
@@ -635,7 +635,7 @@ export class CommandsManager {
       title: `Instances`,
       height: 500,
       width: 300,
-      modal: true,
+      modal: false,
       url: `#/headless/find-all-instances`,
     });
   }

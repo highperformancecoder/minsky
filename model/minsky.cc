@@ -929,10 +929,11 @@ namespace minsky
              for (size_t i=0; i<p->portsSize(); ++i)
                {
                  auto pp=p->ports(i).lock();
-                 if (!pp->wires().empty())
-                   if (auto vv=pp->getVariableValue())
-                     if (vv->idx()>=0)
-                       p->connectVar(vv, i);
+                 for (auto wire: pp->wires())
+                   if (auto fromPort=wire->from())
+                     if (auto vv=wire->from()->getVariableValue())
+                       if (vv->idx()>=0)
+                         p->connectVar(vv, i);
                }
              p->clear();
              if (running)
@@ -1282,7 +1283,7 @@ namespace minsky
       }
     while (history.size()>maxHistory)
       history.pop_front();
-    if (memcmp(buf.data(), history.back().data(), buf.size())!=0)
+    if (history.empty() || history.back().size()!=buf.size() || memcmp(buf.data(), history.back().data(), buf.size())!=0)
       {
         // check XML versions differ (slower)
         ostringstream prev, curr;

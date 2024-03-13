@@ -71,14 +71,21 @@ namespace minsky
     mutable double yoffs=0;
 
     Formatter formatter=defaultFormatter;
+    size_t m_numLines=1; ///< number of ports on the side
+
+    /// returns to starting pen number for input \a port
+    size_t startPen(size_t port) const;
     
   public:
     using Item::x;
     using Item::y;
     using ecolab::CairoSurface::surface;
 
+    /// number of bounds (xmin/xmax, ymin/ymax, y1min/y1max) ports
+    static constexpr unsigned nBoundsPorts=6;
+
     /// variable port attached to (if any)
-    std::vector<std::shared_ptr<VariableValue>> yvars;
+    std::vector<std::vector<std::shared_ptr<VariableValue>>> yvars;
     std::vector<std::shared_ptr<VariableValue>> xvars;
 
     /// variable ports specifying plot size
@@ -86,7 +93,6 @@ namespace minsky
     /// number of ticks to show in canvas item
     unsigned displayNTicks{3};
     double displayFontSize{3};
-
 
     std::string title;
 
@@ -98,6 +104,11 @@ namespace minsky
     void addPorts();
     PlotWidget(const PlotWidget& x): PlotWidgetSuper(x) {addPorts();}
     PlotWidget(PlotWidget&& x): PlotWidgetSuper(x) {addPorts();}
+
+    /// @{ number of input ports along a side
+    size_t numLines() const {return m_numLines;}
+    size_t numLines(size_t n) {m_numLines=n; addPorts(); return n;}
+    /// @}
     
     // pick the Item width method, not ecolab::Plot's
     float width() const {return Item::width();}
@@ -122,7 +133,13 @@ namespace minsky
       ecolab::Plot::y1label=latexToPangoNonItalicised(x);
       return m_y1label=x;
     }
-   
+
+    /// @{ bar chart bar width control
+    // for now, set all bar width to the same value
+    double barWidth() const;
+    double barWidth(double w);
+    /// @}
+    
     void addPlotPt(double t); ///< add another plot point
     void updateIcon(double t) override {addPlotPt(t);}
     /// add vector/tensor curves to plot
