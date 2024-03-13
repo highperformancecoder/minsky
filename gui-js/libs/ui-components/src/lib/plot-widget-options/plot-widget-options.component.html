@@ -20,6 +20,12 @@
     </div>
 
     <div class="form-control">
+      <label for="numLines">No. inputs on each side</label>
+      <input type="number" min="1" id="numLines"
+             formControlName="numLines" />
+    </div>
+
+    <div class="form-control">
       <label for="plotType">Plot type</label>
       <select name="plotType" id="plotType" formControlName="plotType">
         <option value="automatic">Automatic</option>
