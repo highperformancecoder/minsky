@@ -129,15 +129,18 @@ SUITE(PubTab)
           mouseMove(100,100);
           CHECK(items[0].itemRef->mouseFocus);
         }
-       TEST_FIXTURE(PubTab,moveSlider)
+       TEST_FIXTURE(MinskyFixture,moveSlider)
          {
            VariablePtr var(VariableBase::parameter, "foobar");
-           items.emplace_back(var);
+           model->addItem(var);
+           auto& tab=publicationTabs[0];
+           tab.items.emplace_back(var);
+           auto& item=tab.items[0];
            var->initSliderBounds();
-           auto x=var->x()+items[0].x, y=var->y()+items[0].y-0.5f*var->height();
-           CHECK(var->clickType(x-items[0].x,y-items[0].y)==ClickType::onSlider);
-           mouseDown(x,y);
-           mouseUp(x+0.5*var->width(),y);
+           auto x=var->x()+item.x, y=var->y()+item.y-0.5f*var->height();
+           CHECK(var->clickType(x-item.x,y-item.y)==ClickType::inItem);
+           tab.mouseDown(x,y);
+           tab.mouseUp(x+0.5*var->width(),y);
            CHECK_CLOSE(var->sliderMax,var->value(),0.1);
          }
        TEST_FIXTURE(MinskyFixture,redraw)
