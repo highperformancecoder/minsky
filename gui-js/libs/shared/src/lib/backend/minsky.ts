@@ -1609,6 +1609,7 @@ export class PlotWidget extends Item {
   async assignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('assignSide',a1,a2);}
   async autoScale(): Promise<void> {return this.$callMethod('autoScale');}
   async autoscale(...args: boolean[]): Promise<boolean> {return this.$callMethod('autoscale',...args);}
+  async availableMarkers(): Promise<string[]> {return this.$callMethod('availableMarkers');}
   async barWidth(...args: any[]): Promise<number> {return this.$callMethod('barWidth',...args);}
   async cairoSurface(): Promise<minsky__dummy> {return this.$callMethod('cairoSurface');}
   async clear(): Promise<void> {return this.$callMethod('clear');}

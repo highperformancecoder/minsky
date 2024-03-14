@@ -182,6 +182,9 @@ namespace minsky
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
 
     void destroyFrame() override {RenderNativeWindow::destroyFrame();}
+
+    /// return list of variables that could be attached to markers
+    std::set<std::string> availableMarkers() const;
     
   };
 

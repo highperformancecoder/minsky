@@ -770,5 +770,15 @@ namespace minsky
     xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=nullptr;
   }
 
+  set<string> PlotWidget::availableMarkers() const
+  {
+    // search upwards through group heirarchy, looking for variable to add
+    set<string> r;
+    for (auto g=group.lock(); g; g=g->group.lock())
+      for (auto& i: g->items)
+        if (auto v=i->variableCast())
+          r.insert(uqName(v->rawName()));
+    return r;
+  }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotWidget);
