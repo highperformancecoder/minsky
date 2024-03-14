@@ -473,7 +473,8 @@ namespace minsky
         for (auto& m: horizontalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
-              double x[]{minx,miny};
+              auto eps=1e-4*(maxx-minx);
+              double x[]{minx+eps,miny-eps};
               double y[]{v->value(),v->value()};
               setPen(pen,x,y,2);
               assignSide(pen,marker);
@@ -482,8 +483,9 @@ namespace minsky
         for (auto& m: verticalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
+              auto eps=1e-4*(maxy-miny);
               double x[]{v->value(),v->value()};
-              double y[]{miny,maxy};
+              double y[]{miny+eps,maxy-eps};
               setPen(pen,x,y,2);
               assignSide(pen,marker);
               labelPen(pen++,v->tooltip);
