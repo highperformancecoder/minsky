@@ -599,9 +599,11 @@ bool VariableBase::onKeyPress(int keySym, const std::string&,int)
     {
     case 0xff52: case 0xff53: //Right, Up
         sliderSet(value()+(sliderStepRel? value(): 1)*sliderStep);
+        if (!minsky().running) minsky().requestReset();
         return true;
     case 0xff51: case 0xff54: //Left, Down
         sliderSet(value()-(sliderStepRel? value(): 1)*sliderStep);
+        if (!minsky().running) minsky().requestReset();
         return true;
     default:
       return false;

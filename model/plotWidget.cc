@@ -677,18 +677,26 @@ namespace minsky
         for (auto& m: horizontalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
-              addPt(pen,minx,v->value());
-              addPt(pen,maxx,v->value());
+              auto eps=1e-4*(maxx-minx);
+              addPt(pen,minx+eps,v->value());
+              addPt(pen,maxx-eps,v->value());
               assignSide(pen,marker);
-              labelPen(pen++,v->tooltip);
+              if (!v->tooltip.empty())
+                labelPen(pen++,v->tooltip);
+              else
+                labelPen(pen++,m);
             }
         for (auto& m: verticalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
-              addPt(pen,v->value(),miny);
-              addPt(pen,v->value(),maxy);
+              auto eps=1e-4*(maxy-miny);
+              addPt(pen,v->value(),miny+eps);
+              addPt(pen,v->value(),maxy-eps);
               assignSide(pen,marker);
-              labelPen(pen++,v->tooltip);
+              if (!v->tooltip.empty())
+                labelPen(pen++,v->tooltip);
+              else
+                labelPen(pen++,m);
             }
       }
         
