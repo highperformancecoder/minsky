@@ -179,8 +179,13 @@ FLAGS+=-Werror
 endif
 endif
 
-#-DUSE_UNROLLED 
-FLAGS+=-std=c++20 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC -DCLASSDESC_ARITIES=0xf $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
+# undef this, or redefine on command line
+CLASSDESC_ARITIES=0xf
+ifdef CLASSDESC_ARITIES
+FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
+endif
+
+FLAGS+=-std=c++20 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
 
 ifeq ($(CPLUSPLUS),clang++)
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option
