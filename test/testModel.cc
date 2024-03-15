@@ -1305,10 +1305,7 @@ SUITE(GodleyTableWindow)
   
   struct GodleyTableWindowFixture: private EmbedGodleyIcon, public GodleyTableWindow
   {
-    GodleyTableWindowFixture(): GodleyTableWindow(embeddedGodleyIcon)
-    {
-      Tk_Init(interp()); // required for clipboard operations
-    }
+    GodleyTableWindowFixture(): GodleyTableWindow(embeddedGodleyIcon) {}
   };
   
   TEST_FIXTURE(GodleyTableWindowFixture, mouseMove)
@@ -1338,7 +1335,6 @@ SUITE(GodleyTableWindow)
   
   TEST_FIXTURE(GodleyTableWindowFixture, mouseSelect)
     {
-      Tk_Init(interp()); // required for clipboard operations
       godleyIcon().table.cell(1,1)="hello";
       surface.reset(new ecolab::cairo::Surface
                     (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));

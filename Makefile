@@ -241,7 +241,11 @@ ifdef AEGIS
 # ensure all exes get built in AEGIS mode
 TESTS=tests 
 # enable TCL coverage testing
-FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor -Wno-unknown-pragmas
+FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor -Wno-unknown-pragmas 
+endif
+
+ifdef ASAN
+FLAGS+=-fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls -O1 -DRealloc=std::realloc
 endif
 
 ifdef MXE

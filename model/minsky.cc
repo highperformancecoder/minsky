@@ -1282,7 +1282,7 @@ namespace minsky
       }
     while (history.size()>maxHistory)
       history.pop_front();
-    if (memcmp(buf.data(), history.back().data(), buf.size())!=0)
+    if (history.empty() || history.back().size()!=buf.size() || memcmp(buf.data(), history.back().data(), buf.size())!=0)
       {
         // check XML versions differ (slower)
         ostringstream prev, curr;
