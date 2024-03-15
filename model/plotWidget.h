@@ -110,7 +110,7 @@ namespace minsky
 
     /// @{ number of input ports along a side
     size_t numLines() const {return m_numLines;}
-    size_t numLines(size_t n) {m_numLines=n; addPorts(); return n;}
+    size_t numLines(size_t n);
     /// @}
     
     // pick the Item width method, not ecolab::Plot's

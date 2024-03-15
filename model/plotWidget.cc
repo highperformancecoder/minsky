@@ -419,6 +419,17 @@ namespace minsky
 
   static const size_t maxNumTensorElementsToPlot=10;
 
+  size_t PlotWidget::numLines(size_t n)
+  {
+    if (m_numLines!=n)
+      {
+        m_numLines=n;
+        addPorts();
+      }
+    return n;
+  }
+
+  
   double PlotWidget::barWidth() const
   {
     return accumulate(palette.begin(), palette.end(), 1.0,
