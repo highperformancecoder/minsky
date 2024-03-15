@@ -468,7 +468,7 @@ namespace minsky
           }
 
     // add markers
-    if (finite(miny) && finite(maxy))
+    if (isfinite(miny) && isfinite(maxy))
       {
         for (auto& m: horizontalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
@@ -674,7 +674,7 @@ namespace minsky
     scalePlot();
 
     // add markers
-    if (finite(miny) && finite(maxy))
+    if (isfinite(miny) && isfinite(maxy))
       {
         for (auto& m: horizontalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
