@@ -568,6 +568,7 @@ namespace minsky
             {
               if (Plot::plotType==Plot::bar)
                 addPlotPt(0);
+              pen++;
               continue;
             }
           // work out a reference to the x data
@@ -675,8 +676,7 @@ namespace minsky
                       label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
                       stride*=d[i];
                     }
-                  if (pen>=m_numLines)
-                    assignSide(startPen,Side::right);
+                  assignSide(startPen,pen<m_numLines? Side::left: Side::right);
                   labelPen(startPen,defang(label));
                 }
             }
@@ -772,8 +772,7 @@ namespace minsky
         yvars.resize(port-nBoundsPorts+1);
         yvars[port-nBoundsPorts].push_back(var);
         // assign Side::right to pens belonging to the RHS
-        if (port-nBoundsPorts>=m_numLines)
-          assignSide(startPen(port-nBoundsPorts+1)-1,Side::right);
+        assignSide(startPen(port-nBoundsPorts+1)-1,port-nBoundsPorts<m_numLines? Side::left: Side::right);
       }
     else if (port-nBoundsPorts<4*m_numLines)
       {
