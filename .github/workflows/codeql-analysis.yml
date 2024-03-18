@@ -23,13 +23,13 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-${{ matrix.ubuntu_ver }}
 
     strategy:
       fail-fast: false
       matrix:
         language: [ 'cpp', 'javascript' ]
-        ubuntu_ver: [20.04]
+        ubuntu_ver: ['22.04','latest']
 
     permissions:
       actions: read
