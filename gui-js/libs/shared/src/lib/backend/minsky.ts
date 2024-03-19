@@ -1643,7 +1643,6 @@ export class PlotWidget extends Item {
   async legendLeft(...args: number[]): Promise<number> {return this.$callMethod('legendLeft',...args);}
   async legendOffset(...args: number[]): Promise<number> {return this.$callMethod('legendOffset',...args);}
   async legendSide(...args: string[]): Promise<string> {return this.$callMethod('legendSide',...args);}
-  async legendSize(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('legendSize',a1,a2,a3);}
   async legendTop(...args: number[]): Promise<number> {return this.$callMethod('legendTop',...args);}
   async lh(a1: number,a2: number): Promise<number> {return this.$callMethod('lh',a1,a2);}
   async logx(...args: boolean[]): Promise<boolean> {return this.$callMethod('logx',...args);}

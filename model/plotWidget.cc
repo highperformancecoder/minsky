@@ -59,7 +59,7 @@ namespace minsky
     const float boundY[PlotWidget::nBoundsPorts]={0.49,0.49,0.47,-0.49, 0.47, -0.49};
 
     // height of title, as a fraction of overall widget height
-    const double titleHeight=0.07;
+    const double titleHeight=0.05;
 
   }
 
@@ -107,6 +107,7 @@ namespace minsky
     CairoSave cs(cairo);
     cairo_translate(cairo,-0.5*w,-0.5*h);
 
+    yoffs=0;
     if (!title.empty())
       {
         const CairoSave cs(cairo);
@@ -177,7 +178,31 @@ namespace minsky
     if (plotType!=automatic)
       pt=static_cast<Plot::PlotType>(plotType);
 
-    Plot::draw(cairo,gw,gh); 
+    Plot::draw(cairo,gw,gh);
+    if (mouseFocus && legend)
+      {
+        double width,height,x,y;
+        legendSize(x,y,width,height,gw,gh);
+        // following code puts x,y at centre point of legend
+        x+=0.5*width;
+        const double arrowLength=6;
+        y=(h-portSpace)/z-y+0.5*height;
+        cairo_move_to(cairo,x-arrowLength,y);
+        cairo_rel_line_to(cairo,2*arrowLength,0);
+        cairo_move_to(cairo,x,y-arrowLength);
+        cairo_rel_line_to(cairo,0,2*arrowLength);
+
+        cairo_move_to(cairo,x,y+0.5*height);
+        cairo_rel_line_to(cairo,0,arrowLength);
+        cairo_stroke(cairo);
+        drawTriangle(cairo,x-arrowLength,y,{0,0,0,1},M_PI);
+        drawTriangle(cairo,x+arrowLength,y,{0,0,0,1},0);
+        drawTriangle(cairo,x,y-arrowLength,{0,0,0,1},3*M_PI/2);
+        drawTriangle(cairo,x,y+arrowLength,{0,0,0,1},M_PI/2);
+        drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
+
+        cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
+      }
     cs.restore();
     if (mouseFocus)
       {
@@ -186,30 +211,6 @@ namespace minsky
         // draw legend tags for move/resize
         if (legend)
           {
-            double width,height;
-            legendSize(width,height,gh);
-            width+=legendOffset*gw;
-
-            
-            const double x=legendLeft*gw-0.5*(w-width)+portSpace;
-            double y=-legendTop*gh+0.5*(h+height)-portSpace;
-            if (!title.empty()) y=-legendTop*gh+0.5*(h+height)-portSpace+titleHeight*h; // take into account room for the title
-            const double arrowLength=6;
-            cairo_move_to(cairo,x-arrowLength,y);
-            cairo_rel_line_to(cairo,2*arrowLength,0);
-            cairo_move_to(cairo,x,y-arrowLength);
-            cairo_rel_line_to(cairo,0,2*arrowLength);
-
-            cairo_move_to(cairo,x,y+0.5*height);
-            cairo_rel_line_to(cairo,0,arrowLength);
-            cairo_stroke(cairo);
-            drawTriangle(cairo,x-arrowLength,y,{0,0,0,1},M_PI);
-            drawTriangle(cairo,x+arrowLength,y,{0,0,0,1},0);
-            drawTriangle(cairo,x,y-arrowLength,{0,0,0,1},3*M_PI/2);
-            drawTriangle(cairo,x,y+arrowLength,{0,0,0,1},M_PI/2);
-            drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
-
-            cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
           }
         // Resize handles always visible on mousefocus. For ticket 92.
         drawResizeHandles(cairo);   
@@ -395,10 +396,10 @@ namespace minsky
           return ClickType::onPort;
       }
 
-    double legendWidth, legendHeight;
-    legendSize(legendWidth, legendHeight, iHeight()*z-portSpace);
+    double legendWidth, legendHeight, xoff, yoff;
+    legendSize(xoff, yoff, legendWidth, legendHeight, iWidth()*z-2*portSpace, iHeight()*z-portSpace-yoffs);
     const double xx= x-this->x() - portSpace +(0.5-legendLeft)*iWidth()*z;
-    const double yy= y-this->y() + (legendTop-0.5)*iHeight()*z;
+    const double yy= y-this->y() + (legendTop-0.5)*iHeight()*z-yoffs;
     if (legend && xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
