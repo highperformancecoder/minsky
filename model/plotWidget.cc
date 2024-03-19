@@ -229,7 +229,7 @@ namespace minsky
     setMinMax();
     if (xminVar && xminVar->idx()>-1)
       {
-        if (xIsSecsSinceEpoch && xminVar->units==Units("year"))
+        if (xIsSecsSinceEpoch && (xminVar->units.empty() || xminVar->units==Units("year")))
           minx=yearToPTime(xminVar->value());
         else
           minx=xminVar->value();
@@ -237,7 +237,7 @@ namespace minsky
 
     if (xmaxVar && xmaxVar->idx()>-1)
       {
-        if (xIsSecsSinceEpoch && xmaxVar->units==Units("year"))
+        if (xIsSecsSinceEpoch && (xmaxVar->units.empty() || xmaxVar->units==Units("year")))
           maxx=yearToPTime(xmaxVar->value());
         else
           maxx=xmaxVar->value();
@@ -453,7 +453,10 @@ namespace minsky
             switch (xvars.size())
               {
               case 0: // use t, when x variable not attached
-                x=t;
+                if (xIsSecsSinceEpoch && (cminsky().timeUnit.empty()||cminsky().timeUnit=="year"))
+                  x=yearToPTime(t);
+                else
+                  x=t;
                 y=(*yvar)[i];
                 break;
               case 1: // use the value of attached variable
@@ -495,7 +498,10 @@ namespace minsky
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
               auto eps=1e-4*(maxy-miny);
-              double x[]{v->value(),v->value()};
+              auto value=v->value();
+              if (xIsSecsSinceEpoch && (v->units.empty() || v->units==Units("year")))
+                value=yearToPTime(value);
+              double x[]{value,value};
               double y[]{miny+eps,maxy-eps};
               setPen(pen,x,y,2);
               assignSide(pen,marker);
@@ -558,10 +564,12 @@ namespace minsky
     formatter=defaultFormatter;
 
     size_t pen=0;
+    bool noLhsPens=true; // track whether any left had side ports are connected
     for (size_t port=0; port<yvars.size(); ++port)
       for (size_t i=0; i<yvars[port].size(); ++i)
         if (yvars[port][i])
         {
+          if (port<m_numLines) noLhsPens=false;
           auto& yv=yvars[port][i];
           auto d=yv->hypercube().dims();
           if (d.empty())
@@ -635,7 +643,7 @@ namespace minsky
                   xdefault.push_back(i);
               x=xdefault.data();
             }
-
+        
           const auto& idx=yv->index();
           if (yv->rank()==1)
             {
@@ -676,7 +684,7 @@ namespace minsky
                       label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
                       stride*=d[i];
                     }
-                  assignSide(startPen,pen<m_numLines? Side::left: Side::right);
+                  assignSide(startPen,port<m_numLines? Side::left: Side::right);
                   labelPen(startPen,defang(label));
                 }
             }
@@ -684,6 +692,13 @@ namespace minsky
     justDataChanged=true;
     scalePlot();
 
+    if (noLhsPens)
+      {
+        // set scale to RHS
+        miny=miny1;
+        maxy=maxy1;
+      }
+    
     // add markers
     if (isfinite(miny) && isfinite(maxy))
       {
@@ -703,8 +718,11 @@ namespace minsky
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
               auto eps=1e-4*(maxy-miny);
-              addPt(pen,v->value(),miny+eps);
-              addPt(pen,v->value(),maxy-eps);
+              auto value=v->value();
+              if (xIsSecsSinceEpoch && (v->units.empty() || v->units==Units("year")))
+                value=yearToPTime(value);
+              addPt(pen,value,miny+eps);
+              addPt(pen,value,maxy-eps);
               assignSide(pen,marker);
               if (!v->tooltip.empty())
                 labelPen(pen++,v->tooltip);
