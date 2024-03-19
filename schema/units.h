@@ -69,4 +69,5 @@ namespace minsky
 
 #include "units.cd"
 #include "units.xcd"
+#include "units.rcd"
 #endif

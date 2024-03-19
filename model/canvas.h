@@ -303,5 +303,7 @@ namespace classdesc
 }
 
 #include "canvas.cd"
+#include "canvas.rcd"
+#include "canvas.xcd"
 
 #endif

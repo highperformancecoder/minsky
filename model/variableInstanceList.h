@@ -55,4 +55,6 @@ namespace minsky
 }
 
 #include "variableInstanceList.cd"
+#include "variableInstanceList.rcd"
+#include "variableInstanceList.xcd"
 #endif

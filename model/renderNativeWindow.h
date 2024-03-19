@@ -70,4 +70,6 @@ namespace minsky
 } // namespace minsky
 
 #include "renderNativeWindow.cd"
+#include "renderNativeWindow.rcd"
+#include "renderNativeWindow.xcd"
 #endif

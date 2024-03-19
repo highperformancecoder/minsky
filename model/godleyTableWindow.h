@@ -242,4 +242,6 @@ namespace minsky
 }
 
 #include "godleyTableWindow.cd"
+#include "godleyTableWindow.rcd"
+#include "godleyTableWindow.xcd"
 #endif

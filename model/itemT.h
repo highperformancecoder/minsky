@@ -61,5 +61,6 @@ namespace minsky
 
 #include "itemT.cd"
 #include "itemT.xcd"
+#include "itemT.rcd"
 #endif
 

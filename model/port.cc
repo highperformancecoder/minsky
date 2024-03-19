@@ -27,8 +27,6 @@
 #include "plotWidget.h"
 #include "SVGItem.h"
 #include "switchIcon.h"
-#include "port.rcd"
-#include "port.xcd"
 #include "minsky_epilogue.h"
 using namespace std;
 
@@ -118,4 +116,4 @@ namespace minsky
 
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Port);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Port);

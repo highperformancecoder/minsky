@@ -19,6 +19,9 @@
 
 #ifndef NOBBLE_H
 #define NOBBLE_H
+#include "geometry.h"
+#include "dimension.h"
+#include "json_pack_base.h"
 
 // deal with multiple template arguments
 #define NOBBLE_TARG(...) __VA_ARGS__
@@ -62,6 +65,7 @@ NOBBLE(std::__1::__wrap_iter<const unsigned long *>,)
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const unsigned long*, std::vector<T>>),class T)
 #endif
 NOBBLE(NOBBLE_TARG(boost::geometry::model::d2::point_xy<T,S>),NOBBLE_TARG(class T,class S))
+//NOBBLE(cairo_t*,)
 namespace classdesc_access
 {
   template <> struct access_RESTProcess<civita::any>:

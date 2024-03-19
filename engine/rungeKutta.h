@@ -75,4 +75,6 @@ namespace minsky
   };
 }
 #include "rungeKutta.cd"
+#include "rungeKutta.xcd"
+#include "rungeKutta.rcd"
 #endif

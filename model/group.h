@@ -483,5 +483,6 @@ namespace classdesc_access
     public classdesc::NullDescriptor<classdesc::unpack_t> {};
 }
 #include "group.cd"
+#include "group.rcd"
 #include "group.xcd"
 #endif

@@ -69,4 +69,5 @@ namespace minsky
 
 #include "eventInterface.cd"
 #include "eventInterface.xcd"
+#include "eventInterface.rcd"
 #endif

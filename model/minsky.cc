@@ -35,21 +35,13 @@
 
 #include "minskyVersion.h"
 
-#include "fontDisplay.rcd"
-#include "minsky.rcd"
-#include "minsky.xcd"
 #include "signature.h"
 #include "signature.rcd"
 #include "signature.xcd"
 #include "dimension.rcd"
-#include "callableFunction.rcd"
 #include "tensorInterface.xcd"
 #include "tensorVal.xcd"
-#include "pannableTab.rcd"
-#include "pannableTab.xcd"
 #include "polyRESTProcessBase.h"
-#include "polyRESTProcessBase.rcd"
-#include "polyRESTProcessBase.xcd"
 #include "minsky_epilogue.h"
 
 #include <algorithm>
@@ -1813,7 +1805,7 @@ namespace classdesc
   {t.add(d, new RESTProcessAssociativeContainer<minsky::VariableValues>(a));}
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Minsky);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Minsky);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);

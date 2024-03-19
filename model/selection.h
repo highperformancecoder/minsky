@@ -58,5 +58,6 @@ namespace minsky
 }
 
 #include "selection.cd"
+#include "selection.rcd"
 #include "selection.xcd"
 #endif

@@ -17,6 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairo_base.h"
+#include "group.h"
 #include <vector>
 #include "operationType.h"
 #include "minsky_epilogue.h"

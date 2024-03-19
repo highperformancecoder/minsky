@@ -46,4 +46,5 @@ namespace minsky
 
 #include "lasso.cd"
 #include "lasso.xcd"
+#include "lasso.rcd"
 #endif

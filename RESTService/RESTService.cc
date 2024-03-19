@@ -17,8 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "variableInstanceList.h"
 #include "minskyRS.h"
 #include "RESTMinsky.h"
+#include "classdesc.h"
 #include "minsky_epilogue.h"
 
 using namespace classdesc;

@@ -54,4 +54,5 @@ namespace minsky
 
 #include "dataSpecSchema.cd"
 #include "dataSpecSchema.xcd"
+#include "dataSpecSchema.rcd"
 #endif

@@ -65,5 +65,6 @@ namespace minsky
 }
 
 #include "dataOp.cd"
+#include "dataOp.rcd"
 #include "dataOp.xcd"
 #endif

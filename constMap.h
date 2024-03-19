@@ -44,4 +44,5 @@ namespace minsky
 
 #include "constMap.cd"
 #include "constMap.xcd"
+#include "constMap.rcd"
 #endif

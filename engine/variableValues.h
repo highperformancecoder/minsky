@@ -98,4 +98,6 @@ namespace classdesc
 }
 
 #include "variableValues.cd"
+#include "variableValues.rcd"
+#include "variableValues.xcd"
 #endif

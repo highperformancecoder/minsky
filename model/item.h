@@ -411,5 +411,8 @@ namespace classdesc_access
 }
 #include "item.cd"
 #include "item.xcd"
+#include "item.rcd"
+#include "polyRESTProcessBase.xcd"
+#include "polyRESTProcessBase.rcd"
 #endif
 

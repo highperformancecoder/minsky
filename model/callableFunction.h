@@ -33,4 +33,5 @@ namespace minsky
 }
 
 #include "callableFunction.xcd"
+#include "callableFunction.rcd"
 #endif

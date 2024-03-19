@@ -26,10 +26,6 @@
 #include "ravelWrap.h"
 #include <cairo_base.h>
 
-#include "canvas.rcd"
-#include "canvas.xcd"
-#include "eventInterface.rcd"
-#include "polyRESTProcessBase.xcd"
 #include "nobble.h"
 #include "minsky_epilogue.h"
 using namespace std;
@@ -981,5 +977,5 @@ namespace minsky
   }
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EventInterface);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Canvas);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EventInterface);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Canvas);

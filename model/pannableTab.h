@@ -83,4 +83,6 @@ namespace minsky
 }
 
 #include "pannableTab.cd"
+#include "pannableTab.rcd"
+#include "pannableTab.xcd"
 #endif

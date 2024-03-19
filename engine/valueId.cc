@@ -17,7 +17,9 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "plotWidget.h"
 #include "valueId.h"
+#include "variableValue.h"
 #include "group.h"
 #include "lasso.h"
 #include "latexMarkup.h"

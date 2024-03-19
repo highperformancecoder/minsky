@@ -208,5 +208,6 @@ namespace minsky
 }
 
 #include "godleyTable.cd"
+#include "godleyTable.rcd"
 #include "godleyTable.xcd"
 #endif

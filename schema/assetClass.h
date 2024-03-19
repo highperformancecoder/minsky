@@ -30,4 +30,5 @@ namespace minsky
 
 #include "assetClass.cd"
 #include "assetClass.xcd"
+#include "assetClass.rcd"
 #endif

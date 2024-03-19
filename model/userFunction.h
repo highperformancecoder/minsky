@@ -66,5 +66,6 @@ namespace  minsky
 
 }
 #include "userFunction.cd"
+#include "userFunction.rcd"
 #include "userFunction.xcd"
 #endif

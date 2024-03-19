@@ -92,5 +92,6 @@ namespace minsky
 }
 
 #include "intOp.cd"
+#include "intOp.rcd"
 #include "intOp.xcd"
 #endif

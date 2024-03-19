@@ -20,8 +20,10 @@
 #include "dataOp.h"
 #include "selection.h"
 #include "lasso.h"
-#include "dataOp.rcd"
-#include "itemT.rcd"
+#include "variableValue.h"
+#include "classdesc.h"
+#include "plotWidget.h"
+#include "nobble.h"
 #include "minsky_epilogue.h"
 
 using namespace std;
@@ -99,4 +101,4 @@ namespace minsky
 
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::DataOp);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::DataOp);

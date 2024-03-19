@@ -18,6 +18,10 @@
 */
 #define NTDDI_VERSION NTDDI_WINBLUE
 #include "windowInformation.h"
+#include "group.h"
+#include "tensorVal.h"
+#include "tensorVal.xcd"
+#include "tensorVal.rcd"
 #include "minsky_epilogue.h"
 
 #include <stdexcept>

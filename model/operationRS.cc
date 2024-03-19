@@ -17,12 +17,3 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define OPNAMEDEF
-#include "operation.h"
-#include "lasso.h"
-#include "item.rcd"
-#include "operationBase.rcd"
-#include "operationType.rcd"
-#include "minsky_epilogue.h"
-
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::OperationBase);

@@ -217,16 +217,20 @@ namespace classdesc_access
 #include "xvector.xcd"
 #endif
 
+#include "nobble.h"
+#include "plotWidget.h"
+#include "lasso.h"
+
 #include <ecolab_epilogue.h>
 
-/*(json_pack_t&,const std::string&,type&); \*/
-#define CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(type)                   \
-  namespace classdesc_access                                            \
-  {                                                                     \
-    template void access_json_pack<type>::operator()(classdesc::json_pack_t&,const std::string&,type&); \
-    template void access_json_unpack<type>::operator()(classdesc::json_pack_t&,const std::string&,type&); \
-    template void access_RESTProcess<type>::operator()(classdesc::RESTProcess_t&,const std::string&,type&); \
-    template void access_RESTProcess<type>::operator()(classdesc::RESTProcess_t&,const std::string&,const type&); \
-  }
+///*(json_pack_t&,const std::string&,type&); \*/
+//#define CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(type)                   \
+//  namespace classdesc_access                                            \
+//  {                                                                     \
+//    template void access_json_pack<type>::operator()(classdesc::json_pack_t&,const std::string&,type&); \
+//    template void access_json_unpack<type>::operator()(classdesc::json_pack_t&,const std::string&,type&); \
+//    template void access_RESTProcess<type>::operator()(classdesc::RESTProcess_t&,const std::string&,type&); \
+//    template void access_RESTProcess<type>::operator()(classdesc::RESTProcess_t&,const std::string&,const type&); \
+//  }
 
 #endif

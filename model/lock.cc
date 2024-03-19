@@ -21,10 +21,11 @@
 #include "wire.h"
 #include "selection.h"
 #include "lasso.h"
+#include "plotWidget.h"
+#include "variableValue.h"
 #include <cairo_base.h>
-#include "itemT.rcd"
-#include "lock.rcd"
-#include "lock.xcd"
+#include "ravelState.xcd"
+#include "ravelState.rcd"
 #include "minsky_epilogue.h"
 using namespace std;
 
@@ -144,4 +145,4 @@ namespace minsky
 
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Lock);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Lock);

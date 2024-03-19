@@ -197,5 +197,6 @@ namespace classdesc_access
 
 #include "godleyIcon.cd"
 #include "godleyIcon.xcd"
+#include "godleyIcon.rcd"
 #endif
 

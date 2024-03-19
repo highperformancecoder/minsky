@@ -34,5 +34,6 @@ namespace minsky
 
 
 #include "variableType.cd"
+#include "variableType.rcd"
 #include "variableType.xcd"
 #endif

@@ -17,6 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "schema0.h"
+#include "lasso.h"
+#include "group.h"
+#include "tensorVal.h"
+#include "tensorVal.xcd"
+#include "tensorVal.rcd"
 #include "minsky_epilogue.h"
 #include <fstream>
 using namespace ecolab;

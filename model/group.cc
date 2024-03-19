@@ -25,9 +25,6 @@
 #include "autoLayout.h"
 #include "equations.h"
 #include <cairo_base.h>
-#include "group.rcd"
-#include "itemT.rcd"
-#include "bookmark.rcd"
 #include "progress.h"
 #include "minsky_epilogue.h"
 using namespace std;
@@ -1359,6 +1356,6 @@ namespace minsky
 
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Group);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ItemT<minsky::Group>);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Bookmark);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Group);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ItemT<minsky::Group>);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Bookmark);

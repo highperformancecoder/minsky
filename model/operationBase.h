@@ -146,4 +146,5 @@ inline void xml_unpack(classdesc::xml_unpack_t&,const classdesc::string&,classde
 
 #include "operationBase.cd"
 #include "operationBase.xcd"
+#include "operationBase.rcd"
 #endif

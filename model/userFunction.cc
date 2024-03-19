@@ -21,8 +21,6 @@
 #include "userFunction.h"
 #include "evalOp.h"
 #include "selection.h"
-#include "itemT.rcd"
-#include "userFunction.rcd"
 #include "minsky_epilogue.h"
 
 #ifndef NO_EXPRTK
@@ -259,4 +257,4 @@ namespace minsky
 
 #endif
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::UserFunction);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::UserFunction);

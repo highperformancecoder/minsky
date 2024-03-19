@@ -27,15 +27,12 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
-#include "itemT.rcd"
-#include "plotOptions.rcd"
 #include "plot.rcd"
 #include "plot.xcd"
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
 #include "tensorVal.rcd"
 #include "tensorVal.xcd"
-#include "plotWidget.rcd"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -646,4 +643,4 @@ namespace minsky
   }
 
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotWidget);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotWidget);

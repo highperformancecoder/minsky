@@ -20,12 +20,7 @@
 #include "minsky.h"
 #include "variablePane.h"
 #include "cairoItems.h"
-#include "pannableTab.rcd"
-#include "pannableTab.xcd"
 #include "variableValue.h"
-#include "variablePane.rcd"
-#include "variablePane.xcd"
-#include "variableType.rcd"
 #include "minsky_epilogue.h"
 #include <stdexcept>
 using namespace std;
@@ -123,6 +118,6 @@ namespace minsky
       }
   }
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneBase);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePane);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneCell);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneBase);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePane);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneCell);

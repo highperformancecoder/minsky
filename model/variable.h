@@ -318,5 +318,6 @@ namespace classdesc
  }
 
 #include "variable.cd"
+#include "variable.rcd"
 #include "variable.xcd"
 #endif

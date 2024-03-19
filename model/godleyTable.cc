@@ -21,8 +21,7 @@
 #include "port.h"
 #include "flowCoef.h"
 #include "godleyExport.h"
-#include "assetClass.rcd"
-#include "godleyTable.rcd"
+#include "nobble.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -397,4 +396,4 @@ void GodleyTable::renameStock(const std::string& from, const std::string& to)
           }
       }
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTable);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTable);

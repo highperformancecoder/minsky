@@ -103,4 +103,6 @@ namespace minsky
 }
 
 #include "phillipsDiagram.cd"
+#include "phillipsDiagram.rcd"
+#include "phillipsDiagram.xcd"
 #endif

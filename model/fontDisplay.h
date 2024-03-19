@@ -46,5 +46,6 @@ namespace minsky
 }
 
 #include "fontDisplay.cd"
+#include "fontDisplay.rcd"
 #include "fontDisplay.xcd"
 #endif

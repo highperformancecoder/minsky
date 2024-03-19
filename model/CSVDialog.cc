@@ -17,13 +17,14 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "plotWidget.h"
 #include "CSVDialog.h"
 #include "group.h"
 #include "selection.h"
 #include "lasso.h"
 #include <pango.h>
+#include "variableValue.h"
 
-#include "CSVDialog.rcd"
 #include "minsky_epilogue.h"
 #include "zStream.h"
 #include "dimension.h"
@@ -495,4 +496,4 @@ void CSVDialog::classifyColumns()
     }
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CSVDialog);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CSVDialog);

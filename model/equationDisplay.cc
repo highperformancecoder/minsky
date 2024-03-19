@@ -18,14 +18,12 @@
 */
 
 #include "equationDisplay.h"
-#include "equationDisplay.rcd"
-#include "equationDisplay.xcd"
 
 #include "equations.h"
 #include "minsky.h"
 #include "progress.h"
 
-#include "item.rcd"
+#include "nobble.h"
 #include "minsky_epilogue.h"
 
 namespace minsky
@@ -55,4 +53,4 @@ namespace minsky
   }
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EquationDisplay);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EquationDisplay);

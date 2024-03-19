@@ -28,16 +28,11 @@
 #include "dimension.rcd"
 #include "dynamicRavelCAPI.rcd"
 #include "dynamicRavelCAPI.xcd"
-#include "handleLockInfo.rcd"
-#include "handleLockInfo.xcd"
 #include "hypercube.rcd"
 #include "hypercube.xcd"
-#include "itemT.rcd"
 #include "nobble.h"
 #include "ravelState.xcd"
 #include "ravelState.rcd"
-#include "ravelWrap.rcd"
-#include "ravelWrap.xcd"
 #include "xvector.rcd"
 #include "minskyCairoRenderer.h"
 #include "minsky_epilogue.h"
@@ -832,5 +827,5 @@ namespace minsky
 }
 
   
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Ravel);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravel::RavelState);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Ravel);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravel::RavelState);

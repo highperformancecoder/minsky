@@ -21,6 +21,7 @@
 #include "RESTProcess_base.h"
 #include "signature.h"
 #include "signature.xcd"
+#include "nobble.h"
 #include "minsky_epilogue.h"
 using namespace std;
 

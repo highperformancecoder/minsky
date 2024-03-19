@@ -44,5 +44,6 @@ namespace schema3
 using classdesc::xsd_generate;
 using classdesc::xml_pack;
 #include "publication.cd" 
+#include "publication.rcd" 
 #include "publication.xcd" 
 #endif

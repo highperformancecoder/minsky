@@ -190,4 +190,5 @@ namespace minsky
 
 #include "operation.cd"
 #include "operation.xcd"
+#include "operation.rcd"
 #endif

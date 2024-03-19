@@ -19,6 +19,7 @@
 
 #include "minskyRS.h"
 #include "RESTProcess_base.h"
+#include "nobble.h"
 #include "minsky_epilogue.h"
 
 

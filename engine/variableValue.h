@@ -204,6 +204,7 @@ namespace minsky
 
 #include "variableValue.cd"
 #include "variableValue.xcd"
+#include "variableValue.rcd"
 
 #ifdef _CLASSDESC
 #pragma omit pack minsky::VariableValue

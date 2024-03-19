@@ -73,5 +73,6 @@ namespace minsky
 }
 
 #include "switchIcon.cd"
+#include "switchIcon.rcd"
 #include "switchIcon.xcd"
 #endif

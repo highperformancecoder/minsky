@@ -32,4 +32,6 @@ namespace minsky
   };
 }
 #include "handleLockInfo.cd"
+#include "handleLockInfo.rcd"
+#include "handleLockInfo.xcd"
 #endif

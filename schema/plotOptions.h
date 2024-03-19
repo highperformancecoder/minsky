@@ -101,5 +101,6 @@ namespace minsky
 }
 
 #include "plotOptions.cd"
+#include "plotOptions.rcd"
 #include "plotOptions.xcd"
 #endif

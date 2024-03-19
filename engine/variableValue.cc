@@ -22,7 +22,6 @@
 #include "str.h"
 #include "valueId.h"
 
-#include "constMap.rcd"
 #include "dimension.rcd"
 #include "hypercube.rcd"
 #include "hypercube.xcd"
@@ -33,11 +32,7 @@
 #include "tensorInterface.xcd"
 #include "tensorVal.rcd"
 #include "tensorVal.xcd"
-#include "units.rcd"
 #include "userFunction.h"
-#include "variableValue.rcd"
-#include "variableValues.rcd"
-#include "variableValues.xcd"
 #include "xvector.rcd"
 #include "minsky_epilogue.h"
 
@@ -455,8 +450,8 @@ namespace minsky
 
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Units);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ValueVector);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValue);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValues);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValuePtr);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Units);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ValueVector);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValue);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValues);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableValuePtr);

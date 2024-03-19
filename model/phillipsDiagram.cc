@@ -19,8 +19,6 @@
 
 #include "cairoItems.h"
 #include "phillipsDiagram.h"
-#include "phillipsDiagram.rcd"
-#include "phillipsDiagram.xcd"
 #include "minsky.h"
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;
@@ -256,5 +254,5 @@ namespace minsky
 
   
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsDiagram);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsFlow);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsDiagram);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PhillipsFlow);

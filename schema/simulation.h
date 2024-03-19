@@ -39,4 +39,5 @@ namespace minsky
 
 #include "simulation.cd" 
 #include "simulation.xcd" 
+#include "simulation.rcd" 
 #endif

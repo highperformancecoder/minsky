@@ -76,4 +76,6 @@ namespace minsky
   };
 }
 #include "variablePane.cd"
+#include "variablePane.rcd"
+#include "variablePane.xcd"
 #endif

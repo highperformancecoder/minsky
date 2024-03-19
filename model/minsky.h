@@ -558,4 +558,6 @@ namespace minsky
 #endif
 
 #include "minsky.cd"
+#include "minsky.xcd"
+#include "minsky.rcd"
 #endif

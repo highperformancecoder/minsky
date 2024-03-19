@@ -30,4 +30,5 @@ namespace minsky
 }
 
 #include "engNotation.xcd"
+#include "engNotation.rcd"
 #endif

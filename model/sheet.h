@@ -85,5 +85,6 @@ namespace minsky
 }
 
 #include "sheet.cd"
+#include "sheet.rcd"
 #include "sheet.xcd"
 #endif

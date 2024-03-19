@@ -38,4 +38,5 @@ namespace minsky
 
 #include "bookmark.cd"
 #include "bookmark.xcd"
+#include "bookmark.rcd"
 #endif

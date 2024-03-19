@@ -124,4 +124,5 @@ using minsky::operator<<;
 
 #include "operationType.cd"
 #include "operationType.xcd"
+#include "operationType.rcd"
 #endif

@@ -18,9 +18,7 @@
 */
 #include "minsky.h"
 #include "cairoItems.h"
-#include "itemT.rcd"
 #include "switchIcon.h"
-#include "switchIcon.rcd"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -125,4 +123,4 @@ namespace minsky
   }
   
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::SwitchIcon);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::SwitchIcon);

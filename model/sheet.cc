@@ -25,9 +25,6 @@
 #include <cairo_base.h>
 #include <pango.h>
 
-#include "itemT.rcd"
-#include "sheet.rcd"
-#include "showSlice.xcd"
 #include "minskyCairoRenderer.h"
 #include "ravelWrap.h"
 #include "tensorOp.h"

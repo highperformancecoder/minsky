@@ -16,8 +16,13 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "cairo_base.h"
+#include "group.h"
 #include "variableType.h"
-#include "variableType.rcd"
+#include "lasso.h"
+#include "tensorVal.h"
+#include "tensorVal.xcd"
+#include "tensorVal.rcd"
 #include "minsky_epilogue.h"
 using namespace classdesc;
 
@@ -108,4 +113,4 @@ namespace minsky
 
 
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableType);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariableType);

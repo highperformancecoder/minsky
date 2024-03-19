@@ -17,8 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairo_base.h"
 #include "flowCoef.h"
 #include "str.h"
+#include "group.h"
 #include "minsky_epilogue.h"
 #include <ctype.h>
 #include <stdlib.h>

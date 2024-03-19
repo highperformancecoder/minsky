@@ -50,4 +50,6 @@ namespace minsky
 }
 
 #include "lock.cd"
+#include "lock.rcd"
+#include "lock.xcd"
 #endif

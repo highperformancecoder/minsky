@@ -45,4 +45,6 @@ namespace minsky
 }
 
 #include "equationDisplay.cd"
+#include "equationDisplay.rcd"
+#include "equationDisplay.xcd"
 #endif

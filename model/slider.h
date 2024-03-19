@@ -39,4 +39,5 @@ namespace minsky
 
 #include "slider.cd"
 #include "slider.xcd"
+#include "slider.rcd"
 #endif

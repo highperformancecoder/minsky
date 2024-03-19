@@ -69,4 +69,6 @@ namespace minsky
 }
 
 #include "grid.cd"
+#include "grid.xcd"
+#include "grid.rcd"
 #endif

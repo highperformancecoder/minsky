@@ -89,4 +89,6 @@ namespace minsky
 }
 
 #include "pubTab.cd"
+#include "pubTab.rcd"
+#include "pubTab.xcd"
 #endif

@@ -249,6 +249,8 @@ namespace minsky
 }
 
 #include "ravelWrap.cd"
+#include "ravelWrap.rcd"
+#include "ravelWrap.xcd"
 
 #endif
 

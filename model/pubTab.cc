@@ -21,11 +21,6 @@
 #include "minsky.h"
 #include "cairoItems.h"
 #include "pubTab.h"
-#include "publication.rcd"
-#include "pubTab.xcd"
-#include "pubTab.rcd"
-#include "pannableTab.rcd"
-#include "pannableTab.xcd"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 
@@ -273,6 +268,6 @@ namespace minsky
     return false;
   }
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(schema3::PublicationItem);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubTab);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubItem);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(schema3::PublicationItem);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubTab);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PubItem);

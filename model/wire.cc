@@ -27,7 +27,6 @@
 #include "pango.h"
 #include "plotWidget.h"
 #include "SVGItem.h"
-#include "wire.rcd"
 #include "minsky_epilogue.h"
 #include  <random>
 #include  <iterator>
@@ -683,4 +682,4 @@ namespace
 
   
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Wire);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Wire);

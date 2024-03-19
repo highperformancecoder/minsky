@@ -20,9 +20,6 @@
 #include "minsky.h"
 #include "CSVParser.h"
 
-#include "CSVParser.rcd"
-#include "dataSpecSchema.rcd"
-#include "dimension.rcd"
 #include "nobble.h"
 #include "minsky_epilogue.h"
 
@@ -895,4 +892,4 @@ namespace minsky
   }
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::DataSpec);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::DataSpec);

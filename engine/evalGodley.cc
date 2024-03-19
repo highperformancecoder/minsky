@@ -17,11 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "plotWidget.h"
 #include "evalGodley.h"
 #include "group.h"
 #include "selection.h"
 #include "lasso.h"
-#include "evalGodley.rcd"
 #include "minsky_epilogue.h"
 
 using namespace std;
@@ -97,4 +97,4 @@ namespace minsky
       sv[sidx[i]] += fv[fidx[i]] * m[i];
   }
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EvalGodley);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EvalGodley);

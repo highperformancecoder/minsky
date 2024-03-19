@@ -19,10 +19,12 @@
 
 #define OPNAMEDEF
 #include "operation.h"
+#include "group.h"
 #include "lasso.h"
-#include "itemT.rcd"
-#include "operation.rcd"
-#include "operationType.rcd"
+#include "wire.h"
+#include "tensorVal.h"
+#include "tensorVal.xcd"
+#include "tensorVal.rcd"
 #include "minsky_epilogue.h"
 
 template <minsky::OperationType::Type T>
@@ -32,49 +34,49 @@ using OpItemT=minsky::ItemT<minsky::Operation<T>,minsky::OperationBase>;
   CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Operation<minsky::OperationType::type>); \
   CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(OpItemT<minsky::OperationType::type>);
 
-DEFOP(copy)
-DEFOP(sqrt)
-DEFOP(exp)
-DEFOP(ln)
-DEFOP(sin)
-DEFOP(cos)
-DEFOP(tan)
-DEFOP(asin)
-DEFOP(acos)
-DEFOP(atan)
-DEFOP(sinh)
-DEFOP(cosh)
-DEFOP(tanh)
-DEFOP(abs)
-DEFOP(floor)
-DEFOP(frac)
-DEFOP(not_)
-DEFOP(Gamma)
-DEFOP(fact)
-DEFOP(sum)
-DEFOP(product)
-DEFOP(infimum)
-DEFOP(supremum)
-DEFOP(any)
-DEFOP(all)
-DEFOP(infIndex)
-DEFOP(supIndex)
-DEFOP(size)
-DEFOP(shape)
-DEFOP(mean)
-DEFOP(median)
-DEFOP(stdDev)
-DEFOP(moment)
-DEFOP(histogram)
-DEFOP(runningSum)
-DEFOP(runningProduct)
-DEFOP(difference)
-DEFOP(innerProduct)
-DEFOP(outerProduct)
-DEFOP(index)
-DEFOP(gather)
-DEFOP(meld)
-DEFOP(merge)
-DEFOP(slice)
-DEFOP(numOps)
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::NamedOp);
+//DEFOP(copy)
+//DEFOP(sqrt)
+//DEFOP(exp)
+//DEFOP(ln)
+//DEFOP(sin)
+//DEFOP(cos)
+//DEFOP(tan)
+//DEFOP(asin)
+//DEFOP(acos)
+//DEFOP(atan)
+//DEFOP(sinh)
+//DEFOP(cosh)
+//DEFOP(tanh)
+//DEFOP(abs)
+//DEFOP(floor)
+//DEFOP(frac)
+//DEFOP(not_)
+//DEFOP(Gamma)
+//DEFOP(fact)
+//DEFOP(sum)
+//DEFOP(product)
+//DEFOP(infimum)
+//DEFOP(supremum)
+//DEFOP(any)
+//DEFOP(all)
+//DEFOP(infIndex)
+//DEFOP(supIndex)
+//DEFOP(size)
+//DEFOP(shape)
+//DEFOP(mean)
+//DEFOP(median)
+//DEFOP(stdDev)
+//DEFOP(moment)
+//DEFOP(histogram)
+//DEFOP(runningSum)
+//DEFOP(runningProduct)
+//DEFOP(difference)
+//DEFOP(innerProduct)
+//DEFOP(outerProduct)
+//DEFOP(index)
+//DEFOP(gather)
+//DEFOP(meld)
+//DEFOP(merge)
+//DEFOP(slice)
+//DEFOP(numOps)
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::NamedOp);

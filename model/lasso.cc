@@ -18,10 +18,16 @@
 */
 
 #include "item.h"
+#include "group.h"
 #include "lasso.h"
 #include "port.h"
 #include "wire.h"
-#include "lasso.rcd"
+#include "tensorInterface.h"
+#include "tensorInterface.xcd"
+#include "tensorInterface.rcd"
+#include "tensorVal.h"
+#include "tensorVal.xcd"
+#include "tensorVal.rcd"
 #include "minsky_epilogue.h"
 
 #include <utility>
@@ -40,5 +46,5 @@ bool minsky::LassoBox::contains(const Wire& wire) const
   return (intersects(wire.from()->item()) && intersects(wire.to()->item())); 
 }
 
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::LassoBox);
+//CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::LassoBox);
 
