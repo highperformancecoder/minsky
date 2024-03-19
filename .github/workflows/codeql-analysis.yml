@@ -64,7 +64,7 @@ jobs:
         sudo add-apt-repository -y \
           'deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_${{ matrix.ubuntu_ver }}/ /'
         sudo apt install -y --no-install-recommends \
-          g++ tcl-dev tk-dev libcairo2-dev zlib1g-dev libreadline-dev libgsl0-dev libblas-dev libpango1.0-dev exuberant-ctags libdb-dev libncurses5-dev librsvg2-dev libboost-all-dev libssl-dev libclipboard gfortran libjpeg-dev
+          g++ clang tcl-dev tk-dev libcairo2-dev zlib1g-dev libreadline-dev libgsl0-dev libblas-dev libpango1.0-dev exuberant-ctags libdb-dev libncurses5-dev librsvg2-dev libboost-all-dev libssl-dev libclipboard gfortran libjpeg-dev
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
@@ -79,7 +79,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-        make OBS=1 GCC=1
+        make OBS=1
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

@@ -44,6 +44,7 @@ else
 HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
 ifeq ($(HAVE_CLANG),1)
 CPLUSPLUS=clang++
+CXXFLAGS+=-stdlib=libc++
 $(warning clang selected)
 else
 CPLUSPLUS=g++
