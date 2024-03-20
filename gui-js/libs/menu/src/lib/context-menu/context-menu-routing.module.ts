@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PenStylesComponent } from './pen-styles/pen-styles.component';
+import { PenStylesComponent } from '@minsky/ui-components';
 
 const routes: Routes = [{ path: 'pen-styles', component: PenStylesComponent }];
 
