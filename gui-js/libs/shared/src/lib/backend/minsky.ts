@@ -2455,6 +2455,7 @@ export class ecolab__Plot__LineStyle extends CppClass {
   async barWidth(...args: number[]): Promise<number> {return this.$callMethod('barWidth',...args);}
   async dashPattern(): Promise<number[]> {return this.$callMethod('dashPattern');}
   async dashStyle(...args: string[]): Promise<string> {return this.$callMethod('dashStyle',...args);}
+  async plotType(...args: string[]): Promise<string> {return this.$callMethod('plotType',...args);}
   async width(...args: number[]): Promise<number> {return this.$callMethod('width',...args);}
 }
 

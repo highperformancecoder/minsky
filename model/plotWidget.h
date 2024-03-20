@@ -100,7 +100,6 @@ namespace minsky
     std::string title;
 
     /// automatic means choose line or bar depending on the x-vector type.
-    enum PlotType {line, bar, scatter, line_scatter, automatic};
     PlotType plotType=automatic;
     
     PlotWidget();
