@@ -503,7 +503,7 @@ SUITE(Canvas)
       // work out where slider is located
       RenderVariable rv(*cv);
       float xc=cv->x()+rv.handlePos(), yc=cv->y()-rv.height();
-      CHECK_EQUAL(ClickType::onSlider, cv->clickType(xc,yc));
+      CHECK_EQUAL(ClickType::inItem, cv->clickType(xc,yc));
       canvas.mouseDown(xc,yc);
       xc+=5;
       canvas.mouseUp(xc,yc);

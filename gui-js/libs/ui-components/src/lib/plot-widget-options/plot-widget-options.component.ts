@@ -5,6 +5,7 @@ import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
+import { NgFor } from '@angular/common';
 
 @Component({
     selector: 'minsky-plot-widget-options',
@@ -14,13 +15,17 @@ import { MatButtonModule } from '@angular/material/button';
     imports: [
         FormsModule,
         ReactiveFormsModule,
-        MatButtonModule,
+      MatButtonModule,
+      NgFor,
     ],
 })
 export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   form: FormGroup;
   itemId: string;
-
+  availableMarkers=[];
+  horizontalMarkers=[];
+  verticalMarkers=[];
+  
   destroy$ = new Subject<{}>();
 
   public get title(): AbstractControl {
@@ -135,8 +140,20 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       this.legendFontSz.setValue(await plot.legendFontSz());
       this.xLogScale.setValue(await plot.logx());
       this.yLogScale.setValue(await plot.logy());
+      this.availableMarkers=await plot.availableMarkers();
+      this.horizontalMarkers=await plot.horizontalMarkers.$properties();
+      this.verticalMarkers=await plot.verticalMarkers.$properties();
     }
   }
+
+  getMarkersSelection(id: string) {
+    let markers=[];
+    let selectedOptions=(document.getElementById(id) as HTMLSelectElement).selectedOptions;
+    for (let i=0; i<selectedOptions.length; ++i)
+      markers.push(selectedOptions[i].value);
+    return markers;
+  }
+  
   async handleSave() {
     if (this.electronService.isElectron) {
       let plot=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second);
@@ -158,6 +175,8 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       plot.legendFontSz(this.legendFontSz.value);
       plot.logx(this.xLogScale.value);
       plot.logy(this.yLogScale.value);
+      plot.horizontalMarkers.$properties(this.getMarkersSelection("horizontalMarkers"));
+      plot.verticalMarkers.$properties(this.getMarkersSelection("verticalMarkers"));
       plot.requestRedraw();
       this.electronService.minsky.canvas.requestRedraw();
     }

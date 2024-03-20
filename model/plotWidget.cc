@@ -419,6 +419,17 @@ namespace minsky
 
   static const size_t maxNumTensorElementsToPlot=10;
 
+  size_t PlotWidget::numLines(size_t n)
+  {
+    if (m_numLines!=n)
+      {
+        m_numLines=n;
+        addPorts();
+      }
+    return n;
+  }
+
+  
   double PlotWidget::barWidth() const
   {
     return accumulate(palette.begin(), palette.end(), 1.0,
@@ -466,6 +477,32 @@ namespace minsky
               }
             addPt(pen++, x, y);
           }
+
+    // add markers
+    if (isfinite(miny) && isfinite(maxy))
+      {
+        for (auto& m: horizontalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              auto eps=1e-4*(maxx-minx);
+              double x[]{minx+eps,miny-eps};
+              double y[]{v->value(),v->value()};
+              setPen(pen,x,y,2);
+              assignSide(pen,marker);
+              labelPen(pen++,v->tooltip);
+            }
+        for (auto& m: verticalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              auto eps=1e-4*(maxy-miny);
+              double x[]{v->value(),v->value()};
+              double y[]{miny+eps,maxy-eps};
+              setPen(pen,x,y,2);
+              assignSide(pen,marker);
+              labelPen(pen++,v->tooltip);
+            }
+      }
+
     
     // throttle plot redraws
     static const time_duration maxWait=milliseconds(1000);
@@ -531,6 +568,7 @@ namespace minsky
             {
               if (Plot::plotType==Plot::bar)
                 addPlotPt(0);
+              pen++;
               continue;
             }
           // work out a reference to the x data
@@ -638,8 +676,7 @@ namespace minsky
                       label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
                       stride*=d[i];
                     }
-                  if (pen>=m_numLines)
-                    assignSide(startPen,Side::right);
+                  assignSide(startPen,pen<m_numLines? Side::left: Side::right);
                   labelPen(startPen,defang(label));
                 }
             }
@@ -647,7 +684,35 @@ namespace minsky
     justDataChanged=true;
     scalePlot();
 
-    
+    // add markers
+    if (isfinite(miny) && isfinite(maxy))
+      {
+        for (auto& m: horizontalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              auto eps=1e-4*(maxx-minx);
+              addPt(pen,minx+eps,v->value());
+              addPt(pen,maxx-eps,v->value());
+              assignSide(pen,marker);
+              if (!v->tooltip.empty())
+                labelPen(pen++,v->tooltip);
+              else
+                labelPen(pen++,m);
+            }
+        for (auto& m: verticalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              auto eps=1e-4*(maxy-miny);
+              addPt(pen,v->value(),miny+eps);
+              addPt(pen,v->value(),maxy-eps);
+              assignSide(pen,marker);
+              if (!v->tooltip.empty())
+                labelPen(pen++,v->tooltip);
+              else
+                labelPen(pen++,m);
+            }
+      }
+        
     if (newXticks.size()==1) // nothing to disambiguate
       xticks=std::move(newXticks.front());
     else
@@ -707,8 +772,7 @@ namespace minsky
         yvars.resize(port-nBoundsPorts+1);
         yvars[port-nBoundsPorts].push_back(var);
         // assign Side::right to pens belonging to the RHS
-        if (port-nBoundsPorts>=m_numLines)
-          assignSide(startPen(port-nBoundsPorts+1)-1,Side::right);
+        assignSide(startPen(port-nBoundsPorts+1)-1,port-nBoundsPorts<m_numLines? Side::left: Side::right);
       }
     else if (port-nBoundsPorts<4*m_numLines)
       {
@@ -726,5 +790,15 @@ namespace minsky
     xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=nullptr;
   }
 
+  set<string> PlotWidget::availableMarkers() const
+  {
+    // search upwards through group heirarchy, looking for variable to add
+    set<string> r;
+    for (auto g=group.lock(); g; g=g->group.lock())
+      for (auto& i: g->items)
+        if (auto v=i->variableCast())
+          r.insert(uqName(v->rawName()));
+    return r;
+  }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotWidget);

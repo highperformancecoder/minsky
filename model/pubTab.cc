@@ -271,16 +271,6 @@ namespace minsky
               lasso.x1=x;
               lasso.y1=y;
               break;
-            case ClickType::onSlider:
-              if (auto v=item->itemRef->variableCast())
-                {
-                  const RenderVariable rv(*v);
-                  const double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
-                  const double sliderPos=(x-item->x)* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
-                  const double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value.
-                  v->sliderSet(sliderHatch);
-                }
-              break;
             case ClickType::inItem:
               {
                 const EnsureEditorMode e(*item);

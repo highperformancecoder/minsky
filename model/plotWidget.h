@@ -93,6 +93,9 @@ namespace minsky
     /// number of ticks to show in canvas item
     unsigned displayNTicks{3};
     double displayFontSize{3};
+    /// markers at a position given by a named variable/parameter 
+    std::vector<std::string> horizontalMarkers;
+    std::vector<std::string> verticalMarkers;
 
     std::string title;
 
@@ -107,7 +110,7 @@ namespace minsky
 
     /// @{ number of input ports along a side
     size_t numLines() const {return m_numLines;}
-    size_t numLines(size_t n) {m_numLines=n; addPorts(); return n;}
+    size_t numLines(size_t n);
     /// @}
     
     // pick the Item width method, not ecolab::Plot's
@@ -179,6 +182,9 @@ namespace minsky
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
 
     void destroyFrame() override {RenderNativeWindow::destroyFrame();}
+
+    /// return list of variables that could be attached to markers
+    std::set<std::string> availableMarkers() const;
     
   };
 

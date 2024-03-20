@@ -55,6 +55,7 @@ namespace minsky
     Optional<ecolab::Plot::Side> legend;
     Optional<LegendGeometry> legendGeometry;
     Optional<std::vector<ecolab::Plot::LineStyle>> palette;
+    Optional<std::vector<std::string>> horizontalMarkers, verticalMarkers;
     PlotOptions& operator=(const PlotWidget& plot) {
       name=plot.title;
       logx=plot.logx;
@@ -73,6 +74,8 @@ namespace minsky
       if (plot.legend) legend=plot.legendSide;
       legendGeometry=LegendGeometry(plot);
       palette=plot.palette;
+      horizontalMarkers=plot.horizontalMarkers;
+      verticalMarkers=plot.verticalMarkers;
       return *this;
     }
     void applyPlotOptions(PlotWidget& plot) const
@@ -96,6 +99,8 @@ namespace minsky
       if (legendGeometry)
         legendGeometry->setLegendGeometry(plot);
       if (palette) plot.palette=*palette;
+      if (horizontalMarkers) plot.horizontalMarkers=*horizontalMarkers;
+      if (verticalMarkers) plot.verticalMarkers=*verticalMarkers;
     }
   };
 }

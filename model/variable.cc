@@ -106,7 +106,7 @@ ClickType::Type VariableBase::clickType(float xx, float yy) const
       if (rv.height()<0.5*iHeight()) hpy=-z*0.5*iHeight(); 
       const double dx=xx-x(), dy=yy-y();         
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
-        return ClickType::onSlider;
+        return ClickType::inItem;
     }
   catch (...) {}
   return Item::clickType(xx,yy);
@@ -599,9 +599,11 @@ bool VariableBase::onKeyPress(int keySym, const std::string&,int)
     {
     case 0xff52: case 0xff53: //Right, Up
         sliderSet(value()+(sliderStepRel? value(): 1)*sliderStep);
+        if (!minsky().running) minsky().requestReset();
         return true;
     case 0xff51: case 0xff54: //Left, Down
         sliderSet(value()-(sliderStepRel? value(): 1)*sliderStep);
+        if (!minsky().running) minsky().requestReset();
         return true;
     default:
       return false;
@@ -642,6 +644,23 @@ void VariableBase::resetMiniPlot()
   if (miniPlotEnabled())
     miniPlot->clear();
 }
+
+bool VariableBase::onMouseMotion(float x, float y) 
+{
+  RenderVariable rv(*this);
+  double rw=fabs(zoomFactor()*(rv.width()<iWidth()? 0.5*iWidth() : rv.width())*cos(rotation()*M_PI/180));
+  double sliderPos=(x-this->x())* (sliderMax-sliderMin)/rw+0.5*(sliderMin+sliderMax);
+  double sliderHatch=sliderPos-fmod(sliderPos,sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
+  sliderSet(sliderHatch);
+  // push History to prevent an unnecessary reset when
+  // adjusting the slider whilst paused. See ticket #812
+  minsky().pushHistory();
+  if (minsky().reset_flag())
+    minsky().requestReset();
+  minsky().evalEquations();
+  return true;
+}
+
 
 
 void VariableBase::draw(cairo_t *cairo) const

@@ -1565,8 +1565,10 @@ export class PhillipsStock extends Item {
 
 export class PlotWidget extends Item {
   backgroundColour: ecolab__cairo__Colour;
+  horizontalMarkers: Sequence<string>;
   item: Item;
   palette: Sequence<ecolab__Plot__LineStyle>;
+  verticalMarkers: Sequence<string>;
   wire: Wire;
   xmaxVar: VariableValue;
   xminVar: VariableValue;
@@ -1582,8 +1584,10 @@ export class PlotWidget extends Item {
     else
       super(prefix.$prefix())
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.horizontalMarkers=new Sequence<string>(this.$prefix()+'.horizontalMarkers');
     this.item=new Item(this.$prefix()+'.item');
     this.palette=new Sequence<ecolab__Plot__LineStyle>(this.$prefix()+'.palette',ecolab__Plot__LineStyle);
+    this.verticalMarkers=new Sequence<string>(this.$prefix()+'.verticalMarkers');
     this.wire=new Wire(this.$prefix()+'.wire');
     this.xmaxVar=new VariableValue(this.$prefix()+'.xmaxVar');
     this.xminVar=new VariableValue(this.$prefix()+'.xminVar');
@@ -1605,6 +1609,7 @@ export class PlotWidget extends Item {
   async assignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('assignSide',a1,a2);}
   async autoScale(): Promise<void> {return this.$callMethod('autoScale');}
   async autoscale(...args: boolean[]): Promise<boolean> {return this.$callMethod('autoscale',...args);}
+  async availableMarkers(): Promise<string[]> {return this.$callMethod('availableMarkers');}
   async barWidth(...args: any[]): Promise<number> {return this.$callMethod('barWidth',...args);}
   async cairoSurface(): Promise<minsky__dummy> {return this.$callMethod('cairoSurface');}
   async clear(): Promise<void> {return this.$callMethod('clear');}

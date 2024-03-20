@@ -71,7 +71,6 @@ namespace minsky
                 itemFocus.reset();
               }
             break;
-          case ClickType::onSlider:
           case ClickType::onItem:
             moveOffsX=x-itemFocus->x();
             moveOffsY=y-itemFocus->y();
@@ -256,23 +255,6 @@ namespace minsky
               {
               case ClickType::onItem:
                 mouseMoveOnItem(x,y);
-                return;
-              case ClickType::onSlider:
-                if (auto v=itemFocus->variableCast())
-                  {
-                    RenderVariable rv(*v);
-                    double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
-                    double sliderPos=(x-v->x())* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
-                    double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
-                    v->sliderSet(sliderHatch);
-                    // push History to prevent an unnecessary reset when
-                    // adjusting the slider whilst paused. See ticket #812
-                    minsky().pushHistory();
-                    if (minsky().reset_flag())
-                      minsky().requestReset();
-                    minsky().evalEquations();
-                    requestRedraw();
-                  }
                 return;
               case ClickType::inItem:
                 if (itemFocus->onMouseMotion(x,y))
