@@ -1051,7 +1051,7 @@ namespace minsky
 
     if (mouseFocus)
       {
-        displayTooltip(cairo,tooltip);
+        displayTooltip(cairo,tooltip());
         // Resize handles always visible on mousefocus. For ticket 92.
         drawResizeHandles(cairo);
       }

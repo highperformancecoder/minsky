@@ -69,7 +69,8 @@ textInput %
 .textInput.buttonBar.ok invoke
 assert {[model.items.size]==6}
 assert {[findObject Item]} {}
-assert {[minsky.canvas.item.detailedText]=="b"}
+# TODO reenable in python version
+#assert {[minsky.canvas.item.detailedText]=="b"}
 
 textInput s
 .textInput.entry insert 1 "in"

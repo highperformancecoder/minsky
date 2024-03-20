@@ -955,7 +955,7 @@ SUITE(Canvas)
 
          addNote("some text");
          CHECK(itemFocus);
-         CHECK_EQUAL("some text", itemFocus->detailedText);
+         CHECK_EQUAL("some text", itemFocus->detailedText());
 
          addGroup();
          CHECK(dynamic_cast<Group*>(itemFocus.get()));

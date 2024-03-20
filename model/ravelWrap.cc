@@ -63,8 +63,8 @@ namespace minsky
   {
     if (!wrappedRavel)
       {
-        tooltip="https://ravelation.hpcoders.com.au";
-        detailedText=wrappedRavel.lastError();
+        tooltip("https://ravelation.hpcoders.com.au");
+        detailedText(wrappedRavel.lastError());
       }
     if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
       return; // early return if at least 1 ravel already present
@@ -79,7 +79,7 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
+        displayTooltip(cairo,tooltip().empty()? explanation: tooltip());
         // Resize handles always visible on mousefocus. For ticket 92.
         if (m_editorMode) drawResizeHandles(cairo);
       }
@@ -685,7 +685,7 @@ namespace minsky
     int cnt=0;
     for (auto& i: m_ravels)
       if (auto rr=i.lock())
-        r.emplace_back(rr->tooltip.empty()? to_string(cnt++): rr->tooltip);
+        r.emplace_back(rr->tooltip().empty()? to_string(cnt++): rr->tooltip());
       else
         r.emplace_back("<invalid>");
     return r;

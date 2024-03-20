@@ -453,8 +453,10 @@ namespace schema3
 
   void populateNote(minsky::NoteBase& x, const Note& y)
   {
-    if (y.detailedText) x.detailedText=*y.detailedText;
-    if (y.tooltip) x.tooltip=*y.tooltip;
+    if (y.detailedText && !y.detailedText->empty())
+      x.detailedText(*y.detailedText);
+    if (y.tooltip && !y.tooltip->empty())
+      x.tooltip(*y.tooltip);
   }
 
   void populateItem(minsky::Item& x, const Item& y)
@@ -501,7 +503,7 @@ namespace schema3
         if (y.ravelState)
           {
             x1->lockedState=y.ravelState->toRavelRavelState();
-            x1->tooltip=ravel::Ravel::description(x1->lockedState);
+            x1->tooltip(ravel::Ravel::description(x1->lockedState));
           }
       }
     if (auto* x1=dynamic_cast<minsky::VariableBase*>(&x))
@@ -796,6 +798,7 @@ namespace schema3
               v->init(*i.second.init);
             if (i.second.units)
               v->setUnits(*i.second.units);
+            populateNote(*v,i.second);
             if (auto val=v->vValue())
               {
                 if (i.second.csvDataSpec)

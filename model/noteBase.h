@@ -20,19 +20,28 @@
 #ifndef NOTEBASE_H
 #define NOTEBASE_H
 
+#include "classdesc_access.h"
 #include <string>
 
 namespace minsky 
 {
-  struct NoteBase
+  class NoteBase
   {
+  public:
     mutable bool mouseFocus=false; ///<true if target of a mouseover
     bool selected=false; ///<true if selected for cut, copy or group operation
     bool bookmark=false; ///< Is this item also a bookmark?
-    std::string detailedText, tooltip;
+    virtual const std::string& detailedText() const {return m_detailedText;}
+    virtual const std::string& detailedText(const std::string& x) {return m_detailedText=x;}
+    virtual const std::string& tooltip() const {return m_tooltip;}
+    virtual const std::string& tooltip(const std::string& x) {return m_tooltip=x;}
     /// adjust bookmark list to reflect current configuration
     virtual void adjustBookmark() const {}
     virtual void updateBoundingBox() {}
+    virtual ~NoteBase()=default;
+  private:
+    CLASSDESC_ACCESS(NoteBase);
+    std::string m_detailedText, m_tooltip;
   };
 }
 

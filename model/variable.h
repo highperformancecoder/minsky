@@ -171,6 +171,11 @@ namespace minsky
     virtual double value() const override;  
     /// @}
 
+    const std::string& detailedText() const override;
+    const std::string& detailedText(const std::string& x) override;
+    const std::string& tooltip() const override;
+    const std::string& tooltip(const std::string& x) override;
+
     /// returns true if slider is to be drawn
     bool sliderVisible() const;
     

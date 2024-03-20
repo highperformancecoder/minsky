@@ -360,7 +360,7 @@ namespace minsky
     const float z=zoomFactor();
     pango.angle=angle+(flipped? M_PI: 0);
     pango.setFontSize(12.0*scaleFactor()*z);
-    pango.setMarkup(latexToPango(detailedText));         
+    pango.setMarkup(latexToPango(detailedText()));         
     // parameters of icon in userspace (unscaled) coordinates
     const float w=0.5*pango.width()+2*z; 
     const float h=0.5*pango.height()+4*z;       
@@ -369,7 +369,7 @@ namespace minsky
     pango.show();
 
     if (mouseFocus) {
-      displayTooltip(cairo,tooltip);	
+      displayTooltip(cairo,tooltip());	
     }
     if (onResizeHandles) drawResizeHandles(cairo);	
     cairo_move_to(cairo,r.x(-w,-h), r.y(-w,-h));

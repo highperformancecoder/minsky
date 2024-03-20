@@ -35,7 +35,7 @@ namespace minsky
 
   Lock::Lock()
   {
-    tooltip="Double click to lock/unlock";
+    tooltip("Double click to lock/unlock");
     iWidth(30);
     iHeight(30);
     addPorts();
@@ -68,7 +68,7 @@ namespace minsky
       if (auto* r=ravelInput())
         {
           lockedState=r->getState();
-          tooltip=ravel::Ravel::description(lockedState);
+          tooltip(ravel::Ravel::description(lockedState));
         }
       else
         throw_error("Locks can only be applied to Ravels");
@@ -90,7 +90,7 @@ namespace minsky
     if (mouseFocus)
       { 		  
         drawPorts(cairo);
-        displayTooltip(cairo,tooltip);
+        displayTooltip(cairo,tooltip());
         if (onResizeHandles) drawResizeHandles(cairo);
       }	       
 

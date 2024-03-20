@@ -333,7 +333,7 @@ namespace minsky
             auto intOp=new IntOp;
             group.addItem(intOp);
             intOp->description(name);
-            intOp->detailedText=comments;
+            intOp->detailedText(comments);
             auto& v=intOp->intVar;
             integrationVariables.insert(name);
             auto integrand=match[1].str();
@@ -352,7 +352,7 @@ namespace minsky
                 v->setUnits(units);
               }
             catch (...) {}
-            v->detailedText=comments;
+            v->detailedText(comments);
 
           }
         else if (regex_match(definition,match,number))
@@ -365,7 +365,7 @@ namespace minsky
                 v->setUnits(units);
               }
             catch (...) {}
-            v->detailedText=comments;
+            v->detailedText(comments);
             if (regex_match(sliderSpec,match,sliderSpecPattern))
               {
                 vector<string> spec;
@@ -395,7 +395,7 @@ namespace minsky
                 v->setUnits(units);
               }
             catch (...) {}
-            v->detailedText=comments;
+            v->detailedText(comments);
           }
       }
 

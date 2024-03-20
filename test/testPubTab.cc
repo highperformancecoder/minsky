@@ -46,7 +46,7 @@ SUITE(PubTab)
       {
         addNote("hello",100,100);
         CHECK_EQUAL(1,items.size());
-        CHECK_EQUAL("hello",items[0].itemRef->detailedText);
+        CHECK_EQUAL("hello",items[0].itemRef->detailedText());
         CHECK(getItemAt(100,100));
         CHECK_EQUAL(100,items[0].x);
         CHECK_EQUAL(100,items[0].y);

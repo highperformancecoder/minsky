@@ -56,6 +56,10 @@ namespace minsky
     bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
     void setUnits(const std::string& x) {units=Units(x);}
 
+    /// long and short descriptions - common to all variables of a given name
+    std::string detailedText, tooltip;
+
+    
     bool sliderVisible=false; // determined at reset time
     bool godleyOverridden=false;
     std::string name; // name of this variable

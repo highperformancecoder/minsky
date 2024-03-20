@@ -137,7 +137,7 @@ namespace minsky
                     auto& dest=newStocks[g->valueId(dd.name)];
                     auto flow=newFlows.emplace(make_pair(g->valueId(dd.name),g->valueId(ss.name)), PhillipsFlow(dest.ports(0), source.ports(1))).first;
                     flow->second.addTerm(abs(s.coef*d.coef), i.first);
-                    flow->second.tooltip=(!flow->second.tooltip.empty()?";":"")+description;
+                    flow->second.tooltip((!flow->second.tooltip().empty()?";":"")+description);
                     if (auto oldFlow=flows.find(flow->first); oldFlow!=flows.end())
                       flow->second.coords(oldFlow->second.coords());
                   }

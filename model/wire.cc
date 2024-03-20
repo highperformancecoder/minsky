@@ -481,10 +481,10 @@ namespace
                 } 
             }
       }
-    if (mouseFocus && !tooltip.empty())
+    if (mouseFocus && !tooltip().empty())
       {
         const cairo::CairoSave cs(cairo);
-        const string toolTipText=latexToPango(tooltip);
+        const string toolTipText=latexToPango(tooltip());
         ecolab::Pango pango(cairo);
         pango.setMarkup(toolTipText);
         // place tooltip on centre dot if an odd number of control points, or halfway between otherwise
