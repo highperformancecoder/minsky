@@ -1,4 +1,5 @@
 export * from './lib/cli-input/cli-input.component';
+export * from './lib/create-variable/create-variable.component';
 export * from './lib/edit-description/edit-description.component';
 export * from './lib/edit-handle-description/edit-handle-description.component';
 export * from './lib/edit-handle-dimension/edit-handle-dimension.component';
