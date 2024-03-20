@@ -238,6 +238,8 @@ namespace minsky
     bool miniPlotEnabled(bool);
     void resetMiniPlot();
     
+    bool onMouseMotion(float x, float y) override;
+ 
   };
 
   template <minsky::VariableType::Type T>

@@ -1565,8 +1565,10 @@ export class PhillipsStock extends Item {
 
 export class PlotWidget extends Item {
   backgroundColour: ecolab__cairo__Colour;
+  horizontalMarkers: Sequence<string>;
   item: Item;
   palette: Sequence<ecolab__Plot__LineStyle>;
+  verticalMarkers: Sequence<string>;
   wire: Wire;
   xmaxVar: VariableValue;
   xminVar: VariableValue;
@@ -1582,8 +1584,10 @@ export class PlotWidget extends Item {
     else
       super(prefix.$prefix())
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
+    this.horizontalMarkers=new Sequence<string>(this.$prefix()+'.horizontalMarkers');
     this.item=new Item(this.$prefix()+'.item');
     this.palette=new Sequence<ecolab__Plot__LineStyle>(this.$prefix()+'.palette',ecolab__Plot__LineStyle);
+    this.verticalMarkers=new Sequence<string>(this.$prefix()+'.verticalMarkers');
     this.wire=new Wire(this.$prefix()+'.wire');
     this.xmaxVar=new VariableValue(this.$prefix()+'.xmaxVar');
     this.xminVar=new VariableValue(this.$prefix()+'.xminVar');
@@ -1605,6 +1609,7 @@ export class PlotWidget extends Item {
   async assignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('assignSide',a1,a2);}
   async autoScale(): Promise<void> {return this.$callMethod('autoScale');}
   async autoscale(...args: boolean[]): Promise<boolean> {return this.$callMethod('autoscale',...args);}
+  async availableMarkers(): Promise<string[]> {return this.$callMethod('availableMarkers');}
   async barWidth(...args: any[]): Promise<number> {return this.$callMethod('barWidth',...args);}
   async cairoSurface(): Promise<minsky__dummy> {return this.$callMethod('cairoSurface');}
   async clear(): Promise<void> {return this.$callMethod('clear');}
@@ -1638,7 +1643,6 @@ export class PlotWidget extends Item {
   async legendLeft(...args: number[]): Promise<number> {return this.$callMethod('legendLeft',...args);}
   async legendOffset(...args: number[]): Promise<number> {return this.$callMethod('legendOffset',...args);}
   async legendSide(...args: string[]): Promise<string> {return this.$callMethod('legendSide',...args);}
-  async legendSize(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('legendSize',a1,a2,a3);}
   async legendTop(...args: number[]): Promise<number> {return this.$callMethod('legendTop',...args);}
   async lh(a1: number,a2: number): Promise<number> {return this.$callMethod('lh',a1,a2);}
   async logx(...args: boolean[]): Promise<boolean> {return this.$callMethod('logx',...args);}

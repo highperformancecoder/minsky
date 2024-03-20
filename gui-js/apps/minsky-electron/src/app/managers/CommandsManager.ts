@@ -883,7 +883,7 @@ export class CommandsManager {
       title: 'Plot Window Options',
       url: `#/headless/plot-widget-options?itemId=${itemInfo.id}`,
       uid: itemInfo.id,
-      height: 500,
+      height: 600,
       width: 500,
     });
   }

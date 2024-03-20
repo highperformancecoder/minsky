@@ -601,7 +601,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
 
     try
       {
-        json_pack_t arguments(json5_parser::mValue{});
+        json_pack_t arguments(json5_parser::mValue::null);
         if (info.Length()>1)
           {
             const string jsonArguments=info[1].ToString();

@@ -59,7 +59,7 @@ namespace minsky
     const float boundY[PlotWidget::nBoundsPorts]={0.49,0.49,0.47,-0.49, 0.47, -0.49};
 
     // height of title, as a fraction of overall widget height
-    const double titleHeight=0.07;
+    const double titleHeight=0.05;
 
   }
 
@@ -92,9 +92,11 @@ namespace minsky
   
   void PlotWidget::draw(cairo_t* cairo) const
   {
+    CairoSave cs(cairo);
     const double z=Item::zoomFactor();
-    const double w=iWidth()*z;
-    double h=iHeight()*z;
+    cairo_scale(cairo,z,z);
+    const double w=iWidth();
+    double h=iHeight();
 
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty())
@@ -104,9 +106,9 @@ namespace minsky
         cairo_stroke(cairo);
       }
 
-    CairoSave cs(cairo);
     cairo_translate(cairo,-0.5*w,-0.5*h);
 
+    yoffs=0;
     if (!title.empty())
       {
         const CairoSave cs(cairo);
@@ -116,12 +118,11 @@ namespace minsky
         pango.setFontSize(fabs(fy));
         pango.setMarkup(latexToPango(title));   
         cairo_set_source_rgb(cairo,0,0,0);
-        cairo_move_to(cairo,0.5*(w-z*pango.width()), 0);
-        cairo_scale(cairo,z,z);
+        cairo_move_to(cairo,0.5*(w-pango.width()), 0);
         pango.show();
 
         // allow some room for the title
-        yoffs=pango.height()*z;
+        yoffs=pango.height();
         h-=yoffs;
       }
 
@@ -135,7 +136,7 @@ namespace minsky
       {
         const float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
+          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
@@ -145,7 +146,7 @@ namespace minsky
       {
         const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
+          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
@@ -154,7 +155,7 @@ namespace minsky
       {
         const float y=0.5*(dy-h) + (i-m_numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
+          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
       }
 
@@ -163,21 +164,43 @@ namespace minsky
       {
         const float x=dx-0.5*w + (i-2*m_numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
+          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
     double gw=w-2*portSpace, gh=h-portSpace;
-    gw/=z; gh/=z; // undo zoomFactor for Plot::draw, and scale
-    cairo_scale(cairo,z,z);
     //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
     auto& pt=const_cast<Plot*>(static_cast<const Plot*>(this))->plotType;
     if (plotType!=automatic)
       pt=static_cast<Plot::PlotType>(plotType);
 
-    Plot::draw(cairo,gw,gh); 
+    Plot::draw(cairo,gw,gh);
+    if (mouseFocus && legend)
+      {
+        double width,height,x,y;
+        legendSize(x,y,width,height,gw,gh);
+        // following code puts x,y at centre point of legend
+        x+=0.5*width;
+        const double arrowLength=6;
+        y=(h-portSpace)-y+0.5*height;
+        cairo_move_to(cairo,x-arrowLength,y);
+        cairo_rel_line_to(cairo,2*arrowLength,0);
+        cairo_move_to(cairo,x,y-arrowLength);
+        cairo_rel_line_to(cairo,0,2*arrowLength);
+
+        cairo_move_to(cairo,x,y+0.5*height);
+        cairo_rel_line_to(cairo,0,arrowLength);
+        cairo_stroke(cairo);
+        drawTriangle(cairo,x-arrowLength,y,{0,0,0,1},M_PI);
+        drawTriangle(cairo,x+arrowLength,y,{0,0,0,1},0);
+        drawTriangle(cairo,x,y-arrowLength,{0,0,0,1},3*M_PI/2);
+        drawTriangle(cairo,x,y+arrowLength,{0,0,0,1},M_PI/2);
+        drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
+
+        cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
+      }
     cs.restore();
     if (mouseFocus)
       {
@@ -186,30 +209,6 @@ namespace minsky
         // draw legend tags for move/resize
         if (legend)
           {
-            double width,height;
-            legendSize(width,height,gh);
-            width+=legendOffset*gw;
-
-            
-            const double x=legendLeft*gw-0.5*(w-width)+portSpace;
-            double y=-legendTop*gh+0.5*(h+height)-portSpace;
-            if (!title.empty()) y=-legendTop*gh+0.5*(h+height)-portSpace+titleHeight*h; // take into account room for the title
-            const double arrowLength=6;
-            cairo_move_to(cairo,x-arrowLength,y);
-            cairo_rel_line_to(cairo,2*arrowLength,0);
-            cairo_move_to(cairo,x,y-arrowLength);
-            cairo_rel_line_to(cairo,0,2*arrowLength);
-
-            cairo_move_to(cairo,x,y+0.5*height);
-            cairo_rel_line_to(cairo,0,arrowLength);
-            cairo_stroke(cairo);
-            drawTriangle(cairo,x-arrowLength,y,{0,0,0,1},M_PI);
-            drawTriangle(cairo,x+arrowLength,y,{0,0,0,1},0);
-            drawTriangle(cairo,x,y-arrowLength,{0,0,0,1},3*M_PI/2);
-            drawTriangle(cairo,x,y+arrowLength,{0,0,0,1},M_PI/2);
-            drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
-
-            cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
           }
         // Resize handles always visible on mousefocus. For ticket 92.
         drawResizeHandles(cairo);   
@@ -229,7 +228,7 @@ namespace minsky
     setMinMax();
     if (xminVar && xminVar->idx()>-1)
       {
-        if (xIsSecsSinceEpoch && xminVar->units==Units("year"))
+        if (xIsSecsSinceEpoch && (xminVar->units.empty() || xminVar->units==Units("year")))
           minx=yearToPTime(xminVar->value());
         else
           minx=xminVar->value();
@@ -237,7 +236,7 @@ namespace minsky
 
     if (xmaxVar && xmaxVar->idx()>-1)
       {
-        if (xIsSecsSinceEpoch && xmaxVar->units==Units("year"))
+        if (xIsSecsSinceEpoch && (xmaxVar->units.empty() || xmaxVar->units==Units("year")))
           maxx=yearToPTime(xmaxVar->value());
         else
           maxx=xmaxVar->value();
@@ -341,7 +340,7 @@ namespace minsky
     const double dx=x-this->x()+0.5*iWidth()*z-portSpace;
     const double dy=this->y()-y+0.5*iHeight()*z-portSpace;
     const double gw=iWidth()*z-2*portSpace;
-    const double gh=iHeight()*z-portSpace-yoffs;
+    const double gh=iHeight()*z-portSpace-yoffs*z;
     const double loffx=lh(gw,gh)*!Plot::ylabel.empty(), loffy=lh(gw,gh)*!Plot::xlabel.empty();
     return Plot::mouseMove((dx-loffx)/gw, (dy-loffy)/gh, 10.0/std::max(gw,gh),formatter);
   }
@@ -395,10 +394,10 @@ namespace minsky
           return ClickType::onPort;
       }
 
-    double legendWidth, legendHeight;
-    legendSize(legendWidth, legendHeight, iHeight()*z-portSpace);
-    const double xx= x-this->x() - portSpace +(0.5-legendLeft)*iWidth()*z;
-    const double yy= y-this->y() + (legendTop-0.5)*iHeight()*z;
+    double legendWidth, legendHeight, xoff, yoff;
+    legendSize(xoff, yoff, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
+    const double xx= x-this->x() - z*(portSpace +(0.5-legendLeft)*iWidth());
+    const double yy= y-this->y() + z*((legendTop-0.5)*iHeight()-yoffs);
     if (legend && xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
@@ -419,6 +418,17 @@ namespace minsky
 
   static const size_t maxNumTensorElementsToPlot=10;
 
+  size_t PlotWidget::numLines(size_t n)
+  {
+    if (m_numLines!=n)
+      {
+        m_numLines=n;
+        addPorts();
+      }
+    return n;
+  }
+
+  
   double PlotWidget::barWidth() const
   {
     return accumulate(palette.begin(), palette.end(), 1.0,
@@ -442,7 +452,10 @@ namespace minsky
             switch (xvars.size())
               {
               case 0: // use t, when x variable not attached
-                x=t;
+                if (xIsSecsSinceEpoch && (cminsky().timeUnit.empty()||cminsky().timeUnit=="year"))
+                  x=yearToPTime(t);
+                else
+                  x=t;
                 y=(*yvar)[i];
                 break;
               case 1: // use the value of attached variable
@@ -466,6 +479,35 @@ namespace minsky
               }
             addPt(pen++, x, y);
           }
+
+    // add markers
+    if (isfinite(miny) && isfinite(maxy))
+      {
+        for (auto& m: horizontalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              auto eps=1e-4*(maxx-minx);
+              double x[]{minx+eps,miny-eps};
+              double y[]{v->value(),v->value()};
+              setPen(pen,x,y,2);
+              assignSide(pen,marker);
+              labelPen(pen++,v->tooltip);
+            }
+        for (auto& m: verticalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              auto eps=1e-4*(maxy-miny);
+              auto value=v->value();
+              if (xIsSecsSinceEpoch && (v->units.empty() || v->units==Units("year")))
+                value=yearToPTime(value);
+              double x[]{value,value};
+              double y[]{miny+eps,maxy-eps};
+              setPen(pen,x,y,2);
+              assignSide(pen,marker);
+              labelPen(pen++,v->tooltip);
+            }
+      }
+
     
     // throttle plot redraws
     static const time_duration maxWait=milliseconds(1000);
@@ -521,16 +563,19 @@ namespace minsky
     formatter=defaultFormatter;
 
     size_t pen=0;
+    bool noLhsPens=true; // track whether any left had side ports are connected
     for (size_t port=0; port<yvars.size(); ++port)
       for (size_t i=0; i<yvars[port].size(); ++i)
         if (yvars[port][i])
         {
+          if (port<m_numLines) noLhsPens=false;
           auto& yv=yvars[port][i];
           auto d=yv->hypercube().dims();
           if (d.empty())
             {
               if (Plot::plotType==Plot::bar)
                 addPlotPt(0);
+              pen++;
               continue;
             }
           // work out a reference to the x data
@@ -597,7 +642,7 @@ namespace minsky
                   xdefault.push_back(i);
               x=xdefault.data();
             }
-
+        
           const auto& idx=yv->index();
           if (yv->rank()==1)
             {
@@ -638,8 +683,7 @@ namespace minsky
                       label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
                       stride*=d[i];
                     }
-                  if (pen>=m_numLines)
-                    assignSide(startPen,Side::right);
+                  assignSide(startPen,port<m_numLines? Side::left: Side::right);
                   labelPen(startPen,defang(label));
                 }
             }
@@ -647,7 +691,45 @@ namespace minsky
     justDataChanged=true;
     scalePlot();
 
+    if (noLhsPens)
+      {
+        // set scale to RHS
+        miny=miny1;
+        maxy=maxy1;
+      }
     
+    // add markers
+    if (isfinite(miny) && isfinite(maxy))
+      {
+        for (auto& m: horizontalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              auto eps=1e-4*(maxx-minx);
+              addPt(pen,minx+eps,v->value());
+              addPt(pen,maxx-eps,v->value());
+              assignSide(pen,marker);
+              if (!v->tooltip.empty())
+                labelPen(pen++,v->tooltip);
+              else
+                labelPen(pen++,m);
+            }
+        for (auto& m: verticalMarkers)
+          if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
+            {
+              auto eps=1e-4*(maxy-miny);
+              auto value=v->value();
+              if (xIsSecsSinceEpoch && (v->units.empty() || v->units==Units("year")))
+                value=yearToPTime(value);
+              addPt(pen,value,miny+eps);
+              addPt(pen,value,maxy-eps);
+              assignSide(pen,marker);
+              if (!v->tooltip.empty())
+                labelPen(pen++,v->tooltip);
+              else
+                labelPen(pen++,m);
+            }
+      }
+        
     if (newXticks.size()==1) // nothing to disambiguate
       xticks=std::move(newXticks.front());
     else
@@ -707,8 +789,7 @@ namespace minsky
         yvars.resize(port-nBoundsPorts+1);
         yvars[port-nBoundsPorts].push_back(var);
         // assign Side::right to pens belonging to the RHS
-        if (port-nBoundsPorts>=m_numLines)
-          assignSide(startPen(port-nBoundsPorts+1)-1,Side::right);
+        assignSide(startPen(port-nBoundsPorts+1)-1,port-nBoundsPorts<m_numLines? Side::left: Side::right);
       }
     else if (port-nBoundsPorts<4*m_numLines)
       {
@@ -726,5 +807,15 @@ namespace minsky
     xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=nullptr;
   }
 
+  set<string> PlotWidget::availableMarkers() const
+  {
+    // search upwards through group heirarchy, looking for variable to add
+    set<string> r;
+    for (auto g=group.lock(); g; g=g->group.lock())
+      for (auto& i: g->items)
+        if (auto v=i->variableCast())
+          r.insert(uqName(v->rawName()));
+    return r;
+  }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotWidget);

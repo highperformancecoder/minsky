@@ -102,6 +102,17 @@
       </span>
     </div>
 
+    <div class="markers">
+      <select id="verticalMarkers" multiple size="5">
+        <option disabled>Vertical Markers</option>
+        <option *ngFor="let m of availableMarkers" [selected]="verticalMarkers.includes(m)">{{m}}</option>
+      </select>
+      <select id="horizontalMarkers" multiple size="5">
+        <option disabled>Horizontal Markers</option>
+        <option *ngFor="let m of availableMarkers" [selected]="horizontalMarkers.includes(m)">{{m}}</option>
+      </select>
+    </div>
+    
     <div class="form-buttons">
       <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
         Cancel
