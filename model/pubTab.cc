@@ -39,11 +39,14 @@ namespace minsky
       bool variableDisplay=false, buttonDisplay=false;
       LassoBox origBox;
       float origIWidth, origIHeight;
+      double origRotation;
       EnsureEditorMode(PubItem& item):
         item(item), editorModeToggled(item.editorMode!=item.itemRef->editorMode()),
         origIWidth(item.itemRef? item.itemRef->iWidth(): 0),
-        origIHeight(item.itemRef? item.itemRef->iHeight(): 0)
+        origIHeight(item.itemRef? item.itemRef->iHeight(): 0),
+        origRotation(item.itemRef? item.itemRef->rotation(): 0)
       {
+        if (!item.itemRef) return;
         if (auto g=item.itemRef->godleyIconCast())
           {
             if ((variableDisplay=g->variableDisplay()))
@@ -56,9 +59,11 @@ namespace minsky
           
         item.itemRef->iWidth(item.zoomX*origIWidth);
         item.itemRef->iHeight(item.zoomY*origIHeight);
+        item.itemRef->rotation(item.rotation);
       }
       ~EnsureEditorMode()
       {
+        if (!item.itemRef) return;
         if (editorModeToggled)
           item.itemRef->toggleEditorMode();
         if (auto g=item.itemRef->godleyIconCast())
@@ -70,6 +75,7 @@ namespace minsky
           }
         item.itemRef->iWidth(origIWidth);
         item.itemRef->iHeight(origIHeight);
+        item.itemRef->rotation(origRotation);
      }
     };
   }
@@ -118,10 +124,10 @@ namespace minsky
 
   void PubTab::rotateItemAt(float x, float y)
   {
-    item=m_getItemAt(x-offsx,y-offsy);
+    zoomTranslate(x,y);
+    item=m_getItemAt(x,y);
     if (item) {
-      rx=x;
-      ry=y;
+      rotateOrigin=Point{x,y};
       rotating=true;
     }
   }
@@ -140,7 +146,6 @@ namespace minsky
       {
         const CairoSave cs(cairo);
         cairo_translate(cairo, i.x, i.y);
-        cairo_rotate(cairo,(M_PI/180)*i.rotation-i.itemRef->rotation());
         try
           {
             const EnsureEditorMode ensureEditorMode(i);
@@ -255,7 +260,9 @@ namespace minsky
       {
         if (rotating)
           {
-            item->rotation=(180/M_PI)*atan2(x-rx, y-ry);
+            const EnsureEditorMode e(*item);
+            item->itemRef->rotate(Point{x,y},rotateOrigin);
+            item->rotation=item->itemRef->rotation();
           }
         else
           switch (clickType)
