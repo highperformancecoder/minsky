@@ -63,6 +63,10 @@ ifdef FLTO
 CPLUSPLUS+=-flto
 endif
 
+ifdef CLANG_STDCPP
+CXXFLAGS=-stdlib=libc++
+endif
+
 ifdef DISTCC
 CPLUSPLUS=distcc
 # number of jobs to do sub-makes
