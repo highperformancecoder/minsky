@@ -16,7 +16,7 @@
   * `make install`
 
 - Add a code signing certificate (.pfx file), and specify its name in `WINDOWS_SIGN_CERTIFICATE_NAME` environment   variable and password in WINDOWS_SIGN_TOKEN_PASSWORD environment variable.
-
+- Install lld on your system, then link it to the MXE linker `ln -sf /usr/bin/ld.lld $(MINSKYHOME)/usr/bin/x86_64-w64-mingw32.shared-ld`. This make a dramatic improvement to build times, with the link portion of the build shrinking from over 13 minutes to less than 2 seconds.
 - Then compile Minsky with
 
 ~~~~
