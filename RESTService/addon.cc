@@ -148,10 +148,10 @@ namespace minsky
         int nargs=1;
         switch (arguments.type())
           {
-          case json5_parser::array_type:
+          case RESTProcessType::array:
             nargs=arguments.get_array().size();
             break;
-          case json5_parser::null_type:
+          case RESTProcessType::null:
             nargs=0;
             break;
           default:
