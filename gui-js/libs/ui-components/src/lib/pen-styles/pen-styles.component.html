@@ -5,6 +5,8 @@
         formArrayName="pens"
         *ngFor="let control of pens.controls; let i = index"
       >
+        <!--div *ngIf="i<penLabels.length" latex [equation]="penLabels[i]"></div-->
+        <div *ngIf="i<penLabels.length" >{{penLabels[i]}}</div>
         <div *ngIf="pens.value.length" class="form-control" [formGroupName]="i">
           <input
             [colorPicker]="pens.controls[i]?.get('colour')?.value"

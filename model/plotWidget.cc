@@ -256,6 +256,7 @@ namespace minsky
         // 3. attached variable tooltip
         // 4. attached variable name
         size_t pen=0;
+        penLabels.clear();
         assert(m_ports.size()>=2*m_numLines+nBoundsPorts);
         for (auto portNo=nBoundsPorts; portNo<2*m_numLines+nBoundsPorts; ++portNo)
           {
@@ -265,17 +266,17 @@ namespace minsky
                   auto wire=m_ports[portNo]->wires()[i];
                   if (!wire->tooltip().empty())
                     {
-                      labelPen(pen, latexToPango(wire->tooltip()));
+                      labelPen(pen, wire->tooltip());
                       continue;
                     }
                   if (auto from=wire->from(); !from->item().tooltip().empty())
                     {
-                      labelPen(pen, latexToPango(from->item().tooltip()));
+                      labelPen(pen, from->item().tooltip());
                       continue;
                     }
                   if (portNo-nBoundsPorts<yvars.size() && i<yvars[portNo-nBoundsPorts].size())
                     if (auto v=yvars[portNo-nBoundsPorts][i];  !v->name.empty())
-                      labelPen(pen, latexToPango(uqName(v->name)));
+                      labelPen(pen, uqName(v->name));
                 }
           }
       }
@@ -565,6 +566,9 @@ namespace minsky
 
     size_t pen=0;
     bool noLhsPens=true; // track whether any left had side ports are connected
+    clearPensOnLabelling=true; // arrange for penLabels to be cleared first time an entry is added
+    OnStackExit setClearPensOnLabellingFalse([this]{clearPensOnLabelling=false;});
+    
     for (size_t port=0; port<yvars.size(); ++port)
       for (size_t i=0; i<yvars[port].size(); ++i)
         if (yvars[port][i])
@@ -691,7 +695,7 @@ namespace minsky
         }
     justDataChanged=true;
     scalePlot();
-
+    
     if (noLhsPens)
       {
         // set scale to RHS

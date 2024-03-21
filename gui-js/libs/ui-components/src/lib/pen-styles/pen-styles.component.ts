@@ -3,6 +3,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } f
 import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { LatexDirective } from '../directives/latex.directive';
 import { NgFor, NgIf } from '@angular/common';
 
 interface Colour {
@@ -29,12 +30,14 @@ interface Palette {
         ReactiveFormsModule,
         NgFor,
         NgIf,
+        LatexDirective,
         ColorPickerModule,
     ],
 })
 export class PenStylesComponent implements OnInit {
   form: FormGroup;
   palette=[];
+  penLabels=[];
   plot: PlotWidget;
 
   dashStyles = ['solid', 'dash', 'dot', 'dashDot'];
@@ -56,6 +59,7 @@ export class PenStylesComponent implements OnInit {
     (async () => {
       if (this.electronService.isElectron) {
         this.palette = await this.plot.palette.properties();
+        this.penLabels=await this.plot.penLabels.properties();
       }
 
       this.palette.forEach((p) => {

@@ -1568,6 +1568,7 @@ export class PlotWidget extends Item {
   horizontalMarkers: Sequence<string>;
   item: Item;
   palette: Sequence<ecolab__Plot__LineStyle>;
+  penLabels: Sequence<string>;
   verticalMarkers: Sequence<string>;
   wire: Wire;
   xmaxVar: VariableValue;
@@ -1587,6 +1588,7 @@ export class PlotWidget extends Item {
     this.horizontalMarkers=new Sequence<string>(this.$prefix()+'.horizontalMarkers');
     this.item=new Item(this.$prefix()+'.item');
     this.palette=new Sequence<ecolab__Plot__LineStyle>(this.$prefix()+'.palette',ecolab__Plot__LineStyle);
+    this.penLabels=new Sequence<string>(this.$prefix()+'.penLabels');
     this.verticalMarkers=new Sequence<string>(this.$prefix()+'.verticalMarkers');
     this.wire=new Wire(this.$prefix()+'.wire');
     this.xmaxVar=new VariableValue(this.$prefix()+'.xmaxVar');
