@@ -394,15 +394,16 @@ namespace minsky
           return ClickType::onPort;
       }
 
-    double legendWidth, legendHeight, xoff, yoff;
-    legendSize(xoff, yoff, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
-    const double xx= x-this->x() - z*(portSpace +(0.5-legendLeft)*iWidth());
-    const double yy= y-this->y() + z*((legendTop-0.5)*iHeight()-yoffs);
+    double legendWidth, legendHeight, lx, ly;
+    legendSize(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
+    // xx & yy are in plot user coordinates
+    const double xx= x-this->x() + z*(0.5*iWidth()-portSpace) - lx;
+    const double yy= z*(0.5*iHeight()-portSpace)-y+this->y()  - ly+legendHeight;
     if (legend && xx>0 && xx<legendWidth)
       {
-        if (yy>0 && yy<0.8*legendHeight)
+        if (yy>0.2*legendHeight && yy<legendHeight)
           return ClickType::legendMove;
-        if (yy>=0.8*legendHeight && yy<legendHeight+6*z) // allow a bit of extra height for resize arrow
+        if (yy>-6*z &&  yy<=0.2*legendHeight) // allow a bit of extra height for resize arrow
           return ClickType::legendResize;
       }
 
