@@ -123,16 +123,16 @@ namespace classdesc
   {
     static string name() {return "minsky__dummy";}
   };
-  template <class C, class D>
-  struct tn<std::chrono::time_point<C,D>>
-  {
-    static string name() {return "minsky__dummy";}
-  };
-  template <>
-  struct tn<std::istream>
-  {
-    static string name() {return "minsky__dummy";}
-  };
+//  template <class C, class D>
+//  struct tn<std::chrono::time_point<C,D>>
+//  {
+//    static string name() {return "minsky__dummy";}
+//  };
+//  template <>
+//  struct tn<std::istream>
+//  {
+//    static string name() {return "minsky__dummy";}
+//  };
   
   // typescript has difficulties with specialised templates
   template <>
