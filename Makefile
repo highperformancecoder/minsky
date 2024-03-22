@@ -64,6 +64,10 @@ ifdef FLTO
 CPLUSPLUS+=-flto
 endif
 
+ifdef CLANG_STDCPP
+CXXFLAGS=-stdlib=libc++
+endif
+
 ifdef DISTCC
 CPLUSPLUS=distcc
 # number of jobs to do sub-makes
@@ -186,7 +190,7 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-std=c++20 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
+FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
 
 ifeq ($(CPLUSPLUS),clang++)
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option
