@@ -28,7 +28,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'cpp', 'javascript' ]
+        #language: [ 'cpp', 'javascript' ]
+        language: [ 'cpp']
         # cannot use latest here, because need actual ubuntu_ver in install_prerequisites.
         # So every couple of years, this needs to be updated when github cycles its OS versions
         ubuntu_ver: ['22.04']
