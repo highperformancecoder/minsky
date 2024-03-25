@@ -41,13 +41,13 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         queries: +security-and-quality
@@ -67,24 +67,12 @@ jobs:
         sudo apt install -y --no-install-recommends \
           g++ clang tcl-dev tk-dev libcairo2-dev zlib1g-dev libreadline-dev libgsl0-dev libblas-dev libpango1.0-dev exuberant-ctags libdb-dev libncurses5-dev librsvg2-dev libboost-all-dev libssl-dev libclipboard gfortran libjpeg-dev
 
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-#    - name: Autobuild
-#      uses: github/codeql-action/autobuild@v1
-
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 https://git.io/JvXDl
-
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
-
     - name: Build
       run: |
         make -j2 OBS=1 CPLUSPLUS=clang++-15
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
+      uses: github/codeql-action/analyze@v3
       with:
           category: "/language:${{ matrix.language }}"
           upload: false
@@ -115,7 +103,7 @@ jobs:
         output: sarif-results/results.sarif/${{ matrix.language }}-filtered.sarif
 
     - name: upload-sarif
-      uses: github/codeql-action/upload-sarif@v4
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: sarif-results/results.sarif/${{ matrix.language }}-filtered.sarif
 
