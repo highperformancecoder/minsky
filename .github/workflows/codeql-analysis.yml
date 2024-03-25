@@ -80,7 +80,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-        make -j2 OBS=1
+        make -j2 OBS=1 CPLUSPLUS=clang++-15
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
