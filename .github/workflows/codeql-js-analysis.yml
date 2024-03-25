@@ -1,0 +1,119 @@
+# For most projects, this workflow file will not need changing; you simply need
+# to commit it to your repository.
+#
+# You may wish to alter this file to override the set of languages analyzed,
+# or to provide custom queries or build logic.
+#
+# ******** NOTE ********
+# We have attempted to detect the languages in your repository. Please check
+# the `language` matrix defined below to confirm you have the correct set of
+# supported CodeQL languages.
+#
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ master ]
+  schedule:
+    - cron: '32 21 * * 5'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-${{ matrix.ubuntu_ver }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+        # cannot use latest here, because need actual ubuntu_ver in install_prerequisites.
+        # So every couple of years, this needs to be updated when github cycles its OS versions
+        ubuntu_ver: ['22.04']
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        queries: +security-and-quality
+        # If you wish to specify custom queries, you can do so here or in a config file.
+        # By default, queries listed here will override any specified in a config file.
+        # Prefix the list here with "+" to use these queries and those in the config file.
+        # queries: ./path/to/local/query, your-org/your-repo/queries@main
+        config-file: ./.github/codeql-query-filter.yml
+        
+
+    - name: Install prerequisties
+      run: |
+        #wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_${{ matrix.ubuntu_ver }}/Release.key
+        #sudo apt-key add - < Release.key
+        #sudo add-apt-repository -y \
+        #  'deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_${{ matrix.ubuntu_ver }}/ /'
+        #sudo apt install -y --no-install-recommends \
+        #  g++ clang tcl-dev tk-dev libcairo2-dev zlib1g-dev libreadline-dev libgsl0-dev libblas-dev libpango1.0-dev exuberant-ctags libdb-dev libncurses5-dev librsvg2-dev libboost-all-dev libssl-dev libclipboard gfortran libjpeg-dev
+
+    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
+    # If this step fails, then you should remove it and run the build manually (see below)
+#    - name: Autobuild
+#      uses: github/codeql-action/autobuild@v1
+
+    # ℹ️ Command-line programs to run using the OS shell.
+    # 📚 https://git.io/JvXDl
+
+    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
+    #    and modify them (or add more) to build your code if your project
+    #    uses a compiled language
+
+    - run: |
+        #make -j2 OBS=1 CPLUSPLUS=clang++-15
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+          category: "/language:${{ matrix.language }}"
+          upload: false
+          output: sarif-results/results.sarif
+
+    - name: Upload loc as a Build Artifact
+      uses: actions/upload-artifact@v3.1.1
+      with:
+        name: sarif-results
+        path: sarif-results
+        retention-days: 1
+
+    - name: filter-sarif
+      uses: advanced-security/filter-sarif@main
+      with:
+        patterns: |
+          -ecolab
+          -exprtk
+          -gui-tk
+          -test
+          -*.cd
+          -*.rcd
+          -*.tcd
+          -*.xcd
+          -/**/node_modules
+          -/**/*.test.ts
+        input: sarif-results/results.sarif/${{ matrix.language }}.sarif
+        output: sarif-results/results.sarif/${{ matrix.language }}-filtered.sarif
+
+    - name: upload-sarif
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: sarif-results/results.sarif/${{ matrix.language }}-filtered.sarif
+
