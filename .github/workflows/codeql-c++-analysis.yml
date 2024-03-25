@@ -79,7 +79,8 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    - run: |
+    - name: Build
+      run: |
         make -j2 OBS=1 CPLUSPLUS=clang++-15
 
     - name: Perform CodeQL Analysis
