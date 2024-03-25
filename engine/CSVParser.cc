@@ -329,76 +329,102 @@ void DataSpec::setDataArea(size_t row, size_t col)
 
 
 template <class TokenizerFunction>
-void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunction& tf)
+void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& remainingInput, const TokenizerFunction& tf)
 {
-    vector<size_t> starts;
-    size_t nCols=0;
-    string buf;
-    size_t row=0;
-    size_t firstEmpty=numeric_limits<size_t>::max();
+  starts.clear();
+  nCols=0;
+  row=0;
+  firstEmpty=numeric_limits<size_t>::max();
+  m_nRowAxes=0;
 
-    m_nRowAxes=0;
-    for (; getline(input, buf) && row<CSVDialog::numInitialLines; ++row)
-      {
-        // remove trailing carriage returns
-        if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
-        const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
-        vector<string> line(tok.begin(), tok.end());
-        if (!line.empty())
-          {
-            smatch match;
-            static const regex re("RavelHypercube=(.*)");
-            if (regex_match(line[0], match, re))
-              try
-                {
-                    populateFromRavelMetadata(match[1], row);
-                    return;
-                }
-              catch (...)
-                {
-                  continue; // in case of error, ignore the RavelHypercube line.
-                }
-          }
-        starts.push_back(firstNumerical(line));
-        nCols=std::max(nCols, line.size());
-        if (starts.back()==line.size())
-          m_nRowAxes=row;
-        if (starts.size()-1 < firstEmpty && starts.back()<nCols && emptyTail(line, starts.back()))
-          firstEmpty=starts.size()-1;
-      }
-    // compute average of starts, then look for first row that drops below average
-    double sum=0;
-    for (unsigned long i=0; i<starts.size(); ++i) 
-      sum+=starts[i];
-    const double av=sum/(starts.size());
-    for (; starts.size()>m_nRowAxes && (starts[m_nRowAxes]>av); 
-         ++m_nRowAxes);
-    // if nRowAxes exceeds numInitialLines, assume first row is a header row, and that that is all there is.
-    if (m_nRowAxes>=row-1) m_nRowAxes=1;
-    m_nColAxes=0;
-    for (size_t i=nRowAxes(); i<starts.size(); ++i)
-      m_nColAxes=std::max(m_nColAxes,starts[i]);
-    // if more than 1 data column, treat the first row as an axis row
-    if (m_nRowAxes==0 && nCols-m_nColAxes>1)
-      m_nRowAxes=1;
-    
-    if (firstEmpty==m_nRowAxes) ++m_nRowAxes; // allow for possible colAxes header line
-    headerRow=nRowAxes()>0? nRowAxes()-1: 0;
-    size_t i=0;
-    dimensionCols.clear();
-    for (; i<nColAxes(); ++i) dimensionCols.insert(i);
-    dataCols.clear();
-    for (; i<nCols; ++i) dataCols.insert(i);
+  const BusyCursor busy(minsky());
+  // we don't know how many times we'll be going around the loop here, so pick a largish number for the progress bar
+  const ProgressUpdater pu(minsky().progressState,"Guessing CSV format",100);
+
+  try
+    {
+      if (processChunk(initialInput, tf, CSVDialog::numInitialLines))
+        return; // found a Ravel hypercube line.
+      ++minsky().progressState;
+      while (!processChunk(remainingInput, tf, row+CSVDialog::numInitialLines))
+        {
+          if (minsky().progressState.cancel) break;
+          ++minsky().progressState;
+        }
+    }
+  catch (std::exception&)
+    {
+      throw std::runtime_error("CSV format guess terminated by user, best guess specification used.");
+    }
 }
 
-void DataSpec::guessRemainder(std::istream& input, char sep)
+void DataSpec::guessRemainder(std::istream& initialInput, std::istream& remainingInput, char sep)
 {
   separator=sep;
   if (separator==' ')
-    givenTFguessRemainder(input,SpaceSeparatorParser(escape,separator,quote)); //asumes merged whitespace separators
+    givenTFguessRemainder(initialInput, remainingInput, SpaceSeparatorParser(escape,separator,quote)); //assumes merged whitespace separators
   else
-    givenTFguessRemainder(input,Parser(escape,separator,quote));
+    givenTFguessRemainder(initialInput, remainingInput, Parser(escape,separator,quote));
 }
+
+template <class TokenizerFunction>
+bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, size_t until)
+{
+  string buf;
+  for (; getline(input, buf) && row<until; ++row)
+    {
+      // remove trailing carriage returns
+      if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
+      const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
+      vector<string> line(tok.begin(), tok.end());
+      if (!line.empty())
+        {
+          smatch match;
+          static const regex re("RavelHypercube=(.*)");
+          if (regex_match(line[0], match, re))
+            try
+              {
+                populateFromRavelMetadata(match[1], row);
+                return true;
+              }
+            catch (...)
+              {
+                continue; // in case of error, ignore the RavelHypercube line.
+              }
+        }
+      starts.push_back(firstNumerical(line));
+      nCols=std::max(nCols, line.size());
+      if (starts.back()==line.size())
+        m_nRowAxes=row;
+      if (starts.size()-1 < firstEmpty && starts.back()<nCols && emptyTail(line, starts.back()))
+        firstEmpty=starts.size()-1;
+    }
+  // compute average of starts, then look for first row that drops below average
+  double sum=0;
+  for (unsigned long i=0; i<starts.size(); ++i) 
+    sum+=starts[i];
+  const double av=sum/(starts.size());
+  for (; starts.size()>m_nRowAxes && (starts[m_nRowAxes]>av); 
+       ++m_nRowAxes);
+  // if nRowAxes exceeds numInitialLines, assume first row is a header row, and that that is all there is.
+  if (m_nRowAxes>=row-1) m_nRowAxes=1;
+  m_nColAxes=0;
+  for (size_t i=nRowAxes(); i<starts.size(); ++i)
+    m_nColAxes=std::max(m_nColAxes,starts[i]);
+  // if more than 1 data column, treat the first row as an axis row
+  if (m_nRowAxes==0 && nCols-m_nColAxes>1)
+    m_nRowAxes=1;
+    
+  if (firstEmpty==m_nRowAxes) ++m_nRowAxes; // allow for possible colAxes header line
+  headerRow=nRowAxes()>0? nRowAxes()-1: 0;
+  size_t i=0;
+  dimensionCols.clear();
+  for (; i<nColAxes(); ++i) dimensionCols.insert(i);
+  dataCols.clear();
+  for (; i<nCols; ++i) dataCols.insert(i);
+  return !input;
+}
+
 
 
 void DataSpec::guessFromStream(std::istream& input)
@@ -425,13 +451,13 @@ void DataSpec::guessFromStream(std::istream& input)
   {
     istringstream inputCopy(streamBuf.str());
     if (numCommas>0.9*row && numCommas>numSemicolons && numCommas>numTabs)
-      guessRemainder(inputCopy,',');
+      guessRemainder(inputCopy,input,',');
     else if (numSemicolons>0.9*row && numSemicolons>numTabs)
-      guessRemainder(inputCopy,';');
+      guessRemainder(inputCopy,input,';');
     else if (numTabs>0.9*row)
-      guessRemainder(inputCopy,'\t');
+      guessRemainder(inputCopy,input,'\t');
     else
-      guessRemainder(inputCopy,' ');
+      guessRemainder(inputCopy,input,' ');
   }
 }
 
