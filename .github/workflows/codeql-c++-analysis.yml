@@ -70,7 +70,9 @@ jobs:
     - name: Build
       run: |
         rm -rf .git doc gui-js test/oldSchema test/renderedImages
+        df .
         make -j2 OBS=1 CPLUSPLUS=clang++-15
+        df .
         rm *.o *.a
 
     - name: Perform CodeQL Analysis
