@@ -347,13 +347,11 @@ void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& r
         return; // found a Ravel hypercube line.
       ++minsky().progressState;
       while (!processChunk(remainingInput, tf, row+CSVDialog::numInitialLines))
-        {
-          if (minsky().progressState.cancel) break;
-          ++minsky().progressState;
-        }
+        ++minsky().progressState;
     }
   catch (std::exception&)
     {
+      // progressState throws an exception on being cancelled by the user
       throw std::runtime_error("CSV format guess terminated by user, best guess specification used.");
     }
 }
