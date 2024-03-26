@@ -24,7 +24,6 @@
 #include "classdesc_access.h"
 #include "str.h"
 
-#include <atomic>
 #include <cstddef>
 #include <string>
 #include <set>
@@ -44,10 +43,6 @@ namespace minsky
     /// start column of the data area
     std::size_t nColAxes() const {return m_nColAxes;}
 
-    DataSpec()=default;
-    DataSpec(const DataSpec& x): DataSpecSchema(x) {}
-    DataSpec& operator=(const DataSpec& x) {DataSpecSchema::operator=(x); return *this;}
-    
     // handle extra initialisation on conversion
     DataSpecSchema toSchema() {
       dataRowOffset=nRowAxes();
