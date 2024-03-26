@@ -56,6 +56,7 @@ namespace minsky
   // items broken out in a separate structure, as copying is non-default
   class GroupItems
   {
+    bool inDestructor=false;
   protected:
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates
@@ -81,7 +82,7 @@ namespace minsky
     std::vector<VariablePtr> inVariables, outVariables;
     std::vector<VariablePtr> createdIOvariables;
     GroupItems() {}
-    virtual ~GroupItems() {clear();}
+    virtual ~GroupItems() {inDestructor=true; clear();}
     // copy operations not deleted to allow ItemT<Group> to compile
     GroupItems(const GroupItems& x) {};
     GroupItems& operator=(const GroupItems&) {return *this;}

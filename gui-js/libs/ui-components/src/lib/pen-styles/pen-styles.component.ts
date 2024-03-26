@@ -3,14 +3,8 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } f
 import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { LatexDirective } from '../directives/latex.directive';
 import { NgFor, NgIf } from '@angular/common';
-
-enum DashStyles {
-  SOLID = 'solid',
-  DASH = 'dash',
-  DOT = 'dot',
-  DASH_DOT = 'dashDot',
-}
 
 interface Colour {
   r: number;
@@ -21,7 +15,8 @@ interface Colour {
 
 interface Palette {
   colour: string | Colour;
-  dashStyle: DashStyles;
+  dashStyle: string;
+  plotType: string;
   width: number;
 }
 
@@ -35,15 +30,18 @@ interface Palette {
         ReactiveFormsModule,
         NgFor,
         NgIf,
+        LatexDirective,
         ColorPickerModule,
     ],
 })
 export class PenStylesComponent implements OnInit {
   form: FormGroup;
-  palette: Palette[];
+  palette=[];
+  penLabels=[];
   plot: PlotWidget;
 
   dashStyles = ['solid', 'dash', 'dot', 'dashDot'];
+  plotTypes = ['automatic', 'line', 'bar', 'scatter', 'line_scatter'];
   rgbMaxValue = 255;
 
   public get pens(): FormArray {
@@ -60,7 +58,8 @@ export class PenStylesComponent implements OnInit {
   ngOnInit() {
     (async () => {
       if (this.electronService.isElectron) {
-        this.palette = await this.plot.palette.properties() as any as Palette[];
+        this.palette = await this.plot.palette.properties();
+        this.penLabels=await this.plot.penLabels.properties();
       }
 
       this.palette.forEach((p) => {
@@ -74,6 +73,7 @@ export class PenStylesComponent implements OnInit {
       colour: new FormControl(this.getColor(p?.colour as Colour)),
       width: new FormControl(p?.width),
       dashStyle: new FormControl(p?.dashStyle),
+      plotType: new FormControl(p?.plotType),
     });
   }
 
@@ -113,7 +113,8 @@ export class PenStylesComponent implements OnInit {
   addPen() {
     const p: Palette = {
       colour: { r: 100, g: 100, b: 100, a: 1 },
-      dashStyle: DashStyles.DASH,
+      dashStyle: 'dash',
+      plotType: 'automatic',
       width: 1,
     };
     this.pens.push(this.createPen(p));

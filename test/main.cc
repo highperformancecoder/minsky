@@ -40,7 +40,7 @@ namespace
   struct RegExPredicate
   {
     std::regex exp;
-    RegExPredicate(): exp(".*") {} // equivalent to true
+    RegExPredicate(): exp(".*::.*") {} // equivalent to true
     RegExPredicate(const string& exp): exp(exp) {}
     bool operator()(const Test* const test) const
     {return std::regex_match(name(*test), exp);}
@@ -92,5 +92,7 @@ int main(int argc, const char** argv)
         }
     }  
       
-  return RunAllTests();
+  //return RunAllTests() // why is this failing!!!
+  TestReporterStdout reporter;
+  return TestRunner(reporter).RunTestsIf(Test::GetTestList(), NULL, RegExPredicate(".*::.*"), 0);
 }

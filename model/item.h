@@ -136,9 +136,9 @@ namespace minsky
     /// correctly into \a selection.
     virtual void insertControlled(Selection& selection) {}
     /// remove all controlled items from a group
-    virtual void removeControlledItems(GroupItems&) const {}
+    virtual void removeControlledItems(GroupItems&) {}
     /// remove all controlled items from their owning group
-    void removeControlledItems() const;
+    void removeControlledItems();
     
     double m_rotation=0; ///< rotation of icon, in degrees
     /// rotate item based on vector from \a orig to \a mouse

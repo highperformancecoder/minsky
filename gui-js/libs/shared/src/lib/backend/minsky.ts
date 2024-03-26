@@ -1568,6 +1568,7 @@ export class PlotWidget extends Item {
   horizontalMarkers: Sequence<string>;
   item: Item;
   palette: Sequence<ecolab__Plot__LineStyle>;
+  penLabels: Sequence<string>;
   verticalMarkers: Sequence<string>;
   wire: Wire;
   xmaxVar: VariableValue;
@@ -1587,6 +1588,7 @@ export class PlotWidget extends Item {
     this.horizontalMarkers=new Sequence<string>(this.$prefix()+'.horizontalMarkers');
     this.item=new Item(this.$prefix()+'.item');
     this.palette=new Sequence<ecolab__Plot__LineStyle>(this.$prefix()+'.palette',ecolab__Plot__LineStyle);
+    this.penLabels=new Sequence<string>(this.$prefix()+'.penLabels');
     this.verticalMarkers=new Sequence<string>(this.$prefix()+'.verticalMarkers');
     this.wire=new Wire(this.$prefix()+'.wire');
     this.xmaxVar=new VariableValue(this.$prefix()+'.xmaxVar');
@@ -1643,7 +1645,6 @@ export class PlotWidget extends Item {
   async legendLeft(...args: number[]): Promise<number> {return this.$callMethod('legendLeft',...args);}
   async legendOffset(...args: number[]): Promise<number> {return this.$callMethod('legendOffset',...args);}
   async legendSide(...args: string[]): Promise<string> {return this.$callMethod('legendSide',...args);}
-  async legendSize(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('legendSize',a1,a2,a3);}
   async legendTop(...args: number[]): Promise<number> {return this.$callMethod('legendTop',...args);}
   async lh(a1: number,a2: number): Promise<number> {return this.$callMethod('lh',a1,a2);}
   async logx(...args: boolean[]): Promise<boolean> {return this.$callMethod('logx',...args);}
@@ -2456,6 +2457,7 @@ export class ecolab__Plot__LineStyle extends CppClass {
   async barWidth(...args: number[]): Promise<number> {return this.$callMethod('barWidth',...args);}
   async dashPattern(): Promise<number[]> {return this.$callMethod('dashPattern');}
   async dashStyle(...args: string[]): Promise<string> {return this.$callMethod('dashStyle',...args);}
+  async plotType(...args: string[]): Promise<string> {return this.$callMethod('plotType',...args);}
   async width(...args: number[]): Promise<number> {return this.$callMethod('width',...args);}
 }
 

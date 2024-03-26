@@ -4,6 +4,7 @@
     <div class="form-control">
       <label for="title">Title</label>
       <input type="text" id="title" formControlName="title" />
+      <button mat-raised-button (click)="openPenStyles()" class="pen-style">Pen Styles</button>
     </div>
 
     <div class="form-control">
@@ -20,7 +21,7 @@
     </div>
 
     <div class="form-control">
-      <label for="numLines">No. inputs on each side</label>
+      <label for="numLines">Inputs on each side</label>
       <input type="number" min="1" id="numLines"
              formControlName="numLines" />
     </div>

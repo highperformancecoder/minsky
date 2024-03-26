@@ -43,7 +43,7 @@ SUITE(Ticket1461)
       auto var=canvas.itemFocus->variableCast();
       CHECK(var);
       var->tooltip("hello");
-      auto clone=var->clone();
+      VariablePtr clone(var->clone());
       CHECK_EQUAL("hello",clone->tooltip());
     }
 

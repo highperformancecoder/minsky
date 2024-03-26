@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { PlotWidget } from '@minsky/shared';
+import { events, PlotWidget } from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { NgFor } from '@angular/common';
@@ -152,6 +152,15 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
     for (let i=0; i<selectedOptions.length; ++i)
       markers.push(selectedOptions[i].value);
     return markers;
+  }
+
+  openPenStyles() {
+    this.electronService.send(events.CREATE_MENU_POPUP, {
+      title: 'Pen Styles',
+      url: '#/headless/menu/context-menu/pen-styles',
+      height: 700,
+      width: 350,
+    });
   }
   
   async handleSave() {

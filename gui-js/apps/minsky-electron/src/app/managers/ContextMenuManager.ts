@@ -535,7 +535,7 @@ export class ContextMenuManager {
           WindowManager.createPopupWindowWithRouting({
             title: `Pen Styles`,
             url: `#/headless/menu/context-menu/pen-styles`,
-            height: 500,
+            height: 700,
             width: 350,
           });
         },

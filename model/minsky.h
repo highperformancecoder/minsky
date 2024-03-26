@@ -89,8 +89,6 @@ namespace minsky
     
     std::vector<int> flagStack;
 
-    std::map<std::string, std::shared_ptr<CallableFunction>> userFunctions;
-
     Clipboard clipboard; ///< clipboard manager
     
     // make copy operations just dummies, as assignment of Minsky's
@@ -240,7 +238,10 @@ namespace minsky
       publicationTabs.emplace_back("Publication");
     }
     ~Minsky();
-    
+
+    // needs to be declared after variableValues
+    Exclude<std::map<std::string, std::shared_ptr<CallableFunction>>> userFunctions;
+
     GroupPtr model{new Group};
     Canvas canvas{model};
 

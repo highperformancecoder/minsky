@@ -75,6 +75,8 @@ namespace minsky
 
     /// returns to starting pen number for input \a port
     size_t startPen(size_t port) const;
+
+    bool clearPensOnLabelling=false;
     
   public:
     using Item::x;
@@ -88,6 +90,15 @@ namespace minsky
     std::vector<std::vector<std::shared_ptr<VariableValue>>> yvars;
     std::vector<std::shared_ptr<VariableValue>> xvars;
 
+    // cache penLabels to label pen styles dialog
+    std::vector<std::string> penLabels;
+    void labelPen(size_t pen, const std::string& label) {
+      if (clearPensOnLabelling) {penLabels.clear(); clearPensOnLabelling=false;}
+      if (penLabels.size()<=pen+1) penLabels.resize(pen+1);
+      penLabels[pen]=label;
+      Plot::labelPen(pen,latexToPango(label));
+    }
+
     /// variable ports specifying plot size
     std::shared_ptr<VariableValue> xminVar, xmaxVar, yminVar, ymaxVar, y1minVar, y1maxVar;
     /// number of ticks to show in canvas item
@@ -100,7 +111,6 @@ namespace minsky
     std::string title;
 
     /// automatic means choose line or bar depending on the x-vector type.
-    enum PlotType {line, bar, scatter, line_scatter, automatic};
     PlotType plotType=automatic;
     
     PlotWidget();

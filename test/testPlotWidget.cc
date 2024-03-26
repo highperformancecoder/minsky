@@ -37,8 +37,8 @@ namespace minsky
       addPt(1,0.0,1.0);
       labelPen(0,"hello");
       labelPen(1,"hello");
-      double legendWidth, legendHeight;
-      legendSize(legendWidth, legendHeight, iHeight()-10);
+      double xoffs, yoffs, legendWidth, legendHeight;
+      legendSize(xoffs, yoffs, legendWidth, legendHeight, iWidth(), iHeight()-10);
       double x=(legendLeft-0.5)*iWidth() +0.5*legendWidth;
       double y=(0.5-legendTop)*iHeight() + 0.5*legendHeight;
       CHECK_EQUAL(ClickType::legendMove, clickType(x,y));
@@ -49,7 +49,7 @@ namespace minsky
       CHECK_CLOSE(oldLegendTop-20/(iHeight()-10),legendTop,0.01);
       // legend should not change size
       double newLegendWidth, newLegendHeight;
-      legendSize(newLegendWidth, newLegendHeight, iHeight()-10);
+      legendSize(xoffs, yoffs, newLegendWidth, newLegendHeight, iWidth(), iHeight()-10);
       CHECK_CLOSE(legendWidth,newLegendWidth, 0.01);
       CHECK_CLOSE(legendHeight,newLegendHeight,0.01);
      }
@@ -63,8 +63,8 @@ namespace minsky
       addPt(1,0.0,1.0);
       labelPen(0,"hello");
       labelPen(1,"hello");
-      double legendWidth, legendHeight;
-      legendSize(legendWidth, legendHeight, iHeight()-10);
+      double xoffs, yoffs, legendWidth, legendHeight;
+      legendSize(xoffs, yoffs, legendWidth, legendHeight, iWidth(), iHeight()-10);
       double x=(legendLeft-0.5)*iWidth() +0.5*legendWidth;
       double y=(0.5-legendTop)*iHeight() + 0.95*legendHeight;
       CHECK_EQUAL(ClickType::legendResize, clickType(x,y));
@@ -75,8 +75,8 @@ namespace minsky
       CHECK_CLOSE(oldLegendLeft,legendLeft, 0.01);
       CHECK_CLOSE(oldLegendTop,legendTop,0.01);
       double newLegendWidth, newLegendHeight;
-      legendSize(newLegendWidth, newLegendHeight, iHeight()-10);
-       // width change will be proportionate - just check the new heigh is about right
+      legendSize(xoffs, yoffs, newLegendWidth, newLegendHeight, iWidth(), iHeight()-10);
+       // width change will be proportionate - just check the new height is about right
       CHECK_CLOSE(legendHeight+20,newLegendHeight,2);
     }
   }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CreateVariableComponent } from './create-variable/create-variable.component';
+import { CreateVariableComponent } from '@minsky/ui-components';
 
 const routes: Routes = [
   { path: 'create-variable', component: CreateVariableComponent },
