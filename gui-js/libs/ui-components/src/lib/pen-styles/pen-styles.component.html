@@ -5,6 +5,8 @@
         formArrayName="pens"
         *ngFor="let control of pens.controls; let i = index"
       >
+        <!--div *ngIf="i<penLabels.length" latex [equation]="penLabels[i]"></div-->
+        <div *ngIf="i<penLabels.length" >{{penLabels[i]}}</div>
         <div *ngIf="pens.value.length" class="form-control" [formGroupName]="i">
           <input
             [colorPicker]="pens.controls[i]?.get('colour')?.value"
@@ -20,8 +22,13 @@
           />
           <input type="number" formControlName="width" class="palette width" />
 
-          <select class="palette" name="i" id="i" formControlName="dashStyle">
+          <select class="palette" formControlName="dashStyle">
             <option *ngFor="let item of dashStyles" [value]="item">
+              {{ item }}
+            </option>
+          </select>
+          <select class="palette" formControlName="plotType">
+            <option *ngFor="let item of plotTypes" [value]="item">
               {{ item }}
             </option>
           </select>

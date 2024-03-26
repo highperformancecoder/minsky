@@ -186,7 +186,7 @@ namespace minsky
     updateBoundingBox();
   }
 
-  void GodleyIcon::removeControlledItems(GroupItems& g) const
+  void GodleyIcon::removeControlledItems(GroupItems& g)
   {
     for (auto& i: m_flowVars)
       {
@@ -195,6 +195,7 @@ namespace minsky
         auto item=g.removeItem(*i);
         assert(item.use_count()!=1);
       }
+    m_flowVars.clear();
     for (auto& i: m_stockVars)
       {
         assert(i);
@@ -202,6 +203,7 @@ namespace minsky
         auto item=g.removeItem(*i);
         assert(item.use_count()!=1);
       }
+    m_stockVars.clear();
   }
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 

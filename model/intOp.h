@@ -38,7 +38,7 @@ namespace minsky
     friend struct SchemaHelper;
     bool m_coupled=true;
     void insertControlled(Selection& selection) override;
-    void removeControlledItems(minsky::GroupItems&) const override;
+    void removeControlledItems(minsky::GroupItems&) override;
   public:
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;

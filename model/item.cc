@@ -430,7 +430,7 @@ namespace minsky
     return r;
   }
 
-  void ItemExclude::removeControlledItems() const
+  void ItemExclude::removeControlledItems()
   {
     if (auto g=group.lock())
       removeControlledItems(*g);

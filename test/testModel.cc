@@ -913,21 +913,23 @@ SUITE(Canvas)
 
     TEST_FIXTURE(TestFixture,handleArrows)
       {
-        auto cv=dynamic_cast<VariableBase*>(c.get());
-        cv->value(1000);
-        cv->sliderMin=0;
-        cv->sliderMax=2000;
-        cv->sliderStep=100;
-        canvas.keyPress({0xff52,"",0,c->x(),c->y()});
-        CHECK_EQUAL(1100,cv->value());
-        canvas.keyPress({0xff51,"",0,c->x(),c->y()});
-        CHECK_EQUAL(1000,cv->value());
+        auto v=dynamic_cast<VariableBase*>(c.get());
+        // need a variable that is not defined
+        model->removeWire(*bc);
+        v->value(1000);
+        v->sliderMin=0;
+        v->sliderMax=2000;
+        v->sliderStep=100;
+        canvas.keyPress({0xff52,"",0,v->x(),v->y()});
+        CHECK_EQUAL(1100,v->value());
+        canvas.keyPress({0xff51,"",0,v->x(),v->y()});
+        CHECK_EQUAL(1000,v->value());
         for (size_t i=0; i<20; ++i)
-          canvas.keyPress({0xff52,"",0,c->x(),c->y()});
-        CHECK_EQUAL(2000,cv->value());
+          canvas.keyPress({0xff52,"",0,v->x(),v->y()});
+        CHECK_EQUAL(2000,v->value());
         for (size_t i=0; i<30; ++i)
-          canvas.keyPress({0xff51,"",0,c->x(),c->y()});
-        CHECK_EQUAL(0,cv->value());
+          canvas.keyPress({0xff51,"",0,v->x(),v->y()});
+        CHECK_EQUAL(0,v->value());
       }
     
      TEST_FIXTURE(TestFixture,selectVar)
