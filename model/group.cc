@@ -212,7 +212,7 @@ namespace minsky
   ItemPtr GroupItems::removeItem(const Item& it)
   {
     if (it.plotWidgetCast()==displayPlot.get()) removeDisplayPlot();
-    bookmarks.erase(it.bookmarkId());
+    if (!inDestructor) bookmarks.erase(it.bookmarkId());
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
         {
