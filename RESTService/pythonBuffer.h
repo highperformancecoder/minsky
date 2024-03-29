@@ -194,7 +194,7 @@ namespace classdesc
       switch (type())
         {
         case RESTProcessType::null:
-          return json_pack_t();
+          return json_pack_t(json5_parser::mValue::null);
         case RESTProcessType::boolean:
           return json_pack_t(get<bool>());
         case RESTProcessType::int_number:
