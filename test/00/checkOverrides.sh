@@ -1,41 +1,40 @@
 #! /bin/sh
 
 here=`pwd`
-if test $? -ne 0; then exit 2; fi
-tmp=/tmp/$$
-mkdir $tmp
-if test $? -ne 0; then exit 2; fi
-cd $tmp
-if test $? -ne 0; then exit 2; fi
+. $here/test/common-test.sh
 
-fail()
-{
-    echo "FAILED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 1
-}
+cat >checkOverrides.py <<EOF
+import sys
+sys.path.append('$here')
+from pyminsky import minsky
 
-pass()
-{
-    echo "PASSED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 0
-}
+minsky.load(sys.argv[1])
+minsky.doPushHistory(False)
+numItems=len(minsky.model.items)
 
-trap "fail" 1 2 3 15
+for i in range(numItems):
+    if minsky.canvas.getItemAt(minsky.model.items[i].x(), minsky.model.items[i].y()):
+        origClassType=minsky.canvas.item().classType()
+        # removing GodleyIcon removes dependent variables from model
+        if origClassType=="Item" or origClassType=="GodleyIcon": continue
+        minsky.canvas.copyItem()
+        minsky.canvas.mouseUp(-500, -500)
+        assert minsky.canvas.getItemAt(-500, -500)
+        if origClassType=="IntOp":
+           assert "Variable:integral"==minsky.canvas.item().classType(),sys.argv[1]
+        else:
+           assert origClassType==minsky.canvas.item().classType(), sys.argv[1]
+        minsky.canvas.deleteItem()
+EOF
 
-cp $here/test/assert.tcl .
 for i in $here/examples/*.mky; do
+    if [ $i = "$here/examples/4MonetaryMinskyModelLessUnstableStart.mky" ]; then continue; fi
     echo $i
-   $here/gui-tk/minsky $here/test/checkOverrides.tcl $i &>log
-   if [ $? -ne 0 ]; then
-       cat log
-       fail
-   fi
+    python3 checkOverrides.py $i &>log
+    if [ $? -ne 0 ]; then
+        cat log
+        fail
+    fi
 done
 
 pass

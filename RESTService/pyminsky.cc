@@ -40,6 +40,7 @@ namespace
 
   ModuleMinsky& moduleMinsky()
   {
+    static auto onExit=onStackExit([](){cout<<"~Minsky() finished"<<endl;});
     static ModuleMinsky minsky;
     return minsky;
   }
@@ -65,7 +66,8 @@ namespace
   /// C++ wrapper to default initialise the PyObject
   struct CppPyObject: public PyObject
   {
-    CppPyObject() {memset(this,0,sizeof(PyObject));}
+    CppPyObject() {memset((PyObject*)this,0,sizeof(PyObject));}
+    virtual ~CppPyObject() {}
   };
   
   struct CppWrapper: public CppPyObject
@@ -106,7 +108,12 @@ struct CppWrapperType: public PyTypeObject
       return callMinsky(command, arguments);
     }
 
-    static void deleteCppWrapper(PyObject* x) {delete static_cast<CppWrapper*>(x);}
+    static void deleteCppWrapper(PyObject* x) {
+      assert(dynamic_cast<CppWrapper*>((CppPyObject*)x));
+      cout<<"deleting "<<(static_cast<CppWrapper*>(x)->command)<<":"<<hex<<size_t(x)<<endl;
+      delete static_cast<CppWrapper*>(x);
+      cout<<"deleted:"<<hex<<size_t(x)<<endl;
+    }
 
     static PyObject* getAttro(PyObject* self, PyObject* attr)
     {
@@ -152,12 +159,12 @@ struct CppWrapperType: public PyTypeObject
       static int setElem(PyObject* self, PyObject* key, PyObject* val)
       {
         auto cppWrapper=static_cast<CppWrapper*>(self);
-        if (callMinsky(
-                       cppWrapper->command+".@elem."+write(PythonBuffer(key).get<json_pack_t>()),
-                       PythonBuffer(val)
-                       ))
-          return 0; // success
-        return -1;  // some failure, python exception already raised
+        PyObjectRef r=
+          callMinsky( cppWrapper->command+".@elem."+write(PythonBuffer(key).get<json_pack_t>()),
+                      PythonBuffer(val)
+                      );
+        // on failure, python exception already raised
+        return r? 0: -1;
       }
       MappingMethods() {
         memset(this,0,sizeof(PyMappingMethods));
@@ -222,12 +229,21 @@ struct CppWrapperType: public PyTypeObject
     if (PyErr_Occurred())
       PyErr_Print();
   }
+
+  ofstream RESTStream; /// Output log of commands in RESTService format
   
   PyObject* callMinsky(const string& command, const PythonBuffer& arguments)
   {
     try
       {
-        PythonBuffer result(moduleMinsky().registry.process(command, arguments.get<json_pack_t>()));
+        auto args=arguments.get<json_pack_t>();
+        if (RESTStream)
+          {
+            auto c=command;
+            replace(c.begin(),c.end(),'.','/');
+            RESTStream<<'/'<<c<<' '<<write(args)<<endl;
+          }
+        PythonBuffer result(moduleMinsky().registry.process(command, args));
         auto pyResult=result.getPyObject();
         if (result.type()==RESTProcessType::object)
           {
@@ -253,8 +269,24 @@ struct CppWrapperType: public PyTypeObject
       
   }
 
+  PyObject* openRESTStream(PyObject* self, PyObject* args)
+  {
+    RESTStream.open(PyUnicode_AsUTF8(PySequence_GetItem(args,0)));
+    return RESTStream? Py_True: Py_False;
+  }
+
+  PyObject* closeRESTStream(PyObject* self, PyObject* args)
+  {
+    RESTStream.close();
+    return Py_None;
+  }
+
+  
+  
   PyMethodDef moduleMethods[] = {
     {"call", call, METH_VARARGS, "Backend call"},
+    {"openRESTStream", openRESTStream, METH_VARARGS, "Open REST Stream log"},
+    {"closeRESTStream", closeRESTStream, METH_VARARGS, "Close REST Stream log"},
     {NULL, NULL, 0, NULL} 
   };
   
@@ -277,7 +309,7 @@ namespace minsky
   LocalMinsky::LocalMinsky(Minsky&) {}
   LocalMinsky::~LocalMinsky() {}
   // GUI callback needed only to solve linkage problems
-  void doOneEvent(bool idleTasksOnly) {}
+  void doOneEvent(bool) {}
   Minsky& minsky() {return ::moduleMinsky();}
 }
 
@@ -286,7 +318,6 @@ PyMODINIT_FUNC PyInit_pyminsky(void)
   auto module=PyModule_Create(&pyminsky);
   if (module)
     {
-      PyModule_AddObject(module, "t", CppWrapper::create("minsky.t"));
       PyObjectRef minsky=CppWrapper::create("minsky");
       attachMethods(minsky,"minsky");
       PyModule_AddObject(module, "minsky", minsky.release());

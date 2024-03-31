@@ -122,7 +122,8 @@ namespace classdesc
       x.ref=nullptr;
       return *this;
     }
-    operator PyObject*() {return ref;}
+    operator PyObject*() const {return ref;}
+    operator bool() const {return ref;}
     PyObject* release() {auto tmp=ref; ref=nullptr; return tmp;}
   };
     
