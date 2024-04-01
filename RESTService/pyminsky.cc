@@ -40,7 +40,6 @@ namespace
 
   ModuleMinsky& moduleMinsky()
   {
-    static auto onExit=onStackExit([](){cout<<"~Minsky() finished"<<endl;});
     static ModuleMinsky minsky;
     return minsky;
   }
@@ -66,8 +65,7 @@ namespace
   /// C++ wrapper to default initialise the PyObject
   struct CppPyObject: public PyObject
   {
-    CppPyObject() {memset((PyObject*)this,0,sizeof(PyObject));}
-    virtual ~CppPyObject() {}
+    CppPyObject() {memset(this,0,sizeof(PyObject));}
   };
   
   struct CppWrapper: public CppPyObject
@@ -109,10 +107,7 @@ struct CppWrapperType: public PyTypeObject
     }
 
     static void deleteCppWrapper(PyObject* x) {
-      assert(dynamic_cast<CppWrapper*>((CppPyObject*)x));
-      cout<<"deleting "<<(static_cast<CppWrapper*>(x)->command)<<":"<<hex<<size_t(x)<<endl;
       delete static_cast<CppWrapper*>(x);
-      cout<<"deleted:"<<hex<<size_t(x)<<endl;
     }
 
     static PyObject* getAttro(PyObject* self, PyObject* attr)
@@ -272,16 +267,14 @@ struct CppWrapperType: public PyTypeObject
   PyObject* openRESTStream(PyObject* self, PyObject* args)
   {
     RESTStream.open(PyUnicode_AsUTF8(PySequence_GetItem(args,0)));
-    return RESTStream? Py_True: Py_False;
+    if (RESTStream) Py_RETURN_TRUE; Py_RETURN_FALSE;
   }
 
   PyObject* closeRESTStream(PyObject* self, PyObject* args)
   {
     RESTStream.close();
-    return Py_None;
+    Py_RETURN_NONE;
   }
-
-  
   
   PyMethodDef moduleMethods[] = {
     {"call", call, METH_VARARGS, "Backend call"},

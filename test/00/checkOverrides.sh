@@ -28,7 +28,6 @@ for i in range(numItems):
 EOF
 
 for i in $here/examples/*.mky; do
-    if [ $i = "$here/examples/4MonetaryMinskyModelLessUnstableStart.mky" ]; then continue; fi
     echo $i
     python3 checkOverrides.py $i &>log
     if [ $? -ne 0 ]; then
