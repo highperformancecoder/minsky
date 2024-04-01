@@ -253,7 +253,7 @@ namespace
     unordered_map<size_t, vector<T*>> freeList;
     T* allocate(size_t n) {
       auto i=freeList.find(n);
-      if (i!=freeList.end())
+      if (i!=freeList.end() && !i->second.empty())
         {
           auto r=i->second.back();
           i->second.pop_back();
@@ -286,7 +286,8 @@ namespace
       return r;
     }
   };
-  template <class V> using Map=unordered_map<Key,V,HashKey,equal_to<Key>,TrackingAllocator<pair<const Key,V>>>;
+  //template <class V> using Map=unordered_map<Key,V,HashKey,equal_to<Key>,TrackingAllocator<pair<const Key,V>>>;
+  template <class V> using Map=map<Key,V,less<Key>,TrackingAllocator<pair<const Key,V>>>;
 
   struct NoDataColumns: public std::exception
   {
@@ -709,6 +710,14 @@ namespace minsky
     vector<AnyVal> anyVal;
 
     bool memUsageChecked=false;
+
+    {
+      // check dimension names are all distinct
+      set<string> dimNames{spec.horizontalDimName};
+      for (auto& i: spec.dimensionNames)
+        if (!dimNames.insert(i).second)
+          throw runtime_error("Duplicate dimension: "+i);
+    }
     
     const ProgressUpdater pu(minsky().progressState, "Importing CSV",3);
     for (auto i: spec.dimensionCols)
@@ -760,7 +769,7 @@ namespace minsky
         
         for (; getWholeLine(input, buf, spec); ++row)
           {
-            cout<<row<<" mem used="<<TrackingAllocatorBase::allocatedBytes<<endl;
+            if (!(row&0xff)) cout<<row<<" mem used="<<TrackingAllocatorBase::allocatedBytes<<endl;
             if (!memUsageChecked)
               switch (cminsky().checkMemAllocation(TrackingAllocatorBase::allocatedBytes))
                 {
@@ -826,7 +835,6 @@ namespace minsky
                     else if (!isspace(c) && c!='.' && c!=',')
                       s+=c;                    
                   
-                  //                  if (row>=2670) cout<<"1"<<endl;
                   // TODO - this disallows special floating point values - is this right?
                   bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
                   if (valueExists || !isnan(spec.missingValue))
@@ -835,32 +843,22 @@ namespace minsky
                         tmpData[key]+=1;
                       else
                         {
-                          //                          if (row>=2670) cout<<"find"<<endl;
                           auto i=tmpData.find(key);
                           double v=spec.missingValue;
                           if (valueExists)
                             try
                               {
-                                //                                if (row>=2670) cout<<"stod"<<endl;
                                 v=stod(s);
                                 if (i==tmpData.end())
-                                  {
-                                    //                                    if (row>=2670) cout<<"emplacing"<<endl;
-                                    typename decltype(tmpData)::value_type x(key,v);
-                                    //                                    if (row>=2670) cout<<"key made"<<endl;
-                                    tmpData.insert(x);
-                                    //tmpData.emplace(key,v);
-                                  }
+                                  tmpData.emplace(key,v);
                               }
                             catch (const std::bad_alloc&)
                               {throw;}
                             catch (...) // value misunderstood
                               {
-                                //                                cout<<"caught"<<endl;
                                 if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
                                   valueExists=false;
                               }
-                          //                          if (row>=2670) cout<<"2"<<endl;
                           if (valueExists && i!=tmpData.end())
                             switch (spec.duplicateKeyAction)
                               {
