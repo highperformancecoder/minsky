@@ -443,7 +443,8 @@ namespace minsky
     
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL
-    virtual bool checkMemAllocation(size_t bytes) const {return true;}
+    enum MemCheckResult {OK, proceed, abort};
+    virtual MemCheckResult checkMemAllocation(size_t bytes) const {return OK;}
 
     /// returns amount of memory installed on system
     /*static*/ std::size_t physicalMem() const;

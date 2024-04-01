@@ -223,6 +223,8 @@ export default class App {
     // Rendering was not working on some window's machines without disabling gpu
     App.application.commandLine.appendSwitch('high-dpi-support', '1');
     // This probably supports high-res fonts, but we don't know exactly what implications it has!
+    App.application.commandLine.appendSwitch('max-heap-size','8096');
+    console.log('CLI max_old_space_size', app.commandLine.hasSwitch('huge-max-old-generation-size'));
 
     //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
     // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window

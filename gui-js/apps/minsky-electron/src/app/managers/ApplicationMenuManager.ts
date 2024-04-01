@@ -83,6 +83,9 @@ export class ApplicationMenuManager {
         {
           label: 'About Minsky',
           click() {
+            setInterval(()=> {
+              console.log(process.memoryUsage())
+            },100);
             WindowManager.createPopupWindowWithRouting({
               width: 420,
               height: 500,
