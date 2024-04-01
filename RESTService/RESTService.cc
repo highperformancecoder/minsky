@@ -86,7 +86,7 @@ void processBuffer(const string& buffer)
       replace(cmd.begin(), cmd.end(), '/', '.');
       write(rminsky.registry.process(cmd, jin),cout);
       cout << endl;
-      rminsky.commandHook(cmd, nargs);
+      rminsky.commandHook(cmd, jin);
     }
   catch (const std::exception& ex)
     {

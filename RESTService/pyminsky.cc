@@ -28,9 +28,8 @@
 using namespace minsky;
 namespace
 {
-  struct ModuleMinsky: public Minsky
+  struct ModuleMinsky: public RESTMinsky
   {
-    RESTProcess_t registry;
     ModuleMinsky() {
       classdesc_access::access_RESTProcess<minsky::Minsky>()(registry,"minsky",static_cast<Minsky&>(*this));
       registry.add("minsky", new RESTProcessObject<minsky::Minsky>(*this));
@@ -239,6 +238,8 @@ struct CppWrapperType: public PyTypeObject
             RESTStream<<'/'<<c<<' '<<write(args)<<endl;
           }
         PythonBuffer result(moduleMinsky().registry.process(command, args));
+        moduleMinsky().commandHook(command,args);
+
         auto pyResult=result.getPyObject();
         if (result.type()==RESTProcessType::object)
           {

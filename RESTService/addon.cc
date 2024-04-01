@@ -246,19 +246,7 @@ namespace minsky
         
         // disable quoting wide characters in UTF-8 strings
         auto result=write(registry.process(command, arguments),json5_parser::raw_utf8);
-        int nargs=1;
-        switch (arguments.type())
-          {
-          case RESTProcessType::array:
-            nargs=arguments.get_array().size();
-            break;
-          case RESTProcessType::null:
-            nargs=0;
-            break;
-          default:
-            break;
-          }
-        commandHook(command,nargs);
+        commandHook(command,arguments);
         return result;
       }
 

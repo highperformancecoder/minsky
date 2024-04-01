@@ -28,6 +28,22 @@ namespace minsky
   {
     RESTProcess_t registry;
     CmdData getCommandData(const std::string&) const override;
+    template <class RP>
+    void commandHook(const std::string& command, const RP& args) {
+        int nargs=1;
+        switch (args.type())
+          {
+          case RESTProcessType::array:
+            nargs=args.array().size();
+            break;
+          case RESTProcessType::null:
+            nargs=0;
+            break;
+          default:
+            break;
+          }
+        Minsky::commandHook(command,nargs);
+    }
   };
 }
 
