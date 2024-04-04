@@ -682,7 +682,7 @@ export class CommandsManager {
   }
 
   private static onPopupWindowClose(uid: string) {
-    minsky.namedItems.elem(uid).second.destroyFrame();
+    minsky.namedItems.elem(uid).destroyFrame();
     if (uid in this.activeGodleyWindowItems) {
       this.activeGodleyWindowItems.delete(uid);
     }
@@ -788,7 +788,7 @@ export class CommandsManager {
   static async openGodleyTable(itemInfo: CanvasItem) {
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
       CommandsManager.addItemToNamedItems(itemInfo);
-      let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
+      let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id));
       var title=await godley.table.title();
 
       const window = await this.initializePopupWindow({

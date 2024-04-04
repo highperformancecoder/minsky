@@ -21,10 +21,6 @@ namespace classdesc
   template <class T> struct is_excluded: public false_type {};
   template <class T> struct is_excluded<Exclude<T>>: public true_type {};
 
-  template <class T> struct is_pair: public false_type {};
-  template <class F, class S> struct is_pair<std::pair<F,S>>: public true_type {};
-
-  
   template <class T, class = void> struct is_iterator: public std::false_type {};
 #ifndef MAC_OSX_TK
   template <class T, class U> struct is_iterator<__gnu_cxx::__normal_iterator<T,U>>: public true_type {};

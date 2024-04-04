@@ -141,10 +141,10 @@ export class SummaryComponent implements OnInit {
     switch (this.editCol)
     {
       case 'init':
-      this.electronService.minsky.variableValues.elem(this.editRow.valueId).second.init(this.editCellContents);
+      this.electronService.minsky.variableValues.elem(this.editRow.valueId).init(this.editCellContents);
       break;
       case 'units':
-      this.electronService.minsky.variableValues.elem(this.editRow.valueId).second.setUnits(this.editCellContents);
+      this.electronService.minsky.variableValues.elem(this.editRow.valueId).setUnits(this.editCellContents);
       break;
       case 'name':
       this.electronService.minsky.model.renameAllInstances(this.editRow.valueId, this.editCellContents);

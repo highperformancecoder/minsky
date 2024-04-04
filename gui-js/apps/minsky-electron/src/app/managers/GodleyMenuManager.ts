@@ -17,7 +17,7 @@ export class GodleyMenuManager {
     itemInfo: CanvasItem
   ) {
     const scope = this;
-    const godley = new GodleyIcon(minsky.namedItems.elem(itemInfo.id).second);
+    const godley = new GodleyIcon(minsky.namedItems.elem(itemInfo.id));
     const menu = Menu.buildFromTemplate([
       scope.getGodleyFileMenuItem(window, godley),
       scope.getGodleyEditMenuItem(godley),

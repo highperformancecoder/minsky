@@ -33,7 +33,7 @@ export class EditGodleyTitleComponent implements OnDestroy {
     if (this.electronService.isElectron) {
         var godley=new GodleyIcon(
           this.itemId?
-            this.electronService.minsky.namedItems.elem(this.itemId).second:
+            this.electronService.minsky.namedItems.elem(this.itemId):
             this.electronService.minsky.canvas.item
         )
       godley.table.title(newTitle);
