@@ -26,10 +26,6 @@
 #include "nobble.h"
 #include "minsky_epilogue.h"
 
-//#if defined(__linux__)
-//#include <sys/sysinfo.h>
-//#endif
-
 #ifdef _WIN32
 #include <memoryapi.h>
 #include <windows.h>
