@@ -297,15 +297,6 @@ namespace
   
   using SliceLabelToken=uint32_t;
   using Key=vector<SliceLabelToken, TrackingAllocator<SliceLabelToken>>;
-  struct HashKey
-  {
-    size_t operator()(const Key& key) const {
-      size_t r=0;
-      for (auto& i: key) r^=std::hash<typename Key::value_type>()(i);
-      return r;
-    }
-  };
-  //template <class V> using Map=unordered_map<Key,V,HashKey,equal_to<Key>,TrackingAllocator<pair<const Key,V>>>;
   template <class V> using Map=map<Key,V,less<Key>,TrackingAllocator<pair<const Key,V>>>;
 
   struct NoDataColumns: public std::exception
