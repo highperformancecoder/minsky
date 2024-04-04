@@ -26,12 +26,17 @@
 #include "nobble.h"
 #include "minsky_epilogue.h"
 
-#if defined(__linux__)
-#include <sys/sysinfo.h>
-#endif
+//#if defined(__linux__)
+//#include <sys/sysinfo.h>
+//#endif
 
+#ifdef _WIN32
+#include <memoryapi.h>
+#include <windows.h>
+#else
 #include <sys/mman.h>
 #include <sys/resource.h>
+#endif
 
 using namespace minsky;
 using namespace std;
@@ -226,6 +231,16 @@ namespace
     static char* nextPool;
     static void allocatePool() {
       poolSize=minsky::minsky().physicalMem();
+#ifdef _WIN32
+      pool=reinterpret_cast<char*>(VirtualAlloc(nullptr,poolSize,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE));
+      if (!pool)
+        {
+          char message[1024];
+          FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,nullptr,GetLastError(),MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),message,sizeof(message),nullptr);
+          cout<<message<<endl;
+          throw bad_alloc();
+        }
+#else
       pool=reinterpret_cast<char*>
         (mmap(nullptr,poolSize,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0));
       if (pool==MAP_FAILED)
@@ -233,10 +248,18 @@ namespace
           perror("mmap failed");
           throw bad_alloc();
         }
+#endif
       nextPool=pool;
       allocatedBytes=0;
     }
-    static void deallocatePool() {munmap(pool,poolSize); pool=nextPool=nullptr;}
+    static void deallocatePool() {
+#ifdef _WIN32
+      VirtualFree(pool,poolSize,MEM_DECOMMIT);
+#else
+      munmap(pool,poolSize);
+#endif
+      pool=nextPool=nullptr;
+    }
   };
 
   size_t TrackingAllocatorBase::allocatedBytes=0;
