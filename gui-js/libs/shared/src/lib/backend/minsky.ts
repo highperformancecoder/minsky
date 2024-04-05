@@ -1794,6 +1794,7 @@ export class Ravel extends Item {
   async allSliceLabelsAxis(a1: number): Promise<string[]> {return this.$callMethod('allSliceLabelsAxis',a1);}
   async applyState(a1: ravel__RavelState): Promise<void> {return this.$callMethod('applyState',a1);}
   async broadcastStateToLockGroup(): Promise<void> {return this.$callMethod('broadcastStateToLockGroup');}
+  async collapseAllHandles(a1: boolean): Promise<void> {return this.$callMethod('collapseAllHandles',a1);}
   async description(): Promise<string> {return this.$callMethod('description');}
   async dimension(a1: number): Promise<object> {return this.$callMethod('dimension',a1);}
   async dimensionType(...args: any[]): Promise<string> {return this.$callMethod('dimensionType',...args);}
