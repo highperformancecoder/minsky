@@ -127,16 +127,12 @@ const injectCancelButton=`
    document.body.appendChild(cancelButtonDiv);
 `;
 
-let progress={text:"", value:0, indeterminate: false,};
+let progress={text:"", value:0, indeterminate: false, closeOnComplete: false, browserWindow: {}};
 let progressBar;
 let initProgressBar;
 
 restService.setMessageCallback(function (msg: string, buttons: string[]) {
   if (msg && dialog) {
-    if (progressBar) {
-      progressBar.close();
-      progressBar=null;
-    }
     return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
       message: msg,
       type: 'info',
@@ -150,6 +146,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
   WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
   if (!initProgressBar && busy)
     initProgressBar=setTimeout(()=>{
+      progress.browserWindow={parent: WindowManager.getMainWindow()};
       progressBar=new ProgressBar(progress);
       progressBar.on('ready',()=>{progressBar._window.webContents.executeJavaScript(injectCancelButton);});
       progressBar.value=progress.value;
