@@ -66,6 +66,11 @@
 #include <sys/sysinfo.h>
 #endif
 
+#ifdef __APPLE__
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 #include <stdio.h>
 
 using namespace classdesc;
@@ -1718,17 +1723,13 @@ namespace minsky
     MEMORYSTATUSEX s{sizeof(MEMORYSTATUSEX)};
     GlobalMemoryStatusEx(&s);
     return s.ullTotalPhys;
-    //#elif defined(__APPLE__)
-    //    int mib[2];
-    //    int64_t physical_memory;
-    //    size_t length;
-    //
-    //    // Get the Physical memory size
-    //    mib[0] = CTL_HW;
-    //    mib[1] = HW_MEMSIZE;
-    //    length = sizeof(int64_t);
-    //    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
-    //    return physical_memory;
+#elif defined(__APPLE__)
+    int mib[]={CTL_HW,HW_MEMSIZE};
+    uint64_t physical_memory;
+    size_t length = sizeof(uint64_t);
+    if (sysctl(mib, sizeof(mib)/sizeof(int), &physical_memory, &length, NULL, 0))
+      perror("physicalMem:");
+    return physical_memory;
 #else
     // all else fails, return max value
     return ~0UL;
