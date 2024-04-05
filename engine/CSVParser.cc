@@ -939,14 +939,13 @@ namespace minsky
               if (i->size()<2)
                 {
                   hc.xvectors.erase(i);
-                  dimLabels.erase(d);
                 }
               else
                 {
                   ++i;
                   ++d;
                 }
-          assert(hc.xvectors.size()==dimLabels.size());
+          assert(hc.xvectors.size()<=dimLabels.size());
         }
         
         for (auto& xv: hc.xvectors)
@@ -970,14 +969,13 @@ namespace minsky
               {
                 size_t idx=0;
                 assert (hc.rank()<=i.first.size());
-                assert(dimLabels.size()==hc.rank());
+                assert(dimLabels.size()>=hc.rank());
                 int j=hc.rank()-1, k=i.first.size()-1; 
                 while (j>=0 && k>=0)
                   {
-                    auto dimLabel=dimLabels[j].find(i.first[k]);
-                    while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
-                      dimLabel=dimLabels[j].find(i.first[--k]);
-                    assert(dimLabel!=dimLabels[j].end());
+                    while (dimLabels[k].size()<2) --k; // skip over elided dimensions
+                    auto dimLabel=dimLabels[k].find(i.first[k]);
+                    assert(dimLabel!=dimLabels[k].end());
                     idx = (idx*dims[j]) + dimLabel->second;
                     --j; --k;
                   }
@@ -999,14 +997,13 @@ namespace minsky
                 {
                   size_t idx=0;
                   assert (dims.size()<=i.first.size());
-                  assert(dimLabels.size()==dims.size());
+                  assert(dimLabels.size()>=dims.size());
                   int j=dims.size()-1, k=i.first.size()-1;
                   while (j>=0 && k>=0) // changed from for loop to while loop at CodeQL's insistence
                     {
-                      auto dimLabel=dimLabels[j].find(i.first[k]);
-                      while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
-                        dimLabel=dimLabels[j].find(i.first[--k]);
-                      assert(dimLabel!=dimLabels[j].end());
+                      while (dimLabels[k].size()<2) --k; // skip over elided dimensions
+                      auto dimLabel=dimLabels[k].find(i.first[k]);
+                      assert(dimLabel!=dimLabels[k].end());
                       idx = (idx*dims[j]) + dimLabel->second;
                       --j;
                       --k;
