@@ -191,7 +191,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   ngAfterViewInit() {
     (async () => {
       this.valueId = await this.getValueId();
-      this.variableValuesSubCommand = this.electronService.minsky.variableValues.elem(this.valueId).second;
+      this.variableValuesSubCommand = this.electronService.minsky.variableValues.elem(this.valueId);
 
 
       await this.getCSVDialogSpec();
@@ -241,7 +241,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async getValueId() {
-    return new VariableBase(this.electronService.minsky.namedItems.elem(this.itemId).second).valueId();
+    return new VariableBase(this.electronService.minsky.namedItems.elem(this.itemId)).valueId();
   }
 
   async selectFile() {

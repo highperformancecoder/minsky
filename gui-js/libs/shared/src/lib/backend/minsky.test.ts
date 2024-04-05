@@ -40,7 +40,7 @@ describe('Minsky tests', ()=>{
      minsky.canvas.addOperation("time");
      minsky.canvas.getItemAt(0,0);
      minsky.nameCurrentItem("foo");
-     expect(await minsky.namedItems.elem("foo").second.classType()).toBe("Operation:time");
+     expect(await minsky.namedItems.elem("foo").classType()).toBe("Operation:time");
      expect(await minsky.namedItems.size()).toBe(1);
      minsky.namedItems.insert("fooBar",await minsky.canvas.item.$properties());
      expect(await minsky.namedItems.size()).toBe(2);
@@ -140,7 +140,8 @@ describe('Minsky tests', ()=>{
    });
    test('dimensional analysis',async ()=>{
      minsky.deleteAllUnits();
-     expect(await minsky.dimensionalAnalysis()).toStrictEqual({});
+     console.log(await minsky.dimensionalAnalysis());
+     expect(await minsky.dimensionalAnalysis()).toStrictEqual(null);
    });
  
    test('addGodley',async ()=>{

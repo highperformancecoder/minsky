@@ -33,7 +33,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
-      this.plotWidget=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second);
+      this.plotWidget=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId));
     });
   }
 

@@ -135,6 +135,38 @@ struct CppWrapperType: public PyTypeObject
       return 0;
     }
 
+    struct MappingMethods: PyMappingMethods
+    {
+      static Py_ssize_t size(PyObject* self)
+      {
+        auto cppWrapper=static_cast<CppWrapper*>(self);
+        return moduleMinsky().registry.process(cppWrapper->command+".@size",{}).get_uint64();
+      }
+
+      static PyObject* getElem(PyObject* self, PyObject* key)
+      {
+        auto cppWrapper=static_cast<CppWrapper*>(self);
+        return callMinsky(cppWrapper->command+".@elem."+write(PythonBuffer(key).get<json_pack_t>()), {});
+      }
+    
+      static int setElem(PyObject* self, PyObject* key, PyObject* val)
+      {
+        auto cppWrapper=static_cast<CppWrapper*>(self);
+        if (callMinsky(
+                       cppWrapper->command+".@elem."+write(PythonBuffer(key).get<json_pack_t>()),
+                       PythonBuffer(val)
+                       ))
+          return 0; // success
+        return -1;  // some failure, python exception already raised
+      }
+      MappingMethods() {
+        memset(this,0,sizeof(PyMappingMethods));
+        mp_length=size;           // support for len
+        mp_subscript=getElem;     // support for []
+        mp_ass_subscript=setElem; // support for []=
+      }
+    } mappingMethods;
+      
     CppWrapperType()
     {
       memset(this,0,sizeof(PyTypeObject));
@@ -145,6 +177,7 @@ struct CppWrapperType: public PyTypeObject
       tp_dealloc=deleteCppWrapper;
       tp_getattro=getAttro;
       tp_setattro=setAttro;
+      tp_as_mapping=&mappingMethods;
       PyType_Ready(this);
     }
   } cppWrapperType;

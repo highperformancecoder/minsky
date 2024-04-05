@@ -121,7 +121,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
 
   async updateFormValues() {
     if (this.electronService.isElectron) {
-      let plot=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second);
+      let plot=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId));
       this.title.setValue(await plot.title());
       this.xLabel.setValue(await plot.xlabel());
       this.yLabel.setValue(await plot.ylabel());
@@ -165,7 +165,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   
   async handleSave() {
     if (this.electronService.isElectron) {
-      let plot=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId).second);
+      let plot=new PlotWidget(this.electronService.minsky.namedItems.elem(this.itemId));
       plot.title(this.title.value);
       plot.xlabel(this.xLabel.value);
       plot.ylabel(this.yLabel.value);

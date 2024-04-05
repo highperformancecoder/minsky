@@ -43,7 +43,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     if(!this.electronService.isElectron) return;
 
-    this.namedItem=new Ravel(this.electronService.minsky.namedItems.elem(this.itemId).second);
+    this.namedItem=new Ravel(this.electronService.minsky.namedItems.elem(this.itemId));
     this.render();
     this.initEvents();
     if (Functions.isMacOS()) this.yoffs=-20; // why, o why, Mac?
@@ -135,7 +135,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
       this.communicationService.mouseX=this.communicationService.mouseY=0;
       await this.communicationService.handleKeyDown({
         event,
-        command: `minsky.namedItems.@elem."${this.itemId}".second.popup`,
+        command: `minsky.namedItems.@elem."${this.itemId}".popup`,
       });
     };
   }
