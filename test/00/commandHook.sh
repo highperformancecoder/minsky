@@ -55,13 +55,13 @@ cat >reference <<EOF
 /minsky/edited=>false
 /minsky/nSteps=>10
 /minsky/edited=>true
-/minsky/load=>{}
+/minsky/load=>null
 /minsky/edited=>false
-/minsky/save=>{}
+/minsky/save=>null
 /minsky/edited=>false
-/minsky/canvas/addOperation=>{}
+/minsky/canvas/addOperation=>null
 /minsky/edited=>true
-/minsky/save=>{}
+/minsky/save=>null
 /minsky/edited=>false
 EOF
 
