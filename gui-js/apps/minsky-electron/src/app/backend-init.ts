@@ -132,12 +132,17 @@ let progressBar;
 let initProgressBar;
 
 restService.setMessageCallback(function (msg: string, buttons: string[]) {
-  if (msg && dialog)
+  if (msg && dialog) {
+    if (progressBar) {
+      progressBar.close();
+      progressBar=null;
+    }
     return dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
       message: msg,
       type: 'info',
       buttons: buttons,
     });
+  }
   return 0;
 });
 
@@ -164,10 +169,10 @@ restService.setBusyCursorCallback(function (busy: boolean) {
 });
 
 restService.setProgressCallback(function (title: string, val: number) {
-  progress.text=title;
+  progress.text=title+': '+val+'%';
   progress.value=val;
   if (progressBar && !progressBar.isCompleted())  {
-    progressBar.text=title;
+    progressBar.text=progress.text;
     progressBar.value=val;
   }
 });

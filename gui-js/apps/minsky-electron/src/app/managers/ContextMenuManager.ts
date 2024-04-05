@@ -839,6 +839,14 @@ export class ContextMenuManager {
           click: async () => {ravel.nextReduction(agg.value);}
         }))
       }),
+      new MenuItem({
+        label: 'Collapse all handles',
+        click: async () => {ravel.collapseAllHandles(true);}
+      }),
+      new MenuItem({
+        label: 'Expand all handles',
+        click: async () => {ravel.collapseAllHandles(false);}
+      }),
       new MenuItem({ 
         label: 'Link specific handles',
         click: async () => {

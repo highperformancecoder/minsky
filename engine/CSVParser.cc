@@ -26,10 +26,6 @@
 #include "nobble.h"
 #include "minsky_epilogue.h"
 
-//#if defined(__linux__)
-//#include <sys/sysinfo.h>
-//#endif
-
 #ifdef _WIN32
 #include <memoryapi.h>
 #include <windows.h>
@@ -294,22 +290,14 @@ namespace
       return r;
     }
     void deallocate(T* p, size_t n) {
-      freeList[n].push_back(p); // recycle allocation
+      if (pool)
+        freeList[n].push_back(p); // recycle allocation
     }
   };
 
   
   using SliceLabelToken=uint32_t;
   using Key=vector<SliceLabelToken, TrackingAllocator<SliceLabelToken>>;
-  struct HashKey
-  {
-    size_t operator()(const Key& key) const {
-      size_t r=0;
-      for (auto& i: key) r^=std::hash<typename Key::value_type>()(i);
-      return r;
-    }
-  };
-  //template <class V> using Map=unordered_map<Key,V,HashKey,equal_to<Key>,TrackingAllocator<pair<const Key,V>>>;
   template <class V> using Map=map<Key,V,less<Key>,TrackingAllocator<pair<const Key,V>>>;
 
   struct NoDataColumns: public std::exception
@@ -718,12 +706,12 @@ namespace minsky
   void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
     const BusyCursor busy(minsky());
+    const ProgressUpdater pu(minsky().progressState, "Importing CSV",3);
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
     Tokens<SliceLabelToken> sliceLabelTokens;
       
     TrackingAllocatorBase::allocatePool();
-    auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
     Map<double> tmpData;
     Map<int> tmpCnt;
     vector<unordered_map<typename Key::value_type, size_t>> dimLabels(spec.dimensionCols.size());
@@ -734,6 +722,9 @@ namespace minsky
 
     bool memUsageChecked=false;
 
+    // placed here, to delete the pool in one swoop, speeding up ~Map
+    auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
+
     {
       // check dimension names are all distinct
       set<string> dimNames{spec.horizontalDimName};
@@ -742,7 +733,6 @@ namespace minsky
           throw runtime_error("Duplicate dimension: "+i);
     }
     
-    const ProgressUpdater pu(minsky().progressState, "Importing CSV",3);
     for (auto i: spec.dimensionCols)
       {
         hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
@@ -792,7 +782,6 @@ namespace minsky
         
         for (; getWholeLine(input, buf, spec); ++row)
           {
-            if (!(row&0xff)) cout<<row<<" mem used="<<TrackingAllocatorBase::allocatedBytes<<endl;
             if (!memUsageChecked)
               switch (cminsky().checkMemAllocation(TrackingAllocatorBase::allocatedBytes))
                 {
