@@ -81,15 +81,25 @@ namespace minsky
 
     /// populates this spec from a "RavelHypercube" entry, \a row is the row being read, used to set the headerRow attribute
     void populateFromRavelMetadata(const std::string& metadata, std::size_t row);
-    
+
   private:
     /// try to fill in remainder of spec, given a tokenizer function tf
     /// eg boost::escaped_list_separator<char> tf(escape,separator,quote)
     template <class T>
-    void givenTFguessRemainder(std::istream&, const T& tf);
+    void givenTFguessRemainder(std::istream& initialInput, std::istream& remainingInput, const T& tf);
 
     /// figure out the tokenizer function and call givenTFguessRemainder
-    void guessRemainder(std::istream&, char separator);
+    void guessRemainder(std::istream& initialInput, std::istream& remainingInput, char separator);
+
+    std::vector<size_t> starts;
+    size_t nCols=0;
+    size_t row=0;
+    size_t firstEmpty=std::numeric_limits<size_t>::max();
+
+    /// process chunk of input, updating guessed spec
+    /// @return true if there's no more work to be done
+    template <class T>
+    bool processChunk(std::istream& input, const T& tf, size_t until);
   };
 
   /// creates a report CSV file from input, with errors sorted at
