@@ -41,10 +41,9 @@ export class Map<Key, Value> extends CppClass
   valueType: any;  // stash a reference to the actual type here, for use in a new expression
   constructor(prefix: string, valueType: any=null) {super(prefix); this.valueType=valueType;}
   elem(key: Key) {
-    const cmd=`${this.m_prefix}.@elem.${JSON5.stringify(key)}.second`;
+    const cmd=`${this.m_prefix}.@elem.${JSON5.stringify(key)}`;
     // if proxy type provided, instantiate that, otherwise return the current value
-    return new Pair<Key,Value>
-      (key,this.valueType? new this.valueType(cmd): this.$callMethod(cmd));
+    return this.valueType? new this.valueType(cmd): this.$callMethod(cmd);
   }
   insert(key: Key, value: Value) {this.$callMethod("@insert",{first: key, second:value});}
   erase(key: Key) {this.$callMethod("@erase",key);}

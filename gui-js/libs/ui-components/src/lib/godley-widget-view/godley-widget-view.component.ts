@@ -102,7 +102,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   }
 
   async ngOnInit() {
-    this.godleyIcon = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId).second);
+    this.godleyIcon = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId));
     this.namedItemSubCommand = this.godleyIcon.popup;
 
     this.windowId = (await this.electronService.getCurrentWindow()).id;
@@ -218,7 +218,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   onKeyDown = async (event: KeyboardEvent) => {
     await this.communicationService.handleKeyDown({
       event,
-      command: `minsky.namedItems.@elem."${this.itemId}".second.popup`,
+      command: `minsky.namedItems.@elem."${this.itemId}".popup`,
     });
 
     await this.redraw();
