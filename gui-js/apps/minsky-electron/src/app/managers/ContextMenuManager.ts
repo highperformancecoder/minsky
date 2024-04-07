@@ -813,10 +813,11 @@ export class ContextMenuManager {
     const editorMode = await ravel.editorMode();
 
     const ravelsSelected = await minsky.canvas.ravelsSelected();
+    // may be null if ravel.lockGroup is null, ie ravel is not part of a "RavelLockGroup"
     const allLockHandles = await ravel.lockGroup.allLockHandles();
 
-    const lockHandlesAvailable = ravelsSelected > 1 || allLockHandles!==null && allLockHandles.length>0;
-    const unlockAvailable = allLockHandles!==null && allLockHandles.length>0;
+    const linkHandlesAvailable = ravelsSelected > 1 || allLockHandles!==null && allLockHandles.length>0;
+    const unlinkAvailable = allLockHandles!==null;
     const handleAvailable = handleIndex !== -1;
 
     let menuItems = [
@@ -856,11 +857,11 @@ export class ContextMenuManager {
         click: async () => {
           CommandsManager.lockSpecificHandles(ravel);
         },
-        enabled: lockHandlesAvailable 
+        enabled: linkHandlesAvailable 
       }),
       new MenuItem({
         label: 'Unlink',
-        enabled: unlockAvailable,
+        enabled: unlinkAvailable,
         click: async () => {
           ravel.leaveLockGroup();
           CommandsManager.requestRedraw();
