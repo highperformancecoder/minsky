@@ -1,10 +1,6 @@
 declare var process;
 
 export class Functions {
-  static isEmptyObject(obj) {
-    return Object.keys(obj).length === 0 && obj.constructor === Object;
-  }
-  
   static green(anything: unknown) {
     return '\x1b[32m' + `${anything}`;
   }
