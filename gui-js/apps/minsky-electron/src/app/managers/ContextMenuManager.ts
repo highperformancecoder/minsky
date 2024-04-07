@@ -815,8 +815,8 @@ export class ContextMenuManager {
     const ravelsSelected = await minsky.canvas.ravelsSelected();
     const allLockHandles = await ravel.lockGroup.allLockHandles();
 
-    const lockHandlesAvailable = ravelsSelected > 1 || Object.keys(allLockHandles).length !== 0;
-    const unlockAvailable = Object.keys(allLockHandles).length !== 0;
+    const lockHandlesAvailable = ravelsSelected > 1 || allLockHandles!==null && allLockHandles.length>0;
+    const unlockAvailable = allLockHandles!==null && allLockHandles.length>0;
     const handleAvailable = handleIndex !== -1;
 
     let menuItems = [
@@ -846,6 +846,10 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Expand all handles',
         click: async () => {ravel.collapseAllHandles(false);}
+      }),
+      new MenuItem({
+        label: 'Flip',
+        click: async () => {ravel.flipped(!await ravel.flipped());}
       }),
       new MenuItem({ 
         label: 'Link specific handles',

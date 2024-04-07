@@ -182,6 +182,7 @@ namespace schema3
                   items.back().dimensions=r->axisDimensions;
                   items.back().editorMode=r->editorMode();
                 }
+              if (r->flipped) items.back().rotation=180;
             }
           if (auto* l=dynamic_cast<const minsky::Lock*>(i))
             if (l->locked())
@@ -497,6 +498,7 @@ namespace schema3
           x1->axisDimensions=*y.dimensions;
         if (y.editorMode && *y.editorMode!=x1->editorMode())
           x1->toggleEditorMode();
+        x1->flipped=minsky::flipped(y.rotation);
       }
     if (auto* x1=dynamic_cast<minsky::Lock*>(&x))
       {
