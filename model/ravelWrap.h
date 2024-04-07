@@ -78,6 +78,7 @@ namespace minsky
     std::vector<std::string> allSliceLabelsImpl(int axis, ravel::HandleSort::Order) const;
 
     ravel::Ravel wrappedRavel;
+    ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window
@@ -123,12 +124,15 @@ namespace minsky
     /// redistribute handles according to current state
     void redistributeHandles() {wrappedRavel.redistributeHandles();}
     /// sets the type of the next reduction operation
-    void nextReduction(ravel::Op::ReductionOp op) {wrappedRavel.nextReduction(op);}
+    void nextReduction(ravel::Op::ReductionOp op) {m_nextReduction=op; wrappedRavel.nextReduction(op);}
     /// set the reduction type for \a handle
     void handleSetReduction(int handle, ravel::Op::ReductionOp op) {wrappedRavel.handleSetReduction(handle, op);}
     /// current handle mouse is over, or -1 if none
     int selectedHandle() const {return wrappedRavel.selectedHandle();}
-
+    /// collapse all handles (applying nextReduction op where appropriate)
+    /// @param collapse if true, uncollapse if false
+    void collapseAllHandles(bool collapse=true);
+    
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;
     bool setDisplayFilterCaliper(bool x);

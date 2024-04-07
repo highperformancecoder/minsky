@@ -1335,7 +1335,7 @@ export class Minsky extends CppClass {
   async balanceDuplicateColumns(a1: GodleyIcon,a2: number): Promise<void> {return this.$callMethod('balanceDuplicateColumns',a1,a2);}
   async bookmarkRefresh(): Promise<void> {return this.$callMethod('bookmarkRefresh');}
   async checkEquationOrder(): Promise<boolean> {return this.$callMethod('checkEquationOrder');}
-  async checkMemAllocation(a1: number): Promise<boolean> {return this.$callMethod('checkMemAllocation',a1);}
+  async checkMemAllocation(a1: number): Promise<string> {return this.$callMethod('checkMemAllocation',a1);}
   async checkPushHistory(): Promise<void> {return this.$callMethod('checkPushHistory');}
   async classifyOp(a1: string): Promise<string> {return this.$callMethod('classifyOp',a1);}
   async clearAllMaps(...args: boolean[]): Promise<void> {return this.$callMethod('clearAllMaps',...args);}
@@ -1794,6 +1794,7 @@ export class Ravel extends Item {
   async allSliceLabelsAxis(a1: number): Promise<string[]> {return this.$callMethod('allSliceLabelsAxis',a1);}
   async applyState(a1: ravel__RavelState): Promise<void> {return this.$callMethod('applyState',a1);}
   async broadcastStateToLockGroup(): Promise<void> {return this.$callMethod('broadcastStateToLockGroup');}
+  async collapseAllHandles(a1: boolean): Promise<void> {return this.$callMethod('collapseAllHandles',a1);}
   async description(): Promise<string> {return this.$callMethod('description');}
   async dimension(a1: number): Promise<object> {return this.$callMethod('dimension',a1);}
   async dimensionType(...args: any[]): Promise<string> {return this.$callMethod('dimensionType',...args);}

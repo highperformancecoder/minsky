@@ -34,12 +34,12 @@ namespace minsky
 
   class Progress
   {
-    std::string title;
     double delta=100;
     double progress=0;
     bool updaterStack=false; // whether under updater control
     friend class ProgressUpdater;
   public:
+    std::string title;
     std::shared_ptr<std::atomic<bool>> cancel=std::make_shared<std::atomic<bool>>(false); ///< set to true to cancel process in progreess
     void displayProgress();
     void operator++() {
@@ -78,6 +78,7 @@ namespace minsky
     }
     ~ProgressUpdater() {
       updatedProgress=savedProgress;
+      ++updatedProgress;
       if (!updatedProgress.updaterStack)
         updatedProgress.progress=0; // reset progress counter once last ProgressUpdater exits
       else

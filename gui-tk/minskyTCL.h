@@ -378,15 +378,14 @@ namespace minsky
     void runItemDeletedCallback(const Item& item) override
     {tclcmd()<<item.deleteCallback<<'\n';}
     
-    bool checkMemAllocation(std::size_t bytes) const override {
-      bool r=true;
+    MemCheckResult checkMemAllocation(std::size_t bytes) const override {
       if (ecolab::mainWin && bytes>0.2*physicalMem())
         {
           tclcmd cmd;
           cmd<<"tk_messageBox -message {Allocation will use more than 50% of available memory. Do you want to proceed?} -type yesno\n";
-          r=cmd.result=="yes";
+          return cmd.result=="yes"? proceed: abort;
         }
-      return r;
+      return OK;
     }
     
     static int numOpArgs(OperationType::Type o);
