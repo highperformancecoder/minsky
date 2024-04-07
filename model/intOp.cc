@@ -52,7 +52,7 @@ namespace minsky
       if (r<iWidth()*z) r=iWidth()*z;    
       if (h<iHeight()*z) h=iHeight()*z;   
 
-      if (coupled())
+      if (coupled() && intVar)
         {
           cairo::CairoSave cs(cairo);
           auto& iv=*intVar;
@@ -93,7 +93,7 @@ namespace minsky
       cairo_set_source_rgb(cairo,0,0,1);    
       cairo_stroke_preserve(cairo);    
     
-      if (coupled())
+      if (coupled() && intVar)
         {
           const float ivo=intVarOffset*z;
           cairo_new_path(cairo);

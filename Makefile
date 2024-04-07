@@ -251,6 +251,7 @@ endif
 
 ifdef ASAN
 FLAGS+=-fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls -O1 -DRealloc=std::realloc
+LIBS+=-shared-libasan
 endif
 
 ifdef MXE

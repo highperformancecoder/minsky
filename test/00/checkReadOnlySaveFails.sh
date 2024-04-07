@@ -1,43 +1,25 @@
 #! /bin/sh
 
 here=`pwd`
-if test $? -ne 0; then exit 2; fi
-tmp=/tmp/$$
-mkdir $tmp
-if test $? -ne 0; then exit 2; fi
-cd $tmp
-if test $? -ne 0; then exit 2; fi
-
-fail()
-{
-    echo "FAILED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 1
-}
-
-pass()
-{
-    echo "PASSED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 0
-}
-
-trap "fail" 1 2 3 15
+. $here/test/common-test.sh
 
 # test that save file throws an error if it can't
-cat >input.tcl <<EOF
-minsky.save writeable.mky
-if [catch {minsky.save /minsky-dummy/readonly.mky}] {tcl_exit 0}
-tcl_exit 1
+cat >input.py <<EOF
+import sys
+sys.path.append('$here')
+from pyminsky import minsky
+
+minsky.save('writeable.mky')
+try:
+  minsky.save('/minsky-dummy/readonly.mky')
+except:
+  exit(0)
+exit(1)
 EOF
 
 touch readonly.mky
 chmod a-w readonly.mky
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if test $? -ne 0; then fail; fi
 
 pass

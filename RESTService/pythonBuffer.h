@@ -31,7 +31,7 @@
 namespace classdesc
 {
   /// @{ utility python object constructors
-  inline PyObject* newPyObject(const bool& x) {return x? Py_True: Py_False;}
+  inline PyObject* newPyObject(const bool& x) {if (x) Py_RETURN_TRUE; Py_RETURN_FALSE;}
   template <class T> inline typename enable_if<And<is_integral<T>, Not<is_same<T,bool>>>, PyObject*>::T
   newPyObject(const T& x) {return PyLong_FromLong(x);}
   template <class T> inline typename enable_if<is_floating_point<T>,PyObject*>::T
@@ -67,10 +67,10 @@ namespace classdesc
         case json5_parser::real_type:
           return newPyObject(j.get_real());
         case json5_parser::null_type:
-          return Py_None;
+          Py_RETURN_NONE;
         }
     assert(false); // silly compiler cannot figure out this is unreachable code
-    return Py_None;
+    Py_RETURN_NONE;
   }
 
   inline PyObject* newPyObject(const json_pack_t& j) {return newPyObjectJson(j);}
@@ -122,7 +122,8 @@ namespace classdesc
       x.ref=nullptr;
       return *this;
     }
-    operator PyObject*() {return ref;}
+    operator PyObject*() const {return ref;}
+    operator bool() const {return ref;}
     PyObject* release() {auto tmp=ref; ref=nullptr; return tmp;}
   };
     
@@ -130,13 +131,13 @@ namespace classdesc
   {
   public:
     using Array=std::deque<PythonBuffer>;
-    PythonBuffer()=default;
+    PythonBuffer() {Py_INCREF(pyObject);}
     
     explicit PythonBuffer(RESTProcessType::Type type) {
       switch (type)
         {
-        case RESTProcessType::null: pyObject=Py_None; return;
-        case RESTProcessType::boolean: pyObject=Py_False; return;
+        case RESTProcessType::null: pyObject=Py_None; Py_INCREF(pyObject); return;
+        case RESTProcessType::boolean: pyObject=Py_False; Py_INCREF(pyObject); return;
         case RESTProcessType::int_number: pyObject=PyLong_FromLong(0); return;
         case RESTProcessType::float_number: pyObject=PyFloat_FromDouble(0.0); return;
         case RESTProcessType::string: pyObject=PyUnicode_FromString(""); return;
@@ -149,9 +150,11 @@ namespace classdesc
     explicit PythonBuffer(const json_pack_t& x): pyObject(newPyObjectJson(x)) {}
     explicit PythonBuffer(const json5_parser::mArray& x): pyObject(newPyObjectJson(json_pack_t(x))) {}
     explicit PythonBuffer(PyObject* x) {
-      if (x) {
-        pyObject=x; Py_INCREF(x);
-      } else pyObject=Py_None;
+      if (x) 
+        pyObject=x; 
+      else
+        pyObject=Py_None;
+      Py_INCREF(x);
     }
     
     ~PythonBuffer() {Py_DECREF(pyObject);}
@@ -194,7 +197,7 @@ namespace classdesc
       switch (type())
         {
         case RESTProcessType::null:
-          return json_pack_t();
+          return json_pack_t(json5_parser::mValue::null);
         case RESTProcessType::boolean:
           return json_pack_t(get<bool>());
         case RESTProcessType::int_number:
@@ -259,7 +262,7 @@ namespace classdesc
       return PyUnicode_AsUTF8(pyStr);
     }
   private:
-    PyObject* pyObject=Py_None;
+    PyObject* pyObject=Py_None; // note - this needs to be INCREF'd in constructors, not immortal before 3.12
     
 
   };
