@@ -72,14 +72,12 @@ void processBuffer(const string& buffer)
       auto n=buffer.find(' ');
       json_pack_t jin(json5_parser::mValue::null);
       string cmd;
-      unsigned nargs=0;
       if (n==string::npos)
         cmd=buffer;
       else
         { // read argument(s)
           cmd=buffer.substr(0,n);
           read(buffer.substr(n),jin);
-          nargs = jin.type()==RESTProcessType::array? jin.array().size(): 1;
         }
       cout<<cmd<<"=>";
       cmd.erase(0,1); // remove leading '/'
