@@ -26,8 +26,12 @@
 #include "nobble.h"
 #include "minsky_epilogue.h"
 
-#if defined(__linux__)
-#include <sys/sysinfo.h>
+#ifdef _WIN32
+#include <memoryapi.h>
+#include <windows.h>
+#else
+#include <sys/mman.h>
+#include <sys/resource.h>
 #endif
 
 using namespace minsky;
@@ -36,6 +40,7 @@ using namespace std;
 #include <boost/type_traits.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
+#include <boost/pool/pool.hpp>
 
 namespace escapedListSeparator
 {
@@ -189,7 +194,115 @@ namespace
   };
 
   std::string str(const Any& x) {return minsky::str(static_cast<const any&>(x));}
+
+  // slice label token map
+  template <class T>
+  class Tokens
+  {
+    unordered_map<string, T> tokens;
+    vector<const string*> tokenRefs;
+    string empty;
+  public:
+    T operator[](const string& x) {
+      auto i=tokens.find(x);
+      if (i==tokens.end())
+        {
+          i=tokens.emplace(x, tokenRefs.size()).first;
+          tokenRefs.push_back(&(i->first));
+        }
+      return i->second;
+    }
+    const string& operator[](T i) const {
+      if (i<tokenRefs.size()) return *tokenRefs[i];
+      return empty;
+    }
+  };
+
+  // a std::allocator class that tracks the number of bytes allocated
+  struct TrackingAllocatorBase
+  {
+    static size_t allocatedBytes;
+    static size_t poolSize;
+    static char* pool;
+    static char* nextPool;
+    static bool destructing;
+    static void allocatePool() {
+      poolSize=minsky::minsky().physicalMem();
+#ifdef _WIN32
+      pool=reinterpret_cast<char*>(VirtualAlloc(nullptr,poolSize,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE));
+      if (!pool)
+        {
+          char message[1024];
+          FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,nullptr,GetLastError(),MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),message,sizeof(message),nullptr);
+          cout<<message<<endl;
+          throw bad_alloc();
+        }
+#else
+      pool=reinterpret_cast<char*>
+        (mmap(nullptr,poolSize,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0));
+      if (pool==MAP_FAILED)
+        {
+          perror("mmap failed");
+          throw bad_alloc();
+        }
+#endif
+      nextPool=pool;
+      allocatedBytes=0;
+      destructing=false;
+    }
+    static void deallocatePool() {
+#ifdef _WIN32
+      VirtualFree(pool,poolSize,MEM_DECOMMIT);
+#else
+      munmap(pool,poolSize);
+#endif
+      pool=nextPool=nullptr;
+    }
+  };
+
+  size_t TrackingAllocatorBase::allocatedBytes=0;
+  size_t TrackingAllocatorBase::poolSize=0;
+  char* TrackingAllocatorBase::pool=nullptr;
+  char* TrackingAllocatorBase::nextPool=nullptr;
+  bool TrackingAllocatorBase::destructing=false;
   
+  template <class T>
+  struct TrackingAllocator: TrackingAllocatorBase
+  {
+    using value_type=T;
+    TrackingAllocator()=default;
+    template <class U> TrackingAllocator(const TrackingAllocator<U>&) {}
+    unordered_map<size_t, vector<T*>> freeList;
+    T* allocate(size_t n) {
+      auto i=freeList.find(n);
+      if (i!=freeList.end() && !i->second.empty())
+        {
+          auto r=i->second.back();
+          i->second.pop_back();
+          return r;
+        }
+      auto size=n*sizeof(T);
+      // align to 8 byte boundary
+      auto mod=size & 7;
+      if (mod) size=(size-mod)+8;
+      allocatedBytes+=size;
+      if (!pool || allocatedBytes>poolSize)
+        throw bad_alloc();
+      auto r=reinterpret_cast<T*>(nextPool);
+      nextPool+=size;
+      return r;
+    }
+    void deallocate(T* p, size_t n) {
+      if (pool && !destructing)
+        freeList[n].push_back(p); // recycle allocation
+    }
+  };
+
+  
+  using SliceLabelToken=uint32_t;
+  using Key=vector<SliceLabelToken, TrackingAllocator<SliceLabelToken>>;
+  template <class V> using Map=map<Key,V,less<Key>,TrackingAllocator<pair<const Key,V>>>;
+
   struct NoDataColumns: public std::exception
   {
     const char* what() const noexcept override {return "No data columns specified\nIf dataset has no data, try selecting counter";}
@@ -202,9 +315,9 @@ namespace
         msg+=":"+str(i);
       msg+="\nTry selecting a different duplicate key action";
     }
-    DuplicateKey(const vector<string>& x) {
+    DuplicateKey(const Key& x, const Tokens<SliceLabelToken>& tokens) {
       for (auto& i: x)
-        msg+=":"+i;
+        msg+=":"+tokens[i];
       msg+="\nTry selecting a different duplicate key action";
     }
     const char* what() const noexcept override {return msg.c_str();}
@@ -590,23 +703,39 @@ namespace minsky
            (line[i-2]==spec.quote && (i==2 || line[i-3]==spec.separator || line[i-3]==spec.escape)))))) // deal with leading """
           line[i-1]=spec.escape;
   }
+
   
   template <class P>
   void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
     const BusyCursor busy(minsky());
+    const ProgressUpdater pu(minsky().progressState, "Importing CSV",6);
     P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
-    typedef vector<string> Key;
-    unordered_map<Key,double> tmpData;
-    unordered_map<Key,int> tmpCnt;
+    Tokens<SliceLabelToken> sliceLabelTokens;
+      
+    TrackingAllocatorBase::allocatePool();
+    auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
+
+    Map<double> tmpData;
+    Map<int> tmpCnt;
     vector<unordered_map<typename Key::value_type, size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     Hypercube hc;
     vector<typename Key::value_type> horizontalLabels;
     vector<AnyVal> anyVal;
 
-    const ProgressUpdater pu(minsky().progressState, "Importing CSV",3);
+    bool memUsageChecked=false;
+
+    auto optimiseMapCleanup=onStackExit([](){TrackingAllocatorBase::destructing=true;});
+    {
+      // check dimension names are all distinct
+      set<string> dimNames{spec.horizontalDimName};
+      for (auto& i: spec.dimensionNames)
+        if (!dimNames.insert(i).second)
+          throw runtime_error("Duplicate dimension: "+i);
+    }
+    
     for (auto i: spec.dimensionCols)
       {
         hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
@@ -618,7 +747,6 @@ namespace minsky
     uintmax_t bytesRead=0;
     try
       {
-        ProgressUpdater pu(minsky().progressState, "Parsing file",1);
         // skip header lines except for headerRow
         tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
         if (tabularFormat)
@@ -629,14 +757,14 @@ namespace minsky
               for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
                 {
                   col=i;
-                  horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                  horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
                 }
             else
               // explicitly specified data columns
               for (auto i: spec.dataCols)
                 {
                   col=i;
-                  horizontalLabels.emplace_back(str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units));
+                  horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
                 }
             hc.xvectors.emplace_back(spec.horizontalDimName);
             hc.xvectors.back().dimension=spec.horizontalDimension;
@@ -646,7 +774,7 @@ namespace minsky
               if (uniqueLabels.insert(i).second)
                 {
                   dimLabels.back()[i]=hc.xvectors.back().size();
-                  hc.xvectors.back().emplace_back(i);
+                  hc.xvectors.back().emplace_back(sliceLabelTokens[i]);
                 }
           }
           
@@ -654,143 +782,154 @@ namespace minsky
           getline(input,buf);
             
         
-        for (; getWholeLine(input, buf, spec); ++row)
-          {
-#if defined(__linux__) // TODO remove or generalise
-            {
-              struct sysinfo s;
-              sysinfo(&s);
-              if (s.freeram<1000000)
-                throw runtime_error("exhausted memory");
-            }
-#endif
-            const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
-
-            Key key;
-            auto field=tok.begin();
-            size_t dim=0, dataCols=0;
-            col=0;
-            for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
-              if (spec.dimensionCols.contains(col))
-                {
-                  // detect blank data lines (favourite Excel artifact)
-                  if (spec.dimensions[dim].type!=Dimension::string && field->empty())
-                    goto invalidKeyGotoNextLine;
-                  
-                  if (dim>=hc.xvectors.size())
-                    hc.xvectors.emplace_back("?"); // no header present
-                  try
-                    {
-                      auto keyElem=anyVal[dim](*field);
-                      auto skeyElem=str(keyElem, spec.dimensions[dim].units);
-                      if (dimLabels[dim].emplace(skeyElem, dimLabels[dim].size()).second)
-                        hc.xvectors[dim].emplace_back(keyElem);
-                      key.emplace_back(skeyElem);
-                    }
-                  catch (...)
-                    {
-                      if (spec.dontFail)
-                        goto invalidKeyGotoNextLine;
-                      else
-                        throw std::runtime_error("Invalid data: "+*field+" for "+
-                                               to_string(spec.dimensions[dim].type)+
-                                               " dimensioned column: "+spec.dimensionNames[dim]);
-                    }
-                  dim++;
-                }
-
-            col=0;
-            for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
-              if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col)) 
-                {                    
-                  if (tabularFormat)
-                    key.emplace_back(horizontalLabels[dataCols]);
-                  else if (dataCols)
-                    break; // only 1 value column, everything to right ignored
-                  
-                  // remove thousands separators, and set decimal separator to '.' ("C" locale)
-                  string s;
-                  for (auto c: *field)
-                    if (c==spec.decSeparator)
-                      s+='.';
-                    else if ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
-                             ((s=="-"||s=="+") && !isdigit(c)))
-                      continue; // skip non-numeric prefix
-                    else if (!isspace(c) && c!='.' && c!=',')
-                      s+=c;                    
-                  
-                  // TODO - this disallows special floating point values - is this right?
-                  bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
-                  if (valueExists || !isnan(spec.missingValue))
-                    {
-                      if (spec.counter)
-                        tmpData[key]+=1;
-                      else
-                        {
-                          auto i=tmpData.find(key);
-                          double v=spec.missingValue;
-                          if (valueExists)
-                            try
-                              {
-                                v=stod(s);
-                                if (i==tmpData.end())
-                                  tmpData.emplace(key,v);
-                              }
-                            catch (...) // value misunderstood
-                              {
-                                if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
-                                  valueExists=false;
-                              }
-                          if (valueExists && i!=tmpData.end())
-                            switch (spec.duplicateKeyAction)
-                              {
-                              case DataSpec::throwException:
-                                throw DuplicateKey(key); 
-                              case DataSpec::sum:
-                                i->second+=v;
-                                break;
-                              case DataSpec::product:
-                                i->second*=v;
-                                break;
-                              case DataSpec::min:
-                                if (v<i->second)
-                                  i->second=v;
-                                break;
-                              case DataSpec::max:
-                                if (v>i->second)
-                                  i->second=v;
-                                break;
-                              case DataSpec::av:
-                                {
-                                  int& c=tmpCnt[key]; // c initialised to 0
-                                  i->second=((c+1)*i->second + v)/(c+2);
-                                  c++;
-                                }
-                                break;
-                              }
-                        }
-                    }
-                  dataCols++;
-                  if (tabularFormat)
-                    key.pop_back();
-                  else
-                    break; // only one column of data needs to be read
-                }
-            
-            if (!dataCols)
-              {
-                if (spec.counter || spec.dontFail)
-                  tmpData[key]+=1;
-                else
-                  throw NoDataColumns();
-              }
-            
-
-            bytesRead+=buf.size();
-            pu.setProgress(double(bytesRead)/fileSize);
-          invalidKeyGotoNextLine:;
-          }
         ++minsky().progressState;
+
+        {
+          ProgressUpdater pu(minsky().progressState, "Reading data",1);
+          for (; getWholeLine(input, buf, spec); ++row)
+            {
+              if (!memUsageChecked)
+                switch (cminsky().checkMemAllocation(TrackingAllocatorBase::allocatedBytes))
+                  {
+                  case Minsky::OK: break;
+                  case Minsky::proceed:
+                    memUsageChecked=true;
+                    break;
+                  case Minsky::abort:
+                    throw runtime_error("memory threshold exceeded");
+                  }
+              const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
+
+              Key key;
+              auto field=tok.begin();
+              size_t dim=0, dataCols=0;
+              col=0;
+              for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
+                if (spec.dimensionCols.contains(col))
+                  {
+                    // detect blank data lines (favourite Excel artifact)
+                    if (spec.dimensions[dim].type!=Dimension::string && field->empty())
+                      goto invalidKeyGotoNextLine;
+                  
+                    if (dim>=hc.xvectors.size())
+                      hc.xvectors.emplace_back("?"); // no header present
+                    try
+                      {
+                        auto keyElem=anyVal[dim](*field);
+                        auto skeyElem=str(keyElem, spec.dimensions[dim].units);
+                        if (dimLabels[dim].emplace(sliceLabelTokens[skeyElem], dimLabels[dim].size()).second)
+                          hc.xvectors[dim].emplace_back(keyElem);
+                        key.emplace_back(sliceLabelTokens[skeyElem]);
+                      }
+                    catch (...)
+                      {
+                        if (spec.dontFail)
+                          goto invalidKeyGotoNextLine;
+                        else
+                          throw std::runtime_error("Invalid data: "+*field+" for "+
+                                                   to_string(spec.dimensions[dim].type)+
+                                                   " dimensioned column: "+spec.dimensionNames[dim]);
+                      }
+                    dim++;
+                  }
+
+              col=0;
+              for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
+                if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col)) 
+                  {
+                    if (tabularFormat)
+                      key.emplace_back(horizontalLabels[dataCols]);
+                    else if (dataCols)
+                      break; // only 1 value column, everything to right ignored
+                  
+                    // remove thousands separators, and set decimal separator to '.' ("C" locale)
+                    string s;
+                    for (auto c: *field)
+                      if (c==spec.decSeparator)
+                        s+='.';
+                      else if ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
+                               ((s=="-"||s=="+") && !isdigit(c)))
+                        continue; // skip non-numeric prefix
+                      else if (!isspace(c) && c!='.' && c!=',')
+                        s+=c;                    
+                  
+                    // TODO - this disallows special floating point values - is this right?
+                    bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
+                    if (valueExists || !isnan(spec.missingValue))
+                      {
+                        if (spec.counter)
+                          tmpData[key]+=1;
+                        else
+                          {
+                            auto i=tmpData.find(key);
+                            double v=spec.missingValue;
+                            if (valueExists)
+                              try
+                                {
+                                  v=stod(s);
+                                  if (i==tmpData.end())
+                                    tmpData.emplace(key,v);
+                                }
+                              catch (const std::bad_alloc&)
+                                {throw;}
+                              catch (...) // value misunderstood
+                                {
+                                  if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                                    valueExists=false;
+                                }
+                            if (valueExists && i!=tmpData.end())
+                              switch (spec.duplicateKeyAction)
+                                {
+                                case DataSpec::throwException:
+                                  throw DuplicateKey(key,sliceLabelTokens); 
+                                case DataSpec::sum:
+                                  i->second+=v;
+                                  break;
+                                case DataSpec::product:
+                                  i->second*=v;
+                                  break;
+                                case DataSpec::min:
+                                  if (v<i->second)
+                                    i->second=v;
+                                  break;
+                                case DataSpec::max:
+                                  if (v>i->second)
+                                    i->second=v;
+                                  break;
+                                case DataSpec::av:
+                                  {
+                                    int& c=tmpCnt[key]; // c initialised to 0
+                                    i->second=((c+1)*i->second + v)/(c+2);
+                                    c++;
+                                  }
+                                  break;
+                                }
+                            //                          if (row>=2670) cout<<"3"<<endl;
+                          }
+                      }
+                    dataCols++;
+                    //                  if (row>=2670) cout<<"4"<<endl;
+                    if (tabularFormat)
+                      key.pop_back();
+                    else
+                      break; // only one column of data needs to be read
+                    //                  if (row>=2670) cout<<"5"<<endl;
+                  }
+            
+              if (!dataCols)
+                {
+                  if (spec.counter || spec.dontFail)
+                    tmpData[key]+=1;
+                  else
+                    throw NoDataColumns();
+                }
+            
+
+              bytesRead+=buf.size();
+              pu.setProgress(double(bytesRead)/fileSize);
+            invalidKeyGotoNextLine:;
+            }
+        }
 
         // remove zero length dimensions
         {
@@ -800,14 +939,13 @@ namespace minsky
               if (i->size()<2)
                 {
                   hc.xvectors.erase(i);
-                  dimLabels.erase(d);
                 }
               else
                 {
                   ++i;
                   ++d;
                 }
-          assert(hc.xvectors.size()==dimLabels.size());
+          assert(hc.xvectors.size()<=dimLabels.size());
         }
         
         for (auto& xv: hc.xvectors)
@@ -817,7 +955,7 @@ namespace minsky
         if (log(tmpData.size())-hc.logNumElements()>=log(0.5)) 
           { // dense case
             vv.index({});
-            if (!cminsky().checkMemAllocation(hc.numElements()*sizeof(double)))
+            if (cminsky().checkMemAllocation(hc.numElements()*sizeof(double))==Minsky::abort)
               throw runtime_error("memory threshold exceeded");            
             vv.hypercube(hc);
             // stash the data into vv tensorInit field
@@ -831,14 +969,13 @@ namespace minsky
               {
                 size_t idx=0;
                 assert (hc.rank()<=i.first.size());
-                assert(dimLabels.size()==hc.rank());
+                assert(dimLabels.size()>=hc.rank());
                 int j=hc.rank()-1, k=i.first.size()-1; 
                 while (j>=0 && k>=0)
                   {
-                    auto dimLabel=dimLabels[j].find(i.first[k]);
-                    while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
-                      dimLabel=dimLabels[j].find(i.first[--k]);
-                    assert(dimLabel!=dimLabels[j].end());
+                    while (dimLabels[k].size()<2) --k; // skip over elided dimensions
+                    auto dimLabel=dimLabels[k].find(i.first[k]);
+                    assert(dimLabel!=dimLabels[k].end());
                     idx = (idx*dims[j]) + dimLabel->second;
                     --j; --k;
                   }
@@ -848,7 +985,7 @@ namespace minsky
           }    
         else 
           { // sparse case	
-            if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
+            if (cminsky().checkMemAllocation(tmpData.size()*sizeof(double))==Minsky::abort)
               throw runtime_error("memory threshold exceeded");	  	  		
             auto dims=hc.dims();
             const ProgressUpdater pu(minsky().progressState,"Indexing and loading",2);
@@ -860,14 +997,13 @@ namespace minsky
                 {
                   size_t idx=0;
                   assert (dims.size()<=i.first.size());
-                  assert(dimLabels.size()==dims.size());
+                  assert(dimLabels.size()>=dims.size());
                   int j=dims.size()-1, k=i.first.size()-1;
                   while (j>=0 && k>=0) // changed from for loop to while loop at CodeQL's insistence
                     {
-                      auto dimLabel=dimLabels[j].find(i.first[k]);
-                      while (dimLabel==dimLabels[j].end() && k>0) // skip over elided dimension
-                        dimLabel=dimLabels[j].find(i.first[--k]);
-                      assert(dimLabel!=dimLabels[j].end());
+                      while (dimLabels[k].size()<2) --k; // skip over elided dimensions
+                      auto dimLabel=dimLabels[k].find(i.first[k]);
+                      assert(dimLabel!=dimLabels[k].end());
                       idx = (idx*dims[j]) + dimLabel->second;
                       --j;
                       --k;
@@ -890,8 +1026,9 @@ namespace minsky
                 }
               vv=vv.tensorInit;
             }
-          }                 
-
+          }
+        minsky().progressState.title="Cleaning up";
+        minsky().progressState.displayProgress();
       }
     catch (const std::bad_alloc&)
       { // replace with a more user friendly error message

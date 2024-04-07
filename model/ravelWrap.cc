@@ -249,6 +249,21 @@ namespace minsky
     return true;
   }
 
+  void Ravel::collapseAllHandles(bool collapse)
+  {
+    auto state=getState();
+    for (auto& h: state.handleStates)
+      if (collapse && !h.collapsed)
+        {
+          h.reductionOp=m_nextReduction;
+          h.collapsed=true;
+        }
+      else if (!collapse && h.collapsed)
+        h.collapsed=false;
+    applyState(state);
+    minsky().requestReset();
+  }
+
   
   bool Ravel::displayFilterCaliper() const
   {

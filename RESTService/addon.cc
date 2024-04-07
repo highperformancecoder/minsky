@@ -410,16 +410,16 @@ namespace minsky
         tsMessageCallback.BlockingCall(const_cast<AddOnMinsky*>(this));
       }
 
-      bool checkMemAllocation(std::size_t bytes) const override {
+      MemCheckResult checkMemAllocation(std::size_t bytes) const override {
         if (messageCallbackSet && bytes>0.2*physicalMem())
           {
             theMessage="Allocation will use more than 50% of available memory. Do you want to proceed?";
             messageButtons={"No","Yes"};
             userResponse={}; //reset the promise
             tsMessageCallback.BlockingCall(const_cast<AddOnMinsky*>(this));
-            return userResponse.get_future().get();
+            return userResponse.get_future().get()? proceed: abort;
           }
-        return true;
+        return OK;
       }
 
       // signature of last param must be non-const
