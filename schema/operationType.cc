@@ -67,6 +67,7 @@ namespace minsky
     template <> int numArguments<OperationType::or_>() {return 2;}
     template <> int numArguments<OperationType::covariance>() {return 2;}
     template <> int numArguments<OperationType::rho>() {return 2;}
+    template <> int numArguments<OperationType::linearRegression>() {return 2;}
     template <> int numArguments<OperationType::userFunction>() {return 2;}
     template <> int numArguments<OperationType::not_>() {return 1;}
     template <> int numArguments<OperationType::time>() {return 0;}    

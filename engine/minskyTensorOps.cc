@@ -931,7 +931,93 @@ namespace minsky
         sqrt((sumXsq-sumX*sumX*invCount)*(sumYsq-sumY*sumY*invCount));
     }
   };
-        
+
+  // OperationType template parameter is arbitrary, its going to be overridden anyway
+  template <> struct GeneralTensorOp<OperationType::linearRegression>: public ITensor
+  {
+    TensorPtr x, y;
+    std::size_t dimension;
+    Sum sumx, sumy, sumxx, sumyy, sumxy, count;
+    Max maxx;
+    Min minx;
+
+    // allow these members to be updated by computeScaleAndOffset
+    mutable TensorVal scale, offset;
+    mutable Timestamp m_timestamp;
+
+    void computeScaleAndOffset() const {
+      for (size_t i=0; i<scale.size(); ++i)
+        {
+          scale[i]=sumxy[i]/count[i] * sqrt(sumyy[i]/sumxx[i]) ;//* (maxx[i]-minx[i]);
+          offset[i]=sumy[i]/count[i];
+        }
+      m_timestamp=timestamp();
+    }
+    
+    // return y spread over x's hypercube. Note OperationType template parameter ignored
+    struct SpreadY: public TensorBinOp<OperationType::add>
+    {
+      SpreadY() {f=[](double x,double y){return y;};}
+    };
+
+    void setArguments(const TensorPtr& y, const TensorPtr& x,
+                      const ITensor::Args& args) override
+    {
+      sumy.setArgument(y,args);
+      // TODO = populate spreadX with y's x-vector if x is null
+      auto spreadX=make_shared<SpreadY>(); spreadX->setArguments(y,x,{});
+      sumx.setArgument(spreadX,args);
+      minx.setArgument(spreadX,args);
+      maxx.setArgument(spreadX,args);
+      auto fxy=[](double x, double y){return isfinite(x) && isfinite(y)? x*y: 0;};
+      sumyy.setArgument(make_shared<BinOp>(fxy,y,y),args);
+      sumxx.setArgument(make_shared<BinOp>(fxy,spreadX,spreadX),args);
+      sumxy.setArgument(make_shared<BinOp>(fxy,y,spreadX),args);
+      count.setArgument
+        (make_shared<BinOp>([](double x,double y) {return isfinite(x)*isfinite(y);},y,spreadX),args);
+      
+      assert(sumx.hypercube()==sumy.hypercube());
+      assert(sumx.index()==sumy.index());
+
+      scale.index(sumx.index());
+      scale.hypercube(sumx.hypercube());
+      offset.index(sumx.index());
+      offset.hypercube(sumx.hypercube());
+
+      this->x=spreadX;
+      this->y=y;
+      m_index=x->index();
+      hypercube(x->hypercube());
+
+      auto& xv=m_hypercube.xvectors;
+      for (auto i=xv.begin(); i!=xv.end(); ++i)
+        if (i->name==args.dimension)
+          dimension=i-xv.begin();
+    }
+
+    double operator[](size_t i) const override
+    {
+      if (!x) return nan("");
+      assert(dimension<rank() || scale.size()==1);
+
+      if (timestamp()>m_timestamp) computeScaleAndOffset();
+      
+      if (dimension<rank())
+        {
+          auto splitted=hypercube().splitIndex(i);
+          size_t dimIdx=splitted[dimension];
+          splitted.erase(splitted.begin()+dimension);
+          auto hcIdx=scale.hypercube().linealIndex(splitted);
+          return scale.atHCIndex(hcIdx) * (*x)[i] + offset.atHCIndex(hcIdx);
+        }
+      return scale[0]* (*x)[i]  + offset[0];
+    }
+
+    civita::ITensor::Timestamp timestamp() const override {return std::max(x->timestamp(), y->timestamp());}
+ 
+    
+  };
+
   
   template <> struct GeneralTensorOp<OperationType::mean>: public civita::Average {};
   template <> struct GeneralTensorOp<OperationType::stdDev>: public civita::StdDeviation {};
