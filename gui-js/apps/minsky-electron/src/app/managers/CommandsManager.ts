@@ -587,7 +587,7 @@ export class CommandsManager {
   static async help(x: number, y: number) {
     let classType = (await this.getItemClassType(x, y, true)) as string;
 
-    if (Functions.isEmptyObject(classType)) {
+    if (!classType) {
       classType = (await minsky.canvas.getWireAt(x,y)) ? 'Wires' : 'DesignCanvas';
     }
 
