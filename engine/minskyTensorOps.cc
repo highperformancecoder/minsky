@@ -948,8 +948,6 @@ namespace minsky
     TensorPtr x, y;
     std::size_t dimension;
     Sum sumx, sumy, sumxx, sumyy, sumxy, count;
-    Max maxx;
-    Min minx;
 
     // allow these members to be updated by computeScaleAndOffset
     mutable TensorVal scale, offset;
@@ -1020,8 +1018,6 @@ namespace minsky
             }
         }
       sumx.setArgument(spreadX,args);
-      minx.setArgument(spreadX,args);
-      maxx.setArgument(spreadX,args);
       auto fxy=[](double x, double y){return isfinite(x) && isfinite(y)? x*y: 0;};
       sumyy.setArgument(make_shared<BinOp>(fxy,y,y),args);
       sumxx.setArgument(make_shared<BinOp>(fxy,spreadX,spreadX),args);
