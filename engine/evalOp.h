@@ -75,6 +75,10 @@ namespace minsky
 
     /// state data (for those ops that need it)
     std::shared_ptr<OperationBase> state;
+    [[noreturn]] void throw_error(const std::string& msg) const {
+      if (state) state->throw_error(msg);
+      else throw std::runtime_error(msg);
+    }
     virtual ~EvalOpBase() {}
 
     /**

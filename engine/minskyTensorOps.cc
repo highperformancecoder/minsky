@@ -61,6 +61,16 @@ namespace minsky
     virtual ~SetState() {}
     virtual void setState(const OperationPtr&)=0;
   };
+
+  struct OpState: public SetState
+  {
+    OperationPtr state;
+    void setState(const OperationPtr& s) override {state=s;}
+    [[noreturn]] void throw_error(const std::string& msg) const { 
+      if (state) state->throw_error(msg);
+      else throw runtime_error(msg);
+    }
+  };
   
   // Default template calls the regular legacy double function
   template <OperationType::Type op> struct MinskyTensorOp: public civita::ElementWiseOp, public DerivativeMixin, public SetState
@@ -310,7 +320,7 @@ namespace minsky
   };
   
   template <>
-  struct GeneralTensorOp<OperationType::difference>: public civita::DimensionedArgCachedOp
+  struct GeneralTensorOp<OperationType::difference>: public civita::DimensionedArgCachedOp, public OpState
   {
     ssize_t delta=0;
     size_t innerStride=1, outerStride;
@@ -318,7 +328,7 @@ namespace minsky
     void setArgument(const TensorPtr& a,const ITensor::Args& args) override {
       civita::DimensionedArgCachedOp::setArgument(a,args);
       if (dimension>=rank() && rank()>1)
-        throw error("axis name needs to be specified in difference operator");
+        throw_error("axis name needs to be specified in difference operator");
       
       delta=args.val;
       // remove initial slice of hypercube
@@ -327,7 +337,7 @@ namespace minsky
       
       auto& xv=hc.xvectors[rank()==1? 0: dimension];
       if (size_t(abs(delta))>=xv.size())
-        throw std::runtime_error("Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(xv.size())+")");
+        throw_error("Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(xv.size())+")");
       if (delta>=0)
         xv.erase(xv.begin(), xv.begin()+delta);
       else 
@@ -407,7 +417,7 @@ namespace minsky
   };
   
   template <>
-  struct GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp
+  struct GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp, public OpState
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO: tensors of arbitrary rank
@@ -443,7 +453,7 @@ namespace minsky
       arg1=a1; arg2=a2;
       if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
         if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
-          throw std::runtime_error("inner dimensions of tensors do not match");
+          throw_error("inner dimensions of tensors do not match");
         
         auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
         Hypercube hc;
@@ -529,7 +539,7 @@ namespace minsky
   };
 
   template <>
-  struct GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
+  struct GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp, public OpState
   {
     std::shared_ptr<ITensor> arg1, arg2;
     size_t dimension=numeric_limits<size_t>::max();
@@ -538,7 +548,7 @@ namespace minsky
     double interpolateString(double idx, size_t stride, size_t offset) const
     {
       if (arg1->size()==0)
-        throw std::runtime_error("No data to interpolate");
+        throw_error("No data to interpolate");
       auto maxIdx=arg1->rank()==1? arg1->size()-1: arg1->hypercube().xvectors[dimension].size()-1;
       if (idx<=-1 || idx>maxIdx)
         return nan("");
@@ -637,13 +647,13 @@ namespace minsky
       switch (arg1->rank())
         {
         case 0:
-          throw runtime_error("Cannot apply gather to a scalar");
+          throw_error("Cannot apply gather to a scalar");
         case 1:
           dimension=0;
           break;
         default:
           if (dimension>=arg1->rank())
-            throw runtime_error("Need to specify which dimension to gather");
+            throw_error("Need to specify which dimension to gather");
           break;
         }
       
@@ -796,7 +806,7 @@ namespace minsky
     civita::ITensor::Timestamp timestamp() const override {return arg->timestamp();}
   };
 
-  struct Correlation: public civita::ITensor
+  struct Correlation: public civita::ITensor, public OpState
   {
     int dimension1, dimension2;
     TensorPtr arg1, arg2;
@@ -812,7 +822,7 @@ namespace minsky
       switch (arg1->rank())
         {
         case 0:
-          throw runtime_error("covariance or ρ needs at least rank 1 arguments");
+          throw_error("covariance or ρ needs at least rank 1 arguments");
         case 1:
           dimension1=0;
           break;
@@ -832,7 +842,7 @@ namespace minsky
       switch (arg2->rank())
         {
         case 0:
-          throw runtime_error("covariance or ρ needs at least rank 1 arguments");
+          throw_error("covariance or ρ needs at least rank 1 arguments");
         case 1:
           dimension2=0;
           break;
@@ -851,9 +861,9 @@ namespace minsky
         }
 
       if (dimension1<0 || dimension2<0)
-        throw runtime_error("dimension "+args.dimension+" not found");
+        throw_error("dimension "+args.dimension+" not found");
       if (arg1->hypercube().xvectors[dimension1].size() != arg2->hypercube().xvectors[dimension2].size())
-        throw runtime_error("arguments not conformant");
+        throw_error("arguments not conformant");
 
       hypercube(hc);
         
@@ -933,7 +943,7 @@ namespace minsky
   };
 
   // OperationType template parameter is arbitrary, its going to be overridden anyway
-  template <> struct GeneralTensorOp<OperationType::linearRegression>: public ITensor
+  template <> struct GeneralTensorOp<OperationType::linearRegression>: public ITensor, public OpState
   {
     TensorPtr x, y;
     std::size_t dimension;
@@ -965,9 +975,50 @@ namespace minsky
     void setArguments(const TensorPtr& y, const TensorPtr& x,
                       const ITensor::Args& args) override
     {
+      m_index=y->index();
+      hypercube(y->hypercube());
+
+      auto& xv=m_hypercube.xvectors;
+      dimension=rank()>1? rank(): 0;
+      for (auto i=xv.begin(); i!=xv.end(); ++i)
+        if (i->name==args.dimension)
+          dimension=i-xv.begin();
+
       sumy.setArgument(y,args);
-      // TODO = populate spreadX with y's x-vector if x is null
-      auto spreadX=make_shared<SpreadY>(); spreadX->setArguments(y,x,{});
+      TensorPtr spreadX;
+      if (x)
+        {
+          spreadX=make_shared<SpreadY>();
+          spreadX->setArguments(y,x,{});
+        }
+      else
+        {
+          if (rank()>1 && dimension>=rank())
+            throw_error("Need to specify axis");
+          // construct x from y's x-vector
+          auto tv=make_shared<TensorVal>();
+          spreadX=tv;
+          tv->index(y->index());
+          auto& hc=y->hypercube();
+          tv->hypercube(y->hypercube());
+          auto& xv=hc.xvectors[dimension];
+          for (size_t i=0; i<tv->size(); ++i)
+            {
+              auto slice=hc.splitIndex(tv->index()[i])[dimension];
+              switch (xv.dimension.type)
+                {
+                case Dimension::string:
+                  (*tv)[i]=slice;
+                  break;
+                case Dimension::value:
+                  (*tv)[i]=xv[slice].value;
+                  break;
+                case Dimension::time:
+                  (*tv)[i]=(xv[slice].time-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
+                  break;
+                }
+            }
+        }
       sumx.setArgument(spreadX,args);
       minx.setArgument(spreadX,args);
       maxx.setArgument(spreadX,args);
@@ -988,14 +1039,6 @@ namespace minsky
 
       this->x=spreadX;
       this->y=y;
-      m_index=x->index();
-      hypercube(x->hypercube());
-
-      auto& xv=m_hypercube.xvectors;
-      dimension=rank();
-      for (auto i=xv.begin(); i!=xv.end(); ++i)
-        if (i->name==args.dimension)
-          dimension=i-xv.begin();
     }
 
     double operator[](size_t i) const override
@@ -1201,9 +1244,8 @@ namespace minsky
   };
 
   template <>
-  struct GeneralTensorOp<OperationType::merge>: public civita::Merge, public SetState
+  struct GeneralTensorOp<OperationType::merge>: public civita::Merge, public OpState
   {
-    OperationPtr state;
     using civita::Merge::setArguments;
     void setArguments(const std::vector<TensorPtr>& a1,
                       const std::vector<TensorPtr>& a2,
@@ -1215,12 +1257,8 @@ namespace minsky
       meldArgsIntoCommonHypercube(args);
       civita::Merge::setArguments(args,opArgs);
 
-      static const char distinctErrorMsg[]="Please use a distinct name for the synthetic dimension produced by this operation";
       if (!hypercube().dimsAreDistinct())
-        {
-          if (state) state->throw_error(distinctErrorMsg);
-          else throw runtime_error(distinctErrorMsg);
-        }
+        throw_error("Please use a distinct name for the synthetic dimension produced by this operation");
       
       // relabel slices along new dimension with variable names if available
       int stream=0;
@@ -1239,7 +1277,6 @@ namespace minsky
                 }
     }
 
-    void setState(const OperationPtr& op) override {state=op;}
    };
 
   template <> struct GeneralTensorOp<OperationType::slice>: public civita::PermuteAxis {
@@ -1261,7 +1298,7 @@ namespace minsky
     }
   };
 
-  class SwitchTensor: public ITensor
+  class SwitchTensor: public ITensor, public OpState
   {
     size_t m_size=1;
     vector<TensorPtr> args;
@@ -1285,7 +1322,7 @@ namespace minsky
                 m_size=i->size();
               else if (m_size!=i->size())
                 // TODO - should we check and throw on nonconformat hypercubes?
-                throw runtime_error("noconformant tensor arguments in switch");
+                throw_error("nonconformant tensor arguments in switch");
             }
         }
       m_index=indices;
@@ -1529,3 +1566,4 @@ namespace minsky
       }
   }
 }
+
