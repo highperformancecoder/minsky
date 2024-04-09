@@ -731,9 +731,9 @@ namespace minsky
     {
       // check dimension names are all distinct
       set<string> dimNames{spec.horizontalDimName};
-      for (auto& i: spec.dimensionNames)
-        if (!dimNames.insert(i).second)
-          throw runtime_error("Duplicate dimension: "+i);
+      for (auto i: spec.dimensionCols)
+        if (!dimNames.insert(spec.dimensionNames[i]).second)
+          throw runtime_error("Duplicate dimension: "+spec.dimensionNames[i]);
     }
     
     for (auto i: spec.dimensionCols)

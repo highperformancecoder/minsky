@@ -948,8 +948,10 @@ namespace minsky
     void computeScaleAndOffset() const {
       for (size_t i=0; i<scale.size(); ++i)
         {
-          scale[i]=sumxy[i]/count[i] * sqrt(sumyy[i]/sumxx[i]) ;//* (maxx[i]-minx[i]);
-          offset[i]=sumy[i]/count[i];
+          auto n=count[i];
+          auto sx=sumx[i];
+          scale[i]=(n*sumxy[i] - sx*sumy[i])/(n*sumxx[i]-sx*sx);
+          offset[i]=sumy[i]/n-scale[i]*sx/n;
         }
       m_timestamp=timestamp();
     }
@@ -990,6 +992,7 @@ namespace minsky
       hypercube(x->hypercube());
 
       auto& xv=m_hypercube.xvectors;
+      dimension=rank();
       for (auto i=xv.begin(); i!=xv.end(); ++i)
         if (i->name==args.dimension)
           dimension=i-xv.begin();
