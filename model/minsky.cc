@@ -869,111 +869,119 @@ namespace minsky
   }
 
   void Minsky::reset()
-  {
-    // do not reset while simulation is running
-    if (RKThreadRunning)
+    try
       {
-        flags |= reset_needed;
-        if (RKThreadRunning) return;
-      }
-
-    auto start=chrono::high_resolution_clock::now();
-    canvas.itemIndicator=false;
-    const BusyCursor busy(*this);
-    EvalOpBase::t=t=t0;
-    lastT=t0;
-    const ProgressUpdater pu(progressState,"Resetting",5);
-    constructEquations();
-    constructEquations();
-    ++progressState;
-    // if no stock variables in system, add a dummy stock variable to
-    // make the simulation proceed
-    if (stockVars.empty()) stockVars.resize(1,0);
-
-    initGodleys();
-    ++progressState;
-
-    if (!stockVars.empty())
-      rkreset();
-    
-    // update flow variable
-    evalEquations();
-    ++progressState;
-
-    // populate ravel hypercubes first, before reattaching plots.
-    model->recursiveDo
-      (&Group::items,
-       [&](Items& m, Items::iterator i)
-       {
-         if (auto r=dynamic_cast<Ravel*>(i->get()))
-           {
-             if (r->ports(1).lock()->numWires()>0)
-               if (auto vv=r->ports(1).lock()->getVariableValue())
-                 r->populateHypercube(vv->hypercube());
-           }
-         else if (auto v=(*i)->variableCast())
-           { //determine whether a slider should be shown
-             if (auto vv=v->vValue())
-               vv->sliderVisible = v->enableSlider &&
-                 (v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId())));
-             v->resetMiniPlot();
-           }
-         return false;
-       });
-
-    // attach the plots
-    model->recursiveDo
-      (&Group::items,
-       [&](Items& m, Items::iterator it)
-       {
-         if (auto p=(*it)->plotWidgetCast())
-           {
-             p->disconnectAllVars();// clear any old associations
-             p->clearPenAttributes();
-             p->autoScale();
-             for (size_t i=0; i<p->portsSize(); ++i)
-               {
-                 auto pp=p->ports(i).lock();
-                 for (auto wire: pp->wires())
-                   if (auto fromPort=wire->from())
-                     if (auto vv=wire->from()->getVariableValue())
-                       if (vv->idx()>=0)
-                         p->connectVar(vv, i);
-               }
-             p->clear();
-             if (running)
-               p->updateIcon(t);
-             else
-               p->addConstantCurves();
-             p->requestRedraw();
-           }
-         return false;
-       });
-    ++progressState;
-
-    //    if (running)
-    flags &= ~reset_needed; // clear reset flag
-    resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
-    // else
-    //  flags |= reset_needed; // enforce another reset at simulation start
-    running=false;
-
-    requestRedraw();
-    
-    // update maxValues
-    PhillipsFlow::maxFlow.clear();
-    PhillipsStock::maxStock.clear();
-    for (auto& v: variableValues)
-      {
-        if (v.second->type()==VariableType::stock)
+        // do not reset while simulation is running
+        if (RKThreadRunning)
           {
-            PhillipsStock::maxStock[v.second->units]+=v.second->value();
+            flags |= reset_needed;
+            if (RKThreadRunning) return;
           }
-      }
-    for (auto& i: PhillipsStock::maxStock) i.second=abs(i.second);
+
+        auto start=chrono::high_resolution_clock::now();
+        canvas.itemIndicator=false;
+        const BusyCursor busy(*this);
+        EvalOpBase::t=t=t0;
+        lastT=t0;
+        const ProgressUpdater pu(progressState,"Resetting",5);
+        constructEquations();
+        constructEquations();
+        ++progressState;
+        // if no stock variables in system, add a dummy stock variable to
+        // make the simulation proceed
+        if (stockVars.empty()) stockVars.resize(1,0);
+
+        initGodleys();
+        ++progressState;
+
+        if (!stockVars.empty())
+          rkreset();
     
-    resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
-  }
+        // update flow variable
+        evalEquations();
+        ++progressState;
+
+        // populate ravel hypercubes first, before reattaching plots.
+        model->recursiveDo
+          (&Group::items,
+           [&](Items& m, Items::iterator i)
+           {
+             if (auto r=dynamic_cast<Ravel*>(i->get()))
+               {
+                 if (r->ports(1).lock()->numWires()>0)
+                   if (auto vv=r->ports(1).lock()->getVariableValue())
+                     r->populateHypercube(vv->hypercube());
+               }
+             else if (auto v=(*i)->variableCast())
+               { //determine whether a slider should be shown
+                 if (auto vv=v->vValue())
+                   vv->sliderVisible = v->enableSlider &&
+                     (v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId())));
+                 v->resetMiniPlot();
+               }
+             return false;
+           });
+
+        // attach the plots
+        model->recursiveDo
+          (&Group::items,
+           [&](Items& m, Items::iterator it)
+           {
+             if (auto p=(*it)->plotWidgetCast())
+               {
+                 p->disconnectAllVars();// clear any old associations
+                 p->clearPenAttributes();
+                 p->autoScale();
+                 for (size_t i=0; i<p->portsSize(); ++i)
+                   {
+                     auto pp=p->ports(i).lock();
+                     for (auto wire: pp->wires())
+                       if (auto fromPort=wire->from())
+                         if (auto vv=wire->from()->getVariableValue())
+                           if (vv->idx()>=0)
+                             p->connectVar(vv, i);
+                   }
+                 p->clear();
+                 if (running)
+                   p->updateIcon(t);
+                 else
+                   p->addConstantCurves();
+                 p->requestRedraw();
+               }
+             return false;
+           });
+        ++progressState;
+
+        //    if (running)
+        flags &= ~reset_needed; // clear reset flag
+        resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
+        // else
+        //  flags |= reset_needed; // enforce another reset at simulation start
+        running=false;
+
+        requestRedraw();
+    
+        // update maxValues
+        PhillipsFlow::maxFlow.clear();
+        PhillipsStock::maxStock.clear();
+        for (auto& v: variableValues)
+          {
+            if (v.second->type()==VariableType::stock)
+              {
+                PhillipsStock::maxStock[v.second->units]+=v.second->value();
+              }
+          }
+        for (auto& i: PhillipsStock::maxStock) i.second=abs(i.second);
+    
+        resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
+      }
+    catch (...)
+      {
+        // in the event of an exception, clear reset flag
+        flags &= ~reset_needed; // clear reset flag
+        resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
+        throw;
+      }
 
   vector<double> Minsky::step()
   {
@@ -1794,12 +1802,12 @@ namespace minsky
   {if (!--minsky.busyCursorStack) minsky.clearBusyCursor();}
 
   
-  void Progress::displayProgress()
+  void Progress::displayProgress(bool inDestruct)
   {
-    if (*cancel)
+    if (cancel && *cancel)
       {
         *cancel=false;
-        throw std::runtime_error("Cancelled");
+        if (!inDestruct) throw std::runtime_error("Cancelled");
       }
     minsky().progress(title, lround(progress));
   }

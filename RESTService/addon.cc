@@ -243,7 +243,7 @@ namespace minsky
         if (reset_flag())
           resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
 
-        
+        civita::ITensor::cancel(false);
         // disable quoting wide characters in UTF-8 strings
         auto result=write(registry.process(command, arguments),json5_parser::raw_utf8);
         commandHook(command,arguments);
@@ -571,7 +571,11 @@ struct MinskyAddon: public Addon<MinskyAddon>
   Value setProgressCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setProgressCallback(info);}
   Value setBookmarkRefreshCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBookmarkRefreshCallback(info);}
   Value setResetScrollCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setResetScrollCallback(info);}
-  Value cancelProgress(const Napi::CallbackInfo& info) {*addOnMinsky.progressState.cancel=true; return info.Env().Null();}
+  Value cancelProgress(const Napi::CallbackInfo& info) {
+    *addOnMinsky.progressState.cancel=true;
+    civita::ITensor::cancel(true);
+    return info.Env().Null();
+  }
     
 
   Value call(const Napi::CallbackInfo& info)

@@ -363,6 +363,7 @@ namespace minsky
       set<size_t> newIdx;
       for (auto& i: idx)
         {
+          checkCancel();
           // strip of any indices outside the output range
           auto t=ssize_t(i)-delta;
           if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.contains(t) && sameSlice(t,i))
@@ -388,12 +389,13 @@ namespace minsky
           size_t idx=0;
           for (auto i: argIndices)
             {
+              checkCancel();
               auto t=i+delta;
               cachedResult[idx++]=arg->atHCIndex(t)-arg->atHCIndex(i);
             }
         }
       else if (delta>=0)
-        for (size_t i=0; i<cachedResult.size(); ++i)
+        for (size_t i=0; i<cachedResult.size(); checkCancel(), ++i)
           {
             auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
             auto t=ai+delta;
@@ -403,7 +405,7 @@ namespace minsky
               cachedResult[i]=nan("");
           }
       else // with -ve delta, origin of result is shifted
-        for (size_t i=0; i<size(); ++i)
+        for (size_t i=0; i<size(); checkCancel(), ++i)
           {
             auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
             auto t=ai-delta;
@@ -438,7 +440,7 @@ namespace minsky
         for (size_t j=0; j< n; j++)
           {
             tmpSum=0;
-            for (size_t k=0; k<stride; k++)  
+            for (size_t k=0; k<stride; checkCancel(), k++)  
               {
                 auto v1=m>1? arg1->atHCIndex(k*m+i) : (*arg1)[k];  
                 auto v2=n>1? arg2->atHCIndex(j*stride + k) : (*arg2)[k];  
@@ -477,7 +479,7 @@ namespace minsky
       for (size_t i=0; i< m; i++)
        {
          auto v1=(*arg1)[i];  			
-         for (size_t j=0; j< n; j++) 
+         for (size_t j=0; j< n; checkCancel(), j++) 
          {
             auto v2=(*arg2)[j];			
             cachedResult[i+j*m]=v1*v2;			
@@ -506,7 +508,7 @@ namespace minsky
           
           for (auto& i: idx1)
             for (auto& j: idx2) 
-              newIdx.insert(i+stride*j);
+              checkCancel(), newIdx.insert(i+stride*j);
          
           cachedResult.index(Index(newIdx));
         }
@@ -525,10 +527,10 @@ namespace minsky
     std::shared_ptr<ITensor> arg;
     void computeTensor() const override {
       size_t i=0, j=0;
-      for (; i<arg->size(); ++i)
+      for (; i<arg->size(); checkCancel(), ++i)
         if ((*arg)[i]>0.5)
           cachedResult[j++]=i;
-      for (; j<cachedResult.size(); ++j)
+      for (; j<cachedResult.size(); checkCancel(), ++j)
         cachedResult[j]=nan("");
     }
     void setArgument(const TensorPtr& a, const Args&) override {
@@ -557,8 +559,8 @@ namespace minsky
       // expand range to skip over any nan in arg1
       unsigned lesser=idx, greater=idx+1;
       double lv=arg1->atHCIndex(lesser*stride+offset), gv=arg1->atHCIndex(greater*stride+offset);
-      for (; lesser>0 && isnan(lv); --lesser, lv=arg1->atHCIndex(lesser*stride+offset));
-      for (; greater<maxIdx && isnan(gv); ++greater, gv=arg1->atHCIndex(greater*stride+offset));
+      for (; lesser>0 && isnan(lv); checkCancel(), --lesser, lv=arg1->atHCIndex(lesser*stride+offset));
+      for (; greater<maxIdx && isnan(gv); checkCancel(), ++greater, gv=arg1->atHCIndex(greater*stride+offset));
       const double s=(idx-lesser)/(greater-lesser);
       // special cases to avoid unncessarily including nans/infs in the computation
       if (s==0) return lv;
@@ -571,13 +573,13 @@ namespace minsky
       if (xv.size()<2 || diff(x,xv.front())<0 || diff(x,xv.back())>0)
         return nan("");
       auto i=xv.begin();
-      for (; diff(x,*(i+1))>0; ++i); // loop will terminate b/c diff(x,xv.back())<=0
+      for (; diff(x,*(i+1))>0; checkCancel(), ++i); // loop will terminate b/c diff(x,xv.back())<=0
       // expand i & i+1 to finite values on the hypercube, if possible
       auto greater=i+1;
       double lv=arg1->atHCIndex((i-xv.begin())*stride+offset);
       double gv=arg1->atHCIndex((greater-xv.begin())*stride+offset);
-      for (; i>xv.begin() && isnan(lv); --i, lv=arg1->atHCIndex((i-xv.begin())*stride+offset));
-      for (; greater<xv.end()-1 && isnan(gv); ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
+      for (; i>xv.begin() && isnan(lv); checkCancel(), --i, lv=arg1->atHCIndex((i-xv.begin())*stride+offset));
+      for (; greater<xv.end()-1 && isnan(gv); checkCancel(), ++greater, gv=arg1->atHCIndex((greater-xv.begin())*stride+offset));
       const double s=diff(x,*i)/diff(*greater,*i);
       // special cases to avoid unncessarily including nans/infs in the computation
       if (s==0) return lv;
@@ -622,7 +624,7 @@ namespace minsky
         }
 
       for (size_t j=0; j<offsets.size(); ++j)
-        for (size_t i=0; i<arg2->size(); ++i)
+        for (size_t i=0; i<arg2->size(); checkCancel(), ++i)
           {
             auto idx=(*arg2)[i];
             if (isfinite(idx))
@@ -672,12 +674,13 @@ namespace minsky
         {
           const size_t numLower=dimension? arg1Dims[dimension-1]: 1;
           for (size_t i=0; i<upperStride; ++i)
-            for (size_t j=0; j<numLower; ++j)
+            for (size_t j=0; j<numLower; checkCancel(), ++j)
               offsetSet.insert(lowerStride*i*arg1Dims[dimension]+j);
         }
       else
         for (auto i: arg1->index())
           {
+            checkCancel();
             auto splitted=arg1->hypercube().splitIndex(i);
             splitted[dimension]=0;
             offsetSet.insert(arg1->hypercube().linealIndex(splitted));
@@ -698,10 +701,10 @@ namespace minsky
           if (arg1Idx.empty())
             // no need to duplicate elements along the reduced dimension
             for (size_t i=0; i<upperStride; ++i)
-              for (size_t j=0; j<lowerStride; ++j)
+              for (size_t j=0; j<lowerStride; checkCancel(), ++j)
                 arg1Idx.push_back(i*lowerStride*arg1Dims[dimension]+j);
           if (arg2Idx.empty())
-            for (size_t i=0; i<arg2->size(); ++i) arg2Idx.push_back(i);
+            for (size_t i=0; i<arg2->size(); checkCancel(), ++i) arg2Idx.push_back(i);
       
           set<size_t> resultantIndex;
           size_t lastOuter=numeric_limits<size_t>::max();
@@ -709,7 +712,7 @@ namespace minsky
             {
               auto splitIdx=arg1->hypercube().splitIndex(i);
               size_t outerIdx=0, stride=1;
-              for (size_t j=0; j<arg1->rank(); ++j)
+              for (size_t j=0; j<arg1->rank(); checkCancel(), ++j)
                 if (j!=dimension)
                   {
                     outerIdx+=stride*splitIdx[j];
@@ -718,7 +721,7 @@ namespace minsky
               if (outerIdx==lastOuter) continue;
               lastOuter=outerIdx;
               for (auto j: arg2Idx)
-                resultantIndex.insert(outerIdx*arg2NumElements+j);
+                checkCancel(), resultantIndex.insert(outerIdx*arg2NumElements+j);
             }
           cachedResult.index(resultantIndex);
         }
@@ -954,7 +957,7 @@ namespace minsky
     mutable Timestamp m_timestamp;
 
     void computeScaleAndOffset() const {
-      for (size_t i=0; i<scale.size(); ++i)
+      for (size_t i=0; i<scale.size(); checkCancel(), ++i)
         {
           auto n=count[i];
           auto sx=sumx[i];
@@ -1000,7 +1003,7 @@ namespace minsky
           auto& hc=y->hypercube();
           tv->hypercube(y->hypercube());
           auto& xv=hc.xvectors[dimension];
-          for (size_t i=0; i<tv->size(); ++i)
+          for (size_t i=0; i<tv->size(); checkCancel(), ++i)
             {
               auto slice=hc.splitIndex(tv->index()[i])[dimension];
               switch (xv.dimension.type)
@@ -1131,7 +1134,7 @@ namespace minsky
     {
       // first compute max/min over the whole dataset
       double min=numeric_limits<double>::max(), max=-numeric_limits<double>::max();
-      for (size_t i=0; i<arg->size(); ++i)
+      for (size_t i=0; i<arg->size(); checkCancel(), ++i)
         {
           min=std::min((*arg)[i],min);
           max=std::max((*arg)[i],max);
@@ -1162,18 +1165,18 @@ namespace minsky
       for (double x=min+0.5*binSize; x<max; x+=binSize)
         xv.push_back(x);
       cachedResult.hypercube(std::move(hc));
-      for (size_t i=0; i<cachedResult.size(); ++i) cachedResult[i]=0;
+      for (size_t i=0; i<cachedResult.size(); checkCancel(), ++i) cachedResult[i]=0;
 
       auto iBinSize=1/binSize;
       if (cachedResult.rank()>1) // histogram along a particular dimension
-        for (size_t i=0; i<arg->size(); ++i)
+        for (size_t i=0; i<arg->size(); checkCancel(), ++i)
           {
             auto splitted=arg->hypercube().splitIndex(i);
             splitted[dim]=((*arg)[i]-min)*iBinSize;
             cachedResult[cachedResult.hypercube().linealIndex(splitted)]+=1;
           }
       else  // histogram over the lot
-        for (size_t i=0; i<arg->size(); ++i)
+        for (size_t i=0; i<arg->size(); checkCancel(), ++i)
           {
             auto index=((*arg)[i]-min)*iBinSize;
             cachedResult[index]+=1;
@@ -1311,7 +1314,7 @@ namespace minsky
       for (auto& i: args)
         {
           for (auto& j: i->index())
-            indices.insert(j);
+            checkCancel(), indices.insert(j);
           if (i->size()>1)
             {
               if (m_size==1)

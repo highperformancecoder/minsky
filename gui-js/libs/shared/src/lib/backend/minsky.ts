@@ -2274,6 +2274,7 @@ export class VariableValue extends CppClass {
   async allocValue(): Promise<VariableValue> {return this.$callMethod('allocValue');}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
   async begin(): Promise<number> {return this.$callMethod('begin');}
+  async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
   async end(): Promise<number> {return this.$callMethod('end');}
   async exportAsCSV(a1: string,a2: string): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2);}
@@ -2394,6 +2395,7 @@ export class civita__ITensor extends CppClass {
     super(prefix);
   }
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
+  async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
   async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
   async index(): Promise<civita__Index> {return this.$callMethod('index');}
@@ -2423,6 +2425,7 @@ export class civita__TensorVal extends CppClass {
   async allocVal(): Promise<void> {return this.$callMethod('allocVal');}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
   async begin(): Promise<number> {return this.$callMethod('begin');}
+  async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async end(): Promise<number> {return this.$callMethod('end');}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
   async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
