@@ -815,7 +815,7 @@ namespace minsky
                       hc.xvectors.emplace_back("?"); // no header present
                     try
                       {
-                        auto keyElem=anyVal[dim](*field);
+                        auto keyElem=anyVal[dim](trimWS(*field));
                         auto skeyElem=str(keyElem, spec.dimensions[dim].units);
                         if (dimLabels[dim].emplace(sliceLabelTokens[skeyElem], dimLabels[dim].size()).second)
                           hc.xvectors[dim].emplace_back(keyElem);
