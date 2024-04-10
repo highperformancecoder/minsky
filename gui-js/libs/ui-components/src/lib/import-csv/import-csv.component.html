@@ -1,4 +1,4 @@
-<div #fullDialog class="main" [formGroup]="form">
+<div #fullDialog class="main" [formGroup]="form" (click)="wedgeOptionPanelVisibleIndex = null">
   <!-- HEADER START -->
   <div class="import-container">
     <button mat-raised-button type="button" (click)="selectFile()">
@@ -137,18 +137,19 @@
       <span>
         <label for="horizontal-dimension"
               title="Name of the collection of data columns.">Horizontal Dimension</label>
-        <input
-          id="horizontal-dimension"
-          type="text"
-          formControlName="horizontalDimName"
-          [matAutocomplete]="existingDimensions"
-        />
-        <mat-autocomplete
-          [panelWidth]="'10rem'"
-          #existingDimensions="matAutocomplete"
-        >
-          <mat-option *ngFor="let dimensionName of existingDimensionNames" [value]="dimensionName">{{dimensionName}}</mat-option>
-        </mat-autocomplete>
+        <div class="wedge-container">
+          <input
+            id="horizontal-dimension"
+            type="text"
+            formControlName="horizontalDimName"
+          />
+          
+          <div *ngIf="existingDimensionNames.length > 0" class="material-icons wedge-icon" style="width: 20px;" (click)="onWedgeIconClicked($event, -1)">expand_more</div>
+
+          <div *ngIf="wedgeOptionPanelVisibleIndex === -1" class="wedge-options-panel">
+            <div class="wedge-option" *ngFor="let dimensionName of existingDimensionNames" (click)="onWedgeOptionClicked($event, -1, dimensionName)">{{dimensionName}}</div>
+          </div>
+        </div>
       </span>
       <ng-container [formGroup]="horizontalDimension">
         <span>
@@ -193,7 +194,7 @@
       <tr>
         <th>Name</th>
         <td *ngFor="let col of csvCols; let i = index"
-          class="col-type-container" [class.selected]="selected[i]"
+          class="col-type-container wedge-container" [class.selected]="selected[i]"
           (mousedown)="typeMouseDown($event,i)"
           (mousemove)="typeMouseMove($event,i)"
           (mouseup)="typeMouseUp($event,'name',i)"
@@ -204,14 +205,13 @@
             class="form-control"
             [value]="dialogState.spec.dimensionNames[i]"
             (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
-            [matAutocomplete]="existingDimensionsName">
+            >
           
-          <mat-autocomplete
-          [panelWidth]="'10rem'"
-          #existingDimensionsName="matAutocomplete"
-          >
-          <mat-option *ngFor="let dimensionName of selectableDimensionNames[i]" [value]="dimensionName">{{dimensionName}}</mat-option>
-        </mat-autocomplete>
+          <div *ngIf="selectableDimensionNames[i].length > 0" class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
+
+          <div *ngIf="i === wedgeOptionPanelVisibleIndex" class="wedge-options-panel">
+            <div class="wedge-option" *ngFor="let dimensionName of selectableDimensionNames[i]" (click)="onWedgeOptionClicked($event, i, dimensionName)">{{dimensionName}}</div>
+          </div>
         </td>
       </tr>
 

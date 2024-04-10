@@ -79,6 +79,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   dialogState: any;
   existingDimensionNames: string[];
   selectableDimensionNames: string[][];
+  wedgeOptionPanelVisibleIndex: number = null;
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
   @ViewChild('fullDialog') fullDialog: ElementRef<HTMLElement>;
@@ -519,6 +520,25 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     const selectableDimensions = this.existingDimensionNames.slice();
     if(!selectableDimensions.includes(headerValue)) selectableDimensions.push(headerValue);
     return selectableDimensions;
+  }
+
+  onWedgeIconClicked($event, i) {
+    if(this.wedgeOptionPanelVisibleIndex === i) {
+      this.wedgeOptionPanelVisibleIndex = null;
+    } else {
+      this.wedgeOptionPanelVisibleIndex = i;
+    }
+    $event.stopPropagation();
+  }
+
+  onWedgeOptionClicked($event, i, value) {
+    this.wedgeOptionPanelVisibleIndex = null;
+    if(i === -1) {
+      this.form.controls.horizontalDimName.setValue(value);
+    } else {
+      this.dialogState.spec.dimensionNames[i] = value;
+    }
+    $event.stopPropagation();
   }
 
   closeWindow() { this.electronService.closeWindow(); }
