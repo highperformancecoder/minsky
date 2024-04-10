@@ -30,6 +30,8 @@
   }
 
   .options-row {
+    z-index: 10000;
+
     flex: 0 0 1;
     width: 100%;
     
@@ -88,22 +90,18 @@
   }
 }
 
-.autocomplete {
-  width: 11.125rem;
-}
-
-::ng-deep .mat-mdc-option-text {
-  font-size: 0.7rem !important;
+::ng-deep .mat-mdc-autocomplete-panel {
+  width: 9rem !important;
 }
 
 ::ng-deep .mat-mdc-option {
-  height: 18px !important;
-}
+  min-height: 0.9rem !important;
+  height: 0.9rem !important;
 
-::ng-deep .cdk-overlay-pane {
-  height: 4.5rem !important;
+  span.mdc-list-item__primary-text {
+    font-size: 0.8rem !important;
+  }
 }
-
 table {
   border-collapse: collapse;
   user-select: none;
@@ -155,4 +153,45 @@ td {
 }
 .col-type-container.selected {
   filter: brightness(80%)
+}
+
+.hd-wedge-container.wedge-container {
+  z-index: 10000;
+}
+
+.wedge-container {
+  position: relative;
+  overflow-y: visible;
+
+  z-index: 1000;
+
+  .wedge-icon {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin: -1px 1px;
+
+    cursor: pointer;
+
+    transform: scale(0.75, 0.85);
+  }
+
+  .wedge-options-panel {
+    position: absolute;
+    top: 100%;
+    right: 1px;
+    border: 0.5px solid black;
+    width: calc(100% - 2px);
+
+    .wedge-option {
+      font-size: 12px;
+      padding: 2px;
+      background-color: white;
+    }
+
+    .wedge-option:hover {
+      background-color: rgb(98, 98, 203);
+      color: white;
+    }
+  }
 }
