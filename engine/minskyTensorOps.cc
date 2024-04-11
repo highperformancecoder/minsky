@@ -133,7 +133,8 @@ namespace minsky
             for (auto& xv: a2->hypercube().xvectors)
               if (a2Axes.contains(xv.name))
                 hcSpread1.xvectors.push_back(xv);
-
+            size_t numCommonAxes=common.size();
+            
             // append common dimensions to make up a1 final order
             a1Order.insert(a1Order.end(), common.begin(), common.end());
             pivotArg1->setOrientation(a1Order);
@@ -149,8 +150,34 @@ namespace minsky
             spread2->setArgument(pivotArg2,{});
             spread2->setSpreadDimensions(hcSpread2);
 
+            
             if (spread1->hypercube()==spread2->hypercube())
-              setArguments(spread1, spread2);
+              {
+                setArguments(spread1, spread2);
+                // calculate the sparsity pattern of the result
+                map<size_t,set<size_t>> p2i;
+                auto& xv=pivotArg2->hypercube().xvectors;
+                size_t commonElements=1;
+                for (size_t i=0; i<numCommonAxes; ++i) commonElements*=xv[i].size();
+                size_t p1NumElements=pivotArg1->hypercube().numElements();
+                size_t p1ExtraElements=p1NumElements/commonElements;
+                size_t p2ExtraElements=pivotArg2->hypercube().numElements()/commonElements;
+                for (auto i: pivotArg2->index())
+                  {
+                    auto r=lldiv(i,commonElements);
+                    p2i[r.rem].insert(r.quot);
+                  }
+                set<size_t> index;
+                for (auto i: pivotArg1->index())
+                  for (size_t j=0; j<p2ExtraElements; ++j) // loop over all elements that extend pivot1
+                    {
+                      auto s=p2i.find(i/p1ExtraElements);
+                      if (s!=p2i.end())
+                        if (s->second.count(j))
+                          index.insert(i+p1NumElements*j);
+                    }
+                m_index=index;
+              }
             else 
               { // hypercubes not equal, interpolate the second argument
                 Hypercube unionHC=spread1->hypercube();
