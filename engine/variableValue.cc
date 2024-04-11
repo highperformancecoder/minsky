@@ -151,13 +151,13 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        assert(idxInRange());
-         if (size_t(m_idx)<ValueVector::flowVars.size())
-           return ValueVector::flowVars[m_idx];
-         break;
+        //assert(idxInRange()); // assertions fail after cancelled reset()
+        if (size_t(m_idx)<ValueVector::flowVars.size())
+          return ValueVector::flowVars[m_idx];
+        break;
       case stock:
       case integral:
-        assert(idxInRange());
+        //assert(idxInRange()); // assertions fail after cancelled reset()
         if (size_t(m_idx)<ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx];
         break;

@@ -494,7 +494,7 @@ void Sheet::draw(cairo_t* cairo) const
                     {
                       pango.setMarkup(str(v));
                       pango.show();
-                    }                       
+                    }
                   y+=rowHeight;
                 }
             }

@@ -25,7 +25,7 @@ build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) $(JOBS) all-without
 
 $(warning $(build_ecolab))
 ifneq ($(build_ecolab),ecolab built)
-$(error "Making ecolab failed: check ecolab/build.log")
+$(error Making ecolab failed: check ecolab/build.log)
 endif
 include $(ECOLAB_HOME)/include/Makefile
 endif
@@ -55,8 +55,12 @@ endif
 
 MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
-build_RavelCAPI:=$(shell cd RavelCAPI && $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1) 
-$(warning $(build_RavelCAPI))
+build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
+$(warning $(build_ravelcapi))
+ifneq ($(build_ravelcapi),ravelcapi built )
+$(error Making RavelCAPI failed: check RavelCAPI/build.log)
+endif
+
 endif
 
 ifdef FLTO

@@ -150,6 +150,18 @@ namespace minsky
             spread2->setArgument(pivotArg2,{});
             spread2->setSpreadDimensions(hcSpread2);
 
+#ifndef NDEBUG
+            {
+              auto& xv1=spread1->hypercube().xvectors;
+              auto& xv2=spread2->hypercube().xvectors;
+              assert(xv1.size()==xv2.size());
+              for (size_t i=0; i<xv1.size(); ++i)
+                {
+                  assert(xv1[i].name==xv2[i].name);
+                  assert(xv1[i].dimension.type==xv2[i].dimension.type);
+                }
+            }
+#endif
             
             if (spread1->hypercube()==spread2->hypercube())
               {
@@ -164,6 +176,7 @@ namespace minsky
                 size_t p2ExtraElements=pivotArg2->hypercube().numElements()/commonElements;
                 for (auto i: pivotArg2->index())
                   {
+                    checkCancel();
                     auto r=lldiv(i,commonElements);
                     p2i[r.rem].insert(r.quot);
                   }
@@ -171,6 +184,7 @@ namespace minsky
                 for (auto i: pivotArg1->index())
                   for (size_t j=0; j<p2ExtraElements; ++j) // loop over all elements that extend pivot1
                     {
+                      checkCancel();
                       auto s=p2i.find(i/p1ExtraElements);
                       if (s!=p2i.end())
                         if (s->second.count(j))
@@ -183,6 +197,8 @@ namespace minsky
                 Hypercube unionHC=spread1->hypercube();
                 civita::unionHypercube(unionHC,spread2->hypercube());
                 TensorPtr arg1=spread1, arg2=spread2;
+                spread1->setIndex();
+                spread2->setIndex();
                 if (unionHC!=spread1->hypercube())
                   {
                     auto interpolate=make_shared<InterpolateHC>();
