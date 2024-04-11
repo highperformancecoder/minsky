@@ -207,7 +207,7 @@
             (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
             >
           
-          <div *ngIf="selectableDimensionNames[i].length > 0" class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
+          <div *ngIf="selectableDimensionNames[i]?.length > 0" class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
 
           <div *ngIf="i === wedgeOptionPanelVisibleIndex" class="wedge-options-panel">
             <div class="wedge-option" *ngFor="let dimensionName of selectableDimensionNames[i]" (click)="onWedgeOptionClicked($event, i, dimensionName)">{{dimensionName}}</div>
