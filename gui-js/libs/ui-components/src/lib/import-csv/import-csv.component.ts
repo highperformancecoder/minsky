@@ -77,8 +77,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   selected: boolean[]; ///< per column whether column is selected
   mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
-  existingDimensionNames: string[];
-  selectableDimensionNames: string[][];
+  existingDimensionNames: string[]=[];
+  selectableDimensionNames: string[][]=[];
   wedgeOptionPanelVisibleIndex: number = null;
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
@@ -305,7 +305,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     let header = this.dialogState.spec.headerRow;
     this.csvCols = new Array(this.parsedLines[header]?.length);
     this.selected = new Array(this.parsedLines[header]?.length).fill(false);
-    this.selectableDimensionNames = this.parsedLines[this.dialogState.spec.headerRow].map(header => this.getSelectableNameDimensions(header));
+    this.selectableDimensionNames = this.parsedLines[header]? this.parsedLines[header].map(header => this.getSelectableNameDimensions(header)): [];
     this.updateColumnTypes();
   }
 
