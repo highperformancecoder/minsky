@@ -201,14 +201,14 @@ namespace minsky
                 spread2->setIndex();
                 if (unionHC!=spread1->hypercube())
                   {
-                    auto interpolate=make_shared<InterpolateHC>();
+                    auto interpolate=make_shared<PivotedInterpolateHC>();
                     interpolate->hypercube(unionHC);
                     interpolate->setArgument(spread1,{});
                     arg1=interpolate;
                   }
                 if (unionHC!=spread2->hypercube())
                   {
-                    auto interpolate=make_shared<InterpolateHC>();
+                    auto interpolate=make_shared<PivotedInterpolateHC>();
                     interpolate->hypercube(unionHC);
                     interpolate->setArgument(spread2,{});
                     arg2=interpolate;
