@@ -63,12 +63,8 @@ export class CommandsManager {
     return ClassType[classType];
   }
 
-  static isFalseResult(result) {
-    return !result || typeof result === 'object' && (Object.keys(result).length === 0);
-  }
-
   static async getItemInfo(x: number, y: number): Promise<CanvasItem> {
-    if (this.isFalseResult(await minsky.canvas.getItemAt(x, y))) {
+    if (!await minsky.canvas.getItemAt(x, y)) {
       return null;
     }
 
@@ -84,7 +80,7 @@ export class CommandsManager {
     const classType = (await this.getCurrentItemClassType()) as ClassType;
     const id = await minsky.canvas.item.id();
     
-    if(this.isFalseResult(id)) {
+    if(!id) {
       return null;
     }
 
@@ -222,11 +218,7 @@ export class CommandsManager {
     let title = await godley.table.title();
     let godleyId = await godley.id();
 
-    if (Functions.isEmptyObject(title)) {
-      title = '';
-    }
-    
-    minsky.nameCurrentItem(await minsky.canvas.item?.id()); // name current item
+    minsky.nameCurrentItem(godleyId); // name current item
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
       url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godleyId}`,
@@ -595,7 +587,7 @@ export class CommandsManager {
   static async help(x: number, y: number) {
     let classType = (await this.getItemClassType(x, y, true)) as string;
 
-    if (Functions.isEmptyObject(classType)) {
+    if (!classType) {
       classType = (await minsky.canvas.getWireAt(x,y)) ? 'Wires' : 'DesignCanvas';
     }
 

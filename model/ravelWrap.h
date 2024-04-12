@@ -82,6 +82,7 @@ namespace minsky
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window
+    bool flipped=false;
     Ravel();
     // copy operations needed for clone, but not really used for now
     // define them as empty operations to prevent double frees if accidentally used
