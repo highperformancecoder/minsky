@@ -43,10 +43,7 @@ with open(sys.argv[2]) as log:
     row=next(reader)
     nsteps=int(row[1])
 
-    step=0
-
-    while step<nsteps:
-        step+=1
+    for step in range(nsteps):
         row=next(reader)
         minsky.step()
 

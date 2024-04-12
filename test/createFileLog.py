@@ -21,7 +21,6 @@ minsky.running(True)
 #provide seed to ensure repeatability
 minsky.srand(10)
 minsky.reset()
-#step
 
 for step in range(nSteps):
     minsky.step()
