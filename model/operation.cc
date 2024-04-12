@@ -508,6 +508,8 @@ namespace minsky
                 }
               return argUnits;
             }
+          case linearRegression:
+            return m_ports[1]->units(check);
           case rho:
             return {};
           default:
@@ -834,6 +836,20 @@ namespace minsky
     cairo_show_text(cairo,"ρ");
   }
 
+  template <> void Operation<OperationType::linearRegression>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);
+    cairo_move_to(cairo,-7,7);
+    cairo_line_to(cairo,7,-7);
+    cairo_stroke(cairo);
+    cairo_arc(cairo,-4,0,0.2,0,2*M_PI);
+    cairo_stroke(cairo);
+    cairo_arc(cairo,3,3,0.2,0,2*M_PI);
+    cairo_stroke(cairo);
+    cairo_arc(cairo,4,-6,0.2,0,2*M_PI);
+    cairo_stroke(cairo);
+  }
   template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     

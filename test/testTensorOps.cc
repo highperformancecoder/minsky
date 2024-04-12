@@ -1648,4 +1648,160 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      CHECK_ARRAY_CLOSE(cov, &toVal[0], toVal.size(), 1e-4);
    }
 
+  TEST_FIXTURE(CorrelationFixture,lineLinearRegression)
+   {
+     TensorVal x(vector<unsigned>{6}); x=vector<double>{0,1,2,3,4,5};
+     TensorVal y(vector<unsigned>{6}); y=vector<double>{1,2,3,4,5,6};
+     fromVal=y;
+     from1Val=x;
+     
+     // line y=x+1
+     vector<double> result={1,2,3,4,5,6};
+
+     OperationPtr op(OperationType::linearRegression);
+     g->addItem(op);
+     Wire w1(from->ports(0),op->ports(1)), w2(from1->ports(0),op->ports(2)), w3(op->ports(0),to->ports(1));
+     Eval(*to, op)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(result.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+   }
+
+  TEST_FIXTURE(CorrelationFixture,xvectorValueLinearRegression)
+   {
+     Hypercube hc;
+     hc.xvectors.emplace_back("0", Dimension(Dimension::value,""), vector<any>{0,1,2,3,4,5});
+     TensorVal y(hc); y=vector<double>{1,2,3,4,5,6};
+     fromVal=y;
+     
+     // line y=x+1
+     vector<double> result={1,2,3,4,5,6};
+
+     OperationPtr op(OperationType::linearRegression);
+     g->addItem(op);
+     Wire w1(from->ports(0),op->ports(1)), w3(op->ports(0),to->ports(1));
+     Eval(*to, op)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(result.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+   }
+
+  TEST_FIXTURE(CorrelationFixture,xvectorTimeLinearRegression)
+   {
+     Hypercube hc;
+     hc.xvectors.emplace_back("0", Dimension(Dimension::time,""),
+                              vector<any>{
+                                ptime(date(1970,Jan,1)),
+                                ptime(date(1971,Jan,1)),
+                                ptime(date(1972,Jan,1)),
+                                ptime(date(1973,Jan,1)),
+                                ptime(date(1974,Jan,1)),
+                                ptime(date(1975,Jan,1)),
+                              });
+     TensorVal y(hc); y=vector<double>{1,2,3,4,5,6};
+     fromVal=y;
+     
+     // line y=x+1
+     vector<double> result={1,2,3,4,5,6};
+
+     OperationPtr op(OperationType::linearRegression);
+     g->addItem(op);
+     Wire w1(from->ports(0),op->ports(1)), w3(op->ports(0),to->ports(1));
+     Eval(*to, op)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(result.size(), toVal.size());
+     // larger tolerance to allow for years not all being the same length
+     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-1);
+   }
+
+  TEST_FIXTURE(CorrelationFixture,xvectorStringLinearRegression)
+   {
+     Hypercube hc;
+     hc.xvectors.emplace_back("0", Dimension(Dimension::string,""), vector<any>{"a","b","c","d","e","f"});
+     TensorVal y(hc); y=vector<double>{1,2,3,4,5,6};
+     fromVal=y;
+     
+     // line y=x+1
+     vector<double> result={1,2,3,4,5,6};
+
+     OperationPtr op(OperationType::linearRegression);
+     g->addItem(op);
+     Wire w1(from->ports(0),op->ports(1)), w3(op->ports(0),to->ports(1));
+     Eval(*to, op)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(result.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+   }
+
+  TEST_FIXTURE(CorrelationFixture,vectorLinearRegression)
+   {
+     TensorVal x(vector<unsigned>{8}); x=vector<double>{0,0,1,1,2,2,3,3};
+     TensorVal y(vector<unsigned>{8}); y=vector<double>{0,2,1,3,2,4,3,5};
+     fromVal=y;
+     from1Val=x;
+     
+     // line y=x+1
+     vector<double> result{1,1,2,2,3,3,4,4};
+
+     OperationPtr op(OperationType::linearRegression);
+     g->addItem(op);
+     Wire w1(from->ports(0),op->ports(1)), w2(from1->ports(0),op->ports(2)), w3(op->ports(0),to->ports(1));
+     Eval(*to, op)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(result.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+   }
+
+  TEST_FIXTURE(CorrelationFixture,matrixLinearRegression)
+   {
+     TensorVal x(vector<unsigned>{8,2}); x=vector<double>{0,0,1,1,2,2,3,3,0,0,1,1,2,2,3,3};
+     TensorVal y(vector<unsigned>{8,2}); y=vector<double>{0,2,1,3,2,4,3,5,1,3,3,5,5,7,7,9};
+     fromVal=y;
+     from1Val=x;
+     
+     // lines y=x+1, y=2x+2
+     vector<double> result{1,1,2,2,3,3,4,4,2,2,4,4,6,6,8,8};
+
+     OperationPtr op(OperationType::linearRegression);
+     op->axis="0";
+     g->addItem(op);
+     Wire w1(from->ports(0),op->ports(1)), w2(from1->ports(0),op->ports(2)), w3(op->ports(0),to->ports(1));
+     Eval(*to, op)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(result.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+     CHECK_EQUAL(x.rank(), toVal.rank());
+     CHECK_ARRAY_EQUAL(x.hypercube().dims(), toVal.hypercube().dims(), x.rank());
+   }
+
+  TEST_FIXTURE(CorrelationFixture,allMatrixLinearRegression)
+   {
+     TensorVal x(vector<unsigned>{8,2}); x=vector<double>{0,0,1,1,2,2,3,3,0,0,1,1,2,2,3,3};
+     TensorVal y(vector<unsigned>{8,2}); y=vector<double>{0,2,1,3,2,4,3,5,0,2,1,3,2,4,3,5};
+     fromVal=y;
+     from1Val=x;
+     
+     // lines y=x+1, y=2x+2
+     vector<double> result{1,1,2,2,3,3,4,4,1,1,2,2,3,3,4,4};
+
+     OperationPtr op(OperationType::linearRegression);
+     g->addItem(op);
+     Wire w1(from->ports(0),op->ports(1)), w2(from1->ports(0),op->ports(2)), w3(op->ports(0),to->ports(1));
+     Eval(*to, op)();
+     
+     auto& toVal=*to->vValue();
+     CHECK_EQUAL(result.size(), toVal.size());
+     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+     CHECK_EQUAL(x.rank(), toVal.rank());
+     CHECK_ARRAY_EQUAL(x.hypercube().dims(), toVal.hypercube().dims(), x.rank());
+   }
+
+
+ 
 }

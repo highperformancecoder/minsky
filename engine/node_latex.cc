@@ -394,6 +394,18 @@ namespace MathDAG
   }
 
   template <>
+  ostream& OperationDAG<OperationType::linearRegression>::latex(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      return o<<"{\\mathrm{linReg}\\left("<<arguments[0][0]->latex()<<
+        ","<<arguments[1][0]<<"\\right)";
+    return o<<"0";
+  }
+
+  
+  
+  template <>
   ostream& OperationDAG<OperationType::size>::latex(ostream& o) const
   {
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
