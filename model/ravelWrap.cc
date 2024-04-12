@@ -18,6 +18,7 @@
 */
 
 #include "minsky.h"
+#include "cairoItems.h"
 #include "ravelWrap.h"
 #include "selection.h"
 #include "dimension.h"
@@ -74,8 +75,18 @@ namespace minsky
   void Ravel::draw(cairo_t* cairo) const
   {
     const double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
-    m_ports[0]->moveTo(x()+1.1*r, y());
-    m_ports[1]->moveTo(x()-1.1*r, y());
+    if (flipped)
+      {
+        m_ports[0]->moveTo(x()-1.1*r, y());
+        m_ports[1]->moveTo(x()+1.1*r, y());
+        drawTriangle(cairo,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},M_PI);
+      }
+    else
+      {
+        m_ports[0]->moveTo(x()+1.1*r, y());
+        m_ports[1]->moveTo(x()-1.1*r, y());
+        drawTriangle(cairo,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},0);
+      }
     if (mouseFocus)
       {
         drawPorts(cairo);

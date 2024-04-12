@@ -1804,6 +1804,7 @@ export class Ravel extends Item {
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async exportAsCSV(a1: string): Promise<void> {return this.$callMethod('exportAsCSV',a1);}
+  async flipped(...args: boolean[]): Promise<boolean> {return this.$callMethod('flipped',...args);}
   async getState(): Promise<object> {return this.$callMethod('getState');}
   async handleDescription(a1: number): Promise<string> {return this.$callMethod('handleDescription',a1);}
   async handleNames(): Promise<string[]> {return this.$callMethod('handleNames');}
