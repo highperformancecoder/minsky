@@ -41,14 +41,18 @@ namespace minsky
   public:
     std::string title;
     std::shared_ptr<std::atomic<bool>> cancel=std::make_shared<std::atomic<bool>>(false); ///< set to true to cancel process in progreess
-    void displayProgress();
-    void operator++() {
+    /// displayProgress will throw if cancel is set, but destructors
+    /// should not throw, so set \a inDestruct to true when calling
+    /// from a destructor
+    void displayProgress(bool inDestruct=false);
+    void increment(bool inDestruct=false) {
       if (progress+delta<=100)
         {
           progress+=delta;
-          displayProgress();
+          displayProgress(inDestruct);
         }
     }
+    void operator++() {increment();}
   };
 
   class ProgressUpdater
@@ -78,11 +82,10 @@ namespace minsky
     }
     ~ProgressUpdater() {
       updatedProgress=savedProgress;
-      ++updatedProgress;
       if (!updatedProgress.updaterStack)
         updatedProgress.progress=0; // reset progress counter once last ProgressUpdater exits
       else
-        updatedProgress.displayProgress();
+        updatedProgress.increment(true);
     }
   };
 }
