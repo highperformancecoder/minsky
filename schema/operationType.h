@@ -48,7 +48,7 @@ namespace minsky
                // reductions
                sum, product, infimum, supremum, any, all, infIndex, supIndex,
                // scans
-               runningSum, runningProduct, difference,
+               runningSum, runningProduct, difference, differencePlus,
                // other tensor ops
                innerProduct, outerProduct, index, gather, meld, merge, slice, size, shape, 
                // statistics

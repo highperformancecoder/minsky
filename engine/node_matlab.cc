@@ -724,6 +724,13 @@ namespace MathDAG
     checkArg(0,0);
     return o<<"diff("<<arguments[0][0]->matlab()<<")";
   }
+  // nb - because Matlab is oblivious to x-vectors, there is no difference between Δ⁻ and Δ⁺
+  template <>
+  ostream& OperationDAG<OperationType::differencePlus>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"diff("<<arguments[0][0]->matlab()<<")";
+  }
   template <>
   ostream& OperationDAG<OperationType::innerProduct>::matlab(ostream& o) const
   {
