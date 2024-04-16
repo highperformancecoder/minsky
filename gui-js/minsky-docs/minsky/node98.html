@@ -43,16 +43,46 @@
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004211000000000000000"></A><A NAME="Operation:difference"></A>
+<H2><A NAME="SECTION004211000000000000000"></A><A NAME="Operation:difference"></A><A NAME="Operation:differencePlus"></A>
 <BR>
-difference <SPAN CLASS="MATH"><IMG
- WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+difference <!-- MATH
+ $\Delta^-,\Delta^+$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="59" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img23.png"
- ALT="$\Delta $"></SPAN>
+ ALT="$\Delta ^-,\Delta ^+$"></SPAN>
 </H2>
 Computes the nearest neighbour difference along a given direction. The
-optional argument can be used to specify the number of neighbours to
-skip in computing the differences.
+optional argument (<SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img201.png"
+ ALT="$\delta$"></SPAN>) can be used to specify the number of
+neighbours to skip in computing the differences. The length of the
+dimension being differenced is reduced by <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img201.png"
+ ALT="$\delta$"></SPAN> in the result.
+
+<P>
+It comes in two different forms which differ only in how the resultant
+x-vector is calculated. <!-- MATH
+ $\Delta^-_i=x_i-x_{i-\delta}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="113" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img202.png"
+ ALT="$\Delta^-_i=x_i-x_{i-\delta}$"></SPAN>, and
+<!-- MATH
+ $\Delta^+_i=x_{i+\delta}-x_i$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="113" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img203.png"
+ ALT="$\Delta^+_i=x_{i+\delta}-x_i$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="9" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img204.png"
+ ALT="$i$"></SPAN> refers to the x-vector index.
 
 <P>
 <BR><HR>
