@@ -893,7 +893,7 @@ SUITE(TensorOps)
               break;
             case OperationType::scan:
               CHECK_EQUAL(1, dest->vValue()->rank());
-              if (op==OperationType::difference) //TODO should difference really be a scan?
+              if (op==OperationType::difference || op==OperationType::differencePlus) //TODO should difference really be a scan?
                 CHECK_EQUAL(src->vValue()->size()-1, dest->vValue()->size());
               else
                 CHECK_EQUAL(src->vValue()->size(), dest->vValue()->size());

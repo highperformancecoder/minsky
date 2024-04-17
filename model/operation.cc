@@ -1218,7 +1218,16 @@ namespace minsky
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    setCachedText(cairo, "Δ",7);
+    setCachedText(cairo, "Δ⁻",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
+  }
+
+  template <> void Operation<OperationType::differencePlus>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_move_to(cairo,-4,-7);
+    setCachedText(cairo, "Δ⁺",7);
     cairo_scale(cairo,sf,sf);	  
     cachedPango->show();
   }

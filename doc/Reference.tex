@@ -335,10 +335,15 @@ is:
   \right)
 \end{displaymath}
 
-\subsection{difference $\Delta$}\label{Operation:difference}
+\subsection{difference $\Delta^-,\Delta^+$}\label{Operation:difference}\label{Operation:differencePlus}
 Computes the nearest neighbour difference along a given direction. The
-optional argument can be used to specify the number of neighbours to
-skip in computing the differences.
+optional argument ($\delta$) can be used to specify the number of
+neighbours to skip in computing the differences. The length of the
+dimension being differenced is reduced by $\delta$ in the result.
+
+It comes in two different forms which differ only in how the resultant
+x-vector is calculated. $\Delta^-_i=x_i-x_{i-\delta}$, and
+$\Delta^+_i=x_{i+\delta}-x_i$, where $i$ refers to the x-vector index.
 
 \subsection{index}\label{Operation:index}
 
