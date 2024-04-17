@@ -164,7 +164,7 @@ namespace schema3
             }
           if (auto* s=dynamic_cast<const minsky::Sheet*>(i))
             {
-              items.back().showSlice=s->showSlice;
+              items.back().showSlice=s->showRowSlice;
             }
           if (auto* d=dynamic_cast<const minsky::UserFunction*>(i))
             {
@@ -562,7 +562,9 @@ namespace schema3
     if (auto* x1=dynamic_cast<minsky::Sheet*>(&x))
       {
         if (y.showSlice)
-          x1->showSlice=*y.showSlice;
+          x1->showRowSlice=*y.showSlice;
+        if (y.showColSlice)
+          x1->showColSlice=*y.showColSlice;
       }
     if (auto* x1=dynamic_cast<minsky::SwitchIcon*>(&x))
       {

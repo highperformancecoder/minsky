@@ -80,7 +80,8 @@ namespace minsky
     void computeValue();
     
     bool showRavel=false;
-    ShowSlice showSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
+    ShowSlice showRowSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
+    ShowSlice showColSlice=ShowSlice::head; ///< whether to elide columnss from beginning, end or middle
   };
 }
 

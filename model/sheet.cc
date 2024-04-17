@@ -310,6 +310,28 @@ void Sheet::computeValue()
 }
 
 
+namespace {
+  /// A pango that clips text to a standard area suitable for numbers
+  struct ClippedPango: public Pango
+  {
+    double m_width, m_height;
+    ClippedPango(cairo_t* cairo): Pango(cairo) {
+      setText(str(-std::numeric_limits<double>::max()));
+      m_width=5+width();
+      m_height=height();
+    }
+    void show() {
+      cairo::CairoSave cs(cairoContext());
+      double x,y;
+      cairo_get_current_point(cairoContext(),&x,&y);
+      cairo_rectangle(cairoContext(),x,y,m_width,m_height);
+      cairo_clip(cairoContext());
+      cairo_move_to(cairoContext(),x,y);
+      Pango::show();
+    }
+  };
+}
+
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();
@@ -408,17 +430,13 @@ void Sheet::draw(cairo_t* cairo) const
             }
 
           pango.setMarkup("9999");
-          const double rowHeight=pango.height();
 
-          double colWidth=0;
+          ClippedPango cpango(cairo);
+          const double rowHeight=cpango.m_height;
+          const double colWidth=cpango.m_width;
+          
           double x=x0, y=y0;   // make sure row labels are aligned with corresponding values. for ticket 1281
           string format=value->hypercube().xvectors[0].dimension.units;
-          // calculate label column width
-          for (auto& i: value->hypercube().xvectors[0])
-            {
-              pango.setText(trimWS(str(i,format)));
-              colWidth=std::max(colWidth,5+pango.width());
-            }                
 
           if (value->hypercube().rank()>=2)
             {
@@ -427,18 +445,18 @@ void Sheet::draw(cairo_t* cairo) const
                 {
                   y+=rowHeight;
                   const cairo::CairoSave cs(cairo);
-                  pango.setMarkup(sliceIndicator);
-                  cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-pango.width()), y0);
-                  y0+=pango.height();
-                  pango.show();
+                  cpango.setMarkup(sliceIndicator);
+                  cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-cpango.width()), y0);
+                  y0+=cpango.height();
+                  cpango.show();
                 }
               if (!value->hypercube().xvectors[1].name.empty())
                 {
                   const cairo::CairoSave cs(cairo);
-                  pango.setMarkup(value->hypercube().xvectors[1].name);
-                  cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-pango.width()), y0);
-                  y0+=pango.height();
-                  pango.show();
+                  cpango.setMarkup(value->hypercube().xvectors[1].name);
+                  cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-cpango.width()), y0);
+                  y0+=cpango.height();
+                  cpango.show();
                 }
               
               { // draw horizontal grid lines
@@ -462,7 +480,7 @@ void Sheet::draw(cairo_t* cairo) const
             case 2: dataHeight-=2*(rowHeight+3); break;
             default: dataHeight-=3*(rowHeight+3); break;
             }
-          const ElisionRowChecker adjustRowAndFinish(showSlice,dataHeight,rowHeight,dims[0]);
+          const ElisionRowChecker adjustRowAndFinish(showRowSlice,dataHeight,rowHeight,dims[0]);
               
           // draw in label column
           auto& xv=value->hypercube().xvectors[0];
@@ -470,8 +488,8 @@ void Sheet::draw(cairo_t* cairo) const
             {
               if (adjustRowAndFinish(i,y)) break;
               cairo_move_to(cairo,x,y);
-              pango.setText(trimWS(str(xv[i],format)));
-              pango.show();
+              cpango.setText(trimWS(str(xv[i],format)));
+              cpango.show();
               y+=rowHeight;
             }                
           y=y0;          
@@ -492,8 +510,8 @@ void Sheet::draw(cairo_t* cairo) const
                   auto v=value->atHCIndex(i);
                   if (!std::isnan(v))
                     {
-                      pango.setMarkup(str(v));
-                      pango.show();
+                      cpango.setMarkup(str(v));
+                      cpango.show();
                     }
                   y+=rowHeight;
                 }
@@ -503,11 +521,15 @@ void Sheet::draw(cairo_t* cairo) const
               format=value->hypercube().xvectors[1].dimension.units;
               for (size_t i=0; i<dims[1]; ++i)
                 {
-                  colWidth=0;
                   y=y0;
-                  cairo_move_to(cairo,x,y);
-                  pango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
-                  pango.show();
+                  {
+                    cairo::CairoSave cs(cairo);
+                    cairo_rectangle(cairo,x,y,colWidth,rowHeight);
+                    cairo_clip(cairo);
+                    cairo_move_to(cairo,x,y);
+                    cpango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
+                    cpango.show();
+                  }
                   { // draw vertical grid line
                     const cairo::CairoSave cs(cairo);
                     cairo_set_source_rgba(cairo,0,0,0,0.5);
@@ -515,7 +537,6 @@ void Sheet::draw(cairo_t* cairo) const
                     cairo_line_to(cairo,x-2.5,0.5*m_height);
                     cairo_stroke(cairo);
                   }
-                  colWidth=std::max(colWidth, 5+pango.width());
                   for (size_t j=adjustRowAndFinish.startRow; j<dims[0]; ++j)
                     {
                       if (adjustRowAndFinish(j,y)) break;
@@ -524,10 +545,9 @@ void Sheet::draw(cairo_t* cairo) const
                       auto v=value->atHCIndex(j+i*dims[0]+scrollOffset);
                       if (!std::isnan(v))
                         {
-                          pango.setText(str(v));
-                          pango.show();
+                          cpango.setText(str(v));
+                          cpango.show();
                         }
-                      colWidth=std::max(colWidth, pango.width());
                     }
                   x+=colWidth;
                   if (x>0.5*m_width) break;

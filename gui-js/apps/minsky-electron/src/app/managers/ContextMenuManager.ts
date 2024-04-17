@@ -441,15 +441,15 @@ export class ContextMenuManager {
           submenu: [
             {
               label: 'Head',
-              click: () => {sheet.showSlice("head");}
+              click: () => {sheet.showRowSlice("head");}
             },
             {
               label: 'Tail',
-              click: () => {sheet.showSlice("tail");}
+              click: () => {sheet.showRowSlice("tail");}
             },
-              {
+            {
               label: 'Head & Tail',
-              click: () => {sheet.showSlice("headAndTail");}
+              click: () => {sheet.showRowSlice("headAndTail");}
             },
          ]
         }),
