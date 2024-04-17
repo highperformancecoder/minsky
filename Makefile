@@ -498,8 +498,8 @@ mac-dist: gui-tk/minsky gui-js/node-addons/minskyRESTService.node
 #	sh -v mkMacDist.sh
 	bash -v mkMacRESTService.sh
 
-minsky.xsd: gui-tk/minsky
-	gui-tk/minsky exportSchema.tcl 3
+minsky.xsd: pyminsky.so
+	python3 exportSchema.py 3
 
 upload-schema: minsky.xsd
 	scp minsky.xsd $(SF_WEB)
