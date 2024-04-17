@@ -769,7 +769,14 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::difference>::latex(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"\\left[\\Delta\\left("<<arguments[0][0]->latex()<<"\\right)_i\\right])";
+    return o<<"\\left[\\Delta^-\\left("<<arguments[0][0]->latex()<<"\\right)_i\\right])";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::differencePlus>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\left[\\Delta^+\\left("<<arguments[0][0]->latex()<<"\\right)_i\\right])";
   }
 
   template <>

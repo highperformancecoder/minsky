@@ -60,25 +60,25 @@ inputs are of rank <SPAN CLASS="MATH"><IMG
  SRC="img119.png"
  ALT="$N$"></SPAN> and <SPAN CLASS="MATH"><IMG
  WIDTH="21" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img226.png"
+ SRC="img230.png"
  ALT="$M$"></SPAN> respectively, the output will be a
 <!-- MATH
  $(N-1)\times(M-1)$
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="134" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img227.png"
+ SRC="img231.png"
  ALT="$(N-1)\times(M-1)$"></SPAN> rank tensor, where the <SPAN CLASS="MATH"><IMG
  WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img228.png"
+ SRC="img232.png"
  ALT="$(i,j)$"></SPAN> element is the
 covariance of the <SPAN CLASS="MATH"><IMG
  WIDTH="9" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img229.png"
+ SRC="img204.png"
  ALT="$i$"></SPAN>-th slice of the first argument along the named
 dimension, and the <SPAN CLASS="MATH"><IMG
  WIDTH="11" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img206.png"
+ SRC="img210.png"
  ALT="$j$"></SPAN>-th slice along the named dimension. As such, it
 is conformant with the definition of <TT>cov</TT> function in Octave, but
 not with the equivalently named function in Matlab:
@@ -100,7 +100,7 @@ If only a single argument <SPAN CLASS="MATH"><IMG
  ALT="$x$"></SPAN> is supplied to the covariance, then the
 result is equivalent to cov<SPAN CLASS="MATH"><IMG
  WIDTH="41" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img230.png"
+ SRC="img233.png"
  ALT="$(x,x)$"></SPAN>, ie each slice is covaried with
 each other slice.
 
@@ -124,7 +124,7 @@ The formula for covariance between stochastic variables <SPAN CLASS="MATH"><IMG
 
 <IMG
  WIDTH="285" HEIGHT="48" BORDER="0"
- SRC="img231.png"
+ SRC="img234.png"
  ALT="\begin{displaymath}
 \mathrm{cov}(x,y)=\frac1{N-1}\sum_i(x_i-\langle
 x\rangle)(y_i-\langle y\rangle)
