@@ -453,6 +453,23 @@ export class ContextMenuManager {
             },
          ]
         }),
+        new MenuItem({
+          label: 'Column Slices',
+          submenu: [
+            {
+              label: 'Head',
+              click: () => {sheet.showColSlice("head");}
+            },
+            {
+              label: 'Tail',
+              click: () => {sheet.showColSlice("tail");}
+            },
+            {
+              label: 'Head & Tail',
+              click: () => {sheet.showColSlice("headAndTail");}
+            },
+         ]
+        }),
       ];
       break;
       default:

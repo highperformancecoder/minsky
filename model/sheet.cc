@@ -239,8 +239,8 @@ namespace
           break;
         case ShowSlice::headAndTail:
           startRow=0;
-          numRows=0.5*height/rowHeight;
-          tailStartRow=size-numRows+1;
+          numRows=0.5*height/rowHeight-1;
+          tailStartRow=size-numRows;
           if (2*numRows*rowHeight>height)
             tailStartRow++;
           break;
@@ -519,8 +519,10 @@ void Sheet::draw(cairo_t* cairo) const
           else
             {
               format=value->hypercube().xvectors[1].dimension.units;
-              for (size_t i=0; i<dims[1]; ++i)
+              const ElisionRowChecker adjustColAndFinish(showColSlice,m_width-colWidth,colWidth,dims[1]);
+              for (size_t i=adjustColAndFinish.startRow; i<dims[1]; ++i)
                 {
+                  if (adjustColAndFinish(i,x)) break;
                   y=y0;
                   {
                     cairo::CairoSave cs(cairo);

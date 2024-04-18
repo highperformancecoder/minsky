@@ -165,6 +165,7 @@ namespace schema3
           if (auto* s=dynamic_cast<const minsky::Sheet*>(i))
             {
               items.back().showSlice=s->showRowSlice;
+              items.back().showColSlice=s->showColSlice;
             }
           if (auto* d=dynamic_cast<const minsky::UserFunction*>(i))
             {
