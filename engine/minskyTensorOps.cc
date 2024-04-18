@@ -924,10 +924,9 @@ namespace minsky
         lineal=0; stride=1;
         for (size_t i=0, s=1; i<dims.size(); s*=dims[i], ++i)
           if (i!=dimension)
-            {
-              lineal=*splitIndexIterator++ * s;
-              stride=s*dims[i];
-            }
+            lineal+=*splitIndexIterator++ * s;
+          else
+            stride=s;
       };
 
       size_t arg1Lineal, arg1Stride, arg2Lineal, arg2Stride;
