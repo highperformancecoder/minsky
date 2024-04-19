@@ -91,6 +91,7 @@ export class ApplicationMenuManager {
               height: 500,
               title: '',
               url: `#/headless/menu/file/about`,
+              //url: `http://localhost:4200/#/headless/menu/file/about`,
               modal: false,
             });
             shell.beep();
@@ -99,7 +100,23 @@ export class ApplicationMenuManager {
         {
           label: 'Upgrade',
           click() {
-            shell.openExternal('https://www.patreon.com/hpcoder');
+            let window=WindowManager.createWindow({
+              width: 420,
+              height: 500,
+              title: '',
+              modal: false,
+            });
+            window.loadURL('https://www.patreon.com/oauth2/authorize?response_type=code&client_id=abf9j0FWQTj-etln2BbRlUhJnjv11kaL9lH1nprj23NLSq3l6ELxUGkLJKIfWsKt&redirect_uri=https://ravelation.hpcoders.com.au/patreon-redirect.html');
+            window.webContents.on('did-navigate',()=>{
+              console.log(window.webContents.getURL());
+              let url=new URL(window.webContents.getURL());
+              let params=new URLSearchParams(url.search);
+              let code=params.get('code');
+              if (code)
+              {
+                console.log(code)
+                window.close();
+              }
           },
         },
         {
