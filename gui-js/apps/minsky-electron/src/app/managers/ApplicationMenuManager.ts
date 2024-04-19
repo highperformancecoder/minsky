@@ -112,11 +112,11 @@ export class ApplicationMenuManager {
               let url=new URL(window.webContents.getURL());
               let params=new URLSearchParams(url.search);
               let code=params.get('code');
-              if (code)
-              {
+              if (code) {
                 console.log(code)
                 window.close();
               }
+            });
           },
         },
         {
