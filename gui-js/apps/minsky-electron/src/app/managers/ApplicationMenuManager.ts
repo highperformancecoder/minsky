@@ -106,17 +106,22 @@ export class ApplicationMenuManager {
               title: '',
               modal: false,
             });
-            window.loadURL('https://www.patreon.com/oauth2/authorize?response_type=code&client_id=abf9j0FWQTj-etln2BbRlUhJnjv11kaL9lH1nprj23NLSq3l6ELxUGkLJKIfWsKt&redirect_uri=https://ravelation.hpcoders.com.au/patreon-redirect.html');
-            window.webContents.on('did-navigate',()=>{
-              console.log(window.webContents.getURL());
-              let url=new URL(window.webContents.getURL());
-              let params=new URLSearchParams(url.search);
-              let code=params.get('code');
-              if (code) {
-                console.log(code)
-                window.close();
-              }
+            window.webContents.on('did-navigate',async ()=>{
+              if (window.webContents.getURL()=='https://www.patreon.com/')
+                window.close()
+              else
+              {
+                let url=new URL(window.webContents.getURL());
+                console.log(window.getURL());
+                let params=new URLSearchParams(url.search);
+                let file=params.get('asset');
+                if (file)
+                {
+                  console.log(file);
+                  window.close();
+                }
             });
+            window.loadURL('https://www.patreon.com/oauth2/authorize?response_type=code&client_id=abf9j0FWQTj-etln2BbRlUhJnjv11kaL9lH1nprj23NLSq3l6ELxUGkLJKIfWsKt&redirect_uri=https://ravelation.net/ravel-downloader.cgi');
           },
         },
         {
