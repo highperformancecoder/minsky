@@ -774,7 +774,18 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::difference>::render(Surface& surf) const
   {
-    print(surf.cairo(),"Δ<sub>i</sub>",Anchor::nw);
+    print(surf.cairo(),"Δ⁻ᵢ",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+      }
+  }
+  
+  template <>
+  void OperationDAG<OperationType::differencePlus>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"Δ⁺ᵢ",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
