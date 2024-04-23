@@ -2119,8 +2119,9 @@ export class Sheet extends Item {
   async scrollDown(): Promise<boolean> {return this.$callMethod('scrollDown');}
   async scrollUp(): Promise<boolean> {return this.$callMethod('scrollUp');}
   async setSliceIndicator(): Promise<void> {return this.$callMethod('setSliceIndicator');}
+  async showColSlice(...args: string[]): Promise<string> {return this.$callMethod('showColSlice',...args);}
   async showRavel(...args: boolean[]): Promise<boolean> {return this.$callMethod('showRavel',...args);}
-  async showSlice(...args: string[]): Promise<string> {return this.$callMethod('showSlice',...args);}
+  async showRowSlice(...args: string[]): Promise<string> {return this.$callMethod('showRowSlice',...args);}
 }
 
 export class SwitchIcon extends Item {
