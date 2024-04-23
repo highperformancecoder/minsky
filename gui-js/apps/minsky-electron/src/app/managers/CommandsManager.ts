@@ -1168,7 +1168,7 @@ export class CommandsManager {
     window.webContents.session.on('will-download',(event,item,webContents)=>{
       switch (process.platform) {
       case 'win32':
-        item.setSavePath(dirname(process.execPath));
+        item.setSavePath(dirname(process.execPath)+'/libravel.dll');
         break;
       default:
         // nothing to do - TODO implement handlers for MacOS and Linux
