@@ -69,7 +69,7 @@ namespace minsky
     std::size_t columnOver(double x) const;
     /// return row mouse is over
     std::size_t rowOver(double y) const;
-    std::vector<std::vector<std::string> > parseLines();
+    std::vector<std::vector<std::string> > parseLines(size_t maxColumn=std::numeric_limits<size_t>::max());
     /// populate all column names from the headers row
     void populateHeaders();
     /// populate the name of column \a col with the data from the header row
