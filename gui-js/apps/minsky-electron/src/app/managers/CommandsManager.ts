@@ -10,10 +10,10 @@ import {
   importCSVvariableName,
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
-import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions } from 'electron';
+import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions, shell } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
 import { StoreManager } from './StoreManager';
@@ -1120,6 +1120,96 @@ export class CommandsManager {
     minsky.defaultFont(font);
     minsky.numBackups(numBackups);
     RecentFilesManager.updateNumberOfRecentFilesToDisplay();
+  }
+
+  static upgrade() {
+    let window=WindowManager.createWindow({
+      width: 500,
+      height: 700,
+      title: '',
+      modal: false,
+    });
+
+    // handler for when user has logged in to initiate upgrades.
+    window.webContents.on('did-navigate',async ()=>{
+      const urlString=window.webContents.getURL();
+      if (urlString=='https://www.patreon.com/')
+        // user has logged out
+        window.close()
+    });
+    window.webContents.on('did-redirect-navigation' async (event)=>{
+      const installables=await window.webContents.executeJavaScript('document.getElementById("installables")?.innerText');
+      console.log("installables:",installables?installables:null);
+      if (installables) {
+        let params=new URLSearchParams(installables);
+        let minskyFile=params.get('minsky-asset');
+        let ravelFile=params.get('ravel-asset');
+        console.log(minskyFile,ravelFile);
+        if (minskyFile) {
+          let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)/;
+          let [all,major,minor,patch]=minskyVersionRE.exec(minskyFile);
+          let [currAll,currMajor,currMinor,currPatch]=minskyVersionRE.exec(await minsky.minskyVersion());
+          if (major>currMajor || major===currMajor &&
+              (minor>currMinor || minor===currMinor && patch>currPatch)) {
+            if (ravelFile) {
+              // stash in StoreManager to install on startup
+            }
+            shell.openExternal(minskyFile); // at this point, the OS will probably close Minsky.
+          }
+          // currently on latest, so reinstall ravel
+          if (ravelFile)
+            window.webContents.downloadURL(ravelFile);
+          else
+            window.close();
+        }
+      }
+    });
+
+    // handler for downloading Ravel plugin
+    window.webContents.session.on('will-download',(event,item,webContents)=>{
+      switch (process.platform) {
+      case 'win32':
+        item.setSavePath(dirname(process.execPath));
+        break;
+      default:
+        // nothing to do - TODO implement handlers for MacOS and Linux
+      }
+      // handler for when download completed
+      item.once('done', (event,state)=>{
+        if (state==='completed') {
+          dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+            message: 'Ravel updated successfully - restart Ravel to use',
+            type: 'info',
+          });
+          WindowManager.getMainWindow().close();
+        } else {
+          dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+            message: `Ravel update failed: ${state}`,
+            type: 'error',
+          });
+          webContents.close();
+        }
+      });
+    });      
+    
+    let clientId='abf9j0FWQTj-etln2BbRlUhJnjv11kaL9lH1nprj23NLSq3l6ELxUGkLJKIfWsKt';
+    // need to pass what platform we are
+    switch (process.platform) {
+    case 'win32': var system='windows'; break;
+    //case 'darwin': var system='macos'; break;
+    case 'linux': var system='windows'; break; // for testing only, comment out later
+      // TODO consult /etc.os-release to figure out which distro
+    default:
+      dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+            message: `In app update is not available for your operating system yet, please check back later`,
+            type: 'error',
+      });
+      window.close();
+      return;
+      break;
+    }
+    // load patreon's login page
+    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.hpcoders.com.au/ravel-downloader.cgi&state=${system}`);
   }
   
 }

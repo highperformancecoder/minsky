@@ -81,7 +81,7 @@ export class ApplicationMenuManager {
       label: 'File',
       submenu: [
         {
-          label: 'About Minsky',
+          label: 'About',
           click() {
             setInterval(()=> {
               console.log(process.memoryUsage())
@@ -91,7 +91,6 @@ export class ApplicationMenuManager {
               height: 500,
               title: '',
               url: `#/headless/menu/file/about`,
-              //url: `http://localhost:4200/#/headless/menu/file/about`,
               modal: false,
             });
             shell.beep();
@@ -99,30 +98,7 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Upgrade',
-          click() {
-            let window=WindowManager.createWindow({
-              width: 420,
-              height: 500,
-              title: '',
-              modal: false,
-            });
-            window.webContents.on('did-navigate',async ()=>{
-              if (window.webContents.getURL()=='https://www.patreon.com/')
-                window.close()
-              else
-              {
-                let url=new URL(window.webContents.getURL());
-                console.log(window.getURL());
-                let params=new URLSearchParams(url.search);
-                let file=params.get('asset');
-                if (file)
-                {
-                  console.log(file);
-                  window.close();
-                }
-            });
-            window.loadURL('https://www.patreon.com/oauth2/authorize?response_type=code&client_id=abf9j0FWQTj-etln2BbRlUhJnjv11kaL9lH1nprj23NLSq3l6ELxUGkLJKIfWsKt&redirect_uri=https://ravelation.net/ravel-downloader.cgi');
-          },
+          click() {CommandsManager.upgrade();},
         },
         {
           label: 'New System',
