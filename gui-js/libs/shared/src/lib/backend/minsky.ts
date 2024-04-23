@@ -386,7 +386,7 @@ export class CSVDialog extends CppClass {
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
   async numInitialLines(...args: number[]): Promise<number> {return this.$callMethod('numInitialLines',...args);}
-  async parseLines(): Promise<string[][]> {return this.$callMethod('parseLines');}
+  async parseLines(a1: number): Promise<string[][]> {return this.$callMethod('parseLines',a1);}
   async populateHeader(a1: number): Promise<void> {return this.$callMethod('populateHeader',a1);}
   async populateHeaders(): Promise<void> {return this.$callMethod('populateHeaders');}
   async position(): Promise<number[]> {return this.$callMethod('position');}
@@ -568,6 +568,7 @@ export class DataSpec extends CppClass {
   async guessFromStream(a1: minsky__dummy): Promise<void> {return this.$callMethod('guessFromStream',a1);}
   async headerRow(...args: number[]): Promise<number> {return this.$callMethod('headerRow',...args);}
   async horizontalDimName(...args: string[]): Promise<string> {return this.$callMethod('horizontalDimName',...args);}
+  async maxColumn(...args: number[]): Promise<number> {return this.$callMethod('maxColumn',...args);}
   async mergeDelimiters(...args: boolean[]): Promise<boolean> {return this.$callMethod('mergeDelimiters',...args);}
   async missingValue(...args: number[]): Promise<number> {return this.$callMethod('missingValue',...args);}
   async nColAxes(): Promise<number> {return this.$callMethod('nColAxes');}
@@ -2118,8 +2119,9 @@ export class Sheet extends Item {
   async scrollDown(): Promise<boolean> {return this.$callMethod('scrollDown');}
   async scrollUp(): Promise<boolean> {return this.$callMethod('scrollUp');}
   async setSliceIndicator(): Promise<void> {return this.$callMethod('setSliceIndicator');}
+  async showColSlice(...args: string[]): Promise<string> {return this.$callMethod('showColSlice',...args);}
   async showRavel(...args: boolean[]): Promise<boolean> {return this.$callMethod('showRavel',...args);}
-  async showSlice(...args: string[]): Promise<string> {return this.$callMethod('showSlice',...args);}
+  async showRowSlice(...args: string[]): Promise<string> {return this.$callMethod('showRowSlice',...args);}
 }
 
 export class SwitchIcon extends Item {

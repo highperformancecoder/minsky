@@ -418,7 +418,7 @@ namespace minsky
         }
       cachedResult.index(Index(newIdx));
     }
-
+  
     bool sameSlice(size_t i, size_t j) const
     {
       return cachedResult.rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
@@ -462,10 +462,21 @@ namespace minsky
   };
   
   template <>
+  struct GeneralTensorOp<OperationType::differencePlus>: public GeneralTensorOp<OperationType::difference>
+  {
+    void setArgument(const TensorPtr& a,const ITensor::Args& args) override {
+      ITensor::Args negArg={args.dimension,-args.val};
+      GeneralTensorOp<OperationType::difference>::setArgument(a,negArg);
+    }
+    double operator[](std::size_t i) const override
+    {return -GeneralTensorOp<OperationType::difference>::operator[](i);}
+  };
+
+  template <>
   struct GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp, public OpState
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO: tensors of arbitrary rank
+    void computeTensor() const override {
 
       if (!arg1 || !arg2) return;
       size_t m=1, n=1;   
@@ -924,10 +935,9 @@ namespace minsky
         lineal=0; stride=1;
         for (size_t i=0, s=1; i<dims.size(); s*=dims[i], ++i)
           if (i!=dimension)
-            {
-              lineal=*splitIndexIterator++ * s;
-              stride=s*dims[i];
-            }
+            lineal+=*splitIndexIterator++ * s;
+          else
+            stride=s;
       };
 
       size_t arg1Lineal, arg1Stride, arg2Lineal, arg2Stride;

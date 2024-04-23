@@ -299,7 +299,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async parseLines() {
-    this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines() as string[][];
+    this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines(this.dialogState.spec.maxColumn) as string[][];
     await this.getCSVDialogSpec();
 
     let header = this.dialogState.spec.headerRow;

@@ -128,7 +128,8 @@ namespace schema3
     Optional<bool> editorMode, buttonDisplay, variableDisplay;
     Optional<string> currency;
     // sheet specific fields
-    Optional<minsky::ShowSlice> showSlice;
+    Optional<minsky::ShowSlice> showSlice; // slicing rows
+    Optional<minsky::ShowSlice> showColSlice; // slicing columns
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters

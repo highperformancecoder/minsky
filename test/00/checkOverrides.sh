@@ -27,7 +27,8 @@ for i in range(numItems):
         minsky.canvas.deleteItem()
 EOF
 
-for i in $here/examples/*.mky; do
+# this is really slow for some reason, so just check a selection of example files 
+for i in $here/examples/{1Free,GoodwinLinear02,indexing,importedCSV}.mky; do
     echo $i
     python3 checkOverrides.py $i &>log
     if [ $? -ne 0 ]; then

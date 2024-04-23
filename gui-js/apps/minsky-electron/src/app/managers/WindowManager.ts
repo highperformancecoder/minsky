@@ -158,12 +158,16 @@ export class WindowManager {
   ): BrowserWindow {
     const window = WindowManager.createWindow(payload);
 
+    let [path,query]=payload.url.split('?');
     const filePath = format({
-      pathname: payload.url,
+      pathname: path,
+      search: query,
       protocol: 'file:',
       slashes: true,
     });
 
+    console.log(payload.url);
+    console.log(filePath);
     window.loadURL(filePath);
     return window;
   }
