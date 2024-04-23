@@ -38,6 +38,9 @@ namespace minsky
     std::size_t m_nRowAxes=0, m_nColAxes=0;
     CLASSDESC_ACCESS(DataSpec);
   public:
+    /// maximum number of columns that can be configured independently. Columns after this limit are treated as "data"
+    std::size_t maxColumn=1000;
+
     /// start row of the data area
     std::size_t nRowAxes() const {return m_nRowAxes;}
     /// start column of the data area
