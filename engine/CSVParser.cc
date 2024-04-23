@@ -424,8 +424,7 @@ namespace std
 void DataSpec::setDataArea(size_t row, size_t col)
 {
   m_nRowAxes=row;
-  const size_t maxCols=16384; // Excel's limit
-  m_nColAxes=std::min(col, maxCols);
+  m_nColAxes=std::min(col, maxColumn);
   numCols=std::max(numCols, m_nColAxes);
   if (headerRow>=row)
     headerRow=row>0? row-1: 0;
@@ -436,7 +435,7 @@ void DataSpec::setDataArea(size_t row, size_t col)
   // adjust ignored columns
   for (unsigned i=0; i<m_nColAxes; ++i)
     dataCols.erase(i);
-  for (unsigned i=m_nColAxes; i<numCols; ++i)
+  for (unsigned i=m_nColAxes; i<numCols && i<maxColumn; ++i)
     dataCols.insert(i);
 }
 
@@ -530,9 +529,9 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
   headerRow=nRowAxes()>0? nRowAxes()-1: 0;
   size_t i=0;
   dimensionCols.clear();
-  for (; i<nColAxes(); ++i) dimensionCols.insert(i);
+  for (; i<nColAxes() && i<maxColumn; ++i) dimensionCols.insert(i);
   dataCols.clear();
-  for (; i<nCols; ++i) dataCols.insert(i);
+  for (; i<nCols && i<maxColumn; ++i) dataCols.insert(i);
   return !input;
 }
 
@@ -704,7 +703,6 @@ namespace minsky
           line[i-1]=spec.escape;
   }
 
-  
   template <class P>
   void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
@@ -760,12 +758,29 @@ namespace minsky
                   horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
                 }
             else
-              // explicitly specified data columns
-              for (auto i: spec.dataCols)
-                {
-                  col=i;
-                  horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
-                }
+              {
+                // explicitly specified data columns
+                for (auto i: spec.dataCols)
+                  {
+                    col=i;
+                    horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
+                  }
+                if (spec.headerRow<spec.nRowAxes())
+                  {
+                    // check whether any further columns exist that are not in
+                    // spec.dimensionNames, and add these in as horizontal
+                    // data dimension slices
+                    for (; row<=spec.headerRow; ++row)
+                      getWholeLine(input,buf,spec);
+                    const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
+                    auto field=tok.begin();
+                    for (size_t i=0; i<spec.dimensionNames.size() && field!=tok.end(); ++i, ++field);
+                    for (; field!=tok.end(); ++field)
+                      horizontalLabels.emplace_back
+                        (sliceLabelTokens[str(anyVal.back()(*field),spec.horizontalDimension.units)]);
+                  }
+              }
+            
             hc.xvectors.emplace_back(spec.horizontalDimName);
             hc.xvectors.back().dimension=spec.horizontalDimension;
             set<typename Key::value_type> uniqueLabels;
@@ -777,9 +792,11 @@ namespace minsky
                   hc.xvectors.back().emplace_back(sliceLabelTokens[i]);
                 }
           }
-          
+
+             
+
         for (; row<spec.nRowAxes(); ++row)
-          getline(input,buf);
+          getWholeLine(input,buf,spec);
             
         
         ++minsky().progressState;
@@ -835,7 +852,7 @@ namespace minsky
 
               col=0;
               for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
-                if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col)) 
+                if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col) || col>spec.maxColumn) 
                   {
                     if (tabularFormat)
                       key.emplace_back(horizontalLabels[dataCols]);

@@ -83,8 +83,7 @@ namespace minsky
   Point PubItem::itemCoords(float x, float y) const
   {
     if (!itemRef) return {0,0};
-    const float scale=itemRef->zoomFactor();
-    return {scale*(x-this->x)+itemRef->x(), scale*(y-this->y)+itemRef->y()};
+    return {x-this->x+itemRef->x(), y-this->y+itemRef->y()};
   }
 
   void PubTab::addNote(const std::string& note, float x, float y)
