@@ -1137,14 +1137,13 @@ export class CommandsManager {
         // user has logged out
         window.close()
     });
-    window.webContents.on('did-redirect-navigation' async (event)=>{
+    window.webContents.on('did-redirect-navigation', async (event)=>{
       const installables=await window.webContents.executeJavaScript('document.getElementById("installables")?.innerText');
       console.log("installables:",installables?installables:null);
       if (installables) {
         let params=new URLSearchParams(installables);
         let minskyFile=params.get('minsky-asset');
         let ravelFile=params.get('ravel-asset');
-        console.log(minskyFile,ravelFile);
         if (minskyFile) {
           let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)/;
           let [all,major,minor,patch]=minskyVersionRE.exec(minskyFile);
