@@ -10,14 +10,17 @@ import {
   importCSVvariableName,
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
-import { dialog, ipcMain, Menu, MenuItem, SaveDialogOptions, shell } from 'electron';
+import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions, shell } from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
 import { join, dirname } from 'path';
+import { tmpdir } from 'os';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
 import { StoreManager } from './StoreManager';
 import { RecentFilesManager } from './RecentFilesManager';
+import ProgressBar from 'electron-progressbar';
+import {spawn} from 'child_process';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -1122,6 +1125,75 @@ export class CommandsManager {
     RecentFilesManager.updateNumberOfRecentFilesToDisplay();
   }
 
+  // handler for downloading Ravel and installing it
+  static downloadRavel(event,item,webContents) {
+    switch (process.platform) {
+      case 'win32':
+        item.setSavePath(dirname(process.execPath)+'/libravel.dll');
+      break;
+    default:
+      // nothing to do - TODO implement handlers for MacOS and Linux
+    }
+    // handler for when download completed
+    item.once('done', (event,state)=>{
+      if (state==='completed') {
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: 'Ravel plugin updated successfully - restart Ravel to use',
+          type: 'info',
+        });
+        app.relaunch();
+        app.quit();
+      } else {
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: `Ravel plugin update failed: ${state}`,
+          type: 'error',
+        });
+        webContents.close();
+      }
+    });
+  }
+
+  // handler for downloading Minsky
+  static downloadMinsky(event,item,webContents) {
+    item.setSavePath(join(tmpdir(),item.getFilename()));
+
+    let progress=new ProgressBar({text:"Downloading Ravel application",value: 0, indeterminate:false, closeOnComplete: true,});
+
+    // handler for when download completed
+    item.once('done', (event,state)=>{
+      if (state==='completed') {
+        switch (process.platform) {
+        case 'win32':
+          spawn(item.getSavePath(),{detached: true, stdio: 'ignore'});
+          app.quit();
+          break;
+        default:
+          webContents.close();
+          break;
+        }
+      } else {
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: `Ravel update failed: ${state}`,
+          type: 'error',
+        });
+        webContents.close();
+      }
+    });
+
+    // handler for updating progress bar
+    item.on('updated',(event,state)=>{
+      switch (state) {
+      case 'progressing':
+        if (!progress?.isCompleted())
+          progress.value=100*item.getReceivedBytes()/item.getTotalBytes();
+        break;
+      case 'interrupted':
+        //item.resume();
+        break;
+      }
+    });
+  }
+  
   static upgrade() {
     let window=WindowManager.createWindow({
       width: 500,
@@ -1139,58 +1211,42 @@ export class CommandsManager {
     });
     window.webContents.on('did-redirect-navigation', async (event)=>{
       const installables=await window.webContents.executeJavaScript('document.getElementById("installables")?.innerText');
-      console.log("installables:",installables?installables:null);
       if (installables) {
         let params=new URLSearchParams(installables);
         let minskyFile=params.get('minsky-asset');
         let ravelFile=params.get('ravel-asset');
         if (minskyFile) {
-          let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)/;
+          let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)([.-])/;
           let [all,major,minor,patch]=minskyVersionRE.exec(minskyFile);
-          let [currAll,currMajor,currMinor,currPatch]=minskyVersionRE.exec(await minsky.minskyVersion());
+          let [currAll,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec(await minsky.minskyVersion());
           if (major>currMajor || major===currMajor &&
-              (minor>currMinor || minor===currMinor && patch>currPatch)) {
-            if (ravelFile) {
-              // stash in StoreManager to install on startup
+              (minor>currMinor || minor===currMinor && patch>currPatch) ||
+              terminator==='-' && // currently a beta release, so install if release nos match (since betas precede releases)
+              major===currMajor && minor===currMinor && patch==currPatch
+             ) {
+            if (ravelFile) { // stash ravel upgrade to be installed on next startup
+              StoreManager.store.set('ravelPlugin',ravelFile);
             }
-            shell.openExternal(minskyFile); // at this point, the OS will probably close Minsky.
-          }
-          // currently on latest, so reinstall ravel
-          if (ravelFile)
-            window.webContents.downloadURL(ravelFile);
-          else
+            // openExternal opens in Edge, but doesn't start the installation
+            //shell.openExternal(minskyFile); // at this point, the OS will probably close Minsky.
+            window.webContents.session.on('will-download',this.downloadMinsky);
+            window.webContents.downloadURL(minskyFile);
+          } else if (ravelFile) {
+              // currently on latest, so reinstall ravel
+              window.webContents.session.on('will-download',this.downloadRavel);      
+              window.webContents.downloadURL(ravelFile);
+            }
+          else {
+            dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+              message: "Everything's up to date, nothing to do",
+              type: 'info',
+            });
             window.close();
+          }
         }
       }
     });
 
-    // handler for downloading Ravel plugin
-    window.webContents.session.on('will-download',(event,item,webContents)=>{
-      switch (process.platform) {
-      case 'win32':
-        item.setSavePath(dirname(process.execPath)+'/libravel.dll');
-        break;
-      default:
-        // nothing to do - TODO implement handlers for MacOS and Linux
-      }
-      // handler for when download completed
-      item.once('done', (event,state)=>{
-        if (state==='completed') {
-          dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-            message: 'Ravel updated successfully - restart Ravel to use',
-            type: 'info',
-          });
-          WindowManager.getMainWindow().close();
-        } else {
-          dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-            message: `Ravel update failed: ${state}`,
-            type: 'error',
-          });
-          webContents.close();
-        }
-      });
-    });      
-    
     let clientId='abf9j0FWQTj-etln2BbRlUhJnjv11kaL9lH1nprj23NLSq3l6ELxUGkLJKIfWsKt';
     // need to pass what platform we are
     switch (process.platform) {

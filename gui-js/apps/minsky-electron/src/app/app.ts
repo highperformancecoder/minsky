@@ -46,6 +46,12 @@ export default class App {
     backend('minsky.pushFlags');
     await HelpFilesManager.initialize(helpFilesFolder);
     App.initMainWindow();
+    let ravelPlugin=StoreManager.store.get('ravelPlugin');
+    if (ravelPlugin) {
+      App.mainWindow.webContents.downloadURL(ravelPlugin);
+      App.mainWindow.webContents.session.on('will-download',CommandsManager.downloadRavel);
+      StoreManager.store.set('ravelPlugin','');
+    }
     await App.initMenu();
     App.loadMainWindow();
     backend('minsky.popFlags');
