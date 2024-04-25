@@ -1351,6 +1351,7 @@ export class Minsky extends CppClass {
   async copy(): Promise<void> {return this.$callMethod('copy');}
   async cut(): Promise<void> {return this.$callMethod('cut');}
   async cycleCheck(): Promise<boolean> {return this.$callMethod('cycleCheck');}
+  async daysUntilRavelExpires(): Promise<number> {return this.$callMethod('daysUntilRavelExpires');}
   async defaultFont(...args: any[]): Promise<string> {return this.$callMethod('defaultFont',...args);}
   async definingVar(a1: string): Promise<object> {return this.$callMethod('definingVar',a1);}
   async deleteAllUnits(): Promise<void> {return this.$callMethod('deleteAllUnits');}

@@ -52,6 +52,14 @@ export default class App {
       App.mainWindow.webContents.session.on('will-download',CommandsManager.downloadRavel);
       StoreManager.store.set('ravelPlugin','');
     }
+    // check if ravel is approaching its expiry date, and nag user to upgrade if so
+    let daysLeft=await minsky.daysUntilRavelExpires();
+    if (await minsky.ravelVersion()!=="unavailable" && daysLeft<30) {
+      dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+        message: `The Ravel plugin is expiring in ${daysLeft} days,\nplease update the plugin using the File>Upgrade menu`,
+        type: 'info',
+      });
+    }
     await App.initMenu();
     App.loadMainWindow();
     backend('minsky.popFlags');
