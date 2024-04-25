@@ -10,7 +10,7 @@ import {
   importCSVvariableName,
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
-import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions, shell } from 'electron';
+import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
 import { existsSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
 import { join, dirname } from 'path';
@@ -1227,8 +1227,6 @@ export class CommandsManager {
             if (ravelFile) { // stash ravel upgrade to be installed on next startup
               StoreManager.store.set('ravelPlugin',ravelFile);
             }
-            // openExternal opens in Edge, but doesn't start the installation
-            //shell.openExternal(minskyFile); // at this point, the OS will probably close Minsky.
             window.webContents.session.on('will-download',this.downloadMinsky);
             window.webContents.downloadURL(minskyFile);
           } else if (ravelFile) {
@@ -1252,7 +1250,7 @@ export class CommandsManager {
     switch (process.platform) {
     case 'win32': var system='windows'; break;
     //case 'darwin': var system='macos'; break;
-    case 'linux': var system='windows'; break; // for testing only, comment out later
+    //case 'linux': var system='linux'; break;
       // TODO consult /etc.os-release to figure out which distro
     default:
       dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
