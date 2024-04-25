@@ -433,8 +433,10 @@ namespace minsky
           for (auto i: argIndices)
             {
               checkCancel();
-              auto t=i+delta;
-              cachedResult[idx++]=arg->atHCIndex(t)-arg->atHCIndex(i);
+              if (delta>=0)
+                cachedResult[idx++]=arg->atHCIndex(i+delta)-arg->atHCIndex(i);
+              else // with -ve delta, origin of result is shifted
+                cachedResult[idx++]=arg->atHCIndex(i)-arg->atHCIndex(i-delta);
             }
         }
       else if (delta>=0)
