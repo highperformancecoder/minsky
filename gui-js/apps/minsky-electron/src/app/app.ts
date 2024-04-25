@@ -48,6 +48,7 @@ export default class App {
     App.initMainWindow();
     let ravelPlugin=StoreManager.store.get('ravelPlugin');
     if (ravelPlugin) {
+      // if this is set (after a full reinstall of Minsky, kick off updating the Ravel plugin)
       App.mainWindow.webContents.downloadURL(ravelPlugin);
       App.mainWindow.webContents.session.on('will-download',CommandsManager.downloadRavel);
       StoreManager.store.set('ravelPlugin','');
