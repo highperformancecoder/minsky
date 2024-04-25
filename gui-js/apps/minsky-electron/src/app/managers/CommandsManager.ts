@@ -1251,7 +1251,7 @@ export class CommandsManager {
     case 'win32': var system='windows'; break;
     //case 'darwin': var system='macos'; break;
     //case 'linux': var system='linux'; break;
-      // TODO consult /etc.os-release to figure out which distro
+      // TODO consult /etc/os-release to figure out which distro
     default:
       dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
             message: `In app update is not available for your operating system yet, please check back later`,
