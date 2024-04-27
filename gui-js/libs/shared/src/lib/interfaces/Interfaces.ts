@@ -52,12 +52,6 @@ export interface HandleDimensionPayload {
   units: string;
 }
 
-export interface PickSlicesPayload {
-  command: string;
-  handleIndex: number;
-  pickedSliceLabels: string[];
-}
-
 export interface ElectronCanvasOffset {
   left: number;
   top: number;

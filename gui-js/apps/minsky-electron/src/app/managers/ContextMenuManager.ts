@@ -927,8 +927,8 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Pick axis slices',
         enabled: handleAvailable,
-        click: async () => {
-          await CommandsManager.pickSlices(ravel,handleIndex);
+        click: () => {
+          CommandsManager.pickSlices(ravel,handleIndex);
         }
       }),
     new MenuItem({

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { events, CurrentWindowDetails, HandleDescriptionPayload, HandleDimensionPayload, PickSlicesPayload,} from '@minsky/shared';
+import { events, CurrentWindowDetails, HandleDescriptionPayload, HandleDimensionPayload,} from '@minsky/shared';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';
 
@@ -67,10 +67,6 @@ export class ElectronService {
 
   async saveHandleDimension(payload: HandleDimensionPayload) {
     return await this.ipcRenderer.invoke(events.SAVE_HANDLE_DIMENSION, payload);
-  }
-
-  async savePickSlices(payload: PickSlicesPayload) {
-    return await this.ipcRenderer.invoke(events.SAVE_PICK_SLICES, payload);
   }
 
   async currentTabPosition(): Promise<number[]> {
