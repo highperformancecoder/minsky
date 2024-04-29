@@ -81,7 +81,7 @@ export class ApplicationMenuManager {
       label: 'File',
       submenu: [
         {
-          label: 'About Minsky',
+          label: 'About',
           click() {
             setInterval(()=> {
               console.log(process.memoryUsage())
@@ -98,9 +98,7 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Upgrade',
-          click() {
-            shell.openExternal('https://www.patreon.com/hpcoder');
-          },
+          click() {CommandsManager.upgrade();},
         },
         {
           label: 'New System',
