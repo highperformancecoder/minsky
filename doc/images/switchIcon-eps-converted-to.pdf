@@ -1,6 +1,6 @@
-%PDF-1.7
+%PDF-1.5
 %«Ïè¢
-%%Invocation: gs -q -dSAFER -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=? -dPDFSETTINGS#/prepress -dMaxSubsetPct=100 -dSubsetFonts=true -dEmbedAllFonts=true -dAutoRotatePages#/None -
+%%Invocation: gs -q -dSAFER -dNOPAUSE -dBATCH -dCompatibilityLevel=1.5 -sDEVICE=pdfwrite -sOutputFile=? -dPDFSETTINGS#/prepress -dMaxSubsetPct=100 -dSubsetFonts=true -dEmbedAllFonts=true -dAutoRotatePages#/None -
 5 0 obj
 <</Length 6 0 R/Filter /FlateDecode>>
 stream
@@ -36,10 +36,10 @@ endobj
 <x:xmpmeta xmlns:x='adobe:ns:meta/' x:xmptk='XMP toolkit 2.9.1-13, framework 1.6'>
 <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:iX='http://ns.adobe.com/iX/1.0/'>
 <rdf:Description rdf:about="" xmlns:pdf='http://ns.adobe.com/pdf/1.3/' pdf:Producer='GPL Ghostscript 9.52'/>
-<rdf:Description rdf:about="" xmlns:xmp='http://ns.adobe.com/xap/1.0/'><xmp:ModifyDate>2021-09-29T09:53:30+10:00</xmp:ModifyDate>
-<xmp:CreateDate>2021-09-29T09:53:30+10:00</xmp:CreateDate>
+<rdf:Description rdf:about="" xmlns:xmp='http://ns.adobe.com/xap/1.0/'><xmp:ModifyDate>2024-04-29T11:16:46+10:00</xmp:ModifyDate>
+<xmp:CreateDate>2024-04-29T11:16:46+10:00</xmp:CreateDate>
 <xmp:CreatorTool>cairo 1.12.16 (http://cairographics.org)</xmp:CreatorTool></rdf:Description>
-<rdf:Description rdf:about="" xmlns:xapMM='http://ns.adobe.com/xap/1.0/mm/' xapMM:DocumentID='uuid:d4c2a11c-58d3-11f7-0000-224854d160a7'/>
+<rdf:Description rdf:about="" xmlns:xapMM='http://ns.adobe.com/xap/1.0/mm/' xapMM:DocumentID='uuid:b23269ee-3de2-11fa-0000-c55e1501bc6b'/>
 <rdf:Description rdf:about="" xmlns:dc='http://purl.org/dc/elements/1.1/' dc:format='application/pdf'><dc:title><rdf:Alt><rdf:li xml:lang='x-default'>Untitled</rdf:li></rdf:Alt></dc:title></rdf:Description>
 </rdf:RDF>
 </x:xmpmeta>
@@ -50,23 +50,23 @@ endstream
 endobj
 2 0 obj
 <</Producer(GPL Ghostscript 9.52)
-/CreationDate(D:20210929095330+10'00')
-/ModDate(D:20210929095330+10'00')
+/CreationDate(D:20240429111646+10'00')
+/ModDate(D:20240429111646+10'00')
 /Creator(cairo 1.12.16 \(http://cairographics.org\))>>endobj
 xref
 0 8
 0000000000 65535 f 
-0000000587 00000 n 
-0000001929 00000 n 
-0000000528 00000 n 
-0000000416 00000 n 
-0000000203 00000 n 
-0000000397 00000 n 
-0000000651 00000 n 
+0000000612 00000 n 
+0000001954 00000 n 
+0000000553 00000 n 
+0000000441 00000 n 
+0000000228 00000 n 
+0000000422 00000 n 
+0000000676 00000 n 
 trailer
 << /Size 8 /Root 1 0 R /Info 2 0 R
-/ID [<E057FFCB09DAF4F4A8CF0F367E4266E6><E057FFCB09DAF4F4A8CF0F367E4266E6>]
+/ID [<7AFD20116AEBB942B3A163ABC95D3257><7AFD20116AEBB942B3A163ABC95D3257>]
 >>
 startxref
-2105
+2130
 %%EOF
