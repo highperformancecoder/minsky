@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import sys
 from pathlib import Path
 here=str(Path(sys.argv[0]).parent)
@@ -18,5 +19,8 @@ for op in ops:
 
     if op=="switch": minsky.canvas.addSwitch()
     else: minsky.canvas.addOperation(op)
+    if op=="userFunction":
+        minsky.canvas.itemFocus().description('f(x,y)')
+        print(minsky.canvas.itemFocus().description())
     minsky.renderCanvasToPNG(iconDir+op+'.png')
     minsky.clearAllMaps()
