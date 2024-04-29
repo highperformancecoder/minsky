@@ -11,7 +11,6 @@ import {
   events,
   HandleDescriptionPayload,
   HandleDimensionPayload,
-  PickSlicesPayload,
   MinskyProcessPayload,
   minsky,
   RenderNativeWindow,
@@ -172,13 +171,6 @@ ipcMain.handle(
   events.SAVE_HANDLE_DIMENSION,
   async (event, payload: HandleDimensionPayload) => {
     return await CommandsManager.saveHandleDimension(payload);
-  }
-);
-
-ipcMain.handle(
-  events.SAVE_PICK_SLICES,
-  async (event, payload: PickSlicesPayload) => {
-    return await CommandsManager.savePickSlices(payload);
   }
 );
 

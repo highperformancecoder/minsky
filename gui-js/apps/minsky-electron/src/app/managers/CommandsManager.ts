@@ -4,7 +4,6 @@ import {
   events,
   Functions,
   HandleDimensionPayload,
-  PickSlicesPayload,
   InitializePopupWindowPayload,
   electronMenuBarHeightForWindows, HandleDescriptionPayload,
   importCSVvariableName,
@@ -1067,22 +1066,13 @@ export class CommandsManager {
   }
 
   static async pickSlices(ravel: Ravel, handleIndex: number) {
-    // encode slice labels for transport through CGI URI 
-    const allSliceLabels = (await ravel.allSliceLabels()).map(x=>encodeURIComponent(x));
-    const pickedSliceLabels = (await ravel.pickedSliceLabels()).map(x=>encodeURIComponent(x));
-    
     const window=WindowManager.createPopupWindowWithRouting({
       title: `Pick slices`,
-      url: `#/headless/pick-slices?command=${ravel.$prefix()}&handleIndex=${handleIndex}&allSliceLabels=${allSliceLabels.join()}&pickedSliceLabels=${pickedSliceLabels.join()}`,
+      url: `#/headless/pick-slices?command=${ravel.$prefix()}&handleIndex=${handleIndex}`,
       height: 400,
       width: 400,
     });
     Object.defineProperty(window,'dontCloseOnReturn',{value: true,writable:false});
-  }
-
-  static async savePickSlices(payload: PickSlicesPayload) {
-    await (new Ravel(payload.command)).pickSliceLabels(payload.handleIndex, payload.pickedSliceLabels);
-    minsky.reset();
   }
 
   static async lockSpecificHandles(ravel: Ravel) {
