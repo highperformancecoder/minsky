@@ -202,7 +202,7 @@ is computed.
 
 \begin{itemize}
 \item Time unit allows one to specify units for the time dimension for
-  dimensional analysis. eg ``year'', ``s'' etc.
+  \htmlref{dimensional analysis}{dimensional analysis}. eg ``year'', ``s'' etc.
 \item Controls aspect of the adaptive Runge-Kutta equation solver, which
 trade off performance and accuracy of the model. 
 \item Note a first order explicit solver is the classic Jacobi method, which is the fastest,
@@ -682,26 +682,54 @@ in size.
 
 This displays the mathematical representation of the model
 
-\subsection{Parameters tab}\label{tabs:Parameters}
+\subsection{Summary Tab}\label{tabs:Summary}
 
-This displays the properties of all parameters defined in the model,
-in one place.
+This tab provides a summary table of all variables in the system, in a
+heirarchical fashion that can be navigated by expanding or hiding
+sections by toggling the caret. Each variable shows its name, it
+definition, dimensions (for tensor-valued variables), initial
+expression, units and current value.
 
-\subsection{Variables tab}\label{tabs:Variables}
+Most of these fields are editable, and usually do the obvious
+thing. Changing a variable's name will do a {\em replace all
+  instances} operation to update all variables of the same
+name. Changing a variable's definition will replace the wiring graph
+leading into the variable by a \htmlref{user defined function}{UserFunction} containing your
+edited string. At some future point, functionality will be added to
+convert a user defined function into a wiring graph.
 
-This displays the properties of selected variables in the model. The
-variables can be displayed on the tab by selecting ``Display variable
-on tab'' in it's context menu. It may be hidden on the design canvas
-if it is not required for the definition of something else. This can
-be a place to keep less important variables ``out of sight''.
+\subsection{Phillips diagram tab}\label{tabs:Phillips}
 
-\subsection{Plots tab}\label{tabs:Plots}
+This tab implement's Minsky's take on a \htmladdnormallink{Phillips
+  diagram showing the stocks and flows in a monetary
+  economy}{https://en.wikipedia.org/wiki/Phillips_Machine}. The
+Phillips tab shows all the information contained in the Godley tables
+of the model - if there aren't any, this tab will be blank.
 
-Shows all plots in one place
+Initially, all the stocks will be arranged around a circle, with the
+flows shown as connecting arrows showing the current direction of the
+flow. You can move and rotate the stocks, and bend the flows to make a
+pleasing layout. The stocks will be coloured as though filled with a
+fluid like Bill Phillip's original analogue computer, and dynamically
+updated as the simulation proceeds.
 
-\subsection{Godleys tab}\label{tabs:Godleys}
+Publication tabs allow the creation of dashboards to emphasise certain
+aspects of a simulation. For example, you may wish to focus on a
+particular plot or Godley table when running the simulation.
 
-Shows all Godley tables in one place.
+Multiple publication tabs can be created by clicking the '+' tab.
+
+Any item from the wiring tab can be added to a publication tab, and
+then moved, resized or rotated independently of the item on the wiring
+tab. For items that dynamically update, the publication tab will be
+updated dynamically during the simulation.
+
+Textual annotation can be added to the publication tab, independently
+of any annotations on the wiring tab.
+
+Wires cannot be added to the publication tab, however you can insert
+arrows (eg $\rightarrow$) by typing the LaTeX text \verb+\rightarrow+,
+and then rotate and scale the arrow to connect parts of the dashboard together.
 
 \subsection{Wires}
 \label{Wires}
@@ -791,8 +819,8 @@ copy where you want it on the palette.
   name (eg \verb+sin+, or \verb+*+). Notes can be inserted by starting
   the note with a \verb+#+ character.
 
-\item Variables can also be picked from the \hyperref[ref]{Variable
-    Browser}{Variable Browser}{}{VariableBrowser} and placed on the canvas.
+\item Variables can also be picked from the \htmlref{Variable
+    Browser}{VariableBrowser} and placed on the canvas.
 \end{enumerate}
 
 
