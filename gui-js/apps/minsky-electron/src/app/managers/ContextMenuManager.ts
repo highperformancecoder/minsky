@@ -811,6 +811,13 @@ export class ContextMenuManager {
         },
       }),
       new MenuItem({
+        label: 'Resize icon on contents',
+        click: () => {
+          group.resizeOnContents();
+          CommandsManager.requestRedraw();
+        },
+      }),
+      new MenuItem({
         label: 'Ungroup',
         click: async () => {
           minsky.canvas.ungroupItem();

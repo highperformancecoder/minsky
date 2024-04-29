@@ -1101,8 +1101,6 @@ namespace minsky
         populateMissingDimensions();
       }
     catch (...) {flags|=reset_needed;}
-    requestRedraw();
-    canvas.recentre();
     canvas.requestRedraw();
     canvas.moveTo(0,0); // force placement of ports
     // sometimes we need to recalculate the bounding boxes
@@ -1111,7 +1109,6 @@ namespace minsky
                          (*i)->updateBoundingBox();
                          return false;
                        });
-
     pushHistory();
   }
 
