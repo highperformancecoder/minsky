@@ -171,7 +171,7 @@
             [matAutocomplete]="auto"
             class="form-control autocomplete"
           />
-          <mat-autocomplete [panelWidth]="'10rem'" #auto="matAutocomplete">
+          <mat-autocomplete [panelWidth]="'14rem'" #auto="matAutocomplete">
             <ng-container *ngIf="type.value === 'time'">
               <mat-option
                 *ngFor="let tfs of timeFormatStrings"
@@ -265,7 +265,7 @@
           />
           <mat-autocomplete
             id="format_{{ i }}"
-            [panelWidth]="'10rem'"
+            [panelWidth]="'14rem'"
             #autocompleteFormat="matAutocomplete"
             (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
           >

@@ -52,7 +52,6 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
     }
     CppClass.record(`${command} ${arg}`);
 
-    log.info('Async Rest API: ',command,arg);
     let response=await restService.call(command, arg);
     if (logFilter(command))
       log.info('Async Rest API: ',command,arg,"=>",response);

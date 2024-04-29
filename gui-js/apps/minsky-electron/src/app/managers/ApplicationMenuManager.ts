@@ -117,8 +117,7 @@ export class ApplicationMenuManager {
               const _dialog = await dialog.showOpenDialog({
                 properties: ['openFile'],
                 filters: [
-                  { name: '*.mky', extensions: ['mky'] },
-                  { name: '*.rvl', extensions: ['rvl'] },
+                  { name: 'Minsky/Ravel', extensions: ['rvl','mky'] },
                   { name: '*.xml', extensions: ['xml'] },
                   { name: '*.*', extensions: ['*'] },
                 ],

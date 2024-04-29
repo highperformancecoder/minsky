@@ -4,6 +4,7 @@ import { ElectronService } from '@minsky/core';
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import { MatButtonModule } from '@angular/material/button';
 import { NgFor } from '@angular/common';
+import {Ravel} from '@minsky/shared';
 
 @Component({
     selector: 'minsky-pick-slices',
@@ -15,7 +16,7 @@ import { NgFor } from '@angular/common';
 export class PickSlicesComponent implements OnInit {
   sliceLabels: {label: string, selected: boolean, lastClicked: boolean}[] = [];
 
-  command: string;
+  ravel: Ravel;
   handleIndex: number;
   
   constructor(
@@ -24,16 +25,16 @@ export class PickSlicesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      this.command=params['command'];
+    this.route.queryParams.subscribe(async (params) => {
+      this.ravel=new Ravel(params['command']);
       this.handleIndex = +params['handleIndex'];
-
-      const pickedSliceLabels = params['pickedSliceLabels'].split(',');
-      this.sliceLabels = params['allSliceLabels'].split(',').map(l => ({
-        label: l,
-        selected: pickedSliceLabels.includes(l),
-        lastClicked: false
-      }));
+      const pickedSliceLabels = await this.ravel.pickedSliceLabels();
+      const allSliceLabels=await this.ravel.allSliceLabelsAxis(this.handleIndex);
+      this.sliceLabels = allSliceLabels.map(l => ({
+          label: l,
+          selected: pickedSliceLabels.includes(l),
+          lastClicked: false
+        }));
     });
   }
 
@@ -48,11 +49,7 @@ export class PickSlicesComponent implements OnInit {
 
         await this.electronService.showMessageBoxSync(options);
       } else {
-        await this.electronService.savePickSlices({
-          command: this.command,
-          handleIndex: this.handleIndex,
-          pickedSliceLabels: this.sliceLabels.filter(sl => sl.selected).map(sl => sl.label)
-        });
+        await this.ravel.pickSliceLabels(this.handleIndex, this.sliceLabels.filter(sl => sl.selected).map(sl => sl.label));
       }
     }
     this.closeWindow();
