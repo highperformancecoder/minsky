@@ -1,11 +1,11 @@
-nsteps 10
-0.3 {:I(t)␣-␣Investment␣at␣time␣t} 7.10417 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 5.60769 {:O(t)␣-␣Output␣at␣time␣t} 23.6806 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-1 {:I(t)␣-␣Investment␣at␣time␣t} 9.52509 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 10.0808 {:O(t)␣-␣Output␣at␣time␣t} 31.7503 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-1.7 {:I(t)␣-␣Investment␣at␣time␣t} 11.7432 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 15.3225 {:O(t)␣-␣Output␣at␣time␣t} 39.144 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-2.4 {:I(t)␣-␣Investment␣at␣time␣t} 13.7755 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 21.0848 {:O(t)␣-␣Output␣at␣time␣t} 45.9182 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-3.1 {:I(t)␣-␣Investment␣at␣time␣t} 15.6374 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 27.17 {:O(t)␣-␣Output␣at␣time␣t} 52.1248 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-3.8 {:I(t)␣-␣Investment␣at␣time␣t} 17.3434 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 33.4217 {:O(t)␣-␣Output␣at␣time␣t} 57.8115 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-4.5 {:I(t)␣-␣Investment␣at␣time␣t} 18.9065 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 39.7174 {:O(t)␣-␣Output␣at␣time␣t} 63.0217 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-5.2 {:I(t)␣-␣Investment␣at␣time␣t} 20.3386 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 45.9622 {:O(t)␣-␣Output␣at␣time␣t} 67.7954 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-5.9 {:I(t)␣-␣Investment␣at␣time␣t} 21.6508 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 52.0839 {:O(t)␣-␣Output␣at␣time␣t} 72.1692 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
-6.6 {:I(t)␣-␣Investment␣at␣time␣t} 22.8529 {:L(t)␣-␣Labor␣at␣time␣t} 100 {:M(t)␣-␣Machines␣at␣time␣t} 58.0286 {:O(t)␣-␣Output␣at␣time␣t} 76.1765 {:d␣-␣Depreciation␣Rate} 0.25 {:s␣-␣Savings␣Rate} 0.3 
+nsteps, 10
+0.30000000000000004,":I(t) - Investment at time t",7.104167466172268,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",5.607688376380056,":O(t) - Output at time t",23.680558220574227,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+1.0,":I(t) - Investment at time t",9.525090599324303,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",10.080816769481803,":O(t) - Output at time t",31.750301997747677,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+1.7000000000000002,":I(t) - Investment at time t",11.743188033358388,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",15.322496131867965,":O(t) - Output at time t",39.14396011119463,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+2.4000000000000004,":I(t) - Investment at time t",13.775451034964933,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",21.084783468524048,":O(t) - Output at time t",45.918170116549774,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+3.1000000000000005,":I(t) - Investment at time t",15.637448802212152,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",27.16997833797847,":O(t) - Output at time t",52.12482934070717,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+3.8000000000000007,":I(t) - Investment at time t",17.343446308862408,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",33.421681096488115,":O(t) - Output at time t",57.811487696208026,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+4.5,":I(t) - Investment at time t",18.90651342376496,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",39.717361093667186,":O(t) - Output at time t",63.02171141254987,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+5.199999999999999,":I(t) - Investment at time t",20.338625013910285,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",45.96218527293968,":O(t) - Output at time t",67.79541671303429,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+5.899999999999999,":I(t) - Investment at time t",21.65075268006212,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",52.08389906813524,":O(t) - Output at time t",72.16917560020707,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
+6.599999999999998,":I(t) - Investment at time t",22.852948810383328,":L(t) - Labor at time t",100.0,"M(t) - Machines at time t",58.02858548111121,":O(t) - Output at time t",76.17649603461109,":d - Depreciation Rate",0.25,":s - Savings Rate",0.3
