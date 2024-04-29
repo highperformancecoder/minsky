@@ -16,6 +16,7 @@ interface MinskyStore {
   recentFiles: Array<string>;
   backgroundColor: string;
   preferences: MinskyPreferences;
+  ravelPlugin: string; // used for post installation installation of Ravel
 }
 
 class StoreManager {
@@ -34,6 +35,7 @@ class StoreManager {
         // focusFollowsMouse: false,
         numBackups: 1,
       },
+      ravelPlugin: '',
     },
   });
 }

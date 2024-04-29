@@ -335,7 +335,8 @@ namespace minsky
       else return "unavailable";
     }
     static bool ravelExpired() {return  ravel::Ravel::available() && ravel::Ravel::daysUntilExpired()<0;}
-    
+    static int daysUntilRavelExpires() {return  ravel::Ravel::daysUntilExpired();}
+
     std::string fileVersion; ///< Minsky version file was saved under
     
     unsigned maxHistory{100}; ///< maximum no. of history states to save

@@ -172,7 +172,7 @@ export class WindowManager {
     return window;
   }
 
-  private static createWindow(
+  static createWindow(
     payload: CreateWindowPayload,
     onCloseCallback?: (ev : Electron.Event) => void
   ) {
