@@ -1,11 +1,11 @@
-nsteps 10
-0.03 {:cos} 0.99955 {:sin} 0.0299955 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.1 {:cos} 0.995004 {:sin} 0.0998334 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.17 {:cos} 0.985585 {:sin} 0.169182 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.24 {:cos} 0.971338 {:sin} 0.237703 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.31 {:cos} 0.952334 {:sin} 0.305059 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.38 {:cos} 0.928665 {:sin} 0.37092 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.45 {:cos} 0.900447 {:sin} 0.434966 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.52 {:cos} 0.867819 {:sin} 0.49688 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.59 {:cos} 0.830941 {:sin} 0.556361 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
-0.66 {:cos} 0.789992 {:sin} 0.613117 {:string-dimensioned|0} 20 {:string-dimensioned|1} 20 {:string-dimensioned|2} 20 {:time-dimensioned|0} 20 {:time-dimensioned|1} 20 {:time-dimensioned|2} 20 
+nsteps, 10
+0.03,":cos",0.9995500337489875,":sin",0.02999550020249566,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.09999999999999999,":cos",0.9950041652780258,":sin",0.09983341664682814,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.17,":cos",0.9855847669095608,":sin",0.16918234906699603,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.24000000000000005,":cos",0.9713379748520296,":sin",0.23770262642713463,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.31000000000000005,":cos",0.9523335698857134,":sin",0.30505863644344355,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.38000000000000006,":cos",0.9286646355765102,":sin",0.37092046941298273,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.45000000000000007,":cos",0.9004471023526769,":sin",0.4349655341112303,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.5200000000000001,":cos",0.8678191796776499,":sin",0.4968801378437368,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.5900000000000002,":cos",0.8309406791001633,":sin",0.5563610229127839,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0
+0.6600000000000003,":cos",0.789992231497365,":sin",0.613116851973434,":string-dimensioned|0",20.0,":string-dimensioned|1",20.0,":string-dimensioned|2",20.0,":time-dimensioned|0",20.0,":time-dimensioned|1",20.0,":time-dimensioned|2",20.0

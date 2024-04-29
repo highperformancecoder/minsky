@@ -1,7 +1,7 @@
 <ng-container *ngIf="title && operations.length">
   <button class="tab toolButton" [attr.classType]="'Operations'" [matMenuTriggerFor]="opMenu" [attr.aria-label]="title">
     <img
-      src="assets/images/icons/{{ operations[0] }}.gif"
+      src="assets/images/icons/{{ operations[0] }}.png"
       alt="{{ title }}"
       title="{{ title }}"
     />
@@ -17,7 +17,7 @@
         (dragstart)="onButtonDrag($event, operation)"
       >
         <img
-          src="assets/images/icons/{{ operation }}.gif"
+          src="assets/images/icons/{{ operation }}.png"
           alt="{{ operation }}"
           title="{{ operation }}"
         />

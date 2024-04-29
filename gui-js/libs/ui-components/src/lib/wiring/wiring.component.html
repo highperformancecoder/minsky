@@ -33,7 +33,7 @@
         <img src="assets/images/icons/note.gif" alt="Note" title="Note" />
       </button>
       <button class="tab toolButton" classType="Operation:time" (click)="electronService.minsky.canvas.addOperation('time')">
-        <img src="assets/images/icons/time.gif" alt="Time" title="Time" />
+        <img src="assets/images/icons/time.png" alt="Time" title="Time" />
       </button>
       <ng-container *ngFor="let operation of availableOperationsMapping | keyvalue">
         <minsky-available-operations
@@ -42,12 +42,12 @@
           ></minsky-available-operations>
       </ng-container>
       <button class="tab toolButton"  classType="SwitchIcon" (click)="electronService.minsky.canvas.addSwitch()">
-        <img src="assets/images/icons/switch.gif" alt="Switch" title="Switch" />
+        <img src="assets/images/icons/switch.png" alt="Switch" title="Switch" />
       </button>
       <button class="tab toolButton"
               classType="Operation:userFunction" (click)="electronService.minsky.canvas.addOperation('userFunction')">
         <img
-          src="assets/images/icons/userFunction.gif"
+          src="assets/images/icons/userFunction.png"
           alt="User Defined Function"
           title="User Defined Function"
           />
@@ -69,7 +69,7 @@
       <button class="tab toolButton"
               classType="Operation:differentiate" (click)="electronService.minsky.canvas.addOperation('differentiate')">
         <img
-          src="assets/images/icons/differentiate.gif"
+          src="assets/images/icons/differentiate.png"
           alt="Differentiate"
           title="Differentiate"
           />
