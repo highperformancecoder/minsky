@@ -6,60 +6,159 @@
   constants}\label{Operation:euler}\label{Operation:pi}\label{Operation:zero}\label{Operation:one}
 \label{Operation:inf}
 
-Some special constants ($e=2.72\ldots$, $\pi=3.14\ldots$, 0, 1,
-$\infty$).
+Some special constants ($e=2.72\ldots$, $\pi=3.14\ldots$, 0, 1, $\infty$) can be placed on the canvas, via two methods:
 
-\subsection{Percent} \label{Operation:percent} Multiplies input by
-100.
+\begin{itemize}
+\item By clicking on the relevant icon on the Fundamental Constants toolbar; or
+\item By typing the constant name on the canvas, and pressing Enter (or clicking OK) in the variable definition window. These names are: \textit{Euler} for $e=2.72\ldots$; \textit{pi} for $\pi=3.14\ldots$; and \textit{inf} for $\infty$.
+\end{itemize}
 
-\subsection{add +}\label{Operation:add} Add multiple numbers together. The input
-ports allow multiple wires, which are all summed. If an input port is
-unwired, it is equivalent to setting it to zero.
 
-\subsection{subtract $-$}\label{Operation:subtract} Subtract two numbers. The input
-ports allow multiple wires, which are summed prior to the subtraction
-being carried out. If an input port is unwired, it is equivalent to
-setting it to zero. Note the small `+' and `$-$' signs on the input
-ports indicating which terms are added or subtracted from the result.
+\includegraphics{images/FundamentalConstants.png} 
+ 	
+\subsection{Percent} \label{Operation:percent} The percent operator takes one input, and multiplies its elements by 100. It is useful for converting fractions into percentages for display purposes.
 
-\subsection{multiply $\times$}\label{Operation:multiply} Multiply numbers with each
-other. The input ports allow multiple wires, which are all multiplied
-together. If an input port is unwired, it is equivalent to setting it
-to one.
+\includegraphics{images/PercentOperator.png} 
 
-\subsection{divide $\div$}\label{Operation:divide} Divide a number by another. The
-input ports allow multiple wires, which are multiplied together prior
-to the division being carried out. If an input port is unwired, it is
-equivalent to setting it to one. Note the small `$\times$' and
-`$\div$' signs indicating which port refers to the numerator and which
-the denominator.
+The operator can be placed on the canvas in two ways:
 
-\subsection{log}\label{Operation:log} Take the logarithm of the $x$ input port, to
-base $b$. The base $b$ needs to be specified --- if the natural
-logarithm is desired ($b=e$), use the \htmlref{ln
-  operator}{Operation:ln} instead.
+\begin{itemize}
+\item From the Fundamental Constants toolbar; or
+\item By pressing the percent key anywhere on the wiring canvas.
+\end{itemize}
 
-\subsection{pow $x^y$}\label{Operation:pow} Raise one number to the power of another. The
-ports are labelled $x$ and $y$, referring the the formula $x^y$.
 
-\subsection{lt $<$}\label{Operation:lt} Returns 0 or 1, depending
-on whether $x<y$ is true (1) or false (0).
+\subsection{add +}\label{Operation:add} Add multiple numbers together.
 
-\subsection{le $\le$}\label{Operation:le} Returns 0 or 1, depending
-on whether $x\le y$ is true (1) or false (0).
+The input ports allow multiple wires, which are all summed. If an input port is unwired, it is equivalent to setting it to zero.
 
-\subsection{eq $=$}\label{Operation:eq} Returns 0 or 1, depending
-on whether $x=y$ is true (1) or false (0).
+\includegraphics{images/PlusSymbol.png} 
 
-\subsection{min}\label{Operation:min} Returns the minimum of $x$ and
-$y$.
+The operator can be placed on the canvas in two ways:
 
-\subsection{max}\label{Operation:max} Returns the maximum of $x$ and
-$y$.
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By pressing the plus key anywhere on the wiring canvas.
+\end{itemize}
 
-\subsection{and $\wedge$}\label{Operation:and_} Logical and of $x$ and $y$, where
-$x\le 0.5$ means false, and $x>0.5$ means true. The output is 1 or 0,
-depending on the result being true (1) or false (0) respectively.
+
+\subsection{subtract $-$}\label{Operation:subtract} Subtract two numbers. The input ports allow multiple wires, which are summed prior to the subtraction being carried out. If an input port is unwired, it is equivalent to setting it to zero. Note the small `+' and `$-$' signs on the input ports indicating which terms are added or subtracted from the result.
+
+\includegraphics{images/MinusKey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By pressing the minus key anywhere on the wiring canvas, \textit{followed by pressing the Enter key, or clicking on OK in the text input window}. The reason for requiring the Enter key to be pressed---rather than immediately placing the minus operator on the keyboard, as with the plus and multiply operators---is that a user may wish to enter a negative number as a constant.
+\end{itemize}
+
+\includegraphics{images/MinusTextWindow.png} 
+
+\subsection{multiply $\times$}\label{Operation:multiply} Multiply numbers with each other. The input ports allow multiple wires, which are all multiplied together. If an input port is unwired, it is equivalent to setting it to one.
+
+\includegraphics{images/MultiplyKey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By pressing the multiply (asterisk: *) key anywhere on the wiring canvas.
+\end{itemize}
+\subsection{divide $\div$}\label{Operation:divide} Divide a number by another. The input ports allow multiple wires, which are multiplied together prior to the division being carried out. If an input port is unwired, it is equivalent to setting it to one. Note the small `$\times$' and `$\div$' signs indicating which port refers to the numerator and which the denominator.
+
+\includegraphics{images/DivideKey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By pressing the divide key (/) anywhere on the wiring canvas.
+\end{itemize}
+\subsection{log}\label{Operation:log} Take the logarithm of the $x$ input port, to base $b$. The base $b$ needs to be specified --- if the natural logarithm is desired ($b=e$), use the \htmlref{ln operator}{Operation:ln} instead.
+
+\includegraphics{images/LogKey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By typing the word "log" anywhere on the wiring canvas, and then pressing the Enter key.
+\end{itemize}
+When you use the direct typing method to enter the Log operator, the text entry window pops up. This allows you to type a variable/parameter name starting with Log (like, for example, "Logical". If you press Enter (or click on OK) with only the word Log in the window, the Log operator will be placed on the canvas.
+
+\subsection{pow $x^y$}\label{Operation:pow} Raise one number to the power of another. The ports are labelled $x$ and $y$, referring the the formula $x^y$.
+
+\includegraphics{images/PowerKey.png} 
+
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By typing the word "Pow" anywhere on the wiring canvas and then pressing the Enter Key (or clicking on OK).
+\end{itemize}
+
+\subsection{lt $<$}\label{Operation:lt} Returns 0 or 1, depending on whether $x<y$ is true (1) or false (0).
+
+\includegraphics{images/LessThanKey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By typing the letters "lt" on the canvas and then pressing the Enter key.
+\end{itemize}
+
+
+\subsection{le $\le$}\label{Operation:le} Returns 0 or 1, depending on whether $x\le y$ is true (1) or false (0).
+
+\includegraphics{images/LessEqualKey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By typing the letters "le" on the canvas and then pressing the Enter key.
+\end{itemize}
+
+
+\subsection{eq $=$}\label{Operation:eq} Returns 0 or 1, depending on whether $x=y$ is true (1) or false (0).
+
+\includegraphics{images/EqualKey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By typing the letters "eq" on the canvas and then pressing the Enter key.
+\end{itemize}
+\subsection{min}\label{Operation:min} Returns the minimum of $x$ and $y$.
+
+\includegraphics{images/minkey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By typing the letters "min" on the canvas and then pressing the Enter key.
+\end{itemize}
+
+\subsection{max}\label{Operation:max} Returns the maximum of $x$ and $y$.
+
+\includegraphics{images/maxkey.png} 
+
+\subsection{and $\wedge$}\label{Operation:and_} Logical and of $x$ and $y$, where $x\le 0.5$ means false, and $x>0.5$ means true. The output is 1 or 0, depending on the result being true (1) or false (0) respectively.
+
+\includegraphics{images/andkey.png} 
+
+The operator can be placed on the canvas in two ways:
+
+\begin{itemize}
+\item From the Binary Operations toolbar; or
+\item By typing the letters "and\_" on the canvas and then pressing the Enter key.
+\end{itemize}
+
 
 \subsection{or $\vee$}\label{Operation:or_} Logical or of $x$ and $y$, where $x\le0.5$
 means false, and $x>0.5$ means true. The output is 1 or 0, depending

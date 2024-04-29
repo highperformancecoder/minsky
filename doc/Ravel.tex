@@ -1,0 +1,52 @@
+\documentclass{book}
+\usepackage{html,graphics,color}
+\title{Minsky Simulation Engine}
+\bodytext{bgcolor="white"}
+\pagecolor[gray]{1}
+\author{}
+
+% prevent having to place annoying mboxes
+%begin{latexonly}
+%\renewcommand{\htmladdimg}[1]{\resizebox{\textwidth}{!}{\includegraphics{images/#1}}}
+\renewcommand{\htmladdimg}[1]{\includegraphics{images/#1}}
+%end{latexonly}
+
+%begin{latexonly}
+\newcommand{\fwhtmladdimg}[1]{
+  \noindent\resizebox{\textwidth}{!}{\htmladdimg{#1}}
+}
+%end{latexonly}
+\begin{htmlonly}
+\newcommand{\fwhtmladdimg}[1]{\htmladdimg{#1}}
+\end{htmlonly}
+
+%begin{latexonly}
+\newcommand{\smhtmladdimg}[1]{
+  \resizebox{!}{3ex}{\htmladdimg{#1}}
+}
+%end{latexonly}
+\begin{htmlonly}
+\newcommand{\smhtmladdimg}[1]{\htmladdimg{#1}}
+
+
+
+\end{htmlonly}
+
+\newcommand{\buttonIcon}[1]{
+  \resizebox{!}{2ex}{\includegraphics{images/#1}}
+  }
+
+\begin{document}
+
+\include{Introduction}
+\include{GettingStarted}
+\include{Tutorial}
+\include{Reference}
+\include{exprtk}
+\include{Introduction-Minsky}
+\include{GettingStarted-Minsky}
+\include{Tutorial-Minsky}
+
+% no FAQs have been answered yet :)
+%\include{FAQs}
+\end{document}
