@@ -896,8 +896,8 @@ export class ContextMenuManager {
     let valueSort=(type: string,dir: string)=>{
       return type+dir[0].toUpperCase()+dir.slice(1);
     };
-    menuItems.push(...[new MenuItem(
-      {
+    menuItems.push(...[
+      new MenuItem({
         label: 'Toggle axis calipers',
         enabled: handleAvailable,
         click: async () => {
@@ -905,31 +905,56 @@ export class ContextMenuManager {
           ravel.broadcastStateToLockGroup();
         }
       }),
-      new MenuItem(
-      {
+      new MenuItem({
         label: 'Sort axis',
         enabled: handleAvailable,
         submenu: ['none','forward','reverse'].map(so =>(<any>{
           label: so,
           type: 'radio',
-          checked: sortOrder == valueSort('static',so),
+          checked: sortOrder == so,
           click: () => {
-            ravel.setSortOrder(valueSort('static',so));
+            ravel.setSortOrder(so);
             ravel.broadcastStateToLockGroup();
             minsky.reset();
           }
-        })).concat(
-          ['forward','reverse'].map(vso =>(<any>{
-            label: `${vso} dynamically`,
+        })),
+      }),
+      new MenuItem({
+        label: 'Sort by value',
+        enabled: await ravel.handleSortableByValue(),
+        submenu: [
+          <any>{
+            label: 'none',
             type: 'radio',
-            checked: sortOrder == valueSort('dynamic',vso),
-            click: async () => {
-              ravel.sortByValue(vso);
-              ravel.setSortOrder(valueSort('dynamic',vso));
+            checked: sortOrder == 'none',
+            click: () => {
+              ravel.setSortOrder('none');
               ravel.broadcastStateToLockGroup();
               minsky.reset();
-          }
-        })))
+            },
+          }].concat(
+            ['forward','reverse'].map(vso =>(<any>{
+              label: `${vso} statically`,
+              type: 'radio',
+              checked: sortOrder == valueSort('static',vso),
+              click: async () => {
+                ravel.sortByValue(vso);
+                ravel.setSortOrder(valueSort('static',vso));
+                ravel.broadcastStateToLockGroup();
+                minsky.reset();
+              }
+            }))).concat(
+              ['forward','reverse'].map(vso =>(<any>{
+                label: `${vso} dynamically`,
+                type: 'radio',
+                checked: sortOrder == valueSort('dynamic',vso),
+                click: async () => {
+                  ravel.sortByValue(vso);
+                  ravel.setSortOrder(valueSort('dynamic',vso));
+                  ravel.broadcastStateToLockGroup();
+                  minsky.reset();
+                }
+              }))),
       }),
       new MenuItem({
         label: 'Pick axis slices',
