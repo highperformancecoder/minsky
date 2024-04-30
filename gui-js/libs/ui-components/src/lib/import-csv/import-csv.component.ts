@@ -45,20 +45,20 @@ class Dimension {
 };
 
 @Component({
-    selector: 'minsky-import-csv',
-    templateUrl: './import-csv.component.html',
-    styleUrls: ['./import-csv.component.scss'],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatAutocompleteModule,
-        MatOptionModule,
-        NgIf,
-        NgFor,
-        NgStyle,
-    ],
+  selector: 'minsky-import-csv',
+  templateUrl: './import-csv.component.html',
+  styleUrls: ['./import-csv.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    NgIf,
+    NgFor,
+    NgStyle,
+  ],
 })
 export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   form: FormGroup;
@@ -68,6 +68,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   itemId: string;
   systemWindowId: number;
   isInvokedUsingToolbar: boolean;
+  examplesPath: string;
   valueId: string;
   variableValuesSubCommand: VariableValue;
   timeFormatStrings = dateTimeFormats;
@@ -77,8 +78,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   selected: boolean[]; ///< per column whether column is selected
   mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
-  existingDimensionNames: string[]=[];
-  selectableDimensionNames: string[][]=[];
+  existingDimensionNames: string[] = [];
+  selectableDimensionNames: string[][] = [];
   wedgeOptionPanelVisibleIndex: number = null;
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
@@ -130,10 +131,10 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   zoom(ratio: number) {
     this.zoomFactor *= ratio;
-    let style=this.fullDialog.nativeElement.style;
+    let style = this.fullDialog.nativeElement.style;
     style.setProperty('zoom', `${Math.round(this.zoomFactor * 100)}%`);
-    style.setProperty('width', `${Math.round(100/this.zoomFactor)}vw`);
-    style.setProperty('height', `${Math.round(100/this.zoomFactor)}vh`);
+    style.setProperty('width', `${Math.round(100 / this.zoomFactor)}vw`);
+    style.setProperty('height', `${Math.round(100 / this.zoomFactor)}vh`);
   }
 
   constructor(
@@ -146,6 +147,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
       this.isInvokedUsingToolbar = params.isInvokedUsingToolbar;
+      this.examplesPath = params.examplesPath;
     });
 
     this.form = new FormGroup({
@@ -245,13 +247,15 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     return new VariableBase(this.electronService.minsky.namedItems.elem(this.itemId)).valueId();
   }
 
-  async selectFile() {
-    const filePath = await this.electronService.openFileDialog({
+  async selectFile(defaultPath: string = '') {
+    let options = {
       filters: [
         { extensions: ['csv'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },
       ],
-    });
+    };
+    if (defaultPath) options['defaultPath'] = defaultPath;
+    const filePath = await this.electronService.openFileDialog(options);
 
     if (!filePath) { return; }
     this.url.setValue(filePath);
@@ -305,7 +309,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     let header = this.dialogState.spec.headerRow;
     this.csvCols = new Array(this.parsedLines[header]?.length);
     this.selected = new Array(this.parsedLines[header]?.length).fill(false);
-    this.selectableDimensionNames = this.parsedLines[header]? this.parsedLines[header].map(header => this.getSelectableNameDimensions(header)): [];
+    this.selectableDimensionNames = this.parsedLines[header] ? this.parsedLines[header].map(header => this.getSelectableNameDimensions(header)) : [];
     this.updateColumnTypes();
   }
 
@@ -424,7 +428,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     spec.mergeDelimiters = this.mergeDelimiters.value;
     spec.missingValue = this.missingValue.value;
     spec.quote = this.quote.value;
-    spec.separator=separatorToChar(this.separator.value);
+    spec.separator = separatorToChar(this.separator.value);
     spec.horizontalDimension = this.horizontalDimension.value;
 
     this.dialogState.spec.dimensionCols = [];
@@ -518,12 +522,12 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   // should not be called from HTML template because this will create a massive number of arrays that have to be garbage-collected
   getSelectableNameDimensions(headerValue: string) {
     const selectableDimensions = this.existingDimensionNames.slice();
-    if(!selectableDimensions.includes(headerValue)) selectableDimensions.push(headerValue);
+    if (!selectableDimensions.includes(headerValue)) selectableDimensions.push(headerValue);
     return selectableDimensions;
   }
 
   onWedgeIconClicked($event, i) {
-    if(this.wedgeOptionPanelVisibleIndex === i) {
+    if (this.wedgeOptionPanelVisibleIndex === i) {
       this.wedgeOptionPanelVisibleIndex = null;
     } else {
       this.wedgeOptionPanelVisibleIndex = i;
@@ -533,7 +537,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   onWedgeOptionClicked($event, i, value) {
     this.wedgeOptionPanelVisibleIndex = null;
-    if(i === -1) {
+    if (i === -1) {
       this.form.controls.horizontalDimName.setValue(value);
     } else {
       this.dialogState.spec.dimensionNames[i] = value;

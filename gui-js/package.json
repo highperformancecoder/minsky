@@ -22,6 +22,12 @@
         "to": ""
       }
     ],
+    "extraResources": [
+      {
+        "from": "examples/data",
+        "to": "examples/data"
+      }
+    ],
     "fileAssociations": [
       {
         "ext": "mky",
