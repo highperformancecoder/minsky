@@ -15,7 +15,7 @@ ops=minsky.availableOperations()
 ops.append("switch")
 for op in ops:
     # ignore some operations
-    if op in ["numOps","constant","copy","ravel","integrate"]: continue
+    if op in ["numOps","constant","copy","data","ravel","integrate"]: continue
 
     if op=="switch": minsky.canvas.addSwitch()
     else: minsky.canvas.addOperation(op)
