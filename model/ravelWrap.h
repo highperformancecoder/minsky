@@ -66,7 +66,7 @@ namespace minsky
     bool m_editorMode=false;
     //std::string m_filename;
     std::string explanation; // explanation of Ravel bits displayed as tooltip
-    ravel::HandleSort::Order previousOrder=ravel::HandleSort::staticForward;
+    ravel::HandleSort::Order previousOrder=ravel::HandleSort::forward;
     
     /// used entirely to defer persisted state data until after first
     /// load from a variable
