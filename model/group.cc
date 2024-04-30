@@ -606,18 +606,7 @@ namespace minsky
     }
 
     
-    template <class T>
-    void accumulateCentres(const T& items, float& xc, float& yc, size_t& n)
-    {
-      for (auto& i: items)
-        if (!i->ioVar())
-          {
-            xc+=i->m_x;
-            yc+=i->m_y;
-            n++;
-          }
-    }
-
+    
     template <class T>
     void recentreItems(const T& items, float xc, float yc)
     {
@@ -641,28 +630,17 @@ namespace minsky
     if (fabs(b.x0-b.x1) < l+r || fabs(b.y0-b.y1)<2*z*topMargin) return;
     iWidth(fabs(b.x0-b.x1)/z);
     iHeight((fabs(b.y0-b.y1)-2*topMargin)/z);
+    // TODO - it is wasteful to call contentBounds within computeRelZoom, then again a few lines later
     computeRelZoom(); // needed to ensure grouped items scale properly with resize operation. for ticket 1243    
-
-    // rescale contents to fit
-    // firstly, recentre the centroid
-    float xc=0, yc=0;
-    size_t n=0;
-    accumulateCentres(items,xc,yc,n);
-    accumulateCentres(groups,xc,yc,n);
-    if (n>0)
-      {
-        xc/=n; yc/=n;
-        recentreItems(items,xc,yc);
-        recentreItems(groups,xc,yc);
-        
-        z=zoomFactor();     // recalculate zoomFactor because relZoom changed above. for ticket 1243
-        double x0, x1, y0, y1;
-        contentBounds(x0,y0,x1,y1);
-        double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);
-        sx=std::min(sx,sy);
-        resizeItems(items,sx,sx);
-        resizeItems(groups,sx,sx);
-      }
+    z=zoomFactor();     // recalculate zoomFactor because relZoom changed above. for ticket 1243
+    double x0, x1, y0, y1;
+    contentBounds(x0,y0,x1,y1);
+    recentreItems(items,0.5*(x0+x1)-x(),0.5*(y0+y1)-y());
+    recentreItems(groups,0.5*(x0+x1)-x(),0.5*(y0+y1)-y());
+    double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);
+    sx=std::min(sx,sy);
+    resizeItems(items,sx,sx);
+    resizeItems(groups,sx,sx);
     
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
