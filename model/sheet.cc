@@ -395,6 +395,9 @@ void Sheet::draw(cairo_t* cairo) const
   
   if (selected) drawSelected(cairo);
 
+  static const regex pangoMarkup("<[^<>]*>");
+  smatch match;
+
   try
     {
       if (!value || !m_ports[0] || m_ports[0]->numWires()==0) return;
@@ -488,7 +491,11 @@ void Sheet::draw(cairo_t* cairo) const
             {
               if (adjustRowAndFinish(i,y)) break;
               cairo_move_to(cairo,x,y);
-              cpango.setText(trimWS(str(xv[i],format)));
+              auto sliceLabel=trimWS(str(xv[i],format));
+              if (regex_search(sliceLabel,match,pangoMarkup))
+                cpango.setMarkup(sliceLabel);
+              else
+                cpango.setText(sliceLabel);
               cpango.show();
               y+=rowHeight;
             }                
@@ -529,7 +536,11 @@ void Sheet::draw(cairo_t* cairo) const
                     cairo_rectangle(cairo,x,y,colWidth,rowHeight);
                     cairo_clip(cairo);
                     cairo_move_to(cairo,x,y);
-                    cpango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
+                    auto sliceLabel=trimWS(str(value->hypercube().xvectors[1][i],format));
+                    if (regex_search(sliceLabel,match,pangoMarkup))
+                      cpango.setMarkup(sliceLabel);
+                    else
+                      cpango.setText(sliceLabel);
                     cpango.show();
                   }
                   { // draw vertical grid line
