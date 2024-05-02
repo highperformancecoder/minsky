@@ -542,7 +542,7 @@ namespace minsky
         if (auto ri=dynamic_cast<Ravel*>(it->get()))
           for (size_t i=0; i<ri->numHandles(); ++i)
             if (varDimensions.contains(ri->handleDescription(i)))
-              ri->setHandleSortOrder(ravel::HandleSort::staticForward, i);
+              ri->setHandleSortOrder(ravel::HandleSort::forward, i);
         return false;
       });
   }
@@ -1101,8 +1101,6 @@ namespace minsky
         populateMissingDimensions();
       }
     catch (...) {flags|=reset_needed;}
-    requestRedraw();
-    canvas.recentre();
     canvas.requestRedraw();
     canvas.moveTo(0,0); // force placement of ports
     // sometimes we need to recalculate the bounding boxes
@@ -1111,7 +1109,6 @@ namespace minsky
                          (*i)->updateBoundingBox();
                          return false;
                        });
-
     pushHistory();
   }
 
