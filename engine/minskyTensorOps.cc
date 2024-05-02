@@ -404,6 +404,7 @@ namespace minsky
       auto idx=arg->index();
       const set<size_t> idxSet(idx.begin(),idx.end());
       set<size_t> newIdx;
+      size_t hcSize=cachedResult.hypercube().numElements();
       for (auto& i: idx)
         {
           checkCancel();
@@ -411,9 +412,13 @@ namespace minsky
           auto t=ssize_t(i)-delta;
           if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.contains(t) && sameSlice(t,i))
             {
-              argIndices.push_back(i);
-              newIdx.insert(hypercube().linealIndex(arg->hypercube().splitIndex(delta>0? t: i)));
-              assert(argIndices.size()==newIdx.size());
+              auto linealIndex=hypercube().linealIndex(arg->hypercube().splitIndex(delta>0? t: i));
+              if (linealIndex<hcSize)
+                {
+                  argIndices.push_back(i);
+                  newIdx.insert(linealIndex);
+                  assert(argIndices.size()==newIdx.size());
+                }
             }
         }
       cachedResult.index(Index(newIdx));
