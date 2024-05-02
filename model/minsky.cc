@@ -879,6 +879,7 @@ namespace minsky
           }
 
         auto start=chrono::high_resolution_clock::now();
+        auto updateResetDuration=onStackExit([&]{resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);});
         canvas.itemIndicator=false;
         const BusyCursor busy(*this);
         EvalOpBase::t=t=t0;
@@ -972,9 +973,7 @@ namespace minsky
               }
           }
         for (auto& i: PhillipsStock::maxStock) i.second=abs(i.second);
-    
-        resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
-      }
+     }
     catch (...)
       {
         // in the event of an exception, clear reset flag

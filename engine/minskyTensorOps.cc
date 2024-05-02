@@ -411,8 +411,8 @@ namespace minsky
           auto t=ssize_t(i)-delta;
           if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.contains(t) && sameSlice(t,i))
             {
-              argIndices.push_back(t);
-              newIdx.insert(hypercube().linealIndex(arg->hypercube().splitIndex(t)));
+              argIndices.push_back(i);
+              newIdx.insert(hypercube().linealIndex(arg->hypercube().splitIndex(delta>0? t: i)));
               assert(argIndices.size()==newIdx.size());
             }
         }
@@ -421,7 +421,10 @@ namespace minsky
   
     bool sameSlice(size_t i, size_t j) const
     {
-      return cachedResult.rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
+      // original implementation left on place for reference
+      //return cachedResult.rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
+      assert(i%innerStride==j%innerStride); // internally, delta should be a multiple of innerStride
+      return abs(ssize_t(i)-ssize_t(j))<outerStride; // simpler version of above
     }
     
     void computeTensor() const override
@@ -433,17 +436,14 @@ namespace minsky
           for (auto i: argIndices)
             {
               checkCancel();
-              if (delta>=0)
-                cachedResult[idx++]=arg->atHCIndex(i+delta)-arg->atHCIndex(i);
-              else // with -ve delta, origin of result is shifted
-                cachedResult[idx++]=arg->atHCIndex(i)-arg->atHCIndex(i-delta);
+              cachedResult[idx++]=arg->atHCIndex(i)-arg->atHCIndex(i-delta);
             }
         }
       else if (delta>=0)
         for (size_t i=0; i<cachedResult.size(); checkCancel(), ++i)
           {
             auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
-            auto t=ai+delta;
+            auto t=ai+delta*innerStride;
             if (sameSlice(t, ai))
               cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(ai);
             else
