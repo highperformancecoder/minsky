@@ -10,7 +10,7 @@
     <key>CFBundleIconFile</key>
     <string>MinskyLogo</string>
     <key>CFBundleShortVersionString</key>
-    <!--version--><string>2.34.1</string>
+    <!--version--><string>3.4.0-alpha.18</string>
     <key>CFBundleVersion</key>
     <string>2.8</string>
     <key>CFBundleDocumentTypes</key>
