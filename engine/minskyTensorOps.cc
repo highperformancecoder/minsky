@@ -1329,7 +1329,7 @@ namespace minsky
                 {
                   auto v=from->item().variableCast();
                   if (v && !v->name().empty())
-                    m_hypercube.xvectors.back()[stream]=v->name();
+                    m_hypercube.xvectors.back()[stream]=latexToPango(v->name());
                   else
                     m_hypercube.xvectors.back()[stream]=to_string(stream);
                   stream++;
