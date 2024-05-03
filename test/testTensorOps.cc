@@ -353,6 +353,20 @@ SUITE(TensorOps)
       CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[1][0].value);
       vector<size_t> ii{3,8};
       CHECK_ARRAY_EQUAL(ii, to->vValue()->index(), ii.size());
+      
+      evalOp<OperationType::difference>("1",delta=-1);
+      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
+      cnt=0;
+      for (auto& i: *to->vValue())
+        if (std::isfinite(i))
+          {
+            CHECK_EQUAL(-1,i);
+            cnt++;
+          }
+      CHECK_EQUAL(2,cnt);
+      CHECK_EQUAL(0, to->vValue()->hypercube().xvectors[1][0].value);
+      vector<size_t> i2{3,8};
+      CHECK_ARRAY_EQUAL(i2, to->vValue()->index(), i2.size());
     }
 
   TEST_FIXTURE(TestFixture, gatherInterpolateValue)
@@ -995,7 +1009,7 @@ SUITE(TensorOps)
       auto& x1Val=*x1->vValue();
       auto& x2Val=*x2->vValue();
       Hypercube hc1({7}), hc2=hc1;
-       x1Val.hypercube(hc1);
+      x1Val.hypercube(hc1);
       x2Val.hypercube(hc2);
       x1Val={1,2,2,1,3,2,1};
       x2Val={3,4,5,6,7,8,2};

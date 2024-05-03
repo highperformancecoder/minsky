@@ -296,12 +296,12 @@ namespace minsky
 
   vector<string> Ravel::allSliceLabels() const
   {
-    return wrappedRavel.allSliceLabels(wrappedRavel.selectedHandle(),ravel::HandleSort::staticForward);
+    return wrappedRavel.allSliceLabels(wrappedRavel.selectedHandle(),ravel::HandleSort::forward);
   }
   
   vector<string> Ravel::allSliceLabelsAxis(int axis) const
   {
-    return wrappedRavel.allSliceLabels(axis,ravel::HandleSort::staticForward);
+    return wrappedRavel.allSliceLabels(axis,ravel::HandleSort::forward);
   }  
 
   vector<string> Ravel::pickedSliceLabels() const
