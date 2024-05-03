@@ -475,6 +475,7 @@ namespace minsky
         r->lockGroup=lockGroup;
       }
     if (lockGroup) lockGroup->initialBroadcast();
+    selection.clear();
   }
 
   void Canvas::unlockRavelsInSelection()

@@ -391,15 +391,18 @@ export class CommunicationService {
 
       switch (type) {
 
-        case 'mousedown':
+      case 'mousedown':
+        if (message.ctrlKey)
+          canvas.controlMouseDown(clientX, this.mouseY + yoffs);
+        else
           canvas.mouseDown(clientX, this.mouseY + yoffs);
-          break;
-        case 'mouseup':
-          canvas.mouseUp(clientX, this.mouseY + yoffs);
-          break;
-        case 'mousemove':
-          canvas.mouseMove(clientX, this.mouseY + yoffs);
-          break;
+        break;
+      case 'mouseup':
+        canvas.mouseUp(clientX, this.mouseY + yoffs);
+        break;
+      case 'mousemove':
+        canvas.mouseMove(clientX, this.mouseY + yoffs);
+        break;
       }
     }
   }
