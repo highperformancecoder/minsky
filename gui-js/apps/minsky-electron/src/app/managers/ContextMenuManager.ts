@@ -909,7 +909,7 @@ export class ContextMenuManager {
           click: () => {
             ravel.setSortOrder(valueSort('static',so));
             ravel.broadcastStateToLockGroup();
-            minsky.reset();
+            minsky.requestReset();
           }
         })).concat(
           ['forward','reverse'].map(vso =>(<any>{
@@ -920,7 +920,7 @@ export class ContextMenuManager {
               ravel.sortByValue(vso);
               ravel.setSortOrder(valueSort('dynamic',vso));
               ravel.broadcastStateToLockGroup();
-              minsky.reset();
+              minsky.requestReset();
           }
         })))
       }),

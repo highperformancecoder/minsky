@@ -477,7 +477,7 @@ namespace minsky
 
   void Minsky::requestReset()
   {
-    if (resetDuration<chrono::milliseconds(500))
+    if (resetDuration<resetNowThreshold)
       {
         try
           {
@@ -489,7 +489,10 @@ namespace minsky
       }
     flags|=reset_needed;
     // schedule reset for some time in the future
-    resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
+    if (resetDuration<resetPostponedThreshold)
+      resetAt=std::chrono::system_clock::now()+resetPostponedThreshold;
+    else // postpone "indefinitely"
+      resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
   }
 
   void Minsky::requestRedraw()
@@ -980,6 +983,7 @@ namespace minsky
         // in the event of an exception, clear reset flag
         flags &= ~reset_needed; // clear reset flag
         resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
+        resetDuration=chrono::milliseconds::max();
         throw;
       }
 
