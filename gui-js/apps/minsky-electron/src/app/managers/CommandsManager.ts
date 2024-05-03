@@ -941,7 +941,7 @@ export class CommandsManager {
       
       window.loadURL(
         WindowManager.getWindowUrl(
-          `#/headless/import-csv?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`
+          `#/headless/import-csv?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}&examplesPath=${join(dirname(app.getAppPath()),'examples','data')}`
         )
       );
     }
