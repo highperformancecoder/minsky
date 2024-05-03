@@ -590,7 +590,15 @@ namespace minsky
             {
               if (xvars[port]->hypercube().xvectors[0].size()!=d[0])
                 throw error("x vector not same length as y vectors");
-              x=xvars[port]->begin();
+              if (xvars[port]->index().empty())
+                x=xvars[port]->begin();
+              else
+                {
+                  xdefault.reserve(d[0]);
+                  for (size_t i=0; i<d[0]; ++i)
+                    xdefault.push_back(xvars[port]->atHCIndex(i));
+                  x=xdefault.data();
+                }
             }
           else
             {
