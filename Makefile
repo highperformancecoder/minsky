@@ -197,7 +197,7 @@ endif
 FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
 
 ifeq ($(CPLUSPLUS),clang++)
-FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option
+FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted
 endif
 
 # NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations

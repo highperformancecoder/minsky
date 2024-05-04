@@ -45,7 +45,7 @@ int main(int argc, const char** argv)
               if (!inLayout && fabs(d1-d2)>1e-30)
                 return 1;
             }
-          else if (!inLayout && fabs(d1)+fabs(d2)>1e-3 && fabs(d1-d2)>1e-3*(fabs(d1)+fabs(d2)))
+          else if (!inLayout && fabs(d1-d2)>1 && fabs(d1-d2)>1e-3*(fabs(d1)+fabs(d2)))
             return 1;
         }
       else

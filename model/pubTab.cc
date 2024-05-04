@@ -110,7 +110,8 @@ namespace minsky
 
   void PubTab::removeItemAt(float x, float y)
   {
-    if (auto item=m_getItemAt(x-offsx,y-offsy))
+    zoomTranslate(x,y);
+    if (auto item=m_getItemAt(x,y))
         for (auto i=items.begin(); i!=items.end(); ++i)
           if (&*i==item)
             {
