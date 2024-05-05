@@ -352,6 +352,12 @@ namespace minsky
       if (auto vv=m_ports[i]->getVariableValue())
         for (auto& i: vv->hypercube().xvectors)
           names.insert(i.name);
+      else if (!m_ports[i]->wires().empty())
+        if (auto f=m_ports[i]->wires()[0]->from())
+          if (auto r=f->item().ravelCast())
+            for (auto& i: r->hypercube().xvectors)
+              names.insert(i.name);
+              
     return {names.begin(), names.end()};
   }
 
