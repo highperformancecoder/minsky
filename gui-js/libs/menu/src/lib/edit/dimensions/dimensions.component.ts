@@ -92,7 +92,7 @@ export class DimensionsComponent implements OnInit {
         this.electronService.minsky.renameDimension(this.originalDimensionNames[i],newDimensions[i].dimension); 
     await this.electronService.minsky.dimensions.$properties(this.getDimensions());
     await this.electronService.minsky.imposeDimensions();
-    this.electronService.minsky.reset();
+    this.electronService.minsky.requestReset();
     this.closeWindow();
   }
 }

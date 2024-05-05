@@ -240,8 +240,7 @@ namespace minsky
         const LocalMinsky lm(*this); // sets this to be the global minsky object
 
         // if reset requested, postpone it
-        if (reset_flag())
-          resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
+        if (reset_flag()) requestReset();
 
         civita::ITensor::cancel(false);
         // disable quoting wide characters in UTF-8 strings
@@ -312,7 +311,7 @@ namespace minsky
             
             if (!command) // perform housekeeping
               {
-                if (reset_flag() && resetAt<std::chrono::system_clock::now())
+                if (reset_flag() && resetDuration<resetPostponedThreshold && resetAt<std::chrono::system_clock::now())
                   try
                     {
                       const lock_guard<mutex> lock(minskyCmdMutex);

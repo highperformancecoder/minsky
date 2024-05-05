@@ -81,6 +81,11 @@ namespace minsky
     enum StateFlags {is_edited=1, reset_needed=2, fullEqnDisplay_needed=4};
     int flags=reset_needed;
 
+    /// if reset duration is less than this, immediately perform reset on request
+    static constexpr std::chrono::milliseconds resetNowThreshold{500};
+    /// if reset duration is less than this, but more than resetNowThreshold, schedule a future reset
+    /// if greater, then do not auto schedule reset, but require explicit resets.
+    static constexpr std::chrono::milliseconds resetPostponedThreshold{1500};
     std::chrono::time_point<std::chrono::system_clock> resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
     std::chrono::milliseconds resetDuration;
 

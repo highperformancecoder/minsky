@@ -255,8 +255,7 @@ namespace minsky
       default:
         return false;
       }
-    if (state>0) minsky().reset(); //reset if any modifier key pressed
-    else minsky().requestReset();
+    minsky().requestReset();
     return true;
   }
 

@@ -155,15 +155,13 @@ namespace minsky
             model->addWire(static_cast<shared_ptr<Port>&>(fromPort),to);
 
             // populate the destination tooltip if a Ravel
-            if (to->item().tooltip().empty() && dynamic_cast<Ravel*>(&to->item()))
+            if (to->item().tooltip().empty() && to->item().ravelCast())
               if (auto v=fromPort->item().variableCast())
                 to->item().tooltip(v->name());
             
-            fromPort.reset();
             minsky().requestReset(); 
-          } else {
-            fromPort.reset();
-          }
+          } 
+          fromPort.reset();
       }
     
     if (wireFocus)

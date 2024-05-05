@@ -477,7 +477,7 @@ namespace minsky
 
   void Minsky::requestReset()
   {
-    if (resetDuration<chrono::milliseconds(500))
+    if (resetDuration<resetNowThreshold)
       {
         try
           {
@@ -489,7 +489,10 @@ namespace minsky
       }
     flags|=reset_needed;
     // schedule reset for some time in the future
-    resetAt=std::chrono::system_clock::now()+std::chrono::milliseconds(1500);
+    if (resetDuration<resetPostponedThreshold)
+      resetAt=std::chrono::system_clock::now()+resetPostponedThreshold;
+    else // postpone "indefinitely"
+      resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
   }
 
   void Minsky::requestRedraw()
@@ -879,6 +882,7 @@ namespace minsky
           }
 
         auto start=chrono::high_resolution_clock::now();
+        auto updateResetDuration=onStackExit([&]{resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);});
         canvas.itemIndicator=false;
         const BusyCursor busy(*this);
         EvalOpBase::t=t=t0;
@@ -972,14 +976,13 @@ namespace minsky
               }
           }
         for (auto& i: PhillipsStock::maxStock) i.second=abs(i.second);
-    
-        resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);
-      }
+     }
     catch (...)
       {
         // in the event of an exception, clear reset flag
         flags &= ~reset_needed; // clear reset flag
         resetAt=std::chrono::time_point<std::chrono::system_clock>::max();
+        resetDuration=chrono::milliseconds::max();
         throw;
       }
 
