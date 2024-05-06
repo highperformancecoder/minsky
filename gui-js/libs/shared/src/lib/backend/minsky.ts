@@ -1459,6 +1459,7 @@ export class Minsky extends CppClass {
   async tmax(...args: number[]): Promise<number> {return this.$callMethod('tmax',...args);}
   async triggerCheckMemAllocationCallback(): Promise<boolean> {return this.$callMethod('triggerCheckMemAllocationCallback');}
   async undo(a1: number): Promise<number> {return this.$callMethod('undo',a1);}
+  async unloadRavel(): Promise<void> {return this.$callMethod('unloadRavel');}
   async variableTypes(): Promise<string[]> {return this.$callMethod('variableTypes');}
 }
 
