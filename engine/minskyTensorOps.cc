@@ -982,7 +982,7 @@ namespace minsky
     }
   };
 
-  template <> struct GeneralTensorOp<OperationType::rho>: public Correlation
+  template <> struct GeneralTensorOp<OperationType::correlation>: public Correlation
   {
     double operator[](size_t i) const override
     {

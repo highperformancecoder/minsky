@@ -384,7 +384,7 @@ namespace MathDAG
   }
 
   template <>
-  ostream& OperationDAG<OperationType::rho>::latex(ostream& o) const
+  ostream& OperationDAG<OperationType::correlation>::latex(ostream& o) const
   {
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
         arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
