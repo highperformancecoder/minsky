@@ -193,6 +193,9 @@ namespace minsky
   
   const std::string& VariableValue::init(const std::string& x)  {
     m_init=x;
+    // don't reallocate if initialisation will be ignored (eg wired flow)
+    if (x.empty() || m_type!=parameter && isFlowVar() && cminsky().definingVar(valueId()))
+      return m_init;
     auto tensorInit=cminsky().variableValues.initValue(*this);
     if (tensorInit.size()>size()) m_idx=-1; // force reallocation
     index(tensorInit.index());
