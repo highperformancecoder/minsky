@@ -1592,7 +1592,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
        -0.397234,   0.080619,  -0.766631,  -0.013774,  -0.552663
      };
 
-     OperationPtr rhoOp(OperationType::rho);
+     OperationPtr rhoOp(OperationType::correlation);
      rhoOp->axis="1";
      g->addItem(rhoOp);
      Wire w1(from->ports(0),rhoOp->ports(1)), w2(from1->ports(0),rhoOp->ports(2)), w3(rhoOp->ports(0),to->ports(1));
