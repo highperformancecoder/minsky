@@ -461,7 +461,6 @@ export class Canvas extends RenderNativeWindow {
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async findVariableDefinition(): Promise<boolean> {return this.$callMethod('findVariableDefinition');}
-  async focusFollowsMouse(...args: boolean[]): Promise<boolean> {return this.$callMethod('focusFollowsMouse',...args);}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
