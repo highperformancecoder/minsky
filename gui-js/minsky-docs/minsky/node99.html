@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>index</TITLE>
-<META NAME="description" CONTENT="index">
+<TITLE>gather</TITLE>
+<META NAME="description" CONTENT="gather">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,86 +16,87 @@
 
 <LINK REL="next" HREF="node100.html">
 <LINK REL="previous" HREF="node98.html">
-<LINK REL="up" HREF="node87.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node100.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1597"
+<A NAME="tex2html1595"
   HREF="node100.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1593"
-  HREF="node87.html">
+<A NAME="tex2html1591"
+  HREF="node86.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1587"
+<A NAME="tex2html1585"
   HREF="node98.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1595"
+<A NAME="tex2html1593"
   HREF="minsky.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1598"
-  HREF="node100.html">gather</A>
-<B> Up:</B> <A NAME="tex2html1594"
-  HREF="node87.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1588"
-  HREF="node98.html">difference</A>
- &nbsp; <B>  <A NAME="tex2html1596"
+<B> Next:</B> <A NAME="tex2html1596"
+  HREF="node100.html">inner product</A>
+<B> Up:</B> <A NAME="tex2html1592"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1586"
+  HREF="node98.html">index</A>
+ &nbsp; <B>  <A NAME="tex2html1594"
   HREF="minsky.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004212000000000000000"></A><A NAME="Operation:index"></A>
+<H2><A NAME="SECTION004213000000000000000"></A><A NAME="Operation:gather"></A>
 <BR>
-index
+gather
 </H2>
 
 <P>
-Returns the index within the hypecube where the input is true (ie
-<SPAN CLASS="MATH"><IMG
- WIDTH="41" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img205.png"
- ALT="$&gt;0.5$"></SPAN>). For example, where
-<P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
+Gather collects the values at index locations indexed by the second
+argument. The output tensor has shape
 <!-- MATH
- \begin{eqnarray*}
-\iota(3,3) &=& \left(\begin{array}{ccc}
-                         0 & 3 & 6 \\
-                         1 & 4 & 7 \\
-                         2 & 5 & 8 \\
-                       \end{array}\right),\\
-  \mathrm{idx}(\iota(3,3)<5) &=&
-                                 \left(\begin{array}{ccc}
-                                         0 & 3 &\\
-                                         1 & 4 &\\
-                                         2 & &
-                                       \end{array}\right),\\
-\end{eqnarray*}
+ $[i_0, \ldots i_{ir}, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$
  -->
-<IMG
- WIDTH="255" HEIGHT="134" BORDER="0"
- SRC="img206.png"
- ALT="\begin{eqnarray*}
-\iota(3,3) &amp;=&amp; \left(\begin{array}{ccc}
-0 &amp; 3 &amp; 6 \\
-1 &amp; 4...
-...ray}{ccc}
-0 &amp; 3 &amp;\\
-1 &amp; 4 &amp;\\
-2 &amp; &amp;
-\end{array}\right),\\
-\end{eqnarray*}"></DIV>
-<BR CLEAR="ALL"><P></P>
-<BR CLEAR="ALL"><P></P>
-Note that the output array has the same shape as the input, with
-unused values padded with NANs (missing value).
+<SPAN CLASS="MATH"><IMG
+ WIDTH="242" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img207.png"
+ ALT="$[i_0, \ldots i_{ir}, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$"></SPAN> where
+<!-- MATH
+ $[a_0,\ldots,a_{ar}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="86" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img208.png"
+ ALT="$[a_0,\ldots,a_{ar}]$"></SPAN> is the shape of the first argument, and
+<!-- MATH
+ $[i_0,\ldots,i_{ir}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="78" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img209.png"
+ ALT="$[i_0,\ldots,i_{ir}]$"></SPAN> is the shape of the second second (index)
+argument, and <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img210.png"
+ ALT="$j$"></SPAN> is the axis along which the gather is performed.
 
 <P>
-Dimension and argument parameters are unused.
+If the index is not an integer, the gather will linearly interpolate
+between the values on either side. So, for example,
+<!-- MATH
+ $x[2.5] = 0.5 (x[2]+x[3])$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="167" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img211.png"
+ ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>.
+
+<P>
+If the index value is outside the range of the
+<A HREF="node124.html#x-vector">x-vector</A> along the axis being gathered, then NAN is assigned
+to that tensor element.
 
 <P>
 <BR><HR>
