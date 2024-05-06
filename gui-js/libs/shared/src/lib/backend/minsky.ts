@@ -1827,6 +1827,7 @@ export class Ravel extends Item {
   async pickSliceLabels(a1: number,a2: string[]): Promise<void> {return this.$callMethod('pickSliceLabels',a1,a2);}
   async pickedSliceLabels(): Promise<string[]> {return this.$callMethod('pickedSliceLabels');}
   async populateHypercube(a1: civita__Hypercube): Promise<void> {return this.$callMethod('populateHypercube',a1);}
+  async radius(): Promise<number> {return this.$callMethod('radius');}
   async ravelCast(): Promise<Ravel> {return this.$callMethod('ravelCast');}
   async redistributeHandles(): Promise<void> {return this.$callMethod('redistributeHandles');}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
