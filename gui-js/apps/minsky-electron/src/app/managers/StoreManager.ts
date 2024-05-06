@@ -8,7 +8,6 @@ interface MinskyPreferences {
   numberOfRecentFilesToDisplay: number;
   wrapLongEquationsInLatexExport: boolean;
   font: string;
-  // focusFollowsMouse: boolean;
   numBackups: number;
 }
 
@@ -17,6 +16,7 @@ interface MinskyStore {
   backgroundColor: string;
   preferences: MinskyPreferences;
   ravelPlugin: string; // used for post installation installation of Ravel
+  ravelDll: string; // on windows, temporarily store a copy of the Ravel plugin, and move it into position on next startup
 }
 
 class StoreManager {
@@ -32,10 +32,10 @@ class StoreManager {
         numberOfRecentFilesToDisplay: 10,
         wrapLongEquationsInLatexExport: false,
         font: "",
-        // focusFollowsMouse: false,
         numBackups: 1,
       },
       ravelPlugin: '',
+      ravelDll: '',
     },
   });
 }

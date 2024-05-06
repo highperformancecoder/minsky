@@ -1118,8 +1118,10 @@ export class CommandsManager {
   // handler for downloading Ravel and installing it
   static downloadRavel(event,item,webContents) {
     switch (process.platform) {
-      case 'win32':
-        item.setSavePath(dirname(process.execPath)+'/libravel.dll');
+    case 'win32':
+      const savePath=dirname(process.execPath)+'/libravel.dll';
+      minsky.unloadRavel();
+      item.setSavePath(savePath);
       break;
     default:
       // nothing to do - TODO implement handlers for MacOS and Linux
