@@ -20,7 +20,6 @@ import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
 import { backend, backendSync, initialWorkingDirectory, loadResources, sanityCheck } from './backend-init';
-import { renameSync } from 'fs';
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will

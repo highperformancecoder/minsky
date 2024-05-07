@@ -16,7 +16,6 @@ interface MinskyStore {
   backgroundColor: string;
   preferences: MinskyPreferences;
   ravelPlugin: string; // used for post installation installation of Ravel
-  ravelDll: string; // on windows, temporarily store a copy of the Ravel plugin, and move it into position on next startup
 }
 
 class StoreManager {
@@ -35,7 +34,6 @@ class StoreManager {
         numBackups: 1,
       },
       ravelPlugin: '',
-      ravelDll: '',
     },
   });
 }
