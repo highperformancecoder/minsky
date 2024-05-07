@@ -1513,10 +1513,8 @@ namespace minsky
                 }
           }
         else
-          {
-            assert(!tfp.tensorsFromPort(*l->ports(1).lock()).empty());
-            return tfp.tensorsFromPort(*l->ports(1).lock())[0];
-          }
+          if (auto tensors=tfp.tensorsFromPort(*l->ports(1).lock()); !tensors.empty())
+            return tensors.front();
       }
     return {};
   }
@@ -1542,8 +1540,8 @@ namespace minsky
                 throw std::runtime_error("Tensor derivative not implemented");
               }
           }
-        r.push_back(tensorOpFactory.create(item.itemPtrFromThis(), *this));
-        assert(r.back());
+        if (auto tensorOp=tensorOpFactory.create(item.itemPtrFromThis(), *this))
+          r.push_back(tensorOp);
       }
     return r;
   }
