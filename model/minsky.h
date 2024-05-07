@@ -341,7 +341,6 @@ namespace minsky
     }
     static bool ravelExpired() {return  ravel::Ravel::available() && ravel::Ravel::daysUntilExpired()<0;}
     static int daysUntilRavelExpires() {return  ravel::Ravel::daysUntilExpired();}
-    static void unloadRavel() {ravel::Ravel::unload();}
     
     std::string fileVersion; ///< Minsky version file was saved under
     

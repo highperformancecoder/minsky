@@ -10,7 +10,7 @@ import {
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
 import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
-import { existsSync, unlinkSync } from 'fs';
+import { existsSync, renameSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
 import { join, dirname } from 'path';
 import { tmpdir } from 'os';
@@ -1120,7 +1120,8 @@ export class CommandsManager {
     switch (process.platform) {
     case 'win32':
       const savePath=dirname(process.execPath)+'/libravel.dll';
-      minsky.unloadRavel();
+      if (existsSync(savePath))
+        renameSync(savePath,dirname(process.execPath)+'/deleteme')
       item.setSavePath(savePath);
       break;
     default:
