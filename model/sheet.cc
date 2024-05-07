@@ -235,18 +235,18 @@ namespace
         default: // just to shut up the "maybe uninitialised" checker.
         case ShowSlice::head:
           tailStartRow=startRow=0;
-          numRows=height/rowHeight+1;
+          numRows=std::min(size, size_t(height/rowHeight+1));
           break;
         case ShowSlice::headAndTail:
           startRow=0;
-          numRows=0.5*height/rowHeight-1;
+          numRows=std::min(size, size_t(0.5*height/rowHeight-1));
           tailStartRow=size-numRows;
-          if (2*numRows*rowHeight>height)
+          if (numRows<size && 2*numRows*rowHeight>height)
             tailStartRow++;
           break;
         case ShowSlice::tail:
-          numRows=height/rowHeight-1;
-          tailStartRow=startRow=size>numRows? size-numRows: 0;
+          numRows=std::min(size, size_t(height/rowHeight-1));
+          tailStartRow=startRow=size-numRows;
           break;
         }
     }
@@ -256,7 +256,7 @@ namespace
           row=tailStartRow; // for middle elision
           y+=rowHeight;
         }
-      return row>tailStartRow+numRows;
+      return row>=tailStartRow+numRows;
     }
   };
 }
