@@ -39,7 +39,6 @@ proc afterMinskyStarted {} {uplevel #0 {
   update
   assert {[findObject Group]}
   set item minsky.canvas.item
-  canvas.focusFollowsMouse 1
   canvas.mouseDown [expr [\$item.left]-10] [expr [\$item.bottom]+10]
   canvas.mouseUp [expr [\$item.left]+10] [expr [\$item.bottom]-10] 
   assert {[canvas.selection.groups.size]==1}

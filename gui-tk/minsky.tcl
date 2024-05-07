@@ -205,7 +205,6 @@ wm title . "$progName: $fname"
 setBackgroundColour $backgroundColour
 proc tk_focusPrev {win} {return $win}
 proc tk_focusNext {win} {return $win}
-canvas.focusFollowsMouse $preferences(focusFollowsMouse)
 if {$preferences(focusFollowsMouse)} {
     tk_focusFollowsMouse
 # Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.	
@@ -1397,7 +1396,6 @@ proc openNamedFile {ofname} {
     minsky.multipleEquities $preferences(multipleEquities)
     setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
 
-    canvas.focusFollowsMouse $preferences(focusFollowsMouse)
     recentreCanvas
 
    .controls.simSpeed set [simulationDelay]
@@ -1603,7 +1601,6 @@ proc setPreferenceParms {} {
     defaultFont $preferences(defaultFont)
     multipleEquities $preferences(multipleEquities)
     setGodleyDisplay
-    canvas.focusFollowsMouse $preferences(focusFollowsMouse)
     if {$preferences(focusFollowsMouse)} {
         tk_focusFollowsMouse
 	# Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.
