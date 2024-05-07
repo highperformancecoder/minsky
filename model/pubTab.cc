@@ -142,6 +142,9 @@ namespace minsky
     cairo_translate(cairo, offsx, offsy);
     cairo_scale(cairo, m_zoomFactor, m_zoomFactor);
     cairo_set_line_width(cairo, 1);
+    // stash toplevel zoomfactor and set it to 1.
+    auto zf=cminsky().model->relZoom;
+    cminsky().model->relZoom=1;
     for (auto& i: items)
       {
         const CairoSave cs(cairo);
@@ -159,6 +162,7 @@ namespace minsky
                         abs(lasso.x0-lasso.x1), abs(lasso.y0-lasso.y1));
         cairo_stroke(cairo);
       }
+    cminsky().model->relZoom=zf; // restore zoomFactor
     return !items.empty() || clickType!=ClickType::outside;
   }
 
