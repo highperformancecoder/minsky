@@ -46,17 +46,31 @@ minsky.canvas.renderToSVG('allItemsOnBorder.svg')
 
 for i in range(len(minsky.model.items)):
   if minsky.model.items[i].classType() =="Sheet":
-    minsky.model.items[i].showSlice("headAndTail")
+    minsky.model.items[i].showRowSlice("headAndTail")
     minsky.model.items[i].updateBoundingBox()
 
 minsky.canvas.renderToSVG('allItemsHeadAndTail.svg')
 
 for i in range(len(minsky.model.items)):
   if minsky.model.items[i].classType()=="Sheet":
-    minsky.model.items[i].showSlice("tail")           
+    minsky.model.items[i].showRowSlice("tail")           
     minsky.model.items[i].updateBoundingBox()
 
 minsky.canvas.renderToSVG('allItemsTail.svg')
+
+for i in range(len(minsky.model.items)):
+  if minsky.model.items[i].classType() =="Sheet":
+    minsky.model.items[i].showColSlice("headAndTail")
+    minsky.model.items[i].updateBoundingBox()
+
+minsky.canvas.renderToSVG('allItemsColHeadAndTail.svg')
+
+for i in range(len(minsky.model.items)):
+  if minsky.model.items[i].classType()=="Sheet":
+    minsky.model.items[i].showColSlice("tail")           
+    minsky.model.items[i].updateBoundingBox()
+
+minsky.canvas.renderToSVG('allItemsColTail.svg')
 EOF
 
 python3 input.py
