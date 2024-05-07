@@ -54,6 +54,7 @@ SUITE(Ticket1461)
       var.tooltip("hello");
       var.setUnits("m");
       canvas.selection.insertItem(canvas.itemFocus);
+      canvas.itemFocus.reset();
       copy();
       paste();
       auto& varCopy=*canvas.itemFocus->variableCast();
