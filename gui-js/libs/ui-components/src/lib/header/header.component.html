@@ -1,87 +1,15 @@
 <div class="toolbar-controls">
-  <div class="record-controls m-a-0">
+  <div class="recalculate m-a-0">
     <button
       class="btn recalculate-btn toolButton" classType="Recalculate"
       title="Recalculate"
       (click)="recalculateButton()"
-      
-    >
+      >
       <img src="assets/images/icons/recalculate.svg" alt=""
            class="btn-icon" />
     </button>
-    <button
-      class="btn record-btn toolButton" classType="RecReplayButtons"
-      [ngClass]="{ focus: isRecordingOn }"
-      title="Record"
-      (click)="recordButton()"
-    >
-      <img src="assets/images/icons/record.svg" alt="" class="btn-icon" />
-    </button>
-    <button
-      class="btn replay-btn toolButton" classType="RecReplayButtons"
-      [ngClass]="{ focus: isReplayRecordingOn }"
-      title="Simulate/Recording Replay"
-      (click)="recordingReplyButton()"
-    >
-      <img src="assets/images/icons/replay.svg" alt="" class="btn-icon" />
-    </button>
   </div>
-
-  <div class="simulation-controls">
-    <div class="checkbox-control">
-      <div class="checkbox-wrapper">
-        <input
-          type="checkbox"
-          id="reverseSimulationCheckbox"
-          class="reverse-simulation-checkbox  toolButton" classType="RunButtons"
-          (click)="reverseCheckboxButton($event)"
-        />
-      </div>
-      <label for="reverseSimulationCheckbox">Reverse</label>
-    </div>
-  </div>
-  <!--div class="toolbar">
-    <minsky-toolbar
-      (toolbarEvent)="handleToolbarEvent($event)"
-    ></minsky-toolbar>
-  </div-->
-    <div class="play-controls m-a-0">
-    <button class="btn play-btn toolButton" classType="RunButtons" title="Play/Stop" (click)="playButton()">
-      <img
-        src="{{
-          this.showPlayButton
-            ? 'assets/images/icons/play.svg'
-            : 'assets/images/icons/pause.svg'
-        }}"
-        alt="paly/pause button"
-        class="btn-icon"
-      />
-    </button>
-    <button class="btn reset-btn toolButton" classType="RunButtons" title="Reset" (click)="resetButton()">
-      <img src="assets/images/icons/stop.svg" alt="" class="btn-icon" />
-    </button>
-    <button class="btn step-btn toolButton" classType="RunButtons" title="Step" (click)="stepButton()">
-      <img src="assets/images/icons/step-forward.svg" alt="" class="btn-icon" />
-    </button>
-  </div>
-
-  <div class="range-input-control m-a-0 toolButton" classType="Speedslider" >
-    <div class="range-input-label">Simulation Speed</div>
-    <div class="range-input-wrapper">
-      <span class="slow-label">Slow</span>
-      <input
-        type="range"
-        min="0"
-        max="150"
-        value="150"
-        #simulation
-        class="speed-slider"
-        (change)="simulationSpeed($event.target['value'])"
-      />
-      <span class="fast-label">Fast</span>
-    </div>
-  </div>
-
+  
   <div class="play-controls zoom-controls-container m-a-0">
     <button class="btn zoom-btn toolButton" classType="ZoomButtons" title="Zoom Out">
       <img
@@ -116,6 +44,77 @@
       />
     </button>
   </div>
+
+  <div class="simulation-controls">
+    <div class="play-controls m-a-0">
+      <button class="btn play-btn toolButton" classType="RunButtons" title="Play/Stop" (click)="playButton()">
+        <img
+          src="{{
+               this.showPlayButton
+               ? 'assets/images/icons/play.svg'
+               : 'assets/images/icons/pause.svg'
+               }}"
+          alt="paly/pause button"
+          class="btn-icon"
+          />
+      </button>
+      <button class="btn reset-btn toolButton" classType="RunButtons" title="Reset" (click)="resetButton()">
+        <img src="assets/images/icons/stop.svg" alt="" class="btn-icon" />
+      </button>
+      <button class="btn step-btn toolButton" classType="RunButtons" title="Step" (click)="stepButton()">
+        <img src="assets/images/icons/step-forward.svg" alt="" class="btn-icon" />
+      </button>
+    </div>
+
+    <div class="range-input-control m-a-0 toolButton" classType="Speedslider" >
+      <div class="range-input-label">Simulation Speed</div>
+      <div class="range-input-wrapper">
+        <span class="slow-label">Slow</span>
+        <input
+          type="range"
+          min="0"
+          max="150"
+          value="150"
+          #simulation
+          class="speed-slider"
+          (change)="simulationSpeed($event.target['value'])"
+          />
+        <span class="fast-label">Fast</span>
+      </div>
+    </div>
+    
+    <div class="checkbox-control">
+      <div class="checkbox-wrapper">
+        <input
+          type="checkbox"
+          id="reverseSimulationCheckbox"
+          class="reverse-simulation-checkbox  toolButton" classType="RunButtons"
+          (click)="reverseCheckboxButton($event)"
+          />
+      </div>
+      <label for="reverseSimulationCheckbox">Reverse</label>
+    </div>
+  </div>
+
+  <div class="record-controls m-a-0">
+    <button
+      class="btn record-btn toolButton" classType="RecReplayButtons"
+      [ngClass]="{ focus: isRecordingOn }"
+      title="Record"
+      (click)="recordButton()"
+    >
+      <img src="assets/images/icons/record.svg" alt="" class="btn-icon" />
+    </button>
+    <button
+      class="btn replay-btn toolButton" classType="RecReplayButtons"
+      [ngClass]="{ focus: isReplayRecordingOn }"
+      title="Simulate/Recording Replay"
+      (click)="recordingReplyButton()"
+    >
+      <img src="assets/images/icons/replay.svg" alt="" class="btn-icon" />
+    </button>
+  </div>
+
   <div class="time-info toolButton" classType="SimTime">
     <span class="time">t:{{ commService.t }}</span>
     <span class="delta-time">&Delta;t:{{ commService.deltaT }}</span>
