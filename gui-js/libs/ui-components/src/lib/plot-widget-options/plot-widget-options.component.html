@@ -103,6 +103,25 @@
       </span>
     </div>
 
+    <div class="bounds">
+      <table class="bounds-table">
+        <td colspan="3">Bounds Control</td>
+        <tr><td></td><td>Min</td><td>Max</td></tr>
+        <tr><td>X</td>
+          <td><input formControlName="xmin" type="text" value="NaN"/></td>
+          <td><input formControlName="xmax" type="text" value="NaN"/></td>
+        </tr>
+        <tr><td>Y (LHS)</td>
+          <td><input formControlName="ymin" type="text" value="NaN"/></td>
+          <td><input formControlName="ymax" type="text" value="NaN"/></td>
+        </tr>
+        <tr><td>Y (RHS)</td>
+          <td><input formControlName="y1min" type="text" value="NaN"/></td>
+          <td><input formControlName="y1max" type="text" value="NaN"/></td>
+        </tr>
+      </table>
+    </div>
+    
     <div class="markers">
       <select id="verticalMarkers" multiple size="5">
         <option disabled>Vertical Markers</option>
