@@ -59,8 +59,25 @@
     </div>
 
     <div class="form-control">
-      <label for="value">Initial Value</label>
-      <input type="text" class="value" id="value" formControlName="value" />
+      <label for="value">
+        Initial Value
+        <span class="help" (click)="displayInitHelp()">?</span>
+      </label>
+      <input type="text" class="value" id="value"
+             formControlName="value"
+             [matAutocomplete]="init"
+             />
+      <mat-autocomplete [panelWidth]="'10rem'"
+                        #init="matAutocomplete">
+        <mat-option>Number</mat-option>
+        <mat-option>Var Name</mat-option>
+        <mat-option value="iota(5,5)">iota</mat-option>
+        <mat-option value='one(5,5)'>one</mat-option>
+        <mat-option value='zero(5,5)'>zero</mat-option>
+        <mat-option value='eye(5,5)'>eye</mat-option>
+        <mat-option value='rand(5,5)'>rand</mat-option>
+      </mat-autocomplete>
+
     </div>
 
     <div class="form-control">
