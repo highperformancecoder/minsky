@@ -172,10 +172,10 @@ namespace minsky
       model->removeGroup(*i);
     for (auto& i: canvas.selection.wires)
       model->removeWire(*i);
-    garbageCollect();
     canvas.item.reset();
     canvas.itemFocus.reset();
 #ifndef NDEBUG
+    garbageCollect();
     for (auto& i: canvas.selection.items)
       {
         if (auto v=i->variableCast())
