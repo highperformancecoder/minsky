@@ -852,7 +852,7 @@ namespace minsky
 
               col=0;
               for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
-                if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col) || col>spec.maxColumn) 
+                if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col) || col>=spec.maxColumn) 
                   {
                     if (tabularFormat)
                       key.emplace_back(horizontalLabels[dataCols]);

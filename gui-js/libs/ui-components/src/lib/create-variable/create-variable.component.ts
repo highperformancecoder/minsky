@@ -9,6 +9,8 @@ import {
 } from '@minsky/core';
 import { VariableBase } from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NgIf } from '@angular/common';
 
 @Component({
@@ -21,6 +23,8 @@ import { NgIf } from '@angular/common';
         ReactiveFormsModule,
         NgIf,
         MatButtonModule,
+      MatAutocompleteModule,
+      MatOptionModule,
     ],
 })
 export class CreateVariableComponent implements OnInit, OnDestroy {
@@ -207,6 +211,8 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
     this.saveVariableParams(new VariableBase(this.electronService.minsky.canvas.itemFocus))
   }
 
+  displayInitHelp() {this.electronService.displayInitHelp();}
+  
   closeWindow() {
     if (this.electronService.isElectron) {
       this.windowUtilityService.closeCurrentWindowIfNotMain();
