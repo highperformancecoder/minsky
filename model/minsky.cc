@@ -172,10 +172,10 @@ namespace minsky
       model->removeGroup(*i);
     for (auto& i: canvas.selection.wires)
       model->removeWire(*i);
-    garbageCollect();
     canvas.item.reset();
     canvas.itemFocus.reset();
 #ifndef NDEBUG
+    garbageCollect();
     for (auto& i: canvas.selection.items)
       {
         if (auto v=i->variableCast())
@@ -224,6 +224,8 @@ namespace minsky
   void Minsky::paste()
     try
       {
+        // don't paste if previous created item hasn't been placed yet.
+        if (canvas.itemFocus) return; 
         map<string,string> existingParms; 
         // preserve initial conditions.
         for (auto& [valueId,vv]: variableValues)

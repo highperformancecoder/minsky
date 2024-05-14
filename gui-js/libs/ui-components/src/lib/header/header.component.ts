@@ -7,7 +7,6 @@ import {
   ReplayRecordingStatus,
 } from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
-import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { NgClass } from '@angular/common';
 
 @Component({
@@ -15,12 +14,13 @@ import { NgClass } from '@angular/common';
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
     standalone: true,
-    imports: [NgClass, ToolbarComponent],
+    imports: [NgClass],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   headerEvent = 'HEADER_EVENT';
   isRecordingOn = false;
   isReplayRecordingOn = false;
+  showPlayButton = false;
 
   destroy$ = new Subject<{}>();
 
@@ -70,6 +70,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
           }
         }
       );
+
+      this.commService.showPlayButton$.pipe(takeUntil(this.destroy$)).subscribe((showPlayButton) => {
+        this.showPlayButton = showPlayButton;
+        this.changeDetectorRef.detectChanges();
+      });
+
     }
   }
 
@@ -106,6 +112,73 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
+  playButton() {
+    if (this.showPlayButton) {
+      this.commService.sendEvent(this.headerEvent, {
+        action: 'CLICKED',
+        target: 'PLAY',
+      });
+    } else {
+      this.commService.sendEvent(this.headerEvent, {
+        action: 'CLICKED',
+        target: 'PAUSE',
+      });
+    }
+
+    this.commService.showPlayButton$.next(
+      !this.commService.showPlayButton$.value
+    );
+  }
+
+  resetButton() {
+    this.commService.sendEvent(this.headerEvent, {
+      action: 'CLICKED',
+      target: 'RESET',
+    });
+  }
+
+  stepButton() {
+    this.commService.sendEvent(this.headerEvent, {
+      action: 'CLICKED',
+      target: 'STEP',
+    });
+  }
+
+  simulationSpeed(value) {
+    this.commService.sendEvent(this.headerEvent, {
+      action: 'CLICKED',
+      target: 'SIMULATION_SPEED',
+      value: value,
+    });
+  }
+
+  zoomOutButton() {
+    this.commService.sendEvent(this.headerEvent, {
+      action: 'CLICKED',
+      target: 'ZOOM_OUT',
+    });
+  }
+
+  zoomInButton() {
+    this.commService.sendEvent(this.headerEvent, {
+      action: 'CLICKED',
+      target: 'ZOOM_IN',
+    });
+  }
+
+  resetZoomButton() {
+    this.commService.sendEvent(this.headerEvent, {
+      action: 'CLICKED',
+      target: 'RESET_ZOOM',
+    });
+  }
+
+  zoomToFitButton() {
+    this.commService.sendEvent(this.headerEvent, {
+      action: 'CLICKED',
+      target: 'ZOOM_TO_FIT',
+    });
+  }
   ngOnDestroy() {
     this.destroy$.next(undefined);
     this.destroy$.complete();

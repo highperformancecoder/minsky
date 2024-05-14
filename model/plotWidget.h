@@ -101,6 +101,9 @@ namespace minsky
 
     /// variable ports specifying plot size
     std::shared_ptr<VariableValue> xminVar, xmaxVar, yminVar, ymaxVar, y1minVar, y1maxVar;
+    /// Settable bounds values if above variables not connected
+    /// NaN means autocalculate from data
+    double xmin=nan(""), xmax=xmin, ymin=xmin, ymax=xmin, y1min=xmin, y1max=xmin;
     /// number of ticks to show in canvas item
     unsigned displayNTicks{3};
     double displayFontSize{3};

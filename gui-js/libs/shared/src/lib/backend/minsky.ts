@@ -461,7 +461,6 @@ export class Canvas extends RenderNativeWindow {
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async findVariableDefinition(): Promise<boolean> {return this.$callMethod('findVariableDefinition');}
-  async focusFollowsMouse(...args: boolean[]): Promise<boolean> {return this.$callMethod('focusFollowsMouse',...args);}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
@@ -1701,9 +1700,15 @@ export class PlotWidget extends Item {
   async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async width(): Promise<number> {return this.$callMethod('width');}
   async xlabel(...args: any[]): Promise<string> {return this.$callMethod('xlabel',...args);}
+  async xmax(...args: number[]): Promise<number> {return this.$callMethod('xmax',...args);}
+  async xmin(...args: number[]): Promise<number> {return this.$callMethod('xmin',...args);}
   async xtickAngle(...args: number[]): Promise<number> {return this.$callMethod('xtickAngle',...args);}
   async y1label(...args: any[]): Promise<string> {return this.$callMethod('y1label',...args);}
+  async y1max(...args: number[]): Promise<number> {return this.$callMethod('y1max',...args);}
+  async y1min(...args: number[]): Promise<number> {return this.$callMethod('y1min',...args);}
   async ylabel(...args: any[]): Promise<string> {return this.$callMethod('ylabel',...args);}
+  async ymax(...args: number[]): Promise<number> {return this.$callMethod('ymax',...args);}
+  async ymin(...args: number[]): Promise<number> {return this.$callMethod('ymin',...args);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
@@ -1828,6 +1833,7 @@ export class Ravel extends Item {
   async pickSliceLabels(a1: number,a2: string[]): Promise<void> {return this.$callMethod('pickSliceLabels',a1,a2);}
   async pickedSliceLabels(): Promise<string[]> {return this.$callMethod('pickedSliceLabels');}
   async populateHypercube(a1: civita__Hypercube): Promise<void> {return this.$callMethod('populateHypercube',a1);}
+  async radius(): Promise<number> {return this.$callMethod('radius');}
   async ravelCast(): Promise<Ravel> {return this.$callMethod('ravelCast');}
   async redistributeHandles(): Promise<void> {return this.$callMethod('redistributeHandles');}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}

@@ -232,6 +232,8 @@ namespace schema3
     // override here for special handling of Operations and Variables
     minsky::Item* create(const string& t) const
     {
+      if (t=="Operation:rho") // handle legacy names after operation rename
+        return minsky::OperationBase::create(minsky::OperationType::correlation); 
       if (matchesStart(t,"Operation:"))
         return minsky::OperationBase::create
           (enum_keys<minsky::OperationType::Type>()

@@ -10,7 +10,7 @@ import {
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility
 } from '@minsky/shared';
 import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
-import { existsSync, unlinkSync } from 'fs';
+import { existsSync, renameSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
 import { join, dirname } from 'path';
 import { tmpdir } from 'os';
@@ -877,7 +877,7 @@ export class CommandsManager {
       title: 'Plot Window Options',
       url: `#/headless/plot-widget-options?itemId=${itemInfo.id}`,
       uid: itemInfo.id,
-      height: 600,
+      height: 700,
       width: 500,
     });
   }
@@ -1118,8 +1118,11 @@ export class CommandsManager {
   // handler for downloading Ravel and installing it
   static downloadRavel(event,item,webContents) {
     switch (process.platform) {
-      case 'win32':
-        item.setSavePath(dirname(process.execPath)+'/libravel.dll');
+    case 'win32':
+      const savePath=dirname(process.execPath)+'/libravel.dll';
+      if (existsSync(savePath))
+        renameSync(savePath,dirname(process.execPath)+'/deleteme')
+      item.setSavePath(savePath);
       break;
     default:
       // nothing to do - TODO implement handlers for MacOS and Linux

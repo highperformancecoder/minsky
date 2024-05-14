@@ -393,8 +393,8 @@ namespace minsky
       if (i->visible() && lasso.intersects(*i))
         selection.ensureGroupInserted(i);
 
-    if (focusFollowsMouse)
-      minsky().copy();
+    // X11 behaviour, selecting automatically copies.
+    minsky().copy();
   }
 
   int Canvas::ravelsSelected() const

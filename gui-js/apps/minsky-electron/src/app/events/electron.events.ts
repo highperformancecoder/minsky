@@ -252,3 +252,6 @@ ipcMain.handle(events.RECORD, async (event) => {
 ipcMain.handle(events.RECORDING_REPLAY, async (event) => {
   await RecordingManager.handleRecordingReplay();
 });
+ipcMain.handle(events.DISPLAY_INIT_HELP, (event)=> {
+  CommandsManager.loadHelpFile('tensor-init');
+});

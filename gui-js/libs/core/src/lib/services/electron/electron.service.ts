@@ -83,4 +83,7 @@ export class ElectronService {
   async recordingReplay(): Promise<void> {
     return await this.ipcRenderer.invoke(events.RECORDING_REPLAY);
   }
+  displayInitHelp() {
+    this.ipcRenderer.invoke(events.DISPLAY_INIT_HELP);
+  }
 }

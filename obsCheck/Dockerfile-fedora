@@ -8,3 +8,4 @@ RUN dnf config-manager --add-repo https://download.opensuse.org/repositories/hom
 RUN dnf install -y $project
 RUN useradd -m minsky
 RUN su - minsky -c "minsky --version --no-sandbox"
+RUN python3 -c "import pyminsky"

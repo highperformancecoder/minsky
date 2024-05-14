@@ -94,4 +94,30 @@
   .m-a-0 {
     margin: auto 0;
   }
+  .zoom-btn {
+    width: 3rem;
+    padding: 8px;
+  }
+  .range-input-control {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    font-size: 14px;
+    .range-input-label {
+      text-align: center;
+      user-select: none;
+    }
+    .range-input-wrapper {
+      display: flex;
+      align-items: center;
+      .slow-label,
+      .fast-label {
+        margin: 0 5px;
+        user-select: none;
+      }
+      input {
+        cursor: pointer;
+      }
+    }
+  }
 }

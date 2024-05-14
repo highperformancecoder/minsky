@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>running sum </TITLE>
-<META NAME="description" CONTENT="running sum ">
+<TITLE>running product </TITLE>
+<META NAME="description" CONTENT="running product ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,47 +16,47 @@
 
 <LINK REL="next" HREF="node97.html">
 <LINK REL="previous" HREF="node95.html">
-<LINK REL="up" HREF="node87.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node97.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1561"
+<A NAME="tex2html1559"
   HREF="node97.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1557"
-  HREF="node87.html">
+<A NAME="tex2html1555"
+  HREF="node86.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1551"
+<A NAME="tex2html1549"
   HREF="node95.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1559"
+<A NAME="tex2html1557"
   HREF="minsky.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1562"
-  HREF="node97.html">running product</A>
-<B> Up:</B> <A NAME="tex2html1558"
-  HREF="node87.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1552"
-  HREF="node95.html">supindex</A>
- &nbsp; <B>  <A NAME="tex2html1560"
+<B> Next:</B> <A NAME="tex2html1560"
+  HREF="node97.html">difference</A>
+<B> Up:</B> <A NAME="tex2html1556"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1550"
+  HREF="node95.html">running sum</A>
+ &nbsp; <B>  <A NAME="tex2html1558"
   HREF="minsky.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00429000000000000000"></A><A NAME="Operation:runningSum"></A>
+<H2><A NAME="SECTION004210000000000000000"></A>
+<A NAME="Operation:runningProduct"></A>
 <BR>
-running sum <SPAN CLASS="MATH"><IMG
- WIDTH="36" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img21.png"
- ALT="$\sum +$"></SPAN>
-</H2> Computes
-the running sum of the input tensor along a given axis. For example,
-take this rank 2 tensor:
+running product <SPAN CLASS="MATH"><IMG
+ WIDTH="34" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img22.png"
+ ALT="$\prod +$"></SPAN>
+</H2> Computes the running product of the
+input tensor along a given axis. For example, take this rank 2 tensor:
 
 <P>
 <BR><P></P>
@@ -65,8 +65,8 @@ take this rank 2 tensor:
  \begin{displaymath}
 \left(
     \begin{array}{cccc}
-      1& 2& 3& 4 \\
-      5& 4& 3& 2 \\
+      1& 2& 3& 4\\
+      5& 4& 3& 2\\
       8& 7& 6& 5
     \end{array}
   \right)
@@ -89,7 +89,8 @@ take this rank 2 tensor:
 <P></P>
 
 <P>
-The running sum of this tensor, along the horizontal dimension, is:
+The running product of this tensor, along the horizontal dimension,
+is:
 
 <P>
 <BR><P></P>
@@ -98,23 +99,23 @@ The running sum of this tensor, along the horizontal dimension, is:
  \begin{displaymath}
 \left(
     \begin{array}{cccc}
-      1& 3& 6& 10 \\
-      5& 9& 12& 14 \\
-      8& 15& 21& 26
+      1& 2& 6& 24\\
+      5& 20& 60& 120\\
+      8& 56& 336& 1680
     \end{array}
   \right)
 \end{displaymath}
  -->
 
 <IMG
- WIDTH="140" HEIGHT="64" BORDER="0"
- SRC="img199.png"
+ WIDTH="163" HEIGHT="64" BORDER="0"
+ SRC="img200.png"
  ALT="\begin{displaymath}
 \left(
 \begin{array}{cccc}
-1&amp; 3&amp; 6&amp; 10 \\
-5&amp; 9&amp; 12&amp; 14 \\
-8&amp; 15&amp; 21&amp; 26
+1&amp; 2&amp; 6&amp; 24\\
+5&amp; 20&amp; 60&amp; 120\\
+8&amp; 56&amp; 336&amp; 1680
 \end{array} \right)
 \end{displaymath}">
 </DIV>

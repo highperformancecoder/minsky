@@ -1,7 +1,8 @@
 import {
   electronMenuBarHeightForWindows,
+  Functions,
+  importCSVvariableName,
   minsky,
-  Functions
 } from '@minsky/shared';
 import {
   dialog,
@@ -83,9 +84,6 @@ export class ApplicationMenuManager {
         {
           label: 'About',
           click() {
-            setInterval(()=> {
-              console.log(process.memoryUsage())
-            },100);
             WindowManager.createPopupWindowWithRouting({
               width: 420,
               height: 500,
@@ -173,6 +171,13 @@ export class ApplicationMenuManager {
             label: 'Save As',
             accelerator: 'CmdOrCtrl + Shift + S',
             async click() {await CommandsManager.saveAs();}
+        },
+        {
+          label: 'Import Data',
+          async click() {
+            minsky.canvas.addVariable(importCSVvariableName, 'parameter');
+            CommandsManager.importCSV(await CommandsManager.getFocusItemInfo(), true);
+          }
         },
         {
           label: 'Insert File as Group',

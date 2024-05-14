@@ -7,4 +7,5 @@ RUN zypper addrepo https://download.opensuse.org/repositories/home:hpcoder1/${ve
 RUN zypper --gpg-auto-import-keys refresh
 RUN zypper --non-interactive install $project
 RUN useradd -m minsky
-RUN su - minsky -c minsky --version
+RUN su - minsky -c "minsky --version --no-sandbox"
+#RUN python3 -c "import pyminsky"
