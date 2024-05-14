@@ -8,3 +8,4 @@ RUN yum install -y sudo $project --nogpgcheck
 RUN useradd -m minsky
 RUN chmod 4755 /usr/lib/minsky/chrome-sandbox
 RUN sudo -u minsky minsky --version
+RUN python3 -c "import pyminsky"
