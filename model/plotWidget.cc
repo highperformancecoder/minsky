@@ -233,6 +233,8 @@ namespace minsky
         else
           minx=xminVar->value();
       }
+    else if (isfinite(xmin))
+      minx=xmin;
 
     if (xmaxVar && xmaxVar->idx()>-1)
       {
@@ -241,11 +243,26 @@ namespace minsky
         else
           maxx=xmaxVar->value();
       }
+    else if (isfinite(xmax))
+      maxx=xmax;
 
-    if (yminVar && yminVar->idx()>-1) {miny=yminVar->value();}
-    if (ymaxVar && ymaxVar->idx()>-1) {maxy=ymaxVar->value();}
-    if (y1minVar && y1minVar->idx()>-1) {miny1=y1minVar->value();}
-    if (y1maxVar && y1maxVar->idx()>-1) {maxy1=y1maxVar->value();}
+    if (yminVar && yminVar->idx()>-1)
+      miny=yminVar->value();
+    else if (isfinite(ymin))
+      miny=ymin;
+    if (ymaxVar && ymaxVar->idx()>-1)
+      maxy=ymaxVar->value();
+    else if (isfinite(ymax))
+      maxy=ymax;
+      
+    if (y1minVar && y1minVar->idx()>-1)
+      miny1=y1minVar->value();
+    else if (isfinite(y1min))
+      miny1=ymin;
+    if (y1maxVar && y1maxVar->idx()>-1)
+      maxy1=y1maxVar->value();
+    else if (isfinite(y1max))
+      maxy1=y1max;
     autoscale=false;
 
     if (!justDataChanged)

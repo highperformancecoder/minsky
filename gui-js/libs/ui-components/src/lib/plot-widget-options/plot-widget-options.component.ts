@@ -83,6 +83,25 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
     return this.form.get('yLogScale');
   }
 
+  public get xmin(): AbstractControl {
+    return this.form.get('xmin');
+  }
+  public get xmax(): AbstractControl {
+    return this.form.get('xmax');
+  }
+  public get ymin(): AbstractControl {
+    return this.form.get('ymin');
+  }
+  public get ymax(): AbstractControl {
+    return this.form.get('ymax');
+  }
+  public get y1min(): AbstractControl {
+    return this.form.get('y1min');
+  }
+  public get y1max(): AbstractControl {
+    return this.form.get('y1max');
+  }
+ 
   constructor(
     private electronService: ElectronService,
     private route: ActivatedRoute
@@ -110,6 +129,12 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       legendFontSz: new FormControl(false),
       xLogScale: new FormControl(false),
       yLogScale: new FormControl(false),
+      xmin: new FormControl(NaN),
+      xmax: new FormControl(NaN),
+      ymin: new FormControl(NaN),
+      ymax: new FormControl(NaN),
+      y1min: new FormControl(NaN),
+      y1max: new FormControl(NaN),
     });
   }
 
@@ -140,6 +165,12 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       this.legendFontSz.setValue(await plot.legendFontSz());
       this.xLogScale.setValue(await plot.logx());
       this.yLogScale.setValue(await plot.logy());
+      this.xmin.setValue(await plot.xmin());
+      this.xmax.setValue(await plot.xmax());
+      this.ymin.setValue(await plot.ymin());
+      this.ymax.setValue(await plot.ymax());
+      this.y1min.setValue(await plot.y1min());
+      this.y1max.setValue(await plot.y1max());
       this.availableMarkers=await plot.availableMarkers();
       this.horizontalMarkers=await plot.horizontalMarkers.$properties();
       this.verticalMarkers=await plot.verticalMarkers.$properties();
@@ -179,11 +210,18 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       plot.grid(this.grid.value);
       plot.subgrid(this.subGrid.value);
       plot.legend(this.legend.value);
-      plot.legendLeft(this.legendLeft.value);
+      // insert an await to avoid backend commands being lost
+      await plot.legendLeft(this.legendLeft.value);
       plot.legendTop(this.legendTop.value);
       plot.legendFontSz(this.legendFontSz.value);
       plot.logx(this.xLogScale.value);
       plot.logy(this.yLogScale.value);
+      plot.xmin(+this.xmin.value);
+      plot.xmax(+this.xmax.value);
+      plot.ymin(+this.ymin.value);
+      plot.ymax(+this.ymax.value);
+      plot.y1min(+this.y1min.value);
+      plot.y1max(+this.y1max.value);
       plot.horizontalMarkers.$properties(this.getMarkersSelection("horizontalMarkers"));
       plot.verticalMarkers.$properties(this.getMarkersSelection("verticalMarkers"));
       plot.requestRedraw();
