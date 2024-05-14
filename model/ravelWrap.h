@@ -94,6 +94,8 @@ namespace minsky
     const Ravel* ravelCast() const override {return this;}
     Ravel* ravelCast() override {return this;}
 
+    double radius() const {return wrappedRavel.radius();}
+    
     /// local override of axis dimensionality
     Dimensions axisDimensions;
 
