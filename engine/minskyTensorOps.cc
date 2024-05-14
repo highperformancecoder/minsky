@@ -733,9 +733,8 @@ namespace minsky
       set<size_t> offsetSet;
       if (arg1->index().empty()) //dense case
         {
-          const size_t numLower=dimension? arg1Dims[dimension-1]: 1;
           for (size_t i=0; i<upperStride; ++i)
-            for (size_t j=0; j<numLower; checkCancel(), ++j)
+            for (size_t j=0; j<lowerStride; checkCancel(), ++j)
               offsetSet.insert(lowerStride*i*arg1Dims[dimension]+j);
         }
       else
