@@ -326,17 +326,17 @@ namespace MathDAG
   {
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
         arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-      return o<<"corr("<<arguments[0][0]->matlab()<<"," <<
+      return o<<"cov("<<arguments[0][0]->matlab()<<"," <<
             arguments[1][0]->matlab()<<")";
     return o<<"0";
   }
 
   template <>
-  ostream& OperationDAG<OperationType::rho>::matlab(ostream& o) const
+  ostream& OperationDAG<OperationType::correlation>::matlab(ostream& o) const
   {
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
         arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-      return o<<"corrcoef("<<arguments[0][0]->matlab()<<"," <<
+      return o<<"corr("<<arguments[0][0]->matlab()<<"," <<
         arguments[1][0]->matlab()<<")";
     return o<<"0";
   }

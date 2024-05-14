@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Standard Deviation</TITLE>
-<META NAME="description" CONTENT="Standard Deviation">
+<TITLE>-th moment</TITLE>
+<META NAME="description" CONTENT="-th moment">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,63 +16,97 @@
 
 <LINK REL="next" HREF="node111.html">
 <LINK REL="previous" HREF="node109.html">
-<LINK REL="up" HREF="node87.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node111.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1729"
+<A NAME="tex2html1727"
   HREF="node111.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1725"
-  HREF="node87.html">
+<A NAME="tex2html1723"
+  HREF="node86.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1719"
+<A NAME="tex2html1717"
   HREF="node109.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1727"
+<A NAME="tex2html1725"
   HREF="minsky.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1730"
-  HREF="node111.html">-th moment</A>
-<B> Up:</B> <A NAME="tex2html1726"
-  HREF="node87.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1720"
-  HREF="node109.html">Median</A>
- &nbsp; <B>  <A NAME="tex2html1728"
+<B> Next:</B> <A NAME="tex2html1728"
+  HREF="node111.html">Histogram</A>
+<B> Up:</B> <A NAME="tex2html1724"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1718"
+  HREF="node109.html">Standard Deviation</A>
+ &nbsp; <B>  <A NAME="tex2html1726"
   HREF="minsky.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004223000000000000000"></A><A NAME="Operation:stdDev"></A>
+<H2><A NAME="SECTION004224000000000000000"></A><A NAME="Operation:moment"></A>
 <BR>
-Standard Deviation
+<SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment
 </H2>
 
 <P>
-Returns the standard deviation along a named dimension of all
-elements present. If the dimension is not named, then the standard
-deviation is over all elements present in the tensor. Note that
-missing elements are not counted.
+Returns the <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment about the mean along a named dimension of
+all elements present. <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN> is specified by the numerical argument of
+the operation, which defaults to 1 (hence the result will be 0 in that
+case). If the dimension is not named, then the <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$k$"></SPAN>-th moment is over
+all elements present in the tensor. Note that missing elements are not
+counted.
 
 <P>
 <BR><P></P>
 <DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
-\sigma = \frac1{N-1}\sum_i^N (x_i-\langle x\rangle)^2
+\langle\Delta x^k\rangle = \frac1N\sum_i(x_i-\langle x\rangle)^k
 \end{displaymath}
  -->
 
 <IMG
- WIDTH="176" HEIGHT="56" BORDER="0"
- SRC="img226.png"
+ WIDTH="182" HEIGHT="48" BORDER="0"
+ SRC="img227.png"
  ALT="\begin{displaymath}
-\sigma = \frac1{N-1}\sum_i^N (x_i-\langle x\rangle)^2
+\langle\Delta x^k\rangle = \frac1N\sum_i(x_i-\langle x\rangle)^k
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+Also
+<BR><P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+\sigma^2 = \frac{N}{N-1}\langle\Delta x^2\rangle
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="124" HEIGHT="41" BORDER="0"
+ SRC="img228.png"
+ ALT="\begin{displaymath}
+\sigma^2 = \frac{N}{N-1}\langle\Delta x^2\rangle
 \end{displaymath}">
 </DIV>
 <BR CLEAR="ALL">

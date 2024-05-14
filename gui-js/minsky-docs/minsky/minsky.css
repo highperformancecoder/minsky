@@ -34,3 +34,4 @@ PRE.preform		{   }
 DIV.quote		{   }
 SPAN.arabic		{   }
 SPAN.textbf		{ font-weight: bold  }
+SPAN.textit		{ font-style: italic  }

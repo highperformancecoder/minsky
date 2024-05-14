@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>integrate </TITLE>
-<META NAME="description" CONTENT="integrate ">
+<TITLE>sqrt </TITLE>
+<META NAME="description" CONTENT="sqrt ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,66 +16,47 @@
 
 <LINK REL="next" HREF="node72.html">
 <LINK REL="previous" HREF="node70.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node72.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1236"
+<A NAME="tex2html1234"
   HREF="node72.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1232"
-  HREF="node47.html">
+<A NAME="tex2html1230"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1226"
+<A NAME="tex2html1224"
   HREF="node70.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1234"
+<A NAME="tex2html1232"
   HREF="minsky.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1237"
-  HREF="node72.html">sqrt</A>
-<B> Up:</B> <A NAME="tex2html1233"
-  HREF="node47.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1227"
-  HREF="node70.html">copy</A>
- &nbsp; <B>  <A NAME="tex2html1235"
+<B> Next:</B> <A NAME="tex2html1235"
+  HREF="node72.html">exp</A>
+<B> Up:</B> <A NAME="tex2html1231"
+  HREF="node46.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html1225"
+  HREF="node70.html">integrate</A>
+ &nbsp; <B>  <A NAME="tex2html1233"
   HREF="minsky.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004124000000000000000"></A><A NAME="IntOp"></A>
+<H2><A NAME="SECTION004125000000000000000"></A><A NAME="Operation:sqrt"></A>
 <BR>
-integrate <SPAN CLASS="MATH"><IMG
- WIDTH="31" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
- SRC="img15.png"
- ALT="$\int dt$"></SPAN>
-</H2>  Creates an integration (or stock)
-variable. Editable attributes include the variable's name and its
-initial value at <SPAN CLASS="MATH"><IMG
- WIDTH="39" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img190.png"
- ALT="$t=0$"></SPAN>. The function to be integrated needs to be
-connected to the top port, labelled `<SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img191.png"
- ALT="$f$"></SPAN>'. The bottom port, labelled `0', can optionally be connected
-to a constant, parameter or variable, which is used to specify the
-initial value of the integral.
-
-<P>
-Note that the units of the integral operator are given by the units of
-the input, multiplied by the <A HREF="node13.html#RungeKutta">time unit</A>, but the units of the <EM>integral's
-  variable</EM> are user specified. It is an error for these to be
-mismatched, and running <EM>dimensional analysis</EM> from the
-<A HREF="node9.html#File">File menu</A> will check for the
-  consistency of this. Note that the user specified units in the
-  integral variable can be used to dimension up the integral if the
-  integral variable is connected to the integral's input.
+sqrt <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img16.png"
+ ALT="$\surd $"></SPAN>
+</H2> This produces the square root of 
+the input value. For example, connecting the value of 9 with the
+&ldquo;sqrt&rdquo; block will produce the value of 3.
 
 <P>
 <BR><HR>

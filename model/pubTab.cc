@@ -40,12 +40,15 @@ namespace minsky
       LassoBox origBox;
       float origIWidth, origIHeight;
       double origRotation;
+      float stashedZf;
       EnsureEditorMode(PubItem& item):
         item(item), editorModeToggled(item.editorMode!=item.itemRef->editorMode()),
         origIWidth(item.itemRef? item.itemRef->iWidth(): 0),
         origIHeight(item.itemRef? item.itemRef->iHeight(): 0),
-        origRotation(item.itemRef? item.itemRef->rotation(): 0)
+        origRotation(item.itemRef? item.itemRef->rotation(): 0),
+        stashedZf(cminsky().canvas.model->relZoom)
       {
+        cminsky().canvas.model->relZoom=1;
         if (!item.itemRef) return;
         if (auto g=item.itemRef->godleyIconCast())
           {
@@ -63,6 +66,7 @@ namespace minsky
       }
       ~EnsureEditorMode()
       {
+        cminsky().canvas.model->relZoom=stashedZf;
         if (!item.itemRef) return;
         if (editorModeToggled)
           item.itemRef->toggleEditorMode();
@@ -194,9 +198,11 @@ namespace minsky
           {
           case ClickType::onResize:
             {
-              auto scale=item->itemRef->zoomFactor();
-              lasso.x0=x>item->x? x-item->itemRef->width()*scale: x+item->itemRef->width()*scale;
-              lasso.y0=y>item->y? y-item->itemRef->height()*scale: y+item->itemRef->height()*scale;
+              const EnsureEditorMode e(*item);
+              auto w=item->itemRef->width()/item->zoomX;
+              auto h=item->itemRef->height()/item->zoomY;
+              lasso.x0=x>item->x? x-w: x+w;
+              lasso.y0=y>item->y? y-h: y+h;
               lasso.x1=x;
               lasso.y1=y;
             }
@@ -225,10 +231,13 @@ namespace minsky
       switch (clickType)
         {
         case ClickType::onResize:
-          item->zoomX=abs(lasso.x1-lasso.x0)/(item->itemRef->width());
-          item->zoomY=abs(lasso.y1-lasso.y0)/(item->itemRef->height());
-          item->x=0.5*(lasso.x0+lasso.x1);
-          item->y=0.5*(lasso.y0+lasso.y1);
+          {
+            const EnsureEditorMode e(*item);
+            item->zoomX*=abs(lasso.x1-lasso.x0)/(item->itemRef->width());
+            item->zoomY*=abs(lasso.y1-lasso.y0)/(item->itemRef->height());
+            item->x=0.5*(lasso.x0+lasso.x1);
+            item->y=0.5*(lasso.y0+lasso.y1);
+          }
           break;
         case ClickType::inItem:
           {

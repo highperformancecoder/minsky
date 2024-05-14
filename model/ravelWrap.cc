@@ -580,13 +580,16 @@ namespace minsky
       }
     if (ravelIdx==m_ravels.size()) return; // not in lock group
     
-    const auto sourceState=ravel.getState();
+    auto sourceState=ravel.getState();
 
     if (handleLockInfo.empty()) // default is all handles are locked
       {
         for (auto& i: m_ravels)
           if (auto r=i.lock())
-            r->applyState(sourceState);
+            {
+              sourceState.radius=r->radius(); // preserve radius
+              r->applyState(sourceState);
+            }
         return;
       }
 

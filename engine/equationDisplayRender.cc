@@ -1005,7 +1005,7 @@ namespace MathDAG
   }
   
   template <>
-  void OperationDAG<OperationType::rho>::render(Surface& surf) const 
+  void OperationDAG<OperationType::correlation>::render(Surface& surf) const 
   {
       if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&	  
           arguments.size()>1 && !arguments[1].empty() && arguments[1][0])

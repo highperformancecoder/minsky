@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>running product </TITLE>
-<META NAME="description" CONTENT="running product ">
+<TITLE>difference </TITLE>
+<META NAME="description" CONTENT="difference ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,111 +16,78 @@
 
 <LINK REL="next" HREF="node98.html">
 <LINK REL="previous" HREF="node96.html">
-<LINK REL="up" HREF="node87.html">
+<LINK REL="up" HREF="node86.html">
 <LINK REL="next" HREF="node98.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1573"
+<A NAME="tex2html1571"
   HREF="node98.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1569"
-  HREF="node87.html">
+<A NAME="tex2html1567"
+  HREF="node86.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1563"
+<A NAME="tex2html1561"
   HREF="node96.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1571"
+<A NAME="tex2html1569"
   HREF="minsky.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1574"
-  HREF="node98.html">difference</A>
-<B> Up:</B> <A NAME="tex2html1570"
-  HREF="node87.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1564"
-  HREF="node96.html">running sum</A>
- &nbsp; <B>  <A NAME="tex2html1572"
+<B> Next:</B> <A NAME="tex2html1572"
+  HREF="node98.html">index</A>
+<B> Up:</B> <A NAME="tex2html1568"
+  HREF="node86.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1562"
+  HREF="node96.html">running product</A>
+ &nbsp; <B>  <A NAME="tex2html1570"
   HREF="minsky.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004210000000000000000"></A>
-<A NAME="Operation:runningProduct"></A>
+<H2><A NAME="SECTION004211000000000000000"></A><A NAME="Operation:difference"></A><A NAME="Operation:differencePlus"></A>
 <BR>
-running product <SPAN CLASS="MATH"><IMG
- WIDTH="34" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img22.png"
- ALT="$\prod +$"></SPAN>
-</H2> Computes the running product of the
-input tensor along a given axis. For example, take this rank 2 tensor:
-
-<P>
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-\left(
-    \begin{array}{cccc}
-      1& 2& 3& 4\\
-      5& 4& 3& 2\\
-      8& 7& 6& 5
-    \end{array}
-  \right)
-\end{displaymath}
+difference <!-- MATH
+ $\Delta^-,\Delta^+$
  -->
-
-<IMG
- WIDTH="116" HEIGHT="64" BORDER="0"
- SRC="img198.png"
- ALT="\begin{displaymath}
-\left(
-\begin{array}{cccc}
-1&amp; 2&amp; 3&amp; 4 \\
-5&amp; 4&amp; 3&amp; 2 \\
-8&amp; 7&amp; 6&amp; 5
-\end{array} \right)
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-
-<P>
-The running product of this tensor, along the horizontal dimension,
-is:
+<SPAN CLASS="MATH"><IMG
+ WIDTH="59" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img23.png"
+ ALT="$\Delta ^-,\Delta ^+$"></SPAN>
+</H2>
+Computes the nearest neighbour difference along a given direction. The
+optional argument (<SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img201.png"
+ ALT="$\delta$"></SPAN>) can be used to specify the number of
+neighbours to skip in computing the differences. The length of the
+dimension being differenced is reduced by <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img201.png"
+ ALT="$\delta$"></SPAN> in the result.
 
 <P>
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-\left(
-    \begin{array}{cccc}
-      1& 2& 6& 24\\
-      5& 20& 60& 120\\
-      8& 56& 336& 1680
-    \end{array}
-  \right)
-\end{displaymath}
+It comes in two different forms which differ only in how the resultant
+x-vector is calculated. <!-- MATH
+ $\Delta^-_i=x_i-x_{i-\delta}$
  -->
-
-<IMG
- WIDTH="163" HEIGHT="64" BORDER="0"
- SRC="img200.png"
- ALT="\begin{displaymath}
-\left(
-\begin{array}{cccc}
-1&amp; 2&amp; 6&amp; 24\\
-5&amp; 20&amp; 60&amp; 120\\
-8&amp; 56&amp; 336&amp; 1680
-\end{array} \right)
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
+<SPAN CLASS="MATH"><IMG
+ WIDTH="113" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img202.png"
+ ALT="$\Delta^-_i=x_i-x_{i-\delta}$"></SPAN>, and
+<!-- MATH
+ $\Delta^+_i=x_{i+\delta}-x_i$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="113" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img203.png"
+ ALT="$\Delta^+_i=x_{i+\delta}-x_i$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="9" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img204.png"
+ ALT="$i$"></SPAN> refers to the x-vector index.
 
 <P>
 <BR><HR>

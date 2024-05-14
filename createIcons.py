@@ -22,6 +22,5 @@ for op in ops:
     if op=="userFunction":
         #default label too large for a button label
         minsky.canvas.itemFocus().description('f(x,y)')
-        print(minsky.canvas.itemFocus().description())
     minsky.renderCanvasToPNG(iconDir+op+'.png')
     minsky.clearAllMaps()
