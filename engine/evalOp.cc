@@ -356,7 +356,11 @@ namespace minsky
 
   template <>
   double EvalOp<OperationType::min>::evaluate(double in1, double in2) const
-  {return std::min(in1,in2);}
+  {
+    if (isnan(in1)) return in2; // see ravel #175
+    if (isnan(in2)) return in1;
+    return std::min(in1,in2);
+  }
   template <>
   double EvalOp<OperationType::min>::d1(double x1, double x2) const
   {return x1<=x2;} // TODO: thow exception if x1==x2?
@@ -366,7 +370,11 @@ namespace minsky
 
   template <>
   double EvalOp<OperationType::max>::evaluate(double in1, double in2) const
-  {return std::max(in1,in2);}
+  {
+    if (isnan(in1)) return in2;  // see ravel #175
+    if (isnan(in2)) return in1;
+    return std::max(in1,in2);
+  }
   template <>
   double EvalOp<OperationType::max>::d1(double x1, double x2) const
   {return x1>x2;} // TODO: thow exception if x1==x2?
