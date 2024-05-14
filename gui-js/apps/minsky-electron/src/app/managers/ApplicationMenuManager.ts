@@ -1,7 +1,8 @@
 import {
   electronMenuBarHeightForWindows,
+  Functions,
+  importCSVvariableName,
   minsky,
-  Functions
 } from '@minsky/shared';
 import {
   dialog,
@@ -173,6 +174,13 @@ export class ApplicationMenuManager {
             label: 'Save As',
             accelerator: 'CmdOrCtrl + Shift + S',
             async click() {await CommandsManager.saveAs();}
+        },
+        {
+          label: 'Import Data',
+          async click() {
+            minsky.canvas.addVariable(importCSVvariableName, 'parameter');
+            CommandsManager.importCSV(await CommandsManager.getFocusItemInfo(), true);
+          }
         },
         {
           label: 'Insert File as Group',
