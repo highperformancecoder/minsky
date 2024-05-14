@@ -470,6 +470,10 @@ export class ContextMenuManager {
             },
          ]
         }),
+        new MenuItem({
+          label: 'Export as CSV',
+          click: () => {CommandsManager.exportItemAsCSV(sheet);}
+        }),
       ];
       break;
       default:

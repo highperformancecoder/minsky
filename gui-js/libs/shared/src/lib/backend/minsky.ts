@@ -2113,6 +2113,7 @@ export class Sheet extends Item {
   async corners(): Promise<object[]> {return this.$callMethod('corners');}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async drawResizeHandles(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
+  async exportAsCSV(a1: string): Promise<void> {return this.$callMethod('exportAsCSV',a1);}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async inRavel(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inRavel',a1,a2);}
   async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}

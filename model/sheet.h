@@ -79,6 +79,9 @@ namespace minsky
     /// calculates the input value
     void computeValue();
     
+    /// export the plotted data as a CSV file
+    void exportAsCSV(const std::string& filename) const;
+
     bool showRavel=false;
     ShowSlice showRowSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
     ShowSlice showColSlice=ShowSlice::head; ///< whether to elide columnss from beginning, end or middle
