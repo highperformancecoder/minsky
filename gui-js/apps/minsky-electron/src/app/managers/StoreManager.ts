@@ -8,7 +8,6 @@ interface MinskyPreferences {
   numberOfRecentFilesToDisplay: number;
   wrapLongEquationsInLatexExport: boolean;
   font: string;
-  // focusFollowsMouse: boolean;
   numBackups: number;
 }
 
@@ -32,7 +31,6 @@ class StoreManager {
         numberOfRecentFilesToDisplay: 10,
         wrapLongEquationsInLatexExport: false,
         font: "",
-        // focusFollowsMouse: false,
         numBackups: 1,
       },
       ravelPlugin: '',

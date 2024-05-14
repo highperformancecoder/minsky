@@ -461,7 +461,6 @@ export class Canvas extends RenderNativeWindow {
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async findVariableDefinition(): Promise<boolean> {return this.$callMethod('findVariableDefinition');}
-  async focusFollowsMouse(...args: boolean[]): Promise<boolean> {return this.$callMethod('focusFollowsMouse',...args);}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
@@ -1834,6 +1833,7 @@ export class Ravel extends Item {
   async pickSliceLabels(a1: number,a2: string[]): Promise<void> {return this.$callMethod('pickSliceLabels',a1,a2);}
   async pickedSliceLabels(): Promise<string[]> {return this.$callMethod('pickedSliceLabels');}
   async populateHypercube(a1: civita__Hypercube): Promise<void> {return this.$callMethod('populateHypercube',a1);}
+  async radius(): Promise<number> {return this.$callMethod('radius');}
   async ravelCast(): Promise<Ravel> {return this.$callMethod('ravelCast');}
   async redistributeHandles(): Promise<void> {return this.$callMethod('redistributeHandles');}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}

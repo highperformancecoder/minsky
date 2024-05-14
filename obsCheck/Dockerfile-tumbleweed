@@ -6,3 +6,4 @@ RUN zypper --gpg-auto-import-keys refresh
 RUN zypper --non-interactive install $project
 RUN useradd -m minsky
 RUN su - minsky -c minsky --version
+RUN python3 -c "import pyminsky"

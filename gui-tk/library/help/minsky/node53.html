@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>divide </TITLE>
-<META NAME="description" CONTENT="divide ">
+<TITLE>log</TITLE>
+<META NAME="description" CONTENT="log">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,56 +16,83 @@
 
 <LINK REL="next" HREF="node54.html">
 <LINK REL="previous" HREF="node52.html">
-<LINK REL="up" HREF="node47.html">
+<LINK REL="up" HREF="node46.html">
 <LINK REL="next" HREF="node54.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1020"
+<A NAME="tex2html1018"
   HREF="node54.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1016"
-  HREF="node47.html">
+<A NAME="tex2html1014"
+  HREF="node46.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1010"
+<A NAME="tex2html1008"
   HREF="node52.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1018"
+<A NAME="tex2html1016"
   HREF="minsky.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1021"
-  HREF="node54.html">log</A>
-<B> Up:</B> <A NAME="tex2html1017"
-  HREF="node47.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1011"
-  HREF="node52.html">multiply</A>
- &nbsp; <B>  <A NAME="tex2html1019"
+<B> Next:</B> <A NAME="tex2html1019"
+  HREF="node54.html">pow</A>
+<B> Up:</B> <A NAME="tex2html1015"
+  HREF="node46.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html1009"
+  HREF="node52.html">divide</A>
+ &nbsp; <B>  <A NAME="tex2html1017"
   HREF="minsky.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00416000000000000000"></A><A NAME="Operation:divide"></A>
+<H2><A NAME="SECTION00417000000000000000"></A><A NAME="Operation:log"></A>
 <BR>
-divide <SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img3.png"
- ALT="$\div $"></SPAN>
-</H2> Divide a number by another. The
-input ports allow multiple wires, which are multiplied together prior
-to the division being carried out. If an input port is unwired, it is
-equivalent to setting it to one. Note the small `<SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img2.png"
- ALT="$\times $"></SPAN>' and
-`<SPAN CLASS="MATH"><IMG
- WIDTH="16" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img3.png"
- ALT="$\div $"></SPAN>' signs indicating which port refers to the numerator and which
-the denominator.
+log
+</H2> Take the logarithm of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img60.png"
+ ALT="$x$"></SPAN>
+input port, to base <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img62.png"
+ ALT="$b$"></SPAN>. The base <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img62.png"
+ ALT="$b$"></SPAN> needs to be specified -- if the
+natural logarithm is desired (<SPAN CLASS="MATH"><IMG
+ WIDTH="39" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img179.png"
+ ALT="$b=e$"></SPAN>), use the <A HREF="node73.html#Operation:ln">ln
+  operator</A> instead.
+
+<P>
+<IMG
+  WIDTH="108" HEIGHT="103" ALIGN="BOTTOM" BORDER="0"
+ SRC="./LogKey.png"
+ ALT="Image LogKey"> 
+
+<P>
+The operator can be placed on the canvas in two ways:
+
+<P>
+
+<UL>
+<LI>From the Binary Operations toolbar; or
+</LI>
+<LI>By typing the word &ldquo;log&rdquo; anywhere on the wiring canvas, and then
+  pressing the Enter key.
+</LI>
+</UL>
+
+<P>
+When you use the direct typing method to enter the log operations, the
+text entry window pops up. This allows you to type a
+variable/parameter name starting with log (like, for example,
+&ldquo;logical&rdquo;. If you press Enter (or click on OK) with only the word log
+in the window, the log operation will be placed on the canvas.
 
 <P>
 <BR><HR>

@@ -224,6 +224,8 @@ namespace minsky
   void Minsky::paste()
     try
       {
+        // don't paste if previous created item hasn't been placed yet.
+        if (canvas.itemFocus) return; 
         map<string,string> existingParms; 
         // preserve initial conditions.
         for (auto& [valueId,vv]: variableValues)

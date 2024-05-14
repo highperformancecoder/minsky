@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Arithmetic &amp; Assignment Operators</TITLE>
-<META NAME="description" CONTENT="Arithmetic &amp; Assignment Operators">
+<TITLE>Equalities &amp; Inequalities</TITLE>
+<META NAME="description" CONTENT="Equalities &amp; Inequalities">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,40 +16,40 @@
 
 <LINK REL="next" HREF="node143.html">
 <LINK REL="previous" HREF="node141.html">
-<LINK REL="up" HREF="node141.html">
+<LINK REL="up" HREF="node140.html">
 <LINK REL="next" HREF="node143.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html2132"
+<A NAME="tex2html2130"
   HREF="node143.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2128"
-  HREF="node141.html">
+<A NAME="tex2html2126"
+  HREF="node140.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2122"
+<A NAME="tex2html2120"
   HREF="node141.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2130"
+<A NAME="tex2html2128"
   HREF="minsky.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2133"
-  HREF="node143.html">Equalities &amp; Inequalities</A>
-<B> Up:</B> <A NAME="tex2html2129"
-  HREF="node141.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html2123"
-  HREF="node141.html">Built-in operations &amp; functions</A>
- &nbsp; <B>  <A NAME="tex2html2131"
+<B> Next:</B> <A NAME="tex2html2131"
+  HREF="node143.html">Boolean Operations</A>
+<B> Up:</B> <A NAME="tex2html2127"
+  HREF="node140.html">Built-in operations &amp; functions</A>
+<B> Previous:</B> <A NAME="tex2html2121"
+  HREF="node141.html">Arithmetic &amp; Assignment Operators</A>
+ &nbsp; <B>  <A NAME="tex2html2129"
   HREF="minsky.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00551000000000000000">
-Arithmetic &amp; Assignment Operators</A>
+<H2><A NAME="SECTION00552000000000000000">
+Equalities &amp; Inequalities</A>
 </H2>
 
 <P>
@@ -57,84 +57,28 @@ Arithmetic &amp; Assignment Operators</A>
 <TR><TD ALIGN="CENTER">OPERATOR</TD>
 <TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>DEFINITION</TD>
 </TR>
-<TR><TD ALIGN="CENTER"><code>+</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Addition between x and y.  (eg: <code>x + y</code>)</TD>
+<TR><TD ALIGN="CENTER"><code>==</code> or <code>=</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x is strictly equal to y. (eg: <code>x == y</code>)</TD>
 </TR>
-<TR><TD ALIGN="CENTER"><code>-</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Subtraction between x and y.  (eg: <code>x - y</code>)</TD>
+<TR><TD ALIGN="CENTER"><code>&lt;&gt;</code> or <code>!=</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x does not equal y. (eg: <code>x &lt;&gt; y</code> or <code>x != y</code>)</TD>
 </TR>
-<TR><TD ALIGN="CENTER"><code>*</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Multiplication between x and y.  (eg: <code>x * y</code>)</TD>
+<TR><TD ALIGN="CENTER"><code>&lt;</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x is less than y. (eg: <code>x &lt; y</code>)</TD>
 </TR>
-<TR><TD ALIGN="CENTER"><code>/</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Division between x and y.  (eg: <code>x / y</code>)</TD>
+<TR><TD ALIGN="CENTER"><code>&lt;=</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x is less than or equal to y. (eg: <code>x &lt;= y</code>)</TD>
 </TR>
-<TR><TD ALIGN="CENTER"><code>%</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Modulus of x with respect to y.  (eg: <code>x % y</code>)</TD>
+<TR><TD ALIGN="CENTER"><code>&gt;</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x is greater than y. (eg: <code>x &gt; y</code></TD>
 </TR>
-<TR><TD ALIGN="CENTER"><code>^</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400><SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img4.png"
- ALT="$x^y$"></SPAN>.  (eg: <code>x ^ y</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>:=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Assign the value of x to y. Where y is either a variable
- or vector type.  (eg: <code>y := x</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>+=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Increment x by the value of the expression on the right 
-hand side. Where x is either a variable or vector type. 
-(eg: <code>x += abs(y - z)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>-=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Decrement x by the value of the expression on the right 
-hand side. Where x is either a variable or vector type. 
-(eg: <code>x[i] -= abs(y + z)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>*=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Assign the multiplication of x by the value of the 
- expression on the righthand side to x. Where x is either
- a variable or vector type. (eg: <code>x *= abs(y / z)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>/=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Assign the division of x by the value of the expression
-on the right-hand side to x. Where x is either a  variable or vector
-type.  (eg: <code>x[i + j] /= abs(y * z)</code>)</TD>
-</TR>
-<TR><TD ALIGN="CENTER"><code>%=</code></TD>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>Assign x modulo the value of the expression on the right
-hand side to x. Where x is either a variable or vector type.  (eg:
-<code>x[2] %= y ^ 2</code>)</TD>
+<TR><TD ALIGN="CENTER"><code>&gt;=</code></TD>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH=400>True only if x greater than or equal to y. (eg: <code>x &gt;= y</code>)</TD>
 </TR>
 </TABLE>
 
 <P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html2132"
-  HREF="node143.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2128"
-  HREF="node141.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2122"
-  HREF="node141.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2130"
-  HREF="minsky.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
-<BR>
-<B> Next:</B> <A NAME="tex2html2133"
-  HREF="node143.html">Equalities &amp; Inequalities</A>
-<B> Up:</B> <A NAME="tex2html2129"
-  HREF="node141.html">Built-in operations &amp; functions</A>
-<B> Previous:</B> <A NAME="tex2html2123"
-  HREF="node141.html">Built-in operations &amp; functions</A>
- &nbsp; <B>  <A NAME="tex2html2131"
-  HREF="minsky.html">Contents</A></B> </DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

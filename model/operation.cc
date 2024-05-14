@@ -516,7 +516,7 @@ namespace minsky
             }
           case linearRegression:
             return m_ports[1]->units(check);
-          case rho:
+          case correlation:
             return {};
           default:
             throw_error("Statistics operation does not have units() defined");
@@ -834,7 +834,7 @@ namespace minsky
     cairo_show_text(cairo,"<ΔxΔy>");
   }
   
-  template <> void Operation<OperationType::rho>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::correlation>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 

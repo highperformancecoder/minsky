@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Creating an equation</TITLE>
-<META NAME="description" CONTENT="Creating an equation">
+<TITLE>Wiring components together</TITLE>
+<META NAME="description" CONTENT="Wiring components together">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,107 +16,82 @@
 
 <LINK REL="next" HREF="node33.html">
 <LINK REL="previous" HREF="node31.html">
-<LINK REL="up" HREF="node29.html">
+<LINK REL="up" HREF="node28.html">
 <LINK REL="next" HREF="node33.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html637"
+<A NAME="tex2html635"
   HREF="node33.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html633"
-  HREF="node29.html">
+<A NAME="tex2html631"
+  HREF="node28.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html627"
+<A NAME="tex2html625"
   HREF="node31.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html635"
+<A NAME="tex2html633"
   HREF="minsky.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html638"
-  HREF="node33.html">Wiring components together</A>
-<B> Up:</B> <A NAME="tex2html634"
-  HREF="node29.html">Working with Minsky</A>
-<B> Previous:</B> <A NAME="tex2html628"
-  HREF="node31.html">Inserting a model component</A>
- &nbsp; <B>  <A NAME="tex2html636"
+<B> Next:</B> <A NAME="tex2html636"
+  HREF="node33.html">Creating a banking model</A>
+<B> Up:</B> <A NAME="tex2html632"
+  HREF="node28.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html626"
+  HREF="node31.html">Creating an equation</A>
+ &nbsp; <B>  <A NAME="tex2html634"
   HREF="minsky.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00243000000000000000">
-Creating an equation</A>
+<H2><A NAME="SECTION00244000000000000000">
+Wiring components together</A>
 </H2>
 
 <P>
-Equations are entered in Minsky graphically. Mathematical operations
-like addition, multiplication and subtraction are performed by wiring
-the inputs up to the relevant mathematical block. The output of the
-block is then the result of the equation. 
+A model is constructed by wiring one component to another in a way
+that defines an equation. Wires are drawn from the output port of one
+block to the input port of another. Ports are circles on the blocks to
+which wires can be attached, which can be seen when hovering the
+pointer over the block. Variables have an input and an output
+port; constants and parameters only have an output port. A
+mathematical operator has as many input ports as are needed to define
+the operation.
 
 <P>
-For example, a simple equation like
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-100/3 = 33.3
-\end{displaymath}
- -->
+To construct an equation, such as Fred - Wilma = Barney:
 
-<IMG
- WIDTH="88" HEIGHT="29" BORDER="0"
- SRC="img90.png"
- ALT="\begin{displaymath}
-100/3 = 33.3
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem130.png"
- ALT="793"> :
+<P>
+Click the mouse near the output port of one block and drag the
+cursor to the input port of another while holding the mouse button
+down. An arrow extends out from the output port. Release the mouse
+button near the required input port of the operator. A connection will
+be made.
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- WIDTH="551" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
- SRC="img91.png"
- ALT="\includegraphics{images/NewItem129.eps}">
+ WIDTH="221" HEIGHT="141" ALIGN="BOTTOM" BORDER="0"
+ SRC="img93.png"
+ ALT="\includegraphics{images/NewItem181.eps}"> 
 
 </DIV>
 
 <P>
-If you click on the equation tab, you will see that it is:
+The equation is completed by wiring up the other components in the same way.
 
 <P>
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-\mathrm{Answer}=\frac{100}{3}
-\end{displaymath}
- -->
-
+<DIV ALIGN="CENTER">
 <IMG
- WIDTH="99" HEIGHT="39" BORDER="0"
- SRC="img92.png"
- ALT="\begin{displaymath}
-\mathrm{Answer}=\frac{100}{3}
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
+ WIDTH="354" HEIGHT="141" ALIGN="BOTTOM" BORDER="0"
+ SRC="img94.png"
+ ALT="\includegraphics{images/NewItem182.eps}"> 
 
-<P>
-Very complex equations--including dynamic elements like integral
-blocks and Godley Tables--are designed by wiring up lots of
-components, with the output of one being the input of the next. See
-the tutorial for examples.
+</DIV>
 
 <P>
 <BR><HR>

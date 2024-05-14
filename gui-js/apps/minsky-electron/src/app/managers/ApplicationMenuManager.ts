@@ -84,9 +84,6 @@ export class ApplicationMenuManager {
         {
           label: 'About',
           click() {
-            setInterval(()=> {
-              console.log(process.memoryUsage())
-            },100);
             WindowManager.createPopupWindowWithRouting({
               width: 420,
               height: 500,
