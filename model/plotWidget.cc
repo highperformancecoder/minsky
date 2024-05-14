@@ -529,11 +529,11 @@ namespace minsky
     {
       std::string format;
       TimeFormatter(const std::string& format): format(format) {}
-      std::string operator()(double x,double y) const
+      std::string operator()(const string& label,double x,double y) const
       {
         ostringstream r;
         r.precision(3);
-        r<<"("<<str(ptime(date(1970,Jan,1))+microseconds(static_cast<long long>(1E6*x)),format)
+        r<<label<<":("<<str(ptime(date(1970,Jan,1))+microseconds(static_cast<long long>(1E6*x)),format)
          <<","<<y<<")";
         return r.str();
       }
