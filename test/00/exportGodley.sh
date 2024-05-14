@@ -28,22 +28,28 @@ pass()
 
 trap "fail" 1 2 3 15
 
-cat >input.tcl <<EOF
-minsky.load $here/examples/1Free.mky
-minsky.findObject GodleyIcon
-minsky.canvas.item.table.exportToLaTeX 1FreeGodley.tex
-minsky.canvas.item.table.exportToCSV 1FreeGodley.csv
+cat >input.py <<EOF
+import sys
+sys.path.append('$here')
+from pyminsky import minsky
+minsky.load('$here/examples/1Free.mky')
+for i in range(len(minsky.model.items)):
+    item=minsky.model.items[i]
+    if item.classType()=='GodleyIcon':
+       item.table.exportToLaTeX('1FreeGodley.tex')
+       item.table.exportToCSV('1FreeGodley.csv')
+       break
 
-minsky.load $here/test/testEq.mky
-minsky.findObject GodleyIcon
-minsky.canvas.item.table.exportToLaTeX testEqGodley.tex
-minsky.canvas.item.table.exportToCSV testEqGodley.csv
-
-
-tcl_exit
+minsky.load('$here/test/testEq.mky')
+for i in range(len(minsky.model.items)):
+    item=minsky.model.items[i]
+    if item.classType()=='GodleyIcon':
+       item.table.exportToLaTeX('testEqGodley.tex')
+       item.table.exportToCSV('testEqGodley.csv')
+       break
 EOF
 
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if [ $? -ne 0 ]; then fail; fi
 
 for i in *.tex *.csv; do
