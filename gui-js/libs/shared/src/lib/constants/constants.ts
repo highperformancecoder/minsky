@@ -26,6 +26,7 @@ export const events = {
   CURRENT_TAB_MOVE_TO: 'current-tab-move-to',
   CURRENT_TAB_POSITION: 'current-tab-position',
   CURSOR_BUSY: 'cursor-busy',
+  DISPLAY_INIT_HELP: 'display-init-help',
   DISPLAY_MOUSE_COORDINATES: 'display-mouse-coordinates',
   DOUBLE_CLICK: 'double-click',
   GET_CURRENT_WINDOW: 'get-current-window',
