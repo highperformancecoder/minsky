@@ -368,8 +368,10 @@ namespace minsky
     ssize_t delta=0;
     size_t innerStride=1, outerStride;
     vector<size_t> argIndices;
+    string errorMsg;
     void setArgument(const TensorPtr& a,const ITensor::Args& args) override {
       civita::DimensionedArgCachedOp::setArgument(a,args);
+      errorMsg="";
       switch (rank())
         {
         case 0: return;
@@ -377,8 +379,19 @@ namespace minsky
           dimension=0;
           break;
         default:
-          if (dimension>=rank()) return;
+          if (dimension>=rank())
+            {
+              errorMsg="axis name needs to be specified in difference operator";
+              return;
+            }
           break;
+        }
+      
+      auto dimSize=arg->hypercube().xvectors[dimension].size();
+      if (size_t(abs(delta))>=dimSize)
+        {
+          errorMsg="Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(dimSize)+")";
+          return;
         }
       
       delta=args.val;
@@ -441,11 +454,7 @@ namespace minsky
     void computeTensor() const override
     {
       if (!arg) throw_error("input unwired");
-      if (dimension>=arg->rank())
-        throw_error("axis name needs to be specified in difference operator");
-      auto dimSize=arg->hypercube().xvectors[dimension].size();
-      if (size_t(abs(delta))>=dimSize)
-        throw_error("Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(dimSize)+")");
+      if (!errorMsg.empty()) throw_error(errorMsg);
       if (!argIndices.empty())
         {
           assert(argIndices.size()==size());
