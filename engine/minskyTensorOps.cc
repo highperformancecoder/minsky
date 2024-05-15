@@ -370,17 +370,23 @@ namespace minsky
     vector<size_t> argIndices;
     void setArgument(const TensorPtr& a,const ITensor::Args& args) override {
       civita::DimensionedArgCachedOp::setArgument(a,args);
-      if (dimension>=rank() && rank()>1)
-        throw_error("axis name needs to be specified in difference operator");
+      switch (rank())
+        {
+        case 0: return;
+        case 1:
+          dimension=0;
+          break;
+        default:
+          if (dimension>=rank()) return;
+          break;
+        }
       
       delta=args.val;
       // remove initial slice of hypercube
       auto hc=arg->hypercube();
-      if (rank()==0) return;
       
-      auto& xv=hc.xvectors[rank()==1? 0: dimension];
-      if (size_t(abs(delta))>=xv.size())
-        throw_error("Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(xv.size())+")");
+      auto& xv=hc.xvectors[dimension];
+      if (size_t(abs(delta))>=xv.size()) return;
       if (delta>=0)
         xv.erase(xv.begin(), xv.begin()+delta);
       else 
@@ -434,6 +440,12 @@ namespace minsky
     
     void computeTensor() const override
     {
+      if (!arg) throw_error("input unwired");
+      if (dimension>=arg->rank())
+        throw_error("axis name needs to be specified in difference operator");
+      auto dimSize=arg->hypercube().xvectors[dimension].size();
+      if (size_t(abs(delta))>=dimSize)
+        throw_error("Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(dimSize)+")");
       if (!argIndices.empty())
         {
           assert(argIndices.size()==size());
@@ -484,8 +496,11 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {
-
       if (!arg1 || !arg2) return;
+      if (arg1->rank()!=0 && arg2->rank()!=0 &&
+          arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
+        throw_error("inner dimensions of tensors do not match");
+
       size_t m=1, n=1;   
       if (arg1->rank()>1)
         for (size_t i=0; i<arg1->rank()-1; i++)
@@ -514,17 +529,12 @@ namespace minsky
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const Args&) override {
       arg1=a1; arg2=a2;
-      if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
-        if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
-          throw_error("inner dimensions of tensors do not match");
-        
-        auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
-        Hypercube hc;
-        hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());        
-        hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
-        cachedResult.hypercube(std::move(hc));
-                
-      }
+      if (!arg1 || arg1->rank()==0 || !arg2 || arg2->rank()==0) return;
+      auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
+      Hypercube hc;
+      hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());        
+      hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
+      cachedResult.hypercube(std::move(hc));
     }    
   };
 
@@ -650,6 +660,11 @@ namespace minsky
 
     void computeTensor() const override
     {
+      if (arg1->rank()==0)
+        throw_error("Cannot apply gather to a scalar");
+      if (dimension>=arg1->rank())
+        throw_error("Need to specify which dimension to gather");
+
       size_t d=dimension;
       if (arg1 && d>=arg1->rank()) d=0;
       if (!arg1 || arg1->hypercube().xvectors.size()<=d) return;
@@ -710,13 +725,12 @@ namespace minsky
       switch (arg1->rank())
         {
         case 0:
-          throw_error("Cannot apply gather to a scalar");
+          return;
         case 1:
           dimension=0;
           break;
         default:
-          if (dimension>=arg1->rank())
-            throw_error("Need to specify which dimension to gather");
+          if (dimension>=arg1->rank()) return;
           break;
         }
       
@@ -873,19 +887,22 @@ namespace minsky
   {
     int dimension1, dimension2;
     TensorPtr arg1, arg2;
+    string errorMsg;
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const ITensor::Args& args) override
     {
       arg1=a1? a1: a2;
       arg2=a2? a2: a1;
       if (!arg1 || !arg2) return;
-
+      errorMsg="";
+      
       Hypercube hc;
       set<string> dimNames; // for ensuring dimension names are unique
       switch (arg1->rank())
         {
         case 0:
-          throw_error("covariance or ρ needs at least rank 1 arguments");
+          errorMsg="covariance or ρ needs at least rank 1 arguments";
+          return;
         case 1:
           dimension1=0;
           break;
@@ -905,7 +922,8 @@ namespace minsky
       switch (arg2->rank())
         {
         case 0:
-          throw_error("covariance or ρ needs at least rank 1 arguments");
+          errorMsg="covariance or ρ needs at least rank 1 arguments";
+          return;
         case 1:
           dimension2=0;
           break;
@@ -924,9 +942,15 @@ namespace minsky
         }
 
       if (dimension1<0 || dimension2<0)
-        throw_error("dimension "+args.dimension+" not found");
+        {
+          errorMsg="dimension "+args.dimension+" not found";
+          return;
+        }
       if (arg1->hypercube().xvectors[dimension1].size() != arg2->hypercube().xvectors[dimension2].size())
-        throw_error("arguments not conformant");
+        {
+          errorMsg="arguments not conformant";
+          return;
+        }
 
       hypercube(hc);
         
@@ -934,6 +958,7 @@ namespace minsky
 
     template <class F> void performSum(F f, size_t idx) const
     {
+      if (!errorMsg.empty()) throw_error(errorMsg);
       auto splitted=hypercube().splitIndex(idx);
       auto splitIndexIterator=splitted.begin();
 
@@ -1053,8 +1078,7 @@ namespace minsky
         }
       else
         {
-          if (rank()>1 && dimension>=rank())
-            throw_error("Need to specify axis");
+          if (rank()>1 && dimension>=rank()) return;
           // construct x from y's x-vector
           auto tv=make_shared<TensorVal>();
           spreadX=tv;
@@ -1101,6 +1125,8 @@ namespace minsky
 
     double operator[](size_t i) const override
     {
+      if (rank()>1 && dimension>=rank())
+        throw_error("Need to specify axis");
       if (!x) return nan("");
       assert(dimension<rank() || scale.size()==1);
 
