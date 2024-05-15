@@ -13,4 +13,4 @@ RUN apt-get update -qq -y
 RUN apt-get install -y --allow-unauthenticated $project
 RUN useradd -m minsky
 #RUN su - minsky -c "minsky --version  --no-sandbox"
-#RUN python3 -c "import pyminsky"
+RUN python3 -c "import pyminsky"
