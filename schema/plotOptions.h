@@ -52,6 +52,7 @@ namespace minsky
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;
+    double xmin=nan(""), xmax=nan(""), ymin=nan(""), ymax=nan(""), y1min=nan(""), y1max=nan("");
     Optional<ecolab::Plot::Side> legend;
     Optional<LegendGeometry> legendGeometry;
     Optional<std::vector<ecolab::Plot::LineStyle>> palette;
@@ -71,6 +72,12 @@ namespace minsky
       nyTicks=plot.nyTicks;
       xtickAngle=plot.xtickAngle;
       exp_threshold=plot.exp_threshold;
+      xmin=plot.xmin;
+      xmax=plot.xmax;
+      ymin=plot.ymin;
+      ymax=plot.ymax;
+      y1min=plot.y1min;
+      y1max=plot.y1max;
       if (plot.legend) legend=plot.legendSide;
       legendGeometry=LegendGeometry(plot);
       palette=plot.palette;
@@ -94,6 +101,12 @@ namespace minsky
       if (nyTicks) plot.nyTicks=*nyTicks;
       if (xtickAngle) plot.xtickAngle=*xtickAngle;
       if (exp_threshold) plot.exp_threshold=*exp_threshold;
+      plot.xmin=xmin;
+      plot.xmax=xmax;
+      plot.ymin=ymin;
+      plot.ymax=ymax;
+      plot.y1min=y1min;
+      plot.y1max=y1max;
       plot.legend=legend.get();
       if (legend) plot.legendSide=*legend;
       if (legendGeometry)
