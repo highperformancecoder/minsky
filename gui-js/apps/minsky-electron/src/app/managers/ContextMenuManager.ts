@@ -848,6 +848,16 @@ export class ContextMenuManager {
     const unlinkAvailable = allLockHandles!==null;
     const handleAvailable = handleIndex !== -1;
 
+    let linkGroupColours=await ravel.lockGroupColours();
+    let linkGroups=[];
+    for (let i=0; i<linkGroupColours.length; ++i) {
+      let icon=`${__dirname}/assets/linkGroup${linkGroupColours[i]}.png`;
+      linkGroups.push(new MenuItem({
+        icon: icon,
+        click: ()=>{ravel.joinLockGroup(linkGroupColours[i]);}
+      }));
+    }
+    
     let menuItems = [
       new MenuItem({
         label: 'Editor mode',
@@ -886,6 +896,10 @@ export class ContextMenuManager {
           CommandsManager.lockSpecificHandles(ravel);
         },
         enabled: linkHandlesAvailable 
+      }),
+      new MenuItem({ 
+        label: 'Join Link Group',
+        submenu: linkGroups,
       }),
       new MenuItem({
         label: 'Unlink',

@@ -215,7 +215,9 @@ namespace minsky
     bool editorMode() const override {return m_editorMode;}
     void toggleEditorMode() override {m_editorMode=!m_editorMode;updateBoundingBox();}
 
-    };
+    static std::vector<unsigned> lockGroupColours();
+    void joinLockGroup(unsigned);
+  };
 
   class RavelLockGroup
   {

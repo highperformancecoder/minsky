@@ -1819,7 +1819,9 @@ export class Ravel extends Item {
   async handleSortableByValue(): Promise<boolean> {return this.$callMethod('handleSortableByValue');}
   async hypercube(): Promise<object> {return this.$callMethod('hypercube');}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
+  async joinLockGroup(a1: number): Promise<void> {return this.$callMethod('joinLockGroup',a1);}
   async leaveLockGroup(): Promise<void> {return this.$callMethod('leaveLockGroup');}
+  async lockGroupColours(): Promise<number[]> {return this.$callMethod('lockGroupColours');}
   async maxRank(): Promise<number> {return this.$callMethod('maxRank');}
   async nextReduction(a1: string): Promise<void> {return this.$callMethod('nextReduction',a1);}
   async numHandles(): Promise<number> {return this.$callMethod('numHandles');}

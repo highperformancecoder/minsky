@@ -320,7 +320,7 @@ FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 # add the python module build here
 ifeq ($(OS),Linux)
 ifndef MXE
-EXES+=pyminsky.so
+EXES+=pyminsky.so createLinkGroupIcons
 endif
 endif
 
@@ -409,6 +409,8 @@ RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHE
 RESTService/typescriptAPI: typescriptAPI.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	$(LINK) $(FLAGS) $^  $(LIBS) -o $@
 
+createLinkGroupIcons: createLinkGroupIcons.o
+	$(LINK) $(FLAGS) $^  $(LIBS) -o $@
 
 ifndef MXE
 gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI

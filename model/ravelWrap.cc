@@ -561,6 +561,35 @@ namespace minsky
     if (lockGroup) lockGroup->broadcast(*this);
   }
 
+  vector<unsigned> Ravel::lockGroupColours()
+  {
+    set<unsigned> r;
+    cminsky().model->recursiveDo(&GroupItems::items, [&r](Items&, Items::iterator i) {
+      if (auto ravel=(*i)->ravelCast(); ravel->lockGroup)
+        r.insert(ravel->lockGroup->colour());
+      return false;
+    });
+    return {r.begin(),r.end()};
+  }
+
+  void Ravel::joinLockGroup(unsigned colour)
+  {
+    cminsky().model->recursiveDo(&GroupItems::items, [this,colour](Items&, Items::iterator i) {
+      if (auto ravel=(*i)->ravelCast(); ravel->lockGroup && ravel->lockGroup->colour()==colour)
+        {
+          leaveLockGroup();
+          auto ravelPtr=dynamic_pointer_cast<Ravel>(itemPtrFromThis());
+          if (ravelPtr)
+            {
+              lockGroup=ravel->lockGroup;
+              lockGroup->addRavel(ravelPtr);
+              return true;
+            }
+        }
+      return false;
+    });
+  }
+  
   void RavelLockGroup::initialBroadcast()
   {
     if (!m_ravels.empty())
