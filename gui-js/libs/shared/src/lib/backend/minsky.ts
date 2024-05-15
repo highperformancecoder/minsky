@@ -1833,7 +1833,7 @@ export class Ravel extends Item {
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
   async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
   async pickSliceLabels(a1: number,a2: string[]): Promise<void> {return this.$callMethod('pickSliceLabels',a1,a2);}
-  async pickedSliceLabels(): Promise<string[]> {return this.$callMethod('pickedSliceLabels');}
+  async pickedSliceLabels(...args: any[]): Promise<string[]> {return this.$callMethod('pickedSliceLabels',...args);}
   async populateHypercube(a1: civita__Hypercube): Promise<void> {return this.$callMethod('populateHypercube',a1);}
   async radius(): Promise<number> {return this.$callMethod('radius');}
   async ravelCast(): Promise<Ravel> {return this.$callMethod('ravelCast');}

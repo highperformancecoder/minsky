@@ -149,6 +149,7 @@ namespace minsky
     std::vector<std::string> allSliceLabelsAxis(int axis) const;
     /// returns just the picked slice labels along the handle
     std::vector<std::string> pickedSliceLabels() const;
+    std::vector<std::string> pickedSliceLabels(int axis) const;
     /// pick (selected) \a pick labels
     void pickSliceLabels(int axis, const std::vector<std::string>& pick);
 

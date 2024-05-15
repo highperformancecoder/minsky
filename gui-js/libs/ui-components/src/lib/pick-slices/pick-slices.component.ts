@@ -28,7 +28,7 @@ export class PickSlicesComponent implements OnInit {
     this.route.queryParams.subscribe(async (params) => {
       this.ravel=new Ravel(params['command']);
       this.handleIndex = +params['handleIndex'];
-      const pickedSliceLabels = await this.ravel.pickedSliceLabels();
+      const pickedSliceLabels = await this.ravel.pickedSliceLabels(this.handleIndex);
       const allSliceLabels=await this.ravel.allSliceLabelsAxis(this.handleIndex);
       this.sliceLabels = allSliceLabels.map(l => ({
           label: l,
