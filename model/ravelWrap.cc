@@ -328,6 +328,8 @@ namespace minsky
         wrappedRavel.applyCustomPermutation(axis,customOrder);
         if (state.order!=ravel::HandleSort::custom)
           setHandleSortOrder(state.order, axis);
+        broadcastStateToLockGroup();
+        minsky().requestReset();
       }
   }
 
