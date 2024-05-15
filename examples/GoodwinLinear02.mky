@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-beta.2</minskyVersion>
+  <minskyVersion>3.4.0-beta.1</minskyVersion>
   <wires>
    <Wire>
     <id>102</id>
@@ -44,13 +44,13 @@
     <coords>
      <float>444.002</float>
      <float>49.0004</float>
-     <float>452.065</float>
-     <float>56.058</float>
-     <float>488.365</float>
-     <float>67.149</float>
-     <float>471.222</float>
-     <float>124.62</float>
-     <float>479.5</float>
+     <float>452.161</float>
+     <float>56.1422</float>
+     <float>488.894</float>
+     <float>67.3656</float>
+     <float>471.547</float>
+     <float>125.522</float>
+     <float>483.5</float>
      <float>155</float>
     </coords>
    </Wire>
@@ -71,9 +71,9 @@
     <coords>
      <float>26.0001</float>
      <float>174</float>
-     <float>-2.18963</float>
-     <float>104.533</float>
-     <float>3.9999</float>
+     <float>-2.27013</float>
+     <float>104.335</float>
+     <float>2.4999</float>
      <float>67.0002</float>
     </coords>
    </Wire>
@@ -97,14 +97,14 @@
     <from>31</from>
     <to>60</to>
     <coords>
-     <float>400.5</float>
+     <float>396.5</float>
      <float>155</float>
-     <float>352.995</float>
-     <float>27.6639</float>
-     <float>17.0226</float>
-     <float>99.167</float>
-     <float>187</float>
-     <float>80.75</float>
+     <float>367.982</float>
+     <float>78.557</float>
+     <float>166.289</float>
+     <float>121.482</float>
+     <float>262</float>
+     <float>137</float>
     </coords>
    </Wire>
    <Wire>
@@ -117,10 +117,10 @@
     <from>85</from>
     <to>14</to>
     <coords>
-     <float>163.734</float>
+     <float>151.234</float>
      <float>305.335</float>
-     <float>115.515</float>
-     <float>173.243</float>
+     <float>104.312</float>
+     <float>176.796</float>
      <float>90.0002</float>
      <float>143</float>
     </coords>
@@ -130,12 +130,12 @@
     <from>85</from>
     <to>61</to>
     <coords>
-     <float>163.734</float>
+     <float>151.234</float>
      <float>305.335</float>
-     <float>106.036</float>
-     <float>189.833</float>
-     <float>187</float>
-     <float>118.25</float>
+     <float>89.5627</float>
+     <float>181.879</float>
+     <float>262</float>
+     <float>137</float>
     </coords>
    </Wire>
    <Wire>
@@ -143,11 +143,11 @@
     <from>31</from>
     <to>101</to>
     <coords>
-     <float>400.5</float>
+     <float>396.5</float>
      <float>155</float>
-     <float>417.547</float>
-     <float>278.99</float>
-     <float>333.5</float>
+     <float>412.942</float>
+     <float>274.591</float>
+     <float>345.5</float>
      <float>305.335</float>
     </coords>
    </Wire>
@@ -176,14 +176,14 @@
     <from>85</from>
     <to>94</to>
     <coords>
-     <float>163.734</float>
+     <float>151.234</float>
      <float>305.335</float>
-     <float>166.737</float>
-     <float>254</float>
-     <float>169.459</float>
-     <float>252.603</float>
-     <float>234.295</float>
-     <float>306.191</float>
+     <float>154.783</float>
+     <float>244.669</float>
+     <float>158</float>
+     <float>243.018</float>
+     <float>234.624</float>
+     <float>306.108</float>
     </coords>
    </Wire>
    <Wire>
@@ -204,12 +204,18 @@
   </wires>
   <items>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>0</id>
     <type>Operation:divide</type>
     <x>268</x>
     <y>14</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -224,12 +230,18 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>4</id>
     <type>Operation:divide</type>
     <x>350.001</x>
     <y>25.0002</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -244,12 +256,18 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>8</id>
     <type>Operation:divide</type>
     <x>432.002</x>
     <y>49.0004</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -264,12 +282,18 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>12</id>
     <type>Operation:multiply</type>
     <x>82.0002</x>
     <y>152</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -284,12 +308,18 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>16</id>
     <type>Operation:subtract</type>
     <x>38.0001</x>
     <y>174</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -304,12 +334,18 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>20</id>
     <type>IntOp</type>
     <x>197</x>
     <y>0</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -326,12 +362,18 @@
    </Item>
    <Item>
     <name>:Y</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>24</id>
     <type>Variable:flow</type>
     <x>305</x>
     <y>11.0001</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -344,6 +386,7 @@
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>100</max>
      <step>0.1</step>
@@ -352,12 +395,18 @@
    </Item>
    <Item>
     <name>:L</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>27</id>
     <type>Variable:flow</type>
     <x>393.999</x>
     <y>31.0002</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -370,6 +419,7 @@
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>100</max>
      <step>0.1</step>
@@ -378,12 +428,18 @@
    </Item>
    <Item>
     <name>:emprate</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>30</id>
     <type>Variable:flow</type>
     <x>441</x>
     <y>155</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -396,6 +452,7 @@
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -404,12 +461,18 @@
    </Item>
    <Item>
     <name>:L</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>33</id>
     <type>Variable:flow</type>
     <x>107</x>
     <y>184</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -422,6 +485,7 @@
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>100</max>
      <step>0.1</step>
@@ -430,12 +494,18 @@
    </Item>
    <Item>
     <name>:Y</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>36</id>
     <type>Variable:flow</type>
     <x>66.0001</x>
     <y>197</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -448,6 +518,7 @@
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>100</max>
      <step>0.1</step>
@@ -456,12 +527,18 @@
    </Item>
    <Item>
     <name>:Profit</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>39</id>
     <type>Variable:flow</type>
     <x>32.9999</x>
     <y>67.0002</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -474,6 +551,7 @@
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -482,12 +560,18 @@
    </Item>
    <Item>
     <name>:Investment</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>42</id>
     <type>Variable:flow</type>
     <x>117</x>
     <y>18.0002</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -500,6 +584,7 @@
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -508,12 +593,18 @@
    </Item>
    <Item>
     <name>K</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>45</id>
     <type>Variable:integral</type>
     <x>236</x>
     <y>0</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -526,6 +617,7 @@
     <init>300</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>300</max>
      <step>0.1</step>
@@ -534,12 +626,18 @@
    </Item>
    <Item>
     <name>:v</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>47</id>
     <type>Variable:parameter</type>
     <x>236</x>
     <y>30.0003</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -551,6 +649,7 @@
     <init>3</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>3</max>
      <step>0.1</step>
@@ -559,12 +658,18 @@
    </Item>
    <Item>
     <name>:a</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>49</id>
     <type>Variable:parameter</type>
     <x>306</x>
     <y>48.0001</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -576,6 +681,7 @@
     <init>1</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -584,12 +690,18 @@
    </Item>
    <Item>
     <name>:N</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>51</id>
     <type>Variable:parameter</type>
     <x>391</x>
     <y>69.9998</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -601,6 +713,7 @@
     <init>110</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>110</max>
      <step>0.1</step>
@@ -618,6 +731,12 @@
     <nyTicks>10</nyTicks>
     <xtickAngle>-45</xtickAngle>
     <exp_threshold>4</exp_threshold>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <legendGeometry>
      <legendLeft>0.1</legendLeft>
      <legendTop>0.95</legendTop>
@@ -632,7 +751,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -642,7 +763,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -652,7 +775,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -662,7 +787,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -672,7 +799,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -682,7 +811,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -692,7 +823,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -702,15 +835,17 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
     </palette>
     <id>53</id>
     <type>PlotWidget</type>
     <x>262</x>
     <y>137</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>150</width>
@@ -750,7 +885,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -760,7 +897,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -770,7 +909,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -780,7 +921,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -790,7 +933,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -800,7 +945,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -810,7 +957,9 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -820,17 +969,25 @@
        <a>1</a>
       </colour>
       <width>1</width>
+      <barWidth>1.5</barWidth>
       <dashStyle>solid</dashStyle>
+      <plotType>line</plotType>
      </LineStyle>
     </palette>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>76</id>
     <type>Operation:subtract</type>
     <x>59.2501</x>
     <y>-4.53831</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -845,12 +1002,18 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>80</id>
     <type>Operation:multiply</type>
     <x>4.79043</x>
     <y>-5.54682</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -866,12 +1029,18 @@
    </Item>
    <Item>
     <name>w</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>84</id>
     <type>Variable:integral</type>
     <x>-79.883</x>
     <y>0</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -884,6 +1053,7 @@
     <init>1</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -891,12 +1061,18 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>87</id>
     <type>IntOp</type>
     <x>-113.205</x>
     <y>-3.02555</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -912,12 +1088,18 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>91</id>
     <type>Operation:multiply</type>
     <x>-49.6693</x>
     <y>-1.51276</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -933,12 +1115,18 @@
    </Item>
    <Item>
     <name>:NAIRU</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>95</id>
     <type>Variable:parameter</type>
     <x>100.599</x>
     <y>-30.7596</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -950,6 +1138,7 @@
     <init>0.95</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -958,12 +1147,18 @@
    </Item>
    <Item>
     <name>:PhSlope</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>97</id>
     <type>Variable:parameter</type>
     <x>72.3608</x>
     <y>29.7511</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -975,6 +1170,7 @@
     <init>10</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>10</max>
      <step>0.1</step>
@@ -983,12 +1179,18 @@
    </Item>
    <Item>
     <name>0</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>99</id>
     <type>Variable:flow</type>
     <x>81.383</x>
     <y>0</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>0</width>
@@ -1001,6 +1203,7 @@
     <init>0</init>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -1011,12 +1214,18 @@
   <groups>
    <Group>
     <name>Phillips&#32;Curve</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
     <id>129</id>
     <type>Group</type>
     <x>249.617</x>
     <y>305.335</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <width>176.766</width>

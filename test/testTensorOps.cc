@@ -635,10 +635,10 @@ SUITE(TensorOps)
         Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
         
         fromVal.hypercube(Hypercube());
-        CHECK_THROW(Eval(gatheredVar, gatherOp), std::exception);
+        CHECK_THROW(Eval(gatheredVar, gatherOp)(), std::exception);
 
         fromVal.hypercube(Hypercube({3,4}));
-        CHECK_THROW(Eval(gatheredVar, gatherOp), std::exception);
+        CHECK_THROW(Eval(gatheredVar, gatherOp)(), std::exception);
       }
 
     TEST_FIXTURE(MinskyFixture, gatherBackElement)
@@ -1633,7 +1633,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      covOp->axis="1";
      g->addItem(covOp);
      Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
-     CHECK_THROW(Eval(*to, covOp), std::exception);
+     CHECK_THROW(Eval(*to, covOp)(), std::exception);
    }
  
  TEST_FIXTURE(CorrelationFixture,dimensionNotFound)
@@ -1642,7 +1642,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      covOp->axis="foo";
      g->addItem(covOp);
      Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
-     CHECK_THROW(Eval(*to, covOp), std::exception);
+     CHECK_THROW(Eval(*to, covOp)(), std::exception);
    }
  
  TEST_FIXTURE(CorrelationFixture,vectorCovariance)
@@ -1805,6 +1805,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      vector<double> result{1,1,2,2,3,3,4,4,1,1,2,2,3,3,4,4};
 
      OperationPtr op(OperationType::linearRegression);
+     op->axis="0";
      g->addItem(op);
      Wire w1(from->ports(0),op->ports(1)), w2(from1->ports(0),op->ports(2)), w3(op->ports(0),to->ports(1));
      Eval(*to, op)();

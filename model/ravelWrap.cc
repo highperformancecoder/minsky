@@ -565,7 +565,7 @@ namespace minsky
   {
     set<unsigned> r;
     cminsky().model->recursiveDo(&GroupItems::items, [&r](Items&, Items::iterator i) {
-      if (auto ravel=(*i)->ravelCast(); ravel->lockGroup)
+      if (auto ravel=(*i)->ravelCast(); ravel && ravel->lockGroup)
         r.insert(ravel->lockGroup->colour());
       return false;
     });
@@ -575,7 +575,7 @@ namespace minsky
   void Ravel::joinLockGroup(unsigned colour)
   {
     cminsky().model->recursiveDo(&GroupItems::items, [this,colour](Items&, Items::iterator i) {
-      if (auto ravel=(*i)->ravelCast(); ravel->lockGroup && ravel->lockGroup->colour()==colour)
+      if (auto ravel=(*i)->ravelCast(); ravel && ravel->lockGroup && ravel->lockGroup->colour()==colour)
         {
           leaveLockGroup();
           auto ravelPtr=dynamic_pointer_cast<Ravel>(itemPtrFromThis());

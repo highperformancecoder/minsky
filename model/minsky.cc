@@ -1458,7 +1458,7 @@ namespace minsky
         });
         if (numBookmarksAfterwards!=numBookmarks)
           message("This undo/redo operation potentially deletes some bookmarks");
-        try {reset();}
+        try {requestReset();}
         catch (...) {}
           
       }

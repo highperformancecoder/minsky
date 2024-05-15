@@ -234,7 +234,12 @@ namespace minsky
           minx=xminVar->value();
       }
     else if (isfinite(xmin))
-      minx=xmin;
+      {
+        if (xIsSecsSinceEpoch && (cminsky().timeUnit.empty() || cminsky().timeUnit=="year"))
+          minx=yearToPTime(xmin);
+        else
+          minx=xmin;
+      }
 
     if (xmaxVar && xmaxVar->idx()>-1)
       {
@@ -244,7 +249,12 @@ namespace minsky
           maxx=xmaxVar->value();
       }
     else if (isfinite(xmax))
-      maxx=xmax;
+      {
+        if (xIsSecsSinceEpoch && (cminsky().timeUnit.empty() || cminsky().timeUnit=="year"))
+          maxx=yearToPTime(xmax);
+        else
+          maxx=xmax;
+      }
 
     if (yminVar && yminVar->idx()>-1)
       miny=yminVar->value();
