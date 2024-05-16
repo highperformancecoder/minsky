@@ -1,4 +1,4 @@
-name: CI Tests: Release
+name: CI Tests - Release
 
 on: [pull_request,push]
 
