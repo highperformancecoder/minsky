@@ -650,103 +650,94 @@ namespace minsky
     void rowKeyInsert(const Key&, size_t) {}
   };
 
-  template <class P,  class E>
-  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError)
+  template <class P>
+  struct ParseCSV
   {
-    const BusyCursor busy(minsky());
-    const ProgressUpdater pu(minsky().progressState, "Importing CSV",6);
-    P csvParser(spec.escape,spec.separator,spec.quote);
+    P csvParser;
     string buf;
     Tokens<SliceLabelToken> sliceLabelTokens;
-      
-    TrackingAllocatorBase::allocatePool();
-    auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
-
     Map<double> tmpData;
     Map<int> tmpCnt;
-    vector<unordered_map<typename Key::value_type, size_t>> dimLabels(spec.dimensionCols.size());
+    vector<unordered_map<typename Key::value_type, size_t>> dimLabels;
     bool tabularFormat=false;
-    Hypercube hc;
     vector<typename Key::value_type> horizontalLabels;
     vector<AnyVal> anyVal;
-
+    Hypercube hc;
     bool memUsageChecked=false;
-
-    auto optimiseMapCleanup=onStackExit([](){TrackingAllocatorBase::destructing=true;});
-    {
-      // check dimension names are all distinct
-      set<string> dimNames{spec.horizontalDimName};
-      for (auto i: spec.dimensionCols)
-        if (!dimNames.insert(spec.dimensionNames[i]).second)
-          throw runtime_error("Duplicate dimension: "+spec.dimensionNames[i]);
-    }
-    
-    for (auto i: spec.dimensionCols)
-      {
-        hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
-        hc.xvectors.back().dimension=spec.dimensions[i];
-        anyVal.emplace_back(spec.dimensions[i]);
-      }
-    ++minsky().progressState;
     size_t row=0, col=0;
-    uintmax_t bytesRead=0;
-    try
-      {
-        // skip header lines except for headerRow
-        tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
-        if (tabularFormat)
-          {
-            anyVal.emplace_back(spec.horizontalDimension);
-            // legacy situation where all data columns are to the right
-            if (spec.dataCols.empty())
-              for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
+
+    ~ParseCSV() {TrackingAllocatorBase::destructing=true;}
+    template <class E>
+    ParseCSV(istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError):
+      csvParser(spec.escape,spec.separator,spec.quote),
+      dimLabels(spec.dimensionCols.size())
+    {
+      const BusyCursor busy(minsky());
+      const ProgressUpdater pu(minsky().progressState, "Parsing CSV",6);
+      for (auto i: spec.dimensionCols)
+        {
+          hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
+          hc.xvectors.back().dimension=spec.dimensions[i];
+          anyVal.emplace_back(spec.dimensions[i]);
+        }
+      ++minsky().progressState;
+      uintmax_t bytesRead=0;
+      
+      // skip header lines except for headerRow
+      tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
+      if (tabularFormat)
+        {
+          anyVal.emplace_back(spec.horizontalDimension);
+          // legacy situation where all data columns are to the right
+          if (spec.dataCols.empty())
+            for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
+              {
+                col=i;
+                horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
+              }
+          else
+            {
+              // explicitly specified data columns
+              for (auto i: spec.dataCols)
                 {
                   col=i;
                   horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
                 }
-            else
-              {
-                // explicitly specified data columns
-                for (auto i: spec.dataCols)
-                  {
-                    col=i;
-                    horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
-                  }
-                if (spec.headerRow<spec.nRowAxes())
-                  {
-                    // check whether any further columns exist that are not in
-                    // spec.dimensionNames, and add these in as horizontal
-                    // data dimension slices
-                    for (; row<=spec.headerRow; ++row)
-                      getWholeLine(input,buf,spec);
-                    const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
-                    auto field=tok.begin();
-                    for (size_t i=0; i<spec.dimensionNames.size() && field!=tok.end(); ++i, ++field);
-                    for (; field!=tok.end(); ++field)
-                      horizontalLabels.emplace_back
-                        (sliceLabelTokens[str(anyVal.back()(*field),spec.horizontalDimension.units)]);
-                  }
-              }
-            
-            hc.xvectors.emplace_back(spec.horizontalDimName);
-            hc.xvectors.back().dimension=spec.horizontalDimension;
-            set<typename Key::value_type> uniqueLabels;
-            dimLabels.emplace_back();
-            for (auto& i: horizontalLabels)
-              if (uniqueLabels.insert(i).second)
+              if (spec.headerRow<spec.nRowAxes())
                 {
-                  dimLabels.back()[i]=hc.xvectors.back().size();
-                  hc.xvectors.back().emplace_back(sliceLabelTokens[i]);
+                  // check whether any further columns exist that are not in
+                  // spec.dimensionNames, and add these in as horizontal
+                  // data dimension slices
+                  for (; row<=spec.headerRow; ++row)
+                    getWholeLine(input,buf,spec);
+                  const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
+                  auto field=tok.begin();
+                  for (size_t i=0; i<spec.dimensionNames.size() && field!=tok.end(); ++i, ++field);
+                  for (; field!=tok.end(); ++field)
+                    horizontalLabels.emplace_back
+                      (sliceLabelTokens[str(anyVal.back()(*field),spec.horizontalDimension.units)]);
                 }
-          }
+            }
+            
+          hc.xvectors.emplace_back(spec.horizontalDimName);
+          hc.xvectors.back().dimension=spec.horizontalDimension;
+          set<typename Key::value_type> uniqueLabels;
+          dimLabels.emplace_back();
+          for (auto& i: horizontalLabels)
+            if (uniqueLabels.insert(i).second)
+              {
+                dimLabels.back()[i]=hc.xvectors.back().size();
+                hc.xvectors.back().emplace_back(sliceLabelTokens[i]);
+              }
+        }
 
              
 
-        for (; row<spec.nRowAxes(); ++row)
-          getWholeLine(input,buf,spec);
+      for (; row<spec.nRowAxes(); ++row)
+        getWholeLine(input,buf,spec);
             
         
-        ++minsky().progressState;
+      ++minsky().progressState;
 
         {
           ProgressUpdater pu(minsky().progressState, "Reading data",1);
@@ -895,6 +886,44 @@ namespace minsky
             invalidKeyGotoNextLine:;
             }
         }
+    }
+  };
+  
+  template <class P,  class E>
+  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError)
+  {
+    const BusyCursor busy(minsky());
+    const ProgressUpdater pu(minsky().progressState, "Importing CSV",6);
+
+    // set up off-heap memory allocator, and ensure it is torn down at exit
+    TrackingAllocatorBase::allocatePool();
+    auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
+
+    {
+      // check dimension names are all distinct
+      set<string> dimNames{spec.horizontalDimName};
+      for (auto i: spec.dimensionCols)
+        if (!dimNames.insert(spec.dimensionNames[i]).second)
+          throw runtime_error("Duplicate dimension: "+spec.dimensionNames[i]);
+    }
+    
+    ParseCSV<P> parseCSV(input,spec,fileSize,onError);
+    auto& csvParser=parseCSV.csvParser;
+    auto& buf=parseCSV.buf;
+    auto& sliceLabelTokens=parseCSV.sliceLabelTokens;
+
+    auto& tmpData=parseCSV.tmpData;
+    auto& tmpCnt=parseCSV.tmpCnt;
+    auto& dimLabels=parseCSV.dimLabels;
+    auto& tabularFormat=parseCSV.tabularFormat;
+    auto& horizontalLabels=parseCSV.horizontalLabels;
+    auto& anyVal=parseCSV.anyVal;
+    auto& hc=parseCSV.hc;
+    auto& memUsageChecked=parseCSV.memUsageChecked;
+
+    try
+      {
+
 
         // remove zero length dimensions
         {
@@ -1005,9 +1034,9 @@ namespace minsky
       }
     catch (const std::exception& ex)
       {
-        auto msg=string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col);
-        if (col<spec.dimensionNames.size())
-          msg+=" ("+spec.dimensionNames[col]+")";
+        auto msg=string(ex.what())+" at line:"+to_string(parseCSV.row)+", col:"+to_string(parseCSV.col);
+        if (parseCSV.col<spec.dimensionNames.size())
+          msg+=" ("+spec.dimensionNames[parseCSV.col]+")";
         throw std::runtime_error(msg);
       }
   }
