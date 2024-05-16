@@ -599,77 +599,6 @@ void DataSpec::guessFromStream(std::istream& input)
 
 namespace minsky
 {
-  template <class P>
-  void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec)
-  {
-    typedef std::vector<std::string> Key;
-    map<Key,string> lines;
-    multimap<Key,string> duplicateLines;
-    string buf;
-    P csvParser(spec.escape,spec.separator,spec.quote);
-    for (size_t row=0; getline(input, buf); ++row)
-      {
-        // remove trailing carriage returns
-        if (!buf.empty() && buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
-        if (row==spec.headerRow)
-          {
-            output<<"error"<<spec.separator<<buf<<endl;
-            continue;
-          }
-        if (row>=spec.nRowAxes())
-          {
-            const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
-            Key key;
-            auto field=tok.begin();
-            size_t i=0;
-            for (; field!=tok.end(); ++i, ++field)
-              if (spec.dimensionCols.contains(i))
-                key.push_back(*field);
-
-            for (i=0, field=tok.begin(); field!=tok.end(); ++i, ++field)
-              if ((spec.dataCols.empty() && i>=spec.nColAxes()) || spec.dataCols.contains(i))
-                {
-                  string x=*field;
-                  if (!x.empty())
-                    {
-                      if (x.back()=='\r') x=x.substr(0,x.size()-1); //deal with MS nonsense
-                      if (!isNumerical(x))
-                        {
-                          output<<"invalid numerical data"<<spec.separator<<buf<<endl;
-                          continue;
-                        }
-                    }
-                }
-
-            if ((spec.dataCols.empty() && i<=spec.nColAxes()) || i<=*spec.dataCols.end())
-              output<<"missing numerical data"<<spec.separator<<buf<<endl;
-            
-            auto rec=lines.find(key);
-            if (rec!=lines.end())
-              {
-                duplicateLines.insert(*rec);
-                lines.erase(rec);
-              }
-            if (duplicateLines.contains(key))
-              duplicateLines.emplace(key, buf);
-            else
-              lines.emplace(key, buf);
-          }
-      }    
-    for (auto& i: duplicateLines)
-      output<<"duplicate key"<<spec.separator<<i.second<<endl;
-    for (auto& i: lines)
-      output<<spec.separator<<i.second<<endl;
-  }
-
-  void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec)
-  {
-    if (spec.separator==' ')
-      reportFromCSVFileT<SpaceSeparatorParser>(input,output,spec);
-    else
-      reportFromCSVFileT<Parser>(input,output,spec);
-  }
-
   // handle DOS files with '\r' '\n' line terminators
   void chomp(string& buf)
   {
@@ -705,11 +634,11 @@ namespace minsky
       if (line[i]==spec.quote && line[i-1]==spec.quote &&
           ((i==1 && (i==line.size()-1|| line[i+1]!=spec.quote)) ||                                       // deal with leading ""
            (i>1 &&
-          ((line[i-2]!=spec.quote && line[i-2]!=spec.escape &&
-             (line[i-2]!=spec.separator || i==line.size()-1|| line[i+1]!=spec.quote))  // deal with ,''
+            ((line[i-2]!=spec.quote && line[i-2]!=spec.escape &&
+              (line[i-2]!=spec.separator || i==line.size()-1|| line[i+1]!=spec.quote))  // deal with ,''
              ||            // deal with "" middle or end
-           (line[i-2]==spec.quote && (i==2 || line[i-3]==spec.separator || line[i-3]==spec.escape)))))) // deal with leading """
-          line[i-1]=spec.escape;
+             (line[i-2]==spec.quote && (i==2 || line[i-3]==spec.separator || line[i-3]==spec.escape)))))) // deal with leading """
+        line[i-1]=spec.escape;
   }
 
   /// handle reporting errors in loadValueFromCSVFileT when loading files
@@ -972,15 +901,15 @@ namespace minsky
           auto d=dimLabels.begin();
           assert(hc.xvectors.size()==dimLabels.size());
           for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
-              if (i->size()<2)
-                {
-                  hc.xvectors.erase(i);
-                }
-              else
-                {
-                  ++i;
-                  ++d;
-                }
+            if (i->size()<2)
+              {
+                hc.xvectors.erase(i);
+              }
+            else
+              {
+                ++i;
+                ++d;
+              }
           assert(hc.xvectors.size()<=dimLabels.size());
         }
         
@@ -1092,69 +1021,69 @@ namespace minsky
       loadValueFromCSVFileT<Parser>(v,input,spec,fileSize,onError);
   }
   
-      template <class P>
-        void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize )
+  template <class P>
+  void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize )
+  {
+    struct ErrorReporter //: public OnError // using duck typing, not dynamic polymorphism
+    {
+      Map<size_t> firstRow;
+      map<size_t,Key> duplicates;
+      map<size_t,string> invalidData;
+      void operator()(const DuplicateKey& ex, size_t row) {
+        duplicates.emplace(firstRow[ex.key],ex.key);
+        duplicates.emplace(row,ex.key);
+      }
+      void operator()(const InvalidData& ex, size_t row) {invalidData.emplace(row, ex.msg);}
+      /// update a map of keys to first rows for duplicate key processing
+      void rowKeyInsert(const Key& key, size_t row) {firstRow.emplace(key,row);}
+    } onError;
+
+    VariableValue vv(VariableType::parameter);
+
+    // parse file to extract error locations
+    loadValueFromCSVFileT<P>(vv, input, spec, fileSize, onError);
+
+    input.seekg(0);
+    string buf;
+    size_t row=0;
+
+    // extract all error lines  
+    multimap<Key,string> duplicateLines;
+    vector<string> invalidDataLines;
+    string sep{spec.separator};
+    for (;  getWholeLine(input, buf, spec); ++row)
       {
-        struct ErrorReporter //: public OnError // using duck typing, not dynamic polymorphism
-        {
-          Map<size_t> firstRow;
-          map<size_t,Key> duplicates;
-          map<size_t,string> invalidData;
-          void operator()(const DuplicateKey& ex, size_t row) {
-            duplicates.emplace(firstRow[ex.key],ex.key);
-            duplicates.emplace(row,ex.key);
-          }
-          void operator()(const InvalidData& ex, size_t row) {invalidData.emplace(row, ex.msg);}
-          /// update a map of keys to first rows for duplicate key processing
-          void rowKeyInsert(const Key& key, size_t row) {firstRow.emplace(key,row);}
-        } onError;
+        if (onError.duplicates.contains(row))
+          duplicateLines.emplace(onError.duplicates[row],"duplicate key"+sep+buf);
+        if (onError.invalidData.contains(row))
+          invalidDataLines.push_back(onError.invalidData[row]+sep+buf);
+      }
 
-        VariableValue vv(VariableType::parameter);
-
-        // parse file to extract error locations
-        loadValueFromCSVFileT<P>(vv, input, spec, fileSize, onError);
-
-        input.seekg(0);
-        string buf;
-        size_t row=0;
-
-        // extract all error lines  
-        multimap<Key,string> duplicateLines;
-        vector<string> invalidDataLines;
-        string sep{spec.separator};
-        for (;  getWholeLine(input, buf, spec); ++row)
-          {
-            if (onError.duplicates.contains(row))
-              duplicateLines.emplace(onError.duplicates[row],"duplicate key"+sep+buf);
-            if (onError.invalidData.contains(row))
-              invalidDataLines.push_back(onError.invalidData[row]+sep+buf);
-          }
-
-        // now output report
-        input.seekg(0);
-        // process header
-        for (row=0; row<spec.nRowAxes() && getWholeLine(input, buf, spec); ++row)
-          output<<sep+buf<<endl;
-        // process invalid data
-        for (auto& i: invalidDataLines)
-          output<<i;
-        // process duplicates
-        for (auto& i: duplicateLines)
-          output<<i.second;
-        // process remaining good part of the file
-        for (; getWholeLine(input, buf, spec); ++row)
-          if (!onError.duplicates.contains(row) && !onError.invalidData.contains(row))
-            output<<sep+buf<<endl;
+    // now output report
+    input.seekg(0);
+    // process header
+    for (row=0; row<spec.nRowAxes() && getWholeLine(input, buf, spec); ++row)
+      output<<sep+buf<<endl;
+    // process invalid data
+    for (auto& i: invalidDataLines)
+      output<<i;
+    // process duplicates
+    for (auto& i: duplicateLines)
+      output<<i.second;
+    // process remaining good part of the file
+    for (; getWholeLine(input, buf, spec); ++row)
+      if (!onError.duplicates.contains(row) && !onError.invalidData.contains(row))
+        output<<sep+buf<<endl;
     
-      }
+  }
 
-      void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize)
-      {
-        if (spec.separator==' ')
-          reportFromCSVFileT<SpaceSeparatorParser>(input,output,spec,fileSize);
-        else
-          reportFromCSVFileT<Parser>(input,output,spec,fileSize);
-      }
+  void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize)
+  {
+    if (spec.separator==' ')
+      reportFromCSVFileT<SpaceSeparatorParser>(input,output,spec,fileSize);
+    else
+      reportFromCSVFileT<Parser>(input,output,spec,fileSize);
+  }
 
 
 }
