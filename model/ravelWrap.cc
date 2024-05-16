@@ -304,8 +304,11 @@ namespace minsky
     return wrappedRavel.allSliceLabels(axis,ravel::HandleSort::forward);
   }  
 
+  vector<string> Ravel::pickedSliceLabels(int axis) const
+  {return wrappedRavel.sliceLabels(axis);}
+  
   vector<string> Ravel::pickedSliceLabels() const
-  {return wrappedRavel.sliceLabels(wrappedRavel.selectedHandle());}
+  {return pickedSliceLabels(wrappedRavel.selectedHandle());}
 
   void Ravel::pickSliceLabels(int axis, const vector<string>& pick) 
   {
@@ -328,6 +331,8 @@ namespace minsky
         wrappedRavel.applyCustomPermutation(axis,customOrder);
         if (state.order!=ravel::HandleSort::custom)
           setHandleSortOrder(state.order, axis);
+        broadcastStateToLockGroup();
+        minsky().requestReset();
       }
   }
 
