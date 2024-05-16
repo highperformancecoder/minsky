@@ -114,7 +114,7 @@ SUITE(CSVParser)
       istringstream is(input);
       ostringstream os(output);
             
-      reportFromCSVFile(is,os,*this);
+      reportFromCSVFile(is,os,*this,6);
       
       CHECK(os.str().find("error") != std::string::npos);
       CHECK(os.str().find("invalid numerical data") != std::string::npos);
@@ -131,7 +131,7 @@ SUITE(CSVParser)
       setDataArea(1,1);
       dimensionCols.insert(0);
       
-      reportFromCSVFile(isn,osn,*this);
+      reportFromCSVFile(isn,osn,*this,5);
       
       CHECK(osn.str().find("missing numerical data") != std::string::npos);
     }
