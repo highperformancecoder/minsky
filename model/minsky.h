@@ -339,6 +339,7 @@ namespace minsky
         }
       else return "unavailable";
     }
+    static bool ravelAvailable() {return  ravel::Ravel::available();}
     static bool ravelExpired() {return  ravel::Ravel::available() && ravel::Ravel::daysUntilExpired()<0;}
     static int daysUntilRavelExpires() {return  ravel::Ravel::daysUntilExpired();}
     

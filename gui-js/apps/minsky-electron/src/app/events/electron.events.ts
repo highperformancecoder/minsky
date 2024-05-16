@@ -255,3 +255,7 @@ ipcMain.handle(events.RECORDING_REPLAY, async (event) => {
 ipcMain.handle(events.DISPLAY_INIT_HELP, (event)=> {
   CommandsManager.loadHelpFile('tensor-init');
 });
+ipcMain.handle(events.OPEN_URL, (event,options)=> {
+  let window=WindowManager.createWindow(options);
+  window.loadURL(options.url);
+});
