@@ -1,0 +1,30 @@
+name: CI Tests: Release
+
+on: [pull_request,push]
+
+jobs:
+  Regression-test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu_ver: [20.04]
+
+    name: ubuntu-${{ matrix.ubuntu_ver }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Run docker build
+        run: |
+          docker build --network=host --build-arg debug="DEBUG=" -t build:latest .
+
+      - name: Run regression tests
+        run: |
+          docker run -w /root -e TRAVIS=1 build:latest make sure
+

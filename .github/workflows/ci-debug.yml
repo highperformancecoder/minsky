@@ -1,4 +1,4 @@
-name: CI Tests
+name: CI Tests: Debug
 
 on: [pull_request,push]
 
