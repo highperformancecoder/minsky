@@ -52,6 +52,7 @@ using ecolab::cairo::CairoSave;
 using tcp = boost::asio::ip::tcp;       
 namespace ssl = boost::asio::ssl;       
 namespace http = boost::beast::http;    
+using boost::filesystem::file_size;
 
 const unsigned CSVDialog::numInitialLines;
 
@@ -60,7 +61,7 @@ void CSVDialog::reportFromFile(const std::string& input, const std::string& outp
   ifstream is(input);
   stripByteOrderingMarker(is);
   ofstream of(output);
-  reportFromCSVFile(is,of,spec);
+  reportFromCSVFile(is,of,spec,file_size(input));
 }
 
 namespace

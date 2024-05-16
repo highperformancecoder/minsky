@@ -307,19 +307,28 @@ namespace
   {
     const char* what() const noexcept override {return "No data columns specified\nIf dataset has no data, try selecting counter";}
   };
+  
   struct DuplicateKey: public std::exception
   {
     std::string msg="Duplicate key";
-    DuplicateKey(const vector<Any>& x) {
-      for (auto& i: x)
-        msg+=":"+str(i);
-      msg+="\nTry selecting a different duplicate key action";
-    }
-    DuplicateKey(const Key& x, const Tokens<SliceLabelToken>& tokens) {
+    Key key;
+    DuplicateKey(const Key& x, const Tokens<SliceLabelToken>& tokens): key(x) {
       for (auto& i: x)
         msg+=":"+tokens[i];
       msg+="\nTry selecting a different duplicate key action";
     }
+    const char* what() const noexcept override {return msg.c_str();}
+  };
+
+  struct InvalidData: public std::exception
+  {
+    string data; ///< data received in field
+    string type; ///< type of data
+    string colName; ///< column name
+    string msg;
+    InvalidData(const string& data, const string& type,const string& colName):
+      data(data), type(type), colName(colName)
+    {msg="Invalid data: "+data+" for "+type+" dimensioned column: "+colName;}
     const char* what() const noexcept override {return msg.c_str();}
   };
 
@@ -703,8 +712,17 @@ namespace minsky
           line[i-1]=spec.escape;
   }
 
-  template <class P>
-  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize)
+  /// handle reporting errors in loadValueFromCSVFileT when loading files
+  struct OnError
+  {
+    /// called on error - \a ex message to pass on, \a row - current row
+    void operator()(const std::exception& ex, size_t row) {throw ex;}
+    /// update a map of keys to first rows for duplicate key processing
+    void rowKeyInsert(const Key&, size_t) {}
+  };
+
+  template <class P,  class E>
+  void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError)
   {
     const BusyCursor busy(minsky());
     const ProgressUpdater pu(minsky().progressState, "Importing CSV",6);
@@ -843,9 +861,7 @@ namespace minsky
                         if (spec.dontFail)
                           goto invalidKeyGotoNextLine;
                         else
-                          throw std::runtime_error("Invalid data: "+*field+" for "+
-                                                   to_string(spec.dimensions[dim].type)+
-                                                   " dimensioned column: "+spec.dimensionNames[dim]);
+                          onError(InvalidData(*field,to_string(spec.dimensions[dim].type),spec.dimensionNames[dim]),row);
                       }
                     dim++;
                   }
@@ -885,7 +901,10 @@ namespace minsky
                                 {
                                   v=stod(s);
                                   if (i==tmpData.end())
-                                    tmpData.emplace(key,v);
+                                    {
+                                      tmpData.emplace(key,v);
+                                      onError.rowKeyInsert(key,v);
+                                    }
                                 }
                               catch (const std::bad_alloc&)
                                 {throw;}
@@ -898,7 +917,7 @@ namespace minsky
                               switch (spec.duplicateKeyAction)
                                 {
                                 case DataSpec::throwException:
-                                  throw DuplicateKey(key,sliceLabelTokens); 
+                                  onError(DuplicateKey(key,sliceLabelTokens),row); 
                                 case DataSpec::sum:
                                   i->second+=v;
                                   break;
@@ -1066,11 +1085,78 @@ namespace minsky
   
   void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {
+    OnError onError;
     if (spec.separator==' ')
-      loadValueFromCSVFileT<SpaceSeparatorParser>(v,input,spec,fileSize);
+      loadValueFromCSVFileT<SpaceSeparatorParser>(v,input,spec,fileSize,onError);
     else
-      loadValueFromCSVFileT<Parser>(v,input,spec,fileSize);
+      loadValueFromCSVFileT<Parser>(v,input,spec,fileSize,onError);
   }
+  
+      template <class P>
+        void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize )
+      {
+        struct ErrorReporter //: public OnError // using duck typing, not dynamic polymorphism
+        {
+          Map<size_t> firstRow;
+          map<size_t,Key> duplicates;
+          map<size_t,string> invalidData;
+          void operator()(const DuplicateKey& ex, size_t row) {
+            duplicates.emplace(firstRow[ex.key],ex.key);
+            duplicates.emplace(row,ex.key);
+          }
+          void operator()(const InvalidData& ex, size_t row) {invalidData.emplace(row, ex.msg);}
+          /// update a map of keys to first rows for duplicate key processing
+          void rowKeyInsert(const Key& key, size_t row) {firstRow.emplace(key,row);}
+        } onError;
+
+        VariableValue vv(VariableType::parameter);
+
+        // parse file to extract error locations
+        loadValueFromCSVFileT<P>(vv, input, spec, fileSize, onError);
+
+        input.seekg(0);
+        string buf;
+        size_t row=0;
+
+        // extract all error lines  
+        multimap<Key,string> duplicateLines;
+        vector<string> invalidDataLines;
+        string sep{spec.separator};
+        for (;  getWholeLine(input, buf, spec); ++row)
+          {
+            if (onError.duplicates.contains(row))
+              duplicateLines.emplace(onError.duplicates[row],"duplicate key"+sep+buf);
+            if (onError.invalidData.contains(row))
+              invalidDataLines.push_back(onError.invalidData[row]+sep+buf);
+          }
+
+        // now output report
+        input.seekg(0);
+        // process header
+        for (row=0; row<spec.nRowAxes() && getWholeLine(input, buf, spec); ++row)
+          output<<sep+buf<<endl;
+        // process invalid data
+        for (auto& i: invalidDataLines)
+          output<<i;
+        // process duplicates
+        for (auto& i: duplicateLines)
+          output<<i.second;
+        // process remaining good part of the file
+        for (; getWholeLine(input, buf, spec); ++row)
+          if (!onError.duplicates.contains(row) && !onError.invalidData.contains(row))
+            output<<sep+buf<<endl;
+    
+      }
+
+      void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize)
+      {
+        if (spec.separator==' ')
+          reportFromCSVFileT<SpaceSeparatorParser>(input,output,spec,fileSize);
+        else
+          reportFromCSVFileT<Parser>(input,output,spec,fileSize);
+      }
+
+
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::DataSpec);

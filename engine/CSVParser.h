@@ -107,7 +107,7 @@ namespace minsky
 
   /// creates a report CSV file from input, with errors sorted at
   /// begining of file, with a column for error messages
-  void reportFromCSVFile(std::istream& input, std::ostream& output, const DataSpec& spec);
+  void reportFromCSVFile(std::istream& input, std::ostream& output, const DataSpec& spec, uintmax_t fileSize);
 
   /// load a variableValue from a stream according to data spec
   /// @param fileSize size of file to read (for progress bar)
