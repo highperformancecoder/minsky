@@ -332,6 +332,11 @@ namespace
     const char* what() const noexcept override {return msg.c_str();}
   };
 
+  struct MemoryExhausted: public std::exception
+  {
+    const char* what() const noexcept override {return "exhausted memory - try reducing the rank";}
+  };
+  
   double quotedStoD(const string& s,size_t& charsProcd)
   {
     //strip possible quote characters
@@ -646,7 +651,7 @@ namespace minsky
   struct OnError
   {
     /// called on error - \a ex message to pass on, \a row - current row
-    void operator()(const std::exception& ex, size_t row) {throw ex;}
+    template <class E> void operator()(const E& ex, size_t row) {throw ex;}
     /// update a map of keys to first rows for duplicate key processing
     void rowKeyInsert(const Key&, size_t) {}
   };
@@ -676,225 +681,243 @@ namespace minsky
       vector<AnyVal> anyVal;
       bool memUsageChecked=false;
 
-      for (auto i: spec.dimensionCols)
+      try
         {
-          hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
-          hc.xvectors.back().dimension=spec.dimensions[i];
-          anyVal.emplace_back(spec.dimensions[i]);
-        }
-      ++minsky().progressState;
-      uintmax_t bytesRead=0;
-      
-      // skip header lines except for headerRow
-      tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
-      if (tabularFormat)
-        {
-          anyVal.emplace_back(spec.horizontalDimension);
-          // legacy situation where all data columns are to the right
-          if (spec.dataCols.empty())
-            for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
-              {
-                col=i;
-                horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
-              }
-          else
+          for (auto i: spec.dimensionCols)
             {
-              // explicitly specified data columns
-              for (auto i: spec.dataCols)
-                {
-                  col=i;
-                  horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
-                }
-              if (spec.headerRow<spec.nRowAxes())
-                {
-                  // check whether any further columns exist that are not in
-                  // spec.dimensionNames, and add these in as horizontal
-                  // data dimension slices
-                  for (; row<=spec.headerRow; ++row)
-                    getWholeLine(input,buf,spec);
-                  const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
-                  auto field=tok.begin();
-                  for (size_t i=0; i<spec.dimensionNames.size() && field!=tok.end(); ++i, ++field);
-                  for (; field!=tok.end(); ++field)
-                    horizontalLabels.emplace_back
-                      (sliceLabelTokens[str(anyVal.back()(*field),spec.horizontalDimension.units)]);
-                }
+              hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
+              hc.xvectors.back().dimension=spec.dimensions[i];
+              anyVal.emplace_back(spec.dimensions[i]);
             }
+          ++minsky().progressState;
+          uintmax_t bytesRead=0;
+      
+          // skip header lines except for headerRow
+          tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
+          if (tabularFormat)
+            {
+              anyVal.emplace_back(spec.horizontalDimension);
+              // legacy situation where all data columns are to the right
+              if (spec.dataCols.empty())
+                for (size_t i=spec.nColAxes(); i<spec.dimensionNames.size(); ++i)
+                  {
+                    col=i;
+                    horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
+                  }
+              else
+                {
+                  // explicitly specified data columns
+                  for (auto i: spec.dataCols)
+                    {
+                      col=i;
+                      horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
+                    }
+                  if (spec.headerRow<spec.nRowAxes())
+                    {
+                      // check whether any further columns exist that are not in
+                      // spec.dimensionNames, and add these in as horizontal
+                      // data dimension slices
+                      for (; row<=spec.headerRow; ++row)
+                        getWholeLine(input,buf,spec);
+                      const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
+                      auto field=tok.begin();
+                      for (size_t i=0; i<spec.dimensionNames.size() && field!=tok.end(); ++i, ++field);
+                      for (; field!=tok.end(); ++field)
+                        horizontalLabels.emplace_back
+                          (sliceLabelTokens[str(anyVal.back()(*field),spec.horizontalDimension.units)]);
+                    }
+                }
             
-          hc.xvectors.emplace_back(spec.horizontalDimName);
-          hc.xvectors.back().dimension=spec.horizontalDimension;
-          set<typename Key::value_type> uniqueLabels;
-          dimLabels.emplace_back();
-          for (auto& i: horizontalLabels)
-            if (uniqueLabels.insert(i).second)
-              {
-                dimLabels.back()[i]=hc.xvectors.back().size();
-                hc.xvectors.back().emplace_back(sliceLabelTokens[i]);
-              }
-        }
+              hc.xvectors.emplace_back(spec.horizontalDimName);
+              hc.xvectors.back().dimension=spec.horizontalDimension;
+              set<typename Key::value_type> uniqueLabels;
+              dimLabels.emplace_back();
+              for (auto& i: horizontalLabels)
+                if (uniqueLabels.insert(i).second)
+                  {
+                    dimLabels.back()[i]=hc.xvectors.back().size();
+                    hc.xvectors.back().emplace_back(sliceLabelTokens[i]);
+                  }
+            }
 
              
 
-      for (; row<spec.nRowAxes(); ++row)
-        getWholeLine(input,buf,spec);
+          for (; row<spec.nRowAxes(); ++row)
+            getWholeLine(input,buf,spec);
             
         
-      ++minsky().progressState;
+          ++minsky().progressState;
 
-        {
-          ProgressUpdater pu(minsky().progressState, "Reading data",1);
-          for (; getWholeLine(input, buf, spec); ++row)
-            {
-              if (!memUsageChecked)
-                switch (cminsky().checkMemAllocation(TrackingAllocatorBase::allocatedBytes))
-                  {
-                  case Minsky::OK: break;
-                  case Minsky::proceed:
-                    memUsageChecked=true;
-                    break;
-                  case Minsky::abort:
-                    throw runtime_error("memory threshold exceeded");
-                  }
-              const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
+          {
+            ProgressUpdater pu(minsky().progressState, "Reading data",1);
+            for (; getWholeLine(input, buf, spec); ++row)
+              {
+                if (!memUsageChecked)
+                  switch (cminsky().checkMemAllocation(TrackingAllocatorBase::allocatedBytes))
+                    {
+                    case Minsky::OK: break;
+                    case Minsky::proceed:
+                      memUsageChecked=true;
+                      break;
+                    case Minsky::abort:
+                      throw runtime_error("memory threshold exceeded");
+                    }
+                const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
-              Key key;
-              auto field=tok.begin();
-              size_t dim=0, dataCols=0;
-              col=0;
-              for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
-                if (spec.dimensionCols.contains(col))
-                  {
-                    // detect blank data lines (favourite Excel artifact)
-                    if (spec.dimensions[dim].type!=Dimension::string && field->empty())
-                      goto invalidKeyGotoNextLine;
+                Key key;
+                auto field=tok.begin();
+                size_t dim=0, dataCols=0;
+                col=0;
+                for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
+                  if (spec.dimensionCols.contains(col))
+                    {
+                      // detect blank data lines (favourite Excel artifact)
+                      if (spec.dimensions[dim].type!=Dimension::string && field->empty())
+                        goto invalidKeyGotoNextLine;
                   
-                    if (dim>=hc.xvectors.size())
-                      hc.xvectors.emplace_back("?"); // no header present
-                    try
-                      {
-                        auto keyElem=anyVal[dim](trimWS(*field));
-                        auto skeyElem=str(keyElem, spec.dimensions[dim].units);
-                        if (dimLabels[dim].emplace(sliceLabelTokens[skeyElem], dimLabels[dim].size()).second)
-                          hc.xvectors[dim].emplace_back(keyElem);
-                        key.emplace_back(sliceLabelTokens[skeyElem]);
-                      }
-                    catch (...)
-                      {
-                        if (spec.dontFail)
-                          goto invalidKeyGotoNextLine;
-                        else
-                          onError(InvalidData(*field,to_string(spec.dimensions[dim].type),spec.dimensionNames[dim]),row);
-                      }
-                    dim++;
-                  }
+                      if (dim>=hc.xvectors.size())
+                        hc.xvectors.emplace_back("?"); // no header present
+                      try
+                        {
+                          auto keyElem=anyVal[dim](trimWS(*field));
+                          auto skeyElem=str(keyElem, spec.dimensions[dim].units);
+                          if (dimLabels[dim].emplace(sliceLabelTokens[skeyElem], dimLabels[dim].size()).second)
+                            hc.xvectors[dim].emplace_back(keyElem);
+                          key.emplace_back(sliceLabelTokens[skeyElem]);
+                        }
+                      catch (...)
+                        {
+                          if (spec.dontFail)
+                            goto invalidKeyGotoNextLine;
+                          else
+                            onError(InvalidData(*field,to_string(spec.dimensions[dim].type),spec.dimensionNames[dim]),row);
+                        }
+                      dim++;
+                    }
 
-              col=0;
-              for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
-                if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col) || col>=spec.maxColumn) 
-                  {
-                    if (tabularFormat)
-                      key.emplace_back(horizontalLabels[dataCols]);
-                    else if (dataCols)
-                      break; // only 1 value column, everything to right ignored
+                col=0;
+                for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
+                  if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col) || col>=spec.maxColumn) 
+                    {
+                      if (tabularFormat)
+                        key.emplace_back(horizontalLabels[dataCols]);
+                      else if (dataCols)
+                        break; // only 1 value column, everything to right ignored
                   
-                    // remove thousands separators, and set decimal separator to '.' ("C" locale)
-                    string s;
-                    for (auto c: *field)
-                      if (c==spec.decSeparator)
-                        s+='.';
-                      else if (!checkValues &&
-                               ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
-                                ((s=="-"||s=="+") && !isdigit(c))))
-                        continue; // skip non-numeric prefix
-                      else if (!isspace(c) && c!='.' && c!=',')
-                        s+=c;                    
+                      // remove thousands separators, and set decimal separator to '.' ("C" locale)
+                      string s;
+                      for (auto c: *field)
+                        if (c==spec.decSeparator)
+                          s+='.';
+                        else if (!checkValues &&
+                                 ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
+                                  ((s=="-"||s=="+") && !isdigit(c))))
+                          continue; // skip non-numeric prefix
+                        else if (!isspace(c) && c!='.' && c!=',')
+                          s+=c;                    
                   
-                    // TODO - this disallows special floating point values - is this right?
-                    bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
-                    if (checkValues && !valueExists)
-                      onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
+                      // TODO - this disallows special floating point values - is this right?
+                      bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
+                      if (checkValues && !valueExists)
+                        onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
                       
-                    if (valueExists || !isnan(spec.missingValue))
-                      {
-                        if (spec.counter)
-                          tmpData[key]+=1;
-                        else
-                          {
-                            auto i=tmpData.find(key);
-                            double v=spec.missingValue;
-                            if (valueExists)
-                              try
-                                {
-                                  size_t end;
-                                  v=stod(s,&end);
-                                  if (checkValues && end<s.length())
-                                    onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
-                                  if (i==tmpData.end())
-                                    {
-                                      tmpData.emplace(key,v);
-                                      onError.rowKeyInsert(key,row);
-                                    }
-                                }
-                              catch (const std::bad_alloc&)
-                                {throw;}
-                              catch (...) // value misunderstood
-                                {
-                                  if (checkValues) onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
-                                  if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
-                                    valueExists=false;
-                                }
-                            if (valueExists && i!=tmpData.end())
-                              switch (spec.duplicateKeyAction)
-                                {
-                                case DataSpec::throwException:
-                                  onError(DuplicateKey(key,sliceLabelTokens),row); 
-                                case DataSpec::sum:
-                                  i->second+=v;
-                                  break;
-                                case DataSpec::product:
-                                  i->second*=v;
-                                  break;
-                                case DataSpec::min:
-                                  if (v<i->second)
-                                    i->second=v;
-                                  break;
-                                case DataSpec::max:
-                                  if (v>i->second)
-                                    i->second=v;
-                                  break;
-                                case DataSpec::av:
+                      if (valueExists || !isnan(spec.missingValue))
+                        {
+                          if (spec.counter)
+                            tmpData[key]+=1;
+                          else
+                            {
+                              auto i=tmpData.find(key);
+                              double v=spec.missingValue;
+                              if (valueExists)
+                                try
                                   {
-                                    int& c=tmpCnt[key]; // c initialised to 0
-                                    i->second=((c+1)*i->second + v)/(c+2);
-                                    c++;
+                                    size_t end;
+                                    v=stod(s,&end);
+                                    if (checkValues && end<s.length())
+                                      onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
+                                    if (i==tmpData.end())
+                                      {
+                                        tmpData.emplace(key,v);
+                                        onError.rowKeyInsert(key,row);
+                                      }
                                   }
-                                  break;
-                                }
-                            //                          if (row>=2670) cout<<"3"<<endl;
-                          }
-                      }
-                    dataCols++;
-                    //                  if (row>=2670) cout<<"4"<<endl;
-                    if (tabularFormat)
-                      key.pop_back();
+                                catch (const std::bad_alloc&)
+                                  {throw;}
+                                catch (...) // value misunderstood
+                                  {
+                                    if (checkValues) onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
+                                    if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                                      valueExists=false;
+                                  }
+                              if (valueExists && i!=tmpData.end())
+                                switch (spec.duplicateKeyAction)
+                                  {
+                                  case DataSpec::throwException:
+                                    onError(DuplicateKey(key,sliceLabelTokens),row); 
+                                  case DataSpec::sum:
+                                    i->second+=v;
+                                    break;
+                                  case DataSpec::product:
+                                    i->second*=v;
+                                    break;
+                                  case DataSpec::min:
+                                    if (v<i->second)
+                                      i->second=v;
+                                    break;
+                                  case DataSpec::max:
+                                    if (v>i->second)
+                                      i->second=v;
+                                    break;
+                                  case DataSpec::av:
+                                    {
+                                      int& c=tmpCnt[key]; // c initialised to 0
+                                      i->second=((c+1)*i->second + v)/(c+2);
+                                      c++;
+                                    }
+                                    break;
+                                  }
+                              //                          if (row>=2670) cout<<"3"<<endl;
+                            }
+                        }
+                      dataCols++;
+                      //                  if (row>=2670) cout<<"4"<<endl;
+                      if (tabularFormat)
+                        key.pop_back();
+                      else
+                        break; // only one column of data needs to be read
+                      //                  if (row>=2670) cout<<"5"<<endl;
+                    }
+            
+                if (!dataCols)
+                  {
+                    if (spec.counter || spec.dontFail)
+                      tmpData[key]+=1;
                     else
-                      break; // only one column of data needs to be read
-                    //                  if (row>=2670) cout<<"5"<<endl;
+                      throw NoDataColumns();
                   }
             
-              if (!dataCols)
-                {
-                  if (spec.counter || spec.dontFail)
-                    tmpData[key]+=1;
-                  else
-                    throw NoDataColumns();
-                }
-            
 
-              bytesRead+=buf.size();
-              pu.setProgress(double(bytesRead)/fileSize);
-            invalidKeyGotoNextLine:;
-            }
+                bytesRead+=buf.size();
+                pu.setProgress(double(bytesRead)/fileSize);
+              invalidKeyGotoNextLine:;
+              }
+          }
+        }
+      catch (const std::bad_alloc&)
+        { // replace with a more user friendly error message
+          throw MemoryExhausted();
+        }
+      catch (const std::length_error&)
+        { // replace with a more user friendly error message
+          throw MemoryExhausted();
+        }
+      catch (const std::exception& ex)
+        {
+          auto msg=string(ex.what())+" at line:"+to_string(row)+", col:"+to_string(col);
+          if (col<spec.dimensionNames.size())
+            msg+=" ("+spec.dimensionNames[col]+")";
+          throw std::runtime_error(msg);
         }
     }
   };
@@ -924,8 +947,6 @@ namespace minsky
 
     try
       {
-
-
         // remove zero length dimensions
         {
           auto d=dimLabels.begin();
@@ -951,7 +972,7 @@ namespace minsky
           { // dense case
             vv.index({});
             if (cminsky().checkMemAllocation(hc.numElements()*sizeof(double))==Minsky::abort)
-              throw runtime_error("memory threshold exceeded");            
+              throw MemoryExhausted();            
             vv.hypercube(hc);
             // stash the data into vv tensorInit field
             vv.tensorInit.index({});
@@ -981,7 +1002,7 @@ namespace minsky
         else 
           { // sparse case	
             if (cminsky().checkMemAllocation(tmpData.size()*sizeof(double))==Minsky::abort)
-              throw runtime_error("memory threshold exceeded");	  	  		
+              throw MemoryExhausted();	  	  		
             auto dims=hc.dims();
             const ProgressUpdater pu(minsky().progressState,"Indexing and loading",2);
               
@@ -1027,18 +1048,11 @@ namespace minsky
       }
     catch (const std::bad_alloc&)
       { // replace with a more user friendly error message
-        throw std::runtime_error("exhausted memory - try reducing the rank");
+        throw MemoryExhausted();
       }
     catch (const std::length_error&)
       { // replace with a more user friendly error message
-        throw std::runtime_error("exhausted memory - try reducing the rank");
-      }
-    catch (const std::exception& ex)
-      {
-        auto msg=string(ex.what())+" at line:"+to_string(parseCSV.row)+", col:"+to_string(parseCSV.col);
-        if (parseCSV.col<spec.dimensionNames.size())
-          msg+=" ("+spec.dimensionNames[parseCSV.col]+")";
-        throw std::runtime_error(msg);
+        throw MemoryExhausted();
       }
   }
   
@@ -1106,7 +1120,7 @@ namespace minsky
     for (row=0; row<spec.nRowAxes() && getWholeLine(input, buf, spec); ++row)
       {
         if (row==spec.headerRow)
-          output<<"error"<<sep;
+          output<<"Error"<<sep;
         output<<buf<<endl;
       }
     // process invalid data

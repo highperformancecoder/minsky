@@ -103,6 +103,30 @@ SUITE(CSVParser)
       CHECK((set<unsigned>{2}==dataCols));
     }
 
+  TEST_FIXTURE(DataSpec,badTimeData)
+    {
+      string input="time,data\n"
+        "1966-Q,1\n";
+      istringstream is(input);
+      setDataArea(1,1);
+      dimensionCols={0};
+      dimensions[0].type=Dimension::time;
+      dimensions[0].units="%Y-Q%Q";
+      VariableValue v(VariableType::parameter,":foo");
+      CHECK_THROW(loadValueFromCSVFile(v,is,*this,2),std::exception);
+      is.clear(); is.seekg(0);
+      try {loadValueFromCSVFile(v,is,*this,2);}
+      catch (const std::exception& ex) {
+        CHECK(string(ex.what()).starts_with("Invalid"));
+      }
+
+      is.clear(); is.seekg(0);
+      string output;  
+      ostringstream os(output);
+      reportFromCSVFile(is,os,*this,2);
+      CHECK(os.str().find("Invalid data") != std::string::npos);
+    }
+  
   // disable temporarily until this is fixed.
   TEST_FIXTURE(DataSpec,reportFromCSV)
     {
@@ -141,7 +165,7 @@ SUITE(CSVParser)
       CHECK_EQUAL(numSep+(numLines-nRowAxes()+1),
                   accumulate(osStr.begin(), osStr.end(), 0, Count(';')));
       
-      CHECK(os.str().find("error") != std::string::npos);
+      CHECK(os.str().find("Error") != std::string::npos);
       CHECK(os.str().find("Invalid data") != std::string::npos);
       CHECK(os.str().find("Duplicate key") != std::string::npos);
 
