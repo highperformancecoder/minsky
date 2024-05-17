@@ -492,6 +492,7 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
   string buf;
   for (; getline(input, buf) && row<until; ++row)
     {
+      if (buf.empty()) continue;
       // remove trailing carriage returns
       if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
       const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
@@ -653,27 +654,28 @@ namespace minsky
   template <class P>
   struct ParseCSV
   {
-    P csvParser;
-    string buf;
-    Tokens<SliceLabelToken> sliceLabelTokens;
-    Map<double> tmpData;
-    Map<int> tmpCnt;
+    Map<double> tmpData;  ///< map of data by key
     vector<unordered_map<typename Key::value_type, size_t>> dimLabels;
-    bool tabularFormat=false;
-    vector<typename Key::value_type> horizontalLabels;
-    vector<AnyVal> anyVal;
     Hypercube hc;
-    bool memUsageChecked=false;
     size_t row=0, col=0;
 
     ~ParseCSV() {TrackingAllocatorBase::destructing=true;}
     template <class E>
-    ParseCSV(istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError):
-      csvParser(spec.escape,spec.separator,spec.quote),
+    ParseCSV(istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError, bool checkValues=false):
       dimLabels(spec.dimensionCols.size())
     {
       const BusyCursor busy(minsky());
       const ProgressUpdater pu(minsky().progressState, "Parsing CSV",6);
+
+      P csvParser(spec.escape,spec.separator,spec.quote);
+      string buf;
+      Tokens<SliceLabelToken> sliceLabelTokens;
+      Map<int> tmpCnt;
+      bool tabularFormat=false;
+      vector<typename Key::value_type> horizontalLabels;
+      vector<AnyVal> anyVal;
+      bool memUsageChecked=false;
+
       for (auto i: spec.dimensionCols)
         {
           hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
@@ -800,14 +802,18 @@ namespace minsky
                     for (auto c: *field)
                       if (c==spec.decSeparator)
                         s+='.';
-                      else if ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
-                               ((s=="-"||s=="+") && !isdigit(c)))
+                      else if (!checkValues &&
+                               ((s.empty() && (!isdigit(c)&&c!='-'&&c!='+')) ||
+                                ((s=="-"||s=="+") && !isdigit(c))))
                         continue; // skip non-numeric prefix
                       else if (!isspace(c) && c!='.' && c!=',')
                         s+=c;                    
                   
                     // TODO - this disallows special floating point values - is this right?
                     bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
+                    if (checkValues && !valueExists)
+                      onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
+                      
                     if (valueExists || !isnan(spec.missingValue))
                       {
                         if (spec.counter)
@@ -819,17 +825,21 @@ namespace minsky
                             if (valueExists)
                               try
                                 {
-                                  v=stod(s);
+                                  size_t end;
+                                  v=stod(s,&end);
+                                  if (checkValues && end<s.length())
+                                    onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
                                   if (i==tmpData.end())
                                     {
                                       tmpData.emplace(key,v);
-                                      onError.rowKeyInsert(key,v);
+                                      onError.rowKeyInsert(key,row);
                                     }
                                 }
                               catch (const std::bad_alloc&)
                                 {throw;}
                               catch (...) // value misunderstood
                                 {
+                                  if (checkValues) onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
                                   if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
                                     valueExists=false;
                                 }
@@ -908,18 +918,9 @@ namespace minsky
     }
     
     ParseCSV<P> parseCSV(input,spec,fileSize,onError);
-    auto& csvParser=parseCSV.csvParser;
-    auto& buf=parseCSV.buf;
-    auto& sliceLabelTokens=parseCSV.sliceLabelTokens;
-
     auto& tmpData=parseCSV.tmpData;
-    auto& tmpCnt=parseCSV.tmpCnt;
     auto& dimLabels=parseCSV.dimLabels;
-    auto& tabularFormat=parseCSV.tabularFormat;
-    auto& horizontalLabels=parseCSV.horizontalLabels;
-    auto& anyVal=parseCSV.anyVal;
     auto& hc=parseCSV.hc;
-    auto& memUsageChecked=parseCSV.memUsageChecked;
 
     try
       {
@@ -1049,10 +1050,19 @@ namespace minsky
     else
       loadValueFromCSVFileT<Parser>(v,input,spec,fileSize,onError);
   }
+
+  struct FailedToRewind: public std::exception
+  {
+    const char* what() const noexcept override {return "Failed to rewind input";}
+  };
   
   template <class P>
   void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize )
   {
+    // set up off-heap memory allocator, and ensure it is torn down at exit
+    TrackingAllocatorBase::allocatePool();
+    auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
+
     struct ErrorReporter //: public OnError // using duck typing, not dynamic polymorphism
     {
       Map<size_t> firstRow;
@@ -1067,12 +1077,12 @@ namespace minsky
       void rowKeyInsert(const Key& key, size_t row) {firstRow.emplace(key,row);}
     } onError;
 
-    VariableValue vv(VariableType::parameter);
-
     // parse file to extract error locations
-    loadValueFromCSVFileT<P>(vv, input, spec, fileSize, onError);
+    ParseCSV<P> parseCSV(input, spec, fileSize, onError, /*checkValues=*/true);
 
+    input.clear();
     input.seekg(0);
+    if (!input) throw FailedToRewind();
     string buf;
     size_t row=0;
 
@@ -1083,22 +1093,28 @@ namespace minsky
     for (;  getWholeLine(input, buf, spec); ++row)
       {
         if (onError.duplicates.contains(row))
-          duplicateLines.emplace(onError.duplicates[row],"duplicate key"+sep+buf);
+          duplicateLines.emplace(onError.duplicates[row],"Duplicate key"+sep+buf);
         if (onError.invalidData.contains(row))
           invalidDataLines.push_back(onError.invalidData[row]+sep+buf);
       }
 
     // now output report
+    input.clear();
     input.seekg(0);
+    if (!input) throw FailedToRewind();
     // process header
     for (row=0; row<spec.nRowAxes() && getWholeLine(input, buf, spec); ++row)
-      output<<sep+buf<<endl;
+      {
+        if (row==spec.headerRow)
+          output<<"error"<<sep;
+        output<<buf<<endl;
+      }
     // process invalid data
     for (auto& i: invalidDataLines)
-      output<<i;
+      output<<i<<endl;
     // process duplicates
     for (auto& i: duplicateLines)
-      output<<i.second;
+      output<<i.second<<endl;
     // process remaining good part of the file
     for (; getWholeLine(input, buf, spec); ++row)
       if (!onError.duplicates.contains(row) && !onError.invalidData.contains(row))
