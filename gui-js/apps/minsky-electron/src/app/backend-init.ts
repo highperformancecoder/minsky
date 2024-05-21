@@ -145,7 +145,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
   WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
   if (!initProgressBar && busy)
     initProgressBar=setTimeout(()=>{
-      progress.browserWindow={parent: WindowManager.getMainWindow()};
+      progress.browserWindow={parent: WindowManager.getMainWindow(), height: 200};
       progressBar=new ProgressBar(progress);
       progressBar.on('ready',()=>{progressBar._window.webContents.executeJavaScript(injectCancelButton);});
       progressBar.value=progress.value;
