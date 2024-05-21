@@ -509,7 +509,16 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
           if (regex_match(line[0], match, re))
             try
               {
-                populateFromRavelMetadata(match[1], row);
+                string metadata=match[1];
+                string horizontalName;
+                getline(input, buf);
+                static const regex re("HorizontalDimension=\"(.*)\"");
+                if (regex_match(buf, match, re))
+                  {
+                    horizontalName=match[1];
+                    ++row;
+                  }
+                populateFromRavelMetadata(metadata, horizontalName, row);
                 return true;
               }
             catch (...)
@@ -586,7 +595,7 @@ void DataSpec::guessFromStream(std::istream& input)
   }
 }
 
- void DataSpec::populateFromRavelMetadata(const std::string& metadata, size_t row)
+void DataSpec::populateFromRavelMetadata(const std::string& metadata, const string& horizontalName, size_t row)
  {
    vector<NamedDimension> ravelMetadata;
    json(ravelMetadata,metadata);
@@ -595,10 +604,16 @@ void DataSpec::guessFromStream(std::istream& input)
    dimensionNames.clear();
    dimensions.clear();
    for (auto& i: ravelMetadata)
-     {
-       dimensions.push_back(i.dimension);
-       dimensionNames.push_back(i.name);
-     }
+     if (i.name==horizontalName)
+       {
+         horizontalDimension=i.dimension;
+         horizontalDimName=i.name;
+       }
+     else
+       {
+         dimensions.push_back(i.dimension);
+         dimensionNames.push_back(i.name);
+       }
    for (size_t i=0; i<dimensions.size(); ++i)
      dimensionCols.insert(i);
  }
@@ -817,8 +832,8 @@ namespace minsky
                           s+=c;                    
                   
                       // TODO - this disallows special floating point values - is this right?
-                      bool valueExists=!s.empty() && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
-                      if (checkValues && !valueExists)
+                      bool valueExists=!s.empty() && s!="\\N" && (isdigit(s[0])||s[0]=='-'||s[0]=='+'||s[0]=='.');
+                      if (checkValues && !valueExists && !s.empty() && s!="\\N") // ignore empty cells or explicit nulls
                         onError(InvalidData(s,"value",spec.dimensionNames[col]),row);
                       
                       if (valueExists || !isnan(spec.missingValue))

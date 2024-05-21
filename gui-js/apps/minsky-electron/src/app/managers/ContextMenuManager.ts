@@ -1141,9 +1141,20 @@ export class ContextMenuManager {
     menuItems.push(
       new MenuItem({
         label: 'Export as CSV',
-        click: async () => {
-          await CommandsManager.exportItemAsCSV(v);
-        },
+        submenu: [
+          {
+            label: 'Save by datapoint per row',
+            click: async () => {
+              await CommandsManager.exportItemAsCSV(v);
+            },
+          },
+          {
+            label: 'Save by series per row',
+            click: async () => {
+              await CommandsManager.exportItemAsCSV(v,true);
+            },
+          },
+        ],
       })
     );
 

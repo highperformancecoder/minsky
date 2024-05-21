@@ -457,11 +457,11 @@ void VariableBase::setUnits(const string& x) const
 
 
 
-void VariableBase::exportAsCSV(const std::string& filename) const
+void VariableBase::exportAsCSV(const std::string& filename, bool tabular) const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end())
-    value->second->exportAsCSV(filename, name());
+    value->second->exportAsCSV(filename, name(), tabular);
 }
 
 void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spec) const

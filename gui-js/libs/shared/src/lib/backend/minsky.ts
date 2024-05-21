@@ -235,7 +235,7 @@ export class VariableBase extends Item {
   async engExp(): Promise<object> {return this.$callMethod('engExp');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
   async ensureValueExists(a1: VariableValue,a2: string): Promise<void> {return this.$callMethod('ensureValueExists',a1,a2);}
-  async exportAsCSV(a1: string): Promise<void> {return this.$callMethod('exportAsCSV',a1);}
+  async exportAsCSV(a1: string,a2: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2);}
   async flip(): Promise<void> {return this.$callMethod('flip');}
   async getDimLabelsPicked(): Promise<object> {return this.$callMethod('getDimLabelsPicked');}
   async height(): Promise<number> {return this.$callMethod('height');}
@@ -573,7 +573,7 @@ export class DataSpec extends CppClass {
   async nColAxes(): Promise<number> {return this.$callMethod('nColAxes');}
   async nRowAxes(): Promise<number> {return this.$callMethod('nRowAxes');}
   async numCols(...args: number[]): Promise<number> {return this.$callMethod('numCols',...args);}
-  async populateFromRavelMetadata(a1: string,a2: number): Promise<void> {return this.$callMethod('populateFromRavelMetadata',a1,a2);}
+  async populateFromRavelMetadata(a1: string,a2: string,a3: number): Promise<void> {return this.$callMethod('populateFromRavelMetadata',a1,a2,a3);}
   async quote(...args: number[]): Promise<number> {return this.$callMethod('quote',...args);}
   async separator(...args: number[]): Promise<number> {return this.$callMethod('separator',...args);}
   async setDataArea(a1: number,a2: number): Promise<void> {return this.$callMethod('setDataArea',a1,a2);}
@@ -2291,7 +2291,7 @@ export class VariableValue extends CppClass {
   async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
   async end(): Promise<number> {return this.$callMethod('end');}
-  async exportAsCSV(a1: string,a2: string): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2);}
+  async exportAsCSV(a1: string,a2: string,a3: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2,a3);}
   async godleyOverridden(...args: boolean[]): Promise<boolean> {return this.$callMethod('godleyOverridden',...args);}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
   async idx(): Promise<number> {return this.$callMethod('idx');}

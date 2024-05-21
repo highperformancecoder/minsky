@@ -83,7 +83,8 @@ namespace minsky
     }
 
     /// populates this spec from a "RavelHypercube" entry, \a row is the row being read, used to set the headerRow attribute
-    void populateFromRavelMetadata(const std::string& metadata, std::size_t row);
+    /// \a If horizontalName is one of the dimensions, data is written in a tabular format
+    void populateFromRavelMetadata(const std::string& metadata, const std::string& horizontalName, std::size_t row);
 
   private:
     /// try to fill in remainder of spec, given a tokenizer function tf

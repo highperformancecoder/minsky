@@ -370,13 +370,18 @@ namespace minsky
   {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
 
 
-  void VariableValue::exportAsCSV(const string& filename, const string& comment) const
+  void VariableValue::exportAsCSV(const string& filename, const string& comment, bool tabular) const
   {
     ofstream of(filename);
     if (!comment.empty())
       of<<R"(""")"<<comment<<R"(""")"<<endl;
                
+    // calculate longest dimension
+    auto dims=hypercube().dims();
+    auto longestDim=max_element(dims.begin(),dims.end())-dims.begin();
+
     const auto& xv=hypercube().xvectors;
+    
     ostringstream os;
     for (const auto& i: xv)
       {
@@ -384,24 +389,80 @@ namespace minsky
         os<<json(static_cast<const NamedDimension&>(i));
       }
     of<<quoted("RavelHypercube=["+os.str()+"]")<<endl;
-    for (const auto& i: hypercube().xvectors)
-      of<<CSVQuote(i.name,',')<<",";
-    of<<"value$\n";
+    if (tabular)
+      of<<"HorizontalDimension="<<quoted(xv[longestDim].name)<<endl;
+    
+    for (size_t i=0; i<xv.size(); ++i)
+      if (!tabular || i!=longestDim)
+        of<<CSVQuote(xv[i].name,',')<<",";
+
+    if (tabular)
+      for (size_t k=0; k<dims[longestDim]; ++k)
+        {
+          if (k>0) of<<",";
+          of<<CSVQuote(str(xv[longestDim][k],xv[longestDim].dimension.units),',');
+        }
+    else
+      of<<"value$";
+    of<<"\n";
 
     auto idxv=index();
-    size_t i=0;
-    for (auto d=begin(); d!=end(); ++i, ++d)
-      if (isfinite(*d))
-        {
-          ssize_t idx=idxv.empty()? i: idxv[i];
-          for (size_t j=0; j<rank(); ++j)
+
+    if (tabular)
+      {
+        size_t stride=1;
+        for (size_t i=0; i<longestDim; ++i)
+          stride*=dims[i];
+        for (size_t i=0; i<hypercube().numElements(); i+=stride*dims[longestDim])
+          for (size_t j=0; j<stride; ++j)
             {
-              auto div=std::div(idx, ssize_t(hypercube().xvectors[j].size()));
-              of << "\""<<str(hypercube().xvectors[j][div.rem], hypercube().xvectors[j].dimension.units) << "\",";
-              idx=div.quot;
+              // collect elements in a buffer, which can be discarded if no data on line
+              bool isData=false;
+              vector<double> data;
+              data.reserve(dims[longestDim]);
+              for (size_t k=0; k<stride*dims[longestDim]; k+=stride)
+                {
+                  data.push_back(this->atHCIndex(i+j+k));
+                  if (isfinite(data.back())) isData=true;
+                }
+              if (isData)
+                {
+                  auto idx=i+j;
+                  for (size_t k=0; k<rank(); ++k)
+                    {
+                      auto div=std::div(idx, ssize_t(dims[k]));
+                      if (k!=longestDim)
+                        {
+                          if (k>1 || k>0 && longestDim>0) of<<",";
+                          of << "\""<<str(xv[k][div.rem], xv[k].dimension.units) << "\"";
+                        }
+                      idx=div.quot;
+                    }
+                  for (auto d: data)
+                    {
+                      of<<",";
+                      if (isfinite(d)) of<<d;
+                    }
+                  of<<"\n";
+                }
             }
-          of << *d << endl;
-        }
+      }
+    else
+      {
+        size_t i=0;
+        for (auto d=begin(); d!=end(); ++i, ++d)
+          if (isfinite(*d))
+            {
+              ssize_t idx=idxv.empty()? i: idxv[i];
+              for (size_t j=0; j<rank(); ++j)
+                {
+                  auto div=std::div(idx, ssize_t(dims[j]));
+                  of << "\""<<str(xv[j][div.rem], xv[j].dimension.units) << "\",";
+                  idx=div.quot;
+                }
+              of << *d << "\n";
+            }
+      }
   }
 
   Summary VariableValue::summary() const
