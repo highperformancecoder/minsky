@@ -433,7 +433,7 @@ namespace minsky
                       auto div=std::div(idx, ssize_t(dims[k]));
                       if (k!=longestDim)
                         {
-                          if (k>1 || k>0 && longestDim>0) of<<",";
+                          if (k>1 || (k>0 && longestDim>0)) of<<",";
                           of << "\""<<str(xv[k][div.rem], xv[k].dimension.units) << "\"";
                         }
                       idx=div.quot;
