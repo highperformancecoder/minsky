@@ -489,12 +489,12 @@ namespace minsky
   }
 
   
-  void Ravel::exportAsCSV(const string& filename) const
+  void Ravel::exportAsCSV(const string& filename, bool tabular) const
   {
     if (!m_ports.empty())
       if (auto vv=m_ports[0]->getVariableValue())
         {
-          vv->exportAsCSV(filename, wrappedRavel.description());
+          vv->exportAsCSV(filename, wrappedRavel.description(), tabular);
           return;
         }
 
@@ -504,7 +504,7 @@ namespace minsky
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
     v=*tensorOpFactory.create(itemPtrFromThis(), tp);
     // TODO: add some comment lines, such as source of data
-    v.exportAsCSV(filename, wrappedRavel.description());
+    v.exportAsCSV(filename, wrappedRavel.description(), tabular);
   }
 
   Units Ravel::units(bool check) const

@@ -346,6 +346,23 @@ export class ContextMenuManager {
     }
   }
 
+  private static exportAsCSVSubmenu(item: any) {
+    return [
+          {
+            label: 'Save by datapoint per row',
+            click: async () => {
+              await CommandsManager.exportItemAsCSV(item);
+            },
+          },
+          {
+            label: 'Save by series per row',
+            click: async () => {
+              await CommandsManager.exportItemAsCSV(item,true);
+            },
+          },
+    ];
+  }
+  
   private static async contextMenu(itemInfo: CanvasItem) {
     let menuItems: MenuItem[] = [
       new MenuItem({
@@ -472,7 +489,7 @@ export class ContextMenuManager {
         }),
         new MenuItem({
           label: 'Export as CSV',
-          click: () => {CommandsManager.exportItemAsCSV(sheet);}
+          submenu: this.exportAsCSVSubmenu(sheet),
         }),
       ];
       break;
@@ -867,9 +884,7 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Export as CSV',
-        click: async () => {
-          await CommandsManager.exportItemAsCSV(ravel);
-        },
+        submenu: this.exportAsCSVSubmenu(ravel),
       }),
       new MenuItem({
         label: 'Set next aggregation',
@@ -1141,20 +1156,7 @@ export class ContextMenuManager {
     menuItems.push(
       new MenuItem({
         label: 'Export as CSV',
-        submenu: [
-          {
-            label: 'Save by datapoint per row',
-            click: async () => {
-              await CommandsManager.exportItemAsCSV(v);
-            },
-          },
-          {
-            label: 'Save by series per row',
-            click: async () => {
-              await CommandsManager.exportItemAsCSV(v,true);
-            },
-          },
-        ],
+        submenu: this.exportAsCSVSubmenu(v),
       })
     );
 

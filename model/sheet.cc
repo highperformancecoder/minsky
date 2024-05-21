@@ -585,10 +585,10 @@ void Sheet::draw(cairo_t* cairo) const
   cairo_clip(cairo);
 }
 
-void Sheet::exportAsCSV(const string& filename) const
+void Sheet::exportAsCSV(const string& filename, bool tabular) const
 {
   if (!value)
     throw_error("input not defined");
   VariableValue vv(VariableType::flow); vv=*value;
-  vv.exportAsCSV(filename);
+  vv.exportAsCSV(filename,"",tabular);
 }
