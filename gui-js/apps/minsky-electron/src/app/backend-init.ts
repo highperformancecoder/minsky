@@ -126,7 +126,7 @@ const injectCancelButton=`
    document.body.appendChild(cancelButtonDiv);
 `;
 
-let progress={text:"", value:0, indeterminate: false, closeOnComplete: false, browserWindow: {}};
+let progress={text:"Wait...", value:0, indeterminate: false, closeOnComplete: false, browserWindow: {}};
 let progressBar;
 let initProgressBar;
 
@@ -158,7 +158,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
       progressBar.setCompleted();
       progressBar.close();
       progressBar=null;
-      progress.text="";
+      progress.text="Wait...";
       progress.value=0;
     }
   }
