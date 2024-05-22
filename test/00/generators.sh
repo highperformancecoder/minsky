@@ -27,19 +27,20 @@ pass()
 }
 
 trap "fail" 1 2 3 15
-cat >input.tcl <<EOF
-minsky.addVariable gen parameter
+cat >input.py <<EOF
+import sys
+sys.path.append('$here')
+from pyminsky import minsky
 
-foreach op {eye one zero iota} {
-  minsky.canvas.itemFocus.init "[set op](3,3)"
-  minsky.reset
-  minsky.canvas.itemFocus.exportAsCSV [set op].csv
-}
+minsky.canvas.addVariable('gen','parameter')
 
-tcl_exit
+for op in ['eye', 'one', 'zero', 'iota']:
+  minsky.canvas.itemFocus().init(f'{op}(3,3)')
+  minsky.reset()
+  minsky.canvas.itemFocus().exportAsCSV(f'{op}.csv')
 EOF
 
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if [ $? -ne 0 ]; then fail; fi
 
 for i in *.csv; do
