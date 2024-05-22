@@ -80,7 +80,8 @@ namespace minsky
     void computeValue();
     
     /// export the plotted data as a CSV file
-    void exportAsCSV(const std::string& filename, bool tabular=false) const;
+    /// @param tabular - if true, the longest dimension is split across columns as a horizontal dimension
+    void exportAsCSV(const std::string& filename, bool tabular) const;
 
     bool showRavel=false;
     ShowSlice showRowSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
