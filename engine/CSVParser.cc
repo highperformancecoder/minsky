@@ -332,6 +332,16 @@ namespace
     const char* what() const noexcept override {return msg.c_str();}
   };
 
+  struct ShortLine: public std::exception
+  {
+    std::string msg="Short line";
+    ShortLine(const Key& x, const Tokens<SliceLabelToken>& tokens) {
+      for (auto& i: x)
+        msg+=":"+tokens[i];
+    }
+    const char* what() const noexcept override {return msg.c_str();}
+  };
+  
   struct MemoryExhausted: public std::exception
   {
     const char* what() const noexcept override {return "exhausted memory - try reducing the rank";}
@@ -678,7 +688,7 @@ namespace minsky
     vector<unordered_map<typename Key::value_type, size_t>> dimLabels;
     Hypercube hc;
     size_t row=0, col=0;
-
+    
     ~ParseCSV() {TrackingAllocatorBase::destructing=true;}
     template <class E>
     ParseCSV(istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError, bool checkValues=false):
@@ -804,11 +814,17 @@ namespace minsky
                         {
                           if (spec.dontFail)
                             goto invalidKeyGotoNextLine;
-                          else
-                            onError(InvalidData(*field,to_string(spec.dimensions[dim].type),spec.dimensionNames[dim]),row);
+                          onError(InvalidData(*field,to_string(spec.dimensions[col].type),spec.dimensionNames[col]),row);
                         }
                       dim++;
                     }
+
+                if (key.size()<hc.rank()-tabularFormat)
+                  {
+                    if (spec.dontFail)
+                      goto invalidKeyGotoNextLine;
+                    onError(ShortLine(key,sliceLabelTokens),row);
+                  }
 
                 col=0;
                 for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
@@ -869,7 +885,8 @@ namespace minsky
                                 switch (spec.duplicateKeyAction)
                                   {
                                   case DataSpec::throwException:
-                                    onError(DuplicateKey(key,sliceLabelTokens),row); 
+                                    if (!spec.dontFail)
+                                      onError(DuplicateKey(key,sliceLabelTokens),row); 
                                   case DataSpec::sum:
                                     i->second+=v;
                                     break;
@@ -1102,6 +1119,7 @@ namespace minsky
         duplicates.emplace(row,ex.key);
       }
       void operator()(const InvalidData& ex, size_t row) {invalidData.emplace(row, ex.msg);}
+      void operator()(const ShortLine& ex, size_t row) {invalidData.emplace(row, ex.msg);}
       /// update a map of keys to first rows for duplicate key processing
       void rowKeyInsert(const Key& key, size_t row) {firstRow.emplace(key,row);}
     } onError;
