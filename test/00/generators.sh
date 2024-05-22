@@ -37,7 +37,7 @@ minsky.canvas.addVariable('gen','parameter')
 for op in ['eye', 'one', 'zero', 'iota']:
   minsky.canvas.itemFocus().init(f'{op}(3,3)')
   minsky.reset()
-  minsky.canvas.itemFocus().exportAsCSV(f'{op}.csv')
+  minsky.canvas.itemFocus().exportAsCSV(f'{op}.csv',False)
 EOF
 
 python3 input.py
