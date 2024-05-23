@@ -1187,8 +1187,8 @@ namespace minsky
       {
         if (!onError.duplicates.contains(row) && !onError.invalidData.contains(row))
           output<<sep+buf<<endl;
-          bytesRead+=buf.size();
-          pu.setProgress(double(bytesRead)/fileSize);
+        bytesRead+=buf.size();
+        pu.setProgress(double(bytesRead)/fileSize);
       }
     }
   }
