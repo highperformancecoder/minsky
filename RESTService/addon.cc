@@ -398,7 +398,8 @@ namespace minsky
       }
 
       MemCheckResult checkMemAllocation(std::size_t bytes) const override {
-        if (messageCallbackSet && bytes>0.2*physicalMem())
+        // Electron restricts heap size to 4GiB, regardless of how much physical memory is present
+        if (messageCallbackSet && bytes>/*physicalMem()*/4ULL*1024*1024*1024)
           {
             theMessage="Allocation will use more than 50% of available memory. Do you want to proceed?";
             messageButtons={"No","Yes"};
@@ -538,30 +539,9 @@ namespace minsky
 
   // GUI callback needed only to solve linkage problems
   void doOneEvent(bool idleTasksOnly) {}
+
 }
 
-// Turn signal into an exception, since Node reports heap exhaustion via a signal
-template <int S> struct Signal;
-template <int S> void signalHandler(int);
-// Using a macro here, because by the time the signal handler is
-// called, the heap is likely exhausted, so we can't do runtime string
-// manipulation
-#define SIG_HANDLER(sig)                                                \
-  template <> struct Signal<sig>: public std::exception                 \
-  {                                                                     \
-    const char* what() const noexcept override                          \
-    {                                                                   \
-      return #sig" received";                                           \
-    }                                                                   \
-  };                                                                    \
-  template <>                                                           \
-  void signalHandler<sig>(int)                                          \
-  {                                                                     \
-    throw Signal<sig>();                                                \
-  }                                                                     
-
-SIG_HANDLER(SIGTRAP);
-  
 struct MinskyAddon: public Addon<MinskyAddon>
 {
   minsky::AddOnMinsky addOnMinsky;
@@ -584,7 +564,6 @@ struct MinskyAddon: public Addon<MinskyAddon>
         InstanceMethod("setResetScrollCallback", &MinskyAddon::setResetScrollCallback),
         InstanceMethod("cancelProgress", &MinskyAddon::cancelProgress)
       });
-    signal(SIGTRAP,signalHandler<SIGTRAP>);
   }
 
   Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}

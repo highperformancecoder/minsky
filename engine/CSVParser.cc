@@ -640,6 +640,7 @@ namespace minsky
   // gets a line, accounting for quoted newlines
   bool getWholeLine(istream& input, string& line, const DataSpec& spec)
   {
+    line.clear();
     bool r=getline(input,line).good();
     chomp(line);
     while (r)
@@ -655,7 +656,7 @@ namespace minsky
         line+=buf;
       }
     escapeDoubledQuotes(line,spec);
-    return r;
+    return r || !line.empty();
   }
 
   void escapeDoubledQuotes(std::string& line,const DataSpec& spec)
@@ -695,7 +696,7 @@ namespace minsky
       dimLabels(spec.dimensionCols.size())
     {
       const BusyCursor busy(minsky());
-      const ProgressUpdater pu(minsky().progressState, "Parsing CSV",6);
+      const ProgressUpdater pu(minsky().progressState, "Parsing CSV",2);
 
       P csvParser(spec.escape,spec.separator,spec.quote);
       string buf;
@@ -778,7 +779,8 @@ namespace minsky
             for (; getWholeLine(input, buf, spec); ++row)
               {
                 if (!memUsageChecked)
-                  switch (cminsky().checkMemAllocation(TrackingAllocatorBase::allocatedBytes))
+                  // fudge this a bit, because we're using a mmap allocator to bypass Electron's heap
+                  switch (cminsky().checkMemAllocation((2147483648.0*TrackingAllocatorBase::allocatedBytes)/TrackingAllocatorBase::poolSize))
                     {
                     case Minsky::OK: break;
                     case Minsky::proceed:
@@ -804,7 +806,10 @@ namespace minsky
                         hc.xvectors.emplace_back("?"); // no header present
                       try
                         {
-                          auto keyElem=anyVal[dim](trimWS(*field));
+                          auto trimmedField=trimWS(*field);
+                          if (trimmedField.empty() && spec.dimensions[col].type!=Dimension::string)
+                            onError(InvalidData("<empty>",to_string(spec.dimensions[col].type),spec.dimensionNames[col]),row);
+                          auto keyElem=anyVal[dim](trimmedField);
                           auto skeyElem=str(keyElem, spec.dimensions[dim].units);
                           if (dimLabels[dim].emplace(sliceLabelTokens[skeyElem], dimLabels[dim].size()).second)
                             hc.xvectors[dim].emplace_back(keyElem);
@@ -958,7 +963,7 @@ namespace minsky
   void loadValueFromCSVFileT(VariableValue& vv, istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError)
   {
     const BusyCursor busy(minsky());
-    const ProgressUpdater pu(minsky().progressState, "Importing CSV",6);
+    const ProgressUpdater pu(minsky().progressState, "Importing CSV",4);
 
     // set up off-heap memory allocator, and ensure it is torn down at exit
     TrackingAllocatorBase::allocatePool();
@@ -1003,7 +1008,7 @@ namespace minsky
         if (log(tmpData.size())-hc.logNumElements()>=log(0.5)) 
           { // dense case
             vv.index({});
-            if (cminsky().checkMemAllocation(hc.numElements()*sizeof(double))==Minsky::abort)
+            if (cminsky().checkMemAllocation(2*hc.numElements()*sizeof(double))==Minsky::abort)
               throw MemoryExhausted();            
             vv.hypercube(hc);
             // stash the data into vv tensorInit field
@@ -1033,7 +1038,7 @@ namespace minsky
           }    
         else 
           { // sparse case	
-            if (cminsky().checkMemAllocation(tmpData.size()*sizeof(double))==Minsky::abort)
+            if (cminsky().checkMemAllocation(6*tmpData.size()*sizeof(double))==Minsky::abort)
               throw MemoryExhausted();	  	  		
             auto dims=hc.dims();
             const ProgressUpdater pu(minsky().progressState,"Indexing and loading",2);
@@ -1072,7 +1077,6 @@ namespace minsky
                   vv.tensorInit[j++]=i.second;
                   ++minsky().progressState;
                 }
-              vv=vv.tensorInit;
             }
           }
         minsky().progressState.title="Cleaning up";
@@ -1105,6 +1109,8 @@ namespace minsky
   template <class P>
   void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize )
   {
+    const BusyCursor busy(minsky());
+    const ProgressUpdater pu(minsky().progressState, "Generating report",3);
     // set up off-heap memory allocator, and ensure it is torn down at exit
     TrackingAllocatorBase::allocatePool();
     auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
@@ -1132,30 +1138,42 @@ namespace minsky
     if (!input) throw FailedToRewind();
     string buf;
     size_t row=0;
-
-    // extract all error lines  
+    string sep{spec.separator};
     multimap<Key,string> duplicateLines;
     vector<string> invalidDataLines;
-    string sep{spec.separator};
-    for (;  getWholeLine(input, buf, spec); ++row)
-      {
-        if (onError.duplicates.contains(row))
-          duplicateLines.emplace(onError.duplicates[row],"Duplicate key"+sep+buf);
-        if (onError.invalidData.contains(row))
-          invalidDataLines.push_back(onError.invalidData[row]+sep+buf);
-      }
 
+    {
+      // extract all error lines  
+      ProgressUpdater pu(minsky().progressState, "Extracting errors",3);
+      size_t bytesRead=0;
+      for (;  getWholeLine(input, buf, spec); ++row)
+        {
+          if (onError.duplicates.contains(row))
+            duplicateLines.emplace(onError.duplicates[row],"Duplicate key"+sep+buf);
+          if (onError.invalidData.contains(row))
+            invalidDataLines.push_back(onError.invalidData[row]+sep+buf);
+          bytesRead+=buf.size();
+          pu.setProgress(double(bytesRead)/fileSize);
+        }
+    }
+    
     // now output report
     input.clear();
     input.seekg(0);
     if (!input) throw FailedToRewind();
-    // process header
-    for (row=0; row<spec.nRowAxes() && getWholeLine(input, buf, spec); ++row)
-      {
-        if (row==spec.headerRow)
-          output<<"Error"<<sep;
-        output<<buf<<endl;
-      }
+    {
+      ProgressUpdater pu(minsky().progressState, "Writing report",3);
+      size_t bytesRead=0;
+      // process header
+      for (row=0; row<spec.nRowAxes() && getWholeLine(input, buf, spec); ++row)
+        {
+          if (row==spec.headerRow)
+            output<<"Error"<<sep;
+          output<<buf<<endl;
+          bytesRead+=buf.size();
+          pu.setProgress(double(bytesRead)/fileSize);
+        }
+      
     // process invalid data
     for (auto& i: invalidDataLines)
       output<<i<<endl;
@@ -1164,9 +1182,13 @@ namespace minsky
       output<<i.second<<endl;
     // process remaining good part of the file
     for (; getWholeLine(input, buf, spec); ++row)
-      if (!onError.duplicates.contains(row) && !onError.invalidData.contains(row))
-        output<<sep+buf<<endl;
-    
+      {
+        if (!onError.duplicates.contains(row) && !onError.invalidData.contains(row))
+          output<<sep+buf<<endl;
+          bytesRead+=buf.size();
+          pu.setProgress(double(bytesRead)/fileSize);
+      }
+    }
   }
 
   void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec, uintmax_t fileSize)
