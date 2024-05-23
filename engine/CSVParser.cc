@@ -510,16 +510,16 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
       if (buf.empty()) continue;
       // remove trailing carriage returns
       if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
-      const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
-      vector<string> line(tok.begin(), tok.end());
-      if (!line.empty())
+      if (!buf.empty())
         {
           smatch match;
-          static const regex re("RavelHypercube=(.*)");
-          if (regex_match(line[0], match, re))
+          static const regex re("\"RavelHypercube=(.*)\"");
+          if (regex_match(buf, match, re))
             try
               {
                 string metadata=match[1];
+                // remove leaning toothpicks
+                metadata.erase(remove(metadata.begin(),metadata.end(),'\\'));
                 string horizontalName;
                 getline(input, buf);
                 static const regex re("HorizontalDimension=\"(.*)\"");
@@ -536,6 +536,8 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
                 continue; // in case of error, ignore the RavelHypercube line.
               }
         }
+      const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
+      vector<string> line(tok.begin(), tok.end());
       starts.push_back(firstNumerical(line));
       nCols=std::max(nCols, line.size());
       if (starts.back()==line.size())
