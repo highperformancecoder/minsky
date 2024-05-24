@@ -207,6 +207,8 @@ namespace minsky
     /// populate missing dimensions from a variableValue
     /// @param incompatibleMessageDisplayed boolean flag to make message display single shot
     void populateMissingDimensionsFromVariable(const VariableValue&, bool& incompatibleMessageDisplayed);
+    void populateMissingDimensionsFromVariable(const VariableValue& v)
+    {bool dummy; populateMissingDimensionsFromVariable(v,dummy);}
     void renameDimension(const std::string& oldName, const std::string& newName);
     
     void setGodleyIconResource(const string& s)
