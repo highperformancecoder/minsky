@@ -588,7 +588,9 @@ struct MinskyAddon: public Addon<MinskyAddon>
         InstanceMethod("setResetScrollCallback", &MinskyAddon::setResetScrollCallback),
         InstanceMethod("cancelProgress", &MinskyAddon::cancelProgress)
       });
+#ifndef _WIN32
     signal(SIGTRAP,handleSignal);
+#endif
   }
 
   Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}
