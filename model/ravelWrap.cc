@@ -64,12 +64,17 @@ namespace minsky
   {
     if (!wrappedRavel)
       {
-        tooltip("https://ravelation.hpcoders.com.au");
+        tooltip("https://ravelation.net");
         detailedText(wrappedRavel.lastError());
       }
     if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
       return; // early return if at least 1 ravel already present
     m_editorMode=true; // first ravel is in editor mode
+    // set an intial 3 axis ravel to give an indication of what it is about
+    wrappedRavel.addHandle("Year",{"1990","1991","1992"});
+    wrappedRavel.addHandle("Gender",{"Male","Female"});
+    wrappedRavel.addHandle("Country",{"Australia","UK","USA"});
+    wrappedRavel.setOutputHandleIds({0,2});
   }
 
   void Ravel::draw(cairo_t* cairo) const
