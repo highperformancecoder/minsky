@@ -368,7 +368,9 @@ namespace minsky
         auto buttons=Array::New(env);
         for (unsigned i=0; i< addonMinsky->messageButtons.size(); ++i)
           buttons[i]=String::New(env,addonMinsky->messageButtons[i]);
-        addonMinsky->userResponse.set_value(fn({String::New(env,addonMinsky->theMessage), buttons}).As<Number>().Int32Value());
+        try {
+          addonMinsky->userResponse.set_value(fn({String::New(env,addonMinsky->theMessage), buttons}).As<Number>().Int32Value());
+        } catch (...) {/* may fail if multiple messages posted in rapid succession */}
       }
 
       bool messageCallbackSet=false;

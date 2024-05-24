@@ -204,7 +204,9 @@ namespace minsky
     std::map<Units, double> maxFlowValue; // max flow values along wires
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
-    void populateMissingDimensionsFromVariable(const VariableValue&);
+    /// populate missing dimensions from a variableValue
+    /// @param incompatibleMessageDisplayed boolean flag to make message display single shot
+    void populateMissingDimensionsFromVariable(const VariableValue&, bool& incompatibleMessageDisplayed);
     void renameDimension(const std::string& oldName, const std::string& newName);
     
     void setGodleyIconResource(const string& s)
