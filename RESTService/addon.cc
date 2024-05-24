@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// @file An nodejs-embedded REST Service
+/// @file A nodejs-embedded REST Service
 #include <napi.h>
 #include "RESTMinsky.h"
 #include "minsky_epilogue.h"
@@ -25,6 +25,7 @@
 #include <exception>
 #include <atomic>
 #include <future>
+#include <filesystem>
 
 #ifdef _WIN32
 #include <time.h>
@@ -411,7 +412,7 @@ namespace minsky
           }
         return OK;
       }
-
+    
       // signature of last param must be non-const
       static void busyCursorCallback(Napi::Env env, Napi::Function fn, void*, bool* busy)
       {
@@ -523,6 +524,21 @@ namespace minsky
           (env,info[0].As<Function>(), "resetScroll",0,2,nullptr);
         return env.Null();
       }
+      void outOfMemoryHandler()
+      {
+        string file=(std::filesystem::current_path()/"savedRavelSession.rvl").string();
+        if (autoSaver) {
+          autoSaver->killThread();
+          file=autoSaver->fileName;
+        }
+        save(file);
+
+        theMessage="Out of memory, saving to autosave file: "+file;
+        messageButtons={"OK"};
+        userResponse={}; //reset the promise
+        tsMessageCallback.BlockingCall(const_cast<AddOnMinsky*>(this));
+        userResponse.get_future().get();
+      }
     };
     
     Minsky* l_minsky=NULL;
@@ -542,6 +558,12 @@ namespace minsky
   // GUI callback needed only to solve linkage problems
   void doOneEvent(bool idleTasksOnly) {}
 
+}
+
+void handleSignal(int)
+{
+  static_cast<minsky::AddOnMinsky&>(minsky::minsky()).outOfMemoryHandler();
+  exit(1);
 }
 
 struct MinskyAddon: public Addon<MinskyAddon>
@@ -566,6 +588,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
         InstanceMethod("setResetScrollCallback", &MinskyAddon::setResetScrollCallback),
         InstanceMethod("cancelProgress", &MinskyAddon::cancelProgress)
       });
+    signal(SIGTRAP,handleSignal);
   }
 
   Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}
