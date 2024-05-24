@@ -130,12 +130,18 @@ namespace minsky
       case parameter:
         m_idx=ValueVector::flowVars.size();
         assert(size());
+        // return a more meaningful error message to the user than what STL does
+        if (ValueVector::flowVars.max_size()-ValueVector::flowVars.size()<size())
+          throw runtime_error("Maximum processing data exceeded.");
         ValueVector::flowVars.resize(ValueVector::flowVars.size()+size());
         break;
       case stock:
       case integral:
         m_idx=ValueVector::stockVars.size();
         assert(size());
+        // return a more meaningful error message to the user than what STL does
+        if (ValueVector::stockVars.max_size()-ValueVector::stockVars.size()<size())
+          throw runtime_error("Maximum processing data exceeded.");
         ValueVector::stockVars.resize(ValueVector::stockVars.size()+size());
         break;
       default: break;
