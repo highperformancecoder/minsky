@@ -1007,6 +1007,11 @@ namespace minsky
           xv.imposeDimension();
         ++minsky().progressState;
 
+        if (hc.logNumElements()>log(numeric_limits<size_t>::max()))
+          throw runtime_error("Hypercube dimensionality exceeds maximum size, results are likely to be garbage.\n"
+                  "Suggest rolling up one or more axes by ignoring them, and setting 'Duplicate Key Action' as appropriate");
+            
+        
         if (log(tmpData.size())-hc.logNumElements()>=log(0.5)) 
           { // dense case
             vv.index({});
