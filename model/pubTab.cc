@@ -48,8 +48,9 @@ namespace minsky
         origRotation(item.itemRef? item.itemRef->rotation(): 0),
         stashedZf(cminsky().canvas.model->relZoom)
       {
-        cminsky().canvas.model->relZoom=1;
         if (!item.itemRef) return;
+        if (auto g=item.itemRef->group.lock())
+          g->relZoom=1/g->zoomFactor();
         if (auto g=item.itemRef->godleyIconCast())
           {
             if ((variableDisplay=g->variableDisplay()))
@@ -66,8 +67,10 @@ namespace minsky
       }
       ~EnsureEditorMode()
       {
-        cminsky().canvas.model->relZoom=stashedZf;
         if (!item.itemRef) return;
+        if (auto g=item.itemRef->group.lock())
+          g->relZoom=stashedZf;
+        
         if (editorModeToggled)
           item.itemRef->toggleEditorMode();
         if (auto g=item.itemRef->godleyIconCast())
