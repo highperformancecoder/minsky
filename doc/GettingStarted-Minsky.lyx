@@ -1,0 +1,9268 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Getting Started with Minsky
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Getting-Started-Minsky"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+System requirements
+\end_layout
+
+\begin_layout Standard
+Minsky is an open source program available for Windows, Mac OS X, and various
+ Linux distributions, as well as compilable on any suitable Posix compliant
+ system.
+ Go to our 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdnormallink
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+SourceForge page
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+https://minsky.sourceforge.io
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to download the version you need.
+ Linux packages are available from the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdnormallink
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+OpenSUSE build service
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+https://build.opensuse.org/package/show/home:hpcoder1/minsky
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Getting help
+\end_layout
+
+\begin_layout Standard
+Press the F1 key, or select 
+\begin_inset Quotes eld
+\end_inset
+
+help
+\begin_inset Quotes erd
+\end_inset
+
+ from the context menu.
+ Help is context-sensitive.
+\end_layout
+
+\begin_layout Section
+Components of the Program
+\end_layout
+
+\begin_layout Standard
+There are 6 components to the Minsky interface:
+\end_layout
+
+\begin_layout Enumerate
+The menus.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="6">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+File 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Edit 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Insert 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Options 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Simulation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Help 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The Run buttons
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem15.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The simulation speed slider
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem16.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The Zoom buttons
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem17.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The Wiring and Equation tabs
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+WiringEquationsTab.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The design icons
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+fwhtmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem18.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+And finally the Design Canvas–the large drawing area beneath the buttons
+ and icons.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+fwhtmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem19.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Menu
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Menu"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="6">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+File 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Edit 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Insert 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Options 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Runge Kutta 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Help 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The menu controls the basic functions of saving and loading files, default
+ settings for the program, etc.
+ These will alter as the program is developed; the current menu items are:
+\end_layout
+
+\begin_layout Subsubsection
+File
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "File"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+About Minsky
+\end_layout
+
+\end_inset
+
+ Tells you the version of Minsky that you are using.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+New System
+\end_layout
+
+\end_inset
+
+ Clear the design canvas.
+\end_layout
+
+\begin_layout Description
+Open Open an existing Minsky file (Minsky files have the suffix of 
+\begin_inset Quotes eld
+\end_inset
+
+mky
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Recent Files
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "recentfiles"
+
+\end_inset
+
+ Provides a shortcut to some of your previously opened Minsky files.
+\end_layout
+
+\begin_layout Description
+Library Opens a repository of models for the Minsky simulation system.
+\end_layout
+
+\begin_layout Description
+Save Save the current file.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Save As
+\end_layout
+
+\end_inset
+
+ Save the current file under a new name.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Insert File as Group
+\end_layout
+
+\end_inset
+
+ Insert a Minsky file directly into the current model as a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Export Canvas
+\end_layout
+
+\end_inset
+
+ Export the current canvas into *svg, *pdf, *eps, *tex, or *m format.
+ If using LaTeX (*tex), produce the set of equations that define the current
+ system for use in documenting the model, for use in LaTeX compatible typesettin
+g systems.
+ If your LaTeX implemention doesn't support breqn, untick the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+wrap long equations option
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+wrap-equations
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, which can be found in the preferences panel under the options menu.
+ If using a MatLab function this can be used to simulate the system in a
+ MatLab compatible system, such as 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdnormallinkfoot
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+MatLab
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+https://en.wikipedia.org/wiki/MATLAB
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ or 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdnormallinkfoot
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Octave
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+http://www.gnu.org/software/octave/
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Log simulation
+\end_layout
+
+\end_inset
+
+ Outputs the results of the integration variables into a CSV data file for
+ later use in spreadsheets or plotting applications.
+\end_layout
+
+\begin_layout Description
+Recording Record the states of a model as it is being built for later replay.
+ This is useful for demonstrating how to build a model, but bear in mind
+ that recorded logs are not, in general, portable between versions of Minsky.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Replay recording
+\end_layout
+
+\end_inset
+
+ Replay a recording of model states.
+\end_layout
+
+\begin_layout Description
+Quit Exit the program.
+ Minsky will check to see whether you have saved your changes.
+ If you have, you will exit the program; if not, you will get a reminder
+ to save your changes.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Debugging use
+\end_layout
+
+\end_inset
+
+ Items under the line are intended for developer use, and will not be documented
+ here.
+ Redraw may be useful if the screen gets messed up because of a bug.
+\end_layout
+
+\begin_layout Subsubsection
+Edit
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Edit"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "edit:undo"
+
+\end_inset
+
+ Undo and Redo allow you to step back and forward in your editing history.
+ If you step back a few steps, and then edit the model, all subsequent model
+ states will be erased from the history.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "edit:copy"
+
+\end_inset
+
+ Cut/copy/paste.
+ Selecting, or lassoing a region of the canvas will select a group of icons,
+ which will be shaded to indicate the selected items.
+ Wires joining two selected items will also be selected.
+ Note that, compatible with X-windows, selecting automatically performs
+ a copy, so the copy operation is strictly redundant, but provided for users
+ familiar with systems where an explicit copy request is required.
+ Cut deletes the selected items.
+ Paste will paste the items in the clipboard as a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ into the current model.
+ At the time of writing, copy-pasting between different instances of Minsky,
+ or into other applications, may not work on certain systems.
+ Pasting the clipboard into a text-based application will be a Minsky schema
+ XML document.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{0.45
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/selectionExamplePrior.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+raisebox{1.5cm}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\Rightarrow$
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{0.45
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/selectionExamplePost.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{rawhtml}
+\end_layout
+
+\end_inset
+
+ <table> <tr> <td><img src=
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+selectionExamplePrior.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+">
+\end_layout
+
+\end_inset
+
+</td> <td><big>&#x21d2;</big></td> <td><img src=
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+selectionExamplePost.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+">
+\end_layout
+
+\end_inset
+
+</td> </tr> </table> 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{rawhtml}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "edit:group"
+
+\end_inset
+
+ Create a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ using the contents of the selection.
+ Groups allow you to organise more complicated systems specification into
+ higher level modules that make the overall system more comprehensible.
+\end_layout
+
+\begin_layout Subsubsection
+Insert
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Insert"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This menu contains a set of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+mathematical operator blocks
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Operations
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ for placement on the Canvas.
+ You can get the same effect by clicking on the Design Icons.
+ Also present are entries for 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Godley table items
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+godley
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Plots
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+PlotWidget
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Options
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Options"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The options menu allows you to customise aspects of Minsky.
+\end_layout
+
+\begin_layout Description
+Preferences 
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 1
+width ""
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Godley table show values.
+ When ticked, the values of flow variables are displayed in the Godley table
+ whilst a simulation is running.
+ This will tend to slow down the simulation somewhat.
+ 
+\end_layout
+
+\begin_layout Itemize
+Godley table output style — whether 
+\begin_inset Formula $+/-$
+\end_inset
+
+ or DR/CR (debit/credit) indicators are used.
+ 
+\end_layout
+
+\begin_layout Itemize
+Enable multiple equity columns - whether Godley table have more than one
+ equity columns.
+ 
+\end_layout
+
+\begin_layout Itemize
+Number of recent files to display — affects the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+recent files
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+recentfiles
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ menu.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "wrap-equations"
+
+\end_inset
+
+ Wrap long equations in LaTeX export.
+ If ticked, use the breqn package to produce nicer looking automatically
+ line-wrapped formulae.
+ Because not all LaTeX implementations are guaranteed to support breqn,
+ untick this option if you find difficulty.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "font"
+
+\end_inset
+
+ select a font for variable names etc.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Background colour
+\end_layout
+
+\end_inset
+
+ — select a colour from which a colour scheme is computed.
+\end_layout
+
+\begin_layout Subsubsection
+Simulation
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "RungeKutta"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Time unit allows one to specify units for the time dimension for dimensional
+ analysis.
+ eg 
+\begin_inset Quotes eld
+\end_inset
+
+year
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+s
+\begin_inset Quotes erd
+\end_inset
+
+ etc.
+ 
+\end_layout
+
+\begin_layout Itemize
+Controls aspect of the adaptive Runge-Kutta equation solver, which trade
+ off performance and accuracy of the model.
+ 
+\end_layout
+
+\begin_layout Itemize
+Note a first order explicit solver is the classic Jacobi method, which is
+ the fastest, but least accurate solver.
+ 
+\end_layout
+
+\begin_layout Itemize
+The algorithm is adaptive, so the step size will vary according to how stiff
+ the system of equations is.
+ 
+\end_layout
+
+\begin_layout Itemize
+Specifying a minimum step size prevents the system from stalling, at the
+ expense of accuracy when the step size reaches that minimum.
+ 
+\end_layout
+
+\begin_layout Itemize
+Specifying a maximum step size is useful to ensure one has sufficient data
+ points for smooth plots.
+ 
+\end_layout
+
+\begin_layout Itemize
+An iteration is the time between updates to plots, increasing the number
+ of solver steps per iteration decreases the overhead involved in updating
+ the display, at the expense of smoothness of the plots.
+ Screen refresh is the period between screen updates, in ms.
+ If an iteration takes less than this time, the screen refresh is postponed
+ until the time has expired.
+ 100ms is fast enough for a smooth animation of the simulation - increasing
+ this value will improve simulation performance at the cost of a jerky animation
+ of the simulation.
+ 
+\end_layout
+
+\begin_layout Itemize
+Start time is the value of the system 
+\begin_inset Formula $t$
+\end_inset
+
+ variable when the system is reset.
+ 
+\end_layout
+
+\begin_layout Itemize
+Run until time can be used to pause the simulation ince t reaches a certain
+ value.
+ Setting this to 
+\begin_inset Quotes eld
+\end_inset
+
+Infinity
+\begin_inset Quotes erd
+\end_inset
+
+ causes the simulation to run indefinitely, or until some arithmetic error
+ occurs.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Help
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Help"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Provides an in-program link to this manual.
+ Note that pressing F1 will also launch help windows in a cintext sensitive
+ way, ie it will open the relevant help section for where ever the mouse
+ is over.
+ Similarly, each item on the canvas has a help menu item in the context
+ menu relevant for that item.
+\end_layout
+
+\begin_layout Subsection
+Record/Replay Buttons
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "RecReplayButtons"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+recReplayButtons.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These buttons control the recording / replay mode of Minsky.
+ You can record your interactions with Minsky, and replay those interactions
+ for demonstration/presentation purposes.
+\end_layout
+
+\begin_layout Enumerate
+Record a session of building/modifying a model.
+ Note that replaying a recorded session always starts from a blank canvas,
+ so if you're recording the modification of a model, ensure that the first
+ thing recorded is to load the model being modified.
+ This button is a toggle button, so clicking it again finishes the session,
+ and closes the file.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Simulate/Replay button.
+ Pressing this button changes Minsky into replay mode, and asks for a recording
+ file.
+ You may use the run buttons (run/pause,stop and step), as well as the speed
+ slider, to control the replay.
+ This button is a toggle button, so clicking it again returns Minsky back
+ to the default simulation mode.
+ 
+\end_layout
+
+\begin_layout Subsection
+Recalculate button
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Recalculate"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+recalculate.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The recalculate button computes the values of all variables at the start
+ of simulation.
+ It is particularly useful for recalculating the state of the model with
+ tensor valued data.
+\end_layout
+
+\begin_layout Subsection
+Run Buttons
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "RunButtons"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem15.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Run buttons respectively: 
+\end_layout
+
+\begin_layout Enumerate
+Start a simulation–when started the button changes to a pause icon, allowing
+ you to pause the simulation 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem23.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Stop a simulation and reset the simulation time to zero 
+\end_layout
+
+\begin_layout Enumerate
+Step through the simulation one iteration at a time.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Reverse checkbox changes the simulation time direction.
+ Bear in mind that a simulation will eventually diverge from its original
+ trajectory due to chaotic effects.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+subsection{Manipulating items on the canvas}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{description}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item[To move] and item, click on the interior of an item and drag it
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%to the new position.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item[To wire items] click on the small circle representing the output
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%port, and drag out a wire towards an input port on another item.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item[To lasso], click outside of any item and drag out a rectangular
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%region.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item[To pan] the canvas, hold the shift key down whilst dragging on
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%the canvas.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{description}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{description}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item[Wire] This draws wires that connect one operator on the Canvas
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%to another.
+ For example, if you have placed these icons on the
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Palette: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+htmladdimg{NewItem24.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%and you now want to link them together into an equation, then click on
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%the Wire button, move the cursor to the right end of GDP, and click
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%and drag to the top of the divide symbol:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+htmladdimg{NewItem25.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Do the same for LabProd, and to attach the Divide icon to the left
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%hand side of Workers, and you've defined the equation that the number
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%of workers employed equals GDP divided by labor productivity.
+ The
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%flowchart will look like this: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+htmladdimg{NewItem26.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%And this is the equation you have now created:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{displaymath}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+mathrm{Workers}=
+\backslash
+frac{
+\backslash
+mathrm{GDP}}{
+\backslash
+mathrm{LabProd}}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{displaymath}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item[Move] This is the default mode for the mouse, and it lets you:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item Move already entered icons around the Canvas by clicking on
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%them, holding the mouse button down, and releasing it when you have
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%got to the desired location; 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item Select an item from the Design Icons and place it on the
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Canvas.
+ When you first click on an Icon, it will either appear at the
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%top left hand corner of the Canvas, or bring up a menu where you enter
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%various essential details (Name, value etc.), after which the Icon
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%appears at the top left hand corner of the Canvas.
+ It will then snap
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%to wherever the mouse cursor currently is, and can be placed on the
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Canvas by clicking.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item[Pan] This moves all the Icons on the Canvas as a group, which is useful
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%when you have a very large model and you want to move to a small part
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%of it.
+ Choose Pan, click and hold the mouse button down, and then move
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%the mouse.
+ The entire model will shift with the mouse.
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+item[Lasso] Lassoing is the first step in creating a Group, or
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%selecting multiple Icons for some operation (copying, deleting,
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%etc.---these are not yet implemented but will be in the next major
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%release).
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{description}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%        Grouping.
+ Choose Lasso, click and hold down the mouse button,
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%        then drag over the region you wish to make into a group:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+htmladdimg{NewItem117.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Release the mouse button, and a box will be drawn around the selected
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%items which can now be moved as a single entity.
+ The inputs to the
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%group are noted on the input side of the group, and the outputs on the
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%output side:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+htmladdimg{NewItem118.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%One unique feature of Minsky (when compared to existing system
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%dynamics programs) is that the contents of the group can still be seen
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%inside the group window, and they can also be edited from there.
+ In
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%the next image, the contents of the group were moved more cleanly
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%inside the group (this feature is still being implemented, so some
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%tidying up was needed, but was possible without having to open the
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%group in a separate window):
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+htmladdimg{NewItem119.png}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Speed slider
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Speedslider"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem16.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The speed slider controls the rate at which a model is simulated.
+ The default speed is the maximum speed your system can support, but you
+ can slow this down to more closely observe dynamics at crucial points in
+ a simulation.
+\end_layout
+
+\begin_layout Subsection
+Zoom buttons
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "ZoomButtons"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem17.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The Zoom buttons zoom in and out on the wiring canvas.
+ The same functionality is accessed via the mouse scroll wheel.
+ The reset zoom button 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+zoomOrig.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ resets the zoom level to 1, and also recentres the canvas.
+ It can also be used to recentre the equation view.
+\end_layout
+
+\begin_layout Standard
+The zoom to fit button zooms the model so that it just fits in the current
+ canvas window.
+\end_layout
+
+\begin_layout Subsection
+Simulation time
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "SimTime"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the right hand top corner is a textual display of the current simulation
+ time 
+\begin_inset Formula $t$
+\end_inset
+
+, and the current (adaptive) difference between iterations 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Wiring and Equations Tabs
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "WiringEquationsTab"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+WiringEquationsTab.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This allows you to switch between the visual block diagram wiring view and
+ the more mathematical equations view.
+\end_layout
+
+\begin_layout Subsection
+Design Icons
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+fwhtmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem18.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These are the 
+\begin_inset Quotes eld
+\end_inset
+
+nuts and bolts
+\begin_inset Quotes erd
+\end_inset
+
+ of any system dynamics program.
+ The number of icons will grow over time, but the key ones are implemented
+ now:
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Import data
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+importData.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Opens an import CSV file dialog, allowing the creation of a parameter from
+ a CSV data file.
+ See 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Importing CSV files
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Operation:csvImport
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Description
+Ravel See 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Ravel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Ravel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Plot widget
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+plot.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Add 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+plots
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+PlotWidget
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to the canvas.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Sheet widget
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+sheet.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Add a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+sheet
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Sheet
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to the canvas.
+\end_layout
+
+\begin_layout Description
+Variable 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+var.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "Variable"
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+This is a pull down menu, giving access to creating variables, constants
+ and parameters.
+\end_layout
+
+\begin_layout Standard
+Variables are entities whose value changes as a function of time and its
+ relationship with other entities in your model.
+ Click on it and a variable definition window will appear:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem32.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The only essential step here is providing a name for the Variable.
+ You can also enter a value for it (and a rotation in degrees), but these
+ can be omitted.
+ In a dynamic model, the value will be generated by the model itself, provided
+ its input is wired.
+\end_layout
+
+\begin_layout Standard
+When you click on OK (or press Enter), the newly named variable will appear
+ in the top left hand corner of the Canvas.
+ Move the mouse cursor to where you want to place the variable on the Canvas,
+ click, and it will be placed in that location.
+\end_layout
+
+\begin_layout Standard
+Constants are entities whose value is unaffected by the simulation or other
+ entities in the model.
+ Click on it and a constant definition window will appear:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem34.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The only essential element here is its value.
+ You can also specify its rotation on the Canvas in degrees.
+ This lets you vary a parameter while a simulation is running—which is useful
+ if you wish to explore a range of policy options while a model is running.
+\end_layout
+
+\begin_layout Standard
+A constant is just a type of variable, which also include parameters (named
+ constants), flow variables, stock variables and integration variables.
+ In fact there is no real conceptual difference between creating a constant
+ or creating a variable, as you can switch the type using the type field.
+\end_layout
+
+\begin_layout Standard
+Like the variable and constant button, the parameter button creates a variable
+ defaulting to the parameter type.
+ Parameters differ from flow variables in not having an input port, and
+ differ from constants in having a name and being controllable by a slider
+ during simulation.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+Lock Lock widgets are used with 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Ravels
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Ravel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Description
+Notes Add 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+textual annotations
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Notes
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Time 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+time.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ embeds a reference to the simulation time on the Canvas.
+ This is not necessary in most simulations, but can be useful if you want
+ to make a time-dependent process explicit, or control the appearance of
+ a graph.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+For example, by default a graph displays the simulation time on the horizontal
+ axis, so that cycles get compressed as a simulation runs for a substantial
+ period:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem36.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+If a Time block is added to the marker for the x-axis range, you can control
+ the number of years that are displayed.
+ This graph is set up to show a ten year range of the model only:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem37.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Unary functions
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+sqrt.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ These are a fairly standard complement of mathematical functions.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Binary operations
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+add.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ These execute the stated binary mathematical operations.
+ Each input can take multiple wires as well—so that to add five numbers
+ together, for example you can wire 1 input to one port on the Add block,
+ and the other four to the other port.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Min & Max Functions These take the minimum and maximum values, respectively.
+ These also allow multiple wires per input.
+\end_layout
+
+\begin_layout Standard
+Pow and log.
+ These are binary operations (taking two arguments).
+ In the case of the power operation, the exponent is the top port, and the
+ argument to be raised to that exponent is the bottom port.
+ This is indicated by the 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ labels on the ports.
+ In the case of logarithm, the bottom port (labelled 
+\begin_inset Formula $b$
+\end_inset
+
+) is the base of the logarithm.
+\end_layout
+
+\begin_layout Standard
+Logical Operators 
+\begin_inset Formula $<$
+\end_inset
+
+ 
+\begin_inset Formula $\le$
+\end_inset
+
+, =, 
+\begin_inset Formula $\wedge$
+\end_inset
+
+ 
+\begin_inset Formula $\vee$
+\end_inset
+
+ 
+\begin_inset Formula $\neg$
+\end_inset
+
+ (and, or, not)] These return 0 for false and 1 for true.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Reduction operations
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+sum.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ This menu contains operations that reduce a vector to a scalar, or reduce
+ the rank of a tensor.
+ Typically sum, product, any, all etc.
+\end_layout
+
+\begin_layout Description
+Scans 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+runningSum.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ These are running sums and the difference operator
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Miscellaneous tensor operations
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+outerProduct.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Any other tensor function not covered elsewhere.
+\end_layout
+
+\begin_layout Description
+Switch 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+switchIcon.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Add 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+a piecewise-defined function block
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+SwitchIcon
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to the canvas.
+ Also known as a hybrid function.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+User defined function
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+userFunction.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ You can define 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+your own function
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Operation:userFunction
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ using an algebraic expression, such as 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+exp(-x^2+
+\end_layout
+
+\end_inset
+
+y)+.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Godley Table
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+NewItem29.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "GodleyTable"
+
+\end_inset
+
+ This is the fundamental element of Minsky that is not found (yet) in any
+ other system dynamics program.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Clicking on it and placing the resulting Bank Icon on the Canvas enters
+ a Godley table into your model:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem29.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Double-click on the Bank Icon (or right-click and choose 
+\begin_inset Quotes eld
+\end_inset
+
+Open Godley Table
+\begin_inset Quotes erd
+\end_inset
+
+ from the context menu) and you get a double-entry bookkeeping table we
+ call a Godley Table, which looks like the following onscreen:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fwhtmladdimg{NewItem30.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/emptyGodley.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Use this table to enter the bank accounts and financial flows in your model.
+ We discuss this later in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Tutorial (Monetary)
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+tut:basicBankModel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+Integration 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+int.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\begin_inset CommandInset label
+LatexCommand label
+name "Integrate"
+
+\end_inset
+
+ This inserts a variable whose value depends on the integral of other variables
+ in the system.
+ This is the essential element for defining a dynamic model.
+ Click on it and the following entity will appear at the top left hand side
+ of the canvas (and move with your mouse until you click to place it somewhere:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem39.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes eld
+\end_inset
+
+int1
+\begin_inset Quotes erd
+\end_inset
+
+ is just a placeholder for the integration variable, and the first thing
+ you should do after creating one is give it a name.
+ Double-click on the 
+\begin_inset Quotes eld
+\end_inset
+
+int1
+\begin_inset Quotes erd
+\end_inset
+
+, or right click and choose Edit.
+ This will bring up the following menu:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem40.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Change the name to something appropriate, and give it an initial value.
+ For example, if you were building a model that included America's population,
+ you would enter the following:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem41.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The integrated variable block would now look like this:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem42.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+To model population, you need to include a growth rate.
+ According to Wikipedia, the current US population growth rate is 0.97 percent
+ per annum.
+ Expressed as an equation, this says that the annual change in population,
+ divided by its current level, equals 0.0097:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{1}{\mathrm{Population}(t)}\cdot\left(\frac{d}{dt}\mathrm{Population}(t)\right)=0.0097
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To express this as an integral equation, firstly we multiply both sides
+ of this equation by Population to get:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{d}{dt}\mathrm{Population}(t)=0.0097\cdot\mathrm{Population}(t)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then we integrate both sides to get an equation that estimates what the
+ population will be T years into the future as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathrm{Population}(T)=315+\int_{0}^{T}0.0097\cdot\mathrm{Population}(t)dt
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here, 315 (million) equals the current population of the USA, the year zero
+ is today, and 
+\begin_inset Formula $T$
+\end_inset
+
+ is some number of years from today.
+ The same equation done as a block diagram looks like this:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem46.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Or you can make it look more like the mathematical equation by right-clicking
+ on 
+\begin_inset Quotes eld
+\end_inset
+
+Population
+\begin_inset Quotes erd
+\end_inset
+
+ and choosing 
+\begin_inset Quotes eld
+\end_inset
+
+Copy Var
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Then you will get another copy of the Population variable, and you can
+ wire up the equation this way:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem47.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Either method can be used.
+ I prefer the latter because it's neater, and it emphasizes the link between
+ the simple formula for a percentage rate of change and a differential equation.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Derivative Operator
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+differentiate.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ This operator symbolically differentiates its input, provided the input
+ is differentiable.
+ An error is generated if the input is not differentiable.
+\end_layout
+
+\begin_layout Subsection
+Design Canvas
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "DesignCanvas"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Wiring"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Design Canvas is where you develop your model.
+ A model consists of a number of blocks—variables, constants and mathematical
+ operators—connected by wires.
+\end_layout
+
+\begin_layout Standard
+The canvas is 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ zoomable
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, either via the zoom buttons on the toolbar, or via the mouse scroll wheel.
+ It is also 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ pannable
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, either via the scroll bars on the right and bottom, or by holding the
+ shift key and first mouse button together.
+ The canvas is effectively unlimited, however the scroll bars treat the
+ canvas as a 
+\begin_inset Formula $10000\time10000$
+\end_inset
+
+ pixels in size.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+fwhtmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem19.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Equations tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Equations"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This displays the mathematical representation of the model
+\end_layout
+
+\begin_layout Subsection
+Parameters tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Parameters"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This displays the properties of all parameters defined in the model, in
+ one place.
+\end_layout
+
+\begin_layout Subsection
+Variables tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Variables"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This displays the properties of selected variables in the model.
+ The variables can be displayed on the tab by selecting 
+\begin_inset Quotes eld
+\end_inset
+
+Display variable on tab
+\begin_inset Quotes erd
+\end_inset
+
+ in it's context menu.
+ It may be hidden on the design canvas if it is not required for the definition
+ of something else.
+ This can be a place to keep less important variables 
+\begin_inset Quotes eld
+\end_inset
+
+out of sight
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Plots tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Plots"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Shows all plots in one place
+\end_layout
+
+\begin_layout Subsection
+Godleys tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Godleys"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Shows all Godley tables in one place.
+\end_layout
+
+\begin_layout Subsection
+Wires
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Wires"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The wires in a model connect blocks together to define equations.
+ For example, to write an equation for 100/33, you would place a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+const.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ on the canvas, and give it the value of 100:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem122.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Then do the same for 33, and place a divide block on the canvas:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem123.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Then click on the right hand edge of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+const100.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and drag to extend the wire to the numerator (
+\begin_inset Formula $\times$
+\end_inset
+
+) port of the divide operation.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/wireExample1.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Finally, add the other wire.
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/wireExample2.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Working with Minsky
+\end_layout
+
+\begin_layout Subsection
+Components in Minsky
+\end_layout
+
+\begin_layout Standard
+There are a number of types of components in Minsky 
+\end_layout
+
+\begin_layout Enumerate
+Mathematical operators such as plus (+), minus (-) 
+\end_layout
+
+\begin_layout Enumerate
+Constants (or parameters, which are named constants) which are given a value
+ by the user 
+\end_layout
+
+\begin_layout Enumerate
+Variables whose values are calculated by the program during a simulation
+ and depend on the values of constants and other variables; and 
+\end_layout
+
+\begin_layout Enumerate
+Godley Tables, which define both financial accounts and the flows between
+ them.
+ In the language of stock and flow modelling, the columns of a Godley table
+ are the stocks, which are computed by integrating over a linear combination
+ of flow variables.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Integrals — represent a variable computed by integrating a function forward
+ in time.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Groups, which allow components to be grouped into modules that can be used
+ to construct more complex models.
+ 
+\end_layout
+
+\begin_layout Subsection
+Inserting a model component
+\end_layout
+
+\begin_layout Standard
+There are five ways to insert a component of a model onto the Canvas: 
+\end_layout
+
+\begin_layout Enumerate
+Click on the desired Icon on the Icon Palette, drag the block onto the Canvas
+ and release the mouse where you want to insert it
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+fwhtmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem18.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Choose Insert from the menu and select the desired block there
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{!}{0.6
+\backslash
+textheight}{
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem159.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Right-click on an existing block and choose copy.
+ Then place the copy where you want it on the palette.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem161.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Variables can be inserted by typing the variable name on the canvas, and
+ constants enetered by typing the numerical value.
+ Similarly, operations can be inserted by typing the operator name (eg 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+sin+
+\end_layout
+
+\end_inset
+
+, or 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+*+
+\end_layout
+
+\end_inset
+
+).
+ Notes can be inserted by starting the note with a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+#+
+\end_layout
+
+\end_inset
+
+ character.
+\end_layout
+
+\begin_layout Enumerate
+Variables can also be picked from the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+hyperref{[}{r}{
+\end_layout
+
+\end_inset
+
+e
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+f]
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Variable Browser
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Variable Browser
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+VariableBrowser
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and placed on the canvas.
+ 
+\end_layout
+
+\begin_layout Subsection
+Creating an equation
+\end_layout
+
+\begin_layout Standard
+Equations are entered in Minsky graphically.
+ Mathematical operations like addition, multiplication and subtraction are
+ performed by wiring the inputs up to the relevant mathematical block.
+ The output of the block is then the result of the equation.
+\end_layout
+
+\begin_layout Standard
+For example, a simple equation like 
+\begin_inset Formula 
+\[
+100/3=33.3
+\]
+
+\end_inset
+
+is performed in Minsky by defining a constant block with a value of 100,
+ defining another with a value of 3, and wiring them up to a divide-by block.
+ Then attach the output of the divide block to a variable, and run the model
+ by clicking on
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+smhtmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem130.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ :
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem129.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+If you click on the equation tab, you will see that it is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathrm{Answer}=\frac{100}{3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Very complex equations—including dynamic elements like integral blocks and
+ Godley Tables—are designed by wiring up lots of components, with the output
+ of one being the input of the next.
+ See the tutorial for examples.
+\end_layout
+
+\begin_layout Subsection
+Wiring components together
+\end_layout
+
+\begin_layout Standard
+A model is constructed by wiring one component to another in a way that
+ defines an equation.
+ Wires are drawn from the output port of one block to the input port of
+ another.
+ Ports are circles on the blocks to which wires can be attached, which can
+ be seen when hovering the pointer over the block.
+ Variables have an input and an output port; constants and parameters only
+ have an output port.
+ A mathematical operator has as many input ports as are needed to define
+ the operation.
+\end_layout
+
+\begin_layout Standard
+To construct an equation, such as Fred - Wilma = Barney:
+\end_layout
+
+\begin_layout Standard
+Click the mouse near the output port of one block and drag the cursor to
+ the input port of another while holding the mouse button down.
+ An arrow extends out from the output port.
+ Release the mouse button near the required input port of the operator.
+ A connection will be made.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem181.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The equation is completed by wiring up the other components in the same
+ way.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem182.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsection
+Creating a banking model
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "creatingBankingModel"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Creating a bank
+\end_layout
+
+\begin_layout Standard
+The first step in creating a model with a banking sector is to click on
+ the Godley Table Icon in the Icon Palette, and place the block somewhere
+ on the Canvas.
+\end_layout
+
+\begin_layout Subsubsection
+Entering accounts
+\end_layout
+
+\begin_layout Standard
+Double click or right click on the Godley table block to bring up the Godley
+ Table.
+ The table is divided up into sections representing the different accounting
+ asset classes: Asset, Liability and Equity.
+ Assets represent what you have to hand at any point in time, and should
+ always be the sum of liabilities and equity.
+ Liabilities represent amounts that are owed to other parties, and equity
+ the amount of capital owned.
+ The column 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+A-L-E+
+\end_layout
+
+\end_inset
+
+ represents the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ accounting equation
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ (Assets
+\begin_inset Formula $-$
+\end_inset
+
+Liabilities
+\begin_inset Formula $-$
+\end_inset
+
+Equity), and a properly formatted Godley table adhering to 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ double entry accounting conventions
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ will have this column zero for all rows.
+\end_layout
+
+\begin_layout Standard
+When a Godley Table is first loaded, each accounting class has room for
+ one account (also known as a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ stock
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) to be defined.
+ To create an additional accounts, click on the `+' button above the first
+ account.
+ One click then adds another column in which an additional account can be
+ defined.
+ Note that the table will delete excess blank accounts, so you should name
+ them as you go.
+ You can chancge the asset class of an account by moving it into the appropriate
+ sector using the 
+\begin_inset Formula $\leftarrow$
+\end_inset
+
+ and 
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+ buttons, or by clicking and dragging the column variable name (the first
+ row of the column).
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{}&
+\backslash
+multicolumn{1}{|c|}{}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-3}&
+\backslash
+multicolumn{2}{|c|}{noAssetClass}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$0$&$0$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/emptyGodley.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+A column can be deleted by clicking on the `–' button above the column.
+\end_layout
+
+\begin_layout Standard
+To define bank accounts in the system you enter a name into the row labeled
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Flows 
+\begin_inset Formula $\downarrow$
+\end_inset
+
+ / Stock Variables 
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+.
+ For example, if you were going to define a banking sector that operated
+ simply as an intermediary between 
+\begin_inset Quotes eld
+\end_inset
+
+Patient
+\begin_inset Quotes erd
+\end_inset
+
+ people and 
+\begin_inset Quotes eld
+\end_inset
+
+Impatient
+\begin_inset Quotes erd
+\end_inset
+
+ people—as in the Neoclassical 
+\begin_inset Quotes eld
+\end_inset
+
+Loanable Funds
+\begin_inset Quotes erd
+\end_inset
+
+ model–you might define the following accounts:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{4}{|c|}{noAssetClass}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$0$&$0$&$0$&$0$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+As you enter the accounts, they appear at the bottom of the Bank block on
+ the canvas:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem145.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+subsection{Defining account types}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Bank accounts must be classified as either an Asset, a Liability, or
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%the Equity of the relevant Bank, using the drop-down menu currently
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%labeled {
+\backslash
+tt noAssetClass} at the top of each account.
+ In
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%this model, Reserves are an asset of the banking sector, the accounts
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%of ``Patient'' and ``Impatient'' are liabilities, and the ``Safe'' is
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%the equity of the banking system.
+ Click on the
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%{
+\backslash
+tt noAssetClass} button and this drop-down menu will
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%appear:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+htmladdimg{NewItem140.png} 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Choose the relevant entry for each column, and the accounts will be properly
+ classified when the model is simulated:
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$0$&$0$&$0$&$0$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Entering flows between accounts
+\end_layout
+
+\begin_layout Standard
+Flows between accounts are entered by typing text labels in the accounts
+ involved.
+ The source label is entered as a simple name—for example, if Patient is
+ lending money to Impatient, the word 
+\begin_inset Quotes eld
+\end_inset
+
+Lend
+\begin_inset Quotes erd
+\end_inset
+
+ could be used to describe this action.
+ Firstly you need to create a row beneath the 
+\begin_inset Quotes eld
+\end_inset
+
+Initial Conditions
+\begin_inset Quotes erd
+\end_inset
+
+ row (which records the amount of money in each account when the simulation
+ begins).
+ You do this by clicking on the `+' key on the Initial Conditions row.
+ This creates a blank row for recording a flow between accounts.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$0$&$0$&$0$&$0$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%&&&&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts1.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The cell below 
+\begin_inset Quotes eld
+\end_inset
+
+Initial Conditions
+\begin_inset Quotes erd
+\end_inset
+
+ is used to give a verbal description of what the flow is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$0$&$0$&$0$&$0$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Patient lends to Impatient&&&&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts2.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The flows between accounts are then recorded in the relevant cells underneath
+ the columns.
+ Here we will start with putting the label 
+\begin_inset Quotes eld
+\end_inset
+
+-Lend
+\begin_inset Quotes erd
+\end_inset
+
+ into the Patient column.
+ It is negative, because Patient is lending to Impatient.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$0$&$0$&$0$&$0$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Patient lends to Impatient&&$-Lend$&&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts3.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Notice that the program shows that the Row Sum for this transaction is currently
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Lend
+\begin_inset Quotes erd
+\end_inset
+
+, when it should be zero to obey the double-entry bookkeeping rule that
+ all rows must balance.
+ This is because a destination for 
+\begin_inset Quotes eld
+\end_inset
+
+Lend
+\begin_inset Quotes erd
+\end_inset
+
+ has not yet been specified.
+ Please note that different asset class columns follow different +ve and
+ -ve rules, so an asset and a liability with the same value might need to
+ both be +ve or both -ve to sum to zero.
+ The destination is Impatient's account, and to balance the row to zero
+ this part of the transaction must be entered as 
+\begin_inset Quotes eld
+\end_inset
+
+Lend
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$0$&$0$&$0$&$0$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Patient lends to Impatient&&$-Lend$&$Lend$&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts4.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The accounting equation also applies to the Initial Conditions (the amount
+ of money in each of the accounts prior to the flows between accounts):
+ the Initial Conditions must balance.
+ This requires that there are entries on the Asset side of the Banking ledger
+ that exactly match the sum of Liabilities and Equity:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$120$&$100$&$0$&$20$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Patient lends to Impatient&&$-Lend$&$Lend$&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts5.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+As you enter flows, these appear on the left hand side of the bank block:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem147.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Defining flows
+\end_layout
+
+\begin_layout Standard
+The entries in the Godley Table represent flows of money, which are denominated
+ in money units per unit of time.
+ The relevant time dimension for an economic simulation is a year (whereas
+ in engineering applications, the relevant time dimension is a second),
+ so whatever you enter there represents a flow of money per year.
+\end_layout
+
+\begin_layout Standard
+You define the value of flows by attaching a constant or variable to the
+ input side of the flow into the bank as shown on the Canvas.
+ For example, you could assign Lend a value of 10 (which would represent
+ a loan of $10 per year by Patient to Impatient) by:
+\end_layout
+
+\begin_layout Standard
+Create a constant with a value of 10, and attaching this to the input side
+ of Lend:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem149.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+What you have now defined is an annual flow from Patient to Impatient of
+ $10.
+ In the dynamic equations this model generates, Minsky converts all amounts
+ in accounts to positive sums—it shows the financial system from the point
+ of the overall economy, rather than from the point of view of the bank:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{Lend} & = & 10\\
+\frac{d\mathrm{Impatient}}{dt} & = & \mathrm{Lend}\\
+\frac{d\mathrm{Patient}}{dt} & = & -\mathrm{Lend}\\
+\frac{d\mathrm{Reserves}}{dt} & =\\
+\frac{d\mathrm{Safe}}{dt} & =
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you attach a graph to the accounts at the bottom of the bank block, you
+ will see the impact of this flow over time on the balances of the two accounts.
+ Patient's account begins at $100 and falls at $10 per year, while Impatient's
+ account begins at $0 and rises by $10 per year.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.7}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem151.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Obviously this will result in a negative total worth for Patient after 10
+ years, so it is not a realistic model.
+ A more sensible simple model would relate lending to the amount left in
+ Patient's account (and a more complex model would relate this to many other
+ variables in the model).
+ That is done in the next example, where a constant 
+\begin_inset Quotes eld
+\end_inset
+
+lendrate
+\begin_inset Quotes erd
+\end_inset
+
+ has been defined and given the value of 0.1, and Lend is now defined as
+ 0.1 times the balance in Patient's account.
+ This now results in a smooth exponential decay of the amount in the Patient
+ account, matched by a rise in the amount in Impatient account.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.7}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem152.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+This is because the equation you have defined is identical to a radioactive
+ decay equation, with the amount in the Patient account falling at 10 percent
+ per year:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{Lend} & = & \mathrm{lendrate}\times\mathrm{Patient}\\
+\frac{d\mathrm{Impatient}}{dt} & = & \mathrm{Lend}\\
+\frac{d\mathrm{Patient}}{dt} & = & -\mathrm{Lend}\\
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note however that there are now wires crossing over other wires? There is
+ a neater way to define flows.
+\end_layout
+
+\begin_layout Subsubsection
+Copying Godley Table input & outputs
+\end_layout
+
+\begin_layout Standard
+Right-click on the inputs and outputs of a Godley Table and choose 
+\begin_inset Quotes eld
+\end_inset
+
+copy
+\begin_inset Quotes erd
+\end_inset
+
+ from the drop-down menu:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem153.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Place the copied flows and accounts and place them away from the table.
+ Then wire up your definition there:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem154.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+This now results in a much neater model.
+ The same process can be used to tidy up graphs as well:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem155.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+A more complex model would have many more flows, and these in turn would
+ depend on other entities in the model, and be time-varying rather than
+ using a constant 
+\begin_inset Quotes eld
+\end_inset
+
+lendrate
+\begin_inset Quotes erd
+\end_inset
+
+ as in this example—see the Tutorial on a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Basic Banking Model
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+tut:basicBankModel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ for an example.
+ This example uses the engineering concept of a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes eld
+\end_inset
+
+time constant
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+time-constants
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, which is explained in the next section.
+ Please note that right-clicking godley table variables and selecting 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+copy flow variables
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ creates a new group, which, when clicked and selecting 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+open in canvas
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+, changes the canvas to show just that group.
+ The normal canvas can be brought back by right-clicking and selecting 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+open master group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Using 
+\begin_inset Quotes eld
+\end_inset
+
+Time Constants
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "time-constants"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The value of 0.1 means that the amount of money in the Patient account falls
+ by one tenth every year (and therefore tapers towards zero).
+ An equivalent way to express this is that the 
+\begin_inset Quotes eld
+\end_inset
+
+time constant
+\begin_inset Quotes erd
+\end_inset
+
+ for lending is the inverse of 1/10, or ten years.
+ The next model uses a variable called 
+\begin_inset Formula $\tau_{Lend}$
+\end_inset
+
+, and gives it a value of 10:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem158.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+As the simulation shows, the two models have precisely the same result numerical
+ly:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{!}{0.9
+\backslash
+textheight}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem157.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The advantage of the time constant approach is that it is defined in terms
+ of the time that a process takes.
+ A time constant of 10 says that, if this rate of lending was sustained
+ (rather than declining as the account falls), then in 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ precisely
+\series default
+ 10 years, the Patient account would be empty.
+ The advantages of this formulation will be more obvious in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+tutorial
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+tutorial
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Multiple banks
+\end_layout
+
+\begin_layout Standard
+There can be any number of Godley Tables—each representing a different financial
+ institution or sector in an economy—in the one diagram.
+ The name of the institution can be altered by clicking on the default name
+ (
+\begin_inset Quotes eld
+\end_inset
+
+Godley0
+\begin_inset Quotes erd
+\end_inset
+
+ in the first one created) and altering it.
+ Here is an example with 4 such institutions/sectors defined:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem136.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+If there are interlocking accounts in these banks—if one lends to another
+ for example—then what is an asset for one must be shown as a liability
+ for the other.
+\end_layout
+
+\begin_layout Standard
+Godley tables may be further placed in 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ groups
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, which allows scoping of the flow variables and their defining equations,
+ whilst still allowing the tables to be coupled via global variables.
+\end_layout
+
+\end_body
+\end_document

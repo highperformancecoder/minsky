@@ -1,0 +1,100 @@
+\section{New to business intelligence?}
+\label{intro:new}
+
+
+\begin{eqnarray*}
+\mathrm{GDP}&:=&100\\
+\mathrm{LaborProductivity}&:=&1\\
+\mathrm{Population}&:=&100\\
+\mathrm{Workers}&:=&\mathrm{GDP}\div\mathrm{LaborProductivity}\\
+\mathrm{EmpRate}&:=&\mathrm{Workers}\div\mathrm{Population}\\
+\mathrm{EmpRate}&=&1
+\end{eqnarray*}
+
+Or you could define it using a block diagram, such as Minsky:
+
+\begin{center}
+%\fwhtmladdimg{NewItem1.png}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem1.eps}}
+\end{center}
+
+
+\begin{displaymath}
+K_t=K_{t-1}+I_{t-1}
+\end{displaymath}
+
+
+\begin{displaymath}
+K(t)=\int_0^t I(s)ds
+\end{displaymath}
+
+However, rather than being shown as an equation, the relationship is shown as a diagram:
+
+\begin{center}
+\includegraphics{images/NewItem7.eps}
+\end{center}
+
+
+\begin{center}
+\fwhtmladdimg{NewItem8.png}
+\end{center}
+
+
+\section{Experienced in system dynamics?}
+\label{intro:experienced}
+
+
+\begin{center}
+\includegraphics{images/NewItem11.eps}
+\end{center}
+
+
+\begin{center}
+\includegraphics{images/NewItem12.eps}
+\end{center}
+
+Or, perhaps, wiring up both blocks, but giving one the wrong sign:
+
+\begin{center}
+\includegraphics{images/NewItem51.eps}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{|c|cc|c|}
+\hline
+Flows $\downarrow$ / Stock Variables
+$\rightarrow$&\multicolumn{1}{|c|}{$BuyerCredit$}&\multicolumn{1}{|c|}{$SellerDeposit$}&Row Sum\\\cline{2-3}&\multicolumn{1}{|c|}{asset}&\multicolumn{1}{|c|}{liability}&\\\hline
+Initial Conditions&$0$&$0$&0\\
+Buyer Accesses Credit&$Card$&$Card$&0\\
+\hline
+\end{tabular}
+\end{center}
+
+If you forget to enter the recipient in this transaction, then the Row
+Sum identifies your mistake by showing that the row sums to ``Card''
+rather than zero:
+
+\begin{center}
+\begin{tabular}{|c|cc|c|}
+\hline
+Flows $\downarrow$ / Stock Variables
+$\rightarrow$&\multicolumn{1}{|c|}{$BuyerCredit$}&\multicolumn{1}{|c|}{$SellerDeposit$}&Row Sum\\\cline{2-3}&\multicolumn{1}{|c|}{asset}&\multicolumn{1}{|c|}{liability}&\\\hline
+Initial Conditions&$0$&$0$&0\\
+Buyer Accesses Credit&$Card$&&$Card$\\
+\hline
+\end{tabular}
+\end{center}
+
+And it also identifies if you give the wrong sign to one entry:
+
+\begin{center}
+\begin{tabular}{|c|cc|c|}
+\hline
+Flows $\downarrow$ / Stock Variables
+$\rightarrow$&\multicolumn{1}{|c|}{$BuyerCredit$}&\multicolumn{1}{|c|}{$SellerDeposit$}&Row Sum\\\cline{2-3}&\multicolumn{1}{|c|}{asset}&\multicolumn{1}{|c|}{liability}&\\\hline
+Initial Conditions&$0$&$0$&0\\
+Buyer Accesses Credit&$Card$&$-Card$&$2Card$\\
+\hline
+\end{tabular}
+\end{center}

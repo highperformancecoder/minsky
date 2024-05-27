@@ -1,0 +1,4614 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Minsky Tutorial
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tutorial-Minsky"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Basic System Dynamics model
+\end_layout
+
+\begin_layout Standard
+In 1965, Richard Goodwin, the great pioneer of complexity in economics,
+ presented the paper 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdnormallink
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes eld
+\end_inset
+
+A Growth Cycle
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+https://en.wikipedia.org/wiki/Goodwinmodel(economics)
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to the First World Congress of the Econometric Society in Rome.
+ It was later published in a book collection (Goodwin, Richard M.
+ 1967.
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+A Growth Cycle,
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ in C.
+ H.
+ Feinstein, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Socialism, Capitalism and Economic Growth
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ Cambridge: Cambridge University Press, pp.
+ 54–58.); to my knowledge it was never published in a journal.
+\end_layout
+
+\begin_layout Standard
+Goodwin's model has been subjected to much critical literature about implying
+ stable cycles, not matching empirical data, etc., but Goodwin himself emphasized
+ that it was a 
+\begin_inset Quotes eld
+\end_inset
+
+starkly schematized and hence quite unrealistic model of cycles in growth
+ rates
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+.
+ He argued however that it was a better foundation for a more realistic
+ model than 
+\begin_inset Quotes eld
+\end_inset
+
+the more usual treatment of growth theory or of cycle theory, separately
+ or in combination.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Goodwin emphasized the similarity of this model to the Lokta-Volterra model
+ of interacting predator and prey, which can make it seem as if it was derived
+ by analogy to the biological model.
+ But in fact it can easily be derived from a highly simplified causal chain:
+\end_layout
+
+\begin_layout Itemize
+The level of output (
+\begin_inset Formula $Y$
+\end_inset
+
+) determines the level of employment (
+\begin_inset Formula $L$
+\end_inset
+
+), with 
+\begin_inset Formula $L=Y/a$
+\end_inset
+
+ where 
+\begin_inset Formula $a$
+\end_inset
+
+ is a measure of labor productivity; 
+\end_layout
+
+\begin_layout Itemize
+Given a population 
+\begin_inset Formula $N$
+\end_inset
+
+, the employment rate 
+\begin_inset Formula $\lambda=L/N$
+\end_inset
+
+ plays a role in determining the 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ rate of change
+\series default
+ of the wage 
+\begin_inset Formula $w$
+\end_inset
+
+: Goodwin used a linear approximation to a non-linear 
+\begin_inset Quotes eld
+\end_inset
+
+Phillips Curve
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fwhtmladdimg{NewItem55.png}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/PhillipsCurve.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+His linear approximation was:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{1}{w}\frac{d}{dt}w=-\gamma+\rho\cdot\lambda
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+In a simple two-class model, profits 
+\begin_inset Formula $\Pi$
+\end_inset
+
+ equals the level of output 
+\begin_inset Formula $Y$
+\end_inset
+
+ minus the wage bill: 
+\begin_inset Formula $\Pi=Y-wL$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+For simplicity, Goodwin assumed that all profits were invested, so that
+ Investment equals profits: 
+\begin_inset Formula $I=\Pi$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Itemize
+Investment is the rate of change of the capital stock 
+\begin_inset Formula $K$
+\end_inset
+
+; 
+\end_layout
+
+\begin_layout Itemize
+The level of output is, to a first approximation, determined by the level
+ of capital stock (
+\begin_inset Formula $K$
+\end_inset
+
+).
+ A simple way of stating this is that 
+\begin_inset Formula $Y$
+\end_inset
+
+ is proportional to 
+\begin_inset Formula $K$
+\end_inset
+
+: 
+\begin_inset Formula $Y=K/v$
+\end_inset
+
+, where 
+\begin_inset Formula $v$
+\end_inset
+
+ is a constant (Goodwin notes that this relation 
+\begin_inset Quotes eld
+\end_inset
+
+could be softened but it would mean a serious complicating of the structure
+ of the model
+\begin_inset Quotes erd
+\end_inset
+
+); and finally 
+\end_layout
+
+\begin_layout Itemize
+Goodwin assumed that labor productivity grew at a constant rate 
+\begin_inset Formula $\alpha$
+\end_inset
+
+, while population grew at a constant rate 
+\begin_inset Formula $\beta$
+\end_inset
+
+.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Goodwin published the model as a reduced form equation in the two system
+ states the employment rate (
+\begin_inset Formula $\lambda$
+\end_inset
+
+) and the workers' share of output (
+\begin_inset Formula $\omega$
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{d}{dt}\lambda & = & \lambda\left(\frac{1-\omega}{v}-\alpha-\beta\right)\\
+\frac{d}{dt}\omega & = & \omega\cdot\left(\rho\cdot\lambda-\gamma-\alpha\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+This form is useful for analytic reasons, but it obscures the causal chain
+ that actually lies behind the model.
+ With modern system dynamic software, this can be laid out explicitly, and
+ we can also use much more meaningful names.
+ We'll start with defining output (which is a variable).
+ Click on 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+var.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ on the Icon Palette, or click on the Operations menu and choose 
+\begin_inset Quotes eld
+\end_inset
+
+Variable
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This will open up the 
+\begin_inset Quotes eld
+\end_inset
+
+Specify Variable Name
+\begin_inset Quotes erd
+\end_inset
+
+ window:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem63.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Enter 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+
+\series bold
+GDP
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ into the 
+\begin_inset Quotes eld
+\end_inset
+
+Name
+\begin_inset Quotes erd
+\end_inset
+
+ field, and leave the other fields blank—since 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+GDP
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ is a variable and we're defining a dynamic system, the value of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+GDP
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ at any particular point in time will depend on the other entities in the
+ model.
+ Now Click OK (or press 
+\begin_inset Quotes eld
+\end_inset
+
+Enter
+\begin_inset Quotes erd
+\end_inset
+
+).
+ The variable will now appear, attached to the cursor.
+ Move to a point near the top of the screen and click, which will place
+ the variable at that location.
+\end_layout
+
+\begin_layout Standard
+We are now going to write the first part of the model, that Labor (
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+
+\series bold
+Labor
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) equals output (
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+GDP
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) divided by labor productivity (
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+LabProd
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+).
+ Just for the sake of illustration, we'll make 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+a
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ a parameter, which is a named constant (this can easily be modified later).
+ For this we start by clicking on 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+const.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ on the Palette, or by choosing Insert/variable from the menu.
+ This will pop-up the Edit Constant window:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem66.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+There is actually no real difference between the 
+\begin_inset Quotes eld
+\end_inset
+
+Edit constant
+\begin_inset Quotes erd
+\end_inset
+
+ dialog and the 
+\begin_inset Quotes eld
+\end_inset
+
+Edit variable
+\begin_inset Quotes erd
+\end_inset
+
+ dialog.
+ The window's title differs, and the default value of Type is 
+\begin_inset Quotes eld
+\end_inset
+
+constant
+\begin_inset Quotes erd
+\end_inset
+
+ instead of 
+\begin_inset Quotes eld
+\end_inset
+
+flow
+\begin_inset Quotes erd
+\end_inset
+
+.
+ We're going to select 
+\begin_inset Quotes eld
+\end_inset
+
+parameter
+\begin_inset Quotes erd
+\end_inset
+
+, allowing one to give the parameter a name.
+\end_layout
+
+\begin_layout Standard
+Give the paramter the name 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+
+\series bold
+LabProd
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ and the value of 1 (i.e., one unit of output per worker).
+ Click OK or press Enter and the constant 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+LabProd.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ will now be attached to the cursor.
+ Place it below 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+GDP
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem66.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now we need to divide 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+
+\series bold
+GDP
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ by 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+LabProd
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ Click on the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+divide.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ symbol on the palette and the symbol will be attached to the cursor.
+ Drag it near the other two objects and click.
+ Your Canvas will now look something like this:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem70.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now to complete the equation, you have to attach 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+
+\series bold
+GDP
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to the top of the divide block and LabProd to the bottom.
+\end_layout
+
+\begin_layout Standard
+Now move your cursor to the right hand side of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+GDP.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and click, hold the mouse button down, and drag.
+ An arrow will come out from 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+GDP.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ Drag this arrow to the top of the divide block (where you'll see a tiny
+ multiply sign) and release the mouse.
+ You should then see this:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem74.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+When the mouse hovers over a block, you will then see little circles that
+ identify the input and output ports of the block:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem75.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Those are the connection points for wires, so start dragging from one and
+ release on the other.
+ Now wire LabProd to the bottom of the Divide block (where you'll see a
+ miniature divide symbol (blown up below):
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem76.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Then click on 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+var.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ in the Design Icons to create a new variable, call it Labor, place it the
+ the right of the Divide block, and wire the output port from the Divide
+ block to the input port for 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Labor
+\series default
+:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem79.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+To show the correspondence between the flowchart above and standard modeling
+ equations, click on the equations tab:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{GDP} & =\\
+\mathrm{Labor} & = & \frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now let's keep going with the model.
+ With 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Labor
+\series default
+ defined, the employment rate will be 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Labor
+\series default
+ divided by 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Population
+\series default
+.
+ Define 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Population
+\series default
+ as a parameter (we'll later change it to a variable), and give it a value
+ of 110.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem81.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Add it to the Canvas and you are now ready to define the employment rate—another
+ variable.
+ Click on 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+var.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, give it the name 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Formula $\backslash$
+\end_inset
+
+lambda
+\begin_inset Quotes erd
+\end_inset
+
+ (be sure to include the backslash symbol), put another Divide block on
+ the canvas, choose Wire mode and wire this next part of the model up.
+ You should now have:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem83.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now switch to the equations tab, and you will see
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{GDP} & =\\
+\mathrm{Labor} & = & \frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\lambda & = & \frac{\mathrm{Labor}}{\mathrm{Population}}\\
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Notice that Minsky outputs a Greek 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ in the equation.
+ You can input such characters directly, if your keyboard supports them
+ as unicode characters, however you can also use a subset of the LaTeX language
+ to give your variables more mathematial names.
+\end_layout
+
+\begin_layout Standard
+With the employment rate defined, we are now ready to define a 
+\begin_inset Quotes eld
+\end_inset
+
+Phillips Curve
+\begin_inset Quotes erd
+\end_inset
+
+ relationship between the level of employment and the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+
+\series bold
+rate of change
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ of wages.
+ There was far more to Phillips than this (he actually tried to introduce
+ economists to system dynamics back in the 1950s), and far more to his employmen
+t-wage change relation too, and he insisted that the relationship was nonlinear
+ (as in Goodwin's figure above).
+ But again for simplicity we'll define a linear relationship between employment
+ and the rate of change of wages.
+\end_layout
+
+\begin_layout Standard
+Here we need to manipulate the basic linear equation that Goodwin used:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{1}{w}\frac{d}{dt}w=-\gamma+\rho\cdot\lambda
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Firstly multiply both sides by 
+\begin_inset Formula $w$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{d}{dt}w=w\cdot(-\gamma+\rho\cdot\lambda)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then integrate both sides (because integration is a numerically much more
+ stable process than differentiation, all system dynamics programs use integrati
+on rather than differentiation):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+w=w_{0}+\int w\cdot(-\gamma+\rho\cdot\lambda)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In English, this says that the wage now is the initial wage plus the integral
+ of the wage multiplied by its rate of change function.
+ That's what we now need to add to the Canvas, and the first step is to
+ spell out the wage change function itself.
+ Firstly, since we're using a linear wage response function, the rate of
+ employment has to be referenced to a rate of employment at which the rate
+ of changes is zero.
+ I suggest using Milton Friedman's concept of a 
+\begin_inset Quotes eld
+\end_inset
+
+Non-Accelerating-Inflation-Rate-of-Unemployment
+\begin_inset Quotes erd
+\end_inset
+
+, or NAIRU.
+ We need to define this constant, subtract it from 1, and subtract the result
+ from the actual employment rate 
+\begin_inset Formula $\lambda$
+\end_inset
+
+.
+ To enter 1, click on 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+const.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, define a constant and give it a value of 1.
+ Then define another variable NAIRU, and give it a value of 0.05 (5% unemployment
+).
+ Select 
+\begin_inset Quotes eld
+\end_inset
+
+parameter
+\begin_inset Quotes erd
+\end_inset
+
+ as the variable type.
+ Subtract this from 1 and subtract the result from 
+\begin_inset Formula $\lambda$
+\end_inset
+
+.
+ You should have the following:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem108.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now we need to multiply this gap between the actual employment rate and
+ the 
+\begin_inset Quotes eld
+\end_inset
+
+NAIRE
+\begin_inset Quotes erd
+\end_inset
+
+ rate by a parameter that represents the response of wages to this gap.
+ Let's call this parameter 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Emp_{Response}
+\series default
+ (remember to include the underscore and the braces).
+ Define the parameter, give it a value of 10, and multiply (
+\begin_inset Formula $\lambda$
+\end_inset
+
+ minus NAIRE) by it:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem109.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now we are ready to add a crucial component of a dynamic model: the integral
+ block, which takes a flow as its input and has the integral of that flow
+ as the output.
+ The wage rate 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ w
+\series default
+ is such a variable, and we define it by clicking on the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+int.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ symbol in the Icon Palette (or by choosing Operations/Integrate from the
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Insert
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ menu).
+ This then attaches the following block to the cursor:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem39.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now we need to rename this from the default name of 
+\begin_inset Quotes eld
+\end_inset
+
+int1
+\begin_inset Quotes erd
+\end_inset
+
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+
+\series bold
+w
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ for the wage rate.
+ Either right click or double-click on 
+\begin_inset Quotes eld
+\end_inset
+
+int1
+\begin_inset Quotes erd
+\end_inset
+
+ and this will bring up the edit window .
+ Rename it to 
+\begin_inset Quotes eld
+\end_inset
+
+w
+\begin_inset Quotes erd
+\end_inset
+
+ and give it a value of 1:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem93.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+To compete the integral equation, we need to multiply the linear employment
+ response function by the current wage before we integrate it (see the last
+ equation above).
+ There are two ways to do this.
+ First, place a multiply block between the wage change function and the
+ integral block, wire the function up to one input on the multiply block,
+ and then either:
+\end_layout
+
+\begin_layout Itemize
+wire the output of the 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ w
+\series default
+ block back to the other input on multiply block; or 
+\end_layout
+
+\begin_layout Itemize
+Right-click on 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ w
+\series default
+, choose 
+\begin_inset Quotes eld
+\end_inset
+
+Copy Var
+\begin_inset Quotes erd
+\end_inset
+
+, place that copy before the multiply block, and wire it up.
+ 
+\end_layout
+
+\begin_layout Standard
+The first method gives you this initial result:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem110.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+That looks messy, but notice the blue dot on the wire? Click and drag on
+ that and you will turn the straight line connector into a curve:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem111.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The second approach, which I personally prefer (it's neater, and it precisely
+ emulates the integral equation), yields this result:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem112.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+From this point on the model develops easily—
+\begin_inset Quotes eld
+\end_inset
+
+like money for old rope
+\begin_inset Quotes erd
+\end_inset
+
+, as one of my maths lecturers used to say.
+ Firstly if we multiply the wage rate 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ w
+\series default
+ by 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Labor
+\series default
+ we get the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+
+\series bold
+Wage Bill
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ To do this, firstly create the variable Wage Bill, and put it well below
+ where 
+\begin_inset Formula $w$
+\end_inset
+
+ currently is on your diagram:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem113.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now right-click on 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ WageBill
+\series default
+ and choose 
+\begin_inset Quotes eld
+\end_inset
+
+Flip
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This rotates the block through 180 degrees (any arbitrary rotation can
+ be applied from the variable definition window itself).
+ Now right-click on 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Labor
+\series default
+, which you've already defined some time ago, and choose 
+\begin_inset Quotes eld
+\end_inset
+
+Copy
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Place the copy of 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Labor
+\series default
+ to the right of 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ WageBill
+\series default
+:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem98.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now insert a multiply block before 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ WageBill
+\series default
+, and wire 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ w
+\series default
+ and 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Labor
+\series default
+ up to it.
+ Curve the wire from 
+\begin_inset Formula $w$
+\end_inset
+
+ using the blue dots (you can do this multiple times to create a very curved
+ path: each time you create a curve, another 2 curve points are added that
+ you can also manipulate, as I have done below:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem114.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The next step is to subtract the 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ WageBill
+\series default
+ from 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ GDP
+\series default
+ to define 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Profits
+\series default
+.
+ Take a copy of 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ GDP
+\series default
+, insert it above 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ WageBill
+\series default
+, insert a subtract block, and wire it up to define the variable 
+\series bold
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Profits
+\series default
+:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem100.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+In the simple Goodwin model, all Profits are invested, and investment of
+ course is the rate of change of the capital stock Capital.
+ Create a variable called Investment, wire this up to Profits, and then
+ create a new integral variable 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Capital
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ using the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+int.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ icon.
+ Right-click or double-click on it to rename 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ int2
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Capital
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, and give it an initial value of 300:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem102.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Wire this up to Investment:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem104.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Now there's only one step left to complete the model: define a parameter
+ CapOutputRatio and give it a value of 3:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem103.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Divide Capital by this, and wire the result up to the input on GDP.
+ You have now built your first dynamic model in Minsky:
+\end_layout
+
+\begin_layout Standard
+Before you attempt to run it, do two things.
+ Firstly from the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Runge Kutta
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ menu item, change the Max Step Size to 0.01—to get a smoother simulation.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem107.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Secondly, add some graphs by clicking on the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+smhtmladdimg{
+\end_layout
+
+\end_inset
+
+plot.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ icon, placing the graph in the middle of the flowchart, and wiring up 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ and 
+\begin_inset Formula $w$
+\end_inset
+
+ to two of the four inputs on the left hand side.
+ You will now see that, rather than reaching equilibrium, the model cycles
+ constantly:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem116.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+If you click on the equations tab, you will see that you have defined the
+ following system of equations:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{GDP} & = & \frac{\mathrm{Capital}}{\mathrm{CapOutRatio}}\\
+\mathrm{Investment} & = & \mathrm{Profits}\\
+\mathrm{Labor} & = & \frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\mathrm{Profits} & = & \mathrm{GDP}-\mathrm{WageBill}\\
+\mathrm{WageBill} & = & w\times\mathrm{Labor}\\
+\lambda & = & \frac{\mathrm{Labor}}{\mathrm{Population}}\\
+\omega & = & \frac{\mathrm{WageBill}}{\mathrm{GDP}}\\
+\frac{dw}{dt} & = & \mathrm{Emp}_{\mathrm{Response}}\times(\lambda-(1-\mathrm{NAIRU})\times w\\
+\frac{d\mathrm{Capital}}{dt} & = & \mathrm{Investment}\\
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At this level of complexity, the equation form—if you're accustomed to working
+ in equations—is as accessible as the block diagram model from which it
+ was generated.
+ But at much higher levels of complexity, the block diagram is far easier
+ to understand since it displays the causal links in the model clearly,
+ and can be structured in sub-groups that focus on particular parts of the
+ system.
+\end_layout
+
+\begin_layout Section
+Basic Banking model
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tut:basicBankModel"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you haven't yet read the section on 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Creating a Banking Model
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+creatingBankingModel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, do so now.
+ This tutorial starts from the skeleton of the 
+\begin_inset Quotes eld
+\end_inset
+
+Loanable Funds
+\begin_inset Quotes erd
+\end_inset
+
+ model built in that section, and using 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+time constants
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+time-constants
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to specify how quickly lending occurs.
+\end_layout
+
+\begin_layout Subsection
+Loanable Funds
+\end_layout
+
+\begin_layout Standard
+Our model begins with the single operation of Patient lending to Impatient
+ at a rate that, if kept constant at its initial level of of $10 per annum,
+ would empty the Patient account in 10 years.
+ Because the rate of outflow declines as the Patient account declines, the
+ money in the account decays towards zero but never quite reaches it.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$120$&$100$&$0$&$20$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Patient lends to Impatient&&$-Lend$&$Lend$&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\backslash
+includegraphics{images/NewItem169.eps}}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts5.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Many more actions need to be added to this model to complete it.
+ For a start, Impatient should be paying interest to Patient on the amount
+ lent.
+ Add an additional row to the Godley Table by clicking on the `+' key next
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+Patient lends to Impatient
+\begin_inset Quotes erd
+\end_inset
+
+ to create a blank row:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$120$&$100$&$0$&$20$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Patient lends to Impatient&&$-Lend$&$Lend$&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%&&&&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts6.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Then label this flow 
+\begin_inset Quotes eld
+\end_inset
+
+Impatient pays interest
+\begin_inset Quotes erd
+\end_inset
+
+ and make the entry 
+\begin_inset Quotes eld
+\end_inset
+
+Interest
+\begin_inset Quotes erd
+\end_inset
+
+ into the cell for Patient on that row.
+ Make the matching entry 
+\begin_inset Quotes eld
+\end_inset
+
+-Interest
+\begin_inset Quotes erd
+\end_inset
+
+ in the cell for Impatient.
+ The flow 
+\begin_inset Quotes eld
+\end_inset
+
+Interest
+\begin_inset Quotes erd
+\end_inset
+
+ now appears on the input side of the Godley Table on the Canvas:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|cccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-5}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{2}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$120$&$100$&$0$&$20$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Patient lends to Impatient&&$-Lend$&$Lend$&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Impatient pays interest&&$Interest$&$-Interest$&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{center}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts7.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Interest now has to be defined.
+ It will be the amount in Impatient's account (since this began at zero)
+ multiplied by the rate of interest charged by Patient:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem173.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+With that definition, the dynamics of the model change: rather than the
+ Patient account falling to zero and Impatient rising to 100, the two accounts
+ stabilize once the outflow of new loans by Patient equals the inflow of
+ interest payments by Impatient:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem174.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Though it stabilizes, this is is still a very incomplete model: neither
+ Patient nor Impatient are doing anything with the money apart from lending
+ it and paying interest.
+ I am now going to assume that Impatient is borrowing the money in order
+ to hire workers to work at a factory and produce output for sale.
+ So we now need another account called Workers, and a payment from Impatient
+ to Workers called Wage:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%{
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%  
+\backslash
+noindent
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+small
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{tabular}{|c|ccccc|}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Flows $
+\backslash
+downarrow$ / Stock Variables $
+\backslash
+rightarrow$&
+\backslash
+multicolumn{1}{|c|}{$Reserves$}&
+\backslash
+multicolumn{1}{|c|}{$Patient$}&
+\backslash
+multicolumn{1}{|c|}{$Impatient$}&
+\backslash
+multicolumn{1}{|c|}{$Workers$}&
+\backslash
+multicolumn{1}{|c|}{$Safe$}
+\backslash
+
+\backslash
+
+\backslash
+cline{2-6}&
+\backslash
+multicolumn{1}{|c|}{asset}&
+\backslash
+multicolumn{3}{|c|}{liability}&
+\backslash
+multicolumn{1}{|c|}{equity}
+\backslash
+
+\backslash
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Initial Conditions&$120$&$100$&$0$&$0$&$20$
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Patient lends to Impatient&&$-Lend$&$Lend$&&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Impatient pays interest&&$Interest$&$-Interest$&&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Impatient pays Workers&&&$-Wage$&$Wage$&
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/godleyTableWithAccounts8.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+In a more complex model, the Wage bill could be related to the current rate
+ times the number of workers in employment.
+ In this simple model I will regard the wage as a function of the amount
+ of money in Impatient's account turning over several times a year in the
+ payment of wages.
+ Using a time constant, I will assume that the amount in Impatient's account
+ turns over 3 times a year paying wages, so that the time constant 
+\begin_inset Formula $\tau_{T}$
+\end_inset
+
+ is 1/3rd of a year:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem176.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The dynamics of this incomplete model are very different again: very little
+ money turns up in the Impatient account, and all of the money ends up in
+ the Workers account.
+ However economic activity also ceases as both lending and the flow of wages
+ falls towards zero:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{
+\backslash
+textwidth}{!}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/NewItem177.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+This is because wages are being paid to workers, but they are doing nothing
+ with it.
+ So we need to include consumption by workers–and by Patient as well.
+ Here the reason time constants are useful may be more obvious.
+ The time constant for consumption by Workers is given the very low value
+ of 0.05—or 1/20th of a year—which indicates that if their initial rate of
+ consumption was maintained without any wage income, they would reduce their
+ bank balances to zero in 1/20th of a year or about 2.5 weeks.
+ 
+\end_layout
+
+\end_body
+\end_document

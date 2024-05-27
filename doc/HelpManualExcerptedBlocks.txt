@@ -1,0 +1,86 @@
+%\subsection{Manipulating items on the canvas}
+%
+%\begin{description}
+%\item[To move] and item, click on the interior of an item and drag it
+%to the new position.
+%\item[To wire items] click on the small circle representing the output
+%port, and drag out a wire towards an input port on another item.
+%\item[To lasso], click outside of any item and drag out a rectangular
+%region.
+%\item[To pan] the canvas, hold the shift key down whilst dragging on
+%the canvas.
+%\end{description}
+
+%\begin{description}
+%\item[Wire] This draws wires that connect one operator on the Canvas
+%to another. For example, if you have placed these icons on the
+%Palette: 
+%
+%\htmladdimg{NewItem24.png}
+%
+%and you now want to link them together into an equation, then click on
+%the Wire button, move the cursor to the right end of GDP, and click
+%and drag to the top of the divide symbol:
+%
+%\htmladdimg{NewItem25.png}
+%
+%Do the same for LabProd, and to attach the Divide icon to the left
+%hand side of Workers, and you've defined the equation that the number
+%of workers employed equals GDP divided by labor productivity. The
+%flowchart will look like this: 
+%
+%\htmladdimg{NewItem26.png}
+%
+%And this is the equation you have now created:
+%\begin{displaymath}
+%\mathrm{Workers}=\frac{\mathrm{GDP}}{\mathrm{LabProd}}
+%\end{displaymath}
+%
+%\item[Move] This is the default mode for the mouse, and it lets you:
+%
+%\begin{itemize}
+%\item Move already entered icons around the Canvas by clicking on
+%them, holding the mouse button down, and releasing it when you have
+%got to the desired location; 
+%\item Select an item from the Design Icons and place it on the
+%Canvas. When you first click on an Icon, it will either appear at the
+%top left hand corner of the Canvas, or bring up a menu where you enter
+%various essential details (Name, value etc.), after which the Icon
+%appears at the top left hand corner of the Canvas. It will then snap
+%to wherever the mouse cursor currently is, and can be placed on the
+%Canvas by clicking.
+%\end{itemize}
+%\item[Pan] This moves all the Icons on the Canvas as a group, which is useful
+%when you have a very large model and you want to move to a small part
+%of it. Choose Pan, click and hold the mouse button down, and then move
+%the mouse. The entire model will shift with the mouse.
+%
+%\item[Lasso] Lassoing is the first step in creating a Group, or
+%selecting multiple Icons for some operation (copying, deleting,
+%etc.---these are not yet implemented but will be in the next major
+%release).
+%\end{description}
+%
+%        Grouping. Choose Lasso, click and hold down the mouse button,
+%        then drag over the region you wish to make into a group:
+%
+%\htmladdimg{NewItem117.png}
+%
+%
+%Release the mouse button, and a box will be drawn around the selected
+%items which can now be moved as a single entity. The inputs to the
+%group are noted on the input side of the group, and the outputs on the
+%output side:
+%
+%\htmladdimg{NewItem118.png}
+%
+%One unique feature of Minsky (when compared to existing system
+%dynamics programs) is that the contents of the group can still be seen
+%inside the group window, and they can also be edited from there. In
+%the next image, the contents of the group were moved more cleanly
+%inside the group (this feature is still being implemented, so some
+%tidying up was needed, but was possible without having to open the
+%group in a separate window):
+%
+%
+%\htmladdimg{NewItem119.png}

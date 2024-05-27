@@ -1,0 +1,4849 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Getting Started with 
+\emph on
+Ravel
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Ravel
+\emph default
+ has three main components: 
+\end_layout
+
+\begin_layout Itemize
+The Ravel, a visual representation of your data; 
+\end_layout
+
+\begin_layout Itemize
+Equations expressed as flowcharts; and 
+\end_layout
+
+\begin_layout Itemize
+The system-dynamics engine Minsky 
+\end_layout
+
+\begin_layout Section
+System requirements
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Ravel
+\emph default
+ is a proprietary program for data analysis which currently only runs on
+ Windows.
+ It is built on top of 
+\emph on
+Minsky
+\emph default
+, which is an open source program available for Windows, Mac OS X,and various
+ Linux distributions.
+ Some components of the interface are specific to 
+\emph on
+Minsky
+\emph default
+.
+ This 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+Getting Started
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ guide focuses on the components used by 
+\emph on
+Ravel
+\emph default
+.
+ For a getting started guide to 
+\emph on
+Minsky
+\emph default
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+click here
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Getting-Started-Minsky
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Getting help
+\end_layout
+
+\begin_layout Standard
+Press the F1 key, or select 
+\begin_inset Quotes eld
+\end_inset
+
+help
+\begin_inset Quotes erd
+\end_inset
+
+ from the context menu.
+ Help is context-sensitive.
+ If you press F1 while the mouse is hovering over a widget–for example,
+ the addition block–then the help window will appear with instructions on
+ how to add elements together.
+\end_layout
+
+\begin_layout Section
+Components of the Program
+\end_layout
+
+\begin_layout Standard
+There are 5 main components to the 
+\emph on
+Ravel
+\emph default
+ interface:
+\end_layout
+
+\begin_layout Enumerate
+The menus;
+\end_layout
+
+\begin_layout Enumerate
+The Operations controls;
+\end_layout
+
+\begin_layout Enumerate
+The Tabs;
+\end_layout
+
+\begin_layout Enumerate
+The design icons; and
+\end_layout
+
+\begin_layout Enumerate
+The Design Canvas
+\end_layout
+
+\begin_layout Subsection
+Menus
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Menu"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The menu controls the basic functions of saving and loading files, default
+ settings for the program, etc.
+ These will alter as the program is developed; the current menu items (as
+ of May 2024) are:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="7">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+File 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Edit 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bookmarks 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Insert 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Options 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Simulation 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Help 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+File
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "File"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+About Tells you the version of 
+\emph on
+Ravel
+\emph default
+ and/or 
+\emph on
+Minsky
+\emph default
+ that you are using.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+New System
+\end_layout
+
+\end_inset
+
+ Clear the design canvas.
+ If you have made changes and haven't saved them, you will be prompted to
+ save before the canvas is cleared.
+\end_layout
+
+\begin_layout Description
+Open Open an existing 
+\emph on
+Ravel
+\emph default
+ or 
+\emph on
+Minsky
+\emph default
+ file (
+\emph on
+Ravel
+\emph default
+ files have the suffix of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+rvl
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+.
+ 
+\emph on
+Minsky
+\emph default
+ files have the suffix of 
+\begin_inset Quotes eld
+\end_inset
+
+mky
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+Recent Files
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "recentfiles"
+
+\end_inset
+
+ Provides a shortcut to some of your previously opened 
+\emph on
+Ravel
+\emph default
+ (or 
+\emph on
+Minsky
+\emph default
+) files.
+\end_layout
+
+\begin_layout Description
+Library Opens a web-based repository of models for the 
+\emph on
+Minsky
+\emph default
+ simulation system.
+\end_layout
+
+\begin_layout Description
+Save Save the current file.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+Save As
+\end_layout
+
+\end_inset
+
+ Save the current file under a new name.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+Insert File as Group
+\end_layout
+
+\end_inset
+
+ Insert a 
+\emph on
+Ravel/Minsky
+\emph default
+ file directly into the current model as a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Dimensional Analysis
+\end_layout
+
+\end_inset
+
+ This 
+\emph on
+Minsky
+\emph default
+-specific command checks whether definitions in a simulation model are consisten
+t.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Export Canvas as
+\end_layout
+
+\end_inset
+
+ Export the current canvas in svg, pdf, eps, tex, or m format.
+ The current canvas (which varies depending on which Tab you have open)
+ can be exported in a number of different formats:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+SVG This is a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+vector graphics
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ format which can be inserted into word processing (such as Word or OpenOffice)
+ or presentation (Powerpoint etc.) documents.
+ 
+\end_layout
+
+\begin_layout Itemize
+PDF This saves the currently displayed canvas as an Adobe Acrobat file 
+\end_layout
+
+\begin_layout Itemize
+EMF This saves the canvas in an enhanced form of the WMF (Windows Metafile)
+ vector graphics standard, for use in documentation programs like Powerpoint
+ and Word.
+ 
+\end_layout
+
+\begin_layout Itemize
+Postscript This saves the canvas in an encapsulated form of PDF 
+\end_layout
+
+\begin_layout Itemize
+Portable Network Graphics This saves the canvas in a bitmap file (PNG) for
+ use in paint and photo programs, etc.
+ 
+\end_layout
+
+\begin_layout Itemize
+LaTeX This exports the equations in a model in a mathematical formatting
+ language called LaTeX.
+ This file can be imported into mathematics programs like MathType to document
+ the mathematical logic in your model.
+ If you are a LaTeX user yourself, you can load this directly into your
+ preferred LaTeX editor.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+If your LaTeX implemention doesn't support breqn, untick the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+wrap long equations option
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+wrap-equations
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, which can be found in the preferences panel under the options menu.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Matlab This exports the model as an 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+m.
+ file
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ for importing into the algebraic program Matlab.
+ This enables the analysis and simulation of your model in a MatLab compatible
+ system, such as 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdnormallinkfoot
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+MatLab
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+https://en.wikipedia.org/wiki/MATLAB
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ or 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdnormallinkfoot
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Octave
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+http://www.gnu.org/software/octave/
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+Log simulation
+\end_layout
+
+\end_inset
+
+ This 
+\emph on
+Minsky
+\emph default
+-specific command outputs the results of simulated variables into a CSV
+ data file for later use in other programs.
+\end_layout
+
+\begin_layout Description
+Recording This 
+\emph on
+Minsky
+\emph default
+-specific command records the states of a model as it is being built for
+ later replay.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+Replay recording
+\end_layout
+
+\end_inset
+
+ This 
+\emph on
+Minsky
+\emph default
+-specific command replays a recording of model states.
+\end_layout
+
+\begin_layout Description
+Quit Exit the program.
+ 
+\emph on
+Ravel
+\emph default
+ will check to see whether you have saved your changes.
+ If you have, the program will close; if not, you will get a reminder to
+ save your changes.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+Debugging use
+\end_layout
+
+\end_inset
+
+ Items under the line are intended for developer use, and will not be documented
+ here.
+\end_layout
+
+\begin_layout Description
+Redraw Redraw may be useful if the screen gets messed up because of a display
+ bug (all programs have them!).
+ For example, a bug could cause items on the canvas to be scaled differently.
+ Redraw could overcome this problem without requiring you to exit the program.
+\end_layout
+
+\begin_layout Subsubsection
+Edit
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Edit"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "edit:undo"
+
+\end_inset
+
+ Undo and Redo allow you to step back and forward in your editing history.
+ If you undo a few edits, and then change the model at that point, the undo
+ history is then reset to commence with your new edit.
+ Ravel supports the standard Windows shortcuts of control-Z for undo and
+ control-Y for redo.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "edit:copy"
+
+\end_inset
+
+ Cut/copy/paste.
+ Selecting, or lassoing a region of the canvas will select a group of icons,
+ which will be shaded to indicate the selected items.
+ Wires joining two selected items will also be selected.
+ Note that, compatible with X-windows, selecting automatically performs
+ a copy, so the copy operation is strictly redundant, but provided for users
+ familiar with systems where an explicit copy request is required.
+ Cut deletes the selected items.
+ Paste will paste the items in the clipboard as a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ into the current model.
+ 
+\emph on
+Ravel
+\emph default
+ supports the Windows-standard shortcut keys of control-C for copy, control-X
+ for cut (which deletes the entity at the current location and creates a
+ copy for pasting elsewhere) and control-V for paste.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "edit:group"
+
+\end_inset
+
+ Group selection.
+ Create a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Group
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ using the contents of the selection.
+ Groups allow you to organise more complicated systems components into aggregate
+d modules that make the overall system more comprehensible.
+ In Ravel, groups can be used to, for example, collect all the file importing
+ operations into a Group, thus removing these detail of these operations
+ from the top level view.
+ This reduces the complexity of a canvas, which can make it easier for both
+ the developer and viewers to focus on the analysis that the document is
+ actually doing.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "edit: Dimensions"
+
+\end_inset
+
+ This invokes the Dimensions dialog box, which lists the Dimensions (Ravel
+ axes) in a document, their type (string, time, value), and their units
+ or formatting.
+\end_layout
+
+\begin_layout Itemize
+Remove Units is a 
+\emph on
+Minsky
+\emph default
+-specific command.
+\end_layout
+
+\begin_layout Itemize
+Auto Layout and Random Layout change the layout of your model.
+ These are developer-specific commands.
+\end_layout
+
+\begin_layout Subsubsection
+Bookmarks
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Bookmarks"
+
+\end_inset
+
+ Bookmarks store the location and scaling of a model for future reference.
+ This is an alternative to grouping as a means to organize a model.
+ To create a bookmark, either:
+\end_layout
+
+\begin_layout Itemize
+Move the canvas and zoom it to the level at which all the items you wish
+ to bookmark are visible.
+ Then click on the Bookmark menu and choose 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+Bookmark this position
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+.
+ Give the Bookmark a name and it will be added to this menu.
+ To move to that location in the model, click on this Bookmark name.
+ Bookmarks can be deleted using the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+Delete bookmark
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ sub-menu.
+ Or
+\end_layout
+
+\begin_layout Itemize
+Insert a text box at the upper left location and click the Bookmark? checkbox.
+ The Short Description of the textbox is used as the name for the Bookmark.
+\end_layout
+
+\begin_layout Subsubsection
+Insert
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Insert"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This menu contains all the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+mathematical operator blocks
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Operations
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ used in 
+\emph on
+Ravel
+\emph default
+, and enables you to place those operators on the Canvas.
+ You can get the same effect by clicking on the Design Icons.
+ A Ravel can be inserted from this menu, as can Minsky-specific tools like
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Godley table items
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+godley
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Plots
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+PlotWidget
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Options
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Options"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The options menu allows you to customise aspects of 
+\emph on
+Ravel
+\emph default
+ and 
+\emph on
+Minsky
+\emph default
+.
+ At the moment most options pertain to 
+\emph on
+Minsky
+\emph default
+ rather than 
+\emph on
+Ravel
+\emph default
+, but this will change as 
+\emph on
+Ravel
+\emph default
+ increases in complexity.
+ In this section of the manual we ignore options pertaining only to 
+\emph on
+Minsky
+\emph default
+; these are covered in 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Getting-Started-Minsky
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Getting-Started-Minsky
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Preferences 
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 1
+width ""
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Number of recent files to display — this determines how many previously
+ edited files are displayed on the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+recentfiles
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+recentfiles
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ menu.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "wrap-equations"
+
+\end_inset
+
+ Wrap long equations in LaTeX export.
+ If ticked, 
+\emph on
+Ravel
+\emph default
+ & 
+\emph on
+Minsky
+\emph default
+ will use the LaTeX 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+breqn
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ package to produce nicer looking automatically line-wrapped formulae.
+ Because not all LaTeX implementations are guaranteed to support breqn,
+ untick this option if you encounter problems.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset CommandInset label
+LatexCommand label
+name "font"
+
+\end_inset
+
+ select a font for variable names, parameter names, etc.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Background colour
+\end_layout
+
+\end_inset
+
+ — select a colour for the wiring canvas.
+ The default is white.
+\end_layout
+
+\begin_layout Subsubsection
+Simulation
+\end_layout
+
+\begin_layout Standard
+These commands are specific to 
+\emph on
+Minsky
+\emph default
+ and control how a model is simulated.
+ They are covered in the 
+\emph on
+Minsky
+\emph default
+ component of this manual.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Help
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Help"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Provides an in-program link to this manual.
+ Note that pressing F1 will also launch help windows in a context-sensitive
+ way.
+ That is, it will open the relevant help section for whatever object the
+ mouse is currently hovering over.
+ Similarly, each item on the canvas has a help menu item in the context
+ menu relevant for that item.
+\end_layout
+
+\begin_layout Subsection
+The Operation Controls
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/OperationsControls.png
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Recalculate button
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/Recalc.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The recalculate button computes the values of all variables in a model.
+ 
+\emph on
+Ravel
+\emph default
+ will periodically recalculate a document, but this is a useful option if
+ you wish to immediately see the results of a calculation.
+\end_layout
+
+\begin_layout Subsubsection
+Zoom buttons
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "ZoomButtons"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/ZoomControls.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Zoom buttons zoom in and out on the wiring canvas.
+ The same functionality is accessed via the mouse scroll wheel.
+ The reset zoom button 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+zoomOrig.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ resets the zoom level to 1, and also recentres the canvas.
+ The Zoom to Fit button zooms the model so that it just fits in the current
+ canvas window.
+\end_layout
+
+\begin_layout Subsubsection
+Run Buttons
+\end_layout
+
+\begin_layout Standard
+These commands are specific to 
+\emph on
+Minsky
+\emph default
+ and are covered in the 
+\emph on
+Minsky
+\emph default
+ component of this manual.
+\end_layout
+
+\begin_layout Subsubsection
+Speed slider
+\end_layout
+
+\begin_layout Standard
+The speed slider controls the rate at which a model is simulated.
+ These commands are specific to 
+\emph on
+Minsky
+\emph default
+ and are covered in the 
+\emph on
+Minsky
+\emph default
+ component of this manual.
+\end_layout
+
+\begin_layout Subsubsection
+Simulation time
+\end_layout
+
+\begin_layout Standard
+In the right hand top corner is a textual display of the current simulation
+ time 
+\begin_inset Formula $t$
+\end_inset
+
+, and the current (adaptive) difference between iterations 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+.
+ This information is specific to a 
+\emph on
+Minsky
+\emph default
+ simulation model.
+\end_layout
+
+\begin_layout Subsection
+Wiring, Equations and Summary Tabs
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "WiringEquationsTab"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:wiring"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+WiringEquationsTab.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This allows you to switch between the visual block diagram wiring view and
+ other views of your document.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Argument item:1
+status open
+
+\begin_layout Plain Layout
+Wiring
+\end_layout
+
+\end_inset
+
+This is 
+\emph on
+Ravel
+\emph default
+'s design canvas, where you import data, analyse it using 
+\emph on
+Ravel
+\emph default
+'s mathematical operators and functions, and produce visualisations using
+ Plots and Sheets.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Argument item:1
+status open
+
+\begin_layout Plain Layout
+Equations
+\end_layout
+
+\end_inset
+
+As you analyse a model using the flowchart operators in 
+\emph on
+Ravel
+\emph default
+, the program converts the flowchart logic into standard mathematical formulas.
+ This Tab gives you an instant view of the mathematical logic in your model.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Argument item:1
+status open
+
+\begin_layout Plain Layout
+Summary
+\end_layout
+
+\end_inset
+
+This tab provides a structured view of all the equations in a model, with
+ details about the number of dimensions and values in a formula.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+For example, this model imports data from the Bank of International Assessments,
+ separates the data into a number of variables, and uses data on debt in
+ domestic currency and debt as a percentage of GDP to derive GDP in domestic
+ currency data.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/DebtCalcGDPexample.png
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is the Summary Tab for that model, showing the variable names, their
+ mathematical definitions, their dimensions, and any initial values assigned
+ to them.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/DebtCalcGDPexampleSummaryTab.png
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset Argument item:1
+status open
+
+\begin_layout Plain Layout
+Phillips Diagram
+\end_layout
+
+\end_inset
+
+This is a 
+\emph on
+Minsky
+\emph default
+-specific feature which is covered in the 
+\emph on
+Minsky
+\emph default
+ section of this manual.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Argument item:1
+status open
+
+\begin_layout Plain Layout
+Publication
+\end_layout
+
+\end_inset
+
+Publication Tabs allow you to place specific items from the Wiring diagram
+ onto a documentation canvas.
+ The default Tab is called 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+Publication
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+, and additional user-named Tabs can be added using the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
++
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ Tab.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+To place an item on a Publication Tab, right-click on it on the Wiring Tab,
+ and then click on 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+Add item to a publication tab
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+.
+ Click on the desired named tab from the resulting menu.
+ The item will then be placed in the top-left-hand corner of the selected
+ Tab.
+ You can then place it wherever you want on the Publication Tab.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset Argument item:1
+status open
+
+\begin_layout Plain Layout
++
+\end_layout
+
+\end_inset
+
+This creates a new tab.
+ Provide a name in the form and press Enter or click OK and the new Tab
+ will be created.
+ 
+\end_layout
+
+\begin_layout Subsection
+Design Icons
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/DesignIcons.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These are the 
+\begin_inset Quotes eld
+\end_inset
+
+nuts and bolts
+\begin_inset Quotes erd
+\end_inset
+
+ of data analysis using 
+\emph on
+Ravel
+\emph default
+.
+ There are many icons, and more will be added over time as we extend 
+\emph on
+Ravel
+\emph default
+'s capabilities.
+\end_layout
+
+\begin_layout Standard
+The critical icons for 
+\emph on
+Ravel
+\emph default
+ are the first four: Import Data 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+importData.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+; insert a Ravel 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+RavelIcon.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+; attach a selected slice of the Ravel to a Lock; and attach that lock to
+ a variable for further analysis.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+Import data
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+importData.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Opens an import CSV file dialog, which allows a CSV file to be loaded into
+ a parameter in Ravel (the default name of the parameter is the name of
+ the file being imported).
+ See 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Importing CSV files
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Operation:csvImport
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ for full details.
+ After a data file is imported, the next step is to attach it to a Ravel.
+\end_layout
+
+\begin_layout Description
+Ravel 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+RavelIcon.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ This places a Ravel on the wiring canvas.
+ The first time this is done in a document, the Ravel is displayed full-size
+ in Edit mode.
+ Subsequent Ravels are displayed in icon mode.
+ For full details on using a Ravel see 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Ravel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Ravel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Plot widget
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+plot.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Add 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+plots
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+PlotWidget
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to the canvas.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Sheet widget
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+sheet.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Add a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+sheet
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Sheet
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to the canvas.
+\end_layout
+
+\begin_layout Description
+Variable 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+var.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "Variable"
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+This is a pop-up menu, which gives access to the form that creates variables,
+ constants and parameters, and access to the Browser, which is a window
+ that lists all the variables and parameters in a model, and enables them
+ to be placed on the wiring canvas.
+\end_layout
+
+\begin_layout Standard
+Variables are entities whose value changes as a function of time and its
+ relationship with other entities in your model.
+ Click on it and a variable definition window will appear:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem32.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The only essential step here is providing a name for the Variable.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Ravel
+\emph default
+ supports the LaTeX language for naming variables (and parameters), which
+ enables you to:
+\end_layout
+
+\begin_layout Itemize
+Use subscripts and superscripts.
+ The character following an underscore character _
+\begin_inset space \space{}
+\end_inset
+
+is subscripted, while the character following a caret symbol 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+^{
+\backslash
+ }
+\end_layout
+
+\end_inset
+
+is superscripted.
+ If the _
+\begin_inset space \space{}
+\end_inset
+
+or 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+^{
+\backslash
+ }
+\end_layout
+
+\end_inset
+
+is followed by text in parentheses (curly brackets) {}, then all the text
+ within the parentheses is superscripted or subscripted; and 
+\end_layout
+
+\begin_layout Itemize
+Use Greek characters.
+ The English name for a Greek letter (alpha, beta, gamma), preceded by a
+ backslash character 
+\begin_inset Formula $\backslash$
+\end_inset
+
+ generates the equivalent Greek letter as part of a variable's name (
+\begin_inset Formula $\alpha,\beta,\gamma$
+\end_inset
+
+);
+\end_layout
+
+\begin_layout Standard
+This enables more readable variables to be defined, such as, for example
+ 
+\begin_inset Formula $\Delta{Sales}_{Product}^{State}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+You can also optionally enter a numerical value for a variable.
+ In a 
+\emph on
+Minsky
+\emph default
+ model, the value will be generated by the model itself, provided its input
+ is wired.
+ In a 
+\emph on
+Ravel
+\emph default
+ document, the values of the variable will be determined by the data and
+ mathematical operations attached to it.
+\end_layout
+
+\begin_layout Standard
+When you click on OK (or press Enter), the newly named variable will appear
+ in the top left hand corner of the Canvas.
+ Move the mouse cursor to where you want to place the variable on the Canvas,
+ click, and it will be placed in that location.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Constants
+\emph default
+ are entities whose value is unaffected by the simulation or other entities
+ in the model.
+ Click on it and a constant definition window will appear:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem34.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The only essential requirement for entering a constant is its value.
+ You can vary the value of a constant or parameter using the arrow keys
+ or the slider button on top of a constant or parameter.
+\end_layout
+
+\begin_layout Standard
+A constant is just a type of variable, which also include parameters (named
+ constants), flow variables, stock variables and integration variables.
+ In fact there is no real conceptual difference between creating a constant
+ or creating a variable, as you can switch the type using the type field.
+\end_layout
+
+\begin_layout Standard
+Like the variable and constant button, the parameter button creates a variable
+ defaulting to the parameter type.
+ Parameters differ from flow variables in not having an input port, and
+ differ from constants in having a name, and being controllable by a slider
+ during simulation.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+Lock Lock widgets 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+LockIcon.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ are used with 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Ravels
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Ravel
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ A lock keeps a record of the current state of a Ravel: the items selected
+ on its axes, the effect of calipers in selecting data ranges, and so on.
+ You can then manipulate the Ravel without changing the output from the
+ Lock, which can be assigned to a variable for further use.
+ You can also impose the state of a Lock on its associated Ravel—this is
+ useful if you wish to fine tune the output from the Lock.
+\end_layout
+
+\begin_layout Description
+Notes Add 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+textual annotations
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Notes
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Time 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+time.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ embeds a reference to the simulation time on the Canvas.
+ This is a 
+\emph on
+Minsky
+\emph default
+-specific feature.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Binary operations
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+BinaryButton.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ These execute the stated binary mathematical operations: operations that
+ require two (or more) inputs.
+ Where appropriate, each input port to a binary operator can take multiple
+ wires—so that to add five numbers together, for example, you can wire 1
+ input to one port on the Add block, and the other four to the other port.
+ The same applies to the subtract, multiply, and divide blocks: multiple
+ inputs to the input ports on the subtract operator are added together,
+ and then the sum of inputs attached to the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"-
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ port is subtracted from the sum of the inputs attached to the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
++
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ port.
+ For the divide block, the product of the inputs to the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+*
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ port is divided by the product of the inputs to the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"/
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ port.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+BinaryOperators.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Min & Max Functions.
+ These take the minimum and maximum values, respectively.
+ These also allow multiple wires per input.
+ The sum of the inputs to one port is compared to the sum of the inputs
+ on the other.
+\end_layout
+
+\begin_layout Standard
+Pow and log.
+ These are binary operations (taking just two arguments).
+ In the case of the power operation, the exponent is the top port, and the
+ argument to be raised to that exponent is the bottom port.
+ This is indicated by the 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ labels on the ports.
+ In the case of logarithm, the bottom port (labelled 
+\begin_inset Formula $b$
+\end_inset
+
+) is the base of the logarithm.
+\end_layout
+
+\begin_layout Standard
+Logical Operators 
+\begin_inset Formula $<$
+\end_inset
+
+ 
+\begin_inset Formula $\le$
+\end_inset
+
+, =, 
+\begin_inset Formula $\wedge$
+\end_inset
+
+ 
+\begin_inset Formula $\vee$
+\end_inset
+
+ 
+\begin_inset Formula $\neg$
+\end_inset
+
+ (and, or, not)] These return 0 for false and 1 for true.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Unary functions
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+sqrt.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ These are a fairly standard complement of mathematical functions which
+ take only one input–though this input can have multiple dimensions.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Reduction operations
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+sum.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ This menu contains operations that reduce a vector to a scalar, or reduce
+ the rank of a tensor.
+ Typically sum, product, any, all etc.
+\end_layout
+
+\begin_layout Description
+Scans 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+runningSum.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ These are running sums and the difference operator
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Miscellaneous tensor operations
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+outerProduct.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Any other tensor function not covered elsewhere.
+\end_layout
+
+\begin_layout Description
+Switch 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+switchIcon.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ Add 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+a piecewise-defined function block
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+SwitchIcon
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ to the canvas.
+ Also known as a hybrid function.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+User defined function
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+userFunction.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ You can define 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+your own function
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Operation:userFunction
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ using an algebraic expression, such as 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+exp(-x^2+
+\end_layout
+
+\end_inset
+
+y)+.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Godley Table
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+NewItem29.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "GodleyTable"
+
+\end_inset
+
+ This is the fundamental element of 
+\emph on
+Minsky
+\emph default
+ that is not found (yet) in any other system dynamics program.
+ It is covered in the 
+\emph on
+Minsky
+\emph default
+ chapter of this manual.
+\end_layout
+
+\begin_layout Description
+Integration 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+int.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\begin_inset CommandInset label
+LatexCommand label
+name "Integrate"
+
+\end_inset
+
+ This inserts a variable whose value depends on the integral of other variables
+ in the system.
+ It is discussed further in the 
+\emph on
+Minsky
+\emph default
+ section of the manual.
+\end_layout
+
+\begin_layout Description
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+Derivative Operator
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+differentiate.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ This operator symbolically differentiates its input.
+ It is a component of 
+\emph on
+Minsky
+\emph default
+ which is explained in the 
+\emph on
+Minsky
+\emph default
+ section of this manual.
+\end_layout
+
+\begin_layout Subsection
+Design Canvas
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "DesignCanvas"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Wiring"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Design Canvas is where you develop your model.
+ A model consists of a number of blocks—imported data in parameters, Ravels,
+ user-defined parameters, variables, constants, mathematical operators and
+ the display elements (plots and sheets)—connected by wires.
+\end_layout
+
+\begin_layout Standard
+The canvas is 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ zoomable
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, either via the zoom buttons on the toolbar, or via the mouse scroll wheel.
+ It is also 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ pannable
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+, either via the scroll bars on the right and bottom, or by holding the
+ shift key and left mouse button together.
+ The canvas is effectively unlimited, however the scroll bars treat the
+ canvas as 
+\begin_inset Formula $10000\time10000$
+\end_inset
+
+ pixels in size.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+fwhtmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem19.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Equations tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Equations"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This displays the mathematical representation of the model.
+ This enables you to see the mathematical logic in a model without having
+ to export a full LaTeX rendition of the model (from the File:Export Canvas
+ command) to a LaTeX-capable editor.
+\end_layout
+
+\begin_layout Subsection
+Summary Tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Summary"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This tab provides a summary table of all variables in the system, in a heirarchi
+cal fashion that can be navigated by expanding or hiding sections by toggling
+ the caret.
+ Each variable shows its name, definition, dimensions (for tensor-valued
+ variables), initial expression, units and current value.
+\end_layout
+
+\begin_layout Standard
+Most of these fields are editable, and usually do the obvious thing.
+ Changing a variable's name will do a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ replace all instances
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ operation to update all variables of the same name.
+ Changing a variable's definition will replace the wiring graph leading
+ into the variable by a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+user defined function
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+UserFunction
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ containing your edited string.
+ At some future point, functionality will be added to convert a user defined
+ function into a wiring graph.
+\end_layout
+
+\begin_layout Standard
+For example, this is a 
+\emph on
+Ravel
+\emph default
+ file modelling the economics textbook concept of a profit-maximizing firm.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/NeoclassicalModelOfFirm.svg
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The next figure shows an extract from the summary tab documentation for
+ this model.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/SummaryTabScreenshot.png
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Phillips diagram tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Phillips"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is a 
+\emph on
+Minsky
+\emph default
+-specific feature which is covered in the 
+\emph on
+Minsky 
+\emph default
+sections of this manual.
+\end_layout
+
+\begin_layout Subsection
+Publication tab
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "tabs:Publication"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Publication tabs allow the creation of dashboards to emphasise certain aspects
+ of a simulation.
+ For example, you may wish to provide different reports on the same data
+ for the Accounting and Marketing sections of your company.
+\end_layout
+
+\begin_layout Standard
+Multiple publication tabs can be created by clicking the '+' tab.
+\end_layout
+
+\begin_layout Standard
+Any item from the wiring tab can be added to a publication tab, and then
+ moved, resized or rotated independently of the item on the wiring tab.
+ For items that dynamically update, the publication tab will be updated
+ dynamically during the simulation.
+\end_layout
+
+\begin_layout Standard
+Textual annotation can be added to the publication tab, independently of
+ any annotations on the wiring tab.
+\end_layout
+
+\begin_layout Standard
+Wires cannot be added to the publication tab, however you can insert arrows
+ (eg 
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+) by typing the LaTeX text 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+
+\backslash
+rightarrow+
+\end_layout
+
+\end_inset
+
+, and then rotate and scale the arrow to connect parts of the dashboard
+ together.
+\end_layout
+
+\begin_layout Subsection
+Wires
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Wires"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The wires in a model connect blocks together to define equations.
+ For example, to write an equation for 100/33, you would place a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+const.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ on the canvas, and give it the value of 100:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+scalebox{0.5}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem122.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Then do the same for 33, and place a divide block on the canvas:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/NewItem123.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Then click on the right hand edge of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+buttonIcon{
+\end_layout
+
+\end_inset
+
+const100.eps
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and drag to extend the wire to the numerator (
+\begin_inset Formula $\times$
+\end_inset
+
+) port of the divide operation.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/wireExample1.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Finally, add the other wire.
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/wireExample2.eps
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Working with 
+\emph on
+Ravel
+\end_layout
+
+\begin_layout Subsection
+Components in 
+\emph on
+Ravel
+\end_layout
+
+\begin_layout Standard
+There are several types of components in 
+\emph on
+Ravel
+\emph default
+: 
+\end_layout
+
+\begin_layout Enumerate
+Data storage parameters, which load in data from an external CSV file; 
+\end_layout
+
+\begin_layout Enumerate
+Ravels, which take data from a data storage parameter and create a multi-dimensi
+onal graphical rendition of the data, with one axis per dimension; 
+\end_layout
+
+\begin_layout Enumerate
+Mathematical operators such as plus (+), minus (-), etc.
+ These are all aware of the dimensions of your data, so they act on arrays
+ of data, rather than single cells as with spreadsheet formulas; 
+\end_layout
+
+\begin_layout Enumerate
+Constants (or parameters, which are named constants) which are given a value
+ by the user; 
+\end_layout
+
+\begin_layout Enumerate
+Variables whose values are calculated by the program during a simulation
+ and depend on the values of constants and other variables; and 
+\end_layout
+
+\begin_layout Enumerate
+Groups, which allow components to be grouped into modules that can be used
+ to construct more complex models.
+ 
+\end_layout
+
+\begin_layout Subsection
+Inserting a model component
+\end_layout
+
+\begin_layout Standard
+There are five ways to insert a component onto the Canvas: 
+\end_layout
+
+\begin_layout Enumerate
+Click on the desired Icon on the Icon Palette, drag the block onto the Canvas
+ and click the mouse where you want to insert it
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+fwhtmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem18.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Choose Insert from the menu and select the desired block there
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+resizebox{!}{0.6
+\backslash
+textheight}{
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem159.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Right-click on an existing block and choose copy.
+ Then place the copy where you want it on the palette.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmladdimg{
+\end_layout
+
+\end_inset
+
+NewItem161.png
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Variables can be inserted by typing the variable name on the canvas, and
+ constants can be entered simply by typing the number on the canvas.
+ Similarly, operations can be inserted by typing the operator name (eg 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+sin+
+\end_layout
+
+\end_inset
+
+, or 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+*+
+\end_layout
+
+\end_inset
+
+).
+ Notes can be inserted by starting the note with a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+verb+#+
+\end_layout
+
+\end_inset
+
+ character.
+\end_layout
+
+\begin_layout Enumerate
+Variables can also be picked from the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+htmlref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Variable Browser
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+VariableBrowser
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and placed on the canvas.
+ 
+\end_layout
+
+\begin_layout Subsection
+Creating an equation
+\end_layout
+
+\begin_layout Standard
+Equations are entered in Ravel graphically.
+ Mathematical operations like addition, multiplication and subtraction are
+ performed by wiring the inputs up to the relevant mathematical block.
+ The output of the block is then the result of the equation.
+\end_layout
+
+\begin_layout Standard
+For example, a simple equation like 
+\begin_inset Formula 
+\[
+ProfitMargin=(Price-Cost)/Cost
+\]
+
+\end_inset
+
+is performed in Ravel by :
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/ProfitMarginEquation.svg
+	width 10cm
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+If you click on the equation tab, you will see that it is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Profit_{Margin}=\frac{Price-Cost}{Cost}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If the variables Price and Cost were multi-dimensional—say they stored price
+ and cost data for different products at different stores at different dates—the
+n this one formula would calculate profit margins by product by store by
+ date.
+\end_layout
+
+\begin_layout Subsection
+Wiring components together
+\end_layout
+
+\begin_layout Standard
+A model is constructed by wiring one component to another in a way that
+ defines an equation.
+ Wires are drawn from the output port of one block to the input port of
+ another.
+ Ports are circles on the blocks to which wires can be attached, which can
+ be seen when hovering the pointer over the block.
+ Variables have an input and an output port; constants and parameters only
+ have an output port.
+ A mathematical operator has as many input ports as are needed to define
+ the operation.
+\end_layout
+
+\end_body
+\end_document
