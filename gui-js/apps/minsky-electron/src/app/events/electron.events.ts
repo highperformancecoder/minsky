@@ -16,6 +16,7 @@ import {
   RenderNativeWindow,
   ImportStockPayload,
   GodleyIcon,
+  DownloadCSVPayload,
 } from '@minsky/shared';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
@@ -255,3 +256,10 @@ ipcMain.handle(events.RECORDING_REPLAY, async (event) => {
 ipcMain.handle(events.DISPLAY_INIT_HELP, (event)=> {
   CommandsManager.loadHelpFile('tensor-init');
 });
+
+ipcMain.handle(
+  events.DOWNLOAD_CSV,
+  async (event, payload: DownloadCSVPayload) => {
+    return await CommandsManager.startCSVDownload(payload);
+  }
+);

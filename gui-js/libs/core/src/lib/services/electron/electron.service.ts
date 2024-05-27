@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { events, CurrentWindowDetails, HandleDescriptionPayload, HandleDimensionPayload,} from '@minsky/shared';
+import { events, CurrentWindowDetails, HandleDescriptionPayload, HandleDimensionPayload, DownloadCSVPayload,} from '@minsky/shared';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';
 
@@ -82,6 +82,9 @@ export class ElectronService {
   }
   async recordingReplay(): Promise<void> {
     return await this.ipcRenderer.invoke(events.RECORDING_REPLAY);
+  }
+  async downloadCSV(payload: DownloadCSVPayload): Promise<string> {
+    return await this.ipcRenderer.invoke(events.DOWNLOAD_CSV, payload)
   }
   displayInitHelp() {
     this.ipcRenderer.invoke(events.DISPLAY_INIT_HELP);

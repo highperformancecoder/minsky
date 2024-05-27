@@ -65,6 +65,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   destroy$ = new Subject<{}>();
 
+  localPath: string;
   itemId: string;
   systemWindowId: number;
   isInvokedUsingToolbar: boolean;
@@ -84,7 +85,6 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   @ViewChild('checkboxRow') checkboxRow: ElementRef<HTMLCollection>;
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
   @ViewChild('fullDialog') fullDialog: ElementRef<HTMLElement>;
-
 
   public get url(): AbstractControl {
     return this.form.get('url');
@@ -263,11 +263,18 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async load() {
-    const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
-    const fileUrl = this.url.value;
+    if(this.url.value === '') return;
 
-    if (fileUrl !== fileUrlOnServer) {
-      await this.variableValuesSubCommand.csvDialog.url(fileUrl);
+    if(this.url.value.includes('://')) {
+      this.localPath = await this.electronService.downloadCSV({windowUid: this.itemId, url: this.url.value});
+    } else {
+      this.localPath = this.url.value;
+    }
+
+    const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
+
+    if (this.localPath !== fileUrlOnServer) {
+      await this.variableValuesSubCommand.csvDialog.url(this.localPath);
       await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
       await this.getCSVDialogSpec();
       this.updateForm();

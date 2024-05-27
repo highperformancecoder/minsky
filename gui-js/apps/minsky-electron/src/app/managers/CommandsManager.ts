@@ -7,9 +7,9 @@ import {
   InitializePopupWindowPayload,
   electronMenuBarHeightForWindows, HandleDescriptionPayload,
   importCSVvariableName,
-  minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility
+  minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility, DownloadCSVPayload
 } from '@minsky/shared';
-import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
 import { existsSync, renameSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
 import { join, dirname } from 'path';
@@ -1186,14 +1186,60 @@ export class CommandsManager {
       }
     });
   }
-  
-  static upgrade() {
-    let window=WindowManager.createWindow({
+
+  static startCSVDownload(payload: DownloadCSVPayload) {
+    const window=this.createDownloadWindow();
+
+    const splitUrl = payload.url.split('.');
+    const extension = splitUrl.length === 1 ? 'csv' : splitUrl.pop();
+    const savePath = join(tmpdir(),`downloaded.${extension}`);
+    window.webContents.session.on('will-download', (e,i,w) => this.downloadCSV(e,i,w,savePath));
+    window.webContents.downloadURL(payload.url);
+    return savePath;
+  }
+
+
+  static async downloadCSV(event,item,webContents, savePath) {
+    item.setSavePath(savePath);
+
+    let progress = new ProgressBar({text:"Downloading CSV File",value: 0, indeterminate:false, closeOnComplete: true});
+
+    // handler for when download completed
+    item.once('done', (event,state)=>{
+      if (state !== 'completed') {
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: `CSV file download failed: ${state}`,
+          type: 'error',
+        });
+      }
+      webContents.close();
+    });
+
+    // handler for updating progress bar
+    item.on('updated',(event,state) => {
+      switch (state) {
+      case 'progressing':
+        if (!progress?.isCompleted())
+          progress.value=100*item.getReceivedBytes()/item.getTotalBytes();
+        break;
+      case 'interrupted':
+        //item.resume();
+        break;
+      }
+    });
+  }
+
+  static createDownloadWindow() {
+    return WindowManager.createWindow({
       width: 500,
       height: 700,
       title: '',
       modal: false,
     });
+  }
+  
+  static upgrade() {
+    const window=this.createDownloadWindow();
 
     // handler for when user has logged in to initiate upgrades.
     window.webContents.on('did-navigate',async ()=>{
