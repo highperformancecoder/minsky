@@ -466,20 +466,26 @@ Dimension and argument parameters are unused.
 
 \subsection{gather}\label{Operation:gather}
 
-Gather collects the values at index locations indexed by the second
-argument. The output tensor has shape
-$[i_0, \ldots i_{ir}, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$ where
-$[a_0,\ldots,a_{ar}]$ is the shape of the first argument, and
-$[i_0,\ldots,i_{ir}]$ is the shape of the second second (index)
-argument, and $j$ is the axis along which the gather is performed.
+Gather collects the values at index locations of the first argument, indexed by the second
+argument. If the index argument is a scalar, the output tensor's rank
+is one less than the first argument's rank, ie 
+$[a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$ where $j$ is the axis
+along which the gather is performed. If the index argument is a
+tensor, however, it's shape is ignored, and the output tensor is the
+same rank as the first argument, and has shape
+$[i, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$ where
+$i$ is the number of elements in the index argument's hypercube, and $j$ is the axis along which the gather is performed.
 
 If the index is not an integer, the gather will linearly interpolate
 between the values on either side. So, for example,
-$x[2.5] = 0.5 (x[2]+x[3])$.
+$x[2.5] = 0.5 (x[2]+x[3])$. The x-vector elements are also linearly
+interpolated if the x-vector is a value or time type dimension, or the
+closest string label if a string type.
 
 If the index value is outside the range of the
-\htmlref{x-vector}{x-vector} along the axis being gathered, then NAN is assigned
-to that tensor element.
+\htmlref{x-vector}{x-vector} along the axis being gathered, then NAN
+is assigned to that tensor element, and the x-vector gets a default
+assigned element (empty string, NaN or not-a-date).
 
 \subsection{inner product $\cdot$}\label{Operation:innerProduct}
 Computes

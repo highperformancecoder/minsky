@@ -714,23 +714,22 @@ SUITE(TensorOps)
       Eval eval(gatheredVar, gatherOp);
       eval();
       
-      vector<size_t> expectedDims{2,2,2,5};
+      vector<size_t> expectedDims{4,2,5};
       CHECK_EQUAL(expectedDims.size(), gathered.rank());
       CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
 
       auto& gxv=gathered.hypercube().xvectors;
-      CHECK_EQUAL("t0",gxv[0].name);
-      CHECK_EQUAL("t1",gxv[1].name);
-      CHECK_EQUAL("x",gxv[2].name);
-      CHECK_EQUAL("z",gxv[3].name);
+      CHECK_EQUAL("y",gxv[0].name);
+      CHECK_EQUAL("x",gxv[1].name);
+      CHECK_EQUAL("z",gxv[2].name);
 
-      for (size_t i=0; i<expectedDims[3]; ++i)
-        for (size_t j=0; j<expectedDims[2]; ++j)
+      for (size_t i=0; i<expectedDims[2]; ++i)
+        for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+1.3, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+2, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+1.3, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+2, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 
@@ -784,17 +783,17 @@ SUITE(TensorOps)
       Eval eval(gatheredVar, gatherOp);
       eval();
       
-      vector<size_t> expectedDims{2,2,2,5};
+      vector<size_t> expectedDims{4,2,5};
       CHECK_EQUAL(expectedDims.size(), gathered.rank());
       CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
 
-      for (size_t i=0; i<expectedDims[3]; ++i)
-        for (size_t j=0; j<expectedDims[2]; ++j)
+      for (size_t i=0; i<expectedDims[2]; ++i)
+        for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 
@@ -848,17 +847,17 @@ SUITE(TensorOps)
       Eval eval(gatheredVar, gatherOp);
       eval();
       
-      vector<size_t> expectedDims{2,2,2,5};
+      vector<size_t> expectedDims{4,2,5};
       CHECK_EQUAL(expectedDims.size(), gathered.rank());
       CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
 
-      for (size_t i=0; i<expectedDims[3]; ++i)
-        for (size_t j=0; j<expectedDims[2]; ++j)
+      for (size_t i=0; i<expectedDims[2]; ++i)
+        for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 

@@ -678,6 +678,31 @@ namespace minsky
       if (arg1 && d>=arg1->rank()) d=0;
       if (!arg1 || arg1->hypercube().xvectors.size()<=d) return;
       auto& xv=arg1->hypercube().xvectors[d];
+
+      if (arg2->rank()>0)
+        {
+          // recalculate hypercube
+          Hypercube hc=cachedResult.hypercube();
+          auto& xvToGather=arg1->hypercube().xvectors[dimension];
+          for (size_t i=0; !xv.empty() && i<arg2->size() && i<hc.xvectors[0].size(); ++i)
+            {
+              double intPart;
+              double fracPart=std::modf((*arg2)[i], &intPart);
+              if (intPart>=0)
+                if (intPart<xvToGather.size()-1)
+                  hc.xvectors[0][i]=interpolate(xvToGather[intPart],xvToGather[intPart+1],fracPart);
+                else if (intPart<xvToGather.size())
+                  hc.xvectors[0][i]=xvToGather[intPart];
+                else
+                  hc.xvectors[0][i]=any(xvToGather.dimension.type);
+              else if (intPart==-1)
+                hc.xvectors[0][i]=xvToGather[0];
+              else
+                hc.xvectors[0][i]=any(xvToGather.dimension.type);
+            }
+          cachedResult.hypercube(std::move(hc));
+        }
+      
       function<double(double,size_t)> interpolate;
       
       size_t stride=1;
@@ -685,6 +710,7 @@ namespace minsky
       for (size_t i=0; i<d; ++i)
         stride*=dims[i];
       
+
       switch (xv.dimension.type)
         {
         case Dimension::string:
@@ -772,7 +798,31 @@ namespace minsky
 
       // resulting hypercube is a tensor product of arg2 and the reduced arg1.
       const size_t arg2NumElements=arg2->hypercube().numElements();
-      Hypercube hc=arg2->hypercube();
+      Hypercube hc;
+      if (arg2NumElements>1)
+        {
+          hc.xvectors.push_back(arg1->hypercube().xvectors[dimension]);
+          hc.xvectors[0].resize(arg2NumElements);
+        }
+//      hc.xvectors.resize(1);
+//      auto& xvToGather=arg1->hypercube().xvectors[dimension];
+//      for (size_t i=0; !xv.empty() && i<arg2->size(); ++i)
+//        {
+//          double intPart;
+//          double fracPart=std::modf((*arg2)[i], &intPart);
+//          if (intPart>=0)
+//            if (intPart<xvToGather.size()-1)
+//              hc.xvectors[0].emplace_back(interpolate(xvToGather[intPart],xvToGather[intPart+1],fracPart));
+//            else if (intPart<xvToGather.size())
+//              hc.xvectors[0].emplace_back(xvToGather[intPart]);
+//            else
+//              hc.xvectors[0].emplace_back(any(xvToGather.dimension.type));
+//          else if (intPart==-1)
+//            hc.xvectors[0].emplace_back(xvToGather[0]);
+//          else
+//            hc.xvectors[0].emplace_back(any(xvToGather.dimension.type));
+//        }
+                                
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin(), arg1->hypercube().xvectors.begin()+dimension);
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin()+dimension+1, arg1->hypercube().xvectors.end());
 
@@ -1457,7 +1507,9 @@ namespace minsky
   class RavelTensor: public civita::ITensor
   {
     const Ravel& ravel;
-    vector<TensorPtr> chain;
+    mutable vector<TensorPtr> chain;
+    TensorPtr arg;
+    mutable Timestamp m_timestamp;
     
     CLASSDESC_ACCESS(Ravel);
   public:
@@ -1465,11 +1517,25 @@ namespace minsky
 
     void setArgument(const TensorPtr& a,const Args&) override {
       // not sure how to avoid this const cast here
+      arg=a;
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
       chain=ravel::createRavelChain(ravel.getState(), a);
     }
 
-    double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
+    double operator[](size_t i) const override {
+      double v=0;
+      if (!chain.empty())
+        {
+          v=(*chain.back())[i];
+          if (m_timestamp<chain.back()->timestamp())
+            { // update hypercube if argument has changed
+              const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
+              chain=ravel::createRavelChain(ravel.getState(), arg);
+              m_timestamp=Timestamp::clock::now();
+            }
+        }
+      return v;
+    }
     size_t size() const override {return chain.empty()? 1: chain.back()->size();}
     const Index& index() const override
     {return chain.empty()? m_index: chain.back()->index();}

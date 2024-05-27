@@ -602,6 +602,7 @@ namespace minsky
         {
           if (port<m_numLines) noLhsPens=false;
           auto& yv=yvars[port][i];
+          if (yv->size()>0) (*yv)[0]; // ensure cachedTensors are up to date
           auto d=yv->hypercube().dims();
           if (d.empty())
             {

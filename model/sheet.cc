@@ -404,6 +404,11 @@ void Sheet::draw(cairo_t* cairo) const
       Pango pango(cairo);
       pango.setFontSize(12.0);
       double x0=-0.5*m_width+border, y0=-0.5*m_height+border;
+
+      // force evaluate first data item, in case cachedTensorOp updates hypercube
+      if (value->size()>0)
+        (*value)[0];
+      
       if (value->hypercube().rank()==0)
         {
           cairo_move_to(cairo,x0,y0);
