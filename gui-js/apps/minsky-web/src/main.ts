@@ -7,7 +7,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 import { AppRoutingModule } from './app/app-routing.module';
 
-import { withInterceptorsFromDi, provideHttpClient, HttpClient, HttpClientModule, withFetch } from '@angular/common/http';
+import { withInterceptorsFromDi, provideHttpClient, HttpClient, HttpClientModule } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { bootstrapApplication } from '@angular/platform-browser';
 
@@ -19,7 +19,7 @@ if (AppConfig.production) {
 bootstrapApplication(AppComponent, {
     providers: [
     provideAnimations(),
-    provideHttpClient(withInterceptorsFromDi(), withFetch()),
+    provideHttpClient(withInterceptorsFromDi()),
     importProvidersFrom(TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
