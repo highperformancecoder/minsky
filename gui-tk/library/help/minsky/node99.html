@@ -54,32 +54,35 @@ gather
 </H2>
 
 <P>
-Gather collects the values at index locations indexed by the second
-argument. The output tensor has shape
+Gather collects the values at index locations of the first argument, indexed by the second
+argument. If the index argument is a scalar, the output tensor's rank
+is one less than the first argument's rank, ie 
 <!-- MATH
- $[i_0, \ldots i_{ir}, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$
+ $[a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$
  -->
 <SPAN CLASS="MATH"><IMG
- WIDTH="242" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ WIDTH="177" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
  SRC="img207.png"
- ALT="$[i_0, \ldots i_{ir}, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$"></SPAN> where
-<!-- MATH
- $[a_0,\ldots,a_{ar}]$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="86" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img208.png"
- ALT="$[a_0,\ldots,a_{ar}]$"></SPAN> is the shape of the first argument, and
-<!-- MATH
- $[i_0,\ldots,i_{ir}]$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="78" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img209.png"
- ALT="$[i_0,\ldots,i_{ir}]$"></SPAN> is the shape of the second second (index)
-argument, and <SPAN CLASS="MATH"><IMG
+ ALT="$[a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$"></SPAN> where <SPAN CLASS="MATH"><IMG
  WIDTH="11" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img210.png"
+ SRC="img208.png"
+ ALT="$j$"></SPAN> is the axis
+along which the gather is performed. If the index argument is a
+tensor, however, it's shape is ignored, and the output tensor is the
+same rank as the first argument, and has shape
+<!-- MATH
+ $[i, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="189" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img209.png"
+ ALT="$[i, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$"></SPAN> where
+<SPAN CLASS="MATH"><IMG
+ WIDTH="9" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img204.png"
+ ALT="$i$"></SPAN> is the number of elements in the index argument's hypercube, and <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img208.png"
  ALT="$j$"></SPAN> is the axis along which the gather is performed.
 
 <P>
@@ -90,13 +93,16 @@ between the values on either side. So, for example,
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="167" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img211.png"
- ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>.
+ SRC="img210.png"
+ ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>. The x-vector elements are also linearly
+interpolated if the x-vector is a value or time type dimension, or the
+closest string label if a string type.
 
 <P>
 If the index value is outside the range of the
-<A HREF="node124.html#x-vector">x-vector</A> along the axis being gathered, then NAN is assigned
-to that tensor element.
+<A HREF="node124.html#x-vector">x-vector</A> along the axis being gathered, then NAN
+is assigned to that tensor element, and the x-vector gets a default
+assigned element (empty string, NaN or not-a-date).
 
 <P>
 <BR><HR>

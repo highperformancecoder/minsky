@@ -61,8 +61,8 @@ single number, let's refer to it as <SPAN CLASS="MATH"><IMG
  SRC="img60.png"
  ALT="$x$"></SPAN>. A tensor of rank 1 may appear
 as a sequence of numbers, let's say <SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img253.png"
+ WIDTH="52" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img252.png"
  ALT="$(x x x x)$"></SPAN>. Rank 2 means a tensor
 appears as a 2D sequence of numbers, for example:
 
@@ -83,7 +83,7 @@ appears as a 2D sequence of numbers, for example:
 
 <IMG
  WIDTH="95" HEIGHT="64" BORDER="0"
- SRC="img254.png"
+ SRC="img253.png"
  ALT="\begin{displaymath}
 \left(
 \begin{array}{ccc}
@@ -134,10 +134,10 @@ the the values <!-- MATH
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="102" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img255.png"
+ SRC="img254.png"
  ALT="$(0,\ldots,n_i-1)$"></SPAN>, where <SPAN CLASS="MATH"><IMG
  WIDTH="19" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img256.png"
+ SRC="img255.png"
  ALT="$n_i$"></SPAN> is the dimension size
 of axis <SPAN CLASS="MATH"><IMG
  WIDTH="9" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
@@ -151,13 +151,13 @@ For example, if the first tensor consists of three elements
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="79" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img257.png"
+ SRC="img256.png"
  ALT="$(x_0, x_1, x_2)$"></SPAN> and the second consist of a number of different
 elements that roughly correspond to the same three elements, these can
 be added together.  The x-vector starts with the first tensor's value
 of <SPAN CLASS="MATH"><IMG
  WIDTH="32" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img258.png"
+ SRC="img257.png"
  ALT="$(x_0)$"></SPAN> and looks for a matching value in the second tensor. If it
 can't find a direct match, it will search for nearby values which
 roughly correspond. It can then take those values and interpolate the
@@ -170,18 +170,18 @@ take another example:
 <P>
 Suppose the first tensor was a vector <SPAN CLASS="MATH"><IMG
  WIDTH="56" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img259.png"
+ SRC="img258.png"
  ALT="$(x_0,x_1)$"></SPAN> and had an x-vector
 (1,3) and the second tensor <SPAN CLASS="MATH"><IMG
  WIDTH="75" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img260.png"
+ SRC="img259.png"
  ALT="$(y_0,y_1,y_2)$"></SPAN> had an x-vector (0,2,3),
 then the resulting tensor will be <!-- MATH
  $(x_0+0.5(y_0+y_1), x_1+y_2)$
  -->
 <SPAN CLASS="MATH"><IMG
- WIDTH="192" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img261.png"
+ WIDTH="191" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img260.png"
  ALT="$(x_0+0.5(y_0+y_1), x_1+y_2)$"></SPAN>. If
 the x-vector were date/time data, then the tensor values will be
 interpolated according to the actual time values. If the first
@@ -197,7 +197,7 @@ in their x-vectors. In the above case, where the x-vectors were
 ('1','3') and ('0','2','3') the resulting tensor will be the scalar
 <SPAN CLASS="MATH"><IMG
  WIDTH="54" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img262.png"
+ SRC="img261.png"
  ALT="$x_1+y_2$"></SPAN>.
 
 <P>
