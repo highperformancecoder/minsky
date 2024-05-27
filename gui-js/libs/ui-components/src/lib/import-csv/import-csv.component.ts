@@ -65,7 +65,6 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   destroy$ = new Subject<{}>();
 
-  localPath: string;
   itemId: string;
   systemWindowId: number;
   isInvokedUsingToolbar: boolean;
@@ -266,15 +265,13 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     if(this.url.value === '') return;
 
     if(this.url.value.includes('://')) {
-      this.localPath = await this.electronService.downloadCSV({windowUid: this.itemId, url: this.url.value});
-    } else {
-      this.localPath = this.url.value;
+      this.url.setValue(await this.electronService.downloadCSV({windowUid: this.itemId, url: this.url.value}));
     }
 
     const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
 
-    if (this.localPath !== fileUrlOnServer) {
-      await this.variableValuesSubCommand.csvDialog.url(this.localPath);
+    if (this.url.value !== fileUrlOnServer) {
+      await this.variableValuesSubCommand.csvDialog.url(this.url.value);
       await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
       await this.getCSVDialogSpec();
       this.updateForm();
