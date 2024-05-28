@@ -916,16 +916,13 @@ namespace minsky
                                     }
                                     break;
                                   }
-                              //                          if (row>=2670) cout<<"3"<<endl;
                             }
                         }
                       dataCols++;
-                      //                  if (row>=2670) cout<<"4"<<endl;
                       if (tabularFormat)
                         key.pop_back();
                       else
                         break; // only one column of data needs to be read
-                      //                  if (row>=2670) cout<<"5"<<endl;
                     }
             
                 if (!dataCols)

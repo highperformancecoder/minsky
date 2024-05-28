@@ -1620,6 +1620,7 @@ export class PlotWidget extends Item {
   async clearPenAttributes(): Promise<void> {return this.$callMethod('clearPenAttributes');}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
   async connectVar(a1: VariableValue,a2: number): Promise<void> {return this.$callMethod('connectVar',a1,a2);}
+  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disconnectAllVars(): Promise<void> {return this.$callMethod('disconnectAllVars');}
