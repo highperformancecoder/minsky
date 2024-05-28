@@ -607,10 +607,10 @@ export class CommunicationService {
         }
 
         const operations = await this.electronService.minsky.availableOperations();
-        const operation = multipleKeyString.toLowerCase();
-        
-        if (operations.includes(operation)) {
-          this.addOperation(operation);
+        const operationToLookFor = multipleKeyString.toLowerCase();
+        const operationFound = operations.find((i)=>i.toLowerCase()===operationToLookFor);
+        if (operationFound) {
+          this.addOperation(operationFound);
           return;
         }
         
