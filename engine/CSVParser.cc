@@ -933,7 +933,7 @@ namespace minsky
                     if (spec.counter || spec.dontFail)
                       tmpData[key]+=1;
                     else
-                      throw NoDataColumns();
+                      onError(ShortLine(key,sliceLabelTokens),row);
                   }
             
 
