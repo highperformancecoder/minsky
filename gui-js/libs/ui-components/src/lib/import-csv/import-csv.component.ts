@@ -265,7 +265,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     if(this.url.value === '') return;
 
     if(this.url.value.includes('://')) {
-      this.url.setValue(await this.electronService.downloadCSV({windowUid: this.itemId, url: this.url.value}));
+      const savePath = await this.electronService.downloadCSV({windowUid: this.itemId, url: this.url.value});
+      this.url.setValue(savePath);
     }
 
     const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();

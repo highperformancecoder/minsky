@@ -12,7 +12,7 @@ import {
 import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
 import { existsSync, renameSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
-import { join, dirname } from 'path';
+import { extname, join, dirname } from 'path';
 import { tmpdir } from 'os';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
@@ -1188,18 +1188,22 @@ export class CommandsManager {
   }
 
   static startCSVDownload(payload: DownloadCSVPayload) {
+    console.warn('Download started');
+
     const window=this.createDownloadWindow();
 
-    const splitUrl = payload.url.split('.');
-    const extension = splitUrl.length === 1 ? 'csv' : splitUrl.pop();
-    const savePath = join(tmpdir(),`downloaded.${extension}`);
-    window.webContents.session.on('will-download', (e,i,w) => this.downloadCSV(e,i,w,savePath));
-    window.webContents.downloadURL(payload.url);
-    return savePath;
+    return new Promise<string>(resolve => {
+      console.warn('Will-download started')
+
+      window.webContents.session.on('will-download', (e,i,w) => this.downloadCSV(e,i,w, resolve));
+      window.webContents.downloadURL(payload.url);
+    });
   }
 
 
-  static async downloadCSV(event,item,webContents, savePath) {
+  static downloadCSV(event,item,webContents, downloadResolve) {
+    const extension = '.csv'; //extname(item.getFilename());
+    const savePath = join(tmpdir(),`downloaded${extension}`);
     item.setSavePath(savePath);
 
     let progress = new ProgressBar({text:"Downloading CSV File",value: 0, indeterminate:false, closeOnComplete: true});
@@ -1213,6 +1217,9 @@ export class CommandsManager {
         });
       }
       webContents.close();
+
+      console.warn('Resolving savepath: ' + savePath);
+      downloadResolve(savePath);
     });
 
     // handler for updating progress bar

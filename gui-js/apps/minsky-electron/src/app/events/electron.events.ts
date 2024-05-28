@@ -260,6 +260,8 @@ ipcMain.handle(events.DISPLAY_INIT_HELP, (event)=> {
 ipcMain.handle(
   events.DOWNLOAD_CSV,
   async (event, payload: DownloadCSVPayload) => {
-    return await CommandsManager.startCSVDownload(payload);
+    const savePath = await CommandsManager.startCSVDownload(payload);
+    console.warn('Exiting ipcMain.handle DOWNLOAD_CSV');
+    return savePath;
   }
 );
