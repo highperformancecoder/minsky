@@ -528,11 +528,15 @@ namespace minsky
 
   void Minsky::populateMissingDimensionsFromVariable(const VariableValue& v, bool& incompatibleMessageDisplayed)
   {
+    set<string> varDimensions;
     for (auto& xv: v.hypercube().xvectors)
       {
         auto d=dimensions.find(xv.name);
         if (d==dimensions.end())
-          dimensions.emplace(xv.name, xv.dimension);
+          {
+            dimensions.emplace(xv.name, xv.dimension);
+            varDimensions.insert(xv.name);
+          }
         else if (d->second.type==xv.dimension.type)
           d->second.units=xv.dimension.units;
         else if (!incompatibleMessageDisplayed)
@@ -541,10 +545,7 @@ namespace minsky
             incompatibleMessageDisplayed=true;
           }
       }
-    // set all such dimensions on Ravels to forward sort order
-    set<string> varDimensions;
-    for (auto& xv: v.hypercube().xvectors)
-      varDimensions.insert(xv.name);
+    // set all newly populated dimensions on Ravels to forward sort order
     model->recursiveDo
       (&Group::items,[&](Items& m, Items::iterator it)
       {
