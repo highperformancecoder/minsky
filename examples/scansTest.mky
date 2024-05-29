@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.1</minskyVersion>
+  <minskyVersion>3.4.0-beta.3</minskyVersion>
   <wires>
    <Wire>
     <id>85</id>
@@ -112,6 +112,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>0</id>
     <type>Variable:parameter</type>
     <x>193.116</x>
@@ -143,6 +144,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>2</id>
     <type>Operation:time</type>
     <x>192.116</x>
@@ -167,6 +169,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>4</id>
     <type>Operation:multiply</type>
     <x>273.116</x>
@@ -193,6 +196,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>8</id>
     <type>Operation:add</type>
     <x>339.116</x>
@@ -219,6 +223,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>12</id>
     <type>VarConstant</type>
     <x>280.116</x>
@@ -250,6 +255,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>14</id>
     <type>Operation:sin</type>
     <x>441.116</x>
@@ -275,6 +281,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>17</id>
     <type>Operation:runningSum</type>
     <x>528.116</x>
@@ -300,6 +307,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>20</id>
     <type>Operation:runningProduct</type>
     <x>528.116</x>
@@ -325,6 +333,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>23</id>
     <type>Operation:difference</type>
     <x>531.116</x>
@@ -360,6 +369,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <legendGeometry>
      <legendLeft>0.1</legendLeft>
      <legendTop>0.95</legendTop>
@@ -606,6 +616,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>49</id>
     <type>Variable:flow</type>
     <x>581.116</x>
@@ -638,6 +649,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>52</id>
     <type>Variable:flow</type>
     <x>580.116</x>
@@ -670,6 +682,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>55</id>
     <type>Variable:flow</type>
     <x>583.116</x>
@@ -702,6 +715,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>58</id>
     <type>Variable:integral</type>
     <x>795.116</x>
@@ -726,6 +740,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>61</id>
     <type>IntOp</type>
     <x>747.116</x>
@@ -754,6 +769,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>64</id>
     <type>Variable:integral</type>
     <x>798.116</x>
@@ -778,6 +794,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>67</id>
     <type>IntOp</type>
     <x>749.116</x>
@@ -806,6 +823,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>70</id>
     <type>Variable:integral</type>
     <x>793.116</x>
@@ -830,6 +848,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>73</id>
     <type>IntOp</type>
     <x>744.116</x>
@@ -857,6 +876,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>76</id>
     <type>Operation:sum</type>
     <x>679</x>
@@ -882,6 +902,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>79</id>
     <type>Operation:sum</type>
     <x>683</x>
@@ -907,6 +928,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>82</id>
     <type>Operation:sum</type>
     <x>680</x>

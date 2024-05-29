@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.1</minskyVersion>
+  <minskyVersion>3.4.0-beta.3</minskyVersion>
   <wires>
    <Wire>
     <id>38</id>
@@ -52,6 +52,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>0</id>
     <type>IntOp</type>
     <x>49</x>
@@ -79,6 +80,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>4</id>
     <type>Operation:multiply</type>
     <x>76</x>
@@ -106,6 +108,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>8</id>
     <type>Variable:integral</type>
     <x>87</x>
@@ -139,6 +142,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>10</id>
     <type>Variable:flow</type>
     <x>121</x>
@@ -172,6 +176,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>13</id>
     <type>Variable:parameter</type>
     <x>143</x>
@@ -213,6 +218,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <legendGeometry>
      <legendLeft>0.1</legendLeft>
      <legendTop>0.95</legendTop>

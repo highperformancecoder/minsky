@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.1</minskyVersion>
+  <minskyVersion>3.4.0-beta.3</minskyVersion>
   <wires>
    <Wire>
     <id>112</id>
@@ -164,6 +164,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>0</id>
     <type>Operation:multiply</type>
     <x>360</x>
@@ -190,6 +191,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>4</id>
     <type>IntOp</type>
     <x>708.545</x>
@@ -217,6 +219,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>8</id>
     <type>Operation:multiply</type>
     <x>416.727</x>
@@ -243,6 +246,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>12</id>
     <type>Operation:subtract</type>
     <x>373.091</x>
@@ -269,6 +273,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>16</id>
     <type>Operation:add</type>
     <x>599.5</x>
@@ -295,6 +300,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>20</id>
     <type>Operation:multiply</type>
     <x>167.636</x>
@@ -321,6 +327,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>24</id>
     <type>Operation:pow</type>
     <x>110.5</x>
@@ -347,6 +354,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>28</id>
     <type>Operation:subtract</type>
     <x>69.5</x>
@@ -373,6 +381,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>32</id>
     <type>Operation:pow</type>
     <x>110</x>
@@ -400,6 +409,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>36</id>
     <type>Variable:flow</type>
     <x>267</x>
@@ -433,6 +443,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>39</id>
     <type>Variable:flow</type>
     <x>490</x>
@@ -466,6 +477,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>42</id>
     <type>Variable:flow</type>
     <x>0</x>
@@ -499,6 +511,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>45</id>
     <type>Variable:integral</type>
     <x>823.545</x>
@@ -532,6 +545,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>47</id>
     <type>Variable:integral</type>
     <x>4</x>
@@ -565,6 +579,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>50</id>
     <type>Variable:integral</type>
     <x>278.545</x>
@@ -598,6 +613,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>53</id>
     <type>Variable:flow</type>
     <x>14.5</x>
@@ -631,6 +647,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>56</id>
     <type>Variable:parameter</type>
     <x>225</x>
@@ -663,6 +680,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>58</id>
     <type>Variable:parameter</type>
     <x>267.636</x>
@@ -695,6 +713,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>60</id>
     <type>Variable:parameter</type>
     <x>35.5</x>
@@ -727,6 +746,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>62</id>
     <type>Variable:parameter</type>
     <x>22.5</x>
@@ -759,6 +779,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>64</id>
     <type>Variable:parameter</type>
     <x>16.5</x>
@@ -800,6 +821,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <legendGeometry>
      <legendLeft>0.1</legendLeft>
      <legendTop>0.95</legendTop>
@@ -1055,6 +1077,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <legendGeometry>
      <legendLeft>0.1</legendLeft>
      <legendTop>0.95</legendTop>

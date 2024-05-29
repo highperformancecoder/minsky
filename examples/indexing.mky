@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.1</minskyVersion>
+  <minskyVersion>3.4.0-beta.3</minskyVersion>
   <wires>
    <Wire>
     <id>39</id>
@@ -114,6 +114,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>0</id>
     <type>Variable:parameter</type>
     <x>110</x>
@@ -145,6 +146,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>2</id>
     <type>Sheet</type>
     <x>501.5</x>
@@ -170,6 +172,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>4</id>
     <type>Operation:infimum</type>
     <x>240</x>
@@ -196,6 +199,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>7</id>
     <type>Variable:flow</type>
     <x>304</x>
@@ -228,6 +232,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>10</id>
     <type>Variable:flow</type>
     <x>302</x>
@@ -260,6 +265,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>13</id>
     <type>Variable:flow</type>
     <x>302</x>
@@ -292,6 +298,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>16</id>
     <type>Variable:flow</type>
     <x>311</x>
@@ -323,6 +330,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>19</id>
     <type>Operation:supremum</type>
     <x>241</x>
@@ -348,6 +356,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>22</id>
     <type>Operation:infIndex</type>
     <x>244</x>
@@ -373,6 +382,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>25</id>
     <type>Operation:supIndex</type>
     <x>245</x>
@@ -398,6 +408,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>28</id>
     <type>Operation:index</type>
     <x>249</x>
@@ -424,6 +435,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>31</id>
     <type>Sheet</type>
     <x>662.25</x>
@@ -449,6 +461,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>33</id>
     <type>Operation:gather</type>
     <x>310</x>
@@ -476,6 +489,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>37</id>
     <type>Sheet</type>
     <x>501.5</x>
