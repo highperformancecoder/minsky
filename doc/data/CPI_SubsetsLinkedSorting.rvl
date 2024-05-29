@@ -3,56 +3,39 @@
   <minskyVersion>3.4.0-beta.3</minskyVersion>
   <wires>
    <Wire>
-    <id>32</id>
+    <id>22</id>
     <from>0</from>
     <to>3</to>
    </Wire>
    <Wire>
-    <id>33</id>
+    <id>23</id>
     <from>2</from>
-    <to>22</to>
-   </Wire>
-   <Wire>
-    <id>34</id>
-    <from>2</from>
-    <to>19</to>
-   </Wire>
-   <Wire>
-    <id>35</id>
-    <from>21</from>
-    <to>25</to>
-   </Wire>
-   <Wire>
-    <id>36</id>
-    <from>24</from>
-    <to>16</to>
-   </Wire>
-   <Wire>
-    <id>37</id>
-    <from>18</from>
-    <to>28</to>
-   </Wire>
-   <Wire>
-    <id>38</id>
-    <from>27</from>
     <to>11</to>
    </Wire>
    <Wire>
-    <id>39</id>
-    <from>21</from>
-    <to>30</to>
-    <coords>
-     <float>516</float>
-     <float>424</float>
-     <float>575.391</float>
-     <float>294.692</float>
-     <float>836.346</float>
-     <float>287.442</float>
-     <float>873.309</float>
-     <float>566.718</float>
-     <float>883</float>
-     <float>696</float>
-    </coords>
+    <id>24</id>
+    <from>2</from>
+    <to>8</to>
+   </Wire>
+   <Wire>
+    <id>25</id>
+    <from>10</from>
+    <to>14</to>
+   </Wire>
+   <Wire>
+    <id>26</id>
+    <from>13</from>
+    <to>5</to>
+   </Wire>
+   <Wire>
+    <id>27</id>
+    <from>10</from>
+    <to>16</to>
+   </Wire>
+   <Wire>
+    <id>28</id>
+    <from>13</from>
+    <to>19</to>
    </Wire>
   </wires>
   <items>
@@ -10484,274 +10467,28 @@
     <editorMode>true</editorMode>
    </Item>
    <Item>
-    <name>USA&#32;Inflation&#32;Rate</name>
-    <logx>false</logx>
-    <logy>false</logy>
-    <ypercent>false</ypercent>
-    <grid>true</grid>
-    <subgrid>false</subgrid>
-    <plotType>automatic</plotType>
-    <xlabel>Date</xlabel>
-    <ylabel>Annualized&#32;rate&#32;of&#32;inflation</ylabel>
-    <nxTicks>10</nxTicks>
-    <nyTicks>10</nyTicks>
-    <xtickAngle>-45</xtickAngle>
-    <exp_threshold>4</exp_threshold>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
-    <legendGeometry>
-     <legendLeft>0.1</legendLeft>
-     <legendTop>0.95</legendTop>
-     <legendFontSz>0.03</legendFontSz>
-    </legendGeometry>
-    <palette>
-     <LineStyle>
-      <colour>
-       <r>0</r>
-       <g>0</g>
-       <b>0</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>1</r>
-       <g>0</g>
-       <b>0</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>0</r>
-       <g>0.6</g>
-       <b>0</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>0</r>
-       <g>0</g>
-       <b>1</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>1</r>
-       <g>0</g>
-       <b>1</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>0</r>
-       <g>1</g>
-       <b>1</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>1</r>
-       <g>0.647</g>
-       <b>0</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>0.627</r>
-       <g>0.125</g>
-       <b>0.941</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-    </palette>
-    <id>15</id>
-    <type>PlotWidget</type>
-    <x>1656.08</x>
-    <y>338.421</y>
+    <id>6</id>
+    <type>Sheet</type>
+    <x>1909.98</x>
+    <y>649.587</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
-    <width>305.562</width>
-    <height>248.521</height>
+    <width>267.469</width>
+    <height>830.578</height>
     <ports>
      <int>5</int>
-     <int>6</int>
-     <int>7</int>
-     <int>8</int>
-     <int>9</int>
-     <int>10</int>
-     <int>11</int>
-     <int>12</int>
-     <int>13</int>
-     <int>14</int>
     </ports>
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
-    <palette>
-     <LineStyle>
-      <colour>
-       <r>0</r>
-       <g>0</g>
-       <b>0</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>1</r>
-       <g>0</g>
-       <b>0</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>0</r>
-       <g>0.6</g>
-       <b>0</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>0</r>
-       <g>0</g>
-       <b>1</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>1</r>
-       <g>0</g>
-       <b>1</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>0</r>
-       <g>1</g>
-       <b>1</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>1</r>
-       <g>0.647</g>
-       <b>0</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-     <LineStyle>
-      <colour>
-       <r>0.627</r>
-       <g>0.125</g>
-       <b>0.941</b>
-       <a>1</a>
-      </colour>
-      <width>1</width>
-      <barWidth>1</barWidth>
-      <dashStyle>solid</dashStyle>
-      <plotType>automatic</plotType>
-     </LineStyle>
-    </palette>
-   </Item>
-   <Item>
-    <xmin>NaN</xmin>
-    <xmax>NaN</xmax>
-    <ymin>NaN</ymin>
-    <ymax>NaN</ymax>
-    <y1min>NaN</y1min>
-    <y1max>NaN</y1max>
-    <id>17</id>
-    <type>Sheet</type>
-    <x>1644</x>
-    <y>993</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>270</width>
-    <height>954</height>
-    <ports>
-     <int>16</int>
-    </ports>
-    <bookmark>false</bookmark>
-    <miniPlot>false</miniPlot>
-    <showSlice>headAndTail</showSlice>
+    <showSlice>head</showSlice>
     <showColSlice>headAndTail</showColSlice>
    </Item>
    <Item>
@@ -10761,7 +10498,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
-    <id>20</id>
+    <id>9</id>
     <type>Ravel</type>
     <x>1336.34</x>
     <y>389.214</y>
@@ -10772,8 +10509,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>18</int>
-     <int>19</int>
+     <int>7</int>
+     <int>8</int>
     </ports>
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
@@ -10791,15 +10528,15 @@
         <x>0</x>
         <y>100</y>
         <collapsed>false</collapsed>
-        <displayFilterCaliper>false</displayFilterCaliper>
+        <displayFilterCaliper>true</displayFilterCaliper>
         <reductionOp>sum</reductionOp>
         <order>forward</order>
         <format></format>
         <customOrder>
         </customOrder>
-        <minLabel>1661-01-01T00:00:00</minLabel>
-        <maxLabel></maxLabel>
-        <sliceLabel>1661-01-01T00:00:00</sliceLabel>
+        <minLabel>1955-02-01T00:00:00</minLabel>
+        <maxLabel>2024-02-01T00:00:00</maxLabel>
+        <sliceLabel>1957-05-01T00:00:00</sliceLabel>
        </second>
       </pair>
       <pair>
@@ -10827,7 +10564,6 @@
          <string>Chile</string>
          <string>Israel</string>
          <string>Romania</string>
-         <string>Japan</string>
          <string>Mexico</string>
          <string>T&#-61;&#-68;rkiye</string>
          <string>Iceland</string>
@@ -10837,44 +10573,45 @@
          <string>Slovakia</string>
          <string>Czechia</string>
          <string>Philippines</string>
-         <string>Belgium</string>
-         <string>Austria</string>
          <string>Colombia</string>
          <string>Portugal</string>
-         <string>United&#32;Kingdom</string>
          <string>Singapore</string>
          <string>Greece</string>
          <string>India</string>
-         <string>Italy</string>
          <string>Korea</string>
          <string>Hungary</string>
-         <string>Denmark</string>
-         <string>Sweden</string>
          <string>Spain</string>
          <string>Hong&#32;Kong&#32;SAR</string>
-         <string>Norway</string>
+         <string>United&#32;Kingdom</string>
+         <string>Italy</string>
+         <string>Japan</string>
          <string>Ireland</string>
          <string>Thailand</string>
-         <string>Australia</string>
-         <string>United&#32;States</string>
          <string>Malaysia</string>
-         <string>France</string>
          <string>Algeria</string>
-         <string>Canada</string>
          <string>South&#32;Africa</string>
          <string>Finland</string>
          <string>Russia</string>
          <string>New&#32;Zealand</string>
-         <string>Switzerland</string>
+         <string>France</string>
+         <string>Australia</string>
          <string>Malta</string>
+         <string>Belgium</string>
+         <string>Denmark</string>
+         <string>Sweden</string>
+         <string>Norway</string>
+         <string>United&#32;States</string>
          <string>Netherlands</string>
-         <string>Luxembourg</string>
+         <string>Canada</string>
          <string>Cyprus</string>
-         <string>Germany</string>
+         <string>Switzerland</string>
+         <string>Luxembourg</string>
+         <string>Austria</string>
          <string>Saudi&#32;Arabia</string>
          <string>Euro&#32;area</string>
          <string>Morocco</string>
          <string>China</string>
+         <string>Germany</string>
          <string>United&#32;Arab&#32;Emirates</string>
         </customOrder>
         <minLabel>Serbia</minLabel>
@@ -10894,7 +10631,7 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
-    <id>23</id>
+    <id>12</id>
     <type>Ravel</type>
     <x>1337</x>
     <y>637</y>
@@ -10905,8 +10642,8 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>21</int>
-     <int>22</int>
+     <int>10</int>
+     <int>11</int>
     </ports>
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
@@ -10923,15 +10660,15 @@
         <x>-20</x>
         <y>-2.44921e-15</y>
         <collapsed>true</collapsed>
-        <displayFilterCaliper>false</displayFilterCaliper>
+        <displayFilterCaliper>true</displayFilterCaliper>
         <reductionOp>max</reductionOp>
         <order>forward</order>
         <format></format>
         <customOrder>
         </customOrder>
-        <minLabel>1661-01-01T00:00:00</minLabel>
-        <maxLabel></maxLabel>
-        <sliceLabel>1661-01-01T00:00:00</sliceLabel>
+        <minLabel>1955-02-01T00:00:00</minLabel>
+        <maxLabel>2024-02-01T00:00:00</maxLabel>
+        <sliceLabel>1955-09-01T00:00:00</sliceLabel>
        </second>
       </pair>
       <pair>
@@ -10959,7 +10696,6 @@
          <string>Chile</string>
          <string>Israel</string>
          <string>Romania</string>
-         <string>Japan</string>
          <string>Mexico</string>
          <string>T&#-61;&#-68;rkiye</string>
          <string>Iceland</string>
@@ -10969,44 +10705,45 @@
          <string>Slovakia</string>
          <string>Czechia</string>
          <string>Philippines</string>
-         <string>Belgium</string>
-         <string>Austria</string>
          <string>Colombia</string>
          <string>Portugal</string>
-         <string>United&#32;Kingdom</string>
          <string>Singapore</string>
          <string>Greece</string>
          <string>India</string>
-         <string>Italy</string>
          <string>Korea</string>
          <string>Hungary</string>
-         <string>Denmark</string>
-         <string>Sweden</string>
          <string>Spain</string>
          <string>Hong&#32;Kong&#32;SAR</string>
-         <string>Norway</string>
+         <string>United&#32;Kingdom</string>
+         <string>Italy</string>
+         <string>Japan</string>
          <string>Ireland</string>
          <string>Thailand</string>
-         <string>Australia</string>
-         <string>United&#32;States</string>
          <string>Malaysia</string>
-         <string>France</string>
          <string>Algeria</string>
-         <string>Canada</string>
          <string>South&#32;Africa</string>
          <string>Finland</string>
          <string>Russia</string>
          <string>New&#32;Zealand</string>
-         <string>Switzerland</string>
+         <string>France</string>
+         <string>Australia</string>
          <string>Malta</string>
+         <string>Belgium</string>
+         <string>Denmark</string>
+         <string>Sweden</string>
+         <string>Norway</string>
+         <string>United&#32;States</string>
          <string>Netherlands</string>
-         <string>Luxembourg</string>
+         <string>Canada</string>
          <string>Cyprus</string>
-         <string>Germany</string>
+         <string>Switzerland</string>
+         <string>Luxembourg</string>
+         <string>Austria</string>
          <string>Saudi&#32;Arabia</string>
          <string>Euro&#32;area</string>
          <string>Morocco</string>
          <string>China</string>
+         <string>Germany</string>
          <string>United&#32;Arab&#32;Emirates</string>
         </customOrder>
         <minLabel>Serbia</minLabel>
@@ -11026,10 +10763,10 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
-    <id>26</id>
+    <id>15</id>
     <type>Operation:slice</type>
-    <x>1489.06</x>
-    <y>636.459</y>
+    <x>1750.24</x>
+    <y>638.583</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -11037,12 +10774,12 @@
     <width>10</width>
     <height>10</height>
     <ports>
-     <int>24</int>
-     <int>25</int>
+     <int>13</int>
+     <int>14</int>
     </ports>
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
-    <arg>37</arg>
+    <arg>23</arg>
    </Item>
    <Item>
     <xmin>NaN</xmin>
@@ -11051,49 +10788,98 @@
     <ymax>NaN</ymax>
     <y1min>NaN</y1min>
     <y1max>NaN</y1max>
-    <id>29</id>
-    <type>Operation:slice</type>
-    <x>1484.11</x>
-    <y>350.192</y>
-    <itemTabX>NaN</itemTabX>
-    <itemTabY>NaN</itemTabY>
-    <scaleFactor>1</scaleFactor>
-    <rotation>0</rotation>
-    <width>10</width>
-    <height>10</height>
-    <ports>
-     <int>27</int>
-     <int>28</int>
-    </ports>
-    <bookmark>false</bookmark>
-    <miniPlot>false</miniPlot>
-    <axis>Reference&#32;area</axis>
-    <arg>37</arg>
-   </Item>
-   <Item>
-    <xmin>NaN</xmin>
-    <xmax>NaN</xmax>
-    <ymin>NaN</ymin>
-    <ymax>NaN</ymax>
-    <y1min>NaN</y1min>
-    <y1max>NaN</y1max>
-    <id>31</id>
+    <id>17</id>
     <type>Sheet</type>
-    <x>1950</x>
-    <y>909</y>
+    <x>1597.73</x>
+    <y>886.06</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
-    <width>250</width>
-    <height>1378</height>
+    <width>239.091</width>
+    <height>1337.78</height>
     <ports>
-     <int>30</int>
+     <int>16</int>
     </ports>
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
     <showColSlice>headAndTail</showColSlice>
+   </Item>
+   <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <id>20</id>
+    <type>Ravel</type>
+    <x>2184.25</x>
+    <y>645.719</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+     <int>18</int>
+     <int>19</int>
+    </ports>
+    <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
+    <ravelState>
+     <radius>100</radius>
+     <outputHandles>
+      <string>Reference&#32;area</string>
+     </outputHandles>
+     <handleStates>
+      <pair>
+       <first>Reference&#32;area</first>
+       <second>
+        <description>Reference&#32;area</description>
+        <x>100</x>
+        <y>0</y>
+        <collapsed>false</collapsed>
+        <displayFilterCaliper>false</displayFilterCaliper>
+        <reductionOp>sum</reductionOp>
+        <order>none</order>
+        <format></format>
+        <customOrder>
+        </customOrder>
+        <minLabel>Serbia</minLabel>
+        <maxLabel></maxLabel>
+        <sliceLabel>Serbia</sliceLabel>
+       </second>
+      </pair>
+     </handleStates>
+    </ravelState>
+    <arg>1</arg>
+    <editorMode>true</editorMode>
+   </Item>
+   <Item>
+    <detailedText>Issue:&#32;How&#32;do&#32;I&#32;impose&#32;this&#32;set&#32;&#10;of&#32;countries&#32;on&#32;the&#32;Ravel&#32;which&#10;includes&#32;the&#32;time&#32;series&#32;data?</detailedText>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <id>21</id>
+    <type>Item</type>
+    <x>2177.94</x>
+    <y>493.571</y>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <width>10</width>
+    <height>10</height>
+    <ports>
+    </ports>
+    <bookmark>false</bookmark>
+    <miniPlot>false</miniPlot>
    </Item>
   </items>
   <groups>
@@ -11101,14 +10887,14 @@
   <lockGroups>
    <LockGroup>
     <ravels>
-     <int>20</int>
-     <int>23</int>
+     <int>9</int>
+     <int>12</int>
     </ravels>
     <handleLockInfo>
      <HandleLockInfo>
       <slicer>false</slicer>
       <orientation>false</orientation>
-      <calipers>false</calipers>
+      <calipers>true</calipers>
       <order>false</order>
       <handleNames>
        <string>Date</string>
