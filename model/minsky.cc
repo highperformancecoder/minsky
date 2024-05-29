@@ -537,7 +537,7 @@ namespace minsky
             dimensions.emplace(xv.name, xv.dimension);
             varDimensions.insert(xv.name);
           }
-        else if (!incompatibleMessageDisplayed)
+        else if (d->second.type!=xv.dimension.type && !incompatibleMessageDisplayed)
           {
             message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog, which can be found under the Edit menu.");
             incompatibleMessageDisplayed=true;
