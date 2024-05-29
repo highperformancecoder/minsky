@@ -25,6 +25,7 @@
 #include "itemT.rcd"
 #include "lock.rcd"
 #include "lock.xcd"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 using namespace std;
 
@@ -67,6 +68,8 @@ namespace minsky
     else
       if (auto* r=ravelInput())
         {
+          // need to a full reset at this point, not delayed
+          minsky::minsky().reset();
           lockedState=r->getState();
           tooltip(ravel::Ravel::description(lockedState));
         }
