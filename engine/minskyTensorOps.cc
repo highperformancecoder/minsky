@@ -1107,6 +1107,9 @@ namespace minsky
           scale[i]=(n*sumxy[i] - sx*sumy[i])/(n*sumxx[i]-sx*sx);
           offset[i]=sumy[i]/n-scale[i]*sx/n;
         }
+      if (state && scale.size()==1 &&
+          (state->tooltip().empty()||state->tooltip().starts_with("y=")))
+          state->tooltip("y="+to_string(scale[0])+"x + "+to_string(offset[0]));
       m_timestamp=timestamp();
     }
     
