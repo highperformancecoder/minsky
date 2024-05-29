@@ -265,3 +265,8 @@ ipcMain.handle(
     return savePath;
   }
 );
+
+ipcMain.handle(events.OPEN_URL, (event,options)=> {
+  let window=WindowManager.createWindow(options);
+  window.loadURL(options.url);
+});

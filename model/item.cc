@@ -51,6 +51,12 @@ namespace minsky
     auto savedMouseFocus=x.mouseFocus;
     x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
     x.onResizeHandles=false;
+    double stashedZf=1;
+    if (auto parent=x.group.lock())
+      {
+        stashedZf=parent->relZoom;
+        parent->relZoom/=x.zoomFactor(); // undo any zooming coming from owning group
+      }
     try
       {
         const cairo::CairoSave cs(surf.cairo());
@@ -65,16 +71,17 @@ namespace minsky
     catch(...) {}
 #endif
     x.mouseFocus=savedMouseFocus;
+    if (auto parent=x.group.lock())
+      parent->relZoom=stashedZf;
     
     double l,t,w,h;
     cairo_recording_surface_ink_extents(surf.surface(),
                                         &l,&t,&w,&h);
     // note (0,0) is relative to the (x,y) of icon.
-    const double invZ=1/x.zoomFactor();
-    m_left=l*invZ;
-    m_right=(l+w)*invZ;
-    m_top=t*invZ;
-    m_bottom=(t+h)*invZ; //coordinates increase down the page
+    m_left=l;
+    m_right=(l+w);
+    m_top=t;
+    m_bottom=(t+h);
   }
 
   void Item::throw_error(const std::string& msg) const

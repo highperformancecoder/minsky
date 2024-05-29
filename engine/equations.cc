@@ -809,14 +809,19 @@ namespace MathDAG
 
     if (!rhs) return result;
     if (lock.locked())
-      {
-        auto chain=createRavelChain(lock.lockedState, rhs->addEvalOps(ev,{}));
-        if (chain.empty()) return {};
-        result->index(chain.back()->index());
-        result->hypercube(chain.back()->hypercube());
-        ev.emplace_back(EvalOpPtr(new TensorEval(result, make_shared<EvalCommon>(), chain.back())));
-        return result;
-      }
+      try
+        {
+          auto chain=createRavelChain(lock.lockedState, rhs->addEvalOps(ev,{}));
+          if (chain.empty()) return {};
+          result->index(chain.back()->index());
+          result->hypercube(chain.back()->hypercube());
+          ev.emplace_back(EvalOpPtr(new TensorEval(result, make_shared<EvalCommon>(), chain.back())));
+          return result;
+        }
+      catch (const std::exception& ex)
+        {
+          lock.throw_error(ex.what());
+        }
     return rhs->addEvalOps(ev,result);
   }
 

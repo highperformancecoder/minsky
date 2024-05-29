@@ -452,6 +452,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   async handleSubmit() {
     this.updateSpecFromForm();
 
+    if (this.dialogState.spec.dataCols.length===0)
+      this.dialogState.spec.counter=true;
     let v = new VariableBase(this.electronService.minsky.canvas.item);
     // returns an error message on error
     const res = await v.importFromCSV(this.url.value, this.dialogState.spec) as unknown as string;

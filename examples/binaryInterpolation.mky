@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.2.0-beta.2</minskyVersion>
+  <minskyVersion>3.4.0-beta.3</minskyVersion>
   <wires>
    <Wire>
     <id>55</id>
@@ -76,12 +76,19 @@
   <items>
    <Item>
     <name>x1</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>0</id>
     <type>Variable:parameter</type>
     <x>100</x>
     <y>97</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -92,6 +99,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -102,12 +110,19 @@
    </Item>
    <Item>
     <name>x2</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>2</id>
     <type>Variable:parameter</type>
     <x>101</x>
     <y>243</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -118,6 +133,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -127,12 +143,19 @@
 <![CDATA[GhQY>5R&2<&6~'+M`AL_(t%O[-7!HP0^V~j:sT+M@!lH@^+#9W!8oC4"o]]>    </tensorData>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>4</id>
     <type>Sheet</type>
     <x>322.438</x>
     <y>110.938</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>183.125</width>
@@ -143,14 +166,22 @@
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
+    <showColSlice>head</showColSlice>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>6</id>
     <type>Sheet</type>
     <x>310.812</x>
     <y>304.625</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1.00487</scaleFactor>
     <rotation>0</rotation>
     <width>160.375</width>
@@ -161,15 +192,23 @@
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
+    <showColSlice>head</showColSlice>
    </Item>
    <Item>
     <name>x1</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>8</id>
     <type>Variable:parameter</type>
     <x>533</x>
     <y>138</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -180,6 +219,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -190,12 +230,19 @@
    </Item>
    <Item>
     <name>x2</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>10</id>
     <type>Variable:parameter</type>
     <x>531</x>
     <y>239</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -206,6 +253,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>-1</min>
      <max>1</max>
      <step>0.1</step>
@@ -215,12 +263,19 @@
 <![CDATA[GhQY>5R&2<&6~'+M`AL_(t%O[-7!HP0^V~j:sT+M@!lH@^+#9W!8oC4"o]]>    </tensorData>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>12</id>
     <type>Operation:add</type>
     <x>631</x>
     <y>191</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>0</width>
@@ -235,12 +290,19 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>16</id>
     <type>Sheet</type>
     <x>824.25</x>
     <y>204.75</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>223.5</width>
@@ -251,15 +313,23 @@
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
+    <showColSlice>head</showColSlice>
    </Item>
    <Item>
     <name>x3</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>18</id>
     <type>Variable:parameter</type>
     <x>160.1</x>
     <y>534.6</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -270,6 +340,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>0</min>
      <max>3.02677e-316</max>
      <step>3.02668e-316</step>
@@ -321,12 +392,19 @@
 <![CDATA[GhV1g5QVGo%M3qMKJ&XP`a94LVeec__s!Pk%PXZFTJS`p:<kN;.k.Jd[Z).sF$aT~dc-Fa`15%>R,1YX3%L@"b">5V8S,hLLbP&O1,(Q92)#0-&-E"b0LD$[_~`TCV@*C#Xs!H]]>    </tensorData>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>20</id>
     <type>Sheet</type>
     <x>626.075</x>
     <y>534.025</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1.10969</scaleFactor>
     <rotation>0</rotation>
     <width>724.05</width>
@@ -337,15 +415,23 @@
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
+    <showColSlice>head</showColSlice>
    </Item>
    <Item>
     <name>x4</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>22</id>
     <type>Variable:parameter</type>
     <x>169.7</x>
     <y>842.8</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -356,6 +442,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>0</min>
      <max>NaN</max>
      <step>1.35884e-309</step>
@@ -407,12 +494,19 @@
 <![CDATA[GhQY95QVGo%M3qM.UB:6!N(MV8i&j!im\<G'4B6>:tdi_-^>.`G"^'`nmF4%M'~-[=EFm;Bd3^I@pK1(+:9hWYQ?$p.2+Ne!-VW~1B]]>    </tensorData>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>24</id>
     <type>Sheet</type>
     <x>604</x>
     <y>841.5</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>2.08723</scaleFactor>
     <rotation>0</rotation>
     <width>651.6</width>
@@ -423,15 +517,23 @@
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
+    <showColSlice>head</showColSlice>
    </Item>
    <Item>
     <name>x3</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>26</id>
     <type>Variable:parameter</type>
     <x>1146.5</x>
     <y>550.2</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -442,6 +544,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>0</min>
      <max>3.02677e-316</max>
      <step>3.02668e-316</step>
@@ -494,12 +597,19 @@
    </Item>
    <Item>
     <name>x4</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>28</id>
     <type>Variable:parameter</type>
     <x>1146.5</x>
     <y>713</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -510,6 +620,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>0</min>
      <max>NaN</max>
      <step>1.35884e-309</step>
@@ -561,12 +672,19 @@
 <![CDATA[GhQY95QVGo%M3qM.UB:6!N(MV8i&j!im\<G'4B6>:tdi_-^>.`G"^'`nmF4%M'~-[=EFm;Bd3^I@pK1(+:9hWYQ?$p.2+Ne!-VW~1B]]>    </tensorData>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>30</id>
     <type>Operation:add</type>
     <x>1251</x>
     <y>636</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -581,12 +699,19 @@
     <arg>1</arg>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>34</id>
     <type>Operation:gather</type>
     <x>1354.4</x>
     <y>661.3</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -603,12 +728,19 @@
    </Item>
    <Item>
     <name>0</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>38</id>
     <type>Variable:parameter</type>
     <x>1300.5</x>
     <y>699.8</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -619,6 +751,7 @@
     <bookmark>false</bookmark>
     <slider>
      <stepRel>false</stepRel>
+     <visible>true</visible>
      <min>0</min>
      <max>0</max>
      <step>5.43231e-312</step>
@@ -626,12 +759,19 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>40</id>
     <type>Sheet</type>
     <x>1764.24</x>
     <y>721.888</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1.39886</scaleFactor>
     <rotation>0</rotation>
     <width>647.725</width>
@@ -642,15 +782,23 @@
     <bookmark>false</bookmark>
     <miniPlot>false</miniPlot>
     <showSlice>head</showSlice>
+    <showColSlice>head</showColSlice>
    </Item>
    <Item>
     <name>int1</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>42</id>
     <type>Variable:integral</type>
-    <x>742</x>
+    <x>743</x>
     <y>75</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -663,12 +811,19 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>45</id>
     <type>IntOp</type>
     <x>695</x>
     <y>75</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -685,12 +840,19 @@
    </Item>
    <Item>
     <detailedText>integrals&#32;are&#32;for&#32;testing&#32;purposes</detailedText>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>48</id>
     <type>Item</type>
     <x>905</x>
     <y>72</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -702,12 +864,19 @@
    </Item>
    <Item>
     <name>int2</name>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>49</id>
     <type>Variable:integral</type>
-    <x>1478</x>
+    <x>1480</x>
     <y>563</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>
@@ -720,12 +889,19 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
+    <xmin>NaN</xmin>
+    <xmax>NaN</xmax>
+    <ymin>NaN</ymin>
+    <ymax>NaN</ymax>
+    <y1min>NaN</y1min>
+    <y1max>NaN</y1max>
+    <symbolEvery>1</symbolEvery>
     <id>52</id>
     <type>IntOp</type>
     <x>1431</x>
     <y>563</y>
-    <itemTabX>0</itemTabX>
-    <itemTabY>0</itemTabY>
+    <itemTabX>NaN</itemTabX>
+    <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <width>10</width>

@@ -227,7 +227,8 @@ namespace minsky
     {return minsky::mantissa(value(),e, digits);}
 
     /// export this variable as a CSV file
-    void exportAsCSV(const std::string& filename) const;
+    /// @param tabular - if true, the longest dimension is split across columns as a horizontal dimension
+    void exportAsCSV(const std::string& filename, bool tabular) const;
     /// import CSV file, using \a spec
     void importFromCSV(std::string filename, const DataSpecSchema& spec) const;
 

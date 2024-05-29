@@ -913,9 +913,9 @@ SUITE(Canvas)
 
     TEST_FIXTURE(TestFixture,handleArrows)
       {
-        auto v=dynamic_cast<VariableBase*>(c.get());
         // need a variable that is not defined
-        model->removeWire(*bc);
+        auto v=model->addItem(new Variable<VariableType::parameter>("v"))->variableCast();
+        
         v->value(1000);
         v->sliderMin=0;
         v->sliderMax=2000;

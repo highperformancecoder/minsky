@@ -10,6 +10,7 @@ import {
   RenderNativeWindow,
   Utility,
 } from '@minsky/shared';
+import { StoreManager } from './StoreManager';
 import { BrowserWindow, dialog, Menu, screen } from 'electron';
 import log from 'electron-log';
 import os from 'os';
@@ -176,7 +177,7 @@ export class WindowManager {
     payload: CreateWindowPayload,
     onCloseCallback?: (ev : Electron.Event) => void
   ) {
-    const { width, height, minWidth, minHeight, title, modal = true, backgroundColor, alwaysOnTop } = payload;
+    const { width, height, minWidth, minHeight, title, modal = true, backgroundColor=StoreManager.store.get('backgroundColor'), alwaysOnTop } = payload;
 
     const childWindow = new BrowserWindow({
       width,

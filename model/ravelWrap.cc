@@ -64,12 +64,17 @@ namespace minsky
   {
     if (!wrappedRavel)
       {
-        tooltip("https://ravelation.hpcoders.com.au");
+        tooltip("https://ravelation.net");
         detailedText(wrappedRavel.lastError());
       }
     if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
       return; // early return if at least 1 ravel already present
     m_editorMode=true; // first ravel is in editor mode
+    // set an intial 3 axis ravel to give an indication of what it is about
+    wrappedRavel.addHandle("Year",{"1990","1991","1992"});
+    wrappedRavel.addHandle("Gender",{"Male","Female"});
+    wrappedRavel.addHandle("Country",{"Australia","UK","USA"});
+    wrappedRavel.setOutputHandleIds({0,2});
   }
 
   void Ravel::draw(cairo_t* cairo) const
@@ -304,8 +309,11 @@ namespace minsky
     return wrappedRavel.allSliceLabels(axis,ravel::HandleSort::forward);
   }  
 
+  vector<string> Ravel::pickedSliceLabels(int axis) const
+  {return wrappedRavel.sliceLabels(axis);}
+  
   vector<string> Ravel::pickedSliceLabels() const
-  {return wrappedRavel.sliceLabels(wrappedRavel.selectedHandle());}
+  {return pickedSliceLabels(wrappedRavel.selectedHandle());}
 
   void Ravel::pickSliceLabels(int axis, const vector<string>& pick) 
   {
@@ -328,6 +336,8 @@ namespace minsky
         wrappedRavel.applyCustomPermutation(axis,customOrder);
         if (state.order!=ravel::HandleSort::custom)
           setHandleSortOrder(state.order, axis);
+        broadcastStateToLockGroup();
+        minsky().requestReset();
       }
   }
 
@@ -484,12 +494,12 @@ namespace minsky
   }
 
   
-  void Ravel::exportAsCSV(const string& filename) const
+  void Ravel::exportAsCSV(const string& filename, bool tabular) const
   {
     if (!m_ports.empty())
       if (auto vv=m_ports[0]->getVariableValue())
         {
-          vv->exportAsCSV(filename, wrappedRavel.description());
+          vv->exportAsCSV(filename, wrappedRavel.description(), tabular);
           return;
         }
 
@@ -499,7 +509,7 @@ namespace minsky
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
     v=*tensorOpFactory.create(itemPtrFromThis(), tp);
     // TODO: add some comment lines, such as source of data
-    v.exportAsCSV(filename, wrappedRavel.description());
+    v.exportAsCSV(filename, wrappedRavel.description(), tabular);
   }
 
   Units Ravel::units(bool check) const
@@ -561,6 +571,35 @@ namespace minsky
     if (lockGroup) lockGroup->broadcast(*this);
   }
 
+  vector<unsigned> Ravel::lockGroupColours()
+  {
+    set<unsigned> r;
+    cminsky().model->recursiveDo(&GroupItems::items, [&r](Items&, Items::iterator i) {
+      if (auto ravel=(*i)->ravelCast(); ravel && ravel->lockGroup)
+        r.insert(ravel->lockGroup->colour());
+      return false;
+    });
+    return {r.begin(),r.end()};
+  }
+
+  void Ravel::joinLockGroup(unsigned colour)
+  {
+    cminsky().model->recursiveDo(&GroupItems::items, [this,colour](Items&, Items::iterator i) {
+      if (auto ravel=(*i)->ravelCast(); ravel && ravel->lockGroup && ravel->lockGroup->colour()==colour)
+        {
+          leaveLockGroup();
+          auto ravelPtr=dynamic_pointer_cast<Ravel>(itemPtrFromThis());
+          if (ravelPtr)
+            {
+              lockGroup=ravel->lockGroup;
+              lockGroup->addRavel(ravelPtr);
+              return true;
+            }
+        }
+      return false;
+    });
+  }
+  
   void RavelLockGroup::initialBroadcast()
   {
     if (!m_ravels.empty())

@@ -79,6 +79,10 @@ namespace minsky
     /// calculates the input value
     void computeValue();
     
+    /// export the plotted data as a CSV file
+    /// @param tabular - if true, the longest dimension is split across columns as a horizontal dimension
+    void exportAsCSV(const std::string& filename, bool tabular) const;
+
     bool showRavel=false;
     ShowSlice showRowSlice=ShowSlice::head; ///< whether to elide rows from beginning, end or middle
     ShowSlice showColSlice=ShowSlice::head; ///< whether to elide columnss from beginning, end or middle

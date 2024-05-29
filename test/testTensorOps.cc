@@ -635,10 +635,10 @@ SUITE(TensorOps)
         Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
         
         fromVal.hypercube(Hypercube());
-        CHECK_THROW(Eval(gatheredVar, gatherOp), std::exception);
+        CHECK_THROW(Eval(gatheredVar, gatherOp)(), std::exception);
 
         fromVal.hypercube(Hypercube({3,4}));
-        CHECK_THROW(Eval(gatheredVar, gatherOp), std::exception);
+        CHECK_THROW(Eval(gatheredVar, gatherOp)(), std::exception);
       }
 
     TEST_FIXTURE(MinskyFixture, gatherBackElement)
@@ -714,23 +714,22 @@ SUITE(TensorOps)
       Eval eval(gatheredVar, gatherOp);
       eval();
       
-      vector<size_t> expectedDims{2,2,2,5};
+      vector<size_t> expectedDims{4,2,5};
       CHECK_EQUAL(expectedDims.size(), gathered.rank());
       CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
 
       auto& gxv=gathered.hypercube().xvectors;
-      CHECK_EQUAL("t0",gxv[0].name);
-      CHECK_EQUAL("t1",gxv[1].name);
-      CHECK_EQUAL("x",gxv[2].name);
-      CHECK_EQUAL("z",gxv[3].name);
+      CHECK_EQUAL("y",gxv[0].name);
+      CHECK_EQUAL("x",gxv[1].name);
+      CHECK_EQUAL("z",gxv[2].name);
 
-      for (size_t i=0; i<expectedDims[3]; ++i)
-        for (size_t j=0; j<expectedDims[2]; ++j)
+      for (size_t i=0; i<expectedDims[2]; ++i)
+        for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+1.3, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+2, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+1.3, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+2, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 
@@ -784,17 +783,17 @@ SUITE(TensorOps)
       Eval eval(gatheredVar, gatherOp);
       eval();
       
-      vector<size_t> expectedDims{2,2,2,5};
+      vector<size_t> expectedDims{4,2,5};
       CHECK_EQUAL(expectedDims.size(), gathered.rank());
       CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
 
-      for (size_t i=0; i<expectedDims[3]; ++i)
-        for (size_t j=0; j<expectedDims[2]; ++j)
+      for (size_t i=0; i<expectedDims[2]; ++i)
+        for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 
@@ -848,17 +847,17 @@ SUITE(TensorOps)
       Eval eval(gatheredVar, gatherOp);
       eval();
       
-      vector<size_t> expectedDims{2,2,2,5};
+      vector<size_t> expectedDims{4,2,5};
       CHECK_EQUAL(expectedDims.size(), gathered.rank());
       CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
 
-      for (size_t i=0; i<expectedDims[3]; ++i)
-        for (size_t j=0; j<expectedDims[2]; ++j)
+      for (size_t i=0; i<expectedDims[2]; ++i)
+        for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[2]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[2]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[2]+j)*toVal.size()+3]);
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 
@@ -1633,7 +1632,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      covOp->axis="1";
      g->addItem(covOp);
      Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
-     CHECK_THROW(Eval(*to, covOp), std::exception);
+     CHECK_THROW(Eval(*to, covOp)(), std::exception);
    }
  
  TEST_FIXTURE(CorrelationFixture,dimensionNotFound)
@@ -1642,7 +1641,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      covOp->axis="foo";
      g->addItem(covOp);
      Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
-     CHECK_THROW(Eval(*to, covOp), std::exception);
+     CHECK_THROW(Eval(*to, covOp)(), std::exception);
    }
  
  TEST_FIXTURE(CorrelationFixture,vectorCovariance)
@@ -1805,6 +1804,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      vector<double> result{1,1,2,2,3,3,4,4,1,1,2,2,3,3,4,4};
 
      OperationPtr op(OperationType::linearRegression);
+     op->axis="0";
      g->addItem(op);
      Wire w1(from->ports(0),op->ports(1)), w2(from1->ports(0),op->ports(2)), w3(op->ports(0),to->ports(1));
      Eval(*to, op)();

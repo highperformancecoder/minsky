@@ -149,6 +149,7 @@ namespace minsky
     std::vector<std::string> allSliceLabelsAxis(int axis) const;
     /// returns just the picked slice labels along the handle
     std::vector<std::string> pickedSliceLabels() const;
+    std::vector<std::string> pickedSliceLabels(int axis) const;
     /// pick (selected) \a pick labels
     void pickSliceLabels(int axis, const std::vector<std::string>& pick);
 
@@ -207,7 +208,9 @@ namespace minsky
     /// @param preservePositions if true, do not rotate handles
     void applyState(const ravel::RavelState& state);
     void displayDelayedTooltip(float x, float y) override;
-    void exportAsCSV(const std::string& filename) const;
+    /// export the plotted data as a CSV file
+    /// @param tabular - if true, the longest dimension is split across columns as a horizontal dimension
+    void exportAsCSV(const std::string& filename, bool tabular) const;
 
     Units units(bool) const override;
     
@@ -215,7 +218,9 @@ namespace minsky
     bool editorMode() const override {return m_editorMode;}
     void toggleEditorMode() override {m_editorMode=!m_editorMode;updateBoundingBox();}
 
-    };
+    static std::vector<unsigned> lockGroupColours();
+    void joinLockGroup(unsigned);
+  };
 
   class RavelLockGroup
   {

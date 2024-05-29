@@ -346,6 +346,23 @@ export class ContextMenuManager {
     }
   }
 
+  private static exportAsCSVSubmenu(item: any) {
+    return [
+          {
+            label: 'Save by datapoint per row',
+            click: async () => {
+              await CommandsManager.exportItemAsCSV(item);
+            },
+          },
+          {
+            label: 'Save by series per row',
+            click: async () => {
+              await CommandsManager.exportItemAsCSV(item,true);
+            },
+          },
+    ];
+  }
+  
   private static async contextMenu(itemInfo: CanvasItem) {
     let menuItems: MenuItem[] = [
       new MenuItem({
@@ -469,6 +486,10 @@ export class ContextMenuManager {
               click: () => {sheet.showColSlice("headAndTail");}
             },
          ]
+        }),
+        new MenuItem({
+          label: 'Export as CSV',
+          submenu: this.exportAsCSVSubmenu(sheet),
         }),
       ];
       break;
@@ -844,6 +865,16 @@ export class ContextMenuManager {
     const unlinkAvailable = allLockHandles!==null;
     const handleAvailable = handleIndex !== -1;
 
+    let linkGroupColours=await ravel.lockGroupColours();
+    let linkGroups=[];
+    for (let i=0; i<linkGroupColours.length; ++i) {
+      let icon=`${__dirname}/assets/linkGroup${linkGroupColours[i]}.png`;
+      linkGroups.push(new MenuItem({
+        icon: icon,
+        click: ()=>{ravel.joinLockGroup(linkGroupColours[i]);}
+      }));
+    }
+    
     let menuItems = [
       new MenuItem({
         label: 'Editor mode',
@@ -853,9 +884,7 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Export as CSV',
-        click: async () => {
-          await CommandsManager.exportItemAsCSV(ravel);
-        },
+        submenu: this.exportAsCSVSubmenu(ravel),
       }),
       new MenuItem({
         label: 'Set next aggregation',
@@ -882,6 +911,10 @@ export class ContextMenuManager {
           CommandsManager.lockSpecificHandles(ravel);
         },
         enabled: linkHandlesAvailable 
+      }),
+      new MenuItem({ 
+        label: 'Join Link Group',
+        submenu: linkGroups,
       }),
       new MenuItem({
         label: 'Unlink',
@@ -1123,9 +1156,7 @@ export class ContextMenuManager {
     menuItems.push(
       new MenuItem({
         label: 'Export as CSV',
-        click: async () => {
-          await CommandsManager.exportItemAsCSV(v);
-        },
+        submenu: this.exportAsCSVSubmenu(v),
       })
     );
 

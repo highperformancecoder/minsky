@@ -83,7 +83,8 @@ namespace minsky
     }
 
     /// populates this spec from a "RavelHypercube" entry, \a row is the row being read, used to set the headerRow attribute
-    void populateFromRavelMetadata(const std::string& metadata, std::size_t row);
+    /// \a If horizontalName is one of the dimensions, data is written in a tabular format
+    void populateFromRavelMetadata(const std::string& metadata, const std::string& horizontalName, std::size_t row);
 
   private:
     /// try to fill in remainder of spec, given a tokenizer function tf
@@ -107,7 +108,7 @@ namespace minsky
 
   /// creates a report CSV file from input, with errors sorted at
   /// begining of file, with a column for error messages
-  void reportFromCSVFile(std::istream& input, std::ostream& output, const DataSpec& spec);
+  void reportFromCSVFile(std::istream& input, std::ostream& output, const DataSpec& spec, uintmax_t fileSize);
 
   /// load a variableValue from a stream according to data spec
   /// @param fileSize size of file to read (for progress bar)

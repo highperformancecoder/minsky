@@ -206,10 +206,6 @@ namespace minsky
       {
         drawPorts(cairo);
         displayTooltip(cairo,tooltip());
-        // draw legend tags for move/resize
-        if (legend)
-          {
-          }
         // Resize handles always visible on mousefocus. For ticket 92.
         drawResizeHandles(cairo);   
       }
@@ -234,7 +230,12 @@ namespace minsky
           minx=xminVar->value();
       }
     else if (isfinite(xmin))
-      minx=xmin;
+      {
+        if (xIsSecsSinceEpoch && (cminsky().timeUnit.empty() || cminsky().timeUnit=="year"))
+          minx=yearToPTime(xmin);
+        else
+          minx=xmin;
+      }
 
     if (xmaxVar && xmaxVar->idx()>-1)
       {
@@ -244,7 +245,12 @@ namespace minsky
           maxx=xmaxVar->value();
       }
     else if (isfinite(xmax))
-      maxx=xmax;
+      {
+        if (xIsSecsSinceEpoch && (cminsky().timeUnit.empty() || cminsky().timeUnit=="year"))
+          maxx=yearToPTime(xmax);
+        else
+          maxx=xmax;
+      }
 
     if (yminVar && yminVar->idx()>-1)
       miny=yminVar->value();
@@ -325,20 +331,13 @@ namespace minsky
     switch (ct)
       {
       case ClickType::legendMove:
-        if (abs(dx)<w && abs(dy)<h) {  //Ensure plot legend cannot be moved off plot widget  
-           legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
-           legendTop = (oldLegendTop + clickY - y)/gh;
-           if (!title.empty()) legendTop = (oldLegendTop + clickY - y + titleHeight)/gh;
-	    } else {
-			legendLeft = oldLegendLeft/gw;
-			legendTop = oldLegendTop/gh;
-		}
+        legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
+        legendTop = (oldLegendTop + clickY - y)/gh;
+        if (!title.empty()) legendTop = (oldLegendTop + clickY - y + titleHeight)/gh;
         break;
       case ClickType::legendResize:
-        if (abs(dx)<w && abs(dy)<h) { //Ensure plot legend cannot be resized beyond extent of plot widget  
-           legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
-           if (!title.empty()) legendFontSz = oldLegendFontSz * (y-yoffs+titleHeight)/(clickY-yoffs);
-	    } else legendFontSz = oldLegendFontSz;
+        legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
+        if (!title.empty()) legendFontSz = oldLegendFontSz * (y-yoffs+titleHeight)/(clickY-yoffs);
         break;
       default:
         {
@@ -417,6 +416,7 @@ namespace minsky
     // xx & yy are in plot user coordinates
     const double xx= x-this->x() + z*(0.5*iWidth()-portSpace) - lx;
     const double yy= z*(0.5*iHeight()-portSpace)-y+this->y()  - ly+legendHeight;
+
     if (legend && xx>0 && xx<legendWidth)
       {
         if (yy>0.2*legendHeight && yy<legendHeight)
@@ -592,6 +592,7 @@ namespace minsky
         {
           if (port<m_numLines) noLhsPens=false;
           auto& yv=yvars[port][i];
+          if (yv->size()>0) (*yv)[0]; // ensure cachedTensors are up to date
           auto d=yv->hypercube().dims();
           if (d.empty())
             {

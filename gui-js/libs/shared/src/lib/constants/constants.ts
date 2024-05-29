@@ -44,6 +44,7 @@ export const events = {
   NEW_SYSTEM: 'new-system',
   NEW_PUB_TAB: 'new-pub-tab',
   OPEN_FILE_DIALOG: 'open-file-dialog',
+  OPEN_URL: 'open-url',
   PUB_TAB_REMOVED: 'pub-tab-removed',
   RECORD: 'record',
   RECORDING_REPLAY: 'recording-replay',

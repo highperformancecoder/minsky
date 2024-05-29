@@ -89,4 +89,7 @@ export class ElectronService {
   displayInitHelp() {
     this.ipcRenderer.invoke(events.DISPLAY_INIT_HELP);
   }
+  openUrl(options) {
+    this.ipcRenderer.invoke(events.OPEN_URL,options);
+  }
 }

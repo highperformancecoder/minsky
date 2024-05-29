@@ -361,6 +361,19 @@ export class ApplicationMenuManager {
       id: 'insert',
       submenu: [
         {
+          label: 'Variable Browser',
+          click() {
+            WindowManager.createPopupWindowWithRouting({
+              title: 'Variables',
+              url: "#/headless/variable-pane",
+              width: 400,
+              height: 450,
+              alwaysOnTop: true,
+              modal: false,
+            });
+          },
+        },
+        {
           label: 'plot',
           async click() {minsky.canvas.addPlot();}
         },

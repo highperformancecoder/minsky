@@ -579,8 +579,8 @@ namespace minsky
     const double dx=xx-x(), dy=yy-y();
     float l,r; margins(l,r);    
     const float z=zoomFactor();
-    iWidth(((x1-x0)+l+r)/z);
-    iHeight(((y1-y0)+20*z)/z);
+    m_width=((x1-x0)+l+r)/z;
+    m_height=((y1-y0)+20*z)/z;
 
     // adjust contents by the offset
     for (auto& i: items)

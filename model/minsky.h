@@ -204,7 +204,11 @@ namespace minsky
     std::map<Units, double> maxFlowValue; // max flow values along wires
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
-    void populateMissingDimensionsFromVariable(const VariableValue&);
+    /// populate missing dimensions from a variableValue
+    /// @param incompatibleMessageDisplayed boolean flag to make message display single shot
+    void populateMissingDimensionsFromVariable(const VariableValue&, bool& incompatibleMessageDisplayed);
+    void populateMissingDimensionsFromVariable(const VariableValue& v)
+    {bool dummy; populateMissingDimensionsFromVariable(v,dummy);}
     void renameDimension(const std::string& oldName, const std::string& newName);
     
     void setGodleyIconResource(const string& s)
@@ -339,6 +343,7 @@ namespace minsky
         }
       else return "unavailable";
     }
+    static bool ravelAvailable() {return  ravel::Ravel::available();}
     static bool ravelExpired() {return  ravel::Ravel::available() && ravel::Ravel::daysUntilExpired()<0;}
     static int daysUntilRavelExpires() {return  ravel::Ravel::daysUntilExpired();}
     

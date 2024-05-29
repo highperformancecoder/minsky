@@ -165,7 +165,7 @@ export class CommandsManager {
     }
   }
 
-  static async exportItemAsCSV(item: any): Promise<void> {
+  static async exportItemAsCSV(item: any, tabular=false): Promise<void> {
     const exportItemDialog = await dialog.showSaveDialog({
       title: 'Export item as csv',
       defaultPath: 'item.csv',
@@ -182,7 +182,7 @@ export class CommandsManager {
       return;
     }
 
-    item.exportAsCSV(filePath);
+    item.exportAsCSV(filePath, tabular);
     return;
   }
 

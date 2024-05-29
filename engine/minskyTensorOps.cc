@@ -368,19 +368,38 @@ namespace minsky
     ssize_t delta=0;
     size_t innerStride=1, outerStride;
     vector<size_t> argIndices;
+    string errorMsg;
     void setArgument(const TensorPtr& a,const ITensor::Args& args) override {
       civita::DimensionedArgCachedOp::setArgument(a,args);
-      if (dimension>=rank() && rank()>1)
-        throw_error("axis name needs to be specified in difference operator");
+      errorMsg="";
+      switch (rank())
+        {
+        case 0: return;
+        case 1:
+          dimension=0;
+          break;
+        default:
+          if (dimension>=rank())
+            {
+              errorMsg="axis name needs to be specified in difference operator";
+              return;
+            }
+          break;
+        }
+      
+      auto dimSize=arg->hypercube().xvectors[dimension].size();
+      if (size_t(abs(delta))>=dimSize)
+        {
+          errorMsg="Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(dimSize)+")";
+          return;
+        }
       
       delta=args.val;
       // remove initial slice of hypercube
       auto hc=arg->hypercube();
-      if (rank()==0) return;
       
-      auto& xv=hc.xvectors[rank()==1? 0: dimension];
-      if (size_t(abs(delta))>=xv.size())
-        throw_error("Δ ("+to_string(abs(delta))+") larger than dimension size ("+to_string(xv.size())+")");
+      auto& xv=hc.xvectors[dimension];
+      if (size_t(abs(delta))>=xv.size()) return;
       if (delta>=0)
         xv.erase(xv.begin(), xv.begin()+delta);
       else 
@@ -434,6 +453,8 @@ namespace minsky
     
     void computeTensor() const override
     {
+      if (!arg) throw_error("input unwired");
+      if (!errorMsg.empty()) throw_error(errorMsg);
       if (!argIndices.empty())
         {
           assert(argIndices.size()==size());
@@ -484,8 +505,11 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {
-
       if (!arg1 || !arg2) return;
+      if (arg1->rank()!=0 && arg2->rank()!=0 &&
+          arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
+        throw_error("inner dimensions of tensors do not match");
+
       size_t m=1, n=1;   
       if (arg1->rank()>1)
         for (size_t i=0; i<arg1->rank()-1; i++)
@@ -514,17 +538,12 @@ namespace minsky
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const Args&) override {
       arg1=a1; arg2=a2;
-      if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
-        if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
-          throw_error("inner dimensions of tensors do not match");
-        
-        auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
-        Hypercube hc;
-        hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());        
-        hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
-        cachedResult.hypercube(std::move(hc));
-                
-      }
+      if (!arg1 || arg1->rank()==0 || !arg2 || arg2->rank()==0) return;
+      auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
+      Hypercube hc;
+      hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());        
+      hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
+      cachedResult.hypercube(std::move(hc));
     }    
   };
 
@@ -650,10 +669,40 @@ namespace minsky
 
     void computeTensor() const override
     {
+      if (arg1->rank()==0)
+        throw_error("Cannot apply gather to a scalar");
+      if (dimension>=arg1->rank())
+        throw_error("Need to specify which dimension to gather");
+
       size_t d=dimension;
       if (arg1 && d>=arg1->rank()) d=0;
       if (!arg1 || arg1->hypercube().xvectors.size()<=d) return;
       auto& xv=arg1->hypercube().xvectors[d];
+
+      if (arg2->rank()>0)
+        {
+          // recalculate hypercube
+          Hypercube hc=cachedResult.hypercube();
+          auto& xvToGather=arg1->hypercube().xvectors[dimension];
+          for (size_t i=0; !xv.empty() && i<arg2->size() && i<hc.xvectors[0].size(); ++i)
+            {
+              double intPart;
+              double fracPart=std::modf((*arg2)[i], &intPart);
+              if (intPart>=0)
+                if (intPart<xvToGather.size()-1)
+                  hc.xvectors[0][i]=interpolate(xvToGather[intPart],xvToGather[intPart+1],fracPart);
+                else if (intPart<xvToGather.size())
+                  hc.xvectors[0][i]=xvToGather[intPart];
+                else
+                  hc.xvectors[0][i]=any(xvToGather.dimension.type);
+              else if (intPart==-1)
+                hc.xvectors[0][i]=xvToGather[0];
+              else
+                hc.xvectors[0][i]=any(xvToGather.dimension.type);
+            }
+          cachedResult.hypercube(std::move(hc));
+        }
+      
       function<double(double,size_t)> interpolate;
       
       size_t stride=1;
@@ -661,6 +710,7 @@ namespace minsky
       for (size_t i=0; i<d; ++i)
         stride*=dims[i];
       
+
       switch (xv.dimension.type)
         {
         case Dimension::string:
@@ -710,13 +760,12 @@ namespace minsky
       switch (arg1->rank())
         {
         case 0:
-          throw_error("Cannot apply gather to a scalar");
+          return;
         case 1:
           dimension=0;
           break;
         default:
-          if (dimension>=arg1->rank())
-            throw_error("Need to specify which dimension to gather");
+          if (dimension>=arg1->rank()) return;
           break;
         }
       
@@ -733,9 +782,8 @@ namespace minsky
       set<size_t> offsetSet;
       if (arg1->index().empty()) //dense case
         {
-          const size_t numLower=dimension? arg1Dims[dimension-1]: 1;
           for (size_t i=0; i<upperStride; ++i)
-            for (size_t j=0; j<numLower; checkCancel(), ++j)
+            for (size_t j=0; j<lowerStride; checkCancel(), ++j)
               offsetSet.insert(lowerStride*i*arg1Dims[dimension]+j);
         }
       else
@@ -750,7 +798,31 @@ namespace minsky
 
       // resulting hypercube is a tensor product of arg2 and the reduced arg1.
       const size_t arg2NumElements=arg2->hypercube().numElements();
-      Hypercube hc=arg2->hypercube();
+      Hypercube hc;
+      if (arg2NumElements>1)
+        {
+          hc.xvectors.push_back(arg1->hypercube().xvectors[dimension]);
+          hc.xvectors[0].resize(arg2NumElements);
+        }
+//      hc.xvectors.resize(1);
+//      auto& xvToGather=arg1->hypercube().xvectors[dimension];
+//      for (size_t i=0; !xv.empty() && i<arg2->size(); ++i)
+//        {
+//          double intPart;
+//          double fracPart=std::modf((*arg2)[i], &intPart);
+//          if (intPart>=0)
+//            if (intPart<xvToGather.size()-1)
+//              hc.xvectors[0].emplace_back(interpolate(xvToGather[intPart],xvToGather[intPart+1],fracPart));
+//            else if (intPart<xvToGather.size())
+//              hc.xvectors[0].emplace_back(xvToGather[intPart]);
+//            else
+//              hc.xvectors[0].emplace_back(any(xvToGather.dimension.type));
+//          else if (intPart==-1)
+//            hc.xvectors[0].emplace_back(xvToGather[0]);
+//          else
+//            hc.xvectors[0].emplace_back(any(xvToGather.dimension.type));
+//        }
+                                
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin(), arg1->hypercube().xvectors.begin()+dimension);
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin()+dimension+1, arg1->hypercube().xvectors.end());
 
@@ -874,19 +946,22 @@ namespace minsky
   {
     int dimension1, dimension2;
     TensorPtr arg1, arg2;
+    string errorMsg;
     void setArguments(const TensorPtr& a1, const TensorPtr& a2,
                       const ITensor::Args& args) override
     {
       arg1=a1? a1: a2;
       arg2=a2? a2: a1;
       if (!arg1 || !arg2) return;
-
+      errorMsg="";
+      
       Hypercube hc;
       set<string> dimNames; // for ensuring dimension names are unique
       switch (arg1->rank())
         {
         case 0:
-          throw_error("covariance or ρ needs at least rank 1 arguments");
+          errorMsg="covariance or ρ needs at least rank 1 arguments";
+          return;
         case 1:
           dimension1=0;
           break;
@@ -906,7 +981,8 @@ namespace minsky
       switch (arg2->rank())
         {
         case 0:
-          throw_error("covariance or ρ needs at least rank 1 arguments");
+          errorMsg="covariance or ρ needs at least rank 1 arguments";
+          return;
         case 1:
           dimension2=0;
           break;
@@ -925,9 +1001,15 @@ namespace minsky
         }
 
       if (dimension1<0 || dimension2<0)
-        throw_error("dimension "+args.dimension+" not found");
+        {
+          errorMsg="dimension "+args.dimension+" not found";
+          return;
+        }
       if (arg1->hypercube().xvectors[dimension1].size() != arg2->hypercube().xvectors[dimension2].size())
-        throw_error("arguments not conformant");
+        {
+          errorMsg="arguments not conformant";
+          return;
+        }
 
       hypercube(hc);
         
@@ -935,6 +1017,7 @@ namespace minsky
 
     template <class F> void performSum(F f, size_t idx) const
     {
+      if (!errorMsg.empty()) throw_error(errorMsg);
       auto splitted=hypercube().splitIndex(idx);
       auto splitIndexIterator=splitted.begin();
 
@@ -1024,6 +1107,9 @@ namespace minsky
           scale[i]=(n*sumxy[i] - sx*sumy[i])/(n*sumxx[i]-sx*sx);
           offset[i]=sumy[i]/n-scale[i]*sx/n;
         }
+      if (state && scale.size()==1 &&
+          (state->tooltip().empty()||state->tooltip().starts_with("y=")))
+          state->tooltip("y="+to_string(scale[0])+"x + "+to_string(offset[0]));
       m_timestamp=timestamp();
     }
     
@@ -1054,8 +1140,7 @@ namespace minsky
         }
       else
         {
-          if (rank()>1 && dimension>=rank())
-            throw_error("Need to specify axis");
+          if (rank()>1 && dimension>=rank()) return;
           // construct x from y's x-vector
           auto tv=make_shared<TensorVal>();
           spreadX=tv;
@@ -1102,6 +1187,8 @@ namespace minsky
 
     double operator[](size_t i) const override
     {
+      if (rank()>1 && dimension>=rank())
+        throw_error("Need to specify axis");
       if (!x) return nan("");
       assert(dimension<rank() || scale.size()==1);
 
@@ -1423,7 +1510,9 @@ namespace minsky
   class RavelTensor: public civita::ITensor
   {
     const Ravel& ravel;
-    vector<TensorPtr> chain;
+    mutable vector<TensorPtr> chain;
+    TensorPtr arg;
+    mutable Timestamp m_timestamp;
     
     CLASSDESC_ACCESS(Ravel);
   public:
@@ -1431,11 +1520,25 @@ namespace minsky
 
     void setArgument(const TensorPtr& a,const Args&) override {
       // not sure how to avoid this const cast here
+      arg=a;
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
       chain=ravel::createRavelChain(ravel.getState(), a);
     }
 
-    double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
+    double operator[](size_t i) const override {
+      double v=0;
+      if (!chain.empty())
+        {
+          v=(*chain.back())[i];
+          if (m_timestamp<chain.back()->timestamp())
+            { // update hypercube if argument has changed
+              const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
+              chain=ravel::createRavelChain(ravel.getState(), arg);
+              m_timestamp=Timestamp::clock::now();
+            }
+        }
+      return v;
+    }
     size_t size() const override {return chain.empty()? 1: chain.back()->size();}
     const Index& index() const override
     {return chain.empty()? m_index: chain.back()->index();}

@@ -126,7 +126,7 @@ const injectCancelButton=`
    document.body.appendChild(cancelButtonDiv);
 `;
 
-let progress={text:"", value:0, indeterminate: false, closeOnComplete: false, browserWindow: {}};
+let progress={text:"Wait...", value:0, indeterminate: false, closeOnComplete: false, browserWindow: {}};
 let progressBar;
 let initProgressBar;
 
@@ -145,7 +145,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
   WindowManager.getMainWindow()?.webContents?.send(events.CURSOR_BUSY, busy);
   if (!initProgressBar && busy)
     initProgressBar=setTimeout(()=>{
-      progress.browserWindow={parent: WindowManager.getMainWindow()};
+      progress.browserWindow={parent: WindowManager.getMainWindow(), height: 200};
       progressBar=new ProgressBar(progress);
       progressBar.on('ready',()=>{progressBar._window.webContents.executeJavaScript(injectCancelButton);});
       progressBar.value=progress.value;
@@ -158,7 +158,7 @@ restService.setBusyCursorCallback(function (busy: boolean) {
       progressBar.setCompleted();
       progressBar.close();
       progressBar=null;
-      progress.text="";
+      progress.text="Wait...";
       progress.value=0;
     }
   }

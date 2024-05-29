@@ -190,6 +190,19 @@ export class WiringComponent implements OnInit, OnDestroy {
     return operation.value;
   }
 
+  async addRavel() {
+    if (!await this.electronService.minsky.ravelAvailable()) {
+      this.electronService.openUrl({
+        width: 800,
+        height: 1000,
+        title: "It's a Ravelation",
+        modal: false,
+        url: 'https://ravelation.net',
+      });
+    }
+    this.electronService.minsky.canvas.addRavel();
+  }
+  
   ngOnDestroy() {
     this.destroy$.next(undefined);
     this.destroy$.complete();

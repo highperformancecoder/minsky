@@ -25,6 +25,7 @@
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 #include <boost/filesystem.hpp>
+#include <numeric>
 
 using namespace minsky;
 using namespace std;
@@ -101,39 +102,74 @@ SUITE(CSVParser)
       CHECK((set<unsigned>{0,1}==dimensionCols));
       CHECK((set<unsigned>{2}==dataCols));
     }
-    
+
+  TEST_FIXTURE(DataSpec,badTimeData)
+    {
+      string input="time,data\n"
+        "1966-Q,1\n";
+      istringstream is(input);
+      setDataArea(1,1);
+      dimensionCols={0};
+      dimensions[0].type=Dimension::time;
+      dimensions[0].units="%Y-Q%Q";
+      VariableValue v(VariableType::parameter,":foo");
+      CHECK_THROW(loadValueFromCSVFile(v,is,*this,2),std::exception);
+      is.clear(); is.seekg(0);
+      try {loadValueFromCSVFile(v,is,*this,2);}
+      catch (const std::exception& ex) {
+        CHECK(string(ex.what()).starts_with("Invalid"));
+      }
+
+      is.clear(); is.seekg(0);
+      string output;  
+      ostringstream os(output);
+      reportFromCSVFile(is,os,*this,2);
+      CHECK(os.str().find("Invalid data") != std::string::npos);
+    }
+  
+  // disable temporarily until this is fixed.
   TEST_FIXTURE(DataSpec,reportFromCSV)
     {
       string input="A comment\n"
         ";;foobar\n"
         "foo;bar;A;B;C\n"
         "A;A;1.2;1.3;1.4\n"
-        "A;B;1;2;3\n"
-        "B;A;3;2;1\n";
+        "A;A;1;2;3\n"
+        "B;A;3;S;1\n";
       string output="";  
       istringstream is(input);
       ostringstream os(output);
-            
-      reportFromCSVFile(is,os,*this);
+      guessFromStream(is);
+      is.clear();
+      is.seekg(0);
+      setDataArea(3,2);
+      dataCols={2,3,4};
+      dimensionNames={"foo","bar","A","B","C"};
       
-      CHECK(os.str().find("error") != std::string::npos);
-      CHECK(os.str().find("invalid numerical data") != std::string::npos);
-      CHECK(os.str().find("duplicate key") != std::string::npos);
       
-      string in="Country,value$,\n"
-        "Australia\n"
-        "Brazil,1.1,\n"
-        "China,1.5,\n"
-        "\n";
-      string out="";  
-      istringstream isn(in);
-      ostringstream osn(out);
-      setDataArea(1,1);
-      dimensionCols.insert(0);
+      reportFromCSVFile(is,os,*this,6);
+
+      struct Count
+      {
+        const char target;
+        Count(char target): target(target) {}
+        int operator()(int x,char c) const {return x+(c==target);}
+      };
       
-      reportFromCSVFile(isn,osn,*this);
+      // output should have same number of lines as input, and 1 extra ; for each data line
+      auto osStr=os.str();
+      auto numLines=accumulate(input.begin(), input.end(), 0, Count('\n'));
+      auto numSep=accumulate(input.begin(), input.end(), 0, Count(';'));
       
-      CHECK(osn.str().find("missing numerical data") != std::string::npos);
+      CHECK_EQUAL(numLines, accumulate(osStr.begin(), osStr.end(), 0, Count('\n')));
+      CHECK_EQUAL(numSep+(numLines-nRowAxes()+1),
+                  accumulate(osStr.begin(), osStr.end(), 0, Count(';')));
+      
+      CHECK(os.str().find("Error") != std::string::npos);
+      CHECK(os.str().find("Invalid data") != std::string::npos);
+      CHECK(os.str().find("Duplicate key") != std::string::npos);
+
+      // TODO - this doesn't exercise all the value checking paths
     }
 
   // disabled, because I don't think this test makes much sense

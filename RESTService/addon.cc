@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// @file An nodejs-embedded REST Service
+/// @file A nodejs-embedded REST Service
 #include <napi.h>
 #include "RESTMinsky.h"
 #include "minsky_epilogue.h"
@@ -25,6 +25,7 @@
 #include <exception>
 #include <atomic>
 #include <future>
+#include <filesystem>
 
 #ifdef _WIN32
 #include <time.h>
@@ -368,7 +369,9 @@ namespace minsky
         auto buttons=Array::New(env);
         for (unsigned i=0; i< addonMinsky->messageButtons.size(); ++i)
           buttons[i]=String::New(env,addonMinsky->messageButtons[i]);
-        addonMinsky->userResponse.set_value(fn({String::New(env,addonMinsky->theMessage), buttons}).As<Number>().Int32Value());
+        try {
+          addonMinsky->userResponse.set_value(fn({String::New(env,addonMinsky->theMessage), buttons}).As<Number>().Int32Value());
+        } catch (...) {/* may fail if multiple messages posted in rapid succession */}
       }
 
       bool messageCallbackSet=false;
@@ -398,7 +401,8 @@ namespace minsky
       }
 
       MemCheckResult checkMemAllocation(std::size_t bytes) const override {
-        if (messageCallbackSet && bytes>0.2*physicalMem())
+        // Electron restricts heap size to 4GiB, regardless of how much physical memory is present
+        if (messageCallbackSet && bytes>/*physicalMem()*/4ULL*1024*1024*1024)
           {
             theMessage="Allocation will use more than 50% of available memory. Do you want to proceed?";
             messageButtons={"No","Yes"};
@@ -408,7 +412,7 @@ namespace minsky
           }
         return OK;
       }
-
+    
       // signature of last param must be non-const
       static void busyCursorCallback(Napi::Env env, Napi::Function fn, void*, bool* busy)
       {
@@ -520,6 +524,21 @@ namespace minsky
           (env,info[0].As<Function>(), "resetScroll",0,2,nullptr);
         return env.Null();
       }
+      void outOfMemoryHandler()
+      {
+        string file=(std::filesystem::current_path()/"savedRavelSession.rvl").string();
+        if (autoSaver) {
+          autoSaver->killThread();
+          file=autoSaver->fileName;
+        }
+        save(file);
+
+        theMessage="Out of memory, saving to autosave file: "+file;
+        messageButtons={"OK"};
+        userResponse={}; //reset the promise
+        tsMessageCallback.BlockingCall(const_cast<AddOnMinsky*>(this));
+        userResponse.get_future().get();
+      }
     };
     
     Minsky* l_minsky=NULL;
@@ -538,6 +557,13 @@ namespace minsky
 
   // GUI callback needed only to solve linkage problems
   void doOneEvent(bool idleTasksOnly) {}
+
+}
+
+void handleSignal(int)
+{
+  static_cast<minsky::AddOnMinsky&>(minsky::minsky()).outOfMemoryHandler();
+  exit(1);
 }
 
 struct MinskyAddon: public Addon<MinskyAddon>
@@ -562,8 +588,10 @@ struct MinskyAddon: public Addon<MinskyAddon>
         InstanceMethod("setResetScrollCallback", &MinskyAddon::setResetScrollCallback),
         InstanceMethod("cancelProgress", &MinskyAddon::cancelProgress)
       });
+#ifndef _WIN32
+    signal(SIGTRAP,handleSignal);
+#endif
   }
-  
 
   Value setMessageCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setMessageCallback(info);}
   Value setBusyCursorCallback(const Napi::CallbackInfo& info) {return addOnMinsky.setBusyCursorCallback(info);}

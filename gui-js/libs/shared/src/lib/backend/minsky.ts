@@ -235,7 +235,7 @@ export class VariableBase extends Item {
   async engExp(): Promise<object> {return this.$callMethod('engExp');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
   async ensureValueExists(a1: VariableValue,a2: string): Promise<void> {return this.$callMethod('ensureValueExists',a1,a2);}
-  async exportAsCSV(a1: string): Promise<void> {return this.$callMethod('exportAsCSV',a1);}
+  async exportAsCSV(a1: string,a2: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2);}
   async flip(): Promise<void> {return this.$callMethod('flip');}
   async getDimLabelsPicked(): Promise<object> {return this.$callMethod('getDimLabelsPicked');}
   async height(): Promise<number> {return this.$callMethod('height');}
@@ -573,7 +573,7 @@ export class DataSpec extends CppClass {
   async nColAxes(): Promise<number> {return this.$callMethod('nColAxes');}
   async nRowAxes(): Promise<number> {return this.$callMethod('nRowAxes');}
   async numCols(...args: number[]): Promise<number> {return this.$callMethod('numCols',...args);}
-  async populateFromRavelMetadata(a1: string,a2: number): Promise<void> {return this.$callMethod('populateFromRavelMetadata',a1,a2);}
+  async populateFromRavelMetadata(a1: string,a2: string,a3: number): Promise<void> {return this.$callMethod('populateFromRavelMetadata',a1,a2,a3);}
   async quote(...args: number[]): Promise<number> {return this.$callMethod('quote',...args);}
   async separator(...args: number[]): Promise<number> {return this.$callMethod('separator',...args);}
   async setDataArea(a1: number,a2: number): Promise<void> {return this.$callMethod('setDataArea',a1,a2);}
@@ -1408,11 +1408,12 @@ export class Minsky extends CppClass {
   async physicalMem(): Promise<number> {return this.$callMethod('physicalMem');}
   async popFlags(): Promise<void> {return this.$callMethod('popFlags');}
   async populateMissingDimensions(): Promise<void> {return this.$callMethod('populateMissingDimensions');}
-  async populateMissingDimensionsFromVariable(a1: VariableValue): Promise<void> {return this.$callMethod('populateMissingDimensionsFromVariable',a1);}
+  async populateMissingDimensionsFromVariable(...args: any[]): Promise<void> {return this.$callMethod('populateMissingDimensionsFromVariable',...args);}
   async progress(a1: string,a2: number): Promise<void> {return this.$callMethod('progress',a1,a2);}
   async pushFlags(): Promise<void> {return this.$callMethod('pushFlags');}
   async pushHistory(): Promise<boolean> {return this.$callMethod('pushHistory');}
   async randomLayout(): Promise<void> {return this.$callMethod('randomLayout');}
+  async ravelAvailable(): Promise<boolean> {return this.$callMethod('ravelAvailable');}
   async ravelExpired(): Promise<boolean> {return this.$callMethod('ravelExpired');}
   async ravelVersion(): Promise<string> {return this.$callMethod('ravelVersion');}
   async redrawAllGodleyTables(): Promise<void> {return this.$callMethod('redrawAllGodleyTables');}
@@ -1619,6 +1620,7 @@ export class PlotWidget extends Item {
   async clearPenAttributes(): Promise<void> {return this.$callMethod('clearPenAttributes');}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
   async connectVar(a1: VariableValue,a2: number): Promise<void> {return this.$callMethod('connectVar',a1,a2);}
+  async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disconnectAllVars(): Promise<void> {return this.$callMethod('disconnectAllVars');}
@@ -1810,7 +1812,7 @@ export class Ravel extends Item {
   async displayFilterCaliper(): Promise<boolean> {return this.$callMethod('displayFilterCaliper');}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
-  async exportAsCSV(a1: string): Promise<void> {return this.$callMethod('exportAsCSV',a1);}
+  async exportAsCSV(a1: string,a2: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2);}
   async flipped(...args: boolean[]): Promise<boolean> {return this.$callMethod('flipped',...args);}
   async getState(): Promise<object> {return this.$callMethod('getState');}
   async handleDescription(a1: number): Promise<string> {return this.$callMethod('handleDescription',a1);}
@@ -1819,7 +1821,9 @@ export class Ravel extends Item {
   async handleSortableByValue(): Promise<boolean> {return this.$callMethod('handleSortableByValue');}
   async hypercube(): Promise<object> {return this.$callMethod('hypercube');}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
+  async joinLockGroup(a1: number): Promise<void> {return this.$callMethod('joinLockGroup',a1);}
   async leaveLockGroup(): Promise<void> {return this.$callMethod('leaveLockGroup');}
+  async lockGroupColours(): Promise<number[]> {return this.$callMethod('lockGroupColours');}
   async maxRank(): Promise<number> {return this.$callMethod('maxRank');}
   async nextReduction(a1: string): Promise<void> {return this.$callMethod('nextReduction',a1);}
   async numHandles(): Promise<number> {return this.$callMethod('numHandles');}
@@ -1831,7 +1835,7 @@ export class Ravel extends Item {
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
   async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
   async pickSliceLabels(a1: number,a2: string[]): Promise<void> {return this.$callMethod('pickSliceLabels',a1,a2);}
-  async pickedSliceLabels(): Promise<string[]> {return this.$callMethod('pickedSliceLabels');}
+  async pickedSliceLabels(...args: any[]): Promise<string[]> {return this.$callMethod('pickedSliceLabels',...args);}
   async populateHypercube(a1: civita__Hypercube): Promise<void> {return this.$callMethod('populateHypercube',a1);}
   async radius(): Promise<number> {return this.$callMethod('radius');}
   async ravelCast(): Promise<Ravel> {return this.$callMethod('ravelCast');}
@@ -2113,6 +2117,7 @@ export class Sheet extends Item {
   async corners(): Promise<object[]> {return this.$callMethod('corners');}
   async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async drawResizeHandles(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
+  async exportAsCSV(a1: string,a2: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2);}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async inRavel(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inRavel',a1,a2);}
   async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}
@@ -2287,7 +2292,7 @@ export class VariableValue extends CppClass {
   async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
   async end(): Promise<number> {return this.$callMethod('end');}
-  async exportAsCSV(a1: string,a2: string): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2);}
+  async exportAsCSV(a1: string,a2: string,a3: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2,a3);}
   async godleyOverridden(...args: boolean[]): Promise<boolean> {return this.$callMethod('godleyOverridden',...args);}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
   async idx(): Promise<number> {return this.$callMethod('idx');}

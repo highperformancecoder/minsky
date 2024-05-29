@@ -173,6 +173,8 @@ namespace minsky
           
     void resize(const LassoBox&) override;
     ClickType::Type clickType(float x, float y) const override;
+    bool contains(float x, float y) const override
+    {return clickType(x,y)!=ClickType::outside;}
 
     /// set autoscaling
     void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=nullptr;}

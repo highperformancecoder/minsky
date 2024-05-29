@@ -184,7 +184,8 @@ namespace minsky
 
     std::string valueId() const {return valueIdFromScope(m_scope.lock(),canonicalName(name));}
 
-    void exportAsCSV(const std::string& filename, const std::string& comment="") const;
+    /// export this to a CSV file. If \a comment is non-empty, it is written as the first line of the file. If tabular is false, there is one data point per line, if true, the the longest dimension is written as a series on the line.
+    void exportAsCSV(const std::string& filename, const std::string& comment="", bool tabular=false) const;
 
     Summary summary() const;
 
