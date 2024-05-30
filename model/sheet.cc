@@ -109,47 +109,6 @@ bool Sheet::inItem(float xx, float yy) const
   return (abs(xx-x())<w-b && abs(yy-y())<h-b) || onRavelButton(xx,yy) || inRavel(xx,yy);
 }
 
-void Sheet::onMouseDown(float x, float y)
-{
-  if (onRavelButton(x,y))
-    {
-      showRavel=!showRavel;
-      bb.update(*this);
-    }
-  else if (inRavel(x,y))
-    inputRavel.onMouseDown(ravelX(x), ravelY(y));
-}
-
-void Sheet::onMouseUp(float x, float y)
-{if (inRavel(x,y)) inputRavel.onMouseUp(ravelX(x), ravelY(y));}
-
-bool Sheet::onMouseMotion(float x, float y)
-{
-  if (inRavel(x,y))
-    return inputRavel.onMouseMotion(ravelX(x), ravelY(y));
-  if (inputRavel)
-    {
-      inputRavel.onMouseLeave();
-      return true;
-    }
-  return false;
-}
-
-bool Sheet::onMouseOver(float x, float y)
-{
-  if (inRavel(x,y))
-    return inputRavel.onMouseOver(ravelX(x), ravelY(y));
-  if (inputRavel)
-    {
-      inputRavel.onMouseLeave();
-      return true;
-    }
-  return false;
-}
-
-void Sheet::onMouseLeave()
-{if (inputRavel) inputRavel.onMouseLeave();}
-
 ClickType::Type Sheet::clickType(float x, float y) const
 {
   if (onResizeHandle(x,y)) return ClickType::onResize;
@@ -346,36 +305,36 @@ void Sheet::draw(cairo_t* cairo) const
 
   cairo_scale(cairo,z,z);
 
-  if (inputRavel)
-    {
-      if (showRavel)
-        {
-          const cairo::CairoSave cs(cairo);
-          cairo_translate(cairo,-(0.5+ravelOffset)*m_width,-(0.5+ravelOffset)*m_height);
-          double r=inputRavel.radius();
-          const double scale=ravelSize()/r;
-          cairo_scale(cairo,scale,scale);
-          const double cornerX=ravelOffset*m_width/scale;
-          const double cornerY=ravelOffset*m_height/scale;
-          // clip out the bottom right quadrant
-          r*=1.1; // allow space for arrow heads
-          cairo_move_to(cairo,cornerX,cornerY);
-          cairo_line_to(cairo,r,cornerY);
-          cairo_line_to(cairo,r,-r);
-          cairo_line_to(cairo,-r,-r);
-          cairo_line_to(cairo,-r,r);
-          cairo_line_to(cairo,cornerX,r);
-          cairo_stroke_preserve(cairo);
-          cairo_clip(cairo);
-          CairoRenderer render(cairo);
-          inputRavel.render(render);
-        }
-      // display ravel button
-      const cairo::CairoSave cs(cairo);
-      cairo_translate(cairo,-0.5*m_width,-0.5*m_height);
-      cairo_scale(cairo,border/Ravel::svgRenderer.width(),border/Ravel::svgRenderer.height());
-      Ravel::svgRenderer.render(cairo);
-    }
+//  if (inputRavel)
+//    {
+//      if (showRavel)
+//        {
+//          const cairo::CairoSave cs(cairo);
+//          cairo_translate(cairo,-(0.5+ravelOffset)*m_width,-(0.5+ravelOffset)*m_height);
+//          double r=inputRavel.radius();
+//          const double scale=ravelSize()/r;
+//          cairo_scale(cairo,scale,scale);
+//          const double cornerX=ravelOffset*m_width/scale;
+//          const double cornerY=ravelOffset*m_height/scale;
+//          // clip out the bottom right quadrant
+//          r*=1.1; // allow space for arrow heads
+//          cairo_move_to(cairo,cornerX,cornerY);
+//          cairo_line_to(cairo,r,cornerY);
+//          cairo_line_to(cairo,r,-r);
+//          cairo_line_to(cairo,-r,-r);
+//          cairo_line_to(cairo,-r,r);
+//          cairo_line_to(cairo,cornerX,r);
+//          cairo_stroke_preserve(cairo);
+//          cairo_clip(cairo);
+//          CairoRenderer render(cairo);
+//          inputRavel.render(render);
+//        }
+//      // display ravel button
+//      const cairo::CairoSave cs(cairo);
+//      cairo_translate(cairo,-0.5*m_width,-0.5*m_height);
+//      cairo_scale(cairo,border/Ravel::svgRenderer.width(),border/Ravel::svgRenderer.height());
+//      Ravel::svgRenderer.render(cairo);
+//    }
   
   cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
   cairo_stroke_preserve(cairo);
@@ -404,6 +363,7 @@ void Sheet::draw(cairo_t* cairo) const
       Pango pango(cairo);
       pango.setFontSize(12.0);
       double x0=-0.5*m_width+border, y0=-0.5*m_height+border;
+      const size_t vertDim=value->rank()>1? 1: 0, horizDim=0;
 
       // force evaluate first data item, in case cachedTensorOp updates hypercube
       if (value->size()>0)
@@ -444,7 +404,7 @@ void Sheet::draw(cairo_t* cairo) const
           const double colWidth=cpango.m_width;
           
           double x=x0, y=y0;   // make sure row labels are aligned with corresponding values. for ticket 1281
-          string format=value->hypercube().xvectors[0].dimension.units;
+          string format=value->hypercube().xvectors[vertDim].dimension.units;
 
           if (value->hypercube().rank()>=2)
             {
@@ -458,7 +418,7 @@ void Sheet::draw(cairo_t* cairo) const
                   y0+=cpango.height();
                   cpango.show();
                 }
-              if (!value->hypercube().xvectors[1].name.empty())
+              if (!value->hypercube().xvectors[horizDim].name.empty())
                 {
                   const cairo::CairoSave cs(cairo);
                   cpango.setMarkup(value->hypercube().xvectors[1].name);
@@ -488,10 +448,10 @@ void Sheet::draw(cairo_t* cairo) const
             case 2: dataHeight-=2*(rowHeight+3); break;
             default: dataHeight-=3*(rowHeight+3); break;
             }
-          const ElisionRowChecker adjustRowAndFinish(showRowSlice,dataHeight,rowHeight,dims[0]);
+          const ElisionRowChecker adjustRowAndFinish(showRowSlice,dataHeight,rowHeight,dims[vertDim]);
               
           // draw in label column
-          auto& xv=value->hypercube().xvectors[0];
+          auto& xv=value->hypercube().xvectors[vertDim];
           for (size_t i=adjustRowAndFinish.startRow; i<xv.size(); ++i)
             {
               if (adjustRowAndFinish(i,y)) break;
@@ -515,7 +475,7 @@ void Sheet::draw(cairo_t* cairo) const
                 cairo_line_to(cairo,x,0.5*m_height);
                 cairo_stroke(cairo);
               }
-              for (size_t i=adjustRowAndFinish.startRow; i<dims[0]; ++i)
+              for (size_t i=adjustRowAndFinish.startRow; i<dims[vertDim]; ++i)
                 {
                   if (adjustRowAndFinish(i,y)) break;
                   cairo_move_to(cairo,x,y);
@@ -530,9 +490,9 @@ void Sheet::draw(cairo_t* cairo) const
             }
           else
             {
-              format=value->hypercube().xvectors[1].dimension.units;
+              format=value->hypercube().xvectors[horizDim].dimension.units;
               const ElisionRowChecker adjustColAndFinish(showColSlice,m_width-colWidth,colWidth,dims[1]);
-              for (size_t i=adjustColAndFinish.startRow; i<dims[1]; ++i)
+              for (size_t i=adjustColAndFinish.startRow; i<dims[horizDim]; ++i)
                 {
                   if (adjustColAndFinish(i,x)) break;
                   y=y0;
@@ -541,7 +501,7 @@ void Sheet::draw(cairo_t* cairo) const
                     cairo_rectangle(cairo,x,y,colWidth,rowHeight);
                     cairo_clip(cairo);
                     cairo_move_to(cairo,x,y);
-                    auto sliceLabel=trimWS(str(value->hypercube().xvectors[1][i],format));
+                    auto sliceLabel=trimWS(str(value->hypercube().xvectors[horizDim][i],format));
                     if (regex_search(sliceLabel,match,pangoMarkup))
                       cpango.setMarkup(sliceLabel);
                     else
@@ -555,12 +515,12 @@ void Sheet::draw(cairo_t* cairo) const
                     cairo_line_to(cairo,x-2.5,0.5*m_height);
                     cairo_stroke(cairo);
                   }
-                  for (size_t j=adjustRowAndFinish.startRow; j<dims[0]; ++j)
+                  for (size_t j=adjustRowAndFinish.startRow; j<dims[vertDim]; ++j)
                     {
                       if (adjustRowAndFinish(j,y)) break;
                       y+=rowHeight;
                       cairo_move_to(cairo,x,y);
-                      auto v=value->atHCIndex(j+i*dims[0]+scrollOffset);
+                      auto v=value->atHCIndex(j+i*dims[vertDim]+scrollOffset);
                       if (!std::isnan(v))
                         {
                           cpango.setText(str(v));

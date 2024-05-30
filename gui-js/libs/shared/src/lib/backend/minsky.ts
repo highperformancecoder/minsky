@@ -2121,11 +2121,6 @@ export class Sheet extends Item {
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async inRavel(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inRavel',a1,a2);}
   async onKeyPress(a1: number,a2: string,a3: number): Promise<boolean> {return this.$callMethod('onKeyPress',a1,a2,a3);}
-  async onMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseDown',a1,a2);}
-  async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
-  async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
-  async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
   async onRavelButton(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onRavelButton',a1,a2);}
   async onResizeHandle(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onResizeHandle',a1,a2);}
   async scrollDown(): Promise<boolean> {return this.$callMethod('scrollDown');}
