@@ -9,7 +9,7 @@ import {
   importCSVvariableName,
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility, DownloadCSVPayload
 } from '@minsky/shared';
-import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
+import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
 import { existsSync, renameSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
 import { extname, join, dirname } from 'path';
@@ -20,6 +20,7 @@ import { StoreManager } from './StoreManager';
 import { RecentFilesManager } from './RecentFilesManager';
 import ProgressBar from 'electron-progressbar';
 import {spawn} from 'child_process';
+import decompress from 'decompress';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -1202,8 +1203,8 @@ export class CommandsManager {
 
 
   static downloadCSV(event,item,webContents, downloadResolve) {
-    const extension = '.csv'; //extname(item.getFilename());
-    const savePath = join(tmpdir(),`downloaded${extension}`);
+    const extension = extname(item.getFilename());
+    let savePath = join(tmpdir(),`downloaded${extension}`);
     item.setSavePath(savePath);
 
     let progress = new ProgressBar({text:"Downloading CSV File",value: 0, indeterminate:false, closeOnComplete: true});
@@ -1218,8 +1219,17 @@ export class CommandsManager {
       }
       webContents.close();
 
-      console.warn('Resolving savepath: ' + savePath);
-      downloadResolve(savePath);
+      if(extension === '.zip') {
+        decompress(savePath, tmpdir()).then(files => {
+          // yes we are only reading the first file in the zip... if people supply zips with more files they are shit out of luck
+          const innerExtension = extname(files[0].path);
+          savePath = join(tmpdir(),`downloaded${innerExtension}`);
+          renameSync(join(tmpdir(),files[0].path),savePath);
+          downloadResolve(savePath);
+      });
+      } else {
+        downloadResolve(savePath);
+      }
     });
 
     // handler for updating progress bar
