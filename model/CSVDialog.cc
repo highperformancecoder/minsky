@@ -105,7 +105,7 @@ namespace
 
 void CSVDialog::loadFile()
 {
-  loadFileFromName(url));
+  loadFileFromName(url);
 }
 
 void CSVDialog::guessSpecAndLoadFile()
