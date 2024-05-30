@@ -8,7 +8,7 @@ exports.default = async function(context) {
     console.log('updating appInfo');
     p.appInfo.productName="ravel";
     p.appInfo.sanitizedProductName="ravel";
-    p.appInfo.productFilename="ravel";
+    p.appInfo.productFilename="ravel-batt-included";
     if (p.platform.name==="windows")
       p.platformSpecificBuildOptions.icon="apps/minsky-electron/src/assets/RavelLogo.ico"
   }

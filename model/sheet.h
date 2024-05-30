@@ -60,11 +60,6 @@ namespace minsky
     bool onRavelButton(float, float) const;
     bool inRavel(float, float) const;
     bool inItem(float, float) const override;
-//    void onMouseDown(float x, float y) override;
-//    void onMouseUp(float x, float y) override;
-//    bool onMouseMotion(float x, float y) override;
-//    bool onMouseOver(float x, float y) override;
-//    void onMouseLeave() override;
     ClickType::Type clickType(float x, float y) const override;
     std::vector<Point> corners() const override;
     bool contains(float x, float y) const override;

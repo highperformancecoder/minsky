@@ -1,5 +1,5 @@
 {
-  "name": "minsky",
+  "name": "ravel",
   "version":"3.4.0-beta.4",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
@@ -8,10 +8,10 @@
     "appId": "au.com.hpcoders.Minsky",
     "artifactName": "${productName}-${version}.${ext}",
     "mac": {
-      "icon": "../minsky.app/Contents/Resources/MinskyLogo.icns"
+      "icon": "../minsky.app/Contents/Resources/RavelLogo.icns"
     },
     "win": {
-      "icon": "apps/minsky-electron/src/assets/MinskyLogo.ico"
+      "icon": "apps/minsky-electron/src/assets/RavelLogo.ico"
     },
     "linux": {
       "category": "Science"
