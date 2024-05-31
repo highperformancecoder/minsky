@@ -1128,8 +1128,13 @@ export class CommandsManager {
     default:
       // nothing to do - TODO implement handlers for MacOS and Linux
     }
+
+    let progress=new ProgressBar({text:"Downloading Ravel application",value: 0, indeterminate:false, closeOnComplete: true,});
+
     // handler for when download completed
     item.once('done', (event,state)=>{
+      progress.close();
+
       if (state==='completed') {
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
           message: 'Ravel plugin updated successfully - restart Ravel to use',
@@ -1145,16 +1150,31 @@ export class CommandsManager {
         webContents.close();
       }
     });
+
+    // handler for updating progress bar
+    item.on('updated',(event,state)=>{
+      switch (state) {
+      case 'progressing':
+        if (!progress?.isCompleted())
+          progress.value=100*item.getReceivedBytes()/item.getTotalBytes();
+        break;
+      case 'interrupted':
+        //item.resume();
+        break;
+      }
+    });
   }
 
   // handler for downloading Minsky
   static downloadMinsky(event,item,webContents) {
     item.setSavePath(join(tmpdir(),item.getFilename()));
 
-    let progress=new ProgressBar({text:"Downloading Ravel application",value: 0, indeterminate:false, closeOnComplete: true,});
+    let progress=new ProgressBar({text:"Downloading Minsky application",value: 0, indeterminate:false, closeOnComplete: true,});
 
     // handler for when download completed
     item.once('done', (event,state)=>{
+      progress.close();
+
       if (state==='completed') {
         switch (process.platform) {
         case 'win32':
@@ -1217,15 +1237,18 @@ export class CommandsManager {
           type: 'error',
         });
       }
+      progress.close();
       webContents.close();
 
       if(extension === '.zip') {
         decompress(savePath, tmpdir()).then(files => {
-          // yes we are only reading the first file in the zip... if people supply zips with more files they are shit out of luck
-          const innerExtension = extname(files[0].path);
-          savePath = join(tmpdir(),`downloaded${innerExtension}`);
-          renameSync(join(tmpdir(),files[0].path),savePath);
-          downloadResolve(savePath);
+          if(files.length > 0) {
+            // yes we are only reading the first file in the zip... if people supply zips with more files they are shit out of luck
+            const innerExtension = extname(files[0].path);
+            savePath = join(tmpdir(),`downloaded${innerExtension}`);
+            renameSync(join(tmpdir(),files[0].path),savePath);
+            downloadResolve(savePath);
+          }
       });
       } else {
         downloadResolve(savePath);
