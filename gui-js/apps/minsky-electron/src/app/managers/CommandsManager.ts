@@ -10,7 +10,7 @@ import {
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility, DownloadCSVPayload
 } from '@minsky/shared';
 import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
-import { existsSync, renameSync, unlinkSync } from 'fs';
+import { existsSync, renameSync, unlinkSync, removeSync } from 'fs';
 import JSON5 from 'json5';
 import { extname, join, dirname } from 'path';
 import { tmpdir } from 'os';
@@ -1129,7 +1129,7 @@ export class CommandsManager {
       // nothing to do - TODO implement handlers for MacOS and Linux
     }
 
-    let progress=new ProgressBar({text:"Downloading Ravel application",value: 0, indeterminate:false, closeOnComplete: true,});
+    let progress=new ProgressBar({text:"Downloading Ravel",value: 0, indeterminate:false, closeOnComplete: true,});
 
     // handler for when download completed
     item.once('done', (event,state)=>{
@@ -1169,7 +1169,7 @@ export class CommandsManager {
   static downloadMinsky(event,item,webContents) {
     item.setSavePath(join(tmpdir(),item.getFilename()));
 
-    let progress=new ProgressBar({text:"Downloading Minsky application",value: 0, indeterminate:false, closeOnComplete: true,});
+    let progress=new ProgressBar({text:"Downloading Ravel application",value: 0, indeterminate:false, closeOnComplete: true,});
 
     // handler for when download completed
     item.once('done', (event,state)=>{
@@ -1213,16 +1213,16 @@ export class CommandsManager {
 
     const window=this.createDownloadWindow();
 
-    return new Promise<string>(resolve => {
+    return new Promise<string>((resolve, reject) => {
       console.warn('Will-download started')
 
-      window.webContents.session.on('will-download', (e,i,w) => this.downloadCSV(e,i,w, resolve));
+      window.webContents.session.on('will-download', (e,i,w) => this.downloadCSV(e,i,w, resolve, reject));
       window.webContents.downloadURL(payload.url);
     });
   }
 
 
-  static downloadCSV(event,item,webContents, downloadResolve) {
+  static downloadCSV(event,item,webContents, downloadResolve, downloadReject) {
     const extension = extname(item.getFilename());
     let savePath = join(tmpdir(),`downloaded${extension}`);
     item.setSavePath(savePath);
@@ -1232,10 +1232,14 @@ export class CommandsManager {
     // handler for when download completed
     item.once('done', (event,state)=>{
       if (state !== 'completed') {
+        const message = `CSV file download failed: ${state}`;
+
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-          message: `CSV file download failed: ${state}`,
+          message: message,
           type: 'error',
         });
+
+        downloadReject(message);
       }
       progress.close();
       webContents.close();
@@ -1243,11 +1247,15 @@ export class CommandsManager {
       if(extension === '.zip') {
         decompress(savePath, tmpdir()).then(files => {
           if(files.length > 0) {
-            // yes we are only reading the first file in the zip... if people supply zips with more files they are shit out of luck
-            const innerExtension = extname(files[0].path);
+            // preferentially find csv or txt file, use first file otherwise
+            const csvFile = files.find(f => extname(f.path) === '.csv') || files.find(f => extname(f.path) === '.txt') || files[0];
+            const innerExtension = extname(csvFile.path);
             savePath = join(tmpdir(),`downloaded${innerExtension}`);
-            renameSync(join(tmpdir(),files[0].path),savePath);
+            renameSync(join(tmpdir(),csvFile.path),savePath);
+
             downloadResolve(savePath);
+          } else {
+            downloadReject('Empty zip provided.');
           }
       });
       } else {
