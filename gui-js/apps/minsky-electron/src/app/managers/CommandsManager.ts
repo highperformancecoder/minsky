@@ -10,7 +10,7 @@ import {
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility, DownloadCSVPayload
 } from '@minsky/shared';
 import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
-import { existsSync, renameSync, unlinkSync, removeSync } from 'fs';
+import { existsSync, renameSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
 import { extname, join, dirname } from 'path';
 import { tmpdir } from 'os';
