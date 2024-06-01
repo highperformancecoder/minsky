@@ -85,6 +85,15 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
   @ViewChild('fullDialog') fullDialog: ElementRef<HTMLElement>;
 
+  public get parameterName(): AbstractControl {
+    return this.form.get('parameterName');
+  }
+  public get shortDescription(): AbstractControl {
+    return this.form.get('shortDescription');
+  }
+  public get detailedDescription(): AbstractControl {
+    return this.form.get('detailedDescription');
+  }
   public get url(): AbstractControl {
     return this.form.get('url');
   }
@@ -150,6 +159,9 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     });
 
     this.form = new FormGroup({
+      parameterName: new FormControl(''),
+      shortDescription: new FormControl(''),
+      detailedDescription: new FormControl(''),
       dontFail: new FormControl(false),
       counter: new FormControl(false),
       decSeparator: new FormControl('.'),
@@ -264,6 +276,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   async load() {
     if(this.url.value === '') return;
 
+    this.setParameterNameFromUrl();
+
     if(this.url.value.includes('://')) {
       const savePath = await this.electronService.downloadCSV({windowUid: this.itemId, url: this.url.value});
       this.url.setValue(savePath);
@@ -281,6 +295,13 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     }
 
     await this.parseLines();
+  }
+
+  setParameterNameFromUrl() {
+    const path = this.url.value as string;
+    const pathArray = this.electronService.isWindows() ? path.split(`\\`) : path.split(`/`);
+    const fileName = pathArray[pathArray.length - 1].split(`.`)[0];
+    this.parameterName.setValue(fileName);
   }
 
   async getCSVDialogSpec() {
@@ -450,6 +471,10 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async handleSubmit() {
+    if(this.parameterName.value === '') {
+      this.setParameterNameFromUrl();
+    }
+
     this.updateSpecFromForm();
 
     if (this.dialogState.spec.dataCols.length===0)
@@ -483,14 +508,11 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       this.isInvokedUsingToolbar &&
       currentItemId === this.itemId &&
       currentItemName === importCSVvariableName &&
-      this.url.value
+      this.parameterName.value
     ) {
-      const path = this.url.value as string;
-      const pathArray = this.electronService.isWindows() ? path.split(`\\`) : path.split(`/`);
-
-      const fileName = pathArray[pathArray.length - 1].split(`.`)[0];
-
-      await this.electronService.minsky.canvas.renameItem(fileName);
+      await this.electronService.minsky.canvas.renameItem(this.parameterName.value);
+      v.tooltip(this.shortDescription.value);
+      v.detailedText(this.detailedDescription.value);
     }
 
     this.closeWindow();

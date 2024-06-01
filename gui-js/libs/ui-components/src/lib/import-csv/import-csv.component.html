@@ -14,6 +14,35 @@
 
   <div class="options-row">
     <span class="inputs-group">
+      <span class="wide-input">
+        <label for="parameterName" title="Parameter name">Parameter name</label>
+        <input
+          id="parameterName"
+          type="text"
+          formControlName="parameterName"
+          class="form-control"
+        />
+      </span>
+      <span class="wide-input">
+        <label for="shortDescription" title="Short description">Short description</label>
+        <input
+          id="shortDescription"
+          type="text"
+          formControlName="shortDescription"
+          class="form-control"
+        />
+      </span>
+      <span class="wide-input">
+        <label for="detailedDescription" title="Detailed description">Detailed description</label>
+        <input
+          id="detailedDescription"
+          type="text"
+          formControlName="detailedDescription"
+          class="form-control"
+        />
+      </span>
+    </span>
+    <span class="inputs-group">
       <span>
         <label for="dontFail" title="Selecting this discards erroneous
         data from being imported.">Don't fail on invalid data</label>
