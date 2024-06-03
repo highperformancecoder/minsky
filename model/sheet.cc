@@ -305,37 +305,6 @@ void Sheet::draw(cairo_t* cairo) const
 
   cairo_scale(cairo,z,z);
 
-//  if (inputRavel)
-//    {
-//      if (showRavel)
-//        {
-//          const cairo::CairoSave cs(cairo);
-//          cairo_translate(cairo,-(0.5+ravelOffset)*m_width,-(0.5+ravelOffset)*m_height);
-//          double r=inputRavel.radius();
-//          const double scale=ravelSize()/r;
-//          cairo_scale(cairo,scale,scale);
-//          const double cornerX=ravelOffset*m_width/scale;
-//          const double cornerY=ravelOffset*m_height/scale;
-//          // clip out the bottom right quadrant
-//          r*=1.1; // allow space for arrow heads
-//          cairo_move_to(cairo,cornerX,cornerY);
-//          cairo_line_to(cairo,r,cornerY);
-//          cairo_line_to(cairo,r,-r);
-//          cairo_line_to(cairo,-r,-r);
-//          cairo_line_to(cairo,-r,r);
-//          cairo_line_to(cairo,cornerX,r);
-//          cairo_stroke_preserve(cairo);
-//          cairo_clip(cairo);
-//          CairoRenderer render(cairo);
-//          inputRavel.render(render);
-//        }
-//      // display ravel button
-//      const cairo::CairoSave cs(cairo);
-//      cairo_translate(cairo,-0.5*m_width,-0.5*m_height);
-//      cairo_scale(cairo,border/Ravel::svgRenderer.width(),border/Ravel::svgRenderer.height());
-//      Ravel::svgRenderer.render(cairo);
-//    }
-  
   cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
   cairo_stroke_preserve(cairo);
   cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
