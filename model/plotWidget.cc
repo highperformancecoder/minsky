@@ -127,8 +127,6 @@ namespace minsky
       }
 
     // draw bounding box ports
-    const float x = -0.5*w, dx=w/(2*m_numLines+1); // x location of ports
-    const float y=0.5*h, dy = h/m_numLines;
     
     size_t i=0;
     // draw bounds input ports
@@ -140,14 +138,16 @@ namespace minsky
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
-        
+
+    const float xLeft = -0.5*w, dx=w/(2*m_numLines+1); // x location of ports
+    const float dy = h/m_numLines;
     // draw y data ports
     for (; i<m_numLines+nBoundsPorts; ++i)
       {
         const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
+          m_ports[i]->moveTo(xLeft*z + this->x(), y*z + this->y()+0.5*yoffs);
+        drawTriangle(cairo, xLeft+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
     // draw RHS y data ports
@@ -160,12 +160,13 @@ namespace minsky
       }
 
     // draw x data ports
+    const float yBottom=0.5*h;
     for (; i<4*m_numLines+nBoundsPorts; ++i)
       {
         const float x=dx-0.5*w + (i-2*m_numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
+          m_ports[i]->moveTo(x*z + this->x(), yBottom*z + this->y()+0.5*yoffs);
+        drawTriangle(cairo, x+0.5*w, yBottom+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
     cairo_translate(cairo, portSpace, yoffs);
