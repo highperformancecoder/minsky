@@ -560,8 +560,6 @@ namespace minsky
   
   void PlotWidget::addConstantCurves()
   {
-    size_t extraPen=2*m_numLines;
-
     std::vector<std::vector<std::pair<double,std::string>>> newXticks;
     
     // determine if any of the incoming vectors has a ptime-based xVector

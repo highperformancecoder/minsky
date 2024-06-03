@@ -124,7 +124,7 @@ namespace escapedListSeparator
         return false;
       }
       last_ = false;
-      for (;next != end;++next) {
+      while (next != end) {
         if (is_escape(*next)) {
           do_escape(next,end,tok);
         }
@@ -145,6 +145,7 @@ namespace escapedListSeparator
         else {
           tok += *next;
         }
+        ++next;
       }
       return true;
     }
@@ -164,18 +165,21 @@ struct SpaceSeparatorParser
   {
     tok.clear();
     bool quoted=false;
-    for (; next!=end; ++next)
-      if (*next==escape)
-        tok+=*(++next);
-      else if (*next==quote)
-        quoted=!quoted;
-      else if (!quoted && isspace(*next))
-        {
-          while (isspace(*next)) ++next;
-          return true;
-        }
-      else
-        tok+=*next;
+    while (next!=end)
+      {
+        if (*next==escape)
+          tok+=*(++next);
+        else if (*next==quote)
+          quoted=!quoted;
+        else if (!quoted && isspace(*next))
+          {
+            while (isspace(*next)) ++next;
+            return true;
+          }
+        else
+          tok+=*next;
+        ++next;
+      }
     return !tok.empty();
   }
   void reset() {}
@@ -192,8 +196,6 @@ namespace
     bool operator==(const Any& x) const {return static_cast<const any&>(*this)==static_cast<const any&>(x);}
     size_t hash;
   };
-
-  std::string str(const Any& x) {return minsky::str(static_cast<const any&>(x));}
 
   // slice label token map
   template <class T>
@@ -513,8 +515,8 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
       if (!buf.empty())
         {
           smatch match;
-          static const regex re("\"RavelHypercube=(.*)\"");
-          if (regex_match(buf, match, re))
+          static const regex ravelHypercube("\"RavelHypercube=(.*)\"");
+          if (regex_match(buf, match, ravelHypercube))
             try
               {
                 string metadata=match[1];
@@ -794,7 +796,6 @@ namespace minsky
                 const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
                 Key key;
-                auto field=tok.begin();
                 size_t dim=0, dataCols=0;
                 col=0;
                 for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
