@@ -85,7 +85,6 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   @ViewChild('importCsvCanvasContainer') inputCsvCanvasContainer: ElementRef<HTMLElement>;
   @ViewChild('fullDialog') fullDialog: ElementRef<HTMLElement>;
 
-
   public get url(): AbstractControl {
     return this.form.get('url');
   }
@@ -263,11 +262,17 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async load() {
-    const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
-    const fileUrl = this.url.value;
+    if(this.url.value === '') return;
 
-    if (fileUrl !== fileUrlOnServer) {
-      await this.variableValuesSubCommand.csvDialog.url(fileUrl);
+    if(this.url.value.includes('://')) {
+      const savePath = await this.electronService.downloadCSV({windowUid: this.itemId, url: this.url.value});
+      this.url.setValue(savePath);
+    }
+
+    const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
+
+    if (this.url.value !== fileUrlOnServer) {
+      await this.variableValuesSubCommand.csvDialog.url(this.url.value);
       await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
       await this.getCSVDialogSpec();
       this.updateForm();
