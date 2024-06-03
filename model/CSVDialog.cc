@@ -288,10 +288,7 @@ namespace
 bool CSVDialog::redraw(int, int, int, int)
 {
   cairo_t* cairo=surface->cairo();
-  CroppedPango pango(cairo, colWidth);
   rowHeight=15;
-  pango.setFontSize(0.8*rowHeight);
-  
   vector<vector<string>> parsedLines=parseLines();
 
   // LHS row labels
@@ -317,6 +314,9 @@ bool CSVDialog::redraw(int, int, int, int)
     pango.show();
     
   }	
+  
+  CroppedPango pango(cairo, colWidth);
+  pango.setFontSize(0.8*rowHeight);
   
   set<size_t> done;
   double x=xoffs, y=0;

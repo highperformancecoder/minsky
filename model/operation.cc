@@ -350,13 +350,13 @@ namespace minsky
     set<string> names;
     for (size_t i=1; i<m_ports.size(); ++i)
       if (auto vv=m_ports[i]->getVariableValue())
-        for (auto& i: vv->hypercube().xvectors)
-          names.insert(i.name);
+        for (auto& xv: vv->hypercube().xvectors)
+          names.insert(xv.name);
       else if (!m_ports[i]->wires().empty())
         if (auto f=m_ports[i]->wires()[0]->from())
           if (auto r=f->item().ravelCast())
-            for (auto& i: r->hypercube().xvectors)
-              names.insert(i.name);
+            for (auto& xv: r->hypercube().xvectors)
+              names.insert(xv.name);
               
     return {names.begin(), names.end()};
   }
@@ -561,16 +561,12 @@ namespace minsky
   string OperationBase::portValues() const
   {
     string r="equations not yet constructed, please reset";
-    if (!m_ports.empty() && m_ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
-      {
-        std::stringstream ss;
-        ss <<"[out]="<<m_ports[0]->value();		
-        r=ss.str();
-      } else r="[out]="+to_string(m_ports[0]->value());
+    if (!m_ports.empty())
+      r="[out]="+str(m_ports[0]->value());
     if (m_ports.size()>1)
-      r+=" [in1]="+ to_string(m_ports[1]->value());
+      r+=" [in1]="+ str(m_ports[1]->value());
     if (m_ports.size()>2)
-      r+=" [in2]="+ to_string(m_ports[2]->value());
+      r+=" [in2]="+ str(m_ports[2]->value());
     return r;
   }
   

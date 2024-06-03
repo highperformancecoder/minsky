@@ -80,6 +80,10 @@ namespace minsky
     CLASSDESC_ACCESS(GodleyTableEditor);
     GodleyIcon& m_godleyIcon; ///< Godley icon that owns this
     bool button1=false; ///< mouse button pressed
+    void m_enableButtons() {
+      drawButtons=true; leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
+      topTableOffset=30;adjustWidgets();
+    }
    public:
     static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window
@@ -94,10 +98,7 @@ namespace minsky
     
     bool drawButtons=true; ///< whether to draw row/column buttons
     void disableButtons() {drawButtons=false; leftTableOffset=0; topTableOffset=20; requestRedrawCanvas();}
-    void enableButtons() {
-      drawButtons=true; leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
-      topTableOffset=30;adjustWidgets();requestRedrawCanvas();
-    }
+    void enableButtons() {m_enableButtons();requestRedrawCanvas();}
 
     /// starting row/col number of the scrolling region
     unsigned scrollRowStart=1, scrollColStart=1;
@@ -117,7 +118,7 @@ namespace minsky
     double zoomFactor=1; ///< zoom the display
 
     GodleyTableEditor(GodleyIcon& g): m_godleyIcon(g)
-    {enableButtons(); adjustWidgets();}
+    {m_enableButtons(); adjustWidgets();}
 
     void draw(cairo_t* cairo);
 

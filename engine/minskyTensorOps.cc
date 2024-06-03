@@ -806,24 +806,6 @@ namespace minsky
           hc.xvectors.push_back(arg1->hypercube().xvectors[dimension]);
           hc.xvectors[0].resize(arg2NumElements);
         }
-//      hc.xvectors.resize(1);
-//      auto& xvToGather=arg1->hypercube().xvectors[dimension];
-//      for (size_t i=0; !xv.empty() && i<arg2->size(); ++i)
-//        {
-//          double intPart;
-//          double fracPart=std::modf((*arg2)[i], &intPart);
-//          if (intPart>=0)
-//            if (intPart<xvToGather.size()-1)
-//              hc.xvectors[0].emplace_back(interpolate(xvToGather[intPart],xvToGather[intPart+1],fracPart));
-//            else if (intPart<xvToGather.size())
-//              hc.xvectors[0].emplace_back(xvToGather[intPart]);
-//            else
-//              hc.xvectors[0].emplace_back(any(xvToGather.dimension.type));
-//          else if (intPart==-1)
-//            hc.xvectors[0].emplace_back(xvToGather[0]);
-//          else
-//            hc.xvectors[0].emplace_back(any(xvToGather.dimension.type));
-//        }
                                 
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin(), arg1->hypercube().xvectors.begin()+dimension);
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin()+dimension+1, arg1->hypercube().xvectors.end());
@@ -1201,7 +1183,6 @@ namespace minsky
       if (dimension<rank())
         {
           auto splitted=hypercube().splitIndex(i);
-          size_t dimIdx=splitted[dimension];
           splitted.erase(splitted.begin()+dimension);
           auto hcIdx=scale.hypercube().linealIndex(splitted);
           return scale.atHCIndex(hcIdx) * (*x)[i] + offset.atHCIndex(hcIdx);
@@ -1705,8 +1686,8 @@ namespace minsky
       }
   }
    
-  void TensorEval::deriv(double df[], size_t n, const double ds[],
-                         const double sv[], const double fv[])
+  void TensorEval::deriv(double* df, size_t n, const double* ds,
+                         const double* sv, const double* fv)
   {
     if (result.idx()<0) return;
     if (rhs)

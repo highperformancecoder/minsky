@@ -208,11 +208,7 @@ namespace minsky
   void IntOp::removeControlledItems(minsky::GroupItems& g)
   {
     if (intVar)
-      {
-        g.removeItem(*intVar);
-        //intVar->controller.reset();
-      }
-    //intVar.reset();
+      g.removeItem(*intVar);
   }
   
   string IntOp::description(const string& a_desc)
