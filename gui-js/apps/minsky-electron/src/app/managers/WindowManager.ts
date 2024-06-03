@@ -249,6 +249,8 @@ export class WindowManager {
         log.error(error);
       }
     });
+    // in the event the webcontents is closed without the containing window being so.
+    childWindow.webContents.on('destroyed', ()=> this.activeWindows.delete(childWindow.id));
     return childWindow;
   }
 

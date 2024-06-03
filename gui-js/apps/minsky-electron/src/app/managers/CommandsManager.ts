@@ -1209,13 +1209,9 @@ export class CommandsManager {
   }
 
   static startCSVDownload(payload: DownloadCSVPayload) {
-    console.warn('Download started');
-
     const window=this.createDownloadWindow();
 
     return new Promise<string>((resolve, reject) => {
-      console.warn('Will-download started')
-
       window.webContents.session.on('will-download', (e,i,w) => this.downloadCSV(e,i,w, resolve, reject));
       window.webContents.downloadURL(payload.url);
     });
@@ -1281,7 +1277,7 @@ export class CommandsManager {
     return WindowManager.createWindow({
       width: 500,
       height: 700,
-      title: '',
+      title: 'Download CSV',
       modal: false,
     });
   }
