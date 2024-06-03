@@ -29,6 +29,7 @@ export const events = {
   DISPLAY_INIT_HELP: 'display-init-help',
   DISPLAY_MOUSE_COORDINATES: 'display-mouse-coordinates',
   DOUBLE_CLICK: 'double-click',
+  DOWNLOAD_CSV: 'download-csv',
   GET_CURRENT_WINDOW: 'get-current-window',
   GET_PREFERENCES: 'get-preferences',
   GODLEY_POPUP_REFRESH: 'godley-popup-refresh',

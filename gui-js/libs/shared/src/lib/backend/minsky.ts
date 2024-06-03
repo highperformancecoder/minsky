@@ -379,7 +379,6 @@ export class CSVDialog extends CppClass {
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async loadFile(): Promise<void> {return this.$callMethod('loadFile');}
   async loadFileFromName(a1: string): Promise<void> {return this.$callMethod('loadFileFromName',a1);}
-  async loadWebFile(a1: string): Promise<string> {return this.$callMethod('loadWebFile',a1);}
   async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}

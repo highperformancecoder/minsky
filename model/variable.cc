@@ -467,8 +467,6 @@ void VariableBase::exportAsCSV(const std::string& filename, bool tabular) const
 void VariableBase::importFromCSV(std::string filename, const DataSpecSchema& spec) const
 {
   if (auto v=vValue()) {
-    if (filename.find("://")!=std::string::npos)
-      filename = v->csvDialog.loadWebFile(filename);
     std::ifstream is(filename);
     v->csvDialog.spec=spec;
     v->csvDialog.url=filename;
