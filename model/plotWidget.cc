@@ -172,10 +172,6 @@ namespace minsky
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
     double gw=w-2*portSpace, gh=h-portSpace;
-    //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
-    auto& pt=const_cast<Plot*>(static_cast<const Plot*>(this))->plotType;
-    if (plotType!=automatic)
-      pt=static_cast<Plot::PlotType>(plotType);
 
     Plot::draw(cairo,gw,gh);
     if (mouseFocus && legend)
@@ -579,6 +575,9 @@ namespace minsky
         }
 
     formatter=defaultFormatter;
+
+    if (plotType!=automatic)
+      Plot::plotType=plotType;
 
     size_t pen=0;
     bool noLhsPens=true; // track whether any left had side ports are connected
