@@ -753,9 +753,11 @@ namespace minsky
       
       arg1=a1; arg2=a2;
       if (!arg1 || !arg2) return;
-      auto& xv=arg1->hypercube().xvectors;
-      dimension=find_if(xv.begin(), xv.end(), [&](const XVector& i)
-                        {return i.name==args.dimension;})-xv.begin();
+      {
+        auto& xv=arg1->hypercube().xvectors;
+        dimension=find_if(xv.begin(), xv.end(), [&](const XVector& i)
+        {return i.name==args.dimension;})-xv.begin();
+      }
                         
       switch (arg1->rank())
         {
@@ -1125,12 +1127,14 @@ namespace minsky
       m_index=y->index();
       hypercube(y->hypercube());
 
-      auto& xv=m_hypercube.xvectors;
-      dimension=rank()>1? rank(): 0;
-      for (auto i=xv.begin(); i!=xv.end(); ++i)
-        if (i->name==args.dimension)
-          dimension=i-xv.begin();
-
+      {
+        auto& xv=m_hypercube.xvectors;
+        dimension=rank()>1? rank(): 0;
+        for (auto i=xv.begin(); i!=xv.end(); ++i)
+          if (i->name==args.dimension)
+            dimension=i-xv.begin();
+      }
+      
       sumy.setArgument(y,args);
       TensorPtr spreadX;
       if (x)
