@@ -588,8 +588,8 @@ compile-ts:
 	cd gui-js && npx tsc | sed -e 's/\x1b\[[0-9;]*m//g'|sed -e 's/(\([0-9]*\),[0-9]*)/:\1/g'
 
 codeql:
-	rm *.o
-	codeql database create codeqlDb -l c++ -c "$(MAKE) gui-js/node-addons/minskyRESTService.node" -j0  --overwrite
+	-rm *.o
+	codeql database create codeqlDb -l c++ -c "$(MAKE) $(MAKEFLAGS) gui-js/node-addons/minskyRESTService.node" -j0  --overwrite
 	codeql database analyze codeqlDb codeql/cpp-queries:codeql-suites/cpp-security-and-quality.qls --format=csv --output=codeql-c++.csv -j0
 
 codeql/cpp-queries:

@@ -201,7 +201,6 @@ namespace minsky
           {
           case ClickType::onResize:
             {
-              const EnsureEditorMode e(*item);
               auto w=item->itemRef->width()/item->zoomX;
               auto h=item->itemRef->height()/item->zoomY;
               lasso.x0=x>item->x? x-w: x+w;

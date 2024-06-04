@@ -1660,7 +1660,7 @@ namespace minsky
     assert(result.size()==rhs->size());
   }   
 
-  void TensorEval::eval(double fv[], size_t n, const double sv[])
+  void TensorEval::eval(double* fv, size_t n, const double* sv)
   {
     if (rhs)
       {
