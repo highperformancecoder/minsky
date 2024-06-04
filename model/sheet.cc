@@ -280,7 +280,7 @@ namespace {
       m_height=height();
     }
     void show() {
-      cairo::CairoSave cs(cairoContext());
+      const cairo::CairoSave cs(cairoContext());
       double x,y;
       cairo_get_current_point(cairoContext(),&x,&y);
       cairo_rectangle(cairoContext(),x,y,m_width,m_height);
@@ -466,7 +466,7 @@ void Sheet::draw(cairo_t* cairo) const
                   if (adjustColAndFinish(i,x)) break;
                   y=y0;
                   {
-                    cairo::CairoSave cs(cairo);
+                    const cairo::CairoSave cs(cairo);
                     cairo_rectangle(cairo,x,y,colWidth,rowHeight);
                     cairo_clip(cairo);
                     cairo_move_to(cairo,x,y);
